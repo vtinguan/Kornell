@@ -5,6 +5,10 @@
 
 <web-app>
 
+	<listener>
+   		<listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+	</listener>
+	
   <!-- Servlets -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>
