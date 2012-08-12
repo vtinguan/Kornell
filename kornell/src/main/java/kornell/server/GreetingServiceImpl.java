@@ -1,5 +1,7 @@
 package kornell.server;
 
+import javax.inject.Inject;
+
 import kornell.client.GreetingService;
 import kornell.shared.FieldVerifier;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -11,6 +13,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GreetingServiceImpl extends RemoteServiceServlet implements
     GreetingService {
 
+  @Inject Injectee i;
+	
   public String greetServer(String input) throws IllegalArgumentException {
     // Verify that the input is valid.
     if (!FieldVerifier.isValidName(input)) {
@@ -27,7 +31,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
     input = escapeHtml(input);
     userAgent = escapeHtml(userAgent);
 
-    return "Hello, " + input + "!<br><br>I am running " + serverInfo
+    return "Hello, " + i.sayHi() +", " + input + "!<br><br>I am running " + serverInfo
         + ".<br><br>It looks like you are using:<br>" + userAgent;
   }
 
