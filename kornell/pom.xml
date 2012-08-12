@@ -10,7 +10,7 @@
   <artifactId>kornell</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>Craftware e</name>
+  <name>Craftware e-learning</name>
 
   <properties>
     <!-- Convenience property to set the GWT version -->
