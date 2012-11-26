@@ -1,12 +1,23 @@
-*.class
+# Eclipse configuration
+.settings
+.classpath
+.classpath.orig
+.project 
+
+# MacOS Garbage
+.DS_Store
 
 # Package Files #
 *.jar
 *.war
 *.ear
 
+# Generated stuff
 target
+*.class
+.gwt
 
-.project
-.settings
-.classpath
+
+# Unknown
+*.cache
+*.swp
