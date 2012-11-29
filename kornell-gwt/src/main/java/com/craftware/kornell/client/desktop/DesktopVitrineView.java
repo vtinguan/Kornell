@@ -39,7 +39,7 @@ public class DesktopVitrineView  extends Composite implements VitrineView {
 	void doTheLocomotion(ClickEvent e) {
 		// Send request to server and catch any errors.
 		//TODO: Make URLs configurable, conform to same origin policy
-	    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "/kornell-api/users/ftal");
+	    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "http://api.kornell.craftware.com:8080/users/ftal");
 
 	    try {
 	      builder.sendRequest(null, new RequestCallback() {
