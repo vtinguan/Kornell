@@ -1,0 +1,13 @@
+<jboss-web> 
+    <!--
+    Dear dev,
+    
+    Please map this virtual host in you as7 configuration (standalone.xml)
+    <virtual-server name="KornellGWT" enable-welcome-root="false" default-web-module="kornell-gwt">
+    	<alias name="gwt.kornell.craftware.com"/>
+    </virtual-server> 
+    
+    And add "gwt.kornell.craftware.com" to your hosts file.
+     -->
+    <virtual-host>KornellGWT</virtual-host>
+</jboss-web>

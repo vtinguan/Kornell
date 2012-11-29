@@ -34,7 +34,7 @@
 			<g:HorizontalPanel width="100%" height="100%" borderWidth="1">
 				<g:FlowPanel>
 					<g:Label>Une HTTP Request, svp!</g:Label>
-					<g:Button ui:field="btnDoTheLocomotion">DO THE LOCOMOTION</g:Button>
+					<g:Button ui:field="btnDoTheLocomotion">DO THE LOCOMOTION!</g:Button>
 				</g:FlowPanel>
 				<g:cell width="320px">
 				<g:FlowPanel styleName="{style.leste}">
