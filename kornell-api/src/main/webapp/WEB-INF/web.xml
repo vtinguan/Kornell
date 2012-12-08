@@ -5,7 +5,7 @@
       
     <filter>
         <filter-name>CORSFilter</filter-name>
-        <filter-class>com.craftware.kornell.server.web.CORSFilter</filter-class>
+        <filter-class>kornell.server.web.CORSFilter</filter-class>
         <init-param>
             <param-name>allowedOrigins</param-name>
             <!-- TODO: Handle other names for production, homolog, etc -->
