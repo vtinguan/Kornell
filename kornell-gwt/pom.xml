@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>br.com.craftware</groupId>
+	<groupId>kornell</groupId>
 	<artifactId>kornell-gwt</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -138,7 +138,7 @@
 					<runTarget>Kornell.html</runTarget>
 					<!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
 					<compileReport>true</compileReport>
-					<module>com.craftware.kornell.Kornell</module>
+					<module>kornell.Kornell</module>
 
 					<logLevel>INFO</logLevel>
 					<style>${gwt.style}</style>

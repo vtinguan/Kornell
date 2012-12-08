@@ -1,4 +1,4 @@
-package com.craftware.kornell.data
+package kornell.data
 
 import scala.reflect.BeanProperty
 
