@@ -1,4 +1,4 @@
-package com.craftware.kornell.api
+package kornell.api
 
 import javax.ws.rs.core.Application
 import scala.collection.JavaConversions._

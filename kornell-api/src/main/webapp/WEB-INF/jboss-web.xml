@@ -4,10 +4,10 @@
     
     Please map this virtual host in you as7 configuration (standalone.xml)
     <virtual-server name="KornellAPI" enable-welcome-root="false" default-web-module="kornell-api">
-    	<alias name="api.kornell.craftware.com"/>
+    	<alias name="api.kornell.localdomain"/>
     </virtual-server> 
     
-    And add "api.kornell.craftware.com" to your hosts file.
+    And add "api.kornell.localdomain" to your hosts file.
      -->
     <virtual-host>KornellAPI</virtual-host>
 </jboss-web>

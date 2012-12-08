@@ -1,4 +1,4 @@
-package com.craftware.kornell.api
+package kornell.api
 
 import javax.ws.rs.Path
 import javax.ws.rs.Produces

@@ -1,4 +1,4 @@
-package com.craftware.kornell.server.web
+package kornell.server.web
 
 import javax.servlet.annotation.WebFilter
 import javax.servlet.Filter

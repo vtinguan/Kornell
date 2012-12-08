@@ -9,7 +9,7 @@
         <init-param>
             <param-name>allowedOrigins</param-name>
             <!-- TODO: Handle other names for production, homolog, etc -->
-            <param-value>http://gwt.kornell.craftware.com:8080</param-value>
+            <param-value>http://gwt.kornell.localdomain:8080</param-value>
         </init-param>
         
     </filter>

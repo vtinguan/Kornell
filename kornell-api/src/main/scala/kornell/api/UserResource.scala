@@ -1,8 +1,8 @@
-package com.craftware.kornell.api
+package kornell.api
 
 import javax.ws.rs._
 import javax.ws.rs.core.MediaType._
-import com.craftware.kornell.data.UserInfo
+import kornell.data.UserInfo
 import scala.reflect.BeanProperty
 import javax.ws.rs.core.Response._
 import javax.ws.rs.core.Response.Status._

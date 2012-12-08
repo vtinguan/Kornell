@@ -1,4 +1,4 @@
 Kornell
 =======
 
-Craftware e-learning platform
+An e-learning platform. More to come...
