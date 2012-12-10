@@ -3,11 +3,11 @@
 
 	<ui:style>
 		.norte {
-			background-color: lightblue;
+			background-color: lightgrey;
 		}
 		
 		.sul {
-			background-color: lightgreen;
+			background-color: lightgrey;
 		}
 		
 		.leste {
@@ -19,7 +19,7 @@
 
 		<g:north size='50'>
 			<g:FlowPanel styleName="{style.norte}">
-				<g:Label>Top Noth Header</g:Label>
+				<g:Label>Welcome to Kornell</g:Label>
 			</g:FlowPanel>
 		</g:north>
 
@@ -33,8 +33,8 @@
 		<g:center>
 			<g:HorizontalPanel width="100%" height="100%" borderWidth="1">
 				<g:FlowPanel>
-					<g:Label>Une HTTP Request, svp!</g:Label>
-					<g:Button ui:field="btnDoTheLocomotion">DO THE LOCOMOTION!</g:Button>
+					<g:Label>To test if CORS is working..</g:Label>
+					<g:Button ui:field="btnDoTheLocomotion">make a REST API request!</g:Button>
 				</g:FlowPanel>
 				<g:cell width="320px">
 				<g:FlowPanel styleName="{style.leste}">
