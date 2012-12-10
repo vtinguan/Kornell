@@ -24,3 +24,5 @@ http://www.khanacademy.org
 http://www.udemy.com
 
 http://www.udacity.com
+
+For those of you wondering, this project is named after [Dr. Nate Kornell](http://sites.williams.edu/nk2/)
