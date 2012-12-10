@@ -10,10 +10,17 @@ If you would like to be part of this, plase reach us. There is surely a lot to d
 And also, take some time to get inspired by the people that inspire us:
 
 http://www.ted.com/talks/daphne_koller_what_we_re_learning_from_online_education.html
+
 http://www.ted.com/talks/salman_khan_let_s_use_video_to_reinvent_education.html
+
 http://venturelab.stanford.edu/education
+
 http://www.coursera.org
+
 http://www.academicearth.org
+
 http://www.khanacademy.org
+
 http://www.udemy.com
+
 http://www.udacity.com
