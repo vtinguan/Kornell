@@ -3,6 +3,7 @@
 .classpath
 .classpath.orig
 .project 
+rebel.xml
 
 # MacOS Garbage
 .DS_Store

@@ -17,9 +17,13 @@
   <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
+  <!-- This is the CLient API for GWT -->
+  <inherits name='kornell.api.KornellClient' />
 
-  <!-- Specify the app entry point class.                         -->
+  <!-- This is the GWT UI -->
   <entry-point class='kornell.client.Kornell' />
+  
+  <!-- TODO: One could confuse the meaning of the client api for the ui client... rename? -->
   
   <replace-with class="kornell.client.DesktopClientFactoryImpl">
     <when-type-is class="kornell.client.ClientFactory"/>

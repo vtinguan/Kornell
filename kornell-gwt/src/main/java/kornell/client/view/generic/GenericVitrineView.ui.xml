@@ -33,14 +33,13 @@
 		<g:center>
 			<g:HorizontalPanel width="100%" height="100%" borderWidth="1">
 				<g:FlowPanel>
-					<g:Label>To test if CORS is working..</g:Label>
-					<g:Button ui:field="btnDoTheLocomotion">make a REST API request!</g:Button>
+					<g:Label>Welcome to Kornell</g:Label>
 				</g:FlowPanel>
 				<g:cell width="320px">
 				<g:FlowPanel styleName="{style.leste}">
 					<k:FormPanel legend="Identifique-se">
-						<k:InputText label="Usuário"></k:InputText>
-						<k:InputText label="Senha"></k:InputText>
+						<k:InputText label="Usuário" ui:field="txtUsername"></k:InputText>
+						<k:InputText label="Senha" ui:field="txtPassword" value="uala"></k:InputText>
 						<g:Button ui:field="btnLogin" text="Enviar"></g:Button>
 					</k:FormPanel> 
 				</g:FlowPanel>
