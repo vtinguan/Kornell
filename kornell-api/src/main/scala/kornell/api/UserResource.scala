@@ -14,11 +14,6 @@ class UserResource(@BeanProperty var userId:String) {
     if (userId == "ftal") new UserInfo("Fulano de Tal")
     else null
     
-   @GET
-   @Path("checkPassword")
-   def checkPassword(password:String) =
-     (if (password == "uala") ok
-      else status(UNAUTHORIZED)
-     	   header("WWW-Authenticate", "Basic realm=Kornell")) build
+
 	
 }
