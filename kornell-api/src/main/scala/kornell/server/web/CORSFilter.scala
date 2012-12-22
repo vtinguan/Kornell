@@ -25,7 +25,8 @@ class CORSFilter extends Filter {
   override def doFilter(req:ServletRequest, res:ServletResponse, chain:FilterChain){
     val resp = res.asInstanceOf[HttpServletResponse]
     if(allowedOrigins != "") 
-      resp.addHeader("Access-Control-Allow-Origin", allowedOrigins)    
+      resp.addHeader("Access-Control-Allow-Origin", allowedOrigins)
+      resp.addHeader("Access-Control-Allow-Headers", "origin, authorization, content-type")
     chain.doFilter(req,res)
   }
   
