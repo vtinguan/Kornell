@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <jboss-web xmlns="http://www.jboss.com/xml/ns/javaee"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee http://www.jboss.org/schema/jbossweb/jboss-web_6_0.xsd"
@@ -5,12 +6,33 @@
     <!--
     Dear dev,
     
-    Please map this virtual host in you as7 configuration (standalone.xml)
+    Please add these settings to your as7 configuration (standalone.xml)
+    -->
+    
+    <!--
+	<datasource jndi-name="java:/KornellDS" pool-name="KornellDS" enabled="true">
+    	<connection-url>jdbc:mysql://db.kornell.localdomain/kornell</connection-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<driver>mysql-connector-java-5.1.19-bin.jar</driver>
+		<security>
+			<user-name>kornell</user-name>
+			<password>kornell</password>
+		</security>
+	</datasource>
+    -->
+    
+    <!-- 
+    
+     -->
+     
+    <security-domain>KornellSecDomain</security-domain>
+    <!-- 
     <virtual-server name="KornellAPI" enable-welcome-root="false" default-web-module="kornell-api">
     	<alias name="api.kornell.localdomain"/>
     </virtual-server> 
-    
     And add "api.kornell.localdomain" to your hosts file.
-     -->
-    <virtual-host>KornellAPI</virtual-host>
+    -->
+    <virtual-host>KornellAPI</virtual-host> 
+    
+    
 </jboss-web>

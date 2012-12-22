@@ -54,7 +54,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			}
 
 			@Override
-			protected void forbidden() {
+			protected void unauthorized(){
 				Window.alert("Sorry. Try again");
 			}
 		};

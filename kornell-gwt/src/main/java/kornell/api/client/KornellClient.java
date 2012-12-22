@@ -19,15 +19,12 @@ public class KornellClient {
 			String password,
 			RequestCallback callback) {
 		StringBuffer postData = new StringBuffer();
-		postData.append(URL.encode("username")).append("=")
-				.append(URL.encode(username));
-		postData.append("&");
-		postData.append(URL.encode("password")).append("=")
-				.append(URL.encode(password));
+		
 
 		RequestBuilder builder =
-				new RequestBuilder(RequestBuilder.POST, apiURL+"/auth/checkPassword");
-		builder.setHeader("Content-Type", "application/x-www-form-urlencoded");
+				new RequestBuilder(RequestBuilder.GET, apiURL+"/auth");
+		String authorization = "Basic "+KornellClient.encode(username,password);
+		builder.setHeader("Authorization", authorization);
 		try {
 			builder.sendRequest(postData.toString(), callback);
 		} catch (RequestException ex) {
@@ -35,5 +32,13 @@ public class KornellClient {
 		}
 
 	}
+
+	private static String encode(String username, String password) {
+		return KornellClient.base64Encode(username+":"+password);
+	}
+
+	private static native String base64Encode(String plain) /*-{
+	  return window.btoa(plain);
+	}-*/;
 
 }
