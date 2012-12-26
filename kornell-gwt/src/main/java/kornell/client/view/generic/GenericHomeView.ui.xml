@@ -1,7 +1,5 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:k='urn:import:kornell.client.ui'>
 
-	<g:HTML>
-		Welcome to Kornell E-Learning Platform!
-	</g:HTML>
+	<g:Label ui:field="lblWelcome"></g:Label>
 </ui:UiBinder>
