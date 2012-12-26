@@ -13,6 +13,10 @@
 		.leste {
 			background-color: lightgrey;
 		}
+		.error {
+			color: red;
+		}
+		
 	</ui:style>
 
 	<g:DockLayoutPanel unit='PX' styleName="debug">
@@ -38,9 +42,10 @@
 				<g:cell width="320px">
 				<g:FlowPanel styleName="{style.leste}">
 					<k:FormPanel legend="Identifique-se">
-						<k:InputText label="Usuário" ui:field="txtUsername"></k:InputText>
-						<k:InputText label="Senha" ui:field="txtPassword" value="uala"></k:InputText>
+						<k:InputText label="Usuário" ui:field="txtUsername"></k:InputText>						
+						<k:InputText label="Senha" ui:field="txtPassword"></k:InputText>
 						<g:Button ui:field="btnLogin" text="Enviar"></g:Button>
+						<g:Label ui:field="lblError" styleName="{style.error}"></g:Label>
 					</k:FormPanel> 
 				</g:FlowPanel>
 				</g:cell>

@@ -11,7 +11,10 @@ class BasicAuthFilter extends Filter {
     val resp = res.asInstanceOf[HttpServletResponse]
     val req = sreq.asInstanceOf[HttpServletRequest]
     //val path = req.getPathInfo()    
-    checkCredentials(req,resp,chain)    
+    if("OPTIONS".equals(req.getMethod())){
+      chain.doFilter(req,resp);
+    }else    
+      checkCredentials(req,resp,chain)    
   }
   
   

@@ -2,7 +2,8 @@
 <module rename-to='KornellClient'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name="com.google.gwt.http.HTTP" />
-
+  <inherits name="com.google.gwt.json.JSON" /> 
+  
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
 </module>

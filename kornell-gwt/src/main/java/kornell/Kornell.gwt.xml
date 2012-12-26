@@ -4,7 +4,10 @@
   <inherits name='com.google.gwt.activity.Activity'/>
   <inherits name='com.google.gwt.place.Place'/>
   <inherits name='com.google.gwt.user.User' />
+  
   <inherits name="com.google.gwt.http.HTTP" />
+  <inherits name="com.google.gwt.json.JSON" /> 
+  
   
   <!-- We need the JUnit module in the main module,               -->
   <!-- otherwise eclipse complains (Google plugin bug?)           -->
@@ -25,7 +28,7 @@
   
   <!-- TODO: One could confuse the meaning of the client api for the ui client... rename? -->
   
-  <replace-with class="kornell.client.DesktopClientFactoryImpl">
+  <replace-with class="kornell.client.GenericClientFactoryImpl">
     <when-type-is class="kornell.client.ClientFactory"/>
   </replace-with>
   

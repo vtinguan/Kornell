@@ -10,9 +10,11 @@ import javax.persistence.GenerationType._
 import java.util.List
 import java.util.ArrayList
 import javax.persistence.ElementCollection
+import javax.persistence.ManyToOne
 
 @Entity
 class Principal(
+    _person:Person,
     _username:String,
     _roles:List[String]) {
   @BeanProperty
@@ -27,5 +29,9 @@ class Principal(
   @ElementCollection
   var roles:List[String] = _roles
   
-  def this() = this(null,null)
+  @BeanProperty
+  @ManyToOne
+  var person:Person = _person
+  
+  def this() = this(null,null,null)
 }

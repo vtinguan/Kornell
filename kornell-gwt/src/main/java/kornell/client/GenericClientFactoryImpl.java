@@ -1,5 +1,6 @@
 package kornell.client;
 
+import kornell.api.client.KornellClient;
 import kornell.client.activity.AppActivityMapper;
 import kornell.client.activity.AppPlaceHistoryMapper;
 import kornell.client.presenter.home.HomeView;
@@ -15,7 +16,7 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
-public class DesktopClientFactoryImpl implements ClientFactory {
+public class GenericClientFactoryImpl implements ClientFactory {
 	private final EventBus eventBus = new SimpleEventBus();
 	private final UserSession userSession = new UserSession();
 	private final PlaceController placeController = new PlaceController(
@@ -25,9 +26,12 @@ public class DesktopClientFactoryImpl implements ClientFactory {
 	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
 			historyMapper);
 	private ActivityManager activityManager;
+	
+	private final String apiURL = "http://api.kornell.localdomain:8080";
+	private final KornellClient client = new KornellClient(apiURL);
 
 
-	public DesktopClientFactoryImpl() {
+	public GenericClientFactoryImpl() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -53,12 +57,12 @@ public class DesktopClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public HomeView getHomeView() {
-		return new GenericHomeView(placeController);
+		return new GenericHomeView(placeController,client);
 	}
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView(placeController);
+		return new GenericVitrineView(placeController,client);
 	}
 
 	@Override
