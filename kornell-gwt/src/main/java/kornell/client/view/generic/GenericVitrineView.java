@@ -7,9 +7,15 @@ import kornell.client.presenter.home.HomePlace;
 import kornell.client.presenter.vitrine.VitrineView;
 import kornell.client.ui.InputText;
 
+import com.github.gwtbootstrap.client.ui.Form;
+import com.github.gwtbootstrap.client.ui.PasswordTextBox;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.place.shared.PlaceController;
@@ -31,10 +37,13 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private PlaceController placeCtrl;
 
 	@UiField
-	InputText txtPassword;
+	TextBox txtUsername;
 	@UiField
-	InputText txtUsername;
+	PasswordTextBox pwdPassword;
 	@UiField
+	Form frmLogin;
+	
+//	@UiField
 	Label lblError;
 	
 	private KornellClient client;
@@ -44,7 +53,14 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			KornellClient client) {
 		this.placeCtrl = placeCtrl;
 		this.client = client;
+	
 		initWidget(uiBinder.createAndBindUi(this));
+		pwdPassword.addKeyPressHandler(new KeyPressHandler() {			
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				doLogin();				
+			}
+		});
 	}
 
 	@Override
@@ -52,8 +68,10 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	@UiHandler("btnLogin")
 	void doLogin(ClickEvent e) {
-		String url = "http://api.kornell.localdomain:8080";
+		doLogin();
+	}
 
+	private void doLogin() {
 		Callback callback = new Callback() {
 			@Override
 			protected void ok(Person person){
@@ -68,7 +86,21 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		// TODO: Should be client.auth().checkPassword()?
 		// TODO: Should the api accept HasValue<String> too?
 		client.login(txtUsername.getValue(),
-				txtPassword.getValue(),
+				pwdPassword.getValue(),
 				callback);
+	}
+	
+	boolean cssSwitch = true;
+	
+//	@UiHandler("btnWarning")
+	void doWarning(ClickEvent e){
+		if (cssSwitch){
+			Document.get().getElementById("KornellStyle").setAttribute("href","Kornell2.css");	
+		}else {
+			Document.get().getElementById("KornellStyle").setAttribute("href","Kornell.css");
+		}
+		cssSwitch =! cssSwitch; 
+		
+
 	}
 }

@@ -1,57 +1,21 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:k='urn:import:kornell.client.ui'>
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-	<ui:style>
-		.norte {
-			background-color: lightgrey;
-		}
-		
-		.sul {
-			background-color: lightgrey;
-		}
-		
-		.leste {
-			background-color: lightgrey;
-		}
-		.error {
-			color: red;
-		}
-		
-	</ui:style>
 
-	<g:DockLayoutPanel unit='PX' styleName="debug">
 
-		<g:north size='50'>
-			<g:FlowPanel styleName="{style.norte}">
-				<g:Label>Welcome to Kornell</g:Label>
-			</g:FlowPanel>
-		</g:north>
-
-		<g:south size='50'>
-			<g:FlowPanel styleName="{style.sul}">
-				<g:Label>Bell Bottom</g:Label>
-			</g:FlowPanel>
-		</g:south>
-		
-
-		<g:center>
-			<g:HorizontalPanel width="100%" height="100%" borderWidth="1">
-				<g:FlowPanel>
-					<g:Label>Welcome to Kornell</g:Label>
-				</g:FlowPanel>
-				<g:cell width="320px">
-				<g:FlowPanel styleName="{style.leste}">
-					<k:FormPanel legend="Identifique-se">
-						<k:InputText label="Usuário" ui:field="txtUsername"></k:InputText>						
-						<k:InputText label="Senha" ui:field="txtPassword"></k:InputText>
-						<g:Button ui:field="btnLogin" text="Enviar"></g:Button>
-						<g:Label ui:field="lblError" styleName="{style.error}"></g:Label>
-					</k:FormPanel> 
-				</g:FlowPanel>
-				</g:cell>
-			</g:HorizontalPanel>
-
-		</g:center>
-	</g:DockLayoutPanel>
+	<b:FluidContainer addStyleNames="vitrine">
+		<b:FluidRow>
+			<b:Column size="3" offset="3" addStyleNames="boxLogin">
+				<b:Heading size="1">Login</b:Heading>
+				<b:Form ui:field="frmLogin">
+					<b:TextBox ui:field="txtUsername" placeholder="username"></b:TextBox>
+					<b:PasswordTextBox ui:field="pwdPassword" placeholder="password"></b:PasswordTextBox>
+					<b:Controls>
+					<b:Button ui:field="btnLogin" type="PRIMARY">Sign in</b:Button>
+					</b:Controls>
+				</b:Form>
+			</b:Column>
+		</b:FluidRow>
+	</b:FluidContainer>
 
 </ui:UiBinder>
