@@ -7,8 +7,10 @@ import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class App {
@@ -33,7 +35,9 @@ public class App {
 
 
 	public void run(HasWidgets.ForIsWidget parentView) {
-		SimpleLayoutPanel shell = new SimpleLayoutPanel();
+		//SimpleLayoutPanel shell = new SimpleLayoutPanel();		
+		SimplePanel shell = new SimplePanel();
+		shell.addStyleName("wrapper");
 		parentView.add(shell);
 	    activityManager.setDisplay(shell);
 		initBrowserHistory(historyMapper, historyHandler, new VitrinePlace());
