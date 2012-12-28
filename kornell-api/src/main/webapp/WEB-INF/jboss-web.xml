@@ -22,7 +22,17 @@
     -->
     
     <!-- 
-    
+	<security-domain name="KornellSecDomain" cache-type="default">
+		<authentication>
+			<login-module code="Database" flag="required">
+				<module-option name="dsJndiName" value="java:/KornellDS"/>
+				<module-option name="principalsQuery" value="select password from PasswordCredential pw join Principal p on p.id=pw.principal_id where username=?"/>
+            	<module-option name="rolesQuery" value="select roles,'Roles' from Principal_roles pr join Principal p on p.id=pr.Principal_id where username=?"/>
+            	<module-option name="hashAlgorithm" value="SHA-256"/>
+           		<module-option name="hashEncoding" value="base64"/>
+            </login-module>
+        </authentication>
+	</security-domain>
      -->
      
     <security-domain>KornellSecDomain</security-domain>
