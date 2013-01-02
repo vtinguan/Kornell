@@ -7,16 +7,17 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class HomePresenter implements HomeView.Presenter {
 	private final ClientFactory clientFactory;
-
+	HomeView homeView;
 	public HomePresenter(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
-		clientFactory.getHomeView().setPresenter(this);
+		homeView = clientFactory.getHomeView();
+		homeView.setPresenter(this);
 	}
 	
 
 	@Override
 	public Widget asWidget() {
-		return getView().asWidget();
+		return homeView.asWidget();
 	}
 
 
