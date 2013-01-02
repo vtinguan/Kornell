@@ -1,0 +1,12 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
+	
+	<g:FlowPanel>
+		<g:SimplePanel addStyleNames="navbar">
+			<g:Label> Navigation Bar </g:Label>
+		</g:SimplePanel>
+		<g:SimplePanel ui:field="appPanel">
+			<g:Label ui:field="lblWelcome"></g:Label>
+		</g:SimplePanel>
+	</g:FlowPanel>
+</ui:UiBinder>
