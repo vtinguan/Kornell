@@ -7,16 +7,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class VitrinePresenter implements VitrineView.Presenter {
 	private final ClientFactory clientFactory;
+	private VitrineView view;
 
 	public VitrinePresenter(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
-		clientFactory.getVitrineView().setPresenter(this);
+		view = getView();
+		getView().setPresenter(this);
 	}
 	
 
 	@Override
 	public Widget asWidget() {
-		return getView().asWidget();
+		return view.asWidget();
 	}
 
 

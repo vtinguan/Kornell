@@ -15,7 +15,7 @@ public class VitrineActivity extends AbstractActivity {
 	  }
 
 	@Override
-	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {		
 		VitrinePresenter presenter = new VitrinePresenter(clientFactory);
 		panel.setWidget(presenter);
 		

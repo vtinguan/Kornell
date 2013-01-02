@@ -5,14 +5,13 @@
 		<b:Navbar>
 			<b:Brand>Kornell</b:Brand>
 			<b:Nav>
+				<b:NavLink ui:field="welcome">Welcome</b:NavLink>
 				<b:NavLink>NiceFeature</b:NavLink>
-							<b:NavLink>NiceFeature</b:NavLink>			
-				
 			</b:Nav>
 		</b:Navbar>
 
-		<b:Hero>
+		<g:SimplePanel ui:field="appPanel">
 			<g:Label ui:field="lblWelcome"></g:Label>
-		</b:Hero>
+		</g:SimplePanel>
 	</b:FluidContainer>
 </ui:UiBinder>
