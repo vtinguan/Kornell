@@ -9,9 +9,7 @@ public class Kornell implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		ClientFactory clientFactory = GWT.create(ClientFactory.class);
-		RootPanel root = RootPanel.get();
-		clientFactory.getApp().run(root);
-
+		clientFactory.startApp();
 	}
 
 }

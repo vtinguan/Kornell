@@ -1,30 +1,32 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
-
+	
+    <!-- Enable if you want CORS 
 	<filter>
 		<filter-name>CORSFilter</filter-name>
 		<filter-class>kornell.server.web.CORSFilter</filter-class>
 		<init-param>
 			<param-name>allowedOrigins</param-name>
-			<!-- TODO: Handle other names for production, homolog, etc -->
-			<param-value>http://gwt.kornell.localdomain:8080</param-value>
+			<param-value>http://localhost:8080/gwt</param-value>
 		</init-param>
 	</filter>
+	 -->
 
 	<filter>
 		<filter-name>BasicAuth</filter-name>
 		<filter-class>kornell.server.web.BasicAuthFilter</filter-class>
 	</filter>
 
+	<!--  
 	<filter-mapping>
 		<filter-name>CORSFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
+	-->
 	<filter-mapping>
 		<filter-name>BasicAuth</filter-name>
-		<url-pattern>/*</url-pattern>		
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<security-role>
@@ -35,7 +37,7 @@
 		<web-resource-collection>
 			<web-resource-name>All resources</web-resource-name>
 			<description>Protects all resources</description>
-			<url-pattern>/dumb_url_just_for_loading_authenticators</url-pattern>
+			<url-pattern>/nothing-really-just-to-load-security-domain</url-pattern>
 		</web-resource-collection>
 
 		<auth-constraint>
@@ -45,7 +47,7 @@
 
 	<login-config>
 		<auth-method>BASIC</auth-method>
-		<realm-name>Kornell</realm-name>
+		<realm-name>KornellRealm</realm-name>
 	</login-config>
 
 </web-app>

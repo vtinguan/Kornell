@@ -11,7 +11,7 @@
 	border:8px solid white;
 	border-radius:8px;
 	box-shadow: 2px 2px 50px #FFFFFF;	
-	height: 250px;
+	min-height: 250px;
 	color: #535355;
 }
 

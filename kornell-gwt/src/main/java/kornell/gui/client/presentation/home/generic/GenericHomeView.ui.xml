@@ -3,7 +3,7 @@
 	
 	<g:FlowPanel>
 		<g:SimplePanel addStyleNames="navbar">
-			<g:Label> Navigation Bar </g:Label>
+			<b:Button ui:field="lnkWelcome" type="LINK">Welcome</b:Button>
 		</g:SimplePanel>
 		<g:SimplePanel ui:field="appPanel">
 			<g:Label ui:field="lblWelcome"></g:Label>

@@ -9,5 +9,5 @@ import com.google.gwt.place.shared.WithTokenizers;
 
 
 @WithTokenizers({HomePlace.Tokenizer.class,VitrinePlace.Tokenizer.class,WelcomePlace.Tokenizer.class})
-public interface GlobalPlaceHistoryMapper extends PlaceHistoryMapper {
+public interface HistoryMapper extends PlaceHistoryMapper {
 }

@@ -80,20 +80,20 @@
 			<scope>provided</scope>
 		</dependency>
 
-
+		<!-- 
+		TODO: Development builds need the gwt jars for the JUnitHostImpl
+		A production profile could build differently...
+		 -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwtVersion}</version>
-			<!-- "provided" so that we don't deploy -->
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
 			<version>${gwtVersion}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Unit tests -->
