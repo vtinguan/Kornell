@@ -5,8 +5,7 @@ import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
 public interface ClientFactory {
-	//App Support
-	App getApp();
+	ClientFactory startApp();
 	//Views
 	HomeView getHomeView();
 	VitrineView getVitrineView();

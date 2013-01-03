@@ -6,6 +6,7 @@ import kornell.api.client.data.Person;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 
+import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -38,8 +39,8 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@UiField
 	Form frmLogin;
 	
-//	@UiField
-	Label lblError;
+	@UiField
+	Alert altUnauthorized;
 	
 	private KornellClient client;
 
@@ -68,6 +69,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	private void doLogin() {
+		altUnauthorized.setVisible(false);
 		Callback callback = new Callback() {
 			@Override
 			protected void ok(Person person){
@@ -76,7 +78,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 			@Override
 			protected void unauthorized(){
-				lblError.setText("Sorry, please try again.");
+				altUnauthorized.setVisible(true);
 			}
 		};
 		// TODO: Should be client.auth().checkPassword()?

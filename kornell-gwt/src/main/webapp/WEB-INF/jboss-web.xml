@@ -1,16 +1,4 @@
-<jboss-web xmlns="http://www.jboss.com/xml/ns/javaee"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee http://www.jboss.org/schema/jbossweb/jboss-web_6_0.xsd"
-           version="6.0">
-    <!--
-    Dear dev,
-    
-    Please map this virtual host in you as7 configuration (standalone.xml)
-    <virtual-server name="KornellGWT" enable-welcome-root="false" default-web-module="kornell-gwt">
-    	<alias name="gwt.kornell.localdomain"/>
-    </virtual-server> 
-    
-    And add "gwt.kornell.localdomain" to your hosts file.
-     -->
-    <virtual-host>KornellGWT</virtual-host>
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+    <context-root>gui</context-root>
 </jboss-web>
