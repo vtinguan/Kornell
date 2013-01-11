@@ -39,11 +39,13 @@ public class Callback implements RequestCallback{
 		String responseText = response.getText();
 		
 		if(contentType.contains("json")){
-			responseText = '('+responseText+')';		
-			if ("application/json".equals(contentType))
-				ok(Callback.parseJson(responseText));
-			else if (Person.MIME_TYPE.equals(contentType))
+			if(! responseText.startsWith("["))
+				responseText = '('+responseText+')';
+			if (Person.MIME_TYPE.equals(contentType))
 				ok(Person.parseJson(responseText));
+			else
+				ok(Callback.parseJson(responseText));
+				
 		}
 		else ok(); 
 	}

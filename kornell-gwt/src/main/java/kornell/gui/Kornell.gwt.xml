@@ -9,6 +9,8 @@
   <inherits name="com.google.gwt.http.HTTP" />
   <inherits name="com.google.gwt.json.JSON" /> 
   
+  <inherits name="com.google.gwt.xml.XML" />
+  
   
   <!-- We need the JUnit module in the main module,               -->
   <!-- otherwise eclipse complains (Google plugin bug?)           -->

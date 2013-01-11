@@ -47,10 +47,23 @@ public class KornellClient {
 				
 		try {	
 			builder.sendRequest(null, wrapper);
-		} catch (RequestException ex) {
-			GWT.log("Exssssxxxceptuimmmm",ex);
+		} catch (RequestException e) {
+			handle(e);
 		}
 
+	}
+	
+	public void getCourses(Callback callback){
+		RequestBuilder builder = createGET("/courses");
+		try {
+			builder.sendRequest(null, callback);
+		} catch (RequestException e) {
+			handle(e);
+		}		
+	}
+
+	private void handle(RequestException e) {
+		GWT.log(e.getMessage(),e);
 	}
 
 	private void setCurrentUser(Person person) {

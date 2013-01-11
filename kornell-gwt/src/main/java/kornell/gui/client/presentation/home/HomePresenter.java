@@ -17,8 +17,4 @@ public class HomePresenter implements HomeView.Presenter {
 	public Widget asWidget() {
 		return homeView.asWidget();
 	}
-
-
-	
-
 }
