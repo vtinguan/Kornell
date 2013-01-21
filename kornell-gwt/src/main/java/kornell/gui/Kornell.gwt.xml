@@ -23,8 +23,10 @@
   <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
-  
+  <!-- 3rd party libs --> 
   <inherits name="com.github.gwtbootstrap.Bootstrap" />
+  
+  <!-- 1st party libs -->
   <inherits name='kornell.api.KornellClient' />
 
   
