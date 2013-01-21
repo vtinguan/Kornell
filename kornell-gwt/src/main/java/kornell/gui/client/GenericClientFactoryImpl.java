@@ -18,6 +18,7 @@ import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.generic.GenericVitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
+import kornell.gui.client.scorm.API_1484_11;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -116,13 +117,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	
 	private ActivityBarView getActivityBarView() {
 		if(activityBarView == null)
-		activityBarView = new GenericActivityBarView();
+		activityBarView = new GenericActivityBarView(eventBus);
 		return activityBarView;
 	}
 
 	private MenuBarView getMenuBarView() {
 		if(menuBarView == null)
-			menuBarView = new GenericMenuBarView();
+			menuBarView = new GenericMenuBarView(eventBus);
 		return menuBarView;
 	}
 
@@ -131,10 +132,22 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		initGUI();
 		initActivityManagers();
 		initHistoryHandler();
+		initException();
 		return this;
 	}
 
 	
+
+	private void initException() {
+		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+			
+			@Override
+			public void onUncaughtException(Throwable e) {
+				System.out.println("** UNCAUGHT **");
+				e.printStackTrace();
+			}
+		});
+	}
 
 	@Override
 	public HomeView getHomeView() {
@@ -156,7 +169,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public ActivityView getActivityView() {
-		return new GenericActivityView();
+		return new GenericActivityView(eventBus,new API_1484_11(eventBus));
 	}
 	
 	

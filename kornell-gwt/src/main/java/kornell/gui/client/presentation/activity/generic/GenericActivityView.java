@@ -8,12 +8,15 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericActivityView extends Composite implements ActivityView {
+import kornell.gui.client.scorm.event.NavigationRequest;
+
+public class GenericActivityView extends Composite 
+	implements ActivityView, NavigationRequest.Handler {
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityView> {
 	}
 
@@ -22,7 +25,13 @@ public class GenericActivityView extends Composite implements ActivityView {
 	@UiField
 	Frame frmActivity;
 
-	public GenericActivityView() {
+	private EventBus eventBus;
+
+	private API_1484_11 scormAPI;
+
+	public GenericActivityView(EventBus eventBus, API_1484_11 scormAPI) {
+		this.eventBus = eventBus;
+		this.scormAPI = scormAPI;
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -30,29 +39,32 @@ public class GenericActivityView extends Composite implements ActivityView {
 		Scheduler.get().scheduleDeferred(new Command() {
 			@Override
 			public void execute() {
-				API_1484_11 api = API_1484_11.create();
-				GWT.log("agora valendo");
-				injectAPI(frmActivity.getElement(), api);
+				scormAPI.bind();
 			}
 		});
+		
+		eventBus.addHandler(NavigationRequest.TYPE, this);
+		
 	}
-
-	private native void injectAPI(Element iframe, API_1484_11 api) /*-{
-		$wnd.API_1484_11 = {
-			"Initialize" : function() {
-				api.@kornell.gui.client.scorm.API_1484_11::Initialize()();
-			}
-		}
-	}-*/;
 
 	@Override
 	public void setPresenter(Presenter presenter) {
-		// TODO Auto-generated
+		// TODO: Use MVP
 	}
 
 	public void display(String displayUrl) {
 		frmActivity.setUrl(displayUrl);
 		initSCORM();
+	}
+
+	@Override
+	public void onContinue(NavigationRequest event) {
+		GWT.log("CONTINUE!!!!!");
+	}
+
+	@Override
+	public void onPrevious(NavigationRequest event) {
+		GWT.log("PREVIOUS!!!!!");
 	}
 
 }

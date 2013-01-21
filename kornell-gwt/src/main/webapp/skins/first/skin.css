@@ -26,7 +26,8 @@
 	height: 40px;
 	line-height: 40px; 
 	background-color: #f4f4f4;
-	border-bottom: 1px solid #e5e5e5;
+	border-top: 1px solid #e5e5e5;
+	border-bottom: 1px solid #e5e5e5; 
 	color: #4a4a4a;
 	vertical-align: middle;
 	padding-left: 50px;
@@ -35,20 +36,23 @@
 	font-weight: bold;
 }
 
-.pnlCurso {
+.pnlActivities {
+	padding: 10px;
+}
+
+.pnlActivity {
 	border: 1px solid grey;
 	width: 150px;
 	min-height: 150px;
-	margin: 10px;
 	padding: 5px;
 }
 
-.pnlCurso:hover {
+.pnlActivity:hover {
 	cursor: pointer;
 	background-color: #f4f4f4;
 }
 
-.pnlCurso h1 {
+.pnlActivity h1 {
 	font-size: 1em;
 	font-weight: normal;
 	text-align: center;

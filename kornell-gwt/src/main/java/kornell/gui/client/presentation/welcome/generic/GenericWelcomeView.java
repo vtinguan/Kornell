@@ -33,7 +33,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	@UiField()
-	FlowPanel pnlCourses;
+	FlowPanel pnlActivities;
 
 	private KornellClient client;
 
@@ -47,7 +47,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	}
 
 	private void initData() {
-		GWT.log("HER");
 		client.getCourses(new Callback() {
 			@Override
 			protected void ok(JSONValue json) {
@@ -59,12 +58,12 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		});
 	}
 
+	//TODO: Refactor to use "activity manager (todo)"
 	private void display(JSONArray arr) {
-		GWT.log("-->"+arr.size());
 		for (int i = 0; i < arr.size(); i++) {
 			final String url = arr.get(i).isString().stringValue();
 			final FlowPanel pnlCurso = new FlowPanel();
-			pnlCurso.addStyleName("pnlCurso");
+			pnlCurso.addStyleName("pnlActivity");
 			//pnlCurso.add(new Label(url));
 			RequestBuilder reqBuilder = new RequestBuilder(RequestBuilder.GET, url+"imsmanifest.xml");			
 			try{
@@ -80,10 +79,8 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 				    pnlCurso.add(hTitle);
 				    pnlCurso.sinkEvents(Event.ONCLICK);
 				    pnlCurso.addHandler(new ClickHandler() {
-						
 						@Override
 						public void onClick(ClickEvent event) {
-							GWT.log("** CLICK **"+title);
 							placeCtrl.goTo(new ActivityPlace(url));
 						}
 					}, ClickEvent.getType());
@@ -93,7 +90,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 			});}catch(RequestException e){
 				GWT.log(e.getMessage(),e);
 			}
-			pnlCourses.add(pnlCurso);
+			pnlActivities.add(pnlCurso);
 		}
 	}
 
