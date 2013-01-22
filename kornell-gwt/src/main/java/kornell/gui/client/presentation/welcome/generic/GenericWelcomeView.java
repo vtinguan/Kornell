@@ -81,7 +81,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 				    pnlCurso.addHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
-							placeCtrl.goTo(new AtividadePlace(url));
+							placeCtrl.goTo(new AtividadePlace(url,0));
 						}
 					}, ClickEvent.getType());
 				    

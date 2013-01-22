@@ -188,10 +188,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public AtividadePresenter getActivityPresenter(AtividadePlace place) {
+	public AtividadePresenter getActivityPresenter() {
 		if (activityPresenter == null) {
 			AtividadeView activityView = getActivityView();
-			activityPresenter = new AtividadePresenter(activityView, place);
+			activityPresenter = new AtividadePresenter(activityView,placeController);
 		}
 		return activityPresenter;
 	}

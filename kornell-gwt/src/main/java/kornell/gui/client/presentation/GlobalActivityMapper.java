@@ -40,8 +40,9 @@ public class GlobalActivityMapper implements ActivityMapper {
 		return new WelcomeActivity(factory);
 	}
 	if (place instanceof AtividadePlace) {
-		AtividadePresenter activityPresenter = factory.getActivityPresenter((AtividadePlace)place);
-		return new AtividadeActivity(activityPresenter);
+		AtividadePresenter atividadePresenter = factory.getActivityPresenter();
+		atividadePresenter.setPlace((AtividadePlace)place);
+		return new AtividadeActivity(atividadePresenter);
 	}
 
     return null;
