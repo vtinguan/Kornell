@@ -3,6 +3,6 @@
 
 
 	<g:FlowPanel addStyleNames="shy menubar debug-g">
-		<b:Button type="LINK">Activity</b:Button>
+		<b:Button type="LINK">Activity Bar</b:Button>
 	</g:FlowPanel>
 </ui:UiBinder>
