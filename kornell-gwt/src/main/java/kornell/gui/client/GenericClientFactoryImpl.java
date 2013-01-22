@@ -3,10 +3,10 @@ package kornell.gui.client;
 import kornell.api.client.KornellClient;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.activity.ActivityPlace;
-import kornell.gui.client.presentation.activity.ActivityPresenter;
-import kornell.gui.client.presentation.activity.ActivityView;
-import kornell.gui.client.presentation.activity.generic.GenericActivityView;
+import kornell.gui.client.presentation.activity.AtividadePlace;
+import kornell.gui.client.presentation.activity.AtividadePresenter;
+import kornell.gui.client.presentation.activity.AtividadeView;
+import kornell.gui.client.presentation.activity.generic.GenericAtividadeView;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.generic.GenericActivityBarView;
@@ -25,6 +25,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Command;
@@ -36,51 +37,53 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class GenericClientFactoryImpl implements ClientFactory {
-	/* History Management*/
+	/* History Management */
 	private final EventBus eventBus = new SimpleEventBus();
-	private final PlaceController placeController = new PlaceController(eventBus);
+	private final PlaceController placeController = new PlaceController(
+			eventBus);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
-	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
-	
-	/* Activity Managers*/
+	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
+			historyMapper);
+
+	/* Activity Managers */
 	private ActivityManager globalActivityManager;
 	private ActivityManager appActivityManager;
-	
+
 	private SimplePanel appPanel;
-	
+
 	/* REST API Client */
-	private final String apiURL = "http://localhost:8080/api";	
+	private final String apiURL = "http://localhost:8080/api";
 	private final KornellClient client = new KornellClient(apiURL);
-	
+
 	/* Views */
 	private GenericHomeView genericHomeView;
-	private ActivityPresenter activityPresenter;
-	
+	private AtividadePresenter activityPresenter;
+
 	/* GUI */
 	SimplePanel shell = new SimplePanel();
 	private GenericMenuBarView menuBarView;
 	private GenericActivityBarView activityBarView;
 	private FlowPanel wrapper;
+	private API_1484_11 scormAPI;
 
 	public GenericClientFactoryImpl() {
 	}
-	
+
 	private void initActivityManagers() {
-		initGlobalActivityManager();		
+		initGlobalActivityManager();
 	}
-	
+
 	private void initGlobalActivityManager() {
-		globalActivityManager = new ActivityManager(new GlobalActivityMapper(this),eventBus);
+		globalActivityManager = new ActivityManager(new GlobalActivityMapper(
+				this), eventBus);
 		globalActivityManager.setDisplay(shell);
 	}
 
-	
-	
 	private void initHistoryHandler() {
-		historyHandler.register(placeController, eventBus, new VitrinePlace());		
+		historyHandler.register(placeController, eventBus, new VitrinePlace());
 		historyHandler.handleCurrentHistory();
 	}
-	
+
 	private void initGUI() {
 		wrapper = new FlowPanel();
 		wrapper.addStyleName("wrapper");
@@ -89,40 +92,48 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		wrapper.add(getActivityBarView());
 		shell.addStyleName("wrapper");
 		RootPanel.get().add(wrapper);
+
+		Window.addResizeHandler(new ResizeHandler() {
+			@Override
+			public void onResize(ResizeEvent event) {
+				layoutMenus();
+			}
+		});
 		
-		 Scheduler.get().scheduleDeferred(new Command() {
-				@Override
-				public void execute() {
-					layoutMenus();
-				}
-			});
-			 
-			Window.addResizeHandler(new ResizeHandler() {			
-				@Override
-				public void onResize(ResizeEvent event) {
-					layoutMenus();
-				}
-			});
+		eventBus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				layoutMenus();
+				
+			}
+		});
+
+		layoutMenus();
 	}
-	
 
 	public void layoutMenus() {
-		int menuH = menuBarView.getOffsetHeight();
-		int activityH = activityBarView.getOffsetHeight();
-		int wrapperH = wrapper.getOffsetHeight();
+		Scheduler.get().scheduleDeferred(new Command() {
+			@Override
+			public void execute() {
+				int menuH = menuBarView.getOffsetHeight();
+				int activityH = activityBarView.getOffsetHeight();
+				int wrapperH = wrapper.getOffsetHeight();
 
-		String height = wrapperH - (menuH + activityH) + "px";
-		shell.setHeight(height);
+				String height = wrapperH - (menuH + activityH) + "px";
+				shell.setHeight(height);
+			}
+		});
 	}
-	
+
 	private ActivityBarView getActivityBarView() {
-		if(activityBarView == null)
-		activityBarView = new GenericActivityBarView(eventBus);
+		if (activityBarView == null)
+			activityBarView = new GenericActivityBarView(eventBus);
 		return activityBarView;
 	}
 
 	private MenuBarView getMenuBarView() {
-		if(menuBarView == null)
+		if (menuBarView == null)
 			menuBarView = new GenericMenuBarView(eventBus);
 		return menuBarView;
 	}
@@ -133,14 +144,17 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		initActivityManagers();
 		initHistoryHandler();
 		initException();
+		initSCORM();
 		return this;
 	}
 
-	
+	private void initSCORM() {
+		scormAPI = new API_1484_11(eventBus);		
+	}
 
 	private void initException() {
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-			
+
 			@Override
 			public void onUncaughtException(Throwable e) {
 				System.out.println("** UNCAUGHT **");
@@ -151,33 +165,33 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public HomeView getHomeView() {
-		if(genericHomeView == null){
-			genericHomeView = new GenericHomeView(this, eventBus,placeController,historyHandler, client, appPanel);
+		if (genericHomeView == null) {
+			genericHomeView = new GenericHomeView(this, eventBus,
+					placeController, historyHandler, client, appPanel);
 		}
 		return genericHomeView;
 	}
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView(placeController,client);
+		return new GenericVitrineView(placeController, client);
 	}
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(client,placeController);
+		return new GenericWelcomeView(client, placeController);
 	}
 
 	@Override
-	public ActivityView getActivityView() {
-		return new GenericActivityView(eventBus,new API_1484_11(eventBus));
+	public AtividadeView getActivityView() {
+		return new GenericAtividadeView(eventBus);
 	}
-	
-	
+
 	@Override
-	public ActivityPresenter getActivityPresenter(ActivityPlace place) {
-		if(activityPresenter == null){
-			ActivityView activityView = getActivityView();
-			activityPresenter = new ActivityPresenter(activityView, place);
+	public AtividadePresenter getActivityPresenter(AtividadePlace place) {
+		if (activityPresenter == null) {
+			AtividadeView activityView = getActivityView();
+			activityPresenter = new AtividadePresenter(activityView, place);
 		}
 		return activityPresenter;
 	}

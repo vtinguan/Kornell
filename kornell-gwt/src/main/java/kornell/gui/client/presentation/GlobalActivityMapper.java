@@ -2,9 +2,9 @@ package kornell.gui.client.presentation;
 
 
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.presentation.activity.ActivityActivity;
-import kornell.gui.client.presentation.activity.ActivityPlace;
-import kornell.gui.client.presentation.activity.ActivityPresenter;
+import kornell.gui.client.presentation.activity.AtividadeActivity;
+import kornell.gui.client.presentation.activity.AtividadePlace;
+import kornell.gui.client.presentation.activity.AtividadePresenter;
 import kornell.gui.client.presentation.home.HomeActivity;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.vitrine.VitrineActivity;
@@ -39,9 +39,9 @@ public class GlobalActivityMapper implements ActivityMapper {
 	if (place instanceof WelcomePlace) {
 		return new WelcomeActivity(factory);
 	}
-	if (place instanceof ActivityPlace) {
-		ActivityPresenter activityPresenter = factory.getActivityPresenter((ActivityPlace)place);
-		return new ActivityActivity(activityPresenter);
+	if (place instanceof AtividadePlace) {
+		AtividadePresenter activityPresenter = factory.getActivityPresenter((AtividadePlace)place);
+		return new AtividadeActivity(activityPresenter);
 	}
 
     return null;
