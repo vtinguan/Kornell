@@ -22,21 +22,16 @@ public class GenericAtividadeView extends Composite
 	@UiField
 	Frame frmActivity;
 
-	private EventBus eventBus;
-
-	private API_1484_11 scormAPI;
+	private Presenter presenter;
 
 	public GenericAtividadeView(EventBus eventBus) {
-		this.eventBus = eventBus;
 		initWidget(uiBinder.createAndBindUi(this));
 		eventBus.addHandler(NavigationRequest.TYPE, this);
 	}
 
-
-
 	@Override
 	public void setPresenter(Presenter presenter) {
-		// TODO: Use MVP
+		this.presenter = presenter;
 	}
 
 	public void display(String displayUrl) {
@@ -45,12 +40,11 @@ public class GenericAtividadeView extends Composite
 
 	@Override
 	public void onContinue(NavigationRequest event) {
-		GWT.log("CONTINUE!!!!!");
+		presenter.goContinue();
 	}
 
 	@Override
 	public void onPrevious(NavigationRequest event) {
-		GWT.log("PREVIOUS!!!!!");
+		presenter.goPrevious();
 	}
-
 }
