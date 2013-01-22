@@ -6,11 +6,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 //TODO: Well... this name is awkward
-public class ActivityActivity extends AbstractActivity {
+public class AtividadeActivity extends AbstractActivity {
 	
-	private ActivityPresenter presenter;
+	private AtividadePresenter presenter;
 
-	public ActivityActivity(ActivityPresenter presenter) {
+	public AtividadeActivity(AtividadePresenter presenter) {
 		this.presenter = presenter;
 	}
 

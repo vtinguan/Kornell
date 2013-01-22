@@ -2,7 +2,7 @@ package kornell.gui.client.presentation.welcome.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.gui.client.presentation.activity.ActivityPlace;
+import kornell.gui.client.presentation.activity.AtividadePlace;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
 import com.github.gwtbootstrap.client.ui.Heading;
@@ -81,7 +81,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 				    pnlCurso.addHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
-							placeCtrl.goTo(new ActivityPlace(url));
+							placeCtrl.goTo(new AtividadePlace(url));
 						}
 					}, ClickEvent.getType());
 				    

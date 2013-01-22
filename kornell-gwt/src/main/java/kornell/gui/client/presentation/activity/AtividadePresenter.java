@@ -1,7 +1,7 @@
 package kornell.gui.client.presentation.activity;
 
 import kornell.api.client.Callback;
-import kornell.gui.client.presentation.activity.generic.GenericActivityView;
+import kornell.gui.client.presentation.activity.generic.GenericAtividadeView;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.RequestBuilder;
@@ -15,19 +15,19 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
-public class ActivityPresenter implements ActivityView.Presenter{
-	ActivityView view;
+public class AtividadePresenter implements AtividadeView.Presenter{
+	AtividadeView view;
 	
-	public ActivityPresenter(ActivityView view,
-							 ActivityPlace place) {
+	public AtividadePresenter(AtividadeView view,
+							 AtividadePlace place) {
 		this.view = view;
 		view.setPresenter(this);
 		init(place);
 	}
 	
 
-	private void init(ActivityPlace place) {
-		final GenericActivityView v = (GenericActivityView) view;
+	private void init(AtividadePlace place) {
+		final GenericAtividadeView v = (GenericAtividadeView) view;
 		final String packageURL = place.getPackageURL();
 		RequestBuilder reqBuilder = new RequestBuilder(RequestBuilder.GET, packageURL+"imsmanifest.xml");			
 		try {

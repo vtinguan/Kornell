@@ -5,7 +5,9 @@ import java.util.Map;
 
 import kornell.gui.client.scorm.event.NavigationRequest;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.web.bindery.event.shared.EventBus;
 
 //TODO: Reconsider using gwt-exporter or $entry when #4941 is fixed ( http://code.google.com/p/google-web-toolkit/issues/detail?id=4941 )
@@ -19,6 +21,12 @@ public final class API_1484_11 {
 		this.eventBus = eventBus;
 		values.put("adl.nav.request_valid.continue", "true");
 		values.put("adl.nav.request_valid.previous", "true");
+		Scheduler.get().scheduleDeferred(new Command() {
+			@Override
+			public void execute() {
+				bindToWindow();
+			}
+		});
 	}
 
 	public void Initialize() {}
@@ -58,11 +66,11 @@ public final class API_1484_11 {
 		return setValue(key,value);
 	}
 
-	public void bind(){
-		API_1484_11.bind(this);
+	public void bindToWindow(){
+		API_1484_11.bindToWindow(this);
 	}
 	
-	public static native void bind(API_1484_11 api) /*-{
+	public static native void bindToWindow(API_1484_11 api) /*-{
 		$wnd.API_1484_11 = {
 			Initialize : function() {
 				$entry(api.@kornell.gui.client.scorm.API_1484_11::Initialize()());

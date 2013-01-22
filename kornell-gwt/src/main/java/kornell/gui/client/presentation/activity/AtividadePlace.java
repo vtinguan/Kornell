@@ -4,10 +4,10 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class ActivityPlace extends Place {
+public class AtividadePlace extends Place {
 	String packageURL;
 	
-	public ActivityPlace(String url) {
+	public AtividadePlace(String url) {
 		this.packageURL=url;
 	}
 	
@@ -18,13 +18,13 @@ public class ActivityPlace extends Place {
 
 
 	@Prefix("activity")
-	public static class Tokenizer implements PlaceTokenizer<ActivityPlace> {
+	public static class Tokenizer implements PlaceTokenizer<AtividadePlace> {
 
-		public ActivityPlace getPlace(String token) {
-			return new ActivityPlace(token);
+		public AtividadePlace getPlace(String token) {
+			return new AtividadePlace(token);
 		}
 
-		public String getToken(ActivityPlace place) {
+		public String getToken(AtividadePlace place) {
 			return place.packageURL;
 		}
 	}

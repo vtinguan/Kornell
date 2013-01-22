@@ -1,8 +1,8 @@
 package kornell.gui.client;
 
-import kornell.gui.client.presentation.activity.ActivityPlace;
-import kornell.gui.client.presentation.activity.ActivityPresenter;
-import kornell.gui.client.presentation.activity.ActivityView;
+import kornell.gui.client.presentation.activity.AtividadePlace;
+import kornell.gui.client.presentation.activity.AtividadePresenter;
+import kornell.gui.client.presentation.activity.AtividadeView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
@@ -13,6 +13,6 @@ public interface ClientFactory {
 	HomeView getHomeView();
 	VitrineView getVitrineView();
 	WelcomeView getWelcomeView();
-	ActivityView getActivityView();
-	ActivityPresenter getActivityPresenter(ActivityPlace place);
+	AtividadeView getActivityView();
+	AtividadePresenter getActivityPresenter(AtividadePlace place);
 }
