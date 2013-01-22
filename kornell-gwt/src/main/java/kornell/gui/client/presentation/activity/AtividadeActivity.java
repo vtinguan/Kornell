@@ -5,7 +5,14 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-//TODO: Well... this name is awkward
+/**
+ * Activity  = GWT Activity
+ * Atividade = SCORM Activity
+ * 
+ * Got it?
+ * 
+ * @author jfaerman
+ */
 public class AtividadeActivity extends AbstractActivity {
 	
 	private AtividadePresenter presenter;
