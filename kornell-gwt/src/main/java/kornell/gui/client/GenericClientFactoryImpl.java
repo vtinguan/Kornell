@@ -52,7 +52,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SimplePanel appPanel;
 
 	/* REST API Client */
-	private final String apiURL = "http://192.168.1.101:8080/api";
+	private final String apiURL = "/api";
 	private final KornellClient client = new KornellClient(apiURL);
 
 	/* Views */
