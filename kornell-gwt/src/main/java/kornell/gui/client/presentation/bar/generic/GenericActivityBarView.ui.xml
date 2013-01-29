@@ -2,7 +2,7 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
 
-	<g:FlowPanel addStyleNames="shy menubar debug-g">
+	<g:FlowPanel addStyleNames="shy activitybar debug-g">
 		<b:Button type="LINK">Activity Bar</b:Button>
 	</g:FlowPanel>
 </ui:UiBinder>

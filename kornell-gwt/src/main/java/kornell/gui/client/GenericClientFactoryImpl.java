@@ -52,7 +52,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SimplePanel appPanel;
 
 	/* REST API Client */
-	private final String apiURL = "http://localhost:8080/api";
+	private final String apiURL = "http://192.168.1.101:8080/api";
 	private final KornellClient client = new KornellClient(apiURL);
 
 	/* Views */
@@ -85,46 +85,33 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initGUI() {
-		wrapper = new FlowPanel();
-		wrapper.addStyleName("wrapper");
-		wrapper.add(getMenuBarView());
-		wrapper.add(shell);
-		wrapper.add(getActivityBarView());
-		shell.addStyleName("wrapper");
-		RootPanel.get().add(wrapper);
-
-		Window.addResizeHandler(new ResizeHandler() {
-			@Override
-			public void onResize(ResizeEvent event) {
-				layoutMenus();
-			}
-		});
+		final RootPanel rootPanel = RootPanel.get();
 		
-		eventBus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
-			
+		rootPanel.add(getMenuBarView());
+		rootPanel.add(shell);
+		rootPanel.add(getActivityBarView());
+		shell.addStyleName("contentWrapper");
+		
+		eventBus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {			
 			@Override
-			public void onPlaceChange(PlaceChangeEvent event) {
-				layoutMenus();
-				
+			public void onPlaceChange(PlaceChangeEvent event) {				
+				setPlaceNameAsBodyStyle(event);				
+			}
+
+			private void setPlaceNameAsBodyStyle(
+					PlaceChangeEvent event) {
+				String styleName = rootPanel.getStyleName();
+				if(!styleName.isEmpty())
+					rootPanel.removeStyleName(styleName);
+				String[] split = event.getNewPlace().getClass().getName().split("\\.");
+				String newStyle = split[split.length-1];
+				rootPanel.addStyleName(newStyle);
 			}
 		});
 
-		layoutMenus();
 	}
 
-	public void layoutMenus() {
-		Scheduler.get().scheduleDeferred(new Command() {
-			@Override
-			public void execute() {
-				int menuH = menuBarView.getOffsetHeight();
-				int activityH = activityBarView.getOffsetHeight();
-				int wrapperH = wrapper.getOffsetHeight();
 
-				String height = wrapperH - (menuH + activityH) + "px";
-				shell.setHeight(height);
-			}
-		});
-	}
 
 	private ActivityBarView getActivityBarView() {
 		if (activityBarView == null)

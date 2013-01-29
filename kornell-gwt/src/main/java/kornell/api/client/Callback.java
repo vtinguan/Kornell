@@ -13,7 +13,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
 public class Callback implements RequestCallback{
-
+ 
 	@Override
 	public void onResponseReceived(Request request, Response response) {
 		if (! isTrusted(response))
