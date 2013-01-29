@@ -11,7 +11,7 @@ class CoursesResource {
   
 	@GET
 	def getCourses = 
-	  List("http://192.168.1.101:8080/content/SCORM2004.4.SECE.1.0.CP/") asJava
+	  List("/content/SCORM2004.4.SECE.1.0.CP/") asJava
 	 
 
 }
