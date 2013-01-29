@@ -1,15 +1,19 @@
 html, body {
 	margin: 0 0 0 0 !important;
 	padding: 0 0 0 0 !important;
-	height: 100% !important;
+	height: 100% !important;	
 }
 
-.wrapper {
-	height: 100%;
+
+.contentWrapper {
+	position: absolute;
+	bottom: 42px;
+	top: 42px;
+	width: 100%;
 }
 
 .debug{
-	background-color: #FFC9C9;
+	
 }
 
 .debug-g{

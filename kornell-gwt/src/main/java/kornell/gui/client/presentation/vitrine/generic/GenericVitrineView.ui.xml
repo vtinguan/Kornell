@@ -9,7 +9,8 @@
 				Usuário ou senha incorretos, por favor tente novamente.
 			</b:Alert>
 			<b:Form ui:field="frmLogin">
-				<b:TextBox ui:field="txtUsername" placeholder="username"></b:TextBox>
+				<b:TextBox ui:field="txtUsername" placeholder="username" ></b:TextBox>
+				
 				<b:PasswordTextBox ui:field="pwdPassword"
 					placeholder="password"></b:PasswordTextBox>
 				<b:Controls>

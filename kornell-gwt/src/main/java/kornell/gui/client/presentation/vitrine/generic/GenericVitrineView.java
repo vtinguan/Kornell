@@ -63,7 +63,8 @@ public class GenericVitrineView extends Composite implements VitrineView {
 					doLogin();				
 			}
 		});
-		
+		txtUsername.getElement().setAttribute("autocorrect", "off");
+		txtUsername.getElement().setAttribute("autocapitalize", "off");
 		
 	}
 

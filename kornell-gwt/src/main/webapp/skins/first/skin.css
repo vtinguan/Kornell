@@ -1,7 +1,7 @@
-.vitrine{
-	height: 100%;
-	background: url(bg.jpg) no-repeat center center fixed;  
+.VitrinePlace {
+	background: url(bg.jpg) no-repeat center center fixed;
 	background-size: cover;
+	background-color: white;
 }
 
 .boxLogin {
@@ -22,8 +22,12 @@
 	 margin-top: 5px; 
 }
 
-.menubar {
+.menubar{	
 	height: 40px;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	position: absolute;
 	line-height: 40px; 
 	background-color: #f4f4f4;
 	border-top: 1px solid #e5e5e5;
@@ -35,6 +39,25 @@
 	font-size: 13px; 
 	font-weight: bold;
 }
+
+.activitybar {
+	height: 40px; 
+	line-height: 40px; 
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	background-color: #f4f4f4;
+	border-top: 1px solid #e5e5e5;
+	border-bottom: 1px solid #e5e5e5; 
+	color: #4a4a4a;
+	vertical-align: middle;
+	padding-left: 50px;
+	font-family: Helvetica, arial, freesans, clean, sans-serif;
+	font-size: 13px; 
+	font-weight: bold;
+}
+
 
 .pnlActivities {
 	padding: 10px;
