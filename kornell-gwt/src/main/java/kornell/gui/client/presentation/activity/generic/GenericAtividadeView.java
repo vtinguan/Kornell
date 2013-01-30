@@ -1,7 +1,6 @@
 package kornell.gui.client.presentation.activity.generic;
 
 import kornell.gui.client.presentation.activity.AtividadeView;
-import kornell.gui.client.scorm.API_1484_11;
 import kornell.gui.client.scorm.event.NavigationRequest;
 
 import com.google.gwt.core.client.GWT;

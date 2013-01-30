@@ -3,7 +3,6 @@ package kornell.gui.client;
 import kornell.api.client.KornellClient;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.activity.AtividadePlace;
 import kornell.gui.client.presentation.activity.AtividadePresenter;
 import kornell.gui.client.presentation.activity.AtividadeView;
 import kornell.gui.client.presentation.activity.generic.GenericAtividadeView;
@@ -22,15 +21,9 @@ import kornell.gui.client.scorm.API_1484_11;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -83,32 +76,32 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initGUI() {
 		final RootPanel rootPanel = RootPanel.get();
-		
+
 		rootPanel.add(getMenuBarView());
 		rootPanel.add(shell);
 		rootPanel.add(getActivityBarView());
 		shell.addStyleName("contentWrapper");
-		
-		eventBus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {			
-			@Override
-			public void onPlaceChange(PlaceChangeEvent event) {				
-				setPlaceNameAsBodyStyle(event);				
-			}
 
-			private void setPlaceNameAsBodyStyle(
-					PlaceChangeEvent event) {
-				String styleName = rootPanel.getStyleName();
-				if(!styleName.isEmpty())
-					rootPanel.removeStyleName(styleName);
-				String[] split = event.getNewPlace().getClass().getName().split("\\.");
-				String newStyle = split[split.length-1];
-				rootPanel.addStyleName(newStyle);
-			}
-		});
+		eventBus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						setPlaceNameAsBodyStyle(event);
+					}
+
+					private void setPlaceNameAsBodyStyle(
+							PlaceChangeEvent event) {
+						String styleName = rootPanel.getStyleName();
+						if (!styleName.isEmpty())
+							rootPanel.removeStyleName(styleName);
+						String[] split = event.getNewPlace().getClass()
+								.getName().split("\\.");
+						String newStyle = split[split.length - 1];
+						rootPanel.addStyleName(newStyle);
+					}
+				});
 
 	}
-
-
 
 	private ActivityBarView getActivityBarView() {
 		if (activityBarView == null)
@@ -133,7 +126,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initSCORM() {
-		new API_1484_11(eventBus).bindToWindow();		
+		new API_1484_11(eventBus).bindToWindow();
 	}
 
 	private void initException() {
@@ -151,7 +144,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public HomeView getHomeView() {
 		if (genericHomeView == null) {
 			genericHomeView = new GenericHomeView(this, eventBus,
-					placeController, historyHandler, client, appPanel);
+					historyHandler, client, appPanel);
 		}
 		return genericHomeView;
 	}
@@ -175,7 +168,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public AtividadePresenter getActivityPresenter() {
 		if (activityPresenter == null) {
 			AtividadeView activityView = getActivityView();
-			activityPresenter = new AtividadePresenter(activityView,placeController);
+			activityPresenter = new AtividadePresenter(activityView,
+					placeController);
 		}
 		return activityPresenter;
 	}

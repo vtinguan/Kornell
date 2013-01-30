@@ -1,11 +1,8 @@
 package kornell.gui.client.presentation.activity;
 
-import java.util.StringTokenizer;
-
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
-import com.google.gwt.thirdparty.javascript.jscomp.mozilla.rhino.Token;
 
 public class AtividadePlace extends Place {
 	String packageURL;
