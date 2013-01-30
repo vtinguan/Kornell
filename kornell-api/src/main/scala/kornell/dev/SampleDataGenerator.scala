@@ -10,18 +10,27 @@ import kornell.entity.Principal
 import scala.collection.JavaConverters._
 import org.jboss.security.auth.spi.Util._
 import kornell.entity.Person
+import kornell.entity.Course
+import java.util.UUID
 
 @Singleton
 @Startup
-class SampleDataGenerator {
-	@Inject 
-	var em:EntityManager = null;
+class SampleDataGenerator @Inject() (val em:EntityManager){
+	def this() = this(null)
 	
 	@PostConstruct
 	def generateData = {
-	  var fulano = em merge new Person("Fulano de Tal")
-	  var principal = em merge new Principal(fulano,"fulano", List("user") asJava)
-	  var secret = em merge new PasswordCredential(principal,hash("detal"))
+	  val fulano = em merge new Person("Fulano de Tal")
+	  val principal = em merge new Principal(fulano,"fulano", List("user") asJava)
+	  val secret = em merge new PasswordCredential(principal,hash("detal"))
+	  for(i <- 1 to 10){
+		 val course = new Course
+		 course.setUuid(UUID.randomUUID.toString)
+		 course.setCode("SCORM SECE "+i);
+		 course.setPackageURL("/content/SCORM2004.4.SECE.1.0.CP/")
+		 em merge course
+	  }	     
+	  
 	} 
 	
 	def hash(plain:String) = createPasswordHash("SHA-256", "BASE64", null, null, plain)

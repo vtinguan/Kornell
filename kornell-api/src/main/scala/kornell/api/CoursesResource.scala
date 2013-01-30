@@ -4,14 +4,16 @@ import javax.ws.rs.Produces
 import javax.ws.rs.Path
 import scala.collection.JavaConverters._
 import javax.ws.rs.GET
+import javax.inject.Inject
+import javax.persistence.EntityManager
 
 @Produces(Array("application/vnd.kornell.v1.course+json"))
 @Path("courses")
-class CoursesResource {
-  
+class CoursesResource @Inject() (val em:EntityManager) {
+    def this() = this(null)
+	
 	@GET
 	def getCourses = 
-	  List("/content/SCORM2004.4.SECE.1.0.CP/") asJava
-	 
+	  em.createQuery("select c from Course c").getResultList
 
 }

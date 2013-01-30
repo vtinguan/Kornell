@@ -23,9 +23,14 @@ class CORSFilter extends Filter {
   }
   
 
-  override def doFilter(requ:ServletRequest, res:ServletResponse, chain:FilterChain){
-    val resp = res.asInstanceOf[HttpServletResponse]
-    val req = requ.asInstanceOf[HttpServletRequest]
+  override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
+    (sreq, sres) match {
+      case (hreq: HttpServletRequest, hres: HttpServletResponse) =>
+        doFilter(hreq, hres, chain)
+    }
+  }
+
+  def doFilter(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
     
     if(allowedOrigins != "") 
       resp.addHeader("Access-Control-Allow-Origin", allowedOrigins)
@@ -34,7 +39,7 @@ class CORSFilter extends Filter {
     if ("OPTIONS".equals(req.getMethod()))
       resp.setStatus(200)
     else
-      chain.doFilter(req,res)
+      chain.doFilter(req,resp)
   }
   
   override def destroy(){}
