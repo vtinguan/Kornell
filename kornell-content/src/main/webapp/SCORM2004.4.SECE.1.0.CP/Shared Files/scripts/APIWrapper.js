@@ -108,7 +108,7 @@ function getAPI()
       noAPIFound = "true";
    }
 
-   return theAPI
+   return theAPI;
 }
 
 /*******************************************************************************
