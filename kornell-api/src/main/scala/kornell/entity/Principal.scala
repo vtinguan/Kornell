@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.GenerationType._
 import java.util.List
-import java.util.ArrayList
 import javax.persistence.ElementCollection
 import javax.persistence.ManyToOne
 
@@ -27,7 +26,7 @@ class Principal(
   
   @BeanProperty
   @ElementCollection
-  var roles:List[String] = _roles
+  val roles:List[String] = _roles
   
   @BeanProperty
   @ManyToOne

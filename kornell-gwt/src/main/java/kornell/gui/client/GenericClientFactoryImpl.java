@@ -47,7 +47,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	/* Activity Managers */
 	private ActivityManager globalActivityManager;
-	private ActivityManager appActivityManager;
 
 	private SimplePanel appPanel;
 
@@ -63,8 +62,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	SimplePanel shell = new SimplePanel();
 	private GenericMenuBarView menuBarView;
 	private GenericActivityBarView activityBarView;
-	private FlowPanel wrapper;
-	private API_1484_11 scormAPI;
 
 	public GenericClientFactoryImpl() {
 	}
@@ -136,7 +133,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initSCORM() {
-		scormAPI = new API_1484_11(eventBus);		
+		new API_1484_11(eventBus).bindToWindow();		
 	}
 
 	private void initException() {

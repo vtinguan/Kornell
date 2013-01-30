@@ -21,12 +21,7 @@ public final class API_1484_11 {
 		this.eventBus = eventBus;
 		values.put("adl.nav.request_valid.continue", "true");
 		values.put("adl.nav.request_valid.previous", "true");
-		Scheduler.get().scheduleDeferred(new Command() {
-			@Override
-			public void execute() {
-				bindToWindow();
-			}
-		});
+	
 	}
 
 	public void Initialize() {}
@@ -67,7 +62,12 @@ public final class API_1484_11 {
 	}
 
 	public void bindToWindow(){
-		API_1484_11.bindToWindow(this);
+		Scheduler.get().scheduleDeferred(new Command() {
+			@Override
+			public void execute() {
+				API_1484_11.bindToWindow(API_1484_11.this);
+			}
+		});
 	}
 	
 	public static native void bindToWindow(API_1484_11 api) /*-{

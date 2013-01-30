@@ -7,5 +7,5 @@ import javax.persistence.EntityManager
 class CDIResources {
     @Produces
     @PersistenceContext
-    var em:EntityManager = null;
+    val em:EntityManager = null;
 }
