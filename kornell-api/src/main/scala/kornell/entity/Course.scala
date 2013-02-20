@@ -13,13 +13,21 @@ import javax.persistence.Entity
 class Course extends Serializable{
   @BeanProperty
   @Id
-  var uuid:String = null
+  var uuid:String = _
   
   @BeanProperty
   @Column(unique=true)
-  var code:String = ""
+  var code:String = _
   
   @BeanProperty
-  var packageURL:String = ""
-	
+  var packageURL:String = _
+  
+  @BeanProperty
+  @Column(length=1024)
+  var description:String = _
+  
+  override def toString = "Course["+code+"]"
+  
+  override def hashCode = code.hashCode
+  override def equals(other:Any) = other.asInstanceOf[Course].getCode.equals(code)
 }

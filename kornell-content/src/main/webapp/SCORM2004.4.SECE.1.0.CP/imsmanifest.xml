@@ -19,6 +19,7 @@
 <organizations default="ORG-AAE040C6-5D31-FF80-7A74-C93346D3DE42">
     <organization identifier="ORG-AAE040C6-5D31-FF80-7A74-C93346D3DE42" structure="hierarchical">
       <title>SCORM 2004 4th Edition Sequencing Essentials Content Example 1.0</title>
+      
       <item identifier="ITEM-C2D1FAF9-FF04-07BD-9A28-CDC8DC6EC0B8" isvisible="true" identifierref="RES-65C9FBA6-5173-A9A8-C1A0-FE9EDFAB4788">
         <title>Introduction</title>
         <adlnav:presentation>

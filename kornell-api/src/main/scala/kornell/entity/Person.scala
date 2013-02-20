@@ -19,5 +19,6 @@ class Person(_fullName:String) {
   var fullName:String = _fullName
   
   def this() = this(null)
+  override def toString = "Person["+fullName+"]"
   
 }
