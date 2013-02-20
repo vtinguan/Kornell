@@ -58,7 +58,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	}
 
 	//TODO: Refactor to use "activity manager (todo)"
-	private void display(CoursesTO to) {
+	private void display(CoursesTO to) { 
 		for (CourseTO course:to.getCourses()) {
 			final String url = course.getPackageURL();
 			final FlowPanel pnlCurso = new FlowPanel();
