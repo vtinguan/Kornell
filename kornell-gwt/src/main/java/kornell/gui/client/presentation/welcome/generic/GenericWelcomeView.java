@@ -2,6 +2,8 @@ package kornell.gui.client.presentation.welcome.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.shared.to.CourseTO;
+import kornell.core.shared.to.CoursesTO;
 import kornell.gui.client.presentation.activity.AtividadePlace;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
@@ -47,21 +49,18 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	}
 
 	private void initData() {
-		client.getCourses(new Callback() {
+		client.getCourses(new Callback<CoursesTO>() {
 			@Override
-			protected void ok(JSONValue json) {
-				JSONArray arr = json.isArray();
-				if (arr != null)
-					display(arr);
+			protected void ok(CoursesTO to) {
+				display(to);
 			}
-
 		});
 	}
 
 	//TODO: Refactor to use "activity manager (todo)"
-	private void display(JSONArray arr) {
-		for (int i = 0; i < arr.size(); i++) {
-			final String url = arr.get(i).isString().stringValue();
+	private void display(CoursesTO to) {
+		for (CourseTO course:to.getCourses()) {
+			final String url = course.getPackageURL();
 			final FlowPanel pnlCurso = new FlowPanel();
 			pnlCurso.addStyleName("pnlActivity");
 			//pnlCurso.add(new Label(url));

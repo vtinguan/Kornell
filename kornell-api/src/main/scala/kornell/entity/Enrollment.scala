@@ -3,16 +3,28 @@ package kornell.entity
 import javax.persistence.Column
 import javax.persistence.Id
 import scala.reflect.BeanProperty
+import java.util.Date
+import javax.persistence.OneToOne
+import javax.persistence.Entity
+import java.io.Serializable
 
-class Enrollment(_uuid:String) {
+@Entity
+class Enrollment extends Serializable{
   @BeanProperty
   @Id
-  var uuid:String = _uuid
+  var uuid:String = _
+  
   
   @BeanProperty
-  @Column(unique=true)
-  var code:String = ""
+  var enrolledOn:Date = _
   
   @BeanProperty
-  var packageURL:String = ""
+  @OneToOne
+  var course:Course = _
+  
+  @BeanProperty
+  @OneToOne
+  var person:Person = _
+  
+  override def toString = "Enrollment["+course+","+person+","+enrolledOn+"]"
 }
