@@ -5,7 +5,7 @@
   <artifactId>kornell-content</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>kornell-content Maven Webapp</name>
+  <name>Kornell Test Content</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>

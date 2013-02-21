@@ -21,7 +21,7 @@ class JPQLServlet extends HttpServlet {
   }
 
   def execute(query: String, out: PrintWriter) = {
-    val results = em.createQuery(query).getResultList.asScala
+    val results = em.createQuery(query).getResultList.asScala.map {_.asInstanceOf[Any]}
     for (result <- results){
     	print(out,result)
     	out.println

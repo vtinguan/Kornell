@@ -7,8 +7,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>kornell-core</name>
-	<url>http://maven.apache.org</url>
+	<name>Kornell Core Shared Classes</name>
 
 	<properties>
 		<gwtVersion>2.5.0</gwtVersion>
@@ -23,20 +22,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
+			<artifactId>gwt-servlet</artifactId>
 			<version>${gwtVersion}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-dev</artifactId>
-			<version>${gwtVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -50,50 +37,6 @@
 				</includes>
 			</resource>
 		</resources>
-
-		<plugins>
-			<!-- GWT Maven Plugin -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<!-- TODO: Update version to 2.5.0 once gwt-maven-plugin 2.5.0 final 
-					is released (post-GWT 2.5.0) -->
-				<version>${gwtVersion}</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-user</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-dev</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<!-- JS is only needed in the package phase, this speeds up testing -->
-					<execution>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-
-				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
-					documentation at codehaus.org -->
-				<configuration>
-					<!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
-					<compileReport>true</compileReport>
-					<module>kornell.core.KornellCore</module>
-
-					<logLevel>INFO</logLevel>
-					<style>${gwt.style}</style>
-					<copyWebapp>true</copyWebapp>
-				</configuration>
-			</plugin>
-		</plugins>
-
 	</build>
+
 </project>
