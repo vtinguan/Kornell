@@ -25,6 +25,11 @@
 			<artifactId>gwt-servlet</artifactId>
 			<version>${gwtVersion}</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20090211</version>
+		</dependency>
 	</dependencies>
 
 	<build>

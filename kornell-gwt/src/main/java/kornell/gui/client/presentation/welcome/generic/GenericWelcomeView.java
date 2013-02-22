@@ -4,7 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.CourseTO;
 import kornell.core.shared.to.CoursesTO;
-import kornell.gui.client.presentation.activity.AtividadePlace;
+import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
 import com.github.gwtbootstrap.client.ui.Heading;

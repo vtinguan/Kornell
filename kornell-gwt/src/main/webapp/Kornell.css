@@ -5,7 +5,14 @@ html, body {
 }
 
 
-.contentWrapper {
+.WelcomePlace .contentWrapper {
+	position: absolute;
+	bottom: 0px;
+	top: 42px;
+	width: 100%;
+} 
+
+.AtividadePlace .contentWrapper {
 	position: absolute;
 	bottom: 42px;
 	top: 42px;

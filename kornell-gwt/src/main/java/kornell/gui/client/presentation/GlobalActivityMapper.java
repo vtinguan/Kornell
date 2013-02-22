@@ -2,9 +2,9 @@ package kornell.gui.client.presentation;
 
 
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.presentation.activity.AtividadeActivity;
-import kornell.gui.client.presentation.activity.AtividadePlace;
-import kornell.gui.client.presentation.activity.AtividadePresenter;
+import kornell.gui.client.presentation.atividade.AtividadeActivity;
+import kornell.gui.client.presentation.atividade.AtividadePlace;
+import kornell.gui.client.presentation.atividade.AtividadePresenter;
 import kornell.gui.client.presentation.home.HomeActivity;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.vitrine.VitrineActivity;
