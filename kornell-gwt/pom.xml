@@ -30,7 +30,7 @@
 			<id>java.net2</id>
 			<name>Repository hosting the jee6 artifacts</name>
 			<url>http://download.java.net/maven/2</url>
-		</repository>
+		</repository> 
 		<repository>
 			<id>sonatype</id>
 			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
@@ -41,7 +41,7 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
-	
+
 	</repositories>
 
 	<dependencyManagement>
@@ -73,12 +73,22 @@
 
 
 	<dependencies>
-        <dependency>
+		<dependency>
 			<groupId>kornell</groupId>
 			<artifactId>kornell-core</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-servlet</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.json</groupId>
+					<artifactId>json</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-        
+
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
@@ -114,7 +124,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-	
+
 
 	</dependencies>
 

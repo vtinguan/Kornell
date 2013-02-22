@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.activity;
+package kornell.gui.client.presentation.atividade;
 
 
 import com.google.gwt.user.client.ui.IsWidget;

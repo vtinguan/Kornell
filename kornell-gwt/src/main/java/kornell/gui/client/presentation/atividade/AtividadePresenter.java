@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.activity;
+package kornell.gui.client.presentation.atividade;
 
 import kornell.api.client.Callback;
 import kornell.gui.client.presentation.activity.generic.GenericAtividadeView;

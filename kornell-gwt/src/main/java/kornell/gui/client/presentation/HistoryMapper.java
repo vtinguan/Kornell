@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation;
 
-import kornell.gui.client.presentation.activity.AtividadePlace;
+import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
