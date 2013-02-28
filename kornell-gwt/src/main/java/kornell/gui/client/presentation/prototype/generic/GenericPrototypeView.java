@@ -8,8 +8,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-//HTTP
-
 public class GenericPrototypeView extends Composite implements PrototypeView {
 	interface MyUiBinder extends UiBinder<Widget, GenericPrototypeView> {
 	}

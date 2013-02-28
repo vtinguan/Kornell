@@ -57,28 +57,51 @@
 }
 
 
-.pnlActivities {
-	padding: 5px 0px 5px 20px;
-	overflow: scroll;
-	height: 100%;
+.pnlCourses {
+	padding: 20px;
+	overflow: auto;
+	
 }
 
-.pnlActivity {
-	border: 1px solid grey;
-	width: 300px;	
-	height: 170px;
+.courseSummary {
+	border: 1px solid #e5e5e5;
+	background-color: #f4f4f4;
+	border-radius:5px;  
 	padding: 5px 5px 5px 5px;
-	margin: 5px 5px 5px 5px;
-	float:left;
+	margin-bottom: 10px;
+	height: 135px;
 } 
 
-.pnlActivity:hover {
+.courseSummary:hover {
 	cursor: pointer;
-	background-color: #f4f4f4;
+	background-color: #f0f0f0;
 }
 
-.pnlActivity h1 {
-	font-size: 1em;
-	font-weight: normal;
-	text-align: center;
+.courseSummary h1 {
+	margin: 0px;
+	padding: 5px 0px 5px 0px;
+	font-size: 1.1em;
+	font-weight: bold;
+	text-align: left;
+	line-height: 1.231;	
+}
+
+.courseSummary .details {
+	height: 100%;
+	padding-left: 10px;
+	margin-left: 240px;	
+}
+
+.courseSummary .thumb {
+	width: 240px;
+	float: left;
+}
+
+.courseSummary .courseProgress {
+	text-align: right;
+	font-style: italic;
+}
+
+.courseSummary .description {
+	height: 75px;
 }
