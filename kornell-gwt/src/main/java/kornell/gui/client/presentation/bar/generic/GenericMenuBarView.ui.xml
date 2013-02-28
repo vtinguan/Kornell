@@ -3,6 +3,6 @@
 
 
 	<g:FlowPanel ui:field="menuBar" addStyleNames="shy menubar debug-g">
-		<b:Button ui:field="lnkWelcome" type="LINK">Menu Bar</b:Button>
+		<b:Button ui:field="lnkWelcome" type="LINK">Kornell</b:Button>
 	</g:FlowPanel>
 </ui:UiBinder>

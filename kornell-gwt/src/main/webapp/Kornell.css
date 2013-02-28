@@ -43,3 +43,7 @@ html, body {
 iframe {
 	border-width: 0;
 }
+
+.clearer{
+	clear: both;
+}

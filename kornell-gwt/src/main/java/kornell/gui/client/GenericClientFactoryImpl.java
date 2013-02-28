@@ -111,7 +111,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(eventBus);
+			menuBarView = new GenericMenuBarView(placeController,eventBus);
 		return menuBarView;
 	}
 

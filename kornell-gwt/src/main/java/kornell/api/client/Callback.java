@@ -17,7 +17,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 public class Callback<T> implements RequestCallback {
 	private static final TOFactory tofactory = GWT.create(TOFactory.class);	
-	private static final SupportedMimeTypes mimeTypes = new SupportedMimeTypes();
+	private SupportedMimeTypes mimeTypes = new SupportedMimeTypes();
 
 	@Override
 	public void onResponseReceived(Request request, Response response) {
@@ -48,7 +48,7 @@ public class Callback<T> implements RequestCallback {
 	}
 
 	private void dispatchByMimeType(Response response) {
-		String contentType = response.getHeader("Content-Type");
+		String contentType = response.getHeader("Content-Type").toLowerCase();
 		String responseText = response.getText();
 
 		if (contentType.contains("json")) {
