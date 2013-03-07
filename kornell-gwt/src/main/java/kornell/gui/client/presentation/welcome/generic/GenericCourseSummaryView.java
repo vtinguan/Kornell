@@ -3,7 +3,7 @@ package kornell.gui.client.presentation.welcome.generic;
 
 import java.math.BigDecimal;
 
-import kornell.core.shared.to.CourseTO;
+import kornell.core.shared.data.CourseTO;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 
 import com.github.gwtbootstrap.client.ui.Heading;
@@ -41,10 +41,10 @@ public class GenericCourseSummaryView extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		
-		hTitle.setText(course.getTitle());
-		pDescription.setText(course.getDescription());
+		hTitle.setText(course.getCourse().getTitle());
+		pDescription.setText(course.getCourse().getDescription());
 		
-		BigDecimal progress = course.getProgress();
+		BigDecimal progress = course.getEnrollment().getProgress();
 		if(progress != null){
 			if(progress.compareTo(BigDecimal.ONE) == 0)
 				//TODO: i18n
@@ -55,13 +55,13 @@ public class GenericCourseSummaryView extends Composite {
 			//TODO: i18n
 			pProgress.setText("Not started yet.");
 		}
-		imgThumb.setUrl(course.getThumbDataURI());
+		imgThumb.setUrl(course.getCourse().getThumbDataURI());
 		
 		sinkEvents(Event.ONCLICK);
 		addHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				placeCtrl.goTo(new AtividadePlace(course.getCourseUUID(), 0));
+				placeCtrl.goTo(new AtividadePlace(course.getCourse().getUUID(), 0));
 			}
 		}, ClickEvent.getType());
 		

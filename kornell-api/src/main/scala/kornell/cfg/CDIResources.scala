@@ -4,8 +4,10 @@ import javax.enterprise.inject.Produces
 import javax.persistence.PersistenceContext
 import javax.persistence.EntityManager
 import javax.enterprise.context.ApplicationScoped
-import kornell.core.shared.to.TOFactory
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+import kornell.core.shared.data.BeanFactory
+
+
 
 class CDIResources {
     @Produces
@@ -14,6 +16,6 @@ class CDIResources {
     
     @Produces
     @ApplicationScoped
-    val createTOFactory = AutoBeanFactorySource.create(classOf[TOFactory])
+    val BeanFactory = AutoBeanFactorySource.create(classOf[BeanFactory])
     
 }

@@ -4,6 +4,7 @@ import javax.ws.rs.core.Application
 import scala.collection.JavaConverters._
 import javax.ws.rs.ApplicationPath
 import kornell.ws.rs.AutoBeanWriter
+import org.jboss.resteasy.plugins.providers.DefaultTextPlain
 
 @ApplicationPath("/")
 class KornellAPI extends Application {
@@ -13,5 +14,7 @@ class KornellAPI extends Application {
       classOf[UalaResource],
       classOf[UserResource],
       classOf[CoursesResource],
-      classOf[AutoBeanWriter]) asJava
+      classOf[OptionResource],
+      classOf[AutoBeanWriter]      
+  ) asJava
 }

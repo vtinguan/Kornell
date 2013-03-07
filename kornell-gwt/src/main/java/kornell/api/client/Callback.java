@@ -4,7 +4,7 @@ import static com.google.gwt.http.client.Response.SC_FORBIDDEN;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import kornell.api.client.data.Person;
-import kornell.core.shared.to.TOFactory;
+import kornell.core.shared.data.BeanFactory;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.Request;
@@ -16,7 +16,7 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 public class Callback<T> implements RequestCallback {
-	private static final TOFactory tofactory = GWT.create(TOFactory.class);	
+	private static final BeanFactory tofactory = GWT.create(BeanFactory.class);	
 	private SupportedMimeTypes mimeTypes = new SupportedMimeTypes();
 
 	@Override

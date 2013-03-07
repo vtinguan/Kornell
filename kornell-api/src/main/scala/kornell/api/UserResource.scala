@@ -10,21 +10,18 @@ import javax.ws.rs.core.SecurityContext
 import javax.persistence.EntityManager
 import javax.inject.Inject
 import javax.enterprise.context.RequestScoped
+import kornell.repository.slick.plain.Persons
 
 @Produces(Array("application/vnd.kornell.v1.person+json"))
 @Path("user")
 @RequestScoped
-class UserResource @Inject() (val em: EntityManager) {
-  def this() = this(null)
+class UserResource {
   
   @GET
   def get(@Context sc: SecurityContext) = {
     val username = sc.getUserPrincipal.getName
-
-    em.createNamedQuery("person.byUsername")
-      .setParameter("username", username)
-      .setMaxResults(1)
-      .getSingleResult
+    val p = Persons.byUsername(username)
+    p
   }
 
 }
