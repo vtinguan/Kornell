@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.bar.generic;
 
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;

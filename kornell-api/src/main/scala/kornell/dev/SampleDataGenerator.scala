@@ -1,54 +1,69 @@
 package kornell.dev
 
-import javax.ejb.Singleton
-import javax.ejb.Startup
-import javax.inject.Inject
-import javax.persistence.EntityManager
-import javax.annotation.PostConstruct
-import kornell.entity.PasswordCredential
-import kornell.entity.Principal
-import scala.collection.JavaConverters._
-import org.jboss.security.auth.spi.Util._
-import kornell.entity.Person
-import kornell.entity.Course
-import java.util.UUID
-import kornell.entity.Enrollment
+import kornell.repository.Beans
+import kornell.repository.slick.plain.Courses
+import kornell.repository.slick.plain.Persons
+import kornell.repository.slick.plain.Auth
 import java.util.Date
 
-@Singleton
-@Startup
-class SampleDataGenerator @Inject() (val em:EntityManager){
-	def this() = this(null)
-	
-	@PostConstruct
-	def generateData = {
-	  val fulano = em merge new Person("Fulano de Tal")
-	  val principal = em merge new Principal(fulano,"fulano", List("user") asJava)
-	  val secret = em merge new PasswordCredential(principal,hash("detal"))
-	  for(i <- 1 to 10){
-		 var course = new Course
-		 course.uuid = UUID.randomUUID.toString
-		 course.code = "SCORM SECE "+i
-		 course.packageURL = "/content/SCORM2004.4.SECE.1.0.CP/"
-		 course.description = 
-		 """A SCORM Content Example, copy """+i+"""| 
-		 	|Used not so much for learning SCORM, but to test our implementation.
-		    |Not meant to be complete or anything, just seemed like a good starting point.
-		 	|It is copied multiple times to test scoping of variables.
-		 	|""".stripMargin
-		 course = em merge course
-		 if(i == 1){
-		   var enrollment = new Enrollment
-		   enrollment.uuid = UUID.randomUUID.toString
-		   enrollment.course = course
-		   enrollment.person = fulano
-		   enrollment.enrolledOn = new Date
-		   em merge enrollment
-		 }
-	  }	     
-	  
-	} 
-	
-	def hash(plain:String) = createPasswordHash("SHA-256", "BASE64", null, null, plain)
-	
+trait CleanDB extends Toolkit {
+  respawnDB
 }
+
+trait BasicData {
+  val fulano = Persons.create("Fulano de Tal")
+  val cbabbage = Persons.create("Charles Babbage")
+}
+
+trait AuthData extends BasicData {  
+  val principal = Auth.createUser(fulano.getUUID, "fulano", "detal", List("user"))
+}
+
+trait CoursesData extends BasicData {
+  val cDSP = Courses.create(
+    "Digital Signal Processing", "dsp", """
+    |Learn the fundamentals of digital signal processing theory and discover the myriad ways DSP makes everyday life more productive and fun.""",
+    "samples/coursera/dsp/small-icon.hover.png")
+
+  val cCalc1 = Courses.create(
+    "Calculus One", "calc1", """
+    |Calculus One is a first introduction to differential and integral calculus, emphasizing engaging examples from everyday life.""",
+    "samples/coursera/calcone/calculus1.png")
+
+  val cCompIn = Courses.create(
+    "Computational Investing", "compinv","""
+    |Find out how modern electronic markets work, why stock prices change in the ways they do, and how computation can help our understanding of them.  Build algorithms and visualizations to inform investing practice..""",
+    "samples/coursera/compinv/small-icon.hover.png")
+
+  val cGamet = Courses.create(
+    "Game Theory", "gamet","""
+    |The course covers the basics: representing games and strategies, the extensive form (which computer scientists call game trees), repeated and stochastic games, coalitional games, and Bayesian games (modeling things like auctions).""",
+    "samples/coursera/gamet/small-icon.hover.png")
+
+  val cNLP = Courses.create(
+    "Natural Language Processing","nlp", """
+    |Have you ever wondered how to build a system that automatically translates between languages? Or a system that can understand natural language instructions from a human? This class will cover the fundamentals of mathematical and computational models of language, and the application of these models to key problems in natural language processing.""",
+    "samples/coursera/nlp/thumb.jpg")
+
+  val cNut = Courses.create(
+    "Nutrition, Health, and Lifestyle: Issues and Insights","nut", """
+    |This seven week course will explore nutrition concepts that take center stage in mainstream media outlets and become conversation topics among consumers interested in food choice as it relates to optimal health and physical performance.""",
+    "samples/coursera/nutrition/Food-icon.jpg")
+
+  val cScala = Courses.create(
+    "Functional Programming Principles in Scala","funprog", """
+    |Learn about functional programming, and how it can be effectively combined with object-oriented programming. Gain practice in writing clean functional code, using the Scala programming language.""",
+    "samples/coursera/scala/small-icon.hover.png")
+  
+    
+  val eScala = Courses.createEnrollment(new Date,cScala.getUUID(),fulano.getUUID(),"1.00")
+  val eGamet = Courses.createEnrollment(new Date,cGamet.getUUID(),fulano.getUUID(),"0.90")
+  val eCompIn = Courses.createEnrollment(new Date,cGamet.getUUID(),cbabbage.getUUID(),"1.00")
+    
+}
+
+object SampleDataGenerator extends App
+  with Beans
+  with CleanDB
+  with AuthData
+  with CoursesData

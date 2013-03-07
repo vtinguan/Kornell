@@ -7,9 +7,6 @@
 	<persistence-unit name="KornellPU">
 		<jta-data-source>java:/KornellDS</jta-data-source>
 		<properties>
-			<!-- Properties for Hibernate -->
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-						
 			<!-- Debugging SQL -->
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />

@@ -2,8 +2,8 @@ package kornell.gui.client.presentation.welcome.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.to.CourseTO;
-import kornell.core.shared.to.CoursesTO;
+import kornell.core.shared.data.CourseTO;
+import kornell.core.shared.data.CoursesTO;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
 import com.google.gwt.core.client.GWT;
@@ -43,7 +43,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		});
 	}
 
-	// TODO: Refactor to use "activity manager (todo)"
 	private void display(CoursesTO to) {
 		for (final CourseTO course : to.getCourses()) {
 			GenericCourseSummaryView courseSummaryView 

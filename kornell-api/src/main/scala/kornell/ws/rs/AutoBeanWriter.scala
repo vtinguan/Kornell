@@ -22,7 +22,7 @@ class AutoBeanWriter extends MessageBodyWriter[Any]{
                     genericType:java.lang.reflect.Type,
                     annotations:Array[java.lang.annotation.Annotation],
                     mediaType:MediaType) 
-	 = true
+	 = mediaType.toString().contains("vnd.kornell");
      
     override def writeTo(t:Any,
              aType:java.lang.Class[_],
@@ -31,8 +31,13 @@ class AutoBeanWriter extends MessageBodyWriter[Any]{
              mediaType:MediaType,
              httpHeaders:MultivaluedMap[java.lang.String,java.lang.Object],
              out:java.io.OutputStream) {
-    	 val bean = AutoBeanUtils.getAutoBean(t);
-    	 val payload = AutoBeanCodex.encode(bean).getPayload();
-    	 out.write(payload.getBytes())
+         
+    	 val content = t match {
+    	   case Some(thing) => thing
+    	   case _ => t
+    	 }
+    	 val bean = AutoBeanUtils.getAutoBean(content)
+    	 val payload = AutoBeanCodex.encode(bean).getPayload
+    	 out.write(payload.getBytes)
      }
 }
