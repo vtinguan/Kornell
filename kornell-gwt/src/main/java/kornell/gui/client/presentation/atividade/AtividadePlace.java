@@ -5,31 +5,37 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
 public class AtividadePlace extends Place {
-	String packageURL;
-	Integer item;
+	String courseUUID;
+	Integer position;
 
-	public AtividadePlace(String url, Integer item) {
-		this.packageURL = url;
-		this.item = item;
-	}
-
-	public String getPackageURL() {
-		return packageURL;
+	public AtividadePlace(String courseUUID, Integer postition) {
+		this.courseUUID = courseUUID;
+		this.position = postition;
 	}
 
-	public Integer getItem() {
-		return item;
+	public AtividadePlace next() {
+		return new AtividadePlace(courseUUID, position + 1);
 	}
-	
-	public AtividadePlace next(){
-		return new AtividadePlace(packageURL,item+1);
+
+	public AtividadePlace previous() {
+		return new AtividadePlace(courseUUID, position - 1);
 	}
-	
-	public AtividadePlace previous(){
-		return new AtividadePlace(packageURL,item-1);
+
+	public String getCourseUUID() {
+		return courseUUID;
 	}
-	
-	
+
+	public void setCourseUUID(String courseUUID) {
+		this.courseUUID = courseUUID;
+	}
+
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
 
 	@Prefix("activity")
 	public static class Tokenizer implements PlaceTokenizer<AtividadePlace> {
@@ -38,23 +44,13 @@ public class AtividadePlace extends Place {
 		public AtividadePlace getPlace(String token) {
 			String[] tokens = token.split(SEPARATOR);
 			String packageUrl = tokens[0];
-			Integer item = Integer.valueOf(
-					tokens.length > 1 ?
-							tokens[1] : "0");
+			Integer item = Integer.valueOf(tokens.length > 1 ? tokens[1] : "0");
 			return new AtividadePlace(packageUrl, item);
 		}
 
 		public String getToken(AtividadePlace place) {
-			return place.packageURL
-					+ SEPARATOR
-					+ place.getItem();
+			return place.getCourseUUID() + SEPARATOR + place.getPosition();
 		}
 	}
 
-
-
-	public void setItem(Integer item) {
-		this.item = item;
-		
-	}
 }

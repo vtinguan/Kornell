@@ -1,11 +1,13 @@
 package kornell.gui.client;
 
 import kornell.api.client.KornellClient;
+import kornell.gui.client.content.RendererFactory;
+import kornell.gui.client.content.RendererFactoryImpl;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.activity.generic.GenericAtividadeView;
 import kornell.gui.client.presentation.atividade.AtividadePresenter;
 import kornell.gui.client.presentation.atividade.AtividadeView;
+import kornell.gui.client.presentation.atividade.generic.GenericAtividadeView;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.generic.GenericActivityBarView;
@@ -166,10 +168,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public AtividadePresenter getActivityPresenter() {
+		RendererFactory rendererFactory = new RendererFactoryImpl(client);
 		if (activityPresenter == null) {
 			AtividadeView activityView = getActivityView();
+			
 			activityPresenter = new AtividadePresenter(activityView,
-					placeController);
+					placeController, rendererFactory);
 		}
 		return activityPresenter;
 	}

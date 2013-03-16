@@ -3,7 +3,7 @@ CREATE TABLE Course (
   code varchar(255),
   title varchar(255),
   description longtext,
-  thumbDataURI longtext,
+  assetsURL varchar(2083),
   UNIQUE KEY code (code)
 );
 
