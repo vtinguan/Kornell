@@ -13,6 +13,12 @@ public interface Course {
 	String getTitle();
 	void setTitle(String title);
 	
+	String getAssetsURL();
+	void setAssetsURL(String assetsURL);
+
+	//TODO: Delete
+	@Deprecated
 	String getThumbDataURI();
+	@Deprecated
 	void setThumbDataURI(String thumbDataURI); 
 }

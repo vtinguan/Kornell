@@ -18,7 +18,8 @@ import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.CourseTO
 import scala.slick.jdbc.GetResult
 import kornell.core.shared.data.CoursesTO
-
+import javax.ws.rs.core.SecurityContext
+import kornell.core.shared.data.Person
 
 object Courses extends Repository with Beans {
 
@@ -32,13 +33,13 @@ object Courses extends Repository with Beans {
       p setBigDecimal (d)
   }
 
-  implicit val getCourseTO = GetResult(r => newCourseTO(r.nextString,r.nextString,r.nextString,r.nextString,r.nextString,
-		  												r.nextString,r.nextDate,r.nextString,r.nextString))
+  implicit val getCourseTO = GetResult(r => newCourseTO(r.nextString, r.nextString, r.nextString, r.nextString, r.nextString,
+    r.nextString, r.nextDate, r.nextString, r.nextString))
 
-  def create(title: String, code: String, description: String, resourceName: String) =
+  def create(title: String, code: String, description: String, assetsURL: String) =
     db.withTransaction {
-      val c = newCourse(randUUID, code, title, description.stripMargin, DataURI.fromResource(resourceName).get)
-      sqlu"insert into Course values (${c.getUUID},${c.getCode},${c.getTitle},${c.getDescription},${c.getThumbDataURI})".execute
+      val c = newCourse(randUUID, code, title, description.stripMargin, assetsURL)
+      sqlu"insert into Course values (${c.getUUID},${c.getCode},${c.getTitle},${c.getDescription},${c.getAssetsURL})".execute
       c
     }
 
@@ -47,28 +48,43 @@ object Courses extends Repository with Beans {
       val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, new BigDecimal(progress))
       sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
       e
-  }
-  
-  implicit def toCourses(l:List[CourseTO]):CoursesTO = newCoursesTO(l)
-  
-  def allWithEnrollment(username:String):CoursesTO = db.withSession {
-    val person = Persons.byUsername(username)
-    (person match {
-      case Some(p) => sql"""
-		select c.uuid,c.code,c.title,c.description,c.thumbDataURI,
+    }
+
+  implicit def toCourses(l: List[CourseTO]): CoursesTO = newCoursesTO(l)
+
+  def selectCourses(p: Person) = sql"""
+		select c.uuid,c.code,c.title,c.description,c.assetsURL,
 			   e.uuid, e.enrolledOn,e.person_uuid,e.progress
 		from Course c
 		left join Enrollment e on c.uuid = e.course_uuid
 		where e.person_uuid is null
-		   or e.person_uuid = ${p.getUUID()}
-	""".as[CourseTO].list	
-      case None => List.empty
-    }).sortBy { to =>
-        val progress = to.getEnrollment.getProgress
-        if(progress == null)
-          new BigDecimal("0.999") //not tryed just before completed
-        else progress
-    }
+		   or e.person_uuid = ${p.getUUID}
+	"""
+
+  def selectCourse(p: Person, uuid: String) = sql"""
+		select c.uuid,c.code,c.title,c.description,c.assetsURL,
+			   e.uuid, e.enrolledOn,e.person_uuid,e.progress
+		from Course c
+		left join Enrollment e on c.uuid = e.course_uuid
+		where c.uuid = ${uuid} 
+           and (e.person_uuid is null
+		   or e.person_uuid = ${p.getUUID})
+	"""
+
+  def allWithEnrollment(implicit sc: SecurityContext): CoursesTO = db.withSession {
+    Persons.byUserPrincipal
+      .map(selectCourses(_).as[CourseTO].list)
+      .getOrElse(List[CourseTO]())
+      .sortBy(to =>
+        Option(to.getEnrollment.getProgress) match {
+          case Some(progress) => progress
+          case None => new BigDecimal("0.999")
+        })
+  }
+
+  def byUUID(uuid: String)(implicit sc: SecurityContext):Option[CourseTO] = db.withSession {
+     Persons.byUserPrincipal
+      .flatMap {selectCourse(_, uuid).as[CourseTO].firstOption}
   }
 
 }

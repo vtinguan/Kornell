@@ -12,14 +12,22 @@ import kornell.core.shared.data.BeanFactory
 import kornell.dev.Mocks
 import kornell.repository.slick.plain.Courses
 import kornell.core.shared.data.CoursesTO
+import javax.ws.rs.PathParam
+import kornell.core.shared.data.CourseTO
 
-@Produces(Array(CoursesTO.MIME_TYPE))
 @Path("courses")
 class CoursesResource {
 
   @GET
-  def getCourses(@Context sc: SecurityContext) = {
-    val username = sc.getUserPrincipal.getName //TODO: Can username be implicit?
-    Courses.allWithEnrollment(username) 
-  }
+  @Produces(Array(CoursesTO.MIME_TYPE))
+  def getCourses(implicit @Context sc: SecurityContext) = 
+    Courses.allWithEnrollment
+  
+  @Path("{uuid}")
+  @Produces(Array(CourseTO.MIME_TYPE))
+  @GET
+  def getCourse(@PathParam("uuid") uuid:String)(implicit @Context sc: SecurityContext) = 
+    Courses.byUUID(uuid)
+ 
+ 
 }

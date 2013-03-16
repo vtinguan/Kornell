@@ -33,12 +33,12 @@ trait Beans {
 
 	def newCourse:Course = factory.newCourse.as
 	
-	def newCourse(uuid:String,code:String,title:String,description:String,thumbDataURI:String):Course = {
+	def newCourse(uuid:String,code:String,title:String,description:String,assetsURL:String):Course = {
 	  val c = newCourse
 	  c.setUUID(uuid)
 	  c.setCode(code)
 	  c.setDescription(description)
-	  c.setThumbDataURI(thumbDataURI)
+	  c.setAssetsURL(assetsURL)
 	  c.setTitle(title)
 	  c
 	}

@@ -1,6 +1,9 @@
 package kornell.api.client;
 
 import kornell.api.client.data.Person;
+import kornell.core.shared.data.Course;
+import kornell.core.shared.data.CourseTO;
+import kornell.core.shared.data.CoursesTO;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.RequestBuilder;
@@ -21,9 +24,7 @@ public class KornellClient {
 			String username,
 			String password,
 			final Callback callback) {
-		RequestBuilder builder = createGET("/user");
-		final String auth = "Basic "+KornellClient.encode(username,password);		
-		builder.setHeader("Authorization", auth);
+		final String auth = "Basic "+KornellClient.encode(username,password);				
 		
 		Callback wrapper = new Callback(){
 			protected void ok(Person person) {
@@ -45,26 +46,17 @@ public class KornellClient {
 			}
 		};
 				
-		try {	
-			builder.sendRequest(null, wrapper);
-		} catch (RequestException e) {
-			handle(e);
-		}
+		createGET("/user")
+			.addHeader("Authorization", auth)
+			.sendRequest(null, wrapper);
 
 	}
 	
-	public void getCourses(Callback callback){
-		RequestBuilder builder = createGET("/courses");
-		try {
-			builder.sendRequest(null, callback);
-		} catch (RequestException e) {
-			handle(e);
-		}		
+	public void getCourses(Callback<CoursesTO> callback){
+		createGET("/courses").sendRequest(null, callback);	
 	}
 
-	private void handle(RequestException e) {
-		GWT.log(e.getMessage(),e);
-	}
+	
 
 	private void setCurrentUser(Person person) {
 		this.currentUser = person;
@@ -72,16 +64,17 @@ public class KornellClient {
 	};
 	
 	public void getCurrentUser(Callback cb){
-		try{
-			RequestBuilder builder = createGET("/user");
-			builder.sendRequest(null, cb);	
-		}catch(RequestException e){
-			GWT.log("OOPS...",e);
-		}
+		createGET("/user").sendRequest(null, cb);	
+	}
+	
+	public void getCourseTO(String uuid, Callback<CourseTO> cb) {
+		createGET("/courses/"+uuid).sendRequest(null, cb);
+		
 	}
 
-	private RequestBuilder createGET(String path) {
-		RequestBuilder reqBuilder = new RequestBuilder(RequestBuilder.GET, apiURL+path);
+	private ExceptionalRequestBuilder createGET(String path) {
+		ExceptionalRequestBuilder reqBuilder =
+				new ExceptionalRequestBuilder(RequestBuilder.GET, apiURL+path);
 		if(store != null){
 			String auth = store.getItem("Authorization");
 			if(auth != null && auth.length()>0)
@@ -97,4 +90,9 @@ public class KornellClient {
 	private static native String base64Encode(String plain) /*-{
 	  return window.btoa(plain);
 	}-*/;
+
+	
+	
+
+
 }	

@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.welcome.generic;
 
 import java.math.BigDecimal;
 
+import kornell.core.shared.data.Course;
 import kornell.core.shared.data.CourseTO;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 
@@ -37,14 +38,14 @@ public class GenericCourseSummaryView extends Composite {
 	@UiField
 	Image imgThumb;
 
-	public GenericCourseSummaryView(final PlaceController placeCtrl, final CourseTO course) {
+	public GenericCourseSummaryView(final PlaceController placeCtrl, final CourseTO courseTO) {
 		initWidget(uiBinder.createAndBindUi(this));
-
 		
-		hTitle.setText(course.getCourse().getTitle());
-		pDescription.setText(course.getCourse().getDescription());
+		final Course course = courseTO.getCourse();
+		hTitle.setText(course.getTitle());
+		pDescription.setText(course.getDescription());
 		
-		BigDecimal progress = course.getEnrollment().getProgress();
+		BigDecimal progress = courseTO.getEnrollment().getProgress();
 		if(progress != null){
 			if(progress.compareTo(BigDecimal.ONE) == 0)
 				//TODO: i18n
@@ -55,13 +56,17 @@ public class GenericCourseSummaryView extends Composite {
 			//TODO: i18n
 			pProgress.setText("Not started yet.");
 		}
-		imgThumb.setUrl(course.getCourse().getThumbDataURI());
+		
+		String assetsURL = course.getAssetsURL();
+		imgThumb.setUrl(assetsURL + "thumb.png");
+		imgThumb.setHeight("240");
+		imgThumb.setHeight("135");
 		
 		sinkEvents(Event.ONCLICK);
 		addHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				placeCtrl.goTo(new AtividadePlace(course.getCourse().getUUID(), 0));
+				placeCtrl.goTo(new AtividadePlace(course.getUUID(), 0));
 			}
 		}, ClickEvent.getType());
 		
