@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Kornell GWT Client</name>
-  
+    
 	<properties>
 		<!-- Convenience property to set the GWT version -->
 		<gwtVersion>2.5.0</gwtVersion>
