@@ -9,6 +9,7 @@ import scala.slick.session.Session
 import kornell.repository.Beans
 import kornell.core.shared.data.Person
 import javax.ws.rs.core.SecurityContext
+import java.security.Principal
 
 object Persons extends Repository with Beans{
   
@@ -24,15 +25,17 @@ object Persons extends Repository with Beans{
     sql"select uuid,fullName from Person".as[Person].foreach(f)
   }
 
-  //TODO: Cache
+  //TODO: Cache candidate
   def byUsername(username:String) = db.withSession{
     sql"""
     select n.uuid,n.fullName
-	from Principal p
+	from Password p
 	join Person n on p.person_uuid = n.uuid
 	where p.username = ${username}
     """.as[Person].firstOption 
   }
   
-  def byUserPrincipal(implicit sc:SecurityContext) = byUsername(sc.getUserPrincipal.getName)
+  
+  def byUserPrincipal(implicit p:Principal) = byUsername(p.getName)
+  
 }

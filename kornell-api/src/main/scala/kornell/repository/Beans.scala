@@ -8,9 +8,9 @@ import kornell.core.shared.data.Person
 import kornell.core.shared.data.Course
 import java.util.Date
 import java.math.BigDecimal
-import kornell.core.shared.data.Enrollment
-import kornell.core.shared.data.CourseTO
+import kornell.core.shared.data._
 import scala.collection.JavaConverters._
+import java.sql.ResultSet
 
 //TODO: Smells bad... but relates to 1-1 to BeanFactory
 trait Beans {
@@ -64,6 +64,14 @@ trait Beans {
 	  to setEnrollment (enrollmentUUID,enrolledOn,courseUUID,personUUID,prog)
 	  to
 	}
+	
+	
+   def newCourseTO(r:ResultSet):CourseTO = newCourseTO(r.getString("courseUUID"), r.getString("code"), r.getString("title"),
+      r.getString("description"), r.getString("assetsURL"),
+      r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
+      r.getString("person_uuid"), r.getString("progress"))
+      
+    
 	
 	def newCoursesTO(l:List[CourseTO]) = {
 	  val to = factory.newCoursesTO.as
