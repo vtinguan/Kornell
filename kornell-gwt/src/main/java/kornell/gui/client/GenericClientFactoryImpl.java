@@ -46,7 +46,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SimplePanel appPanel;
 
 	/* REST API Client */
-	private final String apiURL = "/api";
+	private final String apiURL = "http://api.kornell";
 	private final KornellClient client = new KornellClient(apiURL);
 
 	/* Views */

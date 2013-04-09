@@ -8,10 +8,7 @@
 	<name>Kornell API Module</name>
 
 	<properties>
-		<resteasy.version>2.3.2.Final</resteasy.version>
-		<version.org.jboss.as.plugins.maven.plugin>7.3.Final</version.org.jboss.as.plugins.maven.plugin>
-		<version.org.jboss.bom>1.0.0.Final</version.org.jboss.bom>
-
+		<resteasy.version>2.3.5.Final</resteasy.version>
 
 		<!-- Don't let your Mac use a crazy non-standard encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,32 +40,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<dependencyManagement>
-		<dependencies>
-			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
-				of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
-				of artifacts. We use this here so that we always get the correct versions 
-				of artifacts. Here we use the jboss-javaee-6.0-with-tools stack (you can 
-				read this as the JBoss stack of the Java EE 6 APIs, with some extras tools 
-				for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate 
-				stack you can read this as the JBoss stack of the Java EE 6 APIs, with extras 
-				from the Hibernate family of projects) -->
-			<dependency>
-				<groupId>org.jboss.bom</groupId>
-				<artifactId>jboss-javaee-6.0-with-tools</artifactId>
-				<version>${version.org.jboss.bom}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.bom</groupId>
-				<artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
-				<version>${version.org.jboss.bom}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+
 
 	<dependencies>
 		<dependency>
@@ -94,27 +66,13 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>${resteasy.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<version>4.11</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.picketbox</groupId>
-			<artifactId>picketbox</artifactId>
-			<version>4.0.7.Final</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.logging</groupId>
-			<artifactId>jboss-logging</artifactId>
-			<version>3.1.0.GA</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -154,7 +112,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>kornell-api</finalName>
+		<finalName>ROOT</finalName>
 		<sourceDirectory>src/main/scala</sourceDirectory>
 		<testSourceDirectory>src/test/scala</testSourceDirectory>
 		<plugins>
@@ -206,7 +164,7 @@
 				<version>0.2.0</version>
 				<configuration>
 					<verbose>false</verbose>
-					<failOnViolation>true</failOnViolation>
+					<failOnViolation>false</failOnViolation>
 					<failOnWarning>false</failOnWarning>
 					<configLocation>${basedir}/lib/scalastyle_config.xml</configLocation>
 					<sourceDirectory>${basedir}/src/main/scala</sourceDirectory>

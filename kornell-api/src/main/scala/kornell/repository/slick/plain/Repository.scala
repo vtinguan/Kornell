@@ -14,18 +14,22 @@ import java.nio.file.Paths
 import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
-
 import java.nio.charset.Charset
+import scala.slick.session.PositionedParameters
+import scala.slick.jdbc.SetParameter
+import java.util.Date
+import java.sql.Timestamp
 
 trait Repository {
   def randUUID: String = UUID.randomUUID.toString
   //TODO: Connection Pooling
-  def forURL(url:String) = Database.forURL(url,
+  def forURL(url: String) = Database.forURL(url,
     driver = "com.mysql.jdbc.Driver",
     user = "kornell",
     password = "kornell")
-  
-  val nodb = forURL("jdbc:mysql:///") 
+
+  val nodb = forURL("jdbc:mysql:///")
 
   val db = forURL("jdbc:mysql:///kornell")
 }
+

@@ -1,16 +1,15 @@
 CONTEXT=$( cat <<EOF
-<Context>
+<Context path=""> 
 	<Resource name="jdbc/KornellDS" 
 		auth="Container" 
 	    type="javax.sql.DataSource"
 		maxActive="100"  
 		maxIdle="10" 
-		maxWait="10000" 
-		username="$USERNAME"
-		password="kornell" 
+		maxWait="10000"
 		driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://db.kornell:3306/kornell" 
-		
+		username="kornell"
+		password="kornell"
+		url="jdbc:mysql://db.kornell:3306/kornell"
 		validationQuery="select 42"
 		validationQueryTimeout="2"
 		testOnBorrow="true"
@@ -31,4 +30,6 @@ CONTEXT=$( cat <<EOF
 </Context>
 EOF
 )
+
+TOMCAT_CONF=${TOMCAT_CONF:=/etc/tomcat}
 echo $CONTEXT

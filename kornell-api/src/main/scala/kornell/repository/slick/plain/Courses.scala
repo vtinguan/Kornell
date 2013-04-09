@@ -1,28 +1,25 @@
 package kornell.repository.slick.plain
 
 import java.math.BigDecimal
+import java.sql.Timestamp
 import java.util.Date
-import scala.slick.driver.BasicProfile
+import scala.math.BigDecimal.javaBigDecimal2bigDecimal
+import scala.slick.jdbc.GetResult
+import scala.slick.jdbc.SetParameter
 import scala.slick.jdbc.StaticQuery.interpolation
-import scala.slick.lifted.BaseTypeMapper
-import scala.slick.lifted.TypeMapperDelegate
 import scala.slick.session.Database.threadLocalSession
 import scala.slick.session.PositionedParameters
-import scala.slick.session.PositionedResult
-import kornell.repository.Beans
-import kornell.util.DataURI
-import java.sql.Timestamp
-import scala.slick.lifted.MappedTypeMapper
-import scala.slick.jdbc.SetParameter
-import kornell.core.shared.data.Enrollment
-import kornell.core.shared.data.CourseTO
-import scala.slick.jdbc.GetResult
-import kornell.core.shared.data.CoursesTO
 import javax.ws.rs.core.SecurityContext
+import kornell.core.shared.data.CourseTO
+import kornell.core.shared.data.CoursesTO
+import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.Person
+import kornell.repository.Beans
+import kornell.core.shared.data.Course
 
 object Courses extends Repository with Beans {
 
+  //TODO: Move this SetParameter to package object or Repository 
   implicit val SetDateTime: SetParameter[Date] = new SetParameter[Date] {
     def apply(d: Date, p: PositionedParameters): Unit =
       p setTimestamp (new Timestamp(d.getTime))
@@ -33,28 +30,16 @@ object Courses extends Repository with Beans {
       p setBigDecimal (d)
   }
 
+  //Conversions
   implicit val getCourseTO = GetResult(r => newCourseTO(r.nextString, r.nextString, r.nextString, r.nextString, r.nextString,
     r.nextString, r.nextDate, r.nextString, r.nextString))
 
-  def create(title: String, code: String, description: String, assetsURL: String) =
-    db.withTransaction {
-      val c = newCourse(randUUID, code, title, description.stripMargin, assetsURL)
-      sqlu"insert into Course values (${c.getUUID},${c.getCode},${c.getTitle},${c.getDescription},${c.getAssetsURL})".execute
-      c
-    }
-
-  def createEnrollment(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String) =
-    db.withTransaction {
-      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, new BigDecimal(progress))
-      sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
-      e
-    }
-
   implicit def toCourses(l: List[CourseTO]): CoursesTO = newCoursesTO(l)
 
+  //Queries
   def selectCourses(p: Person) = sql"""
-		select c.uuid,c.code,c.title,c.description,c.assetsURL,
-			   e.uuid, e.enrolledOn,e.person_uuid,e.progress
+		select c.uuid as courseUUID,c.code,c.title,c.description,c.assetsURL,
+			   e.uuid as enrollmentUUID, e.enrolledOn,e.person_uuid,e.progress
 		from Course c
 		left join Enrollment e on c.uuid = e.course_uuid
 		where e.person_uuid is null
@@ -71,6 +56,23 @@ object Courses extends Repository with Beans {
 		   or e.person_uuid = ${p.getUUID})
 	"""
 
+  def insert(c: Course) =
+    sqlu"insert into Course values (${c.getUUID},${c.getCode},${c.getTitle},${c.getDescription},${c.getAssetsURL})"
+
+  def create(title: String, code: String, description: String, assetsURL: String) =
+    db.withTransaction {
+      val c = newCourse(randUUID, code, title, description.stripMargin, assetsURL)
+      insert(c).execute
+      c
+    }
+
+  def createEnrollment(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String) =
+    db.withTransaction {
+      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, new BigDecimal(progress))
+      sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
+      e
+    }
+
   def allWithEnrollment(implicit sc: SecurityContext): CoursesTO = db.withSession {
     Persons.byUserPrincipal
       .map(selectCourses(_).as[CourseTO].list)
@@ -82,9 +84,9 @@ object Courses extends Repository with Beans {
         })
   }
 
-  def byUUID(uuid: String)(implicit sc: SecurityContext):Option[CourseTO] = db.withSession {
-     Persons.byUserPrincipal
-      .flatMap {selectCourse(_, uuid).as[CourseTO].firstOption}
+  def byUUID(uuid: String)(implicit sc: SecurityContext): Option[CourseTO] = db.withSession {
+    Persons.byUserPrincipal
+      .flatMap { selectCourse(_, uuid).as[CourseTO].firstOption }
   }
 
 }
