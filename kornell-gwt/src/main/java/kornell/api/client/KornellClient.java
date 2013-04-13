@@ -28,7 +28,7 @@ public class KornellClient {
 			tryEndpointFile();
 		}else{
 			GWT.log("API url already discovered");
-		}
+		}		
 	}
 
 	private void tryEndpointFile() {
@@ -37,7 +37,9 @@ public class KornellClient {
 			req.sendRequest(null, new RequestCallback() {				
 				@Override
 				public void onResponseReceived(Request request, Response response) {
-					apiURL = response.getText();					
+					if(response.getStatusCode() == 200)
+						apiURL = response.getText();
+					else useDefaultUrl();
 				}
 				
 				@Override
@@ -51,7 +53,7 @@ public class KornellClient {
 	}
 
 	private void useDefaultUrl() {
-		apiURL = "http://api.kornell";
+		apiURL = "http://localhost:8080";
 	}
 
 	public void login(
