@@ -23,6 +23,7 @@ import kornell.gui.client.scorm.API_1484_11;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -46,8 +47,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SimplePanel appPanel;
 
 	/* REST API Client */
-	private final String apiURL = "http://api.kornell";
-	private final KornellClient client = new KornellClient(apiURL);
+	private final KornellClient client = KornellClient.getInstance();
 
 	/* Views */
 	private GenericHomeView genericHomeView;

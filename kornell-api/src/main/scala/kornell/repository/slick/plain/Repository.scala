@@ -22,14 +22,15 @@ import java.sql.Timestamp
 
 trait Repository {
   def randUUID: String = UUID.randomUUID.toString
-  //TODO: Connection Pooling
+  //TODO: Use Connection Pooling from JNDI (have to care for off-container connections)
+  
   def forURL(url: String) = Database.forURL(url,
     driver = "com.mysql.jdbc.Driver",
     user = "kornell",
-    password = "kornell")
+    password = "42kornell73")
 
-  val nodb = forURL("jdbc:mysql:///")
+  val nodb = forURL("jdbc:mysql://db.kornell/")
 
-  val db = forURL("jdbc:mysql:///kornell")
+  val db = forURL("jdbc:mysql://db.kornell/ebdb")
 }
 

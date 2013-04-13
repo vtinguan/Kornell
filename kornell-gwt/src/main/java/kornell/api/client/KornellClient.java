@@ -6,18 +6,52 @@ import kornell.core.shared.data.CourseTO;
 import kornell.core.shared.data.CoursesTO;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.storage.client.Storage;
 
 public class KornellClient {
 	Storage store = Storage.getLocalStorageIfSupported();
 
-	private String apiURL;
+	private String apiURL = null;
 	private Person currentUser;	
 
-	public KornellClient(String apiURL) {
-		this.apiURL = apiURL;
+	private KornellClient() {
+		discoverApiUrl();
+	}
+
+	private void discoverApiUrl() {
+		if(apiURL == null){ 
+			tryEndpointFile();
+		}else{
+			GWT.log("API url already discovered");
+		}
+	}
+
+	private void tryEndpointFile() {
+		RequestBuilder req = new RequestBuilder(RequestBuilder.GET, "/api_endpoint");		
+		try {
+			req.sendRequest(null, new RequestCallback() {				
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					apiURL = response.getText();					
+				}
+				
+				@Override
+				public void onError(Request request, Throwable exception) {
+					useDefaultUrl();
+				}
+			});
+		} catch (RequestException e) {
+			useDefaultUrl();
+		}
+	}
+
+	private void useDefaultUrl() {
+		apiURL = "http://api.kornell";
 	}
 
 	public void login(
@@ -73,8 +107,9 @@ public class KornellClient {
 	}
 
 	private ExceptionalRequestBuilder createGET(String path) {
+		
 		ExceptionalRequestBuilder reqBuilder =
-				new ExceptionalRequestBuilder(RequestBuilder.GET, apiURL+path);
+				new ExceptionalRequestBuilder(RequestBuilder.GET, getApiUrl()+path);
 		if(store != null){
 			String auth = store.getItem("Authorization");
 			if(auth != null && auth.length()>0)
@@ -83,6 +118,17 @@ public class KornellClient {
 		return  reqBuilder;
 	}
 	
+	
+	
+	
+	private String getApiUrl() {
+		while(apiURL == null){
+			GWT.log("Could not find API URL. Looking up again");
+			discoverApiUrl();
+		}
+		return apiURL;
+	}
+
 	private static String encode(String username, String password) {
 		return KornellClient.base64Encode(username+":"+password);
 	}
@@ -90,6 +136,10 @@ public class KornellClient {
 	private static native String base64Encode(String plain) /*-{
 	  return window.btoa(plain);
 	}-*/;
+
+	public static KornellClient getInstance() {		
+		return new KornellClient();
+	}
 
 	
 	

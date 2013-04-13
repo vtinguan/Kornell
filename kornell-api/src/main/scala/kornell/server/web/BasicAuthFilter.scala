@@ -4,9 +4,11 @@ import javax.servlet._
 import javax.servlet.http._
 import javax.servlet.annotation.WebFilter
 import org.apache.commons.codec.binary.Base64
+import java.util.logging.Logger
 
 class BasicAuthFilter extends Filter {
-
+  val log = Logger.getLogger(classOf[BasicAuthFilter].getName) 
+	
   val public = Set("/","/checkup")
   
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
@@ -23,10 +25,10 @@ class BasicAuthFilter extends Filter {
       checkCredentials(req, resp, chain)
 
   def isPublic(req: HttpServletRequest, resp: HttpServletResponse) ={
-      val pathInfo = req.getPathInfo
-      val isPublic = public.contains(pathInfo)
+      val path = req.getRequestURI
+      val isPublic = public.contains(path)
       val isOption = "OPTIONS".equals(req.getMethod)
-      isOption || isPublic    
+      isOption || isPublic 
     }
     
       
@@ -38,7 +40,9 @@ class BasicAuthFilter extends Filter {
         req.login(username, password);
         chain.doFilter(req, resp);
       } catch {
-        case se: ServletException => se.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed")
+        case se: ServletException => 
+          se.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, 
+              s"Authentication failed for user $username at uri ${req.getRequestURI}")
       }
     } else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You should authenticate")
   }
