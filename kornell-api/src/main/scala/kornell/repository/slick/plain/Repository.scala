@@ -22,7 +22,7 @@ import java.sql.Timestamp
 
 trait Repository {
   def randUUID: String = UUID.randomUUID.toString
-  //TODO: Use Connection Pooling from JNDI (have to care for off-container connections)
+  //TODO: Use Connection Pooling from JNDI (have to care for off-container connections, useful in development)
   
   def forURL(url: String) = Database.forURL(url,
     driver = "com.mysql.jdbc.Driver",
