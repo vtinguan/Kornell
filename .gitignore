@@ -5,6 +5,9 @@
 .project 
 rebel.xml
 
+# Scala Worksheets
+*.sc
+
 # MacOS Garbage
 .DS_Store
 
