@@ -58,7 +58,7 @@ public class GenericCourseSummaryView extends Composite {
 		}
 		
 		String assetsURL = course.getAssetsURL();
-		imgThumb.setUrl(assetsURL + "thumb.png");
+		imgThumb.setUrl(assetsURL + "thumb.jpg");
 		imgThumb.setHeight("240");
 		imgThumb.setHeight("135");
 		

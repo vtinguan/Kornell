@@ -1,16 +1,11 @@
 package kornell.api.client;
 
 import kornell.api.client.data.Person;
-import kornell.core.shared.data.Course;
 import kornell.core.shared.data.CourseTO;
 import kornell.core.shared.data.CoursesTO;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.storage.client.Storage;
 
 public class KornellClient {
@@ -24,33 +19,20 @@ public class KornellClient {
 	}
 
 	private void discoverApiUrl() {
-		if(apiURL == null){ 
-			tryEndpointFile();
+		apiURL = KornellClient.getFromEnvironment();
+		if(apiURL == null || apiURL.length() == 0){ 
+			useDefaultUrl();
 		}else{
 			GWT.log("API url already discovered");
 		}		
 	}
 
-	private void tryEndpointFile() {
-		RequestBuilder req = new RequestBuilder(RequestBuilder.GET, "/api_endpoint");		
-		try {
-			req.sendRequest(null, new RequestCallback() {				
-				@Override
-				public void onResponseReceived(Request request, Response response) {
-					if(response.getStatusCode() == 200)
-						apiURL = response.getText();
-					else useDefaultUrl();
-				}
-				
-				@Override
-				public void onError(Request request, Throwable exception) {
-					useDefaultUrl();
-				}
-			});
-		} catch (RequestException e) {
-			useDefaultUrl();
-		}
-	}
+	
+
+	private static native String getFromEnvironment() /*-{
+	  console.debug($wnd.KornellConfig.apiEndpoint);
+	  return ""; 
+	}-*/;
 
 	private void useDefaultUrl() {
 		apiURL = "http://localhost:8080";
