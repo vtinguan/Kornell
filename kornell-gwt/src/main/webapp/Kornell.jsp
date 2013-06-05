@@ -2,6 +2,7 @@
 <html>
   <head>
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
   	<!-- 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, user-scalable=no">
@@ -15,8 +16,13 @@
 	<!--[if IE 7]>
  	<link rel="stylesheet" href="Kornell/css/font-awesome-ie7.css">
 	<![endif]-->
-	<!-- your module(*.nocache.js) loading  -->
+	<!-- your module(*.nocache.js) loading -->  
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
+    <script type="text/javascript">
+		var KornellConfig = {
+			apiEndpoint:"<%= System.getenv("PARAM1") != null ? System.getenv("PARAM1") : "" %>"
+		};  				
+  	</script>
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
   </head>
 

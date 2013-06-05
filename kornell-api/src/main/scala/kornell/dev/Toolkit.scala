@@ -11,8 +11,8 @@ import scala.slick.session.Database.threadLocalSession
 
 
 trait Toolkit extends Repository {
-  def dropDB = nodb withSession sqlu"drop database if exists kornell".execute 
-  def createDB = nodb withSession sqlu"create database if not exists kornell".execute
+  def dropDB = nodb withSession sqlu"drop database if exists ebdb".execute 
+  def createDB = nodb withSession sqlu"create database if not exists ebdb".execute
 
   def truncDB = {
     dropDB

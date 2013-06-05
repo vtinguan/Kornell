@@ -31,7 +31,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		this.client = client;
 		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
-		initData();
+		initData();		
 	}
 
 	private void initData() {
