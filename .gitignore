@@ -24,3 +24,4 @@ target
 # Unknown
 *.cache
 *.swp
+.elasticbeanstalk/

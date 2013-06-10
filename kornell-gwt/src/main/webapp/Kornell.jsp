@@ -3,7 +3,8 @@
   <head>
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-  	<!-- 
+  	<!--
+  	<meta name="kornell.version" content="2010-06-10"> 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, user-scalable=no">
      -->
@@ -20,7 +21,7 @@
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
     <script type="text/javascript">
 		var KornellConfig = {
-			apiEndpoint:"<%= System.getenv("PARAM1") != null ? System.getenv("PARAM1") : "" %>"
+			apiEndpoint:"<%= System.getProperty("PARAM1") != null ? System.getProperty("PARAM1") : "" %>"
 		};  				
   	</script>
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
