@@ -8,5 +8,5 @@ import javax.ws.rs.GET
 class RootResource {
 	@Produces(Array("text/plain"))
 	@GET
-	def get = "Welcome to Kornell API\n"
+	def get = "Welcome to Kornell API\n" 
 }
