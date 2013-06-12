@@ -28,4 +28,3 @@ http://www.udacity.com
 Do you want a piece of this? Check our [wiki](https://github.com/Craftware/Kornell/wiki) and get started!
 
 For those of you wondering, this project is named after [Dr. Nate Kornell](http://sites.williams.edu/nk2/)
---
