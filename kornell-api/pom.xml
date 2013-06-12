@@ -203,7 +203,7 @@
 								<!-- Safety -->
 								<mkdir dir="${project.build.outputDirectory}" />
 								<tstamp>
-									<format property="last.updated" pattern="yyyy-MM-dd HH:mm:ss" />
+									<format property="last.updated" pattern="yyyy-MM-dd HH:mm:ss z" />
 								</tstamp>
 								<echo file="${project.build.outputDirectory}/version.properties"
 									message="built.on=${last.updated}" />

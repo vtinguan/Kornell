@@ -18,12 +18,19 @@
  	<link rel="stylesheet" href="Kornell/css/font-awesome-ie7.css">
 	<![endif]-->
 	<!-- your module(*.nocache.js) loading -->  
-    <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
-    <script type="text/javascript">
+	<script type="text/javascript">
+		<%
+		String apiEndpoint = "";
+		if (System.getenv("PARAM1") != null)
+			apiEndpoint = System.getenv("PARAM1");
+		if (System.getProperty("PARAM1") != null)
+			apiEndpoint = System.getProperty("PARAM1");  		
+		%>
 		var KornellConfig = {
-			apiEndpoint:"<%= System.getProperty("PARAM1") != null ? System.getProperty("PARAM1") : "" %>"
+			apiEndpoint:"<%= apiEndpoint %>"
 		};  				
   	</script>
+    <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
   </head>
 

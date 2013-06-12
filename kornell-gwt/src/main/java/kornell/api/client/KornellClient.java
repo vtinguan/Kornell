@@ -24,14 +24,16 @@ public class KornellClient {
 			useDefaultUrl();
 		}else{
 			GWT.log("API url already discovered");
-		}		
+		}
+		GWT.log("Using API Endpoint: "+apiURL);
 	}
 
 	
 
 	private static native String getFromEnvironment() /*-{
-	  console.debug($wnd.KornellConfig.apiEndpoint);
-	  return ""; 
+	  //console.debug("Using API Endpoint: "+$wnd.KornellConfig.apiEndpoint);
+	  //console.debug($wnd.KornellConfig.apiEndpoint);
+	  return $wnd.KornellConfig.apiEndpoint; 
 	}-*/;
 
 	private void useDefaultUrl() {
