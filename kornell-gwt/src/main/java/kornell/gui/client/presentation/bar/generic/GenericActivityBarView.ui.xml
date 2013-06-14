@@ -2,7 +2,8 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
 
-	<g:FlowPanel addStyleNames="shy activitybar debug-g">
-		<b:Button type="LINK">Activity Bar</b:Button>
+	<g:FlowPanel addStyleNames="shy activitybar">
+		<b:Button type="LINK" ui:field="btnPrev">Anterior</b:Button>
+		<b:Button type="LINK" ui:field="btnNext">Próximo</b:Button>		
 	</g:FlowPanel>
 </ui:UiBinder>

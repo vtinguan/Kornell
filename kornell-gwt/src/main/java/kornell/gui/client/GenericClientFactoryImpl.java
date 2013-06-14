@@ -1,8 +1,8 @@
 package kornell.gui.client;
 
 import kornell.api.client.KornellClient;
-import kornell.gui.client.content.RendererFactory;
-import kornell.gui.client.content.RendererFactoryImpl;
+import kornell.gui.client.content.SequencerFactory;
+import kornell.gui.client.content.SequencerFactoryImpl;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.atividade.AtividadePresenter;
@@ -34,9 +34,9 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class GenericClientFactoryImpl implements ClientFactory {
 	/* History Management */
-	private final EventBus eventBus = new SimpleEventBus();
+	private final EventBus bus = new SimpleEventBus();
 	private final PlaceController placeController = new PlaceController(
-			eventBus);
+			bus);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
 			historyMapper);
@@ -67,12 +67,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initGlobalActivityManager() {
 		globalActivityManager = new ActivityManager(new GlobalActivityMapper(
-				this), eventBus);
+				this), bus);
 		globalActivityManager.setDisplay(shell);
 	}
 
 	private void initHistoryHandler() {
-		historyHandler.register(placeController, eventBus, new VitrinePlace());
+		historyHandler.register(placeController, bus, new VitrinePlace());
 		historyHandler.handleCurrentHistory();
 	}
 
@@ -84,7 +84,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		rootPanel.add(getActivityBarView());
 		shell.addStyleName("contentWrapper");
 
-		eventBus.addHandler(PlaceChangeEvent.TYPE,
+		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
@@ -107,13 +107,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private ActivityBarView getActivityBarView() {
 		if (activityBarView == null)
-			activityBarView = new GenericActivityBarView(eventBus);
+			activityBarView = new GenericActivityBarView(bus);
 		return activityBarView;
 	}
 
 	private MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(placeController,eventBus);
+			menuBarView = new GenericMenuBarView(placeController,bus);
 		return menuBarView;
 	}
 
@@ -128,7 +128,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initSCORM() {
-		new API_1484_11(eventBus).bindToWindow();
+		new API_1484_11(bus).bindToWindow();
 	}
 
 	private void initException() {
@@ -145,7 +145,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public HomeView getHomeView() {
 		if (genericHomeView == null) {
-			genericHomeView = new GenericHomeView(this, eventBus,
+			genericHomeView = new GenericHomeView(this, bus,
 					historyHandler, client, appPanel);
 		}
 		return genericHomeView;
@@ -163,12 +163,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public AtividadeView getActivityView() {
-		return new GenericAtividadeView(eventBus);
+		return new GenericAtividadeView(bus);
 	}
 
 	@Override
 	public AtividadePresenter getActivityPresenter() {
-		RendererFactory rendererFactory = new RendererFactoryImpl(client);
+		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeController,client);
 		if (activityPresenter == null) {
 			AtividadeView activityView = getActivityView();
 			

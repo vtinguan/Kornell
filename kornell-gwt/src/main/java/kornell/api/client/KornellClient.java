@@ -19,7 +19,7 @@ public class KornellClient {
 	}
 
 	private void discoverApiUrl() {
-		apiURL = KornellClient.getFromEnvironment();
+			apiURL = KornellClient.getFromEnvironment();
 		if(apiURL == null || apiURL.length() == 0){ 
 			useDefaultUrl();
 		}else{

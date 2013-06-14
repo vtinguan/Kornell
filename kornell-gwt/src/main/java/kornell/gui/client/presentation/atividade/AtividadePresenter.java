@@ -1,34 +1,33 @@
 package kornell.gui.client.presentation.atividade;
 
-import kornell.gui.client.content.RendererFactory;
+import kornell.gui.client.content.SequencerFactory;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.NodeList;
 
 public class AtividadePresenter implements AtividadeView.Presenter{
 	AtividadeView view;
 	private AtividadePlace place;
-	private PlaceController placeCtrl;
-	private NodeList items;
-	private RendererFactory renderer;
+	private SequencerFactory sequencer;
 	
 	public AtividadePresenter(AtividadeView view,
 							 PlaceController placeCtrl,
-							 RendererFactory renderer) {
-		this.placeCtrl = placeCtrl;
+							 SequencerFactory sequencer) {
 		this.view = view;
 		view.setPresenter(this);
-		this.renderer = renderer;		
+		this.sequencer = sequencer;		
 	}
 	
 
 	private void displayPlace() {
-		final String uuid = place.getCourseUUID();
-		final Integer position = place.getPosition();
-		renderer.source(uuid,position)
-				.render(view.getContentPanel());
-		
+		sequencer.at(place).displayOn(getPanel());
+	}
+
+
+	private FlowPanel getPanel() {
+		return view.getContentPanel();
 	}
 
 
@@ -36,21 +35,6 @@ public class AtividadePresenter implements AtividadeView.Presenter{
 	public Widget asWidget() {
 		return view.asWidget();
 	}
-
-
-	@Override
-	public void goContinue() {
-		if(place.getPosition().compareTo(items.getLength()-1) < 0)
-		placeCtrl.goTo(place.next());
-	}
-
-
-	@Override
-	public void goPrevious() {
-		if(place.getPosition().compareTo(new Integer("0")) > 0)
-		placeCtrl.goTo(place.previous());
-	}
-
 
 	public void setPlace(AtividadePlace place) {
 		this.place = place;
