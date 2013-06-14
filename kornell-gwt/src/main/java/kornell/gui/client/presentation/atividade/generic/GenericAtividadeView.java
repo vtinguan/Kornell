@@ -1,7 +1,6 @@
 package kornell.gui.client.presentation.atividade.generic;
 
 import kornell.gui.client.presentation.atividade.AtividadeView;
-import kornell.gui.client.scorm.event.NavigationRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -12,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericAtividadeView extends Composite 
-	implements AtividadeView, NavigationRequest.Handler {
+	implements AtividadeView {
 	interface MyUiBinder extends UiBinder<Widget, GenericAtividadeView> {
 	}
 
@@ -25,24 +24,13 @@ public class GenericAtividadeView extends Composite
 
 	public GenericAtividadeView(EventBus eventBus) {
 		initWidget(uiBinder.createAndBindUi(this));
-		eventBus.addHandler(NavigationRequest.TYPE, this);
 	}
 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
-
-	@Override
-	public void onContinue(NavigationRequest event) {
-		presenter.goContinue();
-	}
-
-	@Override
-	public void onPrevious(NavigationRequest event) {
-		presenter.goPrevious();
-	}
-
+	
 	@Override
 	public FlowPanel getContentPanel() {
 		return contentPanel;

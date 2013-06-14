@@ -9,7 +9,7 @@ import javax.ws.rs.FormParam
 import javax.ws.rs.GET
 
 @Path("auth")
-class AuthResource {
+class AuthResource { 
   @GET
   def get() = ok build
 }

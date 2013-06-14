@@ -7,7 +7,7 @@ import javax.ws.rs.GET
 
 @Path("uala")
 @Produces(Array(TEXT_PLAIN))
-class UalaResource {
+class UalaResource { 
 	@GET
 	def get = "UALA!!!"
 }

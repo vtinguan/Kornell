@@ -3,7 +3,7 @@ package kornell.gui.client.scorm;
 import java.util.HashMap;
 import java.util.Map;
 
-import kornell.gui.client.scorm.event.NavigationRequest;
+import kornell.gui.client.content.NavigationRequest;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
@@ -48,7 +48,7 @@ public final class API_1484_11 {
 	
 	private void fireEvent(String key, Object value) {
 		 if(key.equals("adl.nav.request")){
-		 	eventBus.fireEvent(new NavigationRequest(value.toString()));
+		 	eventBus.fireEvent(NavigationRequest.valueOf(value.toString()));
 		 }
 	}
 

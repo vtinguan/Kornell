@@ -47,3 +47,12 @@ iframe {
 .clearer{
 	clear: both;
 }
+
+.externalContent{
+	width: 100%;
+	height: 100%;
+}
+
+.contentPanel{
+	height: 100%;
+}

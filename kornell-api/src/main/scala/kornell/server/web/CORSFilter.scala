@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse
  * @see http://www.html5rocks.com/en/tutorials/cors/
  * @see http://caniuse.com/#feat=cors (Does IE suck or what)
  */
-class CORSFilter extends Filter {
+class CORSFilter extends Filter { 
   var allowedOrigins = ""
   
   override def init(cfg:FilterConfig){
