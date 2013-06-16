@@ -8,9 +8,9 @@ public class AtividadePlace extends Place {
 	String courseUUID;
 	Integer position;
 
-	public AtividadePlace(String courseUUID, Integer postition) {
+	public AtividadePlace(String courseUUID, Integer position) {
 		this.courseUUID = courseUUID;
-		this.position = postition;
+		this.position = position;
 	}
 
 	public AtividadePlace next() {
