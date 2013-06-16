@@ -3,6 +3,8 @@ package kornell.gui.client.presentation.vitrine.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.api.client.data.Person;
+import kornell.gui.client.presentation.atividade.AtividadePlace;
+import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 
@@ -48,7 +50,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 
 	private KornellClient client;
-
+	//TODO i18n xml
 	public GenericVitrineView(
 			PlaceController placeCtrl,
 			KornellClient client) {
@@ -83,7 +85,12 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		Callback callback = new Callback() {
 			@Override
 			protected void ok(Person person) {
-				placeCtrl.goTo(new WelcomePlace());
+				//TODO person signed terms of use
+				if(true){
+					placeCtrl.goTo(new TermsPlace());
+				} else {
+					placeCtrl.goTo(new WelcomePlace());
+				}
 			}
 
 			@Override
