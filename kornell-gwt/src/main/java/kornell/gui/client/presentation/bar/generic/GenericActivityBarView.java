@@ -11,10 +11,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-<<<<<<< HEAD
 import com.google.gwt.uibinder.client.UiHandler;
-=======
->>>>>>> 6d96e21ac97f30e10aea63af302afcdc89c10975
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,7 +59,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	@UiField
 	FlowPanel activityBar;
-
+	
 	@Override
 	public void setPresenter(Presenter presenter) {
 	}

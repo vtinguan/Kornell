@@ -17,12 +17,12 @@ trait BasicData {
 trait AuthData extends BasicData {  
   val principal = Auth.createUser(fulano.getUUID, "fulano", "detal", List("user"))
 }
-//TODO: introduce indirection for content location 
+
 trait CoursesData extends BasicData {
     val cFloyd1 = Courses.create(
     "Pink Floyd1", "floyd1", """
     |All that is now, and all that is gone, and all that's to come, and everything under the sun is in tune but the sun is eclipsed by the moon.""",
-    "http://localhost:8080/kornell-content/pinkfloyd/")
+    "https://s3-sa-east-1.amazonaws.com/content-pinkfloyd/")
     
     val eBeatles1 = Courses.createEnrollment(new Date,cFloyd1.getUUID(),fulano.getUUID(),"0.90")
   
@@ -79,6 +79,6 @@ trait CoursesData extends BasicData {
 
 object SampleDataGenerator extends App
   with Beans
-  with CleanDB //(TODO: CleanDB is not portable as FileVisitor order is not predictable)
+  //with CleanDB (TODO: CleanDB is not portable as FileVisitor order is not predictable)
   with AuthData
   with CoursesData
