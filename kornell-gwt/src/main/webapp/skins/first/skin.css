@@ -1,3 +1,54 @@
-/* Places */
-.btn-primary{background-color:#91080d!important;background-repeat:repeat-x;filter:progid:dximagetransform.microsoft.gradient(startColorstr="#c00b11", endColorstr="#90080c");background-image:-khtml-gradient(linear,left top,left bottom,from( #c00b11),to( #90080c));background-image:-moz-linear-gradient(top, #c00b11, #90080c);background-image:-ms-linear-gradient(top, #c00b11, #90080c);background-image:-webkit-gradient(linear,left top,left bottom,color-stop(0%, #c00b11),color-stop(100%, #90080c));background-image:-webkit-linear-gradient(top, #c00b11, #90080c);background-image:-o-linear-gradient(top, #c00b11, #90080c);background-image:linear-gradient( #c00b11, #90080c);border-color:#90080c #90080c #85080c;color:#fff!important;text-shadow:0 -1px 0 rgba(0,0,0,.16);-webkit-font-smoothing:antialiased}.activitybar{bottom:0;left:0}.menubar{top:0;left:0}.menubar,.activitybar{height:45px;width:100%;position:absolute;line-height:40px;background:#45484d;background:-moz-linear-gradient(top, #45484d 0, #000 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%, #45484d),color-stop(100%, #000));background:-webkit-linear-gradient(top, #45484d 0, #000 100%);background:-o-linear-gradient(top, #45484d 0, #000 100%);background:-ms-linear-gradient(top, #45484d 0, #000 100%);background:linear-gradient(to bottom, #45484d 0, #000 100%);filter:progid:dximagetransform.microsoft.gradient(startColorstr='#45484d', endColorstr='#000000', GradientType=0);border-bottom:1px solid #e5e5e5}.menubar .buttons,.activitybar .buttons{float:right}.menubar .btn,.activitybar .btn{color:#fff;font-family:Helvetica,arial,freesans,clean,sans-serif;font-size:13px;height:37px;padding:8px 8px 0 8px;margin:0;border:0;border-left:1px solid #474747}.menubar .btn-link:hover,.activitybar .btn-link:hover{text-decoration:none}.VitrinePlace{background:url(bg.jpg) no-repeat center center fixed;background-size:cover;background-color:#000}.boxLogin{width:300px;position:absolute;right:50px;top:25px;background-color:#000;padding:25px;border:1px solid #373737;border-radius:8px;box-shadow:0 0 2px 5px rgba(109,103,99,.5);min-height:200px;color:#fff}.boxLogin h1{font-size:1.7em;font-weight:400}.contentWrapper{background-color:#252a2e}.pnlCourses{padding:20px;overflow:auto}.courseSummary{border:1px solid #e5e5e5;background-color:#f4f4f4;border-radius:5px;padding:5px 5px 5px 5px;margin-bottom:10px;height:150px;width:360px}.courseSummary:hover{cursor:pointer;background-color:#f0f0f0}.courseSummary h1{margin:0;padding:5px 0 5px 0;font-size:1.1em;font-weight:700;text-align:left;line-height:1.231}.courseSummary .details{height:100%;margin-left:100px}.courseSummary img.thumb{height:140px;width:90px;float:left}.courseSummary .courseProgress{text-align:right;font-style:italic}.courseSummary .description{height:75px}
-/* This beautiful CSS-File has been crafted with LESS (lesscss.org) and compiled by simpLESS (wearekiss.com/simpless) */
+.btn-primary{}
+.activitybar{bottom:0px;left:0px;}
+.menubar{top:0px;left:0px;}
+.menubar,.activitybar{height:88px;width:100%;position:absolute;line-height:48px;background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );border-bottom:1px solid #e5e5e5;}.menubar .buttons,.activitybar .buttons{float:right;}
+.menubar .btn,.activitybar .btn{color:black;font-family:Helvetica,arial,freesans,clean,sans-serif;font-size:13px;height:37px;padding:8px 8px 0px 8px;margin:0px 0px 0px 0px;border:0px 0px 0px 0px;border-left:1px solid #323c47;border-right:1px solid #0b0f13;}
+.menubar .btn-link:hover,.activitybar .btn-link:hover{text-decoration:none;}
+body{background:#000000;background:-moz-linear-gradient(top, #000000 0%, #543846 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #000000), color-stop(100%, #543846));background:-webkit-linear-gradient(top, #000000 0%, #543846 100%);background:-o-linear-gradient(top, #000000 0%, #543846 100%);background:-ms-linear-gradient(top, #000000 0%, #543846 100%);background:linear-gradient(to bottom, #000000 0%, #543846 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}
+.wrapper{width:600px;margin:0 auto;}
+.VitrinePlace{background:url(bg.jpg) no-repeat center center fixed;background-size:cover;background-color:black;}
+.boxLogin{width:300px;position:absolute;right:50px;top:25px;background-color:black;padding:25px;border:1px solid #373737;border-radius:8px;box-shadow:0px 0px 2px 5px rgba(109, 103, 99, 0.5);min-height:200px;color:white;}
+.boxLogin h1{font-size:1.7em;font-weight:normal;}
+.pnlCoursesWrapper{margin-right:30px;}
+.pnlCourses{padding:20px;overflow:auto;}
+.btnCourses{float:right;height:24px;border:0px;padding-left:24px;padding-right:24px;color:#d3d3d3;font-size:11px;border-left:2px solid #505C66;display:block;}
+.btnNotSelected{background:#4c4f54;background:-moz-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c4f54), color-stop(100%, #2a2d32));background:-webkit-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-o-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-ms-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:linear-gradient(to bottom, #4c4f54 0%, #2a2d32 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}
+.btnSelected{background:#9b020a;background:-moz-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #9b020a), color-stop(100%, #4b0105));background:-webkit-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-o-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-ms-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:linear-gradient(to bottom, #9b020a 0%, #4b0105 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}
+.borderNone{border:0 !important;}
+.paddingTop30{padding-top:30px;}
+.paddingTop37{padding-top:37px;}
+.paddingTop44{padding-top:44px;}
+.width120{widht:120px;}
+.labelPnlCourses{color:#B3B3B4;font-size:15px;line-height:23px;padding-left:14px;padding-bottom:12px;}
+.labelPnlCoursesHighlight{color:#D61609;padding-left:5px;}
+.courseSummary{background-color:#3D3133;border-radius:5px;padding:5px 5px 5px 5px;margin-bottom:10px;margin-left:22px;height:142px;width:350px;}
+.imgPnlCourses{margin-left:24px;}
+.courseSummary:hover{cursor:pointer;background-color:#574447;}
+.courseSummary h1{margin:0px;padding:5px 0px 5px 0px;font-size:1.1em;font-weight:bold;text-align:left;line-height:1.231;color:#d6d5d5;}
+.courseSummary .details{height:100%;margin-left:100px;color:#989899;}
+.courseSummary img.thumb{height:132px;width:86px;float:left;border:4px solid #4B363A;}
+.courseSummary .courseProgress{text-align:right;font-size:11px;font-weight:bold;line-height:23px;padding-left:7px;color:#d6d5d5;}
+.courseSummary .courseProgressCertificate{float:right;}
+.courseSummary .iconCertificate{padding-left:40px;}
+.courseSummary .description{height:75px;}
+.menuLeft:hover{cursor:pointer;}
+.menuLeft{width:100%;height:132px;background:#3e3a42;background:-moz-linear-gradient(top, #3e3a42 0%, #271e22 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #3e3a42), color-stop(100%, #271e22));background:-webkit-linear-gradient(top, #3e3a42 0%, #271e22 100%);background:-o-linear-gradient(top, #3e3a42 0%, #271e22 100%);background:-ms-linear-gradient(top, #3e3a42 0%, #271e22 100%);background:linear-gradient(to bottom, #3e3a42 0%, #271e22 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}
+.menuLeftItem{width:150px;}
+.menuLeftHeader{color:#fff;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:bold;font-size:13px;padding-left:2px;}
+.menuLeftItemLabel{color:#ff9c00;height:10px;font-size:11px;line-height:15px;padding-left:2px;}
+.menuLeftItemValue{color:#c9b3b3;font-size:11px;line-height:15px;padding-left:2px;}
+.menuLeft img.iconMenuLeft{padding-left:17px;padding-right:17px;padding-top:45px;}
+.menuLeftImgWrapper{width:70px;}
+.menuLeft .courseProgress{text-align:right;font-style:italic;}
+.imgTermsTitle{margin-left:auto;margin-right:auto;width:407px;}
+.termsPanel{width:80%;margin:0 auto;text-align:left;}.termsPanel .titleUser{color:#f7c30e;font-size:18px;padding-top:5px;padding-bottom:10px;}
+.termsPanel .shout{color:#fff;font-size:12px;}
+.termsPanel .normal{color:#a5a4a5;font-size:12px;}
+.termsPanel .termsButtonBar{margin:0 auto;}
+.termsPanel .btnTerms{width:150px;height:30px;border:0px;color:#d3d3d3;font-size:13px;font-weight:bold;margin-top:15px;}
+.termsPanel .btnAgree{margin-right:34px;background:#9b020a;background:-moz-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #9b020a), color-stop(100%, #4b0105));background:-webkit-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-o-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-ms-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:linear-gradient(to bottom, #9b020a 0%, #4b0105 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}
+.termsPanel .btnDontAgree{margin-left:34px;background:#4c4f54;background:-moz-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c4f54), color-stop(100%, #2a2d32));background:-webkit-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-o-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-ms-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:linear-gradient(to bottom, #4c4f54 0%, #2a2d32 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.3);border-radius:10px;}
+::-webkit-scrollbar-thumb{border-radius:10px;-webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.5);}
+@media screen and (min-width:1000px){.wrapper{width:1000px;}}

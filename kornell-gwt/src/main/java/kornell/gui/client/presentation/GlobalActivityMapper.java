@@ -7,6 +7,8 @@ import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.atividade.AtividadePresenter;
 import kornell.gui.client.presentation.home.HomeActivity;
 import kornell.gui.client.presentation.home.HomePlace;
+import kornell.gui.client.presentation.terms.TermsActivity;
+import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrineActivity;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomeActivity;
@@ -36,6 +38,9 @@ public class GlobalActivityMapper implements ActivityMapper {
     if (place instanceof VitrinePlace){
     	return new VitrineActivity(factory);
     }
+	if (place instanceof TermsPlace) {
+		return new TermsActivity(factory);
+	}
 	if (place instanceof WelcomePlace) {
 		return new WelcomeActivity(factory);
 	}

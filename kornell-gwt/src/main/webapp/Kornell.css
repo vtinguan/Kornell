@@ -3,13 +3,15 @@ html, body {
 	padding: 0 0 0 0 !important;
 	height: 100% !important;	
 }
-
-
+.WelcomePlace {
+	position: absolute;
+	bottom: 0px;
+	top: 42px;
+}
 .WelcomePlace .contentWrapper {
 	position: absolute;
 	bottom: 0px;
 	top: 42px;
-	width: 100%;
 } 
 
 .AtividadePlace .contentWrapper {
@@ -37,7 +39,11 @@ html, body {
 }
 
 .shy {
-/*	display: none; */
+	display: none; 
+}
+
+.show {
+	display: block !important; 
 }
 
 iframe {

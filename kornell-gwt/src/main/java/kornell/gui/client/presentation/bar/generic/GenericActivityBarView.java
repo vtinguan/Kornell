@@ -7,14 +7,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 //HTTP
 
-public class GenericActivityBarView extends Composite implements
-		ActivityBarView {
+public class GenericActivityBarView extends Composite implements ActivityBarView {
+	
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityBarView> {
 	}
 
@@ -33,6 +35,9 @@ public class GenericActivityBarView extends Composite implements
 				});
 
 	}
+
+	@UiField
+	FlowPanel activityBar;
 
 	@Override
 	public void setPresenter(Presenter presenter) {

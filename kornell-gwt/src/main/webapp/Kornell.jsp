@@ -3,10 +3,8 @@
   <head>
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-  	<!-- 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, user-scalable=no">
-     -->
 
     <title>Kornell</title>
     <!-- before your module(*.nocache.js) loading  -->
@@ -37,6 +35,6 @@
         in order for this application to display correctly.
       </div>
     </noscript>
-    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/skin.css"/>  
+    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/skin.css"/> 
   </body>
 </html>
