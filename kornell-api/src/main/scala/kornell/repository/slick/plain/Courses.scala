@@ -72,6 +72,13 @@ object Courses extends Repository with Beans {
       sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
       e
     }
+  
+  def createEnrollmentNull(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String) =
+    db.withTransaction {
+      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, null)
+      sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
+      e
+    }
 
   def allWithEnrollment(implicit sc: SecurityContext): CoursesTO = db.withSession {
     Persons.byUserPrincipal
