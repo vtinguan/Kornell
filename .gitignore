@@ -2,7 +2,7 @@
 .settings
 .classpath
 .classpath.orig
-.project 
+.project
 rebel.xml
 
 # Scala Worksheets
