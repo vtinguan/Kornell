@@ -7,7 +7,7 @@ import com.google.gwt.place.shared.Prefix;
 public class WelcomePlace extends Place{
 	@Prefix("welcome")
 	public static class Tokenizer implements PlaceTokenizer<WelcomePlace> {
-
+	
 		public WelcomePlace getPlace(String token) {
 			return new WelcomePlace();
 		}

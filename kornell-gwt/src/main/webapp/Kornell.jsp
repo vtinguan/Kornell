@@ -29,7 +29,7 @@
 		var KornellConfig = {
 			apiEndpoint:"<%= apiEndpoint %>"
 		};  				
-  	</script>
+  	</script> 
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
   </head>

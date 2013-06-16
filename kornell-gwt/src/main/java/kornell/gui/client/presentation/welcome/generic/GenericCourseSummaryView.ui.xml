@@ -2,11 +2,17 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
 	<g:FlowPanel addStyleNames="courseSummary">
-		<b:Image ui:field="imgThumb" addStyleNames="thumb" />
+	    <g:SimplePanel addStyleNames="thumbWrapper">
+			<b:Image ui:field="imgThumb" addStyleNames="thumb" />
+		</g:SimplePanel>
 		<g:FlowPanel addStyleNames="details">
 			<b:Heading size="1" ui:field="hTitle" />
 			<b:Paragraph addStyleNames="description" ui:field="pDescription" />
-			<b:Paragraph addStyleNames="courseProgress" ui:field="pProgress"/>
+	    	<g:HorizontalPanel ui:field="pnlCourseSummaryBar" addStyleNames="courseSummaryBar">
+				<b:Image ui:field="imgIconCourse" addStyleNames="icon" />
+				<b:Paragraph addStyleNames="courseProgress" ui:field="pProgress"/>
+			</g:HorizontalPanel>	
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>
+		

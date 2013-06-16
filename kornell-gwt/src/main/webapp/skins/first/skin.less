@@ -1,87 +1,317 @@
-@import "buttons.less";
-@import "bars.less";
-
-
-/* Places */
-.VitrinePlace {	
-	background: url(bg.jpg) no-repeat center center fixed;	
-	background-size: cover;
-	background-color: black;
+@import "buttons";
+@import "bars";
+@import "lesshat";
+@import "mixins";
+ 
+@media screen and (max-width: 1023px) {
+    .wrapper {
+		width: 600px;
+	}
 }
 
-.boxLogin {
-	width: 300px;
-	position: absolute;
-	right: 50px;
-	top: 25px;
-	background-color: black;
-	padding: 25px;
-	border:1px solid #373737;
-	border-radius:8px;
-	box-shadow: 0px 0px 2px 5px rgba(109,103,99,0.5);	
-	min-height: 200px;
-	color: white;
+body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	.gradient(@bodyGradientStartColor, @bodyGradientEndColor);
 }
 
-.boxLogin h1{
-	font-size: 1.7em;
-	font-weight: normal;
+.wrapper {
+    width: 1024px;
+    margin: 0 auto;  
 }
 
 .contentWrapper {
-	background-color: #252a2e;
 }
 
+ // #     #                                      
+ // #     #  #  #####  #####   #  #    #  ###### 
+ // #     #  #    #    #    #  #  ##   #  #      
+ // #     #  #    #    #    #  #  # #  #  #####  
+ //  #   #   #    #    #####   #  #  # #  #      
+ //   # #    #    #    #   #   #  #   ##  #      
+ //    #     #    #    #    #  #  #    #  ######                                             
 
-.pnlCourses { 
-	padding: 20px;
-	overflow: auto;
+.VitrinePlace {	
+	background: url(bg.jpg) no-repeat center center fixed;	 
+	background-size: cover;
+	background-color: @boxLoginBackgroundColor;
+
+	.boxLogin {
+		width: 300px;
+		position: absolute;
+		right: 50px;
+		top: 25px;
+		background-color: @boxLoginBackgroundColor;
+		padding: 25px;
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow: 0px 0px 2px 5px rgba(109,103,99,0.5);	
+		min-height: 200px;
+		color: white;
+	}
+
+	.boxLogin h1{
+		font-size: 1.7em;
+		font-weight: normal;
+	}
 }
 
-.courseSummary {
-	border: 1px solid #e5e5e5;
-	background-color: #f4f4f4;
-	border-radius:5px;  
-	
-	padding: 5px 5px 5px 5px;
-	margin-bottom: 10px;
-	
-	height: 150px;
-	width: 360px;
+ // #######                                 
+ //    #     ######  #####   #    #   ####  
+ //    #     #       #    #  ##  ##  #      
+ //    #     #####   #    #  # ## #   ####  
+ //    #     #       #####   #    #       # 
+ //    #     #       #   #   #    #  #    # 
+ //    #     ######  #    #  #    #   #### 
+
+.termsPanel {
+	width: 80%;
+	margin: 0 auto;
+	text-align: left; 
+
+	.titleUser {
+		color: @textHighlightColor;
+		font-size: 18px;
+		padding-top: 5px;
+		padding-bottom: 10px;
+	}
+	.normal {
+		color: @niceTextColor;
+		font-size: 12px;
+	}	
+	.termsButtonBar{
+		margin: 0 auto;
+	}
+	.btnTerms{
+		color: @niceTextColor;
+		.sizepx(150, 30);
+		border: 0px;
+		font-size: 13px;
+		font-weight: bold;
+		margin-top: 15px;
+	}
+	.btnAgree{
+		margin-right: 34px;
+		.btnSelected;
+	}
+	.btnDontAgree{
+		margin-left: 34px;
+		.btnNotSelected;
+	}
+	.imgTermsTitle{
+		 margin-left: auto;
+		 margin-right: auto;
+		 width: 407px;
+	}
 }
 
+ // #     #                                                 
+ // #  #  #  ######  #        ####    ####   #    #  ###### 
+ // #  #  #  #       #       #    #  #    #  ##  ##  #      
+ // #  #  #  #####   #       #       #    #  # ## #  #####  
+ // #  #  #  #       #       #       #    #  #    #  #      
+ // #  #  #  #       #       #    #  #    #  #    #  #      
+ //  ## ##   ######  ######   ####    ####   #    #  ###### 
 
-.courseSummary:hover {
-	cursor: pointer;
-	background-color: #f0f0f0;
+.pnlCoursesWrapper{
+	margin-right: 30px;
+
+	.pnlCourses { 
+		padding: 20px;
+		overflow: auto;
+	}
+	.labelPnlCourses { 
+		color: @niceTextColor;
+		font-size: 15px;
+		line-height: 23px;
+		padding-left: 14px;
+		padding-bottom: 12px;
+	}
+	.labelPnlCoursesHighlight { 
+		color: @highlightCoursesCountColor;
+		padding-left: 5px;
+	}
+	.imgPnlCourses{
+		margin-left: 24px;
+	}
+	.courseSummary {
+		.sizepx(350,142);
+		background-color: @courseSummaryBackgroundColor;
+		border-radius:5px;  
+		padding: 5px 5px 5px 5px;
+		margin-bottom: 10px;
+		margin-left: 22px;
+		&:hover {
+			cursor: pointer;
+			.changeBackgroundColorOnHover(@courseSummaryBackgroundColor, 15%);
+		}
+		h1 {
+			margin: 0px;
+			padding: 5px 0px 5px 0px;
+			font-size: 1.1em;
+			font-weight: bold;
+			text-align: left;
+			line-height: 1.231;	
+			color: @textHighlightDiscreteColor;
+		}
+		.details {
+			height: 100%;
+			margin-left: 100px;
+			color: @niceTextColor;
+		}
+		img.thumb {
+			height: 132px;
+			width:  86px;
+			float: left;	
+			border: 4px solid @courseSummaryThumbBorderColor;
+		}
+		.courseProgress {
+			text-align: right;
+			font-size: 11px;
+			font-weight: bold;
+			line-height: 23px;
+			padding-left: 7px;
+			color: @niceTextColor;
+		}
+		.courseProgressCertificate {
+			float: right; 
+		}
+		.iconCertificate {
+			padding-left: 40px;
+		}
+		.description {
+			height: 75px;
+		}
+	}
 }
 
+ // #     #                          #                              
+ // ##   ##  ######  #    #  #    #  #        ######  ######  ##### 
+ // # # # #  #       ##   #  #    #  #        #       #         #   
+ // #  #  #  #####   # #  #  #    #  #        #####   #####     #   
+ // #     #  #       #  # #  #    #  #        #       #         #   
+ // #     #  #       #   ##  #    #  #        #       #         #   
+ // #     #  ######  #    #   ####   #######  ######  #         #   
 
-.courseSummary h1 {
-	margin: 0px;
-	padding: 5px 0px 5px 0px;
-	font-size: 1.1em;
-	font-weight: bold;
-	text-align: left;
-	line-height: 1.231;	
+.menuLeft {
+	width: 100%;
+	height: 132px;
+	.gradient(@menuLeftGradientStartColor, @menuLeftGradientEndColor);
+
+	&:hover {
+		cursor: pointer;
+	} 
+	.menuLeftItem {
+		width: 150px;
+	}  
+	.menuLeftHeader {
+		color: @textHighlightDiscreteColor;
+		font-weight: bold;
+		font-size: 13px;
+		padding-left: 2px;
+	}  
+	.menuLeftItemLabel { 
+		color: @textHighlightColor;
+		height:10px;
+		font-size: 11px;
+		line-height: 15px;
+		padding-left: 2px;
+	}  
+	.menuLeftItemValue {
+		color: @niceTextColor;
+		font-size: 11px;
+		line-height: 15px;
+		padding-left: 2px;
+	} 
+	.menuLeft img.iconMenuLeft {
+		padding-left: 17px;
+		padding-right: 17px;
+		padding-top: 45px;
+	} 
+	.menuLeftImgWrapper{
+		width: 70px;
+	}
+	.menuLeft .courseProgress {
+		text-align: right; 
+		font-style: italic;
+	}
 }
 
-.courseSummary .details {
-	height: 100%;
-	margin-left: 100px;
-}
+ //  #####                                          
+ // #     #   ####   #        ####   #####    ####  
+ // #        #    #  #       #    #  #    #  #      
+ // #        #    #  #       #    #  #    #   ####  
+ // #        #    #  #       #    #  #####        # 
+ // #     #  #    #  #       #    #  #   #   #    # 
+ //  #####    ####   ######   ####   #    #   ####  
 
-.courseSummary img.thumb {
-	height: 140px;
-	width:  90px;
-	float: left;	
-}
+// GENERAL
+@bordersColor: #474747;
+@textHighlightColor: #ff9c00;
+@textHighlightDiscreteColor: #d6d5d5;
+@niceTextColor: #a5a4a5;
 
-.courseSummary .courseProgress {
-	text-align: right;
-	font-style: italic;
-}
+// BACKGROUND
+@bodyGradientStartColor: #000;
+@bodyGradientEndColor: #543846;
 
-.courseSummary .description {
-	height: 75px;
-}
+// BARS
+@barGradientStartColor: #45484D;
+@barGradientEndColor: #000;
+@barButtonTextColor: #fff;
+@barButtonSeparatorColor: @bordersColor;
+
+// VITRINE
+@boxLoginBackgroundColor: #000;
+@boxLoginBorderColor: @bordersColor;
+
+// WELCOME
+@courseSummaryBackgroundColor: #3D3133;
+@courseSummaryThumbBorderColor: lighten(@courseSummaryBackgroundColor, 20%);
+@highlightCoursesCountColor: #D61609;
+
+// MENULEFT
+@menuLeftGradientStartColor: #3e3a42;
+@menuLeftGradientEndColor: #271e22;
+
+// BUTTONS
+@buttonNotSelectedGradientStart: #4c4f54;
+@buttonNotSelectedGradientEnd: #2a2d32;
+@buttonSelectedGradientStart: #9b020a;
+@buttonSelectedGradientEnd: #4b0105;
+
+// // GENERAL
+// @bordersColor: #f1f6f7;
+// @textHighlightColor: #01a8d3;
+// @textHighlightDiscreteColor: #01a8d3;
+// @niceTextColor: #7e8991;
+
+// // BACKGROUND
+// @bodyGradientStartColor: #000;
+// @bodyGradientEndColor: #3e4d52;
+
+// // BARS
+// @barGradientStartColor: #555f62;
+// @barGradientEndColor: #2f3537;
+// @barButtonTextColor: #d7d8d9;
+// @barButtonSeparatorColor: @bordersColor;
+
+// // VITRINE
+// @boxLoginBackgroundColor: #000;
+// @boxLoginBorderColor: @bordersColor;
+
+// // WELCOME
+// @courseSummaryBackgroundColor: #ecf3f5;
+// @courseSummaryThumbBorderColor: lighten(@courseSummaryBackgroundColor, 20%);
+// @highlightCoursesCountColor: #01a8d3;
+
+// // MENULEFT
+// @menuLeftGradientStartColor: #3f4e53;
+// @menuLeftGradientEndColor: #28363b;
+
+// // BUTTONS
+// @buttonNotSelectedGradientStart: #4c4f54;
+// @buttonNotSelectedGradientEnd: #2a2d32;
+// @buttonSelectedGradientStart: #9b020a;
+// @buttonSelectedGradientEnd: #4b0105;
+
+
