@@ -3,8 +3,11 @@
   <head>
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
+  	<!--
+  	<meta name="kornell.version" content="2010-06-10"> 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, user-scalable=no">
+     -->
 
     <title>Kornell</title>
     <!-- before your module(*.nocache.js) loading  -->
@@ -15,12 +18,19 @@
  	<link rel="stylesheet" href="Kornell/css/font-awesome-ie7.css">
 	<![endif]-->
 	<!-- your module(*.nocache.js) loading -->  
-    <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
-    <script type="text/javascript">
+	<script type="text/javascript">
+		<%
+		String apiEndpoint = "";
+		if (System.getenv("PARAM1") != null)
+			apiEndpoint = System.getenv("PARAM1");
+		if (System.getProperty("PARAM1") != null)
+			apiEndpoint = System.getProperty("PARAM1");  		
+		%>
 		var KornellConfig = {
-			apiEndpoint:"<%= System.getenv("PARAM1") != null ? System.getenv("PARAM1") : "" %>"
+			apiEndpoint:"<%= apiEndpoint %>"
 		};  				
-  	</script>
+  	</script> 
+    <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
   </head>
 
@@ -35,6 +45,6 @@
         in order for this application to display correctly.
       </div>
     </noscript>
-    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/skin.css"/> 
+    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/skin.css"/>  
   </body>
 </html>
