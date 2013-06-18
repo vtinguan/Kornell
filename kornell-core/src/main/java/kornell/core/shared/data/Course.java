@@ -1,9 +1,7 @@
 package kornell.core.shared.data;
 
-public interface Course {
-	String getUUID();
-	void setUUID(String UUID);
-	
+public interface Course extends Entity{
+
 	String getCode();
 	void setCode(String code);
 	

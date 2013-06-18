@@ -23,7 +23,6 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class NamingConventionSequencer implements Sequencer {
 
-	private FlowPanel contentPanel;
 	private KornellClient client;
 	private IFrameElement iframe;
 	private String assetsURL;
@@ -47,7 +46,6 @@ public class NamingConventionSequencer implements Sequencer {
 
 	@Override
 	public void displayOn(FlowPanel contentPanel) {
-		this.contentPanel = contentPanel;
 		contentPanel.clear();		
 		contentPanel.getElement().appendChild(iframe);
 		render();
@@ -79,9 +77,8 @@ public class NamingConventionSequencer implements Sequencer {
 	private void go(final String location) {
 		try {
 			new RequestBuilder(HEAD, location).sendRequest(null, new RequestCallback() {
-				
 				@Override
-				public void onResponseReceived(Request request, Response response) {
+				public void onResponseReceived(Request request, Response response) {					
 					if (response.getStatusCode() == 200){
 						iframe.setSrc(location);
 					}else if(response.getStatusCode() == 0){
