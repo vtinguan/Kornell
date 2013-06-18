@@ -3,7 +3,7 @@
 
 
 	<g:FlowPanel ui:field="menuBar" addStyleNames="menubar">
-		<g:Image url="skins/first/icons/logo.png" addStyleNames="imgMenuBar"/>
+		<g:FlowPanel addStyleNames="imgMenuBar"/>
 	    <g:FlowPanel addStyleNames="buttons">
 			<b:Button ui:field="lnkWelcome" type="LINK">Home</b:Button>
 		</g:FlowPanel>

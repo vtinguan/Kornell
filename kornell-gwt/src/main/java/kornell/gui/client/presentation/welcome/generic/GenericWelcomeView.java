@@ -41,21 +41,21 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	@UiField
-	VerticalPanel pnlInProgress;
+	FlowPanel pnlInProgress;
 	@UiField
-	VerticalPanel pnlToStart;
+	FlowPanel pnlToStart;
 	@UiField
-	VerticalPanel pnlToAcquire;
+	FlowPanel pnlToAcquire;
 	@UiField
-	VerticalPanel pnlFinished;
+	FlowPanel pnlFinished;
 	@UiField
-	HorizontalPanel pnlCoursesInProgress;
+	FlowPanel pnlCoursesInProgress;
 	@UiField
-	HorizontalPanel pnlCoursesToStart;
+	FlowPanel pnlCoursesToStart;
 	@UiField
-	HorizontalPanel pnlCoursesToAcquire;
+	FlowPanel pnlCoursesToAcquire;
 	@UiField
-	HorizontalPanel pnlCoursesFinished;
+	FlowPanel pnlCoursesFinished;
 	@UiField
 	Label labelCoursesInProgress;
 	@UiField

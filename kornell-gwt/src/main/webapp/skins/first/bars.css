@@ -1,5 +1,13 @@
+.marginLogo{margin-left:42px;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.3);border-radius:10px;}
+::-webkit-scrollbar-thumb{border-radius:10px;-webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.5);}
+.borderNone{border:0 !important;}
+.paddingTop30{padding-top:30px;}
+.paddingTop37{padding-top:37px;}
+.paddingTop44{padding-top:44px;}
+.width120{widht:120px;}
 .activitybar{bottom:0px;left:0px;}
-.menubar{top:0px;left:0px;}
-.menubar,.activitybar{height:88px;width:100%;position:absolute;line-height:48px;background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );border-bottom:1px solid #e5e5e5;}.menubar .buttons,.activitybar .buttons{float:right;}
-.menubar .btn,.activitybar .btn{color:black;font-family:Helvetica,arial,freesans,clean,sans-serif;font-size:13px;height:37px;padding:8px 8px 0px 8px;margin:0px 0px 0px 0px;border:0px 0px 0px 0px;border-left:1px solid #323c47;border-right:1px solid #0b0f13;}
-.menubar .btn-link:hover,.activitybar .btn-link:hover{text-decoration:none;}
+.menubar{top:0px;left:0px;-moz-box-shadow:0 1px 4px 2px #000;-webkit-box-shadow:0 1px 4px 2px #000;box-shadow:0 1px 4px 2px #000;}.menubar .imgMenuBar{width:280px;height:45px;background:url('icons/logo.png') no-repeat;float:left;margin-left:42px;}
+.menubar,.activitybar{width:100%;height:45px;position:absolute;background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}.menubar .buttons,.activitybar .buttons{float:right;}.menubar .buttons .btn,.activitybar .buttons .btn{color:#a5a4a5;text-shadow:none;font-size:13px;height:37px;padding:8px 8px 0px 8px;border-left:1px solid #3f4d5a;border-right:1px solid #11161d;}
+.menubar .buttons .btn-link:hover,.activitybar .buttons .btn-link:hover{text-decoration:none;}
