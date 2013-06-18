@@ -5,10 +5,10 @@ build:
         name: print Java version's
         code: |-
           cd $WERCKER_SOURCE_DIR
-          java -version
-          scala -version
-          sbt --version
-          mvn -version
+          java -version || echo "exited with $?"
+          scala -version || echo "exited with $?"
+          sbt --version || echo "exited with $?"
+          mvn -version || echo "exited with $?"
     - script:
         name: initialize
         code: mvn initialize
