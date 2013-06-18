@@ -56,7 +56,7 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("Forums")
 	String forums();
 
-	@DefaultStringValue("complete")
+	@DefaultStringValue("Complete")
 	String complete();
 
 	@DefaultStringValue("Courses")

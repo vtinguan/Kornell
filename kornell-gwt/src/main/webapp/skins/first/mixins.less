@@ -30,9 +30,13 @@
   	background-color: lighten(@color, @percent);
 }
 
+.backgroundImage(@imageName){ 
+   background: url('@{imagesPath}@{imageName}') no-repeat; 
+}
 
-
-
+.marginLogo{
+	margin-left: @marginLeftLogo;
+}
 
 
 ::-webkit-scrollbar {
@@ -65,3 +69,94 @@
 .width120{
 	widht:	120px;
 }
+
+
+
+
+
+ //  #####                                          
+ // #     #   ####   #        ####   #####    ####  
+ // #        #    #  #       #    #  #    #  #      
+ // #        #    #  #       #    #  #    #   ####  
+ // #        #    #  #       #    #  #####        # 
+ // #     #  #    #  #       #    #  #   #   #    # 
+ //  #####    ####   ######   ####   #    #   ####  
+
+// GENERAL
+@bordersColor: #474747;
+@textHighlightColor: #ff9c00;
+@textHighlightDiscreteColor: #d6d5d5;
+@niceTextColor: #a5a4a5;
+
+// BACKGROUND
+@bodyGradientStartColor: #000;
+@bodyGradientEndColor: #543846;
+
+// BARS
+@barGradientStartColor: #45484D;
+@barGradientEndColor: #000;
+@barButtonTextColor: #fff;
+@barButtonSeparatorColor: @bordersColor;
+
+// VITRINE
+@boxLoginBackgroundColor: #000;
+@boxLoginBorderColor: @bordersColor;
+
+// WELCOME
+@courseSummaryBackgroundColor: #3D3133;
+@courseSummaryThumbBorderColor: lighten(@courseSummaryBackgroundColor, 20%);
+@highlightCoursesCountColor: #D61609;
+
+// MENULEFT
+@menuLeftGradientStartColor: #3e3a42;
+@menuLeftGradientEndColor: #271e22;
+
+// BUTTONS
+@buttonNotSelectedGradientStart: #4c4f54;
+@buttonNotSelectedGradientEnd: #2a2d32;
+@buttonSelectedGradientStart: #9b020a;
+@buttonSelectedGradientEnd: #4b0105;
+
+@imagesPath: ~"icons/";
+@defaultFont: Helvetica, arial, freesans, clean, sans-serif;
+@marginLeftLogo: 42px;
+
+// // GENERAL
+// @bordersColor: #f1f6f7;
+// @textHighlightColor: #01a8d3;
+// @textHighlightDiscreteColor: #01a8d3;
+// @niceTextColor: #7e8991;
+
+// // BACKGROUND
+// @bodyGradientStartColor: #000;
+// @bodyGradientEndColor: #3e4d52;
+
+// // BARS
+// @barGradientStartColor: #555f62;
+// @barGradientEndColor: #2f3537;
+// @barButtonTextColor: #d7d8d9;
+// @barButtonSeparatorColor: @bordersColor;
+
+// // VITRINE
+// @boxLoginBackgroundColor: #000;
+// @boxLoginBorderColor: @bordersColor;
+
+// // WELCOME
+// @courseSummaryBackgroundColor: #ecf3f5;
+// @courseSummaryThumbBorderColor: lighten(@courseSummaryBackgroundColor, 20%);
+// @highlightCoursesCountColor: #01a8d3;
+
+// // MENULEFT
+// @menuLeftGradientStartColor: #3f4e53;
+// @menuLeftGradientEndColor: #28363b;
+
+// // BUTTONS
+// @buttonNotSelectedGradientStart: #4c4f54;
+// @buttonNotSelectedGradientEnd: #2a2d32;
+// @buttonSelectedGradientStart: #9b020a;
+// @buttonSelectedGradientEnd: #4b0105;
+
+// @imagesPath: ~"icons/";
+// @defaultFont: Helvetica, arial, freesans, clean, sans-serif;
+// @marginLeftLogo: 42px;
+

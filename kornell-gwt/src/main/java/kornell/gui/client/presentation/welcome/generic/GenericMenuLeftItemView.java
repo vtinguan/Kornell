@@ -1,28 +1,19 @@
 package kornell.gui.client.presentation.welcome.generic;
 
 
-import java.math.BigDecimal;
-
-import kornell.core.shared.data.Course;
-import kornell.core.shared.data.CourseTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
 
-import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Image;
-import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.Constants.DefaultStringValue;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericMenuLeftItemView extends Composite {
@@ -30,9 +21,12 @@ public class GenericMenuLeftItemView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+
+	@UiField
+	FlowPanel menuLeftItem;
 	
 	@UiField
-	VerticalPanel pnlFields;
+	FlowPanel pnlFields;
 	
 	@UiField
 	Image imgIcon;
@@ -46,7 +40,7 @@ public class GenericMenuLeftItemView extends Composite {
 	public static String MENU_ITEM_MY_PARTICIPATION = "myParticipation";
 	public static String MENU_ITEM_PROFILE = "profile";
 
-	public GenericMenuLeftItemView(final PlaceController placeCtrl, String menuItemType) {
+	public GenericMenuLeftItemView(final PlaceController placeCtrl, final String menuItemType, final GenericMenuLeftView genericMenuLeftView) {
 		this.menuItemType = menuItemType;
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
@@ -55,6 +49,9 @@ public class GenericMenuLeftItemView extends Composite {
 		addHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				System.out.println(menuItemType);
+				genericMenuLeftView.clearSelection();
+				setSelected();
 			}
 		}, ClickEvent.getType());
 		
@@ -71,7 +68,7 @@ public class GenericMenuLeftItemView extends Composite {
 			displayProfile(); 
 		}
 	}
-	//TODO i18n
+
 	private void displayCourses() {
 		imgIcon.setUrl("skins/first/icons/menuLeftCourses.png");
 		createHeader(constants.courses(), "paddingTop30");
@@ -96,7 +93,7 @@ public class GenericMenuLeftItemView extends Composite {
 	private void displayProfile() {
 		imgIcon.setUrl("skins/first/icons/menuLeftProfile.png");
 		createHeader(constants.profile(), "paddingTop44");
-		createInfo(constants.complete(), "30%", true);
+		createInfo(constants.complete(), "30%");
 		
 	}
 
@@ -106,27 +103,24 @@ public class GenericMenuLeftItemView extends Composite {
 		notifications.addStyleName(styleName);
 		pnlFields.add(notifications);
 	}
-
+	
 	private void createInfo(String lblName, String value) {
-		createInfo(lblName, value, false);
+		FlowPanel pnlInfo = new FlowPanel();
+		Label lbl = new Label(lblName);
+		lbl.addStyleName("menuLeftItemLabel");
+		Label valueLbl = new Label(value);
+		valueLbl.addStyleName("menuLeftItemValue");
+		pnlInfo.add(lbl);
+		pnlInfo.add(valueLbl);
+		pnlFields.add(pnlInfo);
 	}
 
-	private void createInfo(String lblName, String value, boolean reverseLabel) {
-		HorizontalPanel pnlNetworkActivities = new HorizontalPanel();
-		Label networkActivities = new Label(lblName);
-		networkActivities.addStyleName("menuLeftItemLabel");
-		Label networkActivitiesValue = new Label(value);
-		networkActivitiesValue.addStyleName("menuLeftItemValue");
-		if(!reverseLabel){
-			pnlNetworkActivities.add(networkActivities);
-			pnlNetworkActivities.add(networkActivitiesValue);
-		} else {
-			pnlNetworkActivities.add(networkActivitiesValue);
-			pnlNetworkActivities.add(networkActivities);
-		}
-		pnlFields.add(pnlNetworkActivities);
+	public void setSelected(){
+		menuLeftItem.addStyleName("selectedMenuLeftItem");
 	}
 
-
+	public void setUnselected(){
+		menuLeftItem.removeStyleName("selectedMenuLeftItem");
+	}
 
 }

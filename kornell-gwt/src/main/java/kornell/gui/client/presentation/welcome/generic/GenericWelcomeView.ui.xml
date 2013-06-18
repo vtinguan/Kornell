@@ -3,7 +3,7 @@
 	<g:HorizontalPanel>
 		<g:VerticalPanel ui:field="pnlMenuLeft"/>
    		<g:ScrollPanel>
-			<g:FlowPanel>
+			<g:FlowPanel addStyleNames="pnlRight">
 				<g:FlowPanel>
 					<g:Button ui:field="btnCoursesToAcquire" addStyleNames="btnCourses"/>
 					<g:Button ui:field="btnCoursesFinished" addStyleNames="btnCourses"/>
@@ -12,43 +12,43 @@
 					<g:Button ui:field="btnCoursesAll" addStyleNames="btnCourses borderNone"/>
 				</g:FlowPanel>
 				
-				<g:VerticalPanel ui:field="pnlInProgress" addStyleNames="pnlCoursesWrapper">
-					<g:HorizontalPanel>
+				<g:FlowPanel ui:field="pnlInProgress" addStyleNames="pnlCoursesWrapper">
+					<g:FlowPanel>
 						<g:Image url="skins/first/icons/courses.png" addStyleNames="imgPnlCourses"/>
 						<g:Label ui:field="labelCoursesInProgress" addStyleNames="labelPnlCourses"/>
 						<g:Label ui:field="labelCoursesInProgressCount" addStyleNames="labelPnlCourses labelPnlCoursesHighlight"/>
-					</g:HorizontalPanel>
-					<g:HorizontalPanel ui:field="pnlCoursesInProgress" addStyleNames="pnlCourses"/>
-				</g:VerticalPanel>
+					</g:FlowPanel>
+					<g:FlowPanel ui:field="pnlCoursesInProgress" addStyleNames="pnlCourses"/>
+				</g:FlowPanel>
 				
-				<g:VerticalPanel ui:field="pnlToStart" addStyleNames="pnlCoursesWrapper">
-					<g:HorizontalPanel>
+				<g:FlowPanel ui:field="pnlToStart" addStyleNames="pnlCoursesWrapper">
+					<g:FlowPanel>
 						<g:Image url="skins/first/icons/courses.png" addStyleNames="imgPnlCourses"/>
 						<g:Label ui:field="labelCoursesToStart" addStyleNames="labelPnlCourses"/>
 						<g:Label ui:field="labelCoursesToStartCount" addStyleNames="labelPnlCourses labelPnlCoursesHighlight"/>
-					</g:HorizontalPanel>
-				    <g:HorizontalPanel ui:field="pnlCoursesToStart" addStyleNames="pnlCourses"/>
-				</g:VerticalPanel>
+					</g:FlowPanel>
+				    <g:FlowPanel ui:field="pnlCoursesToStart" addStyleNames="pnlCourses"/>
+				</g:FlowPanel>
 				    
 				    
-				<g:VerticalPanel ui:field="pnlToAcquire" addStyleNames="pnlCoursesWrapper">
-					<g:HorizontalPanel>
+				<g:FlowPanel ui:field="pnlToAcquire" addStyleNames="pnlCoursesWrapper">
+					<g:FlowPanel>
 						<g:Image url="skins/first/icons/courses.png" addStyleNames="imgPnlCourses"/>
 				    	<g:Label ui:field="labelCoursesToAcquire" addStyleNames="labelPnlCourses"/>
 						<g:Label ui:field="labelCoursesToAcquireCount" addStyleNames="labelPnlCourses labelPnlCoursesHighlight"/>
-					</g:HorizontalPanel>
-				    <g:HorizontalPanel ui:field="pnlCoursesToAcquire" addStyleNames="pnlCourses"/>
-				</g:VerticalPanel>
+					</g:FlowPanel>
+				    <g:FlowPanel ui:field="pnlCoursesToAcquire" addStyleNames="pnlCourses"/>
+				</g:FlowPanel>
 				    
 				    
-				<g:VerticalPanel ui:field="pnlFinished" addStyleNames="pnlCoursesWrapper">
-					<g:HorizontalPanel>
+				<g:FlowPanel ui:field="pnlFinished" addStyleNames="pnlCoursesWrapper">
+					<g:FlowPanel>
 						<g:Image url="skins/first/icons/courses.png" addStyleNames="imgPnlCourses"/>
 				    	<g:Label ui:field="labelCoursesFinished" addStyleNames="labelPnlCourses"/>
 						<g:Label ui:field="labelCoursesFinishedCount" addStyleNames="labelPnlCourses labelPnlCoursesHighlight"/>
-					</g:HorizontalPanel>
-				    <g:HorizontalPanel ui:field="pnlCoursesFinished" addStyleNames="pnlCourses"/>
-				</g:VerticalPanel>
+					</g:FlowPanel>
+				    <g:FlowPanel ui:field="pnlCoursesFinished" addStyleNames="pnlCourses"/>
+				</g:FlowPanel>
 			</g:FlowPanel>
    		</g:ScrollPanel>
 	</g:HorizontalPanel>

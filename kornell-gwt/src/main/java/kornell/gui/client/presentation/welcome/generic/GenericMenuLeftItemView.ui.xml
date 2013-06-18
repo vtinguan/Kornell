@@ -1,10 +1,10 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-	<g:HorizontalPanel addStyleNames="menuLeft">
-	    <g:FlowPanel addStyleNames="menuLeftImgWrapper">
-			<b:Image ui:field="imgIcon" addStyleNames="iconMenuLeft" />
+	<g:FlowPanel ui:field="menuLeftItem" addStyleNames="menuLeftItem">
+	    <g:FlowPanel addStyleNames="menuLeftItemImgWrapper">
+			<b:Image ui:field="imgIcon" addStyleNames="iconMenuLeftItem" />
 		</g:FlowPanel>
-		<g:VerticalPanel ui:field="pnlFields" addStyleNames="menuLeftItem"></g:VerticalPanel>
-	</g:HorizontalPanel>
+		<g:FlowPanel ui:field="pnlFields" addStyleNames="menuLeftItems"/>
+	</g:FlowPanel>
 </ui:UiBinder>
