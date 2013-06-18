@@ -9,15 +9,15 @@ build:
           scala -version || echo "exited with $?"
           sbt --version || echo "exited with $?"
           mvn -version || echo "exited with $?"
-    - script:
-        name: initialize
-        code: mvn initialize
+#    - script:
+#        name: initialize
+#        code: mvn initialize
     - script:
         name: install
         code: mvn install
-    - script:
-        name: build
-        code: mvn test-compile
-    - script:
-        name: test
-        code: mvn test
+#    - script:
+#        name: build
+#        code: mvn test-compile
+#    - script:
+#        name: test
+#        code: mvn test

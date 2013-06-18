@@ -91,7 +91,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.addNorth(getMenuBarView(), 48);
 		dockLayoutPanel.addSouth(getActivityBarView(), 48);
-		dockLayoutPanel.setWidgetHidden((Widget) getActivityBarView(), true);
+		//dockLayoutPanel.setWidgetHidden((Widget) getActivityBarView(), true);
 		
 		ScrollPanel sp = new ScrollPanel();
 		sp.add(shell);

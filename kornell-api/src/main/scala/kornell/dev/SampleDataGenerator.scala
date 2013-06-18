@@ -79,6 +79,6 @@ trait CoursesData extends BasicData {
 
 object SampleDataGenerator extends App
   with Beans
-  //with CleanDB (TODO: CleanDB is not portable as FileVisitor order is not predictable)
+  with CleanDB //(TODO: CleanDB is not portable as FileVisitor order is not predictable)
   with AuthData
   with CoursesData
