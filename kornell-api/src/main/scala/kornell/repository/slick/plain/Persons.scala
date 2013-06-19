@@ -10,6 +10,7 @@ import kornell.repository.Beans
 import kornell.core.shared.data.Person
 import javax.ws.rs.core.SecurityContext
 import java.security.Principal
+import kornell.repository.Repository
 
 object Persons extends Repository with Beans{
   

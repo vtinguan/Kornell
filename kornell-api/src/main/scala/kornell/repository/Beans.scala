@@ -11,8 +11,9 @@ import java.math.BigDecimal
 import kornell.core.shared.data._
 import scala.collection.JavaConverters._
 import java.sql.ResultSet
+import java.util.UUID
 
-//TODO: Smells bad... but relates to 1-1 to BeanFactory
+//TODO: Smells bad... but relates to 1-1 to BeanFactory  
 trait Beans {
 	val factory = AutoBeanFactorySource.create(classOf[BeanFactory])
 	
@@ -78,5 +79,17 @@ trait Beans {
 	  to.setCourses(l asJava)
 	  to
 	}
+    
+   //FTW: Default parameter values
+   
+   def newInstitution(uuid:String = randomUUID,name:String,terms:String) = {
+     val to = factory.newInstitution().as
+     to.setName(name)
+     to.setUUID(uuid)
+     to.setTerms(terms.stripMargin)
+     to
+   }
+   
+   def randomUUID = UUID.randomUUID().toString()
 	
 }
