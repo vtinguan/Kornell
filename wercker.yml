@@ -32,3 +32,15 @@ deploy:
         name: can i has eb?
         code: |-
           eb --help
+    - script:
+        name: can i has java?
+        code: |-
+          java -version
+    - script:
+        name: where am i?
+        code: |-
+          pwd
+    - script:
+        name: what is here?
+        code: |-
+          find .
