@@ -21,3 +21,11 @@ build:
 #    - script:
 #        name: test
 #        code: mvn test
+deploy:
+  steps:
+    - bundle-install
+    - script:
+        name: just be polite
+        code: |-
+          echo Hello, i will deploy your artifacts, please hang on...
+    - eb --help
