@@ -4,9 +4,9 @@ import scala.slick.jdbc.StaticQuery.interpolation
 import scala.slick.session.Database
 import scala.slick.session.Database.threadLocalSession
 import scala.slick.session.Session
-
 import kornell.core.shared.data.Principal
 import kornell.repository.Beans
+import kornell.repository.Repository
 
 object Auth extends Repository with Beans {
   def hash(plain:String) = plain
