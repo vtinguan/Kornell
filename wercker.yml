@@ -28,4 +28,7 @@ deploy:
         name: just be polite
         code: |-
           echo Hello, i will deploy your artifacts, please hang on...
-    - eb --help
+    - script:
+        name: can i has eb?
+        code: |-
+          eb --help
