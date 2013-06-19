@@ -69,7 +69,7 @@ trait Repository {
       finally pstmt.close
     }
 
-  //FTW: Currying
+  //TODO: Currying / Partially apply
   def query(sql: String)(params: Any*)(fun: ResultSet => Unit) =
     prepared(sql)(params.toList) { stmt =>
       val rs = stmt.executeQuery
