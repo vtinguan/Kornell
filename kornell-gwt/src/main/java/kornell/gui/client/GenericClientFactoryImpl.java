@@ -171,7 +171,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(client, placeController);
+		return new GenericWelcomeView(bus, client, placeController);
 	}
 
 	@Override
