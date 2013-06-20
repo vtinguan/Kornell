@@ -43,19 +43,7 @@ public class GenericMenuLeftView extends Composite {
 	
 	private CoursesTO coursesTO;
 
-	private final EventBus eventBus = new SimpleEventBus();
-
-	@UiField
-	FlowPanel menuLeftItemCourses;
-	
-	@UiField
-	FlowPanel menuLeftItemNotifications;
-	
-	@UiField
-	FlowPanel menuLeftItemMyParticipation;
-	
-	@UiField
-	FlowPanel menuLeftItemProfile;
+	private final EventBus bus; 
 
 	GenericMenuLeftItemView genericMenuLeftItemCourses;
 	
@@ -64,25 +52,14 @@ public class GenericMenuLeftView extends Composite {
 	GenericMenuLeftItemView genericMenuLeftItemMyParticipation;
 	
 	GenericMenuLeftItemView genericMenuLeftItemProfile;
-
 	
-	public GenericMenuLeftView(KornellClient client, PlaceController placeCtrl) {
+	@UiField
+	FlowPanel menuLeft;
+
+	public GenericMenuLeftView(EventBus bus, KornellClient client, PlaceController placeCtrl) {
+		this.bus = bus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
-		/*menuLeftItemNotifications = new FlowPanel();
-		menuLeftItemNotifications.sinkEvents(Event.ONCLICK);
-		menuLeftItemNotifications.setTitle("Click me");
-		//menuLeftItemNotifications.setSize("600px", "600px");
-		menuLeftItemNotifications.addHandler(new ClickHandler(){
-
-	        @Override
-	        public void onClick(ClickEvent event) {
-	        	System.out.println("wat");
-	            Window.alert("SimplePanel clicked!");
-
-	        }
-
-	    }, ClickEvent.getType());*/
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();		
 	}
@@ -107,17 +84,17 @@ public class GenericMenuLeftView extends Composite {
 	}
 
 	private void display() {
-		genericMenuLeftItemCourses = new GenericMenuLeftItemView(placeCtrl, GenericMenuLeftItemView.MENU_ITEM_COURSES, this);
-		menuLeftItemCourses.add(genericMenuLeftItemCourses);
+		genericMenuLeftItemCourses = new GenericMenuLeftItemView(bus, GenericMenuLeftItemView.MENU_ITEM_COURSES, this);
+		menuLeft.add(genericMenuLeftItemCourses);
 		
-		genericMenuLeftItemNotifications = new GenericMenuLeftItemView(placeCtrl, GenericMenuLeftItemView.MENU_ITEM_NOTIFICATIONS, this);
-		menuLeftItemNotifications.add(genericMenuLeftItemNotifications);
+		genericMenuLeftItemNotifications = new GenericMenuLeftItemView(bus, GenericMenuLeftItemView.MENU_ITEM_NOTIFICATIONS, this);
+		menuLeft.add(genericMenuLeftItemNotifications);
 		
-		genericMenuLeftItemMyParticipation = new GenericMenuLeftItemView(placeCtrl, GenericMenuLeftItemView.MENU_ITEM_MY_PARTICIPATION, this);
-		menuLeftItemMyParticipation.add(genericMenuLeftItemMyParticipation);
+		genericMenuLeftItemMyParticipation = new GenericMenuLeftItemView(bus, GenericMenuLeftItemView.MENU_ITEM_MY_PARTICIPATION, this);
+		menuLeft.add(genericMenuLeftItemMyParticipation);
 		
-		genericMenuLeftItemProfile = new GenericMenuLeftItemView(placeCtrl, GenericMenuLeftItemView.MENU_ITEM_PROFILE, this);
-		menuLeftItemProfile.add(genericMenuLeftItemProfile);
+		genericMenuLeftItemProfile = new GenericMenuLeftItemView(bus, GenericMenuLeftItemView.MENU_ITEM_PROFILE, this);
+		menuLeft.add(genericMenuLeftItemProfile);
 	}
 
 }
