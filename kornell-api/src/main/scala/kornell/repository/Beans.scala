@@ -81,8 +81,8 @@ trait Beans {
 	}
     
    //FTW: Default parameter values
-   
-   def newInstitution(uuid:String = randomUUID,name:String,terms:String) = {
+   implicit def dehydrate(i: Institution) = List(i.getUUID, i.getName, i.getTerms)
+   def Institution(uuid:String = randomUUID,name:String,terms:String) = {
      val to = factory.newInstitution().as
      to.setName(name)
      to.setUUID(uuid)
