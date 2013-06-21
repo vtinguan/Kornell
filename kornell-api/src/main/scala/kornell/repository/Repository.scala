@@ -30,6 +30,13 @@ trait Repository {
     case e: NoInitialContextException => forURL("jdbc:mysql://db.kornell/ebdb")
   }
 
+  //TODO: Support named parameters
+  def update(sql: String, params: List[Any]) = new Statement(sql).executeUpdate(params)
+
+  implicit def toStatement(sql: String) = new Statement(sql)
+}
+
+class Statement(sql: String) {
   //JDBC Connections (FTW!)
   val ctx = try
     Option(new InitialContext().lookup("java:comp/env").asInstanceOf[Context])
@@ -51,7 +58,7 @@ trait Repository {
     finally conn.close
   }
 
-  def prepared(sql: String)(params: List[Any])(fun: PreparedStatement => Unit) =
+  def prepared(params: List[Any])(fun: PreparedStatement => Unit) =
     connected { conn =>
       val pstmt = conn.prepareStatement(sql.stripMargin.trim)
       //FTW: High Order Functions with Pattern Matching
@@ -68,17 +75,14 @@ trait Repository {
       try fun(pstmt)
       finally pstmt.close
     }
-
-  //TODO: Currying / Partially apply
-  def query(sql: String)(params: Any*)(fun: ResultSet => Unit) =
-    prepared(sql)(params.toList) { stmt =>
+  
+  def query(params: Any*)(fun: ResultSet => Unit) =
+    prepared(params.toList) { stmt =>
       val rs = stmt.executeQuery
       try fun(rs)
       finally rs.close
     }
-
-  def update(sql: String)(params: Any*) =
-    prepared(sql)(params.toList)({ stmt => stmt.executeUpdate })
-
+  
+  def executeUpdate(params: List[Any]) = prepared(params)({ stmt => stmt.executeUpdate })
 }
 
