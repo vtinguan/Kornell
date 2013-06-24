@@ -1,3 +1,4 @@
+#
 box: pjvds/scala
 build:
   steps:
