@@ -16,6 +16,14 @@ deploy:
   steps:
     - bundle-install
     - script:
+        name: Checking ENV
+        code: |-
+          echo Environment:
+          set
+          echo AWS Keys:
+          echo $AWS_ACCESS_KEY_ID
+          echo $AWS_SECRET_KEY 
+    - script:
         name: Deploy API module
         code: |-
           java -jar tools/eb-ci.jar -a $AWS_ACCESS_KEY_ID -s $AWS_SECRET_KEY -b kornell-api-red -app kornell-api -env kornell-api-red -eb https://elasticbeanstalk.sa-east-1.amazonaws.com -s3 https://s3-sa-east-1.amazonaws.com -war ./kornell-api/target/kornell-api-1.0-SNAPSHOT.war
