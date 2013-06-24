@@ -27,8 +27,12 @@ deploy:
     - script:
         name: Deploy API module
         code: |-
-          java -jar tools/eb-ci.jar -a $AWS_ACCESS_KEY_ID -s $AWS_SECRET_KEY -b kornell-api-red -app kornell-api -env kornell-api-red -eb https://elasticbeanstalk.sa-east-1.amazonaws.com -s3 https://s3-sa-east-1.amazonaws.com -war ./kornell-api/target/kornell-api-1.0-SNAPSHOT.war
+          java -jar tools/eb-ci.jar -a $AWS_ACCESS_KEY_ID -s $AWS_SECRET_KEY -b kornell-api-red -app kornell-api -env kornell-api-red -eb https://elasticbeanstalk.sa-east-1.amazonaws.com -s3 https://s3-sa-east-1.amazonaws.com -war ./kornell-api/target/kornell-api-1.0-SNAPSHOT.war &
     - script:
         name: Deploy GUI module
         code: |-
-          java -jar tools/eb-ci.jar -a $AWS_ACCESS_KEY_ID -s $AWS_SECRET_KEY -b kornell-api-red -app kornell-api -env kornell-api-red -eb https://elasticbeanstalk.sa-east-1.amazonaws.com -s3 https://s3-sa-east-1.amazonaws.com -war ./kornell-gwt/target/kornell-gwt-0.0.1-SNAPSHOT.war
+          java -jar tools/eb-ci.jar -a $AWS_ACCESS_KEY_ID -s $AWS_SECRET_KEY -b kornell-api-red -app kornell-api -env kornell-api-red -eb https://elasticbeanstalk.sa-east-1.amazonaws.com -s3 https://s3-sa-east-1.amazonaws.com -war ./kornell-gwt/target/kornell-gwt-0.0.1-SNAPSHOT.war &
+    - script:
+        name: Now wait
+        code: |-
+          echo now wait...
