@@ -9,38 +9,17 @@ build:
           scala -version || echo "exited with $?"
           sbt --version || echo "exited with $?"
           mvn -version || echo "exited with $?"
-#    - script:
-#        name: initialize
-#        code: mvn initialize
     - script:
         name: install
         code: mvn install
-#    - script:
-#        name: build
-#        code: mvn test-compile
-#    - script:
-#        name: test
-#        code: mvn test
 deploy:
   steps:
     - bundle-install
     - script:
-        name: just be polite
+        name: Deploy API module
         code: |-
-          echo Hello, i will deploy your artifacts, please hang on...
-#    - script:
-#        name: can i has eb?
-#        code: |-
-#          eb --help
+          java -jar tools/eb-ci.jar -a $AWS_ACCESS_KEY_ID -s $AWS_SECRET_KEY -b kornell-api-red -app kornell-api -env kornell-api-red -eb https://elasticbeanstalk.sa-east-1.amazonaws.com -s3 https://s3-sa-east-1.amazonaws.com -war ./kornell-api/target/kornell-api-1.0-SNAPSHOT.war
     - script:
-        name: can i has java?
+        name: Deploy GUI module
         code: |-
-          java -version
-    - script:
-        name: where am i?
-        code: |-
-          pwd
-    - script:
-        name: what is here?
-        code: |-
-          find .
+          java -jar tools/eb-ci.jar -a $AWS_ACCESS_KEY_ID -s $AWS_SECRET_KEY -b kornell-api-red -app kornell-api -env kornell-api-red -eb https://elasticbeanstalk.sa-east-1.amazonaws.com -s3 https://s3-sa-east-1.amazonaws.com -war ./kornell-gwt/target/kornell-gwt-0.0.1-SNAPSHOT.war
