@@ -5,6 +5,9 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.atividade.AtividadeActivity;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.atividade.AtividadePresenter;
+import kornell.gui.client.presentation.course.CourseActivity;
+import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CoursePresenter;
 import kornell.gui.client.presentation.home.HomeActivity;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.terms.TermsActivity;
@@ -43,6 +46,11 @@ public class GlobalActivityMapper implements ActivityMapper {
 	}
 	if (place instanceof WelcomePlace) {
 		return new WelcomeActivity(factory);
+	}
+	if (place instanceof CoursePlace) {
+		CoursePresenter coursePresenter = factory.getCoursePresenter();
+		coursePresenter.setPlace((CoursePlace)place);
+		return new CourseActivity(coursePresenter);
 	}
 	if (place instanceof AtividadePlace) {
 		AtividadePresenter atividadePresenter = factory.getActivityPresenter();

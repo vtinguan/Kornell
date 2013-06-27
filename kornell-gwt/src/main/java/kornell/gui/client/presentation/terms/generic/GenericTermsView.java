@@ -38,7 +38,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
-//TODO - Courses will overflow the screen
 
 public class GenericTermsView extends Composite implements TermsView {
 	interface MyUiBinder extends UiBinder<Widget, GenericTermsView> {
@@ -67,8 +66,6 @@ public class GenericTermsView extends Composite implements TermsView {
 	
 	private String displayCourses;
 
-	private final EventBus eventBus = new SimpleEventBus();
-
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	
 	private GenericMenuLeftView menuLeftView;
@@ -96,37 +93,6 @@ public class GenericTermsView extends Composite implements TermsView {
 		//TODO i18n
 		btnAgree.setText("Concordo".toUpperCase());
 		btnDontAgree.setText("Não Concordo".toUpperCase());
-		
-		
-		
-		
-		
-		
-		
-		/*String str = "Você está na Universidade Virtual Midway!";
-		
-		str+= "Ao acessar este sistema, você declara que irá respeitar todos os direitos de propriedade intelectual e industrial.";
-		
-		str+= "Você assume toda e qualquer responsabilidade, de caráter cívil e/ou criminal, pela utilização indevida das informações, textos, gráficos, marcas, obras, enfim, de todo e qualquer direito de propriedade intelectual ou industrial contido neste sistema.";
-		
-		str+= "Você concorda que é responsável por sua própria conduta e por qualquer Conteúdo que criar, transmitir ou apresentar ao utilizar os serviços da ";
-		str+= "" + "Universidade Virtual Midway";
-		str+= " e por todas as consequências relacionadas. Você concorda em usar os serviços da ";
-		str+= "" + "Universidade Virtual Midway";
-		str+= " apenas para finalidades legais, adequadas e condizentes com os Termos e com quaisquer políticas ou diretrizes aplicáveis. Você concorda em não se engajar em qualquer atividade que interfira ou interrompa os serviços da ";
-		str+= "" + "Universidade Virtual Midway";
-		str+= ", ou os servidores e redes relacionados aos serviços da ";
-		str+= "" + "Universidade Virtual Midway";
-		str+= ".";
-		
-		str+= "Ao usar os serviços da ";
-		str+= "" + "Universidade Virtual Midway";
-		str+= ", você concorda e está ciente de que a ";
-		str+= "" + "Universidade Virtual Midway";
-		str+= " pode acessar, preservar e divulgar as informações da sua conta e qualquer conteúdo a ela associado, caso assim seja exigido por lei ou quando acreditarmos, de boa-fé, que tal preservação ou divulgação de acesso é necessária para: (a) cumprir qualquer lei, regulamentação, processo legal ou solicitação governamental obrigatória; (b) fazer cumprir os Termos, incluindo a investigação de possíveis violações; (c) detectar, impedir ou tratar de questões de fraude, segurança ou técnicas (inclusive, sem limitações, a filtragem de spam); (d) proteger, mediante perigo iminente, os direitos, a propriedade ou a segurança da ";
-		str+= "" + "Universidade Virtual Midway";
-		str+= ", seus usuários ou o público, de acordo com o exigido ou permitido por lei.";*/
-		
 		
 	}
 

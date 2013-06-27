@@ -14,8 +14,8 @@ public class TermsPresenter implements TermsView.Presenter{
 	
 	@Override
 	public Widget asWidget() {
-		Widget TermsView = getView().asWidget();
-		return TermsView;
+		Widget termsView = getView().asWidget();
+		return termsView;
 	}
 	
 	private TermsView getView() {
