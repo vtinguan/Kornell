@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.atividade;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+import static java.lang.Math.*;
 
 public class AtividadePlace extends Place {
 	String courseUUID;
@@ -18,7 +19,7 @@ public class AtividadePlace extends Place {
 	}
 
 	public AtividadePlace previous() {
-		return new AtividadePlace(courseUUID, position - 1);
+		return new AtividadePlace(courseUUID, max(0,position - 1));
 	}
 
 	public String getCourseUUID() {

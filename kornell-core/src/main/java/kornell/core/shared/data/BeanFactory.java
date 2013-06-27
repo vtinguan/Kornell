@@ -7,10 +7,13 @@ public interface BeanFactory extends AutoBeanFactory {
 	  /* TO Beans */
 	  AutoBean<CourseTO>  newCourseTO();
 	  AutoBean<CoursesTO> newCoursesTO();
+	  
 	  /* Entity Beans */
 	  AutoBean<Person> newPerson(); 
 	  AutoBean<Principal> newPrincipal();
 	  AutoBean<Course> newCourse();
 	  AutoBean<Enrollment> newEnrollment();
+	  AutoBean<Institution> newInstitution();
+	  AutoBean<Registration> newRegistration();
 
 }

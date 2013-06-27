@@ -12,9 +12,10 @@ import java.nio.file.Path
 
 class SQLFinder extends SimpleFileVisitor[Path] {
   val kornellApiSrc = System.getProperty("user.dir")
-  val scriptsPath = Paths.get(kornellApiSrc, "src", "main", "sql")
+  val scriptsPath = Paths.get(kornellApiSrc, "src", "main", "ddl")
 
   val matcher = FileSystems.getDefault.getPathMatcher("glob:**.sql");
+  //TODO: Change to scala version of SortedSet
   var result: MutableList[Path] = _
 
   override def visitFile(file: Path, attr: BasicFileAttributes): FileVisitResult = {
