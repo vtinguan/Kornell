@@ -1,0 +1,13 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	<g:FlowPanel ui:field="courseBar" addStyleNames="courseBar">
+		<b:Button type="LINK" ui:field="btnCourse" addStyleNames="courseBarButton"></b:Button>		
+		<b:Button type="LINK" ui:field="btnDetails" addStyleNames="courseBarButton"></b:Button>	
+		<b:Button type="LINK" ui:field="btnLibrary" addStyleNames="courseBarButton"></b:Button>			
+		<b:Button type="LINK" ui:field="btnForum" addStyleNames="courseBarButton"></b:Button>	
+		<b:Button type="LINK" ui:field="btnChat" addStyleNames="courseBarButton"></b:Button>
+		<b:Button type="LINK" ui:field="btnSpecialists" addStyleNames="courseBarButton"></b:Button>	
+		<b:Button type="LINK" ui:field="btnNotes" addStyleNames="courseBarButton"></b:Button>	
+		<b:Button type="LINK" ui:field="btnBack" addStyleNames="courseBarButton"></b:Button>		
+	</g:FlowPanel>
+</ui:UiBinder>

@@ -2,7 +2,7 @@ package kornell.gui.client.presentation.welcome.generic;
 
 
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.events.MenuLeftWelcomeEvent;
+import kornell.gui.client.event.MenuLeftWelcomeEvent;
 
 import com.github.gwtbootstrap.client.ui.Image;
 import com.google.gwt.core.client.GWT;

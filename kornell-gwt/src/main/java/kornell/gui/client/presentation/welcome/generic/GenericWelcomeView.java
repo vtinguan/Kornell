@@ -2,8 +2,8 @@ package kornell.gui.client.presentation.welcome.generic;
 
 import kornell.api.client.KornellClient;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.events.MenuLeftWelcomeEvent;
-import kornell.gui.client.events.MenuLeftWelcomeEventHandler;
+import kornell.gui.client.event.MenuLeftWelcomeEvent;
+import kornell.gui.client.event.MenuLeftWelcomeEventHandler;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
 import com.google.gwt.core.client.GWT;
@@ -50,7 +50,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		this.bus = bus;
 		
 		bus.addHandler(MenuLeftWelcomeEvent.TYPE, new MenuLeftWelcomeEventHandler() {
-			
 			@Override
 			public void onItemSelected(MenuLeftWelcomeEvent event) {
 				display(event.getMenuLeftItemSelected());

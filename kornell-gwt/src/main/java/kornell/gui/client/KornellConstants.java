@@ -83,6 +83,36 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("Certificate")
 	String certificate();
 
+	
+	/**
+	 * 
+	 * GenericBarView
+	 */
+	
+	@DefaultStringValue("course")
+	String course();
+	
+	@DefaultStringValue("details")
+	String details();
+	
+	@DefaultStringValue("library")
+	String library();
+	
+	@DefaultStringValue("forum")
+	String forum();
+	
+	@DefaultStringValue("chat")
+	String chat();
+	
+	@DefaultStringValue("specialists")
+	String specialists();
+	
+	@DefaultStringValue("notes")
+	String notes();
+	
+	@DefaultStringValue("back")
+	String back();
+	
 
 
 }

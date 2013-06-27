@@ -1,4 +1,4 @@
-package kornell.gui.client.events;
+package kornell.gui.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
