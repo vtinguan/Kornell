@@ -1,6 +1,5 @@
 <Context path="">
-    
-    <!-- TODO: Generate this file from env on servers to avoid static (unsafe) configuration -->
+	<!-- TODO: Consider Read Replicas http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-replication-connection.html -->    	
 	<Resource name="jdbc/KornellDS" 
 		auth="Container" 
 	    type="javax.sql.DataSource"
@@ -13,7 +12,7 @@
 		url="jdbc:mysql://db.kornell:3306/ebdb"
 		validationQuery="select 42"
 		validationQueryTimeout="2"
-		testOnBorrow="true"
+		testOnBorrow="true" 
 		testOnReturn="false"/>
 	
 	<Realm className="org.apache.catalina.realm.DataSourceRealm"

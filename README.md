@@ -1,5 +1,5 @@
 We need to change the way we educate ourselves. 
-
+ 
 We can no longer pretend that knowledge comes exclusively from tutors, classes or job training. 
 To overcome the challenges we face today, we must learn and teach continuously, collaboratively and supported by the best technology available.
 

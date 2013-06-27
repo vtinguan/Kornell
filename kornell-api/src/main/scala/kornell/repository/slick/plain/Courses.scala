@@ -16,6 +16,7 @@ import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.Person
 import kornell.repository.Beans
 import kornell.core.shared.data.Course
+import kornell.repository.Repository
 
 object Courses extends Repository with Beans {
 
