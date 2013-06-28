@@ -4,16 +4,14 @@ import java.math.BigDecimal
 import java.sql.ResultSet
 import java.util.Date
 import java.util.UUID
-
 import scala.collection.JavaConverters.seqAsJavaListConverter
-
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-
 import kornell.core.shared.data.BeanFactory
 import kornell.core.shared.data.Course
 import kornell.core.shared.data.CourseTO
 import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.Institution
+import kornell.core.shared.data.Person
 
 //TODO: Smells bad... but relates to 1-1 to BeanFactory  
 trait Beans {
@@ -79,16 +77,22 @@ trait Beans {
   }
 
   //FTW: Default parameter values
-  implicit def dehydrate(i: Institution) = List(i.getUUID, i.getName, i.getTerms)
-
   def Institution(uuid: String = randomUUID, name: String, terms: String) = {
-    val to = factory.newInstitution().as
-    to.setName(name)
-    to.setUUID(uuid)
-    to.setTerms(terms.stripMargin)
-    to
+    val i = factory.newInstitution().as
+    i.setName(name)
+    i.setUUID(uuid)
+    i.setTerms(terms.stripMargin)
+    i
   }
 
+  def Registration(p:Person,i:Institution) ={
+    val r = factory.newRegistration().as
+    r.setPersonUUID(p.getUUID)
+    r.setInstitutionUUID(i.getUUID)
+    r
+  }
   def randomUUID = UUID.randomUUID().toString()
+  
+  
 
 }

@@ -1,18 +1,19 @@
 package kornell.dev.data
 
-import java.nio.file.Files
-import kornell.repository.Repository
 import java.nio.charset.Charset
+import java.nio.file.Files
 import java.nio.file.Path
-import scala.collection.JavaConverters._
+
+import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.slick.jdbc.{StaticQuery => Q}
 import scala.slick.jdbc.StaticQuery.interpolation
 import scala.slick.session.Database.threadLocalSession
+
 import kornell.dev.SQLFinder
-import scala.slick.jdbc.{StaticQuery => Q}
+import kornell.repository.SlickRepository
 
 
-trait Toolkit extends Repository {
+trait Toolkit extends SlickRepository {
   def dropDB = nodb withSession sqlu"drop database if exists ebdb".execute 
   def createDB = nodb withSession sqlu"create database if not exists ebdb".execute
   //TODO drop first or add 'if not exists'
