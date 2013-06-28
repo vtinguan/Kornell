@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.welcome.generic;
 
 
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.MenuLeftWelcomeEvent;
 
 import com.github.gwtbootstrap.client.ui.Image;
 import com.google.gwt.core.client.GWT;
@@ -15,13 +16,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericMenuLeftItemView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericMenuLeftItemView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
+	private final EventBus bus;
 	@UiField
 	FlowPanel menuLeftItem;
 	
@@ -31,16 +33,17 @@ public class GenericMenuLeftItemView extends Composite {
 	@UiField
 	Image imgIcon;
 	
-	private KornellConstants constants = GWT.create(KornellConstants.class);
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	
 	private String menuItemType;
 
-	public static String MENU_ITEM_COURSES = "courses";
-	public static String MENU_ITEM_NOTIFICATIONS = "notifications";
-	public static String MENU_ITEM_MY_PARTICIPATION = "myParticipation";
-	public static String MENU_ITEM_PROFILE = "profile";
+	public static String MENU_ITEM_COURSES = constants.courses();
+	public static String MENU_ITEM_NOTIFICATIONS = constants.notifications();
+	public static String MENU_ITEM_MY_PARTICIPATION = constants.myParticipation();
+	public static String MENU_ITEM_PROFILE = constants.profile();
 
-	public GenericMenuLeftItemView(final PlaceController placeCtrl, final String menuItemType, final GenericMenuLeftView genericMenuLeftView) {
+	public GenericMenuLeftItemView(final EventBus bus, final String menuItemType, final GenericMenuLeftView genericMenuLeftView) {
+		this.bus = bus; 
 		this.menuItemType = menuItemType;
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
@@ -49,7 +52,9 @@ public class GenericMenuLeftItemView extends Composite {
 		addHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				System.out.println(menuItemType);
+				MenuLeftWelcomeEvent menuLeftWelcomeEvent = new MenuLeftWelcomeEvent();
+				menuLeftWelcomeEvent.setMenuLeftItemSelected(menuItemType);
+				bus.fireEvent(menuLeftWelcomeEvent);
 				genericMenuLeftView.clearSelection();
 				setSelected();
 			}
@@ -60,6 +65,7 @@ public class GenericMenuLeftItemView extends Composite {
 	private void display() {
 		if(MENU_ITEM_COURSES.equals(menuItemType)){
 			displayCourses();
+			setSelected();
 		} else if(MENU_ITEM_NOTIFICATIONS.equals(menuItemType)){
 			displayNotifications(); 
 		} else if(MENU_ITEM_MY_PARTICIPATION.equals(menuItemType)){

@@ -35,15 +35,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	public GenericActivityBarView(EventBus bus) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.bus = bus;
-		bus.addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
-					@Override
-					public void onPlaceChange(PlaceChangeEvent event) {
-						Place newPlace = event.getNewPlace();
-						boolean isAtAtividade = newPlace instanceof AtividadePlace;
-						GenericActivityBarView.this.setVisible(isAtAtividade);
-					}
-				});
 
 	}
 	
