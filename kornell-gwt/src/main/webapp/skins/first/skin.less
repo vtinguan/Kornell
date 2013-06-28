@@ -195,6 +195,98 @@ body {
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.profileFields{
+	background-color: #111114;
+	.titlePanel{
+		height: 30px;
+		.imgTitle{
+			float: left;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+		.lblTitle{
+			font-size: 17px;
+			color: #ffffff;
+		}
+	}
+	.fieldPanel{
+			width: 1023px - 220px;
+			height: 60px;
+		.labelPanelImg{
+			height: 98px;
+		}
+		.labelPanel{
+			width: 0.3 * (1023px - 220px) - 40px;
+			margin-right: 40px;
+			float: left;
+			text-align: right;
+			.lblLabel{
+				color: #bec1c3;
+				font-size: 16px;
+				line-height: 46px;
+			}
+			.lblExtraInfo{
+				color:	#78af73;
+				font-size: 10px;
+				line-height: 10px;
+				text-align: right;
+			}
+		}
+		.labelPanel2{
+			.lblLabel{
+				line-height: 25px;
+				padding-top: 6px;
+			}
+			.lblExtraInfo{
+			}
+		}
+		.lblValue{
+			width: 0.4 * (1023px - 220px) - 40px;
+			float: left;
+			color:	#e0dfe0;
+			line-height: 46px;
+		}
+		.lblValueAdd{
+			width: 0.4 * (1023px - 220px) - 40px;
+			float: left;
+			color:	#b795a4;
+			line-height: 46px;
+		}
+		.publicPanel{
+			width: 0.3 * (1023px - 220px);
+			float: left;
+			.lblPublic{
+				color: #696769;
+				font-size: 14px;
+				line-height: 46px;
+			}
+			.imgPublic{
+				float: left;
+				padding-right: 10px;
+				padding-top: 10px;
+			}
+		}
+	}
+}
+
+
+
+
  // #     #                          #                              
  // ##   ##  ######  #    #  #    #  #        ######  ######  ##### 
  // # # # #  #       ##   #  #    #  #        #       #         #   
@@ -247,3 +339,133 @@ body {
 .selectedMenuLeftItem{
 	.gradient(#101013,#110f13);
 }
+
+ // ######                          
+ // #     #    ##    #####    ####  
+ // #     #   #  #   #    #  #      
+ // ######   #    #  #    #   ####  
+ // #     #  ######  #####        # 
+ // #     #  #    #  #   #   #    # 
+ // ######   #    #  #    #   ####  
+                               
+
+@barNorthHeight: 45px;
+@barSouthHeight: 35px;
+@buttonWidth: 126px;
+.courseBar{
+	@barsHeight: 45px;
+	position: absolute;
+	.size(100%,@barSouthHeight);
+	.btnPanel{
+		border-left: 1px solid #272f38;
+		border-right: 1px solid #070b0d;
+		border-bottom: 1px solid #0c0c0d;
+	}
+		.course {width: @buttonWidth;border-left: 0px;}
+		.details {width: @buttonWidth;}
+		.library {width: @buttonWidth;}
+		.forum {width: @buttonWidth;}
+		.chat {width: @buttonWidth;}
+		.specialists {width: @buttonWidth + 2;}
+		.notes {width: @buttonWidth;}
+		.back {width: @buttonWidth;border-right: 0px;}
+	.courseBarButton {
+		height: @barSouthHeight;
+		line-height: @barSouthHeight - 3px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-top: 3px solid @buttonSelectedGradientStart;
+		.label{
+			background: transparent;
+			color: @niceTextColor;
+			font-size: 10px;
+			margin-left: 4px;
+		}
+		.icon{
+		}
+	}
+	.activeCourseButton{
+		.btnSelected;
+	}
+	.inactiveCourseButton{
+		.btnNotSelected;
+	}
+}
+
+.activitybar, .courseBar { 
+	bottom: 0px;
+	left: 0px;
+}
+.menubar {
+	top: 0px;
+	left: 0px;
+	-moz-box-shadow: 0 1px 4px 2px #000;
+	-webkit-box-shadow: 0 1px 4px 2px #000;
+	box-shadow: 0 1px 4px 2px #000;
+	.imgMenuBar{
+		.size(280px,@barNorthHeight);
+		.backgroundImage('logo.png');
+		float: left;
+		.marginLogo;
+	}
+}
+.menubar, .activitybar {	
+	.size(100%,@barNorthHeight);
+	position: absolute;
+
+	.gradient(#45484d, #000000);
+	
+	.buttons {
+		float: right;
+		.btn {		
+			color: @niceTextColor;
+			text-shadow: none;
+			font-size: 13px; 
+			height: 37px;
+			padding: 8px 8px 0px 8px;
+			border-left: 1px solid #3f4d5a;
+			border-right: 1px solid #11161d;
+		}
+		.btn-link:hover {
+			text-decoration: none;
+		}
+	}
+}
+
+ // ######                                                
+ // #     #  #    #  #####  #####   ####   #    #   ####  
+ // #     #  #    #    #      #    #    #  ##   #  #      
+ // ######   #    #    #      #    #    #  # #  #   ####  
+ // #     #  #    #    #      #    #    #  #  # #       # 
+ // #     #  #    #    #      #    #    #  #   ##  #    # 
+ // ######    ####     #      #     ####   #    #   ####  
+
+.btn-primary {
+  .btnSelected;
+}
+.btnNotSelected{
+  .gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+}
+.btnSelected{
+  .gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
+}
+.btnCourses{
+	color: @niceTextColor;
+	border-left: 2px solid @bordersColor;
+	float:right;
+	height: 24px; 
+	border: 0px;
+	padding-left: 24px;
+	padding-right: 24px;
+	font-size: 11px;
+	display: block;
+}
+
+
+
+.test{
+	color: red;
+}
+
+

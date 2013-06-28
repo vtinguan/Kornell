@@ -5,13 +5,22 @@ import kornell.gui.client.content.SequencerFactory;
 import kornell.gui.client.content.SequencerFactoryImpl;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
+import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.atividade.AtividadePresenter;
 import kornell.gui.client.presentation.atividade.AtividadeView;
 import kornell.gui.client.presentation.atividade.generic.GenericAtividadeView;
 import kornell.gui.client.presentation.bar.ActivityBarView;
+import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.MenuBarView;
+import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericActivityBarView;
+import kornell.gui.client.presentation.bar.generic.GenericCourseBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
+import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
+import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CoursePresenter;
+import kornell.gui.client.presentation.course.CourseView;
+import kornell.gui.client.presentation.course.generic.GenericCourseView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.terms.TermsView;
@@ -27,6 +36,7 @@ import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -59,13 +69,15 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private final KornellClient client = KornellClient.getInstance();
 
 	/* Views */
+	private GenericMenuBarView menuBarView;
+	private SouthBarView southBarView;
+	
 	private GenericHomeView genericHomeView;
 	private AtividadePresenter activityPresenter;
+	private CoursePresenter coursePresenter;
 
 	/* GUI */
 	SimplePanel shell = new SimplePanel();
-	private GenericMenuBarView menuBarView;
-	private GenericActivityBarView activityBarView;
 
 	public GenericClientFactoryImpl() {
 	}
@@ -86,12 +98,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initGUI() {
-		//TODO activity height
 		final RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
-		DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
-		dockLayoutPanel.addNorth(getMenuBarView(), 48);
-		dockLayoutPanel.addSouth(getActivityBarView(), 48);
-		//dockLayoutPanel.setWidgetHidden((Widget) getActivityBarView(), true);
+		final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
+		dockLayoutPanel.addNorth(getMenuBarView(), 45);
+		dockLayoutPanel.addSouth(getSouthBarView(), 35);
 		
 		ScrollPanel sp = new ScrollPanel();
 		sp.add(shell);
@@ -104,6 +114,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						setPlaceNameAsBodyStyle(event);
+						
+						Place newPlace = event.getNewPlace();
+						dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(), !getSouthBarView().isVisible());
 					}
 
 					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
@@ -118,16 +131,16 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	}
 
-	private ActivityBarView getActivityBarView() {
-		if (activityBarView == null)
-			activityBarView = new GenericActivityBarView(bus);
-		return activityBarView;
-	}
-
 	private MenuBarView getMenuBarView() {
 		if (menuBarView == null)
 			menuBarView = new GenericMenuBarView(placeController,bus);
 		return menuBarView;
+	}
+	
+	private SouthBarView getSouthBarView() {
+		if (southBarView == null)
+			southBarView = new GenericSouthBarView(bus, placeController);
+		return southBarView;
 	}
 
 	@Override
@@ -171,7 +184,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(client, placeController);
+		return new GenericWelcomeView(bus, client, placeController);
 	}
 
 	@Override
@@ -182,6 +195,22 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public TermsView getTermsView() {
 		return new GenericTermsView(client, placeController);
+	}
+
+	@Override
+	public CourseView getCourseView() {
+		return new GenericCourseView(bus, client, placeController);
+	}
+	
+	@Override
+	public CoursePresenter getCoursePresenter() {
+		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeController,client);
+		if (coursePresenter == null) {
+			CourseView courseView = getCourseView();
+			
+			coursePresenter = new CoursePresenter(courseView, placeController);
+		}
+		return coursePresenter;
 	}
 	
 	@Override
