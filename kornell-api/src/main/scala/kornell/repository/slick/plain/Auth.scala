@@ -6,9 +6,9 @@ import scala.slick.session.Database.threadLocalSession
 import scala.slick.session.Session
 import kornell.core.shared.data.Principal
 import kornell.repository.Beans
-import kornell.repository.Repository
+import kornell.repository.SlickRepository
 
-object Auth extends Repository with Beans {
+object Auth extends SlickRepository with Beans {
   def hash(plain:String) = plain
   
   //TODO: UPSERT
