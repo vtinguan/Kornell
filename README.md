@@ -1,9 +1,10 @@
-We need to change the way we educate ourselves. 
- 
-We can no longer pretend that knowledge comes exclusively from tutors, classes or job training. 
-To overcome the challenges we face today, we must learn and teach continuously, collaboratively and supported by the best technology available.
+This project is a new e-learning platform, because we need to change the way we educate ourselves. Current e-learning solutions and content, specially in developing countries, leaves much to be desired in technology and services.
 
-This project is to become the next generation e-learning platform and allow its users to build the most exciting learning environments.
+Learning is proven to be more effective when done socially and interactivelly, not by watching silly animations or unchallenging games. This platform shall enable content developers to publish interactive, social and exciting content.
+
+Technology is a key piece of education, and this project shall support the best of modern web technologies, leveraging high quality audio, video and presentations on mobile devices as well as on desktops.
+
+Finally, we aim to be extremely cost efficient, leveraging the scale advantages of cloud computing and offering this platform as an open source project, allowing its usage by institutions of any size, budget and maturity.
 
 If you would like to be part of this, plase reach us. There is surely a lot to do!
 
@@ -25,6 +26,6 @@ http://www.udemy.com
 
 http://www.udacity.com
 
-Do you want a piece of this? Check our [wiki](https://github.com/Craftware/Kornell/wiki) and get started!
+Check our [wiki](https://github.com/Craftware/Kornell/wiki) and get started!
 
 For those of you wondering, this project is named after [Dr. Nate Kornell](http://sites.williams.edu/nk2/)
