@@ -16,9 +16,9 @@ import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.Person
 import kornell.repository.Beans
 import kornell.core.shared.data.Course
-import kornell.repository.Repository
+import kornell.repository.SlickRepository
 
-object Courses extends Repository with Beans {
+object Courses extends SlickRepository with Beans {
 
   //TODO: Move this SetParameter to package object or Repository 
   implicit val SetDateTime: SetParameter[Date] = new SetParameter[Date] {

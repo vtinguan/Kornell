@@ -1,6 +1,5 @@
-package kornell.dev
+package kornell.dev.data
 
-import kornell.dev.data.Toolkit
 
 object RespawnDatabase extends App with Toolkit {
   respawnDB
