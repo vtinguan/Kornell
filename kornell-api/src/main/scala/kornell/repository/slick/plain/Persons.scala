@@ -10,9 +10,9 @@ import kornell.repository.Beans
 import kornell.core.shared.data.Person
 import javax.ws.rs.core.SecurityContext
 import java.security.Principal
-import kornell.repository.Repository
+import kornell.repository.SlickRepository
 
-object Persons extends Repository with Beans{
+object Persons extends SlickRepository with Beans{
   
   implicit val getPerson = GetResult(r => newPerson(r.nextString,r.nextString))
   
