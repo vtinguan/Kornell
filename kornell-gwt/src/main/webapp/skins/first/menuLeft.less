@@ -1,0 +1,47 @@
+@import "mixins";
+@import "buttons";
+
+.menuLeftItem {
+	width: @menuLeftWidth;
+	height: 132px;
+	.gradient (@menuLeftGradientStartColor, @menuLeftGradientEndColor);
+
+	&:hover {
+		cursor: pointer;
+	} 
+	.menuLeftItems {
+		width: 145px;
+		float: right;
+	}  
+	.menuLeftHeader {
+		color: @textHighlightDiscreteColor;
+		font-weight: bold;
+		font-size: 13px;
+		padding-left: 2px;
+	}  
+	.menuLeftItemLabel { 
+		color: @textHighlightColor;
+		height:10px;
+		font-size: 11px;
+		line-height: 15px;
+		padding-left: 2px;
+		padding-right: 3px;
+		float: left;
+	}  
+	.menuLeftItemValue {
+		color: @niceTextColor;
+		font-size: 11px;
+		line-height: 15px;
+	} 
+	img.iconMenuLeftItem {
+		padding-left: 17px;
+		padding-top: 45px;
+	} 
+	.menuLeftItemImgWrapper{
+		width: 70px;
+		float: left;
+	}
+}
+.selectedMenuLeftItem{
+	.gradient (@menuLeftItemGradientStartColor, @menuLeftItemGradientEndColor);
+}
