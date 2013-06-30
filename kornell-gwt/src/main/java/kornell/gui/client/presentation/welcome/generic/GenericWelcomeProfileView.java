@@ -145,7 +145,7 @@ public class GenericWelcomeProfileView extends Composite {
 		labelPanel.addStyleName("labelPanelImg");
 		
 		Label lblLabel = new Label(labelName);
-		lblLabel.addStyleName("lblLabel");
+		lblLabel.addStyleName("lblLabelImg");
 		labelPanel.add(lblLabel);
 		
 		for (String extra : extraInfo) {
