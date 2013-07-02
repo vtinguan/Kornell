@@ -1,21 +1,12 @@
 package kornell.gui.client.presentation.terms.generic;
 
-import java.math.BigDecimal;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.api.client.data.Person;
-import kornell.core.shared.data.CourseTO;
-import kornell.core.shared.data.CoursesTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.bar.ActivityBarView;
-import kornell.gui.client.presentation.bar.MenuBarView;
-import kornell.gui.client.presentation.bar.generic.GenericActivityBarView;
-import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
-import kornell.gui.client.presentation.welcome.generic.GenericCourseSummaryView;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
 
 import com.github.gwtbootstrap.client.ui.Paragraph;
@@ -27,16 +18,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 
 public class GenericTermsView extends Composite implements TermsView {
