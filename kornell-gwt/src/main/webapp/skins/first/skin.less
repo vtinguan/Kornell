@@ -372,6 +372,148 @@ body {
 
 
 
+.libraryPanel{
+	@libraryPanelMargin: 20px;
+	@buttonsPanelWidth: .18 * @wrapperWidth;
+	@filesPanelWidth: .75 * @wrapperWidth;
+	@fileIconWidth: .1 * @filesPanelWidth - @libraryPanelMargin;
+	@pnlFileNameWidth: .47 * @filesPanelWidth - @libraryPanelMargin;
+	@fileSizeWidth: .11 * @filesPanelWidth - @libraryPanelMargin;
+	@starsPanelWidth: .15 * @filesPanelWidth - @libraryPanelMargin;
+	@publishingDateWidth: .17 * @filesPanelWidth - @libraryPanelMargin;
+	.titlePanel{
+		padding-top: 20px;
+		font-size: 18px;
+		line-height: 20px;
+		.titleImage{
+			padding-left: 20px;
+			float: left;
+		}
+		.titleLabel{
+			color: @niceTextColor;
+			padding-left: 8px;
+			padding-right: 8px;
+			float: left;
+		}
+		.courseNameLabel{
+			color: @textHighlightColor2;
+		}
+	}
+	.buttonsPanel{
+		width: @buttonsPanelWidth;
+		margin-left: @libraryPanelMargin;
+		margin-right: @libraryPanelMargin;
+		float: left;
+		.btnLibrary{
+			width: @buttonsPanelWidth - (@libraryPanelMargin * 2);
+			font-size: 14px;
+			text-align: right;
+			margin-top: @libraryPanelMargin;
+			padding: 4px 12px;
+			border-radius: 8px;
+			display: inline-block;
+			&:hover{
+				text-decoration: none;
+			}
+			.btnTitle{
+				font-weight: bold;
+				color: @plainTextColor;
+				height: 60px;
+				line-height: 60px;
+			}
+		}
+
+	}	
+	.filesPanel{
+		width: @filesPanelWidth;
+		margin-top: @libraryPanelMargin;
+		float: left;
+		.filesHeader{
+			.btnLibraryHeader{
+				border: 0;
+				color: @niceTextColor;
+				padding-left: @libraryPanelMargin / 2;
+				padding-right: @libraryPanelMargin / 2;
+				font-size: 12px;
+				font-weight: bold;
+				border-left: 1px solid @buttonBorderLeftColor;
+				border-right: 1px solid @buttonBorderRightColor;
+			}
+			.btnIcon{width: @fileIconWidth + @libraryPanelMargin;}
+			.btnName{width: @pnlFileNameWidth + @libraryPanelMargin;}
+			.btnSize{width: @fileSizeWidth + @libraryPanelMargin;}
+			.btnClassification{width: @starsPanelWidth + @libraryPanelMargin;}
+			.btnPublishingDate{width: @publishingDateWidth + @libraryPanelMargin;}
+		}
+		.fileWrapper{
+			@fileWrapperHeight: 70px;
+			height: @fileWrapperHeight;
+			background-color: #0D0B0C;
+			margin-top: @libraryPanelMargin / 2;
+			color: @niceTextColor;
+			font-size: 13px;
+			line-height: 70px;
+			.fileIcon{
+				float: left;
+				padding: (@fileWrapperHeight - 40px) / 2;
+			}
+			.pnlFileName{
+				float: left;
+				width: @pnlFileNameWidth;
+				height: @fileWrapperHeight - @libraryPanelMargin;
+				padding: @libraryPanelMargin / 2;
+				.fileName{
+					line-height: 26px;
+				}
+				.fileDescription{
+					color: @textInfoColor;
+					font-size: 10px;
+					line-height: 12px;
+				}
+			}
+			.fileSize{
+				float: left;
+				width: @fileSizeWidth;
+				padding-left: @libraryPanelMargin / 2;
+				padding-right: @libraryPanelMargin / 2;
+			}
+			.starsPanel{
+				float: left;
+				width: @starsPanelWidth;
+				padding-left: @libraryPanelMargin / 2;
+				padding-right: @libraryPanelMargin / 2;
+			}
+			.publishingDate{
+				float: left;
+				width: @publishingDateWidth;
+				padding-left: @libraryPanelMargin / 2;
+				padding-right: @libraryPanelMargin / 2;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
 @media screen and (max-width: 1024px) {
 	@wrapperWidth: 600px;
