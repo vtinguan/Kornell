@@ -138,7 +138,6 @@ public class GenericCourseLibraryView extends Composite {
 						} catch (Exception e) {
 				            return object2.getFileSize().compareTo(object1.getFileSize());
 						}
-			        	
 			        }
 			     });
 			} else if(btnClassification.equals(source)){
