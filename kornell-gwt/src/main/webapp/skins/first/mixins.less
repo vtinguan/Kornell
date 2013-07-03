@@ -1,4 +1,4 @@
-.gradient(@colorStart: #000, @colorEnd: #fff){
+.gradient (@colorStart: #000, @colorEnd: #fff) {
 	background: @colorStart; /* Old browsers */
 	background: -moz-linear-gradient(top,  @colorStart 0%, @colorEnd 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@colorStart), color-stop(100%,@colorEnd)); /* Chrome,Safari4+ */
@@ -9,18 +9,33 @@
 	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 )"; /* IE6-9 */
  }
 
-.size(@square){
+.size (@square) {
 	width: @square;
 	height: @square;
 }
 
-.size(@width, @height){
+.size (@width, @height) {
 	width: @width;
 	height: @height;
 }
 
-.sizepx(@width, @height){
+.sizepx (@width, @height) {
 	.size(@width + 0px, @height + 0px);
+}
+
+.box-shadow (@string) {
+  -webkit-box-shadow: @string;
+  -moz-box-shadow:    @string;
+  box-shadow:         @string;
+}
+
+.south{
+	bottom: 0px;
+	left: 0px;
+}
+.north{
+	top: 0px;
+	left: 0px;
 }
 
 .changeBackgroundColorOnHover (@color, @percent) when (lightness(@color) >= 50%) {
@@ -30,7 +45,7 @@
   	background-color: lighten(@color, @percent);
 }
 
-.backgroundImage(@imageName){ 
+.backgroundImage (@imageName) { 
    background: url('@{imagesPath}@{imageName}') no-repeat; 
 }
 
@@ -40,10 +55,9 @@
 
 
 ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 18px;
+    height: 18px;
 }
- 
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
     border-radius: 10px;
@@ -69,6 +83,9 @@
 .width120{
 	widht:	120px;
 }
+.test{
+	color: red;
+}
 
 
 
@@ -83,10 +100,13 @@
  //  #####    ####   ######   ####   #    #   ####  
 
 // GENERAL
+@niceTextColor: #a5a4a5;
+@plainTextColor: #fff;
 @bordersColor: #474747;
 @textHighlightColor: #d88709;
+@textHighlightColor2: #D61609;
 @textHighlightDiscreteColor: #d6d5d5;
-@niceTextColor: #a5a4a5;
+@textInfoColor: #78af73;
 
 // BACKGROUND
 @bodyGradientStartColor: #000;
@@ -105,28 +125,43 @@
 // WELCOME
 @courseSummaryBackgroundColor: #3D3133;
 @courseSummaryThumbBorderColor: lighten(@courseSummaryBackgroundColor, 20%);
-@highlightCoursesCountColor: #D61609;
+@highlightCoursesCountColor: @textHighlightColor2;
+
+// PROFILE
+@profileBackgroundColor: @menuLeftItemGradientEndColor;
+@profileLabelValueColor: #e0dfe0;
+@profileLabelValueAddColor: #b795a4;
+@profileLabelPublicColor: #696769;
+@profileLabelColor: #bec1c3;
+@profileLabelExtraInfoColor: @textInfoColor;
+@profileLabelTitleColor: #fff;
 
 // MENULEFT
 @menuLeftGradientStartColor: #3e3a42;
 @menuLeftGradientEndColor: #271e22;
+@menuLeftItemGradientStartColor: #101013;
+@menuLeftItemGradientEndColor: #110f13;
 
 // BUTTONS
 @buttonNotSelectedGradientStart: #4c4f54;
 @buttonNotSelectedGradientEnd: #2a2d32;
 @buttonSelectedGradientStart: #9b020a;
 @buttonSelectedGradientEnd: #4b0105;
+@buttonBorderLeftColor: #505864;
+@buttonBorderRightColor: #181c22;
+@buttonBorderBottomColor: #0c0c0d;
 
+@wrapperWidth: 1024px;
+@menuLeftWidth: 220px;
 @imagesPath: ~"icons/";
 @defaultFont: Helvetica, arial, freesans, clean, sans-serif;
 @marginLeftLogo: 42px;
 
-
 // // GENERAL
+// @niceTextColor: #7e8991;
 // @bordersColor: #f1f6f7;
 // @textHighlightColor: #01a8d3;
 // @textHighlightDiscreteColor: #01a8d3;
-// @niceTextColor: #7e8991;
 
 // // BACKGROUND
 // @bodyGradientStartColor: #000;
@@ -147,16 +182,32 @@
 // @courseSummaryThumbBorderColor: lighten(@courseSummaryBackgroundColor, 20%);
 // @highlightCoursesCountColor: #01a8d3;
 
+// // PROFILE
+// @profileBackgroundColor: @menuLeftItemGradientEndColor;
+// @profileLabelValueColor: #e0dfe0;
+// @profileLabelValueAddColor: #b795a4;
+// @profileLabelPublicColor: #696769;
+// @profileLabelColor: #bec1c3;
+// @profileLabelExtraInfoColor: #78af73;
+// @profileLabelTitleColor: #ffffff;;
+
 // // MENULEFT
 // @menuLeftGradientStartColor: #3f4e53;
 // @menuLeftGradientEndColor: #28363b;
+// @menuLeftItemGradientStartColor: #101013;
+// @menuLeftItemGradientEndColor: #110f13;
 
 // // BUTTONS
 // @buttonNotSelectedGradientStart: #4c4f54;
 // @buttonNotSelectedGradientEnd: #2a2d32;
 // @buttonSelectedGradientStart: #9b020a;
 // @buttonSelectedGradientEnd: #4b0105;
+// @buttonBorderLeftColor: #2a343c;
+// @buttonBorderRightColor: #090d10;
+// @buttonBorderBottomColor: #0c0c0d;
 
+// @wrapperWidth: 1024px;
+// @menuLeftWidth: 220px;
 // @imagesPath: ~"icons/";
 // @defaultFont: Helvetica, arial, freesans, clean, sans-serif;
 // @marginLeftLogo: 42px;

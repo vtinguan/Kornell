@@ -1,7 +1,5 @@
 package kornell.api.client;
 
-import javax.management.RuntimeErrorException;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;

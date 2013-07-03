@@ -7,10 +7,6 @@ import kornell.api.client.KornellClient;
 import kornell.core.shared.data.CourseTO;
 import kornell.core.shared.data.CoursesTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.bar.ActivityBarView;
-import kornell.gui.client.presentation.bar.MenuBarView;
-import kornell.gui.client.presentation.bar.generic.GenericActivityBarView;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
 import com.google.gwt.core.client.GWT;
@@ -21,14 +17,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 

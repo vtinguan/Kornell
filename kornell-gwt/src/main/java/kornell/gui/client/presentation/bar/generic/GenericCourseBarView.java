@@ -89,7 +89,7 @@ public class GenericCourseBarView extends Composite implements CourseBarView {
 		displayButton(btnBack, BUTTON_BACK);	
 	}
 	
-	private void displayButton(final Button btnCourse, final String buttonType, boolean active) {
+	private void displayButton(final Button btn, final String buttonType, boolean active) {
 		//TODO i18n
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
@@ -103,29 +103,29 @@ public class GenericCourseBarView extends Composite implements CourseBarView {
 		label.addStyleName("label");
 		buttonPanel.add(label);
 		
-		btnCourse.add(buttonPanel);
+		btn.add(buttonPanel);
+		btn.removeStyleName("btn");
 		
 		if(active)
-			setSelected(btnCourse);
+			setSelected(btn);
 		else
-			setUnselected(btnCourse);
+			setUnselected(btn);
 	}
 
 	private void displayButton(Button btnCourse, String buttonType) {
 		displayButton(btnCourse, buttonType, false);
 	}
 
-	public void setSelected(Button btnCourse){
+	public void setSelected(Button btn){
 		setUnselected(currentBtn);
-		currentBtn = btnCourse;
-		
-		btnCourse.removeStyleName("inactiveCourseButton");
-		btnCourse.addStyleName("activeCourseButton");
+		currentBtn = btn;
+		btn.removeStyleName("btnNotSelected");
+		btn.addStyleName("btnSelected");
 	}
 
-	public void setUnselected(Button btnCourse){
-		btnCourse.removeStyleName("activeCourseButton");
-		btnCourse.addStyleName("inactiveCourseButton");
+	public void setUnselected(Button btn){
+		btn.removeStyleName("btnSelected");
+		btn.addStyleName("btnNotSelected");
 	}
 	
 	public void clearSelection(){
