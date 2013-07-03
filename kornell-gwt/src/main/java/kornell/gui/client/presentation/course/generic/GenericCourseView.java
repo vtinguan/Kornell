@@ -6,27 +6,12 @@ import kornell.api.client.data.Person;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.CourseBarEvent;
 import kornell.gui.client.event.CourseBarEventHandler;
-import kornell.gui.client.event.MenuLeftWelcomeEvent;
-import kornell.gui.client.event.MenuLeftWelcomeEventHandler;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
-import kornell.gui.client.presentation.atividade.AtividadeView.Presenter;
-import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.CourseView;
-import kornell.gui.client.presentation.terms.TermsView;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
-import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
-import kornell.gui.client.presentation.welcome.generic.GenericWelcomeCoursesView;
 
-import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -89,7 +74,7 @@ public class GenericCourseView extends Composite implements CourseView {
 			@Override
 			protected void ok(Person person) {
 				// TODO
-				display(COURSE_VIEW);
+				display(LIBRARY_VIEW);
 			}
 		});
 	}

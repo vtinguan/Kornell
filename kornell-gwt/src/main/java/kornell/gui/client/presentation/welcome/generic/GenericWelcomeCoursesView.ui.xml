@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:ScrollPanel>
 		<g:FlowPanel addStyleNames="pnlRight">
-			<g:FlowPanel>
+			<g:FlowPanel addStyleNames="btnPanel">
 				<g:Button ui:field="btnCoursesToAcquire" addStyleNames="btnCourses"/>
 				<g:Button ui:field="btnCoursesFinished" addStyleNames="btnCourses"/>
 				<g:Button ui:field="btnCoursesToStart" addStyleNames="btnCourses"/>
@@ -12,7 +12,7 @@
 			</g:FlowPanel>
 			
 			<g:FlowPanel ui:field="pnlInProgress" addStyleNames="pnlCoursesWrapper">
-				<g:FlowPanel>
+				<g:FlowPanel addStyleNames="pnlCoursesWrapperTitle">
 					<g:Image url="skins/first/icons/courses.png" addStyleNames="imgPnlCourses"/>
 					<g:Label ui:field="labelCoursesInProgress" addStyleNames="labelPnlCourses"/>
 					<g:Label ui:field="labelCoursesInProgressCount" addStyleNames="labelPnlCourses labelPnlCoursesHighlight"/>
@@ -21,7 +21,7 @@
 			</g:FlowPanel>
 			
 			<g:FlowPanel ui:field="pnlToStart" addStyleNames="pnlCoursesWrapper">
-				<g:FlowPanel>
+				<g:FlowPanel addStyleNames="pnlCoursesWrapperTitle">
 					<g:Image url="skins/first/icons/courses.png" addStyleNames="imgPnlCourses"/>
 					<g:Label ui:field="labelCoursesToStart" addStyleNames="labelPnlCourses"/>
 					<g:Label ui:field="labelCoursesToStartCount" addStyleNames="labelPnlCourses labelPnlCoursesHighlight"/>
@@ -31,7 +31,7 @@
 			    
 			    
 			<g:FlowPanel ui:field="pnlToAcquire" addStyleNames="pnlCoursesWrapper">
-				<g:FlowPanel>
+				<g:FlowPanel addStyleNames="pnlCoursesWrapperTitle">
 					<g:Image url="skins/first/icons/courses.png" addStyleNames="imgPnlCourses"/>
 			    	<g:Label ui:field="labelCoursesToAcquire" addStyleNames="labelPnlCourses"/>
 					<g:Label ui:field="labelCoursesToAcquireCount" addStyleNames="labelPnlCourses labelPnlCoursesHighlight"/>
@@ -41,7 +41,7 @@
 			    
 			    
 			<g:FlowPanel ui:field="pnlFinished" addStyleNames="pnlCoursesWrapper">
-				<g:FlowPanel>
+				<g:FlowPanel addStyleNames="pnlCoursesWrapperTitle">
 					<g:Image url="skins/first/icons/courses.png" addStyleNames="imgPnlCourses"/>
 			    	<g:Label ui:field="labelCoursesFinished" addStyleNames="labelPnlCourses"/>
 					<g:Label ui:field="labelCoursesFinishedCount" addStyleNames="labelPnlCourses labelPnlCoursesHighlight"/>

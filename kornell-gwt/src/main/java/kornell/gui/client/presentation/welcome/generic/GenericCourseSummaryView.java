@@ -20,6 +20,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -49,7 +50,7 @@ public class GenericCourseSummaryView extends Composite {
 	Image imgIconCourse;
 
 	@UiField
-	HorizontalPanel pnlCourseSummaryBar;
+	FlowPanel pnlCourseSummaryBar;
 	
 	String iconCourseURL = "skins/first/icons/";
 	
@@ -63,15 +64,15 @@ public class GenericCourseSummaryView extends Composite {
 		BigDecimal progress = courseTO.getEnrollment().getProgress();
 		if(progress != null){
 			if(progress.compareTo(BigDecimal.ONE) == 0){
-				Image iconCertificate = new Image();
-				iconCertificate.setUrl(iconCourseURL+"iconPDF.png");
-				iconCertificate.addStyleName("iconCertificate");
-				pnlCourseSummaryBar.add(iconCertificate);
-				
 				Label certificate = new Label(constants.certificate());
 				certificate.addStyleName("courseProgress");
 				certificate.addStyleName("courseProgressCertificate");
 				pnlCourseSummaryBar.add(certificate);
+				
+				Image iconCertificate = new Image();
+				iconCertificate.setUrl(iconCourseURL+"iconPDF.png");
+				iconCertificate.addStyleName("iconCertificate");
+				pnlCourseSummaryBar.add(iconCertificate);
 				
 				pProgress.setText(constants.courseFinished());
 				iconCourseURL+="iconFinished.png"; 
