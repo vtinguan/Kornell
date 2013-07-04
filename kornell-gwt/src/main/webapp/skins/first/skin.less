@@ -308,47 +308,162 @@ body {
 		}
 
 	}
-	.infoPanel{
-		width: @infoPanelWidth;
-		margin-top: @detailsPanelMargin;
-		float: left;
-		.infoDetails{
+	.contentPanel{
+		.infoPanel{
+			width: @infoPanelWidth;
 			margin-top: @detailsPanelMargin;
-			.infoTitle{
-				color: @textHighlightColor;
-				font-weight: bold;
-				font-size: 16px;
-				margin-bottom:  @detailsPanelMargin / 2;
-			}
-			.infoText{
-				color: @niceTextColor;
-				padding-right: @detailsPanelMargin;
+			float: left;
+			.infoDetails{
+				margin-top: @detailsPanelMargin;
+				.infoTitle{
+					color: @textHighlightColor;
+					font-weight: bold;
+					font-size: 16px;
+					margin-bottom:  @detailsPanelMargin / 2;
+				}
+				.infoText{
+					color: @niceTextColor;
+					padding-right: @detailsPanelMargin;
+				}
 			}
 		}
-	}
-	.hintsPanel{
-		margin-top: @detailsPanelMargin * 3;
-		width: @hintsPanelWidth;
-		float: left;
-		background-color: @menuLeftItemGradientEndColor;
-		border-radius: 8px;
-		color: @niceTextColor;
-		font-size: 12px;
-		line-height: 14px;
-		padding: @detailsPanelMargin;
-		.hintDetails{
-			padding-top: @detailsPanelMargin;
-			padding-bottom: @detailsPanelMargin;
-			.hintImg{
-				float: left;
+		.hintsPanel{
+			margin-top: @detailsPanelMargin * 3;
+			width: @hintsPanelWidth;
+			float: left;
+			background-color: @menuLeftItemGradientEndColor;
+			border-radius: 8px;
+			color: @niceTextColor;
+			font-size: 12px;
+			line-height: 14px;
+			padding: @detailsPanelMargin;
+			.hintDetails{
+				padding-top: @detailsPanelMargin;
+				padding-bottom: @detailsPanelMargin;
+				.hintImg{
+					float: left;
+				}
+				.hintText{
+					padding-left: @detailsPanelMargin * 1.5;
+				}
 			}
-			.hintText{
-				padding-left: @detailsPanelMargin * 1.5;
+		}	
+		.topicsPanel{
+			@topicsPanelWidth: .75 * @wrapperWidth;
+
+			@topicsWidth: .4 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@statusWidth: .17 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@timeWidth: .1 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@forumCommentsWidth: .21 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@notesWidth: .12 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			margin-top: @detailsPanelMargin;
+			float: left;
+			.topicsHeaderPanel{
+				@topicsHeaderPanelHeight: 24px;
+				height: @topicsHeaderPanelHeight;
+				margin-bottom: 10px;
+				.btnTopicsHeader{
+					height: @topicsHeaderPanelHeight;
+					line-height: @topicsHeaderPanelHeight;
+					border: 0;
+					color: @niceTextColor;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					font-size: 12px;
+					font-weight: bold;
+					border-left: 1px solid @buttonBorderLeftColor;
+					border-right: 1px solid @buttonBorderRightColor;
+					display: block;
+					float: left;
+					&:hover{
+						text-decoration: none;
+						cursor: default;
+					}
+				}
+				.btnTopics{width: @topicsWidth + @detailsPanelMargin;}
+				.btnStatus{width: @statusWidth + @detailsPanelMargin;}
+				.btnTime{width: @timeWidth + @detailsPanelMargin;}
+				.btnForumComments{width: @forumCommentsWidth + @detailsPanelMargin;}
+				.btnNotes{width: @notesWidth + @detailsPanelMargin;}
+			}
+			.topicWrapper{
+				@topicWrapperHeight: 40px;
+				height: @topicWrapperHeight;
+				line-height: @topicWrapperHeight;
+				background-color: @detailsItemWrapperColor;
+				margin-top: @detailsPanelMargin / 2;
+				color: @niceTextColor;
+				font-size: 13px;
+				.topicPanel{
+					float: left;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					width: @topicsWidth + @detailsPanelMargin + 2px;
+					.topicIcon{
+						float: left;
+						padding: (@topicWrapperHeight - 18px) / 2;
+					}
+					.lblTopic{
+						float: left;
+						color: lighten(@niceTextColor, 20%);
+						padding-left: @detailsPanelMargin;
+					}
+				}
+				.lblStatus{
+					float: left;
+					width: @statusWidth + @detailsPanelMargin + 2px;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+				}
+				.lblStatusFinishedTest{
+					float: left;
+					width: @statusWidth + @detailsPanelMargin + 2px;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					color: @detailsTopicStatusFinishedColor;
+				}
+				.lblTime{
+					float: left;
+					width: @timeWidth + @detailsPanelMargin + 2px;
+					text-align: center;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+				}
+				.pnlForumComments{
+					float: left;
+					width: @forumCommentsWidth + @detailsPanelMargin + 2px;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					.lblForumComments{
+						float: left;
+						color: lighten(@niceTextColor, 20%);
+						padding-right: @detailsPanelMargin / 4;
+					}
+					.lblDividingBar{
+						float: left;
+						color: darken(@niceTextColor, 20%);
+						padding-right: @detailsPanelMargin / 4;
+					}
+					.lblNew{
+						float: left;
+						padding-right: @detailsPanelMargin / 4;
+					}
+					.lblNewForumComments{
+						float: left;
+						color: @textHighlightColor;
+					}
+				}
+				.lblNotes{
+					float: left;
+					width: @notesWidth + @detailsPanelMargin + 2px;
+					text-align: center;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+				}
 			}
 		}
 	}
 }
-
 
 
 
@@ -431,6 +546,7 @@ body {
 		.filesHeader{
 			.btnLibraryHeader{
 				border: 0;
+				text-align: left;
 				color: @niceTextColor;
 				padding-left: @libraryPanelMargin / 2;
 				padding-right: @libraryPanelMargin / 2;
@@ -448,11 +564,11 @@ body {
 		.fileWrapper{
 			@fileWrapperHeight: 70px;
 			height: @fileWrapperHeight;
-			background-color: #0D0B0C;
+			line-height: @fileWrapperHeight;
+			background-color: @detailsItemWrapperColor;
 			margin-top: @libraryPanelMargin / 2;
 			color: @niceTextColor;
 			font-size: 13px;
-			line-height: 70px;
 			.fileIcon{
 				float: left;
 				padding: (@fileWrapperHeight - 40px) / 2;
@@ -620,8 +736,8 @@ body {
 		@detailsPanelMargin: 10px;
 		width:	@detailsPanelWidth;
 		.buttonsPanel{
-			width: @buttonsPanelWidth;
-			margin-left: 0px;
+			width: @buttonsPanelWidth - 17px;
+			margin-left: 17px;
 			margin-right: 0px;
 			margin-top: @detailsPanelMargin;
 			.btnDetails{
@@ -631,64 +747,78 @@ body {
 				float: left;
 			}
 		}
-		.infoPanel{
-			width: @infoPanelWidth;
-		}
-		.hintsPanel{
-			width: @hintsPanelWidth;
-			margin-top: @detailsPanelMargin; 
-			margin-bottom: @detailsPanelMargin;
-			margin-right: @detailsPanelMargin * 3;
-			margin-left: @detailsPanelMargin * 3;
-		}
+		.contentPanel{
+			.infoPanel{
+				width: @infoPanelWidth;
+			}
+			.hintsPanel{
+				width: @hintsPanelWidth;
+				margin-top: @detailsPanelMargin; 
+				margin-bottom: @detailsPanelMargin;
+				margin-right: @detailsPanelMargin * 3;
+				margin-left: @detailsPanelMargin * 3;
+			}
+			.topicsPanel{
+				padding-left: @detailsPanelMargin / 2;
+				padding-right: @detailsPanelMargin / 2;
+				margin-left: 35px;
+				.topicsHeaderPanel{
+					.btnForumComments{display: none}
+					.btnNotes{display: none}
+				}					
+				.topicWrapper{
+					.pnlForumComments{display: none}
+					.lblNotes{display: none}
+				}
+			}
+		}	
 	}
 
 
 	.libraryPanel{
-	@libraryPanelMargin: 10px;
-	@buttonsPanelWidth: .18 * @wrapperWidth;
-	@filesPanelWidth: .7 * @wrapperWidth;
-	@pnlFileNameWidth: .8 * @filesPanelWidth - @libraryPanelMargin;
-	.buttonsPanel{
-		width: @buttonsPanelWidth;
-		margin-right: @libraryPanelMargin * 2;
-		.btnLibrary{
-			width: @buttonsPanelWidth - (@libraryPanelMargin * 2);
-			font-size: 10px;
-			.btnTitle{
-				font-weight: normal;
-				height: 40px;
-				line-height: 40px;
+		@libraryPanelMargin: 10px;
+		@buttonsPanelWidth: .18 * @wrapperWidth;
+		@filesPanelWidth: .7 * @wrapperWidth;
+		@pnlFileNameWidth: .8 * @filesPanelWidth - @libraryPanelMargin;
+		.buttonsPanel{
+			width: @buttonsPanelWidth;
+			margin-right: @libraryPanelMargin * 2;
+			.btnLibrary{
+				width: @buttonsPanelWidth - (@libraryPanelMargin * 2);
+				font-size: 10px;
+				.btnTitle{
+					font-weight: normal;
+					height: 40px;
+					line-height: 40px;
+				}
 			}
-		}
 
-	}	
-	.filesPanel{
-		width: @filesPanelWidth;
-		.filesHeader{
+		}	
+		.filesPanel{
 			width: @filesPanelWidth;
-			.btnLibraryHeader{}
-			.btnIcon{}
-			.btnName{width: @pnlFileNameWidth + (@libraryPanelMargin * 2);}
-			.btnSize{display: none;}
-			.btnClassification{display: none}
-			.btnPublishingDate{display: none}
-		}
-		.fileWrapper{
-			width: @filesPanelWidth;
-			.fileIcon{
+			.filesHeader{
+				width: @filesPanelWidth;
+				.btnLibraryHeader{}
+				.btnIcon{}
+				.btnName{width: @pnlFileNameWidth + (@libraryPanelMargin * 2);}
+				.btnSize{display: none;}
+				.btnClassification{display: none}
+				.btnPublishingDate{display: none}
 			}
-			.pnlFileName{
-				width: @pnlFileNameWidth;
-				.fileName{}
-				.fileDescription{}
+			.fileWrapper{
+				width: @filesPanelWidth;
+				.fileIcon{
+				}
+				.pnlFileName{
+					width: @pnlFileNameWidth;
+					.fileName{}
+					.fileDescription{}
+				}
+				.fileSize{display: none;}
+				.starsPanel{display: none;}
+				.publishingDate{display: none;}
 			}
-			.fileSize{display: none;}
-			.starsPanel{display: none;}
-			.publishingDate{display: none;}
 		}
 	}
-}
-
 
 }

@@ -12,13 +12,13 @@ import java.util.StringTokenizer;
 import kornell.api.client.KornellClient;
 import kornell.gui.client.KornellConstants;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -32,7 +32,6 @@ public class GenericCourseLibraryView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	
 	
 	private KornellClient client;
 	private PlaceController placeCtrl;
@@ -53,13 +52,18 @@ public class GenericCourseLibraryView extends Composite {
 	FlowPanel filesWrapper; 
 	
 	FilesTO filesTO;
-	com.google.gwt.user.client.ui.Button btnIcon;
-	com.google.gwt.user.client.ui.Button btnName; 
-	com.google.gwt.user.client.ui.Button btnSize;
-	com.google.gwt.user.client.ui.Button btnClassification;
-	com.google.gwt.user.client.ui.Button btnPublishingDate;
+	Button btnIcon;
+	Button btnName; 
+	Button btnSize;
+	Button btnClassification;
+	Button btnPublishingDate;
+	Button btnLastClicked;
+	private static Integer ORDER_ASCENDING = 0;
+	private static Integer ORDER_DESCENDING = 1;
+	private Integer order = ORDER_ASCENDING;
+
 	
-	Map<Integer, Widget> fileWidgetMap = new HashMap<Integer, Widget>();
+	Map<Integer, FlowPanel> fileWidgetMap = new HashMap<Integer, FlowPanel>();
 	
 	public GenericCourseLibraryView(KornellClient client, PlaceController placeCtrl) {
 		this.client = client;
@@ -101,13 +105,10 @@ public class GenericCourseLibraryView extends Composite {
 		courseNameLabel.addStyleName("courseNameLabel");
 		titlePanel.add(courseNameLabel);
 	}
-
+	
 	private void displayFilesTable() {
-		displayFilesTable(null);
-	}
-	private void displayFilesTable(Object source) {
 		displayHeader();
-		displayFiles(source);
+		displayFiles(btnName);
 	}
 
 	private void displayFiles(Object source) {
@@ -115,147 +116,101 @@ public class GenericCourseLibraryView extends Composite {
 		
 		if (list.size() > 0) {
 			if(btnIcon.equals(source)){
-			    Collections.sort(list, new Comparator<FileTO>() {
-			        @Override
-			        public int compare(final FileTO object1, final FileTO object2) {
-			            return object1.getFileType().compareTo(object2.getFileType());
-			        }
-			     });
-			} else if(btnSize.equals(source)){
-			    Collections.sort(list, new Comparator<FileTO>() {
-			        @Override
-			        public int compare(final FileTO object1, final FileTO object2) {
-			        	try {
-							String[] parts1 = object1.getFileSize().split(" ");
-							String[] parts2 = object2.getFileSize().split(" ");
-							Integer value1 = Integer.parseInt(parts1[0]);
-							String unit1 = parts1[1];
-							Integer value2 = Integer.parseInt(parts2[0]);
-							String unit2 = parts2[1];
-							if(unit1.equals(unit2))
-							    return value2.compareTo(value1);
-							return unit2.compareTo(unit1);
-						} catch (Exception e) {
-				            return object2.getFileSize().compareTo(object1.getFileSize());
-						}
-			        }
-			     });
-			} else if(btnClassification.equals(source)){
-			    Collections.sort(list, new Comparator<FileTO>() {
-			        @Override
-			        public int compare(final FileTO object1, final FileTO object2) {
-			            return object2.getClassification().compareTo(object1.getClassification());
-			        }
-			     });
-			} else if(btnPublishingDate.equals(source)){
-			    Collections.sort(list, new Comparator<FileTO>() {
-			        @Override
-			        public int compare(final FileTO object1, final FileTO object2) {
-			            return object1.getPublishingDate().compareTo(object2.getPublishingDate());
-			        }
-			     });
+			    Collections.sort(list, new FileTypeComparator());
+		    	if(btnIcon.equals(btnLastClicked) && order == ORDER_ASCENDING){
+		    		Collections.reverse(list);
+		    		order = ORDER_DESCENDING;
+		    	} else {
+		    		order = ORDER_ASCENDING;
+		    	}
+			} else if(btnSize.equals(source)) {
+			    Collections.sort(list, new FileSizeComparator());
+		    	if(btnSize.equals(btnLastClicked) && order == ORDER_DESCENDING){
+		    		Collections.reverse(list);
+		    		order = ORDER_ASCENDING;
+		    	} else {
+		    		order = ORDER_DESCENDING;
+		    	}
+			} else if(btnClassification.equals(source)) {
+			    Collections.sort(list, new FileClassificationComparator());
+		    	if(btnClassification.equals(btnLastClicked) && order == ORDER_DESCENDING){
+		    		Collections.reverse(list);
+		    		order = ORDER_ASCENDING;
+		    	} else {
+		    		order = ORDER_DESCENDING;
+		    	}
+			} else if(btnPublishingDate.equals(source)) {
+			    Collections.sort(list, new FilePublishingDateComparator());
+		    	if(btnPublishingDate.equals(btnLastClicked) && order == ORDER_ASCENDING){
+		    		Collections.reverse(list);
+		    		order = ORDER_DESCENDING;
+		    	} else {
+		    		order = ORDER_ASCENDING;
+		    	}
 			} else {
-			    Collections.sort(list, new Comparator<FileTO>() {
-			        @Override
-			        public int compare(final FileTO object1, final FileTO object2) {
-			            return object1.getFileName().compareTo(object2.getFileName());
-			        }
-			     });
+			    Collections.sort(list, new FileNameComparator());
+		    	if(btnName.equals(btnLastClicked) && order == ORDER_ASCENDING){
+		    		Collections.reverse(list);
+		    		order = ORDER_DESCENDING;
+		    	} else {
+		    		order = ORDER_ASCENDING;
+		    	}
 			}
+			btnLastClicked = (Button) source;
 		}
 		
-		if(fileWidgetMap.size() <= 0){
-			for (FileTO fileTO : list){
+		if(fileWidgetMap.size() <= 0)
+			for (FileTO fileTO : list)
 				fileWidgetMap.put(fileTO.getId(), getFilePanel(fileTO));
-			}
-		}
 
 		filesWrapper.clear();
-		for(FileTO fileTO : list){
+		for(FileTO fileTO : list)
 			filesWrapper.add(fileWidgetMap.get(fileTO.getId()));
-		}
 	}
 
 	private void displayHeader() {
-		btnIcon = new com.google.gwt.user.client.ui.Button("Tipo");
-		btnIcon.removeStyleName("btn");
-		btnIcon.addStyleName("btnLibraryHeader");
-		btnIcon.addStyleName("btnIcon");
-		btnIcon.addStyleName("btnNotSelected");
-		filesHeader.add(btnIcon);
-		btnIcon.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				displayFiles(btnIcon);
-				clearButtonSelection();
-				btnIcon.addStyleName("btnSelected");
-			}
-		});
+		btnIcon = new Button("Tipo");
+		displayHeaderButton(btnIcon, "btnIcon", false);
 
-		btnName = new com.google.gwt.user.client.ui.Button("Nome do Arquivo");
-		btnName.removeStyleName("btn");
-		btnName.addStyleName("btnLibraryHeader");
-		btnName.addStyleName("btnName");
-		btnName.addStyleName("btnSelected");
-		filesHeader.add(btnName);
-		btnName.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				displayFiles(btnName);
-				clearButtonSelection();
-				btnName.addStyleName("btnSelected");
-			}
-		});
+		btnName = new Button("Nome do Arquivo");
+		displayHeaderButton(btnName, "btnName", true);
 
-		btnSize = new com.google.gwt.user.client.ui.Button("Tamanho");
-		btnSize.removeStyleName("btn");
-		btnSize.addStyleName("btnLibraryHeader");
-		btnSize.addStyleName("btnSize");
-		btnSize.addStyleName("btnNotSelected");
-		filesHeader.add(btnSize);
-		btnSize.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				displayFiles(btnSize);
-				clearButtonSelection();
-				btnSize.addStyleName("btnSelected");
-			}
-		});
+		btnSize = new Button("Tamanho");
+		displayHeaderButton(btnSize, "btnSize", false);
 
-		btnClassification = new com.google.gwt.user.client.ui.Button("Classificação");
-		btnClassification.removeStyleName("btn");
-		btnClassification.addStyleName("btnLibraryHeader");
-		btnClassification.addStyleName("btnClassification");
-		btnClassification.addStyleName("btnNotSelected");
-		filesHeader.add(btnClassification);
-		btnClassification.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				displayFiles(btnClassification);
-				clearButtonSelection();
-				btnClassification.addStyleName("btnSelected");
-			}
-		});
+		btnClassification = new Button("Classificação");
+		displayHeaderButton(btnClassification, "btnClassification", false);
 
-		btnPublishingDate = new com.google.gwt.user.client.ui.Button("Data da publicação");
-		btnPublishingDate.removeStyleName("btn");
-		btnPublishingDate.addStyleName("btnLibraryHeader");
-		btnPublishingDate.addStyleName("btnPublishingDate");
-		btnPublishingDate.addStyleName("btnNotSelected");
-		filesHeader.add(btnPublishingDate);
-		btnPublishingDate.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				displayFiles(btnPublishingDate);
-				clearButtonSelection();
-				btnPublishingDate.addStyleName("btnSelected");
-			}
-		});
+		btnPublishingDate = new Button("Data da publicação");
+		displayHeaderButton(btnPublishingDate, "btnPublishingDate", false);
 	}
 
-	private Widget getFilePanel(FileTO fileTO) {
+	private void displayHeaderButton(Button btn, String styleName, boolean selected) {
+		btn.removeStyleName("btn");
+		btn.addStyleName("btnLibraryHeader"); 
+		btn.addStyleName(styleName);
+		btn.addStyleName(selected ? "btnSelected" : "btnNotSelected");
+		btn.addClickHandler(new LibraryHeaderClickHandler());
+		filesHeader.add(btn);
+	}
+
+	private void handleEvent(Button btn) {		
+		btnLastClicked.removeStyleName("btnSelected");
+		btnLastClicked.addStyleName("btnNotSelected");
+		btn.addStyleName("btnSelected");
+		btn.removeStyleName("btnNotSelected");
+		
+		displayFiles(btn);
+		btnLastClicked = btn;
+	}
+
+	private FlowPanel getFilePanel(FileTO fileTO) {
 		FlowPanel fileWrapper = new FlowPanel();
 		fileWrapper.addStyleName("fileWrapper");
 		
 		Image fileIcon = new Image(getIconImageByFileType(fileTO.getFileType()));
 		fileIcon.addStyleName("fileIcon");
 		fileWrapper.add(fileIcon);
-		
 		
 		FlowPanel pnlFileName = new FlowPanel();
 		pnlFileName.addStyleName("pnlFileName");
@@ -299,18 +254,14 @@ public class GenericCourseLibraryView extends Composite {
 
 	private void displayButtons() {
 		buttonsPanel.add(displayButton("Todos os arquivos", true));
-		buttonsPanel.add(displayButton("Mais acessados"));
-		buttonsPanel.add(displayButton("Categoria"));
-		buttonsPanel.add(displayButton("Meus arquivos"));
-		buttonsPanel.add(displayButton("Incluir arquivo"));
+		buttonsPanel.add(displayButton("Mais acessados", false));
+		buttonsPanel.add(displayButton("Categoria", false));
+		buttonsPanel.add(displayButton("Meus arquivos", false));
+		buttonsPanel.add(displayButton("Incluir arquivo", false));
 	}
 
-	private Button displayButton(String title) {
-		return displayButton(title, false);
-	}
-
-	private Button displayButton(String title, boolean selected) {
-		Button btn = new Button();
+	private com.github.gwtbootstrap.client.ui.Button displayButton(String title, boolean selected) {
+		com.github.gwtbootstrap.client.ui.Button btn = new com.github.gwtbootstrap.client.ui.Button();
 		btn.addStyleName("btnLibrary");
 		btn.addStyleName(selected ? "btnSelected" : "btnNotSelected");
 		btn.removeStyleName("btn");
@@ -322,19 +273,58 @@ public class GenericCourseLibraryView extends Composite {
 		return btn;
 	}
 
-	private void clearButtonSelection() {
-		btnIcon.removeStyleName("btnSelected");
-		btnName.removeStyleName("btnSelected"); 
-		btnSize.removeStyleName("btnSelected");
-		btnClassification.removeStyleName("btnSelected");
-		btnPublishingDate.removeStyleName("btnSelected");
-		btnIcon.addStyleName("btnNotSelected");
-		btnName.addStyleName("btnNotSelected"); 
-		btnSize.addStyleName("btnNotSelected");
-		btnClassification.addStyleName("btnNotSelected");
-		btnPublishingDate.addStyleName("btnNotSelected");
+	private final class LibraryHeaderClickHandler implements ClickHandler {
+		public void onClick(ClickEvent event) {
+			handleEvent((Button) event.getSource());
+		}
 	}
 
+	private final class FileNameComparator implements Comparator<FileTO> {
+		@Override
+		public int compare(final FileTO object1, final FileTO object2) {
+		    return object1.getFileName().compareTo(object2.getFileName());
+		}
+	}
+
+	private final class FilePublishingDateComparator implements Comparator<FileTO> {
+		@Override
+		public int compare(final FileTO object1, final FileTO object2) {
+		    return object1.getPublishingDate().compareTo(object2.getPublishingDate());
+		}
+	}
+
+	private final class FileClassificationComparator implements Comparator<FileTO> {
+		@Override
+		public int compare(final FileTO object1, final FileTO object2) {
+		    return object2.getClassification().compareTo(object1.getClassification());
+		}
+	}
+
+	private final class FileSizeComparator implements Comparator<FileTO> {
+		@Override
+		public int compare(final FileTO object1, final FileTO object2) {
+			try {
+				String[] parts1 = object1.getFileSize().split(" ");
+				String[] parts2 = object2.getFileSize().split(" ");
+				Integer value1 = Integer.parseInt(parts1[0]);
+				String unit1 = parts1[1];
+				Integer value2 = Integer.parseInt(parts2[0]);
+				String unit2 = parts2[1];
+				if(unit1.equals(unit2))
+				    return value2.compareTo(value1);
+				return unit2.compareTo(unit1);
+			} catch (Exception e) {
+		        return object2.getFileSize().compareTo(object1.getFileSize());
+			}
+		}
+	}
+
+	private final class FileTypeComparator implements Comparator<FileTO> {
+		@Override
+		public int compare(final FileTO object1, final FileTO object2) {
+		    return object1.getFileType().compareTo(object2.getFileType());
+		}
+	}
 
 	private FilesTO getFilesTO() {
 		List<FileTO> files = new ArrayList<FileTO>();
