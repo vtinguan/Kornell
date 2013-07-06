@@ -33,8 +33,8 @@ public class GlobalActivityMapper implements ActivityMapper {
   }
 
   /** TODO: This may suck fast */
-  public Activity getActivity(final Place place) {
-	  GWT.log("Global Manager looling for "+place.toString());
+public Activity getActivity(final Place place) {
+	GWT.log("Global Manager looling for "+place.toString());
     if (place instanceof HomePlace) {
       return new HomeActivity(factory);
     }

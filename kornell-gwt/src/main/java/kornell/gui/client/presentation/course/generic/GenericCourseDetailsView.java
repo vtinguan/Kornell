@@ -57,6 +57,7 @@ public class GenericCourseDetailsView extends Composite {
 	
 
 	TopicsTO topicsTO;
+	CertificationsTO certificationsTO;
 	
 	public GenericCourseDetailsView(KornellClient client, PlaceController placeCtrl) {
 		this.client = client;
@@ -73,12 +74,13 @@ public class GenericCourseDetailsView extends Composite {
 		});*/
 		// TODO get info	
 		topicsTO = getTopicsTO();
+		certificationsTO = getCertificationsTO();
 		display();
 	}
 
 
 	private void display() {
-		btnCurrent = btnAbout;
+		btnCurrent = btnCertification;
 		//TODO i18n
 		displayTitle();
 		displayButtons();
@@ -95,6 +97,91 @@ public class GenericCourseDetailsView extends Composite {
 		} else if(btn.equals(btnCertification)) {
 			contentPanel.add(getCertificationPanel());
 		}
+	}
+
+	private Widget getCertificationPanel() {
+		FlowPanel certificationPanel = new FlowPanel();
+		certificationPanel.addStyleName("certificationPanel");
+
+		certificationPanel.add(getCertificationInfo());
+		certificationPanel.add(getCertificationTableHeader());
+		certificationPanel.add(getCertificationTableContent());
+		
+		return certificationPanel;
+	}
+
+	private Widget getCertificationInfo() {
+		FlowPanel certificationInfo = new FlowPanel();
+		certificationInfo.addStyleName("certificationInfo");
+		
+		Label infoTitle = new Label("Certificação");
+		infoTitle.addStyleName("certificationInfoTitle");
+		certificationInfo.add(infoTitle);
+		
+		Label infoText = new Label("Confira abaixo o status dos testes e avaliações presentes neste curso. Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e ter sido aprovado na avaliação final.");
+		infoText.addStyleName("certificationInfoText");
+		certificationInfo.add(infoText);
+		
+		return certificationInfo;
+	}
+
+	private FlowPanel getCertificationTableContent() {
+		FlowPanel certificationContentPanel = new FlowPanel();
+		certificationContentPanel.addStyleName("certificationContentPanel");
+		
+		for (CertificationTO certificationTO : certificationsTO.getCertifications()) {
+			certificationContentPanel.add(getCertificationWrapper(certificationTO));
+		}
+
+		return certificationContentPanel;
+	}
+
+	private FlowPanel getCertificationWrapper(CertificationTO certificationTO) {
+		FlowPanel certificationWrapper = new FlowPanel();
+		certificationWrapper.addStyleName("certificationWrapper");
+
+		FlowPanel itemPanel = new FlowPanel();
+		itemPanel.addStyleName("itemPanel");
+		
+		Image certificationIcon = new Image(IMAGES_PATH + "status_" + certificationTO.getType() + ".png");
+		certificationIcon.addStyleName("certificationIcon");
+		itemPanel.add(certificationIcon);
+		
+		Label lblName = new Label(certificationTO.getName());
+		lblName.addStyleName("lblName");
+		itemPanel.add(lblName);
+		
+		Label lblDescription = new Label(certificationTO.getDescription());
+		lblDescription.addStyleName("lblDescription");
+		itemPanel.add(lblDescription);
+		
+		certificationWrapper.add(itemPanel);
+		
+		Label lblStatus = new Label(certificationTO.getStatus());
+		lblStatus.addStyleName("lblStatus");
+		certificationWrapper.add(lblStatus);
+		
+		Label lblGrade = new Label(certificationTO.getGrade() == null ? " " : (!"".equals(certificationTO.getGrade()) ? certificationTO.getGrade() : "-"));
+		lblGrade.addStyleName("lblGrade");
+		certificationWrapper.add(lblGrade);
+		
+		Label lblActions = new Label(!"".equals(certificationTO.getActions()) ? certificationTO.getActions() : "-");
+		lblActions.addStyleName("lblActions");
+		certificationWrapper.add(lblActions);
+		
+		return certificationWrapper;
+	}
+
+	private FlowPanel getCertificationTableHeader() {
+		FlowPanel certificationHeaderPanel = new FlowPanel(); 
+		certificationHeaderPanel.addStyleName("certificationHeaderPanel");
+
+		certificationHeaderPanel.add(getHeaderButton("Item", "btnItem", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions", "btnCertificationHeader"));
+		
+		return certificationHeaderPanel;
 	}
 
 	private FlowPanel getTopicsPanel() {
@@ -177,26 +264,22 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel topicsHeaderPanel = new FlowPanel(); 
 		topicsHeaderPanel.addStyleName("topicsHeaderPanel");
 
-		topicsHeaderPanel.add(getHeaderButton("Tópicos", "btnTopics"));
-		topicsHeaderPanel.add(getHeaderButton("Status", "btnStatus"));
-		topicsHeaderPanel.add(getHeaderButton("Tempo", "btnTime"));
-		topicsHeaderPanel.add(getHeaderButton("Comentários no Fórum", "btnForumComments"));
-		topicsHeaderPanel.add(getHeaderButton("Anotações", "btnNotes"));
+		topicsHeaderPanel.add(getHeaderButton("Tópicos", "btnTopics", "btnTopicsHeader"));
+		topicsHeaderPanel.add(getHeaderButton("Status", "btnStatus", "btnTopicsHeader"));
+		topicsHeaderPanel.add(getHeaderButton("Tempo", "btnTime", "btnTopicsHeader"));
+		topicsHeaderPanel.add(getHeaderButton("Comentários no Fórum", "btnForumComments", "btnTopicsHeader"));
+		topicsHeaderPanel.add(getHeaderButton("Anotações", "btnNotes", "btnTopicsHeader"));
 		
 		return topicsHeaderPanel;
 	}
 
-	private Button getHeaderButton(String label, String styleName) {
+	private Button getHeaderButton(String label, String styleName, String styleNameGlobal) {
 		Button btn = new Button(label);
 		btn.removeStyleName("btn");
-		btn.addStyleName("btnTopicsHeader"); 
+		btn.addStyleName(styleNameGlobal); 
 		btn.addStyleName(styleName);
 		btn.addStyleName("btnNotSelected");
 		return btn;
-	}
-
-	private Widget getCertificationPanel() {
-		return new FlowPanel();
 	}
 
 	private void displayTitle() {		
@@ -324,6 +407,87 @@ public class GenericCourseDetailsView extends Composite {
 		topics.add(new TopicTO(14,"Avaliação (Pós-Teste)","A iniciar","",1,1,true,"toStartTest"));
 		
 		return new TopicsTO(topics);
+	}
+
+	private CertificationsTO getCertificationsTO() {
+		List<CertificationTO> certifications = new ArrayList<CertificationTO>();
+		certifications.add(new CertificationTO("finishedTest", "Pré-teste", "Esta avaliação tem a intenção de identificar o seu conhecimento referente ao tema do curso."
+				+" A diferença da nota do pré-teste com o pós-teste (avaliação final) serve para te mostrar o ganho de conhecimento que você terá obtido ao final do curso",
+				"Concluído", "30", "Visualizar"));
+		certifications.add(new CertificationTO("finishedTest", "Pós-teste", "Esta avaliação final tem a intenção de identificar o seu conhecimento após a conclusão do curso.",
+				"A fazer", "", ""));
+		certifications.add(new CertificationTO("certification", "Certificado", "Esta avaliação tem a intenção de identificar o seu conhecimento referente ao tema do curso."
+				+" A diferença da nota do pré-teste com o pós-teste (avaliação final) serve para te mostrar o ganho de conhecimento que você terá obtido ao final do curso",
+				"Indisponível", null, ""));
+		
+		return new CertificationsTO(certifications);
+	}
+}
+
+class CertificationsTO{
+	List<CertificationTO> certifications;
+	public CertificationsTO(List<CertificationTO> certifications) {
+		super();
+		this.certifications = certifications;
+	}
+	public List<CertificationTO> getCertifications() {
+		return certifications;
+	}
+	public void setTopics(List<CertificationTO> certifications) {
+		this.certifications = certifications;
+	}
+}
+class CertificationTO {
+	String type;
+	String name;
+	String description;
+	String status;
+	String grade;
+	String actions;
+	public CertificationTO(String type, String name, String description, String status, String grade, String actions) {
+		super();
+		this.type = type;
+		this.name = name;
+		this.description = description;
+		this.status = status;
+		this.grade = grade;
+		this.actions = actions;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getGrade() {
+		return grade;
+	}
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+	public String getActions() {
+		return actions;
+	}
+	public void setActions(String actions) {
+		this.actions = actions;
 	}
 }
 

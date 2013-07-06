@@ -282,13 +282,17 @@ public class GenericCourseLibraryView extends Composite {
 	private final class FileNameComparator implements Comparator<FileTO> {
 		@Override
 		public int compare(final FileTO object1, final FileTO object2) {
-		    return object1.getFileName().compareTo(object2.getFileName());
+			if(object1.getFileName().compareTo(object2.getFileName()) == 0)
+			    return object1.getFileDescription().compareTo(object2.getFileDescription());
+			return object1.getFileName().compareTo(object2.getFileName());
 		}
 	}
 
 	private final class FilePublishingDateComparator implements Comparator<FileTO> {
 		@Override
 		public int compare(final FileTO object1, final FileTO object2) {
+			if(object1.getPublishingDate().compareTo(object2.getPublishingDate()) == 0)
+				return object1.getFileName().compareTo(object2.getFileName());
 		    return object1.getPublishingDate().compareTo(object2.getPublishingDate());
 		}
 	}
@@ -296,6 +300,8 @@ public class GenericCourseLibraryView extends Composite {
 	private final class FileClassificationComparator implements Comparator<FileTO> {
 		@Override
 		public int compare(final FileTO object1, final FileTO object2) {
+			if(object1.getClassification().compareTo(object2.getClassification()) == 0)
+				return object1.getFileName().compareTo(object2.getFileName());
 		    return object2.getClassification().compareTo(object1.getClassification());
 		}
 	}
@@ -304,6 +310,7 @@ public class GenericCourseLibraryView extends Composite {
 		@Override
 		public int compare(final FileTO object1, final FileTO object2) {
 			try {
+				int ret = 0;
 				String[] parts1 = object1.getFileSize().split(" ");
 				String[] parts2 = object2.getFileSize().split(" ");
 				Integer value1 = Integer.parseInt(parts1[0]);
@@ -311,8 +318,11 @@ public class GenericCourseLibraryView extends Composite {
 				Integer value2 = Integer.parseInt(parts2[0]);
 				String unit2 = parts2[1];
 				if(unit1.equals(unit2))
-				    return value2.compareTo(value1);
-				return unit2.compareTo(unit1);
+					ret = value2.compareTo(value1);
+				ret = unit2.compareTo(unit1);
+				if(ret == 0)
+					return object1.getFileName().compareTo(object2.getFileName());
+				return ret;
 			} catch (Exception e) {
 		        return object2.getFileSize().compareTo(object1.getFileSize());
 			}
@@ -322,24 +332,26 @@ public class GenericCourseLibraryView extends Composite {
 	private final class FileTypeComparator implements Comparator<FileTO> {
 		@Override
 		public int compare(final FileTO object1, final FileTO object2) {
+			if(object1.getFileType().compareTo(object2.getFileType()) == 0)
+				return object1.getFileName().compareTo(object2.getFileName());
 		    return object1.getFileType().compareTo(object2.getFileType());
 		}
 	}
 
 	private FilesTO getFilesTO() {
 		List<FileTO> files = new ArrayList<FileTO>();
-		files.add(new FileTO(1,"pdf", "Planos de marketing", "Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Mb", 1, new Date()));
-		files.add(new FileTO(2,"xls", "Calculadora de bonificações", "A calculadora que permite você fazer simulações dos ganhos com base no seu número de vendas", "50 Mb", 2, new Date()));
-		files.add(new FileTO(3,"doc", "Passos para a elaboração de uma proposta", "Utilize este documento para a elaboração de propostas comerciais", "2 Mb", 3, new Date()));
-		files.add(new FileTO(4,"doc", "Planos de marketing", "Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "1 Mb", 3, new Date()));
-		files.add(new FileTO(5,"pdf", "Planos de marketing", "Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "500 Kb", 4, new Date()));
-		files.add(new FileTO(6,"pdf", "Planos de marketing", "Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Kb", 5, new Date()));
-		files.add(new FileTO(7,"pdf", "Planos de marketing", "Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Mb", 1, new Date()));
-		files.add(new FileTO(8,"xls", "Calculadora de bonificações", "A calculadora que permite você fazer simulações dos ganhos com base no seu número de vendas", "50 Mb", 2, new Date()));
-		files.add(new FileTO(9,"doc", "Passos para a elaboração de uma proposta", "Utilize este documento para a elaboração de propostas comerciais", "2 Mb", 3, new Date()));
-		files.add(new FileTO(10,"doc", "Planos de marketing", "Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "1 Mb", 4, new Date()));
-		files.add(new FileTO(11,"pdf", "Planos de marketing", "Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "500 Kb", 5, new Date()));
-		files.add(new FileTO(12,"pdf", "Planos de marketing", "Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Kb", 1, new Date()));
+		files.add(new FileTO(1,"pdf", "a Planos de marketing", "l Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Mb", 1, new Date()));
+		files.add(new FileTO(2,"xls", "b Calculadora de bonificações", "k A calculadora que permite você fazer simulações dos ganhos com base no seu número de vendas", "50 Mb", 2, new Date()));
+		files.add(new FileTO(3,"doc", "c Passos para a elaboração de uma proposta", "j Utilize este documento para a elaboração de propostas comerciais", "2 Mb", 3, new Date()));
+		files.add(new FileTO(4,"doc", "d Planos de marketing", "i Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "1 Mb", 3, new Date()));
+		files.add(new FileTO(5,"pdf", "e Planos de marketing", "h Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "500 Kb", 4, new Date()));
+		files.add(new FileTO(6,"pdf", "f Planos de marketing", "g Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Kb", 5, new Date()));
+		files.add(new FileTO(7,"pdf", "g Planos de marketing", "f Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Mb", 1, new Date()));
+		files.add(new FileTO(8,"xls", "h Calculadora de bonificações", "e A calculadora que permite você fazer simulações dos ganhos com base no seu número de vendas", "50 Mb", 2, new Date()));
+		files.add(new FileTO(9,"doc", "i Passos para a elaboração de uma proposta", "d Utilize este documento para a elaboração de propostas comerciais", "2 Mb", 3, new Date()));
+		files.add(new FileTO(10,"doc", "j Planos de marketing", "c Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "1 Mb", 4, new Date()));
+		files.add(new FileTO(11,"pdf", "k Planos de marketing", "b Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "500 Kb", 5, new Date()));
+		files.add(new FileTO(12,"pdf", "l Planos de marketing", "a Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Kb", 1, new Date()));
 		
 		return new FilesTO(files);
 	}
