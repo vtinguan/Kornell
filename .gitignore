@@ -3,7 +3,6 @@
 .classpath
 .classpath.orig
 .project
-.project/
 **/.project
 rebel.xml
 
