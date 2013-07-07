@@ -74,7 +74,7 @@ public class GenericCourseView extends Composite implements CourseView {
 			@Override
 			protected void ok(Person person) {
 				// TODO
-				display(LIBRARY_VIEW);
+				display(DETAILS_VIEW);
 			}
 		});
 	}
