@@ -13,7 +13,7 @@ class RootResource {
 	  val version = new Properties();
 	  version.load(getClass().getClassLoader().getResourceAsStream("version.properties")); 
 	  s"""|Welcome to Kornell API\n
-	  |CI Check
+	  |CI Verification
 	  |Built on ${version.getProperty("built.on","development environment")}
 	  |
 	  """.stripMargin 
