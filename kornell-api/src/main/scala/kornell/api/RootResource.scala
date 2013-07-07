@@ -12,7 +12,8 @@ class RootResource {
 	def get = {
 	  val version = new Properties();
 	  version.load(getClass().getClassLoader().getResourceAsStream("version.properties")); 
-	  s"""|Welcome to Kornell API AWS Band Tec\n
+	  s"""|Welcome to Kornell API\n
+	  |CI Check
 	  |Built on ${version.getProperty("built.on","development environment")}
 	  |
 	  """.stripMargin 
