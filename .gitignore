@@ -21,6 +21,7 @@ rebel.xml
 target
 *.class
 .gwt
+bin
 
 
 # Unknown
