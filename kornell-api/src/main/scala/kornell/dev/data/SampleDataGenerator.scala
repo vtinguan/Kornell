@@ -11,7 +11,7 @@ trait CleanDB extends Toolkit{
   respawnDB 
 }
 
-object SampleDataGenerator extends App with CleanDB{
+object SampleDataGenerator extends App {
   val persons = new PersonData
   val auth = new AuthData(persons)
   val institutions = new InstitutionsData(persons)
