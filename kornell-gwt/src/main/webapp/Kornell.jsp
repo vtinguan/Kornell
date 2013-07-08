@@ -45,6 +45,6 @@
         in order for this application to display correctly.
       </div>
     </noscript>
-    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/skin.css"/>  
+    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/css/skin.css"/>  
   </body>
 </html>
