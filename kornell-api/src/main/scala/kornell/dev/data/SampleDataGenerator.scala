@@ -9,9 +9,9 @@ import kornell.repository.slick.plain.Persons
 
 trait CleanDB extends Toolkit{
   respawnDB 
-}
+} 
 
-object SampleDataGenerator extends App {
+object SampleDataGenerator extends App with CleanDB {
   val persons = new PersonData
   val auth = new AuthData(persons)
   val institutions = new InstitutionsData(persons)
