@@ -1,16 +1,14 @@
-package kornell.gui.client.presentation.course;
-
-import kornell.core.shared.data.Course;
+package kornell.gui.client.presentation.course.specialists;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class CoursePlace extends Place{
+public class CourseSpecialistsPlace extends Place{
 
 	String courseUUID;
 
-	public CoursePlace(String courseUUID) {
+	public CourseSpecialistsPlace(String courseUUID) {
 		this.courseUUID = courseUUID;
 	}
 	
@@ -22,15 +20,15 @@ public class CoursePlace extends Place{
 		this.courseUUID = courseUUID;
 	}
 	
-	@Prefix("course")
-	public static class Tokenizer implements PlaceTokenizer<CoursePlace> {
+	@Prefix("Specialists")
+	public static class Tokenizer implements PlaceTokenizer<CourseSpecialistsPlace> {
 		private static final String SEPARATOR = ";";
 
-		public CoursePlace getPlace(String token) {
-			return new CoursePlace(token);
+		public CourseSpecialistsPlace getPlace(String token) {
+			return new CourseSpecialistsPlace(token);
 		}
 
-		public String getToken(CoursePlace place) {
+		public String getToken(CourseSpecialistsPlace place) {
 			return place.getCourseUUID();
 		}
 	}

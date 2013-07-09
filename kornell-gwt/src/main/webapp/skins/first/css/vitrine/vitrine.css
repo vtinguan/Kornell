@@ -15,18 +15,5 @@
 .paddingTop44{padding-top:44px;}
 .width120{widht:120px;}
 .test{color:red;}
-.activitybar{bottom:0px;left:0px;}
-.menubar{top:0px;left:0px;}.menubar .imgMenuBar{width:280px;height:45px;background:url('icons/logo.png') no-repeat;float:left;margin-left:42px;}
-.menubar,.activitybar{width:100%;height:45px;background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}.menubar .buttons,.activitybar .buttons{float:right;}.menubar .buttons .btn,.activitybar .buttons .btn{color:#a5a4a5;text-shadow:none;font-size:13px;height:37px;padding:8px 8px 0px 8px;border-left:1px solid #505864;border-right:1px solid #181c22;}
-.menubar .buttons .btn-link:hover,.activitybar .buttons .btn-link:hover{text-decoration:none;}
-.courseBar{bottom:0px;left:0px;width:1024px;height:35px;}.courseBar .btnPanel{border-left:1px solid #505864;border-right:1px solid #181c22;border-bottom:1px solid #0c0c0d;}
-.courseBar .courseBarButton{height:35px;line-height:32px;float:left;text-align:center;padding:0;border:0;border-top:3px solid #9b020a;}.courseBar .courseBarButton .label{background:transparent;color:#a5a4a5;font-size:11px;margin-left:4px;}
-.courseBar .course{width:126px;border-left:0px;}
-.courseBar .details{width:126px;}
-.courseBar .library{width:126px;}
-.courseBar .forum{width:126px;}
-.courseBar .chat{width:126px;}
-.courseBar .specialists{width:128px;}
-.courseBar .notes{width:126px;}
-.courseBar .back{width:126px;border-right:0px;}
-@media screen and (max-width:1024px){.courseBar{}.courseBar .courseBarButton .label{visibility:hidden;width:0px;border:0;margin:0;padding:0;} .courseBar .course{width:73px;border-left:0px;} .courseBar .details{width:73px;} .courseBar .library{width:73px;} .courseBar .forum{width:73px;} .courseBar .chat{width:73px;} .courseBar .specialists{width:75px;} .courseBar .notes{width:73px;} .courseBar .back{width:73px;border-right:0px;}}
+.VitrinePlace{background:url(bg.jpg) no-repeat center center fixed;background-size:cover;background-color:#000000;}.VitrinePlace .boxLogin{width:300px;position:absolute;right:50px;top:25px;background-color:#000000;padding:25px;border:1px solid ;border-radius:8px;box-shadow:0px 0px 2px 5px rgba(109, 103, 99, 0.5);min-height:200px;color:white;}
+.VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;}

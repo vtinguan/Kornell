@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.generic;
+package kornell.gui.client.presentation.course.library.generic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,10 +7,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import kornell.api.client.KornellClient;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.presentation.course.library.CourseLibraryView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,9 +24,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
 
-public class GenericCourseLibraryView extends Composite {
+public class GenericCourseLibraryView extends Composite implements CourseLibraryView {
 
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseLibraryView> {
 	}
@@ -35,6 +36,7 @@ public class GenericCourseLibraryView extends Composite {
 	
 	private KornellClient client;
 	private PlaceController placeCtrl;
+	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseLibrary/";
 
@@ -45,10 +47,25 @@ public class GenericCourseLibraryView extends Composite {
 	@UiField
 	FlowPanel buttonsPanel; 
 	@UiField
+	FlowPanel contentPanel; 
+
+	@UiField
+	com.github.gwtbootstrap.client.ui.Button btnAllFiles;
+	@UiField
+	com.github.gwtbootstrap.client.ui.Button btnMostViewed;
+	@UiField
+	com.github.gwtbootstrap.client.ui.Button btnTags;
+	@UiField
+	com.github.gwtbootstrap.client.ui.Button btnMyFiles;
+	@UiField
+	com.github.gwtbootstrap.client.ui.Button btnIncludeFile;
+	com.github.gwtbootstrap.client.ui.Button btnCurrent;
+	
+
+	com.github.gwtbootstrap.client.ui.Button btnFile;
+
 	FlowPanel filesPanel; 
-	@UiField
 	FlowPanel filesHeader;
-	@UiField
 	FlowPanel filesWrapper; 
 	
 	FilesTO filesTO;
@@ -60,12 +77,11 @@ public class GenericCourseLibraryView extends Composite {
 	Button btnLastClicked;
 	private static Integer ORDER_ASCENDING = 0;
 	private static Integer ORDER_DESCENDING = 1;
-	private Integer order = ORDER_ASCENDING;
-
+	private Integer order = ORDER_ASCENDING;	
+	Map<Integer, FlowPanel> fileWidgetMap;
 	
-	Map<Integer, FlowPanel> fileWidgetMap = new HashMap<Integer, FlowPanel>();
-	
-	public GenericCourseLibraryView(KornellClient client, PlaceController placeCtrl) {
+	public GenericCourseLibraryView(EventBus eventBus, KornellClient client, PlaceController placeCtrl) {
+		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -78,17 +94,38 @@ public class GenericCourseLibraryView extends Composite {
 			protected void ok(CoursesTO to) {
 				display();
 			}
-		});*/
-		// TODO get info	
-		filesTO = getFilesTO();
+		});*/	
 		display();
 	}
 
 	private void display() {
+		btnCurrent = btnAllFiles;
 		//TODO i18n
 		displayTitle();
 		displayButtons();
-		displayFilesTable();
+		displayContent(btnCurrent, btnLastClicked);
+	}
+
+	private void displayContent(com.github.gwtbootstrap.client.ui.Button btnCurrent, Button btnLastClicked) {
+		// TODO get info
+		contentPanel.clear();
+		if(btnCurrent.equals(btnAllFiles)){
+			fileWidgetMap = new HashMap<Integer, FlowPanel>();
+			filesTO = getAllFilesTO();
+			contentPanel.add(getFilesTable(btnLastClicked));
+		} else if(btnCurrent.equals(btnMostViewed)){
+			filesTO = getMostViewedFilesTO();
+			fileWidgetMap = new HashMap<Integer, FlowPanel>();
+			contentPanel.add(getFilesTable(btnLastClicked));
+		} else if(btnCurrent.equals(btnTags)) {
+			contentPanel.add(getFilesTable(btnLastClicked));
+		} else if(btnCurrent.equals(btnMyFiles)) {
+			filesTO = getMyFilesTO();
+			fileWidgetMap = new HashMap<Integer, FlowPanel>();
+			contentPanel.add(getFilesTable(btnLastClicked));
+		} else if(btnCurrent.equals(btnIncludeFile)) {
+			contentPanel.add(new GenericIncludeFileView(bus, client, placeCtrl));
+		}
 	}
 
 	private void displayTitle() {		
@@ -106,16 +143,19 @@ public class GenericCourseLibraryView extends Composite {
 		titlePanel.add(courseNameLabel);
 	}
 	
-	private void displayFilesTable() {
-		displayHeader();
-		displayFiles(btnName);
+	private FlowPanel getFilesTable(Button btn) {
+		FlowPanel filesPanel = new FlowPanel();
+		filesPanel.addStyleName("filesPanel");
+		filesPanel.add(getHeader());
+		filesPanel.add(getFiles(btn));
+		return filesPanel;
 	}
 
-	private void displayFiles(Object source) {
+	private FlowPanel getFiles(Button btn) {
 		ArrayList<FileTO> list = (ArrayList<FileTO>) filesTO.getFiles();
-		
+
 		if (list.size() > 0) {
-			if(btnIcon.equals(source)){
+			if(btnIcon.equals(btn)){
 			    Collections.sort(list, new FileTypeComparator());
 		    	if(btnIcon.equals(btnLastClicked) && order == ORDER_ASCENDING){
 		    		Collections.reverse(list);
@@ -123,7 +163,7 @@ public class GenericCourseLibraryView extends Composite {
 		    	} else {
 		    		order = ORDER_ASCENDING;
 		    	}
-			} else if(btnSize.equals(source)) {
+			} else if(btnSize.equals(btn)) {
 			    Collections.sort(list, new FileSizeComparator());
 		    	if(btnSize.equals(btnLastClicked) && order == ORDER_DESCENDING){
 		    		Collections.reverse(list);
@@ -131,7 +171,7 @@ public class GenericCourseLibraryView extends Composite {
 		    	} else {
 		    		order = ORDER_DESCENDING;
 		    	}
-			} else if(btnClassification.equals(source)) {
+			} else if(btnClassification.equals(btn)) {
 			    Collections.sort(list, new FileClassificationComparator());
 		    	if(btnClassification.equals(btnLastClicked) && order == ORDER_DESCENDING){
 		    		Collections.reverse(list);
@@ -139,7 +179,7 @@ public class GenericCourseLibraryView extends Composite {
 		    	} else {
 		    		order = ORDER_DESCENDING;
 		    	}
-			} else if(btnPublishingDate.equals(source)) {
+			} else if(btnPublishingDate.equals(btn)) {
 			    Collections.sort(list, new FilePublishingDateComparator());
 		    	if(btnPublishingDate.equals(btnLastClicked) && order == ORDER_ASCENDING){
 		    		Collections.reverse(list);
@@ -156,33 +196,52 @@ public class GenericCourseLibraryView extends Composite {
 		    		order = ORDER_ASCENDING;
 		    	}
 			}
-			btnLastClicked = (Button) source;
+			btnLastClicked = btn != null ? btn : btnLastClicked;
 		}
 		
 		if(fileWidgetMap.size() <= 0)
 			for (FileTO fileTO : list)
 				fileWidgetMap.put(fileTO.getId(), getFilePanel(fileTO));
 
-		filesWrapper.clear();
-		for(FileTO fileTO : list)
+
+		filesWrapper = new FlowPanel();
+		filesWrapper.addStyleName("filesWrapper");
+		for(FileTO fileTO : list){
 			filesWrapper.add(fileWidgetMap.get(fileTO.getId()));
+		}
+		return filesWrapper;
 	}
 
-	private void displayHeader() {
-		btnIcon = new Button("Tipo");
+	private FlowPanel getHeader() {
+		if(filesHeader != null)
+			return filesHeader;
+		
+		filesHeader = new FlowPanel();
+		filesHeader.addStyleName("filesHeader");
+		
+		btnIcon = btnIcon != null ? btnIcon : new Button("Tipo");
 		displayHeaderButton(btnIcon, "btnIcon", false);
+		filesHeader.add(btnIcon);
 
-		btnName = new Button("Nome do Arquivo");
+		btnName = btnName != null ? btnName : new Button("Nome do Arquivo");
 		displayHeaderButton(btnName, "btnName", true);
+		filesHeader.add(btnName);
 
-		btnSize = new Button("Tamanho");
+		btnSize = btnSize != null ? btnSize : new Button("Tamanho");
 		displayHeaderButton(btnSize, "btnSize", false);
+		filesHeader.add(btnSize);
 
-		btnClassification = new Button("Classificação");
+		btnClassification = btnClassification != null ? btnClassification : new Button("Classificação");
 		displayHeaderButton(btnClassification, "btnClassification", false);
+		filesHeader.add(btnClassification);
 
-		btnPublishingDate = new Button("Data da publicação");
+		btnPublishingDate = btnPublishingDate != null ? btnPublishingDate : new Button("Data da publicação");
 		displayHeaderButton(btnPublishingDate, "btnPublishingDate", false);
+		filesHeader.add(btnPublishingDate);
+		
+		btnLastClicked = btnLastClicked != null ? btnLastClicked : btnName;
+		
+		return filesHeader;
 	}
 
 	private void displayHeaderButton(Button btn, String styleName, boolean selected) {
@@ -191,16 +250,17 @@ public class GenericCourseLibraryView extends Composite {
 		btn.addStyleName(styleName);
 		btn.addStyleName(selected ? "btnSelected" : "btnNotSelected");
 		btn.addClickHandler(new LibraryHeaderClickHandler());
-		filesHeader.add(btn);
 	}
 
 	private void handleEvent(Button btn) {		
-		btnLastClicked.removeStyleName("btnSelected");
-		btnLastClicked.addStyleName("btnNotSelected");
+		if(btnLastClicked != null){
+			btnLastClicked.removeStyleName("btnSelected");
+			btnLastClicked.addStyleName("btnNotSelected");
+		}
+		contentPanel.clear();
+		contentPanel.add(getFilesTable(btn));
 		btn.addStyleName("btnSelected");
 		btn.removeStyleName("btnNotSelected");
-		
-		displayFiles(btn);
 		btnLastClicked = btn;
 	}
 
@@ -253,24 +313,23 @@ public class GenericCourseLibraryView extends Composite {
 	}
 
 	private void displayButtons() {
-		buttonsPanel.add(displayButton("Todos os arquivos", true));
-		buttonsPanel.add(displayButton("Mais acessados", false));
-		buttonsPanel.add(displayButton("Categoria", false));
-		buttonsPanel.add(displayButton("Meus arquivos", false));
-		buttonsPanel.add(displayButton("Incluir arquivo", false));
+		//TODO i18n
+		displayButton(btnAllFiles, "Todos os arquivos", true);
+		displayButton(btnMostViewed, "Mais acessados", false);
+		displayButton(btnTags, "Categoria", false);
+		btnTags.setVisible(false);
+		displayButton(btnMyFiles, "Meus arquivos", false);
+		displayButton(btnIncludeFile, "Incluir arquivo", false);
 	}
 
-	private com.github.gwtbootstrap.client.ui.Button displayButton(String title, boolean selected) {
-		com.github.gwtbootstrap.client.ui.Button btn = new com.github.gwtbootstrap.client.ui.Button();
-		btn.addStyleName("btnLibrary");
-		btn.addStyleName(selected ? "btnSelected" : "btnNotSelected");
+	private void displayButton(com.github.gwtbootstrap.client.ui.Button btn, String title, boolean selected) {
 		btn.removeStyleName("btn");
 		
 		Label btnTitle = new Label(title);
 		btnTitle.addStyleName("btnTitle");
 		btn.add(btnTitle);
-		
-		return btn;
+
+		btn.addClickHandler(new LibraryButtonClickHandler());
 	}
 
 	private final class LibraryHeaderClickHandler implements ClickHandler {
@@ -338,7 +397,24 @@ public class GenericCourseLibraryView extends Composite {
 		}
 	}
 
-	private FilesTO getFilesTO() {
+	private void handleEvent(com.github.gwtbootstrap.client.ui.Button btn) {		
+		btnCurrent.removeStyleName("btnSelected");
+		btnCurrent.addStyleName("btnNotSelected");
+		btn.addStyleName("btnSelected");
+		btn.removeStyleName("btnNotSelected");
+
+		order = order == ORDER_ASCENDING ? ORDER_DESCENDING : ORDER_ASCENDING;
+		displayContent(btn, btnLastClicked);
+		btnCurrent = btn;
+	}
+
+	private final class LibraryButtonClickHandler implements ClickHandler {
+		public void onClick(ClickEvent event) {
+			handleEvent((com.github.gwtbootstrap.client.ui.Button) event.getSource());
+		}
+	}
+
+	private FilesTO getAllFilesTO() {
 		List<FileTO> files = new ArrayList<FileTO>();
 		files.add(new FileTO(1,"pdf", "a Planos de marketing", "l Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Mb", 1, new Date()));
 		files.add(new FileTO(2,"xls", "b Calculadora de bonificações", "k A calculadora que permite você fazer simulações dos ganhos com base no seu número de vendas", "50 Mb", 2, new Date()));
@@ -354,6 +430,31 @@ public class GenericCourseLibraryView extends Composite {
 		files.add(new FileTO(12,"pdf", "l Planos de marketing", "a Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "200 Kb", 1, new Date()));
 		
 		return new FilesTO(files);
+	}
+
+	private FilesTO getMyFilesTO() {
+		List<FileTO> files = new ArrayList<FileTO>();
+		files.add(new FileTO(2,"xls", "b Calculadora de bonificações", "k A calculadora que permite você fazer simulações dos ganhos com base no seu número de vendas", "50 Mb", 2, new Date()));
+		files.add(new FileTO(3,"doc", "c Passos para a elaboração de uma proposta", "j Utilize este documento para a elaboração de propostas comerciais", "2 Mb", 3, new Date()));
+		files.add(new FileTO(5,"pdf", "e Planos de marketing", "h Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "500 Kb", 4, new Date()));
+		
+		return new FilesTO(files);
+	}
+
+	private FilesTO getMostViewedFilesTO() {
+		List<FileTO> files = new ArrayList<FileTO>();
+		files.add(new FileTO(2,"xls", "b Calculadora de bonificações", "k A calculadora que permite você fazer simulações dos ganhos com base no seu número de vendas", "50 Mb", 2, new Date()));
+		files.add(new FileTO(3,"doc", "c Passos para a elaboração de uma proposta", "j Utilize este documento para a elaboração de propostas comerciais", "2 Mb", 3, new Date()));
+		files.add(new FileTO(4,"doc", "d Planos de marketing", "i Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "1 Mb", 3, new Date()));
+		files.add(new FileTO(5,"pdf", "e Planos de marketing", "h Utilize este documento para a elaboração de propostas comerciais. Conheça várias abordagens.", "500 Kb", 4, new Date()));
+		
+		return new FilesTO(files);
+	}
+
+	@Override
+	public void setPresenter(Presenter presenter) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 
