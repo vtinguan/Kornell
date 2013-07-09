@@ -15,7 +15,7 @@
 .paddingTop44{padding-top:44px;}
 .width120{widht:120px;}
 .test{color:red;}
-.pnlRight{width:786px;}.pnlRight .btnPanel{height:30px;}.pnlRight .btnPanel .btnCourses{color:#a5a4a5;border-left:2px solid #474747;float:right;height:24px;padding-left:24px;padding-right:24px;font-size:11px;display:block;border-left:1px solid #505864;border-right:1px solid #181c22;border-top:0;border-bottom:0;}
+.pnlRight{width:786px;}.pnlRight .btnPanel{height:30px;margin-top:9px;}.pnlRight .btnPanel .btnCourses{color:#a5a4a5;border-left:2px solid #474747;float:right;height:24px;padding-left:24px;padding-right:24px;font-size:11px;display:block;border-left:1px solid #505864;border-right:1px solid #181c22;border-top:0;border-bottom:0;}
 .pnlRight .pnlCoursesWrapper{margin-right:30px;}.pnlRight .pnlCoursesWrapper .btnPanel{width:786px;}
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle{height:20px;}.pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .imgPnlCourses{margin-left:24px;float:left;}
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .labelPnlCourses{color:#a5a4a5;font-size:15px;line-height:23px;padding-left:14px;padding-bottom:12px;float:left;}

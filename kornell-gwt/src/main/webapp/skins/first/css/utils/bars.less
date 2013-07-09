@@ -1,23 +1,14 @@
-@import "../utils/mixins";
-@import "../utils/colors";
+@import "mixins";
+
+
+
+
 
 @barNorthHeight: 45px;
 @barSouthHeight: 35px;
 
-.activitybar { 
+.activitybar {	
 	.south;
-}
-
-.menubar {
-	.north;
-	.imgMenuBar{
-		.size(280px,@barNorthHeight);
-		.backgroundImage('logo.png');
-		float: left;
-		.marginLogo;
-	}
-}
-.menubar, .activitybar {	
 	.size (100%,@barNorthHeight);
 	.gradient (@barGradientStartColor, @barGradientEndColor);
 
@@ -29,8 +20,7 @@
 			font-size: 13px; 
 			height: 37px;
 			padding: 8px 8px 0px 8px;
-			border-left: 1px solid @buttonBorderLeftColor;
-			border-right: 1px solid @buttonBorderRightColor;	
+			.btnBorder;
 		}
 		.btn-link:hover {
 			text-decoration: none;
@@ -39,14 +29,77 @@
 }
 
 
+
+
+.menuBar{
+	.north;
+	.size (100%, @barNorthHeight);
+	.gradient (@barGradientStartColor, @barGradientEndColor);
+	.imgMenuBar{
+		float: left;
+		.marginLogo;
+	}
+	.buttons{
+		float: right;
+		.btnPanel{
+		}
+		.menuBarButton {
+			.btnBorder;
+			height: @barNorthHeight;
+			line-height: barNorthHeight;
+			float: left;
+			text-align: center;
+			padding-left: 10px;
+			padding-right: 10px;
+			padding-top: 12px;
+			.label{
+				background: transparent;
+				color: @niceTextColor;
+				font-size: 12px;
+				margin-left: 4px;
+			}
+			.icon{
+				.size (25px);
+			}
+			.count {
+				font-size: 9px;
+				font-weight: bold;
+				position: relative;
+				color: @textHighlightColor;
+				&:hover{
+					text-decoration: none;
+				}
+			}
+			.countNotifications{
+				left: 12px;
+				top: -27px;
+			}
+			.countMessages{
+				left: 8px;
+				top: -29px;
+			}
+		}
+		.first{
+			border-left: 0px;
+			padding: 0;
+			width: 0;
+		}
+		.last{
+			border-right: 0px;
+		}
+	}
+}
+
+
+
+
+
+
 .courseBar{
 	.south;
-	@barsHeight: 45px;
 	.size (@wrapperWidth,@barSouthHeight);
 	.btnPanel{
-		border-left: 1px solid @buttonBorderLeftColor;
-		border-right: 1px solid @buttonBorderRightColor;
-		border-bottom: 1px solid @buttonBorderBottomColor;
+		.btnBorder;
 	}
 	.courseBarButton {
 		@borderTopHeight: 3px;

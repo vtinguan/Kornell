@@ -34,6 +34,8 @@ public class GenericCourseBarView extends Composite implements CourseBarView {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseBarView> {
 	}
 
+	private static final String IMAGES_PATH = "skins/first/icons/courseBar/";
+
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
@@ -104,7 +106,7 @@ public class GenericCourseBarView extends Composite implements CourseBarView {
 		buttonPanel.addStyleName("btnPanel");
 		buttonPanel.addStyleName(getItemName(buttonType));
 
-		Image icon = new Image("skins/first/icons/courseBar/"+getItemName(buttonType)+".png");
+		Image icon = new Image(IMAGES_PATH + getItemName(buttonType)+".png");
 		icon.addStyleName("icon");
 		buttonPanel.add(icon);
 		
