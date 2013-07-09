@@ -30,11 +30,15 @@ body {
 
 
 
-.detailsPanel{
-	@detailsPanelMargin: 20px;
+.libraryPanel{
+	@libraryPanelMargin: 20px;
 	@buttonsPanelWidth: .18 * @wrapperWidth;
-	@hintsPanelWidth: .25 * @wrapperWidth;
-	@infoPanelWidth: .45 * @wrapperWidth;
+	@filesPanelWidth: .75 * @wrapperWidth;
+	@fileIconWidth: .09 * @filesPanelWidth - @libraryPanelMargin;
+	@pnlFileNameWidth: .47 * @filesPanelWidth - @libraryPanelMargin;
+	@fileSizeWidth: .11 * @filesPanelWidth - @libraryPanelMargin;
+	@starsPanelWidth: .15 * @filesPanelWidth - @libraryPanelMargin;
+	@publishingDateWidth: .17 * @filesPanelWidth - @libraryPanelMargin;
 	.titlePanel{
 		padding-top: 20px;
 		font-size: 18px;
@@ -55,15 +59,14 @@ body {
 	}
 	.buttonsPanel{
 		width: @buttonsPanelWidth;
-		margin-left: @detailsPanelMargin;
-		margin-right: @detailsPanelMargin;
-		margin-top: @detailsPanelMargin * 3;
+		margin-left: @libraryPanelMargin;
+		margin-right: @libraryPanelMargin;
 		float: left;
-		.btnDetails{
-			width: @buttonsPanelWidth - (@detailsPanelMargin * 2);
+		.btnLibrary{
+			width: @buttonsPanelWidth - (@libraryPanelMargin * 2);
 			font-size: 14px;
 			text-align: right;
-			margin-top: @detailsPanelMargin;
+			margin-top: @libraryPanelMargin;
 			padding: 4px 12px;
 			border-radius: 8px;
 			display: inline-block;
@@ -73,371 +76,226 @@ body {
 			.btnTitle{
 				font-weight: bold;
 				color: @plainTextColor;
-				line-height: 28px;
+				height: 60px;
+				line-height: 60px;
 			}
-			.btnLabel{
+		}
+
+	}	
+	.filesPanel{
+		width: @filesPanelWidth;
+		margin-top: @libraryPanelMargin;
+		float: left;
+		.filesHeader{
+			.btnLibraryHeader{
+				border: 0;
+				text-align: left;
+				color: @niceTextColor;
+				padding-left: @libraryPanelMargin / 2;
 				font-size: 12px;
-				line-height: 14px;
-				color: @niceTextColor;
-				padding-bottom: 8px;
+				font-weight: bold;
+				border-left: 1px solid @buttonBorderLeftColor;
+				border-right: 1px solid @buttonBorderRightColor;
 			}
+			.btnIcon{width: @fileIconWidth + @libraryPanelMargin;}
+			.btnName{width: @pnlFileNameWidth + @libraryPanelMargin;}
+			.btnSize{width: @fileSizeWidth + @libraryPanelMargin;}
+			.btnClassification{width: @starsPanelWidth + @libraryPanelMargin;}
+			.btnPublishingDate{width: @publishingDateWidth + @libraryPanelMargin;}
 		}
-
-	}
-	.contentPanel{
-		.infoPanel{
-			width: @infoPanelWidth;
-			margin-top: @detailsPanelMargin;
-			float: left;
-			.infoDetails{
-				margin-top: @detailsPanelMargin;
-				.infoTitle{
-					color: @textHighlightColor;
-					font-weight: bold;
-					font-size: 16px;
-					margin-bottom:  @detailsPanelMargin / 2;
-				}
-				.infoText{
-					color: @niceTextColor;
-					padding-right: @detailsPanelMargin;
-				}
-			}
-		}
-		.hintsPanel{
-			margin-top: @detailsPanelMargin * 3;
-			width: @hintsPanelWidth;
-			float: left;
-			background-color: @menuLeftItemGradientEndColor;
-			border-radius: 8px;
+		.fileWrapper{
+			@fileWrapperHeight: 70px;
+			height: @fileWrapperHeight;
+			line-height: @fileWrapperHeight;
+			background-color: @detailsItemWrapperColor;
+			margin-top: @libraryPanelMargin / 2;
 			color: @niceTextColor;
-			font-size: 12px;
-			line-height: 14px;
-			padding: @detailsPanelMargin;
-			.hintDetails{
-				padding-top: @detailsPanelMargin;
-				padding-bottom: @detailsPanelMargin;
-				.hintImg{
-					float: left;
+			font-size: 13px;
+			.fileIcon{
+				float: left;
+				padding: (@fileWrapperHeight - 40px) / 2;
+			}
+			.pnlFileName{
+				float: left;
+				width: @pnlFileNameWidth;
+				height: @fileWrapperHeight - @libraryPanelMargin;
+				padding: @libraryPanelMargin / 2;
+				.fileName{
+					line-height: 26px;
 				}
-				.hintText{
-					padding-left: @detailsPanelMargin * 1.5;
+				.fileDescription{
+					color: @textInfoColor;
+					font-size: 10px;
+					line-height: 12px;
 				}
 			}
-		}	
-		.topicsPanel{
-			@topicsPanelWidth: .75 * @wrapperWidth;
-
-			@topicsWidth: .4 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@statusWidth: .17 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@timeWidth: .1 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@forumCommentsWidth: .21 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@notesWidth: .12 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			margin-top: @detailsPanelMargin;
-			float: left;
-			.topicsHeaderPanel{
-				@topicsHeaderPanelHeight: 24px;
-				height: @topicsHeaderPanelHeight;
-				margin-bottom: 10px;
-				.btnTopicsHeader{
-					height: @topicsHeaderPanelHeight;
-					line-height: @topicsHeaderPanelHeight;
-					border: 0;
-					color: @niceTextColor;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					font-size: 12px;
-					font-weight: bold;
-					border-left: 1px solid @buttonBorderLeftColor;
-					border-right: 1px solid @buttonBorderRightColor;
-					display: block;
-					float: left;
-					&:hover{
-						text-decoration: none;
-						cursor: default;
-					}
-				}
-				.btnTopics{width: @topicsWidth + @detailsPanelMargin;}
-				.btnStatus{width: @statusWidth + @detailsPanelMargin;}
-				.btnTime{width: @timeWidth + @detailsPanelMargin;}
-				.btnForumComments{width: @forumCommentsWidth + @detailsPanelMargin;}
-				.btnNotes{width: @notesWidth + @detailsPanelMargin;}
+			.fileSize{
+				float: left;
+				width: @fileSizeWidth;
+				padding-left: @libraryPanelMargin / 2;
+				padding-right: @libraryPanelMargin / 2;
 			}
-			.topicWrapper{
-				@topicWrapperHeight: 40px;
-				height: @topicWrapperHeight;
-				line-height: @topicWrapperHeight;
-				background-color: @detailsItemWrapperColor;
-				margin-top: @detailsPanelMargin / 2;
-				color: @niceTextColor;
-				font-size: 13px;
-				.topicPanel{
-					float: left;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					width: @topicsWidth + @detailsPanelMargin + 2px;
-					.topicIcon{
-						float: left;
-						padding: (@topicWrapperHeight - 18px) / 2;
-					}
-					.lblTopic{
-						float: left;
-						color: lighten(@niceTextColor, 20%);
-						padding-left: @detailsPanelMargin;
-					}
-				}
-				.lblStatus{
-					float: left;
-					width: @statusWidth + @detailsPanelMargin + 2px;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-				}
-				.lblStatusFinishedTest{
-					float: left;
-					width: @statusWidth + @detailsPanelMargin + 2px;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					color: @detailsCertificationStatusColor;
-				}
-				.lblTime{
-					float: left;
-					width: @timeWidth + @detailsPanelMargin + 2px;
-					text-align: center;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-				}
-				.pnlForumComments{
-					float: left;
-					width: @forumCommentsWidth + @detailsPanelMargin + 2px;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					.lblForumComments{
-						float: left;
-						color: lighten(@niceTextColor, 20%);
-						padding-right: @detailsPanelMargin / 4;
-					}
-					.lblDividingBar{
-						float: left;
-						color: darken(@niceTextColor, 20%);
-						padding-right: @detailsPanelMargin / 4;
-					}
-					.lblNew{
-						float: left;
-						padding-right: @detailsPanelMargin / 4;
-					}
-					.lblNewForumComments{
-						float: left;
-						color: @textHighlightColor;
-					}
-				}
-				.lblNotes{
-					float: left;
-					width: @notesWidth + @detailsPanelMargin + 2px;
-					text-align: center;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-				}
+			.starsPanel{
+				float: left;
+				width: @starsPanelWidth;
+				padding-left: @libraryPanelMargin / 2;
+				padding-right: @libraryPanelMargin / 2;
 			}
-
+			.publishingDate{
+				float: left;
+				width: @publishingDateWidth;
+				padding-left: @libraryPanelMargin / 2;
+				padding-right: @libraryPanelMargin / 2;
+			}
 		}
-		.certificationPanel{
-			@certificationPanelWidth: .75 * @wrapperWidth;
-
-			@itemWidth: .6 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@statusWidth: .15 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@gradeWidth: .07 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@actionsWidth: .18 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			margin-top: @detailsPanelMargin;
-			float: left;
-			.certificationInfo{
-				width: @certificationPanelWidth;
-				margin-top: @detailsPanelMargin;
-				margin-bottom: @detailsPanelMargin;
-				.certificationInfoTitle{
-					color: @textHighlightColor;
-					font-weight: bold;
-					font-size: 16px;
-					margin-bottom:  @detailsPanelMargin / 2;
-				}
-				.certificationInfoText{
-					color: @niceTextColor;
-					padding-right: @detailsPanelMargin;
-				}
+	}
+	.includeFileFormPanel{
+		width: @filesPanelWidth;
+		margin-top: @libraryPanelMargin;
+		float: left;
+		.includeFileFormInfo{
+			margin-bottom: @libraryPanelMargin;
+			.includeFileFormInfoTitle{
+				color: @textHighlightColor;
+				font-weight: bold;
+				font-size: 16px;
+				margin-bottom:  @libraryPanelMargin / 2;
 			}
-			.certificationHeaderPanel{
-				@certificationHeaderPanelHeight: 24px;
-				height: @certificationHeaderPanelHeight;
-				margin-bottom: 10px;
-				.btnCertificationHeader{
-					height: @certificationHeaderPanelHeight;
-					line-height: @certificationHeaderPanelHeight;
-					border: 0;
-					color: @niceTextColor;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					font-size: 12px;
-					font-weight: bold;
-					text-align: center;
-					.btnBorder;
-					display: block;
-					float: left;
-					&:hover{
-						text-decoration: none;
-						cursor: default;
-					}
-				}
-				.btnItem{width: @itemWidth + @detailsPanelMargin; text-align: left;}
-				.btnStatus{width: @statusWidth + @detailsPanelMargin;}
-				.btnGrade{width: @gradeWidth + @detailsPanelMargin;}
-				.btnActions{width: @actionsWidth + @detailsPanelMargin;}
-			}
-			.certificationWrapper{
-				@certificationWrapperHeight: 78px;
-				height: @certificationWrapperHeight;
-				line-height: @certificationWrapperHeight;
-				background-color: @detailsItemWrapperColor;
-				margin-top: @detailsPanelMargin / 2;
+			.includeFileFormInfoText{
 				color: @niceTextColor;
-				font-size: 13px;
-				.itemPanel{
-					float: left;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					width: @itemWidth + @detailsPanelMargin + 2px;
-					.certificationIcon{
-						float: left;
-						padding-top: (@certificationWrapperHeight - 18px) / 2;
-						padding-bottom: (@certificationWrapperHeight - 18px) / 2;
-						padding-left: @detailsPanelMargin / 2;
-						padding-right: @detailsPanelMargin;
+				padding-right: @libraryPanelMargin;
+			}
+		}
+		.includeFileFormWrapper{
+			background-color: @detailsItemWrapperColor;
+			margin: 0 auto;
+			.includeFileForm{
+				@includeFileFormWidth: .6 * @filesPanelWidth;
+				margin: 0 auto;
+				width: @includeFileFormWidth;
+				.filePanel{
+					width: @includeFileFormWidth;
+					padding-top: @libraryPanelMargin * 3 / 2;
+					.fileUpload{
+						color: @niceTextColor;
+						width: .85 * @includeFileFormWidth;
+						line-height: 20px;
+						button{
+							.btnNotSelected;
+						}
 					}
-					.lblName{
-						color: lighten(@niceTextColor, 20%);
-						padding-left: @detailsPanelMargin;
-						line-height: 15px;
-						padding-top: @detailsPanelMargin * 2 / 3;
-						padding-bottom: @detailsPanelMargin / 4;
-					}
-					.lblDescription{
-						color: @textInfoColor;
-						padding-left: @detailsPanelMargin;
-						font-size: 9px;
-						line-height: 11px;
+					.okImage{
+						float: right;
+						padding-top: 8px;
 					}
 				}
-				.lblStatus{
-					float: left;
-					width: @statusWidth + @detailsPanelMargin + 2px;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					text-align: center;
+				.fileDescription{
+					margin-top: @libraryPanelMargin * 3 / 2;
+					width: @includeFileFormWidth;
+					border: 0;
+					padding: 5px;	
+					height: 58px;
 				}
-				.lblGrade{
-					float: left;
-					min-height: 1px;
-					width: @gradeWidth + @detailsPanelMargin + 2px;
-					text-align: center;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					color: @detailsCertificationStatusColor;
-				}
-				.lblActions{
-					float: left;
-					width: @actionsWidth + @detailsPanelMargin + 2px;
-					text-align: center;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
+				.starsWrapper{
+					width: @includeFileFormWidth;
+					height: 45px;
+					margin-top: @libraryPanelMargin * 3 / 2;
+					.starsLabel{
+						color: @niceTextColor;
+						float: right;
+						line-height: 24px;
+						padding-right: 10px;
+					}
+					.starsPanel{
+						float: right;
+						.star{
+							margin-left: 10px;
+						}
+					}
 				}
 			}
+		}
+		.btnPublish{
+			.btnAction;
+  			color: @plainTextColor;
+			width: .2 * @filesPanelWidth;
+			margin-top: @libraryPanelMargin;
+			margin-bottom: @libraryPanelMargin;
+			padding: 4px 12px;
+			border-radius: 8px;
+			border: 0;
+			float: right
 		}
 	}
 }
-
-
 @media screen and (max-width: 1024px) {
-	.detailsPanel{
-		@detailsPanelWidth: @wrapperWidthUnder1024 - 18px;
-		@buttonsPanelWidth: @detailsPanelWidth;
-		@infoPanelWidth: @detailsPanelWidth;
-		@hintsPanelWidth: @detailsPanelWidth * 2 / 3;
-		@detailsPanelMargin: 10px;
-		width:	@detailsPanelWidth;
+	.libraryPanel{
+		@libraryPanelMargin: 10px;
+		@buttonsPanelWidth: .18 * @wrapperWidthUnder1024;
+		@filesPanelWidth: .7 * @wrapperWidthUnder1024;
+		@pnlFileNameWidth: .8 * @filesPanelWidth - @libraryPanelMargin;
 		.buttonsPanel{
-			width: @buttonsPanelWidth - 17px;
-			margin-left: 17px;
-			margin-right: 0px;
-			margin-top: @detailsPanelMargin;
-			.btnDetails{
-				width: @buttonsPanelWidth / 4;
-				margin-left: @detailsPanelMargin;
-				text-align: center;
-				float: left;
+			width: @buttonsPanelWidth;
+			margin-right: @libraryPanelMargin * 2;
+			.btnLibrary{
+				width: @buttonsPanelWidth - (@libraryPanelMargin * 2);
+				font-size: 10px;
+				.btnTitle{
+					font-weight: normal;
+					height: 40px;
+					line-height: 40px;
+				}
+			}
+
+		}	
+		.filesPanel{
+			width: @filesPanelWidth;
+			.filesHeader{
+				width: @filesPanelWidth;
+				.btnLibraryHeader{}
+				.btnIcon{}
+				.btnName{width: @pnlFileNameWidth + (@libraryPanelMargin * 2);}
+				.btnSize{display: none;}
+				.btnClassification{display: none}
+				.btnPublishingDate{display: none}
+			}
+			.fileWrapper{
+				width: @filesPanelWidth;
+				.fileIcon{
+				}
+				.pnlFileName{
+					width: @pnlFileNameWidth;
+					.fileName{}
+					.fileDescription{}
+				}
+				.fileSize{display: none;}
+				.starsPanel{display: none;}
+				.publishingDate{display: none;}
 			}
 		}
-		.contentPanel{
-			.infoPanel{
-				margin-left: @detailsPanelMargin;
-				width: @infoPanelWidth - @detailsPanelMargin;
-			}
-			.hintsPanel{
-				width: @hintsPanelWidth;
-				margin-top: @detailsPanelMargin; 
-				margin-bottom: @detailsPanelMargin * 3;
-				margin-right: @detailsPanelMargin * 3;
-				margin-left: @detailsPanelMargin * 3;
-			}
-			.topicsPanel{
-				padding-left: @detailsPanelMargin / 2;
-				padding-right: @detailsPanelMargin / 2;
-				margin-left: 35px;
-				.topicsHeaderPanel{
-					.btnForumComments{display: none}
-					.btnNotes{display: none}
-				}					
-				.topicWrapper{
-					.pnlForumComments{display: none}
-					.lblNotes{display: none}
-				}
-			}
-			@certificationPanelWidth: .85 * @wrapperWidthUnder1024;
 
-			@itemWidth: .6 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@statusWidth: .15 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@gradeWidth: .07 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@actionsWidth: .18 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			.certificationPanel{
-				margin-left: @detailsPanelMargin;
-				.certificationInfo{
-					width: @certificationPanelWidth;
-				}
-				.certificationHeaderPanel{
-					.btnItem{width: @itemWidth + @detailsPanelMargin;}
-					.btnStatus{width: @statusWidth + @detailsPanelMargin;}
-					.btnGrade{width: @gradeWidth + @detailsPanelMargin;}
-					.btnActions{width: @actionsWidth + @detailsPanelMargin;}
-				}
-				.certificationWrapper{
-					.itemPanel{
-						width: @itemWidth + @detailsPanelMargin + 2px;
-						.certificationIcon{
-						}
-						.lblName{
-							line-height: 54px;
-						}
-						.lblDescription{
-							display: none;
+
+
+		.includeFileFormPanel{
+			width: @filesPanelWidth;
+			.includeFileFormWrapper{
+				.includeFileForm{
+					@includeFileFormWidth: .9 * @filesPanelWidth;
+					width: @includeFileFormWidth;
+					.filePanel{
+						width: @includeFileFormWidth;
+						.fileUpload{
+							width: @includeFileFormWidth;
 						}
 					}
-					.lblStatus{
-						width: @statusWidth + @detailsPanelMargin + 2px;
+					.fileDescription{
+						width: @includeFileFormWidth;
 					}
-					.lblGrade{
-						width: @gradeWidth + @detailsPanelMargin + 2px;
-					}
-					.lblActions{
-						width: @actionsWidth + @detailsPanelMargin + 2px;
+					.starsWrapper{
+						width: @includeFileFormWidth;
 					}
 				}
 			}
-		}	
+		}
 	}
 }

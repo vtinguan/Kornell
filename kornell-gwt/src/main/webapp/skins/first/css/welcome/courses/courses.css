@@ -15,18 +15,18 @@
 .paddingTop44{padding-top:44px;}
 .width120{widht:120px;}
 .test{color:red;}
-.activitybar{bottom:0px;left:0px;}
-.menubar{top:0px;left:0px;}.menubar .imgMenuBar{width:280px;height:45px;background:url('icons/logo.png') no-repeat;float:left;margin-left:42px;}
-.menubar,.activitybar{width:100%;height:45px;background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}.menubar .buttons,.activitybar .buttons{float:right;}.menubar .buttons .btn,.activitybar .buttons .btn{color:#a5a4a5;text-shadow:none;font-size:13px;height:37px;padding:8px 8px 0px 8px;border-left:1px solid #505864;border-right:1px solid #181c22;}
-.menubar .buttons .btn-link:hover,.activitybar .buttons .btn-link:hover{text-decoration:none;}
-.courseBar{bottom:0px;left:0px;width:1024px;height:35px;}.courseBar .btnPanel{border-left:1px solid #505864;border-right:1px solid #181c22;border-bottom:1px solid #0c0c0d;}
-.courseBar .courseBarButton{height:35px;line-height:32px;float:left;text-align:center;padding:0;border:0;border-top:3px solid #9b020a;}.courseBar .courseBarButton .label{background:transparent;color:#a5a4a5;font-size:11px;margin-left:4px;}
-.courseBar .course{width:126px;border-left:0px;}
-.courseBar .details{width:126px;}
-.courseBar .library{width:126px;}
-.courseBar .forum{width:126px;}
-.courseBar .chat{width:126px;}
-.courseBar .specialists{width:128px;}
-.courseBar .notes{width:126px;}
-.courseBar .back{width:126px;border-right:0px;}
-@media screen and (max-width:1024px){.courseBar{}.courseBar .courseBarButton .label{visibility:hidden;width:0px;border:0;margin:0;padding:0;} .courseBar .course{width:73px;border-left:0px;} .courseBar .details{width:73px;} .courseBar .library{width:73px;} .courseBar .forum{width:73px;} .courseBar .chat{width:73px;} .courseBar .specialists{width:75px;} .courseBar .notes{width:73px;} .courseBar .back{width:73px;border-right:0px;}}
+.pnlRight{width:786px;}.pnlRight .btnPanel{height:30px;}.pnlRight .btnPanel .btnCourses{color:#a5a4a5;border-left:2px solid #474747;float:right;height:24px;padding-left:24px;padding-right:24px;font-size:11px;display:block;border-left:1px solid #505864;border-right:1px solid #181c22;border-top:0;border-bottom:0;}
+.pnlRight .pnlCoursesWrapper{margin-right:30px;}.pnlRight .pnlCoursesWrapper .btnPanel{width:786px;}
+.pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle{height:20px;}.pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .imgPnlCourses{margin-left:24px;float:left;}
+.pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .labelPnlCourses{color:#a5a4a5;font-size:15px;line-height:23px;padding-left:14px;padding-bottom:12px;float:left;}
+.pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .labelPnlCoursesHighlight{color:#d61609;padding-left:5px;}
+.pnlRight .pnlCoursesWrapper .pnlCourses{display:block;overflow:auto;width:786px;}.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary{width:350px;height:142px;background-color:#3d3133;border-radius:5px;padding:5px 5px 5px 5px;margin-bottom:10px;margin-left:22px;float:left;}.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary:hover{cursor:pointer;background-color:#675356;}
+.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary h1{margin:0px;padding:5px 0px 5px 0px;font-size:1.1em;font-weight:bold;text-align:left;line-height:1.231;color:#d6d5d5;}
+.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .details{height:100%;margin-left:100px;color:#a5a4a5;}
+.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary img.thumb{height:132px;width:86px;float:left;border:4px solid #765e62;}
+.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .courseSummaryBar .icon{float:left;}
+.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .courseSummaryBar .courseProgress{text-align:right;font-size:11px;font-weight:bold;line-height:23px;padding-left:7px;color:#a5a4a5;float:left;}
+.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .courseSummaryBar .courseProgressCertificate{float:right;}
+.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .courseSummaryBar .iconCertificate{float:right;}
+.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .description{height:78px;}
+@media screen and (max-width:1024px){.pnlRight{width:362px;}.pnlRight .btnPanel{height:60px;width:362px;} .pnlRight .pnlCoursesWrapper{width:362px;}.pnlRight .pnlCoursesWrapper .pnlCourses{width:362px;} .pnlRight .pnlCoursesWrapper .courseSummary{width:314px !important;}.pnlRight .pnlCoursesWrapper .courseSummary .description{overflow:hidden;}}

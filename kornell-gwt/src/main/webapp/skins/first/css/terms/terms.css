@@ -15,18 +15,10 @@
 .paddingTop44{padding-top:44px;}
 .width120{widht:120px;}
 .test{color:red;}
-.activitybar{bottom:0px;left:0px;}
-.menubar{top:0px;left:0px;}.menubar .imgMenuBar{width:280px;height:45px;background:url('icons/logo.png') no-repeat;float:left;margin-left:42px;}
-.menubar,.activitybar{width:100%;height:45px;background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}.menubar .buttons,.activitybar .buttons{float:right;}.menubar .buttons .btn,.activitybar .buttons .btn{color:#a5a4a5;text-shadow:none;font-size:13px;height:37px;padding:8px 8px 0px 8px;border-left:1px solid #505864;border-right:1px solid #181c22;}
-.menubar .buttons .btn-link:hover,.activitybar .buttons .btn-link:hover{text-decoration:none;}
-.courseBar{bottom:0px;left:0px;width:1024px;height:35px;}.courseBar .btnPanel{border-left:1px solid #505864;border-right:1px solid #181c22;border-bottom:1px solid #0c0c0d;}
-.courseBar .courseBarButton{height:35px;line-height:32px;float:left;text-align:center;padding:0;border:0;border-top:3px solid #9b020a;}.courseBar .courseBarButton .label{background:transparent;color:#a5a4a5;font-size:11px;margin-left:4px;}
-.courseBar .course{width:126px;border-left:0px;}
-.courseBar .details{width:126px;}
-.courseBar .library{width:126px;}
-.courseBar .forum{width:126px;}
-.courseBar .chat{width:126px;}
-.courseBar .specialists{width:128px;}
-.courseBar .notes{width:126px;}
-.courseBar .back{width:126px;border-right:0px;}
-@media screen and (max-width:1024px){.courseBar{}.courseBar .courseBarButton .label{visibility:hidden;width:0px;border:0;margin:0;padding:0;} .courseBar .course{width:73px;border-left:0px;} .courseBar .details{width:73px;} .courseBar .library{width:73px;} .courseBar .forum{width:73px;} .courseBar .chat{width:73px;} .courseBar .specialists{width:75px;} .courseBar .notes{width:73px;} .courseBar .back{width:73px;border-right:0px;}}
+.TermsPlace .termsPanel{width:80%;margin:0 auto;text-align:left;}.TermsPlace .termsPanel .imgTermsTitle{margin:0 auto;width:407px;}
+.TermsPlace .termsPanel .titleUser{color:#d88709;font-size:18px;padding-top:5px;padding-bottom:10px;}
+.TermsPlace .termsPanel .normal{color:#a5a4a5;font-size:12px;}
+.TermsPlace .termsPanel .termsButtonBar{margin:0 auto;width:360px;}
+.TermsPlace .termsPanel .btnTerms{color:#a5a4a5;width:150px;height:30px;border:0px;font-size:13px;font-weight:bold;margin-top:15px;}
+.TermsPlace .termsPanel .btnAgree{margin-right:30px;background:#9b020a;background:-moz-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #9b020a), color-stop(100%, #4b0105));background:-webkit-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-o-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-ms-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:linear-gradient(to bottom, #9b020a 0%, #4b0105 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}
+.TermsPlace .termsPanel .btnDontAgree{margin-left:30px;background:#4c4f54;background:-moz-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c4f54), color-stop(100%, #2a2d32));background:-webkit-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-o-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-ms-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:linear-gradient(to bottom, #4c4f54 0%, #2a2d32 100%);filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 );}

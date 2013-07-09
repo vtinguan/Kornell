@@ -1,24 +1,25 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.gui.client.content.NavigationRequest;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.chat.CourseChatPlace;
+import kornell.gui.client.presentation.course.course.CourseHomePlace;
+import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
+import kornell.gui.client.presentation.course.forum.CourseForumPlace;
+import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
+import kornell.gui.client.presentation.course.notes.CourseNotesPlace;
+import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -35,7 +36,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 	private CourseBarView courseBarView;
 	
 	private boolean visible = false;
-	
+
 	private PlaceController placeCtrl;
 
 	@UiField
@@ -43,7 +44,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 
 	private EventBus bus;
 	
-	public GenericSouthBarView(EventBus bus, PlaceController placeCtrl) {
+	public GenericSouthBarView(EventBus bus, final PlaceController placeCtrl) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
@@ -58,9 +59,15 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 							southBar.clear();
 							southBar.add(getActivityBarView());
 							visible = true;
-						} else if(newPlace instanceof CoursePlace){
+						} else if(newPlace instanceof CourseHomePlace || 
+								  newPlace instanceof CourseDetailsPlace || 
+								  newPlace instanceof CourseLibraryPlace || 
+								  newPlace instanceof CourseForumPlace || 
+								  newPlace instanceof CourseChatPlace || 
+								  newPlace instanceof CourseSpecialistsPlace || 
+								  newPlace instanceof CourseNotesPlace){
 							southBar.clear();
-							southBar.add(getCourseBarView());
+							southBar.add(getCourseBarView(newPlace));
 							visible = true;
 						} else {
 							visible = false;
@@ -75,13 +82,12 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 		return activityBarView;
 	}
 	
-	private CourseBarView getCourseBarView() {
+	private CourseBarView getCourseBarView(Place newPlace) {
 		if (courseBarView == null)
 			courseBarView = new GenericCourseBarView(bus,placeCtrl);
+		courseBarView.updateSelection(newPlace);
 		return courseBarView;
 	}
-
-
 	
 	public boolean isVisible() {
 		return visible;
@@ -90,7 +96,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
-	
 	@Override
 	public void setPresenter(Presenter presenter) {
 	}

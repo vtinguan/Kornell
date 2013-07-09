@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.generic;
+package kornell.gui.client.presentation.course.details.generic;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +8,8 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.data.CoursesTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.presentation.course.course.CourseHomeView;
+import kornell.gui.client.presentation.course.details.CourseDetailsView;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -25,7 +27,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 
-public class GenericCourseDetailsView extends Composite {
+public class GenericCourseDetailsView extends Composite  implements CourseDetailsView {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseDetailsView> {
 	}
 
@@ -34,7 +36,7 @@ public class GenericCourseDetailsView extends Composite {
 	
 	private KornellClient client;
 	private PlaceController placeCtrl;
-	private final EventBus eventBus = new SimpleEventBus();
+	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class); 
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
 
@@ -59,7 +61,8 @@ public class GenericCourseDetailsView extends Composite {
 	TopicsTO topicsTO;
 	CertificationsTO certificationsTO;
 	
-	public GenericCourseDetailsView(KornellClient client, PlaceController placeCtrl) {
+	public GenericCourseDetailsView(EventBus eventBus, KornellClient client, PlaceController placeCtrl) {
+		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -80,7 +83,7 @@ public class GenericCourseDetailsView extends Composite {
 
 
 	private void display() {
-		btnCurrent = btnCertification;
+		btnCurrent = btnAbout;
 		//TODO i18n
 		displayTitle();
 		displayButtons();
@@ -99,7 +102,7 @@ public class GenericCourseDetailsView extends Composite {
 		}
 	}
 
-	private Widget getCertificationPanel() {
+	private FlowPanel getCertificationPanel() {
 		FlowPanel certificationPanel = new FlowPanel();
 		certificationPanel.addStyleName("certificationPanel");
 
@@ -110,7 +113,7 @@ public class GenericCourseDetailsView extends Composite {
 		return certificationPanel;
 	}
 
-	private Widget getCertificationInfo() {
+	private FlowPanel getCertificationInfo() {
 		FlowPanel certificationInfo = new FlowPanel();
 		certificationInfo.addStyleName("certificationInfo");
 		
@@ -421,6 +424,12 @@ public class GenericCourseDetailsView extends Composite {
 				"Indisponível", null, ""));
 		
 		return new CertificationsTO(certifications);
+	}
+
+	@Override
+	public void setPresenter(Presenter presenter) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

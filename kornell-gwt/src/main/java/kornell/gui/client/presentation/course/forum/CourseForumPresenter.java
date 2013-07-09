@@ -1,0 +1,29 @@
+package kornell.gui.client.presentation.course.forum;
+
+import kornell.gui.client.content.SequencerFactory;
+
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.xml.client.NodeList;
+
+public class CourseForumPresenter implements CourseForumView.Presenter{
+	CourseForumView view;
+	private CourseForumPlace place;
+	private SequencerFactory sequencer;
+	
+	public CourseForumPresenter(CourseForumView view,
+							 PlaceController placeCtrl) {
+		this.view = view;
+		view.setPresenter(this);
+	}
+
+	@Override
+	public Widget asWidget() {
+		return view.asWidget();
+	}
+
+	public void setPlace(CourseForumPlace place) {
+		this.place = place;
+	}
+}

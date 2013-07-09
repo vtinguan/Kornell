@@ -7,7 +7,7 @@ import kornell.core.shared.data.Course;
 import kornell.core.shared.data.CourseTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.course.CourseHomePlace;
 
 import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Paragraph;
@@ -97,7 +97,7 @@ public class GenericCourseSummaryView extends Composite {
 		addHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				placeCtrl.goTo(new CoursePlace(course.getUUID()));
+				placeCtrl.goTo(new CourseHomePlace(course.getUUID()));
 			}
 		}, ClickEvent.getType());
 		

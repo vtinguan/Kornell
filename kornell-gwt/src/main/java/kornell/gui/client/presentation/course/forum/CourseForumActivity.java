@@ -1,18 +1,17 @@
-package kornell.gui.client.presentation.course;
+package kornell.gui.client.presentation.course.forum;
 
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.presentation.course.CoursePresenter;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CourseActivity extends AbstractActivity {
+public class CourseForumActivity extends AbstractActivity {
 	
-	private CoursePresenter presenter;
+	private CourseForumPresenter presenter;
 
-	public CourseActivity(CoursePresenter presenter) {
+	public CourseForumActivity(CourseForumPresenter presenter) {
 		this.presenter = presenter;
 	}
 

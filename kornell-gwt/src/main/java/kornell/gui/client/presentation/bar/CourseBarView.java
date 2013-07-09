@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.bar;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -8,5 +9,7 @@ public interface CourseBarView extends IsWidget {
 	}
 
 	void setPresenter(Presenter presenter);
+
+	void updateSelection(Place place);
 
 }
