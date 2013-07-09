@@ -3,6 +3,7 @@
 .classpath
 .classpath.orig
 .project
+**/.project
 rebel.xml
 
 # Scala Worksheets
@@ -19,6 +20,7 @@ rebel.xml
 target
 *.class
 .gwt
+bin
 
 
 # Unknown
