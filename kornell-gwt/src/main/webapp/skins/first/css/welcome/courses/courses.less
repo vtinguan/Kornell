@@ -51,12 +51,12 @@
 			overflow: auto;
 			width: @pnlRightWidth;
 			.courseSummary {
-				.sizepx(350,142);
+				.sizepx(335,142);
 				background-color: @courseSummaryBackgroundColor;
 				border-radius:5px;  
-				padding: 5px 5px 5px 5px;
+				padding: 10px;
 				margin-bottom: 10px;
-				margin-left: 22px;
+				margin-left: 10px;
 				float: left;
 				&:hover {
 					cursor: pointer;
@@ -109,9 +109,9 @@
 		}
 	}
 } 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: @wrapperWidth) {
 	.pnlRight{
-		@pnlRightWidth: @wrapperWidthUnder1024 - @menuLeftWidth - 18px;
+		@pnlRightWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
 		width: @pnlRightWidth;
 		.btnPanel{
 			width: @pnlRightWidth;

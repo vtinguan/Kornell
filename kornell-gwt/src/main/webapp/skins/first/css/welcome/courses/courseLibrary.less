@@ -203,11 +203,11 @@
 		}
 	}
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: @wrapperWidth) {
 	.libraryPanel{
 		@libraryPanelMargin: 10px;
-		@buttonsPanelWidth: .18 * @wrapperWidthUnder1024;
-		@filesPanelWidth: .7 * @wrapperWidthUnder1024;
+		@buttonsPanelWidth: .18 * @wrapperWidthUnder990;
+		@filesPanelWidth: .7 * @wrapperWidthUnder990;
 		@pnlFileNameWidth: .8 * @filesPanelWidth - @libraryPanelMargin;
 		.buttonsPanel{
 			width: @buttonsPanelWidth;

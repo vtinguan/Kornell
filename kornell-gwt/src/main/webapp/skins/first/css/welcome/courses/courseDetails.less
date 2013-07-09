@@ -324,9 +324,9 @@
 }
 
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: @wrapperWidth) {
 	.detailsPanel{
-		@detailsPanelWidth: @wrapperWidthUnder1024 - 18px;
+		@detailsPanelWidth: @wrapperWidthUnder990 - 18px;
 		@buttonsPanelWidth: @detailsPanelWidth;
 		@infoPanelWidth: @detailsPanelWidth;
 		@hintsPanelWidth: @detailsPanelWidth * 2 / 3;
@@ -369,7 +369,7 @@
 					.lblNotes{display: none}
 				}
 			}
-			@certificationPanelWidth: .85 * @wrapperWidthUnder1024;
+			@certificationPanelWidth: .85 * @wrapperWidthUnder990;
 
 			@itemWidth: .6 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@statusWidth: .15 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
