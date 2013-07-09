@@ -129,7 +129,7 @@
 	.notes 			{width: @buttonWidth;}
 	.back 			{width: @buttonWidth; border-right: 0px;}
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: @wrapperWidth) {
 	.courseBar{
 		.courseBarButton {
 			.label{
@@ -141,7 +141,7 @@
 			}		
 		}
 		@buttonCount: 8;
-		@buttonWidth: ( @wrapperWidthUnder1024 / @buttonCount ) - 2px;
+		@buttonWidth: ( @wrapperWidthUnder990 / @buttonCount ) - 2px;
 		.course 		{width: @buttonWidth; border-left: 0px;}
 		.details 		{width: @buttonWidth;}
 		.library 		{width: @buttonWidth;}

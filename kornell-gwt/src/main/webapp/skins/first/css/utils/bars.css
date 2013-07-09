@@ -26,14 +26,14 @@
 .menuBar .buttons .menuBarButton .countMessages{left:8px;top:-29px;}
 .menuBar .buttons .first{border-left:0px;padding:0;width:0;}
 .menuBar .buttons .last{border-right:0px;}
-.courseBar{bottom:0px;left:0px;width:1024px;height:35px;}.courseBar .btnPanel{border-left:1px solid #505864;border-right:1px solid #181c22;}
+.courseBar{bottom:0px;left:0px;width:990px;height:35px;}.courseBar .btnPanel{border-left:1px solid #505864;border-right:1px solid #181c22;}
 .courseBar .courseBarButton{height:35px;line-height:32px;float:left;text-align:center;padding:0;border:0;border-top:3px solid #9b020a;}.courseBar .courseBarButton .label{background:transparent;color:#a5a4a5;font-size:11px;margin-left:4px;}
-.courseBar .course{width:126px;border-left:0px;}
-.courseBar .details{width:126px;}
-.courseBar .library{width:126px;}
-.courseBar .forum{width:126px;}
-.courseBar .chat{width:126px;}
-.courseBar .specialists{width:128px;}
-.courseBar .notes{width:126px;}
-.courseBar .back{width:126px;border-right:0px;}
-@media screen and (max-width:1024px){.courseBar{}.courseBar .courseBarButton .label{visibility:hidden;width:0px;border:0;margin:0;padding:0;} .courseBar .course{width:73px;border-left:0px;} .courseBar .details{width:73px;} .courseBar .library{width:73px;} .courseBar .forum{width:73px;} .courseBar .chat{width:73px;} .courseBar .specialists{width:75px;} .courseBar .notes{width:73px;} .courseBar .back{width:73px;border-right:0px;}}
+.courseBar .course{width:121.75px;border-left:0px;}
+.courseBar .details{width:121.75px;}
+.courseBar .library{width:121.75px;}
+.courseBar .forum{width:121.75px;}
+.courseBar .chat{width:121.75px;}
+.courseBar .specialists{width:123.75px;}
+.courseBar .notes{width:121.75px;}
+.courseBar .back{width:121.75px;border-right:0px;}
+@media screen and (max-width:990px){.courseBar{}.courseBar .courseBarButton .label{visibility:hidden;width:0px;border:0;margin:0;padding:0;} .courseBar .course{width:73px;border-left:0px;} .courseBar .details{width:73px;} .courseBar .library{width:73px;} .courseBar .forum{width:73px;} .courseBar .chat{width:73px;} .courseBar .specialists{width:75px;} .courseBar .notes{width:73px;} .courseBar .back{width:73px;border-right:0px;}}
