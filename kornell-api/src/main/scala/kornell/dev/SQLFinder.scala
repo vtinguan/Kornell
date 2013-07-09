@@ -1,14 +1,15 @@
 package kornell.dev
 
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.Paths
 import java.nio.file.FileSystems
-import java.nio.file.Files
-import scala.collection.mutable.MutableList
-import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.FileVisitResult
 import java.nio.file.FileVisitResult._
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.SimpleFileVisitor
+import java.nio.file.attribute.BasicFileAttributes
+
+import scala.collection.mutable.MutableList
 
 class SQLFinder extends SimpleFileVisitor[Path] {
   val kornellApiSrc = System.getProperty("user.dir")
@@ -27,6 +28,6 @@ class SQLFinder extends SimpleFileVisitor[Path] {
   def files = {
     result = new MutableList[Path]
     Files.walkFileTree(scriptsPath, this);
-    result
+    result.sorted
   }
 }

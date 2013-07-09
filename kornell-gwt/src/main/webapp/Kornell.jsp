@@ -2,9 +2,9 @@
 <html>
   <head>
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
+        <meta name="kornell.version" content="2010-07-08"> 
   	<!--
-  	<meta name="kornell.version" content="2010-06-10"> 
+    <meta name="kornell.version" content="2010-06-10"> 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, user-scalable=no">
      -->
@@ -45,6 +45,6 @@
         in order for this application to display correctly.
       </div>
     </noscript>
-    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/skin.css"/>  
+    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/css/skin.css"/>  
   </body>
 </html>
