@@ -18,7 +18,7 @@
 .profileFields{background-color:#110f13;}.profileFields .titlePanel{height:30px;padding-top:20px;}.profileFields .titlePanel .imgTitle{float:left;padding-left:20px;padding-right:20px;}
 .profileFields .titlePanel .lblTitle{font-size:17px;color:#ffffff;}
 .profileFields .fieldPanel{width:752px;height:56px;}.profileFields .fieldPanel .labelPanelImg{height:98px;}
-.profileFields .fieldPanel .labelPanel{width:185.6px;margin-right:40px;float:left;text-align:right;}.profileFields .fieldPanel .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;line-height:46px;}
+.profileFields .fieldPanel .labelPanel{width:185.6px;margin-right:40px;float:left;text-align:right;}.profileFields .fieldPanel .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
 .profileFields .fieldPanel .labelPanel .lblLabel{color:#bec1c3;font-size:16px;line-height:46px;}
 .profileFields .fieldPanel .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .profileFields .fieldPanel .labelPanel2 .lblLabel{line-height:25px;padding-top:6px;}
