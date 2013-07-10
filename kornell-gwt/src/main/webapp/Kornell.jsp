@@ -32,6 +32,7 @@
   	</script> 
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
+	<link rel="icon" href="favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
