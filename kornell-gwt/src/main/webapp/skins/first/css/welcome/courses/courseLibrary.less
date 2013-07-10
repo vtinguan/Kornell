@@ -54,7 +54,7 @@
 
 	}	
 	.filesPanel{
-		width: @filesPanelWidth;
+		width: @filesPanelWidth - 7px;
 		margin-top: @libraryPanelMargin;
 		float: left;
 		.filesHeader{
@@ -62,7 +62,7 @@
 				border: 0;
 				text-align: left;
 				color: @niceTextColor;
-				padding-left: @libraryPanelMargin / 2;
+				padding-left: @libraryPanelMargin / 4;
 				font-size: 12px;
 				font-weight: bold;
 				border-left: 1px solid @buttonBorderLeftColor;
@@ -84,7 +84,7 @@
 			font-size: 13px;
 			.fileIcon{
 				float: left;
-				padding: (@fileWrapperHeight - 40px) / 2;
+				padding: 15px 10px;
 			}
 			.pnlFileName{
 				float: left;
@@ -224,9 +224,9 @@
 
 		}	
 		.filesPanel{
-			width: @filesPanelWidth;
+			width: @filesPanelWidth - 9px;
 			.filesHeader{
-				width: @filesPanelWidth;
+				width: @filesPanelWidth - 9px;
 				.btnLibraryHeader{}
 				.btnIcon{}
 				.btnName{width: @pnlFileNameWidth + (@libraryPanelMargin * 2);}
@@ -235,7 +235,7 @@
 				.btnPublishingDate{display: none}
 			}
 			.fileWrapper{
-				width: @filesPanelWidth;
+				width: @filesPanelWidth - 9px;
 				.fileIcon{
 				}
 				.pnlFileName{
