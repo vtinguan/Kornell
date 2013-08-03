@@ -5,6 +5,8 @@ import javax.ws.rs._
 import javax.ws.rs.core._
 import kornell.core.shared.data._
 import kornell.repository.slick.plain.Courses
+import kornell.core.shared.data.CoursesTO
+import kornell.core.shared.data.CourseTO
 
 @Path("courses")
 class CoursesResource {

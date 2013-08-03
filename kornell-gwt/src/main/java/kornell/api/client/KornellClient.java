@@ -1,8 +1,8 @@
 package kornell.api.client;
 
-import kornell.api.client.data.Person;
 import kornell.core.shared.data.CourseTO;
 import kornell.core.shared.data.CoursesTO;
+import kornell.core.shared.to.UserInfoTO;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.RequestBuilder;
@@ -12,7 +12,7 @@ public class KornellClient {
 	Storage store = Storage.getLocalStorageIfSupported();
 
 	private String apiURL = null;
-	private Person currentUser;	
+	private UserInfoTO currentUser;	
 
 	private KornellClient() {
 		discoverApiUrl();
@@ -46,12 +46,12 @@ public class KornellClient {
 			final Callback callback) {
 		final String auth = "Basic "+KornellClient.encode(username,password);				
 		
-		Callback wrapper = new Callback(){
-			protected void ok(Person person) {
-				setCurrentUser(person);
+		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>(){
+			protected void ok(UserInfoTO user) {
+				setCurrentUser(user);
 				//TODO: https://github.com/Craftware/Kornell/issues/7
 				storeAuth(auth);
-				callback.ok(person);
+				callback.ok(user);
 			}
 			
 			private void storeAuth(String auth) {				  				  
@@ -78,8 +78,8 @@ public class KornellClient {
 
 	
 
-	private void setCurrentUser(Person person) {
-		this.currentUser = person;
+	private void setCurrentUser(UserInfoTO user) {
+		this.currentUser = user;
 		
 	};
 	

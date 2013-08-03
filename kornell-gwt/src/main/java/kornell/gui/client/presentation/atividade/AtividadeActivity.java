@@ -1,7 +1,6 @@
 package kornell.gui.client.presentation.atividade;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 

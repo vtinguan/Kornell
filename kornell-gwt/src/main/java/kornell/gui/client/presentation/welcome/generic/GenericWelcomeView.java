@@ -14,7 +14,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class GenericWelcomeView extends Composite implements WelcomeView {
 	interface MyUiBinder extends UiBinder<Widget, GenericWelcomeView> {

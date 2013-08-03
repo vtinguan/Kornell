@@ -25,36 +25,35 @@ class Statement(sql: String) {
     val conn = connect()
     Some(connect)
   } catch {
-    case e: Throwable => {/*e.printStackTrace();*/None}
+    case e: Throwable => { /*e.printStackTrace();*/ None }
   }
 
   def tryJNDI: Option[ConnectionFactory] = {
     validated({
       def cff = {
-      //TODO: Consider the scope/caching of InitialContext
-      val context = new InitialContext()
-        .lookup("java:comp/env")
-        .asInstanceOf[Context]
-      context.lookup("jdbc/KornellDS")
-        .asInstanceOf[DataSource]
-        .getConnection }
+        //TODO: Consider the scope/caching of InitialContext
+        val context = new InitialContext()
+          .lookup("java:comp/env")
+          .asInstanceOf[Context]
+        context.lookup("jdbc/KornellDS")
+          .asInstanceOf[DataSource]
+          .getConnection
+      }
       cff _
     })
   }
 
-  def tryRemote: Option[ConnectionFactory] = 
+  def tryRemote: Option[ConnectionFactory] =
     validated({
       def cff = { DriverManager.getConnection("jdbc:mysql://db.kornell/ebdb", "kornell", "42kornell73") }
       cff _
     })
-  
 
-  def tryLocal: Option[ConnectionFactory] = 
+  def tryLocal: Option[ConnectionFactory] =
     validated({
       def cff = { DriverManager.getConnection("jdbc:mysql://localhost/ebdb", "kornell", "42kornell73") }
       cff _
     })
-  
 
   def connected[T](fun: Connection => T): T = {
     val conn = connect()

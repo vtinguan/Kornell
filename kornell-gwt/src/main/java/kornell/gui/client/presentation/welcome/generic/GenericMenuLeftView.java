@@ -1,35 +1,18 @@
 package kornell.gui.client.presentation.welcome.generic;
 
 
-import java.math.BigDecimal;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.api.client.data.Person;
-import kornell.core.shared.data.Course;
-import kornell.core.shared.data.CourseTO;
 import kornell.core.shared.data.CoursesTO;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
 
-import com.github.gwtbootstrap.client.ui.Heading;
-import com.github.gwtbootstrap.client.ui.Image;
-import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class GenericMenuLeftView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericMenuLeftView> {

@@ -2,8 +2,7 @@ package kornell.gui.client.presentation.vitrine.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.api.client.data.Person;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
+import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
@@ -82,11 +81,11 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	private void doLogin() {
 		altUnauthorized.setVisible(false);
-		Callback callback = new Callback() {
+		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(Person person) {
+			protected void ok(UserInfoTO user) {
 				//TODO person signed terms of use
-				if(true){
+				if(user.isSigningNeeded()){
 					placeCtrl.goTo(new TermsPlace());
 				} else {
 					placeCtrl.goTo(new WelcomePlace());

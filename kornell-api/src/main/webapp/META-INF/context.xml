@@ -22,6 +22,7 @@
    		userNameCol="username"
    		userCredCol="password"
    		userRoleTable="Role" 
-   		roleNameCol="role"/>
+   		roleNameCol="role"
+   		digest="SHA-256"/>
 	
 </Context>

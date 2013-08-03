@@ -1,10 +1,10 @@
 package kornell.gui.client.content;
 
-import com.google.gwt.place.shared.PlaceController;
-import com.google.web.bindery.event.shared.EventBus;
-
 import kornell.api.client.KornellClient;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
+
+import com.google.gwt.place.shared.PlaceController;
+import com.google.web.bindery.event.shared.EventBus;
 
 
 public class SequencerFactoryImpl implements SequencerFactory {

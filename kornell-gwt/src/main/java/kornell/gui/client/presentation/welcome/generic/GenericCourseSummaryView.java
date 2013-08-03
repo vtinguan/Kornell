@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import kornell.core.shared.data.Course;
 import kornell.core.shared.data.CourseTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
 
 import com.github.gwtbootstrap.client.ui.Heading;
@@ -15,16 +14,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.Image;
 
 public class GenericCourseSummaryView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseSummaryView> {

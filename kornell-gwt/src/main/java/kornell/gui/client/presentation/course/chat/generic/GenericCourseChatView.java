@@ -1,19 +1,15 @@
 package kornell.gui.client.presentation.course.chat.generic;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.CoursesTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.chat.CourseChatView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 
 public class GenericCourseChatView extends Composite implements CourseChatView {

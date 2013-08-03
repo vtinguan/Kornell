@@ -2,7 +2,8 @@ package kornell.gui.client.presentation.terms.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.api.client.data.Person;
+import kornell.core.shared.data.Person;
+import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -58,23 +59,25 @@ public class GenericTermsView extends Composite implements TermsView {
 		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();		
+		//TODO i18n
+		btnAgree.setText("Concordo".toUpperCase());
+		btnDontAgree.setText("Não Concordo".toUpperCase());
 	}
 	
 	private void initData() {
-		client.getCurrentUser(new Callback<Person>() {
+		client.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(Person person) {
-				display(person);
+			protected void ok(UserInfoTO user) {
+				display(user);
 			}
 		});
 	}
 
 
-	private void display(Person person) {
-		titleUser.setText(person.getFullName());
-		//TODO i18n
-		btnAgree.setText("Concordo".toUpperCase());
-		btnDontAgree.setText("Não Concordo".toUpperCase());
+	private void display(UserInfoTO user) {
+		Person p = user.getPerson();
+		titleUser.setText(p.getFullName());
+
 		
 	}
 

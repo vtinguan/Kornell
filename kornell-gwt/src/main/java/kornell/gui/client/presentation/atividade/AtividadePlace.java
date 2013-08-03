@@ -1,9 +1,10 @@
 package kornell.gui.client.presentation.atividade;
 
+import static java.lang.Math.max;
+
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
-import static java.lang.Math.*;
 
 public class AtividadePlace extends Place {
 	String courseUUID;
