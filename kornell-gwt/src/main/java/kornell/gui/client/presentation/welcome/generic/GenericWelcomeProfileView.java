@@ -9,14 +9,11 @@ import kornell.core.shared.data.CoursesTO;
 import kornell.gui.client.KornellConstants;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.builder.shared.HRBuilder;
-import com.google.gwt.dom.client.HRElement;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;

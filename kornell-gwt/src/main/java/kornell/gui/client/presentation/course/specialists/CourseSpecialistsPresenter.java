@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.course.specialists;
 
-import kornell.gui.client.content.SequencerFactory;
-
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;
 

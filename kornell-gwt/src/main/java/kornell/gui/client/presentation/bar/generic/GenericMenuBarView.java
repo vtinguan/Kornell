@@ -1,13 +1,6 @@
 package kornell.gui.client.presentation.bar.generic;
 
 import kornell.gui.client.presentation.bar.MenuBarView;
-import kornell.gui.client.presentation.course.chat.CourseChatPlace;
-import kornell.gui.client.presentation.course.course.CourseHomePlace;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
-import kornell.gui.client.presentation.course.forum.CourseForumPlace;
-import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
-import kornell.gui.client.presentation.course.notes.CourseNotesPlace;
-import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 

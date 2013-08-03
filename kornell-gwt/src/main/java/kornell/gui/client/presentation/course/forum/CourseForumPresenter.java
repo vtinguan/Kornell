@@ -3,9 +3,7 @@ package kornell.gui.client.presentation.course.forum;
 import kornell.gui.client.content.SequencerFactory;
 
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.xml.client.NodeList;
 
 public class CourseForumPresenter implements CourseForumView.Presenter{
 	CourseForumView view;

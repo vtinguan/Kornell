@@ -3,8 +3,9 @@ package kornell.api.client;
 import static com.google.gwt.http.client.Response.SC_FORBIDDEN;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
-import kornell.api.client.data.Person;
 import kornell.core.shared.data.BeanFactory;
+import kornell.core.shared.data.Person;
+import kornell.core.shared.to.TOFactory;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.Request;
@@ -16,8 +17,9 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 public class Callback<T> implements RequestCallback {
-	private static final BeanFactory tofactory = GWT.create(BeanFactory.class);	
-	private SupportedMimeTypes mimeTypes = new SupportedMimeTypes();
+	private static final BeanFactory beans = GWT.create(BeanFactory.class);
+	private static final TOFactory tos = GWT.create(TOFactory.class);
+	private MediaTypes mimeTypes = new MediaTypes();
 
 	@Override
 	public void onResponseReceived(Request request, Response response) {
@@ -52,30 +54,28 @@ public class Callback<T> implements RequestCallback {
 		String responseText = response.getText();
 
 		if (contentType.contains("json")) {
-			if (Person.MIME_TYPE.equals(contentType)) {
-				if (!responseText.startsWith("["))
-					responseText = '(' + responseText + ')';
-				//TODO: Change to AutoBean instead of OverlayType
-				ok(Person.parseJson(responseText));
-			}
-			else if (mimeTypes.containsKey(contentType)) {
+			if (mimeTypes.containsKey(contentType)) {
 				@SuppressWarnings("unchecked")
-				Class<T> clazz = (Class<T>) mimeTypes.get(contentType);				
-				AutoBean<T> bean = AutoBeanCodex.decode(tofactory,
-						clazz,
-						responseText);
+				Class<T> clazz = (Class<T>) mimeTypes.get(contentType);
+
+				AutoBean<T> bean = null;
+				if (contentType.contains(".to.")) {
+					bean = AutoBeanCodex.decode(tos, clazz, responseText);
+				} else {
+					bean = AutoBeanCodex.decode(beans, clazz, responseText);
+				}
 				ok(bean.as());
 			} else
 				ok(Callback.parseJson(responseText));
 
-		}
-		else
+		} else
 			ok();
 	}
 
 	protected void ok(T to) {
 	}
 
+	@Deprecated
 	protected void ok(Person person) {
 	}
 

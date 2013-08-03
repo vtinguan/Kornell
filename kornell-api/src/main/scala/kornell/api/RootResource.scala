@@ -11,7 +11,10 @@ class RootResource {
 	@GET
 	def get = {
 	  val version = new Properties();
-	  version.load(getClass().getClassLoader().getResourceAsStream("version.properties")); 
+	  val properties = Option(getClass().getClassLoader().getResourceAsStream("version.properties"))
+	  if(properties.isDefined){
+		  version.load(properties.get);
+	  }
 	  s"""|Welcome to Kornell API\n
 	  |CI Verification
 	  |Built on ${version.getProperty("built.on","development environment")}

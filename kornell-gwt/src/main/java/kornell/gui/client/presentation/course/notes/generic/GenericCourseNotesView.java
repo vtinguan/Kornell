@@ -1,8 +1,6 @@
 package kornell.gui.client.presentation.course.notes.generic;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.CoursesTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.notes.CourseNotesView;
 
@@ -12,7 +10,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 
 public class GenericCourseNotesView extends Composite implements CourseNotesView {

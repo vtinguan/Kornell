@@ -2,12 +2,11 @@ package kornell.gui.client.presentation.course.course.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.api.client.data.Person;
+import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
 import kornell.gui.client.presentation.course.course.CourseHomeView;
-import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,16 +45,16 @@ public class GenericCourseHomeView extends Composite implements CourseHomeView {
 	}
 	
 	private void initData() {
-		client.getCurrentUser(new Callback<Person>() {
+		client.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(Person person) {
-				display(person);
+			protected void ok(UserInfoTO user) {
+				display(user);
 			}
 		});
 	}
 
 
-	private void display(Person person) {
+	private void display(UserInfoTO person) {
 	}
 
 	@UiHandler("btnAgree")

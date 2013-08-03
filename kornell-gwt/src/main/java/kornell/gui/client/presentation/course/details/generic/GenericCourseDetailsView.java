@@ -1,14 +1,10 @@
 package kornell.gui.client.presentation.course.details.generic;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.CoursesTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.course.course.CourseHomeView;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -24,7 +20,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 
 public class GenericCourseDetailsView extends Composite  implements CourseDetailsView {

@@ -1,7 +1,6 @@
 package kornell.gui.client;
 
 import com.google.gwt.i18n.client.Constants;
-import com.google.gwt.user.client.ui.Label;
 
 public interface KornellConstants extends Constants {
 
