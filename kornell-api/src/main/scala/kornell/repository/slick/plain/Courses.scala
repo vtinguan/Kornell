@@ -10,15 +10,16 @@ import scala.slick.jdbc.StaticQuery.interpolation
 import scala.slick.session.Database.threadLocalSession
 import scala.slick.session.PositionedParameters
 import javax.ws.rs.core.SecurityContext
-import kornell.core.shared.data.CourseTO
-import kornell.core.shared.data.CoursesTO
+import kornell.core.shared.to.CourseTO
+import kornell.core.shared.to.CoursesTO
 import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.Person
 import kornell.repository.Beans
 import kornell.core.shared.data.Course
 import kornell.repository.SlickRepository
+import kornell.repository.TOs
 
-object Courses extends SlickRepository with Beans {
+object Courses extends SlickRepository with TOs {
 
   //TODO: Move this SetParameter to package object or Repository 
   implicit val SetDateTime: SetParameter[Date] = new SetParameter[Date] {

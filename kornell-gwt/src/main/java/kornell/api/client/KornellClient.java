@@ -1,7 +1,8 @@
 package kornell.api.client;
 
-import kornell.core.shared.data.CourseTO;
-import kornell.core.shared.data.CoursesTO;
+import kornell.core.shared.to.CourseTO;
+import kornell.core.shared.to.CoursesTO;
+import kornell.core.shared.to.RegistrationsTO;
 import kornell.core.shared.to.UserInfoTO;
 
 import com.google.gwt.core.shared.GWT;
@@ -76,11 +77,8 @@ public class KornellClient {
 		createGET("/courses").sendRequest(null, callback);	
 	}
 
-	
-
 	private void setCurrentUser(UserInfoTO user) {
-		this.currentUser = user;
-		
+		this.currentUser = user;	
 	};
 	
 	public void getCurrentUser(Callback cb){
@@ -92,16 +90,26 @@ public class KornellClient {
 		
 	}
 
-	private ExceptionalRequestBuilder createGET(String path) {
-		
+	private ExceptionalRequestBuilder createGET(String path) {		
 		ExceptionalRequestBuilder reqBuilder =
 				new ExceptionalRequestBuilder(RequestBuilder.GET, getApiUrl()+path);
+		setAuthenticationHeaders(reqBuilder);
+		return  reqBuilder;
+	}
+	
+	private ExceptionalRequestBuilder createPUT(String path) {		
+		ExceptionalRequestBuilder reqBuilder =
+				new ExceptionalRequestBuilder(RequestBuilder.PUT, getApiUrl()+path);
+		setAuthenticationHeaders(reqBuilder);
+		return  reqBuilder;
+	}
+
+	private void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
 		if(store != null){
 			String auth = store.getItem("Authorization");
 			if(auth != null && auth.length()>0)
 				reqBuilder.setHeader("Authorization", auth);
 		}
-		return  reqBuilder;
 	}
 	
 	
@@ -126,6 +134,36 @@ public class KornellClient {
 	public static KornellClient getInstance() {		
 		return new KornellClient();
 	}
+	
+	public class RegistrationsClient {
+		public void getUnsigned(Callback<RegistrationsTO> callback) {
+			createGET("/registrations").sendRequest("", callback);		
+		}
+	}
+	
+	public class InstitutionClient{
+		private String institutionUUID;
+
+		public InstitutionClient(String uuid){
+			this.institutionUUID = uuid;
+		}
+		
+		public void acceptTerms(Callback<Void> cb){
+			createPUT("/institutions/"+institutionUUID)
+			.sendRequest("",cb);
+		}
+	}
+	
+	public RegistrationsClient registrations(){
+		//TODO: Consider lifecycle
+		return new RegistrationsClient();
+	}
+	
+	public InstitutionClient institution(String uuid) {
+		return new InstitutionClient(uuid);
+	}
+
+	
 
 	
 	

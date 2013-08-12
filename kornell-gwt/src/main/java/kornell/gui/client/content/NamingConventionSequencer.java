@@ -3,7 +3,7 @@ package kornell.gui.client.content;
 import static com.google.gwt.http.client.RequestBuilder.HEAD;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.CourseTO;
+import kornell.core.shared.to.CourseTO;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 
 import com.google.gwt.core.shared.GWT;

@@ -9,7 +9,7 @@ import java.util.logging.Logger
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName) 
 	
-  val public = Set("/","/checkup")
+  val public = Set("/","/checkup","/sandbox")
   
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
     (sreq, sres) match {

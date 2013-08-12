@@ -39,4 +39,6 @@ object Persons extends SlickRepository with Beans{
   
   def byUserPrincipal(implicit p:Principal) = byUsername(p.getName)
   
+  
+  
 }

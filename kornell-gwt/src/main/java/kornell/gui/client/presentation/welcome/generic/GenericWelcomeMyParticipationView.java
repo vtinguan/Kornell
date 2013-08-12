@@ -2,7 +2,7 @@ package kornell.gui.client.presentation.welcome.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.CoursesTO;
+import kornell.core.shared.to.CoursesTO;
 import kornell.gui.client.KornellConstants;
 
 import com.google.gwt.core.client.GWT;

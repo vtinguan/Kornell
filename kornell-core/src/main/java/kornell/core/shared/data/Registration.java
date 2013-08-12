@@ -3,6 +3,8 @@ package kornell.core.shared.data;
 import java.util.Date;
 
 public interface Registration {
+	public static String TYPE = "application/vnd.kornell.v1.registration+json";
+	
 	String getPersonUUID();
 	void setPersonUUID(String UUID);
 	

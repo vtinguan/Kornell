@@ -11,6 +11,7 @@ class RootResource {
 	@GET
 	def get = {
 	  val version = new Properties();
+	  //TODO: Say X.XX time ago
 	  val properties = Option(getClass().getClassLoader().getResourceAsStream("version.properties"))
 	  if(properties.isDefined){
 		  version.load(properties.get);

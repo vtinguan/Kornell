@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse
  * @see http://www.html5rocks.com/en/tutorials/cors/
  * @see http://caniuse.com/#feat=cors (Does IE suck or what)
  */
+//TODO: Replace by standard apache tomcat CORS Filter
 class CORSFilter extends Filter { 
   var allowedOrigins = ""
   
@@ -34,7 +35,8 @@ class CORSFilter extends Filter {
     
     if(allowedOrigins != "") 
       resp.addHeader("Access-Control-Allow-Origin", allowedOrigins)
-    
+ 
+    resp.addHeader("Access-Control-Allow-Methods", "GET,POST,PUT,HEAD,OPTIONS");
     resp.addHeader("Access-Control-Allow-Headers", "origin, authorization, content-type")
     if ("OPTIONS".equals(req.getMethod()))
       resp.setStatus(200)
