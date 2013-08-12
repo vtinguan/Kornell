@@ -8,7 +8,7 @@
 	<name>Kornell API Module</name>
 
 	<properties>
-		<resteasy.version>2.3.5.Final</resteasy.version>
+		<resteasy.version>3.0.2.Final</resteasy.version>
 
 		<!-- Don't let your Mac use a crazy non-standard encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -1,9 +1,4 @@
-drop database if exists ebdb; 
-create database if not exists ebdb;
-  
-grant all on ebdb.* to kornell@'localhost' identified by '42kornell73';
-grant all on ebdb.* to kornell@'%' identified by '42kornell73';
-  -- ./2013/03/001 - Person and Auth.sql
+-- ../ddl/2013/03/001 - Person and Auth.sql
 CREATE TABLE Person (
   uuid char(36) NOT NULL PRIMARY KEY,
   fullName varchar(255)
@@ -21,7 +16,7 @@ CREATE TABLE Role (
   role varchar(255) not null,
   foreign key (username) references Password(username),
   primary key (username, role)
-);-- ./2013/03/002 - Course.sql
+);-- ../ddl/2013/03/002 - Course.sql
 CREATE TABLE Course (
   uuid char(36) NOT NULL PRIMARY KEY,
   code varchar(255),
@@ -39,13 +34,13 @@ CREATE TABLE Enrollment (
   progress decimal(3,2),
   FOREIGN KEY (course_uuid) REFERENCES Course (uuid),
   FOREIGN KEY (person_uuid) REFERENCES Person (uuid)
-);-- ./2013/06/001 - Institution.sql
+);-- ../ddl/2013/06/001 - Institution.sql
 create table Institution(
     uuid char(36) not null primary key,
     name varchar(255) not null,
     terms mediumtext
-);-- ./2013/06/002 - Registration.sql
-create table registration(
+);-- ../ddl/2013/06/002 - Registration.sql
+create table Registration(
     person_uuid char(36) not null,
     institution_uuid char(36) not null,
     termsAcceptedOn datetime,

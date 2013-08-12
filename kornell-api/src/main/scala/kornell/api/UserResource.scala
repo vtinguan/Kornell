@@ -13,21 +13,21 @@ import javax.enterprise.context.RequestScoped
 import kornell.repository.slick.plain.Persons
 import kornell.core.shared.to.UserInfoTO
 import kornell.repository.TOs
+import kornell.repository.jdbc.Auth
+import kornell.repository.jdbc.Registrations
 
 @Produces(Array(UserInfoTO.TYPE))
 @Path("user")
-@RequestScoped
-class UserResource extends TOs{
-  
+class UserResource extends Resource with TOs{
+
   @GET
-  def get(@Context sc: SecurityContext):Option[UserInfoTO] = {
-    val username = sc.getUserPrincipal.getName
-    val p = Persons.byUsername(username)    
-    if (p.isDefined){
+  def get(implicit @Context sc: SecurityContext):Option[UserInfoTO] =
+    Auth.withPerson { p =>
     	val user = newUserInfoTO
-    	user.setPerson(p.get)
-    	user.setSigningNeeded(true)
-    	Some(user)
-    } else None
-  }
+    	user.setPerson(p)
+    	val signingNeeded = Registrations.signingNeeded(p)
+    	user.setSigningNeeded(signingNeeded)
+    	Option(user)
+    }
+  
 }

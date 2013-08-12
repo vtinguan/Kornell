@@ -1,15 +1,19 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	<ui:style>
+	    .title {
+			color: white;
+			font-size: 1.2em;	
+			text-align: center;		
+		}
+	</ui:style>
 	<g:FlowPanel addStyleNames="termsPanel">
-	    <g:FlowPanel addStyleNames="imgTermsTitle">
-			<b:Image url="skins/first/icons/termodeuso.png"></b:Image><!-- TODO change this -->
+	    <g:FlowPanel>
+			<b:Paragraph  addStyleNames="{style.title}">Termos de Uso</b:Paragraph>
+			<b:Paragraph ui:field="txtInstitutionName" addStyleNames="{style.title}">MIDWAY</b:Paragraph>
 		</g:FlowPanel>
 		<b:Paragraph ui:field="titleUser" addStyleNames="titleUser"></b:Paragraph>
-		<b:Paragraph addStyleNames="normal">Você está na Universidade Virtual!</b:Paragraph>
-		<b:Paragraph addStyleNames="normal">Ao acessar este sistema, você declara que irá respeitar todos os direitos de propriedade intelectual e industrial.</b:Paragraph>
-		<b:Paragraph addStyleNames="normal">Você assume toda e qualquer responsabilidade, de caráter cívil e/ou criminal, pela utilização indevida das informações, textos, gráficos, marcas, obras, enfim, de todo e qualquer direito de propriedade intelectual ou industrial contido neste sistema.</b:Paragraph>
-		<b:Paragraph addStyleNames="normal">Você concorda que é responsável por sua própria conduta e por qualquer Conteúdo que criar, transmitir ou apresentar ao utilizar os serviços da Universidade Virtual e por todas as consequências relacionadas. Você concorda em usar os serviços da Universidade Virtual apenas para finalidades legais, adequadas e condizentes com os Termos e com quaisquer políticas ou diretrizes aplicáveis. Você concorda em não se engajar em qualquer atividade que interfira ou interrompa os serviços da Universidade Virtual, ou os servidores e redes relacionados aos serviços da Universidade Virtual.</b:Paragraph>
-		<b:Paragraph addStyleNames="normal">Ao usar os serviços da Universidade Virtual, você concorda e está ciente de que a Universidade Virtual pode acessar, preservar e divulgar as informações da sua conta e qualquer conteúdo a ela associado, caso assim seja exigido por lei ou quando acreditarmos, de boa-fé, que tal preservação ou divulgação de acesso é necessária para: (a) cumprir qualquer lei, regulamentação, processo legal ou solicitação governamental obrigatória; (b) fazer cumprir os Termos, incluindo a investigação de possíveis violações; (c) detectar, impedir ou tratar de questões de fraude, segurança ou técnicas (inclusive, sem limitações, a filtragem de spam); (d) proteger, mediante perigo iminente, os direitos, a propriedade ou a segurança da Universidade Virtual, seus usuários ou o público, de acordo com o exigido ou permitido por lei.</b:Paragraph>
+		<b:Paragraph ui:field="txtTerms" addStyleNames="normal">[Carregando, aguarde...]</b:Paragraph>
 		<g:FlowPanel addStyleNames="termsButtonBar">
 			<g:Button ui:field="btnAgree" addStyleNames="btnTerms btnAgree"/>
 			<g:Button ui:field="btnDontAgree" addStyleNames="btnTerms btnDontAgree"/>

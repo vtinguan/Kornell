@@ -62,3 +62,7 @@ iframe {
 .contentPanel{
 	height: 100%;
 }
+
+.debug {
+	border: 2px solid red;
+}

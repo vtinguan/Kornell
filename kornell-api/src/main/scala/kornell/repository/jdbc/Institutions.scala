@@ -6,27 +6,36 @@ import kornell.repository.SlickRepository
 import kornell.core.shared.data.Institution
 import kornell.core.shared.data.Person
 import kornell.core.shared.data.Registration
-import kornell.repository.JDBCRepository
+import kornell.repository.jdbc.SQLInterpolation._ 
+import java.sql.ResultSet
 
-object Institutions extends JDBCRepository with Beans {
-  implicit def dehydrate(i: Institution) = List(i.getUUID, i.getName, i.getTerms)
-  implicit def hydrate(l: List[String]): Institution = Institution(l(0), l(1), l(2))
+object Institutions extends  Beans {
 
   def create(name: String, terms: String): Institution = {
-    val i = Institution(randomUUID, name, terms)
-    """
+    val i = newInstitution(randomUUID, name, terms)
+    sql"""
     | insert into Institution(uuid,name,terms) 
-    | values (?,?,?)""".executeUpdate(i)
+    | values ($i.getUUID,$i.getName,$i.terms)""".executeUpdate
     i
   }
 
   def register(p: Person, i: Institution): Registration = {
     val r = Registration(p, i)
-    """
+    sql"""
     | insert into Registration(person_uuid,institution_uuid)
-    | values (?,?)
-    """.executeUpdate(List(p.getUUID, i.getUUID))
+    | values ($p.getUUID, $i.getUUID)
+    """.executeUpdate
     r
   }
+  
+  implicit def toInstitution(rs:ResultSet) = 
+    newInstitution(rs.getString("uuid"), 
+        rs.getString("name"), 
+        rs.getString("terms")) 
+  
+  def byUUID(UUID:String) = 
+	sql"select * from Institution".first[Institution]
+
+  
 
 }

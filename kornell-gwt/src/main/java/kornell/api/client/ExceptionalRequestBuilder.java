@@ -23,7 +23,7 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 
 	private Request handle(RequestException e) {
 		GWT.log(e.getMessage(), e);
-		//TODO: what Request should be returned...
+		//TODO: what Request should be returned?
 		return null;
 	}
 	

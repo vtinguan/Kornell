@@ -8,14 +8,17 @@ import scala.collection.JavaConverters.seqAsJavaListConverter
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
 import kornell.core.shared.data.BeanFactory
 import kornell.core.shared.data.Course
-import kornell.core.shared.data.CourseTO
 import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.Institution
 import kornell.core.shared.data.Person
+import kornell.core.shared.data.Registration
 
-//TODO: Smells bad... but relates to 1-1 to BeanFactory  
+//TODO: Smells bad... but relates to 1-1 to BeanFactory
+//TODO: Entities would be a better name
 trait Beans {
   val factory = AutoBeanFactorySource.create(classOf[BeanFactory])
+
+  def randomUUID = UUID.randomUUID.toString
 
   def newPerson(uuid: String, fullName: String) = {
     val person = factory.newPerson.as
@@ -55,29 +58,10 @@ trait Beans {
     e
   }
 
-  def newCourseTO(courseUUID: String, code: String, title: String, description: String, thumbDataURI: String,
-    enrollmentUUID: String, enrolledOn: Date, personUUID: String, progress: String) = {
-    val to = factory.newCourseTO.as
-    val prog = if (progress != null) new BigDecimal(progress) else null
-    //TODO: Factory Method x Implicit Conversion 
-    to setCourse newCourse(courseUUID, code, title, description, thumbDataURI)
-    to setEnrollment (enrollmentUUID, enrolledOn, courseUUID, personUUID, prog)
-    to
-  }
 
-  def newCourseTO(r: ResultSet): CourseTO = newCourseTO(r.getString("courseUUID"), r.getString("code"), r.getString("title"),
-    r.getString("description"), r.getString("assetsURL"),
-    r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
-    r.getString("person_uuid"), r.getString("progress"))
-
-  def newCoursesTO(l: List[CourseTO]) = {
-    val to = factory.newCoursesTO.as
-    to.setCourses(l asJava)
-    to
-  }
 
   //FTW: Default parameter values
-  def Institution(uuid: String = randomUUID, name: String, terms: String) = {
+  def newInstitution(uuid: String = randomUUID, name: String, terms: String) = {
     val i = factory.newInstitution().as
     i.setName(name)
     i.setUUID(uuid)
@@ -86,13 +70,23 @@ trait Beans {
   }
 
   def Registration(p:Person,i:Institution) ={
-    val r = factory.newRegistration().as
+    val r = newRegistration
     r.setPersonUUID(p.getUUID)
     r.setInstitutionUUID(i.getUUID)
     r
   }
-  def randomUUID = UUID.randomUUID().toString()
   
+  def newRegistration = factory.newRegistration().as
   
+  def newRegistration(personUUID:String, institutionUUID:String, termsAcceptedOn:Date):Registration = {
+    val r = newRegistration
+    r.setPersonUUID(personUUID)
+    r.setInstitutionUUID(institutionUUID)
+    r.setTermsAcceptedon(termsAcceptedOn)
+    r
+  }
+  
+  def newRegistrations = factory.newRegistrations.as
+
 
 }

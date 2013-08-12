@@ -4,7 +4,7 @@ package kornell.gui.client.presentation.welcome.generic;
 import java.math.BigDecimal;
 
 import kornell.core.shared.data.Course;
-import kornell.core.shared.data.CourseTO;
+import kornell.core.shared.to.CourseTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
 

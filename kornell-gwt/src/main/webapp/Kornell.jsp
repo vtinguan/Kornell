@@ -2,7 +2,8 @@
 <html>
   <head>
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <meta name="kornell.version" content="2010-07-08"> 
+  	<meta charset="utf-8">
+  	<meta name="kornell.version" content="2010-07-08"> 
   	<!--
     <meta name="kornell.version" content="2010-06-10"> 
     <meta name="apple-mobile-web-app-capable" content="yes">
