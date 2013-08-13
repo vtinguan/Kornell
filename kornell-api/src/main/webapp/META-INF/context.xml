@@ -1,5 +1,6 @@
 <Context path="">
-	<!-- TODO: Consider Read Replicas http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-replication-connection.html -->    	
+	<!-- TODO: Make this file development only, generate from environment variables in production  -->
+	<!-- TODO: Consider Read Replicas http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-replication-connection.html -->	    	
 	<Resource name="jdbc/KornellDS" 
 		auth="Container" 
 	    type="javax.sql.DataSource"
@@ -9,7 +10,7 @@
 		driverClassName="com.mysql.jdbc.Driver"
 		username="kornell"
 		password="42kornell73"
-		url="jdbc:mysql://db.kornell:3306/ebdb?useUnicode=true&amp;characterEncoding=utf8"
+		url="jdbc:mysql://db.kornell.com.br:3306/ebdb?useUnicode=true&amp;characterEncoding=utf8"
 		validationQuery="select 42"
 		validationQueryTimeout="2"
 		testOnBorrow="true" 
