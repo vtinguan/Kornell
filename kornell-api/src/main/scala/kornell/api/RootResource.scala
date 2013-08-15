@@ -17,7 +17,7 @@ class RootResource {
 		  version.load(properties.get);
 	  }
 	  s"""|Welcome to Kornell API\n
-	  |CI Verification
+	  |Hello AWS Architects!
 	  |Built on ${version.getProperty("built.on","development environment")}
 	  |
 	  """.stripMargin 
