@@ -1,8 +1,6 @@
 package kornell.api.client;
 
-import static com.google.gwt.http.client.Response.SC_FORBIDDEN;
-import static com.google.gwt.http.client.Response.SC_OK;
-import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
+import static com.google.gwt.http.client.Response.*;
 import kornell.core.shared.data.BeanFactory;
 import kornell.core.shared.data.Person;
 import kornell.core.shared.to.TOFactory;
@@ -36,6 +34,9 @@ public class Callback<T> implements RequestCallback {
 		case SC_UNAUTHORIZED:
 			unauthorized();
 			break;
+		case SC_NOT_FOUND:
+			notFound();
+			break;
 		case 0:
 			cancelled();
 			break;
@@ -43,6 +44,10 @@ public class Callback<T> implements RequestCallback {
 			GWT.log("Got a response, but don't know what to do about it");
 			break;
 		}
+	}
+
+	protected void notFound() {
+		
 	}
 
 	protected void ok(Response response) {
@@ -73,10 +78,6 @@ public class Callback<T> implements RequestCallback {
 	}
 
 	protected void ok(T to) {
-	}
-
-	@Deprecated
-	protected void ok(Person person) {
 	}
 
 	protected void ok(JSONValue json) {

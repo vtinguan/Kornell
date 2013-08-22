@@ -1,10 +1,13 @@
 package kornell.gui.client;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.content.SequencerFactory;
 import kornell.gui.client.content.SequencerFactoryImpl;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
+import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.atividade.AtividadePresenter;
 import kornell.gui.client.presentation.atividade.AtividadeView;
 import kornell.gui.client.presentation.atividade.generic.GenericAtividadeView;
@@ -33,6 +36,7 @@ import kornell.gui.client.presentation.course.notes.generic.GenericCourseNotesVi
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.course.specialists.generic.GenericCourseSpecialistsView;
+import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.terms.TermsView;
@@ -74,7 +78,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SimplePanel appPanel;
 
 	/* REST API Client */
-	private final KornellClient client = KornellClient.getInstance();
+	private static final KornellClient client = KornellClient.getInstance();
 
 	/* Views */
 	private GenericMenuBarView menuBarView;
@@ -106,8 +110,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		globalActivityManager.setDisplay(shell);
 	}
 
-	private void initHistoryHandler() {
-		historyHandler.register(placeController, bus, new VitrinePlace());
+	private void initHistoryHandler(Place defaultPlace) {
+		historyHandler.register(placeController, bus, defaultPlace);
 		historyHandler.handleCurrentHistory();
 	}
 
@@ -159,11 +163,30 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public ClientFactory startApp() {
-		initGUI();
-		initActivityManagers();
-		initHistoryHandler();
-		initException();
-		initSCORM();
+		//TODO: Consider caching credentials to avoid this request
+		client.getCurrentUser(new Callback<UserInfoTO>(){
+			@Override
+			protected void ok(UserInfoTO user) {
+				GWT.log("### Activity "+user.getPerson().getFullName());
+//				HomePlace defaultPlace = new HomePlace();
+				Place defaultPlace = getDefaultPlace();
+				startApp(defaultPlace);
+			}
+
+			@Override
+			protected void unauthorized() {
+				GWT.log("### Unauthorized");
+				startApp(new VitrinePlace());
+			}
+			
+			protected void startApp(Place defaultPlace){
+				initGUI();
+				initActivityManagers();
+				initHistoryHandler(defaultPlace);
+				initException();
+				initSCORM();
+			}			
+		});
 		return this;
 	}
 
@@ -193,7 +216,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView(placeController, client);
+		return new GenericVitrineView(placeController, getDefaultPlace(),client);
 	}
 
 	@Override
@@ -336,4 +359,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		}
 		return activityPresenter;
 	}
+	
+	static final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
+	public Place getDefaultPlace() {
+		
+		return  DEFAULT_PLACE;
+	}
+	
 }

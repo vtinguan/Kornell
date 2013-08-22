@@ -16,6 +16,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -49,12 +50,15 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 
 	private KornellClient client;
+	private Place defaultPlace;
 	//TODO i18n xml
 	public GenericVitrineView(
 			PlaceController placeCtrl,
+			Place defaultPlace,
 			KornellClient client) {
 		this.placeCtrl = placeCtrl;
 		this.client = client;
+		this.defaultPlace = defaultPlace;
 	
 		initWidget(uiBinder.createAndBindUi(this));
 		pwdPassword.addKeyPressHandler(new KeyPressHandler() {			
@@ -88,7 +92,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 				if(user.isSigningNeeded()){
 					placeCtrl.goTo(new TermsPlace());
 				} else {
-					placeCtrl.goTo(new WelcomePlace());
+					placeCtrl.goTo(defaultPlace);
 				}
 			}
 
