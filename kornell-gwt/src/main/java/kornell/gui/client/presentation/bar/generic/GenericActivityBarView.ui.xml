@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 	<g:FlowPanel ui:field="activityBar" addStyleNames="activitybar">
-		<b:Button type="LINK" ui:field="btnPrev">Anterior</b:Button>
-		<b:Button type="LINK" ui:field="btnNext">Próximo</b:Button>		
+		<b:Button type="LINK" ui:field="btnPrev" addStyleNames="menuBarButton first">Anterior</b:Button>
+		<b:Button type="LINK" ui:field="btnNext" addStyleNames="menuBarButton last">Próximo</b:Button>		
 	</g:FlowPanel>
 </ui:UiBinder>

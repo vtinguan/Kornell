@@ -81,7 +81,8 @@ public class KornellClient {
 		this.currentUser = user;	
 	};
 	
-	public void getCurrentUser(Callback cb){
+	public void getCurrentUser(Callback<UserInfoTO> cb){
+		//TODO: Consider client side caching
 		createGET("/user").sendRequest(null, cb);	
 	}
 	

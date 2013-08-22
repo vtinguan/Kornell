@@ -1,6 +1,8 @@
 package kornell.gui.client.presentation.bar.generic;
 
 import kornell.gui.client.content.NavigationRequest;
+import kornell.gui.client.event.NavigationForecastEvent;
+import kornell.gui.client.event.NavigationForecastEventHandler;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -15,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class GenericActivityBarView extends Composite implements ActivityBarView {
+public class GenericActivityBarView extends Composite implements ActivityBarView, NavigationForecastEventHandler {
 	
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityBarView> {
 	}
@@ -32,7 +34,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	public GenericActivityBarView(EventBus bus) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.bus = bus;
-
+		bus.addHandler(NavigationForecastEvent.TYPE,this);
 	}
 	
 	@UiHandler("btnNext")
@@ -52,4 +54,16 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	public void setPresenter(Presenter presenter) {
 	}
 
+	@Override
+	public void onNextActivityNotOK(NavigationForecastEvent evt) {
+		GWT.log("NEXT DISABLED");
+		btnNext.setEnabled(false);
+	}
+
+	@Override
+	public void onNextActivityOK(NavigationForecastEvent evt) {
+		GWT.log("NEXT ENABLED");
+		btnNext.setEnabled(true);		
+	}
+	
 }
