@@ -4,13 +4,13 @@
 		<g:FlowPanel ui:field="menuBar" addStyleNames="menuBar">
 			<g:Image url="skins/first/icons/logo.png" addStyleNames="imgMenuBar"/>
 		    <g:FlowPanel addStyleNames="buttons">
-				<b:Button ui:field="btnFake" addStyleNames="menuBarButton first"></b:Button>	
-				<b:Button ui:field="btnHome" addStyleNames="menuBarButton"></b:Button>		
-				<b:Button ui:field="btnNotifications" addStyleNames="menuBarButton"></b:Button>		
-				<b:Button ui:field="btnMessages" addStyleNames="menuBarButton"></b:Button>		
-				<b:Button ui:field="btnHelp" addStyleNames="menuBarButton"></b:Button>		
-				<b:Button ui:field="btnMenu" addStyleNames="menuBarButton"></b:Button>		
-				<b:Button ui:field="btnExit" addStyleNames="menuBarButton last"></b:Button>		
+				<b:Button ui:field="btnFake" addStyleNames="shy menuBarButton first"></b:Button>	
+				<b:Button ui:field="btnHome" addStyleNames="shy menuBarButton"></b:Button>		
+				<b:Button ui:field="btnNotifications" addStyleNames="shy menuBarButton"></b:Button>		
+				<b:Button ui:field="btnMessages" addStyleNames="shy menuBarButton"></b:Button>		
+				<b:Button ui:field="btnHelp" addStyleNames="shy menuBarButton"></b:Button>		
+				<b:Button ui:field="btnMenu" addStyleNames="shy menuBarButton"></b:Button>		
+				<b:Button ui:field="btnExit" addStyleNames="shy menuBarButton last"></b:Button>		
 			</g:FlowPanel>
 		</g:FlowPanel>
 	</g:FlowPanel>

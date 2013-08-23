@@ -1,4 +1,4 @@
-package kornell.gui.client.content;
+package kornell.gui.client.sequence;
 
 import static com.google.gwt.http.client.RequestBuilder.HEAD;
 import kornell.api.client.Callback;

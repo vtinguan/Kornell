@@ -1,4 +1,4 @@
-package kornell.gui.client.content;
+package kornell.gui.client.sequence;
 
 import kornell.api.client.KornellClient;
 import kornell.gui.client.presentation.atividade.AtividadePlace;

@@ -3,7 +3,7 @@ package kornell.gui.client.scorm;
 import java.util.HashMap;
 import java.util.Map;
 
-import kornell.gui.client.content.NavigationRequest;
+import kornell.gui.client.sequence.NavigationRequest;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
