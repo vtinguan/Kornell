@@ -1,9 +1,9 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.gui.client.content.NavigationRequest;
 import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEventHandler;
 import kornell.gui.client.presentation.bar.ActivityBarView;
+import kornell.gui.client.sequence.NavigationRequest;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
