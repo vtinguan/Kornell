@@ -47,6 +47,7 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.scorm.API_1484_11;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
+import kornell.gui.client.sequence.Stalker;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -112,6 +113,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 		historyHandler.register(placeController, bus, defaultPlace);
+		new Stalker(bus,client,historyMapper);
 		historyHandler.handleCurrentHistory();
 	}
 
@@ -167,15 +169,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		client.getCurrentUser(new Callback<UserInfoTO>(){
 			@Override
 			protected void ok(UserInfoTO user) {
-				GWT.log("### Activity "+user.getPerson().getFullName());
-//				HomePlace defaultPlace = new HomePlace();
 				Place defaultPlace = getDefaultPlace();
 				startApp(defaultPlace);
 			}
 
 			@Override
 			protected void unauthorized() {
-				GWT.log("### Unauthorized");
 				startApp(new VitrinePlace());
 			}
 			
@@ -345,9 +344,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public CourseNotesView getCourseNotesView() {
 		return new GenericCourseNotesView(bus, client, placeController);
 	}
-	
-	
-	
+
 	@Override
 	public AtividadePresenter getActivityPresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeController,client);
@@ -361,8 +358,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 	
 	static final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
+	
 	public Place getDefaultPlace() {
-		
 		return  DEFAULT_PLACE;
 	}
 	

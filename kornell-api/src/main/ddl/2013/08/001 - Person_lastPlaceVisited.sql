@@ -1,0 +1,1 @@
+alter table Person add column lastPlaceVisited VARCHAR(2083);

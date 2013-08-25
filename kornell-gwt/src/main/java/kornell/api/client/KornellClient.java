@@ -7,6 +7,7 @@ import kornell.core.shared.to.UserInfoTO;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.storage.client.Storage;
 
 public class KornellClient {
@@ -164,10 +165,13 @@ public class KornellClient {
 		return new InstitutionClient(uuid);
 	}
 
-	
-
-	
-	
-
+	public void placeChanged(String token) {
+		createPUT("/user/placeChange").sendRequest(token,new Callback(){
+			@Override
+			protected void ok() {
+				GWT.log("place changed");
+			}
+		});
+	}
 
 }	

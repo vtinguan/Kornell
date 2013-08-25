@@ -1,3 +1,4 @@
+CONTEXT=$( cat <<EOF
 <Context path="">
 	<!-- TODO: Make this file development only, generate from environment variables in production  -->
 	<!-- TODO: Consider Read Replicas http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-replication-connection.html -->	    	
@@ -10,7 +11,7 @@
 		driverClassName="com.mysql.jdbc.Driver"
 		username="kornell"
 		password="42kornell73"
-		url="jdbc:mysql://localhost:3306/ebdb?useUnicode=true&amp;characterEncoding=utf8"
+		url="${JDBC_CONNECTION_STRING}"
 		validationQuery="select 42"
 		validationQueryTimeout="2"
 		testOnBorrow="true" 
@@ -27,3 +28,5 @@
    		digest="SHA-256"/>
 	
 </Context>
+EOF
+)
