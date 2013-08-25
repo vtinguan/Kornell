@@ -5,4 +5,6 @@ public interface Person {
 	void setUUID(String uuid);
 	String getFullName();
 	void setFullName(String fullName);
+	String getLastPlaceVisited();
+	void setLastPlaceVisited(String lastPlaceVisited);
 }

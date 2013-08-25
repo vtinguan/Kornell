@@ -17,23 +17,25 @@ import kornell.server.repository.jdbc.Registrations
 import kornell.core.shared.to.UserInfoTO
 import kornell.server.repository.jdbc.SQLInterpolation._
 
-@Produces(Array(UserInfoTO.TYPE))
 @Path("user")
 class UserResource extends Resource with TOs{
 
   @GET
+  @Produces(Array(UserInfoTO.TYPE))
   def get(implicit @Context sc: SecurityContext):Option[UserInfoTO] =
     Auth.withPerson { p =>
     	val user = newUserInfoTO
     	user.setPerson(p)
     	val signingNeeded = Registrations.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
+    	user.setLastPlaceVisited(p.getLastPlaceVisited)
     	Option(user)
   }
   
   @PUT
   @Path("placeChange")
-  def putPlaceChange(implicit @Context sc: SecurityContext,newPlace:String) = 
+  @Produces(Array("text/plain"))
+  def putPlaceChange(implicit @Context sc: SecurityContext, newPlace:String) = 
     Auth.withPerson { p => 
     	sql"""
     	update Person set lastPlaceVisited=$newPlace

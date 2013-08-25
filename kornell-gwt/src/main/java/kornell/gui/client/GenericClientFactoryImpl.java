@@ -97,6 +97,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	/* GUI */
 	SimplePanel shell = new SimplePanel();
+	private Place defaultPlace;
 
 	public GenericClientFactoryImpl() {
 	}
@@ -166,10 +167,17 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public ClientFactory startApp() {
 		//TODO: Consider caching credentials to avoid this request
+		final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
+
 		client.getCurrentUser(new Callback<UserInfoTO>(){
 			@Override
 			protected void ok(UserInfoTO user) {
-				Place defaultPlace = getDefaultPlace();
+				String token = user.getLastPlaceVisited();
+				if(token != null){
+					defaultPlace = historyMapper.getPlace(token);
+				}else {
+					defaultPlace = DEFAULT_PLACE;
+				}				
 				startApp(defaultPlace);
 			}
 
@@ -215,7 +223,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView(placeController, getDefaultPlace(),client);
+		return new GenericVitrineView( historyMapper , placeController, getDefaultPlace(),client);
+	}
+
+	private Place getDefaultPlace() {
+		return defaultPlace;
 	}
 
 	@Override
@@ -357,10 +369,5 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		return activityPresenter;
 	}
 	
-	static final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
-	
-	public Place getDefaultPlace() {
-		return  DEFAULT_PLACE;
-	}
 	
 }

@@ -13,10 +13,10 @@ object Auth extends Beans {
   
 	def withPerson[T](fun:Person => T)(implicit sc:SecurityContext):T = {
 	    val username = sc.getUserPrincipal().getName()
-	    implicit def toPerson(rs:ResultSet):Person = newPerson(rs.getString("uuid"),rs.getString("fullName"));
+	    implicit def toPerson(rs:ResultSet):Person = newPerson(rs.getString("uuid"),rs.getString("fullName"),rs.getString("lastPlaceVisited"));
 	    
 		val person:Option[Person] = sql"""
-			select p.uuid, p.fullName 
+			select p.uuid, p.fullName, p.lastPlaceVisited 
 			from Person p
 			join Password pw on pw.person_uuid = p.uuid
 			where pw.username = $username

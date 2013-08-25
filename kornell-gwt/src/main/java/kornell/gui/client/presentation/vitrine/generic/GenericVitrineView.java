@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -51,14 +52,17 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	private KornellClient client;
 	private Place defaultPlace;
+	private PlaceHistoryMapper mapper;
 	//TODO i18n xml
 	public GenericVitrineView(
+			PlaceHistoryMapper mapper, 
 			PlaceController placeCtrl,
 			Place defaultPlace,
 			KornellClient client) {
 		this.placeCtrl = placeCtrl;
 		this.client = client;
 		this.defaultPlace = defaultPlace;
+		this.mapper = mapper;
 	
 		initWidget(uiBinder.createAndBindUi(this));
 		pwdPassword.addKeyPressHandler(new KeyPressHandler() {			
@@ -92,7 +96,14 @@ public class GenericVitrineView extends Composite implements VitrineView {
 				if(user.isSigningNeeded()){
 					placeCtrl.goTo(new TermsPlace());
 				} else {
-					placeCtrl.goTo(defaultPlace);
+					String token = user.getLastPlaceVisited();
+					Place place;
+					if(token != null){
+						place = mapper.getPlace(token);
+					}else {
+						place = defaultPlace;
+					}
+					placeCtrl.goTo(place);
 				}
 			}
 

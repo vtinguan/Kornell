@@ -10,4 +10,7 @@ public interface UserInfoTO {
 	
 	boolean isSigningNeeded();
 	void setSigningNeeded(boolean siginingNeeded);
+	
+	String getLastPlaceVisited();
+	void setLastPlaceVisited(String lastPlaceVisited);
 }

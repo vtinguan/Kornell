@@ -20,10 +20,11 @@ trait Beans {
 
   def randomUUID = UUID.randomUUID.toString
 
-  def newPerson(uuid: String, fullName: String) = {
+  def newPerson(uuid: String, fullName: String,lastPlaceVisited:String) = {
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
+    person.setLastPlaceVisited(lastPlaceVisited)
     person
   }
 
