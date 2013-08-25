@@ -30,3 +30,4 @@ CONTEXT=$( cat <<EOF
 </Context>
 EOF
 )
+echo $CONTEXT
