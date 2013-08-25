@@ -12,13 +12,14 @@ import javax.ws.rs.core.SecurityContext
 import java.security.Principal
 import kornell.server.repository.SlickRepository
 
+@Deprecated
 object Persons extends SlickRepository with Beans{
   
-  implicit val getPerson = GetResult(r => newPerson(r.nextString,r.nextString))
+  implicit val getPerson = GetResult(r => newPerson(r.nextString,r.nextString,r.nextString))
   
   def create(fullname: String):Person = db.withSession {
-    val person = newPerson(randUUID,fullname)    
-    sqlu"insert into Person values (${person.getUUID} ,${person.getFullName})".execute    
+    val person = newPerson(randUUID,fullname,null)    
+    sqlu"insert into Person values (${person.getUUID} ,${person.getFullName},null)".execute    
     person
   }
 
@@ -26,10 +27,10 @@ object Persons extends SlickRepository with Beans{
     sql"select uuid,fullName from Person".as[Person].foreach(f)
   }
 
-  //TODO: Cache candidate
+  //TODO: Consider caching
   def byUsername(username:String) = db.withSession{
     sql"""
-    select n.uuid,n.fullName
+    select n.uuid,n.fullName,n.lastPlaceVisited
 	from Password p
 	join Person n on p.person_uuid = n.uuid
 	where p.username = ${username}
