@@ -24,7 +24,7 @@ class RootResource {
 	  s"""|Welcome to Kornell API\n
 	  |
 	  |Built on ${version.getProperty("built.on","development environment")}
-	  |MySQL, 1+1 is $two
+	  |According to MySQL, 1+1 is $two
 	  """.stripMargin
 	  
 	}
