@@ -31,6 +31,4 @@ CONTEXT=$( cat <<EOF
 </Context>
 EOF
 )
-echo $CONTEXT > /etc/tomcat7/Catalina/localhost/ROOT.xml
-echo $CONTEXT > /var/lib/tomcat7/webapps/ROOT/META-INF/context.xml
-echo $CONTEXT > /var/log/context.xml
+echo $CONTEXT
