@@ -1,3 +1,4 @@
+JDBC_URL=${JDBC_CONNECTION_STRING:-'jdbc:mysql://db.kornell.com.br:3306/ebdb?useUnicode=true&amp;characterEncoding=utf8'}
 CONTEXT=$( cat <<EOF
 <Context path="">
 	<!-- TODO: Make this file development only, generate from environment variables in production  -->
@@ -11,7 +12,7 @@ CONTEXT=$( cat <<EOF
 		driverClassName="com.mysql.jdbc.Driver"
 		username="kornell"
 		password="42kornell73"
-		url="${JDBC_CONNECTION_STRING}"
+		url="${JDBC_URL}"
 		validationQuery="select 42"
 		validationQueryTimeout="2"
 		testOnBorrow="true" 
@@ -30,4 +31,6 @@ CONTEXT=$( cat <<EOF
 </Context>
 EOF
 )
-echo $CONTEXT
+echo $CONTEXT > /etc/tomcat7/Catalina/localhost/ROOT.xml
+echo $CONTEXT > /var/lib/tomcat7/webapps/ROOT/META-INF/context.xml
+echo $CONTEXT > /var/log/context.xml

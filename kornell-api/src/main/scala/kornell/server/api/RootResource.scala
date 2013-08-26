@@ -17,12 +17,14 @@ class RootResource {
 	  if(properties.isDefined){
 		  version.load(properties.get);
 	  }
-	  val two = sql"select 1+1".map {rs => rs.getInt(1)}.head
+	  val two = try 
+	  	sql"select 1+1".map {rs => rs.getInt(1)}.head
+	  	catch {case e:Exception => e.getMessage}
 	  
 	  s"""|Welcome to Kornell API\n
 	  |
 	  |Built on ${version.getProperty("built.on","development environment")}
-	  |MySQL thinks that 1+1=$two
+	  |MySQL, 1+1 is $two
 	  """.stripMargin
 	  
 	}
