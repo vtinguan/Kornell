@@ -26,4 +26,14 @@ object Auth extends Beans {
 		  fun(person.get)
 		else throw new IllegalArgumentException(s"User [$username] not found.")
 	}
+	
+	
+	def setPassword(personUUID:String,username:String,password:String) = {
+	  sql"""
+	  	insert into Password (person_uuid,username,password)
+	  	values ($personUUID,$username,$password)
+	  	on duplicate key update
+	  	username=$username,password=$password
+	  """.executeUpdate
+	}
 }

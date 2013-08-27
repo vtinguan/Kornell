@@ -14,13 +14,14 @@ import kornell.core.shared.data.Person
 import kornell.core.shared.data.Registration
  
 //TODO: Smells bad... but relates to 1-1 to BeanFactory
+//TODO: Favor composition over inheritance
 //TODO: Entities would be a better name
 trait Beans {
   val factory = AutoBeanFactorySource.create(classOf[BeanFactory])
 
   def randomUUID = UUID.randomUUID.toString
 
-  def newPerson(uuid: String, fullName: String,lastPlaceVisited:String) = {
+  def newPerson(uuid: String, fullName: String,lastPlaceVisited:String = null) = {
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
@@ -88,6 +89,5 @@ trait Beans {
   }
   
   def newRegistrations = factory.newRegistrations.as
-
 
 }
