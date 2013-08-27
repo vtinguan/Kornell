@@ -19,13 +19,17 @@ object Institutions extends  Beans {
     i
   }
 
-  def register(p: Person, i: Institution): Registration = {
+  def register(p: Person, i: Institution):Registration = {
     val r = Registration(p, i)
+    register(p.getUUID,i.getUUID)
+    r
+  }
+  
+  def register(p: String, i:String):Unit = {    
     sql"""
     | insert into Registration(person_uuid,institution_uuid)
-    | values ($p.getUUID, $i.getUUID)
-    """.executeUpdate
-    r
+    | values ($p, $i)
+    """.executeUpdate    
   }
   
   implicit def toInstitution(rs:ResultSet) = 

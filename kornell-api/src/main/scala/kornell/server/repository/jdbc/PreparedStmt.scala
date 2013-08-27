@@ -9,23 +9,39 @@ import java.sql.{ Date => SQLDate }
 import javax.sql.DataSource
 import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
-import java.sql.{Date => SQLDate}
+import java.sql.{ Date => SQLDate }
+import java.sql.DriverManager
+import javax.naming.NoInitialContextException
 
 class PreparedStmt(query: String, params: List[Any]) {
+
   type ConnectionFactory = () => Connection
 
   lazy val JNDI: ConnectionFactory = () => {
-    //TODO: lazy cache?
-    val context = new InitialContext()
-      .lookup("java:comp/env")
-      .asInstanceOf[Context]
-    context.lookup("jdbc/KornellDS")
-      .asInstanceOf[DataSource]
-      .getConnection
+    try {
+      //TODO: lazy cache?
+      val context = new InitialContext()
+        .lookup("java:comp/env")
+        .asInstanceOf[Context]
+      context.lookup("jdbc/KornellDS")
+        .asInstanceOf[DataSource]
+        .getConnection
+    } catch {
+      case e: NoInitialContextException => null
+    }
   }
 
-  //TODO: Parameterize (Cake?) to allow testing outside container 
-  lazy val connect = JNDI
+  lazy val LOCAL: ConnectionFactory = () => {
+    DriverManager.getConnection("jdbc:mysql:///ebdb", "kornell", "42kornell73")
+  }
+
+  lazy val connect: ConnectionFactory = verified(JNDI).getOrElse(LOCAL)
+
+  def verified(cf: ConnectionFactory): Option[ConnectionFactory] =
+    try {
+      cf().createStatement().execute("select 40+2");
+      Some(cf)
+    } catch { case e: Exception => None }
 
   def connected[T](fun: Connection => T): T = {
     val conn = connect()
@@ -68,22 +84,21 @@ class PreparedStmt(query: String, params: List[Any]) {
 
   //TODO: Consider converting to a Stream for lazy processing
   def map[T](fun: ResultSet => T): List[T] = {
-    val xs:ListBuffer[T] = ListBuffer()
+    val xs: ListBuffer[T] = ListBuffer()
     foreach { rs => xs += fun(rs) }
     xs.toList
   }
 
-  def first[T](implicit conversion:ResultSet => T):Option[T] = prepared { stmt =>
+  def first[T](implicit conversion: ResultSet => T): Option[T] = prepared { stmt =>
     stmt.setMaxRows(1)
-  	val rs = stmt.executeQuery
-  	if (! rs.next) None
-  	else
-  		try Option(conversion(rs))
-  		finally rs.close
-    
+    val rs = stmt.executeQuery
+    if (!rs.next) None
+    else
+      try Option(conversion(rs))
+      finally rs.close
   }
-  
-  def isPositive:Boolean = executeQuery { rs =>
+
+  def isPositive: Boolean = executeQuery { rs =>
     rs.next && rs.getInt(1) > 0
   }
 } 
