@@ -3,6 +3,7 @@ package kornell.gui.client;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
+import kornell.gui.client.presentation.Captain;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
@@ -67,7 +68,7 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 public class GenericClientFactoryImpl implements ClientFactory {
 	/* History Management */
 	private final EventBus bus = new SimpleEventBus();
-	private final PlaceController placeController = new PlaceController(
+	private final PlaceController placeCtrl = new PlaceController(
 			bus);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
@@ -114,7 +115,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initHistoryHandler(Place defaultPlace) {
-		historyHandler.register(placeController, bus, defaultPlace);
+		historyHandler.register(placeCtrl, bus, defaultPlace);
 		new Stalker(bus,client,historyMapper);
 		historyHandler.handleCurrentHistory();
 	}
@@ -155,13 +156,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(placeController,bus);
+			menuBarView = new GenericMenuBarView(placeCtrl,bus);
 		return menuBarView;
 	}
 	
 	private SouthBarView getSouthBarView() {
 		if (southBarView == null)
-			southBarView = new GenericSouthBarView(bus, placeController);
+			southBarView = new GenericSouthBarView(bus, placeCtrl);
 		return southBarView;
 	}
 
@@ -191,6 +192,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				initHistoryHandler(defaultPlace);
 				initException();
 				initSCORM();
+				initPersonnel();
+			}
+
+			private void initPersonnel() {
+				new Captain(bus, placeCtrl);				
 			}			
 		});
 		return this;
@@ -222,7 +228,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView( historyMapper , placeController, getDefaultPlace(),client);
+		return new GenericVitrineView( historyMapper , placeCtrl, getDefaultPlace(),client);
 	}
 
 	private Place getDefaultPlace() {
@@ -231,7 +237,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(bus, client, placeController);
+		return new GenericWelcomeView(bus, client, placeCtrl);
 	}
 
 	@Override
@@ -241,7 +247,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public TermsView getTermsView() {
-		return new GenericTermsView(client, placeController, DEFAULT_PLACE);
+		return new GenericTermsView(client, placeCtrl, DEFAULT_PLACE);
 	}
 	
 	
@@ -251,13 +257,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (courseHomePresenter == null) {
 			CourseHomeView courseHomeView = getCourseHomeView();
 			
-			courseHomePresenter = new CourseHomePresenter(courseHomeView, placeController);
+			courseHomePresenter = new CourseHomePresenter(courseHomeView, placeCtrl);
 		}
 		return courseHomePresenter;
 	}
 	@Override
 	public CourseHomeView getCourseHomeView() {
-		return new GenericCourseHomeView(bus, client, placeController);
+		return new GenericCourseHomeView(bus, client, placeCtrl);
 	}
 	
 	
@@ -267,13 +273,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (courseDetailsPresenter == null) {
 			CourseDetailsView courseDetailsView = getCourseDetailsView();
 			
-			courseDetailsPresenter = new CourseDetailsPresenter(courseDetailsView, placeController);
+			courseDetailsPresenter = new CourseDetailsPresenter(courseDetailsView, placeCtrl);
 		}
 		return courseDetailsPresenter;
 	}
 	@Override
 	public CourseDetailsView getCourseDetailsView() {
-		return new GenericCourseDetailsView(bus, client, placeController);
+		return new GenericCourseDetailsView(bus, client, placeCtrl);
 	}
 	
 	
@@ -283,13 +289,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (courseLibraryPresenter == null) {
 			CourseLibraryView courseLibraryView = getCourseLibraryView();
 			
-			courseLibraryPresenter = new CourseLibraryPresenter(courseLibraryView, placeController);
+			courseLibraryPresenter = new CourseLibraryPresenter(courseLibraryView, placeCtrl);
 		}
 		return courseLibraryPresenter;
 	}
 	@Override
 	public CourseLibraryView getCourseLibraryView() {
-		return new GenericCourseLibraryView(bus, client, placeController);
+		return new GenericCourseLibraryView(bus, client, placeCtrl);
 	}
 	
 	
@@ -299,13 +305,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (courseForumPresenter == null) {
 			CourseForumView courseForumView = getCourseForumView();
 			
-			courseForumPresenter = new CourseForumPresenter(courseForumView, placeController);
+			courseForumPresenter = new CourseForumPresenter(courseForumView, placeCtrl);
 		}
 		return courseForumPresenter;
 	}
 	@Override
 	public CourseForumView getCourseForumView() {
-		return new GenericCourseForumView(bus, client, placeController);
+		return new GenericCourseForumView(bus, client, placeCtrl);
 	}
 	
 	
@@ -315,13 +321,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (courseChatPresenter == null) {
 			CourseChatView courseChatView = getCourseChatView();
 			
-			courseChatPresenter = new CourseChatPresenter(courseChatView, placeController);
+			courseChatPresenter = new CourseChatPresenter(courseChatView, placeCtrl);
 		}
 		return courseChatPresenter;
 	}
 	@Override
 	public CourseChatView getCourseChatView() {
-		return new GenericCourseChatView(bus, client, placeController);
+		return new GenericCourseChatView(bus, client, placeCtrl);
 	}
 	
 	
@@ -331,13 +337,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (courseSpecialistsPresenter == null) {
 			CourseSpecialistsView courseSpecialistsView = getCourseSpecialistsView();
 			
-			courseSpecialistsPresenter = new CourseSpecialistsPresenter(courseSpecialistsView, placeController);
+			courseSpecialistsPresenter = new CourseSpecialistsPresenter(courseSpecialistsView, placeCtrl);
 		}
 		return courseSpecialistsPresenter;
 	}
 	@Override
 	public CourseSpecialistsView getCourseSpecialistsView() {
-		return new GenericCourseSpecialistsView(bus, client, placeController);
+		return new GenericCourseSpecialistsView(bus, client, placeCtrl);
 	}
 	
 	
@@ -347,23 +353,23 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (courseNotesPresenter == null) {
 			CourseNotesView courseNotesView = getCourseNotesView();
 			
-			courseNotesPresenter = new CourseNotesPresenter(courseNotesView, placeController);
+			courseNotesPresenter = new CourseNotesPresenter(courseNotesView, placeCtrl);
 		}
 		return courseNotesPresenter;
 	}
 	@Override
 	public CourseNotesView getCourseNotesView() {
-		return new GenericCourseNotesView(bus, client, placeController);
+		return new GenericCourseNotesView(bus, client, placeCtrl);
 	}
 
 	@Override
 	public AtividadePresenter getActivityPresenter() {
-		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeController,client);
+		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeCtrl,client);
 		if (activityPresenter == null) {
 			AtividadeView activityView = getActivityView();
 			
 			activityPresenter = new AtividadePresenter(activityView,
-					placeController, rendererFactory);
+					placeCtrl, rendererFactory);
 		}
 		return activityPresenter;
 	}

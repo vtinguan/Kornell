@@ -10,7 +10,7 @@
 				<b:Button ui:field="btnMessages" addStyleNames="shy menuBarButton"></b:Button>		
 				<b:Button ui:field="btnHelp" addStyleNames="shy menuBarButton"></b:Button>		
 				<b:Button ui:field="btnMenu" addStyleNames="shy menuBarButton"></b:Button>		
-				<b:Button ui:field="btnExit" addStyleNames="shy menuBarButton last"></b:Button>		
+				<b:Button ui:field="btnExit" addStyleNames="menuBarButton last"></b:Button>		
 			</g:FlowPanel>
 		</g:FlowPanel>
 	</g:FlowPanel>

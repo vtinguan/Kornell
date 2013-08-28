@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
@@ -116,8 +117,13 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	}
 
 	@UiHandler("btnHome")
-	void handleClick(ClickEvent e) {
+	void handleHome(ClickEvent e) {
 		placeCtrl.goTo(new WelcomePlace());
+	}
+	
+	@UiHandler("btnExit")
+	void handleExit(ClickEvent e) {
+		bus.fireEvent(new LogoutEvent());
 	}
 
 	@Override
