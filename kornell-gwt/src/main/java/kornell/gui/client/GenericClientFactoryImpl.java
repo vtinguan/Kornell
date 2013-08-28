@@ -3,7 +3,8 @@ package kornell.gui.client;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
-import kornell.gui.client.presentation.Captain;
+import kornell.gui.client.personnel.Captain;
+import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
@@ -48,7 +49,6 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.scorm.API_1484_11;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
-import kornell.gui.client.sequence.Stalker;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -228,7 +228,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView( historyMapper , placeCtrl, getDefaultPlace(),client);
+		return new GenericVitrineView( historyMapper , placeCtrl, DEFAULT_PLACE,client);
 	}
 
 	private Place getDefaultPlace() {

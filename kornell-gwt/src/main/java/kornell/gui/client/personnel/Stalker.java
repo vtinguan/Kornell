@@ -1,11 +1,18 @@
-package kornell.gui.client.sequence;
+package kornell.gui.client.personnel;
 
 import kornell.api.client.KornellClient;
+import kornell.gui.client.presentation.atividade.AtividadePlace;
 
 import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 
+/**
+ * Tracks user
+ * 
+ * @author faermanj
+ */
 public class Stalker implements PlaceChangeEvent.Handler {
 	EventBus bus;
 	KornellClient client;
@@ -22,7 +29,14 @@ public class Stalker implements PlaceChangeEvent.Handler {
 
 	@Override
 	public void onPlaceChange(PlaceChangeEvent event) {
-		String token = mapper.getToken(event.getNewPlace());
-		client.placeChanged(token);
+		Place newPlace = event.getNewPlace();
+		if(isRelevant(newPlace)){		
+			String token = mapper.getToken(newPlace);
+			client.placeChanged(token);
+		}
+	}
+
+	private boolean isRelevant(Place place) {
+		return place instanceof AtividadePlace;
 	}
 }
