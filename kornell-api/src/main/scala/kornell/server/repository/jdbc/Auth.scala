@@ -5,6 +5,7 @@ import kornell.core.shared.data.Person
 import java.sql.ResultSet
 import kornell.server.repository.Beans
 import javax.ws.rs.core.SecurityContext
+import org.apache.commons.codec.digest.DigestUtils
 
 
 object Auth extends Beans {
@@ -28,12 +29,16 @@ object Auth extends Beans {
 	}
 	
 	
-	def setPassword(personUUID:String,username:String,password:String) = {
+	def setPlainPassword(personUUID:String, username:String, plainPassword:String) = {
+	  val digest = sha256(plainPassword)
 	  sql"""
 	  	insert into Password (person_uuid,username,password)
-	  	values ($personUUID,$username,$password)
+	  	values ($personUUID,$username,$digest)
 	  	on duplicate key update
-	  	username=$username,password=$password
+	  	username=$username,password=$digest
 	  """.executeUpdate
 	}
+	
+	def sha256(plain:String):String = DigestUtils.sha256Hex(plain)
+	
 }

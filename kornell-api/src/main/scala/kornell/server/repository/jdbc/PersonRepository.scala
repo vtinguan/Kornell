@@ -6,7 +6,7 @@ import kornell.server.repository.Beans
 
 class PersonRepository(val uuid:String) extends Beans {
 	def setPassword(username:String, password:String):PersonRepository = {
-	  Auth.setPassword(uuid, username, password)
+	  Auth.setPlainPassword(uuid, username, password)
 	  this
 	}
 	
