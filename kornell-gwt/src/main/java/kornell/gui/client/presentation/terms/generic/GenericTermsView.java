@@ -1,8 +1,6 @@
 package kornell.gui.client.presentation.terms.generic;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -11,21 +9,18 @@ import kornell.api.client.KornellClient;
 import kornell.core.shared.data.Institution;
 import kornell.core.shared.data.Person;
 import kornell.core.shared.data.Registration;
-import kornell.core.shared.data.Registrations;
 import kornell.core.shared.to.RegistrationsTO;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
 
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -63,16 +58,17 @@ public class GenericTermsView extends Composite implements TermsView {
 	private KornellClient client;
 
 	private PlaceController placeCtrl;
-
+	private Place defaultPlace;
 	private String displayCourses;
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private GenericMenuLeftView menuLeftView;
 
-	public GenericTermsView(KornellClient client, PlaceController placeCtrl) {
+	public GenericTermsView(KornellClient client, PlaceController placeCtrl, Place defaultPlace) {
 		this.client = client;
 		this.placeCtrl = placeCtrl;
+		this.defaultPlace = defaultPlace;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 		// TODO i18n
@@ -98,10 +94,15 @@ public class GenericTermsView extends Composite implements TermsView {
 				ArrayList<Entry<Registration, Institution>> regs = new ArrayList<Entry<Registration, Institution>>(
 						entrySet);
 				//TODO: Handle multiple unsigned terms
+				if(regs.size() > 0) {
 				Entry<Registration, Institution> e = regs.get(0);
 				registration = e.getKey();
 				institution = e.getValue();
 				paint();
+				}else {
+					GWT.log("OPS! Should not be here if nothing to sign");
+					goStudy();
+				}
 			}
 		});
 	}
@@ -119,8 +120,8 @@ public class GenericTermsView extends Composite implements TermsView {
 	void handleClickAll(ClickEvent e) {
 		client.institution(institution.getUUID()).acceptTerms(new Callback<Void>(){
 			@Override
-			protected void ok() {
-				placeCtrl.goTo(new WelcomePlace());
+			protected void ok() {				
+				goStudy();
 			}
 		});		
 	}
@@ -132,6 +133,10 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	@Override
 	public void setPresenter(Presenter presenter) {
+	}
+	
+	private void goStudy() {
+		placeCtrl.goTo(defaultPlace);				
 	}
 
 }

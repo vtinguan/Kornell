@@ -97,6 +97,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	/* GUI */
 	SimplePanel shell = new SimplePanel();
+	final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
 	private Place defaultPlace;
 
 	public GenericClientFactoryImpl() {
@@ -167,8 +168,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public ClientFactory startApp() {
 		//TODO: Consider caching credentials to avoid this request
-		final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
-
 		client.getCurrentUser(new Callback<UserInfoTO>(){
 			@Override
 			protected void ok(UserInfoTO user) {
@@ -242,7 +241,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public TermsView getTermsView() {
-		return new GenericTermsView(client, placeController);
+		return new GenericTermsView(client, placeController, DEFAULT_PLACE);
 	}
 	
 	
