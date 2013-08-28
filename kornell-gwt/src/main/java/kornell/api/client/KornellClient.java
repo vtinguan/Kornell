@@ -4,13 +4,14 @@ import kornell.core.shared.to.CourseTO;
 import kornell.core.shared.to.CoursesTO;
 import kornell.core.shared.to.RegistrationsTO;
 import kornell.core.shared.to.UserInfoTO;
+import kornell.gui.client.event.LogoutEventHandler;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.storage.client.Storage;
 
-public class KornellClient {
+public class KornellClient implements LogoutEventHandler {
 	Storage store = Storage.getLocalStorageIfSupported();
 
 	private String apiURL = null;
@@ -142,7 +143,8 @@ public class KornellClient {
 			createGET("/registrations").sendRequest("", callback);		
 		}
 	}
-	
+
+	//TODO: extract those inner classes
 	public class InstitutionClient{
 		private String institutionUUID;
 
@@ -160,7 +162,7 @@ public class KornellClient {
 		//TODO: Consider lifecycle
 		return new RegistrationsClient();
 	}
-	
+
 	public InstitutionClient institution(String uuid) {
 		return new InstitutionClient(uuid);
 	}
@@ -172,6 +174,17 @@ public class KornellClient {
 				GWT.log("place changed");
 			}
 		});
+	}
+
+	@Override
+	public void onLogout() {
+		forgetCredentials();
+	}
+
+	private void forgetCredentials() {
+		if(store != null){
+			store.removeItem("Authentication");
+		}
 	}
 
 }	
