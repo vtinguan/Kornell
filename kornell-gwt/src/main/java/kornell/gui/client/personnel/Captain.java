@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation;
+package kornell.gui.client.personnel;
 
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;

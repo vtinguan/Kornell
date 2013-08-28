@@ -98,10 +98,11 @@ public class GenericVitrineView extends Composite implements VitrineView {
 				} else {
 					String token = user.getLastPlaceVisited();
 					Place place;
-					if(token != null){
-						place = mapper.getPlace(token);
-					}else {
+					if(token == null || token.contains("vitrine")){
 						place = defaultPlace;
+					}else {
+						place = mapper.getPlace(token);
+						
 					}
 					placeCtrl.goTo(place);
 				}
