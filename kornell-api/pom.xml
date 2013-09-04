@@ -16,7 +16,7 @@
 
 		<m2eclipse.wtp.contextRoot>/</m2eclipse.wtp.contextRoot>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-    	<beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
+		<beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
 	</properties>
 
 	<repositories>
@@ -156,6 +156,10 @@
 				</executions>
 				<configuration>
 					<scalaVersion>2.10.0</scalaVersion>
+					<javacArgs>
+						<javacArg>-source 1.7</javacArg>
+						<javacArg>-target 1.7</javacArg>
+					</javacArgs>
 					<args>
 						<arg>-make:transitive</arg>
 						<arg>-dependencyfile</arg>
@@ -242,6 +246,29 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.3.1</version>
+				<executions>
+					<execution>
+						<id>enforce-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>[3.0.4,)</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<version>[1.7,)</version>
+								</requireJavaVersion>								
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
