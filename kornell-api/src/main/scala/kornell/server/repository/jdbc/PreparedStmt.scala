@@ -1,11 +1,12 @@
 package kornell.server.repository.jdbc
 
 import javax.naming.InitialContext
+import kornell.server.repository.jdbc.DataSources._
 import java.sql.ResultSet
 import java.sql.Connection
 import javax.naming.Context
 import java.util.Date
-import java.sql.{ Date => SQLDate }
+import java.sql.{ Date => SQLDate } 
 import javax.sql.DataSource
 import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
@@ -15,25 +16,6 @@ import javax.naming.NoInitialContextException
 
 class PreparedStmt(query: String, params: List[Any]) {
 
-  type ConnectionFactory = () => Connection
-
-  lazy val JNDI: ConnectionFactory = () => {
-    try {
-      //TODO: lazy cache?
-      val context = new InitialContext()
-        .lookup("java:comp/env")
-        .asInstanceOf[Context]
-      context.lookup("jdbc/KornellDS")
-        .asInstanceOf[DataSource]
-        .getConnection
-    } catch {
-      case e: NoInitialContextException => null
-    }
-  }
-
-  lazy val LOCAL: ConnectionFactory = () => {
-    DriverManager.getConnection("jdbc:mysql:///ebdb", "kornell", "42kornell73")
-  }
 
   lazy val connect: ConnectionFactory = verified(JNDI).getOrElse(LOCAL)
 
