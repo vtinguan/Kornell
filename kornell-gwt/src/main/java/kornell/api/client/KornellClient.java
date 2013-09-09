@@ -8,7 +8,6 @@ import kornell.gui.client.event.LogoutEventHandler;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.storage.client.Storage;
 
 public class KornellClient implements LogoutEventHandler {
@@ -22,7 +21,7 @@ public class KornellClient implements LogoutEventHandler {
 	}
 
 	private void discoverApiUrl() {
-			apiURL = KornellClient.getFromEnvironment();
+		apiURL = KornellClient.getFromEnvironment();
 		if(apiURL == null || apiURL.length() == 0){ 
 			useDefaultUrl();
 		}else{
@@ -90,12 +89,10 @@ public class KornellClient implements LogoutEventHandler {
 	
 	public void getCourseTO(String uuid, Callback<CourseTO> cb) {
 		createGET("/courses/"+uuid).sendRequest(null, cb);
-		
 	}
 
 	private ExceptionalRequestBuilder createGET(String path) {		
-		ExceptionalRequestBuilder reqBuilder =
-				new ExceptionalRequestBuilder(RequestBuilder.GET, getApiUrl()+path);
+		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(RequestBuilder.GET, getApiUrl()+path);
 		setAuthenticationHeaders(reqBuilder);
 		return  reqBuilder;
 	}
@@ -114,9 +111,6 @@ public class KornellClient implements LogoutEventHandler {
 				reqBuilder.setHeader("Authorization", auth);
 		}
 	}
-	
-	
-	
 	
 	private String getApiUrl() {
 		while(apiURL == null){

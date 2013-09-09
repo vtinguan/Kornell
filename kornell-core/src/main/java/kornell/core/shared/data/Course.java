@@ -13,6 +13,9 @@ public interface Course extends Entity{
 	
 	String getAssetsURL();
 	void setAssetsURL(String assetsURL);
+	
+	String getInfoJson();
+	void setInfoJson(String infoJson);
 
 	//TODO: Delete
 	@Deprecated

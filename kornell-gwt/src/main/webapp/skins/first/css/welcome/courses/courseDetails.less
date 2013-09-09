@@ -22,6 +22,18 @@
 		}
 		.courseNameLabel{
 			color: @textHighlightColor2;
+			float: left;
+		}
+		.closePanel{
+			.closeImage {
+				float: right;
+			}
+			.closeLabel {
+				float: right;
+				line-height: 40px;
+				color: @textHighlightColor;
+				padding-right: 3px;
+			}
 		}
 	}
 	.buttonsPanel{
@@ -29,6 +41,7 @@
 		margin-left: @detailsPanelMargin;
 		margin-right: @detailsPanelMargin;
 		margin-top: @detailsPanelMargin * 3;
+		clear: both;
 		float: left;
 		.btnDetails{
 			width: @buttonsPanelWidth - (@detailsPanelMargin * 2);
@@ -97,8 +110,8 @@
 		}	
 		.topicsPanel{
 			@topicsPanelWidth: .75 * @wrapperWidth;
-
-			@topicsWidth: .4 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@topicsWidth: @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;;
+			/*@topicsWidth: .4 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;*/
 			@statusWidth: .17 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@timeWidth: .1 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@forumCommentsWidth: .21 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
