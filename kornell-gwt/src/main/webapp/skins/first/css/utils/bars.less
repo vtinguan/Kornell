@@ -7,27 +7,6 @@
 @barNorthHeight: 45px;
 @barSouthHeight: 35px;
 
-.activitybar {	
-	.south;
-	.size (100%,@barNorthHeight);
-	.gradient (@barGradientStartColor, @barGradientEndColor);
-
-	.buttons {
-		float: right;
-		.btn {		
-			color: @niceTextColor;
-			text-shadow: none;
-			font-size: 13px; 
-			height: 37px;
-			padding: 8px 8px 0px 8px;
-			.btnBorder;
-		}
-		.btn-link:hover {
-			text-decoration: none;
-		}
-	}
-}
-
 
 
 
@@ -92,11 +71,67 @@
 
 
 
-
+.activityBar {	
+	.south;
+	.gradient (@barGradientStartColor, @barGradientEndColor);
+	.size (@wrapperWidth,@barSouthHeight);
+	.btnPanel{
+		.btnBorder;
+	}
+	.activityBarButton {
+		height: @barSouthHeight;
+		float: left;
+		line-height: @barSouthHeight;
+		text-align: center;
+		padding: 0;
+		border: 0;
+		.label{
+			background: transparent;
+			color: @niceTextColor;
+			font-size: 11px;
+			margin-left: 4px;
+		}
+		.icon{}
+	}
+	.selected{
+		@borderTopHeight: 3px;
+		border-top: @borderTopHeight solid @buttonSelectedGradientStart;
+		line-height: @barSouthHeight - @borderTopHeight;
+	}
+	.disabled {
+		.label{
+			color: darken(@niceTextColor, 30%);
+		}
+	}
+	@buttonCount: 3;
+	@buttonWidth: ( @wrapperWidth / @buttonCount ) - 2px;
+	.previous 	{width: @buttonWidth + 1px; border-left: 0px;}
+	.next 	 	{width: @buttonWidth;}
+	.details 	{width: @buttonWidth + 1px; border-right: 0px;}
+}
+@media screen and (max-width: @wrapperWidth) {
+	.activityBar{
+		.activityBarButton {
+			.label{
+				visibility: hidden;
+				width: 0px;
+				border: 0;
+				margin: 0;
+				padding: 0;
+			}		
+		}
+		@buttonCount: 3;
+		@buttonWidth: ( @wrapperWidthUnder990 / @buttonCount ) - 2px;
+		.previous 	{width: @buttonWidth + 1px; border-left: 0px;}
+		.next		{width: @buttonWidth;}
+		.details 	{width: @buttonWidth + 1px; border-right: 0px;}
+	}
+}
 
 
 .courseBar{
 	.south;
+	.gradient (@barGradientStartColor, @barGradientEndColor);
 	.size (@wrapperWidth,@barSouthHeight);
 	.btnPanel{
 		.btnBorder;

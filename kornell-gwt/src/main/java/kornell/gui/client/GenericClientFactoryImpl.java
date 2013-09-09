@@ -21,6 +21,7 @@ import kornell.gui.client.presentation.course.chat.generic.GenericCourseChatView
 import kornell.gui.client.presentation.course.course.CourseHomePresenter;
 import kornell.gui.client.presentation.course.course.CourseHomeView;
 import kornell.gui.client.presentation.course.course.generic.GenericCourseHomeView;
+import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPresenter;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.generic.GenericCourseDetailsView;
@@ -57,6 +58,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -98,7 +100,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	/* GUI */
 	SimplePanel shell = new SimplePanel();
-	final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
+	public final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
 	private Place defaultPlace;
 
 	public GenericClientFactoryImpl() {
@@ -162,7 +164,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	
 	private SouthBarView getSouthBarView() {
 		if (southBarView == null)
-			southBarView = new GenericSouthBarView(bus, placeCtrl);
+			southBarView = new GenericSouthBarView(bus, placeCtrl, client);
 		return southBarView;
 	}
 
@@ -172,13 +174,19 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		client.getCurrentUser(new Callback<UserInfoTO>(){
 			@Override
 			protected void ok(UserInfoTO user) {
-				String token = user.getLastPlaceVisited();
-				if(token != null){
-					defaultPlace = historyMapper.getPlace(token);
-				}else {
-					defaultPlace = DEFAULT_PLACE;
-				}				
-				startApp(defaultPlace);
+					String token;
+					if(!"".equals(Window.Location.getHash()) && 
+							"details".equals(Window.Location.getHash().split(":")[0].split("#")[1])){
+						token = Window.Location.getHash().split("#")[1];
+					} else {
+						token = user.getLastPlaceVisited();
+					}
+					if(token != null){
+						defaultPlace = historyMapper.getPlace(token);
+					}else {
+						defaultPlace = DEFAULT_PLACE;
+					}				
+					startApp(defaultPlace);
 			}
 
 			@Override
@@ -228,7 +236,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView( historyMapper , placeCtrl, DEFAULT_PLACE,client);
+		return new GenericVitrineView( historyMapper , placeCtrl, DEFAULT_PLACE, client);
 	}
 
 	private Place getDefaultPlace() {

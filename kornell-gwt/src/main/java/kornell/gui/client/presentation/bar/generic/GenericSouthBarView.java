@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import kornell.api.client.KornellClient;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
@@ -43,11 +44,14 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 	FlowPanel southBar;
 
 	private EventBus bus;
+
+	private KornellClient client;
 	
-	public GenericSouthBarView(EventBus bus, final PlaceController placeCtrl) {
+	public GenericSouthBarView(EventBus bus, final PlaceController placeCtrl, KornellClient client) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
+		this.client = client;
 
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
@@ -55,12 +59,11 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						
-						if(newPlace instanceof AtividadePlace){
+						if(newPlace instanceof CourseDetailsPlace || newPlace instanceof AtividadePlace){
 							southBar.clear();
 							southBar.add(getActivityBarView());
 							visible = true;
 						} else if(newPlace instanceof CourseHomePlace || 
-								  newPlace instanceof CourseDetailsPlace || 
 								  newPlace instanceof CourseLibraryPlace || 
 								  newPlace instanceof CourseForumPlace || 
 								  newPlace instanceof CourseChatPlace || 
@@ -78,13 +81,13 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 		
 	private ActivityBarView getActivityBarView() {
 		if (activityBarView == null)
-			activityBarView = new GenericActivityBarView(bus);
+			activityBarView = new GenericActivityBarView(bus, placeCtrl, client);
 		return activityBarView;
 	}
 	
 	private CourseBarView getCourseBarView(Place newPlace) {
 		if (courseBarView == null)
-			courseBarView = new GenericCourseBarView(bus,placeCtrl);
+			courseBarView = new GenericCourseBarView(bus, placeCtrl);
 		courseBarView.updateSelection(newPlace);
 		return courseBarView;
 	}

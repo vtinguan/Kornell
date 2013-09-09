@@ -33,14 +33,14 @@ object Courses extends SlickRepository with TOs {
   }
 
   //Conversions
-  implicit val getCourseTO = GetResult(r => newCourseTO(r.nextString, r.nextString, r.nextString, r.nextString, r.nextString,
+  implicit val getCourseTO = GetResult(r => newCourseTO(r.nextString, r.nextString, r.nextString, r.nextString, r.nextString, r.nextString,
     r.nextString, r.nextDate, r.nextString, r.nextString))
 
   implicit def toCourses(l: List[CourseTO]): CoursesTO = newCoursesTO(l)
 
   //Queries
   def selectCourses(p: Person) = sql"""
-		select c.uuid as courseUUID,c.code,c.title,c.description,c.assetsURL,
+		select c.uuid as courseUUID,c.code,c.title,c.description,c.assetsURL,c.infoJson,
 			   e.uuid as enrollmentUUID, e.enrolledOn,e.person_uuid,e.progress
 		from Course c
 		left join Enrollment e on c.uuid = e.course_uuid
@@ -49,7 +49,7 @@ object Courses extends SlickRepository with TOs {
 	"""
 
   def selectCourse(p: Person, uuid: String) = sql"""
-		select c.uuid,c.code,c.title,c.description,c.assetsURL,
+		select c.uuid,c.code,c.title,c.description,c.assetsURL,c.infoJson,
 			   e.uuid, e.enrolledOn,e.person_uuid,e.progress
 		from Course c
 		left join Enrollment e on c.uuid = e.course_uuid
@@ -61,9 +61,9 @@ object Courses extends SlickRepository with TOs {
   def insert(c: Course) =
     sqlu"insert into Course values (${c.getUUID},${c.getCode},${c.getTitle},${c.getDescription},${c.getAssetsURL})"
 
-  def create(title: String, code: String, description: String, assetsURL: String) =
+  def create(title: String, code: String, description: String, assetsURL: String, infoJson: String) =
     db.withTransaction {
-      val c = newCourse(randUUID, code, title, description.stripMargin, assetsURL)
+      val c = newCourse(randUUID, code, title, description.stripMargin, assetsURL, infoJson)
       insert(c).execute
       c
     }

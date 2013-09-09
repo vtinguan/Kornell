@@ -3,6 +3,9 @@ package kornell.gui.client;
 import com.google.gwt.i18n.client.Constants;
 
 public interface KornellConstants extends Constants {
+	
+	@DefaultStringValue("skins/first/icons/")
+	String imagesPath();
 
 	/**
 	 * 
@@ -82,6 +85,40 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("Certificate")
 	String certificate();
 
+
+
+	/**
+	 * 
+	 * GenericCourseDetailsView
+	 * 
+	 */
+	@DefaultStringValue("Course details: ")
+	String detailsHeader();
+	
+	@DefaultStringValue("About the course")
+	String btnAbout();
+	
+	@DefaultStringValue("Topics")
+	String btnTopics();
+	
+	@DefaultStringValue("Certification")
+	String btnCertification();
+	
+	@DefaultStringValue("General view")
+	String btnAboutInfo();
+	
+	@DefaultStringValue("Main topics covered on this course")
+	String btnTopicsInfo();
+	
+	@DefaultStringValue("Evaluations and tests")
+	String btnCertificationInfo();
+	
+	@DefaultStringValue("Close Details")
+	String closeDetails();
+
+	@DefaultStringValue("Topic")
+	String topic();
+
 	
 	/**
 	 * 
@@ -111,6 +148,13 @@ public interface KornellConstants extends Constants {
 	
 	@DefaultStringValue("back")
 	String back();
+	
+	@DefaultStringValue("next")
+	String next();
+	
+	@DefaultStringValue("previous")
+	String previous();
+
 	
 
 

@@ -34,11 +34,11 @@ public class GenericCourseBarView extends Composite implements CourseBarView {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseBarView> {
 	}
 
-	private static final String IMAGES_PATH = "skins/first/icons/courseBar/";
-
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
+	
+	private static final String IMAGES_PATH = constants.imagesPath() + "southBar/";
 
 	@UiField
 	Button btnCourse;
