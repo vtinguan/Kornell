@@ -1,0 +1,43 @@
+@import "../utils/mixins";
+
+.TermsPlace{
+	.termsPanel {
+		width: 80%;
+		margin: 0 auto;
+		text-align: left; 
+		.imgTermsTitle {
+			margin: 0 auto;
+			width: 407px;
+		}
+		.titleUser {
+			color: @textHighlightColor;
+			font-size: 18px;
+			padding-top: 5px;
+			padding-bottom: 10px;
+		}
+		.normal {
+			color: @niceTextColor;
+			font-size: 12px;
+		}	
+		.termsButtonBar{
+			margin: 0 auto;
+			width: 360px;
+		}
+		.btnTerms{
+			color: @niceTextColor;
+			.sizepx(150, 30);
+			border: 0px;
+			font-size: 13px;
+			font-weight: bold;
+			margin-top: 15px;
+		}
+		.btnAgree{
+			margin-right: 30px;
+			.btnSelected;
+		}
+		.btnDontAgree{
+			margin-left: 30px;
+			.btnNotSelected;
+		}
+	}
+}

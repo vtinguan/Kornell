@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	<g:FlowPanel addStyleNames="includeFileFormPanel">
+		<g:FlowPanel addStyleNames="includeFileFormInfo">
+		    <g:Label ui:field="includeFileFormInfoTitle" addStyleNames="includeFileFormInfoTitle"></g:Label>
+		    <g:Label ui:field="includeFileFormInfoText" addStyleNames="includeFileFormInfoText"></g:Label>
+		</g:FlowPanel>
+		<g:FlowPanel addStyleNames="includeFileFormWrapper">
+			<g:FlowPanel addStyleNames="includeFileForm">
+				<g:FlowPanel addStyleNames="filePanel">
+			    	<g:FileUpload ui:field="fileUpload" addStyleNames="fileUpload"></g:FileUpload>
+				</g:FlowPanel>
+				<b:TextArea ui:field="fileDescription" addStyleNames="fileDescription"></b:TextArea>
+				<g:FlowPanel addStyleNames="starsWrapper">
+					<g:FlowPanel addStyleNames="starsPanel">
+			    		<g:Image ui:field="star1" addStyleNames="star"></g:Image>
+			    		<g:Image ui:field="star2" addStyleNames="star"></g:Image>
+			    		<g:Image ui:field="star3" addStyleNames="star"></g:Image>
+			    		<g:Image ui:field="star4" addStyleNames="star"></g:Image>
+			    		<g:Image ui:field="star5" addStyleNames="star"></g:Image>
+					</g:FlowPanel>
+			    	<g:Label ui:field="starsLabel" addStyleNames="starsLabel"></g:Label>
+				</g:FlowPanel>
+			</g:FlowPanel>
+		</g:FlowPanel>
+		<g:Button ui:field="btnPublish" addStyleNames="btnPublish"></g:Button>
+	</g:FlowPanel>
+</ui:UiBinder> 

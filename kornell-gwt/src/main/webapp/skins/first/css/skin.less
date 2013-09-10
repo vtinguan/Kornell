@@ -1,0 +1,29 @@
+//UTILS
+@import "utils/bars";
+@import "utils/mixins";
+//VITRINE
+@import "vitrine/vitrine";
+//TERMS
+@import "terms/terms";
+//WELCOME
+@import "welcome/menuLeft";
+@import "welcome/courses/courses";
+	@import "welcome/courses/courseLibrary";
+	@import "welcome/courses/courseDetails";
+@import "welcome/profile";
+
+body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	.gradient (@bodyGradientStartColor, @bodyGradientEndColor);
+}
+
+.wrapper {
+    width: @wrapperWidth;
+    margin: 0 auto;  
+} 
+@media screen and (max-width: @wrapperWidth) {
+    .wrapper {
+		width: @wrapperWidthUnder990;
+	}
+}
+.contentWrapper {}
