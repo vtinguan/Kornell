@@ -1,0 +1,134 @@
+@import "../../utils/mixins";
+@import "../../utils/colors";
+
+.pnlRight{
+	@pnlRightWidth: @wrapperWidth - @menuLeftWidth - 18px;
+	width: @pnlRightWidth;
+	.btnPanel{
+		height: 30px;
+		margin-top: 9px;
+		.btnCourses{
+			color: @niceTextColor;
+			border-left: 2px solid @bordersColor;
+			float:right;
+			height: 24px; 
+			padding-left: 24px;
+			padding-right: 24px;
+			font-size: 11px;
+			display: block;
+			border-left: 1px solid @buttonBorderLeftColor;
+			border-right: 1px solid @buttonBorderRightColor;
+			border-top: 0;
+			border-bottom: 0;
+		}
+	}
+	.pnlCoursesWrapper{
+		margin-right: 30px;
+		.btnPanel{
+			width: @pnlRightWidth;
+		}
+		.pnlCoursesWrapperTitle{
+			height: 20px;
+			.imgPnlCourses{
+				margin-left: 24px;
+				float: left;
+			}
+			.labelPnlCourses { 
+				color: @niceTextColor;
+				font-size: 15px;
+				line-height: 23px;
+				padding-left: 14px;
+				padding-bottom: 12px;
+				float: left;
+			}
+			.labelPnlCoursesHighlight { 
+				color: @highlightCoursesCountColor;
+				padding-left: 5px;
+			}
+		}
+		.pnlCourses { 
+			display: block;
+			overflow: auto;
+			width: @pnlRightWidth;
+			.courseSummary {
+				.sizepx(.45 * @pnlRightWidth,142);
+				background-color: @courseSummaryBackgroundColor;
+				border-radius:5px;  
+				padding: 10px;
+				margin-bottom: 10px;
+				margin-left: 10px;
+				float: left;
+				&:hover {
+					cursor: pointer;
+					.changeBackgroundColorOnHover(@courseSummaryBackgroundColor, 15%);
+				}
+				h1 {
+					margin: 0px;
+					padding: 5px 0px 5px 0px;
+					font-size: 1.1em;
+					font-weight: bold;
+					text-align: left;
+					line-height: 1.231;	
+					color: @textHighlightDiscreteColor;
+				}
+				.details {
+					height: 100%;
+					margin-left: 100px;
+					color: @niceTextColor;
+				}
+				img.thumb {
+					height: 132px;
+					width:  86px;
+					float: left;	
+					border: 4px solid @courseSummaryThumbBorderColor;
+				}
+				.courseSummaryBar {
+					.icon {
+						float: left;
+					}
+					.courseProgress {
+						text-align: right;
+						font-size: 11px;
+						font-weight: bold;
+						line-height: 23px;
+						padding-left: 7px;
+						color: @niceTextColor;
+						float: left;
+					}
+					.courseProgressCertificate {
+						float: right; 
+					}
+					.iconCertificate {
+						float: right;
+					}
+				}
+				.description {
+					height: 88px;
+				}
+			}
+		}
+	}
+} 
+@media screen and (max-width: @wrapperWidth) {
+	.pnlRight{
+		@pnlRightWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
+		width: @pnlRightWidth;
+		.btnPanel{
+			width: @pnlRightWidth;
+			height:	60px;
+			width: @pnlRightWidth;
+		}
+		.pnlCoursesWrapper {
+			width: @pnlRightWidth;
+			.pnlCourses { 
+				width: @pnlRightWidth;
+			}
+			.courseSummary {
+				width: 314px !important;
+				.description {
+					overflow: hidden;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,69 @@
+html, body {
+	margin: 0 0 0 0 !important;
+	padding: 0 0 0 0 !important;
+	height: 100% !important;	
+}
+.WelcomePlace {
+	position: absolute;
+	bottom: 0px;
+	top: 42px;
+}
+.WelcomePlace .contentWrapper {
+	position: absolute;
+	bottom: 0px;
+	top: 42px;
+} 
+
+.AtividadePlace .contentWrapper {
+	position: absolute;
+	bottom: 42px;
+	top: 42px;
+	width: 100%;
+}
+
+.debug{
+	
+}
+
+.debug-g{
+	background-color: lightgreen;
+}
+
+.full {
+	width: 100%;
+	height: 100%;
+}
+
+.widest {
+	width: 100%;
+}
+
+.shy {
+	display: none; 
+}
+
+.show {
+	display: block !important; 
+}
+
+iframe {
+	border-width: 0;
+}
+
+.clearer{
+	clear: both;
+}
+
+.externalContent{
+	width: 100%;
+	height: 100%;
+	margin-bottom: -5px;
+}
+
+.contentPanel{
+	height: 100%;
+}
+
+.debug {
+	border: 2px solid red;
+}
