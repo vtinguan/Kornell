@@ -109,14 +109,7 @@
 			<version>${gwtVersion}</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Unit tests -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>com.github.gwtbootstrap</groupId>
 			<artifactId>gwt-bootstrap</artifactId>
@@ -124,7 +117,12 @@
 			<scope>provided</scope>
 		</dependency>
 
-
+<dependency>
+	<groupId>junit</groupId>
+	<artifactId>junit</artifactId>
+	<version>4.11</version>
+</dependency>
+            
 
 	</dependencies>
 
