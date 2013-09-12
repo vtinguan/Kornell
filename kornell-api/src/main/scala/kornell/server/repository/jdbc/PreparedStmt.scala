@@ -6,7 +6,7 @@ import java.sql.ResultSet
 import java.sql.Connection
 import javax.naming.Context
 import java.util.Date
-import java.sql.{ Date => SQLDate } 
+import java.sql.{ Date => SQLDate }
 import javax.sql.DataSource
 import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
@@ -16,14 +16,18 @@ import javax.naming.NoInitialContextException
 
 class PreparedStmt(query: String, params: List[Any]) {
 
-
   lazy val connect: ConnectionFactory = verified(JNDI).getOrElse(LOCAL)
 
   def verified(cf: ConnectionFactory): Option[ConnectionFactory] =
     try {
-      cf().createStatement().execute("select 40+2");
+      val conn = cf()
+      val stmt = conn.createStatement
+      stmt.execute("select 40+2")
+      stmt.close
+      conn.close
       Some(cf)
     } catch { case e: Exception => None }
+  
 
   def connected[T](fun: Connection => T): T = {
     val conn = connect()

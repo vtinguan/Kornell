@@ -23,7 +23,7 @@ object DataSources {
     }
   }
 
-  lazy val LOCAL: ConnectionFactory = () => {
+  lazy val LOCAL: ConnectionFactory = () =>
     DriverManager.getConnection("jdbc:mysql:///ebdb", "kornell", "42kornell73")
-  }
+
 }

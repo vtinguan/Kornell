@@ -12,10 +12,13 @@ import kornell.server.repository.jdbc.SQLInterpolation._
 @WebServlet(Array("/sandbox"))
 class SandboxServlet extends HttpServlet{
 	override def doGet( req:HttpServletRequest, resp:HttpServletResponse) {
-		//resp.setCharacterEncoding("UTF-8")
+		val out = resp.getWriter
+		sql"""select terms from Institution""".foreach{rs => out.println(rs.getString("terms"))}
+	  /*
+		resp.setCharacterEncoding("UTF-8")
 		resp.setContentType("text/html; charset=UTF-8");
 		resp.setCharacterEncoding("UTF-8")
-		val out = resp.getWriter
+		
 		out.println("<html><body>")
 		out.println("Servlet Encoding: "+System.getProperty("javax.servlet.request.encoding"))
 		out.println("File Encoding:"+System.getProperty("file.encoding"))
@@ -23,5 +26,8 @@ class SandboxServlet extends HttpServlet{
 		sql"""select terms from Institution""".foreach{rs => out.println(rs.getString("terms"))}
 		out.println("")
 		out.println("</body></html>")
+		*/
+		out.println("Hello");
+		
 	}
 }
