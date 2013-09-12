@@ -16,19 +16,6 @@ import javax.naming.NoInitialContextException
 
 class PreparedStmt(query: String, params: List[Any]) {
 
-  lazy val connect: ConnectionFactory = verified(JNDI).getOrElse(LOCAL)
-
-  def verified(cf: ConnectionFactory): Option[ConnectionFactory] =
-    try {
-      val conn = cf()
-      val stmt = conn.createStatement
-      stmt.execute("select 40+2")
-      stmt.close
-      conn.close
-      Some(cf)
-    } catch { case e: Exception => None }
-  
-
   def connected[T](fun: Connection => T): T = {
     val conn = connect()
     try fun(conn)
