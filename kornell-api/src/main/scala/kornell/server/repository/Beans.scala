@@ -61,8 +61,6 @@ trait Beans {
     e
   }
 
-
-
   //FTW: Default parameter values
   def newInstitution(uuid: String = randomUUID, name: String, terms: String) = {
     val i = factory.newInstitution().as
