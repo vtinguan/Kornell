@@ -24,6 +24,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -37,10 +38,10 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	
+
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
-	
-	
+
+
 	private KornellClient client;
 	private PlaceController placeCtrl;
 	private EventBus bus;
@@ -62,17 +63,17 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 	Button btnTopics;
 	@UiField
 	Button btnCertification;
-	
+
 	Button btnCurrent;
-	
+
 	FlowPanel closePanel;
-	
+
 	CourseTO courseTO;
-	
+
 	CourseDetailsTO courseDetails;
-	
+
 	UserInfoTO user;
-	
+
 	public GenericCourseDetailsView(EventBus eventBus, KornellClient client, PlaceController placeCtrl) {
 		this.bus = eventBus;
 		this.client = client;
@@ -80,26 +81,26 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();		
 	}
-	
+
 	private void initData() {
 		String uuid = placeCtrl.getWhere() instanceof CourseDetailsPlace ?
 				((CourseDetailsPlace) placeCtrl.getWhere()).getCourseUUID() :
-				((AtividadePlace) placeCtrl.getWhere()).getCourseUUID();
-				
-		client.getCourseTO(uuid,new Callback<CourseTO>(){
-			@Override
-			protected void ok(CourseTO to) {
-				courseTO = to;
+					((AtividadePlace) placeCtrl.getWhere()).getCourseUUID();
 
-				client.getCurrentUser(new Callback<UserInfoTO>() {
+				client.getCourseTO(uuid,new Callback<CourseTO>(){
 					@Override
-					protected void ok(UserInfoTO userTO) {
-						user = userTO;
-						display();
-					}
+					protected void ok(CourseTO to) {
+						courseTO = to;
+
+						client.getCurrentUser(new Callback<UserInfoTO>() {
+							@Override
+							protected void ok(UserInfoTO userTO) {
+								user = userTO;
+								display();
+							}
+						});
+					}			
 				});
-			}			
-		});
 	}
 
 
@@ -107,7 +108,7 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 		CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(courseTO.getCourse().getInfoJson());
 		builder.buildCourseDetails();
 		courseDetails = builder.getCourseDetailsTO();
-		
+
 		btnCurrent = btnAbout;
 		displayTitle();
 		displayButtons();
@@ -133,29 +134,29 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 		certificationPanel.add(getCertificationInfo());
 		certificationPanel.add(getCertificationTableHeader());
 		certificationPanel.add(getCertificationTableContent());
-		
+
 		return certificationPanel;
 	}
 
 	private FlowPanel getCertificationInfo() {
 		FlowPanel certificationInfo = new FlowPanel();
 		certificationInfo.addStyleName("certificationInfo");
-		
+
 		Label infoTitle = new Label(courseDetails.getCertificationHeaderInfoTO().getType());
 		infoTitle.addStyleName("certificationInfoTitle");
 		certificationInfo.add(infoTitle);
-		
+
 		Label infoText = new Label(courseDetails.getCertificationHeaderInfoTO().getText());
 		infoText.addStyleName("certificationInfoText");
 		certificationInfo.add(infoText);
-		
+
 		return certificationInfo;
 	}
 
 	private FlowPanel getCertificationTableContent() {
 		FlowPanel certificationContentPanel = new FlowPanel();
 		certificationContentPanel.addStyleName("certificationContentPanel");
-		
+
 		for (CertificationTO certificationTO : courseDetails.getCertifications()) {
 			certificationContentPanel.add(getCertificationWrapper(certificationTO));
 		}
@@ -169,40 +170,47 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 
 		FlowPanel itemPanel = new FlowPanel();
 		itemPanel.addStyleName("itemPanel");
-		
+
 		Image certificationIcon = new Image(IMAGES_PATH + certificationTO.getType() + ".png");
 		certificationIcon.addStyleName("certificationIcon");
 		itemPanel.add(certificationIcon);
-		
+
 		Label lblName = new Label(certificationTO.getName());
 		lblName.addStyleName("lblName");
 		itemPanel.add(lblName);
-		
+
 		Label lblDescription = new Label(certificationTO.getDescription());
 		lblDescription.addStyleName("lblDescription");
 		itemPanel.add(lblDescription);
-		
+
 		certificationWrapper.add(itemPanel);
-		
+
 		Label lblStatus = new Label(certificationTO.getStatus());
 		lblStatus.addStyleName("lblStatus");
 		certificationWrapper.add(lblStatus);
-		
+
 		Label lblGrade = new Label("certification".equals(certificationTO.getType()) ? " " : (!"".equals(certificationTO.getGrade()) ? certificationTO.getGrade() : "-"));
 		lblGrade.addStyleName("lblGrade");
 		certificationWrapper.add(lblGrade);
-		
-		String action = "-";
+
+		Anchor lblActions;
 		if("test".equals(certificationTO.getType())){
-			action = "Visualizar";
+			lblActions = new Anchor("Visualizar");
 		}
 		else if("certification".equals(certificationTO.getType())){
-			action = "Gerar";
+			lblActions = new Anchor("Gerar");
+			lblActions.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick (ClickEvent event){
+					Window.open(client.getApiUrl() + "/report/certificate/" + user.getPerson().getUUID() + "/" + courseTO.getCourse().getUUID() , "", "");
+				}
+			});
+		} else {
+			lblActions = new Anchor("-");
 		}
-		Label lblActions = new Label(action);
 		lblActions.addStyleName("lblActions");
 		certificationWrapper.add(lblActions);
-		
+
 		return certificationWrapper;
 	}
 
@@ -214,7 +222,7 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus", "btnCertificationHeader"));
 		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade", "btnCertificationHeader"));
 		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions", "btnCertificationHeader"));
-		
+
 		return certificationHeaderPanel;
 	}
 
@@ -224,14 +232,14 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 
 		topicsPanel.add(getTopicsTableHeader());
 		topicsPanel.add(getTopicsTableContent());
-		
+
 		return topicsPanel;
 	}
 
 	private FlowPanel getTopicsTableContent() {
 		FlowPanel topicsContentPanel = new FlowPanel();
 		topicsContentPanel.addStyleName("topicsContentPanel");
-		
+
 		for (TopicTO topicTO : courseDetails.getTopics()) {
 			topicsContentPanel.add(getTopicWrapper(topicTO));
 		}
@@ -242,35 +250,35 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 	private FlowPanel getTopicWrapper(TopicTO topicTO) {
 		FlowPanel topicWrapper = new FlowPanel();
 		topicWrapper.addStyleName("topicWrapper");
-		
+
 		FlowPanel topicPanel = new FlowPanel();
 		topicPanel.addStyleName("topicPanel");
-		
+
 		Image topicIcon = new Image(IMAGES_PATH + "status_" + topicTO.getType() + ".png");
 		topicIcon.addStyleName("topicIcon");
 		topicPanel.add(topicIcon);
-		
+
 		Label lblTopic = new Label(topicTO.getTitle());
 		lblTopic.addStyleName("lblTopic");
 		topicPanel.add(lblTopic);
-		
+
 		topicWrapper.add(topicPanel);
 		/*
 		Label lblStatus = new Label(topicTO.getStatus());
 		lblStatus.addStyleName("finishedTest".equals(topicTO.getType()) ? "lblStatusFinishedTest" : "lblStatus");
 		topicWrapper.add(lblStatus);
-		
+
 		Label lblTime = new Label("".equals(topicTO.getTime()) ? "-" : topicTO.getTime());
 		lblTime.addStyleName("lblTime");
 		topicWrapper.add(lblTime);
-		
+
 		FlowPanel pnlForumComments = new FlowPanel();
 		pnlForumComments.addStyleName("pnlForumComments");
-		
+
 		Label lblForumComments = new Label(topicTO.getForumComments() == 0 ? "-" : ""+topicTO.getForumComments());
 		lblForumComments.addStyleName("lblForumComments");
 		pnlForumComments.add(lblForumComments);
-		
+
 		if(topicTO.getNewForumComments() > 0){
 			Label lblDividingBar = new Label("|");
 			lblDividingBar.addStyleName("lblDividingBar");
@@ -284,13 +292,13 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 			lblNewForumComments.addStyleName("lblNewForumComments");
 			pnlForumComments.add(lblNewForumComments);
 		}
-		
+
 		topicWrapper.add(pnlForumComments);
-		
+
 		Label lblNotes = new Label(topicTO.isNotes() ? "Ver" : "-");
 		lblNotes.addStyleName("lblNotes");
 		topicWrapper.add(lblNotes);
-		*/
+		 */
 		return topicWrapper;
 	}
 
@@ -303,7 +311,7 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 		topicsHeaderPanel.add(getHeaderButton("Tempo", "btnTime", "btnTopicsHeader"));
 		topicsHeaderPanel.add(getHeaderButton("Comentários no Fórum", "btnForumComments", "btnTopicsHeader"));
 		topicsHeaderPanel.add(getHeaderButton("Anotações", "btnNotes", "btnTopicsHeader"));*/
-		
+
 		return topicsHeaderPanel;
 	}
 
@@ -320,29 +328,29 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 		Image titleImage = new Image(IMAGES_PATH + "details.png");
 		titleImage.addStyleName("titleImage");
 		titlePanel.add(titleImage);
-		
+
 		Label titleLabel = new Label(constants.detailsHeader()+" ");
 		titleLabel.addStyleName("titleLabel");
 		titlePanel.add(titleLabel);
-		
+
 		Label courseNameLabel = new Label(courseTO.getCourse().getTitle());
 		courseNameLabel.addStyleName("courseNameLabel");
 		titlePanel.add(courseNameLabel);	
-		
+
 		closePanel = new FlowPanel();
 		closePanel.setStyleName("closePanel");
-		
+
 		Image closeImage = new Image(IMAGES_PATH + "close.png");
 		closeImage.addStyleName("closeImage");
 		closeImage.addClickHandler(new DetailsCloseClickHandler());
 		closePanel.add(closeImage);
-		
+
 		Label closeLabel = new Label(constants.closeDetails());
 		closeLabel.addStyleName("closeLabel");
 		closeLabel.addClickHandler(new DetailsCloseClickHandler());
 		closePanel.add(closeLabel);
-		
-		
+
+
 		titlePanel.add(closePanel);
 	}
 
@@ -358,15 +366,15 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 	private FlowPanel getInfoPanel(String title, String text) {
 		FlowPanel info = new FlowPanel();
 		info.addStyleName("infoDetails");
-		
+
 		Label infoTitle = new Label(title);
 		infoTitle.addStyleName("infoTitle");
 		info.add(infoTitle);
-		
+
 		Label infoText = new Label(text);
 		infoText.addStyleName("infoText");
 		info.add(infoText);
-		
+
 		return info;
 	}
 
@@ -378,11 +386,11 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 
 	private void displayButton(Button btn, String title, String label) {
 		btn.removeStyleName("btn");
-		
+
 		Label btnTitle = new Label(title);
 		btnTitle.addStyleName("btnTitle");
 		btn.add(btnTitle);
-		
+
 		Label btnLabel = new Label(label);
 		btnLabel.addStyleName("btnLabel");
 		btn.add(btnLabel);
@@ -393,7 +401,7 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 	private FlowPanel getHintsPanel() {
 		FlowPanel hintsPanel = new FlowPanel();
 		hintsPanel.addStyleName("hintsPanel");
-		
+
 		for (HintTO hintTO : courseDetails.getHints()) {
 			hintsPanel.add(getHintPanel(hintTO.getType(), hintTO.getName()));
 		}
@@ -404,15 +412,15 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 	private FlowPanel getHintPanel(String img, String hintText) {
 		FlowPanel hint = new FlowPanel();
 		hint.addStyleName("hintDetails");
-		
+
 		Image hintImg = new Image(IMAGES_PATH + img + ".png");
 		hintImg.addStyleName("hintImg");
 		hint.add(hintImg);
-		
+
 		Label lblHintText = new Label(hintText);
 		lblHintText.addStyleName("hintText");
 		hint.add(lblHintText);
-		
+
 		return hint;
 	}
 
@@ -421,7 +429,7 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 		btnCurrent.addStyleName("btnNotSelected");
 		btn.addStyleName("btnSelected");
 		btn.removeStyleName("btnNotSelected");
-		
+
 		displayContent(btn);
 		btnCurrent = btn;
 	}
@@ -447,7 +455,7 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 			}
 		}
 	}
-	
+
 	private String getCourseUUID() {
 		try{		
 			return Window.Location.getHash().split(":")[1].split(";")[0];
