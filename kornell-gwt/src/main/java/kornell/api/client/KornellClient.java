@@ -73,7 +73,7 @@ public class KornellClient implements LogoutEventHandler {
 			.sendRequest(null, wrapper);
 
 	}
-	
+
 	public void getCourses(Callback<CoursesTO> callback){
 		createGET("/courses").sendRequest(null, callback);	
 	}
@@ -112,7 +112,7 @@ public class KornellClient implements LogoutEventHandler {
 		}
 	}
 	
-	private String getApiUrl() {
+	public String getApiUrl() {
 		while(apiURL == null){
 			GWT.log("Could not find API URL. Looking up again");
 			discoverApiUrl();
