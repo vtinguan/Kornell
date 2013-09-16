@@ -11,7 +11,6 @@ import org.apache.commons.codec.digest.DigestUtils
 object Auth extends Beans {
     //TODO: importing ScurityContext smells bad
 	
-  
 	def withPerson[T](fun:Person => T)(implicit sc:SecurityContext):T = {
 	    val username = sc.getUserPrincipal().getName()
 	    implicit def toPerson(rs:ResultSet):Person = newPerson(rs.getString("uuid"),rs.getString("fullName"),rs.getString("lastPlaceVisited"));

@@ -11,6 +11,7 @@ import java.math.BigDecimal
 import java.sql.ResultSet
 import kornell.core.shared.to.CourseTO
 
+//TODO: Consider turning to Object
 trait TOs extends Beans {
   val tos = AutoBeanFactorySource.create(classOf[TOFactory])
 
@@ -32,7 +33,8 @@ trait TOs extends Beans {
     to
   }
 
-  def newCourseTO(r: ResultSet): CourseTO = newCourseTO(r.getString("courseUUID"), r.getString("code"), r.getString("title"),
+  implicit def newCourseTO(r: ResultSet): CourseTO = newCourseTO(
+    r.getString("courseUUID"), r.getString("code"), r.getString("title"),
     r.getString("description"), r.getString("assetsURL"), r.getString("infoJson"),
     r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
     r.getString("person_uuid"), r.getString("progress"))
