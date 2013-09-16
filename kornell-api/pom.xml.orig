@@ -121,6 +121,8 @@
 			<scope>compile</scope>
 		</dependency>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		
 		 <dependency>
             <groupId>com.googlecode.flyway</groupId>
@@ -148,6 +150,10 @@
 
 		<dependency>
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
 		<dependency>
 			<groupId>com.googlecode.flyway</groupId>
@@ -156,6 +162,12 @@
 		</dependency>
 
 		<dependency>
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>

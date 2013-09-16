@@ -8,6 +8,7 @@ rebel.xml
 
 # Scala Worksheets
 *.sc
+.worksheet
 
 # MacOS Garbage
 .DS_Store
