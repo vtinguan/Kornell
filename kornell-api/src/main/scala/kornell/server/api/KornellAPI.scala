@@ -9,17 +9,15 @@ import java.util.Collections
 
 class KornellAPI extends Application {
   override def getClasses() = Set[Class[_]](
-      classOf[AutoBeanWriter],
-      classOf[AuthResource],
-      classOf[RootResource],
-      classOf[UserResource],
-      classOf[CoursesResource],
-      classOf[OptionResource],
-      classOf[RegistrationsResource],
-      classOf[InstitutionsResource],
-      classOf[ReportResource],
-      classOf[SyncResource]      
-  ) asJava
-  
+    classOf[AutoBeanWriter],
+    classOf[AuthResource],
+    classOf[RootResource],
+    classOf[UserResource],
+    classOf[CoursesResource],
+    classOf[OptionResource],
+    classOf[RegistrationsResource],
+    classOf[InstitutionsResource],
+    classOf[ReportResource]) asJava
+
   override def getSingletons() = Collections.emptySet()
 }
