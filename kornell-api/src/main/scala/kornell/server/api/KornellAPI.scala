@@ -19,7 +19,11 @@ class KornellAPI extends Application {
       classOf[RegistrationsResource],
       classOf[InstitutionsResource],
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       classOf[ReportResource]
+=======
+      classOf[SyncResource]
+>>>>>>> Stashed changes
 =======
       classOf[SyncResource]
 >>>>>>> Stashed changes
