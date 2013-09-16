@@ -12,11 +12,10 @@ class RootResource {
 	@GET
 	def get = {
 	  val version = new Properties();
-	  //TODO: Say X.XX time ago
+	  //TODO: Say how long ago too
 	  val properties = Option(getClass().getClassLoader().getResourceAsStream("version.properties"))
-	  if(properties.isDefined){
-		  version.load(properties.get);
-	  }
+	  if(properties.isDefined)
+		  version.load(properties.get);	  
 	  val two = try 
 	  	sql"select 1+1".map {rs => rs.getInt(1)}.head
 	  	catch {case e:Exception => e.getMessage}
@@ -25,7 +24,7 @@ class RootResource {
 	  |
 	  |Built on ${version.getProperty("built.on","development environment")}
 	  |According to MySQL, 1+1 is $two
-	  |--- Hello AWS Architects!!!
+	  |
 	  """.stripMargin
 	  
 	}
