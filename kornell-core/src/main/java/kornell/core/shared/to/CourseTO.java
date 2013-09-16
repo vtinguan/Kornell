@@ -16,8 +16,9 @@ public interface CourseTO {
 	Enrollment getEnrollment();
 	void setEnrollment(Enrollment e);
 	
-	/** Undivisible Units of Learning Activity, such as one question or one slide **/
+	/** An Actom is an undivisible units of learning activity, 
+	 * such as a single question or slide **/
 	List<String> getActomsURLs();
-	void setActormsURLs(List<String> actomsURLs);
+	void setActomsURLs(List<String> actomsURLs);
 	
 }

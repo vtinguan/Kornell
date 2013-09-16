@@ -12,7 +12,7 @@ import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.Institution
 import kornell.core.shared.data.Person
 import kornell.core.shared.data.Registration
- 
+
 //TODO: Smells bad... but relates to 1-1 to BeanFactory
 //TODO: Consider turning to Object
 //TODO: Favor composition over inheritance
@@ -22,7 +22,7 @@ trait Beans {
 
   def randomUUID = UUID.randomUUID.toString
 
-  def newPerson(uuid: String, fullName: String,lastPlaceVisited:String = null) = {
+  def newPerson(uuid: String, fullName: String, lastPlaceVisited: String = null) = {
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
@@ -40,7 +40,9 @@ trait Beans {
 
   def newCourse: Course = factory.newCourse.as
 
-  def newCourse(uuid: String, code: String, title: String, description: String, assetsURL: String, infoJson: String): Course = {
+  def newCourse(uuid: String, code: String,
+    title: String, description: String,
+    assetsURL: String, infoJson: String, repository_uuid: String): Course = {
     val c = newCourse
     c.setUUID(uuid)
     c.setCode(code)
@@ -71,23 +73,23 @@ trait Beans {
     i
   }
 
-  def Registration(p:Person,i:Institution) ={
+  def Registration(p: Person, i: Institution) = {
     val r = newRegistration
     r.setPersonUUID(p.getUUID)
     r.setInstitutionUUID(i.getUUID)
     r
   }
-  
+
   def newRegistration = factory.newRegistration().as
-  
-  def newRegistration(personUUID:String, institutionUUID:String, termsAcceptedOn:Date):Registration = {
+
+  def newRegistration(personUUID: String, institutionUUID: String, termsAcceptedOn: Date): Registration = {
     val r = newRegistration
     r.setPersonUUID(personUUID)
     r.setInstitutionUUID(institutionUUID)
     r.setTermsAcceptedon(termsAcceptedOn)
     r
   }
-  
+
   def newRegistrations = factory.newRegistrations.as
 
 }

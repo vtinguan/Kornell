@@ -23,12 +23,17 @@ trait TOs extends Beans {
     registrations
   }
 
-  def newCourseTO(courseUUID: String, code: String, title: String, description: String, thumbDataURI: String, objectives: String,
-    enrollmentUUID: String, enrolledOn: Date, personUUID: String, progress: String) = {
+  //TODO: Smells...
+  def newCourseTO(
+    courseUUID: String, code: String,
+    title: String, description: String,
+    thumbDataURI: String, objectives: String,
+    enrollmentUUID: String, enrolledOn: Date, 
+    personUUID: String, progress: String,
+    repository_uuid:String) = {
     val to = tos.newCourseTO.as
-    val prog = if (progress != null) new BigDecimal(progress) else null
-    //TODO: Factory Method x Implicit Conversion 
-    to setCourse newCourse(courseUUID, code, title, description, thumbDataURI, objectives)
+    val prog = if (progress != null) new BigDecimal(progress) else null 
+    to setCourse newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
     to setEnrollment (enrollmentUUID, enrolledOn, courseUUID, personUUID, prog)
     to
   }
@@ -37,7 +42,7 @@ trait TOs extends Beans {
     r.getString("courseUUID"), r.getString("code"), r.getString("title"),
     r.getString("description"), r.getString("assetsURL"), r.getString("infoJson"),
     r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
-    r.getString("person_uuid"), r.getString("progress"))
+    r.getString("person_uuid"), r.getString("progress"),r.getString("repository_uuid"))
 
   def newCoursesTO(l: List[CourseTO]) = {
     val to = tos.newCoursesTO.as
