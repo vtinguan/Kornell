@@ -14,6 +14,7 @@ import kornell.core.shared.data.Person
 import kornell.core.shared.data.Registration
  
 //TODO: Smells bad... but relates to 1-1 to BeanFactory
+//TODO: Consider turning to Object
 //TODO: Favor composition over inheritance
 //TODO: Entities would be a better name
 trait Beans {

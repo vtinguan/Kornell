@@ -18,11 +18,7 @@ class KornellAPI extends Application {
       classOf[OptionResource],
       classOf[RegistrationsResource],
       classOf[InstitutionsResource],
-<<<<<<< Updated upstream
       classOf[ReportResource]
-=======
-      classOf[SyncResource]
->>>>>>> Stashed changes
       
   ) asJava
   

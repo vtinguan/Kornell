@@ -5,6 +5,7 @@ import java.sql.ResultSet
 import kornell.server.repository.Beans
 
 class PersonRepository(val uuid:String) extends Beans {
+  
 	def setPassword(username:String, password:String):PersonRepository = {
 	  Auth.setPlainPassword(uuid, username, password)
 	  this
