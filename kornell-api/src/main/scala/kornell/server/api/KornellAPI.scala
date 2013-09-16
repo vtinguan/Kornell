@@ -17,7 +17,8 @@ class KornellAPI extends Application {
       classOf[CoursesResource],
       classOf[OptionResource],
       classOf[RegistrationsResource],
-      classOf[InstitutionsResource]
+      classOf[InstitutionsResource],
+      classOf[ReportResource]
       
   ) asJava
   
