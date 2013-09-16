@@ -10,7 +10,7 @@ import java.util.logging.Logger
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName) 
 	
-  val pubPaths = Set("/","/checkup","/sandbox", "/sync", "/report")
+  val pubPaths = Set("/checkup","/sandbox", "/sync", "/report")
   
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
     (sreq, sres) match {
@@ -27,7 +27,7 @@ class BasicAuthFilter extends Filter {
 
   def isPublic(req: HttpServletRequest, resp: HttpServletResponse) ={
       val path = req.getRequestURI
-      val isPublic = pubPaths.exists { path.startsWith(_) }        
+      val isPublic = path == "/" || pubPaths.exists {path.startsWith(_)}        
       val isOption = "OPTIONS".equals(req.getMethod)
       isOption || isPublic 
     }
