@@ -120,10 +120,6 @@
 			<version>5.1.25</version>
 			<scope>compile</scope>
 		</dependency>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 		
 		 <dependency>
             <groupId>com.googlecode.flyway</groupId>
@@ -144,37 +140,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.googlecode.flyway</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>2.2.1</version>
-		</dependency>
-
-		<dependency>
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-
-		<dependency>
-			<groupId>com.googlecode.flyway</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>2.2.1</version>
-		</dependency>
-
-		<dependency>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
 			<version>1.5.6</version>

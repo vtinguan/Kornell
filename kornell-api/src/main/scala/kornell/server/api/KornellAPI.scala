@@ -10,7 +10,6 @@ import java.util.Collections
 class KornellAPI extends Application {
   override def getClasses() = Set[Class[_]](
       classOf[AutoBeanWriter],
-      
       classOf[AuthResource],
       classOf[RootResource],
       classOf[UserResource],
@@ -18,24 +17,8 @@ class KornellAPI extends Application {
       classOf[OptionResource],
       classOf[RegistrationsResource],
       classOf[InstitutionsResource],
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-      classOf[ReportResource]
-=======
-      classOf[SyncResource]
->>>>>>> Stashed changes
-=======
-      classOf[SyncResource]
->>>>>>> Stashed changes
-=======
-      classOf[SyncResource]
->>>>>>> Stashed changes
-=======
-      classOf[SyncResource]
->>>>>>> Stashed changes
-      
+      classOf[ReportResource],
+      classOf[SyncResource]      
   ) asJava
   
   override def getSingletons() = Collections.emptySet()
