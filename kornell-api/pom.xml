@@ -122,6 +122,8 @@
 		</dependency>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		
 		 <dependency>
             <groupId>com.googlecode.flyway</groupId>
@@ -151,6 +153,10 @@
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
 		<dependency>
 			<groupId>com.googlecode.flyway</groupId>
@@ -160,6 +166,12 @@
 
 		<dependency>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
