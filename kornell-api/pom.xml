@@ -269,7 +269,7 @@
 					<packagingExcludes>WEB-INF/lib/mysql-connector-java-5.1.25.jar</packagingExcludes>
 				</configuration>
 			</plugin>
-
+<!-- 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -293,6 +293,7 @@
 					</execution>
 				</executions>
 			</plugin>
+ -->			
 		</plugins>
 		<pluginManagement>
 			<plugins>
