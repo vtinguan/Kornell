@@ -1,8 +1,10 @@
 package kornell.api.client;
 
-import static com.google.gwt.http.client.Response.*;
+import static com.google.gwt.http.client.Response.SC_FORBIDDEN;
+import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
+import static com.google.gwt.http.client.Response.SC_OK;
+import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import kornell.core.shared.data.BeanFactory;
-import kornell.core.shared.data.Person;
 import kornell.core.shared.to.TOFactory;
 
 import com.google.gwt.core.shared.GWT;

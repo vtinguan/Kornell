@@ -45,7 +45,7 @@ public class KornellClient implements LogoutEventHandler {
 	public void login(
 			String username,
 			String password,
-			final Callback callback) {
+			final Callback<UserInfoTO> callback) {
 		final String auth = "Basic "+KornellClient.encode(username,password);				
 		
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>(){
