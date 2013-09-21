@@ -170,6 +170,15 @@ public class KornellClient implements LogoutEventHandler {
 		});
 	}
 
+	public void notesUpdated(String courseUUID, String notes) {
+		createPUT("/enrollment/"+courseUUID+"/notesUpdated").sendRequest(notes,new Callback(){
+			@Override
+			protected void ok() {
+				GWT.log("notes updated");
+			}
+		});
+	}
+
 	@Override
 	public void onLogout() {
 		forgetCredentials();

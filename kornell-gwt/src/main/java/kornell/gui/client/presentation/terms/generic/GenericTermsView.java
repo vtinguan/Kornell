@@ -49,17 +49,10 @@ public class GenericTermsView extends Composite implements TermsView {
 	Institution institution;
 	UserInfoTO user;
 
-	private static String COURSES_ALL = "all";
-	private static String COURSES_IN_PROGRESS = "inProgress";
-	private static String COURSES_TO_START = "toStart";
-	private static String COURSES_TO_ACQUIRE = "toAcquire";
-	private static String COURSES_FINISHED = "finished";
-
 	private KornellClient client;
 
 	private PlaceController placeCtrl;
 	private Place defaultPlace;
-	private String displayCourses;
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 

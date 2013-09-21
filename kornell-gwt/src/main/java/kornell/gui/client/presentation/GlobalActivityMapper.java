@@ -20,9 +20,6 @@ import kornell.gui.client.presentation.course.forum.CourseForumPresenter;
 import kornell.gui.client.presentation.course.library.CourseLibraryActivity;
 import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
-import kornell.gui.client.presentation.course.notes.CourseNotesActivity;
-import kornell.gui.client.presentation.course.notes.CourseNotesPlace;
-import kornell.gui.client.presentation.course.notes.CourseNotesPresenter;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsActivity;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
@@ -94,11 +91,6 @@ public Activity getActivity(final Place place) {
 		CourseSpecialistsPresenter courseSpecialistsPresenter = factory.getCourseSpecialistsPresenter();
 		courseSpecialistsPresenter.setPlace((CourseSpecialistsPlace)place);
 		return new CourseSpecialistsActivity(courseSpecialistsPresenter);
-	}
-	if (place instanceof CourseNotesPlace) {
-		CourseNotesPresenter courseNotesPresenter = factory.getCourseNotesPresenter();
-		courseNotesPresenter.setPlace((CourseNotesPlace)place);
-		return new CourseNotesActivity(courseNotesPresenter);
 	}
 	if (place instanceof AtividadePlace) {
 		AtividadePresenter atividadePresenter = factory.getActivityPresenter();

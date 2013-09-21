@@ -64,61 +64,70 @@
 }
 
 
-
-.activityBar {	
-	.south;
+.activityBarWrapper{
 	.gradient (@barGradientStartColor, @barGradientEndColor);
-	.size (@wrapperWidth,@barSouthHeight);
-	.btnPanel{
-		.btnBorder;
-	}
-	.activityBarButton {
-		height: @barSouthHeight;
-		float: left;
-		line-height: @barSouthHeight;
-		text-align: center;
-		padding: 0;
-		border: 0;
-		.label{
-			background: transparent;
-			color: @niceTextColor;
-			font-size: 11px;
-			margin-left: 4px;
+
+	.activityBar{	
+		.south;
+		.gradient (@barGradientStartColor, @barGradientEndColor);
+		.size (@wrapperWidth,@barSouthHeight);
+		margin: 0 auto;
+		.btnPanel{
+			.btnBorder;
 		}
-		.icon{}
-	}
-	.selected{
-		@borderTopHeight: 3px;
-		border-top: @borderTopHeight solid @buttonSelectedGradientStart;
-		line-height: @barSouthHeight - @borderTopHeight;
-	}
-	.disabled {
-		.label{
-			color: darken(@niceTextColor, 30%);
+		.activityBarButton {
+			height: @barSouthHeight;
+			float: left;
+			line-height: @barSouthHeight;
+			text-align: center;
+			padding: 0;
+			border: 0;
+			.label{
+				background: transparent;
+				color: @niceTextColor;
+				font-size: 11px;
+				margin-left: 4px;
+			}
+			.icon{}
 		}
+		.selected{
+			@borderTopHeight: 3px;
+			border-top: @borderTopHeight solid @buttonSelectedGradientStart;
+			line-height: @barSouthHeight - @borderTopHeight;
+		}
+		.disabled {
+			.label{
+				color: darken(@niceTextColor, 30%);
+			}
+		}
+		@buttonCount: 4;
+		@buttonWidth: ( @wrapperWidth / @buttonCount ) - 2px;
+		.previous 	{width: @buttonWidth;}
+		.next 	 	{width: @buttonWidth;}
+		.details 	{width: @buttonWidth;}
+		.notes	 	{width: @buttonWidth;}
 	}
-	@buttonCount: 3;
-	@buttonWidth: ( @wrapperWidth / @buttonCount ) - 2px;
-	.previous 	{width: @buttonWidth + 1px; border-left: 0px;}
-	.next 	 	{width: @buttonWidth;}
-	.details 	{width: @buttonWidth + 1px; border-right: 0px;}
 }
 @media screen and (max-width: @wrapperWidth) {
-	.activityBar{
-		.activityBarButton {
-			.label{
-				visibility: hidden;
-				width: 0px;
-				border: 0;
-				margin: 0;
-				padding: 0;
-			}		
+	.activityBarWrapper{
+		.activityBar{
+			.size (@wrapperWidthUnder990,@barSouthHeight);
+			.activityBarButton {
+				.label{
+					visibility: hidden;
+					width: 0px;
+					border: 0;
+					margin: 0;
+					padding: 0;
+				}		
+			}
+			@buttonCount: 4;
+			@buttonWidth: ( @wrapperWidthUnder990 / @buttonCount ) - 2px;
+			.previous 	{width: @buttonWidth !important;}
+			.next		{width: @buttonWidth !important;}
+			.details 	{width: @buttonWidth !important;}
+			.notes	 	{width: @buttonWidth !important;}
 		}
-		@buttonCount: 3;
-		@buttonWidth: ( @wrapperWidthUnder990 / @buttonCount ) - 2px;
-		.previous 	{width: @buttonWidth + 1px; border-left: 0px;}
-		.next		{width: @buttonWidth;}
-		.details 	{width: @buttonWidth + 1px; border-right: 0px;}
 	}
 }
 

@@ -10,6 +10,7 @@
 @import "welcome/courses/courses";
 	@import "welcome/courses/courseLibrary";
 	@import "welcome/courses/courseDetails";
+	@import "welcome/courses/courseNotes";
 @import "welcome/profile";
 
 body {
@@ -18,12 +19,10 @@ body {
 }
 
 .wrapper {
-    width: @wrapperWidth;
     margin: 0 auto;  
 } 
 @media screen and (max-width: @wrapperWidth) {
     .wrapper {
-		width: @wrapperWidthUnder990;
 	}
 }
 .contentWrapper {}

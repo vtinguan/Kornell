@@ -2,6 +2,8 @@
 @import "../../utils/colors";
 
 .detailsPanel{
+    width: @wrapperWidth;
+    margin: 0 auto;
 	@detailsPanelMargin: 20px;
 	@buttonsPanelWidth: .18 * @wrapperWidth;
 	@hintsPanelWidth: .25 * @wrapperWidth;
@@ -110,8 +112,7 @@
 		}	
 		.topicsPanel{
 			@topicsPanelWidth: .75 * @wrapperWidth;
-			@topicsWidth: @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;;
-			/*@topicsWidth: .4 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;*/
+			@topicsWidth: @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@statusWidth: .17 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@timeWidth: .1 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@forumCommentsWidth: .21 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
@@ -370,6 +371,7 @@
 				margin-left: @detailsPanelMargin * 3;
 			}
 			.topicsPanel{
+				width: @hintsPanelWidth;
 				padding-left: @detailsPanelMargin / 2;
 				padding-right: @detailsPanelMargin / 2;
 				margin-left: 35px;
