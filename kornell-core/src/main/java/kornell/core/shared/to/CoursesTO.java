@@ -7,4 +7,5 @@ public interface CoursesTO {
 	
 	List<CourseTO> getCourses(); 
 	void setCourses(List<CourseTO> courses);
+
 }
