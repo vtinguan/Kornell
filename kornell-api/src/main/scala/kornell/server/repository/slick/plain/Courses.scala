@@ -34,14 +34,14 @@ object Courses extends SlickRepository with TOs {
 
   //Conversions
   implicit val getCourseTO = GetResult(r => newCourseTO(r.nextString, r.nextString, r.nextString, r.nextString, r.nextString, r.nextString,
-    r.nextString, r.nextDate, r.nextString, r.nextString))
+    r.nextString, r.nextDate, r.nextString, r.nextString, r.nextString))
 
   implicit def toCourses(l: List[CourseTO]): CoursesTO = newCoursesTO(l)
 
   //Queries
   def selectCourses(p: Person) = sql"""
 		select c.uuid as courseUUID,c.code,c.title,c.description,c.assetsURL,c.infoJson,
-			   e.uuid as enrollmentUUID, e.enrolledOn,e.person_uuid,e.progress
+			   e.uuid as enrollmentUUID, e.enrolledOn,e.person_uuid,e.progress,e.notes
 		from Course c
 		left join Enrollment e on c.uuid = e.course_uuid
 		where e.person_uuid is null
@@ -50,7 +50,7 @@ object Courses extends SlickRepository with TOs {
 
   def selectCourse(p: Person, uuid: String) = sql"""
 		select c.uuid,c.code,c.title,c.description,c.assetsURL,c.infoJson,
-			   e.uuid, e.enrolledOn,e.person_uuid,e.progress
+			   e.uuid, e.enrolledOn,e.person_uuid,e.progress,e.notes
 		from Course c
 		left join Enrollment e on c.uuid = e.course_uuid
 		where c.uuid = ${uuid} 
@@ -68,16 +68,16 @@ object Courses extends SlickRepository with TOs {
       c
     }
 
-  def createEnrollment(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String) =
+  def createEnrollment(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String, notes: String) =
     db.withTransaction {
-      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, new BigDecimal(progress))
+      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, new BigDecimal(progress), notes)
       sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
       e
     }
   
-  def createEnrollmentNull(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String) =
+  def createEnrollmentNull(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String, notes: String) =
     db.withTransaction {
-      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, null)
+      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, null, notes)
       sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
       e
     }

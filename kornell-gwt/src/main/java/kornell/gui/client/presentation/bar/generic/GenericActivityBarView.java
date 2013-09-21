@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.bar.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.shared.to.CourseTO;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.NavigationForecastEvent;
@@ -10,6 +11,7 @@ import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
+import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -50,6 +52,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private static String BUTTON_PREVIOUS = constants.previous();
 	private static String BUTTON_NEXT = constants.next();
 	private static String BUTTON_DETAILS = constants.details();
+	private static String BUTTON_NOTES = constants.notes();
 
 	Image iconPrevious;
 	Image iconNext;
@@ -60,6 +63,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	Button btnNext;
 	@UiField
 	Button btnDetails;
+	@UiField
+	Button btnNotes;
 
 	@UiField
 	FlowPanel activityBar;
@@ -104,9 +109,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private void display(){
 		iconPrevious = new Image(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+".png");
 		displayButton(btnPrevious, BUTTON_PREVIOUS, iconPrevious);
+		
 		iconNext = new Image(IMAGES_PATH + getItemName(BUTTON_NEXT)+".png");
 		displayButton(btnNext, BUTTON_NEXT, iconNext, true);	
+		
 		displayButton(btnDetails, BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
+		
+		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
+		
 		
 		if(placeCtrl.getWhere() instanceof CourseDetailsPlace){
 			btnDetails.addStyleName("btnSelected");
@@ -148,8 +158,10 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			return "next";
 		} else if(constant.equals(BUTTON_PREVIOUS)) {
 			return "previous";
-		} else {
+		} else if(constant.equals(BUTTON_DETAILS)){
 			return "details";
+		} else {
+			return "notes";
 		}
 	}
 	
@@ -178,6 +190,18 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				}
 			});
 		}
+	}
+	
+	@UiHandler("btnNotes")
+	void handleClickBtnNotes(ClickEvent e) {
+		
+		client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
+			@Override
+			protected void ok(CourseTO course) {
+				// TODO: get wrapper width to define the popup's width
+				new NotesPopup(962, client, course).show();
+			}			
+		});		
 	}
 	
 	private String getCourseUUID() {

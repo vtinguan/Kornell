@@ -8,7 +8,6 @@ import kornell.gui.client.presentation.course.course.CourseHomePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.forum.CourseForumPlace;
 import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
-import kornell.gui.client.presentation.course.notes.CourseNotesPlace;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 
@@ -96,7 +95,6 @@ public class GenericCourseBarView extends Composite implements CourseBarView {
 		displayButton(btnForum, BUTTON_FORUM, placeCtrl.getWhere() instanceof CourseForumPlace);
 		displayButton(btnChat, BUTTON_CHAT, placeCtrl.getWhere() instanceof CourseChatPlace);
 		displayButton(btnSpecialists, BUTTON_SPECIALISTS, placeCtrl.getWhere() instanceof CourseSpecialistsPlace);
-		displayButton(btnNotes, BUTTON_NOTES, placeCtrl.getWhere() instanceof CourseNotesPlace);
 		displayButton(btnBack, BUTTON_BACK, false);	
 	}
 	
@@ -160,9 +158,7 @@ public class GenericCourseBarView extends Composite implements CourseBarView {
 			setSelected(btnChat);
 		} else if(place instanceof CourseSpecialistsPlace){
 			setSelected(btnSpecialists);
-		} else if(place instanceof CourseNotesPlace){
-			setSelected(btnNotes);
-		}	
+		}
 	}
 	
 	@UiHandler("btnCourse")
@@ -199,12 +195,6 @@ public class GenericCourseBarView extends Composite implements CourseBarView {
 	void handleClickBtnSpecialists(ClickEvent e) {
 		placeCtrl.goTo(new CourseSpecialistsPlace(getCourseUUID()));
 		setSelected(btnSpecialists);
-	}
-	
-	@UiHandler("btnNotes")
-	void handleClickBtnNotes(ClickEvent e) {
-		placeCtrl.goTo(new CourseNotesPlace(getCourseUUID()));
-		setSelected(btnNotes);
 	}
 
 	@UiHandler("btnBack")

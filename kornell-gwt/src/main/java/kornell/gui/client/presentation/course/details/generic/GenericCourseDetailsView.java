@@ -66,8 +66,6 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 
 	Button btnCurrent;
 
-	FlowPanel closePanel;
-
 	CourseTO courseTO;
 
 	CourseDetailsTO courseDetails;
@@ -336,22 +334,6 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 		Label courseNameLabel = new Label(courseTO.getCourse().getTitle());
 		courseNameLabel.addStyleName("courseNameLabel");
 		titlePanel.add(courseNameLabel);	
-
-		closePanel = new FlowPanel();
-		closePanel.setStyleName("closePanel");
-
-		Image closeImage = new Image(IMAGES_PATH + "close.png");
-		closeImage.addStyleName("closeImage");
-		closeImage.addClickHandler(new DetailsCloseClickHandler());
-		closePanel.add(closeImage);
-
-		Label closeLabel = new Label(constants.closeDetails());
-		closeLabel.addStyleName("closeLabel");
-		closeLabel.addClickHandler(new DetailsCloseClickHandler());
-		closePanel.add(closeLabel);
-
-
-		titlePanel.add(closePanel);
 	}
 
 	private FlowPanel getInfosPanel() {
@@ -437,22 +419,6 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 	private final class DetailsButtonClickHandler implements ClickHandler {
 		public void onClick(ClickEvent event) {
 			handleEvent((Button) event.getSource());
-		}
-	}
-
-	private final class DetailsCloseClickHandler implements ClickHandler {
-		public void onClick(ClickEvent event) {
-			if(placeCtrl.getWhere() instanceof AtividadePlace){
-				placeCtrl.goTo(new CourseDetailsPlace(getCourseUUID()));
-			} else {
-				client.getCurrentUser(new Callback<UserInfoTO>() {
-					@Override
-					protected void ok(UserInfoTO userTO) {
-						user = userTO;
-						placeCtrl.goTo(historyMapper.getPlace(user.getLastPlaceVisited()));
-					}
-				});
-			}
 		}
 	}
 
