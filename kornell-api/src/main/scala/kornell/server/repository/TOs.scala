@@ -30,11 +30,11 @@ trait TOs extends Beans {
     thumbDataURI: String, objectives: String,
     enrollmentUUID: String, enrolledOn: Date, 
     personUUID: String, progress: String,
-    repository_uuid:String) = {
+    repository_uuid:String, notes: String) = {
     val to = tos.newCourseTO.as
     val prog = if (progress != null) new BigDecimal(progress) else null 
     to setCourse newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
-    to setEnrollment (enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, repository_uuid)
+    to setEnrollment (enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
     to
   }
 
@@ -42,7 +42,7 @@ trait TOs extends Beans {
     r.getString("courseUUID"), r.getString("code"), r.getString("title"),
     r.getString("description"), r.getString("assetsURL"), r.getString("infoJson"),
     r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
-    r.getString("person_uuid"), r.getString("progress"),r.getString("repository_uuid"))
+    r.getString("person_uuid"), r.getString("progress"),r.getString("repository_uuid"), r.getString("notes"))
 
   def newCoursesTO(l: List[CourseTO]) = {
     val to = tos.newCoursesTO.as

@@ -16,7 +16,7 @@ public interface Enrollment {
 	 * @return Progress on the course as a percentage (between 0 and 1) 
 	 */
 	BigDecimal getProgress(); 
-	void setProgress(BigDecimal progress); 
+	void setProgress(BigDecimal progress);
 	String getNotes();
-	void setNotes(String notes);
+	void setNotes(String notes);	
 }

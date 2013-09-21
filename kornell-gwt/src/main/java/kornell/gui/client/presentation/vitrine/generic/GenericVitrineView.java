@@ -5,7 +5,6 @@ import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.Form;

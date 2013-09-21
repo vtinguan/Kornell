@@ -88,6 +88,7 @@ public class GenericCourseDetailsView extends Composite  implements CourseDetail
 				client.getCourseTO(uuid,new Callback<CourseTO>(){
 					@Override
 					protected void ok(CourseTO to) {
+						GWT.log(to.toString());
 						courseTO = to;
 
 						client.getCurrentUser(new Callback<UserInfoTO>() {

@@ -50,6 +50,7 @@ trait Beans {
     c.setAssetsURL(assetsURL)
     c.setTitle(title)
     c.setInfoJson(infoJson)
+    c.setRepositoryUUID(repository_uuid)
     c
   }
 

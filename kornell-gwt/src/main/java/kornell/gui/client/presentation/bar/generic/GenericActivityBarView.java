@@ -201,7 +201,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				// TODO: get wrapper width to define the popup's width
 				new NotesPopup(962, client, course).show();
 			}			
-		});		
+		});	
 	}
 	
 	private String getCourseUUID() {

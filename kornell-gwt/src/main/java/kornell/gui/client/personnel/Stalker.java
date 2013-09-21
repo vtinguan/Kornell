@@ -2,12 +2,11 @@ package kornell.gui.client.personnel;
 
 import kornell.api.client.KornellClient;
 import kornell.gui.client.presentation.atividade.AtividadePlace;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 
-import com.google.web.bindery.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Tracks user

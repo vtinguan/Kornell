@@ -34,7 +34,7 @@ object Courses extends SlickRepository with TOs {
 
   //Conversions
   implicit val getCourseTO = GetResult(r => newCourseTO(r.nextString, r.nextString, r.nextString, r.nextString, r.nextString, r.nextString,
-    r.nextString, r.nextDate, r.nextString, r.nextString, r.nextString))
+    r.nextString, r.nextDate, r.nextString, r.nextString, r.nextString, r.nextString))
 
   implicit def toCourses(l: List[CourseTO]): CoursesTO = newCoursesTO(l)
 
