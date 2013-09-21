@@ -11,6 +11,7 @@ import java.math.BigDecimal
 import java.sql.ResultSet
 import kornell.core.shared.to.CourseTO
 
+//TODO: Consider turning to Object
 trait TOs extends Beans {
   val tos = AutoBeanFactorySource.create(classOf[TOFactory])
 
@@ -22,20 +23,26 @@ trait TOs extends Beans {
     registrations
   }
 
-  def newCourseTO(courseUUID: String, code: String, title: String, description: String, thumbDataURI: String, objectives: String,
-    enrollmentUUID: String, enrolledOn: Date, personUUID: String, progress: String, notes: String) = {
+  //TODO: Smells...
+  def newCourseTO(
+    courseUUID: String, code: String,
+    title: String, description: String,
+    thumbDataURI: String, objectives: String,
+    enrollmentUUID: String, enrolledOn: Date, 
+    personUUID: String, progress: String,
+    repository_uuid:String) = {
     val to = tos.newCourseTO.as
-    val prog = if (progress != null) new BigDecimal(progress) else null
-    //TODO: Factory Method x Implicit Conversion 
-    to setCourse newCourse(courseUUID, code, title, description, thumbDataURI, objectives)
-    to setEnrollment (enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
+    val prog = if (progress != null) new BigDecimal(progress) else null 
+    to setCourse newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
+    to setEnrollment (enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, repository_uuid)
     to
   }
 
-  def newCourseTO(r: ResultSet): CourseTO = newCourseTO(r.getString("courseUUID"), r.getString("code"), r.getString("title"),
+  implicit def newCourseTO(r: ResultSet): CourseTO = newCourseTO(
+    r.getString("courseUUID"), r.getString("code"), r.getString("title"),
     r.getString("description"), r.getString("assetsURL"), r.getString("infoJson"),
     r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
-    r.getString("person_uuid"), r.getString("progress"), r.getString("notes"))
+    r.getString("person_uuid"), r.getString("progress"),r.getString("repository_uuid"))
 
   def newCoursesTO(l: List[CourseTO]) = {
     val to = tos.newCoursesTO.as

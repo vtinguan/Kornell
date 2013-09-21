@@ -139,7 +139,13 @@
 		    </exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.5.6</version>
+		</dependency>
 	</dependencies>
+	
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
 		<testSourceDirectory>src/test/scala</testSourceDirectory>
@@ -263,7 +269,7 @@
 					<packagingExcludes>WEB-INF/lib/mysql-connector-java-5.1.25.jar</packagingExcludes>
 				</configuration>
 			</plugin>
-
+<!-- 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -281,12 +287,13 @@
 								</requireMavenVersion>
 								<requireJavaVersion>
 									<version>[1.7,)</version>
-								</requireJavaVersion>								
+								</requireJavaVersion>
 							</rules>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+ -->			
 		</plugins>
 		<pluginManagement>
 			<plugins>

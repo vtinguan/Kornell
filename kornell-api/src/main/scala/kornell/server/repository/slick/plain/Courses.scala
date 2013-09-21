@@ -63,7 +63,7 @@ object Courses extends SlickRepository with TOs {
 
   def create(title: String, code: String, description: String, assetsURL: String, infoJson: String) =
     db.withTransaction {
-      val c = newCourse(randUUID, code, title, description.stripMargin, assetsURL, infoJson)
+      val c = newCourse(randUUID, code, title, description.stripMargin, assetsURL, infoJson, "")
       insert(c).execute
       c
     }

@@ -6,10 +6,11 @@ import javax.servlet.annotation.WebFilter
 import org.apache.commons.codec.binary.Base64
 import java.util.logging.Logger
 
+
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName) 
 	
-  val public = Set("/","/checkup","/sandbox","/report/certificate/a29c36f3-19b8-48fd-a86b-d05bbd260f10/d9aaa03a-f225-48b9-8cc9-15495606ac46")
+  val pubPaths = Set("/checkup","/sandbox", "/sync", "/report")
   
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
     (sreq, sres) match {
@@ -26,7 +27,7 @@ class BasicAuthFilter extends Filter {
 
   def isPublic(req: HttpServletRequest, resp: HttpServletResponse) ={
       val path = req.getRequestURI
-      val isPublic = public.contains(path)
+      val isPublic = path == "/" || pubPaths.exists {path.startsWith(_)}        
       val isOption = "OPTIONS".equals(req.getMethod)
       isOption || isPublic 
     }
