@@ -11,11 +11,12 @@ public interface Enrollment {
 	String getCourseUUID();
 	void setCourseUUID(String courseUUID);
 	String getPersonUUID();
-	void setPersonUUID(String personUUID);
-	
+	void setPersonUUID(String personUUID);	
 	/**
 	 * @return Progress on the course as a percentage (between 0 and 1) 
 	 */
 	BigDecimal getProgress(); 
-	void setProgress(BigDecimal progress); 
+	void setProgress(BigDecimal progress);
+	String getNotes();
+	void setNotes(String notes);	
 }

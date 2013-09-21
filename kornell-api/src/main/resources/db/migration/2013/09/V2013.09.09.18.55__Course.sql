@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS Course (
   title varchar(255) DEFAULT NULL,
   description longtext,
   assetsURL varchar(2083) DEFAULT NULL,
-  infoJson longtext,
   PRIMARY KEY (uuid),
   UNIQUE KEY code (code)
 );

@@ -13,8 +13,6 @@ import kornell.gui.client.presentation.course.forum.CourseForumPresenter;
 import kornell.gui.client.presentation.course.forum.CourseForumView;
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.course.library.CourseLibraryView;
-import kornell.gui.client.presentation.course.notes.CourseNotesPresenter;
-import kornell.gui.client.presentation.course.notes.CourseNotesView;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.home.HomeView;
@@ -43,8 +41,6 @@ public interface ClientFactory {
 	CourseChatPresenter getCourseChatPresenter();
 	CourseSpecialistsView getCourseSpecialistsView();
 	CourseSpecialistsPresenter getCourseSpecialistsPresenter();
-	CourseNotesView getCourseNotesView();
-	CourseNotesPresenter getCourseNotesPresenter();
 	
 	
 	AtividadeView getActivityView();

@@ -45,7 +45,7 @@ public class KornellClient implements LogoutEventHandler {
 	public void login(
 			String username,
 			String password,
-			final Callback callback) {
+			final Callback<UserInfoTO> callback) {
 		final String auth = "Basic "+KornellClient.encode(username,password);				
 		
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>(){
@@ -166,6 +166,15 @@ public class KornellClient implements LogoutEventHandler {
 			@Override
 			protected void ok() {
 				GWT.log("place changed");
+			}
+		});
+	}
+
+	public void notesUpdated(String courseUUID, String notes) {
+		createPUT("/enrollment/"+courseUUID+"/notesUpdated").sendRequest(notes,new Callback(){
+			@Override
+			protected void ok() {
+				GWT.log("notes updated");
 			}
 		});
 	}
