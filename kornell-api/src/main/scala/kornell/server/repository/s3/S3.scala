@@ -54,7 +54,7 @@ object S3 {
     	select region,accessKeyId,secretAccessKey,bucketName,prefix
     	from S3ContentRepository
     	where uuid=$repository_uuid
-    """.first[S3].get
+    """.first[S3].getOrElse({throw new IllegalArgumentException(s"Could not find repository [$repository_uuid]")})
 
   def main(args: Array[String]) {
 
