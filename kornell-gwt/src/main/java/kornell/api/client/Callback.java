@@ -71,7 +71,8 @@ public class Callback<T> implements RequestCallback {
 				} else {
 					bean = AutoBeanCodex.decode(beans, clazz, responseText);
 				}
-				ok(bean.as());
+				T unwrapped = bean.as();
+				ok(unwrapped);
 			} else
 				ok(Callback.parseJson(responseText));
 
