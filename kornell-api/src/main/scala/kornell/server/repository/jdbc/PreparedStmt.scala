@@ -27,6 +27,7 @@ class PreparedStmt(query: String, params: List[Any]) {
       val pstmt = conn.prepareStatement(query.stripMargin.trim)
 
       def setQueryParam(param: Tuple2[Any, Int]) = param match {
+        //TODO: case (null,i) => pstmt.setNull(i+1, ???)
         case (p: String, i) => pstmt.setString(i + 1, p)
         case (p: Integer, i) => pstmt.setInt(i + 1, p)
         case (p: Double, i) => pstmt.setDouble(i + 1, p)

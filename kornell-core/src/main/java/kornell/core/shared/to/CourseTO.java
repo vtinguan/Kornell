@@ -18,7 +18,9 @@ public interface CourseTO {
 	
 	/** An Actom is an undivisible units of learning activity, 
 	 * such as a single question or slide **/
-	List<String> getActomsURLs();
-	void setActomsURLs(List<String> actomsURLs);
+	List<String> getActoms();
+	void setActoms(List<String> actoms);
 	
+	String getBaseURL();
+	void setBaseURL(String baseURL);
 }
