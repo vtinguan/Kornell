@@ -11,7 +11,7 @@ import kornell.core.shared.to.CoursesTO
 import kornell.core.shared.to.CourseTO
 import kornell.server.repository.jdbc.Courses
 
-@Produces(Array(CoursesTO.TYPE))
+@Produces(Array(CourseTO.TYPE))
 class CourseResource(uuid:String) {
   @GET
   def getCourse(implicit @Context sc: SecurityContext) = 
