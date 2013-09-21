@@ -55,13 +55,14 @@ trait Beans {
   }
 
   /*TODO: Could use a implicit conversion from tuple instead of factory method */
-  implicit def toEnrollment(t: Tuple5[String, Date, String, String, BigDecimal]): Enrollment = {
+  implicit def toEnrollment(t: Tuple6[String, Date, String, String, BigDecimal, String]): Enrollment = {
     val e = factory.newEnrollment.as
     e.setUUID(t._1)
     e.setEnrolledOn(t._2)
     e.setCourseUUID(t._3)
     e.setPersonUUID(t._4)
     e.setProgress(t._5)
+    e.setNotes(t._6)
     e
   }
 

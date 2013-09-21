@@ -21,7 +21,6 @@ import kornell.gui.client.presentation.course.chat.generic.GenericCourseChatView
 import kornell.gui.client.presentation.course.course.CourseHomePresenter;
 import kornell.gui.client.presentation.course.course.CourseHomeView;
 import kornell.gui.client.presentation.course.course.generic.GenericCourseHomeView;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPresenter;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.generic.GenericCourseDetailsView;
@@ -31,13 +30,9 @@ import kornell.gui.client.presentation.course.forum.generic.GenericCourseForumVi
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.course.library.CourseLibraryView;
 import kornell.gui.client.presentation.course.library.generic.GenericCourseLibraryView;
-import kornell.gui.client.presentation.course.notes.CourseNotesPresenter;
-import kornell.gui.client.presentation.course.notes.CourseNotesView;
-import kornell.gui.client.presentation.course.notes.generic.GenericCourseNotesView;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.course.specialists.generic.GenericCourseSpecialistsView;
-import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.terms.TermsView;
@@ -96,7 +91,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private CourseForumPresenter courseForumPresenter;
 	private CourseChatPresenter courseChatPresenter;
 	private CourseSpecialistsPresenter courseSpecialistsPresenter;
-	private CourseNotesPresenter courseNotesPresenter;
 
 	/* GUI */
 	SimplePanel shell = new SimplePanel();
@@ -354,21 +348,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		return new GenericCourseSpecialistsView(bus, client, placeCtrl);
 	}
 	
-	
-	
-	@Override
-	public CourseNotesPresenter getCourseNotesPresenter() {
-		if (courseNotesPresenter == null) {
-			CourseNotesView courseNotesView = getCourseNotesView();
-			
-			courseNotesPresenter = new CourseNotesPresenter(courseNotesView, placeCtrl);
-		}
-		return courseNotesPresenter;
-	}
-	@Override
-	public CourseNotesView getCourseNotesView() {
-		return new GenericCourseNotesView(bus, client, placeCtrl);
-	}
 
 	@Override
 	public AtividadePresenter getActivityPresenter() {

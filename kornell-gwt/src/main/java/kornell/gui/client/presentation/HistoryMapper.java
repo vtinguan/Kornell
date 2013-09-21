@@ -6,7 +6,6 @@ import kornell.gui.client.presentation.course.course.CourseHomePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.forum.CourseForumPlace;
 import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
-import kornell.gui.client.presentation.course.notes.CourseNotesPlace;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
@@ -28,7 +27,6 @@ import com.google.gwt.place.shared.WithTokenizers;
 	CourseForumPlace.Tokenizer.class,
 	CourseChatPlace.Tokenizer.class,
 	CourseSpecialistsPlace.Tokenizer.class,
-	CourseNotesPlace.Tokenizer.class,
 	
 	AtividadePlace.Tokenizer.class})
 public interface HistoryMapper extends PlaceHistoryMapper {
