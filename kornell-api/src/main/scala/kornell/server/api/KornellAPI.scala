@@ -20,7 +20,6 @@ class KornellAPI extends Application {
       classOf[InstitutionsResource],
       classOf[ReportResource],
       classOf[EnrollmentResource]
-      
   ) asJava
   
   override def getSingletons() = Collections.emptySet()

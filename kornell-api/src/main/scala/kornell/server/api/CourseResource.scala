@@ -11,12 +11,13 @@ import kornell.core.shared.to.CoursesTO
 import kornell.core.shared.to.CourseTO
 import kornell.server.repository.jdbc.Courses
 
-@Path("courses")
-class CoursesResource {
+@Produces(Array(CoursesTO.TYPE))
+class CourseResource(uuid:String) {
   @GET
-  @Produces(Array(CoursesTO.TYPE))
-  def getCourses(implicit @Context sc: SecurityContext) = ???
-  
-  @Path("{uuid}")
-  def getCourse(@PathParam("uuid") uuid:String) = CourseResource(uuid)
+  def getCourse(implicit @Context sc: SecurityContext) = 
+    Courses.byUUID(uuid)
+}
+
+object CourseResource{
+  def apply(uuid:String) = new CourseResource(uuid)
 }

@@ -9,9 +9,8 @@ class People extends Beans {
   def createPerson(fullName:String):PersonRepository = {
     val uuid = randomUUID
     sql"insert into Person(uuid, fullName) values ($uuid,$fullName)".executeUpdate 
-    return PersonRepository(uuid)
+    PersonRepository(uuid)
   }
-  
 }
 
 object People {
