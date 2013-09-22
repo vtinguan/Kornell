@@ -6,6 +6,9 @@ import com.google.gwt.user.client.Cookies;
 public class ClientProperties {
 	private static Storage localStorage = Storage.getLocalStorageIfSupported();
 	
+	public static String COURSE_UUID = "courseUUID";
+	public static String COURSE_NOTES = "courseNotes";
+	
 	public static String get(String propertyName){
 		if(localStorage != null){
 			return localStorage.getItem(propertyName);
