@@ -10,12 +10,16 @@ import kornell.gui.client.presentation.atividade.AtividadePlace;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -27,6 +31,10 @@ public class NamingConventionSequencer implements Sequencer {
 	private PlaceController ctrl;
 	private AtividadePlace place;
 	private EventBus bus;
+	
+	// TODO: fetch these dynamically
+	int NORTH_BAR = 45;
+	int SOUTH_BAR = 35;
 
 	public NamingConventionSequencer(EventBus bus,
 			PlaceController ctrl,
@@ -37,6 +45,27 @@ public class NamingConventionSequencer implements Sequencer {
 		this.bus = bus;
 		iframe = Document.get().createIFrameElement();
 		iframe.addClassName("externalContent");		
+		placeIframe();
+		
+		// Weird yet simple way of solving FF's weird behavior
+		Window.addResizeHandler(new ResizeHandler() {
+			Timer resizeTimer = new Timer() {
+				@Override
+				public void run() {
+					placeIframe();
+				}
+			};
+			@Override
+			public void onResize(ResizeEvent event) {
+				resizeTimer.cancel();
+				resizeTimer.schedule(250);
+			}
+		});
+	}
+	
+	private void placeIframe(){
+		iframe.setPropertyString("width", Window.getClientWidth() + "px");
+		iframe.setPropertyString("height", (Window.getClientHeight() - SOUTH_BAR - NORTH_BAR) + "px");
 	}
 
 	public Sequencer at(AtividadePlace place) {
