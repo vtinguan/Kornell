@@ -45,7 +45,7 @@ public class KornellClient implements LogoutEventHandler {
 			String username,
 			String password,
 			final Callback<UserInfoTO> callback) {
-		final String auth = "Basic "+KornellClient.encode(username,password);				
+		final String auth = "Basic "+ ClientProperties.base64Encode(username+":"+password);				
 		
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>(){
 			protected void ok(UserInfoTO user) {
@@ -109,10 +109,6 @@ public class KornellClient implements LogoutEventHandler {
 			discoverApiUrl();
 		}
 		return apiURL;
-	}
-
-	private static String encode(String username, String password) {
-		return ClientProperties.base64Encode(username+":"+password);
 	}
 
 	public static KornellClient getInstance() {		

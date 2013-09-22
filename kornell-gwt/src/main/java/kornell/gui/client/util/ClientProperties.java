@@ -38,4 +38,13 @@ public class ClientProperties {
 	public static native String base64Decode(String base64) /*-{
 	  return window.atob(base64);
 	}-*/;
+	
+	public static String getDecoded(String propertyName){
+		String value = get(propertyName);
+		return value == null ? null : base64Decode(value);
+	}
+	
+	public static void setEncoded(String propertyName, String propertyValue){
+		set(propertyName, base64Encode(propertyValue));
+	}
 }

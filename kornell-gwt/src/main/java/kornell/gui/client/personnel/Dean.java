@@ -21,8 +21,7 @@ public class Dean implements InstitutionEventHandler{
 	public void onEnter(InstitutionEvent event) {
 		GWT.log("Trick or Dean!");
 		try {
-			String institutionAssetsURL = ClientProperties.base64Encode(event.getInstitution().getAssetsURL());
-			ClientProperties.set("institutionAssetsURL", institutionAssetsURL);
+			ClientProperties.setEncoded("institutionAssetsURL", event.getInstitution().getAssetsURL());
 			updateFavicon(event.getInstitution().getAssetsURL() + "favicon.ico");
 		} catch (Exception e) {
 			// If it was somehow unable to fetch the favicon, use the default logo
