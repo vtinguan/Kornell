@@ -1,13 +1,12 @@
 package kornell.server.repository.jdbc
 
-import kornell.core.shared.data.Institution
-import kornell.server.repository.Beans
-import kornell.server.repository.SlickRepository
+import java.sql.ResultSet
+
 import kornell.core.shared.data.Institution
 import kornell.core.shared.data.Person
 import kornell.core.shared.data.Registration
-import kornell.server.repository.jdbc.SQLInterpolation._ 
-import java.sql.ResultSet
+import kornell.server.repository.Beans
+import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
 
 object Institutions extends  Beans {
 

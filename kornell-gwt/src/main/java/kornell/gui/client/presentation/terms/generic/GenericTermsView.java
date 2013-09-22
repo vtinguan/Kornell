@@ -79,11 +79,8 @@ public class GenericTermsView extends Composite implements TermsView {
 		txtTerms.setText("[Carregando, aguarde...]");
 		btnAgree.setText("Concordo".toUpperCase());
 		btnDontAgree.setText("Não Concordo".toUpperCase());
-<<<<<<< HEAD
+
 		institutionLogo.setUrl("https://s3-sa-east-1.amazonaws.com/midway/logo380x110.png");
-=======
-		institutionLogo.setUrl("https://s3-sa-east-1.amazonaws.com/midway/suplementacao-alimentar/logo380x110.png");
->>>>>>> 27d53cd592e83670bdb1dd3d5d0e9255c7561ef1
 	}
 
 	private void initData() {
@@ -108,14 +105,11 @@ public class GenericTermsView extends Composite implements TermsView {
 					Entry<Registration, Institution> e = regs.get(0);
 					registration = e.getKey();
 					institution = e.getValue();
-<<<<<<< HEAD
 					
 					InstitutionEvent institutionEvent = new InstitutionEvent();
 					institutionEvent.setInstitution(institution);
 					bus.fireEvent(institutionEvent);
 					
-=======
->>>>>>> 27d53cd592e83670bdb1dd3d5d0e9255c7561ef1
 					paint();
 				}else {
 					GWT.log("OPS! Should not be here if nothing to sign");
