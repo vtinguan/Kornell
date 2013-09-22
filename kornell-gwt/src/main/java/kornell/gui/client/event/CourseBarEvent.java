@@ -9,7 +9,7 @@ public class CourseBarEvent extends GwtEvent<CourseBarEventHandler>{
 	private String courseBarItemSelected;
 	
 	@Override
-	public com.google.gwt.event.shared.GwtEvent.Type<CourseBarEventHandler> getAssociatedType() {
+	public Type<CourseBarEventHandler> getAssociatedType() {
 		return TYPE;
 	}
 

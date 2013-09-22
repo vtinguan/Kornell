@@ -4,6 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
@@ -198,7 +199,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 
 			private void initPersonnel() {
-				new Captain(bus, placeCtrl);				
+				new Captain(bus, placeCtrl);	
+				new Dean(bus, client);
 			}			
 		});
 		return this;
@@ -249,7 +251,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public TermsView getTermsView() {
-		return new GenericTermsView(client, placeCtrl, DEFAULT_PLACE);
+		return new GenericTermsView(bus, client, placeCtrl, DEFAULT_PLACE);
 	}
 	
 	

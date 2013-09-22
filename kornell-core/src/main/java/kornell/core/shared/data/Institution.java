@@ -5,4 +5,7 @@ public interface Institution extends Named {
 
 	String getTerms();
 	void setTerms(String terms);
+	
+	String getAssetsURL();
+	void setAssetsURL(String assetsURL);
 }

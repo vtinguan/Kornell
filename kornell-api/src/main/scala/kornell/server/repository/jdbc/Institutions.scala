@@ -12,7 +12,7 @@ import java.sql.ResultSet
 object Institutions extends  Beans {
 
   def create(name: String, terms: String): Institution = {
-    val i = newInstitution(randomUUID, name, terms)
+    val i = newInstitution(randomUUID, name, terms, "")
     sql"""
     | insert into Institution(uuid,name,terms) 
     | values ($i.getUUID,$i.getName,$i.terms)""".executeUpdate
@@ -35,11 +35,17 @@ object Institutions extends  Beans {
   implicit def toInstitution(rs:ResultSet) = 
     newInstitution(rs.getString("uuid"), 
         rs.getString("name"), 
-        rs.getString("terms")) 
+        rs.getString("terms"),
+        rs.getString("assetsURL")) 
   
   def byUUID(UUID:String) = 
 	sql"select * from Institution".first[Institution]
 
   
+  def usersInstitution(implicit person:Person) = 
+	sql"""select * 
+	from Registration r
+	join Institution i on r.institution_uuid=i.uuid
+	where r.person_uuid = ${person.getUUID}""".first[Institution]
 
 }
