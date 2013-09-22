@@ -1,18 +1,17 @@
 package kornell.server.repository.jdbc
 
-import kornell.core.shared.data.Institution
-import kornell.server.repository.Beans
-import kornell.server.repository.SlickRepository
+import java.sql.ResultSet
+
 import kornell.core.shared.data.Institution
 import kornell.core.shared.data.Person
 import kornell.core.shared.data.Registration
-import kornell.server.repository.jdbc.SQLInterpolation._ 
-import java.sql.ResultSet
+import kornell.server.repository.Beans
+import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
 
 object Institutions extends  Beans {
 
   def create(name: String, terms: String): Institution = {
-    val i = newInstitution(randomUUID, name, terms)
+    val i = newInstitution(randomUUID, name, terms, "")
     sql"""
     | insert into Institution(uuid,name,terms) 
     | values ($i.getUUID,$i.getName,$i.terms)""".executeUpdate
@@ -35,11 +34,17 @@ object Institutions extends  Beans {
   implicit def toInstitution(rs:ResultSet) = 
     newInstitution(rs.getString("uuid"), 
         rs.getString("name"), 
-        rs.getString("terms")) 
+        rs.getString("terms"),
+        rs.getString("assetsURL")) 
   
   def byUUID(UUID:String) = 
 	sql"select * from Institution".first[Institution]
 
   
+  def usersInstitution(implicit person:Person) = 
+	sql"""select * 
+	from Registration r
+	join Institution i on r.institution_uuid=i.uuid
+	where r.person_uuid = ${person.getUUID}""".first[Institution]
 
 }

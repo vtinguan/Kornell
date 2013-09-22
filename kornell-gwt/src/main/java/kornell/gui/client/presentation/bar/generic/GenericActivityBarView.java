@@ -41,7 +41,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	private PlaceController placeCtrl;
 		
-	String page;
+	private String page;
+	
+	private NotesPopup notesPopup;
 	
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 	
@@ -195,13 +197,17 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@UiHandler("btnNotes")
 	void handleClickBtnNotes(ClickEvent e) {
 		
-		client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
-			@Override
-			protected void ok(CourseTO course) {
-				// TODO: get wrapper width to define the popup's width
-				new NotesPopup(962, client, course).show();
-			}			
-		});	
+		if(notesPopup == null){
+			client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
+				@Override
+				protected void ok(CourseTO course) {
+					notesPopup = new NotesPopup(client, course);
+					notesPopup.show();
+				}			
+			});	
+		} else {
+			notesPopup.show();
+		}
 	}
 	
 	private String getCourseUUID() {

@@ -21,10 +21,14 @@ public class NotesPopup {
 	KornellClient client;
 	CourseTO course;
 
-	int wrapperWidth;
+	// TODO: fetch these dynamically
+	int NORTH_BAR = 45;
+	int SOUTH_BAR = 35;
+	int BAR_WIDTH = 962;
+	int NOTES_MIN_HEIGHT = 300;
+	
 
-	public NotesPopup(Integer wrapperWidth, final KornellClient client, final CourseTO course) {
-		this.wrapperWidth = wrapperWidth;
+	public NotesPopup(final KornellClient client, final CourseTO course) {
 		this.course = course;
 		this.client = client;
 
@@ -39,8 +43,6 @@ public class NotesPopup {
 		richTextArea.setStyleName("notesTextArea");
 
 		popup.add(richTextArea);
-
-		placePopup();
 		
 		richTextArea.addKeyUpHandler(new KeyUpHandler() {
 			Timer updateTimer = new Timer() {
@@ -84,19 +86,20 @@ public class NotesPopup {
 	}
 	
 	private void placePopup() {
-		int left = (Window.getClientWidth() - wrapperWidth) / 2;
-		int top = (Window.getClientHeight() - popup.getOffsetHeight()) / 2;
+		int left = (Window.getClientWidth() - BAR_WIDTH) / 2;
 		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
+		int top = Window.getClientHeight() - SOUTH_BAR - NOTES_MIN_HEIGHT;
 		
 		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
-		popup.setWidth(wrapperWidth + "px");
-		popup.getElement().getStyle().setPropertyPx("size", 300);
-		popup.getElement().getStyle().setPropertyPx("bottom", 35);
+		popup.setWidth(BAR_WIDTH + "px");
+		popup.getElement().getStyle().setPropertyPx("size", NOTES_MIN_HEIGHT);
+		popup.getElement().getStyle().setPropertyPx("bottom", SOUTH_BAR);
+		popup.setVisible(true);
 	}
 
 	public void show() {
+		placePopup();
 		glass.show();
-		popup.setVisible(true);
 		popup.show();
 		richTextArea.setFocus(true);
 	}

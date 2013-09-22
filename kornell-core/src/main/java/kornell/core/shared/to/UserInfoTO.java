@@ -13,4 +13,7 @@ public interface UserInfoTO {
 	
 	String getLastPlaceVisited();
 	void setLastPlaceVisited(String lastPlaceVisited);
+	
+	String getInstitutionAssetsURL();
+	void setInstitutionAssetsURL(String InstitutionAssetsURL);
 }
