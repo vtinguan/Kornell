@@ -91,7 +91,6 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
 			@Override
 			protected void ok(UserInfoTO user) {
-				//TODO person signed terms of use
 				if(user.isSigningNeeded()){
 					placeCtrl.goTo(new TermsPlace());
 				} else {
