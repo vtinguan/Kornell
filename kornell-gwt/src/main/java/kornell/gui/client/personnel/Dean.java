@@ -1,16 +1,15 @@
 package kornell.gui.client.personnel;
 
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.Institution;
 import kornell.gui.client.event.InstitutionEvent;
 import kornell.gui.client.event.InstitutionEventHandler;
+import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class Dean implements InstitutionEventHandler{
-
+	
 	KornellClient client;
 	
 	public Dean(EventBus bus, KornellClient client) { 
@@ -21,18 +20,13 @@ public class Dean implements InstitutionEventHandler{
 	@Override
 	public void onEnter(InstitutionEvent event) {
 		GWT.log("Trick or Dean!");
-		Timer timer = new Timer() {
-			@Override
-			public void run() {
-				updateFavicon("skins/first/favicon.ico");
-				GWT.log("Favicon set to default");
-			}
-		};
 		try {
+			String institutionAssetsURL = ClientProperties.base64Encode(event.getInstitution().getAssetsURL());
+			ClientProperties.set("institutionAssetsURL", institutionAssetsURL);
 			updateFavicon(event.getInstitution().getAssetsURL() + "favicon.ico");
 		} catch (Exception e) {
 			// If it was somehow unable to fetch the favicon, use the default logo
-			timer.schedule(2000);
+			updateFavicon("skins/first/favicon.ico");
 		}
 	}
 

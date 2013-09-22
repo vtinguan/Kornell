@@ -60,6 +60,8 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	private PlaceController placeCtrl;
 	private Place defaultPlace;
+	
+	private String barLogoFileName = "logo380x110.png";
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
@@ -79,8 +81,6 @@ public class GenericTermsView extends Composite implements TermsView {
 		txtTerms.setText("[Carregando, aguarde...]");
 		btnAgree.setText("Concordo".toUpperCase());
 		btnDontAgree.setText("Não Concordo".toUpperCase());
-
-		institutionLogo.setUrl("https://s3-sa-east-1.amazonaws.com/midway/logo380x110.png");
 	}
 
 	private void initData() {
@@ -124,6 +124,8 @@ public class GenericTermsView extends Composite implements TermsView {
 		titleUser.setText(p.getFullName());
 		if(institution != null){
 			txtTerms.getElement().setInnerHTML(institution.getTerms());
+
+			institutionLogo.setUrl(institution.getAssetsURL() + barLogoFileName);
 		}
 	}
 
