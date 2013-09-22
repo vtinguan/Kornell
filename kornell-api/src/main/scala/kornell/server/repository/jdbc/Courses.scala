@@ -31,10 +31,11 @@ object Courses extends TOs {
 		   or e.person_uuid = ${p.getUUID})
 	"""
       .first[CourseTO]
-      .map { to =>
-        to.setBaseURL("http://s3-sa-east-1.amazonaws.com/") //TODO: Add to table
+      .map { to =>        
         Option(to.getCourse.getRepositoryUUID).map { repository_uuid =>
-          val actoms = S3(repository_uuid).actoms
+          val s3 = S3(repository_uuid)
+          val actoms = s3.actoms
+          to.setBaseURL(s"http://${s3.bucket}.s3-sa-east-1.amazonaws.com/") //TODO: Resolve base url from region
           to.setActoms(actoms.asJava)
         }
         to

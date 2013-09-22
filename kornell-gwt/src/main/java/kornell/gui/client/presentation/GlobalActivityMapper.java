@@ -2,9 +2,9 @@ package kornell.gui.client.presentation;
 
 
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.presentation.atividade.AtividadeActivity;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
-import kornell.gui.client.presentation.atividade.AtividadePresenter;
+import kornell.gui.client.presentation.course.CourseActivity;
+import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CoursePresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatActivity;
 import kornell.gui.client.presentation.course.chat.CourseChatPlace;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
@@ -92,10 +92,10 @@ public Activity getActivity(final Place place) {
 		courseSpecialistsPresenter.setPlace((CourseSpecialistsPlace)place);
 		return new CourseSpecialistsActivity(courseSpecialistsPresenter);
 	}
-	if (place instanceof AtividadePlace) {
-		AtividadePresenter atividadePresenter = factory.getActivityPresenter();
-		atividadePresenter.setPlace((AtividadePlace)place);
-		return new AtividadeActivity(atividadePresenter);
+	if (place instanceof CoursePlace) {
+		CoursePresenter atividadePresenter = factory.getActivityPresenter();
+		atividadePresenter.setPlace((CoursePlace)place);
+		return new CourseActivity(atividadePresenter);
 	}
 
     return null;

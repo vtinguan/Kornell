@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.atividade;
+package kornell.gui.client.presentation.course;
 
 import kornell.gui.client.sequence.SequencerFactory;
 
@@ -6,12 +6,12 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AtividadePresenter implements AtividadeView.Presenter{
-	AtividadeView view;
-	private AtividadePlace place;
+public class CoursePresenter implements CourseView.Presenter{
+	CourseView view;
+	private CoursePlace place;
 	private SequencerFactory sequencer;
 	
-	public AtividadePresenter(AtividadeView view,
+	public CoursePresenter(CourseView view,
 							 PlaceController placeCtrl,
 							 SequencerFactory sequencer) {
 		this.view = view;
@@ -35,7 +35,7 @@ public class AtividadePresenter implements AtividadeView.Presenter{
 		return view.asWidget();
 	}
 
-	public void setPlace(AtividadePlace place) {
+	public void setPlace(CoursePlace place) {
 		this.place = place;
 		displayPlace();
 	}

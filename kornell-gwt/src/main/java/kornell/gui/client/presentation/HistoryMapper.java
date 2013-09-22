@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation;
 
-import kornell.gui.client.presentation.atividade.AtividadePlace;
+import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.chat.CourseChatPlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
@@ -28,6 +28,6 @@ import com.google.gwt.place.shared.WithTokenizers;
 	CourseChatPlace.Tokenizer.class,
 	CourseSpecialistsPlace.Tokenizer.class,
 	
-	AtividadePlace.Tokenizer.class})
+	CoursePlace.Tokenizer.class})
 public interface HistoryMapper extends PlaceHistoryMapper {
 }

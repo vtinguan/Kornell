@@ -7,14 +7,14 @@ import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
-import kornell.gui.client.presentation.atividade.AtividadePresenter;
-import kornell.gui.client.presentation.atividade.AtividadeView;
-import kornell.gui.client.presentation.atividade.generic.GenericAtividadeView;
+import kornell.gui.client.presentation.atividade.generic.GenericCourseView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
 import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
+import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CoursePresenter;
+import kornell.gui.client.presentation.course.CourseView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatView;
 import kornell.gui.client.presentation.course.chat.generic.GenericCourseChatView;
@@ -84,7 +84,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SouthBarView southBarView;
 	
 	private GenericHomeView genericHomeView;
-	private AtividadePresenter activityPresenter;
+	private CoursePresenter activityPresenter;
 	private CourseHomePresenter courseHomePresenter;
 	private CourseDetailsPresenter courseDetailsPresenter;
 	private CourseLibraryPresenter courseLibraryPresenter;
@@ -94,7 +94,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	/* GUI */
 	SimplePanel shell = new SimplePanel();
-	public final AtividadePlace DEFAULT_PLACE = new AtividadePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46", 0);
+	public final CoursePlace DEFAULT_PLACE = new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46");
 	private Place defaultPlace;
 
 	public GenericClientFactoryImpl() {
@@ -243,8 +243,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public AtividadeView getActivityView() {
-		return new GenericAtividadeView(bus);
+	public CourseView getActivityView() {
+		return new GenericCourseView(bus);
 	}
 
 	@Override
@@ -350,12 +350,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	
 
 	@Override
-	public AtividadePresenter getActivityPresenter() {
+	public CoursePresenter getActivityPresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeCtrl,client);
 		if (activityPresenter == null) {
-			AtividadeView activityView = getActivityView();
+			CourseView activityView = getActivityView();
 			
-			activityPresenter = new AtividadePresenter(activityView,
+			activityPresenter = new CoursePresenter(activityView,
 					placeCtrl, rendererFactory);
 		}
 		return activityPresenter;
