@@ -13,7 +13,7 @@ public class CoursePresenter implements CourseView.Presenter{
 	
 	public CoursePresenter(CourseView view,
 							 PlaceController placeCtrl,
-							 SequencerFactory sequencer) {
+							 SequencerFactory sequencer) {		
 		this.view = view;
 		view.setPresenter(this);
 		this.sequencer = sequencer;		

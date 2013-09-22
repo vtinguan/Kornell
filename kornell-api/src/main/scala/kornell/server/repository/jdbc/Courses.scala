@@ -37,6 +37,7 @@ object Courses extends TOs {
           val actoms = s3.actoms
           to.setBaseURL(s"http://${s3.bucket}.s3-sa-east-1.amazonaws.com/") //TODO: Resolve base url from region
           to.setActoms(actoms.asJava)
+          to.getEnrollment().setLastActomVisited("");
         }
         to
       }

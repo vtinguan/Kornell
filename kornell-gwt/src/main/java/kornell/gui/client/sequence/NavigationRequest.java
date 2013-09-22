@@ -7,8 +7,10 @@ import com.google.web.bindery.event.shared.Event;
 public class NavigationRequest extends GwtEvent<NavigationRequest.Handler>{
 	public static final Type<NavigationRequest.Handler> TYPE = new Type<NavigationRequest.Handler>();
 	private String direction;
+	private long ctime;
 	
 	private NavigationRequest(String direction){
+		this.ctime = System.currentTimeMillis();
 		this.direction = direction;
 	}
 	
@@ -45,5 +47,10 @@ public class NavigationRequest extends GwtEvent<NavigationRequest.Handler>{
 
 	public static Event<?> valueOf(String string) {
 		return new NavigationRequest(string);
+	}
+	
+	@Override
+	public String toString() {
+		return "NavigationRequest["+direction+";"+ctime+"]";
 	}
 }
