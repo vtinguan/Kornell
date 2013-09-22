@@ -25,7 +25,7 @@ public class SequencerFactoryImpl implements SequencerFactory {
 		if (sequencer == null)
 			// sequencer = new NamingConventionSequencer(bus, ctrl, client);
 			sequencer = new CourseSequencer(bus,client);
-		return sequencer.at(place);
+		return sequencer.withPlace(place);
 	}
 
 }

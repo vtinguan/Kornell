@@ -1,6 +1,5 @@
 package kornell.gui.client.presentation;
 
-
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.course.CourseActivity;
 import kornell.gui.client.presentation.course.CoursePlace;
@@ -44,12 +43,13 @@ public class GlobalActivityMapper implements ActivityMapper {
 	private ClientFactory factory;
 
 	public GlobalActivityMapper(ClientFactory clientFactory) {
-    this.factory = clientFactory;
-  }
+		this.factory = clientFactory;
+	}
 
-  /** TODO: This may suck fast */
-public Activity getActivity(final Place place) {
-	GWT.log("Global Manager looling for "+place.toString());
+	/** TODO: This may suck fast */
+	public Activity getActivity(final Place place) {
+	GWT.log("GlobalActivityMapper "+place.toString());
+	//TODO: Cache and log mapping
     if (place instanceof HomePlace) {
       return new HomeActivity(factory);
     }
@@ -93,11 +93,14 @@ public Activity getActivity(final Place place) {
 		return new CourseSpecialistsActivity(courseSpecialistsPresenter);
 	}
 	if (place instanceof CoursePlace) {
-		CoursePresenter atividadePresenter = factory.getActivityPresenter();
-		atividadePresenter.setPlace((CoursePlace)place);
-		return new CourseActivity(atividadePresenter);
+		CoursePresenter coursePresenter = factory.getCoursePresenter();
+		coursePresenter.setPlace((CoursePlace)place);
+		CourseActivity courseActivity = new CourseActivity(coursePresenter);
+		return courseActivity;
 	}
 
     return null;
   }
+
+	
 }

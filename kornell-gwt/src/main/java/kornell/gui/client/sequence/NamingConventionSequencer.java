@@ -73,7 +73,7 @@ public class NamingConventionSequencer implements Sequencer {
 				+ "px");
 	}
 
-	public Sequencer at(CoursePlace place) {
+	public Sequencer withPlace(CoursePlace place) {
 		this.place = place;
 		return this;
 	}

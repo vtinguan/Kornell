@@ -43,6 +43,6 @@ public interface ClientFactory {
 	CourseSpecialistsPresenter getCourseSpecialistsPresenter();
 	
 	
-	CourseView getActivityView();
-	CoursePresenter getActivityPresenter();
+	CourseView getCourseView();
+	CoursePresenter getCoursePresenter();
 }

@@ -352,7 +352,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	
 
 	@Override
-	public CoursePresenter getActivityPresenter() {
+	public CoursePresenter getCoursePresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeCtrl,client);
 		if (coursePresenter == null) {
 			CourseView activityView = getCourseView();			

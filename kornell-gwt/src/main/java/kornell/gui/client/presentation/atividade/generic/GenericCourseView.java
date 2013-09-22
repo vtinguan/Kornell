@@ -23,6 +23,7 @@ public class GenericCourseView extends Composite
 	private Presenter presenter;
 
 	public GenericCourseView(EventBus eventBus) {
+		GWT.log("new GenericCourseView");
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
