@@ -153,6 +153,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		
 		btn.add(buttonPanel);
 		btn.removeStyleName("btn");
+		btn.removeStyleName("btn-link");
 	}
 	
 	private String getItemName(String constant){
@@ -182,6 +183,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		if(placeCtrl.getWhere() instanceof AtividadePlace){
 			placeCtrl.goTo(new CourseDetailsPlace(getCourseUUID()));
 			btnDetails.addStyleName("btnSelected");
+			GWT.log("btnSelected");
 		} else {
 			client.getCurrentUser(new Callback<UserInfoTO>() {
 				@Override
