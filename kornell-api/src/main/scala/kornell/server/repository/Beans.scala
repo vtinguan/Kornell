@@ -67,11 +67,12 @@ trait Beans {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randomUUID, name: String, terms: String) = {
+  def newInstitution(uuid: String = randomUUID, name: String, terms: String, assetsURL: String) = {
     val i = factory.newInstitution().as
     i.setName(name)
     i.setUUID(uuid)
     i.setTerms(terms.stripMargin)
+    i.setAssetsURL(assetsURL)
     i
   }
 

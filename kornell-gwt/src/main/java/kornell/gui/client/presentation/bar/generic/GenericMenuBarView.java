@@ -1,5 +1,8 @@
 package kornell.gui.client.presentation.bar.generic;
 
+
+import kornell.gui.client.event.InstitutionEvent;
+import kornell.gui.client.event.InstitutionEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -14,6 +17,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -47,12 +51,24 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	Button btnMenu;
 	@UiField
 	Button btnExit;
+	@UiField
+	Image imgMenuBar;
 
 	public GenericMenuBarView(PlaceController placeCtrl, EventBus bus) {
 		this.placeCtrl=placeCtrl;
 		this.bus = bus;
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
+		
+		bus.addHandler(InstitutionEvent.TYPE, new InstitutionEventHandler() {
+			
+			@Override
+			public void onEnter(InstitutionEvent event) {
+				event.getInstitution();
+				imgMenuBar.setUrl("https://s3-sa-east-1.amazonaws.com/midway/logo250x45.png");
+				GWT.log("Change logo on menu bar");
+			}
+		});
 		
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
@@ -74,6 +90,17 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		displayButton(btnHelp, "btnHelp", "help", true);
 		displayButton(btnMenu, "btnMenu", "MENU", false);
 		displayButton(btnExit, "btnExit", "SAIR", false);
+
+		Timer timer = new Timer() {
+			@Override
+			public void run() {
+				if("".equals(imgMenuBar.getUrl())){
+					imgMenuBar.setUrl("skins/first/icons/logo.png");
+				}
+			}
+		};
+		// If it was unable to fetch the logo, use the default logo
+		timer.schedule(2000);
 	}
 	
 	private void displayButtonWithCount(Button btn, final String buttonType, String content, String countStyleName, Integer value) {

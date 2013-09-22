@@ -12,6 +12,9 @@ import kornell.core.shared.data.Registration;
 import kornell.core.shared.to.RegistrationsTO;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.CourseBarEvent;
+import kornell.gui.client.event.InstitutionEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
@@ -28,6 +31,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericTermsView extends Composite implements TermsView {
 	interface MyUiBinder extends UiBinder<Widget, GenericTermsView> {
@@ -60,8 +64,11 @@ public class GenericTermsView extends Composite implements TermsView {
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private GenericMenuLeftView menuLeftView;
+	
+	private final EventBus bus;
 
-	public GenericTermsView(KornellClient client, PlaceController placeCtrl, Place defaultPlace) {
+	public GenericTermsView(EventBus bus, KornellClient client, PlaceController placeCtrl, Place defaultPlace) {
+		this.bus = bus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
 		this.defaultPlace = defaultPlace;
@@ -72,7 +79,11 @@ public class GenericTermsView extends Composite implements TermsView {
 		txtTerms.setText("[Carregando, aguarde...]");
 		btnAgree.setText("Concordo".toUpperCase());
 		btnDontAgree.setText("Não Concordo".toUpperCase());
+<<<<<<< HEAD
+		institutionLogo.setUrl("https://s3-sa-east-1.amazonaws.com/midway/logo380x110.png");
+=======
 		institutionLogo.setUrl("https://s3-sa-east-1.amazonaws.com/midway/suplementacao-alimentar/logo380x110.png");
+>>>>>>> 27d53cd592e83670bdb1dd3d5d0e9255c7561ef1
 	}
 
 	private void initData() {
@@ -97,6 +108,14 @@ public class GenericTermsView extends Composite implements TermsView {
 					Entry<Registration, Institution> e = regs.get(0);
 					registration = e.getKey();
 					institution = e.getValue();
+<<<<<<< HEAD
+					
+					InstitutionEvent institutionEvent = new InstitutionEvent();
+					institutionEvent.setInstitution(institution);
+					bus.fireEvent(institutionEvent);
+					
+=======
+>>>>>>> 27d53cd592e83670bdb1dd3d5d0e9255c7561ef1
 					paint();
 				}else {
 					GWT.log("OPS! Should not be here if nothing to sign");
@@ -114,14 +133,15 @@ public class GenericTermsView extends Composite implements TermsView {
 		}
 	}
 
+	// TODO: Uncomment
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		client.institution(institution.getUUID()).acceptTerms(new Callback<Void>(){
-			@Override
-			protected void ok() {				
+		//client.institution(institution.getUUID()).acceptTerms(new Callback<Void>(){
+			//@Override
+			//protected void ok() {				
 				goStudy();
-			}
-		});		
+			//}
+		//});		
 	}
 
 	@UiHandler("btnDontAgree")
