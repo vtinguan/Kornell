@@ -13,6 +13,7 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -200,13 +201,21 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	void handleClickBtnNotes(ClickEvent e) {
 		
 		if(notesPopup == null){
-			client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
-				@Override
-				protected void ok(CourseTO course) {
-					notesPopup = new NotesPopup(client, course);
-					notesPopup.show();
-				}			
-			});	
+			// TODO: remove this after changing the api
+			String courseUUID = ClientProperties.getDecoded(ClientProperties.COURSE_UUID);
+			String courseNotes = ClientProperties.getDecoded(ClientProperties.COURSE_NOTES);
+			if(courseUUID == null || courseNotes == null){
+				client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
+					@Override
+					protected void ok(CourseTO course) {
+						notesPopup = new NotesPopup(client, course.getCourse().getUUID(), course.getEnrollment().getNotes());
+						notesPopup.show();
+					}			
+				});	
+			} else {
+				notesPopup = new NotesPopup(client, courseUUID, courseNotes);
+				notesPopup.show();
+			}
 		} else {
 			notesPopup.show();
 		}

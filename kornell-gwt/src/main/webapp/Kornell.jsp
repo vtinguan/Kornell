@@ -38,6 +38,7 @@
 			}
 			document.getElementsByTagName('head')[0].appendChild(link);
 		};
+		
   	</script> 
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
     <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/css/skin.css"/>  

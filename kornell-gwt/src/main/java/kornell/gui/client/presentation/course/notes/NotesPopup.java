@@ -19,7 +19,8 @@ public class NotesPopup {
 	PopupPanel glass;
 	TextArea richTextArea;
 	KornellClient client;
-	CourseTO course;
+	String courseUUID;
+	String notes;
 
 	// TODO: fetch these dynamically
 	int NORTH_BAR = 45;
@@ -28,8 +29,9 @@ public class NotesPopup {
 	int NOTES_MIN_HEIGHT = 300;
 	
 
-	public NotesPopup(final KornellClient client, final CourseTO course) {
-		this.course = course;
+	public NotesPopup(final KornellClient client, final String courseUUID, final String notes) {
+		this.courseUUID = courseUUID;
+		this.notes = notes;
 		this.client = client;
 
 		glass = new PopupPanel();
@@ -39,7 +41,7 @@ public class NotesPopup {
 		popup.setStyleName("notesPopup");
 
 		richTextArea = new TextArea();
-		richTextArea.setText(course.getEnrollment().getNotes());
+		richTextArea.setText(notes);
 		richTextArea.setStyleName("notesTextArea");
 
 		popup.add(richTextArea);
@@ -48,7 +50,7 @@ public class NotesPopup {
 	}
 	
 	private void updateNotes(){
-		client.notesUpdated(course.getCourse().getUUID(), richTextArea.getText());
+		client.notesUpdated(courseUUID, richTextArea.getText());
 	}
 	
 	private void placePopup() {
