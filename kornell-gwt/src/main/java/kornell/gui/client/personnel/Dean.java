@@ -24,7 +24,7 @@ public class Dean implements InstitutionEventHandler{
 		Timer timer = new Timer() {
 			@Override
 			public void run() {
-				updateFavicon("favicon.ico");
+				updateFavicon("skins/first/favicon.ico");
 				GWT.log("Favicon set to default");
 			}
 		};
