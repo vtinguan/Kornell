@@ -39,8 +39,6 @@ public class NotesPopup {
 		richTextArea.setStyleName("notesTextArea");
 
 		popup.add(richTextArea);
-
-		placePopup();
 		
 		richTextArea.addKeyUpHandler(new KeyUpHandler() {
 			Timer updateTimer = new Timer() {
@@ -85,8 +83,11 @@ public class NotesPopup {
 	
 	private void placePopup() {
 		int left = (Window.getClientWidth() - wrapperWidth) / 2;
-		int top = (Window.getClientHeight() - popup.getOffsetHeight()) / 2;
 		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
+		int top = 0;
+		if(Window.getClientHeight() > 500){
+			top = (Window.getClientHeight() - popup.getOffsetHeight()) / 2;
+		}
 		
 		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
 		popup.setWidth(wrapperWidth + "px");
@@ -95,6 +96,7 @@ public class NotesPopup {
 	}
 
 	public void show() {
+		placePopup();
 		glass.show();
 		popup.setVisible(true);
 		popup.show();
