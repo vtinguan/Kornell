@@ -24,11 +24,24 @@
 		%>
 		var KornellConfig = {
 			apiEndpoint:"<%= apiEndpoint %>"
-		};  				
+		}; 
+		
+		function updateFavicon(url){
+			var link = document.createElement('link'),
+			oldLink = document.getElementById('icon');
+			link.id = 'icon';
+			link.rel = 'shortcut icon';
+			link.type = 'image/x-icon';
+			link.href = url;
+			if (oldLink) {
+			 	document.head.removeChild(oldLink);
+			}
+			document.getElementsByTagName('head')[0].appendChild(link);
+		};
   	</script> 
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
+    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/css/skin.css"/>  
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
-	<link rel="icon" href="favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
@@ -42,6 +55,5 @@
         in order for this application to display correctly.
       </div>
     </noscript>
-    <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/css/skin.css"/>  
   </body>
 </html>

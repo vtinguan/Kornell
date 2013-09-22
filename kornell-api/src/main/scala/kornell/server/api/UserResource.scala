@@ -16,6 +16,7 @@ import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.Registrations
 import kornell.core.shared.to.UserInfoTO
 import kornell.server.repository.jdbc.SQLInterpolation._
+import kornell.server.repository.jdbc.Institutions
 
 @Path("user")
 class UserResource extends Resource with TOs{
@@ -29,6 +30,8 @@ class UserResource extends Resource with TOs{
     	val signingNeeded = Registrations.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
+    	val institution = Institutions.usersInstitution(p)
+    	user.setInstitutionAssetsURL(institution.get.getTerms)
     	Option(user)
   }
   

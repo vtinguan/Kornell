@@ -67,11 +67,12 @@ trait Beans {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randomUUID, name: String, terms: String) = {
-    val i = factory.newInstitution().as
+  def newInstitution(uuid: String = randomUUID, name: String, terms: String, assetsURL: String) = {
+    val i = factory.newInstitution.as
     i.setName(name)
     i.setUUID(uuid)
     i.setTerms(terms.stripMargin)
+    i.setAssetsURL(assetsURL)
     i
   }
 
@@ -82,7 +83,7 @@ trait Beans {
     r
   }
 
-  def newRegistration = factory.newRegistration().as
+  def newRegistration = factory.newRegistration.as
 
   def newRegistration(personUUID: String, institutionUUID: String, termsAcceptedOn: Date): Registration = {
     val r = newRegistration

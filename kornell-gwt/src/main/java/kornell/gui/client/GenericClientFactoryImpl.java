@@ -4,6 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
@@ -84,7 +85,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SouthBarView southBarView;
 	
 	private GenericHomeView genericHomeView;
-	private CoursePresenter activityPresenter;
+	private CoursePresenter coursePresenter;
 	private CourseHomePresenter courseHomePresenter;
 	private CourseDetailsPresenter courseDetailsPresenter;
 	private CourseLibraryPresenter courseLibraryPresenter;
@@ -198,7 +199,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 
 			private void initPersonnel() {
-				new Captain(bus, placeCtrl);				
+				new Captain(bus, placeCtrl);	
+				new Dean(bus, client);
 			}			
 		});
 		return this;
@@ -243,13 +245,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public CourseView getActivityView() {
+	public CourseView getCourseView() {
 		return new GenericCourseView(bus);
 	}
 
 	@Override
 	public TermsView getTermsView() {
-		return new GenericTermsView(client, placeCtrl, DEFAULT_PLACE);
+		return new GenericTermsView(bus, client, placeCtrl, DEFAULT_PLACE);
 	}
 	
 	
@@ -352,13 +354,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public CoursePresenter getActivityPresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeCtrl,client);
-		if (activityPresenter == null) {
-			CourseView activityView = getActivityView();
-			
-			activityPresenter = new CoursePresenter(activityView,
-					placeCtrl, rendererFactory);
+		if (coursePresenter == null) {
+			CourseView activityView = getCourseView();			
+			coursePresenter = new CoursePresenter(activityView, placeCtrl, rendererFactory);
 		}
-		return activityPresenter;
+		return coursePresenter;
 	}
 	
 	

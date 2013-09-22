@@ -2,20 +2,31 @@
 
 .TermsPlace{
 	.termsPanel {
-		width: 80%;
+    	width: @wrapperWidth;
 		margin: 0 auto;
 		text-align: left; 
-		.imgTermsTitle {
+		padding-top: 20px;
+		.institutionLogo{
 			margin: 0 auto;
-			width: 407px;
+			width: 250px;
+			display: block;
+			margin-bottom: 30px;
 		}
 		.titleUser {
 			color: @textHighlightColor;
-			font-size: 18px;
+			font-size: 20px;
 			padding-top: 5px;
 			padding-bottom: 10px;
 		}
-		.normal {
+	    .txtTitle {
+			color: @niceTextColor;
+			font-size: 25px;
+			text-align: center;		
+			font-weight: bold;
+			margin-top: 5px;
+			margin-bottom: 20px;
+		}
+		.txtTerms {
 			color: @niceTextColor;
 			font-size: 12px;
 		}	
@@ -26,14 +37,16 @@
 		.btnTerms{
 			color: @niceTextColor;
 			.sizepx(150, 30);
+			border-radius: 5px;
 			border: 0px;
 			font-size: 13px;
 			font-weight: bold;
-			margin-top: 15px;
+			margin-top: 30px;
+			margin-bottom:  50px;
 		}
 		.btnAgree{
 			margin-right: 30px;
-			.btnSelected;
+			.btnAction;
 		}
 		.btnDontAgree{
 			margin-left: 30px;

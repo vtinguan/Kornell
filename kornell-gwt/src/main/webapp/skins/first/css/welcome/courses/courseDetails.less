@@ -343,7 +343,9 @@
 		@detailsPanelWidth: @wrapperWidthUnder990 - 18px;
 		@buttonsPanelWidth: @detailsPanelWidth;
 		@infoPanelWidth: @detailsPanelWidth;
+		@topicsPanelWidth: @detailsPanelWidth;
 		@hintsPanelWidth: @detailsPanelWidth * 2 / 3;
+		@certificationPanelWidth: .85 * @wrapperWidthUnder990;
 		@detailsPanelMargin: 10px;
 		width:	@detailsPanelWidth;
 		.buttonsPanel{
@@ -361,7 +363,7 @@
 		.contentPanel{
 			.infoPanel{
 				margin-left: @detailsPanelMargin;
-				width: @infoPanelWidth - @detailsPanelMargin;
+				width:  .85 * @wrapperWidthUnder990;
 			}
 			.hintsPanel{
 				width: @hintsPanelWidth;
@@ -371,11 +373,12 @@
 				margin-left: @detailsPanelMargin * 3;
 			}
 			.topicsPanel{
-				width: @hintsPanelWidth;
+				width: @topicsPanelWidth + @detailsPanelMargin + 2px;
 				padding-left: @detailsPanelMargin / 2;
 				padding-right: @detailsPanelMargin / 2;
 				margin-left: 35px;
 				.topicsHeaderPanel{
+					.btnTopicsHeader{width: @topicsPanelWidth}
 					.btnForumComments{display: none}
 					.btnNotes{display: none}
 				}					
@@ -384,7 +387,6 @@
 					.lblNotes{display: none}
 				}
 			}
-			@certificationPanelWidth: .85 * @wrapperWidthUnder990;
 
 			@itemWidth: .6 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@statusWidth: .15 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
