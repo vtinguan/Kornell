@@ -44,6 +44,38 @@ public class NotesPopup {
 
 		popup.add(richTextArea);
 		
+		addHandlers();
+	}
+	
+	private void updateNotes(){
+		client.notesUpdated(course.getCourse().getUUID(), richTextArea.getText());
+	}
+	
+	private void placePopup() {
+		int left = (Window.getClientWidth() - BAR_WIDTH) / 2;
+		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
+		int top = Window.getClientHeight() - SOUTH_BAR - NOTES_MIN_HEIGHT;
+		
+		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
+		popup.setWidth(BAR_WIDTH + "px");
+		popup.getElement().getStyle().setPropertyPx("size", NOTES_MIN_HEIGHT);
+		popup.getElement().getStyle().setPropertyPx("bottom", SOUTH_BAR);
+		popup.setVisible(true);
+	}
+
+	public void show() {
+		placePopup();
+		glass.show();
+		popup.show();
+
+		richTextArea.setFocus(true);
+		/* PUTS THE CURSOR ATE THE END
+		String tmp = richTextArea.getText();
+		richTextArea.setText("");
+		richTextArea.setText(tmp);*/
+	}
+
+	private void addHandlers() {
 		richTextArea.addKeyUpHandler(new KeyUpHandler() {
 			Timer updateTimer = new Timer() {
 				@Override
@@ -79,28 +111,5 @@ public class NotesPopup {
 				glass.hide();
 			}
 		});
-	}
-	
-	private void updateNotes(){
-		client.notesUpdated(course.getCourse().getUUID(), richTextArea.getText());
-	}
-	
-	private void placePopup() {
-		int left = (Window.getClientWidth() - BAR_WIDTH) / 2;
-		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
-		int top = Window.getClientHeight() - SOUTH_BAR - NOTES_MIN_HEIGHT;
-		
-		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
-		popup.setWidth(BAR_WIDTH + "px");
-		popup.getElement().getStyle().setPropertyPx("size", NOTES_MIN_HEIGHT);
-		popup.getElement().getStyle().setPropertyPx("bottom", SOUTH_BAR);
-		popup.setVisible(true);
-	}
-
-	public void show() {
-		placePopup();
-		glass.show();
-		popup.show();
-		richTextArea.setFocus(true);
 	}
 }

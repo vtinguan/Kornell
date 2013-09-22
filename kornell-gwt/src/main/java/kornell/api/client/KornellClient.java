@@ -5,13 +5,12 @@ import kornell.core.shared.to.CoursesTO;
 import kornell.core.shared.to.RegistrationsTO;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.event.LogoutEventHandler;
+import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.storage.client.Storage;
 
 public class KornellClient implements LogoutEventHandler {
-	Storage store = Storage.getLocalStorageIfSupported();
 
 	private String apiURL = null;
 	private UserInfoTO currentUser;	
@@ -52,14 +51,8 @@ public class KornellClient implements LogoutEventHandler {
 			protected void ok(UserInfoTO user) {
 				setCurrentUser(user);
 				//TODO: https://github.com/Craftware/Kornell/issues/7
-				storeAuth(auth);
+				ClientProperties.set("Authorization", auth);
 				callback.ok(user);
-			}
-			
-			private void storeAuth(String auth) {				  				  
-				  if(store != null){
-					  store.setItem("Authorization", auth);
-				  }else GWT.log("Ooops, your browser does not support local storage");
 			}
 
 			@Override
@@ -105,11 +98,9 @@ public class KornellClient implements LogoutEventHandler {
 	}
 
 	private void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
-		if(store != null){
-			String auth = store.getItem("Authorization");
-			if(auth != null && auth.length()>0)
-				reqBuilder.setHeader("Authorization", auth);
-		}
+		String auth = ClientProperties.get("Authorization");
+		if(auth != null && auth.length()>0)
+			reqBuilder.setHeader("Authorization", auth);
 	}
 	
 	public String getApiUrl() {
@@ -121,12 +112,8 @@ public class KornellClient implements LogoutEventHandler {
 	}
 
 	private static String encode(String username, String password) {
-		return KornellClient.base64Encode(username+":"+password);
+		return ClientProperties.base64Encode(username+":"+password);
 	}
-
-	private static native String base64Encode(String plain) /*-{
-	  return window.btoa(plain);
-	}-*/;
 
 	public static KornellClient getInstance() {		
 		return new KornellClient();
@@ -185,9 +172,7 @@ public class KornellClient implements LogoutEventHandler {
 	}
 
 	private void forgetCredentials() {
-		if(store != null){
-			store.removeItem("Authentication");
-		}
+		ClientProperties.remove("Authentication");
 	}
 
 }	
