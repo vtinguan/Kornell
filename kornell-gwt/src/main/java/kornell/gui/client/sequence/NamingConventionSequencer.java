@@ -5,7 +5,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.CourseTO;
 import kornell.gui.client.event.NavigationForecastEvent;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
+import kornell.gui.client.presentation.course.CoursePlace;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
@@ -19,13 +19,14 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
+@Deprecated
 public class NamingConventionSequencer implements Sequencer {
 
 	private KornellClient client;
 	private IFrameElement iframe;
 	private String assetsURL;
 	private PlaceController ctrl;
-	private AtividadePlace place;
+	private CoursePlace place;
 	private EventBus bus;
 
 	public NamingConventionSequencer(EventBus bus,
@@ -36,10 +37,11 @@ public class NamingConventionSequencer implements Sequencer {
 		this.ctrl = ctrl;
 		this.bus = bus;
 		iframe = Document.get().createIFrameElement();
-		iframe.addClassName("externalContent");		
+		iframe.addClassName("externalContent");
+		throw new IllegalStateException("NamingConventionSequencer is not usable anymore, it just exists as a reference.");
 	}
 
-	public Sequencer at(AtividadePlace place) {
+	public Sequencer at(CoursePlace place) {
 		this.place = place;
 		return this;
 	}
@@ -70,7 +72,7 @@ public class NamingConventionSequencer implements Sequencer {
 		}
 	}
 
-	private void render(final AtividadePlace place) {
+	private void render(final CoursePlace place) {
 		if (place == null) {
 			GWT.log("null place???");
 			return;
@@ -82,7 +84,7 @@ public class NamingConventionSequencer implements Sequencer {
 				String currentURL = assetsURL+fileOf(place);
 				go(currentURL);
 				
-				String nextURL =assetsURL+fileOf(place.next()); 
+				String nextURL ="";//assetsURL+fileOf(place.next()); 
 				warnIfNextNotOK(nextURL);
 			}
 		});
@@ -147,20 +149,20 @@ public class NamingConventionSequencer implements Sequencer {
 	
 	@Override
 	public void onContinue(NavigationRequest event) {
-		ctrl.goTo(place.next());
+		//ctrl.goTo(place.next());
 	}
 
 	@Override
 	public void onPrevious(NavigationRequest event) {		
-		ctrl.goTo(place.previous());
+		//ctrl.goTo(place.previous());
 	}
 	
 	
-	private static String fileOf(AtividadePlace place) {
-		Integer position = place.getPosition();
-		if(position <= 0) return "home.html";
+	private static String fileOf(CoursePlace place) {
+		//Integer position = place.getPosition();
+		//if(position <= 0) return "home.html";
 		//TODO: use GWT formatter (can not access api now, gimme a break)		
-		return position+".html";
+		return "";// position+".html";
 	}
 
 }

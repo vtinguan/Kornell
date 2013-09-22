@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.atividade;
+package kornell.gui.client.presentation.course;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -12,11 +12,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  * 
  * @author jfaerman
  */
-public class AtividadeActivity extends AbstractActivity {
+public class CourseActivity extends AbstractActivity {
 	
-	private AtividadePresenter presenter;
+	private CoursePresenter presenter;
 
-	public AtividadeActivity(AtividadePresenter presenter) {
+	public CourseActivity(CoursePresenter presenter) {
 		this.presenter = presenter;
 	}
 

@@ -14,7 +14,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest
 
 class S3(regionName: String,
   accessKey: String, secretKey: String,
-  bucket: String, prefix: String) {
+  val bucket: String, prefix: String) {
   
   //TODO: An actom is an undivisible unit of learning content. Pls write that on the wiki, bur for now it is just a key...
   type Actom = String

@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation.atividade.generic;
 
-import kornell.gui.client.presentation.atividade.AtividadeView;
+import kornell.gui.client.presentation.course.CourseView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -10,9 +10,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericAtividadeView extends Composite 
-	implements AtividadeView {
-	interface MyUiBinder extends UiBinder<Widget, GenericAtividadeView> {
+public class GenericCourseView extends Composite 
+	implements CourseView {
+	interface MyUiBinder extends UiBinder<Widget, GenericCourseView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -22,7 +22,7 @@ public class GenericAtividadeView extends Composite
 
 	private Presenter presenter;
 
-	public GenericAtividadeView(EventBus eventBus) {
+	public GenericCourseView(EventBus eventBus) {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
