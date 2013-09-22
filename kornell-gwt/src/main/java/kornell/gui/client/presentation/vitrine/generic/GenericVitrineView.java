@@ -5,9 +5,11 @@ import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.Form;
+import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
@@ -21,6 +23,7 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -33,7 +36,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
-
+	
 	
 	@UiField
 	TextBox txtUsername;
@@ -41,9 +44,12 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	PasswordTextBox pwdPassword;
 	@UiField
 	Form frmLogin;
-
+	@UiField
+	Button btnLogin;
 	@UiField
 	Alert altUnauthorized;
+	@UiField
+	Image imgLogo;
 
 	@UiField
 	FlowPanel contentPanel;
@@ -62,6 +68,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		this.client = client;
 		this.defaultPlace = defaultPlace;
 		this.mapper = mapper;
+		
 	
 		initWidget(uiBinder.createAndBindUi(this));
 		pwdPassword.addKeyPressHandler(new KeyPressHandler() {			
@@ -73,7 +80,14 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		});
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");
+		btnLogin.removeStyleName("btn");
 		
+		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
+		if(imgLogoURL != null){
+			imgLogo.setUrl(imgLogoURL + "logo250x45.png");
+		} else {
+			imgLogo.setUrl("/skins/first/icons/logo.png");
+		}
 	}
 
 
