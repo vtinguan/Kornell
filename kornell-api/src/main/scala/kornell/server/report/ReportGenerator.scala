@@ -28,8 +28,8 @@ object ReportGenerator extends App {
 
     val params: HashMap[String, Object] = new HashMap()
     params.put("userUuid", userUUID)
-    params.put("name", certificateData._1)
-    params.put("course", certificateData._2)
+    params.put("name", certificateData._1.toUpperCase())
+    params.put("course", certificateData._2.toUpperCase())
 
     val assetsURL: String = certificateData._3
 
