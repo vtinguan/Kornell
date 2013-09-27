@@ -16,3 +16,11 @@
 .paddingTop44{padding-top:44px;}
 .width120{widht:120px;}
 .test{color:red;}
+.VitrinePlace{background:url(/skins/first/bg.jpg) no-repeat center center fixed;background-size:cover;background-color:#000000;}.VitrinePlace .wrapper{width:962px;}
+.VitrinePlace .boxLogin{position:absolute;right:50px;top:25px;background-color:rgba(0, 0, 0, 0.9);padding-left:50px;padding-right:50px;padding-top:30px;padding-bottom:30px;border:1px solid ;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(109, 103, 99, 0.5);min-height:200px;color:#a5a4a5;}.VitrinePlace .boxLogin .logo{display:block;margin-top:-30px;margin-left:-50px;margin-bottom:30px;}
+.VitrinePlace .boxLogin .personIcon{float:left;padding-top:5px;padding-right:15px;}
+.VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;}
+.VitrinePlace .boxLogin .btnVitrine{color:#d8d7d8;width:120px;height:30px;border-radius:5px;border:0px;font-size:13px;font-weight:bold;display:block;margin:0 auto;margin-top:30px;}
+.VitrinePlace .boxLogin input{width:200px;display:block;}
+.VitrinePlace .boxLogin .alert{width:162px;}
+@media screen and (max-width:962px){.VitrinePlace .wrapper{width:600px;}}
