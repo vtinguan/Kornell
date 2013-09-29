@@ -54,7 +54,6 @@ public class CourseDetailsTOBuilder {
 		for (ParseType parseType : ParseType.values()) {
 			ret = ret && parseJSON(jsonObject.get(parseType.getCode()), parseType);
 		}
-		System.out.println(courseDetailsTO.toString());
 	    return ret;
 	}
 	
