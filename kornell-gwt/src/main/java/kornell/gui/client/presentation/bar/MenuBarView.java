@@ -8,5 +8,5 @@ public interface MenuBarView extends IsWidget {
 
 	void setPresenter(Presenter presenter);
 
-
+	void display();
 }

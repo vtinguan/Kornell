@@ -85,12 +85,15 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						boolean isAtVitrine = newPlace instanceof VitrinePlace;
+						if(isAtVitrine){
+							GenericMenuBarView.this.setHeight("0px");
+						}
 						GenericMenuBarView.this.setVisible(!isAtVitrine);
 					}
 				});
 	}
 	
-	private void display(){
+	public void display(){
 		// TODO i18n
 		displayButton(btnFake, "btnFake", "", false);
 		displayButton(btnHome, "btnHome", "home", true);
@@ -133,6 +136,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	}
 	
 	private void displayButton(Button btn, final String buttonType, String content, boolean isImage) {
+		btn.clear();
 		//TODO i18n
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
