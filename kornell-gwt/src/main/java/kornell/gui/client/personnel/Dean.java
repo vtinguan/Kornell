@@ -14,6 +14,12 @@ public class Dean implements InstitutionEventHandler{
 	
 	public Dean(EventBus bus, KornellClient client) { 
 		this.client = client;
+		String url = ClientProperties.getDecoded("institutionAssetsURL");
+		if(url != null){
+			updateFavicon(url + "favicon.ico");
+		} else {
+			setDefaultFavicon();
+		}
 		bus.addHandler(InstitutionEvent.TYPE, this);
 	}
 
@@ -24,9 +30,12 @@ public class Dean implements InstitutionEventHandler{
 			ClientProperties.setEncoded("institutionAssetsURL", event.getInstitution().getAssetsURL());
 			updateFavicon(event.getInstitution().getAssetsURL() + "favicon.ico");
 		} catch (Exception e) {
-			// If it was somehow unable to fetch the favicon, use the default logo
-			updateFavicon("skins/first/favicon.ico");
+			setDefaultFavicon();
 		}
+	}
+	
+	private void setDefaultFavicon(){
+		updateFavicon("skins/first/favicon.ico");
 	}
 
 	private static native void updateFavicon(String url) /*-{
