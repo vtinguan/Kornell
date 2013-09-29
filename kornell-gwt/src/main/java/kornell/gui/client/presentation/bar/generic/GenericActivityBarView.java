@@ -173,14 +173,16 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private static native void setUpArrowNavigation() /*-{
 		$doc.onkeydown = function() {
-		    switch ($wnd.event.keyCode) {
-		        case 37: //LEFT ARROW
-		        	$doc.getElementsByClassName("btnPanel previous")[0].click();
-		            break;
-		        case 39: //RIGHT ARROW
-		        	$doc.getElementsByClassName("btnPanel next")[0].click();
-		            break;
-		    }
+			if($wnd.event.target.nodeName != "TEXTAREA"){
+			    switch ($wnd.event.keyCode) {
+			        case 37: //LEFT ARROW
+			        	$doc.getElementsByClassName("btnPanel previous")[0].click();
+			            break;
+			        case 39: //RIGHT ARROW
+			        	$doc.getElementsByClassName("btnPanel next")[0].click();
+			            break;
+			    }
+			}
 		};
 	}-*/;
 	
