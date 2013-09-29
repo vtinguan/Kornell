@@ -11,18 +11,21 @@ import com.google.web.bindery.event.shared.EventBus;
 public class Dean implements InstitutionEventHandler{
 	
 	KornellClient client;
+
+	private String ICON_NAME = "favicon.ico";
+	private String DEFAULT_SITE_TITLE = "Kornell";
 	
 	public Dean(EventBus bus, KornellClient client) { 
 		this.client = client;
 		
-		String url = ClientProperties.getDecoded("institutionAssetsURL");
+		String url = ClientProperties.getDecoded(ClientProperties.INSTITUTION_ASSETS_URL);
 		if(url != null){
-			updateFavicon(url + "favicon.ico");
+			updateFavicon(url + ICON_NAME);
 		} else {
 			setDefaultFavicon();
 		}
 		
-		String name = ClientProperties.getDecoded("institutionName");
+		String name = ClientProperties.getDecoded(ClientProperties.INSTITUTION_NAME);
 		if(name != null){
 			updateTitle(name);
 		} else {
@@ -36,9 +39,9 @@ public class Dean implements InstitutionEventHandler{
 	public void onEnter(InstitutionEvent event) {
 		GWT.log("Trick or Dean!");
 		try {
-			ClientProperties.setEncoded("institutionAssetsURL", event.getInstitution().getAssetsURL());
-			ClientProperties.setEncoded("institutionName", event.getInstitution().getName());
-			updateFavicon(event.getInstitution().getAssetsURL() + "favicon.ico");
+			ClientProperties.setEncoded(ClientProperties.INSTITUTION_ASSETS_URL, event.getInstitution().getAssetsURL());
+			ClientProperties.setEncoded(ClientProperties.INSTITUTION_NAME, event.getInstitution().getName());
+			updateFavicon(event.getInstitution().getAssetsURL() + ICON_NAME);
 			updateTitle(event.getInstitution().getName());
 		} catch (Exception e) {
 			setDefaultFavicon();
@@ -47,11 +50,11 @@ public class Dean implements InstitutionEventHandler{
 	}
 	
 	private void setDefaultFavicon(){
-		updateFavicon("skins/first/favicon.ico");
+		updateFavicon("skins/first/" + ICON_NAME);
 	}
 	
 	private void setDefaultTitle(){
-		updateTitle("Kornell");
+		updateTitle(DEFAULT_SITE_TITLE);
 	}
 
 	private static native void updateFavicon(String url) /*-{

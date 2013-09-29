@@ -107,6 +107,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				display();
 			}
 		});
+		
+		setUpArrowNavigation();
 	}
 	 
 	private void display(){
@@ -168,6 +170,19 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			return "notes";
 		}
 	}
+
+	private static native void setUpArrowNavigation() /*-{
+		$doc.onkeydown = function() {
+		    switch ($wnd.event.keyCode) {
+		        case 37: //LEFT ARROW
+		        	$doc.getElementsByClassName("btnPanel previous")[0].click();
+		            break;
+		        case 39: //RIGHT ARROW
+		        	$doc.getElementsByClassName("btnPanel next")[0].click();
+		            break;
+		    }
+		};
+	}-*/;
 	
 	@UiHandler("btnNext")
 	public void btnNextClicked(ClickEvent e){
