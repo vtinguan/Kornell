@@ -123,7 +123,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.addNorth(getMenuBarView(), 45);
 		dockLayoutPanel.addSouth(getSouthBarView(), 35);
-		System.out.println(placeCtrl.getWhere().getClass());
 		
 		ScrollPanel sp = new ScrollPanel();
 		sp.add(shell);
