@@ -123,6 +123,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.addNorth(getMenuBarView(), 45);
 		dockLayoutPanel.addSouth(getSouthBarView(), 35);
+		System.out.println(placeCtrl.getWhere().getClass());
 		
 		ScrollPanel sp = new ScrollPanel();
 		sp.add(shell);
@@ -138,6 +139,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 						
 						Place newPlace = event.getNewPlace();
 						dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(), !getSouthBarView().isVisible());
+						
+
+						if(placeCtrl.getWhere() instanceof VitrinePlace){
+							dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(), 0);
+						} else {
+							dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(), 45);
+							getMenuBarView().display();
+						}
 					}
 
 					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
