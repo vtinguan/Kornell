@@ -271,7 +271,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	@Override
 	public void onNextActivityNotOK(NavigationForecastEvent evt) {
-		enableButton(BUTTON_NEXT, false);
+		//TODO: uncomment
+		enableButton(BUTTON_NEXT, true);
 	}
 
 	@Override

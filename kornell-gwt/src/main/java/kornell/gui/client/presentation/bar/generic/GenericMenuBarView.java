@@ -85,9 +85,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						boolean isAtVitrine = newPlace instanceof VitrinePlace;
-						if(isAtVitrine){
-							GenericMenuBarView.this.setHeight("0px");
-						}
 						GenericMenuBarView.this.setVisible(!isAtVitrine);
 					}
 				});
