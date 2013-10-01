@@ -6,6 +6,7 @@ import kornell.api.client.KornellClient;
 import kornell.core.shared.to.CourseTO;
 import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
@@ -98,6 +99,9 @@ public class NamingConventionSequencer implements Sequencer {
 				@Override
 				protected void ok(CourseTO to) {
 					assetsURL = to.getCourse().getAssetsURL();
+					// TODO: remove this after changing the api
+					ClientProperties.setEncoded(ClientProperties.COURSE_UUID, to.getCourse().getUUID());
+					ClientProperties.setEncoded(ClientProperties.COURSE_NOTES, to.getEnrollment().getNotes());
 					cb.withAssetsURL(assetsURL);
 				}
 			});

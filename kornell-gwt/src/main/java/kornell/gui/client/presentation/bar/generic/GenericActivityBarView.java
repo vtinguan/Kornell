@@ -13,6 +13,7 @@ import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -106,6 +107,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				display();
 			}
 		});
+		
+		setUpArrowNavigation();
 	}
 	 
 	private void display(){
@@ -153,6 +156,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		
 		btn.add(buttonPanel);
 		btn.removeStyleName("btn");
+		btn.removeStyleName("btn-link");
 	}
 	
 	private String getItemName(String constant){
@@ -166,6 +170,21 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			return "notes";
 		}
 	}
+
+	private static native void setUpArrowNavigation() /*-{
+		$doc.onkeydown = function() {
+			if($wnd.event.target.nodeName != "TEXTAREA"){
+			    switch ($wnd.event.keyCode) {
+			        case 37: //LEFT ARROW
+			        	$doc.getElementsByClassName("btnPanel previous")[0].click();
+			            break;
+			        case 39: //RIGHT ARROW
+			        	$doc.getElementsByClassName("btnPanel next")[0].click();
+			            break;
+			    }
+			}
+		};
+	}-*/;
 	
 	@UiHandler("btnNext")
 	public void btnNextClicked(ClickEvent e){
@@ -182,6 +201,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		if(placeCtrl.getWhere() instanceof CoursePlace){
 			placeCtrl.goTo(new CourseDetailsPlace(getCourseUUID()));
 			btnDetails.addStyleName("btnSelected");
+			GWT.log("btnSelected");
 		} else {
 			client.getCurrentUser(new Callback<UserInfoTO>() {
 				@Override
@@ -198,13 +218,21 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	void handleClickBtnNotes(ClickEvent e) {
 		
 		if(notesPopup == null){
-			client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
-				@Override
-				protected void ok(CourseTO course) {
-					notesPopup = new NotesPopup(client, course);
-					notesPopup.show();
-				}			
-			});	
+			// TODO: remove this after changing the api
+			String courseUUID = ClientProperties.getDecoded(ClientProperties.COURSE_UUID);
+			String courseNotes = ClientProperties.getDecoded(ClientProperties.COURSE_NOTES);
+			if(courseUUID == null || courseNotes == null){
+				client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
+					@Override
+					protected void ok(CourseTO course) {
+						notesPopup = new NotesPopup(client, course.getCourse().getUUID(), course.getEnrollment().getNotes());
+						notesPopup.show();
+					}			
+				});	
+			} else {
+				notesPopup = new NotesPopup(client, courseUUID, courseNotes);
+				notesPopup.show();
+			}
 		} else {
 			notesPopup.show();
 		}
@@ -260,7 +288,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	@Override
 	public void onNextActivityNotOK(NavigationForecastEvent evt) {
-		enableButton(BUTTON_NEXT, false);
+		//TODO: uncomment
+		enableButton(BUTTON_NEXT, true);
 	}
 
 	@Override

@@ -5,7 +5,7 @@
   	<meta charset="utf-8">
   	<meta name="kornell.version" content="2013-08-26 19:22"> 
 
-    <title>Kornell</title>
+    <title>&nbsp;&nbsp;</title>
     <!-- before your module(*.nocache.js) loading  -->
 	<!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -38,6 +38,7 @@
 			}
 			document.getElementsByTagName('head')[0].appendChild(link);
 		};
+		
   	</script> 
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
     <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/css/skin.css"/>  

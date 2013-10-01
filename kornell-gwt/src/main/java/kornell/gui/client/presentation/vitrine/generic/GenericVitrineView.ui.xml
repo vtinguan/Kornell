@@ -3,6 +3,8 @@
 
 	<g:FlowPanel ui:field="contentPanel" addStyleNames="vitrine">
 		<g:FlowPanel addStyleNames="boxLogin">
+			<b:Image ui:field="imgLogo" addStyleNames="logo"></b:Image>
+			<b:Image url="/skins/first/icons/vitrinePersonIcon.png" addStyleNames="personIcon"></b:Image>
 			<b:Heading size="1">Bem vindo</b:Heading>
 			<b:Paragraph>Por favor identifique-se.</b:Paragraph>
 			<b:Alert ui:field="altUnauthorized" type="ERROR" close="true"
@@ -11,11 +13,9 @@
 			</b:Alert>
 			<b:Form ui:field="frmLogin">
 				<b:TextBox ui:field="txtUsername" placeholder="Nome de usuário" ></b:TextBox>
-				
-				<b:PasswordTextBox ui:field="pwdPassword"
-					placeholder="Senha"></b:PasswordTextBox>
+				<b:PasswordTextBox ui:field="pwdPassword" placeholder="Senha"></b:PasswordTextBox>
 				<b:Controls>
-					<b:Button ui:field="btnLogin" type="PRIMARY">Entrar</b:Button>
+					<g:Button ui:field="btnLogin" addStyleNames="btnVitrine btnSelected">Entrar</g:Button>
 				</b:Controls>
 			</b:Form>
 		</g:FlowPanel>
