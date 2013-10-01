@@ -19,7 +19,8 @@ public class NotesPopup {
 	PopupPanel glass;
 	TextArea richTextArea;
 	KornellClient client;
-	CourseTO course;
+	String courseUUID;
+	String notes;
 
 	// TODO: fetch these dynamically
 	int NORTH_BAR = 45;
@@ -28,8 +29,9 @@ public class NotesPopup {
 	int NOTES_MIN_HEIGHT = 300;
 	
 
-	public NotesPopup(final KornellClient client, final CourseTO course) {
-		this.course = course;
+	public NotesPopup(final KornellClient client, final String courseUUID, final String notes) {
+		this.courseUUID = courseUUID;
+		this.notes = notes;
 		this.client = client;
 
 		glass = new PopupPanel();
@@ -39,11 +41,43 @@ public class NotesPopup {
 		popup.setStyleName("notesPopup");
 
 		richTextArea = new TextArea();
-		richTextArea.setText(course.getEnrollment().getNotes());
+		richTextArea.setText(notes);
 		richTextArea.setStyleName("notesTextArea");
 
 		popup.add(richTextArea);
 		
+		addHandlers();
+	}
+	
+	private void updateNotes(){
+		client.notesUpdated(courseUUID, richTextArea.getText());
+	}
+	
+	private void placePopup() {
+		int left = (Window.getClientWidth() - BAR_WIDTH) / 2;
+		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
+		int top = Window.getClientHeight() - SOUTH_BAR - NOTES_MIN_HEIGHT;
+		
+		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
+		popup.setWidth(BAR_WIDTH + "px");
+		popup.getElement().getStyle().setPropertyPx("size", NOTES_MIN_HEIGHT);
+		popup.getElement().getStyle().setPropertyPx("bottom", SOUTH_BAR);
+		popup.setVisible(true);
+	}
+
+	public void show() {
+		placePopup();
+		glass.show();
+		popup.show();
+
+		richTextArea.setFocus(true);
+		/* PUTS THE CURSOR ATE THE END
+		String tmp = richTextArea.getText();
+		richTextArea.setText("");
+		richTextArea.setText(tmp);*/
+	}
+
+	private void addHandlers() {
 		richTextArea.addKeyUpHandler(new KeyUpHandler() {
 			Timer updateTimer = new Timer() {
 				@Override
@@ -79,28 +113,5 @@ public class NotesPopup {
 				glass.hide();
 			}
 		});
-	}
-	
-	private void updateNotes(){
-		client.notesUpdated(course.getCourse().getUUID(), richTextArea.getText());
-	}
-	
-	private void placePopup() {
-		int left = (Window.getClientWidth() - BAR_WIDTH) / 2;
-		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
-		int top = Window.getClientHeight() - SOUTH_BAR - NOTES_MIN_HEIGHT;
-		
-		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
-		popup.setWidth(BAR_WIDTH + "px");
-		popup.getElement().getStyle().setPropertyPx("size", NOTES_MIN_HEIGHT);
-		popup.getElement().getStyle().setPropertyPx("bottom", SOUTH_BAR);
-		popup.setVisible(true);
-	}
-
-	public void show() {
-		placePopup();
-		glass.show();
-		popup.show();
-		richTextArea.setFocus(true);
 	}
 }

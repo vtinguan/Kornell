@@ -1,39 +1,37 @@
 @import "../utils/mixins";
 
-.TermsPlace{
-	.termsPanel {
-    	width: @wrapperWidth;
+.termsPanel {
+	width: @wrapperWidth;
+	margin: 0 auto;
+	text-align: left; 
+	padding-top: 20px;
+	.institutionLogo{
 		margin: 0 auto;
-		text-align: left; 
-		padding-top: 20px;
-		.institutionLogo{
-			margin: 0 auto;
-			width: 250px;
-			display: block;
-			margin-bottom: 30px;
-		}
-		.titleUser {
-			color: @textHighlightColor;
-			font-size: 20px;
-			padding-top: 5px;
-			padding-bottom: 10px;
-		}
-	    .txtTitle {
-			color: @niceTextColor;
-			font-size: 25px;
-			text-align: center;		
-			font-weight: bold;
-			margin-top: 5px;
-			margin-bottom: 20px;
-		}
-		.txtTerms {
-			color: @niceTextColor;
-			font-size: 12px;
-		}	
-		.termsButtonBar{
-			margin: 0 auto;
-			width: 360px;
-		}
+		width: 250px;
+		display: block;
+		margin-bottom: 30px;
+	}
+	.titleUser {
+		color: @textHighlightColor;
+		font-size: 20px;
+		padding-top: 5px;
+		padding-bottom: 10px;
+	}
+    .txtTitle {
+		color: @niceTextColor;
+		font-size: 25px;
+		text-align: center;		
+		font-weight: bold;
+		margin-top: 5px;
+		margin-bottom: 20px;
+	}
+	.txtTerms {
+		color: @niceTextColor;
+		font-size: 12px;
+	}	
+	.termsButtonBar{
+		margin: 0 auto;
+		width: 360px;
 		.btnTerms{
 			color: @niceTextColor;
 			.sizepx(150, 30);
@@ -53,4 +51,9 @@
 			.btnNotSelected;
 		}
 	}
+}
+@media screen and (max-width: @wrapperWidth) {
+	.termsPanel {
+    	width: @wrapperWidthUnder990;
+    }
 }

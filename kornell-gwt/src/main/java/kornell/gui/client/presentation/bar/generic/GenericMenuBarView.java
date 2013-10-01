@@ -7,6 +7,7 @@ import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -34,6 +35,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
 	private EventBus bus;
+	private String barLogoFileName = "logo250x45.png";
 	
 	@UiField
 	FlowPanel menuBar;
@@ -53,6 +55,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	Button btnExit;
 	@UiField
 	Image imgMenuBar;
+	
 
 	public GenericMenuBarView(PlaceController placeCtrl, EventBus bus) {
 		this.placeCtrl=placeCtrl;
@@ -60,12 +63,18 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		
+		try {
+			String institutionAssetsURL = ClientProperties.base64Decode(ClientProperties.get("institutionAssetsURL"));
+			imgMenuBar.setUrl(institutionAssetsURL + barLogoFileName);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		
 		bus.addHandler(InstitutionEvent.TYPE, new InstitutionEventHandler() {
-			
 			@Override
 			public void onEnter(InstitutionEvent event) {
-				event.getInstitution();
-				imgMenuBar.setUrl("https://s3-sa-east-1.amazonaws.com/midway/logo250x45.png");
+				imgMenuBar.setUrl(event.getInstitution().getAssetsURL() + barLogoFileName);
 				GWT.log("Change logo on menu bar");
 			}
 		});
@@ -81,7 +90,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 				});
 	}
 	
-	private void display(){
+	public void display(){
 		// TODO i18n
 		displayButton(btnFake, "btnFake", "", false);
 		displayButton(btnHome, "btnHome", "home", true);
@@ -124,6 +133,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	}
 	
 	private void displayButton(Button btn, final String buttonType, String content, boolean isImage) {
+		btn.clear();
 		//TODO i18n
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");

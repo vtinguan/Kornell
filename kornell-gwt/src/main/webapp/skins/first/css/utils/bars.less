@@ -76,6 +76,7 @@
 			.btnBorder;
 		}
 		.activityBarButton {
+			width: 25%;
 			height: @barSouthHeight;
 			float: left;
 			line-height: @barSouthHeight;
@@ -100,19 +101,13 @@
 				color: darken(@niceTextColor, 30%);
 			}
 		}
-		@buttonCount: 4;
-		@buttonWidth: ( @wrapperWidth / @buttonCount ) - 2px;
-		.previous 	{width: @buttonWidth;}
-		.next 	 	{width: @buttonWidth;}
-		.details 	{width: @buttonWidth;}
-		.notes	 	{width: @buttonWidth;}
 	}
 }
 @media screen and (max-width: @wrapperWidth) {
 	.activityBarWrapper{
 		.activityBar{
 			.size (@wrapperWidthUnder990,@barSouthHeight);
-			.activityBarButton {
+			/*.activityBarButton {
 				.label{
 					visibility: hidden;
 					width: 0px;
@@ -120,13 +115,7 @@
 					margin: 0;
 					padding: 0;
 				}		
-			}
-			@buttonCount: 4;
-			@buttonWidth: ( @wrapperWidthUnder990 / @buttonCount ) - 2px;
-			.previous 	{width: @buttonWidth !important;}
-			.next		{width: @buttonWidth !important;}
-			.details 	{width: @buttonWidth !important;}
-			.notes	 	{width: @buttonWidth !important;}
+			}*/
 		}
 	}
 }
