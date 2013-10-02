@@ -65,7 +65,7 @@ public class NamingConventionSequencer implements Sequencer {
 	}
 	
 	private void placeIframe(){
-		iframe.setPropertyString("width", Window.getClientWidth() + "px");
+		iframe.setPropertyString("width", "100%");
 		iframe.setPropertyString("height", (Window.getClientHeight() - SOUTH_BAR - NORTH_BAR) + "px");
 	}
 
