@@ -1,10 +1,9 @@
 package kornell.gui.client.presentation;
 
-
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.presentation.atividade.AtividadeActivity;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
-import kornell.gui.client.presentation.atividade.AtividadePresenter;
+import kornell.gui.client.presentation.course.CourseActivity;
+import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CoursePresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatActivity;
 import kornell.gui.client.presentation.course.chat.CourseChatPlace;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
@@ -44,12 +43,13 @@ public class GlobalActivityMapper implements ActivityMapper {
 	private ClientFactory factory;
 
 	public GlobalActivityMapper(ClientFactory clientFactory) {
-    this.factory = clientFactory;
-  }
+		this.factory = clientFactory;
+	}
 
-  /** TODO: This may suck fast */
-public Activity getActivity(final Place place) {
-	GWT.log("Global Manager looling for "+place.toString());
+	/** TODO: This may suck fast */
+	public Activity getActivity(final Place place) {
+	GWT.log("GlobalActivityMapper "+place.toString());
+	//TODO: Cache and log mapping
     if (place instanceof HomePlace) {
       return new HomeActivity(factory);
     }
@@ -92,12 +92,15 @@ public Activity getActivity(final Place place) {
 		courseSpecialistsPresenter.setPlace((CourseSpecialistsPlace)place);
 		return new CourseSpecialistsActivity(courseSpecialistsPresenter);
 	}
-	if (place instanceof AtividadePlace) {
-		AtividadePresenter atividadePresenter = factory.getActivityPresenter();
-		atividadePresenter.setPlace((AtividadePlace)place);
-		return new AtividadeActivity(atividadePresenter);
+	if (place instanceof CoursePlace) {
+		CoursePresenter coursePresenter = factory.getCoursePresenter();
+		coursePresenter.setPlace((CoursePlace)place);
+		CourseActivity courseActivity = new CourseActivity(coursePresenter);
+		return courseActivity;
 	}
 
     return null;
   }
+
+	
 }

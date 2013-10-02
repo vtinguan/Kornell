@@ -144,11 +144,11 @@ public class KornellClient implements LogoutEventHandler {
 		return new InstitutionClient(uuid);
 	}
 
-	public void placeChanged(String token) {
+	public void placeChanged(final String token) {
 		createPUT("/user/placeChange").sendRequest(token,new Callback(){
 			@Override
 			protected void ok() {
-				GWT.log("place changed");
+				GWT.log("Place changed to ["+token+"]");
 			}
 		});
 	}
