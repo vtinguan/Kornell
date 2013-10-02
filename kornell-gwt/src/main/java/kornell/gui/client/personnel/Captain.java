@@ -16,8 +16,7 @@ public class Captain implements LogoutEventHandler{
 	private PlaceController placeCtrl;
 
 	public Captain(EventBus bus, PlaceController placeCtrl) { 
-		this.placeCtrl = placeCtrl;
-		
+		this.placeCtrl = placeCtrl;		
 		bus.addHandler(LogoutEvent.TYPE, this);
 	}
 

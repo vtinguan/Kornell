@@ -40,7 +40,7 @@ public class Callback<T> implements RequestCallback {
 			notFound();
 			break;
 		case 0:
-			cancelled();
+			failed();
 			break;
 		default:
 			GWT.log("Got a response, but don't know what to do about it");
@@ -94,8 +94,8 @@ public class Callback<T> implements RequestCallback {
 		return true;
 	}
 
-	protected void cancelled() {
-		GWT.log("Your request was cancelled, probably for the same origin policy, check your cross origin resourse sharing configuration.");
+	protected void failed() {
+		GWT.log("Your request failed. Please check that the API is running and responding cross-origin requests.");
 	}
 
 	protected void unauthorized() {

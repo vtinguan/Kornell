@@ -20,7 +20,7 @@ public class CourseHomePlace extends Place{
 		this.courseUUID = courseUUID;
 	}
 	
-	@Prefix("course")
+	@Prefix("courseHome")
 	public static class Tokenizer implements PlaceTokenizer<CourseHomePlace> {
 		private static final String SEPARATOR = ";";
 

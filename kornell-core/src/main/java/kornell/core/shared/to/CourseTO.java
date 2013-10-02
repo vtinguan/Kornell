@@ -14,7 +14,7 @@ public interface CourseTO {
 	void setCourse(Course c);
 	
 	Enrollment getEnrollment();
-	void setEnrollment(Enrollment e);
+	void setEnrollment(Enrollment e); 
 	
 	/** An Actom is an undivisible units of learning activity, 
 	 * such as a single question or slide **/

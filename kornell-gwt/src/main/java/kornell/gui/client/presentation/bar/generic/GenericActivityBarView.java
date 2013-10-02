@@ -8,8 +8,8 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEventHandler;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
+import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
@@ -89,7 +89,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						
-						if(newPlace instanceof AtividadePlace){
+						if(newPlace instanceof CoursePlace){
 							changePreviousButton();
 							btnDetails.removeStyleName("btnSelected");
 						} else if(newPlace instanceof CourseDetailsPlace){
@@ -198,7 +198,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
-		if(placeCtrl.getWhere() instanceof AtividadePlace){
+		if(placeCtrl.getWhere() instanceof CoursePlace){
 			placeCtrl.goTo(new CourseDetailsPlace(getCourseUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");

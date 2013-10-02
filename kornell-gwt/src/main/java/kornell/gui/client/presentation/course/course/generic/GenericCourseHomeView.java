@@ -4,7 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
+import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
 import kornell.gui.client.presentation.course.course.CourseHomeView;
 
@@ -59,7 +59,7 @@ public class GenericCourseHomeView extends Composite implements CourseHomeView {
 
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		placeCtrl.goTo(new AtividadePlace(((CourseHomePlace) placeCtrl.getWhere()).getCourseUUID(), 0));		
+		placeCtrl.goTo(new CoursePlace(((CourseHomePlace) placeCtrl.getWhere()).getCourseUUID()));		
 	}
 
 	@Override

@@ -1,8 +1,8 @@
 
 package kornell.gui.client;
 
-import kornell.gui.client.presentation.atividade.AtividadePresenter;
-import kornell.gui.client.presentation.atividade.AtividadeView;
+import kornell.gui.client.presentation.course.CoursePresenter;
+import kornell.gui.client.presentation.course.CourseView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatView;
 import kornell.gui.client.presentation.course.course.CourseHomePresenter;
@@ -43,6 +43,6 @@ public interface ClientFactory {
 	CourseSpecialistsPresenter getCourseSpecialistsPresenter();
 	
 	
-	AtividadeView getActivityView();
-	AtividadePresenter getActivityPresenter();
+	CourseView getCourseView();
+	CoursePresenter getCoursePresenter();
 }

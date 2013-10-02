@@ -1,10 +1,10 @@
 package kornell.gui.client.presentation.bar.generic;
 
 import kornell.api.client.KornellClient;
-import kornell.gui.client.presentation.atividade.AtividadePlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
+import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.chat.CourseChatPlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
@@ -58,7 +58,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 				Place newPlace = event.getNewPlace();
 
 				if (newPlace instanceof CourseDetailsPlace
-						|| newPlace instanceof AtividadePlace) {
+						|| newPlace instanceof CoursePlace) {
 					southBar.clear();
 					southBar.add(getActivityBarView());
 					visible = true;
