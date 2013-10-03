@@ -22,11 +22,9 @@ public class CourseDetailsTOBuilder {
 	private CourseDetailsTO courseDetailsTO;
 	
 	private enum ParseType {
-		GENERAL("general"),
 		TOPICS("topics"),
 		INFOS("infos"),
-		HINTS("hints"),
-		CERTIFICATIONS("certifications");
+		HINTS("hints");
 
 		private String code;
 		private ParseType(String code) {
@@ -154,7 +152,7 @@ public class CourseDetailsTOBuilder {
 			break;
 			
 			
-		case GENERAL:
+		/*case GENERAL:
 			for (int i = 0; i < jsonArray.size(); i++) {
 				jsonValue = jsonArray.get(i);
 				if ((jsonObject = jsonValue.isObject()) == null) {
@@ -174,10 +172,10 @@ public class CourseDetailsTOBuilder {
 				}		
 				courseDetailsTO.setCertificationHeaderInfoTO(new InfoTO(certificationHeaderTitle.stringValue(), certificationHeaderText.stringValue()));
 			}
-			break;
+			break;*/
 			
 			
-		case CERTIFICATIONS:
+		/*case CERTIFICATIONS:
 			List<CertificationTO> certifications = new ArrayList<CertificationTO>();
 			for (int i = 0; i < jsonArray.size(); i++) {
 				jsonValue = jsonArray.get(i);
@@ -205,7 +203,7 @@ public class CourseDetailsTOBuilder {
 				certifications.add(new CertificationTO(type.stringValue(),title.stringValue(),text.stringValue()));
 				courseDetailsTO.setCertifications(certifications);	
 			}
-			break;
+			break;*/
 		default:
 			break;
 		}
