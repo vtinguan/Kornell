@@ -31,6 +31,7 @@ public class CourseSequencer implements Sequencer {
 	private CourseTO courseTO;
 	private String currentKey;
 	private String baseURL;
+	private String courseUUID;
 
 	private EventBus bus;
 
@@ -43,26 +44,25 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private void createIFrame() {
-		if(iframe == null){
+		if (iframe == null) {
 			iframe = Document.get().createIFrameElement();
 			iframe.addClassName("externalContent");
 		}
 		placeIframe();
 
-		
 		// Weird yet simple way of solving FF's weird behavior
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
 			public void onResize(ResizeEvent event) {
-				Scheduler.get().scheduleDeferred(new Command() {					
+				Scheduler.get().scheduleDeferred(new Command() {
 					@Override
 					public void execute() {
-						placeIframe();						
+						placeIframe();
 					}
 				});
 			}
 		});
-		
+
 	}
 
 	// TODO: fetch these dynamically
@@ -77,15 +77,12 @@ public class CourseSequencer implements Sequencer {
 				+ "px");
 	}
 
-	
-
 	private String nextKey() {
-		String nextKey = isAtEnd() ? 
-				currentKey : 
-				courseTO.getActoms().get(getCurrentIndex() + 1);
+		String nextKey = isAtEnd() ? currentKey : courseTO.getActoms().get(
+				getCurrentIndex() + 1);
 		return nextKey;
 	}
-	
+
 	@Override
 	public void onContinue(NavigationRequest event) {
 		currentKey = nextKey();
@@ -125,7 +122,7 @@ public class CourseSequencer implements Sequencer {
 
 	private void walk() {
 		String src = baseURL + currentKey;
-		GWT.log("Navigating to ["+src+"]");
+		GWT.log("Navigating to [" + src + "]");
 		iframe.setSrc(src);
 		evaluateNavigation();
 	}
@@ -137,28 +134,52 @@ public class CourseSequencer implements Sequencer {
 
 	private boolean isAtEnd() {
 		int index = getCurrentIndex();
-		int end = courseTO.getActoms().size()-1;
+		int end = courseTO.getActoms().size() - 1;
 		boolean isAtEnd = index >= end;
 		return isAtEnd;
 	}
 
 	private void render(final CoursePlace place) {
-		GWT.log("Rendering ["+place+"]");		
+		GWT.log("Rendering [" + place + "]");
 		if (place == null)
 			throw new IllegalArgumentException("Cannot render null place");
-		String uuid = place.getCourseUUID();
-		client.getCourseTO(uuid, new Callback<CourseTO>() {
+		courseUUID = place.getCourseUUID();
+		fetchCourseAndGo();
+
+	}
+
+	private void fetchCourseAndGo() {
+		client.getCourseTO(courseUUID, new Callback<CourseTO>() {
 			@Override
 			protected void ok(CourseTO to) {
 				courseTO = to;
-				baseURL = to.getBaseURL(); 				
-				String checkpoint = courseTO.getEnrollment().getLastActomVisited();
-				currentKey = checkpoint.isEmpty() ? 
-						courseTO.getActoms().get(0) : 
-						checkpoint;
-				go();
+				baseURL = to.getBaseURL();
+				decideWhereToGo();
 			}
-		});		
+		});
+	}
+
+	private void decideWhereToGo() {
+		if (!directedByQueryString())
+			directToLastVisited();
+		go();
+	}
+
+	private boolean directedByQueryString() {
+		String key = Window.Location.getParameter("key");
+		if (key != null && !key.isEmpty()) {
+			currentKey = key;
+			return true;
+		} else
+			return false;
+	}
+
+	private void directToLastVisited() {
+		String checkpoint = courseTO.getEnrollment().getLastActomVisited();
+		if (checkpoint.isEmpty())
+			currentKey = courseTO.getActoms().get(0);
+		else
+			currentKey = checkpoint;
 	}
 
 	@Override
