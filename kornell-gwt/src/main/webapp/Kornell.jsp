@@ -4,6 +4,7 @@
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   	<meta charset="utf-8">
   	<meta name="kornell.version" content="Direct navigation"> 
+  	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <title>&nbsp;&nbsp;</title>
     <!-- before your module(*.nocache.js) loading  -->
