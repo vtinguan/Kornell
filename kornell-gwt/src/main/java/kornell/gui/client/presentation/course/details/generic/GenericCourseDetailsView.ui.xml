@@ -8,6 +8,6 @@
 		    <b:Button ui:field="btnTopics" addStyleNames="btnDetails btnNotSelected"></b:Button>
 		    <b:Button ui:field="btnCertification" addStyleNames="btnDetails btnNotSelected"></b:Button>
 		</g:FlowPanel>
-		<g:FlowPanel ui:field="contentPanel" addStyleNames="contentPanel"></g:FlowPanel>
+		<g:FlowPanel ui:field="detailsContentPanel" addStyleNames="detailsContentPanel"></g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder> 
