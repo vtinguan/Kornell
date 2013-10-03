@@ -63,12 +63,10 @@ public class NamingConventionSequencer implements Sequencer {
 				resizeTimer.schedule(250);
 			}
 		});
-		throw new IllegalStateException(
-				"NamingConventionSequencer is not usable anymore, it just exists as a reference.");
 	}
 
 	private void placeIframe() {
-		iframe.setPropertyString("width", Window.getClientWidth() + "px");
+		iframe.setPropertyString("width", "100%");
 		iframe.setPropertyString("height", (Window.getClientHeight()
 				- SOUTH_BAR - NORTH_BAR)
 				+ "px");
