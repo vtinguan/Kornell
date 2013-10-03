@@ -3,7 +3,7 @@
   <head>
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   	<meta charset="utf-8">
-  	<meta name="kornell.version" content="CD Check"> 
+  	<meta name="kornell.version" content="Direct navigation"> 
 
     <title>&nbsp;&nbsp;</title>
     <!-- before your module(*.nocache.js) loading  -->
