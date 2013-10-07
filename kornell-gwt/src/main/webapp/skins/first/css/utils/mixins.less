@@ -48,6 +48,10 @@
   box-shadow:         @string;
 }
 
+.fillWidth{
+	width: 100%;
+}
+
 .south{
 	bottom: 0px;
 	left: 0px;
@@ -75,6 +79,21 @@
 	border: 0;
 	margin: 0;
 	padding: 0;
+}
+	
+.standardButtonBar{
+	width: 260px;
+	margin: 0 auto;
+	.btnStandard{
+		color: @niceTextColor;
+		font-size: 10px;
+		width: 100px;
+		height: 20px;
+		line-height: 20px;
+		border-radius: 5px;
+		border: 0;
+		margin: 15px;
+	}
 }
 
 ::-webkit-scrollbar {

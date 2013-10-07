@@ -4,7 +4,8 @@
 		<g:FlowPanel ui:field="menuBar" addStyleNames="menuBar">
 			<g:Image ui:field="imgMenuBar" addStyleNames="imgMenuBar"/>
 		    <g:FlowPanel addStyleNames="buttons">
-				<b:Button ui:field="btnFake" addStyleNames="shy menuBarButton first"></b:Button>	
+				<b:Button ui:field="btnFake" addStyleNames="menuBarButton first"></b:Button>	
+				<b:Button ui:field="btnProfile" addStyleNames="menuBarButton"></b:Button>	
 				<b:Button ui:field="btnHome" addStyleNames="shy menuBarButton"></b:Button>		
 				<b:Button ui:field="btnNotifications" addStyleNames="shy menuBarButton"></b:Button>		
 				<b:Button ui:field="btnMessages" addStyleNames="shy menuBarButton"></b:Button>		

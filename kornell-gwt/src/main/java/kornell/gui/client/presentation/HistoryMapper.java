@@ -8,6 +8,7 @@ import kornell.gui.client.presentation.course.forum.CourseForumPlace;
 import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace;
 import kornell.gui.client.presentation.home.HomePlace;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
@@ -20,6 +21,7 @@ import com.google.gwt.place.shared.WithTokenizers;
 	VitrinePlace.Tokenizer.class,
 	TermsPlace.Tokenizer.class,
 	WelcomePlace.Tokenizer.class,
+	ProfilePlace.Tokenizer.class,
 	
 	CourseHomePlace.Tokenizer.class,
 	CourseDetailsPlace.Tokenizer.class,

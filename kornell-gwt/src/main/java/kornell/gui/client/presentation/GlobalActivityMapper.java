@@ -24,6 +24,8 @@ import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
 import kornell.gui.client.presentation.home.HomeActivity;
 import kornell.gui.client.presentation.home.HomePlace;
+import kornell.gui.client.presentation.profile.ProfileActivity;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsActivity;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrineActivity;
@@ -61,6 +63,9 @@ public class GlobalActivityMapper implements ActivityMapper {
 	}
 	if (place instanceof WelcomePlace) {
 		return new WelcomeActivity(factory);
+	}
+	if (place instanceof ProfilePlace) {
+		return new ProfileActivity(factory);
 	}
 	if (place instanceof CourseHomePlace) {
 		CourseHomePresenter coursePresenter = factory.getCourseHomePresenter();

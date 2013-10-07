@@ -1,10 +1,13 @@
 package kornell.gui.client.presentation.bar.generic;
 
-
+import kornell.api.client.Callback;
+import kornell.api.client.KornellClient;
+import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.event.InstitutionEvent;
 import kornell.gui.client.event.InstitutionEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.bar.MenuBarView;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
@@ -26,21 +29,23 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-
 public class GenericMenuBarView extends Composite implements MenuBarView {
 	interface MyUiBinder extends UiBinder<Widget, GenericMenuBarView> {
 	}
+
 	private static final String IMAGES_PATH = "skins/first/icons/menuBar/";
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
 	private EventBus bus;
 	private String barLogoFileName = "logo250x45.png";
-	
+
 	@UiField
 	FlowPanel menuBar;
 	@UiField
 	Button btnFake;
+	@UiField
+	Button btnProfile;
 	@UiField
 	Button btnHome;
 	@UiField
@@ -55,47 +60,58 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	Button btnExit;
 	@UiField
 	Image imgMenuBar;
-	
+	private UserInfoTO user;
 
-	public GenericMenuBarView(PlaceController placeCtrl, EventBus bus) {
-		this.placeCtrl=placeCtrl;
+	public GenericMenuBarView(final EventBus bus, KornellClient client,
+			final PlaceController placeCtrl) {
+		this.placeCtrl = placeCtrl;
 		this.bus = bus;
 		initWidget(uiBinder.createAndBindUi(this));
-		display();
-		
+
+		client.getCurrentUser(new Callback<UserInfoTO>() {
+			@Override
+			protected void ok(UserInfoTO userTO) {
+				user = userTO;
+				display();
+			}
+		});
+
 		try {
-			String institutionAssetsURL = ClientProperties.base64Decode(ClientProperties.get("institutionAssetsURL"));
+			String institutionAssetsURL = ClientProperties
+					.getDecoded(ClientProperties.INSTITUTION_ASSETS_URL);
 			imgMenuBar.setUrl(institutionAssetsURL + barLogoFileName);
 		} catch (Exception e) {
-			// TODO: handle exception
+			GWT.log("Couldn't find bar logo image.");
 		}
-		
-		
+
 		bus.addHandler(InstitutionEvent.TYPE, new InstitutionEventHandler() {
 			@Override
 			public void onEnter(InstitutionEvent event) {
-				imgMenuBar.setUrl(event.getInstitution().getAssetsURL() + barLogoFileName);
+				imgMenuBar.setUrl(event.getInstitution().getAssetsURL()
+						+ barLogoFileName);
 				GWT.log("Change logo on menu bar");
 			}
 		});
-		
-		bus.addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
-					@Override
-					public void onPlaceChange(PlaceChangeEvent event) {
-						Place newPlace = event.getNewPlace();
-						boolean isAtVitrine = newPlace instanceof VitrinePlace;
-						GenericMenuBarView.this.setVisible(!isAtVitrine);
-					}
-				});
+
+		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				Place newPlace = event.getNewPlace();
+				boolean isAtVitrine = newPlace instanceof VitrinePlace;
+				GenericMenuBarView.this.setVisible(!isAtVitrine);
+			}
+		});
 	}
-	
-	public void display(){
+
+	public void display() {
 		// TODO i18n
 		displayButton(btnFake, "btnFake", "", false);
+		displayButton(btnProfile, "btnProfile", "", false);
 		displayButton(btnHome, "btnHome", "home", true);
-		displayButtonWithCount(btnNotifications, "btnNotifications", "notifications", "countNotifications", 19);
-		displayButtonWithCount(btnMessages, "btnMessages", "messages", "countMessages", 99);
+		displayButtonWithCount(btnNotifications, "btnNotifications",
+				"notifications", "countNotifications", 19);
+		displayButtonWithCount(btnMessages, "btnMessages", "messages",
+				"countMessages", 99);
 		displayButton(btnHelp, "btnHelp", "help", true);
 		displayButton(btnMenu, "btnMenu", "MENU", false);
 		displayButton(btnExit, "btnExit", "SAIR", false);
@@ -103,7 +119,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		Timer timer = new Timer() {
 			@Override
 			public void run() {
-				if("".equals(imgMenuBar.getUrl())){
+				if ("".equals(imgMenuBar.getUrl())) {
 					imgMenuBar.setUrl("skins/first/icons/logo.png");
 				}
 			}
@@ -111,9 +127,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		// If it was unable to fetch the logo, use the default logo
 		timer.schedule(2000);
 	}
-	
-	private void displayButtonWithCount(Button btn, final String buttonType, String content, String countStyleName, Integer value) {
-		//TODO i18n
+
+	private void displayButtonWithCount(Button btn, final String buttonType,
+			String content, String countStyleName, Integer value) {
+		// TODO i18n
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
 		buttonPanel.addStyleName(buttonType);
@@ -121,25 +138,26 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		Image icon = new Image(IMAGES_PATH + content + ".png");
 		icon.addStyleName("icon");
 		buttonPanel.add(icon);
-		
-		//TODO getData
-		Label count = new Label(""+value);
+
+		// TODO getData
+		Label count = new Label("" + value);
 		count.addStyleName("count");
 		count.addStyleName(countStyleName);
 		buttonPanel.add(count);
-		
+
 		btn.add(buttonPanel);
 		btn.removeStyleName("btn");
 	}
-	
-	private void displayButton(Button btn, final String buttonType, String content, boolean isImage) {
+
+	private void displayButton(Button btn, final String buttonType,
+			String content, boolean isImage) {
 		btn.clear();
-		//TODO i18n
+		// TODO i18n
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
 		buttonPanel.addStyleName(buttonType);
 
-		if(isImage){
+		if (isImage) {
 			Image icon = new Image(IMAGES_PATH + content + ".png");
 			icon.addStyleName("icon");
 			buttonPanel.add(icon);
@@ -148,16 +166,22 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 			label.addStyleName("label");
 			buttonPanel.add(label);
 		}
-		
+
 		btn.add(buttonPanel);
 		btn.removeStyleName("btn");
+	}
+
+	@UiHandler("btnProfile")
+	void handleProfile(ClickEvent e) {
+
+		placeCtrl.goTo(new ProfilePlace(user.getPerson().getUUID()));
 	}
 
 	@UiHandler("btnHome")
 	void handleHome(ClickEvent e) {
 		placeCtrl.goTo(new WelcomePlace());
 	}
-	
+
 	@UiHandler("btnExit")
 	void handleExit(ClickEvent e) {
 		bus.fireEvent(new LogoutEvent());
