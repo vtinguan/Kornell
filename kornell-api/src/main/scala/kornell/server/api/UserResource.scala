@@ -17,6 +17,7 @@ import kornell.server.repository.jdbc.Registrations
 import kornell.core.shared.to.UserInfoTO
 import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.server.repository.jdbc.Institutions
+import kornell.core.shared.data.Person
 
 @Path("user")
 class UserResource extends Resource with TOs{
@@ -26,7 +27,28 @@ class UserResource extends Resource with TOs{
   def get(implicit @Context sc: SecurityContext):Option[UserInfoTO] =
     Auth.withPerson { p =>
     	val user = newUserInfoTO
+    	user.setUsername(sc.getUserPrincipal().getName())
     	user.setPerson(p)
+    	val signingNeeded = Registrations.signingNeeded(p)
+    	user.setSigningNeeded(signingNeeded)
+    	user.setLastPlaceVisited(p.getLastPlaceVisited)
+    	val institution = Institutions.usersInstitution(p)
+    	user.setInstitutionAssetsURL(institution.get.getTerms)
+    	Option(user)
+  }
+  
+  @GET
+  @Path("{username}")
+  @Produces(Array(UserInfoTO.TYPE))
+  def getByUsername(implicit @Context sc: SecurityContext,
+	    @PathParam("username") username:String):Option[UserInfoTO] =
+    Auth.withPerson { p =>
+    	val user = newUserInfoTO
+	    val person: Option[Person] = Auth.getPerson(username)    
+	    if (person.isDefined)
+	    	user.setPerson(person.get)
+	    else throw new IllegalArgumentException(s"User [$username] not found.")
+	    user.setUsername(username)
     	val signingNeeded = Registrations.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)

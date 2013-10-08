@@ -80,6 +80,10 @@ public class KornellClient implements LogoutEventHandler {
 		createGET("/user").sendRequest(null, cb);	
 	}
 	
+	public void getUser(String username, Callback<UserInfoTO> cb){
+		createGET("/user/"+username).sendRequest(null, cb);	
+	}
+	
 	public void getCourseTO(String uuid, Callback<CourseTO> cb) {
 		createGET("/courses/"+uuid).sendRequest(null, cb);
 	}
