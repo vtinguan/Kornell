@@ -39,7 +39,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	private PlaceController placeCtrl;
 	private EventBus bus;
 	private String barLogoFileName = "logo250x45.png";
-
+	private KornellClient client;
+	
 	@UiField
 	FlowPanel menuBar;
 	@UiField
@@ -60,22 +61,14 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	Button btnExit;
 	@UiField
 	Image imgMenuBar;
-	private UserInfoTO user;
 
 	public GenericMenuBarView(final EventBus bus, KornellClient client,
 			final PlaceController placeCtrl) {
-		this.placeCtrl = placeCtrl;
 		this.bus = bus;
+		this.client = client;
+		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
-
-		client.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			protected void ok(UserInfoTO userTO) {
-				user = userTO;
-				display();
-			}
-		});
-
+		
 		try {
 			String institutionAssetsURL = ClientProperties
 					.getDecoded(ClientProperties.INSTITUTION_ASSETS_URL);
@@ -84,6 +77,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 			GWT.log("Couldn't find bar logo image.");
 		}
 
+
+		display();
+		
+		
 		bus.addHandler(InstitutionEvent.TYPE, new InstitutionEventHandler() {
 			@Override
 			public void onEnter(InstitutionEvent event) {
@@ -173,8 +170,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 
 	@UiHandler("btnProfile")
 	void handleProfile(ClickEvent e) {
-
-		placeCtrl.goTo(new ProfilePlace(user.getPerson().getUUID()));
+		client.getCurrentUser(new Callback<UserInfoTO>() {
+			@Override
+			protected void ok(UserInfoTO userTO) {
+				placeCtrl.goTo(new ProfilePlace(userTO.getPerson().getUUID()));
+			}
+		});
 	}
 
 	@UiHandler("btnHome")

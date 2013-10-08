@@ -157,5 +157,32 @@ public interface KornellConstants extends Constants {
 
 	
 
-
+	/**
+	 * 
+	 * Util
+	 */
+	@DefaultStringValue("January")
+	String january();
+	@DefaultStringValue("February")
+	String february();
+	@DefaultStringValue("March")
+	String march();
+	@DefaultStringValue("April")
+	String april();
+	@DefaultStringValue("May")
+	String may();
+	@DefaultStringValue("June")
+	String june();
+	@DefaultStringValue("July")
+	String july();
+	@DefaultStringValue("August")
+	String august();
+	@DefaultStringValue("September")
+	String september();
+	@DefaultStringValue("October")
+	String october();
+	@DefaultStringValue("November")
+	String november();
+	@DefaultStringValue("December")
+	String december();
 }

@@ -8,6 +8,9 @@ public interface UserInfoTO {
 	Person getPerson();
 	void setPerson(Person p);
 	
+	String getUsername();
+	void setUsername(String username);
+	
 	boolean isSigningNeeded();
 	void setSigningNeeded(boolean siginingNeeded);
 	

@@ -15,10 +15,16 @@ import kornell.server.repository.SlickRepository
 @Deprecated
 object Persons extends SlickRepository with Beans{
   
-  implicit val getPerson = GetResult(r => newPerson(r.nextString,r.nextString,r.nextString))
+  implicit val getPerson = GetResult(r => newPerson(r.nextString,r.nextString,r.nextString,
+      r.nextString,r.nextString,r.nextString,
+      r.nextString,r.nextString,r.nextString,
+      r.nextDate,r.nextBoolean,r.nextBoolean,
+      r.nextBoolean,r.nextBoolean,r.nextBoolean,
+      r.nextBoolean,r.nextBoolean,r.nextBoolean))
   
   def create(fullname: String):Person = db.withSession {
-    val person = newPerson(randUUID,fullname,null)    
+    val person = newPerson(randUUID,fullname,null,
+    		"","","","","","",null,true,true,true,true,true,true,true,true)    
     sqlu"insert into Person values (${person.getUUID} ,${person.getFullName},null)".execute    
     person
   }

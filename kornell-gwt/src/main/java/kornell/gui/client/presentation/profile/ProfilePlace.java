@@ -5,18 +5,18 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
 public class ProfilePlace extends Place{
-	String userUUID;
+	String username;
 
-	public ProfilePlace(String userUUID) {
-		this.userUUID = userUUID;
+	public ProfilePlace(String username) {
+		this.username = username;
 	}
 
-	public String getUserUUID() {
-		return userUUID;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserUUID(String userUUID) {
-		this.userUUID = userUUID;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@Prefix("profile")
@@ -26,7 +26,7 @@ public class ProfilePlace extends Place{
 		}
 
 		public String getToken(ProfilePlace place) {
-			return place.getUserUUID();
+			return place.getUsername();
 		}
 	}
 

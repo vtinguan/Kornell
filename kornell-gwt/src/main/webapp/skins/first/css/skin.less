@@ -34,7 +34,7 @@ body {
 
 
 
-.profilePanel{
+.profileForm{
 	@profileWidth: @wrapperWidth - 18px;
 	@profilePadding: 20px;
 	width: @profileWidth;
@@ -42,26 +42,28 @@ body {
 	margin: 0 auto;
 	background-color: @profileBackgroundColor;
 	border-radius: 0px 0px 15px 15px;
-	.profileFields{
-		.titlePanel{
-			height: 30px;
-			padding-top: @profilePadding;
-			.imgTitle{
-				float: left;
-				padding-left: @profilePadding;
-				padding-right: @profilePadding;
-			}
-			.lblTitle{
-				font-size: 17px;
-				color: @profileLabelTitleColor;
-				float: left;
-			}
-			.editLabel{
-				float: right;
+	.titlePanel{
+		height: 30px;
+		padding-top: @profilePadding;
+		.imgTitle{
+			float: left;
+			padding-left: @profilePadding;
+			padding-right: @profilePadding;
+		}
+		.lblTitle{
+			font-size: 17px;
+			color: @profileLabelTitleColor;
+			float: left;
+		}
+		.editPanel{
+			float: right;
+			padding-right: 30px;
+			.lblEdit{
 				color: white;
-				padding-right: 30px;
 			}
 		}
+	}
+	.profileFields{
 		.fieldPanel{
 			width: @profileWidth;
 			height: 46px;
@@ -99,21 +101,23 @@ body {
 				.lblExtraInfo{
 				}
 			}
-			.lblValue{
-				width: 0.55 * @profileWidth - (@profilePadding * 2);
+			.fieldPanel{
 				float: left;
-				color:	@profileLabelValueColor;
-				line-height: 46px;
-			}
-			.lblValueAdd{
 				width: 0.55 * @profileWidth - (@profilePadding * 2);
-				float: left;
-				color:	@profileLabelValueAddColor;
 				line-height: 46px;
+				.textField{
+					width: 90%;
+				}
+				.lblValue{
+					color:	@profileLabelValueColor;
+				}
+				.lblValueAdd{
+					color:	@profileLabelValueAddColor;
+				}
 			}
 			.publicPanel{
+				float: right;
 				width: 0.15 * @profileWidth;
-				float: left;
 				.lblPublic{
 					color: @profileLabelPublicColor;
 					font-size: 14px;
