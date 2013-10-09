@@ -1,6 +1,7 @@
 package kornell.server.repository.slick.plain
 
 import java.math.BigDecimal
+
 import java.sql.Timestamp
 import java.util.Date
 import scala.math.BigDecimal.javaBigDecimal2bigDecimal
@@ -18,8 +19,11 @@ import kornell.server.repository.Beans
 import kornell.core.shared.data.Course
 import kornell.server.repository.SlickRepository
 import kornell.server.repository.TOs
+import kornell.server.repository.TOs._
+import kornell.server.repository.Beans._
 
-object Courses extends SlickRepository with TOs {
+@deprecated
+object Courses extends SlickRepository{
 
   //TODO: Move this SetParameter to package object or Repository 
   implicit val SetDateTime: SetParameter[Date] = new SetParameter[Date] {
@@ -70,14 +74,14 @@ object Courses extends SlickRepository with TOs {
 
   def createEnrollment(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String, notes: String) =
     db.withTransaction {
-      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, new BigDecimal(progress), notes)
+      val e: Enrollment = newEnrollment(randUUID, enrolledOn, courseUUID, personUUID, new BigDecimal(progress), notes)
       sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
       e
     }
   
   def createEnrollmentNull(enrolledOn: Date, courseUUID: String, personUUID: String, progress: String, notes: String) =
     db.withTransaction {
-      val e: Enrollment = (randUUID, enrolledOn, courseUUID, personUUID, null, notes)
+      val e: Enrollment = newEnrollment(randUUID, enrolledOn, courseUUID, personUUID, null, notes)
       sqlu"insert into Enrollment values (${e.getUUID},${e.getEnrolledOn},${e.getCourseUUID},${e.getPersonUUID},${e.getProgress})".execute
       e
     }

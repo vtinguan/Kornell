@@ -6,8 +6,9 @@ import java.sql.ResultSet
 import kornell.server.repository.Beans
 import javax.ws.rs.core.SecurityContext
 import org.apache.commons.codec.digest.DigestUtils
+import kornell.server.repository.Beans._
 
-object Auth extends Beans { 
+object Auth  { 
   //TODO: importing ScurityContext smells bad
 
   implicit def toPerson(rs: ResultSet): Person = newPerson(rs.getString("uuid"), rs.getString("fullName"), rs.getString("lastPlaceVisited"))

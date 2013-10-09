@@ -8,39 +8,12 @@ import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.http.client.RequestBuilder;
 
-public class KornellClient implements LogoutEventHandler {
-
-	private String apiURL = null;
+public class KornellClient extends HTTPClient implements LogoutEventHandler {
 	private UserInfoTO currentUser;	
 
-	private KornellClient() {
-		discoverApiUrl();
-	}
-
-	private void discoverApiUrl() {
-		apiURL = KornellClient.getFromEnvironment();
-		if(apiURL == null || apiURL.length() == 0){ 
-			useDefaultUrl();
-		}else{
-			GWT.log("API url already discovered");
-		}
-		GWT.log("Using API Endpoint: "+apiURL);
-	}
-
+	private KornellClient() {}
 	
-
-	private static native String getFromEnvironment() /*-{
-	  //console.debug("Using API Endpoint: "+$wnd.KornellConfig.apiEndpoint);
-	  //console.debug($wnd.KornellConfig.apiEndpoint);
-	  return $wnd.KornellConfig.apiEndpoint; 
-	}-*/;
-
-	private void useDefaultUrl() {
-		apiURL = "http://localhost:8080";
-	}
-
 	public void login(
 			String username,
 			String password,
@@ -61,14 +34,14 @@ public class KornellClient implements LogoutEventHandler {
 			}
 		};
 				
-		createGET("/user")
+		GET("/user")
 			.addHeader("Authorization", auth)
 			.sendRequest(null, wrapper);
 
 	}
 
 	public void getCourses(Callback<CoursesTO> callback){
-		createGET("/courses").sendRequest(null, callback);	
+		GET("/courses").sendRequest(null, callback);	
 	}
 
 	private void setCurrentUser(UserInfoTO user) {
@@ -77,38 +50,11 @@ public class KornellClient implements LogoutEventHandler {
 	
 	public void getCurrentUser(Callback<UserInfoTO> cb){
 		//TODO: Consider client side caching
-		createGET("/user").sendRequest(null, cb);	
+		GET("/user").sendRequest(null, cb);	
 	}
 	
 	public void getCourseTO(String uuid, Callback<CourseTO> cb) {
-		createGET("/courses/"+uuid).sendRequest(null, cb);
-	}
-
-	private ExceptionalRequestBuilder createGET(String path) {		
-		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(RequestBuilder.GET, getApiUrl()+path);
-		setAuthenticationHeaders(reqBuilder);
-		return  reqBuilder;
-	}
-	
-	private ExceptionalRequestBuilder createPUT(String path) {		
-		ExceptionalRequestBuilder reqBuilder =
-				new ExceptionalRequestBuilder(RequestBuilder.PUT, getApiUrl()+path);
-		setAuthenticationHeaders(reqBuilder);
-		return  reqBuilder;
-	}
-
-	private void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
-		String auth = ClientProperties.get("Authorization");
-		if(auth != null && auth.length()>0)
-			reqBuilder.setHeader("Authorization", auth);
-	}
-	
-	public String getApiUrl() {
-		while(apiURL == null){
-			GWT.log("Could not find API URL. Looking up again");
-			discoverApiUrl();
-		}
-		return apiURL;
+		GET("/courses/"+uuid).sendRequest(null, cb);
 	}
 
 	public static KornellClient getInstance() {		
@@ -117,7 +63,7 @@ public class KornellClient implements LogoutEventHandler {
 	
 	public class RegistrationsClient {
 		public void getUnsigned(Callback<RegistrationsTO> callback) {
-			createGET("/registrations").sendRequest("", callback);		
+			GET("/registrations").sendRequest("", callback);		
 		}
 	}
 
@@ -130,8 +76,7 @@ public class KornellClient implements LogoutEventHandler {
 		}
 		
 		public void acceptTerms(Callback<Void> cb){
-			createPUT("/institutions/"+institutionUUID)
-			.sendRequest("",cb);
+			PUT("/institutions/"+institutionUUID).send(cb);
 		}
 	}
 	
@@ -145,7 +90,7 @@ public class KornellClient implements LogoutEventHandler {
 	}
 
 	public void placeChanged(final String token) {
-		createPUT("/user/placeChange").sendRequest(token,new Callback(){
+		PUT("/user/placeChange").sendRequest(token,new Callback(){
 			@Override
 			protected void ok() {
 				GWT.log("Place changed to ["+token+"]");
@@ -154,7 +99,7 @@ public class KornellClient implements LogoutEventHandler {
 	}
 
 	public void notesUpdated(String courseUUID, String notes) {
-		createPUT("/enrollment/"+courseUUID+"/notesUpdated").sendRequest(notes,new Callback(){
+		PUT("/enrollment/"+courseUUID+"/notesUpdated").sendRequest(notes,new Callback(){
 			@Override
 			protected void ok() {
 				GWT.log("notes updated");
@@ -169,6 +114,14 @@ public class KornellClient implements LogoutEventHandler {
 
 	private void forgetCredentials() {
 		ClientProperties.remove("Authentication");
+	}
+
+	public CourseClient course(String courseUUID) {
+		return new CourseClient(courseUUID);
+	}
+
+	public void check(String src, Callback callback) {
+		HEAD(src).send(callback);
 	}
 
 }	

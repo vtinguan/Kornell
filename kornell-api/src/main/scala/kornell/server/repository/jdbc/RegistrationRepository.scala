@@ -4,8 +4,8 @@ import kornell.core.shared.data.Registration
 import java.sql.ResultSet
 import kornell.server.repository.Beans
 import kornell.server.repository.jdbc.SQLInterpolation._
-
-class RegistrationRepository(person: PersonRepository, institution_uuid: String) extends Beans {
+import kornell.server.repository.Beans._
+class RegistrationRepository(person: PersonRepository, institution_uuid: String) {
 
   def register = {
     Institutions.register(person.uuid, institution_uuid)

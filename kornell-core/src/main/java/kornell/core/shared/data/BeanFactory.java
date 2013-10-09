@@ -14,5 +14,9 @@ public interface BeanFactory extends AutoBeanFactory {
 	AutoBean<Institution> newInstitution();
 	AutoBean<Registration> newRegistration();
 	AutoBean<Registrations> newRegistrations();
+	AutoBean<Topic> newTopic();
+	AutoBean<ExternalPage> newExternalPage();
+	AutoBean<Contents> newContents();
+	AutoBean<Content> newContent();
 
 }

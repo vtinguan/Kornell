@@ -1,6 +1,7 @@
 package kornell.server.repository.jdbc
 
 import java.sql.ResultSet
+import kornell.server.repository.Beans._
 
 import kornell.core.shared.data.Institution
 import kornell.core.shared.data.Person
@@ -8,7 +9,7 @@ import kornell.core.shared.data.Registration
 import kornell.server.repository.Beans
 import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
 
-object Institutions extends  Beans {
+object Institutions {
 
   def create(name: String, terms: String): Institution = {
     val i = newInstitution(randomUUID, name, terms, "")
@@ -19,7 +20,7 @@ object Institutions extends  Beans {
   }
 
   def register(p: Person, i: Institution):Registration = {
-    val r = Registration(p, i)
+    val r = newRegistration(p, i)
     register(p.getUUID,i.getUUID)
     r
   }

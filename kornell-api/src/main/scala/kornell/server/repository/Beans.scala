@@ -12,12 +12,17 @@ import kornell.core.shared.data.Enrollment
 import kornell.core.shared.data.Institution
 import kornell.core.shared.data.Person
 import kornell.core.shared.data.Registration
+import java.util.ArrayList
+import kornell.core.shared.data.Content
+import kornell.core.shared.data.ContentFormat
+import kornell.core.shared.data.ExternalPage
+import kornell.core.shared.data.Topic
 
 //TODO: Smells bad... but relates to 1-1 to BeanFactory
 //TODO: Consider turning to Object
 //TODO: Favor composition over inheritance
 //TODO: Entities would be a better name
-trait Beans {
+object Beans {
   val factory = AutoBeanFactorySource.create(classOf[BeanFactory])
 
   def randomUUID = UUID.randomUUID.toString
@@ -54,8 +59,7 @@ trait Beans {
     c
   }
 
-  /*TODO: Could use a implicit conversion from tuple instead of factory method */
-  implicit def toEnrollment(t: Tuple6[String, Date, String, String, BigDecimal, String]): Enrollment = {
+  def newEnrollment(t: Tuple6[String, Date, String, String, BigDecimal, String]): Enrollment = {
     val e = factory.newEnrollment.as
     e.setUUID(t._1)
     e.setEnrolledOn(t._2)
@@ -76,7 +80,7 @@ trait Beans {
     i
   }
 
-  def Registration(p: Person, i: Institution) = {
+  def newRegistration(p: Person, i: Institution): Registration = {
     val r = newRegistration
     r.setPersonUUID(p.getUUID)
     r.setInstitutionUUID(i.getUUID)
@@ -94,5 +98,41 @@ trait Beans {
   }
 
   def newRegistrations = factory.newRegistrations.as
+
+  def newTopic(name: String = "") = {
+    val topic = factory.newTopic.as    
+    topic.setName(name)
+    topic.setChildren(new ArrayList)
+    topic
+  }
+  
+  def newContent(topic:Topic) = {
+    val content = factory.newContent.as    
+    content.setFormat(ContentFormat.Topic);
+    content.setTopic(topic)
+    content
+  }
+
+  def newExternalPage(key: String = "", title: String = "") = {
+    val page = factory.newExternalPage.as
+    page.setTitle(title)
+    page.setKey(key)
+    page    
+  }
+  
+  def newContent(page:ExternalPage) = {
+    val content = factory.newContent.as    
+    content.setFormat(ContentFormat.ExternalPage);
+    content.setExternalPage(page)
+    content
+  }
+
+  def newContents(children: List[Content] = List()) = {
+    val contents = factory.newContents.as
+    contents.setChildren(children asJava)
+    contents
+  }
+  
+  
 
 }
