@@ -143,7 +143,6 @@ public class CourseSequencer implements Sequencer {
 				setContents(contents);
 				orientateAndGo();
 			}
-
 		});
 	}
 
