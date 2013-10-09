@@ -36,6 +36,8 @@ import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.course.specialists.generic.GenericCourseSpecialistsView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
+import kornell.gui.client.presentation.profile.ProfileView;
+import kornell.gui.client.presentation.profile.generic.GenericProfileView;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.terms.generic.GenericTermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -46,7 +48,6 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.scorm.API_1484_11;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
-import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -162,7 +163,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(placeCtrl,bus);
+			menuBarView = new GenericMenuBarView(bus, client, placeCtrl);
 		return menuBarView;
 	}
 	
@@ -251,6 +252,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public WelcomeView getWelcomeView() {
 		return new GenericWelcomeView(bus, client, placeCtrl);
+	}
+
+	@Override
+	public ProfileView getProfileView() {
+		return new GenericProfileView(bus, client, placeCtrl);
 	}
 
 	@Override

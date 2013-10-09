@@ -61,12 +61,14 @@ public class ExternalPageView extends Composite {
 	}
 
 	public void setSrc(final String src) {
+		iframe.setSrc(src);
+		/*
 		client.check(src, new Callback(){
 			@Override
 			protected void ok() {
 				GWT.log("URL ["+src+"] IS OK");
-				iframe.setSrc(src);
 			}
-		});		
+		});
+		*/		
 	}
 }

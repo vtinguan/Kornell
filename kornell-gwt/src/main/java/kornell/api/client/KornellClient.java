@@ -53,6 +53,11 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 		GET("/user").sendRequest(null, cb);	
 	}
 	
+	//TODO: Is this safe?
+	public void getUser(String username, Callback<UserInfoTO> cb){
+		GET("/user/"+username).sendRequest(null, cb);	
+	}
+	
 	public void getCourseTO(String uuid, Callback<CourseTO> cb) {
 		GET("/courses/"+uuid).sendRequest(null, cb);
 	}
