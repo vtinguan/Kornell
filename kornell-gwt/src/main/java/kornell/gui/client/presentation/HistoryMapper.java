@@ -29,9 +29,9 @@ import com.google.gwt.place.shared.WithTokenizers;
 	CourseLibraryPlace.Tokenizer.class,
 	CourseForumPlace.Tokenizer.class,
 	CourseChatPlace.Tokenizer.class,
-	CourseSpecialistsPlace.Tokenizer.class,
-	
+	CourseSpecialistsPlace.Tokenizer.class,	
 	CoursePlace.Tokenizer.class,
+	
 	SandboxPlace.Tokenizer.class})
 public interface HistoryMapper extends PlaceHistoryMapper {
 }
