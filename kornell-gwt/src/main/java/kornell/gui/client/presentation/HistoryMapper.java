@@ -9,6 +9,7 @@ import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.sandbox.SandboxPlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
@@ -30,6 +31,7 @@ import com.google.gwt.place.shared.WithTokenizers;
 	CourseChatPlace.Tokenizer.class,
 	CourseSpecialistsPlace.Tokenizer.class,
 	
-	CoursePlace.Tokenizer.class})
+	CoursePlace.Tokenizer.class,
+	SandboxPlace.Tokenizer.class})
 public interface HistoryMapper extends PlaceHistoryMapper {
 }

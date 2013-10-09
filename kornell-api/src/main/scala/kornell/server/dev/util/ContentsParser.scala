@@ -10,6 +10,7 @@ import scala.io.BufferedSource
 
 object ContentsParser {
   val topicPattern = """#\s?(.*)""".r
+  val pagePattern = """([^;]*);?([^;]*)?""".r 
 
   def parse(source: BufferedSource ): Contents =
     parseLines(source.getLines)
@@ -25,8 +26,8 @@ object ContentsParser {
           topic = Beans.newTopic(topicName)
           result += Beans.newContent(topic) 
         }
-        case _ => { 
-          val page = Beans.newExternalPage(line)
+        case pagePattern(key,title) => { 
+          val page = Beans.newExternalPage(key,title)
           val content = Beans.newContent(page)
           if (topic != null) topic.getChildren().add(content)
           else result += content

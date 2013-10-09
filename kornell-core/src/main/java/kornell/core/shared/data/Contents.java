@@ -7,7 +7,4 @@ public interface Contents extends Node{
 	
 	CourseTO getCourseTO();
 	void setCourseTO(CourseTO to);
-	
-	
-	
 }

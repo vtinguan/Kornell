@@ -38,6 +38,9 @@ import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.profile.generic.GenericProfileView;
+import kornell.gui.client.presentation.sandbox.SandboxPresenter;
+import kornell.gui.client.presentation.sandbox.SandboxView;
+import kornell.gui.client.presentation.sandbox.generic.GenericSandboxView;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.terms.generic.GenericTermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -99,6 +102,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	SimplePanel shell = new SimplePanel();
 	public final CoursePlace DEFAULT_PLACE = new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46");
 	private Place defaultPlace;
+	private SandboxPresenter sandboxPresenter;
 
 	public GenericClientFactoryImpl() {
 	}
@@ -338,8 +342,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public CourseChatPresenter getCourseChatPresenter() {
 		if (courseChatPresenter == null) {
-			CourseChatView courseChatView = getCourseChatView();
-			
+			CourseChatView courseChatView = getCourseChatView();			
 			courseChatPresenter = new CourseChatPresenter(courseChatView, placeCtrl);
 		}
 		return courseChatPresenter;
@@ -374,6 +377,20 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			coursePresenter = new CoursePresenter(activityView, placeCtrl, rendererFactory);
 		}
 		return coursePresenter;
+	}
+
+	@Override
+	public SandboxView getSandboxView() {
+		return new GenericSandboxView();
+	}
+
+	@Override
+	public SandboxPresenter getSandboxPresenter() {
+		if (sandboxPresenter == null) {
+			SandboxView sandboxView = getSandboxView();			
+			sandboxPresenter = new SandboxPresenter(sandboxView);
+		}
+		return sandboxPresenter;
 	}
 	
 	

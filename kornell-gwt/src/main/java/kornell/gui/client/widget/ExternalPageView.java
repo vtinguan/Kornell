@@ -62,6 +62,7 @@ public class ExternalPageView extends Composite {
 
 	public void setSrc(final String src) {
 		iframe.setSrc(src);
+		//TODO: Validate before redirect
 		/*
 		client.check(src, new Callback(){
 			@Override
