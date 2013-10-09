@@ -20,7 +20,7 @@ public class Callback<T> implements RequestCallback {
 	private static final BeanFactory beans = GWT.create(BeanFactory.class);
 	private static final TOFactory tos = GWT.create(TOFactory.class);
 	private MediaTypes mimeTypes = new MediaTypes();
-
+	
 	@Override
 	public void onResponseReceived(Request request, Response response) {
 		if (!isTrusted(response))
@@ -49,7 +49,7 @@ public class Callback<T> implements RequestCallback {
 	}
 
 	protected void notFound() {
-		
+
 	}
 
 	protected void ok(Response response) {
@@ -72,7 +72,12 @@ public class Callback<T> implements RequestCallback {
 					bean = AutoBeanCodex.decode(beans, clazz, responseText);
 				}
 				T unwrapped = bean.as();
-				ok(unwrapped);
+				try {
+					ok(unwrapped);
+				} catch (ClassCastException ex) {
+					String message = "Could not dispatch object of type ["+clazz.getName()+"] to this callback. Please check that your callback type mapping matches the response ContentType and you are hitting the correct URL.";
+					throw new RuntimeException(message,ex);
+				}
 			} else
 				ok(Callback.parseJson(responseText));
 

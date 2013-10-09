@@ -31,5 +31,9 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 		setHeader(header, value);
 		return this;
 	}
+	
+	public void send(Callback callback){
+		sendRequest("", callback);
+	}
 
 }

@@ -3,8 +3,9 @@ import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.core.shared.data.Person
 import java.sql.ResultSet
 import kornell.server.repository.Beans
+import kornell.server.repository.Beans._
 
-class PersonRepository(val uuid:String) extends Beans {
+class PersonRepository(val uuid:String) {
   
 	def setPassword(username:String, password:String):PersonRepository = {
 	  Auth.setPlainPassword(uuid, username, password)

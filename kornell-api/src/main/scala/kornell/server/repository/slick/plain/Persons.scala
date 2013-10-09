@@ -12,8 +12,11 @@ import javax.ws.rs.core.SecurityContext
 import java.security.Principal
 import kornell.server.repository.SlickRepository
 
+import kornell.server.repository.Beans._
+
+
 @Deprecated
-object Persons extends SlickRepository with Beans{
+object Persons extends SlickRepository {
   
   implicit val getPerson = GetResult(r => newPerson(r.nextString,r.nextString,r.nextString))
   

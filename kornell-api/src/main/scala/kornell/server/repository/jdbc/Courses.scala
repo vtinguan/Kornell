@@ -18,8 +18,10 @@ import java.sql.ResultSet
 import kornell.server.repository.s3.S3
 import scala.collection.JavaConverters._
 import javax.ws.rs.core._
+import kornell.server.repository.Beans._
+import kornell.server.repository.TOs._
 
-object Courses extends TOs {
+object Courses {
   def byUUID(uuid: String)(implicit @Context sc: SecurityContext): Option[CourseTO] = Auth.withPerson { p =>
     sql"""
 		select c.uuid as courseUUID,c.code,c.title,c.description,c.assetsURL,c.infoJson,c.repository_uuid,
@@ -31,15 +33,5 @@ object Courses extends TOs {
 		   or e.person_uuid = ${p.getUUID})
 	"""
       .first[CourseTO]
-      .map { to =>        
-        Option(to.getCourse.getRepositoryUUID).map { repository_uuid =>
-          val s3 = S3(repository_uuid)
-          val actoms = s3.actoms
-          to.setBaseURL(s"http://${s3.bucket}.s3-sa-east-1.amazonaws.com/") //TODO: Resolve base url from region
-          to.setActoms(actoms.asJava)
-          to.getEnrollment().setLastActomVisited("");
-        }
-        to
-      }
   }
 }

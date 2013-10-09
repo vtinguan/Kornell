@@ -12,7 +12,7 @@ import java.sql.ResultSet
 import kornell.core.shared.to.CourseTO
 
 //TODO: Consider turning to Object
-trait TOs extends Beans {
+object TOs {
   val tos = AutoBeanFactorySource.create(classOf[TOFactory])
 
   def newUserInfoTO = tos.newUserInfoTO.as
@@ -32,9 +32,11 @@ trait TOs extends Beans {
     personUUID: String, progress: String,
     repository_uuid:String, notes: String) = {
     val to = tos.newCourseTO.as
-    val prog = if (progress != null) new BigDecimal(progress) else null 
-    to setCourse newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
-    to setEnrollment (enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
+    val prog = if (progress != null) new BigDecimal(progress) else null
+    val course = Beans.newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
+    val enrollment = Beans.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
+    to setCourse(course)
+    to setEnrollment(enrollment)
     to
   }
 

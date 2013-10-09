@@ -9,8 +9,10 @@ import kornell.core.shared.data.Registration
 import kornell.core.shared.data.Institution
 import scala.collection.JavaConverters._
 import kornell.core.shared.data.Person
+import kornell.server.repository.Beans._
+import kornell.server.repository.TOs._
 
-object Registrations extends TOs with Beans {
+object Registrations{
   def toRegistration(rs:ResultSet) = newRegistration(
       rs.getString("person_uuid"),
       rs.getString("institution_uuid"),

@@ -14,7 +14,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest
 
 class S3(regionName: String,
   accessKey: String, secretKey: String,
-  val bucket: String, prefix: String) {
+  val bucket: String, val prefix: String) {
   
   //TODO: An actom is an undivisible unit of learning content. Pls write that on the wiki, bur for now it is just a key...
   type Actom = String
@@ -22,11 +22,13 @@ class S3(regionName: String,
   val region = Region.getRegion(Regions.fromName(regionName))
   val creds = new BasicAWSCredentials(accessKey, secretKey)
   val s3 = new AmazonS3Client(creds)
+  lazy val client = s3 
 
   s3.setRegion(region)
 
   lazy val first: ObjectListing = s3.listObjects(bucket, prefix)
   def next(prev: ObjectListing): ObjectListing = s3.listNextBatchOfObjects(prev)
+  
   def isActom(key: String) = key.endsWith("html")
 
   lazy val listings: Stream[ObjectListing] = first #::
@@ -41,6 +43,9 @@ class S3(regionName: String,
  
   def put(key: String, value: String) =
     s3.putObject(bucket, prefix + "/" + key, new ByteArrayInputStream(value.getBytes()), null)
+    
+  def getObject(key:String) =
+    s3.getObject(bucket, prefix + "/" + key)
 }
 
 object S3 {

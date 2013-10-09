@@ -2,6 +2,7 @@ package kornell.api.client;
 
 import java.util.HashMap;
 
+import kornell.core.shared.data.Contents;
 import kornell.core.shared.data.Institution;
 import kornell.core.shared.data.Registration;
 import kornell.core.shared.data.Registrations;
@@ -21,6 +22,7 @@ public class MediaTypes extends HashMap<String,Class<?>>{
 		register(Registrations.TYPE,Registrations.class);
 		register(RegistrationsTO.TYPE,RegistrationsTO.class);
 		register(Institution.TYPE,Institution.class);
+		register(Contents.TYPE,Contents.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

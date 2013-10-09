@@ -17,9 +17,9 @@ import kornell.server.repository.jdbc.Registrations
 import kornell.core.shared.to.UserInfoTO
 import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.server.repository.jdbc.Institutions
-
+import kornell.server.repository.TOs._
 @Path("user")
-class UserResource extends Resource with TOs{
+class UserResource{
 
   @GET
   @Produces(Array(UserInfoTO.TYPE))

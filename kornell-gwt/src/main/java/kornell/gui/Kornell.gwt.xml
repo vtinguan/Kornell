@@ -58,6 +58,7 @@
   
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />
+  <source path='shared' />
   
   <set-property name="bootstrap.responsiveDesign" value="true"/>
   

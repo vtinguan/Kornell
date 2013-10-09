@@ -1,14 +1,21 @@
 package kornell.gui.client.sequence;
 
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.shared.data.Actom;
+import kornell.core.shared.data.Contents;
+import kornell.core.shared.data.ContentsCategory;
 import kornell.core.shared.to.CourseTO;
+import kornell.core.shared.util.StringUtils;
 import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEvent.Forecast;
 import static kornell.gui.client.event.NavigationForecastEvent.Forecast.*;
 import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.widget.ExternalPageView;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
@@ -26,9 +33,9 @@ import com.google.web.bindery.event.shared.EventBus;
 public class CourseSequencer implements Sequencer {
 	private KornellClient client;
 
-	private IFrameElement iframe;
 	private CoursePlace place;
 	private CourseTO courseTO;
+	private Contents contents;
 	private String currentKey;
 	private String baseURL;
 	private String courseUUID;
@@ -40,47 +47,28 @@ public class CourseSequencer implements Sequencer {
 		this.bus = bus;
 		this.client = client;
 		bus.addHandler(NavigationRequest.TYPE, this);
-		createIFrame();
 	}
 
-	private void createIFrame() {
-		if (iframe == null) {
-			iframe = Document.get().createIFrameElement();
-			iframe.addClassName("externalContent");
-		}
-		placeIframe();
 
-		// Weird yet simple way of solving FF's weird behavior
-		Window.addResizeHandler(new ResizeHandler() {
-			@Override
-			public void onResize(ResizeEvent event) {
-				Scheduler.get().scheduleDeferred(new Command() {
-					@Override
-					public void execute() {
-						placeIframe();
-					}
-				});
-			}
-		});
 
-	}
+	
+	private List<Actom> actoms;
 
-	// TODO: fetch these dynamically
-	// TODO: Extract view
-	int NORTH_BAR = 45;
-	int SOUTH_BAR = 35;
+	private int currentIndex;
 
-	private void placeIframe() {
-		iframe.setPropertyString("width", Window.getClientWidth() + "px");
-		iframe.setPropertyString("height", (Window.getClientHeight()
-				- SOUTH_BAR - NORTH_BAR)
-				+ "px");
-	}
+	private ExternalPageView externalPageView;
+
+
 
 	private String nextKey() {
-		String nextKey = isAtEnd() ? currentKey : courseTO.getActoms().get(
-				getCurrentIndex() + 1);
+		String nextKey = isAtEnd() ? currentKey : getActoms().get(++currentIndex).getKey();
 		return nextKey;
+	}
+
+	private List<Actom> getActoms() {
+		if (actoms == null)
+			actoms = ContentsCategory.collectActoms(contents);
+		return actoms;
 	}
 
 	@Override
@@ -104,26 +92,26 @@ public class CourseSequencer implements Sequencer {
 		go();
 	}
 
-	private String prevKey() {
-		int index = getCurrentIndex();
-		return courseTO.getActoms().get(index > 0 ? index - 1 : 0);
+	private String prevKey() {	
+		return getActoms().get(currentIndex > 0 ? --currentIndex : 0).getKey();
 	}
 
 	private int getCurrentIndex() {
-		return Collections.binarySearch(courseTO.getActoms(), currentKey);
+		return currentIndex;
 	}
 
 	@Override
 	public void displayOn(FlowPanel contentPanel) {
 		contentPanel.clear();
-		contentPanel.getElement().appendChild(iframe);
+		externalPageView = new ExternalPageView(client);
+		contentPanel.add(externalPageView);
 		render(place);
 	}
 
-	private void walk() {
-		String src = baseURL + currentKey;
+	private void walk() {		
+		String src = StringUtils.composeURL(baseURL, currentKey);		
 		GWT.log("Navigating to [" + src + "]");
-		iframe.setSrc(src);
+		externalPageView.setSrc(src);
 		evaluateNavigation();
 	}
 
@@ -134,7 +122,7 @@ public class CourseSequencer implements Sequencer {
 
 	private boolean isAtEnd() {
 		int index = getCurrentIndex();
-		int end = courseTO.getActoms().size() - 1;
+		int end = getActoms().size() - 1;
 		boolean isAtEnd = index >= end;
 		return isAtEnd;
 	}
@@ -144,28 +132,28 @@ public class CourseSequencer implements Sequencer {
 		if (place == null)
 			throw new IllegalArgumentException("Cannot render null place");
 		courseUUID = place.getCourseUUID();
-		fetchCourseAndGo();
+		fetchContentsAndGo();
 
 	}
 
-	private void fetchCourseAndGo() {
-		client.getCourseTO(courseUUID, new Callback<CourseTO>() {
+	private void fetchContentsAndGo() {
+		client.course(courseUUID).contents(new Callback<Contents>(){
 			@Override
-			protected void ok(CourseTO to) {
-				courseTO = to;
-				baseURL = to.getBaseURL();
-				decideWhereToGo();
+			protected void ok(Contents contents) {
+				setContents(contents);
+				orientateAndGo();
 			}
+
 		});
 	}
 
-	private void decideWhereToGo() {
-		if (!directedByQueryString())
-			directToLastVisited();
+	private void orientateAndGo() {
+		if (!orientateByQueryString())
+			orientateToLastVisited();
 		go();
 	}
 
-	private boolean directedByQueryString() {
+	private boolean orientateByQueryString() {
 		String key = Window.Location.getParameter("key");
 		if (key != null && !key.isEmpty()) {
 			currentKey = key;
@@ -174,10 +162,10 @@ public class CourseSequencer implements Sequencer {
 			return false;
 	}
 
-	private void directToLastVisited() {
+	private void orientateToLastVisited() {
 		String checkpoint = courseTO.getEnrollment().getLastActomVisited();
-		if (checkpoint.isEmpty())
-			currentKey = courseTO.getActoms().get(0);
+		if (checkpoint == null || checkpoint.isEmpty())
+			currentKey = getActoms().get(0).getKey();
 		else
 			currentKey = checkpoint;
 	}
@@ -187,5 +175,21 @@ public class CourseSequencer implements Sequencer {
 		this.place = place;
 		return this;
 	}
+	
+	private void setContents(Contents contents) {
+		this.contents = contents;
+		setCourseTO(contents.getCourseTO());
+	}
+
+	private void setCourseTO(CourseTO courseTO) {
+		this.courseTO = courseTO;
+		setBaseURL(courseTO.getBaseURL());
+		
+	}
+
+	private void setBaseURL(String baseURL) {
+		this.baseURL = baseURL;
+	}
+
 
 }

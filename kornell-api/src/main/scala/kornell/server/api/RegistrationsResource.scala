@@ -14,8 +14,7 @@ import kornell.server.repository.TOs
 
 @Path("registrations")
 @Produces(Array(RegistrationsTO.TYPE))
-class RegistrationsResource extends Resource with Beans with TOs {
-
+class RegistrationsResource {
   @GET
   def get(implicit @Context sc: SecurityContext) =
     Auth.withPerson { implicit person =>

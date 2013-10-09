@@ -12,7 +12,8 @@ import javax.naming.NoInitialContextException
 import java.sql.DriverManager
 import javax.naming.Context
 import kornell.core.shared.data.Entity
- 
+
+@Deprecated
 trait SlickRepository {
   def randUUID: String = UUID.randomUUID.toString
   //TODO: Use Connection Pooling from JNDI (have to care for off-container connections, useful in development)
