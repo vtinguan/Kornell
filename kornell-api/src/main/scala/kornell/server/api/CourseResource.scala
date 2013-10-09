@@ -24,29 +24,19 @@ class CourseResource(uuid: String) {
   @Produces(Array(Contents.TYPE))
   @Path("contents")
   @GET
-  def getContents(implicit @Context sc: SecurityContext) = fakeItTillYouMakeIt
-
-  def fakeItTillYouMakeIt(implicit @Context sc: SecurityContext) = {
-    val courseTO = Courses.byUUID(uuid).get
-    val src = Source.fromFile("/Users/faermanj/Dropbox/craftware/Clientes/MIDWAY/Content/suplementacao-alimentar/v0.2/structure.knl", "utf-8")
-    val contents = ContentsParser.parse(src)    
+  def getContents(implicit @Context sc: SecurityContext) = {
+    val courseTO = Courses.byUUID(uuid).get    
     val s3 = S3(courseTO.getCourse.getRepositoryUUID)
-    
-    courseTO.setBaseURL(s"http://${s3.bucket}.s3-sa-east-1.amazonaws.com/${s3.prefix}") //TODO: Resolve base url from region
-    contents.setCourseTO(courseTO)      
-    contents
-  }
-
-  def getContentsDraft(implicit @Context sc: SecurityContext) = {
-    var result = ""
-    val course = Courses.byUUID(uuid).get.getCourse
-    val s3 = S3(course.getRepositoryUUID)
     val structure = Option(s3.getObject("structure.knl"))
+    var structureText: String = ""
     if (structure.isDefined) {
       val in = structure.get.getObjectContent()
-      result = Source.fromInputStream(in, "utf-8").mkString("")
-    }
-    result
+      structureText = Source.fromInputStream(in, "utf-8").mkString("")
+      courseTO.setBaseURL(s"http://${s3.bucket}.s3-sa-east-1.amazonaws.com/${s3.prefix}") //TODO: Resolve base url from region
+      val contents = ContentsParser.parse(structureText)
+      contents.setCourseTO(courseTO)      
+      contents
+    }else throw new RuntimeException("Could not find structure.knl")
   }
 
 }

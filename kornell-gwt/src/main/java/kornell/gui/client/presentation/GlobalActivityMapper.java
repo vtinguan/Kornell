@@ -26,6 +26,9 @@ import kornell.gui.client.presentation.home.HomeActivity;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.profile.ProfileActivity;
 import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.sandbox.SandboxActivity;
+import kornell.gui.client.presentation.sandbox.SandboxPlace;
+import kornell.gui.client.presentation.sandbox.SandboxPresenter;
 import kornell.gui.client.presentation.terms.TermsActivity;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrineActivity;
@@ -50,62 +53,71 @@ public class GlobalActivityMapper implements ActivityMapper {
 
 	/** TODO: This may suck fast */
 	public Activity getActivity(final Place place) {
-	GWT.log("GlobalActivityMapper "+place.toString());
-	//TODO: Cache and log mapping
-    if (place instanceof HomePlace) {
-      return new HomeActivity(factory);
-    }
-    if (place instanceof VitrinePlace){
-    	return new VitrineActivity(factory);
-    }
-	if (place instanceof TermsPlace) {
-		return new TermsActivity(factory);
-	}
-	if (place instanceof WelcomePlace) {
-		return new WelcomeActivity(factory);
-	}
-	if (place instanceof ProfilePlace) {
-		return new ProfileActivity(factory);
-	}
-	if (place instanceof CourseHomePlace) {
-		CourseHomePresenter coursePresenter = factory.getCourseHomePresenter();
-		coursePresenter.setPlace((CourseHomePlace)place);
-		return new CourseHomeActivity(coursePresenter);
-	}
-	if (place instanceof CourseDetailsPlace) {
-		CourseDetailsPresenter courseDetailsPresenter = factory.getCourseDetailsPresenter();
-		courseDetailsPresenter.setPlace((CourseDetailsPlace)place);
-		return new CourseDetailsActivity(courseDetailsPresenter);
-	}
-	if (place instanceof CourseLibraryPlace) {
-		CourseLibraryPresenter courseLibraryPresenter = factory.getCourseLibraryPresenter();
-		courseLibraryPresenter.setPlace((CourseLibraryPlace)place);
-		return new CourseLibraryActivity(courseLibraryPresenter);
-	}
-	if (place instanceof CourseForumPlace) {
-		CourseForumPresenter courseForumPresenter = factory.getCourseForumPresenter();
-		courseForumPresenter.setPlace((CourseForumPlace)place);
-		return new CourseForumActivity(courseForumPresenter);
-	}
-	if (place instanceof CourseChatPlace) {
-		CourseChatPresenter courseChatPresenter = factory.getCourseChatPresenter();
-		courseChatPresenter.setPlace((CourseChatPlace)place);
-		return new CourseChatActivity(courseChatPresenter);
-	}
-	if (place instanceof CourseSpecialistsPlace) {
-		CourseSpecialistsPresenter courseSpecialistsPresenter = factory.getCourseSpecialistsPresenter();
-		courseSpecialistsPresenter.setPlace((CourseSpecialistsPlace)place);
-		return new CourseSpecialistsActivity(courseSpecialistsPresenter);
-	}
-	if (place instanceof CoursePlace) {
-		CoursePresenter coursePresenter = factory.getCoursePresenter();
-		coursePresenter.setPlace((CoursePlace)place);
-		CourseActivity courseActivity = new CourseActivity(coursePresenter);
-		return courseActivity;
+		GWT.log("GlobalActivityMapper " + place.toString());
+		// TODO: Cache and log mapping
+		if (place instanceof HomePlace) {
+			return new HomeActivity(factory);
+		}
+		if (place instanceof VitrinePlace) {
+			return new VitrineActivity(factory);
+		}
+		if (place instanceof TermsPlace) {
+			return new TermsActivity(factory);
+		}
+		if (place instanceof WelcomePlace) {
+			return new WelcomeActivity(factory);
+		}
+		if (place instanceof ProfilePlace) {
+			return new ProfileActivity(factory);
+		}
+		if (place instanceof CourseHomePlace) {
+			CourseHomePresenter coursePresenter = factory
+					.getCourseHomePresenter();
+			coursePresenter.setPlace((CourseHomePlace) place);
+			return new CourseHomeActivity(coursePresenter);
+		}
+		if (place instanceof CourseDetailsPlace) {
+			CourseDetailsPresenter courseDetailsPresenter = factory
+					.getCourseDetailsPresenter();
+			courseDetailsPresenter.setPlace((CourseDetailsPlace) place);
+			return new CourseDetailsActivity(courseDetailsPresenter);
+		}
+		if (place instanceof CourseLibraryPlace) {
+			CourseLibraryPresenter courseLibraryPresenter = factory
+					.getCourseLibraryPresenter();
+			courseLibraryPresenter.setPlace((CourseLibraryPlace) place);
+			return new CourseLibraryActivity(courseLibraryPresenter);
+		}
+		if (place instanceof CourseForumPlace) {
+			CourseForumPresenter courseForumPresenter = factory
+					.getCourseForumPresenter();
+			courseForumPresenter.setPlace((CourseForumPlace) place);
+			return new CourseForumActivity(courseForumPresenter);
+		}
+		if (place instanceof CourseChatPlace) {
+			CourseChatPresenter courseChatPresenter = factory
+					.getCourseChatPresenter();
+			courseChatPresenter.setPlace((CourseChatPlace) place);
+			return new CourseChatActivity(courseChatPresenter);
+		}
+		if (place instanceof CourseSpecialistsPlace) {
+			CourseSpecialistsPresenter courseSpecialistsPresenter = factory
+					.getCourseSpecialistsPresenter();
+			courseSpecialistsPresenter.setPlace((CourseSpecialistsPlace) place);
+			return new CourseSpecialistsActivity(courseSpecialistsPresenter);
+		}
+		if (place instanceof CoursePlace) {
+			CoursePresenter coursePresenter = factory.getCoursePresenter();
+			coursePresenter.setPlace((CoursePlace) place);
+			CourseActivity courseActivity = new CourseActivity(coursePresenter);
+			return courseActivity;
+		}
+		if (place instanceof SandboxPlace) {
+			SandboxPresenter sandboxPresenter = factory.getSandboxPresenter();
+			sandboxPresenter.setPlace((SandboxPlace) place);
+			return new SandboxActivity(sandboxPresenter);
+		}
+		return null;
 	}
 
-    return null;
-  }
-
-	
 }

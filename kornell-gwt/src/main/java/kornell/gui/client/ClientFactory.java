@@ -17,6 +17,8 @@ import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPrese
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.profile.ProfileView;
+import kornell.gui.client.presentation.sandbox.SandboxPresenter;
+import kornell.gui.client.presentation.sandbox.SandboxView;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
@@ -47,4 +49,6 @@ public interface ClientFactory {
 	
 	CourseView getCourseView();
 	CoursePresenter getCoursePresenter();
+	SandboxView getSandboxView();
+	SandboxPresenter getSandboxPresenter();
 }
