@@ -11,25 +11,52 @@ import kornell.server.repository.Beans._
 object Auth  { 
   //TODO: importing ScurityContext smells bad
 
-  implicit def toPerson(rs: ResultSet): Person = newPerson(rs.getString("uuid"), rs.getString("fullName"), rs.getString("lastPlaceVisited"))
-  
+  implicit def toPerson(rs: ResultSet): Person = newPerson(
+      rs.getString("uuid"), 
+      rs.getString("fullName"), 
+      rs.getString("lastPlaceVisited"),
+      rs.getString("email"),
+      rs.getString("firstName"),
+      rs.getString("lastName"),
+      rs.getString("company"),
+      rs.getString("title"),
+      rs.getString("sex"),
+      rs.getDate("birthDate"),
+      rs.getBoolean("usernamePrivate"),
+      rs.getBoolean("emailPrivate"),
+      rs.getBoolean("firstNamePrivate"),
+      rs.getBoolean("lastNamePrivate"),
+      rs.getBoolean("companyPrivate"),
+      rs.getBoolean("titlePrivate"),
+      rs.getBoolean("sexPrivate"),
+      rs.getBoolean("birthDatePrivate"))
+
   def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T = {
 
     val username =
       if (sc != null && sc.getUserPrincipal != null)
         sc.getUserPrincipal().getName()
       else "AUTH_SHOULD_HAVE_FAILED" //TODO
-      
-    val person: Option[Person] = sql"""
-			select p.uuid, p.fullName, p.lastPlaceVisited 
-			from Person p
-			join Password pw on pw.person_uuid = p.uuid
-			where pw.username = $username
-		""".first[Person]
-
+    
+    val person: Option[Person] = getPerson(username)    
+        
     if (person.isDefined)
       fun(person.get)
     else throw new IllegalArgumentException(s"User [$username] not found.")
+  }
+  
+  def getPerson(username: String) = {
+    sql"""
+		select p.uuid, p.fullName, p.lastPlaceVisited,
+		    p.email, p.firstName , p.lastName, p.company, 
+		    p.title, p.sex, p.birthDate, 
+			p.usernamePrivate, p.emailPrivate, p.firstNamePrivate, 
+			p.lastNamePrivate, p.companyPrivate, p.titlePrivate, 
+			p.sexPrivate, p.birthDatePrivate
+		from Person p
+		join Password pw on pw.person_uuid = p.uuid
+		where pw.username = $username
+	""".first[Person]
   }
 
   def setPlainPassword(personUUID: String, username: String, plainPassword: String) = {

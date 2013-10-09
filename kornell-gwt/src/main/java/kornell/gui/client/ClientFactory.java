@@ -16,6 +16,7 @@ import kornell.gui.client.presentation.course.library.CourseLibraryView;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.home.HomeView;
+import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
@@ -27,6 +28,7 @@ public interface ClientFactory {
 	VitrineView getVitrineView();
 	TermsView getTermsView();
 	WelcomeView getWelcomeView();
+	ProfileView getProfileView();
 	
 	
 	CourseHomeView getCourseHomeView();

@@ -46,12 +46,8 @@ public class GenericWelcomeProfileView extends Composite {
 	}
 	
 	private void initData() {
-		client.getCourses(new Callback<CoursesTO>() {
-			@Override
-			protected void ok(CoursesTO to) {
-				display();
-			}
-		});
+		display();
+		this.setVisible(true);
 	}
 
 
