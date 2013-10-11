@@ -7,8 +7,8 @@
 			<b:Image url="/skins/first/icons/vitrinePersonIcon.png" addStyleNames="personIcon"></b:Image>
 			<b:Heading size="1">Bem vindo</b:Heading>
 			<b:Paragraph>Por favor identifique-se.</b:Paragraph>
-			<b:Alert ui:field="altUnauthorized" type="ERROR" close="true"
-				animation="true" heading="Ops..." visible="false">
+			<b:Alert ui:field="altUnauthorized" type="ERROR" close="false"
+				animation="true" heading="Ops... " visible="false">
 				Usuário ou senha incorretos, por favor tente novamente.
 			</b:Alert>
 			<b:Form ui:field="frmLogin">
