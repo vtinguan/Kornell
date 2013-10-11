@@ -8,9 +8,10 @@
 			</g:FlowPanel>
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="profileFields" addStyleNames="profileFields">
+			
 		</g:FlowPanel>
 		<g:FlowPanel addStyleNames="standardButtonBar">
-			<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
+			<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard btnOK"/>
 			<g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
 		</g:FlowPanel>
 	</b:Form>

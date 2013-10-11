@@ -71,7 +71,7 @@ body {
 				height: 98px;
 			}
 			.labelPanel{
-				width: 0.3 * @profileWidth - (@profilePadding * 2);
+				width: 0.37 * @profileWidth - (@profilePadding * 2);
 				margin-right: @profilePadding * 2;
 				float: left;
 				text-align: right;
@@ -103,10 +103,10 @@ body {
 			}
 			.fieldPanel{
 				float: left;
-				width: 0.55 * @profileWidth - (@profilePadding * 2);
+				width: 0.33 * @profileWidth - (@profilePadding * 2);
 				line-height: 46px;
 				.textField{
-					width: 90%;
+					width: 248px;
 				}
 				.lblValue{
 					color:	@profileLabelValueColor;
@@ -114,9 +114,13 @@ body {
 				.lblValueAdd{
 					color:	@profileLabelValueAddColor;
 				}
+				.errorMessage{
+					color: @errorMessageColor;
+					margin-top: -20px;
+				}
 			}
 			.publicPanel{
-				float: right;
+				float: left;
 				width: 0.15 * @profileWidth;
 				.lblPublic{
 					color: @profileLabelPublicColor;
