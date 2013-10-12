@@ -388,7 +388,8 @@ body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;background:url(/ski
 .profileForm .profileFields .fieldPanel .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .profileForm .profileFields .fieldPanel .labelPanel2 .lblLabel{line-height:25px;padding-top:6px;}
 .profileForm .profileFields .fieldPanel .fieldPanel{float:left;width:271.52000000000004px;line-height:46px;}.profileForm .profileFields .fieldPanel .fieldPanel .textField{width:248px;}
-.profileForm .profileFields .fieldPanel .fieldPanel .lblValue{color:#e0dfe0;}
+.profileForm .profileFields .fieldPanel .fieldPanel .selectField{width:120px;}
+.profileForm .profileFields .fieldPanel .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;}
 .profileForm .profileFields .fieldPanel .fieldPanel .lblValueAdd{color:#b795a4;}
 .profileForm .profileFields .fieldPanel .fieldPanel .errorMessage{color:#ca2828;margin-top:-20px;}
 .profileForm .profileFields .fieldPanel .publicPanel{float:left;width:141.6px;}.profileForm .profileFields .fieldPanel .publicPanel .lblPublic{color:#696769;font-size:14px;line-height:46px;}

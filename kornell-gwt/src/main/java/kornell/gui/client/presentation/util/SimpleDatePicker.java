@@ -11,6 +11,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 public class SimpleDatePicker extends FlowPanel{
@@ -19,6 +20,10 @@ public class SimpleDatePicker extends FlowPanel{
 	private ListBox dropBoxDay, dropBoxMonth, dropBoxYear;
 	
     public SimpleDatePicker(){
+    	this(null);
+    }
+
+	public SimpleDatePicker(Date birthDate) {
 
         dropBoxDay = new ListBox(false);
         for (int day = 1; day <= 31; day++){
@@ -60,9 +65,33 @@ public class SimpleDatePicker extends FlowPanel{
 				updatePossibleDays();
 			}
 		});
+        
+        setFields(birthDate);
         updatePossibleDays();
         this.setVisible(true);
-    }
+	}
+
+	private void setFields(Date birthDate) {
+		if(birthDate != null){
+			String pattern = "dd"; 
+			DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
+			DateTimeFormat dtf = new DateTimeFormat(pattern, info) {};
+			Integer day = new Integer(dtf.format(birthDate));
+			dropBoxDay.setSelectedValue(new Integer(day+1).toString());
+			
+			pattern = "MM"; 
+			info = new DefaultDateTimeFormatInfo();
+			dtf = new DateTimeFormat(pattern, info) {};
+			String month = dtf.format(birthDate);
+			dropBoxMonth.setSelectedIndex(Integer.parseInt(month));
+			
+			pattern = "yyyy";
+			info = new DefaultDateTimeFormatInfo();
+			dtf = new DateTimeFormat(pattern, info) {};
+			String year = dtf.format(birthDate);
+			dropBoxYear.setSelectedValue(year);
+		}		
+	}
 
 	private void updatePossibleDays() {
 		int maxDays = getMaxDays();
