@@ -43,33 +43,62 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private boolean isEditMode;
 	private boolean isCurrentUser;
-	private TextBox username, email, firstName, lastName, company, title;
-	private PasswordTextBox password;
-	ListBox sex;
 	SimpleDatePicker birthDate;
 	
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
-	@UiField
-	FlowPanel profileFields;
-	@UiField
-	FlowPanel titlePanel;
-	@UiField
-	Image imgTitle;
-	@UiField
-	Label lblTitle;
-	@UiField
-	FlowPanel editPanel;
-	@UiField
-	Label lblEdit;
-	@UiField
-	Button btnOK;
-	@UiField
-	Button btnCancel;
+	@UiField FlowPanel profileFields;
+	@UiField FlowPanel titlePanel;
+	@UiField Image imgTitle;
+	@UiField Label lblTitle;
+	@UiField FlowPanel editPanel;
+	@UiField Label lblEdit;
+	@UiField Button btnOK;
+	@UiField Button btnCancel;
+	@UiField Image imgProfile;
+	@UiField TextBox username;
+	@UiField PasswordTextBox password;
+	@UiField TextBox email;
+	@UiField TextBox firstName;
+	@UiField TextBox lastName;
+	@UiField TextBox company;
+	@UiField TextBox title;
+	@UiField ListBox sex;
+	@UiField FlowPanel birthDatePickerPanel;
+	@UiField Label usernameError;
+	@UiField Label emailError;
+	@UiField Label passwordError;
+	@UiField Label firstNameError;
+	@UiField Label lastNameError;
+	@UiField Label companyError;
+	@UiField Label titleError;
+	@UiField Label sexError;
+	@UiField Label birthDateError;
+	@UiField Label usernameTxt;
+	@UiField Label passwordTxt;
+	@UiField Label emailTxt;
+	@UiField Label firstNameTxt;
+	@UiField Label lastNameTxt;
+	@UiField Label companyTxt;
+	@UiField Label titleTxt;
+	@UiField Label sexTxt;
+	@UiField Label birthDateTxt;
+	@UiField FlowPanel passwordPanel;
+	@UiField FlowPanel emailPanel;
+	@UiField FlowPanel sexPanel;
+	@UiField FlowPanel birthDatePanel;
+	@UiField Image passwordSeparator;
+	@UiField Image emailSeparator;
+	@UiField Image sexSeparator;
+	@UiField Image birthDateSeparator;
+	@UiField Label imageExtraInfo;
+	@UiField Label usernameExtraInfo;
+	@UiField Label usernameExtraInfo2;
+	@UiField Label emailExtraInfo;
+	@UiField Label titleExtraInfo;
+	@UiField Label titleExtraInfo2;
 	
-	Map<Widget, Label> fieldsToErrorLabels;
-
-	Label usernameError, emailError, passwordError, firstNameError, lastNameError, companyError, titleError, sexError, birthDateError;
+	Map<Widget, Field> fieldsToErrorLabels;
 	private UserInfoTO user;
 
 	public GenericProfileView(EventBus bus, KornellClient client,
@@ -77,15 +106,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 		this.bus = bus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
-		usernameError = new Label();
-		emailError = new Label();
-		passwordError = new Label();
-		firstNameError = new Label();
-		lastNameError = new Label();
-		companyError = new Label();
-		titleError = new Label();
-		sexError = new Label();
-		birthDateError = new Label();
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 		// i18n
@@ -108,37 +128,37 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private boolean validateFields() {
 		ValidatorHelper validator = new ValidatorHelper();
 		if (!validator.lengthValid(username.getText(), 3, 50)){
-			fieldsToErrorLabels.get(username).setText("Mínimo de 3 caracteres.");
+			fieldsToErrorLabels.get(username).getError().setText("Mínimo de 3 caracteres.");
 		} else if (!validator.usernameValid(username.getText())){
-			fieldsToErrorLabels.get(username).setText("Campo inválido.");
+			fieldsToErrorLabels.get(username).getError().setText("Campo inválido.");
 		} else if (false){
-			fieldsToErrorLabels.get(username).setText("O nome de usuário já existe.");
+			fieldsToErrorLabels.get(username).getError().setText("O nome de usuário já existe.");
 		}
 
 		if (!validator.emailValid(email.getText())){
-			fieldsToErrorLabels.get(email).setText("Email inválido.");
+			fieldsToErrorLabels.get(email).getError().setText("Email inválido.");
 		} else if (false){
-			fieldsToErrorLabels.get(email).setText("O email já existe.");
+			fieldsToErrorLabels.get(email).getError().setText("O email já existe.");
 		}
 
 		if (!validator.passwordValid(password.getText())){
-			fieldsToErrorLabels.get(password).setText("Senha inválida.");
+			fieldsToErrorLabels.get(password).getError().setText("Senha inválida.");
 		}
 		
-		if(!validator.lengthValid(firstName.getText(), 3, 50)){
-			fieldsToErrorLabels.get(firstName).setText("Mínimo de 3 caracteres.");
+		if(!validator.lengthValid(firstName.getText(), 2, 50)){
+			fieldsToErrorLabels.get(firstName).getError().setText("Mínimo de 2 caracteres.");
 		}
 		
-		if(!validator.lengthValid(lastName.getText(), 3, 50)){
-			fieldsToErrorLabels.get(lastName).setText("Mínimo de 3 caracteres.");
+		if(!validator.lengthValid(lastName.getText(), 2, 50)){
+			fieldsToErrorLabels.get(lastName).getError().setText("Mínimo de 2 caracteres.");
 		}
 		
 		if(sex.getSelectedIndex() <= 0){
-			fieldsToErrorLabels.get(sex).setText("Escolha uma alternativa.");
+			fieldsToErrorLabels.get(sex).getError().setText("Escolha uma alternativa.");
 		}
 		
 		if(!birthDate.isSelected()){
-			fieldsToErrorLabels.get(birthDate).setText("Insira sua data de nascimento.");
+			fieldsToErrorLabels.get(birthDate).getError().setText("Insira sua data de nascimento.");
 		}
 		return checkErrors();
 	}
@@ -168,21 +188,42 @@ public class GenericProfileView extends Composite implements ProfileView {
 	}
 
 	private void clearErrors() {
-		for (Label errorLabel : fieldsToErrorLabels.values()) {
-			errorLabel.setText("");
-			errorLabel.setVisible(false);
+		for (Field field : fieldsToErrorLabels.values()) {
+			field.getError().setText("");
 		}
 	}
 
 	private boolean checkErrors() {
 		boolean errors = false;
-		for (Label errorLabel : fieldsToErrorLabels.values()) {
-			if(!"".equals(errorLabel.getText())){
+		for (Field field : fieldsToErrorLabels.values()) {
+			if(!"".equals(field.getError().getText())){
 				errors = true;
-				errorLabel.setVisible(true);
 			}
 		}
 		return errors;
+	}
+	
+	private void showFields(){
+		for (Field field : fieldsToErrorLabels.values()) {
+			field.getField().setVisible(isEditMode);
+			field.getError().setVisible(isEditMode);
+			field.getValue().setVisible(!isEditMode);
+		}
+		passwordPanel.setVisible(isEditMode);
+		passwordSeparator.setVisible(isEditMode);
+		emailPanel.setVisible(isCurrentUser);
+		emailSeparator.setVisible(isCurrentUser);
+		sexPanel.setVisible(isCurrentUser);
+		sexSeparator.setVisible(isCurrentUser);
+		birthDatePanel.setVisible(isCurrentUser);
+		birthDateSeparator.setVisible(isCurrentUser);
+		
+		imageExtraInfo.setVisible(isEditMode);
+		usernameExtraInfo.setVisible(isEditMode);
+		usernameExtraInfo2.setVisible(isEditMode);
+		emailExtraInfo.setVisible(isEditMode);
+		titleExtraInfo.setVisible(isEditMode);
+		titleExtraInfo2.setVisible(isEditMode);
 	}
 	
 	private void display() {
@@ -194,46 +235,32 @@ public class GenericProfileView extends Composite implements ProfileView {
 	}
 
 	private void displayFields() {
-		profileFields.clear();
-		String mandatory = isEditMode ? " *" : "";
-
-		List<String> labels = new ArrayList<String>();
-		labels.add("Inclua aqui uma foto sua");
-
-		List<String> extraInfoTitle = new ArrayList<String>();
-		extraInfoTitle.add("Designação atribuída a você.");
-		extraInfoTitle.add("Exemplo: Representante de Vendas");
-		
-		List<String> extraInfoUserName = new ArrayList<String>();
-		extraInfoUserName.add("Designação atribuída a você.");
-		extraInfoUserName.add("Exemplo: Representante de Vendas");
-
-		List<String> extraInfoPassword = new ArrayList<String>();
-		extraInfoPassword.add("Mínimo de 8 caracteres, com letras");
-		extraInfoPassword.add("maiúsculas, minúsculas e números.");
-
-		List<String> extraInfoEmail = new ArrayList<String>();
-		extraInfoEmail.add("Insira um email válido.");
-		
-
-		displayImageField("Imagem do perfil", labels);
-		displayField("Nome de usuário" + mandatory, extraInfoUserName,
-				user.getUsername(), false, "username");
-		displayField("Senha" + mandatory, extraInfoPassword,
-				user.getUsername(), true, "password");
-		displayField("Email" + mandatory, extraInfoEmail, user.getPerson().getEmail(),
-				true, "email");
-		displayField("Nome" + mandatory, null, user.getPerson().getFirstName(),
-				false, "firstName");
-		displayField("Sobrenome" + mandatory, null, user.getPerson()
-				.getLastName(), false, "lastName");
-		displayField("Empresa", null, user.getPerson().getCompany(), false, "company");
-		displayField("Título", extraInfoTitle, user.getPerson().getTitle(),
-				false, "title");
-		displayField("Sexo" + mandatory, null, user.getPerson().getSex(), true, "sex");
-		displayField("Nascimento" + mandatory, null, user.getPerson()
-				.getBirthDate().toString(), true, "birthDate");
-		
+		imgProfile.setUrl(IMAGE_PATH + "profilePic.png");
+		if(isEditMode){
+			username.setText(user.getUsername());
+			password.setText(user.getUsername());
+			email.setText(user.getPerson().getEmail());
+			firstName.setText(user.getPerson().getFirstName());
+			lastName.setText(user.getPerson().getLastName());
+			company.setText(user.getPerson().getCompany());
+			title.setText(user.getPerson().getTitle());
+	        sex.addItem("");
+	        sex.addItem("Feminino");
+	        sex.addItem("Masculino");
+	        sex.setSelectedIndex("F".equals(user.getPerson().getSex()) ? 1 : 2);
+	        birthDatePickerPanel.clear();
+			birthDate = new SimpleDatePicker(user.getPerson().getBirthDate());
+			birthDatePickerPanel.add(birthDate);
+		} else {
+			usernameTxt.setText(user.getUsername());
+			emailTxt.setText(user.getPerson().getEmail());
+			firstNameTxt.setText(user.getPerson().getFirstName());
+			lastNameTxt.setText(user.getPerson().getLastName());
+			companyTxt.setText(user.getPerson().getCompany());
+			titleTxt.setText(user.getPerson().getTitle());
+			sexTxt.setText("F".equals(user.getPerson().getSex()) ? "Feminino" : "Masculino");
+			birthDateTxt.setText(user.getPerson().getBirthDate().toString());
+		}
 		mapFieldsToErrorLabels();
 	}
 
@@ -244,211 +271,43 @@ public class GenericProfileView extends Composite implements ProfileView {
 		lblEdit.setText("Editar");
 	}
 
-	private void displayField(String labelName, List<String> extraInfo,
-			String value, boolean isPrivate, String fieldType) {
-		
-		if(!isCurrentUser && isPrivate)
-			return;
-
-		FlowPanel fieldPanel = new FlowPanel();
-		fieldPanel.addStyleName("fieldPanel");
-		
-		FlowPanel labelPanel = new FlowPanel();
-		labelPanel.addStyleName("labelPanel");
-
-		Label lblLabel = new Label(labelName);
-		lblLabel.addStyleName("lblLabel");
-		labelPanel.add(lblLabel);
-
-		if (isEditMode && extraInfo != null) {
-			labelPanel.addStyleName("labelPanel" + extraInfo.size());
-			for (String extra : extraInfo) {
-				Label lblExtraInfo = new Label(extra);
-				lblExtraInfo.addStyleName("lblExtraInfo");
-				labelPanel.add(lblExtraInfo);
-			}
-		}
-		fieldPanel.add(labelPanel);
-		
-		fieldPanel.add(getValueWidget(value, fieldType));
-
-		if(isCurrentUser && isPrivate){
-			FlowPanel publicPanel = new FlowPanel();
-			publicPanel.addStyleName("publicPanel");
-
-			Image imgPublic = new Image(IMAGE_PATH + "notPublic.png");
-			imgPublic.addStyleName("imgPublic");
-			publicPanel.add(imgPublic);
-
-			Label lblPublic = new Label("Privado");
-			lblPublic.addStyleName("lblPublic");
-			publicPanel.add(lblPublic);
-			fieldPanel.add(publicPanel);
-		}
-
-		profileFields.add(fieldPanel);
-
-		Image imgSeparator = new Image(IMAGE_PATH + "separatorBar.png");
-		imgSeparator.addStyleName("fillWidth");
-		imgSeparator.setHeight("2px");
-		profileFields.add(imgSeparator);
-	}
-
-	private FlowPanel getValueWidget(String value, String fieldType) {
-		FlowPanel fieldPanel = new FlowPanel();
-		fieldPanel.addStyleName("fieldPanel");
-		if(isEditMode){
-			if("username".equals(fieldType)){
-				username = new TextBox();
-				username.setText(value);
-				username.addStyleName("field");
-				username.addStyleName("textField");
-				fieldPanel.add(username);
-				fieldPanel.add(usernameError);
-			} else if("email".equals(fieldType)){
-				email = new TextBox();
-				email.setText(value);
-				email.addStyleName("field");
-				email.addStyleName("textField");
-				fieldPanel.add(email);
-				fieldPanel.add(emailError);
-			} else if("password".equals(fieldType)){
-				password = new PasswordTextBox();
-				password.setText(value);
-				password.addStyleName("field");
-				password.addStyleName("textField");
-				fieldPanel.add(password);
-				fieldPanel.add(passwordError);
-			} else if("firstName".equals(fieldType)){
-				firstName = new TextBox();
-				firstName.setText(value);
-				firstName.addStyleName("field");
-				firstName.addStyleName("textField");
-				fieldPanel.add(firstName);
-				fieldPanel.add(firstNameError);
-			} else if("lastName".equals(fieldType)){
-				lastName = new TextBox();
-				lastName.setText(value);
-				lastName.addStyleName("field");
-				lastName.addStyleName("textField");
-				fieldPanel.add(lastName);
-				fieldPanel.add(lastNameError);
-			} else if("company".equals(fieldType)){
-				company = new TextBox();
-				company.setText(value);
-				company.addStyleName("field");
-				company.addStyleName("textField");
-				fieldPanel.add(company);
-				fieldPanel.add(companyError);
-			} else if("title".equals(fieldType)){
-				title = new TextBox();
-				title.setText(value);
-				title.addStyleName("field");
-				title.addStyleName("textField");
-				fieldPanel.add(title);
-				fieldPanel.add(titleError);
-			} else if("sex".equals(fieldType)){
-		        sex = new ListBox(false);
-		        sex.addItem("");
-		        sex.addItem("Feminino");
-		        sex.addItem("Masculino");
-		        sex.ensureDebugId("dropBoxDay");
-		        sex.setWidth("120px");
-				sex.addStyleName("field");
-				sex.addStyleName("textField");
-				fieldPanel.add(sex);
-				fieldPanel.add(sexError);
-			} else if("birthDate".equals(fieldType)){
-				//value
-				birthDate = new SimpleDatePicker();
-				fieldPanel.add(birthDate);
-				fieldPanel.add(birthDateError);
-			} else {
-				fieldPanel.add(new Label(""));
-			}
-		} else {
-			Label lbl = new Label(value != null ? value : "");
-			lbl.addStyleName(value != null ? "lblValue" : "lblValueAdd");
-			fieldPanel.add(lbl);
-		}
-		return fieldPanel;
-	}
-
-	private void displayImageField(String labelName, List<String> extraInfo) {
-
-		FlowPanel labelPanel = new FlowPanel();
-		labelPanel.addStyleName("labelPanel");
-		labelPanel.addStyleName("labelPanelImg");
-
-		Label lblLabel = new Label(labelName);
-		lblLabel.addStyleName("lblLabelImg");
-		labelPanel.add(lblLabel);
-
-		if (isEditMode && extraInfo != null) {
-			for (String extra : extraInfo) {
-				Label lblExtraInfo = new Label(extra);
-				lblExtraInfo.addStyleName("lblExtraInfo");
-				labelPanel.add(lblExtraInfo);
-			}
-		}
-
-		FlowPanel imagePanel = new FlowPanel();
-		imagePanel.addStyleName("imagePanel");
-
-		Image img = new Image(IMAGE_PATH + "profilePic.png");
-		img.addStyleName("imgPublic");
-		imagePanel.add(img);
-
-		FlowPanel fieldPanel = new FlowPanel();
-		fieldPanel.addStyleName("fieldPanel");
-		fieldPanel.addStyleName("fieldPanelImage");
-
-		fieldPanel.add(labelPanel);
-		fieldPanel.add(imagePanel);
-
-		profileFields.add(fieldPanel);
-
-		Image imgSeparator = new Image(IMAGE_PATH + "separatorBar.png");
-		imgSeparator.addStyleName("fillWidth");
-		profileFields.add(imgSeparator);
-	}
-
 	private void mapFieldsToErrorLabels() {
-		fieldsToErrorLabels = new HashMap<Widget, Label>();
-		
-		usernameError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(username, usernameError);
-		
-		emailError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(email, emailError);
-
-		passwordError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(password, passwordError);
-		
-		firstNameError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(firstName, firstNameError);
-		
-		lastNameError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(lastName, lastNameError);
-
-		companyError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(company, companyError);
-		
-		titleError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(title, titleError);
-		
-		sexError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(sex, sexError);
-		
-		birthDateError.addStyleName("errorMessage");
-		fieldsToErrorLabels.put(birthDate, birthDateError);
-		
+		fieldsToErrorLabels = new HashMap<Widget, Field>();
+		fieldsToErrorLabels.put(username, new Field(username, usernameError, usernameTxt));
+		fieldsToErrorLabels.put(email, new Field(email, emailError, emailTxt));
+		fieldsToErrorLabels.put(password, new Field(password, passwordError, passwordTxt));
+		fieldsToErrorLabels.put(firstName, new Field(firstName, firstNameError, firstNameTxt));
+		fieldsToErrorLabels.put(lastName, new Field(lastName, lastNameError, lastNameTxt));
+		fieldsToErrorLabels.put(company, new Field(company, companyError, companyTxt));
+		fieldsToErrorLabels.put(title, new Field(title, titleError, titleTxt));
+		fieldsToErrorLabels.put(sex, new Field(sex, sexError, sexTxt));
+		fieldsToErrorLabels.put(birthDate, new Field(birthDatePickerPanel, birthDateError, birthDateTxt));
+		showFields();
 	}
 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		// TODO Auto-generated method stub
-
+	}
+	
+	class Field{
+		Widget field;
+		Label error;
+		Label value;
+		public Field(Widget field, Label error, Label value) {
+			this.field = field;
+			this.error = error;
+			this.value = value;
+		}
+		public Widget getField() {
+			return field;
+		}
+		public Label getError() {
+			return error;
+		}
+		public Label getValue() {
+			return value;
+		}
 	}
 
 }
