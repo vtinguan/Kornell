@@ -19,9 +19,9 @@ object ReportGenerator extends App {
     implicit def myConvertion(rs:ResultSet):ReportData = (rs.getString(1), rs.getString(2), rs.getString(3))
 
     val certificateData = sql"""
-			select p.fullName, c.title, c.assetsURL from person p
-			join enrollment e on p.uuid = e.person_uuid
-			join course c on c.uuid = e.course_uuid
+			select p.fullName, c.title, c.assetsURL from Person p
+			join Enrollment e on p.uuid = e.person_uuid
+			join Course c on c.uuid = e.course_uuid
 			where c.uuid = $courseUUID
 			and p.uuid = $userUUID
 		""".first[ReportData].get //a29c36f3-19b8-48fd-a86b-d05bbd260f10/d9aaa03a-f225-48b9-8cc9-15495606ac46
