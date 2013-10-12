@@ -49,16 +49,9 @@ public class CourseSequencer implements Sequencer {
 		bus.addHandler(NavigationRequest.TYPE, this);
 	}
 
-
-
-	
 	private List<Actom> actoms;
-
 	private int currentIndex;
-
 	private ExternalPageView externalPageView;
-
-
 
 	private String nextKey() {
 		String nextKey = isAtEnd() ? currentKey : getActoms().get(++currentIndex).getKey();
