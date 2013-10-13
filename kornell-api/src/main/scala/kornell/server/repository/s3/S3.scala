@@ -11,10 +11,15 @@ import com.amazonaws.services.s3.model.ObjectListing
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import java.io.ByteArrayInputStream
 import com.amazonaws.services.s3.model.PutObjectRequest
+import scala.io.Source
+import kornell.core.shared.util.StringUtils._
 
 class S3(regionName: String,
-  accessKey: String, secretKey: String,
-  val bucket: String, val prefix: String) {
+  accessKey: String, 
+  secretKey: String,
+  val bucket: String, 
+  val prefix: String,
+  distributionURL:String) {
   
   //TODO: An actom is an undivisible unit of learning content. Pls write that on the wiki, bur for now it is just a key...
   type Actom = String
@@ -46,17 +51,29 @@ class S3(regionName: String,
     
   def getObject(key:String) =
     s3.getObject(bucket, prefix + "/" + key)
+    
+  def source(key:String) = 
+      Source.fromURL(composeURL(baseURL,key), "utf-8")
+      
+   
+  //TODO: Resolve base url from region
+  lazy val baseURL = 
+    if(distributionURL != null)
+    	composeURL(distributionURL, prefix)
+    else s"http://${bucket}.s3-sa-east-1.amazonaws.com/${prefix}"
+    
 }
 
 object S3 {
   implicit def toS3(rs: ResultSet) = new S3(
     rs.getString("region"),
     rs.getString("accessKeyId"), rs.getString("secretAccessKey"),
-    rs.getString("bucketName"), rs.getString("prefix"))
+    rs.getString("bucketName"), rs.getString("prefix"),
+    rs.getString("distributionURL"))
 
   def apply(repository_uuid: String) =
     sql"""
-    	select region,accessKeyId,secretAccessKey,bucketName,prefix
+    	select region,accessKeyId,secretAccessKey,bucketName,prefix,distributionURL
     	from S3ContentRepository
     	where uuid=$repository_uuid
     """.first[S3].getOrElse({throw new IllegalArgumentException(s"Could not find repository [$repository_uuid]")})

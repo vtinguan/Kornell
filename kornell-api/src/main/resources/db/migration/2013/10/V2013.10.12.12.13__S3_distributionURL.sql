@@ -1,0 +1,1 @@
+alter table S3ContentRepository add column distributionURL varchar(255);
