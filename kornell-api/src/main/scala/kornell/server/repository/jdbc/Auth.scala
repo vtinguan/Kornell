@@ -44,10 +44,7 @@ object Auth  {
     sql"""
 		select p.uuid, p.fullName, p.lastPlaceVisited,
 		    p.email, p.firstName , p.lastName, p.company, 
-		    p.title, p.sex, p.birthDate, 
-			p.usernamePrivate, p.emailPrivate, p.firstNamePrivate, 
-			p.lastNamePrivate, p.companyPrivate, p.titlePrivate, 
-			p.sexPrivate, p.birthDatePrivate
+		    p.title, p.sex, p.birthDate
 		from Person p
 		join Password pw on pw.person_uuid = p.uuid
 		where pw.username = $username

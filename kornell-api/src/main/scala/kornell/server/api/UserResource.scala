@@ -64,11 +64,9 @@ class UserResource{
   @GET
   @Path("check/{username}/{email}")
   @Produces(Array(UserInfoTO.TYPE))
-  def checkUsernameAndEmail(implicit @Context sc: SecurityContext,
-	    @PathParam("username") username:String,
-	    @PathParam("email") email:String):Option[UserInfoTO] =
-    Auth.withPerson { p =>
-    	val user = newUserInfoTO
+  def checkUsernameAndEmail(@PathParam("username") username:String,
+	    @PathParam("email") email:String):Option[UserInfoTO] = {
+      	val user = newUserInfoTO
 	    val person: Option[Person] = Auth.getPerson(username)    
 	    if (person.isDefined){
 	    	user.setPerson(person.get) 
@@ -87,7 +85,7 @@ class UserResource{
   
   @PUT
   @Path("create")
-  @Produces(Array("text/plain"))
+  @Produces(Array(UserInfoTO.TYPE))
   def createUser(data: String) = {
     val aData = data.split("###")
 	val username = aData(0)
@@ -101,11 +99,17 @@ class UserResource{
 	val birthDate = aData(8)
     val institution_uuid = "00a4966d-5442-4a44-9490-ef36f133a259";
     val course_uuid = "d9aaa03a-f225-48b9-8cc9-15495606ac46";
-	People().createPerson(email, firstName, lastName, company, title, sex, birthDate)
-		  .setPassword(username, password) 
-		  .registerOn(institution_uuid)
-		  .enrollOn(course_uuid)
-    ""
+    People().createPerson(email, firstName, lastName, company, title, sex, birthDate)
+    	.setPassword(username, password) 
+    	.registerOn(institution_uuid)
+		.enrollOn(course_uuid)
+  	val user = newUserInfoTO
+    val person: Option[Person] = Auth.getPerson(username)    
+    if (person.isDefined){
+    	user.setPerson(person.get) 
+    }
+    user.setUsername(username)
+	Option(user)
   }
     
   

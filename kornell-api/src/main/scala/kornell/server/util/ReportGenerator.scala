@@ -1,4 +1,4 @@
-package kornell.server.report
+package kornell.server.util
 
 import java.util.HashMap
 import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
