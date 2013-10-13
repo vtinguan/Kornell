@@ -13,6 +13,7 @@ import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.SimpleDatePicker;
 import kornell.gui.client.presentation.util.ValidatorHelper;
+import kornell.gui.client.presentation.vitrine.VitrinePlace;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
@@ -41,8 +42,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private PlaceController placeCtrl;
 	private final EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private boolean isEditMode;
-	private boolean isCurrentUser;
+	private boolean isEditMode, isCurrentUser, isUserCreation;
 	SimpleDatePicker birthDate;
 	
 	// TODO fix this
@@ -124,6 +124,13 @@ public class GenericProfileView extends Composite implements ProfileView {
 				isCurrentUser = ((ProfilePlace) placeCtrl.getWhere()).getUsername() == userTO.getUsername();
 				display();
 			}
+			@Override
+			protected void unauthorized() {
+				isCurrentUser = true;
+				isUserCreation = true;
+				isEditMode = true;
+				display();
+			}
 		});
 		this.setVisible(true);
 	}
@@ -199,16 +206,21 @@ public class GenericProfileView extends Composite implements ProfileView {
 								title.getText().trim() + "###" +
 								(sex.getSelectedIndex() == 1 ? "F" : "M") + "###" +
 								birthDate.toString();
-						client.createUser(data, new Callback<Void>(){
+						client.createUser(data, new Callback<UserInfoTO>(){
 							@Override
-							protected void ok(){
+							protected void ok(UserInfoTO user){
 								GWT.log("User created");
 								isEditMode = false;
 								editPanel.setVisible(!isEditMode);
-								//goto terms
+								placeCtrl.goTo(new VitrinePlace());
+								client.sendWelcomeEmail(user.getPerson().getUUID(), new Callback<Void>(){
+									@Override
+									protected void ok(){
+										GWT.log("Sent welcome email.");
+									}
+								});
 							}
 						});
-						GWT.log(data);
 						
 					}
 				}
@@ -266,8 +278,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 	}
 	
 	private void display() {
-		isEditMode = true;
-		isCurrentUser = true;
 		// TODO i18n
 		displayTitle();
 		displayFields();
@@ -275,7 +285,15 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	private void displayFields() {
 		imgProfile.setUrl(IMAGE_PATH + "profilePic.png");
-		if(isEditMode){
+		sex.clear();
+        sex.addItem("");
+        sex.addItem("Feminino");
+        sex.addItem("Masculino");
+        birthDatePickerPanel.clear();
+        if (isUserCreation){
+			birthDate = new SimpleDatePicker();
+			birthDatePickerPanel.add(birthDate);
+		} else if(isEditMode){
 			username.setText(user.getUsername());
 			password.setText("abcDEF123");
 			password2.setText("abcDEF123");
@@ -284,11 +302,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 			lastName.setText(user.getPerson().getLastName());
 			company.setText(user.getPerson().getCompany());
 			title.setText(user.getPerson().getTitle());
-	        sex.addItem("");
-	        sex.addItem("Feminino");
-	        sex.addItem("Masculino");
 	        sex.setSelectedIndex("F".equals(user.getPerson().getSex()) ? 1 : 2);
-	        birthDatePickerPanel.clear();
 			birthDate = new SimpleDatePicker(user.getPerson().getBirthDate());
 			birthDatePickerPanel.add(birthDate);
 		} else {
