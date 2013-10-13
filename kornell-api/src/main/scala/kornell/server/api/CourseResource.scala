@@ -27,18 +27,13 @@ class CourseResource(uuid: String) {
   def getContents(implicit @Context sc: SecurityContext) = {
     val courseTO = Courses.byUUID(uuid).get    
     val s3 = S3(courseTO.getCourse.getRepositoryUUID)
-    val structure = Option(s3.getObject("structure.knl"))
-    var structureText: String = ""
-    if (structure.isDefined) {
-      val in = structure.get.getObjectContent()
-      structureText = Source.fromInputStream(in, "utf-8").mkString("")
-      courseTO.setBaseURL(s"http://${s3.bucket}.s3-sa-east-1.amazonaws.com/${s3.prefix}") //TODO: Resolve base url from region
-      val contents = ContentsParser.parse(structureText)
-      contents.setCourseTO(courseTO)      
-      contents
-    }else throw new RuntimeException("Could not find structure.knl")
+    val structureSrc = s3.source("structure.knl")    
+    val  structureText = structureSrc.mkString("")      
+    courseTO.setBaseURL(s3.baseURL)
+    val contents = ContentsParser.parse(structureText)
+    contents.setCourseTO(courseTO)      
+    contents   
   }
-
 }
 
 object CourseResource {

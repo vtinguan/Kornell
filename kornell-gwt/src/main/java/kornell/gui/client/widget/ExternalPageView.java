@@ -1,10 +1,8 @@
 package kornell.gui.client.widget;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -13,7 +11,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 
 public class ExternalPageView extends Composite {
 	private IFrameElement iframe;
