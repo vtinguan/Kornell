@@ -4,7 +4,7 @@ public class ValidatorHelper {
 
 	private final String EMAIL_PATTERN = "^[^0-9][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$";
 	private final String USERNAME_PATTERN = "^[^0-9.][A-z0-9.]{2,}$";
-	private final String PASSWORD_PATTERN = "/^(?=.*[0-9]+.*)(?=.*[a-z]+.*)(?=.*[A-Z]+.*)[0-9a-zA-Z]{8,}$/";
+	private final String PASSWORD_PATTERN = "^(?=.*[0-9]+.*)(?=.*[a-z]+.*)(?=.*[A-Z]+.*)[0-9a-zA-Z]{8,}$";
 	
 	public boolean emailValid(String field){
 		return field == null ? false : field.trim().matches(EMAIL_PATTERN);

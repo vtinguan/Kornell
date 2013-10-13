@@ -15,7 +15,7 @@ class EnrollmentResource{
   @PUT
   @Path("{courseUUID}/notesUpdated")
   @Produces(Array("text/plain"))
-  def putPlaceChange(implicit @Context sc: SecurityContext, 
+  def putNotesChange(implicit @Context sc: SecurityContext, 
       @PathParam("courseUUID") courseUUID: String, 
       notes: String) = 
     Auth.withPerson { p => 

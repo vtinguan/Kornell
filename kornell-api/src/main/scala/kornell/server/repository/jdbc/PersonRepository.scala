@@ -26,15 +26,7 @@ class PersonRepository(val uuid:String) {
 	    rs.getString("company"),
 	    rs.getString("title"),
 	    rs.getString("sex"),
-	    rs.getDate("birthDate"),
-	    rs.getBoolean("usernamePrivate"),
-	    rs.getBoolean("emailPrivate"),
-	    rs.getBoolean("firstNamePrivate"),
-	    rs.getBoolean("lastNamePrivate"),
-	    rs.getBoolean("companyPrivate"),
-	    rs.getBoolean("titlePrivate"),
-	    rs.getBoolean("sexPrivate"),
-	    rs.getBoolean("birthDatePrivate"))
+	    rs.getDate("birthDate"))
 	    
 	def get() = sql"""select * from Person where uuid=$uuid""".first[Person]
 }

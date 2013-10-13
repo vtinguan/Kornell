@@ -8,7 +8,7 @@
 			</g:FlowPanel>
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="profileFields" addStyleNames="profileFields">
-			<g:FlowPanel addStyleNames="fieldPanel fieldPanelImage">
+			<g:FlowPanel addStyleNames="fieldPanel fieldPanelImage shy">
 				<g:FlowPanel addStyleNames="labelPanel labelPanelImg">
 					<g:Label addStyleNames="lblLabelImg">Imagem do perfil</g:Label>
 					<g:Label ui:field="imageExtraInfo" addStyleNames="lblExtraInfo">Inclua aqui uma foto sua</g:Label>
@@ -17,7 +17,7 @@
 					<g:Image ui:field="imgProfile"></g:Image>
 				</g:FlowPanel>
 			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
+			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth shy"></g:Image>
 			
 			
 			<g:FlowPanel addStyleNames="fieldPanel">
@@ -44,10 +44,21 @@
 				<g:FlowPanel addStyleNames="fieldPanel">
 					<b:PasswordTextBox ui:field="password" addStyleNames="field textField"></b:PasswordTextBox>
 					<g:Label ui:field="passwordError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="passwordTxt" addStyleNames="lblValue"></g:Label>
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:Image ui:field="passwordSeparator" url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
+			
+			
+			<g:FlowPanel ui:field="password2Panel" addStyleNames="fieldPanel">
+				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
+					<g:Label addStyleNames="lblLabel">Confirmar senha</g:Label>
+				</g:FlowPanel>
+				<g:FlowPanel addStyleNames="fieldPanel">
+					<b:PasswordTextBox ui:field="password2" addStyleNames="field textField"></b:PasswordTextBox>
+					<g:Label ui:field="password2Error" addStyleNames="errorMessage"></g:Label>
+				</g:FlowPanel>
+			</g:FlowPanel>
+			<g:Image ui:field="password2Separator" url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
 			
 			
 			<g:FlowPanel ui:field="emailPanel" addStyleNames="fieldPanel">
