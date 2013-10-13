@@ -24,21 +24,5 @@ public interface Person {
 	void setSex(String sex);
 	Date getBirthDate();
 	void setBirthDate(Date birthDate);
-	Boolean isUsernamePrivate();
-	void setUsernamePrivate(Boolean usernamePrivate);
-	Boolean isEmailPrivate();
-	void setEmailPrivate(Boolean emailPrivate);
-	Boolean isFirstNamePrivate();
-	void setFirstNamePrivate(Boolean firstNamePrivate);
-	Boolean isLastNamePrivate();
-	void setLastNamePrivate(Boolean lastNamePrivate);
-	Boolean isCompanyPrivate();
-	void setCompanyPrivate(Boolean companyPrivate);
-	Boolean isTitlePrivate();
-	void setTitlePrivate(Boolean titlePrivate);
-	Boolean isSexPrivate();
-	void setSexPrivate(Boolean sexPrivate);
-	Boolean isBirthDatePrivate();
-	void setBirthDatePrivate(Boolean birthDatePrivate);
 	
 }

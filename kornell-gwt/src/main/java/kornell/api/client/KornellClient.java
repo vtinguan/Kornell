@@ -58,6 +58,14 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 		GET("/user/"+username).sendRequest(null, cb);	
 	}
 	
+	public void checkUser(String username, String email, Callback<UserInfoTO> cb){
+		GET("/user/check/"+username+"/"+email).sendRequest(null, cb);
+	}
+
+	public void createUser(String data, Callback<Void> cb){
+		PUT("/user/create/").sendRequest(data, cb);
+	}
+	
 	public void getCourseTO(String uuid, Callback<CourseTO> cb) {
 		GET("/courses/"+uuid).sendRequest(null, cb);
 	}
@@ -104,7 +112,7 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 	}
 
 	public void notesUpdated(String courseUUID, String notes) {
-		PUT("/enrollment/"+courseUUID+"/notesUpdated").sendRequest(notes,new Callback(){
+		PUT("/enrollment/"+courseUUID+"/notesUpdated").sendRequest(notes,new Callback<Void>(){
 			@Override
 			protected void ok() {
 				GWT.log("notes updated");
@@ -118,7 +126,7 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 	}
 
 	private void forgetCredentials() {
-		ClientProperties.remove("Authentication");
+		ClientProperties.remove("Authorization");
 	}
 
 	public CourseClient course(String courseUUID) {

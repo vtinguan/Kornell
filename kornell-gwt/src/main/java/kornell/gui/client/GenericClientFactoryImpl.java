@@ -41,6 +41,7 @@ import kornell.gui.client.presentation.profile.generic.GenericProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;
 import kornell.gui.client.presentation.sandbox.SandboxView;
 import kornell.gui.client.presentation.sandbox.generic.GenericSandboxView;
+import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.terms.generic.GenericTermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;

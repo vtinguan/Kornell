@@ -149,4 +149,13 @@ public class SimpleDatePicker extends FlowPanel{
 				dropBoxMonth.getSelectedIndex() > 0 &&
 				dropBoxYear.getSelectedIndex() > 0;
 	}
+	
+	@Override
+	public String toString(){
+		String day = dropBoxDay.getValue();
+		day = day.length() == 1 ? "0"+day : day;
+		String month = ""+dropBoxMonth.getSelectedIndex();
+		month = month.length() == 1 ? "0"+month : month;
+		return dropBoxYear.getValue() + "-" + month + "-" + day;
+	}
 }

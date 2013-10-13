@@ -58,6 +58,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField Image imgProfile;
 	@UiField TextBox username;
 	@UiField PasswordTextBox password;
+	@UiField PasswordTextBox password2;
 	@UiField TextBox email;
 	@UiField TextBox firstName;
 	@UiField TextBox lastName;
@@ -68,6 +69,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField Label usernameError;
 	@UiField Label emailError;
 	@UiField Label passwordError;
+	@UiField Label password2Error;
 	@UiField Label firstNameError;
 	@UiField Label lastNameError;
 	@UiField Label companyError;
@@ -75,7 +77,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField Label sexError;
 	@UiField Label birthDateError;
 	@UiField Label usernameTxt;
-	@UiField Label passwordTxt;
 	@UiField Label emailTxt;
 	@UiField Label firstNameTxt;
 	@UiField Label lastNameTxt;
@@ -84,10 +85,12 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField Label sexTxt;
 	@UiField Label birthDateTxt;
 	@UiField FlowPanel passwordPanel;
+	@UiField FlowPanel password2Panel;
 	@UiField FlowPanel emailPanel;
 	@UiField FlowPanel sexPanel;
 	@UiField FlowPanel birthDatePanel;
 	@UiField Image passwordSeparator;
+	@UiField Image password2Separator;
 	@UiField Image emailSeparator;
 	@UiField Image sexSeparator;
 	@UiField Image birthDateSeparator;
@@ -131,18 +134,18 @@ public class GenericProfileView extends Composite implements ProfileView {
 			fieldsToErrorLabels.get(username).getError().setText("Mínimo de 3 caracteres.");
 		} else if (!validator.usernameValid(username.getText())){
 			fieldsToErrorLabels.get(username).getError().setText("Campo inválido.");
-		} else if (false){
-			fieldsToErrorLabels.get(username).getError().setText("O nome de usuário já existe.");
 		}
 
 		if (!validator.emailValid(email.getText())){
 			fieldsToErrorLabels.get(email).getError().setText("Email inválido.");
-		} else if (false){
-			fieldsToErrorLabels.get(email).getError().setText("O email já existe.");
 		}
 
 		if (!validator.passwordValid(password.getText())){
 			fieldsToErrorLabels.get(password).getError().setText("Senha inválida.");
+		}
+
+		if (!password.getText().equals(password2.getText())){
+			fieldsToErrorLabels.get(password2).getError().setText("As senhas não conferem.");
 		}
 		
 		if(!validator.lengthValid(firstName.getText(), 2, 50)){
@@ -160,7 +163,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		if(!birthDate.isSelected()){
 			fieldsToErrorLabels.get(birthDate).getError().setText("Insira sua data de nascimento.");
 		}
-		return checkErrors();
+		return !checkErrors();
 	}
 
 	@UiHandler("lblEdit")
@@ -174,8 +177,42 @@ public class GenericProfileView extends Composite implements ProfileView {
 	void doOK(ClickEvent e) {
 		clearErrors();
 		if(validateFields()){
-			isEditMode = false;
-			editPanel.setVisible(!isEditMode);
+			client.checkUser(username.getText(), email.getText(), new Callback<UserInfoTO>(){
+				@Override
+				protected void ok(UserInfoTO user){
+					boolean errors = false;
+					if(user.getPerson() != null){
+						fieldsToErrorLabels.get(username).getError().setText("O usuário já existe.");
+						errors = checkErrors();
+					} 
+					if(user.getEmail() != null){
+						fieldsToErrorLabels.get(email).getError().setText("O email já existe.");
+						errors = checkErrors();
+					}
+					if(!errors){
+						String data = username.getText().trim() + "###" + 
+								password.getText().trim() + "###" +
+								email.getText().trim() + "###" +
+								firstName.getText().trim() + "###" +
+								lastName.getText().trim() + "###" +
+								company.getText().trim() + "###" +
+								title.getText().trim() + "###" +
+								(sex.getSelectedIndex() == 1 ? "F" : "M") + "###" +
+								birthDate.toString();
+						client.createUser(data, new Callback<Void>(){
+							@Override
+							protected void ok(){
+								GWT.log("User created");
+								isEditMode = false;
+								editPanel.setVisible(!isEditMode);
+								//goto terms
+							}
+						});
+						GWT.log(data);
+						
+					}
+				}
+			});
 		}
 	}
 
@@ -211,6 +248,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 		}
 		passwordPanel.setVisible(isEditMode);
 		passwordSeparator.setVisible(isEditMode);
+		password2Panel.setVisible(isEditMode);
+		password2Separator.setVisible(isEditMode);
 		emailPanel.setVisible(isCurrentUser);
 		emailSeparator.setVisible(isCurrentUser);
 		sexPanel.setVisible(isCurrentUser);
@@ -238,7 +277,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 		imgProfile.setUrl(IMAGE_PATH + "profilePic.png");
 		if(isEditMode){
 			username.setText(user.getUsername());
-			password.setText(user.getUsername());
+			password.setText("abcDEF123");
+			password2.setText("abcDEF123");
 			email.setText(user.getPerson().getEmail());
 			firstName.setText(user.getPerson().getFirstName());
 			lastName.setText(user.getPerson().getLastName());
@@ -262,6 +302,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 			birthDateTxt.setText(user.getPerson().getBirthDate().toString());
 		}
 		mapFieldsToErrorLabels();
+		showFields();
 	}
 
 	private void displayTitle() {
@@ -275,14 +316,14 @@ public class GenericProfileView extends Composite implements ProfileView {
 		fieldsToErrorLabels = new HashMap<Widget, Field>();
 		fieldsToErrorLabels.put(username, new Field(username, usernameError, usernameTxt));
 		fieldsToErrorLabels.put(email, new Field(email, emailError, emailTxt));
-		fieldsToErrorLabels.put(password, new Field(password, passwordError, passwordTxt));
+		fieldsToErrorLabels.put(password, new Field(password, passwordError, new Label()));
+		fieldsToErrorLabels.put(password2, new Field(password2, password2Error, new Label()));
 		fieldsToErrorLabels.put(firstName, new Field(firstName, firstNameError, firstNameTxt));
 		fieldsToErrorLabels.put(lastName, new Field(lastName, lastNameError, lastNameTxt));
 		fieldsToErrorLabels.put(company, new Field(company, companyError, companyTxt));
 		fieldsToErrorLabels.put(title, new Field(title, titleError, titleTxt));
 		fieldsToErrorLabels.put(sex, new Field(sex, sexError, sexTxt));
 		fieldsToErrorLabels.put(birthDate, new Field(birthDatePickerPanel, birthDateError, birthDateTxt));
-		showFields();
 	}
 
 	@Override

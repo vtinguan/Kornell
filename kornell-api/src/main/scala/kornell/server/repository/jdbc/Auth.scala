@@ -21,15 +21,10 @@ object Auth  {
       rs.getString("company"),
       rs.getString("title"),
       rs.getString("sex"),
-      rs.getDate("birthDate"),
-      rs.getBoolean("usernamePrivate"),
-      rs.getBoolean("emailPrivate"),
-      rs.getBoolean("firstNamePrivate"),
-      rs.getBoolean("lastNamePrivate"),
-      rs.getBoolean("companyPrivate"),
-      rs.getBoolean("titlePrivate"),
-      rs.getBoolean("sexPrivate"),
-      rs.getBoolean("birthDatePrivate"))
+      rs.getDate("birthDate"))
+      
+  implicit def toString(rs: ResultSet): String = rs.getString("email")
+
 
   def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T = {
 
@@ -57,6 +52,13 @@ object Auth  {
 		join Password pw on pw.person_uuid = p.uuid
 		where pw.username = $username
 	""".first[Person]
+  }
+  
+  def getEmail(email: String) = {
+    sql"""
+    	select p.email from Person p
+    	where p.email = $email
+    """.first[String]
   }
 
   def setPlainPassword(personUUID: String, username: String, plainPassword: String) = {
