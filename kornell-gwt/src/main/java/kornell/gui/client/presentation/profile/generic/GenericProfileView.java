@@ -1,8 +1,6 @@
 package kornell.gui.client.presentation.profile.generic;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import kornell.api.client.Callback;
@@ -15,6 +13,7 @@ import kornell.gui.client.presentation.util.SimpleDatePicker;
 import kornell.gui.client.presentation.util.ValidatorHelper;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 
+import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -24,6 +23,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -47,6 +47,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
+	@UiField Form form;
 	@UiField FlowPanel profileFields;
 	@UiField FlowPanel titlePanel;
 	@UiField Image imgTitle;
@@ -121,7 +122,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 			@Override
 			protected void ok(UserInfoTO userTO) {
 				user = userTO;
-				isCurrentUser = ((ProfilePlace) placeCtrl.getWhere()).getUsername() == userTO.getUsername();
+				isCurrentUser = userTO.getUsername().equals(((ProfilePlace) placeCtrl.getWhere()).getUsername());
 				display();
 			}
 			@Override
@@ -132,7 +133,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 				display();
 			}
 		});
-		this.setVisible(true);
 	}
 
 	private boolean validateFields() {
@@ -187,16 +187,13 @@ public class GenericProfileView extends Composite implements ProfileView {
 			client.checkUser(username.getText(), email.getText(), new Callback<UserInfoTO>(){
 				@Override
 				protected void ok(UserInfoTO user){
-					boolean errors = false;
 					if(user.getPerson() != null){
 						fieldsToErrorLabels.get(username).getError().setText("O usuário já existe.");
-						errors = checkErrors();
 					} 
 					if(user.getEmail() != null){
 						fieldsToErrorLabels.get(email).getError().setText("O email já existe.");
-						errors = checkErrors();
 					}
-					if(!errors){
+					if(!checkErrors()){
 						String data = username.getText().trim() + "###" + 
 								password.getText().trim() + "###" +
 								email.getText().trim() + "###" +
@@ -205,7 +202,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 								company.getText().trim() + "###" +
 								title.getText().trim() + "###" +
 								(sex.getSelectedIndex() == 1 ? "F" : "M") + "###" +
-								birthDate.toString();
+								birthDate.toString() + "###" +
+								Window.Location.getHref().split("#")[0];
 						client.createUser(data, new Callback<UserInfoTO>(){
 							@Override
 							protected void ok(UserInfoTO user){
@@ -213,12 +211,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 								isEditMode = false;
 								editPanel.setVisible(!isEditMode);
 								placeCtrl.goTo(new VitrinePlace());
-								client.sendWelcomeEmail(user.getPerson().getUUID(), new Callback<Void>(){
-									@Override
-									protected void ok(){
-										GWT.log("Sent welcome email.");
-									}
-								});
 							}
 						});
 						
@@ -258,10 +250,10 @@ public class GenericProfileView extends Composite implements ProfileView {
 			field.getError().setVisible(isEditMode);
 			field.getValue().setVisible(!isEditMode);
 		}
-		passwordPanel.setVisible(isEditMode);
-		passwordSeparator.setVisible(isEditMode);
-		password2Panel.setVisible(isEditMode);
-		password2Separator.setVisible(isEditMode);
+		passwordPanel.setVisible(isEditMode && isUserCreation);
+		passwordSeparator.setVisible(isEditMode && isUserCreation);
+		password2Panel.setVisible(isEditMode && isUserCreation);
+		password2Separator.setVisible(isEditMode && isUserCreation);
 		emailPanel.setVisible(isCurrentUser);
 		emailSeparator.setVisible(isCurrentUser);
 		sexPanel.setVisible(isCurrentUser);
@@ -281,6 +273,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		// TODO i18n
 		displayTitle();
 		displayFields();
+		form.removeStyleName("shy");
 	}
 
 	private void displayFields() {
@@ -295,8 +288,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 			birthDatePickerPanel.add(birthDate);
 		} else if(isEditMode){
 			username.setText(user.getUsername());
-			password.setText("abcDEF123");
-			password2.setText("abcDEF123");
 			email.setText(user.getPerson().getEmail());
 			firstName.setText(user.getPerson().getFirstName());
 			lastName.setText(user.getPerson().getLastName());

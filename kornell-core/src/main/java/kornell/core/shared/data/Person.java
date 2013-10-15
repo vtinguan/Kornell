@@ -24,5 +24,7 @@ public interface Person {
 	void setSex(String sex);
 	Date getBirthDate();
 	void setBirthDate(Date birthDate);
+	String getConfirmation();
+	void setConfirmation(String confirmation);
 	
 }

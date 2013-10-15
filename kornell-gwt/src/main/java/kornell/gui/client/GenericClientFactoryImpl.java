@@ -201,7 +201,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 			@Override
 			protected void unauthorized() {
-				startApp(new VitrinePlace());
+				VitrinePlace vitrinePlace;
+				if(Window.Location.getHash().split(":").length > 1){
+					vitrinePlace = new VitrinePlace(Window.Location.getHash().split(":")[1]);
+				} else {
+					vitrinePlace = new VitrinePlace();
+				}
+				startApp(vitrinePlace);
 			}
 			
 			protected void startApp(Place defaultPlace){

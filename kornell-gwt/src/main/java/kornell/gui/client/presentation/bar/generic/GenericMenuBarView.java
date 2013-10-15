@@ -102,16 +102,16 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 
 	public void display() {
 		// TODO i18n
-		displayButton(btnFake, "btnFake", "", false);
-		displayButton(btnProfile, "btnProfile", "", false);
-		displayButton(btnHome, "btnHome", "home", true);
+		displayButton(btnFake, "btnFake", "", false, "");
+		displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
+		displayButton(btnHome, "btnHome", "home", true, "");
 		displayButtonWithCount(btnNotifications, "btnNotifications",
 				"notifications", "countNotifications", 19);
 		displayButtonWithCount(btnMessages, "btnMessages", "messages",
 				"countMessages", 99);
-		displayButton(btnHelp, "btnHelp", "help", true);
-		displayButton(btnMenu, "btnMenu", "MENU", false);
-		displayButton(btnExit, "btnExit", "SAIR", false);
+		displayButton(btnHelp, "btnHelp", "help", true, "");
+		displayButton(btnMenu, "btnMenu", "MENU", false, "");
+		displayButton(btnExit, "btnExit", "SAIR", false, "");
 
 		Timer timer = new Timer() {
 			@Override
@@ -147,7 +147,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	}
 
 	private void displayButton(Button btn, final String buttonType,
-			String content, boolean isImage) {
+			String content, boolean isImage, String title) {
 		btn.clear();
 		// TODO i18n
 		FlowPanel buttonPanel = new FlowPanel();
@@ -157,6 +157,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		if (isImage) {
 			Image icon = new Image(IMAGES_PATH + content + ".png");
 			icon.addStyleName("icon");
+			icon.setTitle(title);
 			buttonPanel.add(icon);
 		} else {
 			Label label = new Label(content);
@@ -173,7 +174,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		client.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
 			protected void ok(UserInfoTO userTO) {
-				placeCtrl.goTo(new ProfilePlace(userTO.getPerson().getUUID()));
+				placeCtrl.goTo(new ProfilePlace(userTO.getUsername()));
 			}
 		});
 	}

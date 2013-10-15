@@ -21,11 +21,11 @@ object Persons extends SlickRepository {
   implicit val getPerson = GetResult(r => newPerson(r.nextString,r.nextString,r.nextString,
       r.nextString,r.nextString,r.nextString,
       r.nextString,r.nextString,r.nextString,
-      r.nextDate))
+      r.nextDate,r.nextString))
   
   def create(fullname: String):Person = db.withSession {
     val person = newPerson(randUUID,fullname,null,
-    		"","","","","","",null)    
+    		"","","","","","",null,"")    
     sqlu"insert into Person values (${person.getUUID} ,${person.getFullName},null)".execute    
     person
   }

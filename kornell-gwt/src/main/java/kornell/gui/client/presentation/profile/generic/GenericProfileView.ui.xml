@@ -1,5 +1,5 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
-	<b:Form addStyleNames="profileForm">
+	<b:Form ui:field="form" addStyleNames="shy profileForm">
 		<g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel">
 			<g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
 			<g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>
@@ -8,7 +8,7 @@
 			</g:FlowPanel>
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="profileFields" addStyleNames="profileFields">
-			<g:FlowPanel addStyleNames="fieldPanel fieldPanelImage shy">
+			<g:FlowPanel addStyleNames="fieldPanel fieldPanelImage ">
 				<g:FlowPanel addStyleNames="labelPanel labelPanelImg">
 					<g:Label addStyleNames="lblLabelImg">Imagem do perfil</g:Label>
 					<g:Label ui:field="imageExtraInfo" addStyleNames="lblExtraInfo">Inclua aqui uma foto sua</g:Label>
@@ -17,7 +17,7 @@
 					<g:Image ui:field="imgProfile"></g:Image>
 				</g:FlowPanel>
 			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth shy"></g:Image>
+			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth "></g:Image>
 			
 			
 			<g:FlowPanel addStyleNames="fieldPanel">

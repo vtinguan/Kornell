@@ -24,7 +24,7 @@ object ReportGenerator extends App {
 			join Course c on c.uuid = e.course_uuid
 			where c.uuid = $courseUUID
 			and p.uuid = $userUUID
-		""".first[ReportData].get //a29c36f3-19b8-48fd-a86b-d05bbd260f10/d9aaa03a-f225-48b9-8cc9-15495606ac46
+		""".first[ReportData].get
 
     val params: HashMap[String, Object] = new HashMap()
     params.put("userUuid", userUUID)

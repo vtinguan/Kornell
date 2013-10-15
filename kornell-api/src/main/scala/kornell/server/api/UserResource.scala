@@ -20,6 +20,9 @@ import kornell.server.repository.jdbc.Institutions
 import kornell.server.repository.TOs._
 import kornell.core.shared.data.Person
 import kornell.server.repository.jdbc.People
+import kornell.server.util.EmailSender
+import javax.servlet.http.HttpServletRequest
+import java.util.UUID
 
 @Path("user")
 class UserResource{
@@ -36,7 +39,31 @@ class UserResource{
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
     	val institution = Institutions.usersInstitution(p)
+    	user.setInstitutionAssetsURL(institution.get.getTerms)    	
+    	Option(user)
+  }
+
+  @GET
+  @Path("login/{confirmation}")
+  @Produces(Array(UserInfoTO.TYPE))
+  def login(implicit @Context sc: SecurityContext,
+	    @PathParam("confirmation") confirmation:String):Option[UserInfoTO] =
+    Auth.withPerson { p =>
+    	val user = newUserInfoTO
+    	user.setUsername(sc.getUserPrincipal().getName())
+    	user.setPerson(p)
+	    user.setEmail(user.getPerson().getEmail())
+    	val signingNeeded = Registrations.signingNeeded(p)
+    	user.setSigningNeeded(signingNeeded)
+    	user.setLastPlaceVisited(p.getLastPlaceVisited)
+    	val institution = Institutions.usersInstitution(p)
     	user.setInstitutionAssetsURL(institution.get.getTerms)
+    	
+    	if(user.getPerson().getConfirmation().equals(confirmation)){
+    		Auth.confirmAccount(user.getPerson().getUUID())
+    		user.getPerson().setConfirmation("")
+    	}
+    	
     	Option(user)
   }
   
@@ -87,6 +114,7 @@ class UserResource{
   @Path("create")
   @Produces(Array(UserInfoTO.TYPE))
   def createUser(data: String) = {
+    val confirmation = UUID.randomUUID.toString
     val aData = data.split("###")
 	val username = aData(0)
 	val password = aData(1) 
@@ -97,9 +125,10 @@ class UserResource{
 	val title = aData(6)
 	val sex = aData(7)
 	val birthDate = aData(8)
+	val confirmationLink = aData(9) + "#vitrine:" + confirmation
     val institution_uuid = "00a4966d-5442-4a44-9490-ef36f133a259";
     val course_uuid = "d9aaa03a-f225-48b9-8cc9-15495606ac46";
-    People().createPerson(email, firstName, lastName, company, title, sex, birthDate)
+    People().createPerson(email, firstName, lastName, company, title, sex, birthDate, confirmation)
     	.setPassword(username, password) 
     	.registerOn(institution_uuid)
 		.enrollOn(course_uuid)
@@ -109,6 +138,9 @@ class UserResource{
     	user.setPerson(person.get) 
     }
     user.setUsername(username)
+    
+    EmailSender.sendEmail(Auth.getPerson(username).get, Institutions.byUUID(institution_uuid).get, confirmationLink)
+    
 	Option(user)
   }
     
