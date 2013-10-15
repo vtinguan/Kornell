@@ -21,7 +21,8 @@ object Auth  {
       rs.getString("company"),
       rs.getString("title"),
       rs.getString("sex"),
-      rs.getDate("birthDate"))
+      rs.getDate("birthDate"),
+      rs.getString("confirmation"))
       
   implicit def toString(rs: ResultSet): String = rs.getString("email")
 
@@ -44,11 +45,18 @@ object Auth  {
     sql"""
 		select p.uuid, p.fullName, p.lastPlaceVisited,
 		    p.email, p.firstName , p.lastName, p.company, 
-		    p.title, p.sex, p.birthDate
+		    p.title, p.sex, p.birthDate, p.confirmation
 		from Person p
 		join Password pw on pw.person_uuid = p.uuid
 		where pw.username = $username
 	""".first[Person]
+  }
+  
+  def confirmAccount(personUUID: String) = {
+    sql"""
+		update Person set confirmation = ""
+		where uuid = $personUUID
+	""".executeUpdate
   }
   
   def getEmail(email: String) = {

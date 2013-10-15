@@ -13,14 +13,14 @@ class People{
   }
   def createPerson(fullName:String):PersonRepository = ???
   
-  def createPerson(email: String, firstName: String, lastName: String, company: String, title: String, sex: String, birthDate: String) = {
+  def createPerson(email: String, firstName: String, lastName: String, company: String, title: String, sex: String, birthDate: String, confirmation: String) = {
     val uuid = randomUUID
     val fullName = firstName + " " + lastName
     sql"""
     	insert into Person(uuid, fullName, email, firstName,
-    		lastName, company, title, sex, birthDate
+    		lastName, company, title, sex, birthDate, confirmation
     	) values ($uuid, $fullName, $email, 
-    		$firstName, $lastName, $company, $title, $sex, $birthDate)
+    		$firstName, $lastName, $company, $title, $sex, $birthDate, $confirmation)
     """.executeUpdate 
     PersonRepository(uuid)
   }

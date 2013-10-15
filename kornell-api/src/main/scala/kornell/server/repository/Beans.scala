@@ -30,7 +30,7 @@ object Beans {
   def newPerson(uuid: String, fullName: String, lastPlaceVisited: String = null,
       	email: String, firstName: String, lastName: String, 
       	company: String, title: String, sex: String, 
-      	birthDate: Date) = {
+      	birthDate: Date, confirmation: String) = {
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
@@ -42,6 +42,7 @@ object Beans {
     person.setTitle(title)
     person.setSex(sex)
     person.setBirthDate(birthDate)
+    person.setConfirmation(confirmation)
     person
   }
 

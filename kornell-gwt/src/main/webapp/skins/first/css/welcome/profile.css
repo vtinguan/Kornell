@@ -35,7 +35,7 @@
 .profileForm .profileFields .fieldPanel .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;}
 .profileForm .profileFields .fieldPanel .fieldPanel .lblValueAdd{color:#b795a4;}
 .profileForm .profileFields .fieldPanel .fieldPanel .errorMessage{color:#ca2828;margin-top:-20px;}
-.profileForm .profileFields .fieldPanel .publicPanel{float:left;width:141.6px;}.profileForm .profileFields .fieldPanel .publicPanel .lblPublic{color:#696769;font-size:14px;line-height:46px;}
-.profileForm .profileFields .fieldPanel .publicPanel .imgPublic{float:left;padding-right:10px;padding-top:10px;}
+.profileForm .profileFields .fieldPanel .publicPanel{float:left;width:141.6px;}.profileForm .profileFields .fieldPanel .publicPanel .lblPublic{color:#696769;font-size:12px;line-height:46px;font-weight:bold;}
+.profileForm .profileFields .fieldPanel .publicPanel .imgPublic{float:left;padding-top:10px;}
 .profileForm .profileFields .fieldPanelImage{height:100px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanel{width:362px;height:auto;}.profileFields .fieldPanel .labelPanelImg{height:auto;} .profileFields .fieldPanel .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanel .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanel .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanel .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanel .labelPanelImg{float:left;} .profileFields .fieldPanel .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanel .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanel .publicPanel{float:none;padding-left:50px;}}

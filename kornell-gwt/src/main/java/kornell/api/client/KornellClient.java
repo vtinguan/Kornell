@@ -17,6 +17,7 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 	public void login(
 			String username,
 			String password,
+			String confirmation,
 			final Callback<UserInfoTO> callback) {
 		final String auth = "Basic "+ ClientProperties.base64Encode(username+":"+password);				
 		
@@ -33,8 +34,8 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 				callback.unauthorized();
 			}
 		};
-				
-		GET("/user")
+		confirmation = "".equals(confirmation)?"NONE":confirmation;
+		GET("/user/login/"+confirmation)
 			.addHeader("Authorization", auth)
 			.sendRequest(null, wrapper);
 
