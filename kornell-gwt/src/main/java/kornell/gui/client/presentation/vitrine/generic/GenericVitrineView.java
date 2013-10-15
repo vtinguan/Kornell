@@ -132,6 +132,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 				} else {
 					altUnauthorized.setText("Usuário não verificado. Confira seu email.");
 					altUnauthorized.setVisible(true);
+					ClientProperties.remove("Authorization");
 				}
 			}
 
