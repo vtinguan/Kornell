@@ -1,5 +1,6 @@
 package kornell.api.client;
 
+import kornell.core.shared.data.Institution;
 import kornell.core.shared.to.CourseTO;
 import kornell.core.shared.to.CoursesTO;
 import kornell.core.shared.to.RegistrationsTO;
@@ -95,6 +96,11 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 		
 		public void acceptTerms(Callback<Void> cb){
 			PUT("/institutions/"+institutionUUID).send(cb);
+		}
+		
+		//TODO: remove this
+		public void getInstitution(Callback<Institution> cb){
+			GET("/institutions/"+institutionUUID).sendRequest(null, cb);
 		}
 	}
 	
