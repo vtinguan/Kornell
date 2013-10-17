@@ -8,7 +8,7 @@
 		<b:Paragraph ui:field="titleUser" addStyleNames="titleUser"></b:Paragraph>
 		<b:Paragraph ui:field="txtTerms" addStyleNames="txtTerms"></b:Paragraph>
 		<g:FlowPanel addStyleNames="termsButtonBar">
-			<g:Button ui:field="btnAgree" addStyleNames="btnTerms btnAgree"/>
+			<g:Button ui:field="btnAgree" addStyleNames="btnTerms btnAction"/>
 			<g:Button ui:field="btnDontAgree" addStyleNames="btnTerms btnDontAgree"/>
 		</g:FlowPanel>
 	</g:FlowPanel>
