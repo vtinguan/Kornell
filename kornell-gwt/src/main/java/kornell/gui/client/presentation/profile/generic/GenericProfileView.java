@@ -7,11 +7,13 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.SimpleDatePicker;
 import kornell.gui.client.presentation.util.ValidatorHelper;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -210,6 +212,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 								GWT.log("User created");
 								isEditMode = false;
 								editPanel.setVisible(!isEditMode);
+								//TODO remove this
+								ClientProperties.remove("Authorization");
 								placeCtrl.goTo(new VitrinePlace());
 							}
 						});
@@ -222,10 +226,12 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
+		bus.fireEvent(new LogoutEvent());
+		/*
 		isEditMode = false;
 		editPanel.setVisible(!isEditMode);
 		clearErrors();
-		displayFields();
+		displayFields();*/
 	}
 
 	private void clearErrors() {

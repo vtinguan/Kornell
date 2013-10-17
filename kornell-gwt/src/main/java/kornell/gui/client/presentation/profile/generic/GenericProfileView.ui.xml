@@ -4,11 +4,11 @@
 			<g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
 			<g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>
 			<g:FlowPanel ui:field="editPanel" addStyleNames="editPanel">
-				<g:Label ui:field="lblEdit" addStyleNames="lblEdit"></g:Label>
+				<g:Label ui:field="lblEdit" addStyleNames="shy lblEdit"></g:Label>
 			</g:FlowPanel>
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="profileFields" addStyleNames="profileFields">
-			<g:FlowPanel addStyleNames="fieldPanel fieldPanelImage ">
+			<g:FlowPanel addStyleNames="shy fieldPanel fieldPanelImage ">
 				<g:FlowPanel addStyleNames="labelPanel labelPanelImg">
 					<g:Label addStyleNames="lblLabelImg">Imagem do perfil</g:Label>
 					<g:Label ui:field="imageExtraInfo" addStyleNames="lblExtraInfo">Inclua aqui uma foto sua</g:Label>
@@ -17,7 +17,7 @@
 					<g:Image ui:field="imgProfile"></g:Image>
 				</g:FlowPanel>
 			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth "></g:Image>
+			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="shy fillWidth"></g:Image>
 			
 			
 			<g:FlowPanel addStyleNames="fieldPanel">
