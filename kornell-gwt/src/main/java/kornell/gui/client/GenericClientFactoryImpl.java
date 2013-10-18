@@ -2,6 +2,7 @@ package kornell.gui.client;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.shared.data.Institution;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
@@ -41,6 +42,7 @@ import kornell.gui.client.presentation.profile.generic.GenericProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;
 import kornell.gui.client.presentation.sandbox.SandboxView;
 import kornell.gui.client.presentation.sandbox.generic.GenericSandboxView;
+import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.terms.generic.GenericTermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -51,6 +53,7 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.scorm.API_1484_11;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
+import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -200,16 +203,29 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 			@Override
 			protected void unauthorized() {
-				startApp(new VitrinePlace());
+				VitrinePlace vitrinePlace;
+				if(Window.Location.getHash().split(":").length > 1){
+					vitrinePlace = new VitrinePlace(Window.Location.getHash().split(":")[1]);
+				} else {
+					vitrinePlace = new VitrinePlace();
+				}
+				startApp(vitrinePlace);
 			}
 			
-			protected void startApp(Place defaultPlace){
-				initGUI();
-				initActivityManagers();
-				initHistoryHandler(defaultPlace);
-				initException();
-				initSCORM();
-				initPersonnel();
+			protected void startApp(final Place defaultPlace){
+				//TODO not good
+				client.institution("00a4966d-5442-4a44-9490-ef36f133a259").getInstitution(new Callback<Institution>(){
+					@Override
+					protected void ok(Institution institution){
+						ClientProperties.setEncoded(ClientProperties.INSTITUTION_ASSETS_URL, institution.getAssetsURL());
+						initGUI();
+						initActivityManagers();
+						initHistoryHandler(defaultPlace);
+						initException();
+						initSCORM();
+						initPersonnel();
+					}
+				});
 			}
 
 			private void initPersonnel() {

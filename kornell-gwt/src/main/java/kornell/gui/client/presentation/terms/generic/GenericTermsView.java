@@ -14,6 +14,7 @@ import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.CourseBarEvent;
 import kornell.gui.client.event.InstitutionEvent;
+import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -61,7 +62,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	private PlaceController placeCtrl;
 	private Place defaultPlace;
 	
-	private String barLogoFileName = "logo380x110.png";
+	private String barLogoFileName = "logo300x80.png";
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
@@ -142,7 +143,7 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	@UiHandler("btnDontAgree")
 	void handleClickInProgress(ClickEvent e) {
-		placeCtrl.goTo(new VitrinePlace());
+		bus.fireEvent(new LogoutEvent());
 	}
 
 	@Override

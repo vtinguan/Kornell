@@ -1,18 +1,14 @@
 package kornell.server.api
 
-import scala.collection.JavaConverters._
-import javax.ws.rs._
-import javax.ws.rs.core._
-import kornell.core.shared.data._
-import kornell.core.shared.to.CourseTO
-import kornell.core.shared.to.CourseTO
-import kornell.server.repository.TOs
-import kornell.server.repository.TOs
-import kornell.server.repository.jdbc.Courses
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.core.Context
+import javax.ws.rs.core.SecurityContext
+import kornell.server.dev.util.ContentsParser
 import kornell.server.repository.jdbc.Courses
 import kornell.server.repository.s3.S3
-import scala.io.Source
-import kornell.server.dev.util.ContentsParser
+import kornell.core.shared.to.CourseTO
 import kornell.core.shared.data.Contents
 
 class CourseResource(uuid: String) {

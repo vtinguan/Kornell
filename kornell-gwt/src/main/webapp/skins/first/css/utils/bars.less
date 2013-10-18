@@ -18,13 +18,14 @@
 		}
 		.menuBarButton {
 			.btnBorder;
-			height: @barNorthHeight;
-			line-height: barNorthHeight;
+			@paddingTop: 10px;
+			height: @barNorthHeight - @paddingTop;
+			line-height: @barNorthHeight - (@paddingTop*2);
 			float: left;
 			text-align: center;
 			padding-left: 10px;
 			padding-right: 10px;
-			padding-top: 12px;
+			padding-top: @paddingTop;;
 			.label{
 				background: transparent;
 				color: @niceTextColor;
