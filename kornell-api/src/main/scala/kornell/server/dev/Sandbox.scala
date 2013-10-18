@@ -30,7 +30,7 @@ Pagina 2.2
 Pagina 2.3    
 """;
 
-  val cs = ContentsParser.parse(source);
+  val cs = ContentsParser.parse("",source);
 
   def printPage(p: ExternalPage) = {
     println("[" ++ p.getKey() + "] " + p.getTitle() + "")
