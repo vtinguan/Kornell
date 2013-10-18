@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 public interface Sequencer 
 	extends NavigationRequest.Handler {
-	void displayOn(FlowPanel contentPanel);
+	Sequencer withPanel(FlowPanel contentPanel);
 	Sequencer withPlace(CoursePlace place);
+	void go();
 }

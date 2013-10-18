@@ -20,8 +20,8 @@ public class CoursePresenter implements CourseView.Presenter{
 	}
 	
 
-	private void displayPlace() {
-		sequencer.at(place).displayOn(getPanel());
+	private void displayPlace() {	
+		sequencer.withPlace(place).withPanel(getPanel()).go();
 	}
 
 

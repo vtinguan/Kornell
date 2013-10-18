@@ -21,7 +21,7 @@ public class SequencerFactoryImpl implements SequencerFactory {
 	}
 
 	@Override
-	public Sequencer at(CoursePlace place) {
+	public Sequencer withPlace(CoursePlace place) {
 		if (sequencer == null)
 			// sequencer = new NamingConventionSequencer(bus, ctrl, client);
 			sequencer = new CourseSequencer(bus,client);
