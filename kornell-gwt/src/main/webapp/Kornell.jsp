@@ -3,7 +3,7 @@
   <head>
   	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   	<meta charset="utf-8">
-  	<meta name="kornell.version" content="Direct navigation"> 
+  	<meta name="kornell.version" content="IFRAME FIX"> 
   	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <title>&nbsp;&nbsp;</title>
@@ -44,6 +44,36 @@
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
     <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/css/skin.css"/>  
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
+	<script type="text/javascript">
+		console.debug("BEGIN IFRAME FIX");
+		// Prevent variables from being global      
+		(function () {
+
+		      /*
+		          1. Inject CSS which makes iframe invisible
+		      */
+		    
+		    var div = document.createElement('div'),
+		        ref = document.getElementsByTagName('base')[0] || 
+		              document.getElementsByTagName('script')[0];
+
+		    div.innerHTML = '&shy;<style> iframe { visibility: hidden; } </style>';
+
+		    ref.parentNode.insertBefore(div, ref);
+
+		        
+		    /*
+		        2. When window loads, remove that CSS, 
+		           making iframe visible again
+		    */
+		    
+		    window.onload = function() {
+		        div.parentNode.removeChild(div);
+		    }
+		    
+		})();		
+		console.debug("END IFRAME FIX");
+	</script>
   </head>
 
   <body>

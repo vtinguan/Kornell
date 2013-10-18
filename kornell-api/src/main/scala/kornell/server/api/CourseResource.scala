@@ -28,9 +28,10 @@ class CourseResource(uuid: String) {
     val courseTO = Courses.byUUID(uuid).get    
     val s3 = S3(courseTO.getCourse.getRepositoryUUID)
     val structureSrc = s3.source("structure.knl")    
-    val  structureText = structureSrc.mkString("")      
-    courseTO.setBaseURL(s3.baseURL)
-    val contents = ContentsParser.parse(structureText)
+    val structureText = structureSrc.mkString("")
+    val baseURL = s3.baseURL
+    courseTO.setBaseURL(baseURL)
+    val contents = ContentsParser.parse(baseURL,structureText)
     contents.setCourseTO(courseTO)      
     contents   
   }
