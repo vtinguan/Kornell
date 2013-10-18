@@ -186,7 +186,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	void doOK(ClickEvent e) {
 		clearErrors();
 		if(validateFields()){
-			client.checkUser(username.getText(), email.getText(), new Callback<UserInfoTO>(){
+			client.checkUser(username.getText().toLowerCase().trim(), email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
 				@Override
 				protected void ok(UserInfoTO user){
 					if(user.getPerson() != null){
@@ -196,9 +196,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 						fieldsToErrorLabels.get(email).getError().setText("O email já existe.");
 					}
 					if(!checkErrors()){
-						String data = username.getText().trim() + "###" + 
+						String data = username.getText().toLowerCase().trim() + "###" + 
 								password.getText().trim() + "###" +
-								email.getText().trim() + "###" +
+								email.getText().toLowerCase().trim() + "###" +
 								firstName.getText().trim() + "###" +
 								lastName.getText().trim() + "###" +
 								company.getText().trim() + "###" +

@@ -1,3 +1,87 @@
 @import "../utils/mixins";
 @import "../utils/colors";
 
+.VitrinePlace {	
+	background: url(/skins/first/bg.jpg) no-repeat center center fixed;	 
+	background-size: cover;
+	background-color: @boxLoginBackgroundColor;
+
+	.wrapper{
+		width: @wrapperWidth;
+	}
+	.boxLogin {
+		position: absolute;
+		right: 50px;
+		top: 25px;
+		background-color: rgba(0, 0, 0, 0.8);
+		width: 225px;
+		padding: 15px 50px;
+		border-radius:8px;
+		box-shadow: 0px 0px 2px 8px rgba(109,103,99,0.25);	
+		min-height: 200px;
+		color: @niceTextColor;
+		.logo{
+			margin-bottom: 25px;
+		}
+		.personIcon{
+			float: left;
+			padding-top: 5px;
+			padding-right: 15px;
+			padding-left: 28px;
+		}
+		h1{
+			font-size: 1.7em;
+			font-weight: normal;
+			margin-top: 0;
+		}
+		p{
+		}
+		.btnVitrine{
+			.sizepx(160, 30);
+			font-size: 12px;
+			margin: 0 auto;
+			margin-top: 25px;
+		}
+		.inputWrapper{
+			width: 213px;
+			height: 18px;
+			background: white;
+			padding-left: 10px;
+			padding-top: 8px;
+			padding-bottom: 6px;
+			border: 1px solid #cccccc;
+			margin-bottom: 14px;
+			.inputBar{
+				height: 20px;
+				float: left;
+				width: 3px;
+				background: #9b0b05;
+				margin-right: 5px;
+				margin-top: -2px;
+			}
+			input {
+				width: 200px;
+				padding: 0;
+				border: 0;
+				box-shadow: none;
+				font-size: 16px;
+				font-weight: bold;
+			}	
+		}
+		.alert{
+			width: 202px;
+			font-size: 12px;
+			line-height: 14px;
+			padding: 10px;
+		}
+	}
+}
+@media screen and (max-width: @wrapperWidth) {
+	.VitrinePlace {
+		.wrapper{
+    		width: @wrapperWidthUnder990;
+		}
+    }
+}
+
+

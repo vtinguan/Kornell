@@ -15,6 +15,7 @@ import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -92,6 +93,12 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		} else {
 			imgLogo.setUrl("/skins/first/icons/logo.png");
 		}
+		
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand () {
+	        public void execute () {
+	            txtUsername.setFocus(true);
+	        }
+	    });
 	}
 
 
@@ -146,7 +153,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		GWT.log("Confirmation: " + confirmation);
 		// TODO: Should be client.auth().checkPassword()?
 		// TODO: Should the api accept HasValue<String> too?
-		client.login(txtUsername.getValue(),
+		client.login(txtUsername.getValue().toLowerCase().trim(),
 				pwdPassword.getValue(),
 				confirmation,
 				callback);
