@@ -3,7 +3,9 @@ package kornell.gui.client.presentation.vitrine.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
+import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.util.ClientProperties;
 
@@ -47,6 +49,8 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@UiField
 	Button btnLogin;
 	@UiField
+	Button btnRegister;
+	@UiField
 	Alert altUnauthorized;
 	@UiField
 	Image imgLogo;
@@ -84,7 +88,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		
 		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
 		if(imgLogoURL != null){
-			imgLogo.setUrl(imgLogoURL + "logo250x45.png");
+			imgLogo.setUrl(imgLogoURL + "logo300x80.png");
 		} else {
 			imgLogo.setUrl("/skins/first/icons/logo.png");
 		}
@@ -97,7 +101,13 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	@UiHandler("btnLogin")
 	void doLogin(ClickEvent e) {
+		altUnauthorized.setVisible(true);
 		doLogin();
+	}
+
+	@UiHandler("btnRegister")
+	void register(ClickEvent e) {
+		placeCtrl.goTo(new ProfilePlace(""));
 	}
 
 	private void doLogin() {
@@ -105,30 +115,40 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
 			@Override
 			protected void ok(UserInfoTO user) {
-				if(user.isSigningNeeded()){
-					placeCtrl.goTo(new TermsPlace());
-				} else {
-					String token = user.getLastPlaceVisited();
-					Place place;
-					if(token == null || token.contains("vitrine")){
-						place = defaultPlace;
-					}else {
-						place = mapper.getPlace(token);
-						
+				if("".equals(user.getPerson().getConfirmation())){
+					if(user.isSigningNeeded()){
+						placeCtrl.goTo(new TermsPlace());
+					} else {
+						String token = user.getLastPlaceVisited();
+						Place place;
+						if(token == null || token.contains("vitrine")){
+							place = defaultPlace;
+						}else {
+							place = mapper.getPlace(token);
+							
+						}
+						placeCtrl.goTo(place);
 					}
-					placeCtrl.goTo(place);
+				} else {
+					altUnauthorized.setText("Usuário não verificado. Confira seu email.");
+					altUnauthorized.setVisible(true);
+					ClientProperties.remove("Authorization");
 				}
 			}
 
 			@Override
 			protected void unauthorized() {
+				altUnauthorized.setText("Usuário ou senha incorretos, por favor tente novamente.");
 				altUnauthorized.setVisible(true);
 			}
 		};
+		String confirmation = ((VitrinePlace)placeCtrl.getWhere()).getConfirmation();
+		GWT.log("Confirmation: " + confirmation);
 		// TODO: Should be client.auth().checkPassword()?
 		// TODO: Should the api accept HasValue<String> too?
 		client.login(txtUsername.getValue(),
 				pwdPassword.getValue(),
+				confirmation,
 				callback);
 	}
 

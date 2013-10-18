@@ -3,14 +3,26 @@
 .btn-primary {
   .btnSelected;
 }
+.btnDefault{
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+	font-size: 12px;	
+	font-weight: bold;
+	color: lighten(@niceTextColor, 20%);
+	border-radius: 5px;
+	display: block;
+	border: 0px;
+}
 .btnNotSelected{
-  .gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+	.btnDefault;
+	.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
 }
 .btnSelected{
-  .gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
+	.btnDefault;
+ 	.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
 }
 .btnAction{
-  .gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
+	.btnDefault;
+ 	.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
 }
 .btnBorder{
 	border-left: 1px solid @buttonBorderLeftColor;
@@ -94,6 +106,7 @@
 		border-radius: 5px;
 		border: 0;
 		margin: 15px;
+		display: inline-block;
 	}
 	.btnOK{
 		margin-left: 100px;
@@ -101,8 +114,8 @@
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 18px;
+    height: 18px;
 }
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(90, 88, 88, 0.5) !important; 

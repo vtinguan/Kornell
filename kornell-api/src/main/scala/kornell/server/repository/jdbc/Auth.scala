@@ -22,14 +22,10 @@ object Auth  {
       rs.getString("title"),
       rs.getString("sex"),
       rs.getDate("birthDate"),
-      rs.getBoolean("usernamePrivate"),
-      rs.getBoolean("emailPrivate"),
-      rs.getBoolean("firstNamePrivate"),
-      rs.getBoolean("lastNamePrivate"),
-      rs.getBoolean("companyPrivate"),
-      rs.getBoolean("titlePrivate"),
-      rs.getBoolean("sexPrivate"),
-      rs.getBoolean("birthDatePrivate"))
+      rs.getString("confirmation"))
+      
+  implicit def toString(rs: ResultSet): String = rs.getString("email")
+
 
   def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T = {
 
@@ -49,14 +45,25 @@ object Auth  {
     sql"""
 		select p.uuid, p.fullName, p.lastPlaceVisited,
 		    p.email, p.firstName , p.lastName, p.company, 
-		    p.title, p.sex, p.birthDate, 
-			p.usernamePrivate, p.emailPrivate, p.firstNamePrivate, 
-			p.lastNamePrivate, p.companyPrivate, p.titlePrivate, 
-			p.sexPrivate, p.birthDatePrivate
+		    p.title, p.sex, p.birthDate, p.confirmation
 		from Person p
 		join Password pw on pw.person_uuid = p.uuid
 		where pw.username = $username
 	""".first[Person]
+  }
+  
+  def confirmAccount(personUUID: String) = {
+    sql"""
+		update Person set confirmation = ""
+		where uuid = $personUUID
+	""".executeUpdate
+  }
+  
+  def getEmail(email: String) = {
+    sql"""
+    	select p.email from Person p
+    	where p.email = $email
+    """.first[String]
   }
 
   def setPlainPassword(personUUID: String, username: String, plainPassword: String) = {

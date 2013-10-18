@@ -1,6 +1,8 @@
 package kornell.gui.client.personnel;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.shared.data.Institution;
 import kornell.gui.client.event.InstitutionEvent;
 import kornell.gui.client.event.InstitutionEventHandler;
 import kornell.gui.client.util.ClientProperties;
@@ -16,7 +18,7 @@ public class Dean implements InstitutionEventHandler{
 	private String DEFAULT_SITE_TITLE = "Kornell";
 	
 	public Dean(EventBus bus, KornellClient client) { 
-		this.client = client;
+		this.client = client;		
 		
 		String url = ClientProperties.getDecoded(ClientProperties.INSTITUTION_ASSETS_URL);
 		if(url != null){

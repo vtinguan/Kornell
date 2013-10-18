@@ -6,9 +6,22 @@ import kornell.server.repository.jdbc.SQLInterpolation._
 
 import kornell.server.repository.Beans._
 class People{
-  def createPerson(fullName:String):PersonRepository = {
+  def createTestPerson(fullName:String):PersonRepository = {
     val uuid = randomUUID
     sql"insert into Person(uuid, fullName) values ($uuid,$fullName)".executeUpdate 
+    PersonRepository(uuid)
+  }
+  def createPerson(fullName:String):PersonRepository = ???
+  
+  def createPerson(email: String, firstName: String, lastName: String, company: String, title: String, sex: String, birthDate: String, confirmation: String) = {
+    val uuid = randomUUID
+    val fullName = firstName + " " + lastName
+    sql"""
+    	insert into Person(uuid, fullName, email, firstName,
+    		lastName, company, title, sex, birthDate, confirmation
+    	) values ($uuid, $fullName, $email, 
+    		$firstName, $lastName, $company, $title, $sex, $birthDate, $confirmation)
+    """.executeUpdate 
     PersonRepository(uuid)
   }
 }

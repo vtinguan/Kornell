@@ -11,12 +11,6 @@
 		display: block;
 		margin-bottom: 30px;
 	}
-	.titleUser {
-		color: @textHighlightColor;
-		font-size: 20px;
-		padding-top: 5px;
-		padding-bottom: 10px;
-	}
     .txtTitle {
 		color: @niceTextColor;
 		font-size: 25px;
@@ -24,6 +18,12 @@
 		font-weight: bold;
 		margin-top: 5px;
 		margin-bottom: 20px;
+	}
+	.titleUser {
+		color: @textHighlightColor;
+		font-size: 20px;
+		padding-top: 5px;
+		padding-bottom: 10px;
 	}
 	.txtTerms {
 		color: @niceTextColor;
@@ -35,16 +35,17 @@
 		.btnTerms{
 			color: @niceTextColor;
 			.sizepx(150, 30);
+			float: left;
 			border-radius: 5px;
 			border: 0px;
-			font-size: 13px;
+			font-size: 12px;
 			font-weight: bold;
 			margin-top: 30px;
 			margin-bottom:  50px;
 		}
 		.btnAgree{
 			margin-right: 30px;
-			.btnAction;
+			.btnSelected;
 		}
 		.btnDontAgree{
 			margin-left: 30px;
