@@ -17,8 +17,8 @@
 					<b:PasswordTextBox ui:field="pwdPassword" placeholder="sua senha"></b:PasswordTextBox>
 				</g:FlowPanel>
 				<b:Controls>
-					<g:Button ui:field="btnLogin" addStyleNames="btnVitrine btnSelected">ENTRAR</g:Button>
-		    		<g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnAction">CADASTRAR-SE</g:Button>
+					<g:Button ui:field="btnLogin" addStyleNames="btnVitrine btnAction">ENTRAR</g:Button>
+		    		<g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnSelected">CADASTRAR-SE</g:Button>
 				</b:Controls>
 			</b:Form>
 		</g:FlowPanel>
