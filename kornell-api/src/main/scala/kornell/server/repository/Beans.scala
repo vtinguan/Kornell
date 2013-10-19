@@ -17,6 +17,7 @@ import kornell.core.shared.data.Content
 import kornell.core.shared.data.ContentFormat
 import kornell.core.shared.data.ExternalPage
 import kornell.core.shared.data.Topic
+import kornell.core.shared.util.StringUtils._
 
 //TODO: Smells bad... but relates to 1-1 to BeanFactory
 //TODO: Consider turning to Object
@@ -124,10 +125,11 @@ object Beans {
     content
   }
 
-  def newExternalPage(key: String = "", title: String = "") = {
+  def newExternalPage(baseURL:String ="", key: String = "", title: String = "") = {
     val page = factory.newExternalPage.as
     page.setTitle(title)
     page.setKey(key)
+    page.setURL(composeURL(baseURL,key))
     page    
   }
   

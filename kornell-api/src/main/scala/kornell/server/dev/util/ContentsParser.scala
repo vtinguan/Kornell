@@ -7,17 +7,19 @@ import kornell.server.repository.Beans
 import kornell.core.shared.data.Contents
 import scala.io.Source
 import scala.io.BufferedSource
+import kornell.core.shared.util.StringUtils._
 
 object ContentsParser {
+  
   val topicPattern = """#\s?(.*)""".r
   val pagePattern = """([^;]*);?([^;]*)?""".r 
 
-  def parse(source: BufferedSource ): Contents =
-    parseLines(source.getLines)
-  def parse(source: String): Contents = 
-    parseLines(source.lines) 
+  def parse(baseURL:String,source: BufferedSource ): Contents =
+    parseLines(baseURL,source.getLines)
+  def parse(baseURL:String,source: String): Contents = 
+    parseLines(baseURL,source.lines) 
   
-  def parseLines(lines:Iterator[String]) = {
+  def parseLines(baseURL:String,lines:Iterator[String]) = {
     val result = ListBuffer[Content]()
     var topic: Topic = null
     lines foreach { line =>
@@ -26,12 +28,14 @@ object ContentsParser {
           topic = Beans.newTopic(topicName)
           result += Beans.newContent(topic) 
         }
+        
         case pagePattern(key,title) => { 
-          val page = Beans.newExternalPage(key,title)
+          val page = Beans.newExternalPage(baseURL,key,title)
           val content = Beans.newContent(page)
           if (topic != null) topic.getChildren().add(content)
           else result += content
         }
+        
       }
     }
     val contents = result.toList
