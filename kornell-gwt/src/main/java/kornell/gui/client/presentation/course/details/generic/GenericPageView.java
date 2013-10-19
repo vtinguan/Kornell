@@ -81,15 +81,15 @@ public class GenericPageView extends Composite implements
 	private void display() {
 		topicIcon.setUrl(IMAGES_PATH + "status_toStart.png");
 
-		/*Anchor pageAnchor = new Anchor(page.getTitle());
+		Anchor pageAnchor = new Anchor(page.getTitle());
 		pageAnchor.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				ClientProperties.set(CourseSequencer.class.getName() + ".CURRENT_KEY", page.getKey());
 				placeCtrl.goTo(new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46"));
 			}
-		});*/
-		lblPage.add(new Label(page.getTitle()));
+		});
+		lblPage.add(pageAnchor);
 	}
 	
 	@Override
