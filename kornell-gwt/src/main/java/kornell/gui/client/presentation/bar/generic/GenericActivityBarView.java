@@ -215,21 +215,13 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	void handleClickBtnNotes(ClickEvent e) {
 		
 		if(notesPopup == null){
-			// TODO: remove this after changing the api
-			String courseUUID = ClientProperties.getDecoded(ClientProperties.COURSE_UUID);
-			String courseNotes = ClientProperties.getDecoded(ClientProperties.COURSE_NOTES);
-			if(courseUUID == null || courseNotes == null){
-				client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
-					@Override
-					protected void ok(CourseTO course) {
-						notesPopup = new NotesPopup(client, course.getCourse().getUUID(), course.getEnrollment().getNotes());
-						notesPopup.show();
-					}			
-				});	
-			} else {
-				notesPopup = new NotesPopup(client, courseUUID, courseNotes);
-				notesPopup.show();
-			}
+			client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
+				@Override
+				protected void ok(CourseTO course) {
+					notesPopup = new NotesPopup(client, course.getCourse().getUUID(), course.getEnrollment().getNotes());
+					notesPopup.show();
+				}			
+			});	
 		} else {
 			notesPopup.show();
 		}
@@ -271,12 +263,12 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@Override
 	public void onNextActivityNotOK(NavigationForecastEvent evt) {
 		//TODO: uncomment
-		enableButton(BUTTON_NEXT, true);
+		//enableButton(BUTTON_NEXT, true);
 	}
 
 	@Override
 	public void onNextActivityOK(NavigationForecastEvent evt) {
-		enableButton(BUTTON_NEXT, true);
+		//enableButton(BUTTON_NEXT, true);
 	}
 	
 	@Override
