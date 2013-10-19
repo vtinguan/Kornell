@@ -183,10 +183,11 @@ public class GenericProfileView extends Composite implements ProfileView {
 	}
 
 	@UiHandler("btnOK")
-	void doOK(ClickEvent e) {
+	void doOK(ClickEvent e) { 
+		btnOK.setEnabled(false);
 		clearErrors();
 		if(validateFields()){
-			client.checkUser(username.getText(), email.getText(), new Callback<UserInfoTO>(){
+			client.checkUser(username.getText().toLowerCase().trim(), email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
 				@Override
 				protected void ok(UserInfoTO user){
 					if(user.getPerson() != null){
@@ -196,9 +197,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 						fieldsToErrorLabels.get(email).getError().setText("O email já existe.");
 					}
 					if(!checkErrors()){
-						String data = username.getText().trim() + "###" + 
+						String data = username.getText().toLowerCase().trim() + "###" + 
 								password.getText().trim() + "###" +
-								email.getText().trim() + "###" +
+								email.getText().toLowerCase().trim() + "###" +
 								firstName.getText().trim() + "###" +
 								lastName.getText().trim() + "###" +
 								company.getText().trim() + "###" +
@@ -211,17 +212,23 @@ public class GenericProfileView extends Composite implements ProfileView {
 							protected void ok(UserInfoTO user){
 								GWT.log("User created");
 								isEditMode = false;
+								
 								editPanel.setVisible(!isEditMode);
+								btnOK.setEnabled(true);
 								//TODO remove this
 								ClientProperties.remove("Authorization");
-								placeCtrl.goTo(new VitrinePlace());
+								VitrinePlace vitrinePlace = new VitrinePlace();
+								vitrinePlace.setUserCreated(true);
+								placeCtrl.goTo(vitrinePlace);
 							}
 						});
 						
 					}
+					btnOK.setEnabled(true);
 				}
 			});
 		}
+		btnOK.setEnabled(true);
 	}
 
 	@UiHandler("btnCancel")
