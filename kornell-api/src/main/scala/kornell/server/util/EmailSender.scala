@@ -29,8 +29,8 @@ import java.net.URL
 object EmailSender {
 	def sendEmail(person: Person, institution: Institution, confirmationLink: String){
 	  
-	  	val username: String = "strabstertest11@gmail.com"
-		val password: String = "strabstertest111"
+	  	val username: String = "eduvem.email.dev@gmail.com"
+		val password: String = "eduvemtest123"
  
 		val props: Properties = new Properties()
 		props.put("mail.smtp.host", "smtp.gmail.com")
@@ -56,7 +56,7 @@ object EmailSender {
 			message.setRecipients(Message.RecipientType.TO, person.getEmail())
 			val sex: String = if ("F".equals(person.getSex())) "a" else "o"
 			  
-			message.setSubject("Bem-vind" + sex + " &agrave; Universidade Virtual " + institution.getName() + "!" )
+			message.setSubject("Bem-vind" + sex + " à Universidade Virtual " + institution.getName() + "!" )
 			message.setSentDate(new Date())
 			
 			val body: String = """
