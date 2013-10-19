@@ -244,9 +244,9 @@ public class GenericCourseDetailsView extends Composite implements
 			lblActions.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					Window.open(client.getApiUrl() + "/report/certificate/"
+					Window.Location.assign(client.getApiUrl() + "/report/certificate/"
 							+ user.getPerson().getUUID() + "/"
-							+ courseTO.getCourse().getUUID(), "", "");
+							+ courseTO.getCourse().getUUID());
 				}
 			});
 		} else {
