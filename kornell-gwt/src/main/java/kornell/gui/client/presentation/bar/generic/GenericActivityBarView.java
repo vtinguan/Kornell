@@ -89,8 +89,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						
-						if(newPlace instanceof CoursePlace){
-							changePreviousButton();
+						if(newPlace instanceof CoursePlace){							
 							btnDetails.removeStyleName("btnSelected");
 						} else if(newPlace instanceof CourseDetailsPlace){
 							enableButton(BUTTON_PREVIOUS, false);
@@ -123,12 +122,10 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
 		
 		
-		if(placeCtrl.getWhere() instanceof CourseDetailsPlace){
+		if (placeCtrl.getWhere() instanceof CourseDetailsPlace) {
 			btnDetails.addStyleName("btnSelected");
 			enableButton(BUTTON_PREVIOUS, false);
 			enableButton(BUTTON_NEXT, false);
-		} else {
-			changePreviousButton();
 		}
 	}
 
@@ -248,22 +245,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		return null;
 	}
 	
-	private String getPage() {
-		try{	
-			return Window.Location.getHash().split(":")[1].split(";")[1];
-		} catch (Exception ex){
-			GWT.log("Error trying to get the course page number.");
-		}
-		return null;
-	}
 	
-	private void changePreviousButton() {	
-		if("0".equals(getPage())){
-			enableButton(BUTTON_PREVIOUS, false);
-		} else {
-			enableButton(BUTTON_PREVIOUS, true);
-		}	
-	}
 	
 	private void enableButton(String btn, boolean enable){
 		if(BUTTON_NEXT.equals(btn)){
