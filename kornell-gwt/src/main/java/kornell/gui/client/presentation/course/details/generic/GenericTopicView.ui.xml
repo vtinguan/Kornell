@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	<g:FlowPanel>
+	    <b:CollapseTrigger ui:field="trigger">
+			<g:FlowPanel ui:field="topicWrapper" addStyleNames="topicWrapper">
+				<g:FlowPanel ui:field="topicPanel" addStyleNames="topicPanel">
+					<g:Image ui:field="topicIcon" addStyleNames="topicIcon"></g:Image>
+					<g:Label ui:field="lblTopic" addStyleNames="lblTopic"></g:Label>
+				</g:FlowPanel>
+			</g:FlowPanel>
+	    </b:CollapseTrigger>
+		<b:Collapse ui:field="collapse" existTrigger="true" defaultOpen="false">
+		    <b:FluidRow ui:field="childrenPanel">
+		    </b:FluidRow>
+		</b:Collapse>
+	</g:FlowPanel>
+</ui:UiBinder> 
