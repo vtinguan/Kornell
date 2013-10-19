@@ -174,6 +174,7 @@ public class CourseSequencer implements Sequencer {
 	@Override
 	public Sequencer withPanel(FlowPanel contentPanel) {
 		this.contentPanel = contentPanel;
+		contentPanel.clear();
 		return this;
 	}
 
