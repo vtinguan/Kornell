@@ -22,6 +22,7 @@ import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -329,7 +330,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 			companyTxt.setText(user.getPerson().getCompany());
 			titleTxt.setText(user.getPerson().getTitle());
 			sexTxt.setText("F".equals(user.getPerson().getSex()) ? "Feminino" : "Masculino");
-			birthDateTxt.setText(user.getPerson().getBirthDate().toString());
+			birthDateTxt.setText(DateTimeFormat.getShortDateFormat().format(user.getPerson().getBirthDate()));
 		}
 		mapFieldsToErrorLabels();
 		showFields();
