@@ -1,5 +1,6 @@
 package kornell.gui.client.sequence;
 
+import java.util.Iterator;
 import java.util.List;
 
 import kornell.api.client.Callback;
@@ -15,11 +16,12 @@ import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class CourseSequencer implements Sequencer {
-
+	private String CURRENT_KEY = CourseSequencer.class.getName() + ".CURRENT_KEY";
 	private FlowPanel contentPanel;
 	private String courseUUID;
 	private KornellClient client;
@@ -50,6 +52,7 @@ public class CourseSequencer implements Sequencer {
 		currentIndex++;
 		preloadNext();
 		makeCurrentVisible();
+		checkpoint();
 		debug("CONTINUED");
 	}
 
@@ -63,8 +66,12 @@ public class CourseSequencer implements Sequencer {
 		currentIndex--;
 		preloadPrev();
 		makeCurrentVisible();
-
+		checkpoint();
 		debug("PREVED");
+	}
+
+	private void checkpoint() {
+		store(CURRENT_KEY,currentKey());
 	}
 
 	private void debug(String event) {
@@ -89,17 +96,17 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private String currentKey() {
-		return currentActom != null ? currentActom.getKey() : "-";
+		return currentActom != null ? currentActom.getKey() : "";
 	}
 
 	private String prevKey() {
 		// TODO Auto-generated method stub
-		return prevActom != null ? prevActom.getKey() : "-";
+		return prevActom != null ? prevActom.getKey() : "";
 	}
 
 	private String nextKey() {
 		// TODO Auto-generated method stub
-		return nextActom != null ? nextActom.getKey() : "-";
+		return nextActom != null ? nextActom.getKey() : "";
 	}
 
 	private boolean doesntHaveNext() {
@@ -188,13 +195,45 @@ public class CourseSequencer implements Sequencer {
 
 			private void orientateAndSail() {
 				// TODO: Fetch current position
-				currentIndex = 0;
+				currentIndex = lookupCurrentIndex();
 				currentActom = actoms.get(currentIndex);
 				initialLoad();
 			}
+
+			private int lookupCurrentIndex() {
+				int currentIndex = 0;
+				String currentKey = loadCurrentKey();
+				if(currentKey != null && ! currentKey.isEmpty()){
+					for (int i = 0; i < actoms.size(); i++) {
+						Actom actom = actoms.get(i);
+						if(currentKey.equals(actom.getKey())){
+							return i;
+						}
+					}					
+				}
+				return currentIndex;
+			}
+
+			private String loadCurrentKey() {
+				return load(CURRENT_KEY);
+			}
+
+
 		});
 	}
 
+	private String load(String key) {
+		Storage localStorage = Storage.getLocalStorageIfSupported();
+		if(localStorage != null)
+			return localStorage.getItem(key);
+		return null;
+	}
+	
+	private void store(String key, String value){
+		Storage localStorage = Storage.getLocalStorageIfSupported();
+		if(localStorage != null)
+			localStorage.setItem(key, value);
+	}
 	class ShowWhenReady implements ViewReadyEventHandler {
 
 		private Uidget uidget;
