@@ -38,8 +38,7 @@
 			<g:FlowPanel ui:field="passwordPanel" addStyleNames="fieldPanel">
 				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
 					<g:Label addStyleNames="lblLabel">Senha</g:Label>
-					<g:Label addStyleNames="lblExtraInfo">Mínimo de 8 caracteres, com letras</g:Label>
-					<g:Label addStyleNames="lblExtraInfo">maiúsculas, minúsculas e números.</g:Label>
+					<g:Label addStyleNames="lblExtraInfo">Mínimo de 6 caracteres.</g:Label>
 				</g:FlowPanel>
 				<g:FlowPanel addStyleNames="fieldPanel">
 					<b:PasswordTextBox ui:field="password" addStyleNames="field textField"></b:PasswordTextBox>
