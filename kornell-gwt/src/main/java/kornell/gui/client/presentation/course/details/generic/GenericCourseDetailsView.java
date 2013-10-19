@@ -1,7 +1,15 @@
 package kornell.gui.client.presentation.course.details.generic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.shared.data.Actom;
+import kornell.core.shared.data.Content;
+import kornell.core.shared.data.ContentFormat;
+import kornell.core.shared.data.Contents;
+import kornell.core.shared.data.ContentsCategory;
 import kornell.core.shared.data.coursedetails.CertificationTO;
 import kornell.core.shared.data.coursedetails.CourseDetailsTO;
 import kornell.core.shared.data.coursedetails.HintTO;
@@ -70,7 +78,12 @@ public class GenericCourseDetailsView extends Composite implements
 	CourseDetailsTO courseDetails;
 
 	UserInfoTO user;
+	
+	FlowPanel topicsPanel;
 
+	private Contents contents;
+	private List<Actom> actoms;
+	
 	public GenericCourseDetailsView(EventBus eventBus, KornellClient client,
 			PlaceController placeCtrl) {
 		this.bus = eventBus;
@@ -81,7 +94,7 @@ public class GenericCourseDetailsView extends Composite implements
 	}
 
 	private void initData() {
-		String uuid = placeCtrl.getWhere() instanceof CourseDetailsPlace ? ((CourseDetailsPlace) placeCtrl
+		final String uuid = placeCtrl.getWhere() instanceof CourseDetailsPlace ? ((CourseDetailsPlace) placeCtrl
 				.getWhere()).getCourseUUID() : ((CoursePlace) placeCtrl
 				.getWhere()).getCourseUUID();
 
@@ -95,11 +108,22 @@ public class GenericCourseDetailsView extends Composite implements
 					@Override
 					protected void ok(UserInfoTO userTO) {
 						user = userTO;
-						display();
+						client.course(uuid).contents(new Callback<Contents>() {
+							@Override
+							protected void ok(Contents contents) {
+								setContents(contents);
+								display();
+							}
+						});
 					}
 				});
 			}
 		});
+	}
+
+	private void setContents(Contents contents) {
+		this.contents = contents;
+		this.actoms = ContentsCategory.collectActoms(contents);
 	}
 
 	private void display() {
@@ -251,11 +275,12 @@ public class GenericCourseDetailsView extends Composite implements
 	}
 
 	private FlowPanel getTopicsPanel() {
-		FlowPanel topicsPanel = new FlowPanel();
-		topicsPanel.addStyleName("topicsPanel");
-
-		topicsPanel.add(getTopicsTableHeader());
-		topicsPanel.add(getTopicsTableContent());
+		if(topicsPanel == null){
+			topicsPanel = new FlowPanel();
+			topicsPanel.addStyleName("topicsPanel");
+			topicsPanel.add(getTopicsTableHeader());
+			topicsPanel.add(getTopicsTableContent());
+		}
 
 		return topicsPanel;
 	}
@@ -263,66 +288,11 @@ public class GenericCourseDetailsView extends Composite implements
 	private FlowPanel getTopicsTableContent() {
 		FlowPanel topicsContentPanel = new FlowPanel();
 		topicsContentPanel.addStyleName("topicsContentPanel");
-
-		for (TopicTO topicTO : courseDetails.getTopics()) {
-			topicsContentPanel.add(getTopicWrapper(topicTO));
-		}
-
+		int i = 0;
+		for (Content content:contents.getChildren()) {
+			topicsContentPanel.add(new GenericTopicView(bus, client, placeCtrl, content, i++));
+		}		
 		return topicsContentPanel;
-	}
-
-	private FlowPanel getTopicWrapper(TopicTO topicTO) {
-		FlowPanel topicWrapper = new FlowPanel();
-		topicWrapper.addStyleName("topicWrapper");
-
-		FlowPanel topicPanel = new FlowPanel();
-		topicPanel.addStyleName("topicPanel");
-
-		Image topicIcon = new Image(IMAGES_PATH + "status_" + topicTO.getType()
-				+ ".png");
-		topicIcon.addStyleName("topicIcon");
-		topicPanel.add(topicIcon);
-
-		Label lblTopic = new Label(topicTO.getTitle());
-		lblTopic.addStyleName("lblTopic");
-		topicPanel.add(lblTopic);
-
-		topicWrapper.add(topicPanel);
-		/*
-		 * Label lblStatus = new Label(topicTO.getStatus());
-		 * lblStatus.addStyleName("finishedTest".equals(topicTO.getType()) ?
-		 * "lblStatusFinishedTest" : "lblStatus"); topicWrapper.add(lblStatus);
-		 * 
-		 * Label lblTime = new Label("".equals(topicTO.getTime()) ? "-" :
-		 * topicTO.getTime()); lblTime.addStyleName("lblTime");
-		 * topicWrapper.add(lblTime);
-		 * 
-		 * FlowPanel pnlForumComments = new FlowPanel();
-		 * pnlForumComments.addStyleName("pnlForumComments");
-		 * 
-		 * Label lblForumComments = new Label(topicTO.getForumComments() == 0 ?
-		 * "-" : ""+topicTO.getForumComments());
-		 * lblForumComments.addStyleName("lblForumComments");
-		 * pnlForumComments.add(lblForumComments);
-		 * 
-		 * if(topicTO.getNewForumComments() > 0){ Label lblDividingBar = new
-		 * Label("|"); lblDividingBar.addStyleName("lblDividingBar");
-		 * pnlForumComments.add(lblDividingBar);
-		 * 
-		 * Label lblNew = new Label("Novos:"); lblNew.addStyleName("lblNew");
-		 * pnlForumComments.add(lblNew);
-		 * 
-		 * Label lblNewForumComments = new
-		 * Label(""+topicTO.getNewForumComments());
-		 * lblNewForumComments.addStyleName("lblNewForumComments");
-		 * pnlForumComments.add(lblNewForumComments); }
-		 * 
-		 * topicWrapper.add(pnlForumComments);
-		 * 
-		 * Label lblNotes = new Label(topicTO.isNotes() ? "Ver" : "-");
-		 * lblNotes.addStyleName("lblNotes"); topicWrapper.add(lblNotes);
-		 */
-		return topicWrapper;
 	}
 
 	private FlowPanel getTopicsTableHeader() {
@@ -331,16 +301,6 @@ public class GenericCourseDetailsView extends Composite implements
 
 		topicsHeaderPanel.add(getHeaderButton(constants.topic(), "btnTopics",
 				"btnTopicsHeader"));
-		/*
-		 * topicsHeaderPanel.add(getHeaderButton("Status", "btnStatus",
-		 * "btnTopicsHeader")); topicsHeaderPanel.add(getHeaderButton("Tempo",
-		 * "btnTime", "btnTopicsHeader"));
-		 * topicsHeaderPanel.add(getHeaderButton("Comentários no Fórum",
-		 * "btnForumComments", "btnTopicsHeader"));
-		 * topicsHeaderPanel.add(getHeaderButton("Anotações", "btnNotes",
-		 * "btnTopicsHeader"));
-		 */
-
 		return topicsHeaderPanel;
 	}
 

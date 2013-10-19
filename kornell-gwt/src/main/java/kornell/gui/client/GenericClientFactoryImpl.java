@@ -135,6 +135,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		ScrollPanel sp = new ScrollPanel();
 		sp.add(shell);
 		dockLayoutPanel.add(sp);
+		sp.addStyleName("vScrollBar");
 		dockLayoutPanel.addStyleName("wrapper");
 		rootLayoutPanel.add(dockLayoutPanel);
 
