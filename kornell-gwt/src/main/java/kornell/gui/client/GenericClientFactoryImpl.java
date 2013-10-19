@@ -107,6 +107,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private Place defaultPlace;
 	private SandboxPresenter sandboxPresenter;
 
+
 	public GenericClientFactoryImpl() {
 	}
 
@@ -144,11 +145,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						setPlaceNameAsBodyStyle(event);
-						
-						Place newPlace = event.getNewPlace();
 						dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(), !getSouthBarView().isVisible());
-						
-
 						if(placeCtrl.getWhere() instanceof VitrinePlace){
 							dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(), 0);
 						} else {

@@ -1,6 +1,8 @@
 
 package kornell.gui.client;
 
+import com.google.gwt.place.shared.Place;
+
 import kornell.gui.client.presentation.course.CoursePresenter;
 import kornell.gui.client.presentation.course.CourseView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;

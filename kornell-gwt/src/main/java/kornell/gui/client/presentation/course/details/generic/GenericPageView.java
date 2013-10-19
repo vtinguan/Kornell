@@ -22,6 +22,8 @@ import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
+import kornell.gui.client.sequence.CourseSequencer;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -61,13 +63,13 @@ public class GenericPageView extends Composite implements
 	@UiField
 	Image topicIcon;
 	@UiField
-	Label lblPage;
+	FlowPanel lblPage;
 
 	private ExternalPage page;
 	private List<Actom> actoms;
 	
 	public GenericPageView(EventBus eventBus, KornellClient client,
-			PlaceController placeCtrl, ExternalPage page) {
+			final PlaceController placeCtrl, final ExternalPage page) {
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
@@ -78,7 +80,16 @@ public class GenericPageView extends Composite implements
 	
 	private void display() {
 		topicIcon.setUrl(IMAGES_PATH + "status_toStart.png");
-		lblPage.setText(page.getTitle());
+
+		/*Anchor pageAnchor = new Anchor(page.getTitle());
+		pageAnchor.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				ClientProperties.set(CourseSequencer.class.getName() + ".CURRENT_KEY", page.getKey());
+				placeCtrl.goTo(new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46"));
+			}
+		});*/
+		lblPage.add(new Label(page.getTitle()));
 	}
 	
 	@Override

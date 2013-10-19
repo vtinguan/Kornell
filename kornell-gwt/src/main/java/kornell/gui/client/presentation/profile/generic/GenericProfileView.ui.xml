@@ -170,8 +170,9 @@
 		
 		
 		<g:FlowPanel addStyleNames="standardButtonBar">
-			<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard btnOK"/>
+			<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard btn1of2"/>
 			<g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
+			<g:Button ui:field="btnClose" addStyleNames="btnNotSelected btnStandard btn1of1"/>
 		</g:FlowPanel>
 	</b:Form>
 </ui:UiBinder>
