@@ -12,9 +12,6 @@
 .BMP0{border:0;margin:0;padding:0;}
 .standardButtonBar{width:420px;margin:0 auto;}.standardButtonBar .btnStandard{font-weight:bold;color:#b6b6b6;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;margin:15px;display:inline-block;}
 .standardButtonBar .btnOK{margin-left:100px;}
-::-webkit-scrollbar{width:18px;height:18px;}
-::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(90, 88, 88, 0.5) !important;border-radius:5px;}
-::-webkit-scrollbar-thumb{border-radius:5px;-webkit-box-shadow:inset 0 0 6px rgba(90, 88, 88, 0.5) !important;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}
 .paddingTop37{padding-top:37px;}
@@ -23,11 +20,12 @@
 .test{color:red;}
 .background{background:url(/skins/first/bgIn.jpg);background-size:100% 100%;}
 .VitrinePlace{background:url(/skins/first/bg.jpg) no-repeat center center fixed;background-size:cover;background-color:#000000;}.VitrinePlace .wrapper{width:962px;}
-.VitrinePlace .boxLogin{position:absolute;right:50px;top:25px;background-color:rgba(0, 0, 0, 0.8);width:225px;padding:15px 50px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(109, 103, 99, 0.25);min-height:200px;color:#b6b6b6;}.VitrinePlace .boxLogin .logo{margin-bottom:25px;}
+.VitrinePlace .alertVitrine{float:left;margin-top:30px;margin-left:30px;width:300px;}
+.VitrinePlace .boxLogin{background-color:rgba(0, 0, 0, 0.8);width:225px;padding:15px 50px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(109, 103, 99, 0.25);min-height:200px;margin-top:30px;float:left;color:#b6b6b6;}.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:20px;}
 .VitrinePlace .boxLogin .personIcon{float:left;padding-top:5px;padding-right:15px;padding-left:28px;}
 .VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;margin-top:0;}
-.VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:25px;}
-.VitrinePlace .boxLogin .inputWrapper{width:213px;height:18px;background:white;padding-left:10px;padding-top:8px;padding-bottom:6px;border:1px solid #cccccc;margin-bottom:14px;}.VitrinePlace .boxLogin .inputWrapper .inputBar{height:20px;float:left;width:3px;background:#9b0b05;margin-right:5px;margin-top:-2px;}
-.VitrinePlace .boxLogin .inputWrapper input{width:200px;padding:0;border:0;box-shadow:none;font-size:16px;font-weight:bold;}
+.VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:30px;}
+.VitrinePlace .boxLogin .inputWrapper{width:213px;height:18px;background:white;padding-left:10px;padding-top:6px;padding-bottom:6px;border:1px solid #cccccc;margin-bottom:14px;}.VitrinePlace .boxLogin .inputWrapper .inputBar{height:20px;float:left;width:3px;background:#9b0b05;margin-right:5px;margin-top:-2px;}
+.VitrinePlace .boxLogin .inputWrapper input{width:200px;padding:0;border:0;box-shadow:none;font-size:14px;font-weight:bold;}
 .VitrinePlace .boxLogin .alert{width:202px;font-size:12px;line-height:14px;padding:10px;}
 @media screen and (max-width:962px){.VitrinePlace .wrapper{width:600px;}}

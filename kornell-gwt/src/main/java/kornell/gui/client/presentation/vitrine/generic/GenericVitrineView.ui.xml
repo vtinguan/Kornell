@@ -4,8 +4,6 @@
 	<g:FlowPanel ui:field="contentPanel" addStyleNames="vitrine">
 		<g:FlowPanel addStyleNames="boxLogin">
 			<b:Image ui:field="imgLogo" addStyleNames="logo"></b:Image>
-	        <b:Image url="/skins/first/icons/vitrinePersonIcon.png" addStyleNames="personIcon"></b:Image>
-	        <b:Heading size="1">Bem-vindo</b:Heading>
 			<b:Alert ui:field="altUnauthorized" type="ERROR" close="false" animation="true" heading="Ops... " visible="false"></b:Alert>
 			<b:Form ui:field="frmLogin">
 				<g:FlowPanel addStyleNames="inputWrapper">
@@ -22,6 +20,7 @@
 				</b:Controls>
 			</b:Form>
 		</g:FlowPanel>
+		<b:Alert ui:field="userCreatedAlert" type="SUCCESS" close="true" animation="true" addStyleNames="shy alertVitrine">Usuário criado com sucesso. Enviamos um e-mail para ativação no endereço cadastrado.</b:Alert>
 	</g:FlowPanel>
 
 </ui:UiBinder>

@@ -218,6 +218,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					@Override
 					protected void ok(Institution institution){
 						ClientProperties.setEncoded(ClientProperties.INSTITUTION_ASSETS_URL, institution.getAssetsURL());
+						ClientProperties.setEncoded(ClientProperties.INSTITUTION_NAME, institution.getName());
 						initGUI();
 						initActivityManagers();
 						initHistoryHandler(defaultPlace);
