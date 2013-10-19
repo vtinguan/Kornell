@@ -60,7 +60,17 @@ public class Dean implements InstitutionEventHandler{
 	}
 
 	private static native void updateFavicon(String url) /*-{
-		$wnd.updateFavicon(url);
+		var link = document.createElement('link'),
+		oldLink = document.getElementById('icon');
+		link.id = 'icon';
+		console.log(1212);
+		link.rel = 'shortcut icon';
+		link.type = 'image/x-icon';
+		link.href = url;
+		if (oldLink) {
+		 	$wnd.document.head.removeChild(oldLink);
+		}
+		$wnd.document.getElementsByTagName('head')[0].appendChild(link);
 	}-*/;
 
 	private static native void updateTitle(String title) /*-{
