@@ -27,11 +27,11 @@ class RegistrationRepository(person: PersonRepository, institution_uuid: String)
     .first[Registration]
     .get
 
-  def enrollOn(course_uuid: String) = {
+  def enrollOn(course_uuid: String, person_uuid: String) = {
     val uuid = randomUUID
     sql""" 
-    	insert ignore into Enrollment(uuid,course_uuid,enrolledOn)
-    	values($randomUUID,$course_uuid,now())
+    	insert ignore into Enrollment(uuid,course_uuid,person_uuid,enrolledOn)
+    	values($randomUUID,$course_uuid,$person_uuid,now())
     """.executeUpdate
     None
   }

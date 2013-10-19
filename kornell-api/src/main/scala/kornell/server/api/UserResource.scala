@@ -23,6 +23,7 @@ import kornell.server.repository.jdbc.People
 import kornell.server.util.EmailSender
 import javax.servlet.http.HttpServletRequest
 import java.util.UUID
+import kornell.server.repository.jdbc.PersonRepository
 
 @Path("user")
 class UserResource{
@@ -128,10 +129,10 @@ class UserResource{
 	val confirmationLink = aData(9) + "#vitrine:" + confirmation
     val institution_uuid = "00a4966d-5442-4a44-9490-ef36f133a259";
     val course_uuid = "d9aaa03a-f225-48b9-8cc9-15495606ac46";
-    People().createPerson(email, firstName, lastName, company, title, sex, birthDate, confirmation)
-    	.setPassword(username, password) 
+    val p: PersonRepository = People().createPerson(email, firstName, lastName, company, title, sex, birthDate, confirmation);
+    p.setPassword(username, password) 
     	.registerOn(institution_uuid)
-		.enrollOn(course_uuid)
+		.enrollOn(course_uuid, p.get().get.getUUID())
   	val user = newUserInfoTO
     val person: Option[Person] = Auth.getPerson(username)    
     if (person.isDefined){
