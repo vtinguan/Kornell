@@ -55,7 +55,9 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	Alert altUnauthorized;
 	@UiField
 	Image imgLogo;
-
+	@UiField
+	Alert userCreatedAlert;
+	
 	@UiField
 	FlowPanel contentPanel;
 
@@ -74,8 +76,16 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		this.defaultPlace = defaultPlace;
 		this.mapper = mapper;
 		
-	
+
+		
+		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
+		
 		initWidget(uiBinder.createAndBindUi(this));
+		if(imgLogoURL != null){
+			imgLogo.setUrl(imgLogoURL + "logo300x80.png");
+		} else {
+			imgLogo.setUrl("/skins/first/icons/logo.png");
+		}
 		pwdPassword.addKeyPressHandler(new KeyPressHandler() {			
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
@@ -86,19 +96,17 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");
 		btnLogin.removeStyleName("btn");
-		
-		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
-		if(imgLogoURL != null){
-			imgLogo.setUrl(imgLogoURL + "logo300x80.png");
-		} else {
-			imgLogo.setUrl("/skins/first/icons/logo.png");
-		}
-		
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand () {
 	        public void execute () {
 	            txtUsername.setFocus(true);
 	        }
 	    });
+		
+		if(((VitrinePlace)placeCtrl.getWhere()).isUserCreated()){
+			userCreatedAlert.removeStyleName("shy");
+			GWT.log("wat");
+			((VitrinePlace)placeCtrl.getWhere()).setUserCreated(false);
+		}
 	}
 
 

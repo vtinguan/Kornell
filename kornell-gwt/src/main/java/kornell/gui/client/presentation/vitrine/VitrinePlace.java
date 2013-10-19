@@ -6,7 +6,8 @@ import com.google.gwt.place.shared.Prefix;
 
 public class VitrinePlace extends Place{
 	public static final VitrinePlace instance = new VitrinePlace();
-	String confirmation;
+	private String confirmation;
+	private boolean userCreated;
 
 	public VitrinePlace(String confirmation) {
 		this.confirmation = confirmation;
@@ -38,5 +39,13 @@ public class VitrinePlace extends Place{
 	@Override
 	public String toString() {		
 		return new Tokenizer().getToken(this);
+	}
+
+	public boolean isUserCreated() {
+		return userCreated;
+	}
+
+	public void setUserCreated(boolean userCreated) {
+		this.userCreated = userCreated;
 	}
 }

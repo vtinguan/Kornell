@@ -183,7 +183,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 	}
 
 	@UiHandler("btnOK")
-	void doOK(ClickEvent e) {
+	void doOK(ClickEvent e) { 
+		btnOK.setEnabled(false);
 		clearErrors();
 		if(validateFields()){
 			client.checkUser(username.getText().toLowerCase().trim(), email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
@@ -211,17 +212,23 @@ public class GenericProfileView extends Composite implements ProfileView {
 							protected void ok(UserInfoTO user){
 								GWT.log("User created");
 								isEditMode = false;
+								
 								editPanel.setVisible(!isEditMode);
+								btnOK.setEnabled(true);
 								//TODO remove this
 								ClientProperties.remove("Authorization");
-								placeCtrl.goTo(new VitrinePlace());
+								VitrinePlace vitrinePlace = new VitrinePlace();
+								vitrinePlace.setUserCreated(true);
+								placeCtrl.goTo(vitrinePlace);
 							}
 						});
 						
 					}
+					btnOK.setEnabled(true);
 				}
 			});
 		}
+		btnOK.setEnabled(true);
 	}
 
 	@UiHandler("btnCancel")
