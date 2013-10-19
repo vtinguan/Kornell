@@ -8,6 +8,7 @@ import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.SimpleDatePicker;
@@ -58,6 +59,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField Label lblEdit;
 	@UiField Button btnOK;
 	@UiField Button btnCancel;
+	@UiField Button btnClose;
 	@UiField Image imgProfile;
 	@UiField TextBox username;
 	@UiField PasswordTextBox password;
@@ -117,6 +119,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		// i18n
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
+		btnClose.setText("Fechar".toUpperCase());
 	}
 
 	private void initData() {
@@ -241,6 +244,11 @@ public class GenericProfileView extends Composite implements ProfileView {
 		displayFields();*/
 	}
 
+	@UiHandler("btnClose")
+	void doClose(ClickEvent e) {
+		placeCtrl.goTo(new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46"));
+	}
+
 	private void clearErrors() {
 		for (Field field : fieldsToErrorLabels.values()) {
 			field.getError().setText("");
@@ -280,6 +288,10 @@ public class GenericProfileView extends Composite implements ProfileView {
 		emailExtraInfo.setVisible(isEditMode);
 		titleExtraInfo.setVisible(isEditMode);
 		titleExtraInfo2.setVisible(isEditMode);
+
+		btnOK.setVisible(isEditMode);
+		btnCancel.setVisible(isEditMode);
+		btnClose.setVisible(!isEditMode);
 	}
 	
 	private void display() {

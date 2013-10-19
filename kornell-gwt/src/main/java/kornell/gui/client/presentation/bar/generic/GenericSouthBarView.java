@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
 import kornell.api.client.KornellClient;
+import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;

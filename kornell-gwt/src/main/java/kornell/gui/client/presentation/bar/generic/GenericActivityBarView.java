@@ -4,6 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.CourseTO;
 import kornell.core.shared.to.UserInfoTO;
+import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEventHandler;
@@ -12,8 +13,8 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
+import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.sequence.NavigationRequest;
-import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -92,8 +93,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 						if(newPlace instanceof CoursePlace){							
 							btnDetails.removeStyleName("btnSelected");
 						} else if(newPlace instanceof CourseDetailsPlace){
-							enableButton(BUTTON_PREVIOUS, false);
-							enableButton(BUTTON_NEXT, false);
+							//enableButton(BUTTON_PREVIOUS, false);
+							//enableButton(BUTTON_NEXT, false);
 							btnDetails.addStyleName("btnSelected");
 						}
 						
@@ -124,8 +125,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		
 		if (placeCtrl.getWhere() instanceof CourseDetailsPlace) {
 			btnDetails.addStyleName("btnSelected");
-			enableButton(BUTTON_PREVIOUS, false);
-			enableButton(BUTTON_NEXT, false);
+			//enableButton(BUTTON_PREVIOUS, false);
+			//enableButton(BUTTON_NEXT, false);
 		}
 	}
 
@@ -200,14 +201,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
-			client.getCurrentUser(new Callback<UserInfoTO>() {
-				@Override
-				protected void ok(UserInfoTO userTO) {
-					user = userTO;
-					placeCtrl.goTo(historyMapper.getPlace(user.getLastPlaceVisited()));
-					btnDetails.removeStyleName("btnSelected");
-				}
-			});
+			//TODO remove this
+			placeCtrl.goTo(new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46"));
+			btnDetails.removeStyleName("btnSelected");
 		}
 	}
 	
