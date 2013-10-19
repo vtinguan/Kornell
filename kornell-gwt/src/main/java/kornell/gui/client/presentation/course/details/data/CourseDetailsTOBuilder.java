@@ -126,7 +126,7 @@ public class CourseDetailsTOBuilder {
 			}
 			break;
 			
-			
+		/*	
 		case TOPICS:
 			List<TopicTO> topics = new ArrayList<TopicTO>();
 			for (int i = 0; i < jsonArray.size(); i++) {
@@ -151,7 +151,7 @@ public class CourseDetailsTOBuilder {
 			}
 			break;
 			
-			
+			*/
 		/*case GENERAL:
 			for (int i = 0; i < jsonArray.size(); i++) {
 				jsonValue = jsonArray.get(i);

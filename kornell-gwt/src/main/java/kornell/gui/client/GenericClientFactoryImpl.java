@@ -135,6 +135,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		ScrollPanel sp = new ScrollPanel();
 		sp.add(shell);
 		dockLayoutPanel.add(sp);
+		sp.addStyleName("vScrollBar");
 		dockLayoutPanel.addStyleName("wrapper");
 		rootLayoutPanel.add(dockLayoutPanel);
 
@@ -218,6 +219,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					@Override
 					protected void ok(Institution institution){
 						ClientProperties.setEncoded(ClientProperties.INSTITUTION_ASSETS_URL, institution.getAssetsURL());
+						ClientProperties.setEncoded(ClientProperties.INSTITUTION_NAME, institution.getName());
 						initGUI();
 						initActivityManagers();
 						initHistoryHandler(defaultPlace);
