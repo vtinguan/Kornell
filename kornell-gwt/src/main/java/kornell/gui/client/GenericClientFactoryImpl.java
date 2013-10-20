@@ -103,9 +103,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	/* GUI */
 	SimplePanel shell = new SimplePanel();
-	public final CoursePlace DEFAULT_PLACE = new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46");
 	private Place defaultPlace;
 	private SandboxPresenter sandboxPresenter;
+	
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 
 	public GenericClientFactoryImpl() {
@@ -194,7 +195,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					if(token != null){
 						defaultPlace = historyMapper.getPlace(token);
 					}else {
-						defaultPlace = DEFAULT_PLACE;
+						defaultPlace = new CoursePlace(constants.getDefaultCourseUUID());
 					}				
 					startApp(defaultPlace);
 			}
@@ -261,11 +262,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView( historyMapper , placeCtrl, DEFAULT_PLACE, client);
-	}
-
-	private Place getDefaultPlace() {
-		return defaultPlace;
+		return new GenericVitrineView( historyMapper , placeCtrl, defaultPlace, client);
 	}
 
 	@Override
@@ -285,7 +282,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public TermsView getTermsView() {
-		return new GenericTermsView(bus, client, placeCtrl, DEFAULT_PLACE);
+		return new GenericTermsView(bus, client, placeCtrl, defaultPlace);
 	}
 	
 	

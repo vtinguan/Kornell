@@ -197,21 +197,22 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
 		if(placeCtrl.getWhere() instanceof CoursePlace){
-			placeCtrl.goTo(new CourseDetailsPlace(getCourseUUID()));
+			placeCtrl.goTo(new CourseDetailsPlace(constants.getDefaultCourseUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			placeCtrl.goTo(new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46"));
+			placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
+		
 	}
 	
 	@UiHandler("btnNotes")
 	void handleClickBtnNotes(ClickEvent e) {
 		
 		if(notesPopup == null){
-			client.getCourseTO(getCourseUUID(),new Callback<CourseTO>(){
+			client.getCourseTO(constants.getDefaultCourseUUID(),new Callback<CourseTO>(){
 				@Override
 				protected void ok(CourseTO course) {
 					notesPopup = new NotesPopup(client, course.getCourse().getUUID(), course.getEnrollment().getNotes());
@@ -222,18 +223,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			notesPopup.show();
 		}
 	}
-	
-	private String getCourseUUID() {
-		try{		
-			return Window.Location.getHash().split(":")[1].split(";")[0];
-		} catch (Exception ex){
-			GWT.log("Error trying to get the course id.");
-			placeCtrl.goTo(historyMapper.getPlace(user.getLastPlaceVisited()));
-		}
-		return null;
-	}
-	
-	
 	
 	private void enableButton(String btn, boolean enable){
 		if(BUTTON_NEXT.equals(btn)){

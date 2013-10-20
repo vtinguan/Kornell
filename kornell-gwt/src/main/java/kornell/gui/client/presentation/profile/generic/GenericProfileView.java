@@ -247,7 +247,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	@UiHandler("btnClose")
 	void doClose(ClickEvent e) {
-		placeCtrl.goTo(new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46"));
+		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));
 	}
 
 	private void clearErrors() {
