@@ -63,7 +63,6 @@ public class Dean implements InstitutionEventHandler{
 		var link = document.createElement('link'),
 		oldLink = document.getElementById('icon');
 		link.id = 'icon';
-		console.log(1212);
 		link.rel = 'shortcut icon';
 		link.type = 'image/x-icon';
 		link.href = url;
