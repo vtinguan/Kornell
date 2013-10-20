@@ -22,7 +22,7 @@
 .background{background:url(/skins/first/bgIn.jpg);background-size:100% 100%;}
 .VitrinePlace{background:url(/skins/first/bg.jpg) no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;}.VitrinePlace .wrapper{width:962px;}
 .VitrinePlace .alertVitrine{float:left;margin-top:30px;margin-left:30px;width:300px;}
-.VitrinePlace .boxLogin{background-color:rgba(0, 0, 0, 0.8);width:225px;padding:15px 50px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(109, 103, 99, 0.25);min-height:200px;margin-top:30px;float:left;color:#b6b6b6;}.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:20px;}
+.VitrinePlace .boxLogin{background-color:rgba(0, 0, 0, 0.8);width:225px;padding:15px 50px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(109, 103, 99, 0.25);min-height:200px;margin-top:30px;margin-left:50px;float:left;color:#b6b6b6;}.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:20px;}
 .VitrinePlace .boxLogin .personIcon{float:left;padding-top:5px;padding-right:15px;padding-left:28px;}
 .VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;margin-top:0;}
 .VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:30px;}
