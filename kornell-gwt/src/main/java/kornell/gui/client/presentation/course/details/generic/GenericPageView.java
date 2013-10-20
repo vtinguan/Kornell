@@ -86,7 +86,7 @@ public class GenericPageView extends Composite implements
 			@Override
 			public void onClick(ClickEvent event) {
 				ClientProperties.set(CourseSequencer.class.getName() + ".CURRENT_KEY", page.getKey());
-				placeCtrl.goTo(new CoursePlace("d9aaa03a-f225-48b9-8cc9-15495606ac46"));
+				placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));
 			}
 		});
 		lblPage.add(pageAnchor);

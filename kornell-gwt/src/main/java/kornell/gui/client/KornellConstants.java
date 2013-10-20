@@ -7,6 +7,9 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("skins/first/icons/")
 	String imagesPath();
 
+	@DefaultStringValue("d9aaa03a-f225-48b9-8cc9-15495606ac46")
+	String getDefaultCourseUUID();
+	
 	/**
 	 * 
 	 * GenericWelcomeView
