@@ -56,7 +56,7 @@ object EmailSender {
 			message.setRecipients(Message.RecipientType.TO, person.getEmail())
 			val sex: String = if ("F".equals(person.getSex())) "a" else "o"
 			  
-			message.setSubject("Bem-vind" + sex + " à Universidade Virtual " + institution.getName() + "!" )
+			message.setSubject("Bem-vind" + sex + " à Universidade Virtual " + institution.getName() + "!", "UTF-8");
 			message.setSentDate(new Date())
 			
 			val body: String = """
