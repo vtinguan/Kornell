@@ -9,6 +9,7 @@ import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.SimpleDatePicker;
@@ -23,6 +24,8 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -121,13 +124,28 @@ public class GenericProfileView extends Composite implements ProfileView {
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
 		btnClose.setText("Fechar".toUpperCase());
+		
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						Place newPlace = event.getNewPlace();
+						
+						if(newPlace instanceof ProfilePlace){							
+							 initData();
+						}
+						
+					}});
 	}
-
+	
 	private void initData() {
 		client.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
 			protected void ok(UserInfoTO userTO) {
 				user = userTO;
+				isCurrentUser = true;
+				isUserCreation = false;
+				isEditMode = false;
 				isCurrentUser = userTO.getUsername().equals(((ProfilePlace) placeCtrl.getWhere()).getUsername());
 				display();
 			}
@@ -219,6 +237,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 								
 								editPanel.setVisible(!isEditMode);
 								btnOK.setEnabled(true);
+								form.addStyleName("shy");
 								//TODO remove this
 								ClientProperties.remove("Authorization");
 								VitrinePlace vitrinePlace = new VitrinePlace();
@@ -237,6 +256,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
+		form.addStyleName("shy");
 		bus.fireEvent(new LogoutEvent());
 		/*
 		isEditMode = false;
@@ -247,6 +267,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	@UiHandler("btnClose")
 	void doClose(ClickEvent e) {
+		form.addStyleName("shy");
 		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));
 	}
 
@@ -293,13 +314,14 @@ public class GenericProfileView extends Composite implements ProfileView {
 		btnOK.setVisible(isEditMode);
 		btnCancel.setVisible(isEditMode);
 		btnClose.setVisible(!isEditMode);
+
+		form.removeStyleName("shy");
 	}
 	
 	private void display() {
 		// TODO i18n
 		displayTitle();
 		displayFields();
-		form.removeStyleName("shy");
 	}
 
 	private void displayFields() {
