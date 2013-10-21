@@ -3,6 +3,7 @@ package kornell.gui.client.util;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
 
+//TODO: if this is user specific, move to UserSession
 public class ClientProperties {
 	private static Storage localStorage = Storage.getLocalStorageIfSupported();
 	

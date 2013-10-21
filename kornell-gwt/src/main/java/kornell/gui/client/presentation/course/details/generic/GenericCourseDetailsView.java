@@ -416,6 +416,8 @@ public class GenericCourseDetailsView extends Composite implements
 		}
 	}
 
+	//TODO: Delete unused code if confirmed (commented on 2013-10-21)
+	/*
 	private String getCourseUUID() {
 		try {
 			return Window.Location.getHash().split(":")[1].split(";")[0];
@@ -424,7 +426,7 @@ public class GenericCourseDetailsView extends Composite implements
 			placeCtrl.goTo(historyMapper.getPlace(user.getLastPlaceVisited()));
 		}
 		return null;
-	}
+	}*/
 
 	@Override
 	public void setPresenter(Presenter presenter) {

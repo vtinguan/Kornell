@@ -6,6 +6,7 @@ import kornell.core.shared.to.CoursesTO;
 import kornell.core.shared.to.RegistrationsTO;
 import kornell.core.shared.to.UserInfoTO;
 import kornell.gui.client.event.LogoutEventHandler;
+import kornell.gui.client.session.UserSession;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
@@ -27,6 +28,7 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 				setCurrentUser(user);
 				//TODO: https://github.com/Craftware/Kornell/issues/7
 				ClientProperties.set("Authorization", auth);
+				
 				callback.ok(user);
 			}
 
@@ -35,6 +37,7 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 				callback.unauthorized();
 			}
 		};
+		//TODO: What is this?
 		confirmation = "".equals(confirmation)?"NONE":confirmation;
 		GET("/user/login/"+confirmation)
 			.addHeader("Authorization", auth)

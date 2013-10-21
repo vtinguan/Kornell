@@ -53,6 +53,7 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.scorm.API_1484_11;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
+import kornell.gui.client.session.UserSession;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.activity.shared.ActivityManager;
@@ -185,6 +186,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		client.getCurrentUser(new Callback<UserInfoTO>(){
 			@Override
 			protected void ok(UserInfoTO user) {
+					UserSession.setCurrentPerson(user.getPerson().getUUID());
 					String token;
 					if(!"".equals(Window.Location.getHash()) && 
 							"details".equals(Window.Location.getHash().split(":")[0].split("#")[1])){
@@ -262,7 +264,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView( historyMapper , placeCtrl, defaultPlace, client);
+		return new GenericVitrineView( historyMapper , placeCtrl, defaultPlace, client, bus);
 	}
 
 	@Override

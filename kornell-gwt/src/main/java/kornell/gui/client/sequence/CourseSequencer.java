@@ -12,6 +12,7 @@ import kornell.core.shared.data.ExternalPage;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.session.UserSession;
 import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
@@ -36,9 +37,11 @@ public class CourseSequencer implements Sequencer {
 	private Uidget currentUidget;
 	private Actom prevActom;
 	private Uidget prevUidget;
+	private UserSession session;
 
-	public CourseSequencer(EventBus bus, KornellClient client) {
+	public CourseSequencer(UserSession session,EventBus bus, KornellClient client) {
 		this.client = client;
+		this.session = session;
 		bus.addHandler(NavigationRequest.TYPE, this);
 	}
 
@@ -71,7 +74,7 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private void checkpoint() {
-		store(CURRENT_KEY,currentKey());
+		session.setItem(CURRENT_KEY,currentKey());
 	}
 
 	private void debug(String event) {
@@ -194,7 +197,7 @@ public class CourseSequencer implements Sequencer {
 				orientateAndSail();
 			}
 
-			private void orientateAndSail() {
+			private void orientateAndSail() {				
 				// TODO: Fetch current position
 				currentIndex = lookupCurrentIndex();
 				currentActom = actoms.get(currentIndex);
@@ -216,27 +219,12 @@ public class CourseSequencer implements Sequencer {
 			}
 
 			private String loadCurrentKey() {
-				return load(CURRENT_KEY);
+				return session.getItem(CURRENT_KEY);
 			}
-
-
 		});
 	}
-
-	private String load(String key) {
-		Storage localStorage = Storage.getLocalStorageIfSupported();
-		if(localStorage != null)
-			return localStorage.getItem(key);
-		return null;
-	}
-	
-	private void store(String key, String value){
-		Storage localStorage = Storage.getLocalStorageIfSupported();
-		if(localStorage != null)
-			localStorage.setItem(key, value);
-	}
+		
 	class ShowWhenReady implements ViewReadyEventHandler {
-
 		private Uidget uidget;
 
 		public ShowWhenReady(Uidget uidget) {
@@ -288,117 +276,4 @@ public class CourseSequencer implements Sequencer {
 		this.contents = contents;
 		this.actoms = ContentsCategory.collectActoms(contents);
 	}
-
-	/*
-	 * private KornellClient client;
-	 * 
-	 * private CoursePlace place; private CourseTO courseTO; private Contents
-	 * contents; private String currentKey; private String baseURL; private
-	 * String courseUUID;
-	 * 
-	 * private EventBus bus;
-	 * 
-	 * public CourseSequencer(EventBus bus, KornellClient client) {
-	 * GWT.log("new CourseSequencer"); this.bus = bus; this.client = client;
-	 * bus.addHandler(NavigationRequest.TYPE, this); }
-	 * 
-	 * private List<Actom> actoms; private int currentIndex; private
-	 * ExternalPageView externalPageView;
-	 * 
-	 * private String nextKey() { String nextKey = isAtEnd() ? currentKey :
-	 * getActoms().get(++currentIndex).getKey(); return nextKey; }
-	 * 
-	 * private List<Actom> getActoms() { if (actoms == null) actoms =
-	 * ContentsCategory.collectActoms(contents); return actoms; }
-	 * 
-	 * @Override public void onContinue(NavigationRequest event) { currentKey =
-	 * nextKey(); go(); }
-	 * 
-	 * private void go() { dropBreadcrumb(); walk(); }
-	 * 
-	 * private void dropBreadcrumb() { // TODO Auto-generated method stub }
-	 * 
-	 * @Override public void onPrevious(NavigationRequest event) { currentKey =
-	 * prevKey(); go(); }
-	 * 
-	 * private String prevKey() { return getActoms().get(currentIndex > 0 ?
-	 * --currentIndex : 0).getKey(); }
-	 * 
-	 * private int getCurrentIndex() { return currentIndex; }
-	 * 
-	 * @Override public void displayOn(final FlowPanel contentPanel) {
-	 * contentPanel.clear();
-	 * 
-	 * externalPageView = new ExternalPageView(client); render(place);
-	 * 
-	 * externalPageView.addStyleName("shy"); contentPanel.add(externalPageView);
-	 * 
-	 * 
-	 * 
-	 * 
-	 * final TimerView timerView = new TimerView(); contentPanel.add(timerView);
-	 * 
-	 * externalPageView.onViewReady(new ViewReadyEventHandler() {
-	 * 
-	 * @Override public void onViewReady(ViewReadyEvent evt) { Timer timer = new
-	 * Timer() {
-	 * 
-	 * @Override public void run() { timerView.addStyleName("shy");
-	 * externalPageView.removeStyleName("shy"); } };
-	 * 
-	 * timer.schedule(1500); } });
-	 * 
-	 * 
-	 * 
-	 * }
-	 * 
-	 * private void walk() { String src = StringUtils.composeURL(baseURL,
-	 * currentKey); GWT.log("Navigating to [" + src + "]");
-	 * externalPageView.setSrc(src); evaluateNavigation(); }
-	 * 
-	 * private void evaluateNavigation() { Forecast f = isAtEnd() ? NEXT_NOT_OK
-	 * : NEXT_OK; bus.fireEvent(new NavigationForecastEvent(f)); }
-	 * 
-	 * private boolean isAtEnd() { int index = getCurrentIndex(); int end =
-	 * getActoms().size() - 1; boolean isAtEnd = index >= end; return isAtEnd; }
-	 * 
-	 * private void render(final CoursePlace place) { GWT.log("Rendering [" +
-	 * place + "]"); if (place == null) throw new
-	 * IllegalArgumentException("Cannot render null place"); courseUUID =
-	 * place.getCourseUUID(); fetchContentsAndGo();
-	 * 
-	 * }
-	 * 
-	 * private void fetchContentsAndGo() {
-	 * client.course(courseUUID).contents(new Callback<Contents>(){
-	 * 
-	 * @Override protected void ok(Contents contents) { setContents(contents);
-	 * orientateAndGo(); } }); }
-	 * 
-	 * private void orientateAndGo() { if (!orientateByQueryString())
-	 * orientateToLastVisited(); go(); }
-	 * 
-	 * private boolean orientateByQueryString() { String key =
-	 * Window.Location.getParameter("key"); if (key != null && !key.isEmpty()) {
-	 * currentKey = key; return true; } else return false; }
-	 * 
-	 * private void orientateToLastVisited() { String checkpoint =
-	 * courseTO.getEnrollment().getLastActomVisited(); if (checkpoint == null ||
-	 * checkpoint.isEmpty()) currentKey = getActoms().get(0).getKey(); else
-	 * currentKey = checkpoint; }
-	 * 
-	 * @Override public Sequencer withPlace(CoursePlace place) { this.place =
-	 * place; return this; }
-	 * 
-	 * private void setContents(Contents contents) { this.contents = contents;
-	 * setCourseTO(contents.getCourseTO()); }
-	 * 
-	 * private void setCourseTO(CourseTO courseTO) { this.courseTO = courseTO;
-	 * setBaseURL(courseTO.getBaseURL());
-	 * 
-	 * }
-	 * 
-	 * private void setBaseURL(String baseURL) { this.baseURL = baseURL; }
-	 */
-
 }
