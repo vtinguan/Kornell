@@ -16,6 +16,7 @@ import kornell.gui.client.event.CourseBarEvent;
 import kornell.gui.client.event.InstitutionEvent;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
@@ -133,12 +134,12 @@ public class GenericTermsView extends Composite implements TermsView {
 	// TODO: Uncomment
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		//client.institution(institution.getUUID()).acceptTerms(new Callback<Void>(){
-			//@Override
-			//protected void ok() {				
+		client.institution(institution.getUUID()).acceptTerms(new Callback<Void>(){
+			@Override
+			protected void ok() {				
 				goStudy();
-			//}
-		//});		
+			}
+		});		
 	}
 
 	@UiHandler("btnDontAgree")
@@ -151,7 +152,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 	
 	private void goStudy() {
-		placeCtrl.goTo(defaultPlace);				
+		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));				
 	}
 
 }
