@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.vitrine.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
+import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -30,6 +31,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
 //HTTP
 
@@ -65,17 +67,19 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private KornellClient client;
 	private Place defaultPlace;
 	private PlaceHistoryMapper mapper;
+	private EventBus bus;
 	//TODO i18n xml
 	public GenericVitrineView(
 			PlaceHistoryMapper mapper, 
 			PlaceController placeCtrl,
 			Place defaultPlace,
-			KornellClient client) {
+			KornellClient client,
+			EventBus bus) {
 		this.placeCtrl = placeCtrl;
 		this.client = client;
 		this.defaultPlace = defaultPlace;
 		this.mapper = mapper;
-		
+		this.bus = bus;
 
 		
 		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
@@ -142,6 +146,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 							place = mapper.getPlace(token);
 							
 						}
+						bus.fireEvent(new LoginEvent(user));
 						placeCtrl.goTo(place);
 					}
 				} else {

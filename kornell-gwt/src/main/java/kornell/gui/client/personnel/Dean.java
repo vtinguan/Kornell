@@ -5,6 +5,7 @@ import kornell.api.client.KornellClient;
 import kornell.core.shared.data.Institution;
 import kornell.gui.client.event.InstitutionEvent;
 import kornell.gui.client.event.InstitutionEventHandler;
+import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
@@ -75,4 +76,5 @@ public class Dean implements InstitutionEventHandler{
 	private static native void updateTitle(String title) /*-{
 		$wnd.document.title = title;
 	}-*/;
+
 }

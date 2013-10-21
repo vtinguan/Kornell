@@ -1,8 +1,12 @@
 package kornell.gui.client.personnel;
 
+import kornell.core.shared.to.UserInfoTO;
+import kornell.gui.client.event.LoginEvent;
+import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.session.UserSession;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.place.shared.PlaceController;
@@ -14,12 +18,13 @@ import com.google.web.bindery.event.shared.EventBus;
  * 
  * @author faermanj
  */
-public class Captain implements LogoutEventHandler{
+public class Captain implements LogoutEventHandler, LoginEventHandler{
 	private PlaceController placeCtrl;
 
 	public Captain(EventBus bus, PlaceController placeCtrl) { 
 		this.placeCtrl = placeCtrl;		
 		bus.addHandler(LogoutEvent.TYPE, this);
+		bus.addHandler(LoginEvent.TYPE, this);
 	}
 
 	@Override
@@ -32,5 +37,11 @@ public class Captain implements LogoutEventHandler{
 		//TODO remove this also
 		ClientProperties.remove("Authorization");
 	}
+
+	@Override
+	public void onLogin(UserInfoTO user) {
+		UserSession.setCurrentPerson(user.getPerson().getUUID());
+	}
+
 
 }
