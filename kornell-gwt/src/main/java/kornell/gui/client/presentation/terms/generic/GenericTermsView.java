@@ -134,12 +134,12 @@ public class GenericTermsView extends Composite implements TermsView {
 	// TODO: Uncomment
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		client.institution(institution.getUUID()).acceptTerms(new Callback<Void>(){
-			@Override
-			protected void ok() {				
+		//client.institution(institution.getUUID()).acceptTerms(new Callback<Void>(){
+			//@Override
+			//protected void ok() {				
 				goStudy();
-			}
-		});		
+			//}
+		//});		
 	}
 
 	@UiHandler("btnDontAgree")
