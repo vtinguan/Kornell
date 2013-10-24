@@ -1,4 +1,5 @@
 @import "colors";
+@import "lesshat";
 
 .btn-primary {
   .btnSelected;
@@ -14,14 +15,17 @@
 }
 .btnNotSelected{
 	.btnDefault;
+	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
 	.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
 }
 .btnSelected{
 	.btnDefault;
+	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
  	.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
 }
 .btnAction{
 	.btnDefault;
+	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
  	.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
 }
 .btnBorder{
@@ -37,7 +41,8 @@
 	background: -o-linear-gradient(top,  @colorStart 0%,@colorEnd 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  @colorStart 0%,@colorEnd 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  @colorStart 0%,@colorEnd 100%); /* W3C */
-	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 )"; /* IE6-9 */
+	//filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 )"; /* IE6-9 */
+	//filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#45484d',GradientType=0 ); /* IE6-8 */
  }
 
 .size (@square) {

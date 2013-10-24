@@ -95,6 +95,8 @@ public class GenericTopicView extends Composite implements
 		
 		if(childrenPanel.getWidgetCount() > 0){
 			topicIcon.setUrl(IMAGES_PATH + "topic-expand.png");
+		} else {
+			topicIcon.addStyleName("shy");
 		}
 	}
 
