@@ -1,1 +1,1 @@
-KornellConfig.apiEndpoint = "http://localhost:8080";
+KornellConfig.apiEndpoint = "http://kornell-api-red.elasticbeanstalk.com";
