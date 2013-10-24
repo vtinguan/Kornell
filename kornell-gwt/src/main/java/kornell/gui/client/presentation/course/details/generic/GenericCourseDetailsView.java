@@ -369,6 +369,8 @@ public class GenericCourseDetailsView extends Composite implements
 		Label btnLabel = new Label(label);
 		btnLabel.addStyleName("btnLabel");
 		btn.add(btnLabel);
+		
+		btn.addStyleName("gradient");
 
 		btn.addClickHandler(new DetailsButtonClickHandler());
 	}

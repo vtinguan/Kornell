@@ -28,7 +28,7 @@ body {
 }
 .contentWrapper {}
 
-
+	
 ::-webkit-scrollbar {
     width: 18px;
     height: 18px;
@@ -168,6 +168,7 @@ body {
 			@timeWidth: .1 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@forumCommentsWidth: .21 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@notesWidth: .12 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			width: @topicsPanelWidth;
 			margin-top: @detailsPanelMargin;
 			float: left;
 			.topicsHeaderPanel{
@@ -222,10 +223,17 @@ body {
 					float: left;
 					padding-right: @detailsPanelMargin / 2;
 					width: @topicsWidth + (@detailsPanelMargin/2) + 2px;
-					.topicIcon{
-						float: left;
-						padding: (@topicWrapperHeight - 18px) / 2;
-						width: 20px;
+					.topicImagePanel{
+						width: 50px;
+						.topicIcon{
+							float: left;
+							padding: (@topicWrapperHeight - 18px) / 2;
+							width: 20px;
+							display: block;
+						}
+						.shy{
+							visibility: hidden;
+						}
 					}
 					.lblTopic{
 						float: left;
