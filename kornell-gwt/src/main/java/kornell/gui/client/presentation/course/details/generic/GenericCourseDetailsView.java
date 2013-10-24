@@ -23,6 +23,7 @@ import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
+import kornell.gui.client.presentation.util.loading.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -74,7 +75,7 @@ public class GenericCourseDetailsView extends Composite implements
 	Button btnCurrent;
 
 	CourseTO courseTO;
-
+	
 	CourseDetailsTO courseDetails;
 
 	UserInfoTO user;
@@ -89,6 +90,7 @@ public class GenericCourseDetailsView extends Composite implements
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
+		LoadingPopup.show();
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 	}
@@ -113,6 +115,7 @@ public class GenericCourseDetailsView extends Composite implements
 							protected void ok(Contents contents) {
 								setContents(contents);
 								display();
+								LoadingPopup.hide();
 							}
 						});
 					}
@@ -131,6 +134,11 @@ public class GenericCourseDetailsView extends Composite implements
 				.getCourse().getInfoJson());
 		builder.buildCourseDetails();
 		courseDetails = builder.getCourseDetailsTO();
+		
+		topicsPanel = new FlowPanel();
+		topicsPanel.addStyleName("topicsPanel");
+		topicsPanel.add(getTopicsTableHeader());
+		topicsPanel.add(getTopicsTableContent());
 
 		btnCurrent = btnAbout;
 		displayTitle();
@@ -139,15 +147,17 @@ public class GenericCourseDetailsView extends Composite implements
 	}
 
 	private void displayContent(Button btn) {
+		LoadingPopup.show();
 		detailsContentPanel.clear();
 		if (btn.equals(btnAbout)) {
 			detailsContentPanel.add(getInfosPanel());
 			detailsContentPanel.add(getHintsPanel());
 		} else if (btn.equals(btnTopics)) {
-			detailsContentPanel.add(getTopicsPanel());
+			detailsContentPanel.add(topicsPanel);
 		} else if (btn.equals(btnCertification)) {
 			detailsContentPanel.add(getCertificationPanel());
 		}
+		LoadingPopup.hide();
 	}
 
 	private FlowPanel getCertificationPanel() {
@@ -273,18 +283,7 @@ public class GenericCourseDetailsView extends Composite implements
 
 		return certificationHeaderPanel;
 	}
-
-	private FlowPanel getTopicsPanel() {
-		if(topicsPanel == null){
-			topicsPanel = new FlowPanel();
-			topicsPanel.addStyleName("topicsPanel");
-			topicsPanel.add(getTopicsTableHeader());
-			topicsPanel.add(getTopicsTableContent());
-		}
-
-		return topicsPanel;
-	}
-
+	
 	private FlowPanel getTopicsTableContent() {
 		FlowPanel topicsContentPanel = new FlowPanel();
 		topicsContentPanel.addStyleName("topicsContentPanel");
@@ -370,6 +369,8 @@ public class GenericCourseDetailsView extends Composite implements
 		Label btnLabel = new Label(label);
 		btnLabel.addStyleName("btnLabel");
 		btn.add(btnLabel);
+		
+		btn.addStyleName("gradient");
 
 		btn.addClickHandler(new DetailsButtonClickHandler());
 	}

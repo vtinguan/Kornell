@@ -4,7 +4,8 @@
   	<meta charset="utf-8">
   	<meta name="kornell.version" content="Pre-Loading iframes"> 
   	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
+	<meta http-equiv="X-UA-Compatible" content="IE=9">
+	
     <title>&nbsp;&nbsp;</title>
     <!-- before your module(*.nocache.js) loading  -->
 	<!--[if lt IE 9]>
@@ -13,17 +14,24 @@
 	<!--[if IE 7]>
  	<link rel="stylesheet" href="Kornell/css/font-awesome-ie7.css">
 	<![endif]-->
+	<!--[if gte IE 9]>
+	  <style type="text/css">
+	    .gradient {
+	       filter: none;
+	    }
+	  </style>
+	<![endif]-->
 	<!-- your module(*.nocache.js) loading -->
 	<script type="text/javascript">
 		var KornellConfig = {}; 
 	</script>
-	<script type="text/javascript" src="KornellConfig.js"></script> 
+	<script type="text/javascript" src="KornellConfig.js"></script>
     <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
     <link id="Skin" type="text/css" rel="stylesheet" href="skins/first/css/skin.css"/>  
 	<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.css"/>
   </head>
 
-  <body>
+  <body> 
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
 

@@ -35,7 +35,7 @@ public class NotesPopup {
 		this.client = client;
 
 		glass = new PopupPanel();
-		glass.setStyleName("notesGlass");
+		glass.setStyleName("glass");
 
 		popup = new PopupPanel(true);
 		popup.setStyleName("notesPopup");
