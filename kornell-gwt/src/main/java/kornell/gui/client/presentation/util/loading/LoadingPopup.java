@@ -28,6 +28,7 @@ public class LoadingPopup {
 			popup.add(panel);
 			popup.center();
 		}
+		popup.show();
 	}
 
 	public static void hide() {
