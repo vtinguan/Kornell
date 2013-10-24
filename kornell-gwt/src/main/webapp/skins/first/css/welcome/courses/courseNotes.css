@@ -20,5 +20,4 @@
 .width120{widht:120px;}
 .test{color:red;}
 .background{background:url(/skins/first/bgIn.jpg);background-size:100% 100%;}
-.notesGlass{height:100%;width:100%;background-color:#000;opacity:0.30;-moz-opacity:0.30;filter:alpha(opacity=30);}
 .notesPopup{position:absolute;background-color:#000;border-radius:10px 10px 0px 0px;}.notesPopup .popupContent{height:100%;}.notesPopup .popupContent .notesTextArea{border:0;margin:0;padding:0;width:100%;height:100%;resize:none;border-radius:10px 10px 0px 0px;font-style:italic;background:#000000;color:#b6b6b6;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:15px;border-top:1px solid #6a6a6a;border-left:1px solid #6a6a6a;border-right:1px solid #6a6a6a;}
