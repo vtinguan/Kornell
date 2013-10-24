@@ -78,7 +78,7 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 	public void getCourseTO(String uuid, Callback<CourseTO> cb) {
 		GET("/courses/"+uuid).sendRequest(null, cb);
 	}
-
+	
 	public static KornellClient getInstance() {		
 		return new KornellClient();
 	}

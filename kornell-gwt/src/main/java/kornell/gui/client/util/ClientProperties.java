@@ -36,14 +36,6 @@ public class ClientProperties {
 			Cookies.removeCookie(propertyName);
 		}
 	}
-
-	public static native String base64Encode(String plain) /*-{
-	  return window.btoa(plain);
-	}-*/;
-
-	public static native String base64Decode(String base64) /*-{
-	  return window.atob(base64);
-	}-*/;
 	
 	public static String getDecoded(String propertyName){
 		String value = get(propertyName);
@@ -53,4 +45,12 @@ public class ClientProperties {
 	public static void setEncoded(String propertyName, String propertyValue){
 		set(propertyName, base64Encode(propertyValue));
 	}
+
+	public static String base64Encode(String plain) {
+		return Base64Utils.toBase64(plain.getBytes());
+	};
+
+	public static String base64Decode(String base64) {
+		return new String(Base64Utils.fromBase64(base64));
+	};
 }

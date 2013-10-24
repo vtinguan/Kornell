@@ -134,6 +134,11 @@ public class GenericCourseDetailsView extends Composite implements
 				.getCourse().getInfoJson());
 		builder.buildCourseDetails();
 		courseDetails = builder.getCourseDetailsTO();
+		
+		topicsPanel = new FlowPanel();
+		topicsPanel.addStyleName("topicsPanel");
+		topicsPanel.add(getTopicsTableHeader());
+		topicsPanel.add(getTopicsTableContent());
 
 		btnCurrent = btnAbout;
 		displayTitle();
@@ -142,15 +147,17 @@ public class GenericCourseDetailsView extends Composite implements
 	}
 
 	private void displayContent(Button btn) {
+		LoadingPopup.show();
 		detailsContentPanel.clear();
 		if (btn.equals(btnAbout)) {
 			detailsContentPanel.add(getInfosPanel());
 			detailsContentPanel.add(getHintsPanel());
 		} else if (btn.equals(btnTopics)) {
-			detailsContentPanel.add(getTopicsPanel());
+			detailsContentPanel.add(topicsPanel);
 		} else if (btn.equals(btnCertification)) {
 			detailsContentPanel.add(getCertificationPanel());
 		}
+		LoadingPopup.hide();
 	}
 
 	private FlowPanel getCertificationPanel() {
@@ -276,18 +283,7 @@ public class GenericCourseDetailsView extends Composite implements
 
 		return certificationHeaderPanel;
 	}
-
-	private FlowPanel getTopicsPanel() {
-		if(topicsPanel == null){
-			topicsPanel = new FlowPanel();
-			topicsPanel.addStyleName("topicsPanel");
-			topicsPanel.add(getTopicsTableHeader());
-			topicsPanel.add(getTopicsTableContent());
-		}
-
-		return topicsPanel;
-	}
-
+	
 	private FlowPanel getTopicsTableContent() {
 		FlowPanel topicsContentPanel = new FlowPanel();
 		topicsContentPanel.addStyleName("topicsContentPanel");
