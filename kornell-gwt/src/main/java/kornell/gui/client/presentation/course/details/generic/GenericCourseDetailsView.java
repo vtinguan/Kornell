@@ -23,6 +23,7 @@ import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
+import kornell.gui.client.presentation.util.loading.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -74,7 +75,7 @@ public class GenericCourseDetailsView extends Composite implements
 	Button btnCurrent;
 
 	CourseTO courseTO;
-
+	
 	CourseDetailsTO courseDetails;
 
 	UserInfoTO user;
@@ -89,6 +90,7 @@ public class GenericCourseDetailsView extends Composite implements
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
+		LoadingPopup.show();
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 	}
@@ -113,6 +115,7 @@ public class GenericCourseDetailsView extends Composite implements
 							protected void ok(Contents contents) {
 								setContents(contents);
 								display();
+								LoadingPopup.hide();
 							}
 						});
 					}

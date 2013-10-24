@@ -7,6 +7,7 @@ import kornell.api.client.KornellClient;
 import kornell.core.shared.data.ExternalPage;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
+import kornell.gui.client.presentation.util.loading.LoadingPopup;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
@@ -37,6 +38,7 @@ public class ExternalPageView extends Uidget {
 	public ExternalPageView(KornellClient client, 
 			 ExternalPage page) {
 		//GWT.log("IFRAME FOR ["+page.getKey()+"] CREATED");
+		LoadingPopup.show();
 		this.client = client;
 		this.page = page;
 		createIFrame();
