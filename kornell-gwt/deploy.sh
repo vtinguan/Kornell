@@ -1,7 +1,9 @@
 #!/bin/bash
+echo Installing s3cmd
 wget -O /etc/yum.repos.d/s3tools.repo http://s3tools.org/repo/RHEL_6/s3tools.repo
 yum -y install s3cmd
 
+echo Generating s3cmd config file
 echo "
 access_key = $(AWS_ACCESS_KEY_ID)
 access_token = 
@@ -57,4 +59,5 @@ website_error =
 website_index = index.html
 " > s3cfg
 
-s3cmd -c ./s3cfg  --delete-removed --exclude="WEB-INF/*" sync target/kornell-gwt-0.0.1-SNAPSHOT/  s3://eduvem.com.br 
+echo Syncing
+s3cmd -c ./s3cfg  --delete-removed --exclude="WEB-INF/*" --recursive sync target/kornell-gwt-0.0.1-SNAPSHOT/  s3://eduvem.com.br 
