@@ -5,7 +5,7 @@ yum -y install s3cmd
 
 echo Generating s3cmd config file
 echo "
-access_key = $(AWS_ACCESS_KEY_ID)
+access_key = $AWS_ACCESS_KEY_ID
 access_token = 
 add_encoding_exts = 
 add_headers = 
@@ -46,7 +46,7 @@ proxy_port = 0
 recursive = False
 recv_chunk = 4096
 reduced_redundancy = False
-secret_key = $(AWS_SECRET_KEY)
+secret_key = $AWS_SECRET_KEY
 send_chunk = 4096
 simpledb_host = sdb.amazonaws.com
 skip_existing = False
