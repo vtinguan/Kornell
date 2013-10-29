@@ -113,7 +113,7 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private boolean doesntHaveNext() {
-		return currentIndex >= actoms.size() - 1;
+		return actoms != null && currentIndex >= actoms.size() - 1;
 	}
 
 	private void makeCurrentPrevious() {
@@ -134,12 +134,19 @@ public class CourseSequencer implements Sequencer {
 		currentUidget = nextUidget;
 	}
 
-	private void makeCurrentVisible() {
+	private void makeCurrentVisible() {		
 		currentUidget.setVisible(true);
 		if (nextUidget != null)
 			nextUidget.setVisible(false);
 		if (prevUidget != null)
 			prevUidget.setVisible(false);
+		dropBreadcrumb();
+	}
+
+	private void dropBreadcrumb() {		
+		client.events()
+			.actomEntered(currentActom)	
+			.fire(); 
 	}
 
 	private boolean doesntHavePrev() {

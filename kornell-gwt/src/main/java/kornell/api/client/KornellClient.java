@@ -11,7 +11,7 @@ import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
 
-public class KornellClient extends HTTPClient implements LogoutEventHandler {
+public class KornellClient extends RESTClient implements LogoutEventHandler {
 	private UserInfoTO currentUser;	
 
 	private KornellClient() {}
@@ -53,10 +53,7 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 		this.currentUser = user;	
 	};
 	
-	public void getCurrentUser(Callback<UserInfoTO> cb){
-		//TODO: Consider client side caching
-		GET("/user").sendRequest(null, cb);	
-	}
+
 	
 	//TODO: Is this safe?
 	public void getUser(String username, Callback<UserInfoTO> cb){
@@ -98,7 +95,7 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 		}
 		
 		public void acceptTerms(Callback<Void> cb){
-			PUT("/institutions/"+institutionUUID).send(cb);
+			PUT("/institutions/"+institutionUUID).go(cb);
 		}
 		
 		//TODO: remove this
@@ -146,9 +143,15 @@ public class KornellClient extends HTTPClient implements LogoutEventHandler {
 	public CourseClient course(String courseUUID) {
 		return new CourseClient(courseUUID);
 	}
+	
+	public EventsClient events(){
+		return new EventsClient();
+	}
 
+	@SuppressWarnings("rawtypes")
+	//TODO: Remove raw type
 	public void check(String src, Callback callback) {
-		HEAD(src).send(callback);
+		HEAD(src).go(callback);
 	}
 
 }	
