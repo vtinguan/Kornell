@@ -1,20 +1,21 @@
 package kornell.api.client;
 
+import kornell.core.shared.to.UserInfoTO;
 import kornell.core.shared.util.StringUtils;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 
-public class HTTPClient {
+public class RESTClient {
 	private String apiURL = null;
 
-	public HTTPClient() {
+	public RESTClient() {
 		discoverApiUrl();
 	}
 
 	private void discoverApiUrl() {
-		apiURL = HTTPClient.getFromEnvironment();
+		apiURL = RESTClient.getFromEnvironment();
 		if (apiURL == null || apiURL.length() == 0) {
 			useDefaultUrl();
 		} else {
@@ -60,8 +61,8 @@ public class HTTPClient {
 
 	protected ExceptionalRequestBuilder PUT(String... path) {
 		String url = StringUtils.composeURL(getApiUrl(),path);
-		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
-				RequestBuilder.PUT, url);
+		ExceptionalRequestBuilder reqBuilder = 
+				new ExceptionalRequestBuilder(RequestBuilder.PUT, url);
 		setAuthenticationHeaders(reqBuilder);
 		return reqBuilder;
 	}
@@ -70,5 +71,10 @@ public class HTTPClient {
 		String auth = ClientProperties.get("Authorization");
 		if (auth != null && auth.length() > 0)
 			reqBuilder.setHeader("Authorization", auth);
+	}
+	
+	public void getCurrentUser(Callback<UserInfoTO> cb){
+		//TODO: Consider client side caching
+		GET("/user").sendRequest(null, cb);	
 	}
 }

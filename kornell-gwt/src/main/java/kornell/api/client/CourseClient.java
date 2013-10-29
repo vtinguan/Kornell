@@ -2,7 +2,7 @@ package kornell.api.client;
 
 import kornell.core.shared.data.Contents;
 
-public class CourseClient extends HTTPClient {
+public class CourseClient extends RESTClient {
 
 	private String courseUUID;
 
@@ -11,7 +11,7 @@ public class CourseClient extends HTTPClient {
 	}
 
 	public void contents(Callback<Contents> callback) {
-		GET("courses",courseUUID,"contents").send(callback);
+		GET("courses",courseUUID,"contents").go(callback);
 	}
 
 }
