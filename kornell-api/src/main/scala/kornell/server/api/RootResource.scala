@@ -24,7 +24,7 @@ class RootResource {
 	  |
 	  |Built on ${version.getProperty("built.on","development environment")}
 	  |According to MySQL, 1+1 is $two
-	  |CD Check
+	  |Ola Mexico!!
 	  """.stripMargin
 	  
 	}
