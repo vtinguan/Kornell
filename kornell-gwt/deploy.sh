@@ -21,6 +21,6 @@ echo Deploying to S3
 # Don't cache Kornell.nocache.js
 ./tools/s3cmd/s3cmd -c ./s3cfg  \
   --add-header "Cache-control: max-age=0" \
-  put ./kornell-gwt/target/kornell-gwt-0.0.1-SNAPSHOT/Kornell/Kornell.nocache.js  s3://eduvem.com
+  put ./kornell-gwt/target/kornell-gwt-0.0.1-SNAPSHOT/Kornell/Kornell.nocache.js  s3://eduvem.com/Kornell
 
 echo Unless you see errors above, you should be deployed and good to go. 
