@@ -53,7 +53,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	Button btnDontAgree;
 	@UiField
 	Image institutionLogo;
-	
+
 	Registration registration;
 	Institution institution;
 	UserInfoTO user;
@@ -62,16 +62,17 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	private PlaceController placeCtrl;
 	private Place defaultPlace;
-	
+
 	private String barLogoFileName = "logo300x80.png";
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private GenericMenuLeftView menuLeftView;
-	
+
 	private final EventBus bus;
 
-	public GenericTermsView(EventBus bus, KornellClient client, PlaceController placeCtrl, Place defaultPlace) {
+	public GenericTermsView(EventBus bus, KornellClient client,
+			PlaceController placeCtrl, Place defaultPlace) {
 		this.bus = bus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
@@ -93,8 +94,8 @@ public class GenericTermsView extends Composite implements TermsView {
 				paint();
 			}
 		});
-		
-		//TODO: Improve client API (eg. client.registrations().getUnsigned();
+
+		// TODO: Improve client API (eg. client.registrations().getUnsigned();
 		client.registrations().getUnsigned(new Callback<RegistrationsTO>() {
 			@Override
 			protected void ok(RegistrationsTO to) {
@@ -102,18 +103,18 @@ public class GenericTermsView extends Composite implements TermsView {
 						.getRegistrationsWithInstitutions().entrySet();
 				ArrayList<Entry<Registration, Institution>> regs = new ArrayList<Entry<Registration, Institution>>(
 						entrySet);
-				//TODO: Handle multiple unsigned terms
-				if(regs.size() > 0) {
+				// TODO: Handle multiple unsigned terms
+				if (regs.size() > 0) {
 					Entry<Registration, Institution> e = regs.get(0);
 					registration = e.getKey();
 					institution = e.getValue();
-					
+
 					InstitutionEvent institutionEvent = new InstitutionEvent();
 					institutionEvent.setInstitution(institution);
 					bus.fireEvent(institutionEvent);
-					
+
 					paint();
-				}else {
+				} else {
 					GWT.log("OPS! Should not be here if nothing to sign");
 					goStudy();
 				}
@@ -124,22 +125,24 @@ public class GenericTermsView extends Composite implements TermsView {
 	private void paint() {
 		Person p = user.getPerson();
 		titleUser.setText(p.getFullName());
-		if(institution != null){
+		if (institution != null) {
 			txtTerms.getElement().setInnerHTML(institution.getTerms());
 
-			institutionLogo.setUrl(institution.getAssetsURL() + barLogoFileName);
+			institutionLogo
+					.setUrl(institution.getAssetsURL() + barLogoFileName);
 		}
 	}
 
 	// TODO: Uncomment
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		//client.institution(institution.getUUID()).acceptTerms(new Callback<Void>(){
-			//@Override
-			//protected void ok() {				
-				goStudy();
-			//}
-		//});		
+		client.institution(institution.getUUID()).acceptTerms(
+				new Callback<Void>() {
+					@Override
+					protected void ok() {
+						goStudy();
+					}
+				});
 	}
 
 	@UiHandler("btnDontAgree")
@@ -150,9 +153,9 @@ public class GenericTermsView extends Composite implements TermsView {
 	@Override
 	public void setPresenter(Presenter presenter) {
 	}
-	
+
 	private void goStudy() {
-		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));				
+		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));
 	}
 
 }
