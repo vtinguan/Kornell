@@ -12,7 +12,7 @@ echo Deploying to S3
 # Cacheable for 30 days (2592000 seconds)
 ./tools/s3cmd/s3cmd -c ./s3cfg  \
   --delete-removed \
-  --exclude='WEB-INF/*'
+  --exclude='WEB-INF/*' \
   --exclude='*.nocache.js' \
   --recursive \
   --add-header "Cache-control: max-age=2592000" \
