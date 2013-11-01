@@ -28,9 +28,9 @@ object Auth  {
 
 
   def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T = {
-
+	val principal = if (sc != null) sc.getUserPrincipal else null
     val username =
-      if (sc != null && sc.getUserPrincipal != null)
+      if (principal != null)
         sc.getUserPrincipal().getName()
       else "AUTH_SHOULD_HAVE_FAILED" //TODO
     
@@ -41,6 +41,7 @@ object Auth  {
     else throw new IllegalArgumentException(s"User [$username] not found.")
   }
   
+  //TODO: Cache
   def getPerson(username: String) = {
     sql"""
 		select p.uuid, p.fullName, p.lastPlaceVisited,

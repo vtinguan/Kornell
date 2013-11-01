@@ -134,8 +134,11 @@ public class CourseSequencer implements Sequencer {
 		currentUidget = nextUidget;
 	}
 
-	private void makeCurrentVisible() {		
-		currentUidget.setVisible(true);
+	private void makeCurrentVisible() {
+		if(currentUidget != null)
+			currentUidget.setVisible(true);
+		else
+			GWT.log("CURRENT UIDGET IS NULL. HOW COME?");
 		if (nextUidget != null)
 			nextUidget.setVisible(false);
 		if (prevUidget != null)

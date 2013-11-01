@@ -6,12 +6,10 @@ import javax.servlet.annotation.WebFilter
 import org.apache.commons.codec.binary.Base64
 import java.util.logging.Logger
 
-
 class BasicAuthFilter extends Filter {
-  val log = Logger.getLogger(classOf[BasicAuthFilter].getName) 
-	
-  val pubPaths = Set("/checkup","/sandbox", "/sync", "/report", "/user/check", "/user/create", "/email/welcome", "/institutions")
-  
+  val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
+  val pubPaths = Set("/checkup", "/sandbox", "/sync", "/report", "/user/check", "/user/create", "/email/welcome", "/institutions")
+
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
     (sreq, sres) match {
       case (hreq: HttpServletRequest, hres: HttpServletResponse) =>
@@ -19,20 +17,24 @@ class BasicAuthFilter extends Filter {
     }
   }
 
-  def doFilter(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = 
-    if (isPublic(req,resp))
-      chain.doFilter(req, resp)
-    else
+  def hasCredentials(req: HttpServletRequest) =
+    req.getHeader("Authorization") != null
+  
+  def isPrivate(req: HttpServletRequest, resp: HttpServletResponse) = ! isPublic(req,resp)
+  
+  def doFilter(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) =
+    if (hasCredentials(req) || isPrivate(req, resp))
       checkCredentials(req, resp, chain)
+    else
+      chain.doFilter(req, resp)
 
-  def isPublic(req: HttpServletRequest, resp: HttpServletResponse) ={
-      val path = req.getRequestURI
-      val isPublic = path == "/" || pubPaths.exists {path.startsWith(_)}        
-      val isOption = "OPTIONS".equals(req.getMethod)
-      isOption || isPublic 
-    }
-    
-      
+  def isPublic(req: HttpServletRequest, resp: HttpServletResponse) = {
+    val path = req.getRequestURI
+    val isPublic = path == "/" || pubPaths.exists { path.startsWith(_) }
+    val isOption = "OPTIONS".equals(req.getMethod)
+    isOption || isPublic
+  }
+
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
     val auth = req.getHeader("Authorization");
     if (auth != null && auth.length() > 0) {
@@ -41,9 +43,9 @@ class BasicAuthFilter extends Filter {
         req.login(username, password);
         chain.doFilter(req, resp);
       } catch {
-        case se: ServletException => 
-          se.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, 
-              s"Authentication failed for user $username at uri ${req.getRequestURI}")
+        case se: ServletException =>
+          se.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+            s"Authentication failed for user $username at uri ${req.getRequestURI}")
       }
     } else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You should authenticate")
   }

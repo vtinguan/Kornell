@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.vitrine.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.shared.to.UserInfoTO;
+import static kornell.core.shared.util.StringUtils.*;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
@@ -86,7 +87,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		if(imgLogoURL != null){
-			imgLogo.setUrl(imgLogoURL + "logo300x80.png");
+			imgLogo.setUrl(composeURL(imgLogoURL,  "logo300x80.png"));
 		} else {
 			imgLogo.setUrl("/skins/first/icons/logo.png");
 		}
@@ -134,6 +135,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
 			@Override
 			protected void ok(UserInfoTO user) {
+				bus.fireEvent(new LoginEvent(user));
 				if("".equals(user.getPerson().getConfirmation())){
 					if(user.isSigningNeeded()){
 						placeCtrl.goTo(new TermsPlace());
