@@ -14,9 +14,7 @@ public abstract class Uidget extends Composite {
 		this.viewReadyEventHandler = viewReadyEventHandler;
 	}
 
-	protected void fireViewReady() {
-		//GWT.log("READY ["+this+ "]");
-		LoadingPopup.hide();
+	protected void fireViewReady() {		
 		if(viewReadyEventHandler != null)
 			viewReadyEventHandler.onViewReady(new ViewReadyEvent());
 	}

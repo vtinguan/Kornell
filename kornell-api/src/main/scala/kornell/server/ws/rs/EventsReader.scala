@@ -21,7 +21,7 @@ class EventsReader extends MessageBodyReader[Any] {
     arg1: Type,
     arg2: Array[Annotation],
     mediaType: MediaType): Boolean = 
-      mediaType.toString.startsWith("application/vnd.kornell.v1.event.")
+      mediaType.toString.startsWith(EventFactory.PREFIX)
 
   override def readFrom(
     clazz: Class[Any],
