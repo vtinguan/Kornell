@@ -1,5 +1,5 @@
 package kornell.server.api
-import kornell.core.shared.data.Institution
+import kornell.core.entity.Institution
 import javax.ws.rs._
 
 @Path("institutions")

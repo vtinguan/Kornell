@@ -22,7 +22,7 @@ target
 *.class
 .gwt
 bin
-
+s3cfg
 
 # Unknown
 *.cache

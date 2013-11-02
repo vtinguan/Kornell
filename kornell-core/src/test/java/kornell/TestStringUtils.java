@@ -1,10 +1,9 @@
 package kornell;
 
-import static org.junit.Assert.*;
+import static kornell.core.util.StringUtils.composeURL;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import static kornell.core.shared.util.StringUtils.*;
 
 public class TestStringUtils {
 

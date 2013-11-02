@@ -5,10 +5,10 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.Actom;
-import kornell.core.shared.data.Contents;
-import kornell.core.shared.data.ContentsCategory;
-import kornell.core.shared.data.ExternalPage;
+import kornell.core.lom.Actom;
+import kornell.core.lom.Contents;
+import kornell.core.lom.ContentsCategory;
+import kornell.core.lom.ExternalPage;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.CoursePlace;
@@ -16,7 +16,7 @@ import kornell.gui.client.session.UserSession;
 import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;

@@ -12,7 +12,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary
 import java.io.ByteArrayInputStream
 import com.amazonaws.services.s3.model.PutObjectRequest
 import scala.io.Source
-import kornell.core.shared.util.StringUtils._
+import kornell.core.util.StringUtils._
 
 class S3(regionName: String,
   accessKey: String, 

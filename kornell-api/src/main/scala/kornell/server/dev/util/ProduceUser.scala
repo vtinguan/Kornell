@@ -5,7 +5,7 @@ import kornell.server.repository.jdbc.Auth
 import scala.util.Random
 import scala.collection.Seq
 import kornell.server.repository.jdbc.Institutions
-import kornell.core.shared.data.Registration
+import kornell.core.entity.Registration
 import kornell.server.repository.jdbc.PersonRepository
 
 

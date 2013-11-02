@@ -1,6 +1,6 @@
 package kornell.api.client;
 
-import kornell.core.shared.data.Contents;
+import kornell.core.lom.Contents;
 
 public class CourseClient extends RESTClient {
 

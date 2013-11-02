@@ -1,6 +1,6 @@
 package kornell.gui.client.uidget;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 
 import kornell.gui.client.event.ViewReadyEvent;

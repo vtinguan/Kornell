@@ -10,15 +10,14 @@ import javax.ws.rs.core.SecurityContext
 import javax.persistence.EntityManager
 import javax.inject.Inject
 import javax.enterprise.context.RequestScoped
-import kornell.server.repository.slick.plain.Persons
 import kornell.server.repository.TOs
 import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.Registrations
-import kornell.core.shared.to.UserInfoTO
+import kornell.core.to.UserInfoTO
 import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.server.repository.jdbc.Institutions
 import kornell.server.repository.TOs._
-import kornell.core.shared.data.Person
+import kornell.core.entity.Person
 import kornell.server.repository.jdbc.People
 import kornell.server.util.EmailSender
 import javax.servlet.http.HttpServletRequest

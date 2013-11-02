@@ -8,7 +8,7 @@ import javax.ws.rs.core.SecurityContext
 import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.Institutions
 import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
-import kornell.core.shared.data.Institution
+import kornell.core.entity.Institution
 
 @Produces(Array(Institution.TYPE))
 class InstitutionResource(institutionUUID: String) {

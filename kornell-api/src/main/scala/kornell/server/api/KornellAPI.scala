@@ -6,12 +6,18 @@ import javax.ws.rs.ApplicationPath
 import kornell.server.ws.rs.AutoBeanWriter
 import org.jboss.resteasy.plugins.providers.DefaultTextPlain
 import java.util.Collections
-import kornell.server.ws.rs.EventsReader
+import kornell.server.ws.rs.reader.EventsReader
+import kornell.server.ws.rs.reader.LOMReader
+import kornell.server.ws.rs.reader.EntityReader
+import kornell.server.ws.rs.TOReader
 
 class KornellAPI extends Application {
   override def getClasses() = Set[Class[_]](
       classOf[AutoBeanWriter],
       classOf[EventsReader],
+      classOf[TOReader],
+      classOf[EntityReader],
+      classOf[LOMReader],
       
       classOf[AuthResource],
       classOf[RootResource],

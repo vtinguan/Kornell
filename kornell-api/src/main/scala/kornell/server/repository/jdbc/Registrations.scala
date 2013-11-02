@@ -1,15 +1,15 @@
 package kornell.server.repository.jdbc
 
 import kornell.server.repository.TOs
-import kornell.core.shared.to.RegistrationsTO
+import kornell.core.to.RegistrationsTO
 import kornell.server.repository.jdbc.SQLInterpolation._ 
-import kornell.server.repository.Beans
+import kornell.server.repository.Entities
 import java.sql.ResultSet
-import kornell.core.shared.data.Registration
-import kornell.core.shared.data.Institution
+import kornell.core.entity.Registration
+import kornell.core.entity.Institution
 import scala.collection.JavaConverters._
-import kornell.core.shared.data.Person
-import kornell.server.repository.Beans._
+import kornell.core.entity.Person
+import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
 
 object Registrations{

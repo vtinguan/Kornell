@@ -1,10 +1,10 @@
 package kornell.api.client;
 
-import kornell.core.shared.to.UserInfoTO;
-import kornell.core.shared.util.StringUtils;
+import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.util.ClientProperties;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 
 public class RESTClient {

@@ -1,9 +1,9 @@
 package kornell.server.repository.jdbc
 import kornell.server.repository.jdbc.SQLInterpolation._
-import kornell.core.shared.data.Person
+import kornell.core.entity.Person
 import java.sql.ResultSet
-import kornell.server.repository.Beans
-import kornell.server.repository.Beans._
+import kornell.server.repository.Entities
+import kornell.server.repository.Entities._
 
 class PersonRepository(val uuid:String) {
   

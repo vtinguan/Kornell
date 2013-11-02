@@ -2,12 +2,12 @@ package kornell.api.client;
 
 import java.util.Date;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 
-import kornell.core.shared.data.Actom;
-import kornell.core.shared.event.ActomEntered;
-import kornell.core.shared.event.EventFactory;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.event.ActomEntered;
+import kornell.core.event.EventFactory;
+import kornell.core.lom.Actom;
+import kornell.core.to.UserInfoTO;
 
 public class EventsClient extends RESTClient {
 	// TODO: Move all object creation to client factory

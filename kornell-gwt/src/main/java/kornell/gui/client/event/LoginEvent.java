@@ -1,6 +1,6 @@
 package kornell.gui.client.event;
 
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.to.UserInfoTO;
 
 import com.google.gwt.event.shared.GwtEvent;
 

@@ -8,9 +8,9 @@ import javax.ws.rs.core.SecurityContext
 import kornell.server.dev.util.ContentsParser
 import kornell.server.repository.jdbc.Courses
 import kornell.server.repository.s3.S3
-import kornell.core.shared.to.CourseTO
-import kornell.core.shared.data.Contents
-
+import kornell.core.to.CourseTO
+import kornell.core.lom.Contents
+ 
 class CourseResource(uuid: String) {
   @GET
   @Produces(Array(CourseTO.TYPE))

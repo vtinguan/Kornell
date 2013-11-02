@@ -1,7 +1,7 @@
 package kornell.gui.client.presentation.course.notes;
 
 import kornell.api.client.KornellClient;
-import kornell.core.shared.to.CourseTO;
+import kornell.core.to.CourseTO;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;

@@ -2,7 +2,7 @@ package kornell.gui.client.presentation.bar.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.InstitutionEvent;
 import kornell.gui.client.event.InstitutionEventHandler;
 import kornell.gui.client.event.LogoutEvent;

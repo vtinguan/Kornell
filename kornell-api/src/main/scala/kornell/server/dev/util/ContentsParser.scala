@@ -1,13 +1,14 @@
 package kornell.server.dev.util
 
 import scala.collection.mutable.ListBuffer
-import kornell.core.shared.data.Topic
-import kornell.core.shared.data.Content
-import kornell.server.repository.Beans
-import kornell.core.shared.data.Contents
+import kornell.core.lom.Topic
+import kornell.core.lom.Content
+import kornell.server.repository.Entities
+import kornell.core.lom.Contents
 import scala.io.Source
 import scala.io.BufferedSource
-import kornell.core.shared.util.StringUtils._
+import kornell.core.util.StringUtils._
+import kornell.server.repository.LOM
 
 object ContentsParser {
   
@@ -25,13 +26,13 @@ object ContentsParser {
     lines foreach { line =>
       line match {
         case topicPattern(topicName) => {
-          topic = Beans.newTopic(topicName)
-          result += Beans.newContent(topic) 
+          topic = LOM.newTopic(topicName)
+          result += LOM.newContent(topic) 
         }
         
         case pagePattern(key,title) => { 
-          val page = Beans.newExternalPage(baseURL,key,title)
-          val content = Beans.newContent(page)
+          val page = LOM.newExternalPage(baseURL,key,title)
+          val content = LOM.newContent(page)
           if (topic != null) topic.getChildren().add(content)
           else result += content
         }
@@ -39,6 +40,6 @@ object ContentsParser {
       }
     }
     val contents = result.toList
-    Beans.newContents(contents)
+    LOM.newContents(contents)
   }
 }

@@ -48,6 +48,7 @@
   
   <!-- 1st party libs -->
   <inherits name='kornell.api.KornellClient' />
+  
 
   
   <entry-point class='kornell.gui.client.Kornell' />
@@ -58,7 +59,6 @@
   
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />
-  <source path='shared' />
   
   <set-property name="bootstrap.responsiveDesign" value="true"/>
   

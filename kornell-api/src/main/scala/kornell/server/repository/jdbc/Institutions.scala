@@ -1,13 +1,12 @@
 package kornell.server.repository.jdbc
 
 import java.sql.ResultSet
-import kornell.server.repository.Beans._
-
-import kornell.core.shared.data.Institution
-import kornell.core.shared.data.Person
-import kornell.core.shared.data.Registration
-import kornell.server.repository.Beans
-import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
+import kornell.server.repository.Entities._
+import kornell.server.repository.Entities
+import kornell.core.entity.Person
+import kornell.core.entity.Institution
+import kornell.core.entity.Registration
+import kornell.server.repository.jdbc.SQLInterpolation._
 
 object Institutions {
 
@@ -32,7 +31,7 @@ object Institutions {
     """.executeUpdate    
   }
   
-  implicit def toInstitution(rs:ResultSet) = 
+  implicit def toInstitution(rs:ResultSet):Institution = 
     newInstitution(rs.getString("uuid"), 
         rs.getString("name"), 
         rs.getString("terms"),

@@ -1,9 +1,9 @@
 package kornell.api.client;
 
-import kornell.core.shared.event.ActomEntered;
-import kornell.core.shared.event.EventFactory;
+import kornell.core.event.ActomEntered;
+import kornell.core.event.EventFactory;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;

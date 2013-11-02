@@ -1,6 +1,6 @@
 package kornell.gui.client.personnel;
 
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
