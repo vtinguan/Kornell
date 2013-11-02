@@ -3,11 +3,11 @@ package kornell.gui.client.presentation.course.details.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.core.shared.data.coursedetails.CertificationTO;
-import kornell.core.shared.data.coursedetails.CourseDetailsTO;
-import kornell.core.shared.data.coursedetails.HintTO;
-import kornell.core.shared.data.coursedetails.InfoTO;
-import kornell.core.shared.data.coursedetails.TopicTO;
+import kornell.core.to.coursedetails.CertificationTO;
+import kornell.core.to.coursedetails.CourseDetailsTO;
+import kornell.core.to.coursedetails.HintTO;
+import kornell.core.to.coursedetails.InfoTO;
+import kornell.core.to.coursedetails.TopicTO;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;

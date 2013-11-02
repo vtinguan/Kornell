@@ -1,25 +1,10 @@
 package kornell.server.repository.jdbc
 
-import java.math.BigDecimal
-import java.sql.Timestamp
-import java.util.Date
-import scala.math.BigDecimal.javaBigDecimal2bigDecimal
+import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
-import kornell.core.shared.to.CourseTO
-import kornell.core.shared.to.CoursesTO
-import kornell.core.shared.data.Enrollment
-import kornell.core.shared.data.Person
-import kornell.core.shared.data.Course
-import kornell.server.repository.SlickRepository
-import kornell.server.repository.slick.plain.Persons
-import kornell.server.repository.TOs
-import kornell.server.repository.jdbc.SQLInterpolation._
-import java.sql.ResultSet
-import kornell.server.repository.s3.S3
-import scala.collection.JavaConverters._
-import javax.ws.rs.core._
-import kornell.server.repository.Beans._
-import kornell.server.repository.TOs._
+import kornell.core.to.CourseTO
+import kornell.server.repository.TOs.newCourseTO
+import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
 
 object Courses {
   def byUUID(uuid: String)(implicit @Context sc: SecurityContext): Option[CourseTO] = Auth.withPerson { p =>

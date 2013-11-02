@@ -1,11 +1,11 @@
 package kornell.gui.client.presentation.course.details.generic;
 
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.Content;
-import kornell.core.shared.data.ExternalPage;
-import kornell.core.shared.data.coursedetails.CourseDetailsTO;
-import kornell.core.shared.to.CourseTO;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.lom.Content;
+import kornell.core.lom.ExternalPage;
+import kornell.core.to.CourseTO;
+import kornell.core.to.UserInfoTO;
+import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;

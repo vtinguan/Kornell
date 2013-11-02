@@ -5,7 +5,7 @@ import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.course.CoursePlace;

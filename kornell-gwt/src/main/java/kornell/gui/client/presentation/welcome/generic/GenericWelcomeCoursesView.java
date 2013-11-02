@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.to.CourseTO;
-import kornell.core.shared.to.CoursesTO;
+import kornell.core.to.CourseTO;
+import kornell.core.to.CoursesTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 

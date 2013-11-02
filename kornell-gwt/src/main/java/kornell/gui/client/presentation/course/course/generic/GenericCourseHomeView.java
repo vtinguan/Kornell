@@ -2,7 +2,7 @@ package kornell.gui.client.presentation.course.course.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;

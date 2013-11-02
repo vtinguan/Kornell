@@ -1,6 +1,6 @@
 package kornell.gui.client.event;
 
-import kornell.core.shared.data.Institution;
+import kornell.core.entity.Institution;
 
 import com.google.gwt.event.shared.GwtEvent;
 

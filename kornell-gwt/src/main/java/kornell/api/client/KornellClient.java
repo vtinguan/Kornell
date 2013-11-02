@@ -1,15 +1,15 @@
 package kornell.api.client;
 
-import kornell.core.shared.data.Institution;
-import kornell.core.shared.to.CourseTO;
-import kornell.core.shared.to.CoursesTO;
-import kornell.core.shared.to.RegistrationsTO;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.entity.Institution;
+import kornell.core.to.CourseTO;
+import kornell.core.to.CoursesTO;
+import kornell.core.to.RegistrationsTO;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.session.UserSession;
 import kornell.gui.client.util.ClientProperties;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 
 public class KornellClient extends RESTClient implements LogoutEventHandler {
 	private UserInfoTO currentUser;	

@@ -2,14 +2,14 @@ package kornell.api.client;
 
 import java.util.HashMap;
 
-import kornell.core.shared.data.Contents;
-import kornell.core.shared.data.Institution;
-import kornell.core.shared.data.Registration;
-import kornell.core.shared.data.Registrations;
-import kornell.core.shared.to.CourseTO;
-import kornell.core.shared.to.CoursesTO;
-import kornell.core.shared.to.RegistrationsTO;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.entity.Institution;
+import kornell.core.entity.Registration;
+import kornell.core.entity.Registrations;
+import kornell.core.lom.Contents;
+import kornell.core.to.CourseTO;
+import kornell.core.to.CoursesTO;
+import kornell.core.to.RegistrationsTO;
+import kornell.core.to.UserInfoTO;
 
 public class MediaTypes extends HashMap<String,Class<?>>{
 	private static final long serialVersionUID = 8495421711509512346L;

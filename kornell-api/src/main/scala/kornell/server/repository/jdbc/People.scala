@@ -1,10 +1,10 @@
 package kornell.server.repository.jdbc
 
-import kornell.core.shared.data.Person
-import kornell.server.repository.Beans
+import kornell.core.entity.Person
+import kornell.server.repository.Entities
 import kornell.server.repository.jdbc.SQLInterpolation._
 
-import kornell.server.repository.Beans._
+import kornell.server.repository.Entities._
 class People{
   def createTestPerson(fullName:String):PersonRepository = {
     val uuid = randomUUID

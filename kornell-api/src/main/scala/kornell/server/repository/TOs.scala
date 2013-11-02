@@ -1,15 +1,15 @@
 package kornell.server.repository
 
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-import kornell.core.shared.to.TOFactory
-import kornell.core.shared.data.Institution
-import kornell.core.shared.data.Registration
-import kornell.core.shared.to.RegistrationsTO
+import kornell.core.to.TOFactory
+import kornell.core.entity.Institution
+import kornell.core.entity.Registration
+import kornell.core.to.RegistrationsTO
 import scala.collection.JavaConverters._
 import java.util.Date
 import java.math.BigDecimal
 import java.sql.ResultSet
-import kornell.core.shared.to.CourseTO
+import kornell.core.to.CourseTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -33,8 +33,8 @@ object TOs {
     repository_uuid:String, notes: String) = {
     val to = tos.newCourseTO.as
     val prog = if (progress != null) new BigDecimal(progress) else null
-    val course = Beans.newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
-    val enrollment = Beans.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
+    val course = Entities.newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
+    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
     to setCourse(course)
     to setEnrollment(enrollment)
     to

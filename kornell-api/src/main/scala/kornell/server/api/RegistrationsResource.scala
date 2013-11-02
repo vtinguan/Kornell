@@ -5,11 +5,11 @@ import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
-import kornell.server.repository.Beans
+import kornell.server.repository.Entities
 import kornell.server.repository.TOs
 import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.Registrations
-import kornell.core.shared.to.RegistrationsTO
+import kornell.core.to.RegistrationsTO
 import kornell.server.repository.TOs
 
 @Path("registrations")

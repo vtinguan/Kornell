@@ -4,13 +4,13 @@ import java.beans.EventSetDescriptor;
 import java.util.Date;
 
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.ExternalPage;
+import kornell.core.lom.ExternalPage;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.util.loading.LoadingPopup;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.logical.shared.ResizeEvent;

@@ -2,13 +2,13 @@ package kornell.gui.client.personnel;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.Institution;
+import kornell.core.entity.Institution;
 import kornell.gui.client.event.InstitutionEvent;
 import kornell.gui.client.event.InstitutionEventHandler;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.util.ClientProperties;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class Dean implements InstitutionEventHandler{

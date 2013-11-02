@@ -6,11 +6,11 @@ import java.util.Set;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.Institution;
-import kornell.core.shared.data.Person;
-import kornell.core.shared.data.Registration;
-import kornell.core.shared.to.RegistrationsTO;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.entity.Institution;
+import kornell.core.entity.Person;
+import kornell.core.entity.Registration;
+import kornell.core.to.RegistrationsTO;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.CourseBarEvent;
 import kornell.gui.client.event.InstitutionEvent;

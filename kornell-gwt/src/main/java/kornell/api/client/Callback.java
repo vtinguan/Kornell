@@ -4,10 +4,13 @@ import static com.google.gwt.http.client.Response.SC_FORBIDDEN;
 import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
-import kornell.core.shared.data.BeanFactory;
-import kornell.core.shared.to.TOFactory;
+import kornell.core.entity.EntityFactory;
+import kornell.core.event.EventFactory;
+import kornell.core.lom.LOMFactory;
+import kornell.core.to.TOFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
@@ -15,14 +18,12 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanFactory;
+
 
 public class Callback<T> implements RequestCallback {
-	//TODO: Move all object creation to client factory
-	private static final BeanFactory beans = GWT.create(BeanFactory.class);
-	//TODO: Move all object creation to client factory
-	private static final TOFactory tos = GWT.create(TOFactory.class);
-	private MediaTypes mimeTypes = new MediaTypes();
-	
+	private static final MediaTypes mimeTypes = new MediaTypes();
+
 	@Override
 	public void onResponseReceived(Request request, Response response) {
 		if (!isTrusted(response))
@@ -68,23 +69,36 @@ public class Callback<T> implements RequestCallback {
 				Class<T> clazz = (Class<T>) mimeTypes.get(contentType);
 
 				AutoBean<T> bean = null;
-				if (contentType.contains(".to.")) {
-					bean = AutoBeanCodex.decode(tos, clazz, responseText);
-				} else {
-					bean = AutoBeanCodex.decode(beans, clazz, responseText);
-				}
+				AutoBeanFactory factory = factoryFor(contentType);
+				bean = AutoBeanCodex.decode(factory, clazz, responseText);
 				T unwrapped = bean.as();
 				try {
 					ok(unwrapped);
 				} catch (ClassCastException ex) {
-					String message = "Could not dispatch object of type ["+clazz.getName()+"] to this callback. Please check that your callback type mapping matches the response ContentType and you are hitting the correct URL.";
-					throw new RuntimeException(message,ex);
+					String message = "Could not dispatch object of type ["
+							+ clazz.getName()
+							+ "] to this callback. Please check that your callback type mapping matches the response ContentType and you are hitting the correct URL.";
+					throw new RuntimeException(message, ex);
 				}
 			} else
 				ok(Callback.parseJson(responseText));
 
 		} else
 			ok();
+	}
+
+	private AutoBeanFactory factoryFor(String contentType) {
+		if(contentType == null) throw new NullPointerException("Can't create factory without content type");
+		if(contentType.startsWith(TOFactory.PREFIX))
+			return GenericClientFactoryImpl.toFactory;
+		else if(contentType.startsWith(LOMFactory.PREFIX))
+			return GenericClientFactoryImpl.lomFactory;
+		else if(contentType.startsWith(EventFactory.PREFIX))
+			return GenericClientFactoryImpl.eventFactory;
+		else if (contentType.startsWith(EntityFactory.PREFIX))
+			return GenericClientFactoryImpl.entityFactory;
+		else throw new IllegalArgumentException("Unknown factory for content type ["+contentType+"]");
+		
 	}
 
 	protected void ok(T to) {

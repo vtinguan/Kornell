@@ -8,7 +8,7 @@ import javax.mail.MessagingException
 import javax.mail.PasswordAuthentication
 import javax.mail.Message
 import javax.mail.internet.InternetAddress
-import kornell.core.shared.data.Person
+import kornell.core.entity.Person
 import javax.mail.internet.MimeBodyPart
 import javax.mail.Part
 import javax.mail.Multipart
@@ -22,7 +22,7 @@ import javax.activation.FileDataSource
 import java.io.File
 import java.util.HashMap
 import java.util.Date
-import kornell.core.shared.data.Institution
+import kornell.core.entity.Institution
 import org.apache.commons.io.FileUtils
 import java.net.URL
 

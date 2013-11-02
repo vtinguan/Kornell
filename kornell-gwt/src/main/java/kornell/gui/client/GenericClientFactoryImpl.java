@@ -2,8 +2,12 @@ package kornell.gui.client;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.shared.data.Institution;
-import kornell.core.shared.to.UserInfoTO;
+import kornell.core.entity.EntityFactory;
+import kornell.core.entity.Institution;
+import kornell.core.event.EventFactory;
+import kornell.core.lom.LOMFactory;
+import kornell.core.to.TOFactory;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
@@ -73,6 +77,11 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class GenericClientFactoryImpl implements ClientFactory {
+	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
+	public static final TOFactory toFactory = GWT.create(TOFactory.class);
+	public static final LOMFactory lomFactory = GWT.create(LOMFactory.class);
+	public static final EventFactory eventFactory = GWT.create(EventFactory.class);
+	
 	/* History Management */
 	private final EventBus bus = new SimpleEventBus();
 	private final PlaceController placeCtrl = new PlaceController(
