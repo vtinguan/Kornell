@@ -37,8 +37,6 @@ public class ExternalPageView extends Uidget {
 	
 	public ExternalPageView(KornellClient client, 
 			 ExternalPage page) {
-		//GWT.log("IFRAME FOR ["+page.getKey()+"] CREATED");
-		LoadingPopup.show();
 		this.client = client;
 		this.page = page;
 		createIFrame();

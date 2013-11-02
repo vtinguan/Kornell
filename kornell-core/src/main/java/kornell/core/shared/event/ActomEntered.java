@@ -3,7 +3,7 @@ package kornell.core.shared.event;
 import java.util.Date;
 
 public interface ActomEntered {
-	public static final String TYPE = "application/vnd.kornell.v1.event.ActomEntered+json";
+	public static final String TYPE = EventFactory.PREFIX+"ActomEntered+json";
 
 	Date getTime();
 	void setTime(Date time);
