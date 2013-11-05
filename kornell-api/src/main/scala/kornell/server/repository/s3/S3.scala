@@ -53,14 +53,14 @@ class S3(regionName: String,
     s3.getObject(bucket, prefix + "/" + key)
     
   def source(key:String) = 
-      Source.fromURL(composeURL(baseURL,key), "utf-8")
+      Source.fromURL(composeURL(baseURL,prefix,key), "utf-8")
       
    
   //TODO: Resolve base url from region
   lazy val baseURL = 
     if(distributionURL != null)
-    	composeURL(distributionURL, prefix)
-    else s"http://${bucket}.s3-sa-east-1.amazonaws.com/${prefix}"
+    	distributionURL
+    else s"http://${bucket}.s3-sa-east-1.amazonaws.com/"
     
 }
 
