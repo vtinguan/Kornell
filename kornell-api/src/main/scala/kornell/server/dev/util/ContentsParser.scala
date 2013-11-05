@@ -15,12 +15,12 @@ object ContentsParser {
   val topicPattern = """#\s?(.*)""".r
   val pagePattern = """([^;]*);?([^;]*)?""".r 
 
-  def parse(baseURL:String,source: BufferedSource ): Contents =
-    parseLines(baseURL,source.getLines)
-  def parse(baseURL:String,source: String): Contents = 
-    parseLines(baseURL,source.lines) 
+  def parse(baseURL:String,prefix:String,source: BufferedSource ): Contents =
+    parseLines(baseURL,prefix,source.getLines)
+  def parse(baseURL:String,prefix:String,source: String): Contents = 
+    parseLines(baseURL,prefix,source.lines) 
   
-  def parseLines(baseURL:String,lines:Iterator[String]) = {
+  def parseLines(baseURL:String,prefix:String,lines:Iterator[String]) = {
     val result = ListBuffer[Content]()
     var topic: Topic = null
     lines foreach { line =>
@@ -31,7 +31,7 @@ object ContentsParser {
         }
         
         case pagePattern(key,title) => { 
-          val page = LOM.newExternalPage(baseURL,key,title)
+          val page = LOM.newExternalPage(baseURL,prefix,key,title)
           val content = LOM.newContent(page)
           if (topic != null) topic.getChildren().add(content)
           else result += content

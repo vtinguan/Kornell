@@ -3,6 +3,7 @@ import javax.ws.rs.Path
 import javax.ws.rs.PUT
 import javax.ws.rs.Consumes
 import kornell.core.event.ActomEntered
+import kornell.server.repository.jdbc.Events
 
 @Path("events")
 class EventsResource {
@@ -10,8 +11,7 @@ class EventsResource {
   @PUT
   @Path("actomEntered")
   @Consumes(Array(ActomEntered.TYPE))
-  def putActomEntered(event:ActomEntered){
-    println(s"Actom [${event.getActomKey()}] entered by [${event.getFromPersonUUID()}]");
-  }
-	
+  //TODO: @Asynchronous
+  def putActomEntered(event:ActomEntered):Unit =
+    Events.logActomEntered(event)	
 }
