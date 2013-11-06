@@ -30,5 +30,3 @@ Check our [wiki](https://github.com/Craftware/Kornell/wiki) and get started!
 
 This project is named after [Dr. Nate Kornell](http://sites.williams.edu/nk2/)  
 
-
-https://www.codeship.io/projects/54fb5260-0c71-0131-6aac-526d9d0b5adb/status 
