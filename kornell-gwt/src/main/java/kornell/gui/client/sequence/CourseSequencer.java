@@ -1,5 +1,6 @@
 package kornell.gui.client.sequence;
 
+import java.util.Iterator;
 import java.util.List;
 
 import kornell.api.client.Callback;
@@ -16,14 +17,16 @@ import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class CourseSequencer implements Sequencer {
-
+	private String CURRENT_KEY = CourseSequencer.class.getName() + ".CURRENT_KEY";
 	private FlowPanel contentPanel;
 	private String courseUUID;
 	private KornellClient client;
+	private Contents contents;
 	private List<Actom> actoms;
 
 	private int currentIndex;
@@ -52,7 +55,7 @@ public class CourseSequencer implements Sequencer {
 		currentIndex++;
 		preloadNext();
 		makeCurrentVisible();
-		dropBreadcrumb();
+		checkpoint();
 		debug("CONTINUED");
 	}
 
@@ -66,17 +69,12 @@ public class CourseSequencer implements Sequencer {
 		currentIndex--;
 		preloadPrev();
 		makeCurrentVisible();
-		dropBreadcrumb();
+		checkpoint();
 		debug("PREVED");
 	}
 
-
-
-
-	private String getBreadcrumbKey() {
-		return CourseSequencer.class.getName() 
-				+ "." + courseUUID
-				+ ".CURRENT_KEY";
+	private void checkpoint() {
+		session.setItem(CURRENT_KEY,currentKey());
 	}
 
 	private void debug(String event) {
@@ -145,10 +143,10 @@ public class CourseSequencer implements Sequencer {
 			nextUidget.setVisible(false);
 		if (prevUidget != null)
 			prevUidget.setVisible(false);
+		dropBreadcrumb();
 	}
 
-	private void dropBreadcrumb() {
-		session.setItem(getBreadcrumbKey(),currentKey());
+	private void dropBreadcrumb() {		
 		client.events()
 			.actomEntered(currentActom)	
 			.fire(); 
@@ -231,7 +229,7 @@ public class CourseSequencer implements Sequencer {
 			}
 
 			private String loadCurrentKey() {
-				return session.getItem(getBreadcrumbKey());
+				return session.getItem(CURRENT_KEY);
 			}
 		});
 	}
@@ -267,13 +265,12 @@ public class CourseSequencer implements Sequencer {
 			contentPanel.add(nextUidget);
 		}
 	}
-	
+
 	private void showCurrentASAP() {
 		currentUidget = uidgetFor(currentActom);
 		contentPanel.add(currentUidget);
 		currentUidget.setVisible(false);
 		currentUidget.onViewReady(new ShowWhenReady(currentUidget));
-		dropBreadcrumb();
 	}
 
 	private Uidget uidgetFor(Actom actom) {
@@ -286,6 +283,7 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private void setContents(Contents contents) {
+		this.contents = contents;
 		this.actoms = ContentsCategory.collectActoms(contents);
 	}
 }

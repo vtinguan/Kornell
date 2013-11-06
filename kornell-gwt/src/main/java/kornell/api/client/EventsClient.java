@@ -2,12 +2,12 @@ package kornell.api.client;
 
 import java.util.Date;
 
+import com.google.gwt.core.client.GWT;
+
 import kornell.core.event.ActomEntered;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.Actom;
-import kornell.core.util.UUID;
-
-import com.google.gwt.core.client.GWT;
+import kornell.core.to.UserInfoTO;
 
 public class EventsClient extends RESTClient {
 	// TODO: Move all object creation to client factory
@@ -16,8 +16,7 @@ public class EventsClient extends RESTClient {
 	public EventClient actomEntered(final Actom actom) {
 		ActomEntered actomEntered = factory.newActomEntered().as();
 		actomEntered.setActomKey(actom.getKey());		
-		actomEntered.setEventFiredAt(new Date());
-		actomEntered.setUUID(UUID.random());
+		actomEntered.setTime(new Date());
 		return withEvent(actomEntered);
 	}
 

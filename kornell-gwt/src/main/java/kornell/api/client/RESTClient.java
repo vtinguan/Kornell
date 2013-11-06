@@ -9,7 +9,6 @@ import com.google.gwt.http.client.RequestBuilder;
 
 public class RESTClient {
 	private String apiURL = null;
-	UserInfoTO currrentUserInfoTO = null;
 
 	public RESTClient() {
 		discoverApiUrl();
@@ -74,29 +73,8 @@ public class RESTClient {
 			reqBuilder.setHeader("Authorization", auth);
 	}
 	
-	public void getCurrentUser(final Callback<UserInfoTO> cb){
-		if (currrentUserInfoTO != null){
-			cb.ok(currrentUserInfoTO);
-		}
-		
-		GET("/user").sendRequest(null, new Callback<UserInfoTO>(){
-			@Override
-			protected void ok(UserInfoTO to) {
-				currrentUserInfoTO = to;
-				cb.ok(to);
-			}
-			
-			@Override
-			protected void unauthorized() {
-				currrentUserInfoTO = null;
-				super.unauthorized();
-			}
-		});	
+	public void getCurrentUser(Callback<UserInfoTO> cb){
+		//TODO: Consider client side caching
+		GET("/user").sendRequest(null, cb);	
 	}
-	
-	protected void forgetCredentials() {
-		currrentUserInfoTO = null;
-		ClientProperties.remove("Authorization");
-	}
-
 }
