@@ -150,7 +150,7 @@ public class CourseSequencer implements Sequencer {
 	private void dropBreadcrumb() {
 		session.setItem(getBreadcrumbKey(),currentKey());
 		client.events()
-			.actomEntered(currentActom)	
+			.actomEntered(courseUUID,currentActom)	
 			.fire(); 
 	}
 
