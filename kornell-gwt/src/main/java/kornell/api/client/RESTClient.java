@@ -89,7 +89,7 @@ public class RESTClient {
 			}
 		};
 		if(currentUser == null)
-			GET("/user").sendRequest(null, wrapper);
+			GET("/user").sendRequest(null, cb);
 		else cb.ok(currentUser);
 	}
 

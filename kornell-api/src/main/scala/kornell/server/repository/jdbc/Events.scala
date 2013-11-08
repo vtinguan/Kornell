@@ -4,8 +4,9 @@ import kornell.core.event.ActomEntered
 
 object Events {
   def logActomEntered(event: ActomEntered) = sql"""
-    insert into ActomEntered(uuid,person_uuid,actom_key,eventFiredAt)
+    insert into ActomEntered(uuid,course_uuid,person_uuid,actom_key,eventFiredAt)
     values(${event.getUUID()},
+  		   ${event.getCourseUUID()},
            ${event.getFromPersonUUID()},
 		   ${event.getActomKey()},
 		   ${event.getEventFiredAt()});

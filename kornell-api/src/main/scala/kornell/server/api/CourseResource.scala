@@ -11,6 +11,8 @@ import kornell.server.repository.s3.S3
 import kornell.core.to.CourseTO
 import kornell.core.lom.Contents
 import kornell.server.repository.jdbc.Auth
+import kornell.core.entity.Person
+import kornell.core.lom.Content
  
 class CourseResource(uuid: String) {
   @GET
@@ -23,17 +25,20 @@ class CourseResource(uuid: String) {
   @GET
   def getContents(implicit @Context sc: SecurityContext):Contents = 
   Auth.withPerson { person =>
-    val courseTO = Courses.byUUID(uuid).get    
+    val courseRepo = Courses(uuid)
+    val courseTO = courseRepo.withEnrollment(person).get    
     val s3 = S3(courseTO.getCourse.getRepositoryUUID)
     val structureSrc = s3.source("structure.knl")    
     val structureText = structureSrc.mkString("")
     val baseURL = s3.baseURL
     courseTO.setBaseURL(baseURL)
-    val contents = ContentsParser.parse(baseURL,s3.prefix,structureText)
+    val visited =  courseRepo.actomsVisitedBy(person)
+    val contents = ContentsParser.parse(baseURL,s3.prefix,structureText,visited)
     contents.setCourseTO(courseTO)
-    
     contents
   }
+ 
+  
 }
 
 object CourseResource {

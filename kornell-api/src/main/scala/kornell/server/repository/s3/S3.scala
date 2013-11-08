@@ -15,53 +15,54 @@ import scala.io.Source
 import kornell.core.util.StringUtils._
 
 class S3(regionName: String,
-  accessKey: String, 
+  accessKey: String,
   secretKey: String,
-  val bucket: String, 
+  val bucket: String,
   val prefix: String,
-  distributionURL:String) {
-  
+  distributionURL: String) {
+
   //TODO: An actom is an undivisible unit of learning content. Pls write that on the wiki, bur for now it is just a key...
   type Actom = String
 
   val region = Region.getRegion(Regions.fromName(regionName))
   val creds = new BasicAWSCredentials(accessKey, secretKey)
   val s3 = new AmazonS3Client(creds)
-  lazy val client = s3 
+  lazy val client = s3
 
   s3.setRegion(region)
 
   lazy val first: ObjectListing = s3.listObjects(bucket, prefix)
   def next(prev: ObjectListing): ObjectListing = s3.listNextBatchOfObjects(prev)
-  
+
   def isActom(key: String) = key.endsWith("html")
 
   lazy val listings: Stream[ObjectListing] = first #::
-      listings.map(next)
-      .takeWhile(!_.getObjectSummaries.isEmpty)
-  
+    listings.map(next)
+    .takeWhile(!_.getObjectSummaries.isEmpty)
+
   lazy val keys = listings
-      .flatten(_.getObjectSummaries.asScala)
-      .map(_.getKey)
-  
-  lazy val actoms:Stream[Actom] = keys.filter(isActom)
- 
+    .flatten(_.getObjectSummaries.asScala)
+    .map(_.getKey)
+
+  lazy val actoms: Stream[Actom] = keys.filter(isActom)
+
   def put(key: String, value: String) =
     s3.putObject(bucket, prefix + "/" + key, new ByteArrayInputStream(value.getBytes()), null)
-    
-  def getObject(key:String) =
+
+  def getObject(key: String) =
     s3.getObject(bucket, prefix + "/" + key)
-    
-  def source(key:String) = 
-      Source.fromURL(composeURL(baseURL,prefix,key), "utf-8")
-      
-   
+
+  def source(key: String) = {
+    val url = composeURL(baseURL, prefix, key)
+    Source.fromURL(url, "utf-8")
+  }
+
   //TODO: Resolve base url from region
-  lazy val baseURL = 
-    if(distributionURL != null)
-    	distributionURL
+  lazy val baseURL =
+    if (distributionURL != null)
+      distributionURL
     else s"http://${bucket}.s3-sa-east-1.amazonaws.com/"
-    
+
 }
 
 object S3 {
@@ -76,7 +77,7 @@ object S3 {
     	select region,accessKeyId,secretAccessKey,bucketName,prefix,distributionURL
     	from S3ContentRepository
     	where uuid=$repository_uuid
-    """.first[S3].getOrElse({throw new IllegalArgumentException(s"Could not find repository [$repository_uuid]")})
+    """.first[S3].getOrElse({ throw new IllegalArgumentException(s"Could not find repository [$repository_uuid]") })
 
   def main(args: Array[String]) {
 

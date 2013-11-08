@@ -16,6 +16,7 @@ public interface ActomEntered extends Event {
 	void setFromPersonUUID(String fromPersonUUID);
 	
 	String getCourseUUID();
+	void setCourseUUID(String courseUUID);
 	
 	String getActomKey();
 	void setActomKey(String actomKey);
