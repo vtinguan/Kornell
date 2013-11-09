@@ -67,6 +67,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -273,7 +274,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView( historyMapper , placeCtrl, defaultPlace, client, bus);
+		return new GenericVitrineView(this);
 	}
 
 	@Override
@@ -414,6 +415,31 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			sandboxPresenter = new SandboxPresenter(sandboxView);
 		}
 		return sandboxPresenter;
+	}
+
+	@Override
+	public PlaceController getPlaceController() {
+		return placeCtrl;
+	}
+
+	@Override
+	public PlaceHistoryMapper getHistoryMapper() {
+		return historyMapper;
+	}
+
+	@Override
+	public EventBus getEventBus() {
+		return bus;
+	}
+
+	@Override
+	public Place getDefaultPlace() {
+		return defaultPlace;
+	}
+
+	@Override
+	public KornellClient getKornellClient() {
+		return client;
 	}
 	
 	

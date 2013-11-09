@@ -1,8 +1,7 @@
 
 package kornell.gui.client;
 
-import com.google.gwt.place.shared.Place;
-
+import kornell.api.client.KornellClient;
 import kornell.gui.client.presentation.course.CoursePresenter;
 import kornell.gui.client.presentation.course.CourseView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
@@ -25,8 +24,21 @@ import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.web.bindery.event.shared.EventBus;
+
 public interface ClientFactory {
+	
 	ClientFactory startApp();
+	
+	KornellClient getKornellClient();
+	PlaceController getPlaceController();
+	PlaceHistoryMapper getHistoryMapper();
+	EventBus getEventBus();
+	Place getDefaultPlace();
+	
 	//Views
 	HomeView getHomeView();
 	VitrineView getVitrineView();
