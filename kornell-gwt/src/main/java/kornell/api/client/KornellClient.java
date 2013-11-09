@@ -6,54 +6,18 @@ import kornell.core.to.CoursesTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LogoutEventHandler;
-import kornell.gui.client.session.UserSession;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
 
 public class KornellClient extends RESTClient implements LogoutEventHandler {
-	private UserInfoTO currentUser;	
 
 	private KornellClient() {}
 	
-	public void login(
-			String username,
-			String password,
-			String confirmation,
-			final Callback<UserInfoTO> callback) {
-		final String auth = "Basic "+ ClientProperties.base64Encode(username+":"+password);				
-		
-		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>(){
-			protected void ok(UserInfoTO user) {
-				setCurrentUser(user);
-				//TODO: https://github.com/Craftware/Kornell/issues/7
-				ClientProperties.set("Authorization", auth);
-				
-				callback.ok(user);
-			}
-
-			@Override
-			protected void unauthorized() {
-				callback.unauthorized();
-			}
-		};
-		//TODO: What is this?
-		confirmation = "".equals(confirmation)?"NONE":confirmation;
-		GET("/user/login/"+confirmation)
-			.addHeader("Authorization", auth)
-			.sendRequest(null, wrapper);
-
-	}
 
 	public void getCourses(Callback<CoursesTO> callback){
 		GET("/courses").sendRequest(null, callback);	
 	}
-
-	private void setCurrentUser(UserInfoTO user) {
-		this.currentUser = user;	
-	};
-	
-
 	
 	//TODO: Is this safe?
 	public void getUser(String username, Callback<UserInfoTO> cb){
@@ -144,8 +108,9 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new CourseClient(courseUUID);
 	}
 	
+	static final EventsClient eventsClient = new EventsClient(); 
 	public EventsClient events(){
-		return new EventsClient();
+		return eventsClient;
 	}
 
 	@SuppressWarnings("rawtypes")

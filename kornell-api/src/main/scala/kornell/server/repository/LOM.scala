@@ -27,11 +27,14 @@ object LOM {
     content
   }
 
-  def newExternalPage(baseURL:String ="", key: String = "", title: String = "") = {
+  def newExternalPage(baseURL:String ="",
+		  			  prefix:String = "",
+		  			  key: String = "", 
+		  			  title: String = "") = {
     val page = factory.newExternalPage.as
     page.setTitle(title)
-    page.setKey(key)
-    page.setURL(composeURL(baseURL,key))
+    page.setKey(composeURL(prefix,key))
+    page.setURL(composeURL(baseURL,prefix,key))
     page    
   }
   
