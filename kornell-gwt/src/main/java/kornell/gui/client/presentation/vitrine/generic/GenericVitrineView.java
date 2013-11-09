@@ -1,13 +1,7 @@
 package kornell.gui.client.presentation.vitrine.generic;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
-import kornell.core.to.UserInfoTO;
-import static kornell.core.util.StringUtils.*;
-import kornell.gui.client.event.LoginEvent;
-import kornell.gui.client.presentation.profile.ProfilePlace;
-import kornell.gui.client.presentation.terms.TermsPlace;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import static kornell.core.util.StringUtils.composeURL;
+import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.util.ClientProperties;
 
@@ -22,28 +16,20 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
-
-//HTTP
 
 public class GenericVitrineView extends Composite implements VitrineView {
 	interface MyUiBinder extends UiBinder<Widget, GenericVitrineView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private PlaceController placeCtrl;
-	
-	
+	private VitrineView.Presenter presenter;
+
 	@UiField
 	TextBox txtUsername;
 	@UiField
@@ -60,118 +46,80 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	Image imgLogo;
 	@UiField
 	Alert userCreatedAlert;
-	
-	@UiField
-	FlowPanel contentPanel;
 
-
-	private KornellClient client;
-	private Place defaultPlace;
-	private PlaceHistoryMapper mapper;
-	private EventBus bus;
-	//TODO i18n xml
-	public GenericVitrineView(
-			PlaceHistoryMapper mapper, 
-			PlaceController placeCtrl,
-			Place defaultPlace,
-			KornellClient client,
-			EventBus bus) {
-		this.placeCtrl = placeCtrl;
-		this.client = client;
-		this.defaultPlace = defaultPlace;
-		this.mapper = mapper;
-		this.bus = bus;
-
-		
+	// TODO i18n xml
+	public GenericVitrineView(ClientFactory client) {
 		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
-		
+
 		initWidget(uiBinder.createAndBindUi(this));
-		if(imgLogoURL != null){
-			imgLogo.setUrl(composeURL(imgLogoURL,  "logo300x80.png"));
+		
+		if (imgLogoURL != null) {
+			imgLogo.setUrl(composeURL(imgLogoURL, "logo300x80.png"));
 		} else {
 			imgLogo.setUrl("/skins/first/icons/logo.png");
 		}
-		pwdPassword.addKeyPressHandler(new KeyPressHandler() {			
+		
+		pwdPassword.addKeyPressHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				if(KeyCodes.KEY_ENTER == event.getCharCode())
-					doLogin();				
+				if (KeyCodes.KEY_ENTER == event.getCharCode())
+					doLogin(null);
 			}
 		});
+		
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");
-		btnLogin.removeStyleName("btn");
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand () {
-	        public void execute () {
-	            txtUsername.setFocus(true);
-	        }
-	    });
 		
-		if(((VitrinePlace)placeCtrl.getWhere()).isUserCreated()){
-			userCreatedAlert.removeStyleName("shy");
-			GWT.log("wat");
-			((VitrinePlace)placeCtrl.getWhere()).setUserCreated(false);
-		}
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			public void execute() {
+				txtUsername.setFocus(true);
+			}
+		});
 	}
-
 
 	@Override
 	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
 	}
 
 	@UiHandler("btnLogin")
 	void doLogin(ClickEvent e) {
-		altUnauthorized.setVisible(true);
-		doLogin();
+		presenter.onLoginButtonClicked();
 	}
 
 	@UiHandler("btnRegister")
 	void register(ClickEvent e) {
-		placeCtrl.goTo(new ProfilePlace(""));
+		presenter.onRegisterButtonClicked();
 	}
 
-	private void doLogin() {
-		altUnauthorized.setVisible(false);
-		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
-			@Override
-			protected void ok(UserInfoTO user) {
-				bus.fireEvent(new LoginEvent(user));
-				if("".equals(user.getPerson().getConfirmation())){
-					if(user.isSigningNeeded()){
-						placeCtrl.goTo(new TermsPlace());
-					} else {
-						String token = user.getLastPlaceVisited();
-						Place place;
-						if(token == null || token.contains("vitrine")){
-							place = defaultPlace;
-						}else {
-							place = mapper.getPlace(token);
-							
-						}
-						bus.fireEvent(new LoginEvent(user));
-						placeCtrl.goTo(place);
-					}
-				} else {
-					altUnauthorized.setText("Usuário não verificado. Confira seu email.");
-					altUnauthorized.setVisible(true);
-					ClientProperties.remove("Authorization");
-				}
-			}
+	@Override
+	public String getUsername() {
+		return txtUsername.getValue();
+	}
 
-			@Override
-			protected void unauthorized() {
-				altUnauthorized.setText("Usuário ou senha incorretos, por favor tente novamente.");
-				altUnauthorized.setVisible(true);
-			}
-		};
-		String confirmation = ((VitrinePlace)placeCtrl.getWhere()).getConfirmation();
-		GWT.log("Confirmation: " + confirmation);
-		// TODO: Should be client.auth().checkPassword()?
-		// TODO: Should the api accept HasValue<String> too?
-		client.login(txtUsername.getValue().toLowerCase().trim(),
-				pwdPassword.getValue(),
-				confirmation,
-				callback);
+	@Override
+	public String getPassword() {
+		return pwdPassword.getValue();
+	}
+
+	@Override
+	public void hideMessage() {
+		altUnauthorized.setVisible(false);
+	}
+
+	@Override
+	public void showMessage() {
+		altUnauthorized.setVisible(true);
+	}
+
+	@Override
+	public void setMessage(String msg) {
+		altUnauthorized.setText(msg);
+	}
+	
+	@Override
+	public void showUserCreatedAlert(){
+		userCreatedAlert.removeStyleName("shy");		
 	}
 
 }
