@@ -24,7 +24,6 @@ public class UserSession {
 		return current;
 	}
 
-
 	public UserSession(String personUUID) {
 		this.personUUID = personUUID;
 	}
@@ -45,7 +44,4 @@ public class UserSession {
 	private String prefixed(String key) {
 		return PREFIX + SEPARATOR + personUUID + SEPARATOR + key ;
 	}
-
-	
-	
 }

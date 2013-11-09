@@ -13,6 +13,7 @@ import scala.collection.mutable.ListBuffer
 import java.sql.{ Date => SQLDate }
 import java.sql.DriverManager
 import javax.naming.NoInitialContextException
+import java.sql.Timestamp
 
 class PreparedStmt(query: String, params: List[Any]) {
 
@@ -27,13 +28,13 @@ class PreparedStmt(query: String, params: List[Any]) {
       val pstmt = conn.prepareStatement(query.stripMargin.trim)
 
       def setQueryParam(param: Tuple2[Any, Int]) = param match {
-        //TODO: case (null,i) => pstmt.setNull(i+1, ???)
+        case (null,i) => throw new NullPointerException("This database can not accept nulls. Sorry :(")
         case (p: String, i) => pstmt.setString(i + 1, p)
         case (p: Integer, i) => pstmt.setInt(i + 1, p)
         case (p: Double, i) => pstmt.setDouble(i + 1, p)
-        case (p: Date, i) => pstmt.setDate(i + 1, new SQLDate(p.getTime))
+        case (p: Date, i) => pstmt.setTimestamp(i + 1, new Timestamp(p.getTime))
         //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 
-        case (p, i) => throw new RuntimeException(s"How should i set param ($p:${p.getClass})")
+        case (p, i) => throw new IllegalArgumentException(s"Can not set param [$p]")
       }
 
       params
