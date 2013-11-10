@@ -232,7 +232,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		//TODO not good
 		String institutionName = Window.Location.getParameter("client");
 		if(institutionName == null)
-			institutionName = Window.Location.getHostName().split(".")[0];
+			institutionName = Window.Location.getHostName().split("\\.")[0];
 		GWT.log(institutionName);
 		client.institution(institutionName).getInstitution(new Callback<Institution>(){
 			@Override
