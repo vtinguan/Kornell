@@ -230,10 +230,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	
 	protected void startApp(final Place defaultPlace){
 		//TODO not good
-		String institutionName = Window.Location.getParameter("client");
+		String institutionName = Window.Location.getParameter("institution");
 		if(institutionName == null)
 			institutionName = Window.Location.getHostName().split("\\.")[0];
-		GWT.log(institutionName);
 		client.institution(institutionName).getInstitution(new Callback<Institution>(){
 			@Override
 			protected void ok(Institution institution){
