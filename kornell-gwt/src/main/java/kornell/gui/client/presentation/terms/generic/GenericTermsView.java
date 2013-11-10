@@ -12,13 +12,9 @@ import kornell.core.entity.Registration;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.CourseBarEvent;
-import kornell.gui.client.event.InstitutionEvent;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.terms.TermsView;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
 
 import com.github.gwtbootstrap.client.ui.Image;
@@ -109,10 +105,6 @@ public class GenericTermsView extends Composite implements TermsView {
 					registration = e.getKey();
 					institution = e.getValue();
 
-					InstitutionEvent institutionEvent = new InstitutionEvent();
-					institutionEvent.setInstitution(institution);
-					bus.fireEvent(institutionEvent);
-
 					paint();
 				} else {
 					GWT.log("OPS! Should not be here if nothing to sign");
@@ -133,10 +125,9 @@ public class GenericTermsView extends Composite implements TermsView {
 		}
 	}
 
-	// TODO: Uncomment
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		client.institution(institution.getUUID()).acceptTerms(
+		client.institution(institution.getName()).acceptTerms(
 				new Callback<Void>() {
 					@Override
 					protected void ok() {

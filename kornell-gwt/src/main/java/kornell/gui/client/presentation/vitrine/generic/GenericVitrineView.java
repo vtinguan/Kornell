@@ -48,7 +48,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	Alert userCreatedAlert;
 
 	// TODO i18n xml
-	public GenericVitrineView(ClientFactory client) {
+	public GenericVitrineView() {
 		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
 
 		initWidget(uiBinder.createAndBindUi(this));

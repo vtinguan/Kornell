@@ -1,53 +1,29 @@
 package kornell.gui.client.personnel;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.entity.Institution;
-import kornell.gui.client.event.InstitutionEvent;
-import kornell.gui.client.event.InstitutionEventHandler;
-import kornell.gui.client.event.LoginEventHandler;
-import kornell.gui.client.util.ClientProperties;
+import kornell.gui.client.ClientFactory;
 
-import com.google.gwt.core.client.GWT;
-import com.google.web.bindery.event.shared.EventBus;
-
-public class Dean implements InstitutionEventHandler{
+public class Dean {
 	
 	KornellClient client;
-
+	
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
 	
-	public Dean(EventBus bus, KornellClient client) { 
-		this.client = client;		
+	public Dean(ClientFactory clientFactory) { 
+		this.client = clientFactory.getKornellClient();		
 		
-		String url = ClientProperties.getDecoded(ClientProperties.INSTITUTION_ASSETS_URL);
+		String url = clientFactory.getInstitution().getAssetsURL();
 		if(url != null){
 			updateFavicon(url + ICON_NAME);
 		} else {
 			setDefaultFavicon();
 		}
 		
-		String name = ClientProperties.getDecoded(ClientProperties.INSTITUTION_NAME);
+		String name = clientFactory.getInstitution().getName();
 		if(name != null){
 			updateTitle(name);
 		} else {
-			setDefaultTitle();
-		}
-		
-		bus.addHandler(InstitutionEvent.TYPE, this);
-	}
-
-	@Override
-	public void onEnter(InstitutionEvent event) {
-		GWT.log("Trick or Dean!");
-		try {
-			ClientProperties.setEncoded(ClientProperties.INSTITUTION_ASSETS_URL, event.getInstitution().getAssetsURL());
-			ClientProperties.setEncoded(ClientProperties.INSTITUTION_NAME, event.getInstitution().getName());
-			updateFavicon(event.getInstitution().getAssetsURL() + ICON_NAME);
-			updateTitle(event.getInstitution().getName());
-		} catch (Exception e) {
-			setDefaultFavicon();
 			setDefaultTitle();
 		}
 	}
