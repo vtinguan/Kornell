@@ -19,7 +19,7 @@ public class EventClient extends RESTClient {
 	public void fire() {
 		getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(UserInfoTO to) {
+			public void ok(UserInfoTO to) {
 				event.setFromPersonUUID(to.getPerson().getUUID());
 				ExceptionalRequestBuilder req = PUT("/events/actomEntered");
 				req.setHeader("Content-Type", ActomEntered.TYPE);

@@ -102,17 +102,17 @@ public class GenericCourseDetailsView extends Composite implements
 
 		client.getCourseTO(uuid, new Callback<CourseTO>() {
 			@Override
-			protected void ok(CourseTO to) {
+			public void ok(CourseTO to) {
 				GWT.log(to.toString());
 				courseTO = to;
 
 				client.getCurrentUser(new Callback<UserInfoTO>() {
 					@Override
-					protected void ok(UserInfoTO userTO) {
+					public void ok(UserInfoTO userTO) {
 						user = userTO;
 						client.course(uuid).contents(new Callback<Contents>() {
 							@Override
-							protected void ok(Contents contents) {
+							public void ok(Contents contents) {
 								setContents(contents);
 								display();
 								LoadingPopup.hide();

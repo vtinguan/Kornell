@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>kornell</groupId>
-	<artifactId>kornell-gwt</artifactId> 
+	<artifactId>kornell-gwt</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Kornell GWT Client</name>
@@ -90,7 +90,7 @@
 					<artifactId>json</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency> 
+		</dependency>
 
 		<!-- <dependency> <groupId>javax</groupId> <artifactId>javaee-web-api</artifactId> 
 			<version>6.0</version> <scope>provided</scope> </dependency> -->
@@ -109,7 +109,7 @@
 			<version>${gwtVersion}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.github.gwtbootstrap</groupId>
 			<artifactId>gwt-bootstrap</artifactId>
@@ -120,7 +120,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<!--  <version>4.11</version>  -->
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.gwt-crypto</groupId>
+			<artifactId>gwt-crypto</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 
 	</dependencies>

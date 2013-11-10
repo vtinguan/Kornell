@@ -19,9 +19,8 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
-
-
-public class Callback<T> implements RequestCallback {
+ 
+public abstract class Callback<T> implements RequestCallback {
 	private static final MediaTypes mimeTypes = new MediaTypes();
 
 	@Override
@@ -83,8 +82,7 @@ public class Callback<T> implements RequestCallback {
 			} else
 				ok(Callback.parseJson(responseText));
 
-		} else
-			ok();
+		} else ok((T) null); //TODO: Consider throwing exception "unknow response type" instead, but map "text/*" and "application/*" first
 	}
 
 	private AutoBeanFactory factoryFor(String contentType) {
@@ -101,8 +99,7 @@ public class Callback<T> implements RequestCallback {
 		
 	}
 
-	protected void ok(T to) {
-	}
+	public abstract void ok(T to);
 
 	protected void ok(JSONValue json) {
 	}
@@ -123,9 +120,6 @@ public class Callback<T> implements RequestCallback {
 	}
 
 	protected void forbidden() {
-	}
-
-	protected void ok() {
 	}
 
 	@Override

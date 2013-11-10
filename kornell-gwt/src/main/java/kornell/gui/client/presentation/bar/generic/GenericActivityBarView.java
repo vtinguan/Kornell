@@ -102,7 +102,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 		client.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(UserInfoTO userTO) {
+			public void ok(UserInfoTO userTO) {
 				user = userTO;
 				display();
 			}
@@ -214,7 +214,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		if(notesPopup == null){
 			client.getCourseTO(constants.getDefaultCourseUUID(),new Callback<CourseTO>(){
 				@Override
-				protected void ok(CourseTO course) {
+				public void ok(CourseTO course) {
 					notesPopup = new NotesPopup(client, course.getCourse().getUUID(), course.getEnrollment().getNotes());
 					notesPopup.show();
 				}			

@@ -89,7 +89,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	private void initData() {
 		client.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(UserInfoTO userTO) {
+			public void ok(UserInfoTO userTO) {
 				user = userTO;
 				paint();
 			}
@@ -98,7 +98,7 @@ public class GenericTermsView extends Composite implements TermsView {
 		// TODO: Improve client API (eg. client.registrations().getUnsigned();
 		client.registrations().getUnsigned(new Callback<RegistrationsTO>() {
 			@Override
-			protected void ok(RegistrationsTO to) {
+			public void ok(RegistrationsTO to) {
 				Set<Entry<Registration, Institution>> entrySet = to
 						.getRegistrationsWithInstitutions().entrySet();
 				ArrayList<Entry<Registration, Institution>> regs = new ArrayList<Entry<Registration, Institution>>(
@@ -139,7 +139,7 @@ public class GenericTermsView extends Composite implements TermsView {
 		client.institution(institution.getUUID()).acceptTerms(
 				new Callback<Void>() {
 					@Override
-					protected void ok() {
+					public void ok(Void v) {
 						goStudy();
 					}
 				});

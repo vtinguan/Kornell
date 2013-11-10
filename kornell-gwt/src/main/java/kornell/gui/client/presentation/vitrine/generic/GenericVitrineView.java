@@ -134,7 +134,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		altUnauthorized.setVisible(false);
 		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(UserInfoTO user) {
+			public void ok(UserInfoTO user) {
 				bus.fireEvent(new LoginEvent(user));
 				if("".equals(user.getPerson().getConfirmation())){
 					if(user.isSigningNeeded()){

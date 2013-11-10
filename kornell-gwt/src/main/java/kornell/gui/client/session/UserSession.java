@@ -1,5 +1,7 @@
 package kornell.gui.client.session;
 
+import kornell.api.client.Callback;
+
 import com.google.gwt.storage.client.Storage;
 
 public class UserSession {
@@ -22,6 +24,10 @@ public class UserSession {
 			current = new UserSession(currentPersonUUID);
 		}
 		return current;
+	}
+	 
+	public static void current(Callback<UserSession> callback){
+		callback.ok(current);
 	}
 
 	public UserSession(String personUUID) {

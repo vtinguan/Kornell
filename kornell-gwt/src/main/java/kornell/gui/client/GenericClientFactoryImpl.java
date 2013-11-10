@@ -194,7 +194,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		//TODO: Consider caching credentials to avoid this request
 		client.getCurrentUser(new Callback<UserInfoTO>(){
 			@Override
-			protected void ok(UserInfoTO user) {
+			public void ok(UserInfoTO user) {
 					UserSession.setCurrentPerson(user.getPerson().getUUID());
 					String token;
 					if(!"".equals(Window.Location.getHash()) && 
@@ -226,7 +226,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				//TODO not good
 				client.institution("00a4966d-5442-4a44-9490-ef36f133a259").getInstitution(new Callback<Institution>(){
 					@Override
-					protected void ok(Institution institution){
+					public void ok(Institution institution){
 						ClientProperties.setEncoded(ClientProperties.INSTITUTION_ASSETS_URL, institution.getAssetsURL());
 						ClientProperties.setEncoded(ClientProperties.INSTITUTION_NAME, institution.getName());
 						initGUI();

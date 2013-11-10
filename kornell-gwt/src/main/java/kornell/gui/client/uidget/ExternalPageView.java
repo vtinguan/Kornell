@@ -3,11 +3,13 @@ package kornell.gui.client.uidget;
 import java.beans.EventSetDescriptor;
 import java.util.Date;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.lom.ExternalPage;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.util.loading.LoadingPopup;
+import kornell.gui.client.session.UserSession;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.GWT;
@@ -34,9 +36,7 @@ public class ExternalPageView extends Uidget {
 
 	private ExternalPage page;
 
-	
-	public ExternalPageView(KornellClient client, 
-			 ExternalPage page) {
+	public ExternalPageView(KornellClient client, ExternalPage page) {
 		this.client = client;
 		this.page = page;
 		createIFrame();
@@ -90,15 +90,19 @@ public class ExternalPageView extends Uidget {
 		iframe.setPropertyString("height", height);
 	}
 
-	public void setSrc(final String src) {
-		iframe.setSrc(src);	// TODO: Only if exists
+	public void setSrc(final String src) {	
+		UserSession.current(new Callback<UserSession>() {
+			@Override
+			public void ok(UserSession session) {
+				// TODO: Check if src exists
+				iframe.setSrc(src); 
+			}
+		});
+		
 	}
 
 	private String now() {
 		return df.format(new Date());
 	}
-
-	
-	
 
 }

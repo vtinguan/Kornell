@@ -83,9 +83,10 @@ public class CourseSequencer implements Sequencer {
 		String prevString = prevKey() + prevVis();
 		String currString = currentKey() + currVis();
 		String nextString = nextKey() + nextVis();
-
-		GWT.log(event + " " + currentIndex + " [" + prevString + " | "
-				+ currString + " | " + nextString + "]");
+		
+		//TODO: Use GWT Logging properly 
+		//GWT.log(event + " " + currentIndex + " [" + prevString + " | " + currString + " | " + nextString + "]");
+		
 	}
 
 	private String nextVis() {
@@ -150,7 +151,7 @@ public class CourseSequencer implements Sequencer {
 	private void dropBreadcrumb() {
 		session.setItem(getBreadcrumbKey(),currentKey());
 		client.events()
-			.actomEntered(courseUUID,currentActom)	
+			.actomEntered(courseUUID,currentActom.getKey())	
 			.fire(); 
 	}
 
@@ -204,7 +205,7 @@ public class CourseSequencer implements Sequencer {
 		client.course(courseUUID).contents(new Callback<Contents>() {
 
 			@Override
-			protected void ok(Contents contents) {
+			public void ok(Contents contents) {
 				setContents(contents);
 				orientateAndSail();
 			}
