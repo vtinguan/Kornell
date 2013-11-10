@@ -2,6 +2,7 @@
 package kornell.gui.client;
 
 import kornell.api.client.KornellClient;
+import kornell.core.entity.Institution;
 import kornell.gui.client.presentation.course.CoursePresenter;
 import kornell.gui.client.presentation.course.CourseView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
@@ -38,6 +39,7 @@ public interface ClientFactory {
 	PlaceHistoryMapper getHistoryMapper();
 	EventBus getEventBus();
 	Place getDefaultPlace();
+	Institution getInstitution();
 	
 	//Views
 	HomeView getHomeView();

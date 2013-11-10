@@ -119,6 +119,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
+	private Institution institution;
 
 	public GenericClientFactoryImpl() {
 	}
@@ -180,7 +181,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(bus, client, placeCtrl);
+			menuBarView = new GenericMenuBarView(this);
 		return menuBarView;
 	}
 	
@@ -194,13 +195,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public ClientFactory startApp() {
 		//TODO: Consider caching credentials to avoid this request
 		client.getCurrentUser(new Callback<UserInfoTO>(){
+			String locationStr = Window.Location.getHash();
+			String[] locationStrArray = locationStr.split(":");
 			@Override
 			protected void ok(UserInfoTO user) {
 					UserSession.setCurrentPerson(user.getPerson().getUUID());
 					String token;
-					if(!"".equals(Window.Location.getHash()) && 
-							"details".equals(Window.Location.getHash().split(":")[0].split("#")[1])){
-						token = Window.Location.getHash().split("#")[1];
+					if(!"".equals(locationStr) && "details".equals(locationStrArray[0].split("#")[1])){
+						token = locationStr.split("#")[1];
 					} else {
 						token = user.getLastPlaceVisited();
 					}
@@ -215,38 +217,41 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			@Override
 			protected void unauthorized() {
 				VitrinePlace vitrinePlace;
-				if(Window.Location.getHash().split(":").length > 1 && "#vitrine".equalsIgnoreCase(Window.Location.getHash().split(":")[0])){
-					vitrinePlace = new VitrinePlace(Window.Location.getHash().split(":")[1]);
+				if(locationStrArray.length > 1 && "#vitrine".equalsIgnoreCase(locationStrArray[0])){
+					vitrinePlace = new VitrinePlace(locationStrArray[1]);
 				} else {
 					vitrinePlace = new VitrinePlace();
 				}
 				startApp(vitrinePlace);
-			}
-			
-			protected void startApp(final Place defaultPlace){
-				//TODO not good
-				client.institution("00a4966d-5442-4a44-9490-ef36f133a259").getInstitution(new Callback<Institution>(){
-					@Override
-					protected void ok(Institution institution){
-						ClientProperties.setEncoded(ClientProperties.INSTITUTION_ASSETS_URL, institution.getAssetsURL());
-						ClientProperties.setEncoded(ClientProperties.INSTITUTION_NAME, institution.getName());
-						initGUI();
-						initActivityManagers();
-						initHistoryHandler(defaultPlace);
-						initException();
-						initSCORM();
-						initPersonnel();
-					}
-				});
-			}
-
-			private void initPersonnel() {
-				new Captain(bus, placeCtrl);	
-				new Dean(bus, client);
-			}			
+			}		
 		});
 		return this;
 	}
+	
+	protected void startApp(final Place defaultPlace){
+		//TODO not good
+		String institutionName = Window.Location.getParameter("client");
+		if(institutionName == null)
+			institutionName = Window.Location.getHostName().split(".")[0];
+		GWT.log(institutionName);
+		client.institution(institutionName).getInstitution(new Callback<Institution>(){
+			@Override
+			protected void ok(Institution institution){
+				setInstitution(institution);
+				initGUI();
+				initActivityManagers();
+				initHistoryHandler(defaultPlace);
+				initException();
+				initSCORM();
+				initPersonnel();
+			}
+		});
+	}
+
+	private void initPersonnel() {
+		new Captain(bus, placeCtrl);	
+		new Dean(this);
+	}	
 
 	private void initSCORM() {
 		new API_1484_11(bus).bindToWindow();
@@ -274,7 +279,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView(this);
+		return new GenericVitrineView();
 	}
 
 	@Override
@@ -441,6 +446,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public KornellClient getKornellClient() {
 		return client;
 	}
+
+	@Override
+	public Institution getInstitution() {
+		return institution;
+	}
 	
-	
+	private void setInstitution(Institution institution){
+		this.institution = institution;
+	}
 }
