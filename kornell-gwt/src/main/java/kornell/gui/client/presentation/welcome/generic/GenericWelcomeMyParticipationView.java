@@ -37,7 +37,7 @@ public class GenericWelcomeMyParticipationView extends Composite {
 	private void initData() {
 		client.getCourses(new Callback<CoursesTO>() {
 			@Override
-			protected void ok(CoursesTO to) {
+			public void ok(CoursesTO to) {
 				display();
 			}
 		});

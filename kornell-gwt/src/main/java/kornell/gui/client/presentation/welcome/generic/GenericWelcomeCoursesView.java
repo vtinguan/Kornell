@@ -102,7 +102,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	private void initData() {
 		client.getCourses(new Callback<CoursesTO>() {
 			@Override
-			protected void ok(CoursesTO to) {
+			public void ok(CoursesTO to) {
 				if(displayCourses == null)
 					displayCourses = COURSES_ALL;
 				display(to);

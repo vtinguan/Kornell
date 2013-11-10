@@ -77,7 +77,7 @@ public class RESTClient {
 
 	public void getCurrentUser(final Callback<UserInfoTO> cb) {
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
-			protected void ok(UserInfoTO user) {
+			public void ok(UserInfoTO user) {
 				GWT.log("WRAAAAAPPSSSS OK");
 				setCurrentUser(user);
 				cb.ok(user);
@@ -103,7 +103,8 @@ public class RESTClient {
 				+ ClientProperties.base64Encode(username + ":" + password);
 
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
-			protected void ok(UserInfoTO user) {
+			@Override
+			public void ok(UserInfoTO user) {
 				setCurrentUser(user);
 				// TODO: https://github.com/Craftware/Kornell/issues/7
 				ClientProperties.set("Authorization", auth);

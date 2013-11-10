@@ -52,7 +52,7 @@ public class GenericMenuLeftView extends Composite {
 		
 		client.getCourses(new Callback<CoursesTO>() {
 			@Override
-			protected void ok(CoursesTO to) {
+			public void ok(CoursesTO to) {
 				coursesTO = to;
 				display();
 			}

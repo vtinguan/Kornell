@@ -173,7 +173,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	void handleProfile(ClickEvent e) {
 		client.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(UserInfoTO userTO) {
+			public void ok(UserInfoTO userTO) {
 				placeCtrl.goTo(new ProfilePlace(userTO.getUsername()));
 			}
 		});

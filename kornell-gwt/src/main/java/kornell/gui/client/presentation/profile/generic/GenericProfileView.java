@@ -141,7 +141,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private void initData() {
 		client.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			protected void ok(UserInfoTO userTO) {
+			public void ok(UserInfoTO userTO) {
 				user = userTO;
 				isCurrentUser = true;
 				isUserCreation = false;
@@ -211,7 +211,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		if(validateFields()){
 			client.checkUser(username.getText().toLowerCase().trim(), email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
 				@Override
-				protected void ok(UserInfoTO user){
+				public void ok(UserInfoTO user){
 					if(user.getPerson() != null){
 						fieldsToErrorLabels.get(username).getError().setText("O usuário já existe.");
 					} 
@@ -231,7 +231,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 								Window.Location.getHref().split("#")[0];
 						client.createUser(data, new Callback<UserInfoTO>(){
 							@Override
-							protected void ok(UserInfoTO user){
+							public void ok(UserInfoTO user){
 								GWT.log("User created");
 								isEditMode = false;
 								
