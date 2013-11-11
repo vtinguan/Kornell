@@ -46,7 +46,6 @@ import kornell.gui.client.presentation.profile.generic.GenericProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;
 import kornell.gui.client.presentation.sandbox.SandboxView;
 import kornell.gui.client.presentation.sandbox.generic.GenericSandboxView;
-import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.terms.generic.GenericTermsView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -58,7 +57,6 @@ import kornell.gui.client.scorm.API_1484_11;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
 import kornell.gui.client.session.UserSession;
-import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -67,6 +65,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -77,15 +76,16 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class GenericClientFactoryImpl implements ClientFactory {
-	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
+	public static final EntityFactory entityFactory = GWT
+			.create(EntityFactory.class);
 	public static final TOFactory toFactory = GWT.create(TOFactory.class);
 	public static final LOMFactory lomFactory = GWT.create(LOMFactory.class);
-	public static final EventFactory eventFactory = GWT.create(EventFactory.class);
-	
+	public static final EventFactory eventFactory = GWT
+			.create(EventFactory.class);
+
 	/* History Management */
 	private final EventBus bus = new SimpleEventBus();
-	private final PlaceController placeCtrl = new PlaceController(
-			bus);
+	private final PlaceController placeCtrl = new PlaceController(bus);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
 			historyMapper);
@@ -101,7 +101,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	/* Views */
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
-	
+
 	private GenericHomeView genericHomeView;
 	private CoursePresenter coursePresenter;
 	private CourseHomePresenter courseHomePresenter;
@@ -115,9 +115,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	SimplePanel shell = new SimplePanel();
 	private Place defaultPlace;
 	private SandboxPresenter sandboxPresenter;
-	
-	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
+	private static KornellConstants constants = GWT
+			.create(KornellConstants.class);
+
+	private Institution institution;
 
 	public GenericClientFactoryImpl() {
 	}
@@ -134,7 +136,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
-		new Stalker(bus,client,historyMapper);
+		new Stalker(bus, client, historyMapper);
 		historyHandler.handleCurrentHistory();
 	}
 
@@ -143,7 +145,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.addNorth(getMenuBarView(), 45);
 		dockLayoutPanel.addSouth(getSouthBarView(), 35);
-		
+
 		ScrollPanel sp = new ScrollPanel();
 		sp.add(shell);
 		dockLayoutPanel.add(sp);
@@ -151,38 +153,41 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		dockLayoutPanel.addStyleName("wrapper");
 		rootLayoutPanel.add(dockLayoutPanel);
 
-		bus.addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
-					@Override
-					public void onPlaceChange(PlaceChangeEvent event) {
-						setPlaceNameAsBodyStyle(event);
-						dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(), !getSouthBarView().isVisible());
-						if(placeCtrl.getWhere() instanceof VitrinePlace){
-							dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(), 0);
-						} else {
-							dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(), 45);
-							getMenuBarView().display();
-						}
-					}
+		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				setPlaceNameAsBodyStyle(event);
+				dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(),
+						!getSouthBarView().isVisible());
+				if (placeCtrl.getWhere() instanceof VitrinePlace) {
+					dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(),
+							0);
+				} else {
+					dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(),
+							45);
+					getMenuBarView().display();
+				}
+			}
 
-					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
-						String styleName = rootLayoutPanel.getStyleName();
-						if (!styleName.isEmpty())
-							rootLayoutPanel.removeStyleName(styleName);
-						String[] split = event.getNewPlace().getClass().getName().split("\\.");
-						String newStyle = split[split.length - 1];
-						rootLayoutPanel.addStyleName(newStyle);
-					}
-				});
+			private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
+				String styleName = rootLayoutPanel.getStyleName();
+				if (!styleName.isEmpty())
+					rootLayoutPanel.removeStyleName(styleName);
+				String[] split = event.getNewPlace().getClass().getName()
+						.split("\\.");
+				String newStyle = split[split.length - 1];
+				rootLayoutPanel.addStyleName(newStyle);
+			}
+		});
 
 	}
 
 	private MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(bus, client, placeCtrl);
+			menuBarView = new GenericMenuBarView(this);
 		return menuBarView;
 	}
-	
+
 	private SouthBarView getSouthBarView() {
 		if (southBarView == null)
 			southBarView = new GenericSouthBarView(bus, placeCtrl, client);
@@ -191,60 +196,71 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public ClientFactory startApp() {
-		//TODO: Consider caching credentials to avoid this request
-		client.getCurrentUser(new Callback<UserInfoTO>(){
+		// TODO: Consider caching credentials to avoid this request
+		client.getCurrentUser(new Callback<UserInfoTO>() {
+			String locationStr = Window.Location.getHash();
+			String[] locationStrArray = locationStr.split(":");
+
 			@Override
 			public void ok(UserInfoTO user) {
-					UserSession.setCurrentPerson(user.getPerson().getUUID());
-					String token;
-					if(!"".equals(Window.Location.getHash()) && 
-							"details".equals(Window.Location.getHash().split(":")[0].split("#")[1])){
-						token = Window.Location.getHash().split("#")[1];
-					} else {
-						token = user.getLastPlaceVisited();
-					}
-					if(token != null){
-						defaultPlace = historyMapper.getPlace(token);
-					}else {
-						defaultPlace = new CoursePlace(constants.getDefaultCourseUUID());
-					}				
-					startApp(defaultPlace);
+				UserSession.setCurrentPerson(user.getPerson().getUUID());
+				String token;
+				if (!"".equals(locationStr)
+						&& "details".equals(locationStrArray[0].split("#")[1])) {
+					token = locationStr.split("#")[1];
+				} else {
+					token = user.getLastPlaceVisited();
+				}
+				if (token != null) {
+					defaultPlace = historyMapper.getPlace(token);
+				} else {
+					defaultPlace = new CoursePlace(constants
+							.getDefaultCourseUUID());
+				}
+				startApp(defaultPlace);
 			}
 
 			@Override
 			protected void unauthorized() {
 				VitrinePlace vitrinePlace;
-				if(Window.Location.getHash().split(":").length > 1 && "#vitrine".equalsIgnoreCase(Window.Location.getHash().split(":")[0])){
-					vitrinePlace = new VitrinePlace(Window.Location.getHash().split(":")[1]);
+				if (locationStrArray.length > 1
+						&& "#vitrine".equalsIgnoreCase(locationStrArray[0])) {
+					vitrinePlace = new VitrinePlace(locationStrArray[1]);
 				} else {
 					vitrinePlace = new VitrinePlace();
 				}
 				startApp(vitrinePlace);
 			}
-			
-			protected void startApp(final Place defaultPlace){
-				//TODO not good
-				client.institution("00a4966d-5442-4a44-9490-ef36f133a259").getInstitution(new Callback<Institution>(){
-					@Override
-					public void ok(Institution institution){
-						ClientProperties.setEncoded(ClientProperties.INSTITUTION_ASSETS_URL, institution.getAssetsURL());
-						ClientProperties.setEncoded(ClientProperties.INSTITUTION_NAME, institution.getName());
-						initGUI();
-						initActivityManagers();
-						initHistoryHandler(defaultPlace);
-						initException();
-						initSCORM();
-						initPersonnel();
-					}
-				});
+
+			protected void startApp(final Place defaultPlace) {
+				// TODO not good
+				String institutionName = Window.Location
+						.getParameter("institution");
+				if (institutionName == null)
+					institutionName = Window.Location.getHostName()
+							.split("\\.")[0];
+				client.institution(institutionName).getInstitution(
+						new Callback<Institution>() {
+							@Override
+							public void ok(Institution institution) {
+								setInstitution(institution);
+								initGUI();
+								initActivityManagers();
+								initHistoryHandler(defaultPlace);
+								initException();
+								initSCORM();
+								initPersonnel();
+							}
+						});
 			}
 
-			private void initPersonnel() {
-				new Captain(bus, placeCtrl);	
-				new Dean(bus, client);
-			}			
 		});
 		return this;
+	}
+
+	private void initPersonnel() {
+		new Captain(bus, placeCtrl);
+		new Dean(this);
 	}
 
 	private void initSCORM() {
@@ -265,15 +281,15 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public HomeView getHomeView() {
 		if (genericHomeView == null) {
-			genericHomeView = new GenericHomeView(this, bus,
-					historyHandler, client, appPanel);
+			genericHomeView = new GenericHomeView(this, bus, historyHandler,
+					client, appPanel);
 		}
 		return genericHomeView;
 	}
 
 	@Override
 	public VitrineView getVitrineView() {
-		return new GenericVitrineView( historyMapper , placeCtrl, defaultPlace, client, bus);
+		return new GenericVitrineView();
 	}
 
 	@Override
@@ -295,109 +311,110 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public TermsView getTermsView() {
 		return new GenericTermsView(bus, client, placeCtrl, defaultPlace);
 	}
-	
-	
-	
+
 	@Override
 	public CourseHomePresenter getCourseHomePresenter() {
 		if (courseHomePresenter == null) {
 			CourseHomeView courseHomeView = getCourseHomeView();
-			
-			courseHomePresenter = new CourseHomePresenter(courseHomeView, placeCtrl);
+
+			courseHomePresenter = new CourseHomePresenter(courseHomeView,
+					placeCtrl);
 		}
 		return courseHomePresenter;
 	}
+
 	@Override
 	public CourseHomeView getCourseHomeView() {
 		return new GenericCourseHomeView(bus, client, placeCtrl);
 	}
-	
-	
-	
+
 	@Override
 	public CourseDetailsPresenter getCourseDetailsPresenter() {
 		if (courseDetailsPresenter == null) {
 			CourseDetailsView courseDetailsView = getCourseDetailsView();
-			
-			courseDetailsPresenter = new CourseDetailsPresenter(courseDetailsView, placeCtrl);
+
+			courseDetailsPresenter = new CourseDetailsPresenter(
+					courseDetailsView, placeCtrl);
 		}
 		return courseDetailsPresenter;
 	}
+
 	@Override
 	public CourseDetailsView getCourseDetailsView() {
 		return new GenericCourseDetailsView(bus, client, placeCtrl);
 	}
-	
-	
-	
+
 	@Override
 	public CourseLibraryPresenter getCourseLibraryPresenter() {
 		if (courseLibraryPresenter == null) {
 			CourseLibraryView courseLibraryView = getCourseLibraryView();
-			
-			courseLibraryPresenter = new CourseLibraryPresenter(courseLibraryView, placeCtrl);
+
+			courseLibraryPresenter = new CourseLibraryPresenter(
+					courseLibraryView, placeCtrl);
 		}
 		return courseLibraryPresenter;
 	}
+
 	@Override
 	public CourseLibraryView getCourseLibraryView() {
 		return new GenericCourseLibraryView(bus, client, placeCtrl);
 	}
-	
-	
-	
+
 	@Override
 	public CourseForumPresenter getCourseForumPresenter() {
 		if (courseForumPresenter == null) {
 			CourseForumView courseForumView = getCourseForumView();
-			
-			courseForumPresenter = new CourseForumPresenter(courseForumView, placeCtrl);
+
+			courseForumPresenter = new CourseForumPresenter(courseForumView,
+					placeCtrl);
 		}
 		return courseForumPresenter;
 	}
+
 	@Override
 	public CourseForumView getCourseForumView() {
 		return new GenericCourseForumView(bus, client, placeCtrl);
 	}
-	
-	
-	
+
 	@Override
 	public CourseChatPresenter getCourseChatPresenter() {
 		if (courseChatPresenter == null) {
-			CourseChatView courseChatView = getCourseChatView();			
-			courseChatPresenter = new CourseChatPresenter(courseChatView, placeCtrl);
+			CourseChatView courseChatView = getCourseChatView();
+			courseChatPresenter = new CourseChatPresenter(courseChatView,
+					placeCtrl);
 		}
 		return courseChatPresenter;
 	}
+
 	@Override
 	public CourseChatView getCourseChatView() {
 		return new GenericCourseChatView(bus, client, placeCtrl);
 	}
-	
-	
-	
+
 	@Override
 	public CourseSpecialistsPresenter getCourseSpecialistsPresenter() {
 		if (courseSpecialistsPresenter == null) {
 			CourseSpecialistsView courseSpecialistsView = getCourseSpecialistsView();
-			
-			courseSpecialistsPresenter = new CourseSpecialistsPresenter(courseSpecialistsView, placeCtrl);
+
+			courseSpecialistsPresenter = new CourseSpecialistsPresenter(
+					courseSpecialistsView, placeCtrl);
 		}
 		return courseSpecialistsPresenter;
 	}
+
 	@Override
 	public CourseSpecialistsView getCourseSpecialistsView() {
 		return new GenericCourseSpecialistsView(bus, client, placeCtrl);
 	}
-	
 
 	@Override
 	public CoursePresenter getCoursePresenter() {
-		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,placeCtrl,client);
+		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,
+				placeCtrl, client);
 		if (coursePresenter == null) {
-			CourseView activityView = getCourseView();			
-			coursePresenter = new CoursePresenter(activityView, placeCtrl, rendererFactory);
+			CourseView activityView = getCourseView();
+			coursePresenter = new CoursePresenter(activityView, placeCtrl,
+					rendererFactory);
 		}
 		return coursePresenter;
 	}
@@ -410,11 +427,43 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public SandboxPresenter getSandboxPresenter() {
 		if (sandboxPresenter == null) {
-			SandboxView sandboxView = getSandboxView();			
+			SandboxView sandboxView = getSandboxView();
 			sandboxPresenter = new SandboxPresenter(sandboxView);
 		}
 		return sandboxPresenter;
 	}
-	
-	
+
+	@Override
+	public PlaceController getPlaceController() {
+		return placeCtrl;
+	}
+
+	@Override
+	public PlaceHistoryMapper getHistoryMapper() {
+		return historyMapper;
+	}
+
+	@Override
+	public EventBus getEventBus() {
+		return bus;
+	}
+
+	@Override
+	public Place getDefaultPlace() {
+		return defaultPlace;
+	}
+
+	@Override
+	public KornellClient getKornellClient() {
+		return client;
+	}
+
+	@Override
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	private void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
 }
