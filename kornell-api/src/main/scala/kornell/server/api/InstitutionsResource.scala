@@ -6,7 +6,7 @@ import javax.ws.rs._
 @Produces(Array(Institution.TYPE))
 class InstitutionsResource {
   
-  @Path("{uuid}")
-  def get(@PathParam("uuid") uuid:String):InstitutionResource = new InstitutionResource(uuid) 
+  @Path("{institutionName}")
+  def get(@PathParam("institutionName") institutionName:String):InstitutionResource = new InstitutionResource(institutionName) 
 
 }

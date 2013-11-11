@@ -53,19 +53,19 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 
 	// TODO: extract those inner classes
 	public class InstitutionClient {
-		private String institutionUUID;
+		private String institutionName;
 
-		public InstitutionClient(String uuid) {
-			this.institutionUUID = uuid;
+		public InstitutionClient(String institutionName) {
+			this.institutionName = institutionName;
 		}
 
 		public void acceptTerms(Callback<Void> cb) {
-			PUT("/institutions/" + institutionUUID).go(cb);
+			PUT("/institutions/" + institutionName).go(cb);
 		}
 
 		// TODO: remove this
 		public void getInstitution(Callback<Institution> cb) {
-			GET("/institutions/" + institutionUUID).sendRequest(null, cb);
+			GET("/institutions/" + institutionName).sendRequest(null, cb);
 		}
 	}
 
@@ -130,7 +130,8 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	public static native void bindToWindow(KornellClient kapi) /*-{
 		$wnd.KAPI = {
 			saySomething : function() {
-				console.debug(kapi.@kornell.api.client.KornellClient::saySomething()());
+				console
+						.debug(kapi.@kornell.api.client.KornellClient::saySomething()());
 			}
 		}
 	}-*/;

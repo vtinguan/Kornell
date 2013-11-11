@@ -11,9 +11,9 @@ import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
 import kornell.core.entity.Institution
 
 @Produces(Array(Institution.TYPE))
-class InstitutionResource(institutionUUID: String) {
+class InstitutionResource(institutionName: String) {
   @GET
-  def get = Institutions.byUUID(institutionUUID)
+  def get = Institutions.byName(institutionName)
 
   @PUT
   @Produces(Array("text/plain"))
@@ -22,7 +22,7 @@ class InstitutionResource(institutionUUID: String) {
       sql"""update Registration
       	 set termsAcceptedOn=now()
       	 where person_uuid=${person.getUUID}
-      	   and institution_uuid=$institutionUUID
+      	   and institution_uuid=(select uuid from Institution where name=$institutionName)
       	   """.executeUpdate
     }
 

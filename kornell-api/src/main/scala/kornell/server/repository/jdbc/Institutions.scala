@@ -39,6 +39,9 @@ object Institutions {
   
   def byUUID(UUID:String) = 
 	sql"select * from Institution".first[Institution]
+  
+  def byName(institutionName:String) = 
+	sql"select * from Institution where name = ${institutionName}".first[Institution]
 
   
   def usersInstitution(implicit person:Person) = 
