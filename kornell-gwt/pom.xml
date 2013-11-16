@@ -47,6 +47,7 @@
 
 	</repositories>
 
+
 	<dependencyManagement>
 		<dependencies>
 			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
@@ -120,7 +121,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<!--  <version>4.11</version>  -->
+			<!-- <version>4.11</version> -->
 		</dependency>
 
 		<dependency>
@@ -128,6 +129,7 @@
 			<artifactId>gwt-crypto</artifactId>
 			<version>2.3.0</version>
 		</dependency>
+
 
 	</dependencies>
 

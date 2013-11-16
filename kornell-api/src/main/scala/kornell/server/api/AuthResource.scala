@@ -13,4 +13,6 @@ class AuthResource {
   @GET
   @Deprecated
   def get() = ??? //ok build
+  
+  
 }
