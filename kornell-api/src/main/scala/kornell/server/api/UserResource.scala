@@ -155,6 +155,4 @@ class UserResource{
     	where uuid=${p.getUUID}
     	""".executeUpdate
     }
-  
-  
 }
