@@ -38,7 +38,7 @@ object Institutions {
         rs.getString("assetsURL")) 
   
   def byUUID(UUID:String) = 
-	sql"select * from Institution".first[Institution]
+	sql"select * from Institution where uuid = ${UUID}".first[Institution]
   
   def byName(institutionName:String) = 
 	sql"select * from Institution where name = ${institutionName}".first[Institution]

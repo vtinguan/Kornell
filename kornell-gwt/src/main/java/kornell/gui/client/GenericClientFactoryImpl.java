@@ -239,7 +239,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if (institutionName == null)
 					institutionName = Window.Location.getHostName()
 							.split("\\.")[0];
-				client.institution(institutionName).getInstitution(
+				client.getInstitutionByName(institutionName, 
 						new Callback<Institution>() {
 							@Override
 							public void ok(Institution institution) {

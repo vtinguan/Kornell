@@ -12,12 +12,12 @@ import kornell.core.entity.Person
 import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
 
-class Registrations(personUUID: String, institutionName: String) {
+class Registrations(personUUID: String, institutionUUID: String) {
   def acceptTerms() =
     sql"""update Registration
       	 set termsAcceptedOn=now()
       	 where person_uuid=$personUUID
-      	   and institution_uuid=(select uuid from Institution where name=$institutionName)
+      	   and institution_uuid=$institutionUUID
       	   """.executeUpdate
 }
 
@@ -60,7 +60,7 @@ object Registrations {
 	  and r.termsAcceptedOn is null
 	  and r.person_uuid = ${person.getUUID}""".isPositive
 
-  def apply(personUUID: String, institutionName: String):Registrations =
-    new Registrations(personUUID, institutionName)
+  def apply(personUUID: String, uuid: String):Registrations =
+    new Registrations(personUUID, uuid)
 }
 
