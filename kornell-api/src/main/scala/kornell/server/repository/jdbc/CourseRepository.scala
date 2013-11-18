@@ -7,7 +7,7 @@ import java.sql.ResultSet
 
 class CourseRepository(uuid: String) {
   def withEnrollment(p: Person) = sql"""
-		select c.uuid as courseUUID,c.code,c.title,c.description,c.assetsURL,c.infoJson,c.repository_uuid,
+		select c.uuid as courseUUID,c.code,c.title,c.description,c.infoJson,c.repository_uuid,
 			   e.uuid as enrollmentUUID, e.enrolledOn,e.course_uuid,e.person_uuid,e.progress,e.notes
 		from Course c
 		left join Enrollment e on c.uuid = e.course_uuid
