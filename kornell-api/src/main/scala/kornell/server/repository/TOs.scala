@@ -27,13 +27,13 @@ object TOs {
   def newCourseTO(
     courseUUID: String, code: String,
     title: String, description: String,
-    thumbDataURI: String, objectives: String,
+    objectives: String,
     enrollmentUUID: String, enrolledOn: Date, 
     personUUID: String, progress: String,
     repository_uuid:String, notes: String) = {
     val to = tos.newCourseTO.as
     val prog = if (progress != null) new BigDecimal(progress) else null
-    val course = Entities.newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
+    val course = Entities.newCourse(courseUUID, code, title, description, objectives, repository_uuid)
     val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
     to setCourse(course)
     to setEnrollment(enrollment)
@@ -42,7 +42,7 @@ object TOs {
 
   implicit def newCourseTO(r: ResultSet): CourseTO = newCourseTO(
     r.getString("courseUUID"), r.getString("code"), r.getString("title"),
-    r.getString("description"), r.getString("assetsURL"), r.getString("infoJson"),
+    r.getString("description"), r.getString("infoJson"),
     r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
     r.getString("person_uuid"), r.getString("progress"),r.getString("repository_uuid"), r.getString("notes"))
 

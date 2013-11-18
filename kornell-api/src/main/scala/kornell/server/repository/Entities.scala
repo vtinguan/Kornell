@@ -54,12 +54,11 @@ object Entities {
 
   def newCourse(uuid: String, code: String,
     title: String, description: String,
-    assetsURL: String, infoJson: String, repository_uuid: String): Course = {
+    infoJson: String, repository_uuid: String): Course = {
     val c = newCourse
     c.setUUID(uuid)
     c.setCode(code)
     c.setDescription(description)
-    c.setAssetsURL(assetsURL)
     c.setTitle(title)
     c.setInfoJson(infoJson)
     c.setRepositoryUUID(repository_uuid)
