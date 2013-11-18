@@ -1,0 +1,2 @@
+Enable on dev:
+-javaagent:/Users/faermanj/Dev/Kornell/kornell-api/target/kornell-api-1.0-SNAPSHOT/WEB-INF/lib/newrelic-agent-3.1.0.jar -Dnewrelic.config.file=/Users/faermanj/Dev/Kornell/kornell-api/newrelic.yml

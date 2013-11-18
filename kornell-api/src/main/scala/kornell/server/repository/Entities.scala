@@ -59,7 +59,6 @@ object Entities {
     c.setUUID(uuid)
     c.setCode(code)
     c.setDescription(description)
-    c.setAssetsURL(assetsURL)
     c.setTitle(title)
     c.setInfoJson(infoJson)
     c.setRepositoryUUID(repository_uuid)
