@@ -13,5 +13,5 @@ public interface CourseTO {
 	void setEnrollment(Enrollment e);
 	
 	String getDistributionURL();
-	void setBaseURL(String getDistributionURL);
+	void setDistributionURL(String getDistributionURL);
 }
