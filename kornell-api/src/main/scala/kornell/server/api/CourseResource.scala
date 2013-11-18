@@ -31,7 +31,6 @@ class CourseResource(uuid: String) {
     val structureSrc = s3.source("structure.knl")    
     val structureText = structureSrc.mkString("")
     val baseURL = s3.baseURL
-    courseTO.setBaseURL(baseURL)
     val visited =  courseRepo.actomsVisitedBy(person)
     val contents = ContentsParser.parse(baseURL,s3.prefix,structureText,visited)
     contents.setCourseTO(courseTO)

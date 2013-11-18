@@ -11,6 +11,7 @@ import java.math.BigDecimal
 import java.sql.ResultSet
 import kornell.core.to.CourseTO
 import kornell.server.repository.s3.S3
+import kornell.core.util.StringUtils
 
 //TODO: Consider turning to Object
 object TOs {
@@ -28,20 +29,20 @@ object TOs {
   def newCourseTO(
     courseUUID: String, code: String,
     title: String, description: String,
-    thumbDataURI: String, objectives: String,
+    objectives: String,
     enrollmentUUID: String, enrolledOn: Date, 
     personUUID: String, progress: String,
     repository_uuid:String, notes: String) = {
     val to = tos.newCourseTO.as
     val prog = if (progress != null) new BigDecimal(progress) else null
-    val course = Entities.newCourse(courseUUID, code, title, description, thumbDataURI, objectives, repository_uuid)
+    val course = Entities.newCourse(courseUUID, code, title, description, objectives, repository_uuid)
     val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
     to setCourse(course)
     to setEnrollment(enrollment)
-    to setBaseURL (S3(to.getCourse.getRepositoryUUID).baseURL)
+    val s3 = S3(to.getCourse.getRepositoryUUID)
+    to setDistributionURL( StringUtils.composeURL(s3.baseURL , s3.prefix))
     to
   }
-
 
   def newCoursesTO(l: List[CourseTO]) = {
     val to = tos.newCoursesTO.as
