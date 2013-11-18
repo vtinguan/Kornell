@@ -53,20 +53,23 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 
 	// TODO: extract those inner classes
 	public class InstitutionClient {
-		private String institutionName;
+		private String uuid;
 
-		public InstitutionClient(String institutionName) {
-			this.institutionName = institutionName;
+		public InstitutionClient(String uuid) {
+			this.uuid = uuid;
 		}
 
 		public void acceptTerms(Callback<Void> cb) {
-			PUT("/institutions/" + institutionName).go(cb);
+			PUT("/institutions/" + uuid).go(cb);
 		}
 
-		// TODO: remove this
 		public void getInstitution(Callback<Institution> cb) {
-			GET("/institutions/" + institutionName).sendRequest(null, cb);
+			GET("/institutions/" + uuid).sendRequest(null, cb);
 		}
+	}
+
+	public void getInstitutionByName(String name, Callback<Institution> cb) {
+		GET("/institutions/?name=" + name).sendRequest(null, cb);
 	}
 
 	public RegistrationsClient registrations() {

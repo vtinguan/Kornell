@@ -85,7 +85,7 @@ public class GenericCourseSummaryView extends Composite {
 			iconCourseURL+="iconToAcquire.png"; 
 		}
 		
-		String assetsURL = course.getAssetsURL();
+		String assetsURL = "";
 		//TODO course.getImage()
 		imgThumb.setUrl(assetsURL + "thumb.jpg");
 		imgIconCourse.setUrl(iconCourseURL);

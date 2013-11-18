@@ -10,10 +10,6 @@ public interface Course extends Entity{
 	
 	String getTitle();
 	void setTitle(String title);
-
-	//TODO: Probably DUPs with CourseTO.getBaseURL, remove this one
-	String getAssetsURL();
-	void setAssetsURL(String assetsURL);
 	
 	String getInfoJson();
 	void setInfoJson(String infoJson);

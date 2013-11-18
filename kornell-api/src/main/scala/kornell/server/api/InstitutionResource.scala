@@ -13,14 +13,14 @@ import kornell.server.repository.jdbc.Registrations
 
 @Produces(Array(Institution.TYPE))
 //TODO:Refactor to use /institutions/{uuid} and /institutions?name={name}
-class InstitutionResource(institutionName: String) {
+class InstitutionResource(uuid: String) {
   @GET
-  def get = Institutions.byName(institutionName)
+  def get = Institutions.byUUID(uuid)
   
   @PUT
   @Produces(Array("text/plain"))
   def acceptTerms(implicit @Context sc: SecurityContext) = Auth.withPerson{ p =>
-    Registrations(p.getUUID,institutionName).acceptTerms
+    Registrations(p.getUUID, uuid).acceptTerms
   }
-
+  
 }

@@ -1,0 +1,1 @@
+alter table Course drop column assetsURL;
