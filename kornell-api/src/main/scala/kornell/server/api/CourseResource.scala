@@ -37,8 +37,6 @@ class CourseResource(uuid: String) {
     contents.setCourseTO(courseTO)
     contents
   }
- 
-  
 }
 
 object CourseResource {

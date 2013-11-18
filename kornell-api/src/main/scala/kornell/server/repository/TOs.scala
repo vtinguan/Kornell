@@ -10,6 +10,7 @@ import java.util.Date
 import java.math.BigDecimal
 import java.sql.ResultSet
 import kornell.core.to.CourseTO
+import kornell.server.repository.s3.S3
 
 //TODO: Consider turning to Object
 object TOs {
@@ -37,14 +38,10 @@ object TOs {
     val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
     to setCourse(course)
     to setEnrollment(enrollment)
+    to setBaseURL (S3(to.getCourse.getRepositoryUUID).baseURL)
     to
   }
 
-  implicit def newCourseTO(r: ResultSet): CourseTO = newCourseTO(
-    r.getString("courseUUID"), r.getString("code"), r.getString("title"),
-    r.getString("description"), r.getString("assetsURL"), r.getString("infoJson"),
-    r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
-    r.getString("person_uuid"), r.getString("progress"),r.getString("repository_uuid"), r.getString("notes"))
 
   def newCoursesTO(l: List[CourseTO]) = {
     val to = tos.newCoursesTO.as
