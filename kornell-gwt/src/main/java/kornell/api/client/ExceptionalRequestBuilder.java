@@ -71,10 +71,23 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 	// TODO: Move All creation to clientfactory
 	EventFactory eventFactory = GWT.create(EventFactory.class);
 
-	public ExceptionalRequestBuilder withBody(ActomEntered event) {
-		AutoBean<ActomEntered> autoBean = AutoBeanUtils.getAutoBean(event);
+	private <T> ExceptionalRequestBuilder withBody(T object) {
+		AutoBean<T> autoBean = AutoBeanUtils.getAutoBean(object);
 		String reqData = AutoBeanCodex.encode(autoBean).getPayload();
 		setRequestData(reqData);
+		return this;
+	}
+
+	public <T> ExceptionalRequestBuilder withEntityBody(T object) {	
+		return withBody(object);
+	}
+	
+	public String contentTypeOf(Object o){
+		return MediaTypes.get().typeOf(o.getClass());
+	}
+
+	public ExceptionalRequestBuilder withContentType(String contentType) {
+		setHeader("Content-Type", contentType);
 		return this;
 	}
 

@@ -50,4 +50,9 @@ public class UserSession {
 	private String prefixed(String key) {
 		return PREFIX + SEPARATOR + personUUID + SEPARATOR + key ;
 	}
+
+	public String getPersonUUID() {;
+		return personUUID;
+	}
+
 }

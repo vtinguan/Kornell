@@ -1,34 +1,21 @@
 package kornell.api.client;
 
-import com.google.gwt.http.client.RequestException;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-
-import kornell.core.event.ActomEntered;
-import kornell.core.to.UserInfoTO;
+import kornell.core.event.Event;
 
 public class EventClient extends RESTClient {
 
-	private ActomEntered event;
+	private Event event;
+	private String contentType;
+	private String path;
 
-	public EventClient(ActomEntered event) {
+	public EventClient(String path, String contentType, Event event) {
 		this.event = event;
+		this.path = path;
+		this.contentType = contentType;
 	}
 
 	public void fire() {
-		getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO to) {
-				event.setFromPersonUUID(to.getPerson().getUUID());
-				ExceptionalRequestBuilder req = PUT("/events/actomEntered");
-				req.setHeader("Content-Type", ActomEntered.TYPE);
-				AutoBean<ActomEntered> autobean = AutoBeanUtils.getAutoBean(event);				
-				String reqData = AutoBeanCodex.encode(autobean).getPayload();
-				req.setRequestData(reqData);
-				req.go();
-			}
-		});
-
+		PUT(path).withContentType(contentType).withEntityBody(event).go();
 	}
+
 }
