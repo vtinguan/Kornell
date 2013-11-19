@@ -21,7 +21,6 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  
 public abstract class Callback<T> implements RequestCallback {
-	private static final MediaTypes mimeTypes = new MediaTypes();
 
 	@Override
 	public void onResponseReceived(Request request, Response response) {
@@ -63,9 +62,9 @@ public abstract class Callback<T> implements RequestCallback {
 		String responseText = response.getText();
 
 		if (contentType.contains("json")) {
-			if (mimeTypes.containsKey(contentType)) {
+			if (MediaTypes.get().containsType(contentType)) {
 				@SuppressWarnings("unchecked")
-				Class<T> clazz = (Class<T>) mimeTypes.get(contentType);
+				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
 
 				AutoBean<T> bean = null;
 				AutoBeanFactory factory = factoryFor(contentType);

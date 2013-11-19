@@ -1,6 +1,7 @@
 package kornell.api.client;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import kornell.core.entity.Institution;
 import kornell.core.entity.Registration;
@@ -11,9 +12,13 @@ import kornell.core.to.CoursesTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
 
-public class MediaTypes extends HashMap<String,Class<?>>{
-	private static final long serialVersionUID = 8495421711509512346L;
-
+public class MediaTypes {
+	
+	static final MediaTypes instance = new MediaTypes();
+	
+	Map<String,Class<?>> type2class = new HashMap<String, Class<?>>();
+	Map<Class<?>,String> class2type = new HashMap<Class<?>, String>();
+	
 	public MediaTypes() {
 		register(CoursesTO.TYPE, CoursesTO.class);
 		register(CourseTO.TYPE, CourseTO.class);
@@ -26,7 +31,27 @@ public class MediaTypes extends HashMap<String,Class<?>>{
 	}
 
 	private void register(String type, Class<?> clazz) {
-		put(type.toLowerCase(),clazz);		
+		type2class.put(type.toLowerCase(),clazz);
+		class2type.put(clazz,type.toLowerCase());
 	}
-	 
+	
+	public static MediaTypes get(){
+		return instance;
+	}	 
+	
+	public Class<?> classOf(String type){
+		return type2class.get(type);
+	}
+	
+	public String typeOf(Class<?> clazz){
+		return class2type.get(clazz);
+	}
+	
+	public boolean containsType(String type){
+		return type2class.containsKey(type);
+	}
+	
+	public boolean containsClass(Class<?> clazz){
+		return class2type.containsKey(clazz);
+	}
 }

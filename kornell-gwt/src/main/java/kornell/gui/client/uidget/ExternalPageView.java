@@ -6,6 +6,7 @@ import java.util.Date;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.lom.ExternalPage;
+import static kornell.core.util.StringUtils.*;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.util.loading.LoadingPopup;
@@ -36,12 +37,12 @@ public class ExternalPageView extends Uidget {
 
 	private ExternalPage page;
 
-	public ExternalPageView(KornellClient client, ExternalPage page) {
+	public ExternalPageView(KornellClient client, String courseUUID, ExternalPage page) {
 		this.client = client;
 		this.page = page;
 		createIFrame();
 		panel.getElement().appendChild(iframe);
-		setSrc(page.getURL());
+		setSrc(page.getURL(),courseUUID,page.getKey());
 		initWidget(panel);
 	}
 
@@ -90,11 +91,17 @@ public class ExternalPageView extends Uidget {
 		iframe.setPropertyString("height", height);
 	}
 
-	public void setSrc(final String src) {	
+	public void setSrc(final String src, final String courseUUID, final String actomKey) {	
 		UserSession.current(new Callback<UserSession>() {
 			@Override
 			public void ok(UserSession session) {
-				// TODO: Check if src exists
+				//String courseUUID
+				String personUUID=session.getPersonUUID(); 				
+				String signature = "juliomfaerman";
+				String url = url(src) 
+						.withParam("", "")
+						.build();
+				// TODO: Check if src exists				
 				iframe.setSrc(src); 
 			}
 		});

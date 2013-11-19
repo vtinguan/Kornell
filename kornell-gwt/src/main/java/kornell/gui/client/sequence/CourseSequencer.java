@@ -4,10 +4,12 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.event.ActomEntered;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.CoursePlace;
@@ -149,10 +151,16 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private void dropBreadcrumb() {
-		session.setItem(getBreadcrumbKey(),currentKey());
-		client.events()
-			.actomEntered(courseUUID,currentActom.getKey())	
-			.fire(); 
+		UserSession.current(new Callback<UserSession>() {
+			@Override
+			public void ok(UserSession session) {
+				session.setItem(getBreadcrumbKey(),currentKey());
+				String personUUID =  session.getPersonUUID();
+				client.events()
+					.actomEntered(personUUID,courseUUID,currentActom.getKey())	
+					.fire();
+			}
+		});
 	}
 
 	private boolean doesntHavePrev() {
@@ -281,7 +289,7 @@ public class CourseSequencer implements Sequencer {
 		if (actom == null)
 			return null;
 		if (actom instanceof ExternalPage)
-			return new ExternalPageView(client, (ExternalPage) actom);
+			return new ExternalPageView(client, courseUUID, (ExternalPage) actom);
 		throw new IllegalArgumentException("Do not know how to view [" + actom
 				+ "]");
 	}
