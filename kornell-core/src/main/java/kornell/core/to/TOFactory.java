@@ -8,4 +8,5 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<CoursesTO> newCoursesTO();
 	AutoBean<UserInfoTO> newUserInfoTO();
 	AutoBean<RegistrationsTO> newRegistrationsTO();
+	AutoBean<RegistrationRequestTO> newRegistrationRequestTO();
 }

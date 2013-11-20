@@ -16,8 +16,6 @@ object Auth  {
       rs.getString("fullName"), 
       rs.getString("lastPlaceVisited"),
       rs.getString("email"),
-      rs.getString("firstName"),
-      rs.getString("lastName"),
       rs.getString("company"),
       rs.getString("title"),
       rs.getString("sex"),
@@ -44,8 +42,7 @@ object Auth  {
   //TODO: Cache
   def getPerson(username: String) = {
     sql"""
-		select p.uuid, p.fullName, p.lastPlaceVisited,
-		    p.email, p.firstName , p.lastName, p.company, 
+		select p.uuid, p.fullName, p.lastPlaceVisited, p.email, p.company, 
 		    p.title, p.sex, p.birthDate, p.confirmation
 		from Person p
 		join Password pw on pw.person_uuid = p.uuid

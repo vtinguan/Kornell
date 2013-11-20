@@ -5,6 +5,8 @@ import java.sql.ResultSet
 import kornell.server.repository.Entities
 import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.server.repository.Entities._
+import kornell.core.entity.Enrollment
+import kornell.core.entity.EnrollmentState
 
 class RegistrationRepository(person: PersonRepository, institution_uuid: String) {
 
@@ -28,11 +30,11 @@ class RegistrationRepository(person: PersonRepository, institution_uuid: String)
     .first[Registration]
     .get
 
-  def enrollOn(course_uuid: String, person_uuid: String) = {
+  def requestEnrollment(course_uuid: String, person_uuid: String) = {
     val uuid = randomUUID
     sql""" 
-    	insert ignore into Enrollment(uuid,course_uuid,person_uuid,enrolledOn)
-    	values($randomUUID,$course_uuid,$person_uuid,now())
+    	insert into Enrollment(uuid,course_uuid,person_uuid,enrolledOn,state)
+    	values($randomUUID,$course_uuid,$person_uuid,now(),${EnrollmentState.requested.toString()})
     """.executeUpdate
     None
   }

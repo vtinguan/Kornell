@@ -10,14 +10,14 @@ import kornell.server.repository.jdbc.SQLInterpolation._
 
 object Institutions {
 
-  def create(name: String, terms: String): Institution = {
-    val i = newInstitution(randomUUID, name, terms, "")
+  def create(name: String, terms: String, baseURL: String): Institution = {
+    val i = newInstitution(randomUUID, name, terms, "", baseURL)
     sql"""
     | insert into Institution(uuid,name,terms) 
     | values ($i.getUUID,$i.getName,$i.terms)""".executeUpdate
     i
   }
-
+  
   def register(p: Person, i: Institution):Registration = {
     val r = newRegistration(p, i)
     register(p.getUUID,i.getUUID)
@@ -35,7 +35,8 @@ object Institutions {
     newInstitution(rs.getString("uuid"), 
         rs.getString("name"), 
         rs.getString("terms"),
-        rs.getString("assetsURL")) 
+        rs.getString("assetsURL"),
+        rs.getString("baseURL")) 
   
   def byUUID(UUID:String) = 
 	sql"select * from Institution where uuid = ${UUID}".first[Institution]

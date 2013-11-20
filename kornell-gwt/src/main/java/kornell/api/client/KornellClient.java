@@ -3,6 +3,7 @@ package kornell.api.client;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseTO;
 import kornell.core.to.CoursesTO;
+import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LogoutEventHandler;
@@ -25,12 +26,13 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		GET("/user/" + username).sendRequest(null, cb);
 	}
 
-	public void checkUser(String username, String email, Callback<UserInfoTO> cb) {
-		GET("/user/check/" + username + "/" + email).sendRequest(null, cb);
+	public void checkUser(String email, Callback<UserInfoTO> cb) {
+		GET("/user/check/" + email).sendRequest(null, cb);
 	}
 
-	public void createUser(String data, Callback<UserInfoTO> cb) {
-		PUT("/user/create/").sendRequest(data, cb);
+	public void requestRegistration(RegistrationRequestTO registrationRequestTO, Callback<UserInfoTO> cb) {
+		//PUT("/user/create/").sendRequest(data, cb);
+		PUT("/user/registrationRequest").withContentType(RegistrationRequestTO.TYPE).withEntityBody(registrationRequestTO).go(cb);
 	}
 
 	public void sendWelcomeEmail(String userUUID, Callback<Void> cb) {

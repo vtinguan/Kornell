@@ -4,23 +4,55 @@
 	<g:FlowPanel addStyleNames="vitrine">
 		<g:FlowPanel addStyleNames="boxLogin">
 			<b:Image ui:field="imgLogo" addStyleNames="logo"></b:Image>
-			<b:Alert ui:field="altUnauthorized" type="ERROR" close="false" animation="true" heading="Ops... " visible="false"></b:Alert>
-			<b:Form ui:field="frmLogin">
-				<g:FlowPanel addStyleNames="inputWrapper">
-					<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
-					<b:TextBox ui:field="txtUsername" placeholder="seu usuário" ></b:TextBox>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="inputWrapper">
-					<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
-					<b:PasswordTextBox ui:field="pwdPassword" placeholder="sua senha"></b:PasswordTextBox>
-				</g:FlowPanel>
-				<b:Controls>
-					<g:Button ui:field="btnLogin" addStyleNames="btnVitrine btnAction">ENTRAR</g:Button>
-		    		<g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnSelected">CADASTRAR-SE</g:Button>
-				</b:Controls>
-			</b:Form>
+			<b:Alert ui:field="alertError" type="ERROR" close="false" animation="true" visible="false"></b:Alert>
+			<g:FlowPanel ui:field="loginPanel">
+				<b:Form ui:field="frmLogin">
+					<g:Label addStyleNames="inputLabel">Email</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:TextBox ui:field="txtUsername"></b:TextBox>
+					</g:FlowPanel>
+					<g:Label addStyleNames="inputLabel">Senha</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:PasswordTextBox ui:field="pwdPassword"></b:PasswordTextBox>
+					</g:FlowPanel>
+					<b:Controls>
+						<g:Button ui:field="btnLogin" addStyleNames="btnVitrine btnAction">ENTRAR</g:Button>
+			    		<g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnSelected">CADASTRAR-SE</g:Button>
+					</b:Controls>
+				</b:Form>
+			</g:FlowPanel>
+			<g:FlowPanel ui:field="signUpPanel">
+				<b:Form ui:field="frmSignUp">
+					<g:Label addStyleNames="inputLabel">Nome Completo</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:TextBox ui:field="suName"></b:TextBox>
+					</g:FlowPanel>
+					<g:Label addStyleNames="inputLabel">Email</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:TextBox ui:field="suEmail"></b:TextBox>
+					</g:FlowPanel>
+					<g:Label addStyleNames="inputLabel">Senha</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:PasswordTextBox ui:field="suPassword"></b:PasswordTextBox>
+					</g:FlowPanel>
+					<g:Label addStyleNames="inputLabel">Confirmar Senha</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:PasswordTextBox ui:field="suPasswordConfirm"></b:PasswordTextBox>
+					</g:FlowPanel>
+					<b:Controls>
+						<g:Button ui:field="btnOK" addStyleNames="btnVitrine btnAction">OK</g:Button>
+			    		<g:Button ui:field="btnCancel" addStyleNames="btnVitrine btnSelected">CANCELAR</g:Button>
+					</b:Controls>
+				</b:Form>
+			</g:FlowPanel>
 		</g:FlowPanel>
-		<b:Alert ui:field="userCreatedAlert" type="SUCCESS" close="true" animation="true" addStyleNames="shy alertVitrine">Usuário criado com sucesso. Enviamos um e-mail para ativação no endereço cadastrado.</b:Alert>
+		<b:Alert ui:field="userCreatedAlert" type="SUCCESS" close="false" animation="true" addStyleNames="shy alertVitrine">Usuário criado com sucesso. Uma solicitação foi enviada para a instituição requisitando seu acesso. Você receberá um email quando a requisição for aprovada.</b:Alert>
 	</g:FlowPanel>
 
 </ui:UiBinder>
