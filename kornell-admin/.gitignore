@@ -1,7 +1,0 @@
-target/*
-movies.txt
-.settings
-.classpath
-.project
-gwt-unitCache/
-widgetsets/

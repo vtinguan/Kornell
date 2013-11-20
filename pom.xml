@@ -14,7 +14,6 @@
         <module>kornell-core</module>
         <module>kornell-api</module>
         <module>kornell-gwt</module>
-        <module>kornell-admin</module>
     </modules>
 
     <build>
