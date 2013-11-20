@@ -203,7 +203,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 			@Override
 			public void ok(UserInfoTO user) {
-				UserSession.setCurrentPerson(user.getPerson().getUUID());
 				String token;
 				if (!"".equals(locationStr)
 						&& "details".equals(locationStrArray[0].split("#")[1])) {
@@ -217,7 +216,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					defaultPlace = new CoursePlace(constants
 							.getDefaultCourseUUID());
 				}
-				startApp(defaultPlace);
+				startApp(defaultPlace, user);
 			}
 
 			@Override
@@ -229,21 +228,26 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				} else {
 					vitrinePlace = new VitrinePlace();
 				}
-				startApp(vitrinePlace);
+				startApp(vitrinePlace, null);
 			}
 
-			protected void startApp(final Place defaultPlace) {
+			protected void startApp(final Place defaultPlace,
+					final UserInfoTO user) {
 				// TODO not good
 				String institutionName = Window.Location
 						.getParameter("institution");
 				if (institutionName == null)
 					institutionName = Window.Location.getHostName()
 							.split("\\.")[0];
-				client.getInstitutionByName(institutionName, 
+				client.getInstitutionByName(institutionName,
 						new Callback<Institution>() {
 							@Override
 							public void ok(Institution institution) {
 								setInstitution(institution);
+								if (user != null)
+									UserSession.setCurrentPerson(user
+											.getPerson().getUUID(), institution
+											.getUUID());
 								initGUI();
 								initActivityManagers();
 								initHistoryHandler(defaultPlace);
@@ -259,7 +263,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initPersonnel() {
-		new Captain(bus, placeCtrl);
+		new Captain(bus, placeCtrl, institution.getUUID());
 		new Dean(this);
 	}
 

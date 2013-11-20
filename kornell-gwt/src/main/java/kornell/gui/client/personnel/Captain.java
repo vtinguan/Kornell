@@ -20,9 +20,11 @@ import com.google.web.bindery.event.shared.EventBus;
  */
 public class Captain implements LogoutEventHandler, LoginEventHandler{
 	private PlaceController placeCtrl;
+	private String institutionUUID;
 
-	public Captain(EventBus bus, PlaceController placeCtrl) { 
+	public Captain(EventBus bus, PlaceController placeCtrl,String institutionUUID) { 
 		this.placeCtrl = placeCtrl;		
+		this.institutionUUID = institutionUUID;
 		bus.addHandler(LogoutEvent.TYPE, this);
 		bus.addHandler(LoginEvent.TYPE, this);
 	}
@@ -40,7 +42,7 @@ public class Captain implements LogoutEventHandler, LoginEventHandler{
 
 	@Override
 	public void onLogin(UserInfoTO user) {
-		UserSession.setCurrentPerson(user.getPerson().getUUID());
+		UserSession.setCurrentPerson(user.getPerson().getUUID(),institutionUUID);
 	}
 
 
