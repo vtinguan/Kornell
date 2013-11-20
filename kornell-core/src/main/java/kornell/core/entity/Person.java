@@ -12,10 +12,6 @@ public interface Person {
 	void setLastPlaceVisited(String lastPlaceVisited);
 	String getEmail();
 	void setEmail(String email);
-	String getFirstName();
-	void setFirstName(String firstName);
-	String getLastName();
-	void setLastName(String lastName);
 	String getCompany();
 	void setCompany(String company);
 	String getTitle();

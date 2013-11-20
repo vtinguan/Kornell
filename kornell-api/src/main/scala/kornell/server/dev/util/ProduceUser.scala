@@ -25,7 +25,7 @@ object ProduceUser extends App {
   val p: PersonRepository = People().createPerson(fullName)
   p.setPassword(username, password) 
 		  .registerOn(institution_uuid)
-		  .enrollOn(course_uuid, p.get().get.getUUID())
+		  .requestEnrollment(course_uuid, p.get().get.getUUID())
  
   println(" Full Name: "+fullName)
   println("  Username: "+username)

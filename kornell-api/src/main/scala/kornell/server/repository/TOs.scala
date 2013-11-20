@@ -12,6 +12,7 @@ import java.sql.ResultSet
 import kornell.core.to.CourseTO
 import kornell.server.repository.s3.S3
 import kornell.core.util.StringUtils
+import kornell.core.entity.EnrollmentState
 
 //TODO: Consider turning to Object
 object TOs {
@@ -36,7 +37,7 @@ object TOs {
     val to = tos.newCourseTO.as
     val prog = if (progress != null) new BigDecimal(progress) else null
     val course = Entities.newCourse(courseUUID, code, title, description, objectives, repository_uuid)
-    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes)
+    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes,EnrollmentState.notEnrolled)
     to setCourse(course)
     to setEnrollment(enrollment)
     val s3 = S3(to.getCourse.getRepositoryUUID)

@@ -92,6 +92,7 @@
 .VitrinePlace .boxLogin .personIcon{float:left;padding-top:5px;padding-right:15px;padding-left:28px;}
 .VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;margin-top:0;}
 .VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:30px;}
+.VitrinePlace .boxLogin .inputLabel{padding-bottom:5px;}
 .VitrinePlace .boxLogin .inputWrapper{width:213px;height:18px;background:white;padding-left:10px;padding-top:6px;padding-bottom:6px;border:1px solid #cccccc;margin-bottom:14px;}.VitrinePlace .boxLogin .inputWrapper .inputBar{height:20px;float:left;width:3px;background:#9b0b05;margin-right:5px;margin-top:-2px;}
 .VitrinePlace .boxLogin .inputWrapper input{width:200px;padding:0;border:0;box-shadow:none;font-size:14px;font-weight:bold;}
 .VitrinePlace .boxLogin .alert{width:202px;font-size:12px;line-height:14px;padding:10px;}
