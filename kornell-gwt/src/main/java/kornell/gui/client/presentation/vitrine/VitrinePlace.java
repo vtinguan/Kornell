@@ -25,7 +25,7 @@ public class VitrinePlace extends Place{
 		this.confirmation = confirmation;
 	}
 
-	@Prefix("Vitrine")
+	@Prefix("vitrine")
 	public static class Tokenizer implements PlaceTokenizer<VitrinePlace> {
 		public VitrinePlace getPlace(String token) {
 			return new VitrinePlace(token);

@@ -1,16 +1,21 @@
 package kornell.gui.client.presentation.vitrine;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kornell.api.client.Callback;
+import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
-import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
+import kornell.gui.client.presentation.util.ValidatorHelper;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class VitrinePresenter implements VitrineView.Presenter {
@@ -84,7 +89,81 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onRegisterButtonClicked() {
-		clientFactory.getPlaceController().goTo(new ProfilePlace(""));
+		view.hideMessage();
+		view.displayLoginPanel(false);		
+	}
+
+	private List<String> validateFields() {
+		ValidatorHelper validator = new ValidatorHelper();
+		List<String> errors = new ArrayList<String>();
+		
+		if(!validator.lengthValid(view.getSuName(), 2, 50)){
+			errors.add("O nome deve ter no mínimo 2 caracteres.");
+		}
+		
+		if (!validator.emailValid(view.getSuEmail())){
+			errors.add("Email inválido.");
+		}
+
+		if (!validator.passwordValid(view.getSuPassword())){
+			errors.add("Senha inválida (mínimo de 6 caracteres).");
+		}
+
+		if (!view.getSuPassword().equals(view.getSuPasswordConfirm())){
+			errors.add("As senhas não conferem.");
+		}
+		return errors;
+	}
+	
+	@Override
+	public void onSignUpButtonClicked() {
+		view.hideMessage();
+		view.hideUserCreatedAlert();
+		List<String> errors = validateFields();
+		
+		if(errors.size() == 0){
+			//TODO improve
+			clientFactory.getKornellClient().checkUser(view.getSuEmail().toLowerCase().trim(), new Callback<UserInfoTO>(){
+				@Override
+				public void ok(UserInfoTO user){
+					if(user.getEmail() != null){
+						view.setMessage("O email já existe.");
+						view.showMessage();
+						return;
+					}
+					String data = view.getSuName().toLowerCase().trim() + "###" + 
+							view.getSuEmail().toLowerCase().trim() + "###" +
+							view.getSuPassword().trim() + "###" +
+							Window.Location.getHref().split("#")[0];
+					GWT.log(data);
+					RegistrationRequestTO registrationRequestTO = clientFactory.getTOFactory().newRegistrationRequestTO().as();
+					registrationRequestTO.setFullName(view.getSuName().trim());
+					registrationRequestTO.setEmail(view.getSuEmail().toLowerCase().trim());
+					registrationRequestTO.setPassword(view.getSuPassword().trim());
+					registrationRequestTO.setInstitutionUUID(clientFactory.getInstitution().getUUID());
+					//location
+					clientFactory.getKornellClient().requestRegistration(registrationRequestTO, new Callback<UserInfoTO>(){
+						@Override
+						public void ok(UserInfoTO user){
+							//TODO on OK
+							GWT.log("User created");
+							view.showUserCreatedAlert();
+							view.displayLoginPanel(true);
+						}
+					});
+				}
+			});
+		} else {
+			view.setMessage(errors);
+			view.showMessage();
+		}
+		
+	}
+
+	@Override
+	public void onCancelSignUpButtonClicked() {
+		view.hideMessage();
+		view.displayLoginPanel(true);		
 	}
 
 	@Override

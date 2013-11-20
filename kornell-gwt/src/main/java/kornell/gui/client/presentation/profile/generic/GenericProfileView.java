@@ -209,7 +209,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		btnOK.setEnabled(false);
 		clearErrors();
 		if(validateFields()){
-			client.checkUser(username.getText().toLowerCase().trim(), email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
+			client.checkUser(/*username.getText().toLowerCase().trim(), */email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
 				@Override
 				public void ok(UserInfoTO user){
 					if(user.getPerson() != null){
@@ -229,7 +229,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 								(sex.getSelectedIndex() == 1 ? "F" : "M") + "###" +
 								birthDate.toString() + "###" +
 								Window.Location.getHref().split("#")[0];
-						client.createUser(data, new Callback<UserInfoTO>(){
+						/*client.createUser(data, new Callback<UserInfoTO>(){
 							@Override
 							public void ok(UserInfoTO user){
 								GWT.log("User created");
@@ -244,7 +244,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 								vitrinePlace.setUserCreated(true);
 								placeCtrl.goTo(vitrinePlace);
 							}
-						});
+						});*/
 						
 					}
 					btnOK.setEnabled(true);
@@ -337,8 +337,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 		} else if(isEditMode){
 			username.setText(user.getUsername());
 			email.setText(user.getPerson().getEmail());
-			firstName.setText(user.getPerson().getFirstName());
-			lastName.setText(user.getPerson().getLastName());
+			//firstName.setText(user.getPerson().getFirstName());
+			//lastName.setText(user.getPerson().getLastName());
 			company.setText(user.getPerson().getCompany());
 			title.setText(user.getPerson().getTitle());
 	        sex.setSelectedIndex("F".equals(user.getPerson().getSex()) ? 1 : 2);
@@ -347,8 +347,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 		} else {
 			usernameTxt.setText(user.getUsername());
 			emailTxt.setText(user.getPerson().getEmail());
-			firstNameTxt.setText(user.getPerson().getFirstName());
-			lastNameTxt.setText(user.getPerson().getLastName());
+			//firstNameTxt.setText(user.getPerson().getFirstName());
+			//lastNameTxt.setText(user.getPerson().getLastName());
 			companyTxt.setText(user.getPerson().getCompany());
 			titleTxt.setText(user.getPerson().getTitle());
 			sexTxt.setText("F".equals(user.getPerson().getSex()) ? "Feminino" : "Masculino");

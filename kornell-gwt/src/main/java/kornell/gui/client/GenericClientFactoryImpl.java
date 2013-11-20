@@ -82,7 +82,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public static final LOMFactory lomFactory = GWT.create(LOMFactory.class);
 	public static final EventFactory eventFactory = GWT
 			.create(EventFactory.class);
-
+	
 	/* History Management */
 	private final EventBus bus = new SimpleEventBus();
 	private final PlaceController placeCtrl = new PlaceController(bus);
@@ -469,5 +469,25 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void setInstitution(Institution institution) {
 		this.institution = institution;
+	}
+
+	@Override
+	public EntityFactory getEntityFactory() {
+		return entityFactory;
+	}
+
+	@Override
+	public TOFactory getTOFactory() {
+		return toFactory;
+	}
+
+	@Override
+	public LOMFactory getLOMFactory() {
+		return lomFactory;
+	}
+
+	@Override
+	public EventFactory getEventFactory() {
+		return eventFactory;
 	}
 }
