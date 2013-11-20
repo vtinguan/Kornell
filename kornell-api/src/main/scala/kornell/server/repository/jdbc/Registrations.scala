@@ -31,7 +31,8 @@ object Registrations {
     rs.getString("institution_uuid"),
     rs.getString("name"),
     rs.getString("terms"),
-    rs.getString("assetsURL"))
+    rs.getString("assetsURL"),
+    rs.getString("baseURL"))
 
   //TODO: Use map instead of foreach
   def unsigned(implicit person: Person): RegistrationsTO = {

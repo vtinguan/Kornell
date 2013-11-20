@@ -1,6 +1,9 @@
 package kornell.gui.client.presentation.vitrine.generic;
 
 import static kornell.core.util.StringUtils.composeURL;
+
+import java.util.List;
+
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.util.ClientProperties;
 
@@ -20,6 +23,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericVitrineView extends Composite implements VitrineView {
@@ -30,27 +34,50 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private VitrineView.Presenter presenter;
 
 	@UiField
+	Image imgLogo;
+	
+	@UiField
+	FlowPanel loginPanel;
+	@UiField
+	Form frmLogin;
+	@UiField
 	TextBox txtUsername;
 	@UiField
 	PasswordTextBox pwdPassword;
-	@UiField
-	Form frmLogin;
 	@UiField
 	Button btnLogin;
 	@UiField
 	Button btnRegister;
 	@UiField
-	Alert altUnauthorized;
-	@UiField
-	Image imgLogo;
+	Alert alertError;
 	@UiField
 	Alert userCreatedAlert;
+	
+	@UiField
+	FlowPanel signUpPanel;
+	@UiField
+	Form frmSignUp;
+
+	@UiField
+	TextBox suName;
+	@UiField
+	TextBox suEmail;
+	@UiField
+	PasswordTextBox suPasswordConfirm;
+	@UiField
+	PasswordTextBox suPassword;
+	@UiField
+	Button btnOK;
+	@UiField
+	Button btnCancel;
 
 	// TODO i18n xml
 	public GenericVitrineView() {
+		
 		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
 
 		initWidget(uiBinder.createAndBindUi(this));
+		displayLoginPanel(true);
 		
 		if (imgLogoURL != null) {
 			imgLogo.setUrl(composeURL(imgLogoURL, "logo300x80.png"));
@@ -91,6 +118,16 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		presenter.onRegisterButtonClicked();
 	}
 
+	@UiHandler("btnOK")
+	void signUp(ClickEvent e) {
+		presenter.onSignUpButtonClicked();
+	}
+
+	@UiHandler("btnCancel")
+	void cancelSignUp(ClickEvent e) {
+		presenter.onCancelSignUpButtonClicked();
+	}
+
 	@Override
 	public String getUsername() {
 		return txtUsername.getValue();
@@ -103,22 +140,62 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	@Override
 	public void hideMessage() {
-		altUnauthorized.setVisible(false);
+		alertError.setVisible(false);
 	}
 
 	@Override
 	public void showMessage() {
-		altUnauthorized.setVisible(true);
+		alertError.setVisible(true);
 	}
 
 	@Override
 	public void setMessage(String msg) {
-		altUnauthorized.setText(msg);
+		alertError.setHTML(msg);
+	}
+	
+	@Override
+	public void setMessage(List<String> msgs){
+		String errorsStr = "";
+		for (String error : msgs) {
+			errorsStr += error+"<br>";
+		}
+		alertError.setHTML(errorsStr);
 	}
 	
 	@Override
 	public void showUserCreatedAlert(){
 		userCreatedAlert.removeStyleName("shy");		
+	}
+	
+	@Override
+	public void hideUserCreatedAlert(){
+		userCreatedAlert.addStyleName("shy");		
+	}
+
+	@Override
+	public void displayLoginPanel(boolean show) {
+		loginPanel.setVisible(show);
+		signUpPanel.setVisible(!show);
+	}
+
+	@Override
+	public String getSuEmail() {
+		return suEmail.getValue();
+	}
+
+	@Override
+	public String getSuName() {
+		return suName.getValue();
+	}
+
+	@Override
+	public String getSuPassword() {
+		return suPassword.getValue();
+	}
+
+	@Override
+	public String getSuPasswordConfirm() {
+		return suPasswordConfirm.getValue();
 	}
 
 }

@@ -40,7 +40,7 @@ class PreparedStmt(query: String, params: List[Any]) {
       params
         .zipWithIndex
         .foreach(setQueryParam)
-
+ 
       try fun(pstmt)
       finally pstmt.close
     }

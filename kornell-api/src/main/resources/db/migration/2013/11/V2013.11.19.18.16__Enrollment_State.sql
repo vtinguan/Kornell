@@ -1,0 +1,1 @@
+alter table Enrollment add column state char(36) not null default '';

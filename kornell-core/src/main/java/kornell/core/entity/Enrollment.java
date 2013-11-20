@@ -27,4 +27,7 @@ public interface Enrollment {
 	
 	String getLastActomVisited();
 	void setLastActomVisited(String lastActomVisited);
+	
+	EnrollmentState getState();
+	void setState(EnrollmentState state);
 }

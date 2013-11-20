@@ -17,6 +17,7 @@ import kornell.core.lom.Content
 import kornell.core.lom.Topic
 import kornell.core.entity.Registration
 import kornell.core.entity.EntityFactory
+import kornell.core.entity.EnrollmentState
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -24,16 +25,13 @@ object Entities {
   def randomUUID = UUID.randomUUID.toString
 
   def newPerson(uuid: String, fullName: String, lastPlaceVisited: String = null,
-      	email: String, firstName: String, lastName: String, 
-      	company: String, title: String, sex: String, 
+      	email: String, company: String, title: String, sex: String, 
       	birthDate: Date, confirmation: String) = {
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
     person.setLastPlaceVisited(lastPlaceVisited)
 	person.setEmail(email)
-    person.setFirstName(firstName)
-    person.setLastName(lastName)
     person.setCompany(company)
     person.setTitle(title)
     person.setSex(sex)
@@ -65,24 +63,26 @@ object Entities {
     c
   }
 
-  def newEnrollment(t: Tuple6[String, Date, String, String, BigDecimal, String]): Enrollment = {
+  def newEnrollment(uuid: String, enrolledOn: Date, courseUUID: String, personUUID: String, progress: BigDecimal, notes: String, state: EnrollmentState): Enrollment = {
     val e = factory.newEnrollment.as
-    e.setUUID(t._1)
-    e.setEnrolledOn(t._2)
-    e.setCourseUUID(t._3)
-    e.setPersonUUID(t._4)
-    e.setProgress(t._5)
-    e.setNotes(t._6)
+    e.setUUID(uuid)
+    e.setEnrolledOn(enrolledOn)
+    e.setCourseUUID(courseUUID)
+    e.setPersonUUID(personUUID)
+    e.setProgress(progress)
+    e.setNotes(notes)
+    e.setState(state)
     e
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randomUUID, name: String, terms: String, assetsURL: String) = {
+  def newInstitution(uuid: String = randomUUID, name: String, terms: String, assetsURL: String, baseURL: String) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setUUID(uuid)
     i.setTerms(terms.stripMargin)
     i.setAssetsURL(assetsURL)
+    i.setBaseURL(baseURL)
     i
   }
 

@@ -7,11 +7,6 @@ import java.sql.ResultSet
 import kornell.server.repository.s3.S3
 
 class CourseRepository(uuid: String) {
-  implicit def newCourseTO(r: ResultSet): CourseTO = TOs.newCourseTO( 
-    r.getString("courseUUID"), r.getString("code"), r.getString("title"),
-    r.getString("description"), r.getString("infoJson"),
-    r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
-    r.getString("person_uuid"), r.getString("progress"), r.getString("repository_uuid"), r.getString("notes"))
 
   def withEnrollment(p: Person) = sql"""
 		select c.uuid as courseUUID,c.code,c.title,c.description,c.infoJson,c.repository_uuid,
@@ -22,7 +17,7 @@ class CourseRepository(uuid: String) {
            and (e.person_uuid is null
 		   or e.person_uuid = ${p.getUUID})
 	""".first[CourseTO]
-	
+  
 
   def actomsVisitedBy(p: Person): List[String] = sql"""
   select actom_key from ActomEntered 
