@@ -1,37 +1,33 @@
 package kornell.gui.client.session;
 
 import kornell.api.client.Callback;
+import kornell.core.entity.Institution;
 
 import com.google.gwt.storage.client.Storage;
 
 public class UserSession {
 	private static final String SEPARATOR = ".";
 	private static final String PREFIX = "Kornell.v1.UserSession";
-	private static String currentPersonUUID;
 	private static UserSession current = null;
 	
 	private String personUUID;
+	private String institutionUUID;
 	
-	public static UserSession setCurrentPerson(String personUUID){
-		UserSession.currentPersonUUID = personUUID;
-		return current();
-	}
-	
-	//TODO: Rethink user session (GUI, synchronization, remoting, etc)
-	public static UserSession current(){		
-		if(current == null){
-			if(currentPersonUUID == null) throw new IllegalStateException("Unknown User");
-			current = new UserSession(currentPersonUUID);
-		}
+	public static UserSession setCurrentPerson(String personUUID, String institutionUUID){
+		current = new UserSession(personUUID,institutionUUID);
 		return current;
 	}
 	 
 	public static void current(Callback<UserSession> callback){
+		if(current == null){
+			throw new IllegalStateException("Unknown User");
+		}
 		callback.ok(current);
 	}
 
-	public UserSession(String personUUID) {
+	private UserSession(String personUUID, String institutionUUID) {
 		this.personUUID = personUUID;
+		this.institutionUUID=institutionUUID;
 	}
 
 	public String getItem(String key) {
@@ -53,6 +49,10 @@ public class UserSession {
 
 	public String getPersonUUID() {;
 		return personUUID;
+	}
+
+	public String getInstitutionUUID() {
+		return institutionUUID;
 	}
 
 }

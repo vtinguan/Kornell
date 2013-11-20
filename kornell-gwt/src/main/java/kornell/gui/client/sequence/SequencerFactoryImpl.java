@@ -24,7 +24,7 @@ public class SequencerFactoryImpl implements SequencerFactory {
 	@Override
 	public Sequencer withPlace(CoursePlace place) {
 		if (sequencer == null)
-			sequencer = new CourseSequencer(UserSession.current(),bus,client);
+			sequencer = new CourseSequencer(bus,client);
 		return sequencer.withPlace(place);
 	}
 

@@ -38,9 +38,8 @@ public class CourseSequencer implements Sequencer {
 	private Uidget prevUidget;
 	private UserSession session;
 
-	public CourseSequencer(UserSession session,EventBus bus, KornellClient client) {
+	public CourseSequencer(EventBus bus, KornellClient client) {
 		this.client = client;
-		this.session = session;
 		bus.addHandler(NavigationRequest.TYPE, this);
 	}
 
