@@ -10,8 +10,7 @@
     <version>1.0</version>
     <name>Kornell E-Learning Platform</name>
 
-    <modules>
-        <module>kornell-content</module>
+    <modules>        
         <module>kornell-core</module>
         <module>kornell-api</module>
         <module>kornell-gwt</module>
