@@ -84,13 +84,13 @@ public class UserSession extends KornellClient {
 		return institutionUUID;
 	}
 
-	public boolean hasRole(RoleType type) {
+	public boolean hasRole(RoleType type, String targetInstitutionUUID) {
 		if (currentUser == null) return false;
 		for(Role role: currentUser.getRoles()){
 			switch(role.getRoleType()){
 				case user: if (RoleType.user.equals(type)) return true;
 				case dean: if (RoleType.dean.equals(type) 
-						&& role.getDeanRole().getInstitutionUUID().equals(institutionUUID)) return true;
+						&& role.getDeanRole().getInstitutionUUID().equals(targetInstitutionUUID)) return true;
 			}
 		}
 		return false;
@@ -151,6 +151,12 @@ public class UserSession extends KornellClient {
 
 	public UserInfoTO getUserInfo() {
 		return currentUser;
+	}
+
+
+	public boolean isDean() {
+		return hasRole(RoleType.dean, institutionUUID);
+		
 	}
 
 }
