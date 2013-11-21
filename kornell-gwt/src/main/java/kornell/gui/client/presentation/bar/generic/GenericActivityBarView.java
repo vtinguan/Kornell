@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.bar.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.to.CourseTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
@@ -77,7 +78,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private KornellClient client;
 	private UserInfoTO user;
 	
-	public GenericActivityBarView(EventBus bus, PlaceController placeCtrl, KornellClient client) {
+	public GenericActivityBarView(EventBus bus, PlaceController placeCtrl, UserSession session) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.bus = bus;
 		this.client = client;
@@ -100,7 +101,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 						
 					}});
 
-		client.getCurrentUser(new Callback<UserInfoTO>() {
+		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO userTO) {
 				user = userTO;

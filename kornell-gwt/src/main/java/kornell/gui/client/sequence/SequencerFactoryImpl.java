@@ -1,8 +1,8 @@
 package kornell.gui.client.sequence;
 
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.gui.client.presentation.course.CoursePlace;
-import kornell.gui.client.session.UserSession;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;

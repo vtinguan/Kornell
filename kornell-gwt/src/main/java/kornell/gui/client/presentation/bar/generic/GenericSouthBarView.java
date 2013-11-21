@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
@@ -44,14 +45,14 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 
 	private EventBus bus;
 
-	private KornellClient client;
+	private UserSession session;
 
 	public GenericSouthBarView(EventBus bus, final PlaceController placeCtrl,
-			KornellClient client) {
+			UserSession session) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
-		this.client = client;
+		this.session = session;
 
 		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
@@ -81,7 +82,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 
 	private ActivityBarView getActivityBarView() {
 		if (activityBarView == null)
-			activityBarView = new GenericActivityBarView(bus, placeCtrl, client);
+			activityBarView = new GenericActivityBarView(bus, placeCtrl, session);
 		return activityBarView;
 	}
 

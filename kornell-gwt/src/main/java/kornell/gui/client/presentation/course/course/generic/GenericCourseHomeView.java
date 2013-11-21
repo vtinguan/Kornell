@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.course.course.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.CoursePlace;
@@ -29,7 +30,7 @@ public class GenericCourseHomeView extends Composite implements CourseHomeView {
 	@UiField
 	Button btnAgree;
 	
-	private KornellClient client;
+	private UserSession session;
 	private PlaceController placeCtrl;
 	private EventBus bus;
 	private Presenter presenter;
@@ -38,14 +39,14 @@ public class GenericCourseHomeView extends Composite implements CourseHomeView {
 	
 	public GenericCourseHomeView(EventBus eventBus, KornellClient client, PlaceController placeCtrl) {
 		this.bus = eventBus;
-		this.client = client;
+		this.session = session;
 		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();		
 	}
 	
 	private void initData() {
-		client.getCurrentUser(new Callback<UserInfoTO>() {
+		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO user) {
 				display(user);
