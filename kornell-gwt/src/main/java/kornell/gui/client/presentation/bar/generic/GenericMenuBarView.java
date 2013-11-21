@@ -151,7 +151,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 
 	@UiHandler("btnProfile")
 	void handleProfile(ClickEvent e) {
-		clientFactory.getKornellClient().getCurrentUser(new Callback<UserInfoTO>() {
+		clientFactory.getUserSession().getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO userTO) {
 				clientFactory.getPlaceController().goTo(new ProfilePlace(userTO.getUsername()));

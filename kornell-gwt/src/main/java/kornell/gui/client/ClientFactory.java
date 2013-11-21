@@ -2,6 +2,7 @@
 package kornell.gui.client;
 
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.event.EventFactory;
@@ -36,7 +37,7 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public interface ClientFactory {
 	
-	ClientFactory startApp();
+	void startApp();
 	
 	KornellClient getKornellClient();
 	PlaceController getPlaceController();
@@ -76,4 +77,6 @@ public interface ClientFactory {
 	CoursePresenter getCoursePresenter();
 	SandboxView getSandboxView();
 	SandboxPresenter getSandboxPresenter();
+
+	UserSession getUserSession();
 }

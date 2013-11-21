@@ -5,6 +5,7 @@ import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
@@ -45,7 +46,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-	private KornellClient client;
+	private UserSession session;
 	private PlaceController placeCtrl;
 	private final EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
@@ -113,10 +114,10 @@ public class GenericProfileView extends Composite implements ProfileView {
 	Map<Widget, Field> fieldsToErrorLabels;
 	private UserInfoTO user;
 
-	public GenericProfileView(EventBus bus, KornellClient client,
+	public GenericProfileView(EventBus bus, UserSession session,
 			final PlaceController placeCtrl) {
 		this.bus = bus;
-		this.client = client;
+		this.session = session;
 		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
@@ -139,7 +140,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	}
 	
 	private void initData() {
-		client.getCurrentUser(new Callback<UserInfoTO>() {
+		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO userTO) {
 				user = userTO;
@@ -209,7 +210,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		btnOK.setEnabled(false);
 		clearErrors();
 		if(validateFields()){
-			client.checkUser(/*username.getText().toLowerCase().trim(), */email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
+			session.checkUser(/*username.getText().toLowerCase().trim(), */email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
 				@Override
 				public void ok(UserInfoTO user){
 					if(user.getPerson() != null){

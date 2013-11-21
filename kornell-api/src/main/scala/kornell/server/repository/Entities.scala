@@ -18,6 +18,7 @@ import kornell.core.lom.Topic
 import kornell.core.entity.Registration
 import kornell.core.entity.EntityFactory
 import kornell.core.entity.EnrollmentState
+import kornell.core.entity.RoleType
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -105,6 +106,22 @@ object Entities {
 
   def newRegistrations = factory.newRegistrations.as
 
+  
+  lazy val newUserRole = {
+    val role = factory.newRole().as
+    role.setRoleType(RoleType.user)
+    role.setUserRole(factory.newUserRole().as())
+    role
+  }
+  
+  def newDeanRole(institutionUUID:String) = {
+    val role = factory.newRole().as
+    val dean = factory.newDeanRole().as
+    dean.setInstitutionUUID(institutionUUID)
+    role.setRoleType(RoleType.dean)    
+    role.setDeanRole(dean)
+    role
+  }
   
 
 }

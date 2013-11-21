@@ -1,9 +1,10 @@
 package kornell.gui.client.presentation.sandbox.generic;
 
 import kornell.api.client.Callback;
+import kornell.api.client.UserSession;
 import kornell.core.entity.Institution;
+import kornell.core.entity.RoleType;
 import kornell.gui.client.presentation.sandbox.SandboxView;
-import kornell.gui.client.session.UserSession;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,11 +25,19 @@ public class GenericSandboxView  extends Composite implements SandboxView {
 		GWT.log("GenericSandboxView()");		
 	    initWidget(uiBinder.createAndBindUi(this));
 	    panel.add(new Label("Loading some stuff..."));
-	    UserSession.current(new Callback<UserSession>() {			
+	    UserSession.current(new Callback<UserSession>(){			
 			@Override
 			public void ok(UserSession session) {
 				panel.add(new Label("I'm in institution "+session.getInstitutionUUID()));
-				//session.hasRole(dean);
+				if(session.isAuthenticated())
+					panel.add(new Label("And i am authenticated as "+session.getUserInfo().getPerson().getFullName()));
+				else
+					panel.add(new Label("And i am not authenticated."));
+				
+				if(session.hasRole(RoleType.dean))
+					panel.add(new Label("And i am a dean."));
+				else
+					panel.add(new Label("And i am not dean."));
 			}
 		});
 	}

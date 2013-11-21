@@ -13,7 +13,7 @@ import com.google.gwt.core.client.GWT;
 
 public class KornellClient extends RESTClient implements LogoutEventHandler {
 
-	private KornellClient() {
+	protected KornellClient() {
 		KornellClient.bindToWindow(this);
 	}
 

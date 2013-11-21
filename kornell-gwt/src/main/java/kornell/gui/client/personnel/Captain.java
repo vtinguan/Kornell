@@ -1,12 +1,12 @@
 package kornell.gui.client.personnel;
 
+import kornell.api.client.UserSession;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.session.UserSession;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.place.shared.PlaceController;

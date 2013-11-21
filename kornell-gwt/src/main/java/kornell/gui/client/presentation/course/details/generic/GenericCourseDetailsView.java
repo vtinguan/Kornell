@@ -5,6 +5,7 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
 import kornell.core.lom.ContentFormat;
@@ -50,7 +51,7 @@ public class GenericCourseDetailsView extends Composite implements
 
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 
-	private KornellClient client;
+	private UserSession session;
 	private PlaceController placeCtrl;
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
@@ -85,10 +86,10 @@ public class GenericCourseDetailsView extends Composite implements
 	private Contents contents;
 	private List<Actom> actoms;
 	
-	public GenericCourseDetailsView(EventBus eventBus, KornellClient client,
+	public GenericCourseDetailsView(EventBus eventBus, UserSession session,
 			PlaceController placeCtrl) {
 		this.bus = eventBus;
-		this.client = client;
+		this.session = session;
 		this.placeCtrl = placeCtrl;
 		LoadingPopup.show();
 		initWidget(uiBinder.createAndBindUi(this));
@@ -100,17 +101,17 @@ public class GenericCourseDetailsView extends Composite implements
 				.getWhere()).getCourseUUID() : ((CoursePlace) placeCtrl
 				.getWhere()).getCourseUUID();
 
-		client.getCourseTO(uuid, new Callback<CourseTO>() {
+		session.getCourseTO(uuid, new Callback<CourseTO>() {
 			@Override
 			public void ok(CourseTO to) {
 				GWT.log(to.toString());
 				courseTO = to;
 
-				client.getCurrentUser(new Callback<UserInfoTO>() {
+				session.getCurrentUser(new Callback<UserInfoTO>() {
 					@Override
 					public void ok(UserInfoTO userTO) {
 						user = userTO;
-						client.course(uuid).contents(new Callback<Contents>() {
+						session.course(uuid).contents(new Callback<Contents>() {
 							@Override
 							public void ok(Contents contents) {
 								setContents(contents);
@@ -254,7 +255,7 @@ public class GenericCourseDetailsView extends Composite implements
 			lblActions.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					Window.Location.assign(client.getApiUrl() + "/report/certificate/"
+					Window.Location.assign(session.getApiUrl() + "/report/certificate/"
 							+ user.getPerson().getUUID() + "/"
 							+ courseTO.getCourse().getUUID());
 				}
@@ -289,7 +290,7 @@ public class GenericCourseDetailsView extends Composite implements
 		topicsContentPanel.addStyleName("topicsContentPanel");
 		int i = 0;
 		for (Content content:contents.getChildren()) {
-			topicsContentPanel.add(new GenericTopicView(bus, client, placeCtrl, content, i++));
+			topicsContentPanel.add(new GenericTopicView(bus, session, placeCtrl, content, i++));
 		}		
 		return topicsContentPanel;
 	}

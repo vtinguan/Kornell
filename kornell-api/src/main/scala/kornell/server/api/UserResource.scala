@@ -26,23 +26,30 @@ import kornell.server.repository.jdbc.EnrollmentRepository
 import kornell.core.entity.EnrollmentState
 import kornell.server.repository.jdbc.Courses
 import kornell.core.to.CourseTO
+import scala.collection.SortedSet
+import scala.collection.immutable.Set
+import scala.collection.JavaConverters._
 
 @Path("user")
 class UserResource{
 
   @GET
   @Produces(Array(UserInfoTO.TYPE))
+  //TODO: Cache
   def get(implicit @Context sc: SecurityContext):Option[UserInfoTO] =
     Auth.withPerson { p =>
     	val user = newUserInfoTO
-    	user.setUsername(sc.getUserPrincipal().getName())
+    	val username =  sc.getUserPrincipal().getName()
+    	user.setUsername(username)
     	user.setPerson(p)
 	    user.setEmail(user.getPerson().getEmail())
     	val signingNeeded = Registrations.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
     	val institution = Institutions.usersInstitution(p)
-    	user.setInstitutionAssetsURL(institution.get.getTerms)    	
+    	user.setInstitutionAssetsURL(institution.get.getTerms)
+    	val roles = Auth.rolesOf(username)
+    	user.setRoles((Set.empty ++ roles).asJava)
     	Option(user)
   }
 

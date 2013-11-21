@@ -81,7 +81,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		};
 		String confirmation = ((VitrinePlace)clientFactory.getPlaceController().getWhere()).getConfirmation();
 		GWT.log("Confirmation: " + confirmation);
-		clientFactory.getKornellClient().login(view.getUsername().toLowerCase().trim(),
+		clientFactory.getUserSession().login(view.getUsername().toLowerCase().trim(),
 				view.getPassword(),
 				confirmation,
 				callback);

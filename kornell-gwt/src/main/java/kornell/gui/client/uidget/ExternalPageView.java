@@ -5,12 +5,12 @@ import java.util.Date;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.lom.ExternalPage;
 import static kornell.core.util.StringUtils.*;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.util.loading.LoadingPopup;
-import kornell.gui.client.session.UserSession;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.GWT;
