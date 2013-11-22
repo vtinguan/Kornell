@@ -7,6 +7,8 @@ import scala.collection.Seq
 import kornell.server.repository.jdbc.Institutions
 import kornell.core.entity.Registration
 import kornell.server.repository.jdbc.PersonRepository
+import kornell.server.repository.jdbc.Enrollments
+import kornell.core.entity.EnrollmentState
 
 
 object ProduceUser extends App {
@@ -25,7 +27,7 @@ object ProduceUser extends App {
   val p: PersonRepository = People().createPerson(fullName)
   p.setPassword(username, password) 
 		  .registerOn(institution_uuid)
-		  .requestEnrollment(course_uuid, p.get().get.getUUID())
+  Enrollments().createEnrollment(course_uuid, p.get().get.getUUID(), EnrollmentState.requested)
  
   println(" Full Name: "+fullName)
   println("  Username: "+username)

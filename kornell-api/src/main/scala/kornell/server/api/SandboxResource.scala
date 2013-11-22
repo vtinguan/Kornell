@@ -7,6 +7,8 @@ import kornell.server.repository.jdbc.People
 import kornell.server.repository.TOs
 import javax.ws.rs.GET
 import javax.ws.rs.Produces
+import kornell.core.entity.EnrollmentState
+import kornell.server.repository.jdbc.Enrollments
 
 @Path("sandbox")
 class SandboxResource {
@@ -26,7 +28,8 @@ class SandboxResource {
     
     val enrollmnt = personRepo.setPassword(username, password)
       .registerOn(institution_uuid)
-      .requestEnrollment(course_uuid, person.getUUID())
+    Enrollments().createEnrollment(course_uuid, person.getUUID(),EnrollmentState.requested)
+      
 
      val user = TOs.newUserInfoTO
      user.setEmail(person.getEmail)

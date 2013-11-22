@@ -269,7 +269,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiHandler("btnClose")
 	void doClose(ClickEvent e) {
 		form.addStyleName("shy");
-		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));
+		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseClassUUID()));
 	}
 
 	private void clearErrors() {

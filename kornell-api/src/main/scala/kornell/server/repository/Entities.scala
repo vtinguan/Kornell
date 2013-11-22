@@ -1,24 +1,22 @@
 package kornell.server.repository
 
 import java.math.BigDecimal
-import java.sql.ResultSet
 import java.util.Date
 import java.util.UUID
-import scala.collection.JavaConverters._
+
+import scala.collection.JavaConverters.seqAsJavaListConverter
+
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-import java.util.ArrayList
-import kornell.core.util.StringUtils._
-import kornell.core.entity.Institution
-import kornell.core.entity.Person
+
 import kornell.core.entity.Course
 import kornell.core.entity.Enrollment
-import kornell.core.lom.ExternalPage
-import kornell.core.lom.Content
-import kornell.core.lom.Topic
-import kornell.core.entity.Registration
-import kornell.core.entity.EntityFactory
 import kornell.core.entity.EnrollmentState
+import kornell.core.entity.EntityFactory
+import kornell.core.entity.Institution
+import kornell.core.entity.Person
+import kornell.core.entity.Registration
 import kornell.core.entity.RoleType
+import kornell.server.repository.jdbc.PersonRepository
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -62,13 +60,19 @@ object Entities {
     c.setInfoJson(infoJson)
     c
   }
+  
+  def newEnrollments(enrollments: List[Enrollment]) = {
+    val es = factory.newEnrollments.as
+    es.setEnrollments(enrollments.asJava)
+    es
+  }
 
-  def newEnrollment(uuid: String, enrolledOn: Date, courseUUID: String, personUUID: String, progress: BigDecimal, notes: String, state: EnrollmentState): Enrollment = {
+  def newEnrollment(uuid: String, enrolledOn: Date, courseClassUUID: String, personUUID: String, progress: BigDecimal, notes: String, state: EnrollmentState): Enrollment = {
     val e = factory.newEnrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
-    e.setCourseUUID(courseUUID)
-    e.setPersonUUID(personUUID)
+    e.setCourseClassUUID(courseClassUUID)
+    e.setPerson(PersonRepository.apply(personUUID).get().get)
     e.setProgress(progress)
     e.setNotes(notes)
     e.setState(state)

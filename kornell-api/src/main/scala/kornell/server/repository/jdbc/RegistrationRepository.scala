@@ -11,7 +11,9 @@ import kornell.core.entity.EnrollmentState
 class RegistrationRepository(person: PersonRepository, institution_uuid: String) {
 
   def register = {
-    Institutions.register(person.uuid, institution_uuid)
+    // don't register twice
+    if(!get.isDefined)
+    	Institutions.register(person.uuid, institution_uuid)
     this
   }
 
@@ -23,22 +25,11 @@ class RegistrationRepository(person: PersonRepository, institution_uuid: String)
       rs.getString("institution_uuid"),
       rs.getDate("termsAcceptedOn"))
 
-  def get: Registration = sql"""
+  def get: Option[Registration] = sql"""
 	  select * from Registraton 
 	  were person_uuid=${person.uuid}
 	   and institution_uuid=${institution_uuid}"""
     .first[Registration]
-    .get
-
-  def requestEnrollment(course_uuid: String, person_uuid: String) = {
-    val uuid = randomUUID
-    sql""" 
-    	insert into Enrollment(uuid,course_uuid,person_uuid,enrolledOn,state)
-    	values($randomUUID,$course_uuid,$person_uuid,now(),${EnrollmentState.requested.toString()})
-    """.executeUpdate
-    None
-  }
-
 }
 
 object RegistrationRepository {

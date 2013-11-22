@@ -198,12 +198,12 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
 		if(placeCtrl.getWhere() instanceof CoursePlace){
-			placeCtrl.goTo(new CourseDetailsPlace(constants.getDefaultCourseUUID()));
+			placeCtrl.goTo(new CourseDetailsPlace(constants.getDefaultCourseClassUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));
+			placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseClassUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		
@@ -213,7 +213,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	void handleClickBtnNotes(ClickEvent e) {
 		
 		if(notesPopup == null){
-			client.getCourseTO(constants.getDefaultCourseUUID(),new Callback<CourseTO>(){
+			client.getCourseTO(constants.getDefaultCourseClassUUID(),new Callback<CourseTO>(){
 				@Override
 				public void ok(CourseTO course) {
 					notesPopup = new NotesPopup(client, course.getCourse().getUUID(), course.getEnrollment().getNotes());

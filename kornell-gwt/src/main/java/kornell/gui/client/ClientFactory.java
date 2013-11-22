@@ -8,6 +8,7 @@ import kornell.core.entity.Institution;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
+import kornell.gui.client.presentation.admin.home.DeanHomeView;
 import kornell.gui.client.presentation.course.CoursePresenter;
 import kornell.gui.client.presentation.course.CourseView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
@@ -77,6 +78,9 @@ public interface ClientFactory {
 	CoursePresenter getCoursePresenter();
 	SandboxView getSandboxView();
 	SandboxPresenter getSandboxPresenter();
+	
+	//dean
+	DeanHomeView getDeanHomeView();
 
 	UserSession getUserSession();
 }
