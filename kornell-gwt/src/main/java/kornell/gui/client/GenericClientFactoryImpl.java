@@ -16,14 +16,14 @@ import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.DeanHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericDeanHomeView;
-import kornell.gui.client.presentation.atividade.generic.GenericCourseView;
+import kornell.gui.client.presentation.atividade.generic.GenericCourseClassView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
 import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
-import kornell.gui.client.presentation.course.CoursePlace;
-import kornell.gui.client.presentation.course.CoursePresenter;
-import kornell.gui.client.presentation.course.CourseView;
+import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.CourseClassPresenter;
+import kornell.gui.client.presentation.course.CourseClassView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatView;
 import kornell.gui.client.presentation.course.chat.generic.GenericCourseChatView;
@@ -102,7 +102,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SouthBarView southBarView;
 
 	private GenericHomeView genericHomeView;
-	private CoursePresenter coursePresenter;
+	private CourseClassPresenter coursePresenter;
 	private CourseHomePresenter courseHomePresenter;
 	private CourseDetailsPresenter courseDetailsPresenter;
 	private CourseLibraryPresenter courseLibraryPresenter;
@@ -244,7 +244,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (token != null) {
 			defaultPlace = historyMapper.getPlace(token);
 		} else {
-			defaultPlace = new CoursePlace(constants.getDefaultCourseClassUUID());
+			defaultPlace = new CourseClassPlace(constants.getDefaultCourseClassUUID());
 		}
 		startApp(defaultPlace, user);
 	}
@@ -317,8 +317,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public CourseView getCourseView() {
-		return new GenericCourseView(bus);
+	public CourseClassView getCourseClassView() {
+		return new GenericCourseClassView(bus);
 	}
 
 	@Override
@@ -422,12 +422,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public CoursePresenter getCoursePresenter() {
+	public CourseClassPresenter getCoursePresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,
 				placeCtrl, session);
 		if (coursePresenter == null) {
-			CourseView activityView = getCourseView();
-			coursePresenter = new CoursePresenter(activityView, placeCtrl,
+			CourseClassView activityView = getCourseClassView();
+			coursePresenter = new CourseClassPresenter(activityView, placeCtrl,
 					rendererFactory);
 		}
 		return coursePresenter;

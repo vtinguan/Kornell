@@ -13,7 +13,7 @@ import kornell.core.lom.ExternalPage;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
@@ -24,7 +24,7 @@ import com.google.web.bindery.event.shared.EventBus;
 public class CourseSequencer implements Sequencer {
 
 	private FlowPanel contentPanel;
-	private String courseUUID;
+	private String courseClassUUID;
 	private KornellClient client;
 	private List<Actom> actoms;
 
@@ -36,7 +36,6 @@ public class CourseSequencer implements Sequencer {
 	private Uidget currentUidget;
 	private Actom prevActom;
 	private Uidget prevUidget;
-	private UserSession session;
 
 	public CourseSequencer(EventBus bus, KornellClient client) {
 		this.client = client;
@@ -71,12 +70,8 @@ public class CourseSequencer implements Sequencer {
 		debug("PREVED");
 	}
 
-
-
-
 	private String getBreadcrumbKey() {
-		return CourseSequencer.class.getName() 
-				+ "." + courseUUID
+		return CourseSequencer.class.getName() + "." + courseClassUUID
 				+ ".CURRENT_KEY";
 	}
 
@@ -84,10 +79,11 @@ public class CourseSequencer implements Sequencer {
 		String prevString = prevKey() + prevVis();
 		String currString = currentKey() + currVis();
 		String nextString = nextKey() + nextVis();
-		
-		//TODO: Use GWT Logging properly 
-		//GWT.log(event + " " + currentIndex + " [" + prevString + " | " + currString + " | " + nextString + "]");
-		
+
+		// TODO: Use GWT Logging properly
+		// GWT.log(event + " " + currentIndex + " [" + prevString + " | " +
+		// currString + " | " + nextString + "]");
+
 	}
 
 	private String nextVis() {
@@ -139,7 +135,7 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private void makeCurrentVisible() {
-		if(currentUidget != null)
+		if (currentUidget != null)
 			currentUidget.setVisible(true);
 		else
 			GWT.log("CURRENT UIDGET IS NULL. HOW COME?");
@@ -153,11 +149,11 @@ public class CourseSequencer implements Sequencer {
 		UserSession.current(new Callback<UserSession>() {
 			@Override
 			public void ok(UserSession session) {
-				session.setItem(getBreadcrumbKey(),currentKey());
-				String personUUID =  session.getPersonUUID();
+				session.setItem(getBreadcrumbKey(), currentKey());
+				String personUUID = session.getPersonUUID();
 				client.events()
-					.actomEntered(personUUID,courseUUID,currentActom.getKey())	
-					.fire();
+						.actomEntered(personUUID, courseClassUUID,
+								currentActom.getKey()).fire();
 			}
 		});
 	}
@@ -202,14 +198,14 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	@Override
-	public Sequencer withPlace(CoursePlace place) {
-		this.courseUUID = place.getCourseUUID();
+	public Sequencer withPlace(CourseClassPlace place) {
+		this.courseClassUUID = place.getCourseClassUUID();
 		return this;
 	}
 
 	@Override
 	public void go() {
-		client.course(courseUUID).contents(new Callback<Contents>() {
+		client.courseClass(courseClassUUID).contents(new Callback<Contents>() {
 
 			@Override
 			public void ok(Contents contents) {
@@ -217,33 +213,35 @@ public class CourseSequencer implements Sequencer {
 				orientateAndSail();
 			}
 
-			private void orientateAndSail() {				
-				// TODO: Fetch current position
-				currentIndex = lookupCurrentIndex();
-				currentActom = actoms.get(currentIndex);
-				initialLoad();
+			private void orientateAndSail() {
+				UserSession.current(new Callback<UserSession>() {
+					@Override
+					public void ok(UserSession session) {
+						String currentKey = session.getItem(getBreadcrumbKey());
+						// TODO: Fetch current position
+						currentIndex = lookupCurrentIndex(currentKey);
+						currentActom = actoms.get(currentIndex);
+						initialLoad();
+					}
+				});
 			}
 
-			private int lookupCurrentIndex() {
+			private int lookupCurrentIndex(String currentKey) {
 				int currentIndex = 0;
-				String currentKey = loadCurrentKey();
-				if(currentKey != null && ! currentKey.isEmpty()){
+				if (currentKey != null && !currentKey.isEmpty()) {
 					for (int i = 0; i < actoms.size(); i++) {
 						Actom actom = actoms.get(i);
-						if(currentKey.equals(actom.getKey())){
+						if (currentKey.equals(actom.getKey())) {
 							return i;
 						}
-					}					
+					}
 				}
 				return currentIndex;
 			}
 
-			private String loadCurrentKey() {
-				return session.getItem(getBreadcrumbKey());
-			}
 		});
 	}
-		
+
 	class ShowWhenReady implements ViewReadyEventHandler {
 		private Uidget uidget;
 
@@ -275,7 +273,7 @@ public class CourseSequencer implements Sequencer {
 			contentPanel.add(nextUidget);
 		}
 	}
-	
+
 	private void showCurrentASAP() {
 		currentUidget = uidgetFor(currentActom);
 		contentPanel.add(currentUidget);
@@ -288,7 +286,8 @@ public class CourseSequencer implements Sequencer {
 		if (actom == null)
 			return null;
 		if (actom instanceof ExternalPage)
-			return new ExternalPageView(client, courseUUID, (ExternalPage) actom);
+			return new ExternalPageView(client, courseClassUUID,
+					(ExternalPage) actom);
 		throw new IllegalArgumentException("Do not know how to view [" + actom
 				+ "]");
 	}

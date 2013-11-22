@@ -14,7 +14,7 @@ import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
 
@@ -147,7 +147,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void goStudy() {
-		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseClassUUID()));
+		placeCtrl.goTo(new CourseClassPlace(constants.getDefaultCourseClassUUID()));
 	}
 
 }

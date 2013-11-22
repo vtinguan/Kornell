@@ -1,7 +1,7 @@
 package kornell.gui.client.personnel;
 
 import kornell.api.client.KornellClient;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -37,6 +37,6 @@ public class Stalker implements PlaceChangeEvent.Handler {
 	}
 
 	private boolean isRelevant(Place place) {
-		return place instanceof CoursePlace;
+		return place instanceof CourseClassPlace;
 	}
 }

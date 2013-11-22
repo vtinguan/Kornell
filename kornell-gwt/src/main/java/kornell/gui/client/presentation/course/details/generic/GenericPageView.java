@@ -18,7 +18,7 @@ import kornell.core.to.coursedetails.InfoTO;
 import kornell.core.to.coursedetails.TopicTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
@@ -86,7 +86,7 @@ public class GenericPageView extends Composite implements
 			@Override
 			public void onClick(ClickEvent event) {
 				ClientProperties.set(CourseSequencer.class.getName() + ".CURRENT_KEY", page.getKey());
-				placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseClassUUID()));
+				placeCtrl.goTo(new CourseClassPlace(constants.getDefaultCourseClassUUID()));
 			}
 		});
 		lblPage.add(pageAnchor);

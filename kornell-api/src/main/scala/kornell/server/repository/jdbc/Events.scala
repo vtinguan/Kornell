@@ -14,7 +14,7 @@ object Events {
   def newEnrollmentStateChanged = events.newEnrollmentStateChanged.as
   
   def logActomEntered(event: ActomEntered) = sql"""
-    insert into ActomEntered(uuid,course_uuid,person_uuid,actom_key,eventFiredAt)
+    insert into ActomEntered(uuid,courseClass_uuid,person_uuid,actom_key,eventFiredAt)
     values(${event.getUUID()},
   		   ${event.getCourseUUID()},
            ${event.getFromPersonUUID()},

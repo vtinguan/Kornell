@@ -16,7 +16,7 @@ class CourseClassRepository(uuid:String) {
   select * from CourseClass where uuid=$uuid
   """.get[CourseClass]
   
-  def version = CourseVersionRepository(get.getCouresVersionUUID())
+  def version = CourseVersionRepository(get.getCourseVersionUUID())
   
   def actomsVisitedBy(p: Person): List[String] = sql"""
   	select actom_key from ActomEntered 
