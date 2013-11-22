@@ -5,6 +5,7 @@
 .project
 **/.project
 rebel.xml
+.externalToolBuilders
 
 # Scala Worksheets
 *.sc
