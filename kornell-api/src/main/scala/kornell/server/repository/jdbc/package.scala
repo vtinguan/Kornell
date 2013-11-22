@@ -3,6 +3,10 @@ package kornell.server.repository
 import java.sql.Connection
 import java.sql.ResultSet
 import kornell.core.to.CourseTO
+import kornell.core.entity.Enrollment
+import kornell.server.repository.Entities._
+import kornell.core.entity.EnrollmentState
+
 package object jdbc {
   type UUID = String
   type ConnectionFactory = () => Connection
@@ -13,7 +17,19 @@ package object jdbc {
     r.getString("courseUUID"), r.getString("code"), r.getString("title"),
     r.getString("description"), r.getString("infoJson"),
     r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
-    r.getString("person_uuid"), r.getString("progress"), r.getString("repository_uuid"), r.getString("notes"))
-    * 
+    r.getString("person_uuid"), r.getString("progress"), r.getString("repository_uuid"), r.getString("notes")) 
     */
+
+  implicit def toEnrollment(rs: ResultSet): Enrollment =
+    newEnrollment(
+      rs.getString("uuid"),
+      rs.getDate("enrolledOn"),
+      rs.getString("courseClass_uuid"),
+      rs.getString("person_uuid"),
+      rs.getBigDecimal("progress"),
+      rs.getString("notes"),
+      EnrollmentState.valueOf(rs.getString("state")))
+      
+    
+
 }

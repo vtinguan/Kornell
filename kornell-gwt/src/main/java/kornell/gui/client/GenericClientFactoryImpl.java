@@ -14,6 +14,8 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
+import kornell.gui.client.presentation.admin.home.DeanHomeView;
+import kornell.gui.client.presentation.admin.home.generic.GenericDeanHomeView;
 import kornell.gui.client.presentation.atividade.generic.GenericCourseView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
@@ -242,7 +244,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if (token != null) {
 			defaultPlace = historyMapper.getPlace(token);
 		} else {
-			defaultPlace = new CoursePlace(constants.getDefaultCourseUUID());
+			defaultPlace = new CoursePlace(constants.getDefaultCourseClassUUID());
 		}
 		startApp(defaultPlace, user);
 	}
@@ -443,6 +445,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			sandboxPresenter = new SandboxPresenter(sandboxView);
 		}
 		return sandboxPresenter;
+	}
+	
+	//dean
+	@Override
+	public DeanHomeView getDeanHomeView() {
+		return new GenericDeanHomeView();
 	}
 
 	@Override

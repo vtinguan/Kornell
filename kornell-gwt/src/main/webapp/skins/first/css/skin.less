@@ -43,7 +43,68 @@ body {
     border-radius: 5px;
 }
 
-
+.deanHome{
+	width: @wrapperWidth;
+	margin: 0 auto;
+	background-color: @detailsItemWrapperColor;
+	@insertPanelHeight: 45px;
+	.controlsPanel{
+		float: left;
+		width: 100%;
+		.insertPanel{
+			float: left;
+			height: @insertPanelHeight;
+			line-height: 45px;
+			.label{
+				margin-left: 15px;
+				margin-right: 5px;
+			}
+			.btnAction{
+				margin-left: 20px;
+				display: inline;
+			}
+			input{
+				margin-top: 10px;
+				width: 180px;
+				height: 14px;
+				font-size: 12px;
+			}
+		}
+		.insertBatchPanel{
+			float: right;
+			height: @insertPanelHeight;
+			.btnSelected{
+				margin-top: 12px;
+				margin-right: 12px;
+			}
+		}	
+	}
+	.addEnrollmentBatchPanel{
+		display: block;
+		width: 600px;
+		margin: 0px auto;
+		textarea{
+			width: 500px;
+			float: left;
+			height: 350px;
+			margin-bottom: 20px;
+		}
+		button{
+			margin-left: 20px;
+			margin-top: 340px;
+			float: left;
+		}
+	}
+	.enrollmentsCellTable{
+		width: @wrapperWidth;
+		color: @niceTextColor;
+		margin-bottom: 0;
+		.btnEnrollmentsCellTable{
+			float: left;
+			margin-right: 10px;
+		}
+	}
+}
 
 
 
@@ -500,3 +561,4 @@ body {
 		}	
 	}
 }
+

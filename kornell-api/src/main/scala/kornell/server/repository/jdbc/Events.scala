@@ -40,7 +40,7 @@ object Events {
 			   ${toState.toString()});
 		""".executeUpdate
 	  
-	  sql"""update Enrollment set state = ${toState} where uuid = ${uuid};
+	  sql"""update Enrollment set state = ${toState.toString()} where uuid = ${enrollmentUUID};
 		""".executeUpdate
   }
 	

@@ -1,6 +1,8 @@
 package kornell.gui.client.presentation;
 
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.presentation.admin.home.DeanHomeActivity;
+import kornell.gui.client.presentation.admin.home.DeanHomePlace;
 import kornell.gui.client.presentation.course.CourseActivity;
 import kornell.gui.client.presentation.course.CoursePlace;
 import kornell.gui.client.presentation.course.CoursePresenter;
@@ -116,6 +118,10 @@ public class GlobalActivityMapper implements ActivityMapper {
 			SandboxPresenter sandboxPresenter = factory.getSandboxPresenter();
 			sandboxPresenter.setPlace((SandboxPlace) place);
 			return new SandboxActivity(sandboxPresenter);
+		}
+		//dean
+		if (place instanceof DeanHomePlace) {
+			return new DeanHomeActivity(factory);
 		}
 		return null;
 	}

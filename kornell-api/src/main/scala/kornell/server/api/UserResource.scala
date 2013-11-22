@@ -29,6 +29,7 @@ import kornell.core.to.CourseTO
 import scala.collection.SortedSet
 import scala.collection.immutable.Set
 import scala.collection.JavaConverters._
+import kornell.server.repository.jdbc.Enrollments
 
 @Path("user")
 class UserResource{
@@ -138,10 +139,10 @@ class UserResource{
 		user.setPerson(p.get().get) 
 	} else {
 	    val p: PersonRepository = People().createPerson(email, fullName, "", "", "", "1800-01-01", "")
-	    val r: RegistrationRepository = p.setPassword(email, password).registerOn(institutionUUID)
+	    p.setPassword(email, password).registerOn(institutionUUID)
 		//if there's only one course, an enrollment must be requested
 	    if(courses.length == 1)
-			r.requestEnrollment(courses.head.getCourse().getUUID(), p.get().get.getUUID())
+			Enrollments().createEnrollment(courses.head.getCourse().getUUID(), p.get().get.getUUID(), EnrollmentState.requested)
 		user.setPerson(p.get().get)
 	}
     user.setUsername(email)
@@ -150,41 +151,6 @@ class UserResource{
     
 	Option(user)
   }
-  
-  
-  @PUT
-  @Produces(Array(UserInfoTO.TYPE))
-  def createUserxx(data: String) = {
-    val confirmation = UUID.randomUUID.toString
-    val aData = data.split("###")
-	val username = aData(0)
-	val password = aData(1) 
-	val email = aData(2) 
-	val firstName = aData(3)
-	val lastName = aData(4) 
-	val company = aData(5) 
-	val title = aData(6)
-	val sex = aData(7)
-	val birthDate = aData(8)
-	val confirmationLink = aData(9) + "#vitrine:" + confirmation
-    val institution_uuid = "00a4966d-5442-4a44-9490-ef36f133a259";
-    val course_uuid = "d9aaa03a-f225-48b9-8cc9-15495606ac46";
-    val p: PersonRepository = People().createPerson(email, firstName, company, title, sex, birthDate, confirmation);
-    p.setPassword(username, password) 
-    	.registerOn(institution_uuid)
-		.requestEnrollment(course_uuid, p.get().get.getUUID())
-  	val user = newUserInfoTO
-    val person: Option[Person] = Auth.getPerson(username)    
-    if (person.isDefined){
-    	user.setPerson(person.get) 
-    }
-    user.setUsername(username)
-    
-    EmailSender.sendEmail(Auth.getPerson(username).get, Institutions.byUUID(institution_uuid).get, confirmationLink)
-    
-	Option(user)
-  }
-    
   
   @PUT
   @Path("placeChange")

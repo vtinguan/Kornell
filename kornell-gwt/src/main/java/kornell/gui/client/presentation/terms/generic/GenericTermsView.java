@@ -147,7 +147,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void goStudy() {
-		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseUUID()));
+		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseClassUUID()));
 	}
 
 }
