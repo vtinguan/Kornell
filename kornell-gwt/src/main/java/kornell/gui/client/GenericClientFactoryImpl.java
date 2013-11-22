@@ -2,6 +2,7 @@ package kornell.gui.client;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.event.EventFactory;
@@ -56,7 +57,6 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.scorm.API_1484_11;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
-import kornell.gui.client.session.UserSession;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -82,7 +82,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public static final LOMFactory lomFactory = GWT.create(LOMFactory.class);
 	public static final EventFactory eventFactory = GWT
 			.create(EventFactory.class);
-	
+
 	/* History Management */
 	private final EventBus bus = new SimpleEventBus();
 	private final PlaceController placeCtrl = new PlaceController(bus);
@@ -94,9 +94,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private ActivityManager globalActivityManager;
 
 	private SimplePanel appPanel;
-
-	/* REST API Client */
-	private static final KornellClient client = KornellClient.getInstance();
 
 	/* Views */
 	private GenericMenuBarView menuBarView;
@@ -120,6 +117,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			.create(KornellConstants.class);
 
 	private Institution institution;
+	private UserSession session;
+	private String locationStr;
+	private String[] locationStrArray;
 
 	public GenericClientFactoryImpl() {
 	}
@@ -136,7 +136,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
-		new Stalker(bus, client, historyMapper);
+		new Stalker(bus, session, historyMapper);
 		historyHandler.handleCurrentHistory();
 	}
 
@@ -190,76 +190,88 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private SouthBarView getSouthBarView() {
 		if (southBarView == null)
-			southBarView = new GenericSouthBarView(bus, placeCtrl, client);
+			southBarView = new GenericSouthBarView(bus, placeCtrl, session);
 		return southBarView;
 	}
 
 	@Override
-	public ClientFactory startApp() {
-		// TODO: Consider caching credentials to avoid this request
-		client.getCurrentUser(new Callback<UserInfoTO>() {
-			String locationStr = Window.Location.getHash();
-			String[] locationStrArray = locationStr.split(":");
-
+	public void startApp() {
+		UserSession.current(new Callback<UserSession>() {
 			@Override
-			public void ok(UserInfoTO user) {
-				UserSession.setCurrentPerson(user.getPerson().getUUID());
-				String token;
-				if (!"".equals(locationStr)
-						&& "details".equals(locationStrArray[0].split("#")[1])) {
-					token = locationStr.split("#")[1];
-				} else {
-					token = user.getLastPlaceVisited();
-				}
-				if (token != null) {
-					defaultPlace = historyMapper.getPlace(token);
-				} else {
-					defaultPlace = new CoursePlace(constants
-							.getDefaultCourseUUID());
-				}
-				startApp(defaultPlace);
+			public void ok(UserSession session) {
+				startApp(session);
 			}
-
-			@Override
-			protected void unauthorized() {
-				VitrinePlace vitrinePlace;
-				if (locationStrArray.length > 1
-						&& "#vitrine".equalsIgnoreCase(locationStrArray[0])) {
-					vitrinePlace = new VitrinePlace(locationStrArray[1]);
-				} else {
-					vitrinePlace = new VitrinePlace();
-				}
-				startApp(vitrinePlace);
-			}
-
-			protected void startApp(final Place defaultPlace) {
-				// TODO not good
-				String institutionName = Window.Location
-						.getParameter("institution");
-				if (institutionName == null)
-					institutionName = Window.Location.getHostName()
-							.split("\\.")[0];
-				client.getInstitutionByName(institutionName, 
-						new Callback<Institution>() {
-							@Override
-							public void ok(Institution institution) {
-								setInstitution(institution);
-								initGUI();
-								initActivityManagers();
-								initHistoryHandler(defaultPlace);
-								initException();
-								initSCORM();
-								initPersonnel();
-							}
-						});
-			}
-
 		});
-		return this;
+	}
+
+	public void startApp(UserSession session){
+		this.session = session;
+		this.locationStr = Window.Location.getHash();
+		this.locationStrArray = locationStr.split(":");
+
+		if(session.isAuthenticated()){
+			startAuthenticated(session);
+		}else{
+			startAnonymous(session);
+		}
+		
+
+		
+	}
+	
+	private void startAnonymous(UserSession session){
+		VitrinePlace vitrinePlace;
+		if (locationStrArray.length > 1
+				&& "#vitrine".equalsIgnoreCase(locationStrArray[0])) {
+			vitrinePlace = new VitrinePlace(locationStrArray[1]);
+		} else {
+			vitrinePlace = new VitrinePlace();
+		}
+		startApp(vitrinePlace, null);
+	}
+
+	private void startAuthenticated(UserSession session) {
+		UserInfoTO user = session.getUserInfo();
+		String token;
+		if (!"".equals(locationStr)
+				&& "details".equals(locationStrArray[0].split("#")[1])) {
+			token = locationStr.split("#")[1];
+		} else {
+			token = user.getLastPlaceVisited();
+		}
+		if (token != null) {
+			defaultPlace = historyMapper.getPlace(token);
+		} else {
+			defaultPlace = new CoursePlace(constants.getDefaultCourseUUID());
+		}
+		startApp(defaultPlace, user);
+	}
+
+	protected void startApp(final Place defaultPlace, final UserInfoTO user) {
+		// TODO not good
+		String institutionName = Window.Location.getParameter("institution");
+		if (institutionName == null)
+			institutionName = Window.Location.getHostName().split("\\.")[0];
+		session.getInstitutionByName(institutionName,
+				new Callback<Institution>() {
+					@Override
+					public void ok(Institution institution) {
+						setInstitution(institution);
+						if (user != null)
+							UserSession.setCurrentPerson(user.getPerson()
+									.getUUID(), institution.getUUID());
+						initGUI();
+						initActivityManagers();
+						initHistoryHandler(defaultPlace);
+						initException();
+						initSCORM();
+						initPersonnel();
+					}
+				});
 	}
 
 	private void initPersonnel() {
-		new Captain(bus, placeCtrl);
+		new Captain(bus, placeCtrl, institution.getUUID());
 		new Dean(this);
 	}
 
@@ -282,7 +294,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public HomeView getHomeView() {
 		if (genericHomeView == null) {
 			genericHomeView = new GenericHomeView(this, bus, historyHandler,
-					client, appPanel);
+					session, appPanel);
 		}
 		return genericHomeView;
 	}
@@ -294,12 +306,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(bus, client, placeCtrl);
+		return new GenericWelcomeView(bus, session, placeCtrl);
 	}
 
 	@Override
 	public ProfileView getProfileView() {
-		return new GenericProfileView(bus, client, placeCtrl);
+		return new GenericProfileView(bus, session, placeCtrl);
 	}
 
 	@Override
@@ -309,7 +321,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public TermsView getTermsView() {
-		return new GenericTermsView(bus, client, placeCtrl, defaultPlace);
+		return new GenericTermsView(bus, session, placeCtrl, defaultPlace);
 	}
 
 	@Override
@@ -325,7 +337,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public CourseHomeView getCourseHomeView() {
-		return new GenericCourseHomeView(bus, client, placeCtrl);
+		return new GenericCourseHomeView(bus, session, placeCtrl);
 	}
 
 	@Override
@@ -341,7 +353,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public CourseDetailsView getCourseDetailsView() {
-		return new GenericCourseDetailsView(bus, client, placeCtrl);
+		return new GenericCourseDetailsView(bus, session, placeCtrl);
 	}
 
 	@Override
@@ -357,7 +369,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public CourseLibraryView getCourseLibraryView() {
-		return new GenericCourseLibraryView(bus, client, placeCtrl);
+		return new GenericCourseLibraryView(bus, session, placeCtrl);
 	}
 
 	@Override
@@ -373,7 +385,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public CourseForumView getCourseForumView() {
-		return new GenericCourseForumView(bus, client, placeCtrl);
+		return new GenericCourseForumView(bus, session, placeCtrl);
 	}
 
 	@Override
@@ -388,7 +400,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public CourseChatView getCourseChatView() {
-		return new GenericCourseChatView(bus, client, placeCtrl);
+		return new GenericCourseChatView(bus, session, placeCtrl);
 	}
 
 	@Override
@@ -404,13 +416,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public CourseSpecialistsView getCourseSpecialistsView() {
-		return new GenericCourseSpecialistsView(bus, client, placeCtrl);
+		return new GenericCourseSpecialistsView(bus, session, placeCtrl);
 	}
 
 	@Override
 	public CoursePresenter getCoursePresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,
-				placeCtrl, client);
+				placeCtrl, session);
 		if (coursePresenter == null) {
 			CourseView activityView = getCourseView();
 			coursePresenter = new CoursePresenter(activityView, placeCtrl,
@@ -455,7 +467,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public KornellClient getKornellClient() {
-		return client;
+		return session;
 	}
 
 	@Override
@@ -485,5 +497,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public EventFactory getEventFactory() {
 		return eventFactory;
+	}
+
+	@Override
+	public UserSession getUserSession() {
+		return session;
 	}
 }

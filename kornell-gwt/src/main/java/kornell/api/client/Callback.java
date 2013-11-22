@@ -1,9 +1,6 @@
 package kornell.api.client;
 
-import static com.google.gwt.http.client.Response.SC_FORBIDDEN;
-import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
-import static com.google.gwt.http.client.Response.SC_OK;
-import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
+import static com.google.gwt.http.client.Response.*;
 import kornell.core.entity.EntityFactory;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
@@ -39,6 +36,9 @@ public abstract class Callback<T> implements RequestCallback {
 			break;
 		case SC_NOT_FOUND:
 			notFound();
+			break;
+		case SC_NO_CONTENT:
+			ok((T)null);
 			break;
 		case 0:
 			failed();

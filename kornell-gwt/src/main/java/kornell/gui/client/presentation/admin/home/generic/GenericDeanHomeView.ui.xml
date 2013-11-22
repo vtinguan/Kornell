@@ -1,0 +1,29 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+
+	<g:FlowPanel addStyleNames="deanHome">
+		<g:FlowPanel addStyleNames="controlsPanel">
+			<g:FlowPanel addStyleNames="insertPanel">
+				<b:Label>Nome Completo</b:Label>
+				<b:TextBox ui:field="txtFullName"></b:TextBox>
+				<b:Label>Email</b:Label>
+				<b:TextBox ui:field="txtEmail"></b:TextBox>
+				<g:Button ui:field="btnAddEnrollment" addStyleNames="btnAction">Inserir Nova Matrícula</g:Button>
+			</g:FlowPanel>
+	    	<b:CollapseTrigger ui:field="trigger">
+				<g:FlowPanel addStyleNames="insertBatchPanel">
+					<g:Button ui:field="btnAddEnrollmentBatchEnable" addStyleNames="btnSelected btnAddEnrollmentBatchEnable">Inserir Matrículas em Lote</g:Button>
+				</g:FlowPanel>
+	    	</b:CollapseTrigger>
+		</g:FlowPanel>
+		<b:Collapse ui:field="collapse" existTrigger="true" defaultOpen="false">
+			<g:FlowPanel addStyleNames="addEnrollmentBatchPanel">
+				<b:TextArea ui:field="txtAddEnrollmentBatch"></b:TextArea>
+				<g:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnSelected btnAddEnrollmentBatch">Inserir</g:Button>
+			</g:FlowPanel>
+		</b:Collapse>
+		<g:FlowPanel ui:field="enrollmentsWrapper">
+		</g:FlowPanel>
+	</g:FlowPanel>
+
+</ui:UiBinder>

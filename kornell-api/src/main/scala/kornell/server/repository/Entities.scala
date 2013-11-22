@@ -1,23 +1,19 @@
 package kornell.server.repository
 
 import java.math.BigDecimal
-import java.sql.ResultSet
 import java.util.Date
 import java.util.UUID
-import scala.collection.JavaConverters._
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-import java.util.ArrayList
-import kornell.core.util.StringUtils._
-import kornell.core.entity.Institution
-import kornell.core.entity.Person
 import kornell.core.entity.Course
 import kornell.core.entity.Enrollment
-import kornell.core.lom.ExternalPage
-import kornell.core.lom.Content
-import kornell.core.lom.Topic
-import kornell.core.entity.Registration
-import kornell.core.entity.EntityFactory
 import kornell.core.entity.EnrollmentState
+import kornell.core.entity.EntityFactory
+import kornell.core.entity.Institution
+import kornell.core.entity.Person
+import kornell.core.entity.Registration
+import scala.collection.JavaConverters._
+import kornell.server.repository.jdbc.People
+import kornell.server.repository.jdbc.PersonRepository
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -62,13 +58,19 @@ object Entities {
     c.setRepositoryUUID(repository_uuid)
     c
   }
+  
+  def newEnrollments(enrollments: List[Enrollment]) = {
+    val es = factory.newEnrollments.as
+    es.setEnrollments(enrollments.asJava)
+    es
+  }
 
   def newEnrollment(uuid: String, enrolledOn: Date, courseUUID: String, personUUID: String, progress: BigDecimal, notes: String, state: EnrollmentState): Enrollment = {
     val e = factory.newEnrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
     e.setCourseUUID(courseUUID)
-    e.setPersonUUID(personUUID)
+    e.setPerson(PersonRepository.apply(personUUID).get().get)
     e.setProgress(progress)
     e.setNotes(notes)
     e.setState(state)
@@ -105,6 +107,22 @@ object Entities {
 
   def newRegistrations = factory.newRegistrations.as
 
+  
+  lazy val newUserRole = {
+    val role = factory.newRole().as
+    role.setRoleType(RoleType.user)
+    role.setUserRole(factory.newUserRole().as())
+    role
+  }
+  
+  def newDeanRole(institutionUUID:String) = {
+    val role = factory.newRole().as
+    val dean = factory.newDeanRole().as
+    dean.setInstitutionUUID(institutionUUID)
+    role.setRoleType(RoleType.dean)    
+    role.setDeanRole(dean)
+    role
+  }
   
 
 }

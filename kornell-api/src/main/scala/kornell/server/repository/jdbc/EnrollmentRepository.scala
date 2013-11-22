@@ -13,16 +13,6 @@ class EnrollmentRepository (person: PersonRepository, course_uuid: String) {
 
   def getPerson = person.get()
 
-  implicit def toEnrollment(rs: ResultSet): Enrollment =
-    newEnrollment(
-      rs.getString("uuid"),
-      rs.getDate("enrolledOn"),
-      rs.getString("course_uuid"),
-      rs.getString("person_uuid"),
-      rs.getBigDecimal("progress"),
-      rs.getString("notes"),
-      EnrollmentState.valueOf(rs.getString("state")))
-
   def get: Enrollment = sql"""
 	  select * from Enrollment 
 	  were person_uuid=${person.uuid}
