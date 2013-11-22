@@ -1,5 +1,6 @@
 package kornell.api.client;
 
+import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseTO;
 import kornell.core.to.CoursesTO;
@@ -13,7 +14,7 @@ import com.google.gwt.core.client.GWT;
 
 public class KornellClient extends RESTClient implements LogoutEventHandler {
 
-	private KornellClient() {
+	protected KornellClient() {
 		KornellClient.bindToWindow(this);
 	}
 
@@ -31,7 +32,6 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	}
 
 	public void requestRegistration(RegistrationRequestTO registrationRequestTO, Callback<UserInfoTO> cb) {
-		//PUT("/user/create/").sendRequest(data, cb);
 		PUT("/user/registrationRequest").withContentType(RegistrationRequestTO.TYPE).withEntityBody(registrationRequestTO).go(cb);
 	}
 
@@ -92,6 +92,14 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		});
 	}
 
+	public void getEnrollmentsByCourse(String courseUUID, Callback<Enrollments> cb) {
+		GET("/enrollment/?courseUUID=" + courseUUID).sendRequest(null, cb);
+	}
+
+	public void createEnrollments(Enrollments enrollments, Callback<Enrollments> cb) {
+		PUT("/enrollment/").withContentType(Enrollments.TYPE).withEntityBody(enrollments).go(cb);
+	}
+	
 	public void notesUpdated(String courseUUID, String notes) {
 		PUT("/enrollment/" + courseUUID + "/notesUpdated").sendRequest(notes,
 				new Callback<Void>() {

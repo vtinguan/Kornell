@@ -3,6 +3,8 @@ package kornell.api.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Registration;
 import kornell.core.entity.Registrations;
@@ -28,6 +30,8 @@ public class MediaTypes {
 		register(RegistrationsTO.TYPE,RegistrationsTO.class);
 		register(Institution.TYPE,Institution.class);
 		register(Contents.TYPE,Contents.class);
+		register(Enrollment.TYPE,Enrollment.class);
+		register(Enrollments.TYPE,Enrollments.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

@@ -18,4 +18,8 @@ public class EventClient extends RESTClient {
 		PUT(path).withContentType(contentType).withEntityBody(event).go();
 	}
 
+	public void fire(Callback<Void> cb) {
+		PUT(path).withContentType(contentType).withEntityBody(event).go(cb);
+	}
+
 }

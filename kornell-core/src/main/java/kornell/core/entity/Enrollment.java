@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public interface Enrollment {
+	public static String TYPE = EntityFactory.PREFIX + "enrollment+json";
+	
 	String getUUID();
 	void setUUID(String uuid);
 	
@@ -13,8 +15,8 @@ public interface Enrollment {
 	String getCourseUUID();
 	void setCourseUUID(String courseUUID);
 	
-	String getPersonUUID();
-	void setPersonUUID(String personUUID);
+	Person getPerson();
+	void setPerson(Person person);
 	
 	/**
 	 * @return Progress on the course as a percentage (between 0 and 1) 
