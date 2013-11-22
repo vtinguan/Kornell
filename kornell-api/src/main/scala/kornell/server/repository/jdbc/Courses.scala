@@ -12,10 +12,12 @@ object Courses {
 
   def apply(uuid:String) = CourseRepository(uuid)
 
-  def byInstitution(institutionUUID: String) = {
+  def byInstitution(institutionUUID: String) = ??? 
+  /* {
     sql"""
     | select * from Course where institution_uuid = $institutionUUID
     """.map[CourseTO](newCourseTO)   
-  }
+  } 
+  */
   
 }

@@ -76,4 +76,11 @@ class PreparedStmt(query: String, params: List[Any]) {
   def isPositive: Boolean = executeQuery { rs =>
     rs.next && rs.getInt(1) > 0
   }
+  
+  def getUUID = executeQuery { rs =>
+    if (rs.next) rs.getString("uuid")
+    else throw new IllegalStateException("Can not get on empty result")
+  }
+  
+  def get[T](implicit conversion: ResultSet => T): T = first(conversion).get
 } 

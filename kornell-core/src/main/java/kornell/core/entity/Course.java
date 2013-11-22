@@ -14,8 +14,7 @@ public interface Course extends Entity{
 	String getInfoJson();
 	void setInfoJson(String infoJson);
 	
-	String getRepositoryUUID();
-	void setRepositoryUUID(String repositoryUUID);
+
 
 	//TODO: Delete
 	@Deprecated

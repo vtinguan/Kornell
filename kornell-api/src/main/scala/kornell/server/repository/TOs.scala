@@ -25,25 +25,7 @@ object TOs {
     registrations.setRegistrationsWithInstitutions(registrationsWithInstitutions asJava)
     registrations
   }
-
-  //TODO: Smells...
-  def newCourseTO(
-    courseUUID: String, code: String,
-    title: String, description: String,
-    objectives: String,
-    enrollmentUUID: String, enrolledOn: Date, 
-    personUUID: String, progress: String,
-    repository_uuid:String, notes: String) = {
-    val to = tos.newCourseTO.as
-    val prog = if (progress != null) new BigDecimal(progress) else null
-    val course = Entities.newCourse(courseUUID, code, title, description, objectives, repository_uuid)
-    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes,EnrollmentState.notEnrolled)
-    to setCourse(course)
-    to setEnrollment(enrollment)
-    val s3 = S3(to.getCourse.getRepositoryUUID)
-    to setDistributionURL( StringUtils.composeURL(s3.baseURL , s3.prefix))
-    to
-  }
+ 
 
   def newCoursesTO(l: List[CourseTO]) = {
     val to = tos.newCoursesTO.as
