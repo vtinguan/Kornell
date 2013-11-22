@@ -3,7 +3,11 @@ package kornell.server.repository
 import java.math.BigDecimal
 import java.util.Date
 import java.util.UUID
+
+import scala.collection.JavaConverters.seqAsJavaListConverter
+
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+
 import kornell.core.entity.Course
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
@@ -11,8 +15,7 @@ import kornell.core.entity.EntityFactory
 import kornell.core.entity.Institution
 import kornell.core.entity.Person
 import kornell.core.entity.Registration
-import scala.collection.JavaConverters._
-import kornell.server.repository.jdbc.People
+import kornell.core.entity.RoleType
 import kornell.server.repository.jdbc.PersonRepository
 
 object Entities {

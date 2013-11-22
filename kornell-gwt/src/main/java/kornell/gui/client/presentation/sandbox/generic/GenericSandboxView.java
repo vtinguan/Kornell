@@ -1,5 +1,9 @@
 package kornell.gui.client.presentation.sandbox.generic;
 
+import kornell.api.client.Callback;
+import kornell.api.client.UserSession;
+import kornell.core.entity.Institution;
+import kornell.core.entity.RoleType;
 import kornell.gui.client.presentation.sandbox.SandboxView;
 
 import com.google.gwt.core.client.GWT;
@@ -15,25 +19,29 @@ public class GenericSandboxView  extends Composite implements SandboxView {
 	interface MyUiBinder extends UiBinder<Widget, GenericSandboxView> {}
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	
-	VerticalPanel vpanel = new VerticalPanel();
+	@UiField FlowPanel panel;
 	
 	public GenericSandboxView() {
 		GWT.log("GenericSandboxView()");		
-		panel.add(vpanel);
-		vpanel.add(new Label("Loading..."));
 	    initWidget(uiBinder.createAndBindUi(this));
-	    fetchAndDraw();
+	    panel.add(new Label("Loading some stuff..."));
+	    UserSession.current(new Callback<UserSession>(){			
+			@Override
+			public void ok(UserSession session) {
+				panel.add(new Label("I'm in institution "+session.getInstitutionUUID()));
+				if(session.isAuthenticated())
+					panel.add(new Label("And i am authenticated as "+session.getUserInfo().getPerson().getFullName()));
+				else
+					panel.add(new Label("And i am not authenticated."));
+				
+				if(session.isDean())
+					panel.add(new Label("And i am a dean."));
+				else
+					panel.add(new Label("And i am not dean."));
+			}
+		});
 	}
 	
-	private void fetchAndDraw() {
-		panel.clear();
-		vpanel.add(new Label("done"));
-		
-	}
-
-	@UiField FlowPanel panel;
-	
-
 	@Override
 	public void setPresenter(Presenter presenter) {
 		

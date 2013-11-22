@@ -7,38 +7,39 @@ import javax.ws.rs.core.SecurityContext
 import org.apache.commons.codec.digest.DigestUtils
 import kornell.server.repository.Entities._
 import kornell.core.entity.Person
+import kornell.core.entity.RoleType
+import kornell.core.entity.Role
 
-object Auth  { 
+object Auth {
   //TODO: importing ScurityContext smells bad
 
   implicit def toPerson(rs: ResultSet): Person = newPerson(
-      rs.getString("uuid"), 
-      rs.getString("fullName"), 
-      rs.getString("lastPlaceVisited"),
-      rs.getString("email"),
-      rs.getString("company"),
-      rs.getString("title"),
-      rs.getString("sex"),
-      rs.getDate("birthDate"),
-      rs.getString("confirmation"))
-      
+    rs.getString("uuid"),
+    rs.getString("fullName"),
+    rs.getString("lastPlaceVisited"),
+    rs.getString("email"),
+    rs.getString("company"),
+    rs.getString("title"),
+    rs.getString("sex"),
+    rs.getDate("birthDate"),
+    rs.getString("confirmation"))
+
   implicit def toString(rs: ResultSet): String = rs.getString("email")
 
-
   def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T = {
-	val principal = if (sc != null) sc.getUserPrincipal else null
+    val principal = if (sc != null) sc.getUserPrincipal else null
     val username =
       if (principal != null)
         sc.getUserPrincipal().getName()
       else "AUTH_SHOULD_HAVE_FAILED" //TODO
-    
-    val person: Option[Person] = getPerson(username)    
-        
+
+    val person: Option[Person] = getPerson(username)
+
     if (person.isDefined)
       fun(person.get)
     else throw new IllegalArgumentException(s"User [$username] not found.")
   }
-  
+
   //TODO: Cache
   def getPerson(username: String) = {
     sql"""
@@ -49,14 +50,14 @@ object Auth  {
 		where pw.username = $username
 	""".first[Person]
   }
-  
+
   def confirmAccount(personUUID: String) = {
     sql"""
 		update Person set confirmation = ""
 		where uuid = $personUUID
 	""".executeUpdate
   }
-  
+
   def getEmail(email: String) = {
     sql"""
     	select p.email from Person p
@@ -75,5 +76,16 @@ object Auth  {
   }
 
   def sha256(plain: String): String = DigestUtils.sha256Hex(plain)
+
+  def rolesOf(username: String) = sql"""
+  	select username,role,institution_uuid from Role where username = $username
+  """.map[Role] { rs =>
+    val roleType = RoleType.valueOf(rs.getString("role"))
+    val role = roleType match {
+      case RoleType.user => Entities.newUserRole
+      case RoleType.dean => Entities.newDeanRole(rs.getString("institution_uuid"))
+    }
+    role
+  }
 
 }

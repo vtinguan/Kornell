@@ -5,7 +5,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 public interface EntityFactory extends AutoBeanFactory {
 	public static String PREFIX = "application/vnd.kornell.v1.entity.";
-	
+
 	AutoBean<Person> newPerson();
 
 	AutoBean<Principal> newPrincipal();
