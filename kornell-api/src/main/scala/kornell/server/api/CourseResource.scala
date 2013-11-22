@@ -20,22 +20,6 @@ class CourseResource(uuid: String) {
   def getCourse(implicit @Context sc: SecurityContext) =
     Courses.byUUID(uuid)
 
-  @Produces(Array(Contents.TYPE))
-  @Path("contents")
-  @GET
-  def getContents(implicit @Context sc: SecurityContext):Contents = 
-  Auth.withPerson { person =>
-    val courseRepo = Courses(uuid)
-    val courseTO = courseRepo.withEnrollment(person).get    
-    val s3 = S3(courseTO.getCourse.getRepositoryUUID)
-    val structureSrc = s3.source("structure.knl")    
-    val structureText = structureSrc.mkString("")
-    val baseURL = s3.baseURL
-    val visited =  courseRepo.actomsVisitedBy(person)
-    val contents = ContentsParser.parse(baseURL,s3.prefix,structureText,visited)
-    contents.setCourseTO(courseTO)
-    contents
-  }
 }
 
 object CourseResource {

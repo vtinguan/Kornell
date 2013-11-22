@@ -60,7 +60,6 @@ object Entities {
     c.setDescription(description)
     c.setTitle(title)
     c.setInfoJson(infoJson)
-    c.setRepositoryUUID(repository_uuid)
     c
   }
 
@@ -122,6 +121,24 @@ object Entities {
     role.setDeanRole(dean)
     role
   }
+ 
+  def newCourseVersion(uuid:String,name:String,courseUUID:String,repositoryUUID:String,versionCreatedAt:Date = new Date)={
+    val version = factory.newCourseVersion.as
+    version.setUUID(uuid);
+    version.setName(name);
+    version.setCourseUUID(courseUUID);
+    version.setRepositoryUUID(repositoryUUID);
+    version.setVersionCreatedAt(versionCreatedAt)
+    version
+  }
   
+  def newCourseClass(uuid:String,name:String,courseVersionUUID:String,institutionUUID:String) = {
+    val clazz = factory.newCourseClass.as
+    clazz.setUUID(uuid)
+    clazz.setName(name)
+    clazz.setCourseVersionUUID(courseVersionUUID)
+    clazz.setInstitutionUUID(institutionUUID)
+    clazz
+  }
 
 }
