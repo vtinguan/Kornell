@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import kornell.api.client.Callback;
+import kornell.api.client.UserSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
@@ -14,7 +15,6 @@ import kornell.core.util.UUID;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.loading.LoadingPopup;
-import kornell.gui.client.session.UserSession;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;

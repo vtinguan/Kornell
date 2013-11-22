@@ -29,6 +29,7 @@ import kornell.core.to.CourseTO
 import scala.collection.SortedSet
 import scala.collection.immutable.Set
 import scala.collection.JavaConverters._
+import kornell.server.repository.jdbc.Enrollments
 
 @Path("user")
 class UserResource{
