@@ -4,6 +4,7 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.event.ActomEntered;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
@@ -13,7 +14,6 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.CoursePlace;
-import kornell.gui.client.session.UserSession;
 import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
@@ -38,9 +38,8 @@ public class CourseSequencer implements Sequencer {
 	private Uidget prevUidget;
 	private UserSession session;
 
-	public CourseSequencer(UserSession session,EventBus bus, KornellClient client) {
+	public CourseSequencer(EventBus bus, KornellClient client) {
 		this.client = client;
-		this.session = session;
 		bus.addHandler(NavigationRequest.TYPE, this);
 	}
 

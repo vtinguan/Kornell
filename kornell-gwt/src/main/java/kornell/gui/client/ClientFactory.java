@@ -2,6 +2,7 @@
 package kornell.gui.client;
 
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.event.EventFactory;
@@ -80,4 +81,6 @@ public interface ClientFactory {
 	
 	//dean
 	DeanHomeView getDeanHomeView();
+
+	UserSession getUserSession();
 }

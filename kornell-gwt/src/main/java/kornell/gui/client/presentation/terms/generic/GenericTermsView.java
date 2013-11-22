@@ -6,6 +6,7 @@ import java.util.Set;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
@@ -54,7 +55,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	Institution institution;
 	UserInfoTO user;
 
-	private KornellClient client;
+	private UserSession session;
 
 	private PlaceController placeCtrl;
 	private Place defaultPlace;
@@ -67,10 +68,10 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	private final EventBus bus;
 
-	public GenericTermsView(EventBus bus, KornellClient client,
+	public GenericTermsView(EventBus bus, UserSession session,
 			PlaceController placeCtrl, Place defaultPlace) {
 		this.bus = bus;
-		this.client = client;
+		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.defaultPlace = defaultPlace;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -83,7 +84,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void initData() {
-		client.getCurrentUser(new Callback<UserInfoTO>() {
+		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO userTO) {
 				user = userTO;
@@ -92,7 +93,7 @@ public class GenericTermsView extends Composite implements TermsView {
 		});
 
 		// TODO: Improve client API (eg. client.registrations().getUnsigned();
-		client.registrations().getUnsigned(new Callback<RegistrationsTO>() {
+		session.registrations().getUnsigned(new Callback<RegistrationsTO>() {
 			@Override
 			public void ok(RegistrationsTO to) {
 				Set<Entry<Registration, Institution>> entrySet = to
@@ -127,7 +128,7 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		client.institution(institution.getUUID()).acceptTerms(
+		session.institution(institution.getUUID()).acceptTerms(
 				new Callback<Void>() {
 					@Override
 					public void ok(Void v) {

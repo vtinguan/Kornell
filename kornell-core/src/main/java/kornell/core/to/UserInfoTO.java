@@ -1,6 +1,10 @@
 package kornell.core.to;
 
+import java.util.Set;
+
 import kornell.core.entity.Person;
+import kornell.core.entity.Role;
+import kornell.core.entity.RoleType;
 
 public interface UserInfoTO {
 	public static String TYPE = TOFactory.PREFIX + "userinfo+json";
@@ -22,4 +26,7 @@ public interface UserInfoTO {
 	
 	String getInstitutionAssetsURL();
 	void setInstitutionAssetsURL(String InstitutionAssetsURL);
+	
+	Set<Role> getRoles();
+	void setRoles(Set<Role> roles);
 }
