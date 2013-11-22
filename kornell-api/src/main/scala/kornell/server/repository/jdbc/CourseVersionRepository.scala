@@ -8,8 +8,7 @@ import kornell.core.entity.CourseVersion
 class CourseVersionRepository(uuid:String) {
     implicit def toCourseVersion(rs:ResultSet):CourseVersion =
       Entities.newCourseVersion(rs.getString("uuid"),rs.getString("name"),
-          rs.getString("courseVersion_uuid"),rs.getString("institution_uuid"))
-      
+          rs.getString("course_uuid"),rs.getString("repository_uuid"))
       
 	def get = sql"""
 		select * from CourseVersion where uuid=$uuid

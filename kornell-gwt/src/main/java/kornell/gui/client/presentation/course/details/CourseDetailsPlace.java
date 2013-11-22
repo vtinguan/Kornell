@@ -6,18 +6,18 @@ import com.google.gwt.place.shared.Prefix;
 
 public class CourseDetailsPlace extends Place{
 
-	String courseUUID;
+	String courseClassUUID;
 
-	public CourseDetailsPlace(String courseUUID) {
-		this.courseUUID = courseUUID;
+	public CourseDetailsPlace(String courseClassUUID) {
+		this.courseClassUUID = courseClassUUID;
 	}
 	
 	public String getCourseUUID() {
-		return courseUUID;
+		return courseClassUUID;
 	}
 
-	public void setCourseUUID(String courseUUID) {
-		this.courseUUID = courseUUID;
+	public void setCourseUUID(String courseClassUUID) {
+		this.courseClassUUID = courseClassUUID;
 	}
 	
 	@Prefix("details")

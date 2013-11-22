@@ -20,7 +20,7 @@ import kornell.core.to.coursedetails.InfoTO;
 import kornell.core.to.coursedetails.TopicTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
@@ -98,8 +98,8 @@ public class GenericCourseDetailsView extends Composite implements
 
 	private void initData() {
 		final String uuid = placeCtrl.getWhere() instanceof CourseDetailsPlace ? ((CourseDetailsPlace) placeCtrl
-				.getWhere()).getCourseUUID() : ((CoursePlace) placeCtrl
-				.getWhere()).getCourseUUID();
+				.getWhere()).getCourseUUID() : ((CourseClassPlace) placeCtrl
+				.getWhere()).getCourseClassUUID();
 
 		session.getCourseTO(uuid, new Callback<CourseTO>() {
 			@Override
@@ -111,7 +111,7 @@ public class GenericCourseDetailsView extends Composite implements
 					@Override
 					public void ok(UserInfoTO userTO) {
 						user = userTO;
-						session.course(uuid).contents(new Callback<Contents>() {
+						session.courseClass(uuid).contents(new Callback<Contents>() {
 							@Override
 							public void ok(Contents contents) {
 								setContents(contents);

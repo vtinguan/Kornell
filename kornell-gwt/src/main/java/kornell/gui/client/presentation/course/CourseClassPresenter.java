@@ -6,12 +6,12 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CoursePresenter implements CourseView.Presenter{
-	CourseView view;
-	private CoursePlace place;
+public class CourseClassPresenter implements CourseClassView.Presenter{
+	CourseClassView view;
+	private CourseClassPlace place;
 	private SequencerFactory sequencer;
 	
-	public CoursePresenter(CourseView view,
+	public CourseClassPresenter(CourseClassView view,
 							 PlaceController placeCtrl,
 							 SequencerFactory sequencer) {		
 		this.view = view;
@@ -35,7 +35,7 @@ public class CoursePresenter implements CourseView.Presenter{
 		return view.asWidget();
 	}
 
-	public void setPlace(CoursePlace place) {
+	public void setPlace(CourseClassPlace place) {
 		this.place = place;
 		displayPlace();
 	}

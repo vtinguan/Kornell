@@ -2,7 +2,7 @@ package kornell.gui.client.sequence;
 
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
@@ -22,7 +22,7 @@ public class SequencerFactoryImpl implements SequencerFactory {
 	}
 
 	@Override
-	public Sequencer withPlace(CoursePlace place) {
+	public Sequencer withPlace(CourseClassPlace place) {
 		if (sequencer == null)
 			sequencer = new CourseSequencer(bus,client);
 		return sequencer.withPlace(place);

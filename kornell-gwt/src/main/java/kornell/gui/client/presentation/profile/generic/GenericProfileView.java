@@ -9,7 +9,7 @@ import kornell.api.client.UserSession;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
@@ -269,7 +269,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiHandler("btnClose")
 	void doClose(ClickEvent e) {
 		form.addStyleName("shy");
-		placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseClassUUID()));
+		placeCtrl.goTo(new CourseClassPlace(constants.getDefaultCourseClassUUID()));
 	}
 
 	private void clearErrors() {

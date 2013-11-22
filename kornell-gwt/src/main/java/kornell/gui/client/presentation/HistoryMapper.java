@@ -1,7 +1,7 @@
 package kornell.gui.client.presentation;
 
 import kornell.gui.client.presentation.admin.home.DeanHomePlace;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.chat.CourseChatPlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
@@ -31,7 +31,7 @@ import com.google.gwt.place.shared.WithTokenizers;
 	CourseForumPlace.Tokenizer.class,
 	CourseChatPlace.Tokenizer.class,
 	CourseSpecialistsPlace.Tokenizer.class,	
-	CoursePlace.Tokenizer.class,
+	CourseClassPlace.Tokenizer.class,
 	
 	SandboxPlace.Tokenizer.class,
 	

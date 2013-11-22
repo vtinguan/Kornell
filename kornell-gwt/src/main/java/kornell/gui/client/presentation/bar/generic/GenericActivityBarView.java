@@ -11,7 +11,7 @@ import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEventHandler;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.ActivityBarView;
-import kornell.gui.client.presentation.course.CoursePlace;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.presentation.terms.TermsPlace;
@@ -91,7 +91,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						
-						if(newPlace instanceof CoursePlace){							
+						if(newPlace instanceof CourseClassPlace){							
 							btnDetails.removeStyleName("btnSelected");
 						} else if(newPlace instanceof CourseDetailsPlace){
 							//enableButton(BUTTON_PREVIOUS, false);
@@ -197,13 +197,13 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
-		if(placeCtrl.getWhere() instanceof CoursePlace){
+		if(placeCtrl.getWhere() instanceof CourseClassPlace){
 			placeCtrl.goTo(new CourseDetailsPlace(constants.getDefaultCourseClassUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			placeCtrl.goTo(new CoursePlace(constants.getDefaultCourseClassUUID()));
+			placeCtrl.goTo(new CourseClassPlace(constants.getDefaultCourseClassUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		

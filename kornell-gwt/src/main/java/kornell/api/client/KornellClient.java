@@ -119,8 +119,8 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		ClientProperties.remove("Authorization");
 	}
 
-	public CourseClient course(String courseUUID) {
-		return new CourseClient(courseUUID);
+	public CourseClassClient courseClass(String courseClassUUID) {
+		return new CourseClassClient(courseClassUUID);
 	}
 
 	static final EventsClient eventsClient = new EventsClient();
