@@ -92,8 +92,8 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		});
 	}
 
-	public void getEnrollmentsByCourse(String courseUUID, Callback<Enrollments> cb) {
-		GET("/enrollment/?courseUUID=" + courseUUID).sendRequest(null, cb);
+	public void getEnrollmentsByCourseClass(String courseClassUUID, Callback<Enrollments> cb) {
+		GET("/enrollment/?courseClassUUID=" + courseClassUUID).sendRequest(null, cb);
 	}
 
 	public void createEnrollments(Enrollments enrollments, Callback<Enrollments> cb) {

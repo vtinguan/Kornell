@@ -41,13 +41,12 @@ object Auth {
   }
 
   //TODO: Cache
-  def getPerson(username: String) = {
+  def getPerson(email: String) = {
     sql"""
 		select p.uuid, p.fullName, p.lastPlaceVisited, p.email, p.company, 
 		    p.title, p.sex, p.birthDate, p.confirmation
 		from Person p
-		join Password pw on pw.person_uuid = p.uuid
-		where pw.username = $username
+		where p.email = $email
 	""".first[Person]
   }
 

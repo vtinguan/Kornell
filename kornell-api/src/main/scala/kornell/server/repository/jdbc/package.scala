@@ -24,7 +24,7 @@ package object jdbc {
     newEnrollment(
       rs.getString("uuid"),
       rs.getDate("enrolledOn"),
-      rs.getString("courseClass_uuid"),
+      rs.getString("class_uuid"),
       rs.getString("person_uuid"),
       rs.getBigDecimal("progress"),
       rs.getString("notes"),

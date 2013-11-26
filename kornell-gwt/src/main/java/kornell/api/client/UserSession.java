@@ -37,6 +37,11 @@ public class UserSession extends KornellClient {
 					GWT.log("Welcome Back "+userInfo.getPerson().getFullName());
 					current.setCurrentUser(userInfo);
 					callback.ok(current);
+				}		
+				@Override
+				public void unauthorized() {
+					current.setCurrentUser(null);
+					callback.ok(current);
 				}
 			});
 		}else {
@@ -85,12 +90,20 @@ public class UserSession extends KornellClient {
 	}
 
 	public boolean hasRole(RoleType type, String targetInstitutionUUID) {
-		if (currentUser == null) return false;
-		for(Role role: currentUser.getRoles()){
-			switch(role.getRoleType()){
-				case user: if (RoleType.user.equals(type)) return true;
-				case dean: if (RoleType.dean.equals(type) 
-						&& role.getDeanRole().getInstitutionUUID().equals(targetInstitutionUUID)) return true;
+		if (currentUser == null)
+			return false;
+		for (Role role : currentUser.getRoles()) {
+			switch (role.getRoleType()) {
+			case user: 
+				if (RoleType.user.equals(type))
+					return true;
+				break;
+			case dean:
+				if (RoleType.dean.equals(type)
+						&& role.getDeanRole().getInstitutionUUID()
+								.equals(targetInstitutionUUID))
+					return true;
+				break;
 			}
 		}
 		return false;
@@ -99,11 +112,17 @@ public class UserSession extends KornellClient {
 	@Deprecated
 	public void getCurrentUser(final Callback<UserInfoTO> cb) {
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
+			@Override
 			public void ok(UserInfoTO user) {
 				GWT.log("Fetched user ["+user.getPerson().getUUID()+"]");
 				current.setCurrentUser(user);
 				cb.ok(user);
 			};
+
+			@Override
+			protected void unauthorized() {
+				cb.unauthorized();
+			}
 
 			@Override
 			protected void forbidden() {

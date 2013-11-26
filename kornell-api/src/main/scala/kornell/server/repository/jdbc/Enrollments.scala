@@ -19,81 +19,35 @@ import scala.None
 import java.util.Date
 import kornell.server.util.EmailSender
 import kornell.core.entity.Course
-import kornell.server.repository.jdbc.Classes
+import kornell.server.repository.jdbc.CourseClasses
 import kornell.core.entity.CourseClass
+import kornell.core.util.UUID
+import kornell.server.repository.service.RegistrationEnrollmentService
 
 class Enrollments() {
 
-  def byCourse(courseUUID: String) = newEnrollments(
+  def byCourseClass(courseClassUUID: String) = newEnrollments(
     sql"""
-	    | select e.uuid, e.enrolledOn, e.course_uuid, e.person_uuid, e.progress, e.notes, e.state
+	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
       	| from Enrollment e join Person p on e.person_uuid = p.uuid
-        | where e.course_uuid = ${courseUUID}
+        | where e.class_uuid = ${courseClassUUID}
         | order by e.state desc, p.fullName, p.email
 	    """.map[Enrollment](toEnrollment))
 
-  def byCourseAndPerson(courseUUID: String, personUUID: String): Option[Enrollment] =
+  def byCourseClassAndPerson(courseClassUUID: String, personUUID: String): Option[Enrollment] =
     sql"""
-	    | select e.uuid, e.enrolledOn, e.course_uuid, e.person_uuid, e.progress, e.notes, e.state
+	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
       	| from Enrollment e join Person p on e.person_uuid = p.uuid
-        | where e.course_uuid = ${courseUUID} and
-        | and e.person_uuid = ${personUUID}
+        | where e.class_uuid = ${courseClassUUID} and
+        | e.person_uuid = ${personUUID}
         | order by e.state desc, p.fullName, p.email
 	    """.first[Enrollment]
 
-  def createEnrollmentsBatch(enrollments: kornell.core.entity.Enrollments) =
-    enrollments.getEnrollments().asScala.foreach(createEnrollmentBatch)
-
-  def createEnrollmentBatch(enrollment: Enrollment) = {
-    val clazz = Classes(enrollment.getCourseClassUUID()).get
-    // create person if it doesn't exist
-    Auth.getPerson(enrollment.getPerson.getEmail) match {
-      case Some(one) => enrollExistingPerson(clazz, one)
-      case None => enrollNewPerson(clazz, enrollment.getPerson.getEmail, enrollment.getPerson.getFullName)
-    }
-  }
-
-  private def enrollNewPerson(clazz: CourseClass, email: String, fullName: String): Unit = {
-    //TODO: URG: fix date nulls
-    val personRepo = People().createPerson(email, fullName, "", "", "", "1800-01-01", "")
-    val person = personRepo.get.get
-    personRepo.registerOn(clazz.getInstitutionUUID)
-    createEnrollment(clazz.getUUID, person.getUUID(), EnrollmentState.preEnrolled)
-    //envia email pro cara
-    //??? confirmation link
-    //sem fullName???
-    EmailSender.sendEmail(person, Institutions.byUUID(clazz.getInstitutionUUID).get, ???)
-  }
-
-  private def enrollExistingPerson(clazz: CourseClass, person: Person) =
-    byCourseAndPerson(clazz.getUUID, person.getUUID) match {
-      case Some(enrollment) => updateExistingEnrollment(clazz.getInstitutionUUID, person, enrollment)
-      case None => createNewEnrollment(clazz, person)
-    }
-
-  private def createNewEnrollment(clazz: CourseClass, person: Person): Unit = {
-    createEnrollment(clazz.getUUID, person.getUUID, EnrollmentState.preEnrolled)
-    //envia email pro cara
-    //??? confirmation link
-    //sem fullName???
-    EmailSender.sendEmail(person, Institutions.byUUID(clazz.getInstitutionUUID).get, ???)
-
-  }
-
-  private def updateExistingEnrollment(institutionUUID: String, person: Person, enrollment: Enrollment): Unit = {
-    //fromPersonUUID
-    Events.logEnrollmentStateChanged(randomUUID, new Date(), ???, enrollment.getUUID(), enrollment.getState(), EnrollmentState.enrolled)
-    //envia email pro cara
-    //??? confirmation link
-    //sem fullName???
-    EmailSender.sendEmail(person, Institutions.byUUID(institutionUUID).get, ???)
-  }
-
-  def createEnrollment(clazzUUID: String, person_uuid: String, state: EnrollmentState) = {
+  def createEnrollment(courseClassUUID: String, person_uuid: String, state: EnrollmentState) = {
     val uuid = randomUUID
     sql""" 
-    	insert into Enrollment(uuid,courseClass_uuid,person_uuid,enrolledOn,state)
-    	values($randomUUID,$clazzUUID,$person_uuid,now(),${state.toString()})
+    	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state)
+    	values($randomUUID,$courseClassUUID,$person_uuid,now(),${state.toString()})
     """.executeUpdate
   }
 

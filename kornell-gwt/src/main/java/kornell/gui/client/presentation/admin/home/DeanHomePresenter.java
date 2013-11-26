@@ -25,8 +25,24 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 	private DeanHomeView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 		
-	public DeanHomePresenter(ClientFactory clientFactory) {
+	public DeanHomePresenter(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
+		//TODO refactor permissions per session/activity
+		UserSession.current(new Callback<UserSession>() {
+			@Override
+			public void ok(UserSession session) {
+				if(session.isDean())
+					init();
+				else {
+					GWT.log("Hey, only deans are allowed to see this! " + this.getClass().getName());
+					clientFactory.getPlaceController()
+						.goTo(clientFactory.getDefaultPlace());
+				}
+			}
+		});
+	}
+	
+	private void init() {
 		view = getView();
 		view.setPresenter(this);
 		
@@ -34,10 +50,10 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		//get enrollments for course
 		getEnrollments(getCourseClassUUID());
 	}
-	
-	private List<Enrollment> getEnrollments(String courseUUID){
+
+	private List<Enrollment> getEnrollments(String courseClassUUID){
 		LoadingPopup.show();
-		clientFactory.getKornellClient().getEnrollmentsByCourse(courseUUID, new Callback<Enrollments>(){
+		clientFactory.getKornellClient().getEnrollmentsByCourseClass(courseClassUUID, new Callback<Enrollments>(){
 			@Override
 			public void ok(Enrollments enrollments){
 				view.setEnrollmentList(enrollments.getEnrollments());	
@@ -128,7 +144,6 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 	@Override
 	public void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch) {
 		Window.alert("Inserir: "+txtAddEnrollmentBatch);
-		List<Enrollment> enrollmentsList = new ArrayList<Enrollment>();
 		saveEnrollments(createEnrollments(createEnrollmentsList(txtAddEnrollmentBatch)));
 	}
 

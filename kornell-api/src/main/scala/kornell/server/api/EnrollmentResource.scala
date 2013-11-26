@@ -14,6 +14,7 @@ import javax.ws.rs.QueryParam
 import kornell.server.repository.jdbc.Enrollments
 import scala.collection.JavaConverters._
 import javax.ws.rs.Consumes
+import kornell.server.repository.service.RegistrationEnrollmentService
 
 @Path("enrollment")
 @Produces(Array(Enrollment.TYPE))
@@ -21,11 +22,14 @@ class EnrollmentResource{
   
   @GET
   @Produces(Array(kornell.core.entity.Enrollments.TYPE))
-  def getByCourseUUID(@QueryParam("courseUUID") courseUUID:String) = Enrollments().byCourse(courseUUID)
+  def getByCourseUUID(@QueryParam("courseClassUUID") courseClassUUID:String) = Enrollments().byCourseClass(courseClassUUID)
   
   @PUT
   @Consumes(Array(kornell.core.entity.Enrollments.TYPE))
-  def putEnrollments(enrollments:kornell.core.entity.Enrollments) = Enrollments().createEnrollmentsBatch(enrollments)
+  def putEnrollments(implicit @Context sc: SecurityContext, enrollments:kornell.core.entity.Enrollments) = 
+    Auth.withPerson { p =>
+    	RegistrationEnrollmentService.deanCreateEnrollmentsBatch(enrollments, p)  
+      }
   
   
   @PUT

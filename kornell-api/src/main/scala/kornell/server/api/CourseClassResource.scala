@@ -9,7 +9,7 @@ import kornell.core.lom.Contents
 import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.Courses
 import kornell.server.repository.s3.S3
-import kornell.server.repository.jdbc.Classes
+import kornell.server.repository.jdbc.CourseClasses
 import kornell.server.dev.util.ContentsParser
 
 class CourseClassResource(uuid:String) {
@@ -19,7 +19,7 @@ class CourseClassResource(uuid:String) {
   @GET
   def getLatestContents(implicit @Context sc: SecurityContext): Contents =
     Auth.withPerson { person =>
-      val classRepo = Classes(uuid)
+      val classRepo = CourseClasses(uuid)
       val versionRepo = classRepo.version
       val version = versionRepo.get
       val repositoryUUID = version.getRepositoryUUID();

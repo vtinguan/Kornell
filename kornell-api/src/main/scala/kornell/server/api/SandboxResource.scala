@@ -24,7 +24,7 @@ class SandboxResource {
     val course_uuid = "d9aaa03a-f225-48b9-8cc9-15495606ac46";
 
     val personRepo = People().createTestPerson(fullName)
-    val person = personRepo.get().get
+    val person = personRepo.get
     
     val enrollmnt = personRepo.setPassword(username, password)
       .registerOn(institution_uuid)

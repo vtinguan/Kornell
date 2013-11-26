@@ -11,7 +11,7 @@ import kornell.core.entity.EnrollmentState
 
 class EnrollmentRepository (person: PersonRepository, course_uuid: String) {
 
-  def getPerson = person.get()
+  def getPerson = person.get
 
   def get: Enrollment = sql"""
 	  select * from Enrollment 
