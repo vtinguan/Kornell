@@ -120,6 +120,7 @@ class UserResource{
   @Produces(Array(UserInfoTO.TYPE))
   def createUser(regReq:RegistrationRequestTO) = RegistrationEnrollmentService.userRequestRegistration(regReq)
   
+  
   @PUT
   @Path("placeChange")
   @Produces(Array("text/plain"))
