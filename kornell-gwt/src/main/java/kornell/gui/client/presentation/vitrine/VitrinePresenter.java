@@ -168,9 +168,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void checkIfUserWasCreated() {
-		if (((VitrinePlace) clientFactory.getPlaceController().getWhere()).isUserCreated()) {
+		Place currentPlace = clientFactory.getPlaceController().getWhere();
+		if (currentPlace instanceof VitrinePlace && ((VitrinePlace) currentPlace).isUserCreated()) {
 			view.showUserCreatedAlert();
-			((VitrinePlace) clientFactory.getPlaceController().getWhere()).setUserCreated(false);
+			((VitrinePlace) currentPlace).setUserCreated(false);
 		}
 	}
 

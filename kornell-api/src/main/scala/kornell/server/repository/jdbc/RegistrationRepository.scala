@@ -17,7 +17,7 @@ class RegistrationRepository(person: PersonRepository, institution_uuid: String)
     this
   }
 
-  def getPerson = person.get()
+  def getPerson = person.get
 
   implicit def toRegistration(rs: ResultSet): Registration =
     newRegistration(
@@ -26,8 +26,8 @@ class RegistrationRepository(person: PersonRepository, institution_uuid: String)
       rs.getDate("termsAcceptedOn"))
 
   def get: Option[Registration] = sql"""
-	  select * from Registraton 
-	  were person_uuid=${person.uuid}
+	  select * from Registration 
+	  where person_uuid=${person.uuid}
 	   and institution_uuid=${institution_uuid}"""
     .first[Registration]
 }

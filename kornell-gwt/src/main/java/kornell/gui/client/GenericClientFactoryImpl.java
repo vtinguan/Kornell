@@ -5,6 +5,7 @@ import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
+import kornell.core.entity.RoleType;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
@@ -14,6 +15,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
+import kornell.gui.client.presentation.admin.home.DeanHomePlace;
 import kornell.gui.client.presentation.admin.home.DeanHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericDeanHomeView;
 import kornell.gui.client.presentation.atividade.generic.GenericCourseClassView;
@@ -140,6 +142,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
 		new Stalker(bus, session, historyMapper);
 		historyHandler.handleCurrentHistory();
+		if(!session.isAuthenticated())
+			placeCtrl.goTo(defaultPlace);
 	}
 
 	private void initGUI() {
@@ -210,46 +214,33 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		this.session = session;
 		this.locationStr = Window.Location.getHash();
 		this.locationStrArray = locationStr.split(":");
-
 		if(session.isAuthenticated()){
 			startAuthenticated(session);
 		}else{
 			startAnonymous(session);
 		}
-		
-
-		
 	}
 	
 	private void startAnonymous(UserSession session){
-		VitrinePlace vitrinePlace;
 		if (locationStrArray.length > 1
 				&& "#vitrine".equalsIgnoreCase(locationStrArray[0])) {
-			vitrinePlace = new VitrinePlace(locationStrArray[1]);
+			defaultPlace = new VitrinePlace(locationStrArray[1]);
 		} else {
-			vitrinePlace = new VitrinePlace();
+			defaultPlace = new VitrinePlace();
 		}
-		startApp(vitrinePlace, null);
+		startApp(defaultPlace);
 	}
 
 	private void startAuthenticated(UserSession session) {
-		UserInfoTO user = session.getUserInfo();
-		String token;
-		if (!"".equals(locationStr)
-				&& "details".equals(locationStrArray[0].split("#")[1])) {
-			token = locationStr.split("#")[1];
+		if(session.isDean()){
+			defaultPlace = new DeanHomePlace();
 		} else {
-			token = user.getLastPlaceVisited();
+			defaultPlace = new CourseClassPlace(constants.getDefaultCourseClassUUID());	
 		}
-		if (token != null) {
-			defaultPlace = historyMapper.getPlace(token);
-		} else {
-			defaultPlace = new CourseClassPlace(constants.getDefaultCourseClassUUID());
-		}
-		startApp(defaultPlace, user);
+		startApp(defaultPlace);
 	}
 
-	protected void startApp(final Place defaultPlace, final UserInfoTO user) {
+	protected void startApp(final Place defaultPlace) {
 		// TODO not good
 		String institutionName = Window.Location.getParameter("institution");
 		if (institutionName == null)
@@ -259,11 +250,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					@Override
 					public void ok(Institution institution) {
 						setInstitution(institution);
-						if (user != null)
-							UserSession.setCurrentPerson(user.getPerson()
+						if (session.getUserInfo() != null)
+							UserSession.setCurrentPerson(session.getUserInfo().getPerson()
 									.getUUID(), institution.getUUID());
 						initGUI();
-						initActivityManagers();
+						initActivityManagers();						
 						initHistoryHandler(defaultPlace);
 						initException();
 						initSCORM();

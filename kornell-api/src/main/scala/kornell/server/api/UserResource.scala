@@ -30,6 +30,9 @@ import scala.collection.SortedSet
 import scala.collection.immutable.Set
 import scala.collection.JavaConverters._
 import kornell.server.repository.jdbc.Enrollments
+import kornell.server.repository.jdbc.CourseClasses
+import kornell.core.entity.CourseClass
+import kornell.server.repository.service.RegistrationEnrollmentService
 
 @Path("user")
 class UserResource{
@@ -115,42 +118,7 @@ class UserResource{
   @Path("registrationRequest")
   @Consumes(Array(RegistrationRequestTO.TYPE))
   @Produces(Array(UserInfoTO.TYPE))
-  def createUser(regReq:RegistrationRequestTO){
-    val email = regReq.getEmail()
-    val institutionUUID = regReq.getInstitutionUUID()
-    val password = regReq.getPassword()
-    val fullName = regReq.getFullName()
-    val confirmation = UUID.randomUUID.toString
-	val confirmationLink = "??????????????????????????" + "#vitrine:" + confirmation
-	val courses: List[CourseTO] = Courses.byInstitution(institutionUUID)
-	    
-  	val user = newUserInfoTO 
-	val person: Option[Person] = Auth.getPerson(email)
-	if(person.isDefined){
-		//update the user's info
-		val p: PersonRepository = PersonRepository(person.get.getUUID()).updatePerson(email, fullName, person.get.getCompany(), person.get.getTitle(), person.get.getSex(), person.get.getBirthDate(), person.get.getConfirmation())
-		//if there's only one course, the enrollment's state should be changed to enrolled
-	    if(courses.length == 1){
-		    val e: EnrollmentRepository = EnrollmentRepository(p, courses.head.getCourse().getUUID())
-		    if(EnrollmentState.preEnrolled.equals(e.get.getState())){
-		    	Events.logEnrollmentStateChanged(UUID.randomUUID.toString,new Date(),person.get.getUUID(),e.get.getUUID(),e.get.getState(),EnrollmentState.enrolled)
-		    }
-	    }
-		user.setPerson(p.get().get) 
-	} else {
-	    val p: PersonRepository = People().createPerson(email, fullName, "", "", "", "1800-01-01", "")
-	    p.setPassword(email, password).registerOn(institutionUUID)
-		//if there's only one course, an enrollment must be requested
-	    if(courses.length == 1)
-			Enrollments().createEnrollment(courses.head.getCourse().getUUID(), p.get().get.getUUID(), EnrollmentState.requested)
-		user.setPerson(p.get().get)
-	}
-    user.setUsername(email)
-    
-    //EmailSender.sendEmail(user.getPerson(), Institutions.byUUID(institutionUUID).get, confirmationLink)
-    
-	Option(user)
-  }
+  def createUser(regReq:RegistrationRequestTO) = RegistrationEnrollmentService.userRequestRegistration(regReq)
   
   @PUT
   @Path("placeChange")

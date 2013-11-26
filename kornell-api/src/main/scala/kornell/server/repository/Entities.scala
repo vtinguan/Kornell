@@ -72,7 +72,7 @@ object Entities {
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
     e.setCourseClassUUID(courseClassUUID)
-    e.setPerson(PersonRepository.apply(personUUID).get().get)
+    e.setPerson(PersonRepository.apply(personUUID).get)
     e.setProgress(progress)
     e.setNotes(notes)
     e.setState(state)

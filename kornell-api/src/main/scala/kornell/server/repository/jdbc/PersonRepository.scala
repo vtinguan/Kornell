@@ -28,7 +28,7 @@ class PersonRepository(val uuid:String) {
 	    rs.getDate("birthDate"),
 	    rs.getString("confirmation"))
 	    
-	def get() = sql"""select * from Person where uuid=$uuid""".first[Person]
+	def get = sql"""select * from Person where uuid=$uuid""".first[Person].get
 
 	def updatePerson(email: String, fullName:String, 
       company: String, title: String, sex: String, 

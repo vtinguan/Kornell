@@ -1,8 +1,10 @@
 package kornell.server.repository.jdbc
 
-class Classes {
+class CourseClasses {
 }
 
-object Classes {
+object CourseClasses {
   def apply(uuid:String) = CourseClassRepository(uuid);
+
+  def byInstitution(institutionUUID: String) = ??? 
 }

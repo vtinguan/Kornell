@@ -12,11 +12,9 @@ class People {
     PersonRepository(uuid)
   }
 
-  def createPerson(fullName: String): PersonRepository = ???
-
   def createPerson(email: String, fullName:String, 
-      company: String, title: String, sex: String, 
-      birthDate: String, confirmation: String) = {
+      company: String="", title: String="", sex: String="", 
+      birthDate: String="1800-01-01", confirmation: String = "") = {
     
     val uuid = randomUUID
     sql"""

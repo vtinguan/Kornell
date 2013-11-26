@@ -22,12 +22,10 @@ object ProduceUser extends App {
   val username = randomString
   val password = randomString
   val institution_uuid = "00a4966d-5442-4a44-9490-ef36f133a259";
-  val course_uuid = "d9aaa03a-f225-48b9-8cc9-15495606ac46";
     
-  val p: PersonRepository = People().createPerson(fullName)
+  val p: PersonRepository = People().createPerson(username, fullName)
   p.setPassword(username, password) 
 		  .registerOn(institution_uuid)
-  Enrollments().createEnrollment(course_uuid, p.get().get.getUUID(), EnrollmentState.requested)
  
   println(" Full Name: "+fullName)
   println("  Username: "+username)

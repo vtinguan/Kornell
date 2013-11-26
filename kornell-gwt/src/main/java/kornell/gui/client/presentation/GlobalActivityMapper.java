@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation;
 
+import kornell.api.client.UserSession;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.admin.home.DeanHomeActivity;
 import kornell.gui.client.presentation.admin.home.DeanHomePlace;
@@ -56,6 +57,7 @@ public class GlobalActivityMapper implements ActivityMapper {
 	/** TODO: This may suck fast */
 	public Activity getActivity(final Place place) {
 		GWT.log("GlobalActivityMapper " + place.toString());
+		
 		// TODO: Cache and log mapping
 		if (place instanceof HomePlace) {
 			return new HomeActivity(factory);

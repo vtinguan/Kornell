@@ -11,8 +11,6 @@ object Courses {
     Auth.withPerson { p => apply(uuid).withEnrollment(p) }
 
   def apply(uuid:String) = CourseRepository(uuid)
-
-  def byInstitution(institutionUUID: String) = ??? 
   /* {
     sql"""
     | select * from Course where institution_uuid = $institutionUUID

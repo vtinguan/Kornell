@@ -19,7 +19,6 @@ class KornellAPI extends Application {
       classOf[EntityReader],
       classOf[LOMReader],
       
-      classOf[AuthResource],
       classOf[RootResource],
       classOf[UserResource],
       classOf[CoursesResource],
