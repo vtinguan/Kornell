@@ -19,7 +19,6 @@ import scala.None
 import java.util.Date
 import kornell.server.util.EmailSender
 import kornell.core.entity.Course
-import kornell.server.repository.jdbc.Classes
 import kornell.core.entity.CourseClass
 
 class Enrollments() {

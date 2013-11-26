@@ -31,5 +31,7 @@ object TOs {
     val to = tos.newCoursesTO.as
     to.setCourses(l asJava)
     to
-  }
+  } 
+  
+  def newRegistrationRequestTO = tos.newRegistrationRequestTO.as
 }

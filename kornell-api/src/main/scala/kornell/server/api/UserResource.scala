@@ -114,7 +114,7 @@ class UserResource{
   @PUT
   @Path("registrationRequest")
   @Consumes(Array(RegistrationRequestTO.TYPE))
-  @Produces(Array(UserInfoTO.TYPE))
+  @Produces(Array(UserInfoTO.TYPE)) //TODO: Not producing, should be = {
   def createUser(regReq:RegistrationRequestTO){
     val email = regReq.getEmail()
     val institutionUUID = regReq.getInstitutionUUID()
