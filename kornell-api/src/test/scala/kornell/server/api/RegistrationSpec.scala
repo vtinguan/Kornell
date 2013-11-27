@@ -25,26 +25,4 @@ class RegistrationSpec extends UnitSpec  {
 	  val userInfo = userResource.get(new MockSecurityContext(email))
 	  userInfo should not be (None)
   }
-  
-  
-  /*
-  test("Not pre-enrolled user registration") {
-    val name = UUID.randomUUID.toString
-    val password = chars.take(12).toString
-    val email = name + "@" + chars.take(5) + ".com"
-    val regreq = TOs.newRegistrationRequestTO
-    regreq.setEmail(email)
-    regreq.setFullName(name)
-    val institutionUUID = "00a4966d-5442-4a44-9490-ef36f133a259" //TODO register @before
-    regreq.setInstitutionUUID(institutionUUID)
-    regreq.setPassword(password)
-    
-    
-    //TODO: Can he log in?
-    assert(false,"???") 
-  }
-  
-  */ 
-  
-
 }
