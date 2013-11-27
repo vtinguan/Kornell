@@ -8,12 +8,26 @@ import kornell.server.repository.TOs
 import scala.util.Random
 import java.util.UUID
 import javax.ws.rs.core.SecurityContext
+import kornell.server.test.UnitSpec
+import kornell.server.repository.Entities
 
 @RunWith(classOf[JUnitRunner])
-class EnrollmentSuite extends FunSuite  {
+class RegistrationSpec extends UnitSpec  {
   val userResource = new UserResource 
+  val institution = Entities.newInstitution(randUUID, randStr, randStr, randURL, randURL)
+  
+  "A new user" should "login sucessfully (even if not confirmed yet)." in {      
+      val fullName = randName
+      val email = randEmail
+      val password = randStr
+	  val regreq = TOs.newRegistrationRequestTO(institution.getUUID, fullName, email, password)
+	  userResource.createUser(regreq)
+	  val userInfo = userResource.get(new MockSecurityContext(email))
+	  userInfo should not be (None)
+  }
   
   
+  /*
   test("Not pre-enrolled user registration") {
     val name = UUID.randomUUID.toString
     val password = chars.take(12).toString
@@ -24,14 +38,13 @@ class EnrollmentSuite extends FunSuite  {
     val institutionUUID = "00a4966d-5442-4a44-9490-ef36f133a259" //TODO register @before
     regreq.setInstitutionUUID(institutionUUID)
     regreq.setPassword(password)
-    userResource.createUser(regreq)
+    
     
     //TODO: Can he log in?
     assert(false,"???") 
   }
   
-  lazy val chars = Stream.continually(Random.nextPrintableChar)
-  
+  */ 
   
 
 }

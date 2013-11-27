@@ -10,15 +10,12 @@ import kornell.core.entity.EnrollmentState
 package object jdbc {
   type UUID = String
   type ConnectionFactory = () => Connection
+  def prop(name: String) = System.getProperty(name)
 
-  /*
-  implicit def newCourseTO(r: ResultSet): CourseTO = 
-    TOs.newCourseTO( 
-    r.getString("courseUUID"), r.getString("code"), r.getString("title"),
-    r.getString("description"), r.getString("infoJson"),
-    r.getString("enrollmentUUID"), r.getDate("enrolledOn"),
-    r.getString("person_uuid"), r.getString("progress"), r.getString("repository_uuid"), r.getString("notes")) 
-    */
+  val DEFAULT_URL = "jdbc:mysql:///ebdb"
+  val DEFAULT_USERNAME= "kornell"
+  val DEFAULT_PASSWORD= "42kornell73"
+
 
   implicit def toEnrollment(rs: ResultSet): Enrollment =
     newEnrollment(

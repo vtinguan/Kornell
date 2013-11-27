@@ -58,7 +58,7 @@ class PreparedStmt(query: String, params: List[Any]) {
   }
 
   //TODO: Consider converting to a Stream for lazy processing
-  def map[T](fun: ResultSet => T): List[T] = {
+  def map[T](implicit fun: ResultSet => T): List[T] = {
     val xs: ListBuffer[T] = ListBuffer()
     foreach { rs => xs += fun(rs) }
     xs.toList

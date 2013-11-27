@@ -39,9 +39,8 @@ object DataSources {
     ping { () => DriverManager.getConnection(url, user, pass) }
   }
 
-  lazy val LOCAL = getConnection("jdbc:mysql:///ebdb", "kornell", "42kornell73")
+  lazy val LOCAL = getConnection(DEFAULT_URL,DEFAULT_USERNAME,DEFAULT_PASSWORD)
 
-  def prop(name: String) = System.getProperty(name)
 
   lazy val SYSPROPS = getConnection(
     prop("JDBC_CONNECTION_STRING"),
