@@ -12,17 +12,17 @@ import kornell.server.test.UnitSpec
 import kornell.server.repository.Entities
 
 @RunWith(classOf[JUnitRunner])
-class RegistrationSpec extends UnitSpec  {
-  val userResource = new UserResource 
+class RegistrationSpec extends UnitSpec {
+  val userResource = new UserResource
   val institution = Entities.newInstitution(randUUID, randStr, randStr, randURL, randURL)
-  
-  "A new user" should "login sucessfully (even if not confirmed yet)." in {      
-      val fullName = randName
-      val email = randEmail
-      val password = randStr
-	  val regreq = TOs.newRegistrationRequestTO(institution.getUUID, fullName, email, password)
-	  userResource.createUser(regreq)
-	  val userInfo = userResource.get(new MockSecurityContext(email))
-	  userInfo should not be (None)
+
+  "A new user" should "login sucessfully (even if not confirmed yet)." in {
+    val fullName = randName
+    val email = randEmail
+    val password = randStr
+    val regreq = TOs.newRegistrationRequestTO(institution.getUUID, fullName, email, password)
+    userResource.createUser(regreq)
+    val userInfo = userResource.get(new MockSecurityContext(email))
+    userInfo should not be (None)
   }
 }
