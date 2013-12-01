@@ -13,6 +13,7 @@ import kornell.core.to.CourseTO
 import kornell.server.repository.s3.S3
 import kornell.core.util.StringUtils
 import kornell.core.entity.EnrollmentState
+import kornell.core.to.RegistrationRequestTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -91,5 +92,13 @@ object TOs {
     to
   } 
   
-  def newRegistrationRequestTO = tos.newRegistrationRequestTO.as
+  def newRegistrationRequestTO:RegistrationRequestTO = tos.newRegistrationRequestTO.as
+  def newRegistrationRequestTO(institutionUUID:String,fullName:String,email:String,password:String):RegistrationRequestTO = {
+    val to = newRegistrationRequestTO
+    to.setInstitutionUUID(institutionUUID)
+    to.setFullName(fullName)
+    to.setEmail(email)
+    to.setPassword(password)
+    to
+  }
 }
