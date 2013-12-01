@@ -103,12 +103,10 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private String prevKey() {
-		// TODO Auto-generated method stub
 		return prevActom != null ? prevActom.getKey() : "";
 	}
 
 	private String nextKey() {
-		// TODO Auto-generated method stub
 		return nextActom != null ? nextActom.getKey() : "";
 	}
 

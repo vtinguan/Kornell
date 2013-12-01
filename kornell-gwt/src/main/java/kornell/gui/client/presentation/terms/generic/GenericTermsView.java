@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.terms.generic;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -69,11 +70,12 @@ public class GenericTermsView extends Composite implements TermsView {
 	private final EventBus bus;
 
 	public GenericTermsView(EventBus bus, UserSession session,
-			PlaceController placeCtrl, Place defaultPlace) {
+			PlaceController placeCtrl, Place defaultPlace, Institution institution) {
 		this.bus = bus;
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.defaultPlace = defaultPlace;
+		this.institution = institution;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 		// TODO i18n
@@ -85,29 +87,13 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	private void initData() {
 		user = session.getUserInfo();
-		paint();
-
-		// TODO: Improve client API (eg. client.registrations().getUnsigned();
-		session.registrations().getUnsigned(new Callback<RegistrationsTO>() {
-			@Override
-			public void ok(RegistrationsTO to) {
-				Set<Entry<Registration, Institution>> entrySet = to
-						.getRegistrationsWithInstitutions().entrySet();
-				ArrayList<Entry<Registration, Institution>> regs = new ArrayList<Entry<Registration, Institution>>(
-						entrySet);
-				// TODO: Handle multiple unsigned terms
-				if (regs.size() > 0) {
-					Entry<Registration, Institution> e = regs.get(0);
-					registration = e.getKey();
-					institution = e.getValue();
-
-					paint();
-				} else {
-					GWT.log("OPS! Should not be here if nothing to sign");
-					goStudy();
-				}
+		for (Registration registration : user.getRegistrationsTO().getRegistrations()) {
+			if(institution.getUUID().equals(registration.getInstitutionUUID()) && registration.getTermsAcceptedOn() != null){
+				GWT.log("OPS! Should not be here if there's nothing to sign.");
+				goStudy();
 			}
-		});
+		}
+		paint();
 	}
 
 	private void paint() {
@@ -115,9 +101,7 @@ public class GenericTermsView extends Composite implements TermsView {
 		titleUser.setText(p.getFullName());
 		if (institution != null) {
 			txtTerms.getElement().setInnerHTML(institution.getTerms());
-
-			institutionLogo
-					.setUrl(institution.getAssetsURL() + barLogoFileName);
+			institutionLogo.setUrl(institution.getAssetsURL() + barLogoFileName);
 		}
 	}
 
@@ -142,7 +126,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void goStudy() {
-		placeCtrl.goTo(new CourseClassPlace(constants.getDefaultCourseClassUUID()));
+		placeCtrl.goTo(defaultPlace);
 	}
 
 }

@@ -103,7 +103,7 @@ object Entities {
     val r = newRegistration
     r.setPersonUUID(personUUID)
     r.setInstitutionUUID(institutionUUID)
-    r.setTermsAcceptedon(termsAcceptedOn)
+    r.setTermsAcceptedOn(termsAcceptedOn)
     r
   }
 

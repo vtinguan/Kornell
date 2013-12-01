@@ -1,5 +1,8 @@
 package kornell.api.client;
 
+import java.util.List;
+
+import kornell.core.entity.Registration;
 import kornell.core.entity.Role;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
@@ -78,7 +81,7 @@ public class UserSession extends KornellClient {
 	}
 
 	private String prefixed(String key) {
-		return PREFIX + SEPARATOR + personUUID + SEPARATOR + key;
+		return PREFIX + SEPARATOR + currentUser.getPerson().getUUID() + SEPARATOR + key;
 	}
 
 	public String getPersonUUID() {
@@ -135,7 +138,7 @@ public class UserSession extends KornellClient {
 			cb.ok(currentUser);
 	}
 
-	protected void setCurrentUser(UserInfoTO user) {
+	public void setCurrentUser(UserInfoTO user) {
 		this.currentUser = user;
 	};
 
@@ -171,11 +174,17 @@ public class UserSession extends KornellClient {
 	public UserInfoTO getUserInfo() {
 		return currentUser;
 	}
-
-
+	
 	public boolean isDean() {
 		return hasRole(RoleType.dean, institutionUUID);
-		
+	}
+	
+	public boolean isRegistered(){
+		for (Registration registration : currentUser.getRegistrationsTO().getRegistrations()) {
+			if(registration.getInstitutionUUID().equals(institutionUUID))
+				return true;
+		}
+		return false;
 	}
 
 }

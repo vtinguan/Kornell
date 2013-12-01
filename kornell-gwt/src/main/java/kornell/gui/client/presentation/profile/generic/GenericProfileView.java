@@ -4,19 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.course.CourseClassPlace;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.SimpleDatePicker;
 import kornell.gui.client.presentation.util.ValidatorHelper;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -25,7 +22,6 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -113,12 +109,14 @@ public class GenericProfileView extends Composite implements ProfileView {
 	
 	Map<Widget, Field> fieldsToErrorLabels;
 	private UserInfoTO user;
-
+	private CourseClassTO currentCourseClass;
+	
 	public GenericProfileView(EventBus bus, UserSession session,
-			final PlaceController placeCtrl) {
+			final PlaceController placeCtrl, CourseClassTO currentCourseClass) {
 		this.bus = bus;
 		this.session = session;
 		this.placeCtrl = placeCtrl;
+		this.currentCourseClass = currentCourseClass;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 		// i18n
@@ -130,12 +128,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
-						Place newPlace = event.getNewPlace();
-						
-						if(newPlace instanceof ProfilePlace){							
+						if(event.getNewPlace() instanceof ProfilePlace){							
 							 initData();
 						}
-						
 					}});
 	}
 	
@@ -257,7 +252,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiHandler("btnClose")
 	void doClose(ClickEvent e) {
 		form.addStyleName("shy");
-		placeCtrl.goTo(new CourseClassPlace(constants.getDefaultCourseClassUUID()));
+		placeCtrl.goTo(new CourseClassPlace(currentCourseClass.getCourseClass().getUUID()));
 	}
 
 	private void clearErrors() {

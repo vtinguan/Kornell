@@ -55,6 +55,7 @@ class UserResource{
     		user.setInstitutionAssetsURL(institution.get.getTerms)
     	val roles = Auth.rolesOf(username)
     	user.setRoles((Set.empty ++ roles).asJava)
+    	user.setRegistrationsTO(Registrations.getAll(p))
     	Option(user)
   }
 
@@ -78,6 +79,9 @@ class UserResource{
     		Auth.confirmAccount(user.getPerson().getUUID())
     		user.getPerson().setConfirmation("")
     	}
+    	val roles = Auth.rolesOf(user.getUsername)
+    	user.setRoles((Set.empty ++ roles).asJava)
+    	user.setRegistrationsTO(Registrations.getAll(p))
     	
     	Option(user)
   }
@@ -100,6 +104,9 @@ class UserResource{
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
     	val institution = Institutions.usersInstitution(p)
     	user.setInstitutionAssetsURL(institution.get.getTerms)
+    	val roles = Auth.rolesOf(user.getUsername)
+    	user.setRoles((Set.empty ++ roles).asJava)
+    	user.setRegistrationsTO(Registrations.getAll(p))
     	Option(user)
   }
   

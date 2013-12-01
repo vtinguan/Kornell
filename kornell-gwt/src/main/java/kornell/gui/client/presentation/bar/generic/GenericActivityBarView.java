@@ -1,10 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
-import kornell.api.client.UserSession;
-import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEventHandler;
@@ -20,7 +17,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -29,7 +25,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 
 public class GenericActivityBarView extends Composite implements ActivityBarView, NavigationForecastEventHandler {
@@ -38,8 +33,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	
-	private PlaceController placeCtrl;
 		
 	private String page;
 	
@@ -70,19 +63,16 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	@UiField
 	FlowPanel activityBar;
-
-	private EventBus bus;
-	private UserInfoTO user;
-	private UserSession session;
 	
-	public GenericActivityBarView(EventBus bus, PlaceController placeCtrl, UserSession session) {
+	private UserInfoTO user;
+	private ClientFactory clientFactory;
+	
+	public GenericActivityBarView(ClientFactory clientFactory) {
+		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		this.bus = bus;
-		this.placeCtrl = placeCtrl;
-		this.session = session;
-		bus.addHandler(NavigationForecastEvent.TYPE,this);
+		clientFactory.getEventBus().addHandler(NavigationForecastEvent.TYPE,this);
 		
-		bus.addHandler(PlaceChangeEvent.TYPE,
+		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
@@ -98,7 +88,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 						
 					}});
 
-		user = session.getUserInfo();
+		user = clientFactory.getUserSession().getUserInfo();
 		display();
 		
 		setUpArrowNavigation();
@@ -116,7 +106,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
 		
 		
-		if (placeCtrl.getWhere() instanceof CourseDetailsPlace) {
+		if (clientFactory.getPlaceController().getWhere() instanceof CourseDetailsPlace) {
 			btnDetails.addStyleName("btnSelected");
 			//enableButton(BUTTON_PREVIOUS, false);
 			//enableButton(BUTTON_NEXT, false);
@@ -179,43 +169,35 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@UiHandler("btnNext")
 	public void btnNextClicked(ClickEvent e){
-		bus.fireEvent(NavigationRequest.next());
+		clientFactory.getEventBus().fireEvent(NavigationRequest.next());
 	}
 
 	@UiHandler("btnPrevious")
 	public void btnPrevClicked(ClickEvent e){
-		bus.fireEvent(NavigationRequest.prev());		
+		clientFactory.getEventBus().fireEvent(NavigationRequest.prev());		
 	}
 	
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
-		if(placeCtrl.getWhere() instanceof CourseClassPlace){
-			placeCtrl.goTo(new CourseDetailsPlace(getCourseClassUUID()));
+		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace){
+			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(clientFactory.getCurrentCourse().getCourseClass().getUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			placeCtrl.goTo(new CourseClassPlace(getCourseClassUUID()));
+			clientFactory.getPlaceController().goTo(new CourseClassPlace(clientFactory.getCurrentCourse().getCourseClass().getUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		
 	}
-
-	private String getCourseClassUUID() {
-		return constants.getDefaultCourseClassUUID();
-	}
 	
 	@UiHandler("btnNotes")
 	void handleClickBtnNotes(ClickEvent e) {
-		
 		if(notesPopup == null){
-			session.getCourseClassTO(getCourseClassUUID(),new Callback<CourseClassTO>(){
-				@Override
-				public void ok(CourseClassTO courseClass) {
-					notesPopup = new NotesPopup(session, courseClass.getCourseClass().getUUID(), courseClass.getEnrollment().getNotes());
-					notesPopup.show();
-				}			
-			});	
+			notesPopup = new NotesPopup(clientFactory.getUserSession(), 
+					clientFactory.getCurrentCourse().getCourseClass().getUUID(), 
+					clientFactory.getCurrentCourse().getEnrollment().getNotes());
+			notesPopup.show();
 		} else {
 			notesPopup.show();
 		}

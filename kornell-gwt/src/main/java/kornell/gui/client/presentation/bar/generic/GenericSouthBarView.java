@@ -1,7 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
+import kornell.core.to.CourseClassTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
@@ -43,18 +43,13 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 	@UiField
 	FlowPanel southBar;
 
-	private EventBus bus;
+	private ClientFactory clientFactory;
 
-	private UserSession session;
-
-	public GenericSouthBarView(EventBus bus, final PlaceController placeCtrl,
-			UserSession session) {
+	public GenericSouthBarView(ClientFactory clientFactory) {
+		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		this.bus = bus;
-		this.placeCtrl = placeCtrl;
-		this.session = session;
 
-		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
 			public void onPlaceChange(PlaceChangeEvent event) {
 				Place newPlace = event.getNewPlace();
@@ -82,13 +77,13 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 
 	private ActivityBarView getActivityBarView() {
 		if (activityBarView == null)
-			activityBarView = new GenericActivityBarView(bus, placeCtrl, session);
+			activityBarView = new GenericActivityBarView(clientFactory);
 		return activityBarView;
 	}
 
 	private CourseBarView getCourseBarView(Place newPlace) {
 		if (courseBarView == null)
-			courseBarView = new GenericCourseBarView(bus, placeCtrl);
+			courseBarView = new GenericCourseBarView(clientFactory.getEventBus(), placeCtrl);
 		courseBarView.updateSelection(newPlace);
 		return courseBarView;
 	}

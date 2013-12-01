@@ -7,6 +7,7 @@ import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.presentation.admin.home.DeanHomeView;
 import kornell.gui.client.presentation.course.CourseClassPresenter;
@@ -45,7 +46,10 @@ public interface ClientFactory {
 	PlaceHistoryMapper getHistoryMapper();
 	EventBus getEventBus();
 	Place getDefaultPlace();
+	void setDefaultPlace(Place place);
 	Institution getInstitution();
+	CourseClassTO getCurrentCourse();
+	void setCurrentCourse(CourseClassTO courseClass);
 
 	EntityFactory getEntityFactory();
 	TOFactory getTOFactory();
@@ -83,4 +87,6 @@ public interface ClientFactory {
 	DeanHomeView getDeanHomeView();
 
 	UserSession getUserSession();
+
+
 }

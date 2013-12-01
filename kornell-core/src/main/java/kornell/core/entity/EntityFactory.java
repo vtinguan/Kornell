@@ -1,5 +1,7 @@
 package kornell.core.entity;
 
+import kornell.core.to.CourseClassTO;
+
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 

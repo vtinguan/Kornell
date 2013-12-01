@@ -34,22 +34,27 @@ object Registrations {
     rs.getString("assetsURL"),
     rs.getString("baseURL"))
 
-  //TODO: Use map instead of foreach
   def unsigned(implicit person: Person): RegistrationsTO = {
-    val registrationsWithInstitutions = sql"""
+    val registrationList = sql"""
 	select r.person_uuid, r.institution_uuid, r.termsAcceptedOn, 
 		i.name, i.terms, i.assetsURL, i.baseURL
 	from Registration r
 	join Institution i  on r.institution_uuid = i.uuid
 	where r.termsAcceptedOn is null
       and r.person_uuid=${person.getUUID}
-	""".map { rs =>
-      val r = toRegistration(rs)
-      val i = toInstitution(rs)
-      (r, i)
-    }.toMap
+	""".map[Registration](toRegistration)
+    newRegistrationsTO(registrationList)
+  }
 
-    newRegistrationsTO(registrationsWithInstitutions)
+  def getAll(implicit person: Person): RegistrationsTO = {
+    val registrationList = sql"""
+	select r.person_uuid, r.institution_uuid, r.termsAcceptedOn, 
+		i.name, i.terms, i.assetsURL, i.baseURL
+	from Registration r
+	join Institution i  on r.institution_uuid = i.uuid
+	where r.person_uuid=${person.getUUID}
+	""".map[Registration](toRegistration)
+    newRegistrationsTO(registrationList)
   }
 
   def signingNeeded(implicit person: Person): Boolean =
