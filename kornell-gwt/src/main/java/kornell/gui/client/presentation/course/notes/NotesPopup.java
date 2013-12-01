@@ -19,7 +19,7 @@ public class NotesPopup {
 	PopupPanel glass;
 	TextArea richTextArea;
 	KornellClient client;
-	String courseUUID;
+	String courseClassUUID;
 	String notes;
 
 	// TODO: fetch these dynamically
@@ -30,19 +30,19 @@ public class NotesPopup {
 	
 
 	public NotesPopup(final KornellClient client, final String courseUUID, final String notes) {
-		this.courseUUID = courseUUID;
+		this.courseClassUUID = courseUUID;
 		this.notes = notes;
 		this.client = client;
 
 		glass = new PopupPanel();
-		glass.setStyleName("glass");
+		glass.addStyleName("gwt-PopupPanelGlass");
 
 		popup = new PopupPanel(true);
-		popup.setStyleName("notesPopup");
+		popup.addStyleName("notesPopup");
 
 		richTextArea = new TextArea();
 		richTextArea.setText(notes);
-		richTextArea.setStyleName("notesTextArea");
+		richTextArea.addStyleName("notesTextArea");
 
 		popup.add(richTextArea);
 		
@@ -50,7 +50,7 @@ public class NotesPopup {
 	}
 	
 	private void updateNotes(){
-		client.notesUpdated(courseUUID, richTextArea.getText());
+		client.notesUpdated(courseClassUUID, richTextArea.getText());
 	}
 	
 	private void placePopup() {

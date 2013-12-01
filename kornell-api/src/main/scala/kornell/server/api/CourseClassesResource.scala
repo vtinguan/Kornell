@@ -8,6 +8,7 @@ import kornell.server.repository.jdbc.Auth
 import javax.ws.rs.core.Context
 import kornell.core.lom.Contents
 import kornell.core.to.CoursesTO
+import kornell.core.to.CourseClassesTO
 
 @Path("courseClasses")
 class CourseClassesResource {
@@ -16,7 +17,7 @@ class CourseClassesResource {
   def getCourseClassResource(@PathParam("uuid") uuid:String) = CourseClassResource(uuid)
   
   @GET
-  @Produces(Array(CoursesTO.TYPE))
+  @Produces(Array(CourseClassesTO.TYPE))
   def getClasses(implicit @Context sc: SecurityContext, @PathParam("institutionUUID") institutionUUID:String):Contents = 
   Auth.withPerson { person =>
   	???

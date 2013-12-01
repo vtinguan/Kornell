@@ -2,7 +2,7 @@ package kornell.api.client;
 
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
-import kornell.core.to.CourseTO;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.RegistrationsTO;
@@ -39,8 +39,8 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		GET("/email/welcome/" + userUUID).sendRequest(null, cb);
 	}
 
-	public void getCourseTO(String uuid, Callback<CourseTO> cb) {
-		GET("/courses/" + uuid).sendRequest(null, cb);
+	public void getCourseClassTO(String courseClassUUID, Callback<CourseClassTO> cb) {
+		GET("/courseClasses/" + courseClassUUID + "/to").sendRequest(null, cb);
 	}
 
 	public static KornellClient getInstance() {
@@ -100,8 +100,8 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		PUT("/enrollment/").withContentType(Enrollments.TYPE).withEntityBody(enrollments).go(cb);
 	}
 	
-	public void notesUpdated(String courseUUID, String notes) {
-		PUT("/enrollment/" + courseUUID + "/notesUpdated").sendRequest(notes,
+	public void notesUpdated(String courseClassUUID, String notes) {
+		PUT("/enrollment/" + courseClassUUID + "/notesUpdated").sendRequest(notes,
 				new Callback<Void>() {
 					@Override
 					public void ok(Void v) {

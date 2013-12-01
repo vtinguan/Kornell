@@ -84,13 +84,8 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void initData() {
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO userTO) {
-				user = userTO;
-				paint();
-			}
-		});
+		user = session.getUserInfo();
+		paint();
 
 		// TODO: Improve client API (eg. client.registrations().getUnsigned();
 		session.registrations().getUnsigned(new Callback<RegistrationsTO>() {

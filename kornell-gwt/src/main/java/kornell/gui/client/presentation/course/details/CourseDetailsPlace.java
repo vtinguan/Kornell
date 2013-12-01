@@ -12,11 +12,11 @@ public class CourseDetailsPlace extends Place{
 		this.courseClassUUID = courseClassUUID;
 	}
 	
-	public String getCourseUUID() {
+	public String getCourseClassUUID() {
 		return courseClassUUID;
 	}
 
-	public void setCourseUUID(String courseClassUUID) {
+	public void setCourseClassUUID(String courseClassUUID) {
 		this.courseClassUUID = courseClassUUID;
 	}
 	
@@ -29,7 +29,7 @@ public class CourseDetailsPlace extends Place{
 		}
 
 		public String getToken(CourseDetailsPlace place) {
-			return place.getCourseUUID();
+			return place.getCourseClassUUID();
 		}
 	}
 }

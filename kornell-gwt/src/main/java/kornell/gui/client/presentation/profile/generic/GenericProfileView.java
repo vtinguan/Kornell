@@ -140,24 +140,12 @@ public class GenericProfileView extends Composite implements ProfileView {
 	}
 	
 	private void initData() {
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO userTO) {
-				user = userTO;
-				isCurrentUser = true;
-				isUserCreation = false;
-				isEditMode = false;
-				isCurrentUser = userTO.getUsername().equals(((ProfilePlace) placeCtrl.getWhere()).getUsername());
-				display();
-			}
-			@Override
-			protected void unauthorized() {
-				isCurrentUser = true;
-				isUserCreation = true;
-				isEditMode = true;
-				display();
-			}
-		});
+		user = session.getUserInfo();
+		isCurrentUser = true;
+		isUserCreation = false;
+		isEditMode = false;
+		isCurrentUser = user.getUsername().equals(((ProfilePlace) placeCtrl.getWhere()).getUsername());
+		display();
 	}
 
 	private boolean validateFields() {

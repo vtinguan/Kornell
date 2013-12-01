@@ -73,17 +73,8 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	// TODO i18n xml
 	public GenericVitrineView() {
-		
-		String imgLogoURL = ClientProperties.getDecoded("institutionAssetsURL");
-
 		initWidget(uiBinder.createAndBindUi(this));
 		displayLoginPanel(true);
-		
-		if (imgLogoURL != null) {
-			imgLogo.setUrl(composeURL(imgLogoURL, "logo300x80.png"));
-		} else {
-			imgLogo.setUrl("/skins/first/icons/logo.png");
-		}
 		
 		pwdPassword.addKeyPressHandler(new KeyPressHandler() {
 			@Override
@@ -196,6 +187,15 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@Override
 	public String getSuPasswordConfirm() {
 		return suPasswordConfirm.getValue();
+	}
+
+	@Override
+	public void setLogoURL(String imgLogoURL) {
+		if (imgLogoURL != null) {
+			imgLogo.setUrl(composeURL(imgLogoURL, "logo300x80.png"));
+		} else {
+			imgLogo.setUrl("/skins/first/icons/logo.png");
+		}
 	}
 
 }

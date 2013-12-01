@@ -22,6 +22,10 @@ import kornell.server.util.EmailSender
 
 
 object RegistrationEnrollmentService {
+  
+    def main(args: Array[String]) {
+      println(UUID.random)
+    }
 
   def deanCreateEnrollmentsBatch(enrollments: kornell.core.entity.Enrollments, dean: Person) =
     enrollments.getEnrollments().asScala.foreach(e => deanCreateEnrollmentBatch(e,dean))

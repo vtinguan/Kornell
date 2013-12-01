@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream
 import com.amazonaws.services.s3.model.PutObjectRequest
 import scala.io.Source
 import kornell.core.util.StringUtils._
+import kornell.server.repository.jdbc.CourseClasses
 
 class S3(regionName: String,
   accessKey: String,
@@ -81,9 +82,21 @@ object S3 {
 
   def main(args: Array[String]) {
 
-    S3("840e93aa-2373-4fb5-ba4a-999bb3f43888")
+    /*S3("F7A4A77F-D519-4348-8F62-EDB0C2C48395")
       .actoms
-      .foreach { println(_) }
+      .foreach { println(_) }*/
+    
+      val classRepo = CourseClasses("B6A60AB5-3889-47B4-93DA-60E515309DAF")
+      val versionRepo = classRepo.version
+      val version = versionRepo.get
+      val repositoryUUID = version.getRepositoryUUID();
+      val s3 = S3(repositoryUUID)
+      val structureSrc = s3.source("structure.knl")
+      val structureText = structureSrc.mkString("")
+      val baseURL = s3.baseURL
+      printf(baseURL)
+      //val visited = classRepo.actomsVisitedBy(person) 
+      //val contents = ContentsParser.parse(baseURL, s3.prefix, structureText, visited)
     /*
     val s3 = new S3("sa-east-1","AKIAJZREK4G3OPFKQQTA","vFn6ZEE9PjKxDJ0Sqe2fit5wqL8AeFExVHELUtJ2","aws-examples","ten-thousand")
     s3.actoms.foreach {println(_)} 
