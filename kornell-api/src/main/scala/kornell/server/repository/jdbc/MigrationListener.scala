@@ -9,22 +9,8 @@ import com.googlecode.flyway.core.api.FlywayException
 
 @WebListener
 class MigrationListener extends ServletContextListener {
-  override def contextInitialized(e: ServletContextEvent): Unit = {
-    try {
-      val flyway = new Flyway();
-      flyway.setDataSource(DataSources.KornellDS)
-      flyway.setLocations("db/");
-      flyway.migrate();
-    } catch {
-      case e:FlywayException => {
-        //TODO: Fail deployment and notify the world
-        e.printStackTrace(System.err)
-        //System.exit(-1)
-      }
-    }
-  }
-
-  override def contextDestroyed(e: ServletContextEvent): Unit = {
-  }
+  override def contextInitialized(e: ServletContextEvent): Unit = Migration()
+  
+  override def contextDestroyed(e: ServletContextEvent): Unit = {}
 
 }

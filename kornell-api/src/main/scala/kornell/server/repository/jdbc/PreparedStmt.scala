@@ -18,7 +18,7 @@ import java.sql.Timestamp
 class PreparedStmt(query: String, params: List[Any]) {
 
   def connected[T](fun: Connection => T): T = {
-    val conn = connect()
+    val conn = connectionFactory.get()
     try fun(conn)
     finally conn.close
   }
@@ -28,7 +28,7 @@ class PreparedStmt(query: String, params: List[Any]) {
       val pstmt = conn.prepareStatement(query.stripMargin.trim)
 
       def setQueryParam(param: Tuple2[Any, Int]) = param match {
-        case (null,i) => throw new NullPointerException("This database can not accept nulls. Sorry :(")
+        case (null,i) => pstmt.setObject(i+1,null)
         case (p: String, i) => pstmt.setString(i + 1, p)
         case (p: Integer, i) => pstmt.setInt(i + 1, p)
         case (p: Double, i) => pstmt.setDouble(i + 1, p)
@@ -58,7 +58,7 @@ class PreparedStmt(query: String, params: List[Any]) {
   }
 
   //TODO: Consider converting to a Stream for lazy processing
-  def map[T](fun: ResultSet => T): List[T] = {
+  def map[T](implicit fun: ResultSet => T): List[T] = {
     val xs: ListBuffer[T] = ListBuffer()
     foreach { rs => xs += fun(rs) }
     xs.toList
