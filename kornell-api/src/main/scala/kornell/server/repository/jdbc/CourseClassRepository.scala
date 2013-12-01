@@ -23,34 +23,39 @@ class CourseClassRepository(uuid:String) {
   	order by eventFiredAt
   	""".map[String]({ rs => rs.getString("actom_key") })
   
-  def byPerson(personUUID: String): CourseClassTO = 
-    sql"""
-		select     
-			c.uuid as courseUUID, 
-		    c.code,
-		    c.title, 
-		    c.description,
-		    c.infoJson,
-		    cv.uuid as courseVersionUUID,
-		    cv.name as courseVersionName,
-		    cv.repository_uuid as repositoryUUID, 
-		    cv.versionCreatedAt,
-		    cc.uuid as courseClassUUID,
-		    cc.name as courseClassName,
-		    cc.institution_uuid as institutionUUID,
-		    e.uuid as enrollmentUUID, 
-		    e.enrolledOn, 
-		    e.person_uuid as personUUID, 
-		    e.progress,
-		    e.notes,
-		    e.state as enrollmentState
-		from Course c
-		left join CourseVersion cv on cv.course_uuid = c.uuid
-		left join CourseClass cc on cc.courseVersion_uuid = cv.uuid
-		left join Enrollment e on cc.uuid = e.class_uuid
-		where cc.uuid = ${uuid} and 
-			e.person_uuid = ${personUUID};
-	""".map[CourseClassTO](toCourseClassTO).head
+  def byPerson(personUUID: String): CourseClassTO = {
+    val courseClasses = sql"""
+			select     
+				c.uuid as courseUUID, 
+			    c.code,
+			    c.title, 
+			    c.description,
+			    c.infoJson,
+			    cv.uuid as courseVersionUUID,
+			    cv.name as courseVersionName,
+			    cv.repository_uuid as repositoryUUID, 
+			    cv.versionCreatedAt,
+			    cc.uuid as courseClassUUID,
+			    cc.name as courseClassName,
+			    cc.institution_uuid as institutionUUID,
+			    e.uuid as enrollmentUUID, 
+			    e.enrolledOn, 
+			    e.person_uuid as personUUID, 
+			    e.progress,
+			    e.notes,
+			    e.state as enrollmentState
+			from Course c
+			left join CourseVersion cv on cv.course_uuid = c.uuid
+			left join CourseClass cc on cc.courseVersion_uuid = cv.uuid
+			left join Enrollment e on cc.uuid = e.class_uuid
+			where cc.uuid = ${uuid} and 
+				e.person_uuid = ${personUUID};
+		""".map[CourseClassTO](toCourseClassTO)
+		if(courseClasses.size > 0)
+		  courseClasses.head
+		else
+		  null
+  	}
 }
 
 object CourseClassRepository extends App{

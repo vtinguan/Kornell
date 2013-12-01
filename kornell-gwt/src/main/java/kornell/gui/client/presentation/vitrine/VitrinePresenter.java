@@ -3,14 +3,21 @@ package kornell.gui.client.presentation.vitrine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import kornell.api.client.Callback;
+import kornell.core.entity.Institution;
+import kornell.core.entity.Registration;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.ValidatorHelper;
+import kornell.gui.client.sequence.CourseSequencer;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
@@ -52,26 +59,47 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		view.hideMessage();
 		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
 			@Override
-			public void ok(UserInfoTO user) {
+			public void ok(final UserInfoTO user) {
 				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
 				if("".equals(user.getPerson().getConfirmation())){
-					if(user.isSigningNeeded()){
-						clientFactory.getPlaceController().goTo(new TermsPlace());
-					} else {
-						String token = user.getLastPlaceVisited();
-						Place place;
-						if(token == null || token.contains("vitrine")){
-							place = clientFactory.getDefaultPlace();
-						}else {
-							place = clientFactory.getHistoryMapper().getPlace(token);
-						}
-						clientFactory.getEventBus().fireEvent(new LoginEvent(user));
-						clientFactory.getPlaceController().goTo(place);
-					}
+					clientFactory.getUserSession().getCourseClassTO("B6A60AB5-3889-47B4-93DA-60E515309DAF",new Callback<CourseClassTO>(){
+						@Override
+						public void ok(CourseClassTO courseClass) {
+							if(courseClass != null) {
+								clientFactory.setCurrentCourse(courseClass);
+								clientFactory.getUserSession().setCurrentUser(user);
+								clientFactory.getUserSession().setItem("CURRENT_COURSE_CLASS_UUID", courseClass.getCourseClass().getUUID());
+								if(clientFactory.getDefaultPlace() == null || clientFactory.getDefaultPlace() instanceof CourseClassPlace){
+									clientFactory.setDefaultPlace(new CourseClassPlace(courseClass.getCourseClass().getUUID()));
+								}
+							}
+							doLogin(user);
+						}			
+					});	
 				} else {
 					view.setMessage("Usuário não verificado. Confira seu email.");
 					view.showMessage();
 					ClientProperties.remove("Authorization");
+				}
+			}
+
+			private void doLogin(UserInfoTO user) {
+				if(!clientFactory.getUserSession().isRegistered()){
+					view.setMessage("Usuário não registrado nesta instituição.");
+					view.showMessage();
+					ClientProperties.remove("Authorization");
+				} else if(user.isSigningNeeded()){
+					clientFactory.getPlaceController().goTo(new TermsPlace());
+				} else {
+					String token = user.getLastPlaceVisited();
+					Place place;
+					if(token == null || token.contains("vitrine")){
+						place = clientFactory.getDefaultPlace();
+					}else {
+						place = clientFactory.getHistoryMapper().getPlace(token);
+					}
+					clientFactory.getEventBus().fireEvent(new LoginEvent(user));
+					clientFactory.getPlaceController().goTo(place);
 				}
 			}
 

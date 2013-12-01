@@ -13,8 +13,6 @@ public interface Course extends Entity{
 	
 	String getInfoJson();
 	void setInfoJson(String infoJson);
-	
-
 
 	//TODO: Delete
 	@Deprecated

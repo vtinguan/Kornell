@@ -21,9 +21,9 @@ object TOs {
 
   def newUserInfoTO = tos.newUserInfoTO.as
   def newRegistrationsTO: RegistrationsTO = tos.newRegistrationsTO.as
-  def newRegistrationsTO(registrationsWithInstitutions: Map[Registration, Institution]): RegistrationsTO = {
+  def newRegistrationsTO(registrationList: List[Registration]): RegistrationsTO = {
     val registrations = newRegistrationsTO
-    registrations.setRegistrationsWithInstitutions(registrationsWithInstitutions asJava)
+    registrations.setRegistrations(registrationList asJava)
     registrations
   }
   

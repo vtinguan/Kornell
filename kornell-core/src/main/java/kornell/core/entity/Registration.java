@@ -13,5 +13,5 @@ public interface Registration {
 	
 	//TODO: Enhance security with Digital Signatures
 	Date getTermsAcceptedOn();
-	void setTermsAcceptedon(Date termsAcceptedOn);
+	void setTermsAcceptedOn(Date termsAcceptedOn);
 }

@@ -1,43 +1,29 @@
 package kornell.gui.client.presentation.course.details.generic;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.UserSession;
 import kornell.core.lom.Actom;
-import kornell.core.lom.Content;
-import kornell.core.lom.Contents;
-import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
-import kornell.core.to.CourseTO;
-import kornell.core.to.UserInfoTO;
-import kornell.core.to.coursedetails.CertificationTO;
-import kornell.core.to.coursedetails.HintTO;
-import kornell.core.to.coursedetails.InfoTO;
-import kornell.core.to.coursedetails.TopicTO;
+import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.CourseClassPlace;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
-import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
 import kornell.gui.client.sequence.CourseSequencer;
 import kornell.gui.client.util.ClientProperties;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -67,13 +53,17 @@ public class GenericPageView extends Composite implements
 
 	private ExternalPage page;
 	private List<Actom> actoms;
+	private CourseClassTO currentCourse;
+	private UserSession session;
 	
 	public GenericPageView(EventBus eventBus, KornellClient client,
-			final PlaceController placeCtrl, final ExternalPage page) {
+			final PlaceController placeCtrl, UserSession session, final ExternalPage page, CourseClassTO currentCourse) {
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
 		this.page = page;
+		this.currentCourse = currentCourse;
+		this.session = session;
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 	}
@@ -85,8 +75,9 @@ public class GenericPageView extends Composite implements
 		pageAnchor.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				ClientProperties.set(CourseSequencer.class.getName() + ".CURRENT_KEY", page.getKey());
-				placeCtrl.goTo(new CourseClassPlace(constants.getDefaultCourseClassUUID()));
+				String breadCrumb = CourseSequencer.class.getName() + "." + currentCourse.getCourseClass().getUUID() + ".CURRENT_KEY";
+				session.setItem(breadCrumb, page.getKey());
+				placeCtrl.goTo(new CourseClassPlace(currentCourse.getCourseClass().getUUID()));
 			}
 		});
 		lblPage.add(pageAnchor);

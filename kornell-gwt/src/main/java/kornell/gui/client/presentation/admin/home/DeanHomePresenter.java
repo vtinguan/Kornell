@@ -48,7 +48,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		
 		//get courses for institution
 		//get enrollments for course
-		getEnrollments(getCourseClassUUID());
+		getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());
 	}
 
 	private List<Enrollment> getEnrollments(String courseClassUUID){
@@ -87,7 +87,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 					@Override
 					public void ok(Void to) {
 						GWT.log("ok");
-						getEnrollments(getCourseClassUUID());					
+						getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());					
 					}
 				});;
 			}
@@ -118,7 +118,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 
 	private Enrollment createEnrollment(String fullName, String email) {
 		Enrollment enrollment = clientFactory.getEntityFactory().newEnrollment().as();
-		enrollment.setCourseClassUUID(getCourseClassUUID());
+		enrollment.setCourseClassUUID(clientFactory.getCurrentCourse().getCourseClass().getUUID());
 		enrollment.setEnrolledOn(new Date());
 		enrollment.setState(EnrollmentState.preEnrolled);
 		enrollment.setUUID(UUID.random());
@@ -129,10 +129,6 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		enrollment.setPerson(person);
 		
 		return enrollment;
-	}
-
-	private String getCourseClassUUID() {
-		return constants.getDefaultCourseClassUUID();
 	}
 
 	private Enrollments createEnrollments(List<Enrollment> enrollmentsList) {
@@ -168,7 +164,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		clientFactory.getKornellClient().createEnrollments(enrollments, new Callback<Enrollments>() {
 			@Override
 			public void ok(Enrollments to) {
-				getEnrollments(getCourseClassUUID());
+				getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());
 			}
 		});
 	}

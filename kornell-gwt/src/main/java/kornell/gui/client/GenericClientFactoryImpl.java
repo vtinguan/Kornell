@@ -5,11 +5,10 @@ import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
-import kornell.core.entity.RoleType;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.TOFactory;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
@@ -41,6 +40,7 @@ import kornell.gui.client.presentation.course.forum.generic.GenericCourseForumVi
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.course.library.CourseLibraryView;
 import kornell.gui.client.presentation.course.library.generic.GenericCourseLibraryView;
+import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.course.specialists.generic.GenericCourseSpecialistsView;
@@ -124,6 +124,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private UserSession session;
 	private String locationStr;
 	private String[] locationStrArray;
+	private CourseClassTO currentCourseClass;
 
 	public GenericClientFactoryImpl() {
 	}
@@ -196,7 +197,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private SouthBarView getSouthBarView() {
 		if (southBarView == null)
-			southBarView = new GenericSouthBarView(bus, placeCtrl, session);
+			southBarView = new GenericSouthBarView(this);
 		return southBarView;
 	}
 
@@ -228,19 +229,26 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		} else {
 			defaultPlace = new VitrinePlace();
 		}
-		startApp(defaultPlace);
+		startClient();
 	}
 
 	private void startAuthenticated(UserSession session) {
 		if(session.isDean()){
 			defaultPlace = new DeanHomePlace();
+			startClient();
 		} else {
-			defaultPlace = new CourseClassPlace(constants.getDefaultCourseClassUUID());	
+			session.getCourseClassTO(session.getItem("CURRENT_COURSE_CLASS_UUID"),new Callback<CourseClassTO>(){
+				@Override
+				public void ok(CourseClassTO courseClass) {
+					setCurrentCourse(courseClass);
+					defaultPlace = new CourseClassPlace(courseClass.getCourseClass().getUUID());	
+					startClient();
+				}			
+			});	
 		}
-		startApp(defaultPlace);
 	}
 
-	protected void startApp(final Place defaultPlace) {
+	protected void startClient() {
 		// TODO not good
 		String institutionName = Window.Location.getParameter("institution");
 		if (institutionName == null)
@@ -304,7 +312,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public ProfileView getProfileView() {
-		return new GenericProfileView(bus, session, placeCtrl);
+		return new GenericProfileView(bus, session, placeCtrl, currentCourseClass);
 	}
 
 	@Override
@@ -314,7 +322,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public TermsView getTermsView() {
-		return new GenericTermsView(bus, session, placeCtrl, defaultPlace);
+		return new GenericTermsView(bus, session, placeCtrl, defaultPlace, institution);
 	}
 
 	@Override
@@ -346,7 +354,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public CourseDetailsView getCourseDetailsView() {
-		return new GenericCourseDetailsView(bus, session, placeCtrl);
+		return new GenericCourseDetailsView(bus, session, placeCtrl, currentCourseClass);
 	}
 
 	@Override
@@ -462,6 +470,21 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public Place getDefaultPlace() {
 		return defaultPlace;
+	}
+
+	@Override
+	public void setDefaultPlace(Place place) {
+		this.defaultPlace = place;
+	}
+
+	@Override
+	public CourseClassTO getCurrentCourse() {
+		return currentCourseClass;
+	}
+
+	@Override
+	public void setCurrentCourse(CourseClassTO courseClass) {
+		this.currentCourseClass = courseClass;
 	}
 
 	@Override

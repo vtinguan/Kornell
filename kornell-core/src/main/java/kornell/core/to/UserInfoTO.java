@@ -1,8 +1,10 @@
 package kornell.core.to;
 
+import java.util.List;
 import java.util.Set;
 
 import kornell.core.entity.Person;
+import kornell.core.entity.Registration;
 import kornell.core.entity.Role;
 import kornell.core.entity.RoleType;
 
@@ -29,4 +31,7 @@ public interface UserInfoTO {
 	
 	Set<Role> getRoles();
 	void setRoles(Set<Role> roles);
+	
+	RegistrationsTO getRegistrationsTO();
+	void setRegistrationsTO(RegistrationsTO r);
 }

@@ -86,12 +86,14 @@ public class GenericCourseDetailsView extends Composite implements
 
 	private Contents contents;
 	private List<Actom> actoms;
+	private CourseClassTO currentCourseClass;
 	
 	public GenericCourseDetailsView(EventBus eventBus, UserSession session,
-			PlaceController placeCtrl) {
+			PlaceController placeCtrl, CourseClassTO currentCourseClass) {
 		this.bus = eventBus;
 		this.session = session;
 		this.placeCtrl = placeCtrl;
+		this.currentCourseClass = currentCourseClass;
 		LoadingPopup.show();
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
@@ -282,9 +284,10 @@ public class GenericCourseDetailsView extends Composite implements
 	private FlowPanel getTopicsTableContent() {
 		FlowPanel topicsContentPanel = new FlowPanel();
 		topicsContentPanel.addStyleName("topicsContentPanel");
+		boolean startOpened = (contents.getChildren().size() == 1);
 		int i = 0;
-		for (Content content:contents.getChildren()) {
-			topicsContentPanel.add(new GenericTopicView(bus, session, placeCtrl, content, i++));
+		for (Content content: contents.getChildren()) {
+			topicsContentPanel.add(new GenericTopicView(bus, session, placeCtrl, session, currentCourseClass, content, i++, startOpened));
 		}		
 		return topicsContentPanel;
 	}
