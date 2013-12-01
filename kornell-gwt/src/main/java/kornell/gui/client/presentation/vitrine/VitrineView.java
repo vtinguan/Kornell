@@ -29,7 +29,7 @@ public interface VitrineView extends IsWidget {
 	void showUserCreatedAlert();
 	void hideUserCreatedAlert();
 	void displayLoginPanel(boolean b);
-
+	void setLogoURL(String imgLogoURL);
 
 	
 	

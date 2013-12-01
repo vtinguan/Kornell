@@ -3,9 +3,8 @@ package kornell.gui.client.presentation.bar.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
-import kornell.core.to.CourseTO;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
-import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEventHandler;
@@ -14,7 +13,6 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
-import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.sequence.NavigationRequest;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -26,7 +24,6 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -75,14 +72,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	FlowPanel activityBar;
 
 	private EventBus bus;
-	private KornellClient client;
 	private UserInfoTO user;
+	private UserSession session;
 	
 	public GenericActivityBarView(EventBus bus, PlaceController placeCtrl, UserSession session) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.bus = bus;
-		this.client = client;
 		this.placeCtrl = placeCtrl;
+		this.session = session;
 		bus.addHandler(NavigationForecastEvent.TYPE,this);
 		
 		bus.addHandler(PlaceChangeEvent.TYPE,
@@ -101,13 +98,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 						
 					}});
 
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO userTO) {
-				user = userTO;
-				display();
-			}
-		});
+		user = session.getUserInfo();
+		display();
 		
 		setUpArrowNavigation();
 	}
@@ -198,25 +190,29 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
 		if(placeCtrl.getWhere() instanceof CourseClassPlace){
-			placeCtrl.goTo(new CourseDetailsPlace(constants.getDefaultCourseClassUUID()));
+			placeCtrl.goTo(new CourseDetailsPlace(getCourseClassUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			placeCtrl.goTo(new CourseClassPlace(constants.getDefaultCourseClassUUID()));
+			placeCtrl.goTo(new CourseClassPlace(getCourseClassUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		
+	}
+
+	private String getCourseClassUUID() {
+		return constants.getDefaultCourseClassUUID();
 	}
 	
 	@UiHandler("btnNotes")
 	void handleClickBtnNotes(ClickEvent e) {
 		
 		if(notesPopup == null){
-			client.getCourseTO(constants.getDefaultCourseClassUUID(),new Callback<CourseTO>(){
+			session.getCourseClassTO(getCourseClassUUID(),new Callback<CourseClassTO>(){
 				@Override
-				public void ok(CourseTO course) {
-					notesPopup = new NotesPopup(client, course.getCourse().getUUID(), course.getEnrollment().getNotes());
+				public void ok(CourseClassTO courseClass) {
+					notesPopup = new NotesPopup(session, courseClass.getCourseClass().getUUID(), courseClass.getEnrollment().getNotes());
 					notesPopup.show();
 				}			
 			});	

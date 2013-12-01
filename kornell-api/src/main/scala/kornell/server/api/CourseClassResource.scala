@@ -11,8 +11,22 @@ import kornell.server.repository.jdbc.Courses
 import kornell.server.repository.s3.S3
 import kornell.server.repository.jdbc.CourseClasses
 import kornell.server.dev.util.ContentsParser
+import kornell.core.to.CourseClassesTO
+import javax.ws.rs.PathParam
+import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
+import kornell.core.to.CourseTO
+import kornell.core.to.CourseClassTO
 
+@Path("courseClass")
 class CourseClassResource(uuid:String) {
+  
+  @GET
+  @Path("to")
+  @Produces(Array(CourseClassTO.TYPE))
+  def get(implicit @Context sc: SecurityContext) =
+    Auth.withPerson { person =>
+	    CourseClasses(uuid).byPerson(person.getUUID)
+    }  
   
   @Produces(Array(Contents.TYPE))
   @Path("contents")

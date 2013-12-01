@@ -46,12 +46,7 @@ public class GenericCourseHomeView extends Composite implements CourseHomeView {
 	}
 	
 	private void initData() {
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO user) {
-				display(user);
-			}
-		});
+		display(session.getUserInfo());
 	}
 
 

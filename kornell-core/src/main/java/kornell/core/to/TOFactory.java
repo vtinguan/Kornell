@@ -6,6 +6,9 @@ public interface TOFactory  extends AutoBeanFactory {
 	public static String PREFIX = "application/vnd.kornell.v1.to.";
 	AutoBean<CourseTO> newCourseTO();
 	AutoBean<CoursesTO> newCoursesTO();
+	AutoBean<CourseClassTO> newCourseClassTO();
+	AutoBean<CourseClassesTO> newCourseClassesTO();
+	AutoBean<CourseVersionTO> newCourseVersionTO();
 	AutoBean<UserInfoTO> newUserInfoTO();
 	AutoBean<RegistrationsTO> newRegistrationsTO();
 	AutoBean<RegistrationRequestTO> newRegistrationRequestTO();

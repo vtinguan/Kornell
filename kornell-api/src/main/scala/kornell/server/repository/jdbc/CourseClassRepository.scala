@@ -5,12 +5,10 @@ import java.sql.ResultSet
 import kornell.core.entity.CourseClass
 import kornell.server.repository.Entities
 import kornell.core.entity.Person
+import kornell.core.to.CourseClassTO
+import kornell.core.to.CourseClassesTO
 
 class CourseClassRepository(uuid:String) {
-
-  implicit def toCourseClass(rs:ResultSet):CourseClass = 
-    Entities.newCourseClass(rs.getString("uuid"), rs.getString("name"),
-        rs.getString("courseVersion_uuid"),rs.getString("institution_uuid"))
   
   def get = sql"""
   select * from CourseClass where uuid=$uuid
@@ -25,8 +23,39 @@ class CourseClassRepository(uuid:String) {
   	order by eventFiredAt
   	""".map[String]({ rs => rs.getString("actom_key") })
   
+  def byPerson(personUUID: String): CourseClassTO = 
+    sql"""
+		select     
+			c.uuid as courseUUID, 
+		    c.code,
+		    c.title, 
+		    c.description,
+		    c.infoJson,
+		    cv.uuid as courseVersionUUID,
+		    cv.name as courseVersionName,
+		    cv.repository_uuid as repositoryUUID, 
+		    cv.versionCreatedAt,
+		    cc.uuid as courseClassUUID,
+		    cc.name as courseClassName,
+		    cc.institution_uuid as institutionUUID,
+		    e.uuid as enrollmentUUID, 
+		    e.enrolledOn, 
+		    e.person_uuid as personUUID, 
+		    e.progress,
+		    e.notes,
+		    e.state as enrollmentState
+		from Course c
+		left join CourseVersion cv on cv.course_uuid = c.uuid
+		left join CourseClass cc on cc.courseVersion_uuid = cv.uuid
+		left join Enrollment e on cc.uuid = e.class_uuid
+		where cc.uuid = ${uuid} and 
+			e.person_uuid = ${personUUID};
+	""".map[CourseClassTO](toCourseClassTO).head
 }
 
-object CourseClassRepository {
+object CourseClassRepository extends App{
+  override def main(args: Array[String]) {
+	apply("B6A60AB5-3889-47B4-93DA-60E515309DAF").byPerson("c1ee8adf-ba23-4f7e-80be-9ac3a6dde7b7")
+  }
   def apply(uuid:String) = new CourseClassRepository(uuid)
 }

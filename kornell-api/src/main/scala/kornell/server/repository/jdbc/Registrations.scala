@@ -38,7 +38,7 @@ object Registrations {
   def unsigned(implicit person: Person): RegistrationsTO = {
     val registrationsWithInstitutions = sql"""
 	select r.person_uuid, r.institution_uuid, r.termsAcceptedOn, 
-		i.name, i.terms, i.assetsURL
+		i.name, i.terms, i.assetsURL, i.baseURL
 	from Registration r
 	join Institution i  on r.institution_uuid = i.uuid
 	where r.termsAcceptedOn is null

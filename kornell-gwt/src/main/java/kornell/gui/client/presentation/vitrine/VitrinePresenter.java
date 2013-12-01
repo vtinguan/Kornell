@@ -27,6 +27,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		view = getView();
 		view.setPresenter(this);
 		checkIfUserWasCreated();
+		String imgLogoURL = clientFactory.getInstitution().getAssetsURL();
+		view.setLogoURL(imgLogoURL);
 	}
 
 	@Override

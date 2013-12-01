@@ -33,16 +33,16 @@ class EnrollmentResource{
   
   
   @PUT
-  @Path("{courseUUID}/notesUpdated")
+  @Path("{courseClassUUID}/notesUpdated")
   @Produces(Array("text/plain"))
   def putNotesChange(implicit @Context sc: SecurityContext, 
-      @PathParam("courseUUID") courseUUID: String, 
+      @PathParam("courseClassUUID") courseClassUUID: String, 
       notes: String) = 
     Auth.withPerson { p => 
     	sql"""
     	update Enrollment set notes=$notes
     	where person_uuid=${p.getUUID}
-    	and course_uuid=${courseUUID}
+    	and class_uuid=${courseClassUUID}
     	""".executeUpdate
     }
 }

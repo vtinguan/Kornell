@@ -9,7 +9,10 @@ import kornell.core.entity.Institution;
 import kornell.core.entity.Registration;
 import kornell.core.entity.Registrations;
 import kornell.core.lom.Contents;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CourseTO;
+import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
@@ -22,8 +25,11 @@ public class MediaTypes {
 	Map<Class<?>,String> class2type = new HashMap<Class<?>, String>();
 	
 	public MediaTypes() {
-		register(CoursesTO.TYPE, CoursesTO.class);
 		register(CourseTO.TYPE, CourseTO.class);
+		register(CoursesTO.TYPE, CoursesTO.class);
+		register(CourseClassesTO.TYPE, CourseClassesTO.class);
+		register(CourseClassTO.TYPE, CourseClassTO.class);
+		register(CourseVersionTO.TYPE, CourseVersionTO.class);
 		register(UserInfoTO.TYPE,UserInfoTO.class);
 		register(Registration.TYPE,Registration.class);
 		register(Registrations.TYPE,Registrations.class);

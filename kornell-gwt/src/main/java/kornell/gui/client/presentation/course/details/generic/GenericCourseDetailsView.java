@@ -11,6 +11,7 @@ import kornell.core.lom.Content;
 import kornell.core.lom.ContentFormat;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CertificationTO;
@@ -75,7 +76,7 @@ public class GenericCourseDetailsView extends Composite implements
 
 	Button btnCurrent;
 
-	CourseTO courseTO;
+	CourseClassTO courseClassTO;
 	
 	CourseDetailsTO courseDetails;
 
@@ -98,27 +99,21 @@ public class GenericCourseDetailsView extends Composite implements
 
 	private void initData() {
 		final String uuid = placeCtrl.getWhere() instanceof CourseDetailsPlace ? ((CourseDetailsPlace) placeCtrl
-				.getWhere()).getCourseUUID() : ((CourseClassPlace) placeCtrl
+				.getWhere()).getCourseClassUUID() : ((CourseClassPlace) placeCtrl
 				.getWhere()).getCourseClassUUID();
 
-		session.getCourseTO(uuid, new Callback<CourseTO>() {
+		session.getCourseClassTO(uuid, new Callback<CourseClassTO>() {
 			@Override
-			public void ok(CourseTO to) {
+			public void ok(CourseClassTO to) {
 				GWT.log(to.toString());
-				courseTO = to;
-
-				session.getCurrentUser(new Callback<UserInfoTO>() {
+				courseClassTO = to;
+				user = session.getUserInfo();
+				session.courseClass(uuid).contents(new Callback<Contents>() {
 					@Override
-					public void ok(UserInfoTO userTO) {
-						user = userTO;
-						session.courseClass(uuid).contents(new Callback<Contents>() {
-							@Override
-							public void ok(Contents contents) {
-								setContents(contents);
-								display();
-								LoadingPopup.hide();
-							}
-						});
+					public void ok(Contents contents) {
+						setContents(contents);
+						display();
+						LoadingPopup.hide();
 					}
 				});
 			}
@@ -131,7 +126,7 @@ public class GenericCourseDetailsView extends Composite implements
 	}
 
 	private void display() {
-		CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(courseTO
+		CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(courseClassTO.getCourseVersionTO()
 				.getCourse().getInfoJson());
 		builder.buildCourseDetails();
 		courseDetails = builder.getCourseDetailsTO();
@@ -176,7 +171,6 @@ public class GenericCourseDetailsView extends Composite implements
 		FlowPanel certificationInfo = new FlowPanel();
 		certificationInfo.addStyleName("certificationInfo");
 
-		// TODO: i18n
 		Label infoTitle = new Label("Certificação");
 		infoTitle.addStyleName("certificationInfoTitle");
 		certificationInfo.add(infoTitle);
@@ -257,7 +251,7 @@ public class GenericCourseDetailsView extends Composite implements
 				public void onClick(ClickEvent event) {
 					Window.Location.assign(session.getApiUrl() + "/report/certificate/"
 							+ user.getPerson().getUUID() + "/"
-							+ courseTO.getCourse().getUUID());
+							+ courseClassTO.getCourseVersionTO().getCourse().getUUID());
 				}
 			});
 		} else {
@@ -323,7 +317,7 @@ public class GenericCourseDetailsView extends Composite implements
 		titleLabel.addStyleName("titleLabel");
 		titlePanel.add(titleLabel);
 
-		Label courseNameLabel = new Label(courseTO.getCourse().getTitle());
+		Label courseNameLabel = new Label(courseClassTO.getCourseVersionTO().getCourse().getTitle());
 		courseNameLabel.addStyleName("courseNameLabel");
 		titlePanel.add(courseNameLabel);
 	}
@@ -417,18 +411,6 @@ public class GenericCourseDetailsView extends Composite implements
 			handleEvent((Button) event.getSource());
 		}
 	}
-
-	//TODO: Delete unused code if confirmed (commented on 2013-10-21)
-	/*
-	private String getCourseUUID() {
-		try {
-			return Window.Location.getHash().split(":")[1].split(";")[0];
-		} catch (Exception ex) {
-			GWT.log("Error trying to get the course id.");
-			placeCtrl.goTo(historyMapper.getPlace(user.getLastPlaceVisited()));
-		}
-		return null;
-	}*/
 
 	@Override
 	public void setPresenter(Presenter presenter) {
