@@ -48,8 +48,7 @@ class CourseClassRepository(uuid:String) {
 			left join CourseVersion cv on cv.course_uuid = c.uuid
 			left join CourseClass cc on cc.courseVersion_uuid = cv.uuid
 			left join Enrollment e on cc.uuid = e.class_uuid
-			where cc.uuid = ${uuid} and 
-				e.person_uuid = ${personUUID};
+			where e.person_uuid = ${personUUID};
 		""".map[CourseClassTO](toCourseClassTO)
 		if(courseClasses.size > 0)
 		  courseClasses.head

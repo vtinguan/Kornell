@@ -3,12 +3,8 @@ package kornell.gui.client.presentation.vitrine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import kornell.api.client.Callback;
-import kornell.core.entity.Institution;
-import kornell.core.entity.Registration;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
@@ -17,7 +13,6 @@ import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.ValidatorHelper;
-import kornell.gui.client.sequence.CourseSequencer;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
@@ -60,22 +55,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(final UserInfoTO user) {
+				clientFactory.getUserSession().setCurrentUser(user);
 				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
 				if("".equals(user.getPerson().getConfirmation())){
-					clientFactory.getUserSession().getCourseClassTO("B6A60AB5-3889-47B4-93DA-60E515309DAF",new Callback<CourseClassTO>(){
-						@Override
-						public void ok(CourseClassTO courseClass) {
-							if(courseClass != null) {
-								clientFactory.setCurrentCourse(courseClass);
-								clientFactory.getUserSession().setCurrentUser(user);
-								clientFactory.getUserSession().setItem("CURRENT_COURSE_CLASS_UUID", courseClass.getCourseClass().getUUID());
-								if(clientFactory.getDefaultPlace() == null || clientFactory.getDefaultPlace() instanceof CourseClassPlace){
-									clientFactory.setDefaultPlace(new CourseClassPlace(courseClass.getCourseClass().getUUID()));
-								}
-							}
-							doLogin(user);
-						}			
-					});	
+					doLogin(user);
 				} else {
 					view.setMessage("Usuário não verificado. Confira seu email.");
 					view.showMessage();
@@ -84,6 +67,17 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			}
 
 			private void doLogin(UserInfoTO user) {
+				clientFactory.getUserSession().getCourseClassTO(null,new Callback<CourseClassTO>(){
+					@Override
+					public void ok(CourseClassTO courseClass) {
+						if(courseClass != null) {
+							clientFactory.setCurrentCourse(courseClass);
+							if(clientFactory.getDefaultPlace() == null || clientFactory.getDefaultPlace() instanceof CourseClassPlace){
+								clientFactory.setDefaultPlace(new CourseClassPlace(courseClass.getCourseClass().getUUID()));
+							}
+						}
+					}			
+				});	
 				if(!clientFactory.getUserSession().isRegistered()){
 					view.setMessage("Usuário não registrado nesta instituição.");
 					view.showMessage();
@@ -161,26 +155,24 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						view.showMessage();
 						return;
 					}
-					String data = view.getSuName().toLowerCase().trim() + "###" + 
-							view.getSuEmail().toLowerCase().trim() + "###" +
-							view.getSuPassword().trim() + "###" +
-							Window.Location.getHref().split("#")[0];
-					GWT.log(data);
-					RegistrationRequestTO registrationRequestTO = clientFactory.getTOFactory().newRegistrationRequestTO().as();
-					registrationRequestTO.setFullName(view.getSuName().trim());
-					registrationRequestTO.setEmail(view.getSuEmail().toLowerCase().trim());
-					registrationRequestTO.setPassword(view.getSuPassword().trim());
-					registrationRequestTO.setInstitutionUUID(clientFactory.getInstitution().getUUID());
-					//location
+					RegistrationRequestTO registrationRequestTO = buildRegistrationRequestTO();
 					clientFactory.getKornellClient().requestRegistration(registrationRequestTO, new Callback<UserInfoTO>(){
 						@Override
 						public void ok(UserInfoTO user){
-							//TODO on OK
 							GWT.log("User created");
 							view.showUserCreatedAlert();
 							view.displayLoginPanel(true);
 						}
 					});
+				}
+
+				private RegistrationRequestTO buildRegistrationRequestTO() {
+					RegistrationRequestTO registrationRequestTO = clientFactory.getTOFactory().newRegistrationRequestTO().as();
+					registrationRequestTO.setFullName(view.getSuName().trim());
+					registrationRequestTO.setEmail(view.getSuEmail().toLowerCase().trim());
+					registrationRequestTO.setPassword(view.getSuPassword().trim());
+					registrationRequestTO.setInstitutionUUID(clientFactory.getInstitution().getUUID());
+					return registrationRequestTO;
 				}
 			});
 		} else {
