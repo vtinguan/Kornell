@@ -237,7 +237,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			defaultPlace = new DeanHomePlace();
 			startClient();
 		} else {
-			session.getCourseClassTO(session.getItem("CURRENT_COURSE_CLASS_UUID"),new Callback<CourseClassTO>(){
+			session.getCourseClassTO(null,new Callback<CourseClassTO>(){
 				@Override
 				public void ok(CourseClassTO courseClass) {
 					setCurrentCourse(courseClass);

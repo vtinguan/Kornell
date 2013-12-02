@@ -22,7 +22,7 @@ public class GenericHomeView  extends Composite implements HomeView {
 			PlaceHistoryHandler historyHandler,
 			KornellClient client, SimplePanel appPanel) {
 		GWT.log("GenericHomeView()");		
-	    //initWidget(uiBinder.createAndBindUi(this));
+	    initWidget(uiBinder.createAndBindUi(this));
 	}
 	
 
