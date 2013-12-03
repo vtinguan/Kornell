@@ -6,6 +6,7 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
@@ -67,10 +68,11 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			}
 
 			private void doLogin(UserInfoTO user) {
-				clientFactory.getUserSession().getCourseClassTO(null,new Callback<CourseClassTO>(){
+				clientFactory.getUserSession().getCourseClassesTO(new Callback<CourseClassesTO>(){
 					@Override
-					public void ok(CourseClassTO courseClass) {
-						if(courseClass != null) {
+					public void ok(CourseClassesTO courseClasses) {
+						if(courseClasses.getCourseClasses().size() > 0) {
+							CourseClassTO courseClass = courseClasses.getCourseClasses().get(0);
 							clientFactory.setCurrentCourse(courseClass);
 							if(clientFactory.getDefaultPlace() == null || clientFactory.getDefaultPlace() instanceof CourseClassPlace){
 								clientFactory.setDefaultPlace(new CourseClassPlace(courseClass.getCourseClass().getUUID()));

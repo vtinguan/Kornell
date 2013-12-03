@@ -12,15 +12,15 @@ import kornell.server.util.ReportGenerator
 class ReportResource {
 
 	@GET
-	@Path("/certificate/{userUuid}/{courseUuid}")
+	@Path("/certificate/{userUUID}/{courseClassUUID}")
 	@Produces(Array("application/pdf"))
 	def get(/*implicit @Context sc:SecurityContext,*/
 	    @Context resp:HttpServletResponse,
-	    @PathParam("userUuid") userUuid:String, 
-	    @PathParam("courseUuid") courseUuid:String) = /*Auth.withPerson{ person =>*/ {
+	    @PathParam("userUUID") userUUID:String, 
+	    @PathParam("courseClassUUID") courseClassUUID:String) = /*Auth.withPerson{ person =>*/ {
 	      
 	      
 	    resp.addHeader("Content-disposition", "attachment; filename=Certificado.pdf")
-		ReportGenerator.generateCertificate(userUuid, courseUuid)
+		ReportGenerator.generateCertificate(userUUID, courseClassUUID)
 	}
 }

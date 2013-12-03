@@ -12,6 +12,7 @@ import kornell.core.lom.ContentFormat;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CourseTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CertificationTO;
@@ -104,11 +105,10 @@ public class GenericCourseDetailsView extends Composite implements
 				.getWhere()).getCourseClassUUID() : ((CourseClassPlace) placeCtrl
 				.getWhere()).getCourseClassUUID();
 
-		session.getCourseClassTO(uuid, new Callback<CourseClassTO>() {
+		session.getCourseClassesTO(new Callback<CourseClassesTO>() {
 			@Override
-			public void ok(CourseClassTO to) {
-				GWT.log(to.toString());
-				courseClassTO = to;
+			public void ok(CourseClassesTO courseClasses) {
+				courseClassTO = courseClasses.getCourseClasses().get(0);
 				user = session.getUserInfo();
 				session.courseClass(uuid).contents(new Callback<Contents>() {
 					@Override
@@ -253,7 +253,7 @@ public class GenericCourseDetailsView extends Composite implements
 				public void onClick(ClickEvent event) {
 					Window.Location.assign(session.getApiUrl() + "/report/certificate/"
 							+ user.getPerson().getUUID() + "/"
-							+ courseClassTO.getCourseVersionTO().getCourse().getUUID());
+							+ courseClassTO.getCourseClass().getUUID());
 				}
 			});
 		} else {

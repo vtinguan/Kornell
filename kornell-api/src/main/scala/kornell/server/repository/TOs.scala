@@ -14,6 +14,7 @@ import kornell.server.repository.s3.S3
 import kornell.core.util.StringUtils
 import kornell.core.entity.EnrollmentState
 import kornell.core.to.RegistrationRequestTO
+import kornell.core.to.CourseClassTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -44,6 +45,13 @@ object TOs {
     to setDistributionURL( StringUtils.composeURL(s3.baseURL , s3.prefix))
     to
   }*/
+ 
+
+  def newCourseClassesTO(l: List[CourseClassTO]) = {
+    val to = tos.newCourseClassesTO.as
+    to.setCourseClasses(l asJava)
+    to
+  } 
   
   def newCourseClassTO(
     //course
