@@ -25,7 +25,7 @@ class CourseClassResource(uuid:String) {
   @Produces(Array(CourseClassTO.TYPE))
   def get(implicit @Context sc: SecurityContext) =
     Auth.withPerson { person =>
-	    CourseClasses(uuid).byPerson(person.getUUID)
+	    //CourseClasses(uuid).byPerson(person.getUUID)
     }  
   
   @Produces(Array(Contents.TYPE))

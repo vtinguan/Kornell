@@ -8,6 +8,7 @@ import kornell.core.entity.Institution;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
@@ -40,7 +41,6 @@ import kornell.gui.client.presentation.course.forum.generic.GenericCourseForumVi
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.course.library.CourseLibraryView;
 import kornell.gui.client.presentation.course.library.generic.GenericCourseLibraryView;
-import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
 import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.course.specialists.generic.GenericCourseSpecialistsView;
@@ -237,9 +237,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			defaultPlace = new DeanHomePlace();
 			startClient();
 		} else {
-			session.getCourseClassTO(null,new Callback<CourseClassTO>(){
+			session.getCourseClassesTO(new Callback<CourseClassesTO>(){
 				@Override
-				public void ok(CourseClassTO courseClass) {
+				public void ok(CourseClassesTO courseClasses) {
+					CourseClassTO courseClass = courseClasses.getCourseClasses().get(0);
 					setCurrentCourse(courseClass);
 					defaultPlace = new CourseClassPlace(courseClass.getCourseClass().getUUID());	
 					startClient();

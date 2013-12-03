@@ -2,7 +2,7 @@ package kornell.api.client;
 
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
-import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.RegistrationsTO;
@@ -39,8 +39,8 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		GET("/email/welcome/" + userUUID).sendRequest(null, cb);
 	}
 
-	public void getCourseClassTO(String courseClassUUID, Callback<CourseClassTO> cb) {
-		GET("/courseClasses/" + courseClassUUID + "/to").sendRequest(null, cb);
+	public void getCourseClassesTO(Callback<CourseClassesTO> cb) {
+		GET("/courseClasses").sendRequest(null, cb);
 	}
 
 	public static KornellClient getInstance() {
