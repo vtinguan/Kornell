@@ -14,6 +14,7 @@ import kornell.core.entity.Person;
 import kornell.core.util.UUID;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.util.loading.LoadingPopup;
 
 import com.google.gwt.core.client.GWT;
@@ -167,5 +168,12 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 				getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());
 			}
 		});
+	}
+
+	@Override
+	public void onGoToCourseButtonClicked() {
+		CourseClassPlace place = new CourseClassPlace(clientFactory.getCurrentCourse().getCourseClass().getUUID());
+		clientFactory.setDefaultPlace(place);
+		clientFactory.getPlaceController().goTo(place);
 	}
 }

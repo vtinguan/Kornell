@@ -205,21 +205,42 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public void startApp() {
 		UserSession.current(new Callback<UserSession>() {
 			@Override
-			public void ok(UserSession session) {
-				startApp(session);
+			public void ok(UserSession userSession) {
+				session = userSession;
+				locationStr = Window.Location.getHash();
+				locationStrArray = locationStr.split(":");
+				// TODO not good
+				String institutionName = Window.Location.getParameter("institution");
+				if (institutionName == null){
+					institutionName = Window.Location.getHostName().split("\\.")[0];
+				}
+				session.getInstitutionByName(institutionName, new Callback<Institution>() {
+					@Override
+					public void ok(final Institution institution) {
+						setInstitution(institution);
+						if(session.isAuthenticated()){
+							session.getCourseClassesTO(new Callback<CourseClassesTO>(){
+								@Override
+								public void ok(final CourseClassesTO courseClasses) {
+									session.setCurrentPerson(session.getUserInfo().getPerson().getUUID(), institution.getUUID());
+									CourseClassTO courseClass = null;
+									for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
+										if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(institution.getUUID())){
+											courseClass = courseClassTmp;
+										}
+									}
+									setCurrentCourse(courseClass);
+									defaultPlace = new CourseClassPlace(courseClass.getCourseClass().getUUID());
+									startAuthenticated(session);
+								}			
+							});	
+						}else{
+							startAnonymous(session);
+						}
+					}
+				});	
 			}
 		});
-	}
-
-	public void startApp(UserSession session){
-		this.session = session;
-		this.locationStr = Window.Location.getHash();
-		this.locationStrArray = locationStr.split(":");
-		if(session.isAuthenticated()){
-			startAuthenticated(session);
-		}else{
-			startAnonymous(session);
-		}
 	}
 	
 	private void startAnonymous(UserSession session){
@@ -237,39 +258,17 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			defaultPlace = new DeanHomePlace();
 			startClient();
 		} else {
-			session.getCourseClassesTO(new Callback<CourseClassesTO>(){
-				@Override
-				public void ok(CourseClassesTO courseClasses) {
-					CourseClassTO courseClass = courseClasses.getCourseClasses().get(0);
-					setCurrentCourse(courseClass);
-					defaultPlace = new CourseClassPlace(courseClass.getCourseClass().getUUID());	
-					startClient();
-				}			
-			});	
+			startClient();
 		}
 	}
 
 	protected void startClient() {
-		// TODO not good
-		String institutionName = Window.Location.getParameter("institution");
-		if (institutionName == null)
-			institutionName = Window.Location.getHostName().split("\\.")[0];
-		session.getInstitutionByName(institutionName,
-				new Callback<Institution>() {
-					@Override
-					public void ok(Institution institution) {
-						setInstitution(institution);
-						if (session.getUserInfo() != null)
-							UserSession.setCurrentPerson(session.getUserInfo().getPerson()
-									.getUUID(), institution.getUUID());
-						initGUI();
-						initActivityManagers();						
-						initHistoryHandler(defaultPlace);
-						initException();
-						initSCORM();
-						initPersonnel();
-					}
-				});
+		initGUI();
+		initActivityManagers();						
+		initHistoryHandler(defaultPlace);
+		initException();
+		initSCORM();
+		initPersonnel();
 	}
 
 	private void initPersonnel() {
@@ -323,7 +322,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public TermsView getTermsView() {
-		return new GenericTermsView(bus, session, placeCtrl, defaultPlace, institution);
+		return new GenericTermsView(this);
 	}
 
 	@Override
@@ -355,7 +354,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public CourseDetailsView getCourseDetailsView() {
-		return new GenericCourseDetailsView(bus, session, placeCtrl, currentCourseClass);
+		return new GenericCourseDetailsView(this);
 	}
 
 	@Override

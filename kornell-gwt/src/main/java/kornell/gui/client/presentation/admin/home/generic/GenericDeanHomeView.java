@@ -48,6 +48,8 @@ public class GenericDeanHomeView extends Composite implements DeanHomeView {
 	@UiField
 	Button btnAddEnrollment;
 	@UiField
+	Button btnGoToCourse;
+	@UiField
 	Button btnAddEnrollmentBatch;
 	@UiField
 	Button btnAddEnrollmentBatchEnable;
@@ -76,6 +78,12 @@ public class GenericDeanHomeView extends Composite implements DeanHomeView {
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
+	}
+
+
+	@UiHandler("btnGoToCourse")
+	void onGoToCourseButtonClicked(ClickEvent e) {
+		presenter.onGoToCourseButtonClicked();
 	}
 
 

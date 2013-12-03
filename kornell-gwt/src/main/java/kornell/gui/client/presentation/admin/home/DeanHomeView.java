@@ -13,6 +13,7 @@ public interface DeanHomeView extends IsWidget {
 		boolean showActionButton(String actionName, EnrollmentState state);
 		void onAddEnrollmentButtonClicked(String fullName, String email);
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);
+		void onGoToCourseButtonClicked();
 	}
 
 	void setPresenter(Presenter presenter);

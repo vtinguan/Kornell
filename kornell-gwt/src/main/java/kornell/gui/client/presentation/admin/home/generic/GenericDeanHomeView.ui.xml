@@ -24,6 +24,7 @@
 		</b:Collapse>
 		<g:FlowPanel ui:field="enrollmentsWrapper">
 		</g:FlowPanel>
+		<g:Button ui:field="btnGoToCourse" addStyleNames="btnAction">Ir para o curso</g:Button>
 	</g:FlowPanel>
 
 </ui:UiBinder>

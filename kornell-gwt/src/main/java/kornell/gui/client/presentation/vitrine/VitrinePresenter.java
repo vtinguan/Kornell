@@ -67,36 +67,39 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				}
 			}
 
-			private void doLogin(UserInfoTO user) {
+			private void doLogin(final UserInfoTO user) {
 				clientFactory.getUserSession().getCourseClassesTO(new Callback<CourseClassesTO>(){
 					@Override
 					public void ok(CourseClassesTO courseClasses) {
-						if(courseClasses.getCourseClasses().size() > 0) {
-							CourseClassTO courseClass = courseClasses.getCourseClasses().get(0);
-							clientFactory.setCurrentCourse(courseClass);
-							if(clientFactory.getDefaultPlace() == null || clientFactory.getDefaultPlace() instanceof CourseClassPlace){
-								clientFactory.setDefaultPlace(new CourseClassPlace(courseClass.getCourseClass().getUUID()));
+						CourseClassTO courseClass = null;
+						for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
+							if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(clientFactory.getInstitution().getUUID())){
+								courseClass = courseClassTmp;
 							}
+						}
+						clientFactory.setCurrentCourse(courseClass);
+						clientFactory.setDefaultPlace(new CourseClassPlace(courseClass.getCourseClass().getUUID()));
+						
+						if(!clientFactory.getUserSession().isRegistered()){
+							view.setMessage("Usuário não registrado nesta instituição.");
+							view.showMessage();
+							ClientProperties.remove("Authorization");
+						} else if(user.isSigningNeeded()){
+							clientFactory.getPlaceController().goTo(new TermsPlace());
+						} else {
+							//TODO what if the user visited a class from another institution?
+							String token = null;//user.getLastPlaceVisited();
+							Place place;
+							if(token == null || token.contains("vitrine")){
+								place = clientFactory.getDefaultPlace();
+							}else {
+								place = clientFactory.getHistoryMapper().getPlace(token);
+							}
+							clientFactory.getEventBus().fireEvent(new LoginEvent(user));
+							clientFactory.getPlaceController().goTo(place);
 						}
 					}			
 				});	
-				if(!clientFactory.getUserSession().isRegistered()){
-					view.setMessage("Usuário não registrado nesta instituição.");
-					view.showMessage();
-					ClientProperties.remove("Authorization");
-				} else if(user.isSigningNeeded()){
-					clientFactory.getPlaceController().goTo(new TermsPlace());
-				} else {
-					String token = user.getLastPlaceVisited();
-					Place place;
-					if(token == null || token.contains("vitrine")){
-						place = clientFactory.getDefaultPlace();
-					}else {
-						place = clientFactory.getHistoryMapper().getPlace(token);
-					}
-					clientFactory.getEventBus().fireEvent(new LoginEvent(user));
-					clientFactory.getPlaceController().goTo(place);
-				}
 			}
 
 			@Override
