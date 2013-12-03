@@ -68,7 +68,7 @@ public class UUID {
 	}
 
 	public static String random() {
-		return uuid();
+		return uuid().toLowerCase();
 	}
 	
 	/**

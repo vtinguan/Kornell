@@ -1,25 +1,21 @@
 package kornell.gui.client.presentation.course.details.generic;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
-import kornell.core.lom.ContentFormat;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.CourseTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CertificationTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
-import kornell.core.to.coursedetails.TopicTO;
+import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.CourseClassPlace;
@@ -75,26 +71,23 @@ public class GenericCourseDetailsView extends Composite implements
 	@UiField
 	Button btnCertification;
 
-	Button btnCurrent;
-
-	CourseClassTO courseClassTO;
-	
-	CourseDetailsTO courseDetails;
-
-	UserInfoTO user;
-	
-	FlowPanel topicsPanel;
+	private Button btnCurrent;
+	private CourseClassTO courseClassTO;
+	private CourseDetailsTO courseDetails;
+	private UserInfoTO user;
+	private FlowPanel topicsPanel;
+	private ClientFactory clientFactory;
 
 	private Contents contents;
 	private List<Actom> actoms;
 	private CourseClassTO currentCourseClass;
 	
-	public GenericCourseDetailsView(EventBus eventBus, UserSession session,
-			PlaceController placeCtrl, CourseClassTO currentCourseClass) {
-		this.bus = eventBus;
-		this.session = session;
-		this.placeCtrl = placeCtrl;
-		this.currentCourseClass = currentCourseClass;
+	public GenericCourseDetailsView(ClientFactory clientFactory) {
+		this.clientFactory = clientFactory;
+		this.bus = clientFactory.getEventBus();
+		this.session = clientFactory.getUserSession();
+		this.placeCtrl = clientFactory.getPlaceController();
+		this.currentCourseClass = clientFactory.getCurrentCourse();
 		LoadingPopup.show();
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
@@ -108,7 +101,11 @@ public class GenericCourseDetailsView extends Composite implements
 		session.getCourseClassesTO(new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO courseClasses) {
-				courseClassTO = courseClasses.getCourseClasses().get(0);
+				for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
+					if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(clientFactory.getInstitution().getUUID())){
+						courseClassTO = courseClassTmp;
+					}
+				}
 				user = session.getUserInfo();
 				session.courseClass(uuid).contents(new Callback<Contents>() {
 					@Override

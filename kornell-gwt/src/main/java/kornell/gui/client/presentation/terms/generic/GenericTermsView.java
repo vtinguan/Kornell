@@ -1,21 +1,14 @@
 package kornell.gui.client.presentation.terms.generic;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
-import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
 
@@ -52,43 +45,31 @@ public class GenericTermsView extends Composite implements TermsView {
 	@UiField
 	Image institutionLogo;
 
-	Registration registration;
-	Institution institution;
-	UserInfoTO user;
-
+	private ClientFactory clientFactory;
 	private UserSession session;
-
 	private PlaceController placeCtrl;
-	private Place defaultPlace;
+	private EventBus bus;
+	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private String barLogoFileName = "logo300x80.png";
 
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 
-	private GenericMenuLeftView menuLeftView;
-
-	private final EventBus bus;
-
-	public GenericTermsView(EventBus bus, UserSession session,
-			PlaceController placeCtrl, Place defaultPlace, Institution institution) {
-		this.bus = bus;
-		this.session = session;
-		this.placeCtrl = placeCtrl;
-		this.defaultPlace = defaultPlace;
-		this.institution = institution;
+	public GenericTermsView(ClientFactory clientFactory) {
+		this.bus = clientFactory.getEventBus();
+		this.session = clientFactory.getUserSession();
+		this.placeCtrl = clientFactory.getPlaceController();
+		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 		// TODO i18n
 		txtTitle.setText("Termos de Uso".toUpperCase());
-		txtTerms.setText("[Carregando, aguarde...]");
 		btnAgree.setText("Concordo".toUpperCase());
 		btnDontAgree.setText("Não Concordo".toUpperCase());
 	}
 
 	private void initData() {
-		user = session.getUserInfo();
-		for (Registration registration : user.getRegistrationsTO().getRegistrations()) {
-			if(institution.getUUID().equals(registration.getInstitutionUUID()) && registration.getTermsAcceptedOn() != null){
+		for (Registration registration : session.getUserInfo().getRegistrationsTO().getRegistrations()) {
+			if(clientFactory.getInstitution().getUUID().equals(registration.getInstitutionUUID()) && registration.getTermsAcceptedOn() != null){
 				GWT.log("OPS! Should not be here if there's nothing to sign.");
 				goStudy();
 			}
@@ -97,17 +78,16 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void paint() {
-		Person p = user.getPerson();
-		titleUser.setText(p.getFullName());
-		if (institution != null) {
-			txtTerms.getElement().setInnerHTML(institution.getTerms());
-			institutionLogo.setUrl(institution.getAssetsURL() + barLogoFileName);
+		titleUser.setText(session.getUserInfo().getPerson().getFullName());
+		if (clientFactory.getInstitution() != null) {
+			txtTerms.getElement().setInnerHTML(clientFactory.getInstitution().getTerms());
+			institutionLogo.setUrl(clientFactory.getInstitution().getAssetsURL() + barLogoFileName);
 		}
 	}
 
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		session.institution(institution.getUUID()).acceptTerms(
+		session.institution(clientFactory.getInstitution().getUUID()).acceptTerms(
 				new Callback<Void>() {
 					@Override
 					public void ok(Void v) {
@@ -126,7 +106,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void goStudy() {
-		placeCtrl.goTo(defaultPlace);
+		placeCtrl.goTo(clientFactory.getDefaultPlace());
 	}
 
 }

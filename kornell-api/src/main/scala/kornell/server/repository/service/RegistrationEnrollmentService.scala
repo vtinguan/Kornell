@@ -25,6 +25,8 @@ object RegistrationEnrollmentService {
   
     def main(args: Array[String]) {
       println(UUID.random)
+      println(UUID.random)
+      println(UUID.random)
     }
 
   def deanCreateEnrollmentsBatch(enrollments: kornell.core.entity.Enrollments, dean: Person) =
