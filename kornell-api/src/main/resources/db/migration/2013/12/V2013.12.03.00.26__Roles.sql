@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS Role;
 
+
 CREATE TABLE IF NOT EXISTS Role (
   uuid char(36),
   username varchar(63) NOT NULL,
