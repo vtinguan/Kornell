@@ -11,6 +11,7 @@ import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
+import kornell.gui.client.presentation.admin.home.DeanHomePlace;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.ValidatorHelper;
@@ -91,7 +92,11 @@ public class VitrinePresenter implements VitrineView.Presenter {
 							String token = null;//user.getLastPlaceVisited();
 							Place place;
 							if(token == null || token.contains("vitrine")){
-								place = clientFactory.getDefaultPlace();
+								if(clientFactory.getUserSession().isDean()){
+									place = new DeanHomePlace();
+								} else {
+									place = clientFactory.getDefaultPlace();	
+								}
 							}else {
 								place = clientFactory.getHistoryMapper().getPlace(token);
 							}
