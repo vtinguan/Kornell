@@ -86,22 +86,17 @@ public class VitrinePresenter implements VitrineView.Presenter {
 							view.showMessage();
 							ClientProperties.remove("Authorization");
 						} else if(user.isSigningNeeded()){
+							clientFactory.getEventBus().fireEvent(new LoginEvent(user));
 							clientFactory.getPlaceController().goTo(new TermsPlace());
 						} else {
-							//TODO what if the user visited a class from another institution?
-							String token = null;//user.getLastPlaceVisited();
-							Place place;
-							if(token == null || token.contains("vitrine")){
-								if(clientFactory.getUserSession().isDean()){
-									place = new DeanHomePlace();
-								} else {
-									place = clientFactory.getDefaultPlace();	
-								}
-							}else {
-								place = clientFactory.getHistoryMapper().getPlace(token);
-							}
 							clientFactory.getEventBus().fireEvent(new LoginEvent(user));
-							clientFactory.getPlaceController().goTo(place);
+							//TODO what if the user visited a class from another institution?
+							//place = clientFactory.getHistoryMapper().getPlace(user.getLastPlaceVisited());
+							if(clientFactory.getUserSession().isDean()){
+								clientFactory.getPlaceController().goTo(new DeanHomePlace());
+							} else {
+								clientFactory.getPlaceController().goTo(clientFactory.getDefaultPlace());
+							}
 						}
 					}			
 				});	
