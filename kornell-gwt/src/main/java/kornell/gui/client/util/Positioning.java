@@ -11,9 +11,13 @@ public class Positioning {
 
 	// TODO: fetch these dynamically
 	// TODO: Extract view
-	static int NORTH_BAR = 45;
-	static int SOUTH_BAR = 35;
+	public static int NORTH_BAR = 45;
+	public static int SOUTH_BAR = 35;
+	public static int BAR_WIDTH = 962;
+	public static int NOTES_MIN_HEIGHT = 300;
 
+	
+	
 	public static void placeBetweenBars(FlowPanel pnl) {
 		String width = Window.getClientWidth() + "px";
 		String height = (Window.getClientHeight()

@@ -43,6 +43,15 @@ class Enrollments() {
         | order by e.state desc, p.fullName, p.email
 	    """.first[Enrollment]
 
+  def byStateAndPerson(state: EnrollmentState, personUUID: String) =
+    sql"""
+	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
+      	| from Enrollment e join Person p on e.person_uuid = p.uuid
+        | e.person_uuid = ${personUUID}
+	    | e.state = ${state.toString()}
+        | order by e.state desc, p.fullName, p.email
+	    """.map[Enrollment](toEnrollment)
+
   def createEnrollment(courseClassUUID: String, person_uuid: String, state: EnrollmentState) = {
     val uuid = randomUUID
     sql""" 

@@ -11,7 +11,7 @@ import kornell.core.entity.CourseClass
 import kornell.core.to.CourseClassTO
 
 package object jdbc {
-  type UUID = String
+  //type UUID = String
   type ConnectionFactory = () => Connection
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 

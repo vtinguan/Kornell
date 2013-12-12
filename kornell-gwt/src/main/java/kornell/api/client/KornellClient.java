@@ -4,6 +4,7 @@ import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CoursesTO;
+import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
@@ -35,6 +36,14 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		PUT("/user/registrationRequest").withContentType(RegistrationRequestTO.TYPE).withEntityBody(registrationRequestTO).go(cb);
 	}
 
+	public void requestPasswordChange(String email, String institutionName, Callback<Void> cb) {
+		GET("/user/requestPasswordChange/" + email + "/" + institutionName).sendRequest(null, cb);
+	}
+
+	public void changePassword(String password, String passwordChangeUUID, Callback<Void> cb) {
+		GET("/user/changePassword/" + password + "/" + passwordChangeUUID).sendRequest(null, cb);
+	}
+
 	public void sendWelcomeEmail(String userUUID, Callback<Void> cb) {
 		GET("/email/welcome/" + userUUID).sendRequest(null, cb);
 	}
@@ -62,12 +71,17 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		}
 
 		public void acceptTerms(Callback<Void> cb) {
-			PUT("/institutions/" + uuid).go(cb);
+			PUT("/institutions/" + uuid + "/acceptTerms").go(cb);
 		}
 
-		public void getInstitution(Callback<Institution> cb) {
+		public void get(Callback<Institution> cb) {
 			GET("/institutions/" + uuid).sendRequest(null, cb);
 		}
+
+		public void update(Institution institution, Callback<Institution> cb) {
+			PUT("/institutions/" + uuid).withContentType(Institution.TYPE).withEntityBody(institution).go(cb);
+		}
+		
 	}
 
 	public void getInstitutionByName(String name, Callback<Institution> cb) {
@@ -96,8 +110,8 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		GET("/enrollment/?courseClassUUID=" + courseClassUUID).sendRequest(null, cb);
 	}
 
-	public void createEnrollments(Enrollments enrollments, Callback<Enrollments> cb) {
-		PUT("/enrollment/").withContentType(Enrollments.TYPE).withEntityBody(enrollments).go(cb);
+	public void createEnrollments(EnrollmentRequestsTO enrollmentRequests, Callback<Enrollments> cb) {
+		PUT("/enrollment/").withContentType(EnrollmentRequestsTO.TYPE).withEntityBody(enrollmentRequests).go(cb);
 	}
 	
 	public void notesUpdated(String courseClassUUID, String notes) {

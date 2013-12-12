@@ -1,14 +1,15 @@
 package kornell.server.repository.jdbc
 
-import kornell.server.repository.jdbc.SQLInterpolation._
 import java.sql.ResultSet
-import kornell.server.repository.Entities
-import javax.ws.rs.core.SecurityContext
 import org.apache.commons.codec.digest.DigestUtils
-import kornell.server.repository.Entities._
+import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Person
-import kornell.core.entity.RoleType
 import kornell.core.entity.Role
+import kornell.core.entity.RoleType
+import kornell.server.repository.Entities
+import kornell.server.repository.Entities.newPerson
+import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
+import kornell.core.util.UUID
 
 object Auth {
   //TODO: importing ScurityContext smells bad
@@ -50,29 +51,44 @@ object Auth {
 	""".first[Person]
   }
 
-  def confirmAccount(personUUID: String) = {
+  //TODO: Cache
+  def getPersonByPasswordChangeUUID(passwordChangeUUID: String) = 
+    sql"""
+		select p.uuid, p.fullName, p.lastPlaceVisited, p.email, p.company, 
+			p.title, p.sex, p.birthDate, p.confirmation
+		from Person p join Password pwd on pwd.person_uuid = p.uuid
+		where pwd.requestPasswordChangeUUID = $passwordChangeUUID
+	""".first[Person]
+
+  def confirmAccount(personUUID: String) = 
     sql"""
 		update Person set confirmation = ""
 		where uuid = $personUUID
 	""".executeUpdate
-  }
+  
 
-  def getEmail(email: String) = {
+  def getEmail(email: String) = 
     sql"""
     	select p.email from Person p
     	where p.email = $email
     """.first[String]
-  }
+  
 
-  def setPlainPassword(personUUID: String, username: String, plainPassword: String) = {
-    val digest = sha256(plainPassword)
+  def setPlainPassword(personUUID: String, username: String, plainPassword: String) = 
     sql"""
-	  	insert into Password (person_uuid,username,password)
-	  	values ($personUUID,$username,$digest)
+	  	insert into Password (person_uuid,username,password,requestPasswordChangeUUID)
+	  	values ($personUUID,$username,${sha256(plainPassword)}, null)
 	  	on duplicate key update
-	  	username=$username,password=$digest
+	  	username=$username,password=${sha256(plainPassword)},requestPasswordChangeUUID=null
 	  """.executeUpdate
-  }
+  
+
+  def updateRequestPasswordChangeUUID(personUUID: String, requestPasswordChangeUUID: String) = 
+    sql"""
+	  	update Password set requestPasswordChangeUUID = $requestPasswordChangeUUID
+    	where person_uuid = $personUUID
+	  """.executeUpdate
+  
 
   def sha256(plain: String): String = DigestUtils.sha256Hex(plain)
 

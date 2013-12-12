@@ -1,0 +1,1 @@
+alter table Password add column requestPasswordChangeUUID char(36);
