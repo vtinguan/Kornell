@@ -6,23 +6,23 @@ import com.google.gwt.place.shared.Prefix;
 
 public class VitrinePlace extends Place{
 	public static final VitrinePlace instance = new VitrinePlace();
-	private String confirmation;
+	private String passwordChangeUUID;
 	private boolean userCreated;
 
-	public VitrinePlace(String confirmation) {
-		this.confirmation = confirmation;
+	public VitrinePlace(String passwordChangeUUID) {
+		this.passwordChangeUUID = passwordChangeUUID;
 	}
 
 	public VitrinePlace() {
-		this.confirmation = "";
+		this.passwordChangeUUID = "";
 	}
 
-	public String getConfirmation() {
-		return confirmation;
+	public String getPasswordChangeUUID() {
+		return passwordChangeUUID;
 	}
 
-	public void setConfirmation(String confirmation) {
-		this.confirmation = confirmation;
+	public void setPasswordChangeUUID(String passwordChangeUUID) {
+		this.passwordChangeUUID = passwordChangeUUID;
 	}
 
 	@Prefix("vitrine")
@@ -32,7 +32,7 @@ public class VitrinePlace extends Place{
 		}
 
 		public String getToken(VitrinePlace place) {
-			return place.getConfirmation();
+			return place.getPasswordChangeUUID();
 		}
 	}
 

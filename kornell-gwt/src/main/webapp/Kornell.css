@@ -93,8 +93,14 @@ iframe {
 .ajaxLoaderPanel {
 	width: 126px;
 }
-	.ajaxLoaderPanel span{
-		display: block;
-		text-align: center;
-		margin-bottom: 2px;
-	}
+
+.ajaxLoaderPanel span{
+	display: block;
+	text-align: center;
+	margin-bottom: 2px;
+}
+
+.forgotPasswordModal {
+	background-color: rgba(122, 122, 122, 0.7) !important;
+	width: 450px !important;
+}

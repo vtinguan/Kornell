@@ -6,12 +6,6 @@ import kornell.server.repository.jdbc.SQLInterpolation._
 
 import kornell.server.repository.Entities._
 class People {
-  def createTestPerson(fullName: String): PersonRepository = {
-    val uuid = randomUUID
-    sql"insert into Person(uuid, fullName) values ($uuid,$fullName)".executeUpdate
-    PersonRepository(uuid)
-  }
-
   def createPerson(email: String, fullName:String, 
       company: String="", title: String="", sex: String="", 
       birthDate: String="1800-01-01", confirmation: String = "") = {
@@ -25,6 +19,9 @@ class People {
     """.executeUpdate
     PersonRepository(uuid)
   }
+
+  def createPerson(email: String, fullName:String): PersonRepository = 
+    createPerson(email, fullName, null, null, null, null, null)
 }
 
 object People {

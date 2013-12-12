@@ -20,6 +20,7 @@
 					<b:Controls>
 						<g:Button ui:field="btnLogin" addStyleNames="btnVitrine btnAction">ENTRAR</g:Button>
 			    		<g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnSelected">CADASTRAR-SE</g:Button>
+			    		<g:Button ui:field="btnForgotPassword" addStyleNames="btnVitrine btnNotSelected">ESQUECI A SENHA</g:Button>
 					</b:Controls>
 				</b:Form>
 			</g:FlowPanel>
@@ -46,13 +47,43 @@
 						<b:PasswordTextBox ui:field="suPasswordConfirm"></b:PasswordTextBox>
 					</g:FlowPanel>
 					<b:Controls>
-						<g:Button ui:field="btnOK" addStyleNames="btnVitrine btnAction">OK</g:Button>
+						<g:Button ui:field="btnOK" addStyleNames="btnVitrine btnAction">CADASTRAR-SE</g:Button>
 			    		<g:Button ui:field="btnCancel" addStyleNames="btnVitrine btnSelected">CANCELAR</g:Button>
 					</b:Controls>
 				</b:Form>
 			</g:FlowPanel>
+			<g:FlowPanel ui:field="forgotPasswordPanel">
+				<b:Form ui:field="frmforgotPassword">
+					<g:Label addStyleNames="inputLabel">Email</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:TextBox ui:field="fpEmail"></b:TextBox>
+					</g:FlowPanel>
+					<b:Controls>
+						<g:Button ui:field="btnOKFp" addStyleNames="btnVitrine btnAction">ESQUECI A SENHA</g:Button>
+			    		<g:Button ui:field="btnCancelFp" addStyleNames="btnVitrine btnSelected">CANCELAR</g:Button>
+					</b:Controls>
+				</b:Form>
+			</g:FlowPanel>
+			<g:FlowPanel ui:field="newPasswordPanel">
+				<b:Form ui:field="frmNewPassword">
+					<g:Label addStyleNames="inputLabel">Nova Senha</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:PasswordTextBox ui:field="newPassword"></b:PasswordTextBox>
+					</g:FlowPanel>
+					<g:Label addStyleNames="inputLabel">Confirmar Senha</g:Label>
+					<g:FlowPanel addStyleNames="inputWrapper">
+						<g:FlowPanel addStyleNames="inputBar"></g:FlowPanel>
+						<b:PasswordTextBox ui:field="newPasswordConfirm"></b:PasswordTextBox>
+					</g:FlowPanel>
+					<b:Controls>
+						<g:Button ui:field="btnOKNewPassword" addStyleNames="btnVitrine btnAction">TROCAR SENHA</g:Button>
+			    		<g:Button ui:field="btnCancelNewPassword" addStyleNames="btnVitrine btnSelected">CANCELAR</g:Button>
+					</b:Controls>
+				</b:Form>
+			</g:FlowPanel>
 		</g:FlowPanel>
-		<b:Alert ui:field="userCreatedAlert" type="SUCCESS" close="false" animation="true" addStyleNames="shy alertVitrine">Usuário criado com sucesso. Uma solicitação foi enviada para a instituição requisitando seu acesso. Você receberá um email quando a requisição for aprovada.</b:Alert>
 	</g:FlowPanel>
 
 </ui:UiBinder>

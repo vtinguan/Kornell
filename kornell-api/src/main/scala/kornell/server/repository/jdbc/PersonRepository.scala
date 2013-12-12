@@ -41,6 +41,8 @@ class PersonRepository(val uuid:String) {
 	    """.executeUpdate
       this
     }
+
+	def updatePerson(email: String, fullName:String):PersonRepository = updatePerson(email, fullName, null, null, null, null, null)
 }
 
 object PersonRepository{

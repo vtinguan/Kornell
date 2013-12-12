@@ -10,7 +10,7 @@ import kornell.core.lom.ExternalPage;
 import static kornell.core.util.StringUtils.*;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
-import kornell.gui.client.presentation.util.loading.LoadingPopup;
+import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.GWT;
