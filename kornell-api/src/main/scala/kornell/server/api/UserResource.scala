@@ -1,38 +1,24 @@
 package kornell.server.api
 
-import java.util.UUID
+import scala.collection.JavaConverters._
+import scala.collection.immutable.Set
+import javax.servlet.http.HttpServletResponse
 import javax.ws.rs._
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Person
-import kornell.core.event.EnrollmentStateChanged
 import kornell.core.to.RegistrationRequestTO
 import kornell.core.to.UserInfoTO
 import kornell.server.repository.TOs
 import kornell.server.repository.TOs._
 import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.Institutions
-import kornell.server.repository.jdbc.People
 import kornell.server.repository.jdbc.PersonRepository
-import kornell.server.repository.jdbc.RegistrationRepository
 import kornell.server.repository.jdbc.Registrations
 import kornell.server.repository.jdbc.SQLInterpolation._
-import kornell.server.util.EmailSender
-import kornell.core.to.TOFactory
-import kornell.server.repository.jdbc.Events
-import java.util.Date
-import kornell.core.event.EnrollmentStateChanged
-import kornell.server.repository.jdbc.EnrollmentRepository
-import kornell.core.entity.EnrollmentState
-import kornell.server.repository.jdbc.Courses
-import kornell.core.to.CourseTO
-import scala.collection.SortedSet
-import scala.collection.immutable.Set
-import scala.collection.JavaConverters._
-import kornell.server.repository.jdbc.Enrollments
-import kornell.server.repository.jdbc.CourseClasses
-import kornell.core.entity.CourseClass
 import kornell.server.repository.service.RegistrationEnrollmentService
+import kornell.server.util.EmailService
+import kornell.core.util.UUID
 
 @Path("user")
 class UserResource{
@@ -50,9 +36,6 @@ class UserResource{
     	val signingNeeded = Registrations.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
-    	val institution = Institutions.usersInstitution(p)
-    	if(institution.isDefined)
-    		user.setInstitutionAssetsURL(institution.get.getTerms)
     	val roles = Auth.rolesOf(username)
     	user.setRoles((Set.empty ++ roles).asJava)
     	user.setRegistrationsTO(Registrations.getAll(p))
@@ -72,8 +55,6 @@ class UserResource{
     	val signingNeeded = Registrations.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
-    	val institution = Institutions.usersInstitution(p)
-    	user.setInstitutionAssetsURL(institution.get.getTerms)
     	
     	if(user.getPerson().getConfirmation().equals(confirmation)){
     		Auth.confirmAccount(user.getPerson().getUUID())
@@ -102,8 +83,6 @@ class UserResource{
     	val signingNeeded = Registrations.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
-    	val institution = Institutions.usersInstitution(p)
-    	user.setInstitutionAssetsURL(institution.get.getTerms)
     	val roles = Auth.rolesOf(user.getUsername)
     	user.setRoles((Set.empty ++ roles).asJava)
     	user.setRegistrationsTO(Registrations.getAll(p))
@@ -114,13 +93,38 @@ class UserResource{
   @Path("check/{email}")
   @Produces(Array(UserInfoTO.TYPE))
   def checkUsernameAndEmail(@PathParam("email") email:String):Option[UserInfoTO] = {
-      	val user = newUserInfoTO
-    	val emailFetched = Auth.getEmail(email)
-    	if(emailFetched.isDefined)
-    		user.setEmail(emailFetched.get)
-    	Option(user)
+  	val user = newUserInfoTO
+	val emailFetched = Auth.getEmail(email)
+	if(emailFetched.isDefined)
+		user.setEmail(emailFetched.get)
+	Option(user)
   }
   
+  @GET
+  @Path("requestPasswordChange/{email}/{institutionName}")
+  @Produces(Array("text/plain"))
+  def requestPasswordChange(@PathParam("email") email:String, 
+      @PathParam("institutionName") institutionName:String) = {
+    val person = Auth.getPerson(email)
+    val institution = Institutions.byName(institutionName)
+    if(person.isDefined && institution.isDefined){
+    	val requestPasswordChangeUUID = UUID.random
+    	Auth.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)
+    	EmailService.sendEmailRequestPasswordChange(person.get, institution.get, requestPasswordChangeUUID)
+    }
+  }
+
+  @GET
+  @Path("changePassword/{password}/{passwordChangeUUID}")
+  @Produces(Array("text/plain"))
+  def changePassword(@Context resp:HttpServletResponse,
+      @PathParam("password") password:String, 
+      @PathParam("passwordChangeUUID") passwordChangeUUID:String) = 
+    Auth.getPersonByPasswordChangeUUID(passwordChangeUUID) match { 
+      case Some(one) => PersonRepository(one.getUUID).setPassword(one.getEmail, password)
+      case None => resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "It wasn't possible to change your password.")
+  	} 
+	  
   
   @PUT
   @Path("registrationRequest")

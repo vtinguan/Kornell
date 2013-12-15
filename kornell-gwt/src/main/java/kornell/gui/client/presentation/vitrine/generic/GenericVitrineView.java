@@ -5,7 +5,7 @@ import static kornell.core.util.StringUtils.composeURL;
 import java.util.List;
 
 import kornell.gui.client.presentation.vitrine.VitrineView;
-import kornell.gui.client.util.ClientProperties;
+import kornell.gui.client.presentation.vitrine.VitrineViewType;
 
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.Form;
@@ -32,6 +32,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private VitrineView.Presenter presenter;
+	private VitrineViewType currentViewType = VitrineViewType.login;
 
 	@UiField
 	Image imgLogo;
@@ -49,49 +50,79 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@UiField
 	Button btnRegister;
 	@UiField
-	Alert alertError;
+	Button btnForgotPassword;
 	@UiField
-	Alert userCreatedAlert;
+	Alert alertError;
 	
 	@UiField
 	FlowPanel signUpPanel;
 	@UiField
 	Form frmSignUp;
-
 	@UiField
 	TextBox suName;
 	@UiField
 	TextBox suEmail;
 	@UiField
-	PasswordTextBox suPasswordConfirm;
-	@UiField
 	PasswordTextBox suPassword;
+	@UiField
+	PasswordTextBox suPasswordConfirm;
 	@UiField
 	Button btnOK;
 	@UiField
 	Button btnCancel;
-
+	
+	@UiField
+	FlowPanel forgotPasswordPanel;
+	@UiField
+	Form frmforgotPassword;
+	@UiField
+	TextBox fpEmail;
+	@UiField
+	Button btnOKFp;
+	@UiField
+	Button btnCancelFp;
+	
+	@UiField
+	FlowPanel newPasswordPanel;
+	@UiField
+	Form frmNewPassword;
+	@UiField
+	PasswordTextBox newPassword;
+	@UiField
+	PasswordTextBox newPasswordConfirm;
+	@UiField
+	Button btnOKNewPassword;
+	@UiField
+	Button btnCancelNewPassword;
+	
+	
 	// TODO i18n xml
 	public GenericVitrineView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		displayLoginPanel(true);
+		displayView(VitrineViewType.login);
 		
 		pwdPassword.addKeyPressHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				if (KeyCodes.KEY_ENTER == event.getCharCode())
-					doLogin(null);
+				if (KeyCodes.KEY_ENTER == event.getCharCode()){
+					switch (currentViewType) {
+					case login: doLogin(null);
+						break;
+					case register: signUp(null);
+						break;
+					case forgotPassword: requestPasswordChange(null);
+						break;
+					case newPassword: changePassword(null);
+						break;
+					default:
+						break;
+					}
+				}
 			}
 		});
 		
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");
-		
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			public void execute() {
-				txtUsername.setFocus(true);
-			}
-		});
 	}
 
 	@Override
@@ -109,6 +140,11 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		presenter.onRegisterButtonClicked();
 	}
 
+	@UiHandler("btnForgotPassword")
+	void forgotPassword(ClickEvent e) {
+		presenter.onForgotPasswordButtonClicked();
+	}
+
 	@UiHandler("btnOK")
 	void signUp(ClickEvent e) {
 		presenter.onSignUpButtonClicked();
@@ -117,6 +153,26 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@UiHandler("btnCancel")
 	void cancelSignUp(ClickEvent e) {
 		presenter.onCancelSignUpButtonClicked();
+	}
+
+	@UiHandler("btnOKFp")
+	void requestPasswordChange(ClickEvent e) {
+		presenter.onRequestPasswordChangeButtonClicked();
+	}
+
+	@UiHandler("btnCancelFp")
+	void cancelPasswordChangeRequest(ClickEvent e) {
+		presenter.onCancelPasswordChangeRequestButtonClicked();
+	}
+
+	@UiHandler("btnOKNewPassword")
+	void changePassword(ClickEvent e) {
+		presenter.onChangePasswordButtonClicked();
+	}
+
+	@UiHandler("btnCancelNewPassword")
+	void cancelChangePassword(ClickEvent e) {
+		presenter.onCancelChangePasswordButtonClicked();
 	}
 
 	@Override
@@ -153,20 +209,50 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		alertError.setHTML(errorsStr);
 	}
 	
-	@Override
-	public void showUserCreatedAlert(){
-		userCreatedAlert.removeStyleName("shy");		
-	}
-	
-	@Override
-	public void hideUserCreatedAlert(){
-		userCreatedAlert.addStyleName("shy");		
-	}
-
-	@Override
-	public void displayLoginPanel(boolean show) {
-		loginPanel.setVisible(show);
-		signUpPanel.setVisible(!show);
+	@Override 
+	public void displayView(VitrineViewType type){
+		loginPanel.setVisible(false);
+		signUpPanel.setVisible(false);
+		forgotPasswordPanel.setVisible(false);
+		newPasswordPanel.setVisible(false);
+		switch (type) {
+		case login: 
+			loginPanel.setVisible(true);
+			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+				public void execute() {
+					txtUsername.setFocus(true);
+				}
+			});
+			break;
+		case register: 
+			signUpPanel.setVisible(true);
+			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+				public void execute() {
+					suName.setFocus(true);
+				}
+			});
+			break;
+		case forgotPassword: 
+			forgotPasswordPanel.setVisible(true);
+			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+				public void execute() {
+					fpEmail.setFocus(true);
+				}
+			});
+			break;
+		case newPassword: 
+			newPasswordPanel.setVisible(true);
+			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+				public void execute() {
+					newPassword.setFocus(true);
+				}
+			});
+			break;
+		default:
+			break;
+		}
+		
+		currentViewType = type;
 	}
 
 	@Override
@@ -187,6 +273,21 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@Override
 	public String getSuPasswordConfirm() {
 		return suPasswordConfirm.getValue();
+	}
+
+	@Override
+	public String getFpEmail() {
+		return fpEmail.getValue();
+	}
+
+	@Override
+	public String getNewPassword() {
+		return newPassword.getValue();
+	}
+
+	@Override
+	public String getNewPasswordConfirm() {
+		return newPasswordConfirm.getValue();
 	}
 
 	@Override

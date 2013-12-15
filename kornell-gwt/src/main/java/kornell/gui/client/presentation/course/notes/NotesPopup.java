@@ -1,7 +1,7 @@
 package kornell.gui.client.presentation.course.notes;
 
 import kornell.api.client.KornellClient;
-import kornell.core.to.CourseTO;
+import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -22,11 +22,6 @@ public class NotesPopup {
 	String courseClassUUID;
 	String notes;
 
-	// TODO: fetch these dynamically
-	int NORTH_BAR = 45;
-	int SOUTH_BAR = 35;
-	int BAR_WIDTH = 962;
-	int NOTES_MIN_HEIGHT = 300;
 	
 
 	public NotesPopup(final KornellClient client, final String courseUUID, final String notes) {
@@ -54,14 +49,14 @@ public class NotesPopup {
 	}
 	
 	private void placePopup() {
-		int left = (Window.getClientWidth() - BAR_WIDTH) / 2;
+		int left = (Window.getClientWidth() - Positioning.BAR_WIDTH) / 2;
 		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
-		int top = Window.getClientHeight() - SOUTH_BAR - NOTES_MIN_HEIGHT;
+		int top = Window.getClientHeight() - Positioning.SOUTH_BAR - Positioning.NOTES_MIN_HEIGHT;
 		
 		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
-		popup.setWidth(BAR_WIDTH + "px");
-		popup.getElement().getStyle().setPropertyPx("size", NOTES_MIN_HEIGHT);
-		popup.getElement().getStyle().setPropertyPx("bottom", SOUTH_BAR);
+		popup.setWidth(Positioning.BAR_WIDTH + "px");
+		popup.getElement().getStyle().setPropertyPx("size", Positioning.NOTES_MIN_HEIGHT);
+		popup.getElement().getStyle().setPropertyPx("bottom", Positioning.SOUTH_BAR);
 		popup.setVisible(true);
 	}
 
