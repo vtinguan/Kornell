@@ -53,10 +53,12 @@ class S3(regionName: String,
   def getObject(key: String) =
     s3.getObject(bucket, prefix + "/" + key)
 
-  def source(key: String) = {
-    val url = composeURL(baseURL, prefix, key)
-    Source.fromURL(url, "utf-8")
-  }
+  def source(key: String) =
+    Source.fromURL(url(key), "utf-8")
+
+  def exists(key: String) = ??? //TODO: HTTP HEAD
+
+  def url(key: String) = composeURL(baseURL, prefix, key)
 
   //TODO: Resolve base url from region
   lazy val baseURL =
@@ -85,18 +87,18 @@ object S3 {
     /*S3("F7A4A77F-D519-4348-8F62-EDB0C2C48395")
       .actoms
       .foreach { println(_) }*/
-    
-      val classRepo = CourseClasses("B6A60AB5-3889-47B4-93DA-60E515309DAF")
-      val versionRepo = classRepo.version
-      val version = versionRepo.get
-      val repositoryUUID = version.getRepositoryUUID();
-      val s3 = S3(repositoryUUID)
-      val structureSrc = s3.source("structure.knl")
-      val structureText = structureSrc.mkString("")
-      val baseURL = s3.baseURL
-      printf(baseURL)
-      //val visited = classRepo.actomsVisitedBy(person) 
-      //val contents = ContentsParser.parse(baseURL, s3.prefix, structureText, visited)
+
+    val classRepo = CourseClasses("B6A60AB5-3889-47B4-93DA-60E515309DAF")
+    val versionRepo = classRepo.version
+    val version = versionRepo.get
+    val repositoryUUID = version.getRepositoryUUID();
+    val s3 = S3(repositoryUUID)
+    val structureSrc = s3.source("structure.knl")
+    val structureText = structureSrc.mkString("")
+    val baseURL = s3.baseURL
+    printf(baseURL)
+    //val visited = classRepo.actomsVisitedBy(person) 
+    //val contents = ContentsParser.parse(baseURL, s3.prefix, structureText, visited)
     /*
     val s3 = new S3("sa-east-1","AKIAJZREK4G3OPFKQQTA","vFn6ZEE9PjKxDJ0Sqe2fit5wqL8AeFExVHELUtJ2","aws-examples","ten-thousand")
     s3.actoms.foreach {println(_)} 

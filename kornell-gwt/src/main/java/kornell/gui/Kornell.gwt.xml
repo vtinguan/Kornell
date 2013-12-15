@@ -33,9 +33,6 @@
   <!-- otherwise eclipse complains (Google plugin bug?)           -->
   <inherits name='com.google.gwt.junit.JUnit' />
   
-  
-  
-
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->
   <!-- any one of the following lines.                            -->
@@ -48,6 +45,7 @@
   
   <!-- 1st party libs -->
   <inherits name='kornell.api.KornellClient' />
+  <inherits name='kornell.scorm.KornellSCORM' />
   
 
   
