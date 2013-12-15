@@ -14,23 +14,30 @@ import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.presentation.admin.home.DeanHomePlace;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
+import kornell.gui.client.presentation.util.KornellMessenger;
 import kornell.gui.client.presentation.util.ValidatorHelper;
 import kornell.gui.client.util.ClientProperties;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class VitrinePresenter implements VitrineView.Presenter {
 	private final ClientFactory clientFactory;
 	private VitrineView view;
+	private String passwordChangeUUID;
 
 	public VitrinePresenter(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		view = getView();
 		view.setPresenter(this);
-		checkIfUserWasCreated();
+		
+		this.passwordChangeUUID = ((VitrinePlace) clientFactory.getPlaceController().getWhere()).getPasswordChangeUUID();
+		if(passwordChangeUUID != null && !"".equals(passwordChangeUUID)){
+			view.displayView(VitrineViewType.newPassword);
+		}
+		
 		String imgLogoURL = clientFactory.getInstitution().getAssetsURL();
 		view.setLogoURL(imgLogoURL);
 	}
@@ -108,8 +115,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				view.showMessage();
 			}
 		};
-		String confirmation = ((VitrinePlace)clientFactory.getPlaceController().getWhere()).getConfirmation();
-		GWT.log("Confirmation: " + confirmation);
+		String confirmation = "";//((VitrinePlace)clientFactory.getPlaceController().getWhere()).getConfirmation();
+		//GWT.log("Confirmation: " + confirmation);
 		clientFactory.getUserSession().login(view.getUsername().toLowerCase().trim(),
 				view.getPassword(),
 				confirmation,
@@ -119,7 +126,13 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	@Override
 	public void onRegisterButtonClicked() {
 		view.hideMessage();
-		view.displayLoginPanel(false);		
+		view.displayView(VitrineViewType.register);		
+	}
+
+	@Override
+	public void onForgotPasswordButtonClicked() {
+		view.hideMessage();
+		view.displayView(VitrineViewType.forgotPassword);
 	}
 
 	private List<String> validateFields() {
@@ -147,7 +160,6 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	@Override
 	public void onSignUpButtonClicked() {
 		view.hideMessage();
-		view.hideUserCreatedAlert();
 		List<String> errors = validateFields();
 		
 		if(errors.size() == 0){
@@ -165,8 +177,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						@Override
 						public void ok(UserInfoTO user){
 							GWT.log("User created");
-							view.showUserCreatedAlert();
-							view.displayLoginPanel(true);
+							KornellMessenger.show("Usuário criado com sucesso. Uma solicitação foi enviada para a instituição requisitando seu acesso. Você receberá um email quando a requisição for aprovada.");
+							view.displayView(VitrineViewType.login);
 						}
 					});
 				}
@@ -190,16 +202,62 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	@Override
 	public void onCancelSignUpButtonClicked() {
 		view.hideMessage();
-		view.displayLoginPanel(true);		
+		view.displayView(VitrineViewType.login);		
 	}
 
 	@Override
-	public void checkIfUserWasCreated() {
-		Place currentPlace = clientFactory.getPlaceController().getWhere();
-		if (currentPlace instanceof VitrinePlace && ((VitrinePlace) currentPlace).isUserCreated()) {
-			view.showUserCreatedAlert();
-			((VitrinePlace) currentPlace).setUserCreated(false);
+	public void onRequestPasswordChangeButtonClicked() {
+		clientFactory.getKornellClient().requestPasswordChange(view.getFpEmail(), clientFactory.getInstitution().getName(), new Callback<Void>() {
+			@Override
+			public void ok(Void to) {
+				view.displayView(VitrineViewType.login);	
+				view.setMessage("Requisição feita. Confira seu e-mail.");
+				view.showMessage();
+			}
+		});
+	}
+
+	@Override
+	public void onCancelPasswordChangeRequestButtonClicked() {
+		view.hideMessage();
+		view.displayView(VitrineViewType.login);		
+	}
+
+	@Override
+	public void onChangePasswordButtonClicked() {
+		view.hideMessage();
+		ValidatorHelper validator = new ValidatorHelper();
+		List<String> errors = new ArrayList<String>();
+		
+		if (!validator.passwordValid(view.getNewPassword())){
+			errors.add("Senha inválida (mínimo de 6 caracteres).");
 		}
+		if (!view.getNewPassword().equals(view.getNewPasswordConfirm())){
+			errors.add("As senhas não conferem.");
+		}
+		if(errors.size() == 0){
+			clientFactory.getKornellClient().changePassword(view.getNewPassword(), passwordChangeUUID, new Callback<Void>() {
+				@Override
+				public void ok(Void to) {
+					view.displayView(VitrineViewType.login);	
+					KornellMessenger.show("Senha alterada com sucesso. Favor fazer o login novamente.");
+				}
+				
+				@Override
+				public void unauthorized(){
+					KornellMessenger.show("Não foi possível alterar a senha. Verifique seu email ou faça uma nova requisição de alteração de senha.", AlertType.ERROR, 8000);
+				}
+			});
+		} else {
+			view.setMessage(errors);
+			view.showMessage();
+		}
+	}
+
+	@Override
+	public void onCancelChangePasswordButtonClicked() {
+		view.hideMessage();
+		view.displayView(VitrineViewType.login);		
 	}
 
 }

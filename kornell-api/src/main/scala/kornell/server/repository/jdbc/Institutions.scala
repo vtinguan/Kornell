@@ -9,6 +9,13 @@ import kornell.core.entity.Registration
 import kornell.server.repository.jdbc.SQLInterpolation._
 
 object Institutions {
+  
+  implicit def toInstitution(rs:ResultSet):Institution = 
+    newInstitution(rs.getString("uuid"), 
+        rs.getString("name"), 
+        rs.getString("terms"),
+        rs.getString("assetsURL"),
+        rs.getString("baseURL")) 
 
   def create(name: String, terms: String, baseURL: String): Institution = {
     val i = newInstitution(randomUUID, name, terms, "", baseURL)
@@ -16,6 +23,17 @@ object Institutions {
     | insert into Institution(uuid,name,terms) 
     | values ($i.getUUID,$i.getName,$i.terms)""".executeUpdate
     i
+  }
+  
+  def update(institution: Institution): Institution = {    
+    sql"""
+    | update Institution i
+    | set i.name = ${institution.getName},
+    | i.terms = ${institution.getTerms},
+    | i.assetsURL = ${institution.getAssetsURL},
+    | i.baseURL = ${institution.getBaseURL}
+    | where i.uuid = ${institution.getUUID}""".executeUpdate
+    institution
   }
   
   def register(p: Person, i: Institution):Registration = {
@@ -31,24 +49,10 @@ object Institutions {
     """.executeUpdate    
   }
   
-  implicit def toInstitution(rs:ResultSet):Institution = 
-    newInstitution(rs.getString("uuid"), 
-        rs.getString("name"), 
-        rs.getString("terms"),
-        rs.getString("assetsURL"),
-        rs.getString("baseURL")) 
-  
   def byUUID(UUID:String) = 
 	sql"select * from Institution where uuid = ${UUID}".first[Institution]
   
   def byName(institutionName:String) = 
 	sql"select * from Institution where name = ${institutionName}".first[Institution]
-
-  
-  def usersInstitution(implicit person:Person) = 
-	sql"""select * 
-	from Registration r
-	join Institution i on r.institution_uuid=i.uuid
-	where r.person_uuid = ${person.getUUID}""".first[Institution]
 
 }

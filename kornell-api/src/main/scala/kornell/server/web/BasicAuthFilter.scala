@@ -8,7 +8,18 @@ import java.util.logging.Logger
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
-  val pubPaths = Set("/checkup", "/sandbox", "/sync", "/report", "/user/check", "/user/create", "/user/registrationRequest", "/email/welcome", "/institutions")
+  val pubPaths = Set(
+      "/checkup", 
+      "/sandbox", 
+      "/sync", 
+      "/report", 
+      "/user/check", 
+      "/user/create", 
+      "/user/registrationRequest", 
+      "/user/requestPasswordChange",
+      "/user/changePassword",
+      "/email/welcome", 
+      "/institutions")
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
     (sreq, sres) match {

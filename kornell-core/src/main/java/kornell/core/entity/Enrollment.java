@@ -3,11 +3,8 @@ package kornell.core.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public interface Enrollment {
+public interface Enrollment extends Entity{
 	public static String TYPE = EntityFactory.PREFIX + "enrollment+json";
-	
-	String getUUID();
-	void setUUID(String uuid);
 	
 	Date getEnrolledOn();
 	void setEnrolledOn(Date enrolledOn);

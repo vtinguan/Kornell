@@ -25,11 +25,9 @@ class EnrollmentResource{
   def getByCourseUUID(@QueryParam("courseClassUUID") courseClassUUID:String) = Enrollments().byCourseClass(courseClassUUID)
   
   @PUT
-  @Consumes(Array(kornell.core.entity.Enrollments.TYPE))
-  def putEnrollments(implicit @Context sc: SecurityContext, enrollments:kornell.core.entity.Enrollments) = 
-    Auth.withPerson { p =>
-    	RegistrationEnrollmentService.deanCreateEnrollmentsBatch(enrollments, p)  
-      }
+  @Consumes(Array(kornell.core.to.EnrollmentRequestsTO.TYPE))
+  def putEnrollments(implicit @Context sc: SecurityContext, enrollmentRequests:kornell.core.to.EnrollmentRequestsTO) = 
+    Auth.withPerson { p => RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p) }
   
   
   @PUT

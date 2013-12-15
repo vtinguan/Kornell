@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.util.loading;
+package kornell.gui.client.presentation.util;
 
 import kornell.gui.client.KornellConstants;
 

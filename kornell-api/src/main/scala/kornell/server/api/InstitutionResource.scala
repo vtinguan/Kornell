@@ -10,17 +10,26 @@ import kornell.server.repository.jdbc.Institutions
 import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
 import kornell.core.entity.Institution
 import kornell.server.repository.jdbc.Registrations
+import javax.ws.rs.Path
+import javax.ws.rs.Consumes
 
 @Produces(Array(Institution.TYPE))
-//TODO:Refactor to use /institutions/{uuid} and /institutions?name={name}
 class InstitutionResource(uuid: String) {
   @GET
   def get = Institutions.byUUID(uuid)
   
   @PUT
   @Produces(Array("text/plain"))
+  @Path("acceptTerms")
   def acceptTerms(implicit @Context sc: SecurityContext) = Auth.withPerson{ p =>
     Registrations(p.getUUID, uuid).acceptTerms
+  }
+  
+  @PUT
+  @Produces(Array("text/plain"))
+  @Consumes(Array(Institution.TYPE))
+  def update(implicit @Context sc: SecurityContext, institution: Institution) = Auth.withPerson{ p =>
+    Institutions.update(institution)
   }
   
 }

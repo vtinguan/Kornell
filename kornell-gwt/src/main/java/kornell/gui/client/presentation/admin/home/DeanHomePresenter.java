@@ -10,12 +10,15 @@ import kornell.api.client.UserSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
+import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
+import kornell.core.to.EnrollmentRequestTO;
+import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.util.UUID;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.CourseClassPlace;
-import kornell.gui.client.presentation.util.loading.LoadingPopup;
+import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -26,30 +29,28 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 	private DeanHomeView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 		
-	public DeanHomePresenter(final ClientFactory clientFactory) {
-		this.clientFactory = clientFactory;
+	public DeanHomePresenter(ClientFactory factory) {
+		clientFactory = factory;
 		//TODO refactor permissions per session/activity
 		UserSession.current(new Callback<UserSession>() {
 			@Override
 			public void ok(UserSession session) {
-				if(session.isDean())
-					init();
-				else {
-					GWT.log("Hey, only deans are allowed to see this! " + this.getClass().getName());
-					clientFactory.getPlaceController()
-						.goTo(clientFactory.getDefaultPlace());
-				}
+				init(session.isDean());
 			}
 		});
 	}
 	
-	private void init() {
-		view = getView();
-		view.setPresenter(this);
-		
-		//get courses for institution
-		//get enrollments for course
-		getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());
+	private void init(boolean isDean) {
+		if(isDean){
+			view = getView();
+			view.setPresenter(this);
+			getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());
+		}
+		else {
+			GWT.log("Hey, only deans are allowed to see this! " + this.getClass().getName());
+			clientFactory.getPlaceController()
+				.goTo(clientFactory.getDefaultPlace());
+		}
 	}
 
 	private List<Enrollment> getEnrollments(String courseClassUUID){
@@ -62,17 +63,6 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 			}
 		});
 		return null;
-	}
-	
-
-	@Override
-	public Widget asWidget() {
-		return view.asWidget();
-	}
-
-
-	private DeanHomeView getView() {
-		return clientFactory.getDeanHomeView();
 	}
 
 	@Override
@@ -87,10 +77,9 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 				.fire(new Callback<Void>() {
 					@Override
 					public void ok(Void to) {
-						GWT.log("ok");
 						getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());					
 					}
-				});;
+				});
 			}
 		});
 	}
@@ -112,30 +101,9 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 	@Override
 	public void onAddEnrollmentButtonClicked(String fullName, String email) {
 		Window.alert("Inserir: \""+fullName+"\"<"+email+">");
-		List<Enrollment> enrollmentsList = new ArrayList<Enrollment>();
+		List<EnrollmentRequestTO> enrollmentsList = new ArrayList<EnrollmentRequestTO>();
 		enrollmentsList.add(createEnrollment(fullName, email));
 		saveEnrollments(createEnrollments(enrollmentsList));
-	}
-
-	private Enrollment createEnrollment(String fullName, String email) {
-		Enrollment enrollment = clientFactory.getEntityFactory().newEnrollment().as();
-		enrollment.setCourseClassUUID(clientFactory.getCurrentCourse().getCourseClass().getUUID());
-		enrollment.setEnrolledOn(new Date());
-		enrollment.setState(EnrollmentState.preEnrolled);
-		enrollment.setUUID(UUID.random());
-		
-		Person person = clientFactory.getEntityFactory().newPerson().as();
-		person.setFullName(fullName);
-		person.setEmail(email);
-		enrollment.setPerson(person);
-		
-		return enrollment;
-	}
-
-	private Enrollments createEnrollments(List<Enrollment> enrollmentsList) {
-		Enrollments enrollments = clientFactory.getEntityFactory().newEnrollments().as();
-		enrollments.setEnrollments(enrollmentsList);
-		return enrollments;
 	}
 
 	@Override
@@ -144,8 +112,14 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		saveEnrollments(createEnrollments(createEnrollmentsList(txtAddEnrollmentBatch)));
 	}
 
-	private List<Enrollment> createEnrollmentsList(String txtAddEnrollmentBatch) {
-		List<Enrollment> enrollmentsList = new ArrayList<Enrollment>();
+	private EnrollmentRequestsTO createEnrollments(List<EnrollmentRequestTO> enrollmentRequestsList) {
+		EnrollmentRequestsTO enrollmentRequestsTO = clientFactory.getTOFactory().newEnrollmentRequestsTO().as();
+		enrollmentRequestsTO.setEnrollmentRequests(enrollmentRequestsList);
+		return enrollmentRequestsTO;
+	}
+
+	private List<EnrollmentRequestTO> createEnrollmentsList(String txtAddEnrollmentBatch) {
+		List<EnrollmentRequestTO> enrollmentsList = new ArrayList<EnrollmentRequestTO>();
 		String[] enrollmentsA = txtAddEnrollmentBatch.split("\n");
 		String enrollmentStr, fullName, email;
 		String[] enrollmentStrA;
@@ -160,9 +134,20 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		return enrollmentsList;
 	}
 
-	private void saveEnrollments(Enrollments enrollments) {
+	private EnrollmentRequestTO createEnrollment(String fullName, String email) {
+		EnrollmentRequestTO enrollmentRequestTO = clientFactory.getTOFactory().newEnrollmentRequestTO().as();
+
+		enrollmentRequestTO.setInstitutionUUID(clientFactory.getInstitution().getUUID());
+		enrollmentRequestTO.setCourseClassUUID(clientFactory.getCurrentCourse().getCourseClass().getUUID());
+		enrollmentRequestTO.setEmail(email);
+		enrollmentRequestTO.setFullName(fullName);
+		
+		return enrollmentRequestTO;
+	}
+
+	private void saveEnrollments(EnrollmentRequestsTO enrollmentRequests) {
 		LoadingPopup.show();
-		clientFactory.getKornellClient().createEnrollments(enrollments, new Callback<Enrollments>() {
+		clientFactory.getKornellClient().createEnrollments(enrollmentRequests, new Callback<Enrollments>() {
 			@Override
 			public void ok(Enrollments to) {
 				getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());
@@ -175,5 +160,27 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		CourseClassPlace place = new CourseClassPlace(clientFactory.getCurrentCourse().getCourseClass().getUUID());
 		clientFactory.setDefaultPlace(place);
 		clientFactory.getPlaceController().goTo(place);
+	}
+	
+	private void updateInstitution() {
+		clientFactory.getInstitution().setAssetsURL(clientFactory.getInstitution().getAssetsURL()+"x");
+		clientFactory.getUserSession().institution(clientFactory.getInstitution().getUUID()).update(clientFactory.getInstitution(),
+				new Callback<Institution>() {
+					@Override
+					public void ok(Institution institution) {
+						GWT.log(institution.getName());
+					}
+				});
+	}
+	
+
+	@Override
+	public Widget asWidget() {
+		return view.asWidget();
+	}
+
+
+	private DeanHomeView getView() {
+		return clientFactory.getDeanHomeView();
 	}
 }
