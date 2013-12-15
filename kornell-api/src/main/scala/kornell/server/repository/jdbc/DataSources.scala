@@ -47,6 +47,7 @@ object DataSources {
     prop("JDBC_USERNAME"),
     prop("JDBC_PASSWORD"))
 
+  //TODO: Consider configuring from imported implicit  (like ExecutionContext)
   val connectionFactory = JNDI.orElse(SYSPROPS).orElse(LOCAL)
   
   connectionFactory match {

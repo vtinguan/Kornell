@@ -54,7 +54,7 @@ public class StringUtils {
 		else 
 			buf.append(baseURL); 
 		if(path != null) for (String segment : path) {
-			if (!segment.startsWith("/"))
+			if (!(segment.startsWith("/") || segment.isEmpty()))
 				buf.append("/");
 			buf.append(segment);
 		}
