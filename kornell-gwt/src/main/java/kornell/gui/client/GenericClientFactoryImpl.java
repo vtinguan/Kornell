@@ -334,8 +334,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public ProfileView getProfileView() {
-		return new GenericProfileView(bus, session, placeCtrl,
-				currentCourseClass);
+		return new GenericProfileView(this);
 	}
 
 	@Override
@@ -501,7 +500,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public CourseClassTO getCurrentCourse() {
+	public CourseClassTO getCurrentCourseClass() {
 		return currentCourseClass;
 	}
 
