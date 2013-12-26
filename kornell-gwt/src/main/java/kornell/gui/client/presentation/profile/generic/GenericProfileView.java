@@ -130,7 +130,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	
 	private void initData() {
 		isCurrentUser = session.getUserInfo().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
-		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit();
+		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
 		session.getUser(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID(), new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO to) {
@@ -269,8 +269,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 			if(isEditMode && showContactDetails && session.getUserInfo().getPerson().getCity() == null){
 				KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO);
 			}
-			
-    		profileFields.add(getPictureUploadFormPanel());
+
+			//TODO: remove comment
+    		//profileFields.add(getPictureUploadFormPanel());
 			
     		// the email is shown only on edit mode and on the read-only view of the profile's owner
 			if(isEditMode || isCurrentUser){
@@ -361,8 +362,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 		  }
 		});
 		
-		//TODO: remove shy
-		formPanel.addStyleName("shy");
 		formPanel.setWidget(fileUploadWrapper);
 		return formPanel;
 	}

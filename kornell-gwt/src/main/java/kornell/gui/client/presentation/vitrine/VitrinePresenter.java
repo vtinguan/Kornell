@@ -15,13 +15,12 @@ import kornell.gui.client.presentation.admin.home.DeanHomePlace;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Widget;
 
 public class VitrinePresenter implements VitrineView.Presenter {
