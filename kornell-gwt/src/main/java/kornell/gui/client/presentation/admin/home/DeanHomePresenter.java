@@ -44,7 +44,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		if(isDean){
 			view = getView();
 			view.setPresenter(this);
-			getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());
+			getEnrollments(clientFactory.getCurrentCourseClass().getCourseClass().getUUID());
 		}
 		else {
 			GWT.log("Hey, only deans are allowed to see this! " + this.getClass().getName());
@@ -77,7 +77,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 				.fire(new Callback<Void>() {
 					@Override
 					public void ok(Void to) {
-						getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());					
+						getEnrollments(clientFactory.getCurrentCourseClass().getCourseClass().getUUID());					
 					}
 				});
 			}
@@ -138,7 +138,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		EnrollmentRequestTO enrollmentRequestTO = clientFactory.getTOFactory().newEnrollmentRequestTO().as();
 
 		enrollmentRequestTO.setInstitutionUUID(clientFactory.getInstitution().getUUID());
-		enrollmentRequestTO.setCourseClassUUID(clientFactory.getCurrentCourse().getCourseClass().getUUID());
+		enrollmentRequestTO.setCourseClassUUID(clientFactory.getCurrentCourseClass().getCourseClass().getUUID());
 		enrollmentRequestTO.setEmail(email);
 		enrollmentRequestTO.setFullName(fullName);
 		
@@ -150,14 +150,14 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 		clientFactory.getKornellClient().createEnrollments(enrollmentRequests, new Callback<Enrollments>() {
 			@Override
 			public void ok(Enrollments to) {
-				getEnrollments(clientFactory.getCurrentCourse().getCourseClass().getUUID());
+				getEnrollments(clientFactory.getCurrentCourseClass().getCourseClass().getUUID());
 			}
 		});
 	}
 
 	@Override
 	public void onGoToCourseButtonClicked() {
-		CourseClassPlace place = new CourseClassPlace(clientFactory.getCurrentCourse().getCourseClass().getUUID());
+		CourseClassPlace place = new CourseClassPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID());
 		clientFactory.setDefaultPlace(place);
 		clientFactory.getPlaceController().goTo(place);
 	}

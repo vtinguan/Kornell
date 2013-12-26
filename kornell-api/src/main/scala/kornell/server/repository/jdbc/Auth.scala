@@ -23,7 +23,14 @@ object Auth {
     rs.getString("title"),
     rs.getString("sex"),
     rs.getDate("birthDate"),
-    rs.getString("confirmation"))
+    rs.getString("confirmation"),
+    rs.getString("telephone"),
+    rs.getString("country"),
+    rs.getString("state"),
+    rs.getString("city"),
+    rs.getString("addressLine1"),
+    rs.getString("addressLine2"),
+    rs.getString("postalCode"))
 
   implicit def toString(rs: ResultSet): String = rs.getString("email")
 
@@ -34,7 +41,7 @@ object Auth {
         sc.getUserPrincipal().getName()
       else "AUTH_SHOULD_HAVE_FAILED" //TODO
 
-    val person: Option[Person] = getPerson(username)
+    val person: Option[Person] = getPersonByEmail(username)
 
     if (person.isDefined)
       fun(person.get)
@@ -42,11 +49,9 @@ object Auth {
   }
 
   //TODO: Cache
-  def getPerson(email: String) = {
+  def getPersonByEmail(email: String) = {
     sql"""
-		select p.uuid, p.fullName, p.lastPlaceVisited, p.email, p.company, 
-		    p.title, p.sex, p.birthDate, p.confirmation
-		from Person p
+		select * from Person p
 		where p.email = $email
 	""".first[Person]
   }
@@ -54,8 +59,7 @@ object Auth {
   //TODO: Cache
   def getPersonByPasswordChangeUUID(passwordChangeUUID: String) = 
     sql"""
-		select p.uuid, p.fullName, p.lastPlaceVisited, p.email, p.company, 
-			p.title, p.sex, p.birthDate, p.confirmation
+		select p.*
 		from Person p join Password pwd on pwd.person_uuid = p.uuid
 		where pwd.requestPasswordChangeUUID = $passwordChangeUUID
 	""".first[Person]

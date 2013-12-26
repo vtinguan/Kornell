@@ -48,7 +48,7 @@ public interface ClientFactory {
 	Place getDefaultPlace();
 	void setDefaultPlace(Place place);
 	Institution getInstitution();
-	CourseClassTO getCurrentCourse();
+	CourseClassTO getCurrentCourseClass();
 	void setCurrentCourse(CourseClassTO courseClass);
 
 	EntityFactory getEntityFactory();

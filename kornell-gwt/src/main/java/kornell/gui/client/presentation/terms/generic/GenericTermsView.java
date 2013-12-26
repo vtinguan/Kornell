@@ -9,6 +9,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
 
@@ -106,7 +107,11 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void goStudy() {
-		placeCtrl.goTo(clientFactory.getDefaultPlace());
+		if(clientFactory.getInstitution().isDemandsPersonContactDetails()){
+			placeCtrl.goTo(new ProfilePlace(session.getUserInfo().getPerson().getUUID(), true));
+		} else {
+			placeCtrl.goTo(clientFactory.getDefaultPlace());
+		}
 	}
 
 }

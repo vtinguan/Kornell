@@ -26,23 +26,29 @@ class PersonRepository(val uuid:String) {
 	    rs.getString("title"),
 	    rs.getString("sex"),
 	    rs.getDate("birthDate"),
-	    rs.getString("confirmation"))
+	    rs.getString("confirmation"),
+	    rs.getString("telephone"),
+	    rs.getString("country"),
+	    rs.getString("state"),
+	    rs.getString("city"),
+	    rs.getString("addressLine1"),
+	    rs.getString("addressLine2"),
+	    rs.getString("postalCode"))
 	    
-	def get = sql"""select * from Person where uuid=$uuid""".first[Person].get
+	def get = sql"""select * from Person where uuid=$uuid""".first[Person]
 
-	def updatePerson(email: String, fullName:String, 
-      company: String, title: String, sex: String, 
-      birthDate: Date, confirmation: String) = {
+	def update(person: Person) = {
 	    sql"""
-	    	update Person set fullName = $fullName,
-	    	email = $email, company = $company, title = $title,
-	    	sex = $sex, birthDate = $birthDate, confirmation = $confirmation
+	    	update Person set fullName = ${person.getFullName},
+	    	email = ${person.getEmail}, company = ${person.getCompany}, title = ${person.getTitle},
+	    	sex = ${person.getSex}, birthDate = ${person.getBirthDate}, confirmation = ${person.getConfirmation},
+	    	telephone = ${person.getTelephone}, country = ${person.getCountry}, state = ${person.getState}, city = ${person.getCity}, 
+	    	addressLine1 = ${person.getAddressLine1}, addressLine2 = ${person.getAddressLine2}, postalCode = ${person.getPostalCode}
 	    	where uuid = $uuid
 	    """.executeUpdate
       this
     }
-
-	def updatePerson(email: String, fullName:String):PersonRepository = updatePerson(email, fullName, null, null, null, null, null)
+	
 }
 
 object PersonRepository{

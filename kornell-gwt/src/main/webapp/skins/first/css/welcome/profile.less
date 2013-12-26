@@ -7,7 +7,6 @@
 	width: @profileWidth;
 	height: 100%;
 	margin: 0 auto;
-	background-color: @profileBackgroundColor;
 	border-radius: 0px 0px 15px 15px;
 	.titlePanel{
 		height: 30px;
@@ -30,83 +29,24 @@
 			}
 		}
 	}
-	.profileFields{
-		.fieldPanel{
-			width: @profileWidth;
-			height: 46px;
-			.labelPanelImg{
-				height: 98px;
-			}
-			.labelPanel{
-				width: 0.37 * @profileWidth - (@profilePadding * 2);
-				margin-right: @profilePadding * 2;
-				float: left;
-				text-align: right;
-				.lblLabelImg{
-					color: @profileLabelColor;
-					font-size: 16px;
-					padding-top: 25px;
-					line-height: 25px;
-				}
-				.lblLabel{
-					color: @profileLabelColor;
-					font-size: 16px;
-					line-height: 46px;
-				}
-				.lblExtraInfo{
-					color:	@profileLabelExtraInfoColor;
-					font-size: 10px;
-					line-height: 10px;
-					text-align: right;
-				}
-			}
-			.labelPanel2{
-				.lblLabel{
-					line-height: 25px;
-					padding-top: 6px;
-				}
-				.lblExtraInfo{
-				}
-			}
-			.fieldPanel{
-				float: left;
-				width: 0.33 * @profileWidth - (@profilePadding * 2);
-				line-height: 46px;
-				.textField{
-					width: 248px;
-				}
-				.selectField{
-					width: 120px;
-				}
-				.lblValue{
-					color:	@profileLabelValueColor;
-					margin-top: -4px;
-				}
-				.lblValueAdd{
-					color:	@profileLabelValueAddColor;
-				}
-				.errorMessage{
-					color: @errorMessageColor;
-					margin-top: -20px;
-				}
-			}
-			.publicPanel{
-				float: left;
-				width: 0.15 * @profileWidth;
-				.lblPublic{
-					color: @profileLabelPublicColor;
-					font-size: 12px;
-					line-height: 46px;
-					font-weight: bold;
-				}
-				.imgPublic{
-					float: left;
-					padding-top: @profilePadding/2;
-				}
-			}
+	.fieldsWrapper{
+		padding-left: 100px;
+		.profileSeparatorBar{
+			margin-bottom: 25px;
+			float: left;
 		}
-		.fieldPanelImage{
-			height: 100px;	
+	}
+	.privatePanel{
+		float: left;
+		width: 80px;
+		div{
+			color: @profileLabelPublicColor;
+			font-size: 12px;
+			line-height: 26px;
+			font-weight: bold;
+		}
+		img{
+			float: left;
 		}
 	}
 }
@@ -115,50 +55,5 @@
 		@profileWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
 		@profilePadding: 10px;
 		width: @profileWidth;
-		.fieldPanel{
-				width: @profileWidth;
-				height: auto;
-			.labelPanelImg{
-				height: auto;
-			}
-			.labelPanel{
-				width: auto;
-				float: none;
-				text-align: left;
-				.lblLabelImg{
-					float: left;
-					padding-right: 40px;
-					padding-left: 15px;
-					text-decoration: underline;
-				}
-				.lblLabel{
-					float: none;
-					padding-left: 15px;
-					text-decoration: underline;
-				}
-				.lblExtraInfo{
-					float: none;
-					text-align: left;
-					padding-left: 20px;
-				}
-			}
-			.labelPanelImg{
-				float: left;
-			}
-			.lblValue{
-				width: auto;
-				float: none;
-				padding-left: 50px;
-			}
-			.lblValueAdd{
-				width: auto;
-				float: none;
-				padding-left: 50px;
-			}
-			.publicPanel{
-				float: none;
-				padding-left: 50px;
-			}
-		}
 	}
 }

@@ -109,4 +109,6 @@ object TOs {
     to.setPassword(password)
     to
   }
+  
+  def newS3PolicyTO = tos.newS3PolicyTO.as
 }

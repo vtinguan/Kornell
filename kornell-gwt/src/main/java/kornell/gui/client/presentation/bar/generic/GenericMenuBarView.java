@@ -6,6 +6,7 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
@@ -55,56 +56,59 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	@UiField
 	Image imgMenuBar;
 
-	public GenericMenuBarView(ClientFactory clientFactory) {
+	public GenericMenuBarView(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-
-		// TODO i18n
-		try {
-			String institutionAssetsURL = ClientProperties
-					.getDecoded(ClientProperties.INSTITUTION_ASSETS_URL);
-			imgMenuBar.setUrl(institutionAssetsURL + barLogoFileName);
-		} catch (Exception e) {
-			GWT.log("Couldn't find bar logo image.");
-		}
-
-
 		display();
-
 		imgMenuBar.setUrl(clientFactory.getInstitution().getAssetsURL() + barLogoFileName);
 		
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
 			public void onPlaceChange(PlaceChangeEvent event) {
 				Place newPlace = event.getNewPlace();
-				boolean isAtVitrine = newPlace instanceof VitrinePlace;
-				GenericMenuBarView.this.setVisible(!isAtVitrine);
+				if(newPlace instanceof VitrinePlace){
+					GenericMenuBarView.this.setVisible(false);
+				} else {
+					if(newPlace instanceof TermsPlace || 
+							(newPlace instanceof ProfilePlace && clientFactory.getInstitution().isDemandsPersonContactDetails() &&
+									clientFactory.getUserSession().getUserInfo().getPerson().getCity() == null)){
+						showButtons(false);
+					} else {
+						showButtons(true);
+					}
+					GenericMenuBarView.this.setVisible(true);
+				}
 			}
 		});
+	}
+
+	private void showButtons(boolean show) {
+		showButton(btnProfile, show);
+		showButton(btnHome, show);
+		showButton(btnNotifications, false);
+		showButton(btnMessages, false);
+		showButton(btnHelp, false);
+		showButton(btnMenu, false);
+		showButton(btnExit, true);
+	}
+
+	private void showButton(Button btn, boolean show) {
+		if(show){
+			btn.removeStyleName("shy");
+		} else {
+			btn.addStyleName("shy");
+		}
 	}
 
 	public void display() {
 		displayButton(btnFake, "btnFake", "", false, "");
 		displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
 		displayButton(btnHome, "btnHome", "home", true, "");
-		displayButtonWithCount(btnNotifications, "btnNotifications",
-				"notifications", "countNotifications", 19);
-		displayButtonWithCount(btnMessages, "btnMessages", "messages",
-				"countMessages", 99);
+		displayButtonWithCount(btnNotifications, "btnNotifications", "notifications", "countNotifications", 19);
+		displayButtonWithCount(btnMessages, "btnMessages", "messages", "countMessages", 99);
 		displayButton(btnHelp, "btnHelp", "help", true, "");
 		displayButton(btnMenu, "btnMenu", "MENU", false, "");
 		displayButton(btnExit, "btnExit", "SAIR", false, "");
-
-		Timer timer = new Timer() {
-			@Override
-			public void run() {
-				if ("".equals(imgMenuBar.getUrl())) {
-					imgMenuBar.setUrl("skins/first/icons/logo.png");
-				}
-			}
-		};
-		// If it was unable to fetch the logo, use the default logo
-		timer.schedule(2000);
 	}
 
 	private void displayButtonWithCount(Button btn, final String buttonType,
@@ -126,8 +130,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		btn.removeStyleName("btn");
 	}
 
-	private void displayButton(Button btn, final String buttonType,
-			String content, boolean isImage, String title) {
+	private void displayButton(Button btn, final String buttonType, String content, boolean isImage, String title) {
 		btn.clear();
 		
 		FlowPanel buttonPanel = new FlowPanel();
@@ -151,12 +154,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 
 	@UiHandler("btnProfile")
 	void handleProfile(ClickEvent e) {
-		clientFactory.getPlaceController().goTo(new ProfilePlace(clientFactory.getUserSession().getUserInfo().getUsername()));
+		clientFactory.getPlaceController().goTo(new ProfilePlace(clientFactory.getUserSession().getUserInfo().getPerson().getUUID(), false));
 	}
 
 	@UiHandler("btnHome")
 	void handleHome(ClickEvent e) {
-		clientFactory.getPlaceController().goTo(new WelcomePlace());
+		clientFactory.getPlaceController().goTo(clientFactory.getDefaultPlace());
 	}
 
 	@UiHandler("btnExit")

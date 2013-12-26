@@ -18,6 +18,7 @@ class BasicAuthFilter extends Filter {
       "/user/registrationRequest", 
       "/user/requestPasswordChange",
       "/user/changePassword",
+      "/user/uploadProfileImage",
       "/email/welcome", 
       "/institutions")
 

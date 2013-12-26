@@ -9,6 +9,7 @@ import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Person
 import kornell.core.to.RegistrationRequestTO
 import kornell.core.to.UserInfoTO
+import kornell.core.util.UUID
 import kornell.server.repository.TOs
 import kornell.server.repository.TOs._
 import kornell.server.repository.jdbc.Auth
@@ -18,7 +19,12 @@ import kornell.server.repository.jdbc.Registrations
 import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
-import kornell.core.util.UUID
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import org.apache.commons.fileupload.FileItemIterator
+import org.apache.commons.fileupload.servlet.ServletFileUpload
+import org.apache.commons.fileupload.FileItemStream
+import javax.servlet.http.HttpServletRequest
 
 @Path("user")
 class UserResource{
@@ -68,25 +74,30 @@ class UserResource{
   }
   
   @GET
-  @Path("{username}")
+  @Path("{personUUID}")
   @Produces(Array(UserInfoTO.TYPE))
   def getByUsername(implicit @Context sc: SecurityContext,
-	    @PathParam("username") username:String):Option[UserInfoTO] =
+	    @Context resp:HttpServletResponse,
+	    @PathParam("personUUID") personUUID:String):Option[UserInfoTO] =
     Auth.withPerson { p =>
     	val user = newUserInfoTO
-	    val person: Option[Person] = Auth.getPerson(username)    
-	    if (person.isDefined)
+	    val person = PersonRepository(personUUID).get 
+	    if (person.isDefined){
 	    	user.setPerson(person.get)
-	    else throw new IllegalArgumentException(s"User [$username] not found.")
-	    user.setUsername(username)
-	    user.setEmail(user.getPerson().getEmail())
-    	val signingNeeded = Registrations.signingNeeded(p)
-    	user.setSigningNeeded(signingNeeded)
-    	user.setLastPlaceVisited(p.getLastPlaceVisited)
-    	val roles = Auth.rolesOf(user.getUsername)
-    	user.setRoles((Set.empty ++ roles).asJava)
-    	user.setRegistrationsTO(Registrations.getAll(p))
-    	Option(user)
+		    user.setUsername(user.getPerson().getEmail())
+		    user.setEmail(user.getPerson().getEmail())
+	    	val signingNeeded = Registrations.signingNeeded(p)
+	    	user.setSigningNeeded(signingNeeded)
+	    	user.setLastPlaceVisited(p.getLastPlaceVisited)
+	    	val roles = Auth.rolesOf(user.getUsername)
+	    	user.setRoles((Set.empty ++ roles).asJava)
+	    	user.setRegistrationsTO(Registrations.getAll(p))
+	    	Option(user)
+	    }
+	    else {
+	      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")
+	      null
+	    }
   }
   
   @GET
@@ -103,27 +114,36 @@ class UserResource{
   @GET
   @Path("requestPasswordChange/{email}/{institutionName}")
   @Produces(Array("text/plain"))
-  def requestPasswordChange(@PathParam("email") email:String, 
+  def requestPasswordChange(@Context resp:HttpServletResponse,
+      @PathParam("email") email:String, 
       @PathParam("institutionName") institutionName:String) = {
-    val person = Auth.getPerson(email)
+    val person = Auth.getPersonByEmail(email)
     val institution = Institutions.byName(institutionName)
     if(person.isDefined && institution.isDefined){
     	val requestPasswordChangeUUID = UUID.random
     	Auth.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)
     	EmailService.sendEmailRequestPasswordChange(person.get, institution.get, requestPasswordChangeUUID)
+    } else {
+      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person or Institution not found.");
     }
   }
 
   @GET
   @Path("changePassword/{password}/{passwordChangeUUID}")
-  @Produces(Array("text/plain"))
+  @Produces(Array(UserInfoTO.TYPE))
   def changePassword(@Context resp:HttpServletResponse,
       @PathParam("password") password:String, 
-      @PathParam("passwordChangeUUID") passwordChangeUUID:String) = 
-    Auth.getPersonByPasswordChangeUUID(passwordChangeUUID) match { 
-      case Some(one) => PersonRepository(one.getUUID).setPassword(one.getEmail, password)
-      case None => resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "It wasn't possible to change your password.")
-  	} 
+      @PathParam("passwordChangeUUID") passwordChangeUUID:String) = {
+	  	val person = Auth.getPersonByPasswordChangeUUID(passwordChangeUUID)
+	  	if(person.isDefined){
+	  	  PersonRepository(person.get.getUUID).setPassword(person.get.getEmail, password)
+		  	val user = newUserInfoTO
+			user.setEmail(person.get.getEmail())
+			Option(user)
+	  	} else {
+	  	  resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "It wasn't possible to change your password.")
+	  	}
+  }
 	  
   
   @PUT
@@ -143,4 +163,46 @@ class UserResource{
     	where uuid=${p.getUUID}
     	""".executeUpdate
     }
+  
+  @PUT
+  @Path("{personUUID}")
+  @Consumes(Array(UserInfoTO.TYPE))
+  @Produces(Array(UserInfoTO.TYPE))
+  def update(implicit @Context sc: SecurityContext, userInfo: UserInfoTO,
+	    @PathParam("personUUID") personUUID: String) = Auth.withPerson{ p =>
+    PersonRepository(personUUID).update(userInfo.getPerson())
+    userInfo
+  }
+  
+  @POST
+  @Path("uploadProfileImage/{personUUID}")
+  @Produces(Array("text/plain"))
+  def update(@Context request:HttpServletRequest,
+      @PathParam("personUUID") personUUID: String) = { 
+        val upload = new ServletFileUpload();
+        val iter = upload.getItemIterator(request);
+        if(iter.hasNext()){
+	        val out = new ByteArrayOutputStream();
+	        while (iter.hasNext()) {
+	            val item = iter.next();
+	            val name = item.getFieldName();
+	            val stream = item.openStream();
+	            // Process the input stream
+	            var len = 0;
+	            val buffer = new Array[Byte](8192);
+	            while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
+	                out.write(buffer, 0, len);
+	            }
+	            val maxFileSize = 10*(1024*1024); //10 megs max 
+	            if (out.size() > maxFileSize) { 
+	                throw new RuntimeException("File is > than " + maxFileSize);
+	            }
+	        }
+	        out.size()
+        } else {
+          "notFound"
+        }
+  }
+  
+  
 }
