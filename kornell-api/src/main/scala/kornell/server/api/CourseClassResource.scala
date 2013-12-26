@@ -18,16 +18,16 @@ import kornell.core.to.CourseTO
 import kornell.core.to.CourseClassTO
 
 @Path("courseClass")
-class CourseClassResource(uuid:String) {
-  
+class CourseClassResource(uuid: String) {
+
   @GET
   @Path("to")
   @Produces(Array(CourseClassTO.TYPE))
   def get(implicit @Context sc: SecurityContext) =
     Auth.withPerson { person =>
-	    //CourseClasses(uuid).byPerson(person.getUUID)
-    }  
-  
+      //CourseClasses(uuid).byPerson(person.getUUID)
+    }
+
   @Produces(Array(Contents.TYPE))
   @Path("contents")
   @GET
@@ -37,17 +37,22 @@ class CourseClassResource(uuid:String) {
       val versionRepo = classRepo.version
       val version = versionRepo.get
       val repositoryUUID = version.getRepositoryUUID();
-      val s3 = S3(repositoryUUID)
-      val structureSrc = s3.source("structure.knl")
-      val structureText = structureSrc.mkString("")
-      val baseURL = s3.baseURL
-      val visited = classRepo.actomsVisitedBy(person) 
-      val contents = ContentsParser.parse(baseURL, s3.prefix, structureText, visited)
+      val repo = S3(repositoryUUID)
+      val contents = if (repo.exists("imsmanifest.xml")) {
+        null
+      }else{ 
+        val structureSrc = repo.source("structure.knl")
+        val structureText = structureSrc.mkString("")
+        val baseURL = repo.baseURL
+        val visited = classRepo.actomsVisitedBy(person)
+        ContentsParser.parse(baseURL, repo.prefix, structureText, visited)
+      }
+
       //contents.setCourseClass(classRepo.get)
       contents
     }
 }
 
 object CourseClassResource {
-  def apply(uuid:String) = new CourseClassResource(uuid)
+  def apply(uuid: String) = new CourseClassResource(uuid)
 }
