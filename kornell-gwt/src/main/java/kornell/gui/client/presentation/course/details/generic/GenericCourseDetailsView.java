@@ -87,7 +87,7 @@ public class GenericCourseDetailsView extends Composite implements
 		this.bus = clientFactory.getEventBus();
 		this.session = clientFactory.getUserSession();
 		this.placeCtrl = clientFactory.getPlaceController();
-		this.currentCourseClass = clientFactory.getCurrentCourse();
+		this.currentCourseClass = clientFactory.getCurrentCourseClass();
 		LoadingPopup.show();
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();

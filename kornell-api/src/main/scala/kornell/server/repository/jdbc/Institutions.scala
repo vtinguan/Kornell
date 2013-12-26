@@ -12,16 +12,18 @@ object Institutions {
   
   implicit def toInstitution(rs:ResultSet):Institution = 
     newInstitution(rs.getString("uuid"), 
-        rs.getString("name"), 
+        rs.getString("name"),  
+        rs.getString("fullName"), 
         rs.getString("terms"),
         rs.getString("assetsURL"),
-        rs.getString("baseURL")) 
+        rs.getString("baseURL"),
+        rs.getBoolean("demandsPersonContactDetails")) 
 
-  def create(name: String, terms: String, baseURL: String): Institution = {
-    val i = newInstitution(randomUUID, name, terms, "", baseURL)
+  def create(name: String, fullName: String, terms: String, baseURL: String): Institution = {
+    val i = newInstitution(randomUUID, name, fullName, terms, "", baseURL, false)
     sql"""
-    | insert into Institution(uuid,name,terms) 
-    | values ($i.getUUID,$i.getName,$i.terms)""".executeUpdate
+    | insert into Institution(uuid,name,fullName,baseURL,terms) 
+    | values ($i.getUUID,$i.getName,$i.getFullName,$i.getBaseURL,$i.terms)""".executeUpdate
     i
   }
   
@@ -29,6 +31,7 @@ object Institutions {
     sql"""
     | update Institution i
     | set i.name = ${institution.getName},
+    | i.fullName = ${institution.getFullName},
     | i.terms = ${institution.getTerms},
     | i.assetsURL = ${institution.getAssetsURL},
     | i.baseURL = ${institution.getBaseURL}

@@ -19,7 +19,19 @@
 .paddingTop44{padding-top:44px;}
 .width120{widht:120px;}
 .test{color:red;}
-.background{background:url(/skins/first/bgIn.jpg);background-size:100% 100%;}
+.left{float:left;}
+.right{float:right;}
+.error{color:#ca2828;}
+.fieldPanelWrapper{width:600px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
+.fieldPanelWrapper .fieldPanelImage{height:100px;}
+.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
+.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
+.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
+.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:120px;}
+.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;}
+.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.background{background:url(/skins/first/bgIn.jpg);background-size:100% 100%;}
 .VitrinePlace{background:url("/skins/first/bg.jpg") no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;height:100%;width:100%;}.VitrinePlace .wrapper{width:962px;}
 .VitrinePlace .alertVitrine{float:left;margin-top:30px;margin-left:30px;width:300px;}
 .VitrinePlace .boxLogin{background-color:rgba(0, 0, 0, 0.8);width:225px;padding:15px 50px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(109, 103, 99, 0.25);min-height:200px;margin-top:30px;margin-left:50px;margin-bottom:30px;float:left;color:#b6b6b6;}.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:20px;}

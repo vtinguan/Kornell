@@ -8,14 +8,14 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 
-public class KornellMessenger {
+public class KornellNotification {
 
 	public static void show(String message) {
 		show(message, AlertType.SUCCESS);
 	}
 
 	public static void show(String message, AlertType alertType) {
-		show(message, AlertType.SUCCESS, 5000);
+		show(message, alertType, 5000);
 	}
 
 	public static void show(String message, AlertType alertType, int timer) {	
@@ -32,15 +32,16 @@ public class KornellMessenger {
 				popup.setPopupPosition(left, Positioning.NORTH_BAR);
 			}
 		});
-
-		new Timer() {
-			@Override
-			public void run() {
-				System.out.println("timer repeated");
-				popup.hide();
-				this.cancel();
-			}
-		}.scheduleRepeating(timer);
+		
+		if(timer != 0){
+			new Timer() {
+				@Override
+				public void run() {
+					popup.hide();
+					this.cancel();
+				}
+			}.scheduleRepeating(timer);
+		}
 	}
 }
 
