@@ -16,8 +16,8 @@ import kornell.core.util.StringUtils._
 import kornell.server.repository.jdbc.CourseClasses
 
 class S3(regionName: String,
-  accessKey: String,
-  secretKey: String,
+  val accessKey: String,
+  val secretKey: String,
   val bucket: String,
   val prefix: String,
   distributionURL: String) {
