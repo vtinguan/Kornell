@@ -1,7 +1,5 @@
 package kornell.gui.client;
 
-import org.timepedia.exporter.client.ExporterUtil;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
@@ -62,10 +60,8 @@ import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
-import kornell.scorm.client.API_1484_11;
 import kornell.scorm.client.SCORM12Binder;
 import kornell.scorm.client.SCORM2004Adapter;
-import kornell.scorm.client.SCORM2004Binder;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -334,8 +330,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public ProfileView getProfileView() {
-		return new GenericProfileView(bus, session, placeCtrl,
-				currentCourseClass);
+		return new GenericProfileView(this);
 	}
 
 	@Override
@@ -501,7 +496,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public CourseClassTO getCurrentCourse() {
+	public CourseClassTO getCurrentCourseClass() {
 		return currentCourseClass;
 	}
 

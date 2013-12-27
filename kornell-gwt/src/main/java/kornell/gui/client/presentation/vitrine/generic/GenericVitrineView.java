@@ -176,13 +176,23 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	@Override
-	public String getUsername() {
+	public String getEmail() {
 		return txtUsername.getValue();
+	}
+
+	@Override
+	public void setEmail(String email) {
+		txtUsername.setValue(email);
 	}
 
 	@Override
 	public String getPassword() {
 		return pwdPassword.getValue();
+	}
+
+	@Override
+	public void setPassword(String password) {
+		pwdPassword.setValue(password);
 	}
 
 	@Override
@@ -298,5 +308,6 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			imgLogo.setUrl("/skins/first/icons/logo.png");
 		}
 	}
+
 
 }

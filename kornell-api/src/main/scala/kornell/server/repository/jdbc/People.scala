@@ -5,7 +5,8 @@ import kornell.server.repository.Entities
 import kornell.server.repository.jdbc.SQLInterpolation._
 
 import kornell.server.repository.Entities._
-class People {
+
+object People {
   def createPerson(email: String, fullName:String, 
       company: String="", title: String="", sex: String="", 
       birthDate: String="1800-01-01", confirmation: String = "") = {
@@ -22,8 +23,4 @@ class People {
 
   def createPerson(email: String, fullName:String): PersonRepository = 
     createPerson(email, fullName, null, null, null, null, null)
-}
-
-object People {
-  def apply() = new People()
 }

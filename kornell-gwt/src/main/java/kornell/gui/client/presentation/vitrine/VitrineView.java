@@ -18,8 +18,10 @@ public interface VitrineView extends IsWidget {
 	}
 
 	void setPresenter(Presenter presenter);
-	String getUsername();
+	String getEmail();
+	void setEmail(String email);
 	String getPassword();
+	void setPassword(String password);
 	String getSuEmail();
 	String getSuName();
 	String getSuPassword();
@@ -33,5 +35,4 @@ public interface VitrineView extends IsWidget {
 	void setMessage(List<String> msgs);
 	void setLogoURL(String imgLogoURL);
 	void displayView(VitrineViewType type);
-	
 }

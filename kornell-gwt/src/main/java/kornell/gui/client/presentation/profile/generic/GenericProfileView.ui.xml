@@ -1,177 +1,29 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
-	<b:Form ui:field="form" addStyleNames="shy profileForm">
-		<g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel">
-			<g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
-			<g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>
-			<g:FlowPanel ui:field="editPanel" addStyleNames="editPanel">
-				<g:Label ui:field="lblEdit" addStyleNames="shy lblEdit"></g:Label>
-			</g:FlowPanel>
-		</g:FlowPanel>
-		<g:FlowPanel ui:field="profileFields" addStyleNames="profileFields">
-			<g:FlowPanel addStyleNames="shy fieldPanel fieldPanelImage ">
-				<g:FlowPanel addStyleNames="labelPanel labelPanelImg">
-					<g:Label addStyleNames="lblLabelImg">Imagem do perfil</g:Label>
-					<g:Label ui:field="imageExtraInfo" addStyleNames="lblExtraInfo">Inclua aqui uma foto sua</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="imagePanel">
-					<g:Image ui:field="imgProfile"></g:Image>
+	<g:FlowPanel>
+		<b:Form ui:field="form" addStyleNames="profileForm shy">
+			<g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel">
+				<g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
+				<g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>
+				<g:FlowPanel ui:field="editPanel" addStyleNames="editPanel">
+					<g:Label ui:field="lblEdit" addStyleNames="shy lblEdit"></g:Label>
 				</g:FlowPanel>
 			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="shy fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Nome de usuário</g:Label>
-					<g:Label ui:field="usernameExtraInfo" addStyleNames="lblExtraInfo">Mínimo de 3 caracteres, com letras,</g:Label>
-					<g:Label ui:field="usernameExtraInfo2" addStyleNames="lblExtraInfo">números ou pontos.</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:TextBox ui:field="username" addStyleNames="field textField"></b:TextBox>
-					<g:Label ui:field="usernameError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="usernameTxt" addStyleNames="lblValue"></g:Label>
-				</g:FlowPanel>
+			<g:FlowPanel ui:field="profileFields" addStyleNames="fieldsWrapper">
+				<!--g:FlowPanel addStyleNames="shy fieldPanel fieldPanelImage ">
+					<g:FlowPanel addStyleNames="labelPanel labelPanelImg">
+						<g:Label addStyleNames="lblLabelImg">Imagem do perfil</g:Label>
+					</g:FlowPanel>
+					<g:FlowPanel addStyleNames="imagePanel">
+						<g:Image ui:field="imgProfile"></g:Image>
+					</g:FlowPanel>
+				</g:FlowPanel-->			
+			</g:FlowPanel>		
+			<g:FlowPanel addStyleNames="standardButtonBar">
+				<g:Button ui:field="btnEdit" addStyleNames="btnAction btnStandard"/>
+				<g:Button ui:field="btnClose" addStyleNames="btnNotSelected btnStandard"/>
+				<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
+				<g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
 			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel ui:field="passwordPanel" addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Senha</g:Label>
-					<g:Label addStyleNames="lblExtraInfo">Mínimo de 6 caracteres.</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:PasswordTextBox ui:field="password" addStyleNames="field textField"></b:PasswordTextBox>
-					<g:Label ui:field="passwordError" addStyleNames="errorMessage"></g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image ui:field="passwordSeparator" url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel ui:field="password2Panel" addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Confirmar senha</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:PasswordTextBox ui:field="password2" addStyleNames="field textField"></b:PasswordTextBox>
-					<g:Label ui:field="password2Error" addStyleNames="errorMessage"></g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image ui:field="password2Separator" url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel ui:field="emailPanel" addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Email</g:Label>
-					<g:Label ui:field="emailExtraInfo" addStyleNames="lblExtraInfo">Insira um email válido.</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:TextBox ui:field="email" addStyleNames="field textField"></b:TextBox>
-					<g:Label ui:field="emailError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="emailTxt" addStyleNames="lblValue"></g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="publicPanel">
-					<g:Image url="skins/first/icons/profile/notPublic.png" addStyleNames="imgPublic"></g:Image>
-					<g:Label addStyleNames="lblPublic">Privado</g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image ui:field="emailSeparator" url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Nome</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:TextBox ui:field="firstName" addStyleNames="field textField"></b:TextBox>
-					<g:Label ui:field="firstNameError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="firstNameTxt" addStyleNames="lblValue"></g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Sobrenome</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:TextBox ui:field="lastName" addStyleNames="field textField"></b:TextBox>
-					<g:Label ui:field="lastNameError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="lastNameTxt" addStyleNames="lblValue"></g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Empresa</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:TextBox ui:field="company" addStyleNames="field textField"></b:TextBox>
-					<g:Label ui:field="companyError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="companyTxt" addStyleNames="lblValue"></g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Título</g:Label>
-					<g:Label ui:field="titleExtraInfo" addStyleNames="lblExtraInfo">Designação atribuída a você.</g:Label>
-					<g:Label ui:field="titleExtraInfo2" addStyleNames="lblExtraInfo">Exemplo: Representante de Vendas</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:TextBox ui:field="title" addStyleNames="field textField"></b:TextBox>
-					<g:Label ui:field="titleError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="titleTxt" addStyleNames="lblValue"></g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel ui:field="sexPanel" addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Sexo</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<b:ListBox ui:field="sex" addStyleNames="field selectField"></b:ListBox>
-					<g:Label ui:field="sexError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="sexTxt" addStyleNames="lblValue"></g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="publicPanel">
-					<g:Image url="skins/first/icons/profile/notPublic.png" addStyleNames="imgPublic"></g:Image>
-					<g:Label addStyleNames="lblPublic">Privado</g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image ui:field="sexSeparator" url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-			
-			<g:FlowPanel ui:field="birthDatePanel" addStyleNames="fieldPanel">
-				<g:FlowPanel addStyleNames="labelPanel labelPanel2">
-					<g:Label addStyleNames="lblLabel">Data de Nascimento</g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="fieldPanel">
-					<g:FlowPanel ui:field="birthDatePickerPanel" addStyleNames="field"></g:FlowPanel>
-					<g:Label ui:field="birthDateError" addStyleNames="errorMessage"></g:Label>
-					<g:Label ui:field="birthDateTxt" addStyleNames="lblValue"></g:Label>
-				</g:FlowPanel>
-				<g:FlowPanel addStyleNames="publicPanel">
-					<g:Image url="skins/first/icons/profile/notPublic.png" addStyleNames="imgPublic"></g:Image>
-					<g:Label addStyleNames="lblPublic">Privado</g:Label>
-				</g:FlowPanel>
-			</g:FlowPanel>
-			<g:Image ui:field="birthDateSeparator" url="skins/first/icons/profile/separatorBar.png" addStyleNames="fillWidth"></g:Image>
-			
-		</g:FlowPanel>
-		
-		
-		<g:FlowPanel addStyleNames="standardButtonBar">
-			<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard btn1of2"/>
-			<g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
-			<g:Button ui:field="btnClose" addStyleNames="btnNotSelected btnStandard btn1of1"/>
-		</g:FlowPanel>
-	</b:Form>
+		</b:Form>			
+	</g:FlowPanel>	
 </ui:UiBinder>

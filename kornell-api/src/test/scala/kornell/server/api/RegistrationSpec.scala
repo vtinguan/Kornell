@@ -14,7 +14,7 @@ import kornell.server.repository.Entities
 @RunWith(classOf[JUnitRunner])
 class RegistrationSpec extends UnitSpec {
   val userResource = new UserResource
-  val institution = Entities.newInstitution(randUUID, randStr, randStr, randURL, randURL)
+  val institution = Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false)
 
   "A new user" should "login sucessfully (even if not confirmed yet)." in {
     val fullName = randName

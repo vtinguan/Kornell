@@ -23,7 +23,7 @@ object ProduceUser extends App {
   val password = randomString
   val institution_uuid = "00a4966d-5442-4a44-9490-ef36f133a259";
     
-  val p: PersonRepository = People().createPerson(username, fullName)
+  val p: PersonRepository = People.createPerson(username, fullName)
   p.setPassword(username, password) 
 		  .registerOn(institution_uuid)
  

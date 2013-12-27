@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.util;
+package kornell.gui.client.uidget.formfield;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,9 +35,10 @@ public class SimpleDatePicker extends FlowPanel{
 
         dropBoxMonth = new ListBox(false);
         dropBoxMonth.addItem("");
-        for (String month : getMonthList()){
-        	dropBoxMonth.addItem(month);
-        }
+        List<String> months = getMonthList();
+        for (int i = 0; i < months.size(); i++) {
+			dropBoxMonth.addItem(months.get(i), ""+(i+1));
+		}
         dropBoxMonth.ensureDebugId("dropBoxMonth");
         dropBoxMonth.setWidth("120px");
         this.add(dropBoxMonth);
@@ -71,19 +72,19 @@ public class SimpleDatePicker extends FlowPanel{
         this.setVisible(true);
 	}
 
-	private void setFields(Date birthDate) {
+	public void setFields(Date birthDate) {
 		if(birthDate != null){
 			String pattern = "dd"; 
 			DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
 			DateTimeFormat dtf = new DateTimeFormat(pattern, info) {};
-			Integer day = new Integer(dtf.format(birthDate));
-			dropBoxDay.setSelectedValue(new Integer(day+1).toString());
+			String day = ""+Integer.parseInt(dtf.format(birthDate));
+			dropBoxDay.setSelectedValue(day);
 			
 			pattern = "MM"; 
 			info = new DefaultDateTimeFormatInfo();
 			dtf = new DateTimeFormat(pattern, info) {};
-			String month = dtf.format(birthDate);
-			dropBoxMonth.setSelectedIndex(Integer.parseInt(month));
+			String month = ""+Integer.parseInt(dtf.format(birthDate));
+			dropBoxMonth.setSelectedValue(month);
 			
 			pattern = "yyyy";
 			info = new DefaultDateTimeFormatInfo();
@@ -150,8 +151,18 @@ public class SimpleDatePicker extends FlowPanel{
 				dropBoxYear.getSelectedIndex() > 0;
 	}
 	
-	@Override
-	public String toString(){
+	public String getDisplayText(){
+		if(!isSelected())
+			return null;
+		String day = dropBoxDay.getValue();
+		day = day.length() == 1 ? "0"+day : day;
+		String month = dropBoxMonth.getItemText(dropBoxMonth.getSelectedIndex());
+		return  day + "/" + month + "/" + dropBoxYear.getValue();
+	}
+	
+	public String getPersistText(){
+		if(!isSelected())
+			return null;
 		String day = dropBoxDay.getValue();
 		day = day.length() == 1 ? "0"+day : day;
 		String month = ""+dropBoxMonth.getSelectedIndex();
