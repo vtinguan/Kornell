@@ -1,0 +1,4 @@
+#!/bin/bash
+
+npm -g install aws-sdk
+
