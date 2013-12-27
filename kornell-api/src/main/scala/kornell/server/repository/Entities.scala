@@ -23,9 +23,12 @@ object Entities {
 
   def randomUUID = UUID.randomUUID.toString
 
+  def newPerson: Person = factory.newPerson.as
+
   def newPerson(uuid: String, fullName: String, lastPlaceVisited: String = null,
       	email: String, company: String, title: String, sex: String, 
-      	birthDate: Date, confirmation: String) = {
+      	birthDate: Date, confirmation: String, telephone: String, country: String, 
+      	state: String, city: String, addressLine1: String, addressLine2: String, postalCode: String) = {
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
@@ -36,6 +39,13 @@ object Entities {
     person.setSex(sex)
     person.setBirthDate(birthDate)
     person.setConfirmation(confirmation)
+    person.setTelephone(telephone)
+    person.setCountry(country)
+    person.setState(state)
+    person.setCity(city)
+    person.setAddressLine1(addressLine1)
+    person.setAddressLine2(addressLine2)
+    person.setPostalCode(postalCode)
     person
   }
 
@@ -72,7 +82,7 @@ object Entities {
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
     e.setCourseClassUUID(courseClassUUID)
-    e.setPerson(PersonRepository.apply(personUUID).get)
+    e.setPerson(PersonRepository.apply(personUUID).get.get)
     e.setProgress(progress)
     e.setNotes(notes)
     e.setState(state)
@@ -80,13 +90,15 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randomUUID, name: String, terms: String, assetsURL: String, baseURL: String) = {
+  def newInstitution(uuid: String = randomUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean) = {
     val i = factory.newInstitution.as
     i.setName(name)
+    i.setFullName(fullName)
     i.setUUID(uuid)
     i.setTerms(terms.stripMargin)
     i.setAssetsURL(assetsURL)
     i.setBaseURL(baseURL)
+    i.setDemandsPersonContactDetails(demandsPersonContactDetails)
     i
   }
 

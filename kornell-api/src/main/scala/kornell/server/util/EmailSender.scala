@@ -14,6 +14,7 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
+import javax.mail.Authenticator
 
 object EmailSender {
   
@@ -51,26 +52,24 @@ object EmailSender {
     }
   } 
 
-  private def getEmailSession: javax.mail.Session = {
+  private def getEmailSession = {
 
-    val username: String = "eduvem.email.dev@gmail.com"
-    val password: String = "eduvemtest123"
+    val username = "eduvem.email.dev@gmail.com"
+    val password = "eduvemtest123"
 
-    val props: Properties = new Properties()
+    val props = new Properties()
+    props.put("mail.smtp.auth", "true")
     props.put("mail.smtp.host", "smtp.gmail.com")
+    props.put("mail.smtp.port", "465")
     props.put("mail.smtp.socketFactory.port", "465")
     props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory")
-    props.put("mail.smtp.auth", "true")
-    props.put("mail.smtp.port", "465")
     // avoid hang by setting timeout: 30 seconds
     props.put("mail.smtp.timeout", "30000")
     props.put("mail.smtp.connectiontimeout", "30000")
 
     val session: Session = Session.getInstance(props,
-      new javax.mail.Authenticator() {
-        override def getPasswordAuthentication() = {
-          new PasswordAuthentication(username, password)
-        }
+      new Authenticator {
+        override def getPasswordAuthentication = new PasswordAuthentication(username, password)
       });
     session
   }

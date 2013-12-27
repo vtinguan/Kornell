@@ -180,12 +180,12 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
 		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace){
-			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(clientFactory.getCurrentCourse().getCourseClass().getUUID()));
+			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			clientFactory.getPlaceController().goTo(new CourseClassPlace(clientFactory.getCurrentCourse().getCourseClass().getUUID()));
+			clientFactory.getPlaceController().goTo(new CourseClassPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		
@@ -195,8 +195,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	void handleClickBtnNotes(ClickEvent e) {
 		if(notesPopup == null){
 			notesPopup = new NotesPopup(clientFactory.getUserSession(), 
-					clientFactory.getCurrentCourse().getCourseClass().getUUID(), 
-					clientFactory.getCurrentCourse().getEnrollment().getNotes());
+					clientFactory.getCurrentCourseClass().getCourseClass().getUUID(), 
+					clientFactory.getCurrentCourseClass().getEnrollment().getNotes());
 			notesPopup.show();
 		} else {
 			notesPopup.show();

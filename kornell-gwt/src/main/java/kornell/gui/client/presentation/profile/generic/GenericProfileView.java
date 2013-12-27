@@ -1,36 +1,52 @@
 package kornell.gui.client.presentation.profile.generic;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.UserSession;
+import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.S3PolicyTO;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
-import kornell.gui.client.presentation.util.SimpleDatePicker;
-import kornell.gui.client.presentation.util.ValidatorHelper;
+import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.util.LoadingPopup;
+import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.uidget.formfield.ListBoxFormField;
+import kornell.gui.client.uidget.formfield.SimpleDatePicker;
+import kornell.gui.client.uidget.formfield.SimpleDatePickerFormField;
+import kornell.gui.client.uidget.formfield.TextBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
+import com.github.gwtbootstrap.client.ui.SubmitButton;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
+import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -45,9 +61,11 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private UserSession session;
 	private PlaceController placeCtrl;
 	private final EventBus bus;
+	private Place defaultPlace;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private boolean isEditMode, isCurrentUser, isUserCreation;
-	SimpleDatePicker birthDate;
+	private FormHelper formHelper;
+	private boolean isEditMode, isCurrentUser, showContactDetails;
+	SimpleDatePicker birthDateXX;
 	
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
@@ -56,197 +74,170 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField FlowPanel titlePanel;
 	@UiField Image imgTitle;
 	@UiField Label lblTitle;
-	@UiField FlowPanel editPanel;
-	@UiField Label lblEdit;
+	@UiField Button btnEdit;
+	@UiField Button btnClose;
 	@UiField Button btnOK;
 	@UiField Button btnCancel;
-	@UiField Button btnClose;
-	@UiField Image imgProfile;
-	@UiField TextBox username;
-	@UiField PasswordTextBox password;
-	@UiField PasswordTextBox password2;
-	@UiField TextBox email;
-	@UiField TextBox firstName;
-	@UiField TextBox lastName;
-	@UiField TextBox company;
-	@UiField TextBox title;
-	@UiField ListBox sex;
-	@UiField FlowPanel birthDatePickerPanel;
-	@UiField Label usernameError;
-	@UiField Label emailError;
-	@UiField Label passwordError;
-	@UiField Label password2Error;
-	@UiField Label firstNameError;
-	@UiField Label lastNameError;
-	@UiField Label companyError;
-	@UiField Label titleError;
-	@UiField Label sexError;
-	@UiField Label birthDateError;
-	@UiField Label usernameTxt;
-	@UiField Label emailTxt;
-	@UiField Label firstNameTxt;
-	@UiField Label lastNameTxt;
-	@UiField Label companyTxt;
-	@UiField Label titleTxt;
-	@UiField Label sexTxt;
-	@UiField Label birthDateTxt;
-	@UiField FlowPanel passwordPanel;
-	@UiField FlowPanel password2Panel;
-	@UiField FlowPanel emailPanel;
-	@UiField FlowPanel sexPanel;
-	@UiField FlowPanel birthDatePanel;
-	@UiField Image passwordSeparator;
-	@UiField Image password2Separator;
-	@UiField Image emailSeparator;
-	@UiField Image sexSeparator;
-	@UiField Image birthDateSeparator;
-	@UiField Label imageExtraInfo;
-	@UiField Label usernameExtraInfo;
-	@UiField Label usernameExtraInfo2;
-	@UiField Label emailExtraInfo;
-	@UiField Label titleExtraInfo;
-	@UiField Label titleExtraInfo2;
 	
-	Map<Widget, Field> fieldsToErrorLabels;
 	private UserInfoTO user;
 	private CourseClassTO currentCourseClass;
+	private KornellFormFieldWrapper email, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
+    private FileUpload fileUpload;
+	private List<KornellFormFieldWrapper> fields;
+	private S3PolicyTO s3Policy;
 	
-	public GenericProfileView(EventBus bus, UserSession session,
-			final PlaceController placeCtrl, CourseClassTO currentCourseClass) {
-		this.bus = bus;
-		this.session = session;
-		this.placeCtrl = placeCtrl;
-		this.currentCourseClass = currentCourseClass;
+	
+	public GenericProfileView(ClientFactory clientFactory) {
+		this.bus = clientFactory.getEventBus();
+		this.session = clientFactory.getUserSession();
+		this.user = session.getUserInfo();
+		this.placeCtrl = clientFactory.getPlaceController();
+		this.currentCourseClass = clientFactory.getCurrentCourseClass();
+		this.defaultPlace = clientFactory.getDefaultPlace();
+		this.fields = new ArrayList<KornellFormFieldWrapper>();
+		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
-		initData();
+		
 		// i18n
+		btnEdit.setText("Editar".toUpperCase());
+		btnClose.setText("Fechar".toUpperCase());
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
-		btnClose.setText("Fechar".toUpperCase());
+
+		imgTitle.setUrl(IMAGE_PATH + "course.png");
+		lblTitle.setText("Perfil");
 		
-		bus.addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
-					@Override
-					public void onPlaceChange(PlaceChangeEvent event) {
-						if(event.getNewPlace() instanceof ProfilePlace){							
-							 initData();
-						}
-					}});
+		showContactDetails = clientFactory.getInstitution().isDemandsPersonContactDetails();
+
+		session.getS3PolicyTO(new Callback<S3PolicyTO>() {
+			
+			@Override
+			public void ok(S3PolicyTO to) {
+				s3Policy = to;
+
+				initData();
+				bus.addHandler(PlaceChangeEvent.TYPE,
+						new PlaceChangeEvent.Handler() {
+							@Override
+							public void onPlaceChange(PlaceChangeEvent event) {
+								if(event.getNewPlace() instanceof ProfilePlace){							
+									 initData();
+								}
+							}});
+			}
+		});
 	}
 	
 	private void initData() {
-		user = session.getUserInfo();
-		isCurrentUser = true;
-		isUserCreation = false;
-		isEditMode = false;
-		isCurrentUser = user.getUsername().equals(((ProfilePlace) placeCtrl.getWhere()).getUsername());
-		display();
+		isCurrentUser = session.getUserInfo().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
+		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
+		session.getUser(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID(), new Callback<UserInfoTO>() {
+			@Override
+			public void ok(UserInfoTO to) {
+				user = to;
+				display();
+			}
+			@Override
+			public void unauthorized(){
+				user = null;
+				display();
+			}
+		});
 	}
 
 	private boolean validateFields() {
-		ValidatorHelper validator = new ValidatorHelper();
-		if (!validator.lengthValid(username.getText(), 3, 50)){
-			fieldsToErrorLabels.get(username).getError().setText("Mínimo de 3 caracteres.");
-		} else if (!validator.usernameValid(username.getText())){
-			fieldsToErrorLabels.get(username).getError().setText("Campo inválido.");
-		}
-
-		if (!validator.emailValid(email.getText())){
-			fieldsToErrorLabels.get(email).getError().setText("Email inválido.");
-		}
-
-		if (!validator.passwordValid(password.getText())){
-			fieldsToErrorLabels.get(password).getError().setText("Senha inválida.");
-		}
-
-		if (!password.getText().equals(password2.getText())){
-			fieldsToErrorLabels.get(password2).getError().setText("As senhas não conferem.");
-		}
-		
-		if(!validator.lengthValid(firstName.getText(), 2, 50)){
-			fieldsToErrorLabels.get(firstName).getError().setText("Mínimo de 2 caracteres.");
-		}
-		
-		if(!validator.lengthValid(lastName.getText(), 2, 50)){
-			fieldsToErrorLabels.get(lastName).getError().setText("Mínimo de 2 caracteres.");
-		}
-		
-		if(sex.getSelectedIndex() <= 0){
-			fieldsToErrorLabels.get(sex).getError().setText("Escolha uma alternativa.");
+		if(showContactDetails){
+			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
+				telephone.setError("Insira seu telefone.");
+			}
+			if(!formHelper.isLengthValid(country.getFieldPersistText(), 0, 2)){
+				country.setError("Selecione seu país.");
+			}
+			if("BR".equals(country.getFieldPersistText())){
+				if(!formHelper.isListBoxSelected(((ListBox) state.getFieldWidget()))){
+					state.setError("Selecione seu estado.");
+				}
+			} else {
+				if(!formHelper.isLengthValid(state.getFieldPersistText(), 2, 100)){
+					state.setError("Insira seu estado.");
+				}
+			}
+			if(!formHelper.isLengthValid(city.getFieldPersistText(), 2, 100)){
+				city.setError("Insira sua cidade.");
+			}
+			if(!formHelper.isLengthValid(addressLine1.getFieldPersistText(), 2, 100)){
+				addressLine1.setError("Insira seu endereço.");
+			}
+			if(!formHelper.isLengthValid(postalCode.getFieldPersistText(), 2, 100)){
+				postalCode.setError("Insira seu código postal.");
+			}
 		}
 		
-		if(!birthDate.isSelected()){
-			fieldsToErrorLabels.get(birthDate).getError().setText("Insira sua data de nascimento.");
-		}
 		return !checkErrors();
-	}
-
-	@UiHandler("lblEdit")
-	void doEdit(ClickEvent e) {
-		isEditMode = true;
-		editPanel.setVisible(!isEditMode);
-		displayFields();
 	}
 
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) { 
 		btnOK.setEnabled(false);
-		clearErrors();
-		if(validateFields()){
-			session.checkUser(/*username.getText().toLowerCase().trim(), */email.getText().toLowerCase().trim(), new Callback<UserInfoTO>(){
+		formHelper.clearErrors(fields);
+		
+		if(isEditMode && validateFields()){
+			LoadingPopup.show();
+			session.updateUser(getUserInfoFromForm(), new Callback<UserInfoTO>(){
 				@Override
 				public void ok(UserInfoTO user){
-					if(user.getPerson() != null){
-						fieldsToErrorLabels.get(username).getError().setText("O usuário já existe.");
-					} 
-					if(user.getEmail() != null){
-						fieldsToErrorLabels.get(email).getError().setText("O email já existe.");
-					}
-					if(!checkErrors()){
-						String data = username.getText().toLowerCase().trim() + "###" + 
-								password.getText().trim() + "###" +
-								email.getText().toLowerCase().trim() + "###" +
-								firstName.getText().trim() + "###" +
-								lastName.getText().trim() + "###" +
-								company.getText().trim() + "###" +
-								title.getText().trim() + "###" +
-								(sex.getSelectedIndex() == 1 ? "F" : "M") + "###" +
-								birthDate.toString() + "###" +
-								Window.Location.getHref().split("#")[0];
-						/*client.createUser(data, new Callback<UserInfoTO>(){
-							@Override
-							public void ok(UserInfoTO user){
-								GWT.log("User created");
-								isEditMode = false;
-								
-								editPanel.setVisible(!isEditMode);
-								btnOK.setEnabled(true);
-								form.addStyleName("shy");
-								//TODO remove this
-								ClientProperties.remove("Authorization");
-								VitrinePlace vitrinePlace = new VitrinePlace();
-								vitrinePlace.setUserCreated(true);
-								placeCtrl.goTo(vitrinePlace);
-							}
-						});*/
-						
-					}
+					session.setCurrentUser(user);
+					LoadingPopup.hide();
+					KornellNotification.show("Alterações salvas com sucesso!");
 					btnOK.setEnabled(true);
+					isEditMode = false;
+					display();
+					form.addStyleName("shy");
+					placeCtrl.goTo(defaultPlace);
 				}
 			});
 		}
-		btnOK.setEnabled(true);
+	}
+
+	private UserInfoTO getUserInfoFromForm() {
+		Person person = user.getPerson();
+		person.setEmail(email.getFieldPersistText());
+		person.setFullName(fullName.getFieldPersistText());
+		person.setCompany(company.getFieldPersistText());
+		person.setTitle(position.getFieldPersistText());
+		person.setSex(sex.getFieldPersistText());
+		person.setBirthDate(formHelper.getDateFromString(birthDate.getFieldPersistText()));
+		
+		if(showContactDetails){
+			person.setTelephone(telephone.getFieldPersistText());
+			person.setCountry(country.getFieldPersistText());
+			person.setState(state.getFieldPersistText());
+			person.setCity(city.getFieldPersistText());
+			person.setAddressLine1(addressLine1.getFieldPersistText());
+			person.setAddressLine2(addressLine2.getFieldPersistText());
+			person.setPostalCode(postalCode.getFieldPersistText());
+		}
+		
+		user.setPerson(person);
+		return user;
 	}
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
-		form.addStyleName("shy");
-		bus.fireEvent(new LogoutEvent());
-		/*
-		isEditMode = false;
-		editPanel.setVisible(!isEditMode);
-		clearErrors();
-		displayFields();*/
+		if(showContactDetails && session.getUserInfo().getPerson().getCity() == null){
+			bus.fireEvent(new LogoutEvent());
+		} else {
+			isEditMode = false;
+			formHelper.clearErrors(fields);
+			display();
+		}
+	}
+
+	@UiHandler("btnEdit")
+	void doEdit(ClickEvent e) {
+		isEditMode = true;
+		formHelper.clearErrors(fields);
+		display();
 	}
 
 	@UiHandler("btnClose")
@@ -255,112 +246,187 @@ public class GenericProfileView extends Composite implements ProfileView {
 		placeCtrl.goTo(new CourseClassPlace(currentCourseClass.getCourseClass().getUUID()));
 	}
 
-	private void clearErrors() {
-		for (Field field : fieldsToErrorLabels.values()) {
-			field.getError().setText("");
-		}
+	private boolean checkErrors() {
+		for (KornellFormFieldWrapper field : fields) 
+			if(!"".equals(field.getError()))
+				return true;		
+		return false;
 	}
 
-	private boolean checkErrors() {
-		boolean errors = false;
-		for (Field field : fieldsToErrorLabels.values()) {
-			if(!"".equals(field.getError().getText())){
-				errors = true;
-			}
-		}
-		return errors;
-	}
-	
-	private void showFields(){
-		for (Field field : fieldsToErrorLabels.values()) {
-			field.getField().setVisible(isEditMode);
-			field.getError().setVisible(isEditMode);
-			field.getValue().setVisible(!isEditMode);
-		}
-		passwordPanel.setVisible(isEditMode && isUserCreation);
-		passwordSeparator.setVisible(isEditMode && isUserCreation);
-		password2Panel.setVisible(isEditMode && isUserCreation);
-		password2Separator.setVisible(isEditMode && isUserCreation);
-		emailPanel.setVisible(isCurrentUser);
-		emailSeparator.setVisible(isCurrentUser);
-		sexPanel.setVisible(isCurrentUser);
-		sexSeparator.setVisible(isCurrentUser);
-		birthDatePanel.setVisible(isCurrentUser);
-		birthDateSeparator.setVisible(isCurrentUser);
-		
-		imageExtraInfo.setVisible(isEditMode);
-		usernameExtraInfo.setVisible(isEditMode);
-		usernameExtraInfo2.setVisible(isEditMode);
-		emailExtraInfo.setVisible(isEditMode);
-		titleExtraInfo.setVisible(isEditMode);
-		titleExtraInfo2.setVisible(isEditMode);
+	private void display() {
+		form.addStyleName("shy");
 
 		btnOK.setVisible(isEditMode);
 		btnCancel.setVisible(isEditMode);
 		btnClose.setVisible(!isEditMode);
+		btnEdit.setVisible(!isEditMode && isCurrentUser);
 
+		profileFields.clear();
+		if(user == null){
+			KornellNotification.show("Usuário não encontrado.", AlertType.ERROR);
+		} else {
+
+			if(isEditMode && showContactDetails && session.getUserInfo().getPerson().getCity() == null){
+				KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO);
+			}
+
+			//TODO: remove comment
+    		//profileFields.add(getPictureUploadFormPanel());
+			
+    		// the email is shown only on edit mode and on the read-only view of the profile's owner
+			if(isEditMode || isCurrentUser){
+	    		email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), false);
+	    		fields.add(email);
+	    		profileFields.add(email);
+				profileFields.add(getPrivatePanel());
+			}
+			
+    		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), false);
+    		fields.add(fullName);
+    		profileFields.add(fullName);
+    		
+    		company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
+    		fields.add(company);
+    		profileFields.add(company);
+    		
+    		position = new KornellFormFieldWrapper("Cargo", formHelper.createTextBoxFormField(user.getPerson().getTitle()), isEditMode);
+    		fields.add(position);
+    		profileFields.add(position);
+
+			if(isEditMode || isCurrentUser){
+				final ListBox sexes = formHelper.getSexList();
+				sexes.setSelectedValue(user.getPerson().getSex());
+	    		sex = new KornellFormFieldWrapper("Sexo", new ListBoxFormField(sexes), isEditMode);
+	    		fields.add(sex);
+	    		profileFields.add(sex);
+	    		profileFields.add(getPrivatePanel());
+	
+	    		SimpleDatePicker datePicker = new SimpleDatePicker();
+	    		if(isEditMode || isCurrentUser){
+	    			datePicker.setFields(user.getPerson().getBirthDate());
+	    		}
+	    		birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
+	    		fields.add(birthDate);
+	    		profileFields.add(birthDate);
+	    		profileFields.add(getPrivatePanel());
+			}
+			
+			if((isEditMode  || isCurrentUser) && showContactDetails){
+				displayContactDetails();
+			}
+		}
 		form.removeStyleName("shy");
 	}
-	
-	private void display() {
-		// TODO i18n
-		displayTitle();
-		displayFields();
+
+	private FormPanel getPictureUploadFormPanel() {
+		final FormPanel formPanel = new FormPanel();
+		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
+		formPanel.setMethod(FormPanel.METHOD_POST);
+		formPanel.setAction("http://"+ s3Policy.getBucketName() +".s3.amazonaws.com/");
+		
+		FlowPanel fileUploadWrapper = new FlowPanel();
+		fileUploadWrapper.addStyleName("fileUploadWrapper");
+		fileUploadWrapper.add(new Image(IMAGE_PATH + "profilePic.png"));   
+		
+		fileUploadWrapper.add(new Hidden("key", s3Policy.getKey()+"${filename}"));
+		fileUploadWrapper.add(new Hidden("acl", "public-read"));
+		fileUploadWrapper.add(new Hidden("success_action_redirect", s3Policy.getSuccessActionRedirect()));
+		fileUploadWrapper.add(new Hidden("Content-Type", "image/jpeg"));
+		fileUploadWrapper.add(new Hidden("x-amz-meta-uuid", "14365123651275"));
+		fileUploadWrapper.add(new Hidden("x-amz-meta-tag", ""));
+		fileUploadWrapper.add(new Hidden("AWSAccessKeyId", s3Policy.getAWSAccessKeyId()));
+		fileUploadWrapper.add(new Hidden("Policy", s3Policy.getPolicy()));
+		fileUploadWrapper.add(new Hidden("Signature", s3Policy.getSignature()));		    
+		
+		fileUpload = new FileUpload();
+		fileUpload.setName("file");
+		fileUploadWrapper.add(fileUpload);
+		
+		SubmitButton changeImageButton = new SubmitButton();
+		changeImageButton.setName("submit");
+		changeImageButton.setText("TROCAR IMAGEM");
+		changeImageButton.setStyleName("btnAction btnStandard");
+		fileUploadWrapper.add(changeImageButton);
+		
+		formPanel.addSubmitHandler(new FormPanel.SubmitHandler() {
+		  public void onSubmit(SubmitEvent event) {
+			//TODO: remove comments
+			  //if("".equals(fileUpload.getFilename())){
+				  event.cancel();
+			  //}
+		  }
+		});
+		formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+		  public void onSubmitComplete(SubmitCompleteEvent event) {
+			KornellNotification.show(event.getResults());
+		  }
+		});
+		
+		formPanel.setWidget(fileUploadWrapper);
+		return formPanel;
 	}
 
-	private void displayFields() {
-		imgProfile.setUrl(IMAGE_PATH + "profilePic.png");
-		sex.clear();
-        sex.addItem("");
-        sex.addItem("Feminino");
-        sex.addItem("Masculino");
-        birthDatePickerPanel.clear();
-        if (isUserCreation){
-			birthDate = new SimpleDatePicker();
-			birthDatePickerPanel.add(birthDate);
-		} else if(isEditMode){
-			username.setText(user.getUsername());
-			email.setText(user.getPerson().getEmail());
-			//firstName.setText(user.getPerson().getFirstName());
-			//lastName.setText(user.getPerson().getLastName());
-			company.setText(user.getPerson().getCompany());
-			title.setText(user.getPerson().getTitle());
-	        sex.setSelectedIndex("F".equals(user.getPerson().getSex()) ? 1 : 2);
-			birthDate = new SimpleDatePicker(user.getPerson().getBirthDate());
-			birthDatePickerPanel.add(birthDate);
+	private void displayContactDetails() {
+		profileFields.add(getImageSeparator());
+		
+		telephone = new KornellFormFieldWrapper("Telefone", formHelper.createTextBoxFormField(user.getPerson().getTelephone()), isEditMode);
+		fields.add(telephone);
+		profileFields.add(telephone);
+		profileFields.add(getPrivatePanel());
+		
+		final ListBox countries = formHelper.getCountriesList();
+		if(user.getPerson().getCountry() == null){
+			countries.setSelectedValue("BR");
 		} else {
-			usernameTxt.setText(user.getUsername());
-			emailTxt.setText(user.getPerson().getEmail());
-			//firstNameTxt.setText(user.getPerson().getFirstName());
-			//lastNameTxt.setText(user.getPerson().getLastName());
-			companyTxt.setText(user.getPerson().getCompany());
-			titleTxt.setText(user.getPerson().getTitle());
-			sexTxt.setText("F".equals(user.getPerson().getSex()) ? "Feminino" : "Masculino");
-			birthDateTxt.setText(DateTimeFormat.getShortDateFormat().format(user.getPerson().getBirthDate()));
+			countries.setSelectedValue(user.getPerson().getCountry());
 		}
-		mapFieldsToErrorLabels();
-		showFields();
-	}
+		countries.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				if("BR".equals(countries.getValue())){
+		    		state.initData(new ListBoxFormField(formHelper.getBrazilianStatesList()));
+				} else {
+		    		state.initData(new TextBoxFormField(new TextBox()));
+				}
+			}
+		});
+		country = new KornellFormFieldWrapper("País", new ListBoxFormField(countries), isEditMode);
+		fields.add(country);
+		profileFields.add(country);
+		profileFields.add(getPrivatePanel());
 
-	private void displayTitle() {
-		imgTitle.setUrl(IMAGE_PATH + "course.png");
-		lblTitle.setText("Perfil");
-		editPanel.setVisible(!isEditMode);
-		lblEdit.setText("Editar");
-	}
-
-	private void mapFieldsToErrorLabels() {
-		fieldsToErrorLabels = new HashMap<Widget, Field>();
-		fieldsToErrorLabels.put(username, new Field(username, usernameError, usernameTxt));
-		fieldsToErrorLabels.put(email, new Field(email, emailError, emailTxt));
-		fieldsToErrorLabels.put(password, new Field(password, passwordError, new Label()));
-		fieldsToErrorLabels.put(password2, new Field(password2, password2Error, new Label()));
-		fieldsToErrorLabels.put(firstName, new Field(firstName, firstNameError, firstNameTxt));
-		fieldsToErrorLabels.put(lastName, new Field(lastName, lastNameError, lastNameTxt));
-		fieldsToErrorLabels.put(company, new Field(company, companyError, companyTxt));
-		fieldsToErrorLabels.put(title, new Field(title, titleError, titleTxt));
-		fieldsToErrorLabels.put(sex, new Field(sex, sexError, sexTxt));
-		fieldsToErrorLabels.put(birthDate, new Field(birthDatePickerPanel, birthDateError, birthDateTxt));
+		if("BR".equals(countries.getValue())){
+			final ListBox states = formHelper.getBrazilianStatesList();
+			if(user.getPerson().getState() != null){
+				states.setSelectedValue(user.getPerson().getState());
+			}
+			state = new KornellFormFieldWrapper("Estado", new ListBoxFormField(states), isEditMode);
+		} else {
+			state = new KornellFormFieldWrapper("Estado", formHelper.createTextBoxFormField(user.getPerson().getState()), isEditMode);
+		}
+		fields.add(state);
+		profileFields.add(state);
+		profileFields.add(getPrivatePanel());
+		
+		city = new KornellFormFieldWrapper("Cidade", formHelper.createTextBoxFormField(user.getPerson().getCity()), isEditMode);
+		fields.add(city);
+		profileFields.add(city);
+		profileFields.add(getPrivatePanel());
+		
+		addressLine1 = new KornellFormFieldWrapper("Endereço Linha 1", formHelper.createTextBoxFormField(user.getPerson().getAddressLine1()), isEditMode);
+		fields.add(addressLine1);
+		profileFields.add(addressLine1);
+		profileFields.add(getPrivatePanel());
+		
+		addressLine2 = new KornellFormFieldWrapper("Endereço Linha 2", formHelper.createTextBoxFormField(user.getPerson().getAddressLine2()), isEditMode);
+		fields.add(addressLine2);
+		profileFields.add(addressLine2);
+		profileFields.add(getPrivatePanel());
+		
+		postalCode = new KornellFormFieldWrapper("Código Postal", formHelper.createTextBoxFormField(user.getPerson().getPostalCode()), isEditMode);
+		fields.add(postalCode);
+		profileFields.add(postalCode);
+		profileFields.add(getPrivatePanel());
 	}
 
 	@Override
@@ -368,24 +434,18 @@ public class GenericProfileView extends Composite implements ProfileView {
 		// TODO Auto-generated method stub
 	}
 	
-	class Field{
-		Widget field;
-		Label error;
-		Label value;
-		public Field(Widget field, Label error, Label value) {
-			this.field = field;
-			this.error = error;
-			this.value = value;
-		}
-		public Widget getField() {
-			return field;
-		}
-		public Label getError() {
-			return error;
-		}
-		public Label getValue() {
-			return value;
-		}
+	private FlowPanel getPrivatePanel(){
+		FlowPanel privatePanel = new FlowPanel();
+		privatePanel.addStyleName("privatePanel");
+		privatePanel.add(new Image("skins/first/icons/profile/notPublic.png"));
+		privatePanel.add(new Label("Privado"));
+		return privatePanel;
+	}
+	
+	private Image getImageSeparator(){
+		Image image = new Image("skins/first/icons/profile/separatorBar.png");
+		image.addStyleName("profileSeparatorBar");
+		return image;
 	}
 
 }

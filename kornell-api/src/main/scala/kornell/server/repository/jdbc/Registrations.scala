@@ -1,6 +1,5 @@
 package kornell.server.repository.jdbc
 
-import kornell.server.repository.TOs
 import kornell.core.to.RegistrationsTO
 import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.server.repository.Entities
@@ -30,9 +29,11 @@ object Registrations {
   def toInstitution(rs: ResultSet) = newInstitution(
     rs.getString("institution_uuid"),
     rs.getString("name"),
+    rs.getString("fullName"),
     rs.getString("terms"),
     rs.getString("assetsURL"),
-    rs.getString("baseURL"))
+    rs.getString("baseURL"),
+    rs.getBoolean("demandsPersonContactDetails"))
 
   def unsigned(implicit person: Person): RegistrationsTO = {
     val registrationList = sql"""

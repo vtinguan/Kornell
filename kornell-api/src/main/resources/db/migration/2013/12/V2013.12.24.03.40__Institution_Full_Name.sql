@@ -1,0 +1,1 @@
+alter table Institution add fullName varchar(100);

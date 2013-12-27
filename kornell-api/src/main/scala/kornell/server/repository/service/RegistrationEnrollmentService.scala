@@ -1,24 +1,24 @@
 package kornell.server.repository.service
 
 import java.util.Date
+
 import scala.collection.JavaConverters.asScalaBufferConverter
-import kornell.core.entity.CourseClass
+
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.Person
+import kornell.core.to.EnrollmentRequestTO
+import kornell.core.to.EnrollmentRequestsTO
 import kornell.core.to.UserInfoTO
 import kornell.core.util.UUID
+import kornell.server.repository.Entities
 import kornell.server.repository.TOs.newUserInfoTO
 import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.CourseClasses
 import kornell.server.repository.jdbc.Enrollments
 import kornell.server.repository.jdbc.Events
-import kornell.server.repository.jdbc.Institutions
 import kornell.server.repository.jdbc.People
 import kornell.server.repository.jdbc.PersonRepository
-import kornell.server.util.EmailSender
-import kornell.core.to.EnrollmentRequestTO
-import kornell.core.to.EnrollmentRequestsTO
 
 
 object RegistrationEnrollmentService {
@@ -33,15 +33,15 @@ object RegistrationEnrollmentService {
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
 
   private def deanRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, dean: Person) = 
-    Auth.getPerson(enrollmentRequest.getEmail) match { 
+    Auth.getPersonByEmail(enrollmentRequest.getEmail) match { 
       case Some(one) => deanEnrollExistingPerson(one, enrollmentRequest, dean)
       case None => deanEnrollNewPerson(enrollmentRequest, dean)
   	}
 
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
-    val personRepo = People().createPerson(enrollmentRequest.getEmail, enrollmentRequest.getFullName)
+    val personRepo = People.createPerson(enrollmentRequest.getEmail, enrollmentRequest.getFullName)
     personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
-    createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
+    createEnrollment(personRepo.get.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
     sendYouWerePreEnrolledEmail
   }
 
@@ -68,24 +68,24 @@ object RegistrationEnrollmentService {
     val password = regReq.getPassword()
     val fullName = regReq.getFullName()
 
-    Auth.getPerson(email) match {
+    Auth.getPersonByEmail(email) match {
       case Some(one) => userUpdateExistingPerson(email, fullName, password, one)
       case None => userCreateNewPerson(email, fullName, password, institutionUUID)
     }
   }
 
   private def userCreateNewPerson(email: String, fullName: String, password: String, institutionUUID: String) = {
-    val personRepo = People().createPerson(email, fullName)
+    val personRepo = People.createPerson(email, fullName)
     
     val user = newUserInfoTO
-    user.setPerson(personRepo.get)
+    user.setPerson(personRepo.get.get)
     user.setUsername(email)
     personRepo.setPassword(email, password).registerOn(institutionUUID)
     //if there's only one class offered by the institution, request an enrollment
     val classes = CourseClasses.byInstitution(institutionUUID)
     if (classes.length == 1){
     	val person = personRepo.get
-    	createEnrollment(person.getUUID, classes.head.getUUID, EnrollmentState.requested, person.getUUID)
+    	createEnrollment(person.get.getUUID, classes.head.getUUID, EnrollmentState.requested, person.get.getUUID)
     }
     user
   }
@@ -94,13 +94,18 @@ object RegistrationEnrollmentService {
     val personRepo = PersonRepository(personOld.getUUID())
 
     //update the user's info
-    personRepo.updatePerson(email, fullName)
+    val person = Entities.newPerson
+    person.setEmail(email)
+    person.setFullName(fullName)
+    personRepo.update(person)
+    
     val user = newUserInfoTO
-    user.setPerson(personRepo.get)
+    user.setPerson(personRepo.get.get)
     user.setUsername(email)
+    
     personRepo.setPassword(email, password)
     //for each existing pre-enrollment of this student, enroll
-    Enrollments().byStateAndPerson(EnrollmentState.preEnrolled, personRepo.get.getUUID).foreach(
+    Enrollments().byStateAndPerson(EnrollmentState.preEnrolled, personRepo.get.get.getUUID).foreach(
     		enrollment => Events.logEnrollmentStateChanged(
     		    UUID.random, new Date, enrollment.getPerson.getUUID, 
     		    enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)

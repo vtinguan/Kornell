@@ -3,6 +3,7 @@ package kornell.core.entity;
 import java.util.Date;
 
 public interface Person {
+	public static String TYPE = EntityFactory.PREFIX + "person+json";
 	
 	String getUUID();
 	void setUUID(String uuid);
@@ -22,5 +23,18 @@ public interface Person {
 	void setBirthDate(Date birthDate);
 	String getConfirmation();
 	void setConfirmation(String confirmation);
-	
+	String getTelephone();
+	void setTelephone(String telephone);
+	String getCountry();
+	void setCountry(String country);
+	String getState();
+	void setState(String state);
+	String getCity();
+	void setCity(String city);
+	String getAddressLine1();
+	void setAddressLine1(String addressLine1);
+	String getAddressLine2();
+	void setAddressLine2(String addressLine2);
+	String getPostalCode();
+	void setPostalCode(String postalCode);
 }
