@@ -5,7 +5,7 @@ var version = 'kornell-api-'
 				.replace(/\..+/, '')
 var bucket = "kornell-artifacts";
 var key = 'kornell-api/' + version + '.war';
-var fileName = 'kornell-api-1.0-SNAPSHOT.war';
+var fileName = 'kornell-api/kornell-api.war';
 var application = 'eduvem-api'
 var environment = 'eduvem-api-test-web';
 
