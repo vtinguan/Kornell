@@ -7,9 +7,6 @@
 KNL_API_URL="http://eduvem-api-prod-web.elasticbeanstalk.com/"
 KNL_BUCKET="eduvem.com"
 
-AWS_ACCESS_KEY_ID="AKIAJQP3BHOB4EVVTS4Q"
-AWS_SECRET_KEY="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"
-
 S3CMD_CFG=".s3cfg-kornell"
 KNL_CFG="./kornell-gwt/target/kornell-gwt-0.0.1-SNAPSHOT/KornellConfig.js"
 

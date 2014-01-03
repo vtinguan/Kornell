@@ -14,6 +14,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest
 import scala.io.Source
 import kornell.core.util.StringUtils._
 import kornell.server.repository.jdbc.CourseClasses
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.client.methods.HttpHead
 
 class S3(regionName: String,
   val accessKey: String,
@@ -53,10 +55,18 @@ class S3(regionName: String,
   def getObject(key: String) =
     s3.getObject(bucket, prefix + "/" + key)
 
-  def source(key: String) =
-    Source.fromURL(url(key), "utf-8")
+  def source(key: String) = Source.fromURL(url(key), "utf-8")
 
-  def exists(key: String) = ??? //TODO: HTTP HEAD
+  def exists(key: String):Boolean = {
+    val httpClient = HttpClients.createDefault();
+    val head = new HttpHead(url(key))
+    val response = httpClient.execute(head)
+    try {
+      response.getStatusLine().getStatusCode() == 200
+    }finally {
+      response.close()      
+    }
+  }
 
   def url(key: String) = composeURL(baseURL, prefix, key)
 
