@@ -7,7 +7,7 @@
 	<artifactId>kornell-gwt</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>Kornell GWT Client</name>
+	<name>GWT Client</name>
 
 	<properties>
 		<!-- Convenience property to set the GWT version -->
@@ -136,7 +136,7 @@
 	<build>
 		<!-- Generate compiled stuff in the folder used for development mode -->
 		<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
-
+		<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>br.com.ingenieux</groupId>
