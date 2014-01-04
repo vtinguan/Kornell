@@ -16,8 +16,9 @@ if [ -z "$AWS_SECRET_ACCESS_KEY" ];
 
 S3CMD=${S3CMD:-"s3cmd"}
 S3CMD_CFG=${S3CMD_CFG:-".s3cfg-kornell"} 
-KNL_CFG=${KNL_CFG:-"./kornell-gwt/target/kornell-gwt/KornellConfig.js"}
-SRC_DIR=${SRC_DIR:-"./kornell-gwt/target/kornell-gwt"}
+SRC_DIR=${SRC_DIR:-"${PWD}/kornell-gwt/target/kornell-gwt"}
+KNL_CFG=${KNL_CFG:-$SRC_DIR"/KornellConfig.js"}
+
 
 echo "=== GWT Deployment Variables ==="
 echo "KNL_API_URL=$KNL_API_URL"
