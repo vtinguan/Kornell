@@ -1,15 +1,24 @@
 console.log('Deploying Kornell API');
 
+var fileName = process.env.KNL_API_WAR || 'kornell-api/kornell-api.war';
+var environment = process.env.EB_ENVIRONMENT;
+
 var version = 'kornell-api-'
 		+ new Date().toISOString().replace(/T/, '_').replace(/\:/g, '_')
 				.replace(/\..+/, '')
 var bucket = "kornell-artifacts";
 var key = 'kornell-api/' + version + '.war';
-var fileName = 'kornell-api/kornell-api.war';
 var application = 'eduvem-api'
-var environment = 'eduvem-api-test-web';
 
 var versionsKept = 10;
+
+function suicide(msg){
+	console.log(msg);
+	process.exit(1);
+}
+
+environment || suicide("Set EB_ENVIRONMENT to the target elastic beanstalk environment name.")
+
 console.log('version=' + version);
 
 var fs = require('fs');
