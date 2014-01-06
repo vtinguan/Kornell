@@ -25,6 +25,9 @@ target
 bin
 s3cfg
 
+# Credentials
+AwsCredentials.properties
+
 # Unknown
 *.cache
 *.swp
