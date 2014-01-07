@@ -7,16 +7,19 @@ import kornell.core.entity.EnrollmentState;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface DeanHomeView extends IsWidget {
+public interface AdminHomeView extends IsWidget {
 	public interface Presenter extends IsWidget {
 		void changeEnrollmentState(Enrollment enrollment, EnrollmentState state);
 		boolean showActionButton(String actionName, EnrollmentState state);
 		void onAddEnrollmentButtonClicked(String fullName, String email);
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);
 		void onGoToCourseButtonClicked();
+		void onModalOkButtonClicked();
 	}
 
 	void setPresenter(Presenter presenter);
 	void setEnrollmentList(List<Enrollment> enrollments);
+	void showModal();
+	void setModalErrors(String errors);
 
 }

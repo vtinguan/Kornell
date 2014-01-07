@@ -14,7 +14,7 @@ import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
 //TODO i18n
 public class FormHelper {
 
-	private final String EMAIL_PATTERN = "^[^0-9][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$";
+	private final String EMAIL_PATTERN = "^[^0-9][A-z0-9_+]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$";
 	private final String USERNAME_PATTERN = "^[^0-9.][A-z0-9.]{2,}$";
 	private final String PASSWORD_PATTERN = "^[0-9a-zA-Z!@#$%¨&*()]{6,}$";
 	

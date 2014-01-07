@@ -26,9 +26,8 @@ class EnrollmentResource{
   
   @PUT
   @Consumes(Array(kornell.core.to.EnrollmentRequestsTO.TYPE))
-  def putEnrollments(implicit @Context sc: SecurityContext, enrollmentRequests:kornell.core.to.EnrollmentRequestsTO) = 
-    Auth.withPerson { p => RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p) }
-  
+  def putEnrollments(implicit @Context sc: SecurityContext, enrollmentRequests:kornell.core.to.EnrollmentRequestsTO) =
+    Auth.withPerson { p => RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p) }  
   
   @PUT
   @Path("{courseClassUUID}/notesUpdated")

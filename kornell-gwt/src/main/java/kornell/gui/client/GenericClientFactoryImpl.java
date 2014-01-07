@@ -15,9 +15,9 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.admin.home.DeanHomePlace;
-import kornell.gui.client.presentation.admin.home.DeanHomeView;
-import kornell.gui.client.presentation.admin.home.generic.GenericDeanHomeView;
+import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
 import kornell.gui.client.presentation.atividade.generic.GenericCourseClassView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
@@ -60,6 +60,7 @@ import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
+import kornell.gui.client.util.ClientProperties;
 import kornell.scorm.client.SCORM12Binder;
 import kornell.scorm.client.SCORM2004Adapter;
 
@@ -257,6 +258,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 							}
 						});
 			}
+			
+			@Override
+			public void unauthorized(){
+				ClientProperties.remove("Authorization");
+			}
+			
 		});
 	}
 
@@ -272,7 +279,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void startAuthenticated(UserSession session) {
 		if (session.isDean()) {
-			defaultPlace = new DeanHomePlace();
+			defaultPlace = new AdminHomePlace();
 			startClient();
 		} else {
 			startClient();
@@ -466,8 +473,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	// dean
 	@Override
-	public DeanHomeView getDeanHomeView() {
-		return new GenericDeanHomeView();
+	public AdminHomeView getDeanHomeView() {
+		return new GenericAdminHomeView();
 	}
 
 	@Override

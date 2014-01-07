@@ -26,6 +26,12 @@ import kornell.server.repository.service.RegistrationEnrollmentService
 
 class Enrollments() {
 
+  def byUUID(enrollmentUUID: String): Option[Enrollment] =
+    sql"""
+	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
+      	| from Enrollment e where uuid = ${enrollmentUUID} 
+	    """.first[Enrollment]
+
   def byCourseClass(courseClassUUID: String) = newEnrollments(
     sql"""
 	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
@@ -40,7 +46,6 @@ class Enrollments() {
       	| from Enrollment e join Person p on e.person_uuid = p.uuid
         | where e.class_uuid = ${courseClassUUID} and
         | e.person_uuid = ${personUUID}
-        | order by e.state desc, p.fullName, p.email
 	    """.first[Enrollment]
 
   def byStateAndPerson(state: EnrollmentState, personUUID: String) =

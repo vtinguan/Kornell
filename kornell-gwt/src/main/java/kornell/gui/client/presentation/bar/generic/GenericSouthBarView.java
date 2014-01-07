@@ -1,9 +1,9 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.api.client.UserSession;
-import kornell.core.to.CourseClassTO;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
+import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.CourseClassPlace;
@@ -23,7 +23,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericSouthBarView extends Composite implements SouthBarView {
 
@@ -35,6 +34,8 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 	private ActivityBarView activityBarView;
 
 	private CourseBarView courseBarView;
+	
+	private AdminBarView adminBarView;
 
 	private boolean visible = false;
 
@@ -53,8 +54,11 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 			@Override
 			public void onPlaceChange(PlaceChangeEvent event) {
 				Place newPlace = event.getNewPlace();
-
-				if (newPlace instanceof CourseDetailsPlace
+				if(newPlace instanceof AdminPlace){
+					southBar.clear();
+					southBar.add(getAdminBarView(newPlace));
+					visible = true;
+				} else if (newPlace instanceof CourseDetailsPlace
 						|| newPlace instanceof CourseClassPlace) {
 					southBar.clear();
 					southBar.add(getActivityBarView());
@@ -83,9 +87,15 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 
 	private CourseBarView getCourseBarView(Place newPlace) {
 		if (courseBarView == null)
-			courseBarView = new GenericCourseBarView(clientFactory.getEventBus(), placeCtrl);
+			courseBarView = new GenericCourseBarView(clientFactory.getEventBus(), clientFactory.getPlaceController());
 		courseBarView.updateSelection(newPlace);
 		return courseBarView;
+	}
+
+	private AdminBarView getAdminBarView(Place newPlace) {
+		if (adminBarView == null)
+			adminBarView = new GenericAdminBarView(clientFactory);
+		return adminBarView;
 	}
 
 	public boolean isVisible() {

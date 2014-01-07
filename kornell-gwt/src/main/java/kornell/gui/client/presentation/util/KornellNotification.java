@@ -33,7 +33,7 @@ public class KornellNotification {
 			}
 		});
 		
-		if(timer != 0){
+		if(timer > 0){
 			new Timer() {
 				@Override
 				public void run() {

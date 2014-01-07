@@ -7,9 +7,10 @@ import kornell.core.entity.Institution
 import kornell.core.entity.Person
 import kornell.server.util.EmailSender
 import java.util.UUID
+import kornell.core.entity.Course
 
 object EmailService {
-  def sendEmailConfirmation(person: Person, institution: Institution) {
+  def sendEmailConfirmation(person: Person, institution: Institution) = {
     val sex = person.getSex() match { 
       case "F" => "a"
       case "M" => "o"
@@ -20,33 +21,57 @@ object EmailService {
     val to = person.getEmail
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
+    		<p>&nbsp;</p>
     		<p>Bem-vind""" + sex + """ &agrave; """ + institution.getFullName() + """.</p>
     		<p>Por favor, confirme seu cadastro para ativarmos a sua conta.</p> """ +
     		getActionButton(institution.getBaseURL()+"#vitrine:", "Confirmar agora") + """
     		<p>Depois da ativa&ccedil;&atilde;o voc&ecirc;  poder&aacute; acessar os cursos dispon&iacute;veis para voc&ecirc;, assim como todos os recursos deste ambiente.</p>
-    		<p>Aproveite para trocar experi&ecirc;ncias e ampliar o seu conhecimento.</p>""" +
+    		<p>Aproveite para trocar experi&ecirc;ncias e ampliar o seu conhecimento.</p>
+    		<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
     val imgFile = getInstitutionLogoImage(institution)
     EmailSender.sendEmail(subject, from, to, body, imgFile)
   }
   
-  def sendEmailRequestPasswordChange(person: Person, institution: Institution, requestPasswordChangeUUID: String) {
+  def sendEmailRequestPasswordChange(person: Person, institution: Institution, requestPasswordChangeUUID: String) = {
     val subject = "Você requisitou uma nova senha da " + institution.getFullName()
     val from = getFromEmail(institution)
     val to = person.getEmail
     val actionLink = institution.getBaseURL() + "#vitrine:" + requestPasswordChangeUUID
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
-    		<p>Voc&ecirc; recentemente fez uma requisi&ccedil;&atilde;o de altera&ccedil;&atilde;o de senha da """+ institution.getFullName() +"""</p>
+    		<p>&nbsp;</p>
+    		<p>Voc&ecirc; recentemente fez uma requisi&ccedil;&atilde;o de altera&ccedil;&atilde;o de senha da """+ institution.getFullName() +""".</p>
     		<p>Clique no bot&atilde;o abaixo para fazer a altera&ccedil;&atilde;o da senha.</p> """ +
     		getActionButton(actionLink, "Alterar senha") + """
-    		<p>Caso n&atilde;o tenha requisitado esta mudan&ccedil;a, favor ignorar esta mensagem.</p>""" +
+    		<p>Caso n&atilde;o tenha requisitado esta mudan&ccedil;a, favor ignorar esta mensagem.</p>
+    		<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
     val imgFile = getInstitutionLogoImage(institution)
     EmailSender.sendEmail(subject, from, to, body, imgFile)
   }
+  
+  def sendEmailEnrolled(person: Person, institution: Institution, course: Course) = {
+    val subject = "Você foi matriculado no curso " + course.getTitle()
+    val from = getFromEmail(institution)
+    val to = person.getEmail
+    val actionLink = institution.getBaseURL() + "#vitrine:"
+    val body = wrapBody("""
+    		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
+    		<p>&nbsp;</p>
+    		<p>Voc&ecirc; foi matriculado no curso """+ course.getTitle() +""" oferecido pela """+ institution.getFullName() +""".</p> 
+    		<p>Clique no bot&atilde;o abaixo para ir ao curso.</p> """ +
+    		getActionButton(actionLink, "Acessar o Curso") + """
+    		<p>É necess&aacute;rio criar um usu&aacute;rio antes de acessar o curso, caso ainda n&atilde;o tenha criado.</p>
+    		<p>&nbsp;</p>""" +
+    		getSignature(institution, from))
+			
+    val imgFile = getInstitutionLogoImage(institution)
+    EmailSender.sendEmail(subject, from, to, body, imgFile)
+  }
+  
 
   private def getFromEmail(institution: kornell.core.entity.Institution) = 
     institution.getName().toLowerCase() + "@eduvem.com.br"

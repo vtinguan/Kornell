@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.admin.home;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import kornell.api.client.Callback;
@@ -11,26 +10,30 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
-import kornell.core.entity.Person;
 import kornell.core.to.EnrollmentRequestTO;
 import kornell.core.to.EnrollmentRequestsTO;
-import kornell.core.util.UUID;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DeanHomePresenter implements DeanHomeView.Presenter {
+public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private final ClientFactory clientFactory;
-	private DeanHomeView view;
+	private AdminHomeView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
+	private String batchEnrollmentErrors;
+	private List<EnrollmentRequestTO> batchEnrollments;
+	FormHelper formHelper;
 		
-	public DeanHomePresenter(ClientFactory factory) {
+	public AdminHomePresenter(ClientFactory factory) {
 		clientFactory = factory;
+		 formHelper = new FormHelper();
 		//TODO refactor permissions per session/activity
 		UserSession.current(new Callback<UserSession>() {
 			@Override
@@ -47,7 +50,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 			getEnrollments(clientFactory.getCurrentCourseClass().getCourseClass().getUUID());
 		}
 		else {
-			GWT.log("Hey, only deans are allowed to see this! " + this.getClass().getName());
+			GWT.log("Hey, only admins are allowed to see this! " + this.getClass().getName());
 			clientFactory.getPlaceController()
 				.goTo(clientFactory.getDefaultPlace());
 		}
@@ -100,38 +103,51 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 
 	@Override
 	public void onAddEnrollmentButtonClicked(String fullName, String email) {
-		Window.alert("Inserir: \""+fullName+"\"<"+email+">");
-		List<EnrollmentRequestTO> enrollmentsList = new ArrayList<EnrollmentRequestTO>();
-		enrollmentsList.add(createEnrollment(fullName, email));
-		saveEnrollments(createEnrollments(enrollmentsList));
+		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
+		batchEnrollments.add(createEnrollment(fullName, email));
+		if(formHelper.isEmailValid(email)){
+			saveEnrollments(createEnrollments());
+		} else {
+			KornellNotification.show("Email inválido.", AlertType.ERROR);
+		}
 	}
 
 	@Override
 	public void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch) {
-		Window.alert("Inserir: "+txtAddEnrollmentBatch);
-		saveEnrollments(createEnrollments(createEnrollmentsList(txtAddEnrollmentBatch)));
+		populateEnrollmentsList(txtAddEnrollmentBatch);
+		if(batchEnrollmentErrors == null || !"".equals(batchEnrollmentErrors)){
+			view.setModalErrors(batchEnrollmentErrors);
+			view.showModal();
+		} else {
+			saveEnrollments(createEnrollments());
+		}
 	}
 
-	private EnrollmentRequestsTO createEnrollments(List<EnrollmentRequestTO> enrollmentRequestsList) {
+	private EnrollmentRequestsTO createEnrollments() {
 		EnrollmentRequestsTO enrollmentRequestsTO = clientFactory.getTOFactory().newEnrollmentRequestsTO().as();
-		enrollmentRequestsTO.setEnrollmentRequests(enrollmentRequestsList);
+		enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
 		return enrollmentRequestsTO;
 	}
 
-	private List<EnrollmentRequestTO> createEnrollmentsList(String txtAddEnrollmentBatch) {
-		List<EnrollmentRequestTO> enrollmentsList = new ArrayList<EnrollmentRequestTO>();
+	private void populateEnrollmentsList(String txtAddEnrollmentBatch) {
 		String[] enrollmentsA = txtAddEnrollmentBatch.split("\n");
-		String enrollmentStr, fullName, email;
+		String fullName, email;
 		String[] enrollmentStrA;
+		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
+		batchEnrollmentErrors = "";
 		for (int i = 0; i < enrollmentsA.length; i++) {
-			enrollmentStr = enrollmentsA[i];
-			enrollmentStrA = enrollmentStr.split(";");
+			if("".equals(enrollmentsA[i].trim()))
+				continue;
+			enrollmentStrA = enrollmentsA[i].split(";");
 			fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
-			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]); 
-			enrollmentsList.add(createEnrollment(fullName, email));
-			GWT.log(fullName + " - " + email);
+			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]);
+			GWT.log("*** Validating: " + fullName + " - " + email);
+			if(formHelper.isEmailValid(email)){
+				batchEnrollments.add(createEnrollment(fullName, email));
+			} else {
+				batchEnrollmentErrors += enrollmentsA[i] + "\n";
+			}
 		}
-		return enrollmentsList;
 	}
 
 	private EnrollmentRequestTO createEnrollment(String fullName, String email) {
@@ -147,12 +163,19 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 
 	private void saveEnrollments(EnrollmentRequestsTO enrollmentRequests) {
 		LoadingPopup.show();
+		KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída.", AlertType.INFO);
 		clientFactory.getKornellClient().createEnrollments(enrollmentRequests, new Callback<Enrollments>() {
 			@Override
 			public void ok(Enrollments to) {
 				getEnrollments(clientFactory.getCurrentCourseClass().getCourseClass().getUUID());
+				KornellNotification.show("Matrículas feitas com sucesso.");
 			}
 		});
+	}
+
+	@Override
+	public void onModalOkButtonClicked() {
+		saveEnrollments(createEnrollments());		
 	}
 
 	@Override
@@ -163,7 +186,6 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 	}
 	
 	private void updateInstitution() {
-		clientFactory.getInstitution().setAssetsURL(clientFactory.getInstitution().getAssetsURL()+"x");
 		clientFactory.getUserSession().institution(clientFactory.getInstitution().getUUID()).update(clientFactory.getInstitution(),
 				new Callback<Institution>() {
 					@Override
@@ -180,7 +202,7 @@ public class DeanHomePresenter implements DeanHomeView.Presenter {
 	}
 
 
-	private DeanHomeView getView() {
+	private AdminHomeView getView() {
 		return clientFactory.getDeanHomeView();
 	}
 }

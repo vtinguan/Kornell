@@ -7,6 +7,9 @@ import kornell.core.event.EventFactory
 import kornell.core.event.EnrollmentStateChanged
 import java.util.Date
 import kornell.core.entity.EnrollmentState
+import kornell.server.util.EmailService
+import kornell.core.entity.CourseClass
+import kornell.core.entity.Enrollment
 
 object Events {
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
@@ -15,11 +18,11 @@ object Events {
   
   def logActomEntered(event: ActomEntered) = sql"""
     insert into ActomEntered(uuid,courseClass_uuid,person_uuid,actom_key,eventFiredAt)
-    values(${event.getUUID()},
-  		   ${event.getCourseUUID()},
-           ${event.getFromPersonUUID()},
-		   ${event.getActomKey()},
-		   ${event.getEventFiredAt()});
+    values(${event.getUUID},
+  		   ${event.getCourseUUID},
+           ${event.getFromPersonUUID},
+		   ${event.getActomKey},
+		   ${event.getEventFiredAt});
 	""".executeUpdate
 
   /*
@@ -36,16 +39,24 @@ object Events {
 			   ${eventFiredAt},
 	           ${fromPersonUUID},
 	           ${enrollmentUUID},
-	           ${fromState.toString()},
-			   ${toState.toString()});
+	           ${fromState.toString},
+			   ${toState.toString});
 		""".executeUpdate
+		
+	  if(EnrollmentState.preEnrolled.equals(toState) || EnrollmentState.enrolled.equals(toState)){
+	    val enrollment = Enrollments().byUUID(enrollmentUUID).get
+	    val courseClass = CourseClasses(enrollment.getCourseClassUUID).get
+	    val course = Courses.byCourseClassUUID(courseClass.getUUID).get
+	    val institution = Institutions.byUUID(courseClass.getInstitutionUUID).get
+	    EmailService.sendEmailEnrolled(enrollment.getPerson, institution, course)
+	  }	
 	  
-	  sql"""update Enrollment set state = ${toState.toString()} where uuid = ${enrollmentUUID};
+	  sql"""update Enrollment set state = ${toState.toString} where uuid = ${enrollmentUUID};
 		""".executeUpdate
   }
 	
   def logEnrollmentStateChanged(event: EnrollmentStateChanged):Int = 
-    logEnrollmentStateChanged(event.getUUID(),event.getEventFiredAt(),event.getFromPersonUUID(),
-        event.getEnrollmentUUID(),event.getFromState(),event.getToState())
+    logEnrollmentStateChanged(event.getUUID,event.getEventFiredAt,event.getFromPersonUUID,
+        event.getEnrollmentUUID,event.getFromState,event.getToState)
 	
 }
