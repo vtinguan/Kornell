@@ -1,9 +1,8 @@
 package kornell.gui.client.presentation.admin.home.generic;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.commons.lang.math.NumberUtils;
 
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
@@ -27,6 +26,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -53,8 +53,12 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private AdminHomeView.Presenter presenter;
 	final CellTable<Enrollment> table;
+	private List<Enrollment> enrollmentsCurrent;
 	private List<Enrollment> enrollments;
 	private KornellPagination pagination;
+
+	TextBox txtSearch;
+	Button btnSearch;
 	
 	@UiField
 	Button btnAddEnrollment;
@@ -94,10 +98,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		
 		table = new CellTable<Enrollment>();
 		initTable();
-		pagination = new KornellPagination(table, enrollments);
+		pagination = new KornellPagination(table, enrollmentsCurrent);
 		
 		trigger.setTarget("#toggle");
 		collapse.setId("toggle");
+		
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
@@ -193,6 +198,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@UiHandler("btnAddEnrollmentBatch")
 	void doLogin(ClickEvent e) {
+		collapse.hide();
 		presenter.onAddEnrollmentBatchButtonClicked(txtAddEnrollmentBatch.getText());
 	}
 
@@ -203,7 +209,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@Override
 	public void setEnrollmentList(List<Enrollment> enrollmentsIn) {
-		this.enrollments = enrollmentsIn;
+		enrollmentsCurrent = new ArrayList<Enrollment>(enrollmentsIn);
+		enrollments = new ArrayList<Enrollment>(enrollmentsIn);
 		enrollmentsWrapper.clear();
 		
 		VerticalPanel panel = new VerticalPanel();
@@ -214,7 +221,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		separatorBar.addStyleName("fillWidth");
 		
 		final ListBox pageSizeListBox = new ListBox();
-		pageSizeListBox.addItem("1","1");
+		pageSizeListBox.addItem("1");
 		pageSizeListBox.addItem("10");
 		pageSizeListBox.addItem("20");
 		pageSizeListBox.addItem("50");
@@ -229,12 +236,47 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		});		
 		pageSizeListBox.addStyleName("pageSizeListBox");
 		
+		txtSearch = new TextBox();
+		txtSearch.addStyleName("txtSearch");
+		btnSearch = new Button("Pesquisar");
+		btnSearch.addStyleName("btnNotSelected btnSearch");
+		btnSearch.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
+				if(!"".equals(txtSearch.getText())){
+					filterEnrollments();
+				}
+				pagination.setRowData(enrollmentsCurrent);
+				pagination.displayTableData(1);
+			}
+
+			private void filterEnrollments() {
+				Enrollment enrollment;
+				GWT.log("size: "+enrollmentsCurrent.size());
+				for (int i = 0; i < enrollmentsCurrent.size(); i++) {
+			    	enrollment = enrollmentsCurrent.get(i);
+					boolean fullNameMatch = enrollment.getPerson() != null && enrollment.getPerson().getFullName() != null &&
+							enrollment.getPerson().getFullName().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+					boolean emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getEmail() != null &&
+							enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+					if(!fullNameMatch && !emailMatch){
+						enrollmentsCurrent.remove(i);
+						i--;
+					}
+				}
+			}
+		});
+	
+		
 		enrollmentsWrapper.add(separatorBar);
+		enrollmentsWrapper.add(txtSearch);
+		enrollmentsWrapper.add(btnSearch);
 		enrollmentsWrapper.add(pageSizeListBox);
 		enrollmentsWrapper.add(panel);
 		enrollmentsWrapper.add(pagination);
 		
-		pagination.setRowData(enrollments);
+		pagination.setRowData(enrollmentsCurrent);
 		pagination.displayTableData(1);
 	}
 

@@ -56,8 +56,8 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 				Place newPlace = event.getNewPlace();
 				if(newPlace instanceof AdminPlace){
 					southBar.clear();
-					southBar.add(getAdminBarView(newPlace));
-					visible = true;
+					//southBar.add(getAdminBarView(newPlace));
+					visible = false;
 				} else if (newPlace instanceof CourseDetailsPlace
 						|| newPlace instanceof CourseClassPlace) {
 					southBar.clear();

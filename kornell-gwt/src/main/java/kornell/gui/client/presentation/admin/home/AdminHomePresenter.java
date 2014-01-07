@@ -162,8 +162,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private void saveEnrollments(EnrollmentRequestsTO enrollmentRequests) {
-		LoadingPopup.show();
-		KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída.", AlertType.INFO);
+		if(enrollmentRequests.getEnrollmentRequests().size() == 0){
+			KornellNotification.show("Verifique se os nomes/emails dos usuários estão corretos. Nenhuma matrícula encontrada.", AlertType.WARNING);
+			return;
+		}else if(enrollmentRequests.getEnrollmentRequests().size() > 5){
+			KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "+enrollmentRequests.getEnrollmentRequests().size()*2+" segundos).", AlertType.INFO);
+		} else {
+			LoadingPopup.show();
+		}
 		clientFactory.getKornellClient().createEnrollments(enrollmentRequests, new Callback<Enrollments>() {
 			@Override
 			public void ok(Enrollments to) {
