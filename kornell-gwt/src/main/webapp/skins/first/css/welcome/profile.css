@@ -37,7 +37,7 @@
 .profileForm{width:944px;height:100%;margin:0 auto;border-radius:0px 0px 15px 15px;}.profileForm .titlePanel{height:30px;padding-top:20px;}.profileForm .titlePanel .imgTitle{float:left;padding-left:20px;padding-right:20px;}
 .profileForm .titlePanel .lblTitle{font-size:17px;color:#ffffff;float:left;}
 .profileForm .titlePanel .editPanel{float:right;padding-right:30px;}.profileForm .titlePanel .editPanel .lblEdit{color:white;}
-.profileForm .fieldsWrapper{padding-left:100px;}.profileForm .fieldsWrapper .separatorBar{margin-bottom:25px;float:left;}
+.profileForm .fieldsWrapper{padding-left:100px;}.profileForm .fieldsWrapper .profileSeparatorBar{margin-bottom:25px;float:left;}
 .profileForm .privatePanel{float:left;width:80px;}.profileForm .privatePanel div{color:#696769;font-size:12px;line-height:26px;font-weight:bold;}
 .profileForm .privatePanel img{float:left;}
 @media screen and (max-width:962px){.profileFields{width:362px;}}
