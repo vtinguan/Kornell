@@ -54,7 +54,7 @@ object EmailSender {
 
   private def getEmailSession = {
 
-    val username = "eduvem.email.dev@gmail.com"
+    val username = "eduvem.email.test@gmail.com"
     val password = "eduvemtest123"
 
     val props = new Properties()
