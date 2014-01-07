@@ -10,13 +10,6 @@ class CourseRepository(uuid: String) {
 
   def get() = sql"""select * from Course where uuid=$uuid""".first[Course]
 
-  implicit def toCourse(rs: ResultSet): Course = newCourse(
-    rs.getString("uuid"),
-    rs.getString("code"),
-    rs.getString("title"),
-    rs.getString("description"),
-    rs.getString("infoJson"))
-
   def withEnrollment(p: Person) = ???
 
 }

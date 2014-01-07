@@ -66,7 +66,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private FormHelper formHelper;
 	private boolean isEditMode, isCurrentUser, showContactDetails;
 	SimpleDatePicker birthDateXX;
-	
+
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
 	@UiField Form form;
@@ -78,15 +78,15 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField Button btnClose;
 	@UiField Button btnOK;
 	@UiField Button btnCancel;
-	
+
 	private UserInfoTO user;
 	private CourseClassTO currentCourseClass;
 	private KornellFormFieldWrapper email, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
-    private FileUpload fileUpload;
+	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private S3PolicyTO s3Policy;
-	
-	
+
+
 	public GenericProfileView(ClientFactory clientFactory) {
 		this.bus = clientFactory.getEventBus();
 		this.session = clientFactory.getUserSession();
@@ -97,7 +97,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
-		
+
 		// i18n
 		btnEdit.setText("Editar".toUpperCase());
 		btnClose.setText("Fechar".toUpperCase());
@@ -106,28 +106,27 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 		imgTitle.setUrl(IMAGE_PATH + "course.png");
 		lblTitle.setText("Perfil");
-		
+
 		showContactDetails = clientFactory.getInstitution().isDemandsPersonContactDetails();
 
-		session.getS3PolicyTO(new Callback<S3PolicyTO>() {
-			
+		/*session.getS3PolicyTO(new Callback<S3PolicyTO>() {
 			@Override
 			public void ok(S3PolicyTO to) {
 				s3Policy = to;
-
-				initData();
-				bus.addHandler(PlaceChangeEvent.TYPE,
-						new PlaceChangeEvent.Handler() {
-							@Override
-							public void onPlaceChange(PlaceChangeEvent event) {
-								if(event.getNewPlace() instanceof ProfilePlace){							
-									 initData();
-								}
-							}});
 			}
-		});
+		});*/
+
+		initData();
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				if(event.getNewPlace() instanceof ProfilePlace){							
+					initData();
+				}
+			}});
 	}
-	
+
 	private void initData() {
 		isCurrentUser = session.getUserInfo().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
@@ -172,7 +171,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 				postalCode.setError("Insira seu código postal.");
 			}
 		}
-		
+
 		return !checkErrors();
 	}
 
@@ -180,13 +179,14 @@ public class GenericProfileView extends Composite implements ProfileView {
 	void doOK(ClickEvent e) { 
 		btnOK.setEnabled(false);
 		formHelper.clearErrors(fields);
-		
+
 		if(isEditMode && validateFields()){
 			LoadingPopup.show();
 			session.updateUser(getUserInfoFromForm(), new Callback<UserInfoTO>(){
 				@Override
-				public void ok(UserInfoTO user){
-					session.setCurrentUser(user);
+				public void ok(UserInfoTO userInfo){
+					session.setCurrentUser(userInfo);
+					user = userInfo;
 					LoadingPopup.hide();
 					KornellNotification.show("Alterações salvas com sucesso!");
 					btnOK.setEnabled(true);
@@ -207,7 +207,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		person.setTitle(position.getFieldPersistText());
 		person.setSex(sex.getFieldPersistText());
 		person.setBirthDate(formHelper.getDateFromString(birthDate.getFieldPersistText()));
-		
+
 		if(showContactDetails){
 			person.setTelephone(telephone.getFieldPersistText());
 			person.setCountry(country.getFieldPersistText());
@@ -217,7 +217,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 			person.setAddressLine2(addressLine2.getFieldPersistText());
 			person.setPostalCode(postalCode.getFieldPersistText());
 		}
-		
+
 		user.setPerson(person);
 		return user;
 	}
@@ -271,47 +271,47 @@ public class GenericProfileView extends Composite implements ProfileView {
 			}
 
 			//TODO: remove comment
-    		//profileFields.add(getPictureUploadFormPanel());
-			
-    		// the email is shown only on edit mode and on the read-only view of the profile's owner
-			if(isEditMode || isCurrentUser){
-	    		email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), false);
-	    		fields.add(email);
-	    		profileFields.add(email);
+			//profileFields.add(getPictureUploadFormPanel());
+
+			// the email is shown only to the current user
+			if(isCurrentUser){
+				email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), false);
+				fields.add(email);
+				profileFields.add(email);
 				profileFields.add(getPrivatePanel());
 			}
-			
-    		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), false);
-    		fields.add(fullName);
-    		profileFields.add(fullName);
-    		
-    		company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
-    		fields.add(company);
-    		profileFields.add(company);
-    		
-    		position = new KornellFormFieldWrapper("Cargo", formHelper.createTextBoxFormField(user.getPerson().getTitle()), isEditMode);
-    		fields.add(position);
-    		profileFields.add(position);
 
-			if(isEditMode || isCurrentUser){
+			fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), false);
+			fields.add(fullName);
+			profileFields.add(fullName);
+
+			company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
+			fields.add(company);
+			profileFields.add(company);
+
+			position = new KornellFormFieldWrapper("Cargo", formHelper.createTextBoxFormField(user.getPerson().getTitle()), isEditMode);
+			fields.add(position);
+			profileFields.add(position);
+
+			if(isCurrentUser){
 				final ListBox sexes = formHelper.getSexList();
 				sexes.setSelectedValue(user.getPerson().getSex());
-	    		sex = new KornellFormFieldWrapper("Sexo", new ListBoxFormField(sexes), isEditMode);
-	    		fields.add(sex);
-	    		profileFields.add(sex);
-	    		profileFields.add(getPrivatePanel());
-	
-	    		SimpleDatePicker datePicker = new SimpleDatePicker();
-	    		if(isEditMode || isCurrentUser){
-	    			datePicker.setFields(user.getPerson().getBirthDate());
-	    		}
-	    		birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
-	    		fields.add(birthDate);
-	    		profileFields.add(birthDate);
-	    		profileFields.add(getPrivatePanel());
+				sex = new KornellFormFieldWrapper("Sexo", new ListBoxFormField(sexes), isEditMode);
+				fields.add(sex);
+				profileFields.add(sex);
+				profileFields.add(getPrivatePanel());
+
+				SimpleDatePicker datePicker = new SimpleDatePicker();
+				if(isEditMode || isCurrentUser){
+					datePicker.setFields(user.getPerson().getBirthDate());
+				}
+				birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
+				fields.add(birthDate);
+				profileFields.add(birthDate);
+				profileFields.add(getPrivatePanel());
 			}
-			
-			if((isEditMode  || isCurrentUser) && showContactDetails){
+
+			if(isCurrentUser && showContactDetails){
 				displayContactDetails();
 			}
 		}
@@ -323,11 +323,11 @@ public class GenericProfileView extends Composite implements ProfileView {
 		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		formPanel.setMethod(FormPanel.METHOD_POST);
 		formPanel.setAction("http://"+ s3Policy.getBucketName() +".s3.amazonaws.com/");
-		
+
 		FlowPanel fileUploadWrapper = new FlowPanel();
 		fileUploadWrapper.addStyleName("fileUploadWrapper");
 		fileUploadWrapper.add(new Image(IMAGE_PATH + "profilePic.png"));   
-		
+
 		fileUploadWrapper.add(new Hidden("key", s3Policy.getKey()+"${filename}"));
 		fileUploadWrapper.add(new Hidden("acl", "public-read"));
 		fileUploadWrapper.add(new Hidden("success_action_redirect", s3Policy.getSuccessActionRedirect()));
@@ -337,43 +337,42 @@ public class GenericProfileView extends Composite implements ProfileView {
 		fileUploadWrapper.add(new Hidden("AWSAccessKeyId", s3Policy.getAWSAccessKeyId()));
 		fileUploadWrapper.add(new Hidden("Policy", s3Policy.getPolicy()));
 		fileUploadWrapper.add(new Hidden("Signature", s3Policy.getSignature()));		    
-		
+
 		fileUpload = new FileUpload();
 		fileUpload.setName("file");
 		fileUploadWrapper.add(fileUpload);
-		
+
 		SubmitButton changeImageButton = new SubmitButton();
 		changeImageButton.setName("submit");
 		changeImageButton.setText("TROCAR IMAGEM");
 		changeImageButton.setStyleName("btnAction btnStandard");
 		fileUploadWrapper.add(changeImageButton);
-		
+
 		formPanel.addSubmitHandler(new FormPanel.SubmitHandler() {
-		  public void onSubmit(SubmitEvent event) {
-			//TODO: remove comments
-			  //if("".equals(fileUpload.getFilename())){
-				  event.cancel();
-			  //}
-		  }
+			public void onSubmit(SubmitEvent event) {
+				if("".equals(fileUpload.getFilename())){
+					event.cancel();
+				}
+			}
 		});
 		formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-		  public void onSubmitComplete(SubmitCompleteEvent event) {
-			KornellNotification.show(event.getResults());
-		  }
+			public void onSubmitComplete(SubmitCompleteEvent event) {
+				KornellNotification.show(event.getResults());
+			}
 		});
-		
+
 		formPanel.setWidget(fileUploadWrapper);
 		return formPanel;
 	}
 
 	private void displayContactDetails() {
 		profileFields.add(getImageSeparator());
-		
+
 		telephone = new KornellFormFieldWrapper("Telefone", formHelper.createTextBoxFormField(user.getPerson().getTelephone()), isEditMode);
 		fields.add(telephone);
 		profileFields.add(telephone);
 		profileFields.add(getPrivatePanel());
-		
+
 		final ListBox countries = formHelper.getCountriesList();
 		if(user.getPerson().getCountry() == null){
 			countries.setSelectedValue("BR");
@@ -384,9 +383,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 			@Override
 			public void onChange(ChangeEvent event) {
 				if("BR".equals(countries.getValue())){
-		    		state.initData(new ListBoxFormField(formHelper.getBrazilianStatesList()));
+					state.initData(new ListBoxFormField(formHelper.getBrazilianStatesList()));
 				} else {
-		    		state.initData(new TextBoxFormField(new TextBox()));
+					state.initData(new TextBoxFormField(new TextBox()));
 				}
 			}
 		});
@@ -407,22 +406,22 @@ public class GenericProfileView extends Composite implements ProfileView {
 		fields.add(state);
 		profileFields.add(state);
 		profileFields.add(getPrivatePanel());
-		
+
 		city = new KornellFormFieldWrapper("Cidade", formHelper.createTextBoxFormField(user.getPerson().getCity()), isEditMode);
 		fields.add(city);
 		profileFields.add(city);
 		profileFields.add(getPrivatePanel());
-		
+
 		addressLine1 = new KornellFormFieldWrapper("Endereço Linha 1", formHelper.createTextBoxFormField(user.getPerson().getAddressLine1()), isEditMode);
 		fields.add(addressLine1);
 		profileFields.add(addressLine1);
 		profileFields.add(getPrivatePanel());
-		
+
 		addressLine2 = new KornellFormFieldWrapper("Endereço Linha 2", formHelper.createTextBoxFormField(user.getPerson().getAddressLine2()), isEditMode);
 		fields.add(addressLine2);
 		profileFields.add(addressLine2);
 		profileFields.add(getPrivatePanel());
-		
+
 		postalCode = new KornellFormFieldWrapper("Código Postal", formHelper.createTextBoxFormField(user.getPerson().getPostalCode()), isEditMode);
 		fields.add(postalCode);
 		profileFields.add(postalCode);
@@ -433,7 +432,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	public void setPresenter(Presenter presenter) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	private FlowPanel getPrivatePanel(){
 		FlowPanel privatePanel = new FlowPanel();
 		privatePanel.addStyleName("privatePanel");
@@ -441,7 +440,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		privatePanel.add(new Label("Privado"));
 		return privatePanel;
 	}
-	
+
 	private Image getImageSeparator(){
 		Image image = new Image("skins/first/icons/profile/separatorBar.png");
 		image.addStyleName("profileSeparatorBar");

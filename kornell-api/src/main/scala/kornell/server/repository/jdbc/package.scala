@@ -9,6 +9,7 @@ import kornell.server.repository.TOs._
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.CourseClass
 import kornell.core.to.CourseClassTO
+import kornell.core.entity.Course
 
 package object jdbc {
   //type UUID = String
@@ -17,7 +18,13 @@ package object jdbc {
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
         r.getString("courseVersion_uuid"), r.getString("institution_uuid")) 
-    
+
+  implicit def toCourse(rs: ResultSet): Course = newCourse(
+    rs.getString("uuid"),
+    rs.getString("code"),
+    rs.getString("title"),
+    rs.getString("description"),
+    rs.getString("infoJson"))    
   
   implicit def toCourseClassTO(r: ResultSet): CourseClassTO = 
     TOs.newCourseClassTO(   

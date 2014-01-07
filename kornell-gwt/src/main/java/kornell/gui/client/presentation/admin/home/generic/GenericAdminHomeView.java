@@ -3,13 +3,18 @@ package kornell.gui.client.presentation.admin.home.generic;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
-import kornell.gui.client.presentation.admin.home.DeanHomeView;
+import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.cell.client.ActionCell;
@@ -19,6 +24,8 @@ import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -32,19 +39,23 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
-public class GenericDeanHomeView extends Composite implements DeanHomeView {
+public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
-	interface MyUiBinder extends UiBinder<Widget, GenericDeanHomeView> {
+	interface MyUiBinder extends UiBinder<Widget, GenericAdminHomeView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private DeanHomeView.Presenter presenter;
-
+	private AdminHomeView.Presenter presenter;
+	final CellTable<Enrollment> table;
+	private List<Enrollment> enrollments;
+	private KornellPagination pagination;
+	
 	@UiField
 	Button btnAddEnrollment;
 	@UiField
@@ -63,47 +74,38 @@ public class GenericDeanHomeView extends Composite implements DeanHomeView {
 	CollapseTrigger trigger;
 	@UiField
 	Collapse collapse;
+	
+
+	@UiField
+	Modal errorModal;
+	@UiField
+	TextArea txtModalError;
+	@UiField
+	Button btnModalOK;
+	@UiField
+	Button btnModalCancel;
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
 
 	// TODO i18n xml
-	public GenericDeanHomeView() {
+	public GenericAdminHomeView() {
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		table = new CellTable<Enrollment>();
+		initTable();
+		pagination = new KornellPagination(table, enrollments);
+		
 		trigger.setTarget("#toggle");
 		collapse.setId("toggle");
 
+		btnModalOK.setText("OK".toUpperCase());
+		btnModalCancel.setText("Cancelar".toUpperCase());
+		txtModalError.setEnabled(false);
 	}
 
-	@Override
-	public void setPresenter(Presenter presenter) {
-		this.presenter = presenter;
-	}
-
-
-	@UiHandler("btnGoToCourse")
-	void onGoToCourseButtonClicked(ClickEvent e) {
-		presenter.onGoToCourseButtonClicked();
-	}
-
-
-	@UiHandler("btnAddEnrollment")
-	void onAddEnrollmentButtonClicked(ClickEvent e) {
-		presenter.onAddEnrollmentButtonClicked(txtFullName.getText(), txtEmail.getText());
-	}
-
-
-	@UiHandler("btnAddEnrollmentBatch")
-	void doLogin(ClickEvent e) {
-		presenter.onAddEnrollmentBatchButtonClicked(txtAddEnrollmentBatch.getText());
-	}
-
-	@Override
-	public void setEnrollmentList(List<Enrollment> enrollments) {
-		enrollmentsWrapper.clear();
+	private void initTable() {
 	    
-		// Create a CellTable.
-		final CellTable<Enrollment> table = new CellTable<Enrollment>();
 		table.addStyleName("enrollmentsCellTable");
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 				
@@ -156,22 +158,89 @@ public class GenericDeanHomeView extends Composite implements DeanHomeView {
 						}
 					}
 				});
+	}
 
-		// Set the total row count. This isn't strictly necessary,
-		// but it affects paging calculations, so its good habit to
-		// keep the row count up to date.
-		table.setRowCount(enrollments.size(), true);
+	@Override
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
+	}
 
-		// Push the data into the widget.
-		table.setRowData(0, enrollments);
 
+	@UiHandler("btnModalOK")
+	void onModalOkButtonClicked(ClickEvent e) {
+		presenter.onModalOkButtonClicked();
+    	errorModal.hide();
+	}
+
+
+	@UiHandler("btnModalCancel")
+	void onModalCancelButtonClicked(ClickEvent e) {
+    	errorModal.hide();
+	}
+
+
+	@UiHandler("btnGoToCourse")
+	void onGoToCourseButtonClicked(ClickEvent e) {
+		presenter.onGoToCourseButtonClicked();
+	}
+
+
+	@UiHandler("btnAddEnrollment")
+	void onAddEnrollmentButtonClicked(ClickEvent e) {
+		presenter.onAddEnrollmentButtonClicked(txtFullName.getText(), txtEmail.getText());
+	}
+
+
+	@UiHandler("btnAddEnrollmentBatch")
+	void doLogin(ClickEvent e) {
+		presenter.onAddEnrollmentBatchButtonClicked(txtAddEnrollmentBatch.getText());
+	}
+
+	@Override
+	public void setModalErrors(String errors) {
+		txtModalError.setText(errors);
+	}
+
+	@Override
+	public void setEnrollmentList(List<Enrollment> enrollmentsIn) {
+		this.enrollments = enrollmentsIn;
+		enrollmentsWrapper.clear();
+		
 		VerticalPanel panel = new VerticalPanel();
-		panel.setBorderWidth(1);
 		panel.setWidth("400");
 		panel.add(table);
-
+		
+		Image separatorBar = new Image("skins/first/icons/profile/separatorBar.png");
+		separatorBar.addStyleName("fillWidth");
+		
+		final ListBox pageSizeListBox = new ListBox();
+		pageSizeListBox.addItem("1","1");
+		pageSizeListBox.addItem("10");
+		pageSizeListBox.addItem("20");
+		pageSizeListBox.addItem("50");
+		pageSizeListBox.addItem("100");
+		pageSizeListBox.setSelectedValue(""+pagination.getPageSize());
+		pageSizeListBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				if(pageSizeListBox.getValue().matches("[0-9]*"))
+					pagination.setPageSize(Integer.parseInt(pageSizeListBox.getValue()));
+			}
+		});		
+		pageSizeListBox.addStyleName("pageSizeListBox");
+		
+		enrollmentsWrapper.add(separatorBar);
+		enrollmentsWrapper.add(pageSizeListBox);
 		enrollmentsWrapper.add(panel);
+		enrollmentsWrapper.add(pagination);
+		
+		pagination.setRowData(enrollments);
+		pagination.displayTableData(1);
+	}
 
+	@Override
+	public void showModal(){
+    	errorModal.show();
 	}
 
 	private Delegate<Enrollment> getStateChangeDelegate(final EnrollmentState state) {

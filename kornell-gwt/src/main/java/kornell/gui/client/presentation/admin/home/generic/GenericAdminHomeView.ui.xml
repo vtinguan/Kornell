@@ -25,6 +25,17 @@
 		<g:FlowPanel ui:field="enrollmentsWrapper">
 		</g:FlowPanel>
 		<g:Button ui:field="btnGoToCourse" addStyleNames="btnAction">Ir para o curso</g:Button>
+		<b:Modal ui:field="errorModal" title="Erros ao inserir matrículas" backdrop="STATIC" addStyleNames="forgotPasswordModal">
+			<g:FlowPanel>
+				<g:Label>As seguintes linhas contém erros:</g:Label>
+				<b:TextArea ui:field="txtModalError"></b:TextArea>
+				<g:Label>Deseja ignorar essas linhas e continuar?</g:Label>
+				<g:FlowPanel addStyleNames="standardButtonBar">
+					<g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
+					<g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
+				</g:FlowPanel>
+			</g:FlowPanel>
+		</b:Modal>
 	</g:FlowPanel>
 
 </ui:UiBinder>

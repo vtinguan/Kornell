@@ -21,7 +21,7 @@ class EventsResource {
   @Path("enrollmentStateChanged")
   @Consumes(Array(EnrollmentStateChanged.TYPE))
   def putEnrollmentStateChanged(event:EnrollmentStateChanged){
-	 Events.logEnrollmentStateChanged(event)	
+     Events.logEnrollmentStateChanged(event)	
   }
 	
 }

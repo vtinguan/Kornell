@@ -178,13 +178,5 @@ public class UserSession extends KornellClient {
 	public boolean isDean() {
 		return hasRole(RoleType.dean, institutionUUID);
 	}
-	
-	public boolean isRegistered(){
-		for (Registration registration : currentUser.getRegistrationsTO().getRegistrations()) {
-			if(registration.getInstitutionUUID().equals(institutionUUID))
-				return true;
-		}
-		return false;
-	}
 
 }

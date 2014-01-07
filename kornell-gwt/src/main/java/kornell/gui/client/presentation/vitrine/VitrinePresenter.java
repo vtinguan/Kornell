@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.Callback;
+import kornell.core.entity.Registration;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
-import kornell.gui.client.presentation.admin.home.DeanHomePlace;
+import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
@@ -85,8 +86,12 @@ public class VitrinePresenter implements VitrineView.Presenter {
 								clientFactory.setDefaultPlace(new CourseClassPlace(courseClassTmp.getCourseClass().getUUID()));
 							}
 						}
-						
-						if(!clientFactory.getUserSession().isRegistered()){
+						boolean isRegistered = false;
+						for (Registration registration : clientFactory.getUserSession().getUserInfo().getRegistrationsTO().getRegistrations()) {
+							if(registration.getInstitutionUUID().equals(clientFactory.getInstitution().getUUID()))
+								isRegistered = true;
+						}
+						if(!isRegistered){
 							view.setMessage("Usuário não registrado nesta instituição.");
 							view.showMessage();
 							ClientProperties.remove("Authorization");
@@ -101,7 +106,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 								//TODO what if the user visited a class from another institution?
 								//place = clientFactory.getHistoryMapper().getPlace(user.getLastPlaceVisited());
 								if(clientFactory.getUserSession().isDean()){
-									clientFactory.getPlaceController().goTo(new DeanHomePlace());
+									clientFactory.getPlaceController().goTo(new AdminHomePlace());
 								} else {
 									clientFactory.getPlaceController().goTo(clientFactory.getDefaultPlace());
 								}

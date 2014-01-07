@@ -1,9 +1,7 @@
 package kornell.server.repository.service
 
 import java.util.Date
-
 import scala.collection.JavaConverters.asScalaBufferConverter
-
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.Person
@@ -19,15 +17,21 @@ import kornell.server.repository.jdbc.Enrollments
 import kornell.server.repository.jdbc.Events
 import kornell.server.repository.jdbc.People
 import kornell.server.repository.jdbc.PersonRepository
+import kornell.server.util.EmailService
+import kornell.server.repository.jdbc.Institutions
+import kornell.core.to.RegistrationRequestTO
+import kornell.server.repository.jdbc.Courses
+import kornell.core.entity.Institution
+import scala.collection.mutable.ListBuffer
 
 
 object RegistrationEnrollmentService {
   
-    private def main(args: Array[String]) {
-      println(UUID.random)
-      println(UUID.random)
-      println(UUID.random)
-    }
+  private def main(args: Array[String]) {
+    println(UUID.random)
+    println(UUID.random)
+    println(UUID.random)
+  }
 
   def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) = 
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
@@ -42,31 +46,34 @@ object RegistrationEnrollmentService {
     val personRepo = People.createPerson(enrollmentRequest.getEmail, enrollmentRequest.getFullName)
     personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
     createEnrollment(personRepo.get.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
-    sendYouWerePreEnrolledEmail
   }
 
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) =
     Enrollments().byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
-      case Some(enrollment) => deanUpdateExistingEnrollment(enrollment, dean)
+      case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean)
       case None => createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
     }
   
-  private def deanUpdateExistingEnrollment(enrollment: Enrollment, dean: Person) = {
-    if(EnrollmentState.cancelled.equals(enrollment.getState())){
-    	Events.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID(), enrollment.getUUID(), enrollment.getState(), EnrollmentState.preEnrolled)
-    	sendYouWerePreEnrolledEmail
+  private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person) = {
+    if(EnrollmentState.cancelled.equals(enrollment.getState)){
+    	Events.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.preEnrolled)
+	    val course = Courses.byCourseClassUUID(enrollment.getCourseClassUUID).get
+	    val institution = Institutions.byUUID(institutionUUID).get
+	    EmailService.sendEmailEnrolled(person, institution, course)
     }
     else if(EnrollmentState.requested.equals(enrollment.getState()) || EnrollmentState.denied.equals(enrollment.getState())) {
-    	Events.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID(), enrollment.getUUID(), enrollment.getState(), EnrollmentState.enrolled)
-    	sendYouWereEnrolledEmail
+    	Events.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
+	    val course = Courses.byCourseClassUUID(enrollment.getCourseClassUUID).get
+	    val institution = Institutions.byUUID(institutionUUID).get
+	    EmailService.sendEmailEnrolled(person, institution, course)
     }
   }
 
-  def userRequestRegistration(regReq: kornell.core.to.RegistrationRequestTO): UserInfoTO = {
-    val email = regReq.getEmail()
-    val institutionUUID = regReq.getInstitutionUUID()
-    val password = regReq.getPassword()
-    val fullName = regReq.getFullName()
+  def userRequestRegistration(regReq: RegistrationRequestTO): UserInfoTO = {
+    val email = regReq.getEmail
+    val institutionUUID = regReq.getInstitutionUUID
+    val password = regReq.getPassword
+    val fullName = regReq.getFullName
 
     Auth.getPersonByEmail(email) match {
       case Some(one) => userUpdateExistingPerson(email, fullName, password, one)
@@ -91,7 +98,7 @@ object RegistrationEnrollmentService {
   }
 
   private def userUpdateExistingPerson(email: String, fullName: String, password: String, personOld: Person) = {
-    val personRepo = PersonRepository(personOld.getUUID())
+    val personRepo = PersonRepository(personOld.getUUID)
 
     //update the user's info
     val person = Entities.newPerson
@@ -120,7 +127,4 @@ object RegistrationEnrollmentService {
     		    UUID.random, new Date, enrollerUUID, 
     		    enrollment.getUUID, enrollment.getState, enrollmentState)
   }
-  
-  private def sendYouWerePreEnrolledEmail = ???//EmailSender.sendEmail(user.getPerson(), Institutions.byUUID(institutionUUID).get, confirmationLink)
-  private def sendYouWereEnrolledEmail = ???
 }
