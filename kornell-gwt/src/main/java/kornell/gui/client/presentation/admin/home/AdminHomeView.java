@@ -15,6 +15,7 @@ public interface AdminHomeView extends IsWidget {
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);
 		void onGoToCourseButtonClicked();
 		void onModalOkButtonClicked();
+		void onUserClicked(String uuid);
 	}
 
 	void setPresenter(Presenter presenter);

@@ -188,4 +188,25 @@ public interface KornellConstants extends Constants {
 	String november();
 	@DefaultStringValue("December")
 	String december();
+	
+
+
+	
+
+	/**
+	 * 
+	 * EnrollmentState
+	 */
+	@DefaultStringValue("notEnrolled")
+	String notEnrolled();
+	@DefaultStringValue("preEnrolled")
+	String preEnrolled();
+	@DefaultStringValue("enrolled")
+	String enrolled();
+	@DefaultStringValue("requested")
+	String requested();
+	@DefaultStringValue("denied")
+	String denied();
+	@DefaultStringValue("cancelled")
+	String cancelled();
 }

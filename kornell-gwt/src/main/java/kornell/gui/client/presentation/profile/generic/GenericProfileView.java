@@ -5,7 +5,9 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.UserSession;
+import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
+import kornell.core.entity.Registration;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.S3PolicyTO;
 import kornell.core.to.UserInfoTO;
@@ -62,10 +64,10 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private PlaceController placeCtrl;
 	private final EventBus bus;
 	private Place defaultPlace;
+	private Institution institution;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
-	private boolean isEditMode, isCurrentUser, showContactDetails;
-	SimpleDatePicker birthDateXX;
+	private boolean isEditMode, isCurrentUser, isAdmin, showContactDetails;
 
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
@@ -94,6 +96,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		this.placeCtrl = clientFactory.getPlaceController();
 		this.currentCourseClass = clientFactory.getCurrentCourseClass();
 		this.defaultPlace = clientFactory.getDefaultPlace();
+		this.institution = clientFactory.getInstitution();
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
@@ -130,6 +133,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private void initData() {
 		isCurrentUser = session.getUserInfo().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
+		isAdmin = session.isDean();
+		form.addStyleName("shy");
 		session.getUser(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID(), new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO to) {
@@ -185,7 +190,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 			session.updateUser(getUserInfoFromForm(), new Callback<UserInfoTO>(){
 				@Override
 				public void ok(UserInfoTO userInfo){
-					session.setCurrentUser(userInfo);
+					if(isCurrentUser){
+						session.setCurrentUser(userInfo);
+					}
 					user = userInfo;
 					LoadingPopup.hide();
 					KornellNotification.show("Alterações salvas com sucesso!");
@@ -196,6 +203,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 					placeCtrl.goTo(defaultPlace);
 				}
 			});
+		} else {
+			btnOK.setEnabled(true);
 		}
 	}
 
@@ -259,62 +268,74 @@ public class GenericProfileView extends Composite implements ProfileView {
 		btnOK.setVisible(isEditMode);
 		btnCancel.setVisible(isEditMode);
 		btnClose.setVisible(!isEditMode);
-		btnEdit.setVisible(!isEditMode && isCurrentUser);
+		btnEdit.setVisible(!isEditMode && (isCurrentUser || isAdmin));
 
 		profileFields.clear();
 		if(user == null){
 			KornellNotification.show("Usuário não encontrado.", AlertType.ERROR);
-		} else {
+			return;
+		} 
+		
 
-			if(isEditMode && showContactDetails && session.getUserInfo().getPerson().getCity() == null){
-				KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO);
-			}
-
-			//TODO: remove comment
-			//profileFields.add(getPictureUploadFormPanel());
-
-			// the email is shown only to the current user
-			if(isCurrentUser){
-				email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), false);
-				fields.add(email);
-				profileFields.add(email);
-				profileFields.add(getPrivatePanel());
-			}
-
-			fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), false);
-			fields.add(fullName);
-			profileFields.add(fullName);
-
-			company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
-			fields.add(company);
-			profileFields.add(company);
-
-			position = new KornellFormFieldWrapper("Cargo", formHelper.createTextBoxFormField(user.getPerson().getTitle()), isEditMode);
-			fields.add(position);
-			profileFields.add(position);
-
-			if(isCurrentUser){
-				final ListBox sexes = formHelper.getSexList();
-				sexes.setSelectedValue(user.getPerson().getSex());
-				sex = new KornellFormFieldWrapper("Sexo", new ListBoxFormField(sexes), isEditMode);
-				fields.add(sex);
-				profileFields.add(sex);
-				profileFields.add(getPrivatePanel());
-
-				SimpleDatePicker datePicker = new SimpleDatePicker();
-				if(isEditMode || isCurrentUser){
-					datePicker.setFields(user.getPerson().getBirthDate());
-				}
-				birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
-				fields.add(birthDate);
-				profileFields.add(birthDate);
-				profileFields.add(getPrivatePanel());
-			}
-
-			if(isCurrentUser && showContactDetails){
-				displayContactDetails();
-			}
+		boolean isRegistered = false;
+		for (Registration registration : user.getRegistrationsTO().getRegistrations()) {
+			if(registration.getInstitutionUUID().equals(institution.getUUID()))
+				isRegistered = true;
 		}
+		if(!isRegistered){
+			KornellNotification.show("Este usuário não está registrado nesta instituição.", AlertType.ERROR);
+			return;
+		}
+		
+		if(isEditMode && showContactDetails && session.getUserInfo().getPerson().getCity() == null){
+			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO);
+		}
+
+		//TODO: remove comment
+		//profileFields.add(getPictureUploadFormPanel());
+
+		// the email is shown only to the current user or the admin
+		if(isCurrentUser || isAdmin){
+			email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), isEditMode && isAdmin);
+			fields.add(email);
+			profileFields.add(email);
+			profileFields.add(getPrivatePanel());
+		}
+
+		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode && isAdmin);
+		fields.add(fullName);
+		profileFields.add(fullName);
+
+		company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
+		fields.add(company);
+		profileFields.add(company);
+
+		position = new KornellFormFieldWrapper("Cargo", formHelper.createTextBoxFormField(user.getPerson().getTitle()), isEditMode);
+		fields.add(position);
+		profileFields.add(position);
+
+		if(isCurrentUser || isAdmin){
+			final ListBox sexes = formHelper.getSexList();
+			sexes.setSelectedValue(user.getPerson().getSex());
+			sex = new KornellFormFieldWrapper("Sexo", new ListBoxFormField(sexes), isEditMode);
+			fields.add(sex);
+			profileFields.add(sex);
+			profileFields.add(getPrivatePanel());
+
+			SimpleDatePicker datePicker = new SimpleDatePicker();
+			if(isEditMode || isCurrentUser || isAdmin){
+				datePicker.setFields(user.getPerson().getBirthDate());
+			}
+			birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
+			fields.add(birthDate);
+			profileFields.add(birthDate);
+			profileFields.add(getPrivatePanel());
+		}
+
+		if((isCurrentUser || isAdmin)&& showContactDetails){
+			displayContactDetails();
+		}
+	
 		form.removeStyleName("shy");
 	}
 
@@ -374,7 +395,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		profileFields.add(getPrivatePanel());
 
 		final ListBox countries = formHelper.getCountriesList();
-		if(user.getPerson().getCountry() == null){
+		if(isEditMode && user.getPerson().getCountry() == null){
 			countries.setSelectedValue("BR");
 		} else {
 			countries.setSelectedValue(user.getPerson().getCountry());
