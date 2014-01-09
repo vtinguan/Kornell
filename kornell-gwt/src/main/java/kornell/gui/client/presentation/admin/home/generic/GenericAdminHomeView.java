@@ -1,11 +1,14 @@
 package kornell.gui.client.presentation.admin.home.generic;
 
+import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.uidget.KornellPagination;
 
@@ -18,15 +21,25 @@ import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.Constants.DefaultStringValue;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -51,14 +64,18 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private AdminHomeView.Presenter presenter;
 	final CellTable<Enrollment> table;
 	private List<Enrollment> enrollmentsCurrent;
 	private List<Enrollment> enrollments;
 	private KornellPagination pagination;
 
-	TextBox txtSearch;
-	Button btnSearch;
+	private TextBox txtSearch;
+	private Button btnSearch;
+	private String currentSearch;
+	
+	private boolean forbidProfileView;
 	
 	@UiField
 	Button btnAddEnrollment;
@@ -131,7 +148,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override	
 			public String getValue(Enrollment enrollment) {
-				return enrollment.getState().toString();
+				return getEnrollmentStateAsText(enrollment.getState());
 			}
 		}, "Estado da Matrícula");
 	
@@ -155,12 +172,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		selectionModel
 				.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 					public void onSelectionChange(SelectionChangeEvent event) {
-						Enrollment selected = selectionModel
-								.getSelectedObject();
-						if (selected != null) {
-							// Window.alert("Você selecionou o " +
-							// selected.getPerson().getFullName());
-						}
+			        	if(forbidProfileView){
+				        	forbidProfileView = false;
+			        	} else {
+							Enrollment selected = selectionModel.getSelectedObject();
+							if (selected != null) {
+								presenter.onUserClicked(selected.getPerson().getUUID());
+							}
+			        	}
 					}
 				});
 	}
@@ -238,35 +257,35 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		
 		txtSearch = new TextBox();
 		txtSearch.addStyleName("txtSearch");
+		txtSearch.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				filterEnrollments();
+			}
+		});
+		txtSearch.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				filterEnrollments();
+			}
+		});
+		txtSearch.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				filterEnrollments();
+				
+			}
+		});
 		btnSearch = new Button("Pesquisar");
 		btnSearch.addStyleName("btnNotSelected btnSearch");
 		btnSearch.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
-				if(!"".equals(txtSearch.getText())){
-					filterEnrollments();
-				}
-				pagination.setRowData(enrollmentsCurrent);
-				pagination.displayTableData(1);
-			}
-
-			private void filterEnrollments() {
-				Enrollment enrollment;
-				GWT.log("size: "+enrollmentsCurrent.size());
-				for (int i = 0; i < enrollmentsCurrent.size(); i++) {
-			    	enrollment = enrollmentsCurrent.get(i);
-					boolean fullNameMatch = enrollment.getPerson() != null && enrollment.getPerson().getFullName() != null &&
-							enrollment.getPerson().getFullName().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-					boolean emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getEmail() != null &&
-							enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-					if(!fullNameMatch && !emailMatch){
-						enrollmentsCurrent.remove(i);
-						i--;
-					}
-				}
+				filterEnrollments();
 			}
 		});
+	
 	
 		
 		enrollmentsWrapper.add(separatorBar);
@@ -280,6 +299,48 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		pagination.displayTableData(1);
 	}
 
+	private void filterEnrollments() {
+		if(!txtSearch.getText().equals(currentSearch)){
+			enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
+			Enrollment enrollment;
+			GWT.log("size: "+enrollmentsCurrent.size());
+			for (int i = 0; i < enrollmentsCurrent.size(); i++) {
+		    	enrollment = enrollmentsCurrent.get(i);
+				boolean fullNameMatch = enrollment.getPerson() != null && enrollment.getPerson().getFullName() != null &&
+						enrollment.getPerson().getFullName().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+				boolean emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getEmail() != null &&
+						enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+				boolean enrollmentStateMatch = enrollment.getPerson() != null && enrollment.getState() != null &&
+						getEnrollmentStateAsText(enrollment.getState()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+				if(!fullNameMatch && !emailMatch && !enrollmentStateMatch){
+					enrollmentsCurrent.remove(i);
+					i--;
+				}
+			}
+			pagination.setRowData(enrollmentsCurrent);
+			pagination.displayTableData(1);
+		}
+	}
+	
+	private String getEnrollmentStateAsText(EnrollmentState state){
+		switch (state) {
+		case notEnrolled:
+			return constants.notEnrolled();
+		case preEnrolled:
+			return constants.preEnrolled();
+		case enrolled:
+			return constants.enrolled();
+		case requested:
+			return constants.requested();
+		case denied:
+			return constants.denied();
+		case cancelled:
+			return constants.cancelled();
+		default:
+			return "";
+		}
+	}
+
 	@Override
 	public void showModal(){
     	errorModal.show();
@@ -289,17 +350,45 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		return new Delegate<Enrollment>() {
 	        @Override
 	        public void execute(Enrollment object) {
+	        	forbidProfileView = true;
 	        	presenter.changeEnrollmentState(object, state);
 	        }
 	    };
 	}
 	
+	private class EnrollmentActionsActionCell<Enrollment> extends ActionCell<Enrollment> {
+		Delegate<Enrollment> delegate;
+		public EnrollmentActionsActionCell(String message, Delegate<Enrollment> delegate) {
+			super(message, delegate);
+			this.delegate = delegate;
+		}
+
+		@Override
+		public void onBrowserEvent(Context context, Element parent, Enrollment value,
+				NativeEvent event, ValueUpdater<Enrollment> valueUpdater) {
+			event.stopPropagation();
+			event.preventDefault();
+			event.stopPropagation();
+			super.onBrowserEvent(context, parent, value, event, valueUpdater);
+			if (CLICK.equals(event.getType())) {
+				EventTarget eventTarget = event.getEventTarget();
+				if (!Element.is(eventTarget)) {
+					return;
+				}
+				if (parent.getFirstChildElement().isOrHasChild(Element.as(eventTarget))) {
+					// Ignore clicks that occur outside of the main element.
+					onEnterKeyDown(context, parent, value, event, valueUpdater);
+				}
+			}
+		}
+	}
+	
 	private class EnrollmentActionsHasCell implements HasCell<Enrollment, Enrollment> {
-		private ActionCell<Enrollment> cell;
+		private EnrollmentActionsActionCell<Enrollment> cell;
 
 		public EnrollmentActionsHasCell(String text, Delegate<Enrollment> delegate) {
 			final String actionName = text;
-			cell = new ActionCell<Enrollment>(text, delegate){
+			cell = new EnrollmentActionsActionCell<Enrollment>(text, delegate){
 				@Override
 				public void render(com.google.gwt.cell.client.Cell.Context context, Enrollment object, SafeHtmlBuilder sb) {
 			        if(presenter.showActionButton(actionName, object.getState())){

@@ -86,12 +86,12 @@ class UserResource{
 	    	user.setPerson(person.get)
 		    user.setUsername(user.getPerson().getEmail())
 		    user.setEmail(user.getPerson().getEmail())
-	    	val signingNeeded = Registrations.signingNeeded(p)
-	    	user.setSigningNeeded(signingNeeded)
-	    	user.setLastPlaceVisited(p.getLastPlaceVisited)
-	    	val roles = Auth.rolesOf(user.getUsername)
-	    	user.setRoles((Set.empty ++ roles).asJava)
-	    	user.setRegistrationsTO(Registrations.getAll(p))
+	    	//val signingNeeded = Registrations.signingNeeded(p)
+	    	//user.setSigningNeeded(signingNeeded)
+	    	//user.setLastPlaceVisited(p.getLastPlaceVisited)
+	    	//val roles = Auth.rolesOf(user.getUsername)
+	    	//user.setRoles((Set.empty ++ roles).asJava)
+	    	user.setRegistrationsTO(Registrations.getAll(person.get))
 	    	Option(user)
 	    }
 	    else {
@@ -172,36 +172,6 @@ class UserResource{
 	    @PathParam("personUUID") personUUID: String) = Auth.withPerson{ p =>
     PersonRepository(personUUID).update(userInfo.getPerson())
     userInfo
-  }
-  
-  @POST
-  @Path("uploadProfileImage/{personUUID}")
-  @Produces(Array("text/plain"))
-  def update(@Context request:HttpServletRequest,
-      @PathParam("personUUID") personUUID: String) = { 
-        val upload = new ServletFileUpload();
-        val iter = upload.getItemIterator(request);
-        if(iter.hasNext()){
-	        val out = new ByteArrayOutputStream();
-	        while (iter.hasNext()) {
-	            val item = iter.next();
-	            val name = item.getFieldName();
-	            val stream = item.openStream();
-	            // Process the input stream
-	            var len = 0;
-	            val buffer = new Array[Byte](8192);
-	            while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
-	                out.write(buffer, 0, len);
-	            }
-	            val maxFileSize = 10*(1024*1024); //10 megs max 
-	            if (out.size() > maxFileSize) { 
-	                throw new RuntimeException("File is > than " + maxFileSize);
-	            }
-	        }
-	        out.size()
-        } else {
-          "notFound"
-        }
   }
   
   

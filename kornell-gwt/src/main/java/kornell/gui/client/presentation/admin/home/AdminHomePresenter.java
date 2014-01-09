@@ -15,12 +15,14 @@ import kornell.core.to.EnrollmentRequestsTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AdminHomePresenter implements AdminHomeView.Presenter {
@@ -210,5 +212,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	private AdminHomeView getView() {
 		return clientFactory.getDeanHomeView();
+	}
+
+	@Override
+	public void onUserClicked(String uuid) {
+		ProfilePlace place = new ProfilePlace(uuid, false);
+		clientFactory.getPlaceController().goTo(place);
 	}
 }
