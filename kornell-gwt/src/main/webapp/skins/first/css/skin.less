@@ -1,6 +1,8 @@
 //UTILS
 @import "utils/bars";
 @import "utils/mixins";
+@import "utils/colors";
+@import "utils/lesshat";
 //VITRINE
 @import "vitrine/vitrine";
 //TERMS
@@ -182,3 +184,92 @@ body {
 
 
 
+
+
+.activityBarWrapper{
+	.gradient (@barGradientStartColor, @barGradientEndColor);
+
+	.activityBar{	
+		.south;
+		.gradient (@barGradientStartColor, @barGradientEndColor);
+		.size (@wrapperWidth,@barSouthHeight);
+		margin: 0 auto;
+		.btnPanel{
+			.btnBorder;
+		}
+		.activityBarButton {
+			width: 20%;
+			height: @barSouthHeight;
+			float: left;
+			line-height: @barSouthHeight;
+			text-align: center;
+			padding: 0;
+			border: 0;
+			text-decoration: none;
+			.label{
+				background: transparent;
+				color: @niceTextColor;
+				font-size: 11px;
+				margin-left: 4px;
+			}
+			.icon{}
+		}
+		.selected{
+			@borderTopHeight: 3px;
+			border-top: @borderTopHeight solid @buttonSelectedGradientStart;
+			line-height: @barSouthHeight - @borderTopHeight;
+		}
+		.disabled {
+			.label{
+				color: darken(@niceTextColor, 30%);
+			}
+		}
+		.btnProgress{
+			cursor: default;
+			.progressBarPanel{
+				.btnBorder;
+				.progress{
+					width: 150px;
+					height: 10px;
+					margin: 0 auto;
+					margin-top: 5px;
+					.bar{
+						.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
+					}
+				}
+				.pagePanel{
+					height: 10px;
+					line-height: 11px;
+					margin-top: 3px;
+					display: block;
+					div{
+						display: inline;
+					}
+					.pageCurrent{
+						margin: 0 10px;
+						color: @textHighlightColor;
+					}
+					.pageTotal{
+						margin-left: 10px;
+					}
+				}
+			}
+		}
+	}
+}
+@media screen and (max-width: @wrapperWidth) {
+	.activityBarWrapper{
+		.activityBar{
+			.size (@wrapperWidthUnder990,@barSouthHeight);
+			/*.activityBarButton {
+				.label{
+					visibility: hidden;
+					width: 0px;
+					border: 0;
+					margin: 0;
+					padding: 0;
+				}		
+			}*/
+		}
+	}
+}

@@ -4,6 +4,7 @@
 		<g:FlowPanel ui:field="activityBar" addStyleNames="activityBar">
 			<b:Button type="LINK" ui:field="btnDetails" addStyleNames="activityBarButton first"></b:Button>	
 			<b:Button type="LINK" ui:field="btnNotes" addStyleNames="activityBarButton"></b:Button>	
+			<b:Button type="LINK" ui:field="btnProgress" addStyleNames="activityBarButton btnProgress"></b:Button>
 			<b:Button type="LINK" ui:field="btnPrevious" addStyleNames="activityBarButton"></b:Button>
 			<b:Button type="LINK" ui:field="btnNext" addStyleNames="activityBarButton last"></b:Button>	
 		</g:FlowPanel>

@@ -5,6 +5,8 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEventHandler;
+import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.CourseClassPlace;
@@ -13,6 +15,7 @@ import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ProgressBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.Place;
@@ -20,14 +23,16 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class GenericActivityBarView extends Composite implements ActivityBarView, NavigationForecastEventHandler {
+public class GenericActivityBarView extends Composite implements ActivityBarView, NavigationForecastEventHandler, ProgressChangeEventHandler {
 	
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityBarView> {
 	}
@@ -35,9 +40,10 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 		
 	private String page;
+	private int currentPage;
 	
 	private NotesPopup notesPopup;
-	
+	private FlowPanel progressBarPanel;
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 	
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
@@ -60,7 +66,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	Button btnDetails;
 	@UiField
 	Button btnNotes;
-
+	@UiField
+	Button btnProgress;
+	
 	@UiField
 	FlowPanel activityBar;
 	
@@ -71,7 +79,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		clientFactory.getEventBus().addHandler(NavigationForecastEvent.TYPE,this);
-		
+		clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE,this);
+
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
@@ -105,12 +114,57 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		
 		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
 		
-		
+		displayProgressButton();
 		if (clientFactory.getPlaceController().getWhere() instanceof CourseDetailsPlace) {
 			btnDetails.addStyleName("btnSelected");
 			//enableButton(BUTTON_PREVIOUS, false);
 			//enableButton(BUTTON_NEXT, false);
 		}
+	}
+
+	private void displayProgressButton() {
+		progressBarPanel = new FlowPanel ();
+		progressBarPanel.addStyleName("progressBarPanel");
+				
+		btnProgress.add(progressBarPanel);
+		btnProgress.removeStyleName("btn");
+		btnProgress.removeStyleName("btn-link");
+		
+		currentPage = 0;
+		final int totalPages = 8;
+		new Timer() {
+			@Override
+			public void run() {
+				currentPage = currentPage >= totalPages ? 0 : currentPage+1;
+				
+				//updateProgressBarPanel(currentPage, totalPages, (currentPage * 100)/totalPages);
+			}
+		}.scheduleRepeating(1000);
+	}
+	
+	private void updateProgressBarPanel(Integer currentPage, Integer totalPages, Integer progressPercent){
+		progressBarPanel.clear();
+		
+		ProgressBar  progressBar = new ProgressBar();
+		progressBar.setPercent(progressPercent);
+		
+		FlowPanel pagePanel = new FlowPanel();
+		pagePanel.addStyleName("pagePanel");
+		pagePanel.addStyleName("label");
+		
+		HTMLPanel pageCaption = new HTMLPanel("Página");
+		pagePanel.add(pageCaption);
+		HTMLPanel pageCurrent = new HTMLPanel(""+currentPage);
+		pageCurrent.addStyleName("pageCurrent");
+		pagePanel.add(pageCurrent);
+		HTMLPanel pageSeparator = new HTMLPanel("/");
+		pagePanel.add(pageSeparator);
+		HTMLPanel pageTotal = new HTMLPanel(""+totalPages);
+		pageTotal.addStyleName("pageTotal");
+		pagePanel.add(pageTotal);		
+		
+		progressBarPanel.add(pagePanel);
+		progressBarPanel.add(progressBar);
 	}
 
 	private void displayButton(final Button btn, final String buttonType, Image icon) {
@@ -237,6 +291,11 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@Override
 	public void setPresenter(Presenter presenter) {
+	}
+
+	@Override
+	public void onProgressChange(ProgressChangeEvent event) {
+		updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
 	}
 	
 }

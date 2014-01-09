@@ -65,7 +65,7 @@ object RegistrationEnrollmentService {
     	Events.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
 	    val course = Courses.byCourseClassUUID(enrollment.getCourseClassUUID).get
 	    val institution = Institutions.byUUID(institutionUUID).get
-	    EmailService.sendEmailEnrolled(person, institution, course)
+	    //EmailService.sendEmailEnrolled(person, institution, course)
     }
   }
 
