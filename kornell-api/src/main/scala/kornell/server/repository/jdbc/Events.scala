@@ -43,6 +43,9 @@ object Events {
 			   ${toState.toString});
 		""".executeUpdate
 		
+	  sql"""update Enrollment set state = ${toState.toString} where uuid = ${enrollmentUUID};
+		""".executeUpdate
+		
 	  if(EnrollmentState.preEnrolled.equals(toState) || EnrollmentState.enrolled.equals(toState)){
 	    val enrollment = Enrollments().byUUID(enrollmentUUID).get
 	    val courseClass = CourseClasses(enrollment.getCourseClassUUID).get
@@ -51,11 +54,9 @@ object Events {
 	    EmailService.sendEmailEnrolled(enrollment.getPerson, institution, course)
 	  }	
 	  
-	  sql"""update Enrollment set state = ${toState.toString} where uuid = ${enrollmentUUID};
-		""".executeUpdate
   }
 	
-  def logEnrollmentStateChanged(event: EnrollmentStateChanged):Int = 
+  def logEnrollmentStateChanged(event: EnrollmentStateChanged):Unit = 
     logEnrollmentStateChanged(event.getUUID,event.getEventFiredAt,event.getFromPersonUUID,
         event.getEnrollmentUUID,event.getFromState,event.getToState)
 	

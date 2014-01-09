@@ -5,12 +5,11 @@ import java.util.List;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
-import kornell.core.event.ActomEntered;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
-import kornell.core.to.UserInfoTO;
+import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.CourseClassPlace;
@@ -26,6 +25,7 @@ public class CourseSequencer implements Sequencer {
 	private FlowPanel contentPanel;
 	private String courseClassUUID;
 	private KornellClient client;
+	private EventBus bus;
 	private List<Actom> actoms;
 
 	private int currentIndex;
@@ -39,6 +39,7 @@ public class CourseSequencer implements Sequencer {
 
 	public CourseSequencer(EventBus bus, KornellClient client) {
 		this.client = client;
+		this.bus = bus;
 		bus.addHandler(NavigationRequest.TYPE, this);
 	}
 
@@ -152,6 +153,8 @@ public class CourseSequencer implements Sequencer {
 				client.events()
 						.actomEntered(personUUID, courseClassUUID,
 								currentActom.getKey()).fire();
+				currentActom.setVisited(true);
+				fireProgressChangeEvent();
 			}
 		});
 	}
@@ -292,5 +295,23 @@ public class CourseSequencer implements Sequencer {
 
 	private void setContents(Contents contents) {
 		this.actoms = ContentsCategory.collectActoms(contents);
+	}
+
+	private void fireProgressChangeEvent() {
+		int pagesVisited = 0;
+		int totalPages = actoms.size();
+		for (Actom actom : actoms) {
+			if(actom.isVisited()){
+				pagesVisited++;
+				continue;
+			}
+			break;
+		}
+		int progressPercent = (pagesVisited * 100)/totalPages;
+		ProgressChangeEvent progressChangeEvent = new ProgressChangeEvent();
+		progressChangeEvent.setCurrentPage(currentIndex+1);
+		progressChangeEvent.setTotalPages(totalPages);		
+		progressChangeEvent.setProgressPercent(progressPercent);
+		bus.fireEvent(progressChangeEvent);
 	}
 }

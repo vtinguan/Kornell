@@ -2,6 +2,8 @@
 
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.CourseBarEvent;
+import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.course.chat.CourseChatPlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
