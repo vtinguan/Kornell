@@ -14,7 +14,7 @@ public class LoadingPopup {
 	
 	public static void show() {
 		//TODO: i18n
-		show(constants.loading());
+		show(null);
 	}
 	
 	public static void show(String message) {	
@@ -22,7 +22,9 @@ public class LoadingPopup {
 			popup = new PopupPanel(false, true); // Create a modal dialog box that will not auto-hide
 			FlowPanel panel = new FlowPanel();
 			panel.addStyleName("ajaxLoaderPanel");
-			panel.add(new Label(" " + message + " "));
+			if(message != null){
+				panel.add(new Label(" " + message + " "));
+			}
 			panel.add(new Image("skins/first/ajax-loader.gif"));
 			popup.setGlassEnabled(true);
 			popup.add(panel);
