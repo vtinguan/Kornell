@@ -32,7 +32,12 @@
 	border-left: 1px solid @buttonBorderLeftColor;
 	border-right: 1px solid @buttonBorderRightColor;
 }
-
+.cursorPointer{
+	cursor: pointer;
+}
+.cursorDefault{
+	cursor: default;
+}
 .gradient (@colorStart: #000, @colorEnd: #fff) {
 	background: @colorStart; /* Old browsers */
 	background: -moz-linear-gradient(top,  @colorStart 0%, @colorEnd 100%); /* FF3.6+ */
@@ -117,6 +122,9 @@
 	border: 0;
 	display: inline-block;
 }
+.highlightText{
+	color: @textHighlightColor;
+}
 .borderNone{
 	border: 0 !important;
 }
@@ -131,6 +139,9 @@
 }
 .width120{
 	widht:	120px;
+}
+.marginLeft7{
+	margin-left: 7px;
 }
 .test{
 	color: red;

@@ -22,5 +22,5 @@ object People {
   }
 
   def createPerson(email: String, fullName:String): PersonRepository = 
-    createPerson(email, fullName, null, null, null, null, null)
+    createPerson(email, fullName, null, null, null, null, "")
 }

@@ -8,11 +8,12 @@ import kornell.core.lom.Actom;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.sequence.CourseSequencer;
-import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,11 +25,12 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericPageView extends Composite implements
-		CourseDetailsView {
+		CourseDetailsView, ProgressChangeEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericPageView> {
 	}
 
@@ -57,30 +59,43 @@ public class GenericPageView extends Composite implements
 	private UserSession session;
 	
 	public GenericPageView(EventBus eventBus, KornellClient client,
-			final PlaceController placeCtrl, UserSession session, final ExternalPage page, CourseClassTO currentCourse) {
+			final PlaceController placeCtrl, UserSession session, final ExternalPage page, CourseClassTO currentCourse, boolean enableAnchor) {
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
 		this.page = page;
 		this.currentCourse = currentCourse;
 		this.session = session;
+		bus.addHandler(ProgressChangeEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
-		display();
+		display(enableAnchor);
 	}
 	
-	private void display() {
-		topicIcon.setUrl(IMAGES_PATH + "status_toStart.png");
+	private void display(boolean enableAnchor) {
+		String status = page.isVisited() ? "finished" : "toStart";
+		topicIcon.setUrl(IMAGES_PATH + "status_"+status+".png");
+		lblPage.clear();
+		if(enableAnchor){
+			Anchor pageAnchor = new Anchor(page.getTitle());
+			pageAnchor.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String breadCrumb = CourseSequencer.class.getName() + "." + currentCourse.getCourseClass().getUUID() + ".CURRENT_KEY";
+					session.setItem(breadCrumb, page.getKey());
+					placeCtrl.goTo(new CourseClassPlace(currentCourse.getCourseClass().getUUID()));
+				}
+			});
+			lblPage.add(pageAnchor);
+		} else {
+			lblPage.add(new Label(page.getTitle()));
+		}
+	}
 
-		Anchor pageAnchor = new Anchor(page.getTitle());
-		pageAnchor.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				String breadCrumb = CourseSequencer.class.getName() + "." + currentCourse.getCourseClass().getUUID() + ".CURRENT_KEY";
-				session.setItem(breadCrumb, page.getKey());
-				placeCtrl.goTo(new CourseClassPlace(currentCourse.getCourseClass().getUUID()));
-			}
-		});
-		lblPage.add(pageAnchor);
+	@Override
+	public void onProgressChange(ProgressChangeEvent event) {
+		page.setVisited(page.getIndex() <= event.getPagesVisitedCount());
+		// enable the anchor until the next one after the current
+		display(page.getIndex() <= (event.getPagesVisitedCount() + 1));
 	}
 	
 	@Override

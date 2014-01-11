@@ -5,17 +5,16 @@ import kornell.api.client.UserSession;
 import kornell.core.lom.Content;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseTO;
-import kornell.core.to.UserInfoTO;
-import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
 import com.github.gwtbootstrap.client.ui.FluidRow;
+import com.github.gwtbootstrap.client.ui.event.HideEvent;
+import com.github.gwtbootstrap.client.ui.event.HideHandler;
+import com.github.gwtbootstrap.client.ui.event.ShowEvent;
+import com.github.gwtbootstrap.client.ui.event.ShowHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -27,14 +26,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericTopicView extends Composite implements
-		CourseDetailsView {
+public class GenericTopicView extends Composite implements CourseDetailsView {
 	interface MyUiBinder extends UiBinder<Widget, GenericTopicView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 
 	private KornellClient client;
 	private PlaceController placeCtrl;
@@ -42,10 +39,6 @@ public class GenericTopicView extends Composite implements
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
 	private Content content;
-	private Button btnCurrent;
-	private CourseTO courseTO;
-	private CourseDetailsTO courseDetails;
-	private UserInfoTO user;
 	private UserSession session;
 	private CourseClassTO currentCourse;
 	private int index;
@@ -79,6 +72,18 @@ public class GenericTopicView extends Composite implements
 		this.startOpened = startOpened;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
+		collapse.addShowHandler(new ShowHandler() {
+			@Override
+			public void onShow(ShowEvent showEvent) {
+				topicIcon.setUrl(IMAGES_PATH + "topic-expanded.png");
+			}
+		});
+		collapse.addHideHandler(new HideHandler() {
+			@Override
+			public void onHide(HideEvent hideEvent) {
+				topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
+			}
+		});
 		display();
 	}
 
@@ -93,21 +98,29 @@ public class GenericTopicView extends Composite implements
 		trigger.setTarget("#toggle"+index);
 		collapse.setId("toggle"+index);
 		
+		ExternalPage page;
+		boolean isPreviousPageVisited = true;
 		for (Content contentItem : content.getTopic().getChildren()) {
-			ExternalPage page = contentItem.getExternalPage();
-			if(!page.getTitle().startsWith("###")){ //TODO MDA
-				childrenPanel.add(new GenericPageView(bus, client, placeCtrl, session, page, currentCourse));
+			page = contentItem.getExternalPage();
+			if(!page.getTitle().startsWith("###")){ //TODO MDA 
+				childrenPanel.add(new GenericPageView(bus, client, placeCtrl, session, page, currentCourse, page.isVisited() || isPreviousPageVisited));
 			}
+			isPreviousPageVisited = page.isVisited();
 		}
 		
 		if(childrenPanel.getWidgetCount() > 0){
-			topicIcon.setUrl(IMAGES_PATH + "topic-expand.png");
+			this.addStyleName("cursorPointer");
 		} else {
 			topicIcon.addStyleName("shy");
+			this.addStyleName("cursorDefault");
 		}
 		
-		if(startOpened)
+		if(startOpened){
+			topicIcon.setUrl(IMAGES_PATH + "topic-expanded.png");
 			collapse.setDefaultOpen(true);
+		} else {
+			topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
+		}
 	}
 
 	@Override

@@ -115,6 +115,10 @@ public class CourseSequencer implements Sequencer {
 		return actoms != null && currentIndex >= actoms.size() - 1;
 	}
 
+	private boolean doesntHavePrevious() {
+		return actoms != null && currentIndex <= 1;
+	}
+
 	private void makeCurrentPrevious() {
 		prevActom = currentActom;
 		prevUidget = currentUidget;
@@ -259,6 +263,7 @@ public class CourseSequencer implements Sequencer {
 	private void initialLoad() {
 		showCurrentASAP();
 		preloadNext();
+		preloadPrevious();
 		debug("INITIAL");
 	}
 
@@ -272,6 +277,19 @@ public class CourseSequencer implements Sequencer {
 			nextUidget = uidgetFor(nextActom);
 			nextUidget.setVisible(false);
 			contentPanel.add(nextUidget);
+		}
+	}
+
+	private void preloadPrevious() {
+		if (doesntHavePrevious()) {
+			prevActom = null;
+			prevUidget = null;
+		} else {
+			int previousIndex = currentIndex - 1;
+			prevActom = actoms.get(previousIndex);
+			prevUidget = uidgetFor(prevActom);
+			prevUidget.setVisible(false);
+			contentPanel.add(prevUidget);
 		}
 	}
 
@@ -298,20 +316,19 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private void fireProgressChangeEvent() {
-		int pagesVisited = 0;
+		int pagesVisitedCount = 0;
 		int totalPages = actoms.size();
 		for (Actom actom : actoms) {
 			if(actom.isVisited()){
-				pagesVisited++;
+				pagesVisitedCount++;
 				continue;
 			}
 			break;
 		}
-		int progressPercent = (pagesVisited * 100)/totalPages;
 		ProgressChangeEvent progressChangeEvent = new ProgressChangeEvent();
 		progressChangeEvent.setCurrentPage(currentIndex+1);
 		progressChangeEvent.setTotalPages(totalPages);		
-		progressChangeEvent.setProgressPercent(progressPercent);
+		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
 		bus.fireEvent(progressChangeEvent);
 	}
 }
