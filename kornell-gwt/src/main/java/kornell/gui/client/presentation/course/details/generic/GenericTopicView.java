@@ -99,7 +99,7 @@ public class GenericTopicView extends Composite implements CourseDetailsView {
 		collapse.setId("toggle"+index);
 		
 		ExternalPage page;
-		boolean isPreviousPageVisited = true;
+		boolean isPreviousPageVisited = (index == 1);
 		for (Content contentItem : content.getTopic().getChildren()) {
 			page = contentItem.getExternalPage();
 			if(!page.getTitle().startsWith("###")){ //TODO MDA 

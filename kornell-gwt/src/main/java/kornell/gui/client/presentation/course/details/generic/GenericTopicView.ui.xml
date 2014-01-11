@@ -13,7 +13,7 @@
 			</g:FlowPanel>
 	    </b:CollapseTrigger>
 		<b:Collapse ui:field="collapse" existTrigger="true" defaultOpen="false">
-		    <b:FluidRow ui:field="childrenPanel">
+		    <b:FluidRow ui:field="childrenPanel" addStyleNames="cursorDefault">
 		    </b:FluidRow>
 		</b:Collapse>
 	</g:FlowPanel>
