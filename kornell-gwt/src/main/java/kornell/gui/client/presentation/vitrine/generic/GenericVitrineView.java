@@ -21,9 +21,11 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericVitrineView extends Composite implements VitrineView {
@@ -301,13 +303,18 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	@Override
-	public void setLogoURL(String imgLogoURL) {
-		if (imgLogoURL != null) {
-			imgLogo.setUrl(composeURL(imgLogoURL, "logo300x80.png"));
-		} else {
-			imgLogo.setUrl("/skins/first/icons/logo.png");
-		}
+	public void setLogoURL(String assetsURL) {
+		imgLogo.setUrl(composeURL(assetsURL, "logo300x80.png"));
 	}
 
+	@Override
+	public void setBackgroundImage(String assetsURL) {
+		String style = "background: url('"+composeURL(assetsURL, "bgVitrine.jpg")+"') no-repeat center center fixed; " + 
+				"-webkit-background-size: cover; " + 
+				"-moz-background-size: cover; " + 
+				"-o-background-size: cover; " + 
+				"background-size: cover;";
+		DOM.setElementAttribute(RootLayoutPanel.get().getElement(), "style", style);
+	}
 
 }

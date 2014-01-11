@@ -14,7 +14,6 @@ import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ProgressBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,9 +22,9 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -40,7 +39,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 		
 	private String page;
-	private int currentPage;
 	
 	private NotesPopup notesPopup;
 	private FlowPanel progressBarPanel;
@@ -55,25 +53,27 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private static String BUTTON_DETAILS = constants.details();
 	private static String BUTTON_NOTES = constants.notes();
 
-	Image iconPrevious;
-	Image iconNext;
+	private Image iconPrevious;
+	private Image iconNext;
 
 	@UiField
-	Button btnPrevious;
+	FocusPanel btnPrevious;
 	@UiField
-	Button btnNext;
+	FocusPanel btnNext;
 	@UiField
-	Button btnDetails;
+	FocusPanel btnDetails;
 	@UiField
-	Button btnNotes;
+	FocusPanel btnNotes;
 	@UiField
-	Button btnProgress;
+	FocusPanel btnProgress;
 	
 	@UiField
 	FlowPanel activityBar;
 	
 	private UserInfoTO user;
 	private ClientFactory clientFactory;
+	
+	private Integer currentPage, totalPages, progressPercent;
 	
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -89,10 +89,12 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 						
 						if(newPlace instanceof CourseClassPlace){							
 							btnDetails.removeStyleName("btnSelected");
+							updateProgressBarPanel();
 						} else if(newPlace instanceof CourseDetailsPlace){
 							//enableButton(BUTTON_PREVIOUS, false);
 							//enableButton(BUTTON_NEXT, false);
 							btnDetails.addStyleName("btnSelected");
+							updateProgressBarPanel();
 						}
 						
 					}});
@@ -101,6 +103,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		display();
 		
 		setUpArrowNavigation();
+		
 	}
 	 
 	private void display(){
@@ -129,20 +132,16 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		btnProgress.add(progressBarPanel);
 		btnProgress.removeStyleName("btn");
 		btnProgress.removeStyleName("btn-link");
-		
-		currentPage = 0;
-		final int totalPages = 8;
-		new Timer() {
-			@Override
-			public void run() {
-				currentPage = currentPage >= totalPages ? 0 : currentPage+1;
-				
-				//updateProgressBarPanel(currentPage, totalPages, (currentPage * 100)/totalPages);
-			}
-		}.scheduleRepeating(1000);
 	}
 	
 	private void updateProgressBarPanel(Integer currentPage, Integer totalPages, Integer progressPercent){
+		this.currentPage = currentPage;
+		this.totalPages = totalPages;
+		this.progressPercent = progressPercent;
+		updateProgressBarPanel();
+	}
+	
+	private void updateProgressBarPanel(){
 		progressBarPanel.clear();
 		
 		ProgressBar  progressBar = new ProgressBar();
@@ -152,26 +151,34 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		pagePanel.addStyleName("pagePanel");
 		pagePanel.addStyleName("label");
 		
-		HTMLPanel pageCaption = new HTMLPanel("Página");
-		pagePanel.add(pageCaption);
-		HTMLPanel pageCurrent = new HTMLPanel(""+currentPage);
-		pageCurrent.addStyleName("pageCurrent");
-		pagePanel.add(pageCurrent);
-		HTMLPanel pageSeparator = new HTMLPanel("/");
-		pagePanel.add(pageSeparator);
-		HTMLPanel pageTotal = new HTMLPanel(""+totalPages);
-		pageTotal.addStyleName("pageTotal");
-		pagePanel.add(pageTotal);		
+		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace){
+			pagePanel.add(createSpan("Página", false));
+			pagePanel.add(createSpan(""+currentPage, true));
+			pagePanel.add(createSpan("/", false));
+			pagePanel.add(createSpan(""+totalPages, false));
+		} else {
+			pagePanel.add(createSpan(progressPercent+"%", true));
+			pagePanel.add(createSpan("concluído", false));
+		}
 		
 		progressBarPanel.add(pagePanel);
 		progressBarPanel.add(progressBar);
 	}
 
-	private void displayButton(final Button btn, final String buttonType, Image icon) {
+	private HTMLPanel createSpan(String text, boolean isHighlighted) {
+		HTMLPanel pageCaption = new HTMLPanel(text);
+		pageCaption.addStyleName("marginLeft7");
+		if(isHighlighted){
+			pageCaption.addStyleName("highlightText");
+		}
+		return pageCaption;
+	}
+
+	private void displayButton(final FocusPanel btn, final String buttonType, Image icon) {
 		displayButton(btn, buttonType, icon, false);
 	}
 	
-	private void displayButton(final Button btn, final String buttonType, Image icon, boolean invertIcon) {
+	private void displayButton(final FocusPanel btn, final String buttonType, Image icon, boolean invertIcon) {
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
 		buttonPanel.addStyleName(getItemName(buttonType));
@@ -190,8 +197,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		}
 		
 		btn.add(buttonPanel);
-		btn.removeStyleName("btn");
-		btn.removeStyleName("btn-link");
+		
 	}
 	
 	private String getItemName(String constant){
@@ -296,6 +302,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
 		updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
+		enableButton(BUTTON_PREVIOUS, event.hasPrevious());
+		enableButton(BUTTON_NEXT, event.hasNext());
 	}
 	
 }

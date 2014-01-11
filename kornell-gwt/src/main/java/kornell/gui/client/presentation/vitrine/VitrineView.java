@@ -33,6 +33,7 @@ public interface VitrineView extends IsWidget {
 	void showMessage();
 	void setMessage(String msg);
 	void setMessage(List<String> msgs);
-	void setLogoURL(String imgLogoURL);
+	void setLogoURL(String assetsURL);
 	void displayView(VitrineViewType type);
+	void setBackgroundImage(String assetsURL);
 }

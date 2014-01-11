@@ -13,7 +13,7 @@ import kornell.server.repository.LOM
 object ContentsParser {
   
   val topicPattern = """#\s?(.*)""".r
-  val pagePattern = """([^;]*);?([^;]*)?""".r 
+  val pagePattern = """(([^;.]*).?([^;]*));?([^;]*)?""".r 
 
   def parse(baseURL:String,prefix:String,source: String,visited:List[String]): Contents =
     parseLines(baseURL,prefix,source.lines,visited)
@@ -29,8 +29,8 @@ object ContentsParser {
           result += LOM.newContent(topic) 
         }
         
-        case pagePattern(key,title) => { 
-          val page = LOM.newExternalPage(baseURL,prefix,key,title)
+        case pagePattern(key, index, extension, title) => { 
+          val page = LOM.newExternalPage(baseURL,prefix,index,key,title)
           page.setVisited(visited.contains(page.getKey()))
           val content = LOM.newContent(page)
           if (topic != null) topic.getChildren().add(content)

@@ -18,6 +18,10 @@ public class KornellNotification {
 		show(message, alertType, 5000);
 	}
 
+	public static void show(String message, int timer) {
+		show(message, AlertType.SUCCESS, timer);
+	}
+
 	public static void show(String message, AlertType alertType, int timer) {	
 		final PopupPanel popup = new PopupPanel();
 		Alert alert = new Alert();

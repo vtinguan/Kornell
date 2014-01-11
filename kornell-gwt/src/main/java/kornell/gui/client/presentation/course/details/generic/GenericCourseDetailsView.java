@@ -17,6 +17,7 @@ import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
@@ -122,6 +123,24 @@ public class GenericCourseDetailsView extends Composite implements
 	private void setContents(Contents contents) {
 		this.contents = contents;
 		this.actoms = ContentsCategory.collectActoms(contents);
+		fireProgressChangeEvent();
+	}
+
+	private void fireProgressChangeEvent() {
+		int pagesVisitedCount = 0;
+		int totalPages = actoms.size();
+		for (Actom actom : actoms) {
+			if(actom.isVisited()){
+				pagesVisitedCount++;
+				continue;
+			}
+			break;
+		}
+		ProgressChangeEvent progressChangeEvent = new ProgressChangeEvent();
+		progressChangeEvent.setCurrentPage(pagesVisitedCount);
+		progressChangeEvent.setTotalPages(totalPages);		
+		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
+		bus.fireEvent(progressChangeEvent);
 	}
 
 	private void display() {
@@ -285,7 +304,7 @@ public class GenericCourseDetailsView extends Composite implements
 		int i = 0;
 		for (Content content: contents.getChildren()) {
 			topicsContentPanel.add(new GenericTopicView(bus, session, placeCtrl, session, currentCourseClass, content, i++, startOpened));
-		}		
+		}	
 		return topicsContentPanel;
 	}
 

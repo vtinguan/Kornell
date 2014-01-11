@@ -39,8 +39,9 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			view.displayView(VitrineViewType.newPassword);
 		}
 		
-		String imgLogoURL = clientFactory.getInstitution().getAssetsURL();
-		view.setLogoURL(imgLogoURL);
+		String assetsURL = clientFactory.getInstitution().getAssetsURL();
+		view.setLogoURL(assetsURL);
+		view.setBackgroundImage(assetsURL);
 	}
 
 	@Override
@@ -184,8 +185,13 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						@Override
 						public void ok(UserInfoTO user){
 							GWT.log("User created");
-							KornellNotification.show("Usuário criado com sucesso. Uma solicitação foi enviada para a instituição requisitando seu acesso. Você receberá um email quando a requisição for aprovada.");
+							KornellNotification.show("Usuário criado com sucesso."
+									/*+ " Uma solicitação foi enviada para a instituição requisitando seu acesso. Você receberá um email quando a requisição for aprovada."*/
+									, 2000);
 							view.displayView(VitrineViewType.login);
+							view.setEmail(view.getSuEmail());
+							view.setPassword(view.getSuPassword());
+							doLogin();
 						}
 					});
 				}
@@ -194,7 +200,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 					RegistrationRequestTO registrationRequestTO = clientFactory.getTOFactory().newRegistrationRequestTO().as();
 					registrationRequestTO.setFullName(view.getSuName().trim());
 					registrationRequestTO.setEmail(view.getSuEmail().toLowerCase().trim());
-					registrationRequestTO.setPassword(view.getSuPassword().trim());
+					registrationRequestTO.setPassword(view.getSuPassword());
 					registrationRequestTO.setInstitutionUUID(clientFactory.getInstitution().getUUID());
 					return registrationRequestTO;
 				}
@@ -250,7 +256,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				@Override
 				public void ok(UserInfoTO to) {
 					view.displayView(VitrineViewType.login);	
-					KornellNotification.show("Senha alterada com sucesso. Favor fazer o login novamente.");
+					KornellNotification.show("Senha alterada com sucesso.");
 					view.setEmail(to.getEmail());
 					view.setPassword(view.getNewPassword());
 					doLogin();

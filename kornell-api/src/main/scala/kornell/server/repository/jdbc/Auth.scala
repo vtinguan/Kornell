@@ -50,6 +50,7 @@ object Auth {
 
   //TODO: Cache
   def getPersonByEmail(email: String) = {
+    println(email)
     sql"""
 		select * from Person p
 		where p.email = $email

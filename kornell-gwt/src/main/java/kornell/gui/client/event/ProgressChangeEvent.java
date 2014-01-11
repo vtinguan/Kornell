@@ -8,7 +8,7 @@ public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
 	
 	private Integer totalPages;
 	private Integer currentPage;
-	private Integer progressPercent;
+	private Integer pagesVisitedCount;
 	
 	@Override
 	public Type<ProgressChangeEventHandler> getAssociatedType() {
@@ -18,6 +18,14 @@ public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
 	@Override
 	protected void dispatch(ProgressChangeEventHandler handler) {
 		handler.onProgressChange(this);		
+	}
+	
+	public boolean hasNext(){
+		return currentPage < totalPages;
+	}
+	
+	public boolean hasPrevious(){
+		return currentPage > 1;
 	}
 
 	public Integer getTotalPages() {
@@ -37,13 +45,14 @@ public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
 	}
 
 	public Integer getProgressPercent() {
-		return progressPercent;
+		return (pagesVisitedCount * 100)/totalPages;
 	}
 
-	public void setProgressPercent(Integer progressPercent) {
-		this.progressPercent = progressPercent;
+	public void setPagesVisitedCount(int pagesVisitedCount) {
+		this.pagesVisitedCount = pagesVisitedCount;
 	}
 
-	
-	
+	public Integer getPagesVisitedCount() {
+		return this.pagesVisitedCount;
+	}
 }

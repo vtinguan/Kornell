@@ -66,12 +66,14 @@ import kornell.scorm.client.SCORM2004Adapter;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -183,8 +185,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				String styleName = rootLayoutPanel.getStyleName();
 				if (!styleName.isEmpty())
 					rootLayoutPanel.removeStyleName(styleName);
-				String[] split = event.getNewPlace().getClass().getName()
-						.split("\\.");
+				String[] split = event.getNewPlace().getClass().getName().split("\\.");
 				String newStyle = split[split.length - 1];
 				rootLayoutPanel.addStyleName(newStyle);
 			}

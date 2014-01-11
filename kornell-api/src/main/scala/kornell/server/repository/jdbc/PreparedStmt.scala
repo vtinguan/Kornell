@@ -41,6 +41,8 @@ class PreparedStmt(query: String, params: List[Any]) {
         .zipWithIndex
         .foreach(setQueryParam)
  
+      println("Executing query: " + pstmt.toString())  
+        
       try fun(pstmt)
       finally pstmt.close
     }

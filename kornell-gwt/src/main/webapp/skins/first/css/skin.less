@@ -196,6 +196,7 @@ body {
 		margin: 0 auto;
 		.btnPanel{
 			.btnBorder;
+			.cursorPointer;
 		}
 		.activityBarButton {
 			width: 20%;
@@ -228,11 +229,12 @@ body {
 			cursor: default;
 			.progressBarPanel{
 				.btnBorder;
+				height: @barSouthHeight;
 				.progress{
 					width: 150px;
 					height: 10px;
 					margin: 0 auto;
-					margin-top: 5px;
+					margin-top: 2px;
 					.bar{
 						.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
 					}
@@ -244,13 +246,6 @@ body {
 					display: block;
 					div{
 						display: inline;
-					}
-					.pageCurrent{
-						margin: 0 10px;
-						color: @textHighlightColor;
-					}
-					.pageTotal{
-						margin-left: 10px;
 					}
 				}
 			}
