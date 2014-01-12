@@ -22,7 +22,7 @@ class RootResource {
 	  
 	  s"""|Welcome to Kornell API\n
 	  |
-	  |Built on ${version.getProperty("built.on","development environment")}
+	  |Build number ${version.getProperty("build.number","#development_build")}
 	  """.stripMargin 
 	}
 }
