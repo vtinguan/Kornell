@@ -67,10 +67,10 @@ object EmailSender {
     Session.getDefaultInstance(props);
   }
 
-  lazy val SMTP_HOST = Option(System.getenv("SMTP_HOST"))
-  lazy val SMTP_PORT = System.getenv("SMTP_HOST")
-  lazy val SMTP_USERNAME = System.getenv("SMTP_USERNAME")
-  lazy val SMTP_PASSWORD = System.getenv("SMTP_PASSWORD")
+  lazy val SMTP_HOST = Settings.get("SMTP_HOST")
+  lazy val SMTP_PORT = Settings.get("SMTP_HOST").get
+  lazy val SMTP_USERNAME = Settings.get("SMTP_USERNAME").get
+  lazy val SMTP_PASSWORD = Settings.get("SMTP_PASSWORD").get
 
   lazy val smtp: Option[SMTPConfig] = environmentCfg
 
