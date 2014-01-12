@@ -17,6 +17,7 @@
 		<m2eclipse.wtp.contextRoot>/</m2eclipse.wtp.contextRoot>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
+		<buildNumber>Development Build</buildNumber>
 	</properties>
 
 	<repositories>
@@ -297,6 +298,8 @@
 								</tstamp>
 								<echo file="${project.build.outputDirectory}/version.properties"
 									message="built.on=${last.updated}" />
+								<echo file="${project.build.outputDirectory}/version.properties"
+									message="build.number=${buildNumber}" />
 							</tasks>
 						</configuration>
 					</execution>
