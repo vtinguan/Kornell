@@ -6,7 +6,7 @@ import java.util.Date
 
 @Path("/probes")
 @Produces(Array("text/plain"))
-class ProbeResource {
+class ProbesResource {
   @GET
   @Path("sendEmail")
   def sendEmail = {

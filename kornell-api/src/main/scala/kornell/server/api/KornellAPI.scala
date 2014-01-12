@@ -10,6 +10,7 @@ import kornell.server.ws.rs.reader.EventsReader
 import kornell.server.ws.rs.reader.LOMReader
 import kornell.server.ws.rs.reader.EntityReader
 import kornell.server.ws.rs.TOReader
+import kornell.server.dev.ProbesResource
 
 class KornellAPI extends Application {
   override def getClasses() = Set[Class[_]](
@@ -30,6 +31,7 @@ class KornellAPI extends Application {
       classOf[EventsResource],
       classOf[S3Resource],
       
+      classOf[ProbesResource],
       classOf[SandboxResource]
   ) asJava
   
