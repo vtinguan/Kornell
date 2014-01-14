@@ -77,19 +77,14 @@ public class Dean implements ProgressChangeEventHandler{
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
 		UserInfoTO user = clientFactory.getUserSession().getUserInfo();
-		List<Enrollment> enrollments = user.getEnrollmentsTO().getEnrollments();
-		for (Enrollment enrollment : enrollments) {
-			if(clientFactory.getCurrentCourseClass().getCourseClass().getUUID().equals(enrollment.getCourseClassUUID())){
-					enrollment.setProgress(event.getProgressPercent());
-					clientFactory.getKornellClient().updateEnrollment(enrollment, new Callback<Enrollment>() {
-						@Override
-						public void ok(Enrollment enrollmentUpdated) {
-							//
-						}
-					});
-				break;
+		Enrollment enrollment =  clientFactory.getCurrentCourseClass().getEnrollment();
+		enrollment.setProgress(event.getProgressPercent());
+		clientFactory.getKornellClient().updateEnrollment(enrollment, new Callback<Enrollment>() {
+			@Override
+			public void ok(Enrollment enrollmentUpdated) {
+				//
 			}
-		}
+		});
 	}
 
 }
