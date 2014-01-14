@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.admin.home.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -150,7 +151,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			public String getValue(Enrollment enrollment) {
 				return getEnrollmentStateAsText(enrollment.getState());
 			}
-		}, "Estado da Matrícula");
+		}, "Matrícula");
+
+		table.addColumn(new TextColumn<Enrollment>() {
+			@Override	
+			public String getValue(Enrollment enrollment) {
+				return getEnrollmentProgressAsText(enrollment.getProgress());
+			}
+		}, "Progresso");
 	
 	    List<HasCell<Enrollment, ?>> cells = new LinkedList<HasCell<Enrollment, ?>>();
 	    cells.add(new EnrollmentActionsHasCell("Aceitar", getStateChangeDelegate(EnrollmentState.enrolled)));
@@ -257,6 +265,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		
 		txtSearch = new TextBox();
 		txtSearch.addStyleName("txtSearch");
+		txtSearch.setTitle("nome, email, matrícula ou progresso");
 		txtSearch.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -312,13 +321,25 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 						enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
 				boolean enrollmentStateMatch = enrollment.getPerson() != null && enrollment.getState() != null &&
 						getEnrollmentStateAsText(enrollment.getState()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-				if(!fullNameMatch && !emailMatch && !enrollmentStateMatch){
+				boolean enrollmentProgressMatch = enrollment.getPerson() != null && enrollment.getProgress() != null &&
+						getEnrollmentProgressAsText(enrollment.getProgress()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+				if(!fullNameMatch && !emailMatch && !enrollmentStateMatch && !enrollmentProgressMatch){
 					enrollmentsCurrent.remove(i);
 					i--;
 				}
 			}
 			pagination.setRowData(enrollmentsCurrent);
 			pagination.displayTableData(1);
+		}
+	}
+
+	private String getEnrollmentProgressAsText(Integer progress) {
+		if(progress == null || progress == 0){
+			return "A Iniciar";
+		} else if(progress < 100){
+			return "Em andamento";
+		} else {
+			return "Concluído";
 		}
 	}
 	
@@ -395,7 +416,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			        	//super.render(context, object, sb);
 			        	SafeHtml html = SafeHtmlUtils.fromTrustedString("<button type=\"button\" class=\"gwt-Button btnEnrollmentsCellTable "+
 			        			(("Cancelar".equals(actionName) || "Negar".equals(actionName)) ? "btnSelected" : "btnAction")
-			        			+"\">"+actionName+"</button>");
+			        			+"\">"+actionName.toUpperCase()+"</button>");
 			            sb.append(html);
 			        }
 			        else

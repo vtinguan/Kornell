@@ -63,7 +63,7 @@ package object jdbc {
       rs.getDate("enrolledOn"),
       rs.getString("class_uuid"),
       rs.getString("person_uuid"),
-      rs.getBigDecimal("progress"),
+      rs.getInt("progress"),
       rs.getString("notes"),
       EnrollmentState.valueOf(rs.getString("state")))
       

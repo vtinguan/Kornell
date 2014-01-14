@@ -105,7 +105,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		setUpArrowNavigation();
 		
 	}
-	 
+
 	private void display(){
 		iconPrevious = new Image(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+".png");
 		displayButton(btnPrevious, BUTTON_PREVIOUS, iconPrevious);

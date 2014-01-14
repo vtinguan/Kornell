@@ -77,7 +77,7 @@ object Entities {
     es
   }
 
-  def newEnrollment(uuid: String, enrolledOn: Date, courseClassUUID: String, personUUID: String, progress: BigDecimal, notes: String, state: EnrollmentState): Enrollment = {
+  def newEnrollment(uuid: String, enrolledOn: Date, courseClassUUID: String, personUUID: String, progress: Integer, notes: String, state: EnrollmentState): Enrollment = {
     val e = factory.newEnrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)

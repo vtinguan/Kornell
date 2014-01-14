@@ -11,13 +11,13 @@ import kornell.core.lom.ContentsCategory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UserInfoTO;
-import kornell.core.to.coursedetails.CertificationTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
@@ -76,7 +76,9 @@ public class GenericCourseDetailsView extends Composite implements
 	private CourseClassTO courseClassTO;
 	private CourseDetailsTO courseDetails;
 	private UserInfoTO user;
+	private FlowPanel aboutPanel;
 	private FlowPanel topicsPanel;
+	private FlowPanel certificationPanel;
 	private ClientFactory clientFactory;
 
 	private Contents contents;
@@ -89,16 +91,14 @@ public class GenericCourseDetailsView extends Composite implements
 		this.session = clientFactory.getUserSession();
 		this.placeCtrl = clientFactory.getPlaceController();
 		this.currentCourseClass = clientFactory.getCurrentCourseClass();
-		LoadingPopup.show();
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 	}
 
 	private void initData() {
-		final String uuid = placeCtrl.getWhere() instanceof CourseDetailsPlace ? ((CourseDetailsPlace) placeCtrl
-				.getWhere()).getCourseClassUUID() : ((CourseClassPlace) placeCtrl
-				.getWhere()).getCourseClassUUID();
-
+		LoadingPopup.show();
+		certificationPanel = getCertificationPanel();
+		
 		session.getCourseClassesTO(new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO courseClasses) {
@@ -108,7 +108,7 @@ public class GenericCourseDetailsView extends Composite implements
 					}
 				}
 				user = session.getUserInfo();
-				session.courseClass(uuid).contents(new Callback<Contents>() {
+				session.courseClass(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()).contents(new Callback<Contents>() {
 					@Override
 					public void ok(Contents contents) {
 						setContents(contents);
@@ -140,6 +140,7 @@ public class GenericCourseDetailsView extends Composite implements
 		progressChangeEvent.setCurrentPage(pagesVisitedCount);
 		progressChangeEvent.setTotalPages(totalPages);		
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
+		progressChangeEvent.setCourseClassUUID(currentCourseClass.getCourseClass().getUUID());
 		bus.fireEvent(progressChangeEvent);
 	}
 
@@ -149,6 +150,8 @@ public class GenericCourseDetailsView extends Composite implements
 		builder.buildCourseDetails();
 		courseDetails = builder.getCourseDetailsTO();
 		
+		aboutPanel = getAboutPanel();
+		
 		topicsPanel = new FlowPanel();
 		topicsPanel.addStyleName("topicsPanel");
 		topicsPanel.add(getTopicsTableHeader());
@@ -157,21 +160,25 @@ public class GenericCourseDetailsView extends Composite implements
 		btnCurrent = btnAbout;
 		displayTitle();
 		displayButtons();
+
+		detailsContentPanel.add(aboutPanel);
+		detailsContentPanel.add(topicsPanel);
+		detailsContentPanel.add(certificationPanel);
 		displayContent(btnCurrent);
 	}
 
 	private void displayContent(Button btn) {
-		LoadingPopup.show();
-		detailsContentPanel.clear();
-		if (btn.equals(btnAbout)) {
-			detailsContentPanel.add(getInfosPanel());
-			detailsContentPanel.add(getHintsPanel());
-		} else if (btn.equals(btnTopics)) {
-			detailsContentPanel.add(topicsPanel);
-		} else if (btn.equals(btnCertification)) {
-			detailsContentPanel.add(getCertificationPanel());
-		}
+		aboutPanel.setVisible(btn.equals(btnAbout));
+		topicsPanel.setVisible(btn.equals(btnTopics));
+		certificationPanel.setVisible(btn.equals(btnCertification));
 		LoadingPopup.hide();
+	}
+	
+	private FlowPanel getAboutPanel(){
+		FlowPanel aboutPanel = new FlowPanel();
+		aboutPanel.add(getInfosPanel());
+		aboutPanel.add(getHintsPanel());
+		return aboutPanel;
 	}
 
 	private FlowPanel getCertificationPanel() {
@@ -194,7 +201,7 @@ public class GenericCourseDetailsView extends Composite implements
 		certificationInfo.add(infoTitle);
 
 		Label infoText = new Label(
-				"Confira abaixo o status dos testes e avaliações presentes neste curso. Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e ter sido aprovado na avaliação final.");
+				"Confira abaixo o status dos testes e avaliações presentes neste curso. Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e tenha sido aprovado na avaliação final.");
 		infoText.addStyleName("certificationInfoText");
 		certificationInfo.add(infoText);
 
@@ -205,94 +212,20 @@ public class GenericCourseDetailsView extends Composite implements
 		FlowPanel certificationContentPanel = new FlowPanel();
 		certificationContentPanel.addStyleName("certificationContentPanel");
 
-		CertificationTO certificationTO1 = new CertificationTO(
-				"test",
-				"Pré-teste",
-				"Esta avaliação tem a intenção de identificar o seu conhecimento referente ao tema do curso. A diferença da nota do pré-teste com o pós-teste (avaliação final) serve para te mostrar o ganho de conhecimento que você terá obtido ao final do curso.");
-		CertificationTO certificationTO2 = new CertificationTO(
-				"test",
-				"Pós-teste",
-				"Esta avaliação final tem a intenção de identificar o seu conhecimento após a conclusão do curso.");
-		CertificationTO certificationTO3 = new CertificationTO(
-				"certification",
-				"Certificado",
-				"Impressão do certificado. Uma vez que o curso for terminado, você poderá gerar o certificado aqui.");
-
-
-		certificationContentPanel.add(getCertificationWrapper(certificationTO1));
-		certificationContentPanel.add(getCertificationWrapper(certificationTO2));
-		certificationContentPanel.add(getCertificationWrapper(certificationTO3));
+		certificationContentPanel.add(new GenericCertificationItemView(bus, session, currentCourseClass, GenericCertificationItemView.TEST));
+		certificationContentPanel.add(new GenericCertificationItemView(bus, session, currentCourseClass, GenericCertificationItemView.CERTIFICATION)); 
 
 		return certificationContentPanel;
-	}
-
-	private FlowPanel getCertificationWrapper(CertificationTO certificationTO) {
-		FlowPanel certificationWrapper = new FlowPanel();
-		certificationWrapper.addStyleName("certificationWrapper");
-
-		FlowPanel itemPanel = new FlowPanel();
-		itemPanel.addStyleName("itemPanel");
-
-		Image certificationIcon = new Image(IMAGES_PATH
-				+ certificationTO.getType() + ".png");
-		certificationIcon.addStyleName("certificationIcon");
-		itemPanel.add(certificationIcon);
-
-		Label lblName = new Label(certificationTO.getName());
-		lblName.addStyleName("lblName");
-		itemPanel.add(lblName);
-
-		Label lblDescription = new Label(certificationTO.getDescription());
-		lblDescription.addStyleName("lblDescription");
-		itemPanel.add(lblDescription);
-
-		certificationWrapper.add(itemPanel);
-
-		Label lblStatus = new Label(certificationTO.getStatus());
-		lblStatus.addStyleName("lblStatus");
-		certificationWrapper.add(lblStatus);
-
-		Label lblGrade = new Label(
-				"certification".equals(certificationTO.getType()) ? " " : (!""
-						.equals(certificationTO.getGrade()) ? certificationTO
-						.getGrade() : "-"));
-		lblGrade.addStyleName("lblGrade");
-		certificationWrapper.add(lblGrade);
-
-		Anchor lblActions;
-		if ("test".equals(certificationTO.getType())) {
-			lblActions = new Anchor("Visualizar");
-		} else if ("certification".equals(certificationTO.getType())) {
-			lblActions = new Anchor("Gerar");
-			lblActions.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					Window.Location.assign(session.getApiUrl() + "/report/certificate/"
-							+ user.getPerson().getUUID() + "/"
-							+ courseClassTO.getCourseClass().getUUID());
-				}
-			});
-		} else {
-			lblActions = new Anchor("-");
-		}
-		lblActions.addStyleName("lblActions");
-		certificationWrapper.add(lblActions);
-
-		return certificationWrapper;
 	}
 
 	private FlowPanel getCertificationTableHeader() {
 		FlowPanel certificationHeaderPanel = new FlowPanel();
 		certificationHeaderPanel.addStyleName("certificationHeaderPanel");
 
-		certificationHeaderPanel.add(getHeaderButton("Item", "btnItem",
-				"btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus",
-				"btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade",
-				"btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions",
-				"btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Item", "btnItem", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions", "btnCertificationHeader"));
 
 		return certificationHeaderPanel;
 	}

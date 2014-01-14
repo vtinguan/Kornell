@@ -1,17 +1,38 @@
 package kornell.gui.client.personnel;
 
-import kornell.api.client.KornellClient;
-import kornell.gui.client.ClientFactory;
+import java.math.BigDecimal;
+import java.util.List;
 
-public class Dean {
+import kornell.api.client.Callback;
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.Institution;
+import kornell.core.to.UserInfoTO;
+import kornell.gui.client.ClientFactory;
+import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressChangeEventHandler;
+
+public class Dean implements ProgressChangeEventHandler{
 	
-	KornellClient client;
+	private static Dean instance;
+	
+	private ClientFactory clientFactory;
 	
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
 	
-	public Dean(ClientFactory clientFactory) { 
-		this.client = clientFactory.getKornellClient();		
+	public static Dean createInstance(ClientFactory clientFactory){
+		if(instance == null)
+			instance = new Dean(clientFactory);
+		return instance;
+	}
+	
+	public static Dean getInstance(){
+		return instance;
+	}
+	
+	private Dean(ClientFactory clientFactory) { 
+		this.clientFactory = clientFactory;
+		this.clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE, this);
 		
 		String url = clientFactory.getInstitution().getAssetsURL();
 		if(url != null){
@@ -20,7 +41,7 @@ public class Dean {
 			setDefaultFavicon();
 		}
 		
-		String name = clientFactory.getInstitution().getName();
+		String name = clientFactory.getInstitution().getFullName();
 		if(name != null){
 			updateTitle(name);
 		} else {
@@ -52,5 +73,23 @@ public class Dean {
 	private static native void updateTitle(String title) /*-{
 		$wnd.document.title = title;
 	}-*/;
+
+	@Override
+	public void onProgressChange(ProgressChangeEvent event) {
+		UserInfoTO user = clientFactory.getUserSession().getUserInfo();
+		List<Enrollment> enrollments = user.getEnrollmentsTO().getEnrollments();
+		for (Enrollment enrollment : enrollments) {
+			if(clientFactory.getCurrentCourseClass().getCourseClass().getUUID().equals(enrollment.getCourseClassUUID())){
+					enrollment.setProgress(event.getProgressPercent());
+					clientFactory.getKornellClient().updateEnrollment(enrollment, new Callback<Enrollment>() {
+						@Override
+						public void ok(Enrollment enrollmentUpdated) {
+							//
+						}
+					});
+				break;
+			}
+		}
+	}
 
 }
