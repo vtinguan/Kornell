@@ -10,6 +10,7 @@ import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
 import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.CourseClassPlace;
@@ -154,9 +155,7 @@ public class CourseSequencer implements Sequencer {
 			public void ok(UserSession session) {
 				session.setItem(getBreadcrumbKey(), currentKey());
 				String personUUID = session.getPersonUUID();
-				client.events()
-						.actomEntered(personUUID, courseClassUUID,
-								currentActom.getKey()).fire();
+				client.events().actomEntered(personUUID, courseClassUUID, currentActom.getKey()).fire();
 				currentActom.setVisited(true);
 				fireProgressChangeEvent();
 			}
@@ -223,7 +222,6 @@ public class CourseSequencer implements Sequencer {
 					@Override
 					public void ok(UserSession session) {
 						String currentKey = session.getItem(getBreadcrumbKey());
-						// TODO: Fetch current position
 						currentIndex = lookupCurrentIndex(currentKey);
 						currentActom = actoms.get(currentIndex);
 						initialLoad();
@@ -329,6 +327,7 @@ public class CourseSequencer implements Sequencer {
 		progressChangeEvent.setCurrentPage(currentIndex+1);
 		progressChangeEvent.setTotalPages(totalPages);		
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
+		progressChangeEvent.setCourseClassUUID(courseClassUUID);
 		bus.fireEvent(progressChangeEvent);
 	}
 }

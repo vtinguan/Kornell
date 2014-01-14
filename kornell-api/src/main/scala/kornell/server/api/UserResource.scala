@@ -2,6 +2,7 @@ package kornell.server.api
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable.Set
+
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs._
 import javax.ws.rs.core.Context
@@ -16,15 +17,10 @@ import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.Institutions
 import kornell.server.repository.jdbc.PersonRepository
 import kornell.server.repository.jdbc.Registrations
+import kornell.server.repository.jdbc.Enrollments
 import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import org.apache.commons.fileupload.FileItemIterator
-import org.apache.commons.fileupload.servlet.ServletFileUpload
-import org.apache.commons.fileupload.FileItemStream
-import javax.servlet.http.HttpServletRequest
 
 @Path("user")
 class UserResource{
@@ -45,6 +41,8 @@ class UserResource{
     	val roles = Auth.rolesOf(username)
     	user.setRoles((Set.empty ++ roles).asJava)
     	user.setRegistrationsTO(Registrations.getAll(p))
+    	user.setEnrollmentsTO(newEnrollmentsTO(Enrollments.byPerson(p.getUUID)))
+    	
     	Option(user)
   }
 
@@ -62,13 +60,14 @@ class UserResource{
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
     	
-    	if(user.getPerson().getConfirmation().equals(confirmation)){
+    	if(confirmation.equals(user.getPerson().getConfirmation())){
     		Auth.confirmAccount(user.getPerson().getUUID())
     		user.getPerson().setConfirmation("")
     	}
     	val roles = Auth.rolesOf(user.getUsername)
     	user.setRoles((Set.empty ++ roles).asJava)
     	user.setRegistrationsTO(Registrations.getAll(p))
+    	user.setEnrollmentsTO(newEnrollmentsTO(Enrollments.byPerson(p.getUUID)))
     	
     	Option(user)
   }
@@ -86,12 +85,12 @@ class UserResource{
 	    	user.setPerson(person.get)
 		    user.setUsername(user.getPerson().getEmail())
 		    user.setEmail(user.getPerson().getEmail())
+	    	user.setRegistrationsTO(Registrations.getAll(person.get))
 	    	//val signingNeeded = Registrations.signingNeeded(p)
 	    	//user.setSigningNeeded(signingNeeded)
 	    	//user.setLastPlaceVisited(p.getLastPlaceVisited)
 	    	//val roles = Auth.rolesOf(user.getUsername)
 	    	//user.setRoles((Set.empty ++ roles).asJava)
-	    	user.setRegistrationsTO(Registrations.getAll(person.get))
 	    	Option(user)
 	    }
 	    else {
@@ -105,9 +104,11 @@ class UserResource{
   @Produces(Array(UserInfoTO.TYPE))
   def checkUsernameAndEmail(@PathParam("email") email:String):Option[UserInfoTO] = {
   	val user = newUserInfoTO
-	val emailFetched = Auth.getEmail(email)
-	if(emailFetched.isDefined)
-		user.setEmail(emailFetched.get)
+	//verify if there's a password set for this email
+  	//if an admin created this user, there will be an entry on the person table, 
+  	//but not one on the Password table
+	if(Auth.hasPassword(email))
+		user.setEmail(email)
 	Option(user)
   }
   

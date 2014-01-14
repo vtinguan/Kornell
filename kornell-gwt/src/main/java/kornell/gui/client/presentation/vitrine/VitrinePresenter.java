@@ -68,13 +68,13 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			public void ok(final UserInfoTO user) {
 				clientFactory.getUserSession().setCurrentUser(user);
 				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
-				if("".equals(user.getPerson().getConfirmation())){
+				//if("".equals(user.getPerson().getConfirmation())){
 					doLogin(user);
-				} else {
+				/*} else {
 					view.setMessage("Usuário não verificado. Confira seu email.");
 					view.showMessage();
 					ClientProperties.remove("Authorization");
-				}
+				}*/
 			}
 
 			private void doLogin(final UserInfoTO user) {

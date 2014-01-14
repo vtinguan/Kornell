@@ -24,7 +24,7 @@ import kornell.core.entity.CourseClass
 import kornell.core.util.UUID
 import kornell.server.repository.service.RegistrationEnrollmentService
 
-class Enrollments() {
+object Enrollments {
 
   def byUUID(enrollmentUUID: String): Option[Enrollment] =
     sql"""
@@ -40,6 +40,13 @@ class Enrollments() {
         | order by e.state desc, p.fullName, p.email
 	    """.map[Enrollment](toEnrollment))
 
+  def byPerson(personUUID: String) =
+    sql"""
+	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
+      	| from Enrollment e join Person p on e.person_uuid = p.uuid where
+        | e.person_uuid = ${personUUID}
+	    """.map[Enrollment](toEnrollment)
+
   def byCourseClassAndPerson(courseClassUUID: String, personUUID: String): Option[Enrollment] =
     sql"""
 	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
@@ -52,8 +59,8 @@ class Enrollments() {
     sql"""
 	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
       	| from Enrollment e join Person p on e.person_uuid = p.uuid
-        | e.person_uuid = ${personUUID}
-	    | e.state = ${state.toString()}
+        | where e.person_uuid = ${personUUID}
+	    | and e.state = ${state.toString()}
         | order by e.state desc, p.fullName, p.email
 	    """.map[Enrollment](toEnrollment)
 
@@ -64,11 +71,19 @@ class Enrollments() {
     	values($randomUUID,$courseClassUUID,$person_uuid,now(),${state.toString()})
     """.executeUpdate
   }
+  
+  def update(enrollment: Enrollment): Enrollment = {    
+    sql"""
+    | update Enrollment e
+    | set e.enrolledOn = ${enrollment.getEnrolledOn},
+    | e.class_uuid = ${enrollment.getCourseClassUUID},
+    | e.person_uuid = ${enrollment.getPerson.getUUID},
+    | e.progress = ${enrollment.getProgress.intValue},
+    | e.notes = ${enrollment.getNotes},
+    | e.state = ${enrollment.getState.toString}
+    | where e.uuid = ${enrollment.getUUID}""".executeUpdate
+    enrollment
+  }
 
-}
-
-object Enrollments {
-  def apply(): Enrollments =
-    new Enrollments()
 }
 

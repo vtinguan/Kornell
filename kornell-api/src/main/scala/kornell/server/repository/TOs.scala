@@ -15,6 +15,8 @@ import kornell.core.util.StringUtils
 import kornell.core.entity.EnrollmentState
 import kornell.core.to.RegistrationRequestTO
 import kornell.core.to.CourseClassTO
+import kornell.core.to.EnrollmentsTO
+import kornell.core.entity.Enrollment
 
 //TODO: Consider turning to Object
 object TOs {
@@ -22,10 +24,18 @@ object TOs {
 
   def newUserInfoTO = tos.newUserInfoTO.as
   def newRegistrationsTO: RegistrationsTO = tos.newRegistrationsTO.as
+  def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
+  
   def newRegistrationsTO(registrationList: List[Registration]): RegistrationsTO = {
     val registrations = newRegistrationsTO
     registrations.setRegistrations(registrationList asJava)
     registrations
+  }
+  
+  def newEnrollmentsTO(enrollmentList: List[Enrollment]): EnrollmentsTO = {
+    val enrollments = newEnrollmentsTO
+    enrollments.setEnrollments(enrollmentList asJava)
+    enrollments
   }
   
   /*def newCourseClassTO(
@@ -78,7 +88,7 @@ object TOs {
     enrollmentState: String) = {
     val classTO = tos.newCourseClassTO.as
     val versionTO = tos.newCourseVersionTO.as
-    val prog = if (progress != null) new BigDecimal(progress) else null
+    val prog = if (progress != null) Integer.parseInt(progress) else 0
     val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
     val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt)
     val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID)

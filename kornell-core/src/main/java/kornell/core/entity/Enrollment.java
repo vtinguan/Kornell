@@ -1,6 +1,5 @@
 package kornell.core.entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public interface Enrollment extends Entity{
@@ -14,12 +13,9 @@ public interface Enrollment extends Entity{
 	
 	Person getPerson();
 	void setPerson(Person person);
-	
-	/**
-	 * @return Progress on the course as a percentage (between 0 and 1) 
-	 */
-	BigDecimal getProgress(); 
-	void setProgress(BigDecimal progress);
+
+	Integer getProgress(); 
+	void setProgress(Integer progress);
 	
 	String getNotes();
 	void setNotes(String notes);

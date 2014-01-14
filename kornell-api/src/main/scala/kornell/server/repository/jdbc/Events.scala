@@ -47,7 +47,7 @@ object Events {
 		""".executeUpdate
 		
 	  if(EnrollmentState.preEnrolled.equals(toState) || EnrollmentState.enrolled.equals(toState)){
-	    val enrollment = Enrollments().byUUID(enrollmentUUID).get
+	    val enrollment = Enrollments.byUUID(enrollmentUUID).get
 	    val courseClass = CourseClasses(enrollment.getCourseClassUUID).get
 	    val course = Courses.byCourseClassUUID(courseClass.getUUID).get
 	    val institution = Institutions.byUUID(courseClass.getInstitutionUUID).get

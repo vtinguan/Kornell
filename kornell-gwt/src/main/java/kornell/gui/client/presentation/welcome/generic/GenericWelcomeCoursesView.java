@@ -118,10 +118,10 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 			if(course.getEnrollment().getProgress() == null){
 				pnlCoursesToAcquire.add(courseSummaryView);
 			}
-			else if((course.getEnrollment().getProgress().compareTo(BigDecimal.valueOf(1)) == 0)){
+			else if(course.getEnrollment().getProgress() == 1){
 				pnlCoursesFinished.add(courseSummaryView);
 			}
-			else if(!(course.getEnrollment().getProgress().compareTo(BigDecimal.valueOf(0)) == 0)){
+			else if(!(course.getEnrollment().getProgress() == 0)){
 				pnlCoursesInProgress.add(courseSummaryView);
 			}
 			else{
