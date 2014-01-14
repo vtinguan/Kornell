@@ -27,7 +27,7 @@ class KornellAPI extends Application {
       classOf[RegistrationsResource],
       classOf[InstitutionsResource],
       classOf[ReportResource],
-      classOf[EnrollmentResource],
+      classOf[EnrollmentsResource],
       classOf[EventsResource],
       classOf[S3Resource],
       
