@@ -34,10 +34,10 @@ public class Captain implements LogoutEventHandler, LoginEventHandler{
 		//TODO find a better way to clear the cache
 		//the last user's infos were appearing when I 
 		//logged in with another one
-		Window.Location.reload();
+		//Window.Location.reload();
 		//TODO remove this also
 		ClientProperties.remove("Authorization");
-		//placeCtrl.goTo(VitrinePlace.instance);
+		placeCtrl.goTo(VitrinePlace.instance);
 	}
 
 	@Override
