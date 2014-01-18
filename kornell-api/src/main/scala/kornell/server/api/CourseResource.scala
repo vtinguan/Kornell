@@ -13,7 +13,7 @@ import kornell.core.lom.Contents
 import kornell.server.repository.jdbc.Auth
 import kornell.core.entity.Person
 import kornell.core.lom.Content
- 
+
 class CourseResource(uuid: String) {
   @GET
   @Produces(Array(CourseTO.TYPE))

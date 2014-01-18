@@ -5,6 +5,10 @@ function suicide() {
 	exit
 }
 
+function log(){
+  echo "[$0] $1"
+}
+
 if [[ -z "$KNL_API_URL" ]]; 
 	then suicide "Set KNL_API_URL to the url of the API environment."; fi
 if [ -z "$KNL_BUCKET" ]; 
@@ -14,45 +18,46 @@ if [ -z "$AWS_ACCESS_KEY_ID" ];
 if [ -z "$AWS_SECRET_ACCESS_KEY" ]; 
 	then suicide "Set AWS_SECRET_ACCESS_KEY to your AWS secret key"; fi
 
-S3CMD=${S3CMD:-"s3cmd"}
+REGION=${REGION:-"sa-east-1"}
 S3CMD_CFG=${S3CMD_CFG:-".s3cfg-kornell"} 
 SRC_DIR=${SRC_DIR:-"${PWD}/kornell-gwt/target/kornell-gwt"}
 KNL_CFG=${KNL_CFG:-$SRC_DIR"/KornellConfig.js"}
 
 
-echo "=== GWT Deployment Variables ==="
-echo "KNL_API_URL=$KNL_API_URL"
-echo "KNL_BUCKET=$KNL_BUCKET"
-echo "S3CMD=$S3CMD"
-echo "S3CMD_CFG=$S3CMD_CFG"
-echo "KNL_CFG=$KNL_CFG"
-echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
-echo "================================"
+log "=== GWT Deployment Variables ==="
+log "KNL_API_URL=$KNL_API_URL"
+log "KNL_BUCKET=$KNL_BUCKET"
+log "S3CMD=$S3CMD"
+log "S3CMD_CFG=$S3CMD_CFG"
+log "KNL_CFG=$KNL_CFG"
+log "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
+log "================================"
 
-echo Generating s3cmd config file
-echo -ne "access_key = $AWS_ACCESS_KEY_ID
-secret_key = $AWS_SECRET_ACCESS_KEY
-" > $S3CMD_CFG
-
-echo Setting API Endpoint
+log "Setting API Endpoint"
 echo -n 'KornellConfig.apiEndpoint = "' > $KNL_CFG
 echo -n $KNL_API_URL >> $KNL_CFG
 echo -n '";' >> $KNL_CFG
 
-echo Deploying Cacheable Files to S3
-# Cacheable for 30 days (2592000 seconds)
-$S3CMD -c $S3CMD_CFG  \
-  --delete-removed \
+log "[$0] Deploying Cacheable Files to S3"
+
+aws s3 sync \
+  ${SRC_DIR}/ \
+  s3://$KNL_BUCKET \
+  --delete \
+  --exclude='*.nocache.*' \
   --exclude='WEB-INF/*' \
-  --exclude='*.nocache.js' \
+  --cache-control 'max-age=2592000' \
+  --region=$REGION
+
+log "Deploying Non-cacheable Files to S3"
+
+aws s3 cp \
+  ${SRC_DIR}/ \
+  s3://$KNL_BUCKET \
   --recursive \
-  --add-header "Cache-control: max-age=2592000" \
-  sync ${SRC_DIR}/  s3://$KNL_BUCKET
+  --exclude '*' \
+  --include '*.nocache.*' \
+  --cache-control 'max-age=0' \
+  --region=$REGION
 
-echo Deploying Non-cacheable Files to S3
-# Don't cache Kornell.nocache.js
-$S3CMD -c $S3CMD_CFG  \
-  --add-header "Cache-control: max-age=0" \
-  put ${SRC_DIR}/Kornell/Kornell.nocache.js  s3://$KNL_BUCKET/Kornell/
-
-echo Unless you see errors above, you should be deployed and good to go. 
+log "GWT component deploying finished" 

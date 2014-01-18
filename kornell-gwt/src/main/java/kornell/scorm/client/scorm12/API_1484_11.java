@@ -1,4 +1,4 @@
-package kornell.scorm.client;
+package kornell.scorm.client.scorm12;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,22 +73,22 @@ public final class API_1484_11 {
 	public static native void bindToWindow(API_1484_11 api) /*-{
 		$wnd.API_1484_11 = {
 			Initialize : function() {
-				$entry(api.@kornell.scorm.client.API_1484_11::Initialize()());
+//				$entry(api.@kornell.scorm.client.API_1484_11::Initialize()());
 			},
 			Terminate : function() {
-				$entry(api.@kornell.scorm.client.API_1484_11::Terminate()());
+//				$entry(api.@kornell.scorm.client.API_1484_11::Terminate()());
 			},
 			GetLastError : function() {
-				return api.@kornell.scorm.client.API_1484_11::GetLastError()();				
+//				return api.@kornell.scorm.client.API_1484_11::GetLastError()();				
 			},
 			GetValue : function(key) {
-				return api.@kornell.scorm.client.API_1484_11::GetValue(Ljava/lang/String;)(key);
+//				return api.@kornell.scorm.client.API_1484_11::GetValue(Ljava/lang/String;)(key);
 			},
 			SetValue : function(key,value){
 				if (typeof value == "number")
-				return api.@kornell.scorm.client.API_1484_11::SetNumber(Ljava/lang/String;D)(key,value);
+//				return api.@kornell.scorm.client.API_1484_11::SetNumber(Ljava/lang/String;D)(key,value);
 				else if(typeof value == "string")
-				return api.@kornell.scorm.client.API_1484_11::SetString(Ljava/lang/String;Ljava/lang/String;)(key,value);
+//				return api.@kornell.scorm.client.API_1484_11::SetString(Ljava/lang/String;Ljava/lang/String;)(key,value);
 				else throw "cannot set value of type " + typeof value
 			}
 			
