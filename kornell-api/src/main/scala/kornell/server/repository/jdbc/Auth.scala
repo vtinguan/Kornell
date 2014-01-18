@@ -32,8 +32,8 @@ object Auth {
     rs.getString("addressLine2"),
     rs.getString("postalCode"))
 
-  implicit def toString(rs: ResultSet): String = rs.getString("email")
-
+  implicit def toString(rs: ResultSet): String = rs.getString(1) 
+  
   def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T = {
     val principal = if (sc != null) sc.getUserPrincipal else null
     val username =
@@ -72,11 +72,11 @@ object Auth {
 	""".executeUpdate
   
 
-  def getEmail(email: String) = 
+  def hasPassword(username: String) = 
     sql"""
-    	select p.email from Person p
-    	where p.email = $email
-    """.first[String]
+    	select pwd.username from Password pwd
+    	where pwd.username = $username
+    """.first[String].isDefined
   
 
   def setPlainPassword(personUUID: String, username: String, plainPassword: String) = 

@@ -58,9 +58,9 @@ public class GenericCourseSummaryView extends Composite {
 		hTitle.setText(course.getTitle());
 		pDescription.setText(course.getDescription());
 		
-		BigDecimal progress = courseTO.getEnrollment().getProgress();
+		Integer progress = courseTO.getEnrollment().getProgress();
 		if(progress != null){
-			if(progress.compareTo(BigDecimal.ONE) == 0){
+			if(progress == 100){
 				Label certificate = new Label(constants.certificate());
 				certificate.addStyleName("courseProgress");
 				certificate.addStyleName("courseProgressCertificate");
@@ -73,11 +73,11 @@ public class GenericCourseSummaryView extends Composite {
 				
 				pProgress.setText(constants.courseFinished());
 				iconCourseURL+="iconFinished.png"; 
-			}else if(progress.compareTo(BigDecimal.ZERO) == 0){
+			}else if(progress == 0){
 				pProgress.setText(constants.toStart());
 				iconCourseURL+="iconToStart.png"; 
 			}else{
-				pProgress.setText(toPercentString(progress) + " " + constants.complete().toLowerCase());
+				pProgress.setText(progress + " " + constants.complete().toLowerCase());
 				iconCourseURL+="iconCurrent.png"; 
 			}
 		}else{

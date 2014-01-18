@@ -297,7 +297,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initPersonnel() {
 		new Captain(bus, placeCtrl, institution.getUUID());
-		new Dean(this);
+		Dean.createInstance(this);
 	}
 
 	private void initSCORM() {

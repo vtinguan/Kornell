@@ -4,6 +4,7 @@ import kornell.api.client.Callback;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
@@ -43,6 +44,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	Button btnProfile;
 	@UiField
 	Button btnHome;
+	@UiField
+	Button btnAdmin;
 	@UiField
 	Button btnNotifications;
 	@UiField
@@ -85,6 +88,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	private void showButtons(boolean show) {
 		showButton(btnProfile, show);
 		showButton(btnHome, show);
+		showButton(btnAdmin, show && clientFactory.getUserSession().isDean());
 		showButton(btnNotifications, false);
 		showButton(btnMessages, false);
 		showButton(btnHelp, false);
@@ -104,6 +108,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		displayButton(btnFake, "btnFake", "", false, "");
 		displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
 		displayButton(btnHome, "btnHome", "home", true, "");
+		displayButton(btnAdmin, "btnAdmin", "admin", true, "");
 		displayButtonWithCount(btnNotifications, "btnNotifications", "notifications", "countNotifications", 19);
 		displayButtonWithCount(btnMessages, "btnMessages", "messages", "countMessages", 99);
 		displayButton(btnHelp, "btnHelp", "help", true, "");
@@ -160,6 +165,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	@UiHandler("btnHome")
 	void handleHome(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(clientFactory.getDefaultPlace());
+	}
+
+	@UiHandler("btnAdmin")
+	void handleAdmin(ClickEvent e) {
+		clientFactory.getPlaceController().goTo(new AdminHomePlace());
 	}
 
 	@UiHandler("btnExit")

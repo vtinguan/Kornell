@@ -49,7 +49,7 @@ object RegistrationEnrollmentService {
   }
 
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) =
-    Enrollments().byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
+    Enrollments.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
       case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean)
       case None => createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
     }
@@ -112,7 +112,7 @@ object RegistrationEnrollmentService {
     
     personRepo.setPassword(email, password)
     //for each existing pre-enrollment of this student, enroll
-    Enrollments().byStateAndPerson(EnrollmentState.preEnrolled, personRepo.get.get.getUUID).foreach(
+    Enrollments.byStateAndPerson(EnrollmentState.preEnrolled, personRepo.get.get.getUUID).foreach(
     		enrollment => Events.logEnrollmentStateChanged(
     		    UUID.random, new Date, enrollment.getPerson.getUUID, 
     		    enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
@@ -121,8 +121,8 @@ object RegistrationEnrollmentService {
   }
 
   private def createEnrollment(personUUID: String, courseClassUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
-	  Enrollments().createEnrollment(courseClassUUID, personUUID, EnrollmentState.notEnrolled)
-      val enrollment = Enrollments().byCourseClassAndPerson(courseClassUUID, personUUID).get
+	  Enrollments.createEnrollment(courseClassUUID, personUUID, EnrollmentState.notEnrolled)
+      val enrollment = Enrollments.byCourseClassAndPerson(courseClassUUID, personUUID).get
       Events.logEnrollmentStateChanged(
     		    UUID.random, new Date, enrollerUUID, 
     		    enrollment.getUUID, enrollment.getState, enrollmentState)

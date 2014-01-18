@@ -26,13 +26,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericTopicView extends Composite implements CourseDetailsView {
+public class GenericTopicView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericTopicView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
-
 	private KornellClient client;
 	private PlaceController placeCtrl;
 	private EventBus bus;
@@ -103,7 +101,10 @@ public class GenericTopicView extends Composite implements CourseDetailsView {
 		for (Content contentItem : content.getTopic().getChildren()) {
 			page = contentItem.getExternalPage();
 			if(!page.getTitle().startsWith("###")){ //TODO MDA 
-				childrenPanel.add(new GenericPageView(bus, client, placeCtrl, session, page, currentCourse, page.isVisited() || isPreviousPageVisited));
+				boolean enableAnchor = page.isVisited() || isPreviousPageVisited;
+				childrenPanel.add(new GenericPageView(bus, client, placeCtrl, session, page, currentCourse, enableAnchor));
+				if(!enableAnchor)
+					break;
 			}
 			isPreviousPageVisited = page.isVisited();
 		}
@@ -121,9 +122,5 @@ public class GenericTopicView extends Composite implements CourseDetailsView {
 		} else {
 			topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
 		}
-	}
-
-	@Override
-	public void setPresenter(Presenter presenter) {
 	}
 }
