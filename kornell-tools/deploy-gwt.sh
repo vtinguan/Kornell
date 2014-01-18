@@ -19,10 +19,10 @@ if [ -z "$AWS_SECRET_ACCESS_KEY" ];
 	then suicide "Set AWS_SECRET_ACCESS_KEY to your AWS secret key"; fi
 
 REGION=${REGION:-"sa-east-1"}
+AWS_CLI=${AWS_CLI:-"aws"}
 S3CMD_CFG=${S3CMD_CFG:-".s3cfg-kornell"} 
 SRC_DIR=${SRC_DIR:-"${PWD}/kornell-gwt/target/kornell-gwt"}
 KNL_CFG=${KNL_CFG:-$SRC_DIR"/KornellConfig.js"}
-
 
 log "=== GWT Deployment Variables ==="
 log "KNL_API_URL=$KNL_API_URL"
@@ -40,7 +40,7 @@ echo -n '";' >> $KNL_CFG
 
 log "[$0] Deploying Cacheable Files to S3"
 
-aws s3 sync \
+$AWS_CLI s3 sync \
   ${SRC_DIR}/ \
   s3://$KNL_BUCKET \
   --delete \
@@ -51,7 +51,7 @@ aws s3 sync \
 
 log "Deploying Non-cacheable Files to S3"
 
-aws s3 cp \
+$AWS_CLI s3 cp \
   ${SRC_DIR}/ \
   s3://$KNL_BUCKET \
   --recursive \
