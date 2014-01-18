@@ -11,8 +11,19 @@
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
 	</servlet>
+	
+	<servlet>
+	    <servlet-name>repositoryProxy</servlet-name>
+	    <servlet-class>kornell.server.RepositoryProxyServlet</servlet-class>
+	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<url-pattern>/Kornell/junithost/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+	    <servlet-name>repositoryProxy</servlet-name>
+	    <url-pattern>/repository/*</url-pattern>	    
 	</servlet-mapping>
 </web-app>

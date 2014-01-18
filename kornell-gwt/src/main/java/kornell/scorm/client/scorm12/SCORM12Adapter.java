@@ -1,4 +1,4 @@
-package kornell.scorm.client;
+package kornell.scorm.client.scorm12;
 
 import com.google.gwt.core.shared.GWT;
 

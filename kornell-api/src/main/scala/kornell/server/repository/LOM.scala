@@ -34,7 +34,12 @@ object LOM {
 		  			  title: String = "") = {
     val page = factory.newExternalPage.as
     page.setTitle(title)
-    page.setIndex(index.toInt)
+    try{
+    	page.setIndex(index.toInt)
+    }catch {
+      case e: NumberFormatException => page.setIndex(-666)
+    }
+    
     page.setKey(composeURL(prefix,key))
     page.setURL(composeURL(baseURL,prefix,key))
     page    
