@@ -27,7 +27,7 @@ class SandboxResource {
     val personRepo = People.createPerson(email, fullName)
     personRepo.setPassword(username, password).registerOn(institution_uuid)
     val person = personRepo.get
-    Enrollments().createEnrollment(course_uuid, person.get.getUUID(),EnrollmentState.requested)
+    Enrollments.createEnrollment(course_uuid, person.get.getUUID(),EnrollmentState.requested)
       
 
      val user = TOs.newUserInfoTO

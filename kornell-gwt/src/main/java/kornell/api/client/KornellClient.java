@@ -1,5 +1,6 @@
 package kornell.api.client;
 
+import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassesTO;
@@ -112,15 +113,19 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	}
 
 	public void getEnrollmentsByCourseClass(String courseClassUUID, Callback<Enrollments> cb) {
-		GET("/enrollment/?courseClassUUID=" + courseClassUUID).sendRequest(null, cb);
+		GET("/enrollments/?courseClassUUID=" + courseClassUUID).sendRequest(null, cb);
 	}
 
 	public void createEnrollments(EnrollmentRequestsTO enrollmentRequests, Callback<Enrollments> cb) {
-		PUT("/enrollment/").withContentType(EnrollmentRequestsTO.TYPE).withEntityBody(enrollmentRequests).go(cb);
+		PUT("/enrollments/requests").withContentType(EnrollmentRequestsTO.TYPE).withEntityBody(enrollmentRequests).go(cb);
+	}
+
+	public void updateEnrollment(Enrollment enrollment, Callback<Enrollment> cb) {
+		PUT("/enrollments/" + enrollment.getUUID()).withContentType(Enrollment.TYPE).withEntityBody(enrollment).go(cb);
 	}
 	
 	public void notesUpdated(String courseClassUUID, String notes) {
-		PUT("/enrollment/" + courseClassUUID + "/notesUpdated").sendRequest(notes,
+		PUT("/enrollments/" + courseClassUUID + "/notesUpdated").sendRequest(notes,
 				new Callback<Void>() {
 					@Override
 					public void ok(Void v) {

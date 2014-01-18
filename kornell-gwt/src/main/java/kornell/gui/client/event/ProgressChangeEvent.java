@@ -9,6 +9,7 @@ public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
 	private Integer totalPages;
 	private Integer currentPage;
 	private Integer pagesVisitedCount;
+	private String courseClassUUID;
 	
 	@Override
 	public Type<ProgressChangeEventHandler> getAssociatedType() {
@@ -54,5 +55,13 @@ public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
 
 	public Integer getPagesVisitedCount() {
 		return this.pagesVisitedCount;
+	}
+
+	public String getCourseClassUUID() {
+		return courseClassUUID;
+	}
+
+	public void setCourseClassUUID(String courseClassUUID) {
+		this.courseClassUUID = courseClassUUID;
 	}
 }
