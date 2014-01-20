@@ -42,15 +42,17 @@ class CourseClassResource(uuid: String) {
         null
       }else{ 
       }*/
-        val structureSrc = repo.source("structure.knl")
-        val structureText = structureSrc.mkString("")
-        val baseURL = repo.baseURL
-        val visited = classRepo.actomsVisitedBy(person)
-        val contents = ContentsParser.parse(baseURL, repo.prefix, structureText, visited)
+      val structureSrc = repo.source("structure.knl")
+      val structureText = structureSrc.mkString("")
+      val baseURL = repo.baseURL
+      val visited = classRepo.actomsVisitedBy(person)
+      val contents = ContentsParser.parse(baseURL, repo.prefix, structureText, visited)
 
       //contents.setCourseClass(classRepo.get)
       contents
     }
+
+  	
 }
 
 object CourseClassResource {

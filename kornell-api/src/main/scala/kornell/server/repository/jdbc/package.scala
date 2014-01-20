@@ -10,52 +10,53 @@ import kornell.core.entity.EnrollmentState
 import kornell.core.entity.CourseClass
 import kornell.core.to.CourseClassTO
 import kornell.core.entity.Course
+import java.util.UUID
 
 package object jdbc {
   //type UUID = String
   type ConnectionFactory = () => Connection
-  
-  implicit def toCourseClass(r: ResultSet): CourseClass = 
-    newCourseClass(r.getString("uuid"), r.getString("name"), 
-        r.getString("courseVersion_uuid"), r.getString("institution_uuid")) 
+
+  implicit def toCourseClass(r: ResultSet): CourseClass =
+    newCourseClass(r.getString("uuid"), r.getString("name"),
+      r.getString("courseVersion_uuid"), r.getString("institution_uuid"))
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
     rs.getString("code"),
     rs.getString("title"),
     rs.getString("description"),
-    rs.getString("infoJson"))    
-  
-  implicit def toCourseClassTO(r: ResultSet): CourseClassTO = 
-    TOs.newCourseClassTO(   
-    //course    
-    r.getString("courseUUID"), 
-    r.getString("code"), 
-    r.getString("title"),
-    r.getString("description"), 
-    r.getString("infoJson"),
-    //courseVersion
-    r.getString("courseVersionUUID"), 
-    r.getString("courseVersionName"), 
-    r.getString("repositoryUUID"), 
-    r.getDate("versionCreatedAt"),
-    //courseClass
-    r.getString("courseClassUUID"),
-    r.getString("courseClassName"), 
-    r.getString("institutionUUID"),
-    //enrollment
-    r.getString("enrollmentUUID"), 
-    r.getDate("enrolledOn"), 
-    r.getString("personUUID"), 
-    r.getString("progress"), 
-    r.getString("notes"), 
-    r.getString("enrollmentState"))
-    
+    rs.getString("infoJson"))
+
+  implicit def toCourseClassTO(r: ResultSet): CourseClassTO =
+    TOs.newCourseClassTO(
+      //course    
+      r.getString("courseUUID"),
+      r.getString("code"),
+      r.getString("title"),
+      r.getString("description"),
+      r.getString("infoJson"),
+      //courseVersion
+      r.getString("courseVersionUUID"),
+      r.getString("courseVersionName"),
+      r.getString("repositoryUUID"),
+      r.getDate("versionCreatedAt"),
+      //courseClass
+      r.getString("courseClassUUID"),
+      r.getString("courseClassName"),
+      r.getString("institutionUUID"),
+      //enrollment
+      r.getString("enrollmentUUID"),
+      r.getDate("enrolledOn"),
+      r.getString("personUUID"),
+      r.getString("progress"),
+      r.getString("notes"),
+      r.getString("enrollmentState"))
+
   def prop(name: String) = System.getProperty(name)
 
   val DEFAULT_URL = "jdbc:mysql:///ebdb"
-  val DEFAULT_USERNAME= "kornell"
-  val DEFAULT_PASSWORD= "42kornell73"
+  val DEFAULT_USERNAME = "kornell"
+  val DEFAULT_PASSWORD = "42kornell73"
 
   implicit def toEnrollment(rs: ResultSet): Enrollment =
     newEnrollment(
@@ -66,7 +67,6 @@ package object jdbc {
       rs.getInt("progress"),
       rs.getString("notes"),
       EnrollmentState.valueOf(rs.getString("state")))
-      
-    
-
+   
+  def randomUUID = UUID.randomUUID().toString()
 }

@@ -20,7 +20,8 @@ class BasicAuthFilter extends Filter {
       "/user/changePassword",
       "/user/uploadProfileImage",
       "/email/welcome", 
-      "/institutions")
+      "/institutions",
+      "/repository")
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
     (sreq, sres) match {
