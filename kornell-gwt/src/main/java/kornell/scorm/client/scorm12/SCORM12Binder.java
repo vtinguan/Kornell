@@ -14,6 +14,20 @@ public class SCORM12Binder {
 			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSFinish(Ljava/lang/String;)(param);			
 		}
 		
+		API.LMSGetLastError = function(){
+			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSGetLastError()();
+		}
+		
+		API.LMSGetValue = function(param) {
+			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSGetValue(Ljava/lang/String;)(param);			
+		} 
+		
+		API.LMSSetValue = function(param,value) {
+			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSSetValue(Ljava/lang/String;Ljava/lang/String;)(param,value);			
+		} 
+		
+		
+		
 		$wnd.API = API;
 		console.debug("Scorm 1.2 Adapter bound");
 	}-*/;

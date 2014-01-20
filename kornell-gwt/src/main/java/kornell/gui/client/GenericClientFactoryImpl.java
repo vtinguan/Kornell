@@ -61,6 +61,7 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
 import kornell.gui.client.util.ClientProperties;
+import kornell.scorm.client.scorm12.CMIDataModel;
 import kornell.scorm.client.scorm12.SCORM12Adapter;
 import kornell.scorm.client.scorm12.SCORM12Binder;
 
@@ -300,9 +301,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		Dean.createInstance(this);
 	}
 
-	private void initSCORM() {
-		// SCORM2004Binder.bind(new SCORM2004Adapter());
-		SCORM12Binder.bind(new SCORM12Adapter());
+	private void initSCORM() {		
+		CMIDataModel cmi = new CMIDataModel(getKornellClient());
+		SCORM12Binder.bind(new SCORM12Adapter(cmi));
 	}
 
 	private void initException() {

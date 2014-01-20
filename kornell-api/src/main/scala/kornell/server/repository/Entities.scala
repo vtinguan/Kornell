@@ -156,5 +156,13 @@ object Entities {
     clazz.setInstitutionUUID(institutionUUID)
     clazz
   }
+  
+  def newWebRepository(uuid:String,distributionURL:String,prefix:String) = {
+    val webRepo = factory.newWebReposiory.as
+    webRepo.setUUID(uuid)
+    webRepo.setPrefix(prefix)
+    webRepo.setDistributionURL(distributionURL)
+    webRepo
+  }
 
 }
