@@ -113,7 +113,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 
 	private void display(CoursesTO to) {
 		clearPanels();
-		for (final CourseTO course : to.getCourses()) {
+		/*for (final CourseTO course : to.getCourses()) {
 			GenericCourseSummaryView courseSummaryView = new GenericCourseSummaryView(placeCtrl,course);
 			if(course.getEnrollment().getProgress() == null){
 				pnlCoursesToAcquire.add(courseSummaryView);
@@ -127,7 +127,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 			else{
 				pnlCoursesToStart.add(courseSummaryView);
 			}
-		}
+		}*/
 		disablePanels();
 		refreshButtonsSelection();
 		btnCoursesAll.setText(constants.allCourses());

@@ -171,8 +171,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	public static native void bindToWindow(KornellClient kapi) /*-{
 		$wnd.KAPI = {
 			saySomething : function() {
-				console
-						.debug(kapi.@kornell.api.client.KornellClient::saySomething()());
+				//console.debug(kapi.@kornell.api.client.KornellClient::saySomething()());
 			}
 		}
 	}-*/;

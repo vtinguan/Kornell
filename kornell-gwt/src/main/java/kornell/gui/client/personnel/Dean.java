@@ -1,36 +1,22 @@
 package kornell.gui.client.personnel;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import kornell.api.client.Callback;
 import kornell.core.entity.Enrollment;
-import kornell.core.entity.Institution;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 
+import com.google.gwt.dom.client.Document;
+
 public class Dean implements ProgressChangeEventHandler{
-	
-	private static Dean instance;
 	
 	private ClientFactory clientFactory;
 	
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
 	
-	public static Dean createInstance(ClientFactory clientFactory){
-		if(instance == null)
-			instance = new Dean(clientFactory);
-		return instance;
-	}
-	
-	public static Dean getInstance(){
-		return instance;
-	}
-	
-	private Dean(ClientFactory clientFactory) { 
+	public Dean(ClientFactory clientFactory) { 
 		this.clientFactory = clientFactory;
 		this.clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE, this);
 		
@@ -43,9 +29,11 @@ public class Dean implements ProgressChangeEventHandler{
 		
 		String name = clientFactory.getInstitution().getFullName();
 		if(name != null){
-			updateTitle(name);
+			//updateTitle(name);
+			Document.get().setTitle(name);
 		} else {
-			setDefaultTitle();
+			Document.get().setTitle(DEFAULT_SITE_TITLE);
+			//setDefaultTitle();
 		}
 	}
 	

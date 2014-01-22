@@ -93,7 +93,7 @@ public class GenericPageView extends Composite implements
 
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
-		page.setVisited(page.getIndex() <= event.getPagesVisitedCount());
+		page.setVisited(page.getIndex().intValue() <= event.getPagesVisitedCount().intValue());
 		// enable the anchor until the next one after the current
 		display(page.getIndex() <= (event.getPagesVisitedCount() + 1));
 	}

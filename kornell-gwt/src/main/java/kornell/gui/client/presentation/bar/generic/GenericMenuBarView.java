@@ -108,7 +108,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		displayButton(btnFake, "btnFake", "", false, "");
 		displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
 		displayButton(btnHome, "btnHome", "home", true, "");
-		displayButton(btnAdmin, "btnAdmin", "admin", true, "");
+		displayButton(btnAdmin, "btnAdmin", "admin", true, "Administração");
 		displayButtonWithCount(btnNotifications, "btnNotifications", "notifications", "countNotifications", 19);
 		displayButtonWithCount(btnMessages, "btnMessages", "messages", "countMessages", 99);
 		displayButton(btnHelp, "btnHelp", "help", true, "");
