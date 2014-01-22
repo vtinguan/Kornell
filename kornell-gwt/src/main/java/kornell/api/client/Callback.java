@@ -68,6 +68,8 @@ public abstract class Callback<T> implements RequestCallback {
 
 				AutoBean<T> bean = null;
 				AutoBeanFactory factory = factoryFor(contentType);
+				if("null".equals(responseText))
+					throw new NullPointerException("The remote service returned 'null', this is probably a bug.");
 				bean = AutoBeanCodex.decode(factory, clazz, responseText);
 				T unwrapped = bean.as();
 				try {

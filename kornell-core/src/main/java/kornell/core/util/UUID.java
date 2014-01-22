@@ -93,4 +93,8 @@ public class UUID {
 		}
 		return new String(uuid);
 	}
+	
+	public static String randomUUID() {
+		return uuid();
+	}
 }

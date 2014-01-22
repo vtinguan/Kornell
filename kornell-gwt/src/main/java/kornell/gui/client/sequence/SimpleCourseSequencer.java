@@ -21,7 +21,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class CourseSequencer implements Sequencer {
+public class SimpleCourseSequencer implements Sequencer {
 
 	private FlowPanel contentPanel;
 	private String courseClassUUID;
@@ -38,7 +38,7 @@ public class CourseSequencer implements Sequencer {
 	private Actom prevActom;
 	private Uidget prevUidget;
 
-	public CourseSequencer(EventBus bus, KornellClient client) {
+	public SimpleCourseSequencer(EventBus bus, KornellClient client) {
 		this.client = client;
 		this.bus = bus;
 		bus.addHandler(NavigationRequest.TYPE, this);
@@ -73,7 +73,7 @@ public class CourseSequencer implements Sequencer {
 	}
 
 	private String getBreadcrumbKey() {
-		return CourseSequencer.class.getName() + "." + courseClassUUID
+		return SimpleCourseSequencer.class.getName() + "." + courseClassUUID
 				+ ".CURRENT_KEY";
 	}
 

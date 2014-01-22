@@ -95,12 +95,7 @@ public class ExternalPageView extends Uidget {
 		UserSession.current(new Callback<UserSession>() {
 			@Override
 			public void ok(UserSession session) {
-				//String courseUUID
-				String personUUID=session.getPersonUUID(); 				
-				String signature = "juliomfaerman";
-				String url = url(src) 
-						.withParam("", "")
-						.build();
+				String url = url(src).build();
 				// TODO: Check if src exists				
 				iframe.setSrc(src); 
 			}

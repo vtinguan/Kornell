@@ -6,29 +6,28 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CourseClassPresenter implements CourseClassView.Presenter{
-	CourseClassView view;
+public class CourseClassPresenter implements CourseClassView.Presenter {
+	private CourseClassView view;
 	private CourseClassPlace place;
 	private SequencerFactory sequencer;
-	
+
 	public CourseClassPresenter(CourseClassView view,
-							 PlaceController placeCtrl,
-							 SequencerFactory sequencer) {		
+			PlaceController placeCtrl,
+			SequencerFactory seqFactory) {
 		this.view = view;
 		view.setPresenter(this);
-		this.sequencer = sequencer;		
-	}
-	
-
-	private void displayPlace() {	
-		sequencer.withPlace(place).withPanel(getPanel()).go();
+		this.sequencer = seqFactory;
 	}
 
+	private void displayPlace() {
+		sequencer.withPlace(place)
+				.withPanel(getPanel())
+				.go();
+	}
 
 	private FlowPanel getPanel() {
 		return view.getContentPanel();
 	}
-
 
 	@Override
 	public Widget asWidget() {

@@ -12,24 +12,29 @@ import kornell.server.repository.jdbc.Auth
 import kornell.server.repository.jdbc.Enrollments
 import kornell.server.repository.jdbc.Registrations
 import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
+import javax.ws.rs.PathParam
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
+
   @GET
   def get = Enrollments.byUUID(uuid)
-  
+
   @PUT
   @Produces(Array("text/plain"))
   @Path("acceptTerms")
-  def acceptTerms(implicit @Context sc: SecurityContext) = Auth.withPerson{ p =>
+  def acceptTerms(implicit @Context sc: SecurityContext) = Auth.withPerson { p =>
     Registrations(p.getUUID, uuid).acceptTerms
   }
-  
+
   @PUT
   @Produces(Array("text/plain"))
   @Consumes(Array(Enrollment.TYPE))
-  def update(implicit @Context sc: SecurityContext, enrollment: Enrollment) = Auth.withPerson{ p =>
+  def update(implicit @Context sc: SecurityContext, enrollment: Enrollment) = Auth.withPerson { p =>
     Enrollments.update(enrollment)
   }
-  
+
+  @Path("actoms/{actomKey}")
+  def actom(@PathParam("actomKey") actomKey: String) = ActomResource(uuid,actomKey)
+
 }
