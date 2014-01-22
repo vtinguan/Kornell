@@ -50,14 +50,14 @@ class BasicAuthFilter extends Filter {
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
     val auth = req.getHeader("Authorization");
     if (auth != null && auth.length() > 0) {
-      val (username, password) = extractCredentials(auth)
       try {
+    	val (username, password) = extractCredentials(auth)
         req.login(username, password);
         chain.doFilter(req, resp);
       } catch {
-        case se: ServletException =>
-          se.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-            s"Authentication failed for user $username at uri ${req.getRequestURI}")
+        case e: Exception =>
+          e.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+            s"Authentication failed at uri ${req.getRequestURI}")
       }
     } else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You should authenticate")
   }

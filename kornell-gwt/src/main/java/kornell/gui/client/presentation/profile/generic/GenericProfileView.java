@@ -296,7 +296,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 		// the email is shown only to the current user or the admin
 		if(isCurrentUser || isAdmin){
-			email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), isEditMode && isAdmin);
+			email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), false);
 			fields.add(email);
 			profileFields.add(email);
 			profileFields.add(getPrivatePanel());

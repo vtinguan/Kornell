@@ -188,9 +188,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	@Override
 	public void onGoToCourseButtonClicked() {
-		CourseClassPlace place = new CourseClassPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID());
-		clientFactory.setDefaultPlace(place);
-		clientFactory.getPlaceController().goTo(place);
+		clientFactory.getPlaceController().goTo(new CourseClassPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
 	}
 	
 	private void updateInstitution() {

@@ -15,9 +15,11 @@ package object jdbc {
   //type UUID = String
   type ConnectionFactory = () => Connection
   
-  implicit def toCourseClass(r: ResultSet): CourseClass = 
-    newCourseClass(r.getString("uuid"), r.getString("name"), 
-        r.getString("courseVersion_uuid"), r.getString("institution_uuid")) 
+  implicit def toCourseClass(rs: ResultSet): CourseClass = newCourseClass(
+    rs.getString("uuid"), 
+    rs.getString("name"), 
+    rs.getString("courseVersion_uuid"),
+    rs.getString("institution_uuid")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -26,30 +28,30 @@ package object jdbc {
     rs.getString("description"),
     rs.getString("infoJson"))    
   
-  implicit def toCourseClassTO(r: ResultSet): CourseClassTO = 
+  implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = 
     TOs.newCourseClassTO(   
     //course    
-    r.getString("courseUUID"), 
-    r.getString("code"), 
-    r.getString("title"),
-    r.getString("description"), 
-    r.getString("infoJson"),
+    rs.getString("courseUUID"), 
+    rs.getString("code"), 
+    rs.getString("title"),
+    rs.getString("description"), 
+    rs.getString("infoJson"),
     //courseVersion
-    r.getString("courseVersionUUID"), 
-    r.getString("courseVersionName"), 
-    r.getString("repositoryUUID"), 
-    r.getDate("versionCreatedAt"),
+    rs.getString("courseVersionUUID"), 
+    rs.getString("courseVersionName"), 
+    rs.getString("repositoryUUID"), 
+    rs.getDate("versionCreatedAt"),
     //courseClass
-    r.getString("courseClassUUID"),
-    r.getString("courseClassName"), 
-    r.getString("institutionUUID"),
+    rs.getString("courseClassUUID"),
+    rs.getString("courseClassName"), 
+    rs.getString("institutionUUID"),
     //enrollment
-    r.getString("enrollmentUUID"), 
-    r.getDate("enrolledOn"), 
-    r.getString("personUUID"), 
-    r.getString("progress"), 
-    r.getString("notes"), 
-    r.getString("enrollmentState"))
+    rs.getString("enrollmentUUID"), 
+    rs.getDate("enrolledOn"), 
+    rs.getString("personUUID"), 
+    rs.getString("progress"), 
+    rs.getString("notes"), 
+    rs.getString("enrollmentState"))
     
   def prop(name: String) = System.getProperty(name)
 

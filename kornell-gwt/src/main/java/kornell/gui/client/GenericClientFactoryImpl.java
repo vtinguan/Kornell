@@ -257,18 +257,19 @@ public class GenericClientFactoryImpl implements ClientFactory {
 									startAnonymous(session);
 								}
 							}
+							
+							@Override
+							public void unauthorized(){
+								startAnonymous(session);
+							}
 						});
-			}
-			
-			@Override
-			public void unauthorized(){
-				ClientProperties.remove("Authorization");
 			}
 			
 		});
 	}
 
 	private void startAnonymous(UserSession session) {
+		ClientProperties.remove("Authorization");
 		if (locationStrArray.length > 1
 				&& "#vitrine".equalsIgnoreCase(locationStrArray[0])) {
 			defaultPlace = new VitrinePlace(locationStrArray[1]);
@@ -298,7 +299,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initPersonnel() {
 		new Captain(bus, placeCtrl, institution.getUUID());
-		Dean.createInstance(this);
+		new Dean(this);
 	}
 
 	private void initSCORM() {
