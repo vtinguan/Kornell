@@ -17,11 +17,11 @@ class CourseClassRepository(uuid:String) {
   def version = CourseVersionRepository(get.getCourseVersionUUID())
   
   def actomsVisitedBy(p: Person): List[String] = sql"""
-  	select actom_key from ActomEntered 
+  	select actomKey from ActomEntered 
   	where courseClass_uuid = ${uuid}
   	and person_uuid = ${p.getUUID}
   	order by eventFiredAt
-  	""".map[String]({ rs => rs.getString("actom_key") })
+  	""".map[String]({ rs => rs.getString("actomKey") })
 }
 
 object CourseClassRepository extends App{

@@ -11,6 +11,7 @@ import kornell.server.ws.rs.reader.LOMReader
 import kornell.server.ws.rs.reader.EntityReader
 import kornell.server.ws.rs.TOReader
 import kornell.server.dev.ProbesResource
+import kornell.server.ws.rs.exception.NoSuchElementMapper
 
 class KornellAPI extends Application {
   override def getClasses() = Set[Class[_]](
@@ -19,6 +20,7 @@ class KornellAPI extends Application {
       classOf[TOReader],
       classOf[EntityReader],
       classOf[LOMReader],
+      classOf[NoSuchElementMapper],
       
       classOf[RootResource],
       classOf[UserResource],
@@ -30,6 +32,8 @@ class KornellAPI extends Application {
       classOf[EnrollmentsResource],
       classOf[EventsResource],
       classOf[S3Resource],
+      classOf[RepositoryResource],
+      classOf[ActomResource],
       
       classOf[ProbesResource],
       classOf[SandboxResource]

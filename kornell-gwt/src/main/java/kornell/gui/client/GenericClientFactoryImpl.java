@@ -61,19 +61,18 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
 import kornell.gui.client.util.ClientProperties;
-import kornell.scorm.client.SCORM12Binder;
-import kornell.scorm.client.SCORM2004Adapter;
+import kornell.scorm.client.scorm12.CMIDataModel;
+import kornell.scorm.client.scorm12.SCORM12Adapter;
+import kornell.scorm.client.scorm12.SCORM12Binder;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -185,7 +184,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				String styleName = rootLayoutPanel.getStyleName();
 				if (!styleName.isEmpty())
 					rootLayoutPanel.removeStyleName(styleName);
-				String[] split = event.getNewPlace().getClass().getName().split("\\.");
+				String[] split = event.getNewPlace().getClass().getName()
+						.split("\\.");
 				String newStyle = split[split.length - 1];
 				rootLayoutPanel.addStyleName(newStyle);
 			}
@@ -263,8 +263,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 								startAnonymous(session);
 							}
 						});
+
 			}
-			
+
+			@Override
+			public void unauthorized() {
+				ClientProperties.remove("Authorization");
+			}
+
 		});
 	}
 
@@ -302,14 +308,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		new Dean(this);
 	}
 
-	private void initSCORM() {
-		//SCORM2004Binder.bind(new SCORM2004Adapter());
-		SCORM12Binder.bind(new  SCORM2004Adapter());
-	}	
+	private void initSCORM() {		
+		CMIDataModel cmi = new CMIDataModel(getKornellClient());
+		SCORM12Binder.bind(new SCORM12Adapter(cmi));
+	}
 
 	private void initException() {
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-
 			@Override
 			public void onUncaughtException(Throwable e) {
 				System.out.println("** UNCAUGHT **");

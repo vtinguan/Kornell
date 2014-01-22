@@ -176,4 +176,8 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		}
 	}-*/;
 
+	public ActomClient actom(String actomKey) {
+		return new ActomClient(actomKey);
+	}
+
 }
