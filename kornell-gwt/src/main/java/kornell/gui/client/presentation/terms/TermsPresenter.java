@@ -8,7 +8,7 @@ public class TermsPresenter implements TermsView.Presenter{
 	private TermsView view;
 
 	public TermsPresenter(ClientFactory clientFactory) {
-		view = clientFactory.getTermsView();
+		view = clientFactory.getViewFactory().getTermsView();
 		view.setPresenter(this);
 	}
 	

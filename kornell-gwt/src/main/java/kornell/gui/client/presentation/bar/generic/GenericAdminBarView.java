@@ -3,9 +3,8 @@ package kornell.gui.client.presentation.bar.generic;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.NavigationForecastEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
@@ -179,12 +178,12 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
 		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace){
-			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
+			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			clientFactory.getPlaceController().goTo(new CourseClassPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
+			clientFactory.getPlaceController().goTo(new CourseClassPlace(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		
@@ -194,8 +193,8 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	void handleClickBtnNotes(ClickEvent e) {
 		if(notesPopup == null){
 			notesPopup = new NotesPopup(clientFactory.getUserSession(), 
-					clientFactory.getCurrentCourseClass().getCourseClass().getUUID(), 
-					clientFactory.getCurrentCourseClass().getEnrollment().getNotes());
+					Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), 
+					Dean.getInstance().getCourseClassTO().getEnrollment().getNotes());
 			notesPopup.show();
 		} else {
 			notesPopup.show();

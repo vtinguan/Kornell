@@ -14,6 +14,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
@@ -94,9 +95,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 		this.session = clientFactory.getUserSession();
 		this.user = session.getUserInfo();
 		this.placeCtrl = clientFactory.getPlaceController();
-		this.currentCourseClass = clientFactory.getCurrentCourseClass();
+		this.currentCourseClass = Dean.getInstance().getCourseClassTO();
 		this.defaultPlace = clientFactory.getDefaultPlace();
-		this.institution = clientFactory.getInstitution();
+		this.institution = Dean.getInstance().getInstitution();
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
@@ -110,7 +111,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		imgTitle.setUrl(IMAGE_PATH + "course.png");
 		lblTitle.setText("Perfil");
 
-		showContactDetails = clientFactory.getInstitution().isDemandsPersonContactDetails();
+		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
 
 		/*session.getS3PolicyTO(new Callback<S3PolicyTO>() {
 			@Override

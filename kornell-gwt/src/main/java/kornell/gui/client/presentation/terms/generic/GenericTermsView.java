@@ -9,6 +9,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
@@ -70,7 +71,7 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	private void initData() {
 		for (Registration registration : session.getUserInfo().getRegistrationsTO().getRegistrations()) {
-			if(clientFactory.getInstitution().getUUID().equals(registration.getInstitutionUUID()) && registration.getTermsAcceptedOn() != null){
+			if(Dean.getInstance().getInstitution().getUUID().equals(registration.getInstitutionUUID()) && registration.getTermsAcceptedOn() != null){
 				GWT.log("OPS! Should not be here if there's nothing to sign.");
 				goStudy();
 			}
@@ -80,15 +81,15 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	private void paint() {
 		titleUser.setText(session.getUserInfo().getPerson().getFullName());
-		if (clientFactory.getInstitution() != null) {
-			txtTerms.getElement().setInnerHTML(clientFactory.getInstitution().getTerms());
-			institutionLogo.setUrl(clientFactory.getInstitution().getAssetsURL() + barLogoFileName);
+		if (Dean.getInstance().getInstitution() != null) {
+			txtTerms.getElement().setInnerHTML(Dean.getInstance().getInstitution().getTerms());
+			institutionLogo.setUrl(Dean.getInstance().getInstitution().getAssetsURL() + barLogoFileName);
 		}
 	}
 
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		session.institution(clientFactory.getInstitution().getUUID()).acceptTerms(
+		session.institution(Dean.getInstance().getInstitution().getUUID()).acceptTerms(
 				new Callback<Void>() {
 					@Override
 					public void ok(Void v) {
@@ -107,7 +108,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void goStudy() {
-		if(clientFactory.getInstitution().isDemandsPersonContactDetails()){
+		if(Dean.getInstance().getInstitution().isDemandsPersonContactDetails()){
 			placeCtrl.goTo(new ProfilePlace(session.getUserInfo().getPerson().getUUID(), true));
 		} else {
 			placeCtrl.goTo(clientFactory.getDefaultPlace());
