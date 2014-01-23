@@ -6,6 +6,7 @@ import kornell.core.entity.Registration;
 import kornell.core.entity.Role;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
@@ -17,7 +18,6 @@ public class UserSession extends KornellClient {
 	private static UserSession current;
 
 	private String personUUID;
-	private String institutionUUID;
 
 	private UserInfoTO currentUser;
 
@@ -25,7 +25,6 @@ public class UserSession extends KornellClient {
 	public static UserSession setCurrentPerson(String personUUID,
 			String institutionUUID) {
 		current.personUUID = personUUID;
-		current.institutionUUID = institutionUUID;
 		return current;
 	}
 
@@ -58,12 +57,6 @@ public class UserSession extends KornellClient {
 		return new UserSession();
 	}
 
-
-	private UserSession(String personUUID, String institutionUUID) {
-		this.personUUID = personUUID;
-		this.institutionUUID = institutionUUID;
-	}
-
 	private UserSession() {
 	}
 
@@ -82,14 +75,6 @@ public class UserSession extends KornellClient {
 
 	private String prefixed(String key) {
 		return PREFIX + SEPARATOR + currentUser.getPerson().getUUID() + SEPARATOR + key;
-	}
-
-	public String getPersonUUID() {
-		return personUUID;
-	}
-
-	public String getInstitutionUUID() {
-		return institutionUUID;
 	}
 
 	public boolean hasRole(RoleType type, String targetInstitutionUUID) {
@@ -176,7 +161,7 @@ public class UserSession extends KornellClient {
 	}
 	
 	public boolean isDean() {
-		return hasRole(RoleType.dean, institutionUUID);
+		return hasRole(RoleType.dean, Dean.getInstance().getInstitution().getUUID());
 	}
 
 }

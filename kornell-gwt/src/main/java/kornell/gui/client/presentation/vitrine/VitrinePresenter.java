@@ -12,6 +12,7 @@ import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.CourseClassPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -39,7 +40,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			view.displayView(VitrineViewType.newPassword);
 		}
 		
-		String assetsURL = clientFactory.getInstitution().getAssetsURL();
+		String assetsURL = Dean.getInstance().getInstitution().getAssetsURL();
 		view.setLogoURL(assetsURL);
 		view.setBackgroundImage(assetsURL);
 	}
@@ -51,7 +52,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 
 	private VitrineView getView() {
-		return clientFactory.getVitrineView();
+		return clientFactory.getViewFactory().getVitrineView();
 	}
 
 	@Override
@@ -82,14 +83,15 @@ public class VitrinePresenter implements VitrineView.Presenter {
 					@Override
 					public void ok(CourseClassesTO courseClasses) {
 						for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
-							if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(clientFactory.getInstitution().getUUID())){
-								clientFactory.setCurrentCourse(courseClassTmp);
+							if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())){
+								Dean.getInstance().setCourseClassTO(courseClassTmp);
 								clientFactory.setDefaultPlace(new CourseClassPlace(courseClassTmp.getCourseClass().getUUID()));
+								break;
 							}
 						}
 						boolean isRegistered = false;
 						for (Registration registration : clientFactory.getUserSession().getUserInfo().getRegistrationsTO().getRegistrations()) {
-							if(registration.getInstitutionUUID().equals(clientFactory.getInstitution().getUUID()))
+							if(registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID()))
 								isRegistered = true;
 						}
 						if(!isRegistered){
@@ -100,7 +102,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 							clientFactory.getEventBus().fireEvent(new LoginEvent(user));
 							if(user.isSigningNeeded()){
 								clientFactory.getPlaceController().goTo(new TermsPlace());
-							} else if(clientFactory.getInstitution().isDemandsPersonContactDetails() && 
+							} else if(Dean.getInstance().getInstitution().isDemandsPersonContactDetails() && 
 									clientFactory.getUserSession().getUserInfo().getPerson().getCity() == null){
 								clientFactory.getPlaceController().goTo(new ProfilePlace(clientFactory.getUserSession().getUserInfo().getPerson().getUUID(), true));
 							} else {
@@ -201,7 +203,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 					registrationRequestTO.setFullName(view.getSuName().trim());
 					registrationRequestTO.setEmail(view.getSuEmail().toLowerCase().trim());
 					registrationRequestTO.setPassword(view.getSuPassword());
-					registrationRequestTO.setInstitutionUUID(clientFactory.getInstitution().getUUID());
+					registrationRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
 					return registrationRequestTO;
 				}
 			});
@@ -220,7 +222,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onRequestPasswordChangeButtonClicked() {
-		clientFactory.getKornellClient().requestPasswordChange(view.getFpEmail().toLowerCase().trim(), clientFactory.getInstitution().getName(), new Callback<Void>() {
+		clientFactory.getKornellClient().requestPasswordChange(view.getFpEmail().toLowerCase().trim(), Dean.getInstance().getInstitution().getName(), new Callback<Void>() {
 			@Override
 			public void ok(Void to) {
 				view.displayView(VitrineViewType.login);	

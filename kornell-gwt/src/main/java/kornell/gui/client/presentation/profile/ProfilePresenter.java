@@ -8,7 +8,7 @@ public class ProfilePresenter implements ProfileView.Presenter{
 	private ProfileView view;
 
 	public ProfilePresenter(ClientFactory clientFactory) {
-		view = clientFactory.getProfileView();
+		view = clientFactory.getViewFactory().getProfileView();
 		view.setPresenter(this);
 	}
 	

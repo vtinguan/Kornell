@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class HomePresenter implements HomeView.Presenter {
 	HomeView homeView;
 	public HomePresenter(ClientFactory clientFactory) {
-		homeView = clientFactory.getHomeView();
+		homeView = clientFactory.getViewFactory().getHomeView();
 		homeView.setPresenter(this);
 	}
 	

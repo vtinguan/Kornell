@@ -76,48 +76,48 @@ public class GlobalActivityMapper implements ActivityMapper {
 		}
 		if (place instanceof CourseHomePlace) {
 			CourseHomePresenter coursePresenter = factory
-					.getCourseHomePresenter();
+					.getViewFactory().getCourseHomePresenter();
 			coursePresenter.setPlace((CourseHomePlace) place);
 			return new CourseHomeActivity(coursePresenter);
 		}
 		if (place instanceof CourseDetailsPlace) {
 			CourseDetailsPresenter courseDetailsPresenter = factory
-					.getCourseDetailsPresenter();
+					.getViewFactory().getCourseDetailsPresenter();
 			courseDetailsPresenter.setPlace((CourseDetailsPlace) place);
 			return new CourseDetailsActivity(courseDetailsPresenter);
 		}
 		if (place instanceof CourseLibraryPlace) {
 			CourseLibraryPresenter courseLibraryPresenter = factory
-					.getCourseLibraryPresenter();
+					.getViewFactory().getCourseLibraryPresenter();
 			courseLibraryPresenter.setPlace((CourseLibraryPlace) place);
 			return new CourseLibraryActivity(courseLibraryPresenter);
 		}
 		if (place instanceof CourseForumPlace) {
 			CourseForumPresenter courseForumPresenter = factory
-					.getCourseForumPresenter();
+					.getViewFactory().getCourseForumPresenter();
 			courseForumPresenter.setPlace((CourseForumPlace) place);
 			return new CourseForumActivity(courseForumPresenter);
 		}
 		if (place instanceof CourseChatPlace) {
 			CourseChatPresenter courseChatPresenter = factory
-					.getCourseChatPresenter();
+					.getViewFactory().getCourseChatPresenter();
 			courseChatPresenter.setPlace((CourseChatPlace) place);
 			return new CourseChatActivity(courseChatPresenter);
 		}
 		if (place instanceof CourseSpecialistsPlace) {
 			CourseSpecialistsPresenter courseSpecialistsPresenter = factory
-					.getCourseSpecialistsPresenter();
+					.getViewFactory().getCourseSpecialistsPresenter();
 			courseSpecialistsPresenter.setPlace((CourseSpecialistsPlace) place);
 			return new CourseSpecialistsActivity(courseSpecialistsPresenter);
 		}
 		if (place instanceof CourseClassPlace) {
-			CourseClassPresenter coursePresenter = factory.getCoursePresenter();
+			CourseClassPresenter coursePresenter = factory.getViewFactory().getCoursePresenter();
 			coursePresenter.setPlace((CourseClassPlace) place);
 			CourseClassActivity courseActivity = new CourseClassActivity(coursePresenter);
 			return courseActivity;
 		}
 		if (place instanceof SandboxPlace) {
-			SandboxPresenter sandboxPresenter = factory.getSandboxPresenter();
+			SandboxPresenter sandboxPresenter = factory.getViewFactory().getSandboxPresenter();
 			sandboxPresenter.setPlace((SandboxPlace) place);
 			return new SandboxActivity(sandboxPresenter);
 		}
