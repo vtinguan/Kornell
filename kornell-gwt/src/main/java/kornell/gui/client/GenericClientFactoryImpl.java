@@ -153,7 +153,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		initActivityManagers();
 		initHistoryHandler(defaultPlace);
 		initException();
-		initSCORM();
+		//initSCORM();
 		initPersonnel();
 	}
 

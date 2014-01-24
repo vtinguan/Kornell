@@ -41,16 +41,16 @@ public class Dean implements ProgressChangeEventHandler{
 		
 		String url = institution.getAssetsURL();
 		if(url != null){
-			//updateFavicon(url + ICON_NAME);
+			updateFavicon(url + ICON_NAME);
 		} else {
-			//setDefaultFavicon();
+			setDefaultFavicon();
 		}
 		
 		String name = institution.getFullName();
 		if(name != null){
-			//Document.get().setTitle(name);
+			Document.get().setTitle(name);
 		} else {
-			//Document.get().setTitle(DEFAULT_SITE_TITLE);
+			Document.get().setTitle(DEFAULT_SITE_TITLE);
 		}
 	}
 	
