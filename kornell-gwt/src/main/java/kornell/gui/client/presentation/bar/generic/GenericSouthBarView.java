@@ -6,7 +6,7 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.chat.CourseChatPlace;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
@@ -59,7 +59,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 					//southBar.add(getAdminBarView(newPlace));
 					visible = false;
 				} else if (newPlace instanceof CourseDetailsPlace
-						|| newPlace instanceof CourseClassPlace) {
+						|| newPlace instanceof ClassroomPlace) {
 					southBar.clear();
 					southBar.add(getActivityBarView());
 					visible = true;

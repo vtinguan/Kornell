@@ -19,7 +19,7 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
@@ -140,7 +140,7 @@ public class GenericCourseDetailsView extends Composite implements
 		progressChangeEvent.setCurrentPage(pagesVisitedCount);
 		progressChangeEvent.setTotalPages(totalPages);		
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
-		progressChangeEvent.setCourseClassUUID(currentCourseClass.getCourseClass().getUUID());
+		progressChangeEvent.setEnrollmentUUID(currentCourseClass.getCourseClass().getUUID());
 		bus.fireEvent(progressChangeEvent);
 	}
 

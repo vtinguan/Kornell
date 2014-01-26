@@ -17,13 +17,12 @@ public class EventsClient extends RESTClient {
 	// TODO: Move all object creation to client factory
 	static final EventFactory factory = GWT.create(EventFactory.class);
 
-	public EventClient actomEntered(String personUUID,String courseUUID, final String actomKey) {
+	public EventClient actomEntered(String enrollmentUUID, final String actomKey) {
 		ActomEntered actomEntered = factory.newActomEntered().as();
-		actomEntered.setCourseUUID(courseUUID);
+		actomEntered.setEnrollmentUUID(enrollmentUUID);
 		actomEntered.setActomKey(actomKey);		
 		actomEntered.setEventFiredAt(new Date());
 		actomEntered.setUUID(UUID.random());
-		actomEntered.setFromPersonUUID(personUUID);
 		return withEvent("/events/actomEntered",ActomEntered.TYPE,actomEntered);
 	}
 

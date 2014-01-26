@@ -4,9 +4,9 @@ import kornell.api.client.UserSession;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.admin.home.AdminHomeActivity;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
-import kornell.gui.client.presentation.course.CourseClassActivity;
-import kornell.gui.client.presentation.course.CourseClassPlace;
-import kornell.gui.client.presentation.course.CourseClassPresenter;
+import kornell.gui.client.presentation.course.ClassroomActivity;
+import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatActivity;
 import kornell.gui.client.presentation.course.chat.CourseChatPlace;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
@@ -110,10 +110,10 @@ public class GlobalActivityMapper implements ActivityMapper {
 			courseSpecialistsPresenter.setPlace((CourseSpecialistsPlace) place);
 			return new CourseSpecialistsActivity(courseSpecialistsPresenter);
 		}
-		if (place instanceof CourseClassPlace) {
-			CourseClassPresenter coursePresenter = factory.getCoursePresenter();
-			coursePresenter.setPlace((CourseClassPlace) place);
-			CourseClassActivity courseActivity = new CourseClassActivity(coursePresenter);
+		if (place instanceof ClassroomPlace) {
+			ClassroomPresenter coursePresenter = factory.getCoursePresenter();
+			coursePresenter.setPlace((ClassroomPlace) place);
+			ClassroomActivity courseActivity = new ClassroomActivity(coursePresenter);
 			return courseActivity;
 		}
 		if (place instanceof SandboxPlace) {

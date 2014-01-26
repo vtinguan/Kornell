@@ -17,9 +17,7 @@ import com.google.gwt.core.client.GWT;
 
 public class KornellClient extends RESTClient implements LogoutEventHandler {
 
-	protected KornellClient() {
-		KornellClient.bindToWindow(this);
-	}
+	protected KornellClient() {}
 
 	public void getCourses(Callback<CoursesTO> callback) {
 		GET("/courses").sendRequest(null, callback);
@@ -163,21 +161,12 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		HEAD(src).go(callback);
 	}
 
-	public String saySomething() {
-		GWT.log("Bowties are cool");
-		return "indeed they are";
-	}
-
-	public static native void bindToWindow(KornellClient kapi) /*-{
-		$wnd.KAPI = {
-			saySomething : function() {
-				//console.debug(kapi.@kornell.api.client.KornellClient::saySomething()());
-			}
-		}
-	}-*/;
-
 	public ActomClient actom(String actomKey) {
 		return new ActomClient(actomKey);
+	}
+	
+	public EnrollmentClient enrollment(String enrollmentUUID){
+		return new EnrollmentClient(enrollmentUUID);
 	}
 
 }

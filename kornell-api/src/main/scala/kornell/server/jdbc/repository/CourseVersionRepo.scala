@@ -1,11 +1,12 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
-import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
+
 import java.sql.ResultSet
 import kornell.server.repository.Entities
 import kornell.core.entity.CourseVersion
+import kornell.server.jdbc.SQL._
 
-class CourseVersionRepository(uuid:String) {
+class CourseVersionRepo(uuid:String) {
     implicit def toCourseVersion(rs:ResultSet):CourseVersion =
       Entities.newCourseVersion(rs.getString("uuid"),rs.getString("name"),
           rs.getString("course_uuid"),rs.getString("repository_uuid"))
@@ -15,6 +16,6 @@ class CourseVersionRepository(uuid:String) {
 	""".get[CourseVersion]
 }
 
-object CourseVersionRepository{
-  def apply(uuid:String) = new CourseVersionRepository(uuid:String) 
+object CourseVersionRepo{
+  def apply(uuid:String) = new CourseVersionRepo(uuid:String) 
 }

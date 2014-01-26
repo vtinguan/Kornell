@@ -37,12 +37,12 @@ public class ExternalPageView extends Uidget {
 
 	private ExternalPage page;
 
-	public ExternalPageView(KornellClient client, String courseUUID, ExternalPage page) {
+	public ExternalPageView(KornellClient client, ExternalPage page) {
 		this.client = client;
 		this.page = page;
 		createIFrame();
 		panel.getElement().appendChild(iframe);
-		setSrc(page.getURL(),courseUUID,page.getKey());
+		setSrc(page.getURL(),page.getKey());
 		initWidget(panel);
 	}
 
@@ -91,7 +91,7 @@ public class ExternalPageView extends Uidget {
 		iframe.setPropertyString("height", height);
 	}
 
-	public void setSrc(final String src, final String courseUUID, final String actomKey) {	
+	public void setSrc(final String src, final String actomKey) {	
 		UserSession.current(new Callback<UserSession>() {
 			@Override
 			public void ok(UserSession session) {
@@ -100,7 +100,6 @@ public class ExternalPageView extends Uidget {
 				iframe.setSrc(src); 
 			}
 		});
-		
 	}
 
 	private String now() {

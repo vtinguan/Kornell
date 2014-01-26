@@ -6,7 +6,7 @@ import org.scalatest.OptionValues
 import org.scalatest.FlatSpec
 import scala.util.Random
 import java.util.UUID
-import kornell.server.repository.jdbc.Migration
+import kornell.server.jdbc.Migration
 
 class UnitSpec extends FlatSpec with Matchers with OptionValues with Inside {
   //create database kornell_tests
