@@ -28,7 +28,6 @@ public class GenericSandboxView  extends Composite implements SandboxView {
 	    UserSession.current(new Callback<UserSession>(){			
 			@Override
 			public void ok(UserSession session) {
-				panel.add(new Label("I'm in institution "+session.getInstitutionUUID()));
 				if(session.isAuthenticated())
 					panel.add(new Label("And i am authenticated as "+session.getUserInfo().getPerson().getFullName()));
 				else

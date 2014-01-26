@@ -4,6 +4,7 @@ import kornell.api.client.Callback;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -63,7 +64,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
-		imgMenuBar.setUrl(clientFactory.getInstitution().getAssetsURL() + barLogoFileName);
+		imgMenuBar.setUrl(Dean.getInstance().getInstitution().getAssetsURL() + barLogoFileName);
 		
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
@@ -73,7 +74,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 					GenericMenuBarView.this.setVisible(false);
 				} else {
 					if(newPlace instanceof TermsPlace || 
-							(newPlace instanceof ProfilePlace && clientFactory.getInstitution().isDemandsPersonContactDetails() &&
+							(newPlace instanceof ProfilePlace && Dean.getInstance().getInstitution().isDemandsPersonContactDetails() &&
 									clientFactory.getUserSession().getUserInfo().getPerson().getCity() == null)){
 						showButtons(false);
 					} else {

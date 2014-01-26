@@ -7,6 +7,7 @@ import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.event.NavigationForecastEventHandler;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
@@ -91,8 +92,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 							btnDetails.removeStyleName("btnSelected");
 							updateProgressBarPanel();
 						} else if(newPlace instanceof CourseDetailsPlace){
-							//enableButton(BUTTON_PREVIOUS, false);
-							//enableButton(BUTTON_NEXT, false);
+							enableButton(BUTTON_PREVIOUS, false);
+							enableButton(BUTTON_NEXT, false);
 							btnDetails.addStyleName("btnSelected");
 							updateProgressBarPanel();
 						}
@@ -120,8 +121,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		displayProgressButton();
 		if (clientFactory.getPlaceController().getWhere() instanceof CourseDetailsPlace) {
 			btnDetails.addStyleName("btnSelected");
-			//enableButton(BUTTON_PREVIOUS, false);
-			//enableButton(BUTTON_NEXT, false);
+			enableButton(BUTTON_PREVIOUS, false);
+			enableButton(BUTTON_NEXT, false);
 		}
 	}
 
@@ -229,23 +230,25 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@UiHandler("btnNext")
 	public void btnNextClicked(ClickEvent e){
-		clientFactory.getEventBus().fireEvent(NavigationRequest.next());
+		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace)
+			clientFactory.getEventBus().fireEvent(NavigationRequest.next());
 	}
 
 	@UiHandler("btnPrevious")
 	public void btnPrevClicked(ClickEvent e){
-		clientFactory.getEventBus().fireEvent(NavigationRequest.prev());		
+		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace)
+			clientFactory.getEventBus().fireEvent(NavigationRequest.prev());		
 	}
 	
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
 		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
-			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
+			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			clientFactory.getPlaceController().goTo(new ClassroomPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
+			clientFactory.getPlaceController().goTo(new ClassroomPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		
@@ -255,8 +258,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	void handleClickBtnNotes(ClickEvent e) {
 		if(notesPopup == null){
 			notesPopup = new NotesPopup(clientFactory.getUserSession(), 
-					clientFactory.getCurrentCourseClass().getCourseClass().getUUID(), 
-					clientFactory.getCurrentCourseClass().getEnrollment().getNotes());
+					Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), 
+					Dean.getInstance().getCourseClassTO().getEnrollment().getNotes());
 			notesPopup.show();
 		} else {
 			notesPopup.show();
@@ -302,8 +305,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
 		updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
-		enableButton(BUTTON_PREVIOUS, event.hasPrevious());
-		enableButton(BUTTON_NEXT, event.hasNext());
+		enableButton(BUTTON_PREVIOUS, event.hasPrevious() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
+		enableButton(BUTTON_NEXT, event.hasNext() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
 	}
 	
 }
