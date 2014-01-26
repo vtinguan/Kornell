@@ -23,9 +23,9 @@ import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
 import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
-import kornell.gui.client.presentation.course.CourseClassPlace;
-import kornell.gui.client.presentation.course.CourseClassPresenter;
-import kornell.gui.client.presentation.course.CourseClassView;
+import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.course.ClassroomPresenter;
+import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatView;
 import kornell.gui.client.presentation.course.chat.generic.GenericCourseChatView;
@@ -108,7 +108,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private SouthBarView southBarView;
 
 	private GenericHomeView genericHomeView;
-	private CourseClassPresenter coursePresenter;
+	private ClassroomPresenter coursePresenter;
 	private CourseHomePresenter courseHomePresenter;
 	private CourseDetailsPresenter courseDetailsPresenter;
 	private CourseLibraryPresenter courseLibraryPresenter;
@@ -246,7 +246,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 												}
 											}
 											setCurrentCourse(courseClass);
-											defaultPlace = new CourseClassPlace(
+											defaultPlace = new ClassroomPlace(
 													courseClass
 															.getCourseClass()
 															.getUUID());
@@ -348,7 +348,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public CourseClassView getCourseClassView() {
+	public ClassroomView getCourseClassView() {
 		return new GenericCourseClassView(bus);
 	}
 
@@ -453,12 +453,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public CourseClassPresenter getCoursePresenter() {
+	public ClassroomPresenter getCoursePresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(bus,
 				placeCtrl, session);
 		if (coursePresenter == null) {
-			CourseClassView activityView = getCourseClassView();
-			coursePresenter = new CourseClassPresenter(activityView, placeCtrl,
+			ClassroomView activityView = getCourseClassView();
+			coursePresenter = new ClassroomPresenter(activityView, placeCtrl,
 					rendererFactory);
 		}
 		return coursePresenter;

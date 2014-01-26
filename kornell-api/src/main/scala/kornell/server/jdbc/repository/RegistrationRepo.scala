@@ -1,20 +1,20 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
 import kornell.core.entity.Registration
 import java.sql.ResultSet
 import kornell.server.repository.Entities
-import kornell.server.repository.jdbc.SQLInterpolation._
+import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 
-class RegistrationRepository(person: PersonRepository, institution_uuid: String) {
+class RegistrationRepo(person: PersonRepo, institution_uuid: String) {
 
   def register = {
     // don't register twice
     if(!get.isDefined)
-    	Institutions.register(person.uuid, institution_uuid)
-    this
+    	InstitutionsRepo.register(person.uuid, institution_uuid)
+    RegistrationRepo.this
   }
 
   def getPerson = person.get
@@ -32,7 +32,7 @@ class RegistrationRepository(person: PersonRepository, institution_uuid: String)
     .first[Registration]
 }
 
-object RegistrationRepository {
-  def apply(person: PersonRepository, institution_uuid: String) =
-    new RegistrationRepository(person, institution_uuid)
+object RegistrationRepo {
+  def apply(person: PersonRepo, institution_uuid: String) =
+    new RegistrationRepo(person, institution_uuid)
 }

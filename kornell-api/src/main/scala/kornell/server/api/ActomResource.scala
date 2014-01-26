@@ -1,9 +1,13 @@
 package kornell.server.api
 
-import javax.ws.rs._
 import java.sql.ResultSet
-import kornell.server.repository.jdbc.SQLInterpolation._
-import kornell.core.util.UUID._
+import javax.ws.rs.Produces
+import javax.ws.rs.Consumes
+import javax.ws.rs.PathParam
+import javax.ws.rs.PUT
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import kornell.server.jdbc.SQL._
 
 class ActomResource(enrollmentUUID: String, actomKey: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")

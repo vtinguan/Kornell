@@ -1,15 +1,15 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
 import kornell.core.entity.Enrollment
 import java.sql.ResultSet
 import kornell.server.repository.Entities
-import kornell.server.repository.jdbc.SQLInterpolation._
+import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 
 
-class EnrollmentRepository (person: PersonRepository, course_uuid: String) {
+class EnrollmentRepo (person: PersonRepo, course_uuid: String) {
 
   def getPerson = person.get
 
@@ -31,7 +31,7 @@ class EnrollmentRepository (person: PersonRepository, course_uuid: String) {
 
 }
 
-object EnrollmentRepository {
-  def apply(person: PersonRepository, course_uuid: String) =
-    new EnrollmentRepository(person, course_uuid)
+object EnrollmentRepo {
+  def apply(person: PersonRepo, course_uuid: String) =
+    new EnrollmentRepo(person, course_uuid)
 }

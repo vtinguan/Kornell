@@ -1,7 +1,6 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc
 
 import java.sql.DriverManager
-import javax.naming.NoInitialContextException
 import javax.naming.InitialContext
 import javax.naming.Context
 import javax.sql.DataSource
@@ -10,6 +9,7 @@ import scala.util.Try
 import scala.collection.JavaConverters._
 import scala.util.Success
 import scala.util.Failure
+import SQL._
 
 object DataSources {
   val log = Logger.getLogger(getClass.getName)

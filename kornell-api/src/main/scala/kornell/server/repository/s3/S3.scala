@@ -1,6 +1,5 @@
 package kornell.server.repository.s3
 
-import kornell.server.repository.jdbc.SQLInterpolation._
 import java.sql.ResultSet
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.regions.Regions
@@ -13,9 +12,10 @@ import java.io.ByteArrayInputStream
 import com.amazonaws.services.s3.model.PutObjectRequest
 import scala.io.Source
 import kornell.core.util.StringUtils._
-import kornell.server.repository.jdbc.CourseClasses
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.client.methods.HttpHead
+import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.server.jdbc.SQL._
 
 class S3(regionName: String,
   val accessKey: String,
@@ -98,7 +98,7 @@ object S3 {
       .actoms
       .foreach { println(_) }*/
 
-    val classRepo = CourseClasses("B6A60AB5-3889-47B4-93DA-60E515309DAF")
+    val classRepo = CourseClassesRepo("B6A60AB5-3889-47B4-93DA-60E515309DAF")
     val versionRepo = classRepo.version
     val version = versionRepo.get
     val repositoryUUID = version.getRepositoryUUID();

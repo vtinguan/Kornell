@@ -7,7 +7,7 @@ import kornell.gui.client.event.NavigationForecastEvent;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.bar.AdminBarView;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
@@ -77,7 +77,7 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						
-						if(newPlace instanceof CourseClassPlace){							
+						if(newPlace instanceof ClassroomPlace){							
 							btnDetails.removeStyleName("btnSelected");
 						} else if(newPlace instanceof CourseDetailsPlace){
 							//enableButton(BUTTON_PREVIOUS, false);
@@ -178,13 +178,13 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
-		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace){
+		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
 			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			clientFactory.getPlaceController().goTo(new CourseClassPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
+			clientFactory.getPlaceController().goTo(new ClassroomPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		

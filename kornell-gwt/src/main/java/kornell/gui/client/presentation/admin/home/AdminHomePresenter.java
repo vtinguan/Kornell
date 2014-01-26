@@ -14,7 +14,7 @@ import kornell.core.to.EnrollmentRequestTO;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -188,7 +188,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	@Override
 	public void onGoToCourseButtonClicked() {
-		clientFactory.getPlaceController().goTo(new CourseClassPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
+		clientFactory.getPlaceController().goTo(new ClassroomPlace(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()));
 	}
 	
 	private void updateInstitution() {

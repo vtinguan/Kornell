@@ -1,17 +1,14 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
-import kornell.core.to.RegistrationsTO
-import kornell.server.repository.jdbc.SQLInterpolation._
-import kornell.server.repository.Entities
-import java.sql.ResultSet
-import kornell.core.entity.Registration
-import kornell.core.entity.Institution
-import scala.collection.JavaConverters._
 import kornell.core.entity.Person
+import java.sql.ResultSet
+import kornell.core.to.RegistrationsTO
+import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
+import kornell.core.entity.Registration
 
-class Registrations(personUUID: String, institutionUUID: String) {
+class RegistrationsRepo(personUUID: String, institutionUUID: String) {
   def acceptTerms() =
     sql"""update Registration
       	 set termsAcceptedOn=now()
@@ -20,7 +17,7 @@ class Registrations(personUUID: String, institutionUUID: String) {
       	   """.executeUpdate
 }
 
-object Registrations {
+object RegistrationsRepo {
   def toRegistration(rs: ResultSet) = newRegistration(
     rs.getString("person_uuid"),
     rs.getString("institution_uuid"),
@@ -67,7 +64,7 @@ object Registrations {
 	  and r.termsAcceptedOn is null
 	  and r.person_uuid = ${person.getUUID}""".isPositive
 
-  def apply(personUUID: String, uuid: String):Registrations =
-    new Registrations(personUUID, uuid)
+  def apply(personUUID: String, uuid: String):RegistrationsRepo =
+    new RegistrationsRepo(personUUID, uuid)
 }
 

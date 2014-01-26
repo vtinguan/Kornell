@@ -14,17 +14,17 @@ import javax.crypto.Mac
 import java.security.Signature
 import kornell.core.to.TOFactory
 import kornell.server.repository.TOs
-import kornell.server.repository.jdbc.Auth
 import javax.ws.rs.core.SecurityContext
 import kornell.server.util.HmacSHA1
 import kornell.server.repository.s3.S3
+import kornell.server.jdbc.repository.AuthRepo
 
 @Path("/s3")
 class S3Resource {
 
 	@GET
 	@Produces(Array(S3PolicyTO.TYPE))
-	def get(implicit @Context sc:SecurityContext) = Auth.withPerson{ 
+	def get(implicit @Context sc:SecurityContext) = AuthRepo.withPerson{ 
 	  person => {
 	    //TODO
 		val s3 = S3("840e93aa-2373-4fb5-ba4a-999bb3f43888")

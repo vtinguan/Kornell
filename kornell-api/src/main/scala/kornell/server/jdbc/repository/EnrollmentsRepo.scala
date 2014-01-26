@@ -1,8 +1,8 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
 import kornell.server.repository.TOs
 import kornell.core.to.RegistrationsTO
-import kornell.server.repository.jdbc.SQLInterpolation._
+import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities
 import java.sql.ResultSet
 import kornell.core.entity.Registration
@@ -19,12 +19,11 @@ import scala.None
 import java.util.Date
 import kornell.server.util.EmailSender
 import kornell.core.entity.Course
-import kornell.server.repository.jdbc.CourseClasses
 import kornell.core.entity.CourseClass
 import kornell.core.util.UUID
 import kornell.server.repository.service.RegistrationEnrollmentService
 
-object Enrollments {
+object EnrollmentsRepo {
 
   def byUUID(enrollmentUUID: String): Option[Enrollment] =
     sql"""

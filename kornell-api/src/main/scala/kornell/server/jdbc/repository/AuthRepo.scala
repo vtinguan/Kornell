@@ -1,4 +1,4 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
 import java.sql.ResultSet
 import org.apache.commons.codec.digest.DigestUtils
@@ -8,10 +8,10 @@ import kornell.core.entity.Role
 import kornell.core.entity.RoleType
 import kornell.server.repository.Entities
 import kornell.server.repository.Entities.newPerson
-import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
 import kornell.core.util.UUID
+import kornell.server.jdbc.SQL._
 
-object Auth {
+object AuthRepo {
   //TODO: importing ScurityContext smells bad
 
   implicit def toPerson(rs: ResultSet): Person = newPerson(

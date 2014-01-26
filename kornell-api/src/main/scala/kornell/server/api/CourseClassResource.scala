@@ -1,21 +1,17 @@
 package kornell.server.api
 
 import javax.ws.rs.Produces
-import javax.ws.rs.GET
-import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
+import javax.ws.rs.GET
+import kornell.server.jdbc.repository.AuthRepo
 import javax.ws.rs.Path
+import javax.ws.rs.core.Context
 import kornell.core.lom.Contents
-import kornell.server.repository.jdbc.Auth
-import kornell.server.repository.jdbc.Courses
-import kornell.server.repository.s3.S3
-import kornell.server.repository.jdbc.CourseClasses
-import kornell.server.dev.util.ContentsParser
-import kornell.core.to.CourseClassesTO
-import javax.ws.rs.PathParam
-import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
-import kornell.core.to.CourseTO
 import kornell.core.to.CourseClassTO
+import kornell.server.dev.util.ContentsParser
+import kornell.server.repository.s3.S3
+import kornell.server.jdbc.SQL._
+import kornell.server.jdbc.repository.CourseClassesRepo
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -24,7 +20,7 @@ class CourseClassResource(uuid: String) {
   @Path("to")
   @Produces(Array(CourseClassTO.TYPE))
   def get(implicit @Context sc: SecurityContext) =
-    Auth.withPerson { person =>
+    AuthRepo.withPerson { person =>
       //CourseClasses(uuid).byPerson(person.getUUID)
     }
 
@@ -32,8 +28,8 @@ class CourseClassResource(uuid: String) {
   @Path("contents")
   @GET
   def getLatestContents(implicit @Context sc: SecurityContext): Contents =
-    Auth.withPerson { person =>
-      val classRepo = CourseClasses(uuid)
+    AuthRepo.withPerson { person =>
+      val classRepo = CourseClassesRepo(uuid)
       val versionRepo = classRepo.version
       val version = versionRepo.get
       val repositoryUUID = version.getRepositoryUUID();
@@ -52,7 +48,6 @@ class CourseClassResource(uuid: String) {
       contents
     }
 
-  	
 }
 
 object CourseClassResource {
