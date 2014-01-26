@@ -4,8 +4,8 @@ package kornell.gui.client;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
-import kornell.gui.client.presentation.course.CourseClassPresenter;
-import kornell.gui.client.presentation.course.CourseClassView;
+import kornell.gui.client.presentation.course.ClassroomPresenter;
+import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatView;
 import kornell.gui.client.presentation.course.course.CourseHomePresenter;
@@ -58,8 +58,8 @@ public interface ViewFactory {
 	CourseSpecialistsPresenter getCourseSpecialistsPresenter();
 	
 	
-	CourseClassView getCourseClassView();
-	CourseClassPresenter getCoursePresenter();
+	ClassroomView getClassroomView();
+	ClassroomPresenter getClassroomPresenter();
 	SandboxView getSandboxView();
 	SandboxPresenter getSandboxPresenter();
 	
