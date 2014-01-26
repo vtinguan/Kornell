@@ -153,7 +153,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		initActivityManagers();
 		initHistoryHandler(defaultPlace);
 		initException();
-		//initSCORM();
+		initSCORM12();
 		initPersonnel();
 	}
 
@@ -166,7 +166,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		new Captain(bus, placeCtrl, Dean.getInstance().getInstitution().getUUID());
 	}
 
-	private void initSCORM() {		
+	private void initSCORM12() {		
 		CMIDataModel cmi = new CMIDataModel(getKornellClient());
 		SCORM12Binder.bind(new SCORM12Adapter(cmi));
 	}

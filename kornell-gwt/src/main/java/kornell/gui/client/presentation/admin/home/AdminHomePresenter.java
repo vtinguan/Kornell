@@ -1,6 +1,5 @@
 package kornell.gui.client.presentation.admin.home;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +31,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private String batchEnrollmentErrors;
 	private List<EnrollmentRequestTO> batchEnrollments;
 	FormHelper formHelper;
-		
+
 	public AdminHomePresenter(ClientFactory factory) {
 		clientFactory = factory;
-		 formHelper = new FormHelper();
-		//TODO refactor permissions per session/activity
+		formHelper = new FormHelper();
+		// TODO refactor permissions per session/activity
 		UserSession.current(new Callback<UserSession>() {
 			@Override
 			public void ok(UserSession session) {
@@ -44,61 +43,69 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			}
 		});
 	}
-	
+
 	private void init(boolean isDean) {
-		if(isDean){
+		if (isDean) {
 			view = getView();
 			view.setPresenter(this);
-			getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-		}
-		else {
-			GWT.log("Hey, only admins are allowed to see this! " + this.getClass().getName());
-			clientFactory.getPlaceController()
-				.goTo(clientFactory.getDefaultPlace());
+			getEnrollments(Dean.getInstance().getCourseClassTO()
+					.getCourseClass().getUUID());
+		} else {
+			GWT.log("Hey, only admins are allowed to see this! "
+					+ this.getClass().getName());
+			clientFactory.getPlaceController().goTo(
+					clientFactory.getDefaultPlace());
 		}
 	}
 
-	private List<Enrollment> getEnrollments(String courseClassUUID){
+	private List<Enrollment> getEnrollments(String courseClassUUID) {
 		LoadingPopup.show();
-		clientFactory.getKornellClient().getEnrollmentsByCourseClass(courseClassUUID, new Callback<Enrollments>(){
-			@Override
-			public void ok(Enrollments enrollments){
-				view.setEnrollmentList(enrollments.getEnrollments());	
-				LoadingPopup.hide();
-			}
-		});
+		clientFactory.getKornellClient().getEnrollmentsByCourseClass(
+				courseClassUUID, new Callback<Enrollments>() {
+					@Override
+					public void ok(Enrollments enrollments) {
+						view.setEnrollmentList(enrollments.getEnrollments());
+						LoadingPopup.hide();
+					}
+				});
 		return null;
 	}
 
 	@Override
-	public void changeEnrollmentState(final Enrollment enrollment, final EnrollmentState toState){
+	public void changeEnrollmentState(final Enrollment enrollment,
+			final EnrollmentState toState) {
 		LoadingPopup.show();
 		UserSession.current(new Callback<UserSession>() {
 			@Override
 			public void ok(UserSession session) {
-				String personUUID =  session.getUserInfo().getPerson().getUUID();
-				clientFactory.getKornellClient().events()
-				.enrollmentStateChanged(enrollment.getUUID(), personUUID, enrollment.getState(), toState)
-				.fire(new Callback<Void>() {
-					@Override
-					public void ok(Void to) {
-						getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());					
-					}
-				});
+				String personUUID = session.getUserInfo().getPerson().getUUID();
+				clientFactory
+						.getKornellClient()
+						.events()
+						.enrollmentStateChanged(enrollment.getUUID(),
+								personUUID, enrollment.getState(), toState)
+						.fire(new Callback<Void>() {
+							@Override
+							public void ok(Void to) {
+								getEnrollments(Dean.getInstance()
+										.getCourseClassTO().getCourseClass()
+										.getUUID());
+							}
+						});
 			}
 		});
 	}
 
 	@Override
-	public boolean showActionButton(String actionName, EnrollmentState state){
-		if("Aceitar".equals(actionName) || "Negar".equals(actionName)){
+	public boolean showActionButton(String actionName, EnrollmentState state) {
+		if ("Aceitar".equals(actionName) || "Negar".equals(actionName)) {
 			return EnrollmentState.requested.equals(state);
-		} else if("Cancelar".equals(actionName)){
-			return EnrollmentState.preEnrolled.equals(state) ||
-					EnrollmentState.enrolled.equals(state);
-		} else if("Matricular".equals(actionName)){
-			return EnrollmentState.denied.equals(state) ||
-					EnrollmentState.cancelled.equals(state);
+		} else if ("Cancelar".equals(actionName)) {
+			return EnrollmentState.preEnrolled.equals(state)
+					|| EnrollmentState.enrolled.equals(state);
+		} else if ("Matricular".equals(actionName)) {
+			return EnrollmentState.denied.equals(state)
+					|| EnrollmentState.cancelled.equals(state);
 		}
 		return false;
 	}
@@ -107,7 +114,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	public void onAddEnrollmentButtonClicked(String fullName, String email) {
 		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
 		batchEnrollments.add(createEnrollment(fullName, email));
-		if(formHelper.isEmailValid(email)){
+		if (formHelper.isEmailValid(email)) {
 			saveEnrollments(createEnrollments());
 		} else {
 			KornellNotification.show("Email inválido.", AlertType.ERROR);
@@ -117,7 +124,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	@Override
 	public void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch) {
 		populateEnrollmentsList(txtAddEnrollmentBatch);
-		if(batchEnrollmentErrors == null || !"".equals(batchEnrollmentErrors)){
+		if (batchEnrollmentErrors == null || !"".equals(batchEnrollmentErrors)) {
 			view.setModalErrors(batchEnrollmentErrors);
 			view.showModal();
 		} else {
@@ -126,7 +133,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private EnrollmentRequestsTO createEnrollments() {
-		EnrollmentRequestsTO enrollmentRequestsTO = clientFactory.getTOFactory().newEnrollmentRequestsTO().as();
+		EnrollmentRequestsTO enrollmentRequestsTO = clientFactory
+				.getTOFactory().newEnrollmentRequestsTO().as();
 		enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
 		return enrollmentRequestsTO;
 	}
@@ -138,13 +146,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
 		batchEnrollmentErrors = "";
 		for (int i = 0; i < enrollmentsA.length; i++) {
-			if("".equals(enrollmentsA[i].trim()))
+			if ("".equals(enrollmentsA[i].trim()))
 				continue;
 			enrollmentStrA = enrollmentsA[i].split(";");
 			fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
-			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]);
+			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1]
+					: enrollmentStrA[0]);
 			GWT.log("*** Validating: " + fullName + " - " + email);
-			if(formHelper.isEmailValid(email)){
+			if (formHelper.isEmailValid(email)) {
 				batchEnrollments.add(createEnrollment(fullName, email));
 			} else {
 				batchEnrollmentErrors += enrollmentsA[i] + "\n";
@@ -153,60 +162,74 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private EnrollmentRequestTO createEnrollment(String fullName, String email) {
-		EnrollmentRequestTO enrollmentRequestTO = clientFactory.getTOFactory().newEnrollmentRequestTO().as();
+		EnrollmentRequestTO enrollmentRequestTO = clientFactory.getTOFactory()
+				.newEnrollmentRequestTO().as();
 
-		enrollmentRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
-		enrollmentRequestTO.setCourseClassUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+		enrollmentRequestTO.setInstitutionUUID(Dean.getInstance()
+				.getInstitution().getUUID());
+		enrollmentRequestTO.setCourseClassUUID(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getUUID());
 		enrollmentRequestTO.setEmail(email);
 		enrollmentRequestTO.setFullName(fullName);
-		
+
 		return enrollmentRequestTO;
 	}
 
 	private void saveEnrollments(EnrollmentRequestsTO enrollmentRequests) {
-		if(enrollmentRequests.getEnrollmentRequests().size() == 0){
-			KornellNotification.show("Verifique se os nomes/emails dos usuários estão corretos. Nenhuma matrícula encontrada.", AlertType.WARNING);
+		if (enrollmentRequests.getEnrollmentRequests().size() == 0) {
+			KornellNotification
+					.show("Verifique se os nomes/emails dos usuários estão corretos. Nenhuma matrícula encontrada.",
+							AlertType.WARNING);
 			return;
-		}else if(enrollmentRequests.getEnrollmentRequests().size() > 5){
-			KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "+enrollmentRequests.getEnrollmentRequests().size()*2+" segundos).", AlertType.INFO);
+		} else if (enrollmentRequests.getEnrollmentRequests().size() > 5) {
+			KornellNotification
+					.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
+							+ enrollmentRequests.getEnrollmentRequests().size()
+							* 2 + " segundos).", AlertType.INFO);
 		} else {
 			LoadingPopup.show();
 		}
-		clientFactory.getKornellClient().createEnrollments(enrollmentRequests, new Callback<Enrollments>() {
-			@Override
-			public void ok(Enrollments to) {
-				getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-				KornellNotification.show("Matrículas feitas com sucesso.");
-			}
-		});
+		clientFactory.getKornellClient().createEnrollments(enrollmentRequests,
+				new Callback<Enrollments>() {
+					@Override
+					public void ok(Enrollments to) {
+						getEnrollments(Dean.getInstance().getCourseClassTO()
+								.getCourseClass().getUUID());
+						KornellNotification
+								.show("Matrículas feitas com sucesso.");
+					}
+				});
 	}
 
 	@Override
 	public void onModalOkButtonClicked() {
-		saveEnrollments(createEnrollments());		
+		saveEnrollments(createEnrollments());
 	}
 
 	@Override
 	public void onGoToCourseButtonClicked() {
-		clientFactory.getPlaceController().goTo(new ClassroomPlace(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()));
+		clientFactory.getPlaceController().goTo(
+				new ClassroomPlace(Dean.getInstance().getCourseClassTO()
+						.getEnrollment().getUUID()));
 	}
-	
+
 	private void updateInstitution() {
-		clientFactory.getUserSession().institution(Dean.getInstance().getInstitution().getUUID()).update(Dean.getInstance().getInstitution(),
-				new Callback<Institution>() {
-					@Override
-					public void ok(Institution institution) {
-						GWT.log(institution.getName());
-					}
-				});
+		clientFactory
+				.getUserSession()
+				.institution(Dean.getInstance().getInstitution().getUUID())
+				.update(Dean.getInstance().getInstitution(),
+						new Callback<Institution>() {
+							@Override
+							public void ok(Institution institution) {
+								GWT.log(institution.getName());
+							}
+						});
 	}
-	
 
 	@Override
 	public Widget asWidget() {
 		return view.asWidget();
 	}
-
 
 	private AdminHomeView getView() {
 		return clientFactory.getViewFactory().getDeanHomeView();
