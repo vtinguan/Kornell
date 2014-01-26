@@ -1,12 +1,11 @@
 package kornell.gui.client.presentation.welcome.generic;
 
-import java.math.BigDecimal;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.core.to.CourseTO;
-import kornell.core.to.CoursesTO;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
 import com.google.gwt.core.client.GWT;
@@ -100,34 +99,34 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	}
 	
 	private void initData() {
-		client.getCourses(new Callback<CoursesTO>() {
+		client.getCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 			@Override
-			public void ok(CoursesTO to) {
+			public void ok(CourseClassesTO tos) {
 				if(displayCourses == null)
 					displayCourses = COURSES_ALL;
-				display(to);
+				display(tos);
 			}
 		});
 	}
 
 
-	private void display(CoursesTO to) {
+	private void display(CourseClassesTO tos) {
 		clearPanels();
-		/*for (final CourseTO course : to.getCourses()) {
-			GenericCourseSummaryView courseSummaryView = new GenericCourseSummaryView(placeCtrl,course);
-			if(course.getEnrollment().getProgress() == null){
+		for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
+			GenericCourseSummaryView courseSummaryView = new GenericCourseSummaryView(placeCtrl,courseClassTO);
+			if(courseClassTO.getEnrollment() == null){
 				pnlCoursesToAcquire.add(courseSummaryView);
 			}
-			else if(course.getEnrollment().getProgress() == 1){
+			else if(courseClassTO.getEnrollment().getProgress() == 100){
 				pnlCoursesFinished.add(courseSummaryView);
 			}
-			else if(!(course.getEnrollment().getProgress() == 0)){
+			else if(!(courseClassTO.getEnrollment().getProgress() == 0)){
 				pnlCoursesInProgress.add(courseSummaryView);
 			}
 			else{
 				pnlCoursesToStart.add(courseSummaryView);
 			}
-		}*/
+		}
 		disablePanels();
 		refreshButtonsSelection();
 		btnCoursesAll.setText(constants.allCourses());

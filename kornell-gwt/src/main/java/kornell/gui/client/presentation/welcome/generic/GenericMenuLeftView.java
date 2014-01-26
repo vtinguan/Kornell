@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.welcome.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CoursesTO;
 
 import com.google.gwt.core.client.GWT;
@@ -24,7 +25,7 @@ public class GenericMenuLeftView extends Composite {
 
 	private PlaceController placeCtrl;
 	
-	private CoursesTO coursesTO;
+	private CourseClassesTO courseClassesTO;
 
 	private final EventBus bus; 
 
@@ -49,11 +50,11 @@ public class GenericMenuLeftView extends Composite {
 
 	private void initData() {
 		
-		
-		client.getCourses(new Callback<CoursesTO>() {
+
+		client.getCourseClassesTO(new Callback<CourseClassesTO>() {
 			@Override
-			public void ok(CoursesTO to) {
-				coursesTO = to;
+			public void ok(CourseClassesTO tos) {
+				courseClassesTO = tos;
 				display();
 			}
 		});
