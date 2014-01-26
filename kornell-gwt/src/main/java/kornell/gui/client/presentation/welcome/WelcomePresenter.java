@@ -8,7 +8,7 @@ public class WelcomePresenter implements WelcomeView.Presenter{
 	private WelcomeView view;
 
 	public WelcomePresenter(ClientFactory clientFactory) {
-		view = clientFactory.getWelcomeView();
+		view = clientFactory.getViewFactory().getWelcomeView();
 		view.setPresenter(this);
 	}
 	

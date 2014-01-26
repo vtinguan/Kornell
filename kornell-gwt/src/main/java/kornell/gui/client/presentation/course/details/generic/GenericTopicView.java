@@ -41,6 +41,7 @@ public class GenericTopicView extends Composite {
 	private CourseClassTO currentCourse;
 	private int index;
 	private boolean startOpened;
+	private boolean enableAnchorOnFirstChild;
 	
 	@UiField
 	CollapseTrigger trigger;
@@ -59,7 +60,7 @@ public class GenericTopicView extends Composite {
 
 
 	public GenericTopicView(EventBus eventBus, KornellClient client,
-			PlaceController placeCtrl, UserSession session, CourseClassTO currentCourse, Content content, int index, boolean startOpened) {
+			PlaceController placeCtrl, UserSession session, CourseClassTO currentCourse, Content content, int index, boolean startOpened, boolean enableAnchorOnFirstChild) {
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
@@ -68,6 +69,7 @@ public class GenericTopicView extends Composite {
 		this.currentCourse = currentCourse;
 		this.index = index;
 		this.startOpened = startOpened;
+		this.enableAnchorOnFirstChild = enableAnchorOnFirstChild;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 		collapse.addShowHandler(new ShowHandler() {
@@ -98,15 +100,15 @@ public class GenericTopicView extends Composite {
 		
 		ExternalPage page;
 		boolean isPreviousPageVisited = (index == 1);
+		int childrenIndex = 0;
 		for (Content contentItem : content.getTopic().getChildren()) {
 			page = contentItem.getExternalPage();
 			if(!page.getTitle().startsWith("###")){ //TODO MDA 
-				boolean enableAnchor = page.isVisited() || isPreviousPageVisited;
+				boolean enableAnchor = page.isVisited() || isPreviousPageVisited || (childrenIndex == 0 && enableAnchorOnFirstChild);
 				childrenPanel.add(new GenericPageView(bus, client, placeCtrl, session, page, currentCourse, enableAnchor));
-				if(!enableAnchor)
-					break;
 			}
 			isPreviousPageVisited = page.isVisited();
+			childrenIndex++;
 		}
 		
 		if(childrenPanel.getWidgetCount() > 0){

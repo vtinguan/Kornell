@@ -154,7 +154,7 @@ public class PrefetchSequencer implements Sequencer {
 			@Override
 			public void ok(UserSession session) {
 				session.setItem(getBreadcrumbKey(), currentKey());
-				String personUUID = session.getPersonUUID();
+				String personUUID = session.getUserInfo().getPerson().getUUID();
 				client.events().actomEntered(enrollmentUUID, currentActom.getKey()).fire();
 				currentActom.setVisited(true);
 				fireProgressChangeEvent();

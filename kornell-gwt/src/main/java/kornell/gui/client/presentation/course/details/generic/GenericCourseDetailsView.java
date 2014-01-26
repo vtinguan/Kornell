@@ -8,6 +8,7 @@ import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
+import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UserInfoTO;
@@ -17,10 +18,8 @@ import kornell.core.to.coursedetails.InfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
-import kornell.gui.client.event.ProgressChangeEventHandler;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
 import kornell.gui.client.presentation.util.LoadingPopup;
@@ -32,8 +31,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -90,7 +87,7 @@ public class GenericCourseDetailsView extends Composite implements
 		this.bus = clientFactory.getEventBus();
 		this.session = clientFactory.getUserSession();
 		this.placeCtrl = clientFactory.getPlaceController();
-		this.currentCourseClass = clientFactory.getCurrentCourseClass();
+		this.currentCourseClass = Dean.getInstance().getCourseClassTO();
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 	}
@@ -103,12 +100,12 @@ public class GenericCourseDetailsView extends Composite implements
 			@Override
 			public void ok(CourseClassesTO courseClasses) {
 				for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
-					if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(clientFactory.getInstitution().getUUID())){
+					if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())){
 						courseClassTO = courseClassTmp;
 					}
 				}
 				user = session.getUserInfo();
-				session.courseClass(clientFactory.getCurrentCourseClass().getCourseClass().getUUID()).contents(new Callback<Contents>() {
+				session.courseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()).contents(new Callback<Contents>() {
 					@Override
 					public void ok(Contents contents) {
 						setContents(contents);
@@ -235,8 +232,18 @@ public class GenericCourseDetailsView extends Composite implements
 		topicsContentPanel.addStyleName("topicsContentPanel");
 		boolean startOpened = (contents.getChildren().size() == 1);
 		int i = 0;
+		ExternalPage page;
+		boolean enableAnchorOnNextTopicsFirstChild = true;
 		for (Content content: contents.getChildren()) {
-			topicsContentPanel.add(new GenericTopicView(bus, session, placeCtrl, session, currentCourseClass, content, i++, startOpened));
+			topicsContentPanel.add(new GenericTopicView(bus, session, placeCtrl, session, currentCourseClass, content, i++, startOpened, enableAnchorOnNextTopicsFirstChild));
+			enableAnchorOnNextTopicsFirstChild = true;
+			for (Content contentItem : content.getTopic().getChildren()) {
+				page = contentItem.getExternalPage();
+				if(!page.isVisited()){
+					enableAnchorOnNextTopicsFirstChild = false;
+					break;
+				}
+			}
 		}	
 		return topicsContentPanel;
 	}
