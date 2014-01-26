@@ -54,5 +54,37 @@ object CourseClasses {
 		""".map[CourseClassTO](toCourseClassTO)
       )
   	}
+  
+  def byPersonAndInstitution(personUUID: String, institutionUUID: String) = {
+      TOs.newCourseClassesTO(
+		  sql"""
+			select     
+				c.uuid as courseUUID, 
+			    c.code,
+			    c.title, 
+			    c.description,
+			    c.infoJson,
+			    cv.uuid as courseVersionUUID,
+			    cv.name as courseVersionName,
+			    cv.repository_uuid as repositoryUUID, 
+			    cv.versionCreatedAt,
+			    cc.uuid as courseClassUUID,
+			    cc.name as courseClassName,
+			    cc.institution_uuid as institutionUUID,
+			    e.uuid as enrollmentUUID, 
+			    e.enrolledOn, 
+			    e.person_uuid as personUUID, 
+			    e.progress,
+			    e.notes,
+			    e.state as enrollmentState
+			from Course c
+			left join CourseVersion cv on cv.course_uuid = c.uuid
+			left join CourseClass cc on cc.courseVersion_uuid = cv.uuid
+			left join Enrollment e on cc.uuid = e.class_uuid
+			where e.person_uuid = ${personUUID}
+		    and cc.institution_uuid = ${institutionUUID};
+		""".map[CourseClassTO](toCourseClassTO)
+      )
+  	}
 
 }
