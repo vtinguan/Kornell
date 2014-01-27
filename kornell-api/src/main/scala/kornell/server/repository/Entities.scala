@@ -14,6 +14,7 @@ import kornell.core.entity.Person
 import kornell.core.entity.Registration
 import kornell.core.entity.RoleType
 import kornell.server.jdbc.repository.PersonRepo
+import java.util.Map
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -160,6 +161,14 @@ object Entities {
     webRepo.setPrefix(prefix)
     webRepo.setDistributionURL(distributionURL)
     webRepo
+  }
+  
+  def newActomEntries(enrollmentUUID:String,actomKey:String, entriesMap:Map[String,String]) = {
+    val entries = factory.newActomEntries.as
+    entries.setActomKey(actomKey)
+    entries.setEnrollmentUUID(enrollmentUUID)
+    entries.setEntries(entriesMap)
+    entries
   }
 
 }

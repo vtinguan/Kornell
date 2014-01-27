@@ -100,16 +100,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	public InstitutionClient institution(String uuid) {
 		return new InstitutionClient(uuid);
 	}
-
-	public void placeChanged(final String token) {
-		PUT("/user/placeChange").sendRequest(token, new Callback<Void>() {
-			@Override
-			public void ok(Void v) {
-				GWT.log("Place changed to [" + token + "]");
-			}
-		});
-	}
-
+	
 	public void getEnrollmentsByCourseClass(String courseClassUUID, Callback<Enrollments> cb) {
 		GET("/enrollments/?courseClassUUID=" + courseClassUUID).sendRequest(null, cb);
 	}
@@ -161,10 +152,6 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		HEAD(src).go(callback);
 	}
 
-	public ActomClient actom(String actomKey) {
-		return new ActomClient(actomKey);
-	}
-	
 	public EnrollmentClient enrollment(String enrollmentUUID){
 		return new EnrollmentClient(enrollmentUUID);
 	}

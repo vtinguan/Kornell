@@ -9,8 +9,8 @@ import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
+import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ProgressChangeEvent;
-import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class PrefetchSequencer implements Sequencer {
-
 	private FlowPanel contentPanel;
 	private String enrollmentUUID;
 	private KornellClient client;
@@ -154,8 +153,7 @@ public class PrefetchSequencer implements Sequencer {
 			@Override
 			public void ok(UserSession session) {
 				session.setItem(getBreadcrumbKey(), currentKey());
-				String personUUID = session.getUserInfo().getPerson().getUUID();
-				client.events().actomEntered(enrollmentUUID, currentActom.getKey()).fire();
+				bus.fireEvent(new ActomEnteredEvent(enrollmentUUID,currentActom.getKey()));
 				currentActom.setVisited(true);
 				fireProgressChangeEvent();
 			}

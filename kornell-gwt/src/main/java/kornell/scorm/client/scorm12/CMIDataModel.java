@@ -1,23 +1,27 @@
 package kornell.scorm.client.scorm12;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import kornell.api.client.KornellClient;
+import java.util.Map;
 
 import com.google.gwt.core.shared.GWT;
 
-public class CMIDataModel {
+public class CMIDataModel implements CMIConstants{
+	Map<String, String> values = new HashMap<String, String>();
 
 	// Data Model Constants
 	private static final String CHILDREN = "_children";
 	private static final String LESSON_STATUS = "cmi.core.lesson_status";
 	private static final String NOT_ATTEMPTED = "not attempted";
-	private KornellClient client;
+
+	boolean dirty;
+
+	private SCORM12Adapter api;
 	
-	public CMIDataModel(KornellClient client) {
-		this.client = client;
+	public CMIDataModel(SCORM12Adapter api){
+		this.api = api;
 	}
 
 	public String getValue(String element) {
@@ -48,25 +52,31 @@ public class CMIDataModel {
 			if (iterator.hasNext())
 				buf.append(",");
 		}
-		return null;
+		return buf.toString();
 	}
 
 	private String getLessonStatus() {
-		String status = get(LESSON_STATUS);
-		if (status == null)
-			return NOT_ATTEMPTED;
-		return null;
+		return get(LESSON_STATUS,NOT_ATTEMPTED);
 	}
 
 	public String setValue(String param, String value) {
-		return put(param, value);
-	}
-	
-	public String get(String key) {
-		return client.actom("???ActomKey???").get(key);
+		values.put(param, value);
+		api.onDirtyData();
+		return TRUE;
 	}
 
-	public String put(String key, String value) {
-		return client.actom("???ActomKey???").put(key,value);
+	public String get(String key,String deflt) {
+		String value = EMPTY;
+		if (values.containsKey(key)) 
+			value = values.get(key);
+		boolean isEmpty = value == null || EMPTY.equals(value);
+		boolean hasDefault =  deflt != null;
+		if(isEmpty && hasDefault)
+			return deflt;
+		else return value;
+	}
+
+	public Map<String,String> getValues() {		
+		return values;
 	}
 }
