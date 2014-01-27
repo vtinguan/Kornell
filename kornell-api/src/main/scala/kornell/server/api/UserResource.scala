@@ -2,7 +2,6 @@ package kornell.server.api
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable.Set
-
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs._
 import javax.ws.rs.core.Context
@@ -13,14 +12,18 @@ import kornell.core.to.UserInfoTO
 import kornell.core.util.UUID
 import kornell.server.repository.TOs
 import kornell.server.repository.TOs._
-import kornell.server.repository.jdbc.Auth
-import kornell.server.repository.jdbc.Institutions
-import kornell.server.repository.jdbc.PersonRepository
-import kornell.server.repository.jdbc.Registrations
-import kornell.server.repository.jdbc.Enrollments
-import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
+import kornell.server.jdbc.repository.AuthRepo
+import kornell.server.jdbc.repository.RegistrationsRepo
+import kornell.core.entity.Registrations
+import kornell.server.jdbc.repository.InstitutionsRepo
+import kornell.core.entity.Enrollments
+import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.jdbc.SQL._
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.PersonRepo
 
 @Path("user")
 class UserResource{
@@ -29,19 +32,19 @@ class UserResource{
   @Produces(Array(UserInfoTO.TYPE))
   //TODO: Cache
   def get(implicit @Context sc: SecurityContext):Option[UserInfoTO] =
-    Auth.withPerson { p =>
+    AuthRepo.withPerson { p =>
     	val user = newUserInfoTO
     	val username =  sc.getUserPrincipal().getName()
     	user.setUsername(username)
     	user.setPerson(p)
 	    user.setEmail(user.getPerson().getEmail())
-    	val signingNeeded = Registrations.signingNeeded(p)
+    	val signingNeeded = RegistrationsRepo.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
-    	val roles = Auth.rolesOf(username)
+    	val roles = AuthRepo.rolesOf(username)
     	user.setRoles((Set.empty ++ roles).asJava)
-    	user.setRegistrationsTO(Registrations.getAll(p))
-    	user.setEnrollmentsTO(newEnrollmentsTO(Enrollments.byPerson(p.getUUID)))
+    	user.setRegistrationsTO(RegistrationsRepo.getAll(p))
+    	user.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
     	
     	Option(user)
   }
@@ -51,23 +54,23 @@ class UserResource{
   @Produces(Array(UserInfoTO.TYPE))
   def login(implicit @Context sc: SecurityContext,
 	    @PathParam("confirmation") confirmation:String):Option[UserInfoTO] =
-    Auth.withPerson { p =>
+    AuthRepo.withPerson { p =>
     	val user = newUserInfoTO
     	user.setUsername(sc.getUserPrincipal().getName())
     	user.setPerson(p)
 	    user.setEmail(user.getPerson().getEmail())
-    	val signingNeeded = Registrations.signingNeeded(p)
+    	val signingNeeded = RegistrationsRepo.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
     	
     	if(confirmation.equals(user.getPerson().getConfirmation())){
-    		Auth.confirmAccount(user.getPerson().getUUID())
+    		AuthRepo.confirmAccount(user.getPerson().getUUID())
     		user.getPerson().setConfirmation("")
     	}
-    	val roles = Auth.rolesOf(user.getUsername)
+    	val roles = AuthRepo.rolesOf(user.getUsername)
     	user.setRoles((Set.empty ++ roles).asJava)
-    	user.setRegistrationsTO(Registrations.getAll(p))
-    	user.setEnrollmentsTO(newEnrollmentsTO(Enrollments.byPerson(p.getUUID)))
+    	user.setRegistrationsTO(RegistrationsRepo.getAll(p))
+    	user.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
     	
     	Option(user)
   }
@@ -78,15 +81,15 @@ class UserResource{
   def getByUsername(implicit @Context sc: SecurityContext,
 	    @Context resp:HttpServletResponse,
 	    @PathParam("personUUID") personUUID:String):Option[UserInfoTO] =
-    Auth.withPerson { p =>
+    AuthRepo.withPerson { p =>
     	val user = newUserInfoTO
-	    val person = PersonRepository(personUUID).get 
+	    val person = PersonRepo(personUUID).get 
 	    if (person.isDefined){
 	    	user.setPerson(person.get)
 		    user.setUsername(user.getPerson().getEmail())
 		    user.setEmail(user.getPerson().getEmail())
-	    	user.setRegistrationsTO(Registrations.getAll(person.get))
-	    	//val signingNeeded = Registrations.signingNeeded(p)
+	    	user.setRegistrationsTO(RegistrationsRepo.getAll(person.get))
+	    	//val signingNeeded = RegistrationsRepo.signingNeeded(p)
 	    	//user.setSigningNeeded(signingNeeded)
 	    	//user.setLastPlaceVisited(p.getLastPlaceVisited)
 	    	//val roles = Auth.rolesOf(user.getUsername)
@@ -107,7 +110,7 @@ class UserResource{
 	//verify if there's a password set for this email
   	//if an admin created this user, there will be an entry on the person table, 
   	//but not one on the Password table
-	if(Auth.hasPassword(email))
+	if(AuthRepo.hasPassword(email))
 		user.setEmail(email)
 	Option(user)
   }
@@ -118,11 +121,11 @@ class UserResource{
   def requestPasswordChange(@Context resp:HttpServletResponse,
       @PathParam("email") email:String, 
       @PathParam("institutionName") institutionName:String) = {
-    val person = Auth.getPersonByEmail(email)
-    val institution = Institutions.byName(institutionName)
+    val person = AuthRepo.getPersonByEmail(email)
+    val institution = InstitutionsRepo.byName(institutionName)
     if(person.isDefined && institution.isDefined){
     	val requestPasswordChangeUUID = UUID.random
-    	Auth.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)
+    	AuthRepo.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)
     	EmailService.sendEmailRequestPasswordChange(person.get, institution.get, requestPasswordChangeUUID)
     } else {
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person or Institution not found.");
@@ -135,9 +138,9 @@ class UserResource{
   def changePassword(@Context resp:HttpServletResponse,
       @PathParam("password") password:String, 
       @PathParam("passwordChangeUUID") passwordChangeUUID:String) = {
-	  	val person = Auth.getPersonByPasswordChangeUUID(passwordChangeUUID)
+	  	val person = AuthRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
 	  	if(person.isDefined){
-	  	  PersonRepository(person.get.getUUID).setPassword(person.get.getEmail, password)
+	  	  PersonRepo(person.get.getUUID).setPassword(person.get.getEmail, password)
 		  	val user = newUserInfoTO
 			user.setEmail(person.get.getEmail())
 			Option(user)
@@ -158,7 +161,7 @@ class UserResource{
   @Path("placeChange")
   @Produces(Array("text/plain"))
   def putPlaceChange(implicit @Context sc: SecurityContext, newPlace:String) = 
-    Auth.withPerson { p => 
+    AuthRepo.withPerson { p => 
     	sql"""
     	update Person set lastPlaceVisited=$newPlace
     	where uuid=${p.getUUID}
@@ -170,8 +173,8 @@ class UserResource{
   @Consumes(Array(UserInfoTO.TYPE))
   @Produces(Array(UserInfoTO.TYPE))
   def update(implicit @Context sc: SecurityContext, userInfo: UserInfoTO,
-	    @PathParam("personUUID") personUUID: String) = Auth.withPerson{ p =>
-    PersonRepository(personUUID).update(userInfo.getPerson())
+	    @PathParam("personUUID") personUUID: String) = AuthRepo.withPerson{ p =>
+    PersonRepo(personUUID).update(userInfo.getPerson())
     userInfo
   }
   

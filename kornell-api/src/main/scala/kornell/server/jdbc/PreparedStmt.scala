@@ -1,19 +1,11 @@
-package kornell.server.repository.jdbc
-
-import javax.naming.InitialContext
-import kornell.server.repository.jdbc.DataSources._
+package kornell.server.jdbc
 import java.sql.ResultSet
 import java.sql.Connection
-import javax.naming.Context
 import java.util.Date
-import java.sql.{ Date => SQLDate }
-import javax.sql.DataSource
 import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
-import java.sql.{ Date => SQLDate }
-import java.sql.DriverManager
-import javax.naming.NoInitialContextException
 import java.sql.Timestamp
+import DataSources._
 
 class PreparedStmt(query: String, params: List[Any]) {
 

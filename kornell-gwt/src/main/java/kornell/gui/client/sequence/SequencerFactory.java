@@ -1,10 +1,10 @@
 package kornell.gui.client.sequence;
 
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 
 
 public interface SequencerFactory {
 
-	Sequencer withPlace(CourseClassPlace place);
+	Sequencer withPlace(ClassroomPlace place);
 
 }

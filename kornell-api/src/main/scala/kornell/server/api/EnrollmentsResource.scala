@@ -1,13 +1,20 @@
 package kornell.server.api
 
-import javax.ws.rs._
-import javax.ws.rs.core.Context
+import javax.ws.rs.Produces
+import javax.ws.rs.Consumes
 import javax.ws.rs.core.SecurityContext
-import kornell.core.entity.Enrollment
-import kornell.server.repository.jdbc.Auth
-import kornell.server.repository.jdbc.Enrollments
-import kornell.server.repository.jdbc.SQLInterpolation._
+import kornell.server.jdbc.repository.EnrollmentsRepo
+import javax.ws.rs.PathParam
+import javax.ws.rs.QueryParam
+import javax.ws.rs.PUT
+import javax.ws.rs.GET
+import kornell.server.jdbc.repository.AuthRepo
+import javax.ws.rs.Path
+import javax.ws.rs.core.Context
 import kornell.server.repository.service.RegistrationEnrollmentService
+import kornell.server.jdbc.SQL._
+import kornell.core.entity.Enrollment
+import kornell.core.entity.Enrollments
 
 //TODO: Rename path to "enrollment"
 @Path("enrollments")
@@ -18,22 +25,22 @@ class EnrollmentsResource {
   def get(@PathParam("uuid") uuid: String): EnrollmentResource = new EnrollmentResource(uuid)
 
   @GET
-  @Produces(Array(kornell.core.entity.Enrollments.TYPE))
-  def getByCourseUUID(@QueryParam("courseClassUUID") courseClassUUID: String) = Enrollments.byCourseClass(courseClassUUID)
+  @Produces(Array(Enrollments.TYPE))
+  def getByCourseUUID(@QueryParam("courseClassUUID") courseClassUUID: String) = EnrollmentsRepo.byCourseClass(courseClassUUID)
 
   @PUT
   @Path("requests")
   @Consumes(Array(kornell.core.to.EnrollmentRequestsTO.TYPE))
   def putEnrollments(implicit @Context sc: SecurityContext, enrollmentRequests: kornell.core.to.EnrollmentRequestsTO) =
-    Auth.withPerson { p => RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p) }
+    AuthRepo.withPerson { p => RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p) }
 
   @PUT
   @Path("{courseClassUUID}/notesUpdated")
   @Produces(Array("text/plain"))
   def putNotesChange(implicit @Context sc: SecurityContext,
-    @PathParam("courseClassUUID") courseClassUUID: String,
+    @PathParam("courseClassUUID") courseClassUUID: String, 
     notes: String) =
-    Auth.withPerson { p =>
+    AuthRepo.withPerson { p =>
       sql"""
     	update Enrollment set notes=$notes
     	where person_uuid=${p.getUUID}

@@ -13,7 +13,7 @@ import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
@@ -21,10 +21,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class SimpleCourseSequencer implements Sequencer {
+public class PrefetchSequencer implements Sequencer {
 
 	private FlowPanel contentPanel;
-	private String courseClassUUID;
+	private String enrollmentUUID;
 	private KornellClient client;
 	private EventBus bus;
 	private List<Actom> actoms;
@@ -38,7 +38,7 @@ public class SimpleCourseSequencer implements Sequencer {
 	private Actom prevActom;
 	private Uidget prevUidget;
 
-	public SimpleCourseSequencer(EventBus bus, KornellClient client) {
+	public PrefetchSequencer(EventBus bus, KornellClient client) {
 		this.client = client;
 		this.bus = bus;
 		bus.addHandler(NavigationRequest.TYPE, this);
@@ -73,7 +73,7 @@ public class SimpleCourseSequencer implements Sequencer {
 	}
 
 	private String getBreadcrumbKey() {
-		return SimpleCourseSequencer.class.getName() + "." + courseClassUUID
+		return PrefetchSequencer.class.getName() + "." + enrollmentUUID
 				+ ".CURRENT_KEY";
 	}
 
@@ -155,7 +155,7 @@ public class SimpleCourseSequencer implements Sequencer {
 			public void ok(UserSession session) {
 				session.setItem(getBreadcrumbKey(), currentKey());
 				String personUUID = session.getUserInfo().getPerson().getUUID();
-				client.events().actomEntered(personUUID, courseClassUUID, currentActom.getKey()).fire();
+				client.events().actomEntered(enrollmentUUID, currentActom.getKey()).fire();
 				currentActom.setVisited(true);
 				fireProgressChangeEvent();
 			}
@@ -202,14 +202,14 @@ public class SimpleCourseSequencer implements Sequencer {
 	}
 
 	@Override
-	public Sequencer withPlace(CourseClassPlace place) {
-		this.courseClassUUID = place.getCourseClassUUID();
+	public Sequencer withPlace(ClassroomPlace place) {
+		this.enrollmentUUID = place.getEnrollmentUUID();
 		return this;
 	}
 
 	@Override
 	public void go() {
-		client.courseClass(courseClassUUID).contents(new Callback<Contents>() {
+		client.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
 
 			@Override
 			public void ok(Contents contents) {
@@ -303,8 +303,7 @@ public class SimpleCourseSequencer implements Sequencer {
 		if (actom == null)
 			return null;
 		if (actom instanceof ExternalPage)
-			return new ExternalPageView(client, courseClassUUID,
-					(ExternalPage) actom);
+			return new ExternalPageView(client, (ExternalPage) actom);
 		throw new IllegalArgumentException("Do not know how to view [" + actom
 				+ "]");
 	}
@@ -327,7 +326,7 @@ public class SimpleCourseSequencer implements Sequencer {
 		progressChangeEvent.setCurrentPage(currentIndex+1);
 		progressChangeEvent.setTotalPages(totalPages);		
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
-		progressChangeEvent.setCourseClassUUID(courseClassUUID);
+		progressChangeEvent.setEnrollmentUUID(enrollmentUUID);
 		bus.fireEvent(progressChangeEvent);
 	}
 }

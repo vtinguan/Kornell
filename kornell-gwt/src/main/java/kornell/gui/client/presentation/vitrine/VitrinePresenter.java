@@ -14,7 +14,7 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -85,7 +85,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
 							if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())){
 								Dean.getInstance().setCourseClassTO(courseClassTmp);
-								clientFactory.setDefaultPlace(new CourseClassPlace(courseClassTmp.getCourseClass().getUUID()));
+								clientFactory.setDefaultPlace(new ClassroomPlace(courseClassTmp.getEnrollment().getUUID()));
 								break;
 							}
 						}

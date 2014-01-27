@@ -1,10 +1,10 @@
 package kornell.server.api
 
-import kornell.server.repository.jdbc.SQLInterpolation._
 import javax.ws.rs._
 import kornell.core.entity.WebRepository
 import java.sql.ResultSet
 import kornell.server.repository.Entities
+import kornell.server.jdbc.SQL._ 
 
 @Path("repository")
 @Produces(Array(WebRepository.TYPE))

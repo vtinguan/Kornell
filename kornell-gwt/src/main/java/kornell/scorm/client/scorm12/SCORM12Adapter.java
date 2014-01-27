@@ -7,12 +7,15 @@ public class SCORM12Adapter {
 	private static final String FALSE = "false";
 
 	private String lastError = "0";
+	private String enrollmentUUID;
+	private String actomKey;
+	
 	private CMIDataModel cmi;
 	
 	public SCORM12Adapter(CMIDataModel cmi) {
 		this.cmi = cmi;
 	}
-	
+
 	public String LMSInitialize(String param){
 		GWT.log("LMSInitialize["+param+"]");
 		return TRUE;
@@ -43,7 +46,7 @@ public class SCORM12Adapter {
 	public String LMSSetValue(String param, String value){
 		String result = FALSE;
 		if(isCMIElement(param))
-			return cmi.setValue(param,value);
+			result = cmi.setValue(param,value);
 		GWT.log("LMSSetValue["+param+","+value+"] = "+result);
 		return result;
 	}

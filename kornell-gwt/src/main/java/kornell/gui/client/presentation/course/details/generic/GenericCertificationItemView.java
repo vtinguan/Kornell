@@ -115,8 +115,8 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
 		// TODO Auto-generated method stub
-		if(CERTIFICATION.equals(type) || session.isDean()){
-			if(event.getProgressPercent() >= 100){
+		if(CERTIFICATION.equals(type)){
+			if(event.getProgressPercent() >= 100 || session.isDean()){
 				displayActionCell(true);
 				status = "Disponível";
 				lblStatus.setText(status);

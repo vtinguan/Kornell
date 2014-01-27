@@ -1,21 +1,5 @@
 package kornell.gui.client;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
-import kornell.api.client.UserSession;
-import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Institution;
-import kornell.core.event.EventFactory;
-import kornell.core.lom.LOMFactory;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
-import kornell.core.to.TOFactory;
-import kornell.gui.client.personnel.Captain;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.personnel.Stalker;
-import kornell.gui.client.presentation.GlobalActivityMapper;
-import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
 import kornell.gui.client.presentation.atividade.generic.GenericCourseClassView;
@@ -23,9 +7,8 @@ import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
 import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
-import kornell.gui.client.presentation.course.CourseClassPlace;
-import kornell.gui.client.presentation.course.CourseClassPresenter;
-import kornell.gui.client.presentation.course.CourseClassView;
+import kornell.gui.client.presentation.course.ClassroomPresenter;
+import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
 import kornell.gui.client.presentation.course.chat.CourseChatView;
 import kornell.gui.client.presentation.course.chat.generic.GenericCourseChatView;
@@ -60,27 +43,14 @@ import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
-import kornell.gui.client.util.ClientProperties;
-import kornell.scorm.client.scorm12.CMIDataModel;
-import kornell.scorm.client.scorm12.SCORM12Adapter;
-import kornell.scorm.client.scorm12.SCORM12Binder;
 
-import com.google.gwt.activity.shared.ActivityManager;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.place.shared.PlaceHistoryMapper;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 //TODO: Organize this big, messy class and interface
 public class GenericViewFactoryImpl implements ViewFactory {
@@ -91,7 +61,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
-	private CourseClassPresenter coursePresenter;
+	private ClassroomPresenter coursePresenter;
 	private CourseHomePresenter courseHomePresenter;
 	private CourseDetailsPresenter courseDetailsPresenter;
 	private CourseLibraryPresenter courseLibraryPresenter;
@@ -188,7 +158,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	}
 
 	@Override
-	public CourseClassView getCourseClassView() {
+	public ClassroomView getClassroomView() {
 		return new GenericCourseClassView(clientFactory.getEventBus());
 	}
 
@@ -293,12 +263,12 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	}
 
 	@Override
-	public CourseClassPresenter getCoursePresenter() {
+	public ClassroomPresenter getClassroomPresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(clientFactory.getEventBus(),
 				clientFactory.getPlaceController(), clientFactory.getUserSession());
 		if (coursePresenter == null) {
-			CourseClassView activityView = getCourseClassView();
-			coursePresenter = new CourseClassPresenter(activityView, clientFactory.getPlaceController(),
+			ClassroomView activityView = getClassroomView();
+			coursePresenter = new ClassroomPresenter(activityView, clientFactory.getPlaceController(),
 					rendererFactory);
 		}
 		return coursePresenter;

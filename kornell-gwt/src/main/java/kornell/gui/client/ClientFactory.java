@@ -4,13 +4,10 @@ package kornell.gui.client;
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Institution;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
-import kornell.core.to.CourseClassTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.admin.home.AdminHomeView;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;

@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation.atividade.generic;
 
-import kornell.gui.client.presentation.course.CourseClassView;
+import kornell.gui.client.presentation.course.ClassroomView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericCourseClassView extends Composite 
-	implements CourseClassView {
+	implements ClassroomView {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseClassView> {
 	}
 

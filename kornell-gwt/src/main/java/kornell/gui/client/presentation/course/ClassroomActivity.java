@@ -5,11 +5,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 
-public class CourseClassActivity extends AbstractActivity {
+public class ClassroomActivity extends AbstractActivity {
 	
-	private CourseClassPresenter presenter;
+	private ClassroomPresenter presenter;
 
-	public CourseClassActivity(CourseClassPresenter presenter) {
+	public ClassroomActivity(ClassroomPresenter presenter) {
 		this.presenter = presenter;
 	}
 

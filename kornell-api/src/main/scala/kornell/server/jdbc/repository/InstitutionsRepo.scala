@@ -1,4 +1,4 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
 import java.sql.ResultSet
 import kornell.server.repository.Entities._
@@ -6,9 +6,9 @@ import kornell.server.repository.Entities
 import kornell.core.entity.Person
 import kornell.core.entity.Institution
 import kornell.core.entity.Registration
-import kornell.server.repository.jdbc.SQLInterpolation._
+import kornell.server.jdbc.SQL._
 
-object Institutions {
+object InstitutionsRepo {
   
   implicit def toInstitution(rs:ResultSet):Institution = 
     newInstitution(rs.getString("uuid"), 
@@ -20,7 +20,7 @@ object Institutions {
         rs.getBoolean("demandsPersonContactDetails")) 
 
   def create(name: String, fullName: String, terms: String, baseURL: String): Institution = {
-    val i = newInstitution(randomUUID, name, fullName, terms, "", baseURL, false)
+    val i = newInstitution(randUUID, name, fullName, terms, "", baseURL, false)
     sql"""
     | insert into Institution(uuid,name,fullName,baseURL,terms) 
     | values ($i.getUUID,$i.getName,$i.getFullName,$i.getBaseURL,$i.terms)""".executeUpdate

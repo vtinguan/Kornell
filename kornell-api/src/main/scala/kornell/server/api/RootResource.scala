@@ -4,7 +4,7 @@ import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.GET
 import java.util.Properties
-import kornell.server.repository.jdbc.SQLInterpolation._
+import kornell.server.jdbc.SQL._
 
 @Path("")
 class RootResource {

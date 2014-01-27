@@ -1,0 +1,1 @@
+alter table ActomEntered drop column courseClass_uuid;

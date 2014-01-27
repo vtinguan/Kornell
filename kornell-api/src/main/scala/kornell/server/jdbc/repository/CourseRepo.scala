@@ -1,12 +1,13 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
 import java.sql.ResultSet
 import kornell.core.entity.Course
 import kornell.core.entity.Person
 import kornell.server.repository.Entities.newCourse
-import kornell.server.repository.jdbc.SQLInterpolation.SQLHelper
+import kornell.server.jdbc.SQL._ 
 
-class CourseRepository(uuid: String) {
+
+class CourseRepo(uuid: String) {
 
   def get() = sql"""select * from Course where uuid=$uuid""".first[Course]
 
@@ -14,6 +15,6 @@ class CourseRepository(uuid: String) {
 
 }
 
-object CourseRepository {
-  def apply(uuid: String) = new CourseRepository(uuid)
+object CourseRepo {
+  def apply(uuid: String) = new CourseRepo(uuid)
 }
