@@ -10,7 +10,7 @@ import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.ActivityBarView;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
 import kornell.gui.client.presentation.course.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
@@ -88,7 +88,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						
-						if(newPlace instanceof CourseClassPlace){							
+						if(newPlace instanceof ClassroomPlace){							
 							btnDetails.removeStyleName("btnSelected");
 							updateProgressBarPanel();
 						} else if(newPlace instanceof CourseDetailsPlace){
@@ -152,7 +152,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		pagePanel.addStyleName("pagePanel");
 		pagePanel.addStyleName("label");
 		
-		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace){
+		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
 			pagePanel.add(createSpan("Página", false));
 			pagePanel.add(createSpan(""+currentPage, true));
 			pagePanel.add(createSpan("/", false));
@@ -230,25 +230,25 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@UiHandler("btnNext")
 	public void btnNextClicked(ClickEvent e){
-		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace)
+		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace)
 			clientFactory.getEventBus().fireEvent(NavigationRequest.next());
 	}
 
 	@UiHandler("btnPrevious")
 	public void btnPrevClicked(ClickEvent e){
-		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace)
+		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace)
 			clientFactory.getEventBus().fireEvent(NavigationRequest.prev());		
 	}
 	
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
-		if(clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace){
-			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()));
+		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
+			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {
 			//TODO remove this
-			clientFactory.getPlaceController().goTo(new CourseClassPlace(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()));
+			clientFactory.getPlaceController().goTo(new ClassroomPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
 			btnDetails.removeStyleName("btnSelected");
 		}
 		
@@ -305,8 +305,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
 		updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
-		enableButton(BUTTON_PREVIOUS, event.hasPrevious() && clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace);
-		enableButton(BUTTON_NEXT, event.hasNext() && clientFactory.getPlaceController().getWhere() instanceof CourseClassPlace);
+		enableButton(BUTTON_PREVIOUS, event.hasPrevious() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
+		enableButton(BUTTON_NEXT, event.hasNext() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
 	}
 	
 }

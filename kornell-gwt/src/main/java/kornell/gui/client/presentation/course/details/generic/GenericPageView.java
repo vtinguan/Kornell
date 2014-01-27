@@ -11,9 +11,9 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
-import kornell.gui.client.sequence.SimpleCourseSequencer;
+import kornell.gui.client.sequence.PrefetchSequencer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -80,9 +80,9 @@ public class GenericPageView extends Composite implements
 			pageAnchor.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					String breadCrumb = SimpleCourseSequencer.class.getName() + "." + currentCourse.getCourseClass().getUUID() + ".CURRENT_KEY";
+					String breadCrumb = PrefetchSequencer.class.getName() + "." + currentCourse.getCourseClass().getUUID() + ".CURRENT_KEY";
+					placeCtrl.goTo(new ClassroomPlace(currentCourse.getEnrollment().getUUID()));
 					session.setItem(breadCrumb, page.getKey());
-					placeCtrl.goTo(new CourseClassPlace(currentCourse.getCourseClass().getUUID()));
 				}
 			});
 			lblPage.add(pageAnchor);

@@ -1,8 +1,9 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc
 
 import scala.util.Try
 import com.googlecode.flyway.core.Flyway
 import scala.util._
+import kornell.server.jdbc.DataSources
 
 object Migration {
   def apply() = migration

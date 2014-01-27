@@ -7,13 +7,13 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
 import kornell.api.client.KornellClient;
-import kornell.gui.client.presentation.course.CourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.Sequencer;
 
 public class SCORM12Sequencer implements Sequencer{
 	
-	private CourseClassPlace place;
+	private ClassroomPlace place;
 	private KornellClient client;
 
 	public SCORM12Sequencer(EventBus bus, KornellClient client) {
@@ -39,7 +39,7 @@ public class SCORM12Sequencer implements Sequencer{
 	}
 
 	@Override
-	public Sequencer withPlace(CourseClassPlace place) {
+	public Sequencer withPlace(ClassroomPlace place) {
 		this.place = place;
 		return this;
 	}

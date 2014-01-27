@@ -1,23 +1,22 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc.repository
 
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.to.CourseTO
-import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseClass
 import java.sql.ResultSet
 import kornell.server.repository.Entities
-import kornell.server.repository.jdbc.SQLInterpolation._
 import kornell.core.to.CourseClassTO
 import kornell.server.repository.TOs
+import kornell.server.jdbc.SQL._
 
-class CourseClasses {
+class CourseClassesRepo {
 }
 
-object CourseClasses {
+object CourseClassesRepo {
   
-  def apply(uuid:String) = CourseClassRepository(uuid);
+  def apply(uuid:String) = CourseClassRepo(uuid);
 
   def byInstitution(institutionUUID: String) =
     sql"""

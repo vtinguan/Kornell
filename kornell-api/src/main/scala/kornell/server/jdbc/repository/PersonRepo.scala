@@ -1,20 +1,20 @@
-package kornell.server.repository.jdbc
-import kornell.server.repository.jdbc.SQLInterpolation._
+package kornell.server.jdbc.repository
+import kornell.server.jdbc.SQL._
 import kornell.core.entity.Person
 import java.sql.ResultSet
 import kornell.server.repository.Entities
 import kornell.server.repository.Entities._
 import java.util.Date
 
-class PersonRepository(val uuid:String) {
+class PersonRepo(val uuid:String) {
   
-	def setPassword(username:String, password:String):PersonRepository = {
-	  Auth.setPlainPassword(uuid, username, password)
-	  this
+	def setPassword(username:String, password:String):PersonRepo = {
+	  AuthRepo.setPlainPassword(uuid, username, password)
+	  PersonRepo.this
 	}
 	
-	def registerOn(institution_uuid:String):RegistrationRepository = {
-	  RegistrationRepository(this, institution_uuid).register
+	def registerOn(institution_uuid:String):RegistrationRepo = {
+	  (RegistrationRepo(PersonRepo.this, institution_uuid)).register
 	}
 	
 	implicit def toPerson(rs:ResultSet):Person = newPerson(
@@ -46,11 +46,11 @@ class PersonRepository(val uuid:String) {
 	    	addressLine1 = ${person.getAddressLine1}, addressLine2 = ${person.getAddressLine2}, postalCode = ${person.getPostalCode}
 	    	where uuid = $uuid
 	    """.executeUpdate
-      this
+      PersonRepo.this
     }
 	
 }
 
-object PersonRepository{
-  def apply(uuid:String) = new PersonRepository(uuid)
+object PersonRepo{
+  def apply(uuid:String) = new PersonRepo(uuid)
 }

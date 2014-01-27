@@ -1,6 +1,11 @@
-package kornell.server.repository.jdbc
+package kornell.server.jdbc
 
-object SQLInterpolation {
+import java.sql.Connection
+import kornell.core.util.UUID
+
+object SQL {
+  type ConnectionFactory = () => Connection
+
   implicit class SQLHelper(val sc: StringContext) extends AnyVal {
     //TODO: Copied from http://www.monadzoo.com/blog/2013/01/06/scala-string-interpolation-it-happened/
     //TODO: What args:_* means?
@@ -15,4 +20,6 @@ object SQLInterpolation {
       new PreparedStmt(query.toString, params)
     }
   }
+
+  implicit def randomUUID = UUID.randomUUID()
 }

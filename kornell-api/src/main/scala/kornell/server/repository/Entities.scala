@@ -3,11 +3,8 @@ package kornell.server.repository
 import java.math.BigDecimal
 import java.util.Date
 import java.util.UUID
-
 import scala.collection.JavaConverters.seqAsJavaListConverter
-
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-
 import kornell.core.entity.Course
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
@@ -16,12 +13,12 @@ import kornell.core.entity.Institution
 import kornell.core.entity.Person
 import kornell.core.entity.Registration
 import kornell.core.entity.RoleType
-import kornell.server.repository.jdbc.PersonRepository
+import kornell.server.jdbc.repository.PersonRepo
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
 
-  def randomUUID = UUID.randomUUID.toString
+  def randUUID = UUID.randomUUID.toString
 
   def newPerson: Person = factory.newPerson.as
 
@@ -82,7 +79,7 @@ object Entities {
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
     e.setCourseClassUUID(courseClassUUID)
-    e.setPerson(PersonRepository.apply(personUUID).get.get)
+    e.setPerson(PersonRepo(personUUID).get.get)
     e.setProgress(progress)
     e.setNotes(notes)
     e.setState(state)
@@ -90,7 +87,7 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randomUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean) = {
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)

@@ -137,7 +137,7 @@ public class GenericCourseDetailsView extends Composite implements
 		progressChangeEvent.setCurrentPage(pagesVisitedCount);
 		progressChangeEvent.setTotalPages(totalPages);		
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
-		progressChangeEvent.setCourseClassUUID(currentCourseClass.getCourseClass().getUUID());
+		progressChangeEvent.setEnrollmentUUID(currentCourseClass.getCourseClass().getUUID());
 		bus.fireEvent(progressChangeEvent);
 	}
 
