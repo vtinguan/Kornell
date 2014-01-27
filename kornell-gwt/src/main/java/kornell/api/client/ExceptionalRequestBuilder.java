@@ -78,16 +78,20 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 		return this;
 	}
 
-	public <T> ExceptionalRequestBuilder withEntityBody(T object) {	
+	public <T> ExceptionalRequestBuilder withEntityBody(T object) {			
 		return withBody(object);
 	}
 	
 	public String contentTypeOf(Object o){
+		//TODO: Fix and automate
 		return MediaTypes.get().typeOf(o.getClass());
 	}
 
 	public ExceptionalRequestBuilder withContentType(String contentType) {
-		setHeader("Content-Type", contentType);
+		if(contentType != null)
+			setHeader("Content-Type", contentType);
+		else
+			throw new NullPointerException("Header value ");
 		return this;
 	}
 

@@ -19,7 +19,6 @@ import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.ClientProperties;
-import kornell.scorm.client.scorm12.CMIDataModel;
 import kornell.scorm.client.scorm12.SCORM12Adapter;
 import kornell.scorm.client.scorm12.SCORM12Binder;
 
@@ -51,7 +50,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	/* GUI */
 	private ViewFactory viewFactory;
 	private Place defaultPlace;
-
+	
+	
 	private UserSession session;
 
 	public GenericClientFactoryImpl() {
@@ -68,7 +68,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
-		new Stalker(bus, session, historyMapper);
 		historyHandler.handleCurrentHistory();
 		if (!session.isAuthenticated())
 			placeCtrl.goTo(defaultPlace);
@@ -164,11 +163,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initPersonnel() {
 		new Captain(bus, placeCtrl, Dean.getInstance().getInstitution().getUUID());
+		new Stalker(bus, session);
 	}
 
-	private void initSCORM12() {		
-		CMIDataModel cmi = new CMIDataModel(getKornellClient());
-		SCORM12Binder.bind(new SCORM12Adapter(cmi));
+	private void initSCORM12() {				
+		SCORM12Binder.bind(new SCORM12Adapter(bus,session));
 	}
 
 	private void initException() {
