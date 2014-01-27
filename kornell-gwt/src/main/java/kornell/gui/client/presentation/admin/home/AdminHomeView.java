@@ -22,5 +22,6 @@ public interface AdminHomeView extends IsWidget {
 	void setEnrollmentList(List<Enrollment> enrollments);
 	void showModal();
 	void setModalErrors(String errors);
-
+	void setCourseClassName(String courseClassName);
+	void setCourseName(String courseName);
 }

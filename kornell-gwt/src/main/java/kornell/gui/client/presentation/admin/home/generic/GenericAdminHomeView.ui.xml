@@ -2,26 +2,43 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
 	<g:FlowPanel addStyleNames="deanHome">
+		<g:HTMLPanel addStyleNames="title">Matricular Participante</g:HTMLPanel>
 		<g:FlowPanel addStyleNames="controlsPanel">
 			<g:FlowPanel addStyleNames="insertPanel">
-				<b:Label>Nome Completo</b:Label>
+				<g:Label addStyleNames="inlineLabel">Nome Completo: </g:Label>
 				<b:TextBox ui:field="txtFullName"></b:TextBox>
-				<b:Label>Email</b:Label>
+				<g:Label addStyleNames="inlineLabel">Email: </g:Label>
 				<b:TextBox ui:field="txtEmail"></b:TextBox>
-				<g:Button ui:field="btnAddEnrollment" addStyleNames="btnAction">Inserir Nova Matrícula</g:Button>
+				<g:Button ui:field="btnAddEnrollment" addStyleNames="btnAction">Matricular</g:Button>
 			</g:FlowPanel>
 	    	<b:CollapseTrigger ui:field="trigger">
 				<g:FlowPanel addStyleNames="insertBatchPanel">
-					<g:Button ui:field="btnAddEnrollmentBatchEnable" addStyleNames="btnSelected btnAddEnrollmentBatchEnable">Inserir Matrículas em Lote</g:Button>
+					<g:Button ui:field="btnAddEnrollmentBatchEnable" addStyleNames="btnNotSelected btnAddEnrollmentBatchEnable">Matricular em lote</g:Button>
 				</g:FlowPanel>
 	    	</b:CollapseTrigger>
 		</g:FlowPanel>
 		<b:Collapse ui:field="collapse" existTrigger="true" defaultOpen="false">
 			<g:FlowPanel addStyleNames="addEnrollmentBatchPanel">
 				<b:TextArea ui:field="txtAddEnrollmentBatch"></b:TextArea>
-				<g:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnSelected btnAddEnrollmentBatch">Inserir</g:Button>
+				<g:FlowPanel addStyleNames="infoPanel">
+					<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
+					<g:Label addStyleNames="highlightText">"nome;email" ou somente "email".</g:Label>
+					<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
+					<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
+					<g:Label addStyleNames="highlightText">Nome Sobrenome;email@example.com </g:Label>
+					<g:Label addStyleNames="highlightText">email1@example.com</g:Label>
+					<g:Label addStyleNames="highlightText">email2@example.com</g:Label>
+					<g:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnNotSelected btnAddEnrollmentBatch">Matricular</g:Button>
+				</g:FlowPanel>
 			</g:FlowPanel>
 		</b:Collapse>
+		<g:HTMLPanel addStyleNames="title">Participantes</g:HTMLPanel>
+		<g:FlowPanel>
+			<g:Label addStyleNames="inlineLabel">Matriculados na turma</g:Label>
+			<g:Label ui:field="lblCourseClassName" addStyleNames="inlineLabel lblHighlight"></g:Label>
+			<g:Label addStyleNames="inlineLabel">do curso</g:Label>
+			<g:Label ui:field="lblCourseName" addStyleNames="inlineLabel lblHighlight"></g:Label>
+		</g:FlowPanel>
 		<g:FlowPanel ui:field="enrollmentsWrapper">
 		</g:FlowPanel>
 		<g:Button ui:field="btnGoToCourse" addStyleNames="btnAction">Ir para o curso</g:Button>

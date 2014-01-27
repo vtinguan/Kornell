@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.admin.home.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +21,6 @@ import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
-import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -40,7 +38,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.client.Constants.DefaultStringValue;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -54,6 +51,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -108,6 +106,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	Button btnModalCancel;
 
 	@UiField
+	Label lblCourseClassName;
+	@UiField
+	Label lblCourseName;
+
+	@UiField
 	FlowPanel enrollmentsWrapper;
 
 	// TODO i18n xml
@@ -121,10 +124,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		trigger.setTarget("#toggle");
 		collapse.setId("toggle");
 		
+		txtModalError.setReadOnly(true);
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
-		txtModalError.setEnabled(false);
 	}
 
 	private void initTable() {
@@ -440,5 +443,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		public Enrollment getValue(Enrollment object) {
 			return object;
 		}
+	}
+
+	@Override
+	public void setCourseClassName(String courseClassName) {
+		this.lblCourseClassName.setText(courseClassName);
+	}
+
+	@Override
+	public void setCourseName(String courseName) {
+		this.lblCourseName.setText(courseName);
 	}
 }
