@@ -15,6 +15,7 @@
 .standardButtonBar{width:260px;margin:0 auto;clear:both;}.standardButtonBar .btnStandard{margin:15px;}
 .btnStandard{font-weight:bold;color:#b6b6b6;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
 .highlightText{color:#d88709;}
+.textInfoColor{color:#78af73;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}
 .paddingTop37{padding-top:37px;}

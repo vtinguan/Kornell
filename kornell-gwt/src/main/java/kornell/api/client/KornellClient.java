@@ -19,10 +19,6 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 
 	protected KornellClient() {}
 
-	public void getCourses(Callback<CoursesTO> callback) {
-		GET("/courses").sendRequest(null, callback);
-	}
-
 	// TODO: Is this safe?
 	public void getUser(String username, Callback<UserInfoTO> cb) {
 		GET("/user/" + username).sendRequest(null, cb);
@@ -54,6 +50,10 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 
 	public void getCourseClassesTO(Callback<CourseClassesTO> cb) {
 		GET("/courseClasses").sendRequest(null, cb);
+	}
+
+	public void getCourseClassesTOByInstitution(String institutionUUID, Callback<CourseClassesTO> cb) {
+		GET("/courseClasses?institutionUUID="+institutionUUID).sendRequest(null, cb);
 	}
 
 	public static KornellClient getInstance() {

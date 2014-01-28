@@ -48,6 +48,23 @@ body {
 	width: @wrapperWidth;
 	margin: 0 auto;
 	@insertPanelHeight: 45px;
+	.inlineLabel{
+		margin-right: 5px;
+		display: inline;
+		color: @niceTextColor;
+		font-size: 12px;
+	}
+	.lblHighlight{
+		color: #d6d5d5;
+		font-weight: bold;
+		font-size: 13px;
+	}
+	.title{
+		color: #d88709;
+		font-size: 18px;
+		line-height: 28px;
+		margin-top: 20px;
+	}
 	.controlsPanel{
 		float: left;
 		width: 100%;
@@ -55,44 +72,51 @@ body {
 			float: left;
 			height: @insertPanelHeight;
 			line-height: 45px;
-			.label{
-				margin-left: 15px;
-				margin-right: 5px;
-			}
 			.btnAction{
 				margin-left: 20px;
 				display: inline;
+				width: 85px;
 			}
 			input{
 				margin-top: 10px;
 				width: 180px;
 				height: 14px;
 				font-size: 12px;
+				margin-left: 5px;
+				margin-right: 10px;
 			}
 		}
 		.insertBatchPanel{
 			float: right;
 			height: @insertPanelHeight;
-			.btnSelected{
+			.btnNotSelected{
 				margin-top: 12px;
 				margin-right: 12px;
+				width: 140px;
 			}
 		}	
 	}
 	.addEnrollmentBatchPanel{
 		display: block;
-		width: 600px;
+		width: 800px;
 		margin: 0px auto;
+		.infoPanel{
+			font-size: 12px;
+			line-height: 16px;
+			float: left;
+			margin-left: 15px;
+			margin-top: 225px;
+		}
 		textarea{
 			width: 500px;
 			float: left;
 			height: 350px;
 			margin-bottom: 20px;
+			margin-top: 20px;
 		}
 		button{
-			margin-left: 20px;
-			margin-top: 340px;
-			float: left;
+			margin-top: 15px;
+			width: 75px;
 		}
 	}
 	.enrollmentsCellTable{

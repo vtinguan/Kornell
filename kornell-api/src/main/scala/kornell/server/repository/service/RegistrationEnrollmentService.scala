@@ -25,12 +25,6 @@ import kornell.server.jdbc.repository.PersonRepo
 
 object RegistrationEnrollmentService {
 
-  private def main(args: Array[String]) {
-    println(UUID.random)
-    println(UUID.random)
-    println(UUID.random)
-  }
-
   def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) =
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
 

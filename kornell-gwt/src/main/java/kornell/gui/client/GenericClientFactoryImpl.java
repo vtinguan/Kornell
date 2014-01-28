@@ -84,9 +84,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 						courseClassTO = courseClassTmp;
 					}
 				}
-				Dean.getInstance().setCourseClassTO(courseClassTO);
-				setDefaultPlace(new ClassroomPlace(courseClassTO.getEnrollment().getUUID()));
-				startAuthenticated(session);
+				if(courseClassTO != null){
+					Dean.getInstance().setCourseClassTO(courseClassTO);
+					setDefaultPlace(new ClassroomPlace(courseClassTO.getEnrollment().getUUID()));
+					startAuthenticated(session);
+				} else {
+					setDefaultPlace(new VitrinePlace());
+					startAnonymous(session);
+				}
 			}
 		};
 		

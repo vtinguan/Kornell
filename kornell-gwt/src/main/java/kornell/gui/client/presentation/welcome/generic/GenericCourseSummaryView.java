@@ -4,6 +4,7 @@ package kornell.gui.client.presentation.welcome.generic;
 import java.math.BigDecimal;
 
 import kornell.core.entity.Course;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.course.CourseHomePlace;
@@ -51,14 +52,14 @@ public class GenericCourseSummaryView extends Composite {
 	
 	String iconCourseURL = "skins/first/icons/";
 	
-	public GenericCourseSummaryView(final PlaceController placeCtrl, final CourseTO courseTO) {
+	public GenericCourseSummaryView(final PlaceController placeCtrl, final CourseClassTO courseClassTO) {
 		initWidget(uiBinder.createAndBindUi(this));
 		
-		final Course course = courseTO.getCourse();
+		final Course course = courseClassTO.getCourseVersionTO().getCourse();
 		hTitle.setText(course.getTitle());
 		pDescription.setText(course.getDescription());
 		
-		Integer progress = courseTO.getEnrollment().getProgress();
+		Integer progress = courseClassTO.getEnrollment().getProgress();
 		if(progress != null){
 			if(progress == 100){
 				Label certificate = new Label(constants.certificate());

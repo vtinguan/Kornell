@@ -9,12 +9,13 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentRequestTO;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -48,8 +49,13 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		if (isDean) {
 			view = getView();
 			view.setPresenter(this);
-			getEnrollments(Dean.getInstance().getCourseClassTO()
-					.getCourseClass().getUUID());
+			
+			CourseClassTO to = Dean.getInstance().getCourseClassTO(); 
+			
+			view.setCourseClassName(to.getCourseClass().getName());
+			view.setCourseName(to.getCourseVersionTO().getCourse().getTitle());
+			
+			getEnrollments(to.getCourseClass().getUUID());
 		} else {
 			GWT.log("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());

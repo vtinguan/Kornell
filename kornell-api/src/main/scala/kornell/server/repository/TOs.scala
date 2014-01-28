@@ -86,21 +86,23 @@ object TOs {
     progress: String,
     notes: String,
     enrollmentState: String) = {
-    val classTO = tos.newCourseClassTO.as
-    val versionTO = tos.newCourseVersionTO.as
-    val prog = if (progress != null) Integer.parseInt(progress) else 0
-    val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
-    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt)
-    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID)
-    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseClassUUID, personUUID, prog, notes,EnrollmentState.valueOf(enrollmentState))
-    val s3 = S3(version.getRepositoryUUID)
-    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL , s3.prefix))
-    versionTO.setCourse(course)
-    versionTO.setCourseVersion(version)
-    classTO.setCourseVersionTO(versionTO)
-    classTO.setEnrollment(enrollment)
-    classTO.setCourseClass(clazz)
-    classTO
+	    val classTO = tos.newCourseClassTO.as
+	    val versionTO = tos.newCourseVersionTO.as
+	    val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
+	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt)
+	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID)
+	    val s3 = S3(version.getRepositoryUUID)
+	    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL , s3.prefix))
+	    versionTO.setCourse(course)
+	    versionTO.setCourseVersion(version)
+	    classTO.setCourseVersionTO(versionTO)
+	    classTO.setCourseClass(clazz)
+	    if(enrollmentUUID != null){
+		    val prog = if (progress != null) Integer.parseInt(progress) else 0
+		    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseClassUUID, personUUID, prog, notes,EnrollmentState.valueOf(enrollmentState))
+		    classTO.setEnrollment(enrollment)
+	    }
+	    classTO
   }
  
 
