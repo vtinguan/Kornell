@@ -1,82 +1,82 @@
 package kornell.scorm.client.scorm12;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
+import kornell.api.client.Callback;
+import kornell.core.entity.ActomEntries;
+
 import com.google.gwt.core.shared.GWT;
+import com.google.web.bindery.event.shared.EventBus;
 
-public class CMIDataModel implements CMIConstants{
-	Map<String, String> values = new HashMap<String, String>();
-
-	// Data Model Constants
-	private static final String CHILDREN = "_children";
-	private static final String LESSON_STATUS = "cmi.core.lesson_status";
-	private static final String NOT_ATTEMPTED = "not attempted";
-
+public class CMIDataModel extends CMICoreModel {
 	boolean dirty;
-
 	private SCORM12Adapter api;
-	
-	public CMIDataModel(SCORM12Adapter api){
+	private EventBus bus;
+
+	public CMIDataModel(SCORM12Adapter api, EventBus bus,
+			Map<String, String> entries) {
 		this.api = api;
+		this.entries = entries;
+		this.bus = bus;
 	}
 
-	public String getValue(String element) {
-		if (element == null) {
-			GWT.log("!!! Null Element");
+	public String getValue(String elementKey) {
+		if (elementKey == null) {
+			GWT.log("!!! Null Element !!!");
 			throw new NullPointerException(
 					"Data model element can not be null.");
 		}
-		if (element.endsWith(CHILDREN))
-			return getChildren(element);
-		if (LESSON_STATUS.equals(element))
-			return getLessonStatus();
-		throw new IllegalArgumentException("Unkown Data Model [" + element
-				+ "]");
+		CMIDataElement element = elements.get(elementKey);
+		if (element != null)
+			return getElementValue(element);
+		// TODO: Set Appropriate Error
+		throw new IllegalArgumentException("Unkown CMI Data Model Element ["
+				+ elementKey + "]");
 	}
 
-	private String getChildren(String element) {
-		List<String> result = new ArrayList<String>();
-
-		if (element.equals("cmi.core._children")) {
-			result.add(LESSON_STATUS);
-		}
-
-		// TODO: Array.join
-		StringBuilder buf = new StringBuilder();
-		for (Iterator iterator = result.iterator(); iterator.hasNext();) {
-			buf.append(iterator.next());
-			if (iterator.hasNext())
-				buf.append(",");
-		}
-		return buf.toString();
-	}
-
-	private String getLessonStatus() {
-		return get(LESSON_STATUS,NOT_ATTEMPTED);
-	}
-
-	public String setValue(String param, String value) {
-		values.put(param, value);
-		api.onDirtyData();
-		return TRUE;
-	}
-
-	public String get(String key,String deflt) {
+	private String getElementValue(CMIDataElement element) {
+		String key = element.getKey();
 		String value = EMPTY;
-		if (values.containsKey(key)) 
-			value = values.get(key);
-		boolean isEmpty = value == null || EMPTY.equals(value);
-		boolean hasDefault =  deflt != null;
-		if(isEmpty && hasDefault)
-			return deflt;
-		else return value;
+		if (entries.containsKey(key))
+			value = entries.get(key);
+		boolean isEmpty = isEmpty(value);
+		String defaultValue = element.getDefaultValue();
+		boolean hasDefault = !isEmpty(defaultValue);
+		if (isEmpty && hasDefault)
+			return defaultValue;
+		return value;
 	}
 
-	public Map<String,String> getValues() {		
-		return values;
+	public String setValue(String elementKey, String value) {
+		CMIDataElement element = elements.get(elementKey);
+		if (element != null) {
+			setElementValue(element, value);
+			return TRUE;
+		} else {
+			// TODO: SetLastError, etc
+			return FALSE;
+		}
+	}
+
+	private void setElementValue(final CMIDataElement element, final String value) {
+		entries.put(element.getKey(), value);
+		final Action onSet = element.getOnSet();
+		api.onDirtyData(new Callback<ActomEntries>() {
+			@Override
+			public void ok(ActomEntries to) {
+				if (onSet != null){
+					GWT.log("Executing onSet action for ["+element.getKey()+"]");
+					onSet.execute(bus);
+				}
+			}
+		});
+	}
+
+	private boolean isEmpty(String value) {
+		return value == null || EMPTY.equals(value);
+	}
+
+	public Map<String, String> getValues() {
+		return entries;
 	}
 }
