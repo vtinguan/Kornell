@@ -81,8 +81,8 @@ public class GenericPageView extends Composite implements
 				@Override
 				public void onClick(ClickEvent event) {
 					String breadCrumb = PrefetchSequencer.class.getName() + "." + currentCourse.getCourseClass().getUUID() + ".CURRENT_KEY";
+					placeCtrl.goTo(new ClassroomPlace(currentCourse.getEnrollment().getUUID()));
 					session.setItem(breadCrumb, page.getKey());
-					placeCtrl.goTo(new ClassroomPlace(currentCourse.getCourseClass().getUUID()));
 				}
 			});
 			lblPage.add(pageAnchor);

@@ -35,12 +35,12 @@ public class GenericWelcomeMyParticipationView extends Composite {
 	}
 	
 	private void initData() {
-		client.getCourses(new Callback<CoursesTO>() {
+		/*client.getCourses(new Callback<CoursesTO>() {
 			@Override
 			public void ok(CoursesTO to) {
 				display();
 			}
-		});
+		});*/
 	}
 
 
