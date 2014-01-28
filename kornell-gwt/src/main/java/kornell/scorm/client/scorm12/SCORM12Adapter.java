@@ -2,7 +2,9 @@ package kornell.scorm.client.scorm12;
 
 import java.util.logging.Logger;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.core.entity.ActomEntries;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 
@@ -14,7 +16,7 @@ import com.google.web.bindery.event.shared.EventBus;
 public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	Logger logger = Logger.getLogger(SCORM12Adapter.class.getName());
 
-	private String lastError = "0";
+	private String lastError = NoError;
 
 	private String currentEnrollmentUUID;
 	private String currentActomKey;
@@ -23,8 +25,11 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 
 	private KornellClient client;
 
+	private EventBus bus;
+
 	public SCORM12Adapter(EventBus bus, KornellClient client) {
 		this.client = client;
+		this.bus = bus;
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
 	}
 
@@ -32,9 +37,9 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		GWT.log("LMSInitialize[" + param + "]");
 		if (dataModel == null) {
 			logger.warning("Can not initialize API Adapter without a Data Model");
+			//TODO: Wait for data model
 			return FALSE;
 		}
-
 		return TRUE;
 	}
 
@@ -73,26 +78,43 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		GWT.log("ACTOM ENTERED");
 		// TODO: Make reliable, offlineable, what not-able...
 		if (dataModel != null)
-			syncDataModel();
-
+			putDataModel(new Callback<ActomEntries>() {
+				@Override
+				public void ok(ActomEntries to) {
+					GWT.log("Data model put without action");
+					
+				}
+			});
 		this.currentActomKey = event.getActomKey();
 		this.currentEnrollmentUUID = event.getEnrollmentUUID();
-		dataModel = new CMIDataModel(this);
+		dataModel = null;
+		getDataModel();
 	}
 
-	private void syncDataModel() {
+	private void getDataModel() {
 		client.enrollment(currentEnrollmentUUID)
 			  .actom(currentActomKey)
-			  .sync(dataModel.getValues());
+			  .get(new Callback<ActomEntries>() {
+				@Override
+				public void ok(ActomEntries to) {
+					GWT.log("Populating new data model");
+					dataModel = new CMIDataModel(SCORM12Adapter.this,bus, to.getEntries());
+				}
+			  });
 	}
-	
-	public void onDirtyData(){
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {			
+
+	private void putDataModel(Callback<ActomEntries> callback) {
+		client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
+				.put(dataModel.getValues(),callback);
+	}
+
+	public void onDirtyData(final Callback<ActomEntries> callback) {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				syncDataModel();
+				putDataModel(callback);
 			}
-		});		
+		});
 	}
 
 }

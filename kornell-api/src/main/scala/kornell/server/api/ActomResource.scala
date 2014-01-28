@@ -11,6 +11,8 @@ import kornell.server.jdbc.SQL._
 import kornell.core.entity.ActomEntries
 import scala.collection.JavaConversions._
 import javax.ws.rs.core.Response
+import kornell.server.repository.Entities
+import java.util.HashMap
 
 class ActomResource(enrollmentUUID: String, actomKey: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
@@ -37,14 +39,29 @@ class ActomResource(enrollmentUUID: String, actomKey: String) {
   	values (${randomUUID}, ${enrollmentUUID} , ${actomKey}, ${entryKey}, ${entryValue})
   	on duplicate key update entryValue = ${entryValue}
   """.executeUpdate
-  
+
   @Path("entries")
-  @Consumes(Array(ActomEntries.TYPE)) 
-  @Produces(Array(ActomEntries.TYPE)) 
+  @Consumes(Array(ActomEntries.TYPE))
+  @Produces(Array(ActomEntries.TYPE))
   @PUT
-  def putEntries(entries:ActomEntries) = {
-    for ((key,value) <- entries.getEntries()) putValue(key,value)
-    Response.ok().build()
+  def putEntries(entries: ActomEntries) = {
+    for ((key, value) <- entries.getEntries()) putValue(key, value)
+    entries
+  }
+
+  @Path("entries")
+  @Produces(Array(ActomEntries.TYPE))
+  @GET
+  def getEntries(): ActomEntries = {
+    val entries = Entities.newActomEntries(enrollmentUUID, actomKey, new HashMap[String, String])
+
+    sql"""
+  	select * from ActomEntries 
+  	where enrollment_uuid=${enrollmentUUID}
+  	  and actomKey=${actomKey}""".foreach { rs =>
+  	    entries.getEntries().put(rs.getString("entryKey"), rs.getString("entryValue"))
+    }
+    entries
   }
 
 }

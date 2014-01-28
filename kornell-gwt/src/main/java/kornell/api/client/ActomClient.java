@@ -17,23 +17,29 @@ public class ActomClient extends RESTClient {
 	
 	private String actomKey;
 	private String enrollmentUUID;
+	private String encodedActomKey;
 	
 
 	public ActomClient(EnrollmentClient enrollmentClient,String actomKey) {
 		this.enrollmentUUID = enrollmentClient.getEnrollmentUUID();
 		this.actomKey = actomKey;
+		this.encodedActomKey = URL.encodePathSegment(actomKey);
+
 	}
 
-	public void sync(Map<String, String> entries) {
+	public void put(Map<String, String> entries, Callback<ActomEntries> callback) {
 		ActomEntries actomEntries = entityFactory.newActomEntries().as();
-		String encodedActomKey = URL.encodePathSegment(actomKey);
 		actomEntries.setActomKey(encodedActomKey);
 		actomEntries.setEnrollmentUUID(enrollmentUUID);
 		actomEntries.setEntries(entries);
 		PUT("enrollments",enrollmentUUID,"actoms",encodedActomKey,"entries")
 			.withContentType(ActomEntries.TYPE)
 			.withEntityBody(actomEntries)
-			.go();
+			.go(callback);
+	}
+
+	public void get(Callback<ActomEntries> callback) {
+		GET("enrollments",enrollmentUUID,"actoms",encodedActomKey,"entries").go(callback);
 	}
 
 	
