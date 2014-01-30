@@ -133,7 +133,14 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private void initData() {
 		isCurrentUser = session.getUserInfo().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
-		isAdmin = session.isDean();
+		boolean isAdmin = false;
+		for (Registration registration : session.getUserInfo().getRegistrationsTO().getRegistrations()) {
+			if(registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())){
+				isAdmin = session.isInstitutionAdmin();
+				break;
+			}
+		}
+		isAdmin = isAdmin || session.isPlatformAdmin();
 		form.addStyleName("shy");
 		session.getUser(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID(), new Callback<UserInfoTO>() {
 			@Override

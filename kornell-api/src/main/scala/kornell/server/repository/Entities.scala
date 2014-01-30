@@ -14,6 +14,7 @@ import kornell.core.entity.Person
 import kornell.core.entity.Registration
 import kornell.core.entity.RoleType
 import kornell.server.jdbc.repository.PersonRepo
+import java.util.Map
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -126,12 +127,28 @@ object Entities {
     role
   }
   
-  def newDeanRole(institutionUUID:String) = {
+  lazy val newPlatformAdminRole = {
     val role = factory.newRole().as
-    val dean = factory.newDeanRole().as
-    dean.setInstitutionUUID(institutionUUID)
-    role.setRoleType(RoleType.dean)    
-    role.setDeanRole(dean)
+    role.setRoleType(RoleType.platformAdmin)
+    role.setPlatformAdminRole(factory.newPlatformAdminRole().as())
+    role
+  }
+  
+  def newInstitutionAdminRole(institutionUUID:String) = {
+    val role = factory.newRole().as
+    val institutionAdminRole = factory.newInstitutionAdminRole().as
+    institutionAdminRole.setInstitutionUUID(institutionUUID)
+    role.setRoleType(RoleType.institutionAdmin)    
+    role.setInstitutionAdminRole(institutionAdminRole)
+    role
+  }
+  
+  def newCourseClassAdminRole(courseClassUUID:String) = {
+    val role = factory.newRole().as
+    val courseClassAdminRole = factory.newCourseClassAdminRole().as
+    courseClassAdminRole.setCourseClassUUID(courseClassUUID)
+    role.setRoleType(RoleType.courseClassAdmin)    
+    role.setCourseClassAdminRole(courseClassAdminRole)
     role
   }
  
@@ -160,6 +177,14 @@ object Entities {
     webRepo.setPrefix(prefix)
     webRepo.setDistributionURL(distributionURL)
     webRepo
+  }
+  
+  def newActomEntries(enrollmentUUID:String,actomKey:String, entriesMap:Map[String,String]) = {
+    val entries = factory.newActomEntries.as
+    entries.setActomKey(actomKey)
+    entries.setEnrollmentUUID(enrollmentUUID)
+    entries.setEntries(entriesMap)
+    entries
   }
 
 }

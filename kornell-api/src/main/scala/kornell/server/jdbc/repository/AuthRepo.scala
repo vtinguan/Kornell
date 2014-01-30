@@ -103,7 +103,9 @@ object AuthRepo {
     val roleType = RoleType.valueOf(rs.getString("role"))
     val role = roleType match {
       case RoleType.user => Entities.newUserRole
-      case RoleType.dean => Entities.newDeanRole(rs.getString("institution_uuid"))
+      case RoleType.platformAdmin => Entities.newPlatformAdminRole
+      case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("institution_uuid"))
+      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("institution_uuid"))//TODO courseClassUUID
     }
     role
   }

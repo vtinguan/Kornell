@@ -40,7 +40,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		UserSession.current(new Callback<UserSession>() {
 			@Override
 			public void ok(UserSession session) {
-				init(session.isDean());
+				init(session.isInstitutionAdmin());
 			}
 		});
 	}

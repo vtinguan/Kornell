@@ -77,26 +77,6 @@ public class UserSession extends KornellClient {
 		return PREFIX + SEPARATOR + currentUser.getPerson().getUUID() + SEPARATOR + key;
 	}
 
-	public boolean hasRole(RoleType type, String targetInstitutionUUID) {
-		if (currentUser == null)
-			return false;
-		for (Role role : currentUser.getRoles()) {
-			switch (role.getRoleType()) {
-			case user: 
-				if (RoleType.user.equals(type))
-					return true;
-				break;
-			case dean:
-				if (RoleType.dean.equals(type)
-						&& role.getDeanRole().getInstitutionUUID()
-								.equals(targetInstitutionUUID))
-					return true;
-				break;
-			}
-		}
-		return false;
-	}
-
 	@Deprecated
 	public void getCurrentUser(final Callback<UserInfoTO> cb) {
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
@@ -160,8 +140,49 @@ public class UserSession extends KornellClient {
 		return currentUser;
 	}
 	
-	public boolean isDean() {
-		return hasRole(RoleType.dean, Dean.getInstance().getInstitution().getUUID());
+	public boolean isPlatformAdmin() {
+		return hasRole(RoleType.platformAdmin);
+	}
+	
+	public boolean isInstitutionAdmin() {
+		return hasRole(RoleType.institutionAdmin) || isPlatformAdmin();
+	}
+	
+	public boolean isCourseClassAdmin() {
+		return hasRole(RoleType.courseClassAdmin) || isInstitutionAdmin();
+	}
+
+	public boolean hasRole(RoleType type) {
+		if (currentUser == null)
+			return false;
+		for (Role role : currentUser.getRoles()) {
+			switch (role.getRoleType()) {
+			case user: 
+				if (RoleType.user.equals(type))
+					return true;
+				break;
+			case courseClassAdmin:
+				if (Dean.getInstance().getCourseClassTO() != null
+						&& RoleType.courseClassAdmin.equals(type)
+						&& role.getCourseClassAdminRole().getCourseClassUUID()
+								.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()))
+					return true;
+				break;
+			case institutionAdmin:
+				if (RoleType.institutionAdmin.equals(type)
+						&& role.getInstitutionAdminRole().getInstitutionUUID()
+								.equals(Dean.getInstance().getInstitution().getUUID()))
+					return true;
+				break;
+			case platformAdmin:
+				if (RoleType.platformAdmin.equals(type))
+					return true;
+				break;
+			default:
+				break;
+			}
+		}
+		return false;
 	}
 
 }

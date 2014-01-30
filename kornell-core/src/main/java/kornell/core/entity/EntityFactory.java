@@ -1,7 +1,5 @@
 package kornell.core.entity;
 
-import kornell.core.to.CourseClassTO;
-
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
@@ -28,11 +26,17 @@ public interface EntityFactory extends AutoBeanFactory {
 
 	AutoBean<UserRole> newUserRole();
 
-	AutoBean<DeanRole> newDeanRole();
+	AutoBean<PlatformAdminRole> newPlatformAdminRole();
+
+	AutoBean<InstitutionAdminRole> newInstitutionAdminRole();
+
+	AutoBean<CourseClassAdminRole> newCourseClassAdminRole();
 
 	AutoBean<CourseVersion> newCourseVersion();
 	
 	AutoBean<CourseClass> newCourseClass();
 	
 	AutoBean<WebRepository> newWebReposiory();
+	
+	AutoBean<ActomEntries> newActomEntries();
 }

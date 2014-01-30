@@ -7,6 +7,12 @@ public interface Role {
 	UserRole getUserRole();
 	void setUserRole(UserRole userRole);
 	
-	DeanRole getDeanRole();
-	void setDeanRole(DeanRole deanRole);
+	PlatformAdminRole getPlatformAdminRole();
+	void setPlatformAdminRole(PlatformAdminRole platformRole);
+	
+	InstitutionAdminRole getInstitutionAdminRole();
+	void setInstitutionAdminRole(InstitutionAdminRole institutionAdminRole);
+	
+	CourseClassAdminRole getCourseClassAdminRole();
+	void setCourseClassAdminRole(CourseClassAdminRole courseClassAdminRole);
 }

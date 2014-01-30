@@ -33,7 +33,7 @@ public class GenericSandboxView  extends Composite implements SandboxView {
 				else
 					panel.add(new Label("And i am not authenticated."));
 				
-				if(session.isDean())
+				if(session.isPlatformAdmin())
 					panel.add(new Label("And i am a dean."));
 				else
 					panel.add(new Label("And i am not dean."));
