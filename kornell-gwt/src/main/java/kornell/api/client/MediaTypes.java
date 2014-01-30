@@ -3,6 +3,7 @@ package kornell.api.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import kornell.core.entity.ActomEntries;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
@@ -40,6 +41,7 @@ public class MediaTypes {
 		register(Enrollment.TYPE,Enrollment.class);
 		register(Enrollments.TYPE,Enrollments.class);
 		register(S3PolicyTO.TYPE,S3PolicyTO.class);
+		register(ActomEntries.TYPE,ActomEntries.class);
 	}
 
 	private void register(String type, Class<?> clazz) {
