@@ -108,7 +108,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 							} else {
 								//TODO what if the user visited a class from another institution?
 								//place = clientFactory.getHistoryMapper().getPlace(user.getLastPlaceVisited());
-								if(clientFactory.getUserSession().isDean()){
+								if(clientFactory.getUserSession().isCourseClassAdmin()){
 									clientFactory.getPlaceController().goTo(new AdminHomePlace());
 								} else {
 									clientFactory.getPlaceController().goTo(clientFactory.getDefaultPlace());

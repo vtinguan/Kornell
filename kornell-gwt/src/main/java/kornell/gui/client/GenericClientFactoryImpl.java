@@ -19,7 +19,6 @@ import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.ClientProperties;
-import kornell.scorm.client.scorm12.CMIDataModel;
 import kornell.scorm.client.scorm12.SCORM12Adapter;
 import kornell.scorm.client.scorm12.SCORM12Binder;
 
@@ -30,7 +29,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus; 
 
 //TODO: Organize this big, messy class and interface
 public class GenericClientFactoryImpl implements ClientFactory {
@@ -51,7 +50,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	/* GUI */
 	private ViewFactory viewFactory;
 	private Place defaultPlace;
-
+	
+	
 	private UserSession session;
 
 	public GenericClientFactoryImpl() {
@@ -145,7 +145,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void startAuthenticated(UserSession session) {
-		if (session.isDean()) {
+		if (session.isCourseClassAdmin()) {
 			defaultPlace = new AdminHomePlace();
 			startClient();
 		} else {
@@ -171,9 +171,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		new Captain(bus, placeCtrl, Dean.getInstance().getInstitution().getUUID());
 	}
 
-	private void initSCORM12() {		
-		CMIDataModel cmi = new CMIDataModel(getKornellClient());
-		SCORM12Binder.bind(new SCORM12Adapter(cmi));
+	private void initSCORM12() {				
+		SCORM12Binder.bind(new SCORM12Adapter(bus,session));
 	}
 
 	private void initException() {

@@ -1,6 +1,6 @@
 package kornell.core.entity;
 
-public interface DeanRole extends Role {
+public interface InstitutionAdminRole extends Role {
 	String getInstitutionUUID();
 	void setInstitutionUUID(String institutionUUID);
 }

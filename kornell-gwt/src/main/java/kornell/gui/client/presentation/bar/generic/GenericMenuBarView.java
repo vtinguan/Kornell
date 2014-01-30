@@ -89,7 +89,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	private void showButtons(boolean show) {
 		showButton(btnProfile, show);
 		showButton(btnHome, show);
-		showButton(btnAdmin, show && clientFactory.getUserSession().isDean());
+		showButton(btnAdmin, show && clientFactory.getUserSession().isCourseClassAdmin());
 		showButton(btnNotifications, false);
 		showButton(btnMessages, false);
 		showButton(btnHelp, false);
