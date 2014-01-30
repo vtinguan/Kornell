@@ -58,7 +58,8 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	private void dispatchByMimeType(Response response) {
-		String contentType = response.getHeader("Content-Type").toLowerCase();
+		String contentTypeHeader = response.getHeader("Content-Type");
+		String contentType = contentTypeHeader.toLowerCase();
 		String responseText = response.getText();
 
 		if (contentType.contains("json")) {
@@ -102,9 +103,11 @@ public abstract class Callback<T> implements RequestCallback {
 
 	public abstract void ok(T to);
 
+	
 	protected void ok(JSONValue json) {
 	}
-
+	
+	
 	private static JSONValue parseJson(String jsonStr) {
 		return JSONParser.parseStrict(jsonStr);
 	}

@@ -68,7 +68,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
-		new Stalker(bus, session, historyMapper);
 		historyHandler.handleCurrentHistory();
 		if (!session.isAuthenticated())
 			placeCtrl.goTo(defaultPlace);
@@ -169,6 +168,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initPersonnel() {
 		new Captain(bus, placeCtrl, Dean.getInstance().getInstitution().getUUID());
+		new Stalker(bus, session);
 	}
 
 	private void initSCORM12() {				
