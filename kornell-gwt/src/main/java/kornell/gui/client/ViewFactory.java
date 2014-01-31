@@ -46,8 +46,6 @@ public interface ViewFactory {
 	
 	CourseHomeView getCourseHomeView();
 	CourseHomePresenter getCourseHomePresenter();
-	CourseDetailsView getCourseDetailsView();
-	CourseDetailsPresenter getCourseDetailsPresenter();
 	CourseLibraryView getCourseLibraryView();
 	CourseLibraryPresenter getCourseLibraryPresenter();
 	CourseForumView getCourseForumView();

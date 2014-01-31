@@ -2,7 +2,7 @@ package kornell.gui.client;
 
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
-import kornell.gui.client.presentation.atividade.generic.GenericCourseClassView;
+import kornell.gui.client.presentation.atividade.generic.GenericClassroomView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
@@ -159,7 +159,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public ClassroomView getClassroomView() {
-		return new GenericCourseClassView(clientFactory.getEventBus());
+		return new GenericClassroomView(clientFactory.getPlaceController(), clientFactory.getUserSession(), clientFactory.getEventBus());
 	}
 
 	@Override
@@ -181,22 +181,6 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public CourseHomeView getCourseHomeView() {
 		return new GenericCourseHomeView(clientFactory.getEventBus(), clientFactory.getUserSession(), clientFactory.getPlaceController());
-	}
-
-	@Override
-	public CourseDetailsPresenter getCourseDetailsPresenter() {
-		if (courseDetailsPresenter == null) {
-			CourseDetailsView courseDetailsView = getCourseDetailsView();
-
-			courseDetailsPresenter = new CourseDetailsPresenter(
-					courseDetailsView, clientFactory.getPlaceController());
-		}
-		return courseDetailsPresenter;
-	}
-
-	@Override
-	public CourseDetailsView getCourseDetailsView() {
-		return new GenericCourseDetailsView(clientFactory);
 	}
 
 	@Override
@@ -269,7 +253,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		if (coursePresenter == null) {
 			ClassroomView activityView = getClassroomView();
 			coursePresenter = new ClassroomPresenter(activityView, clientFactory.getPlaceController(),
-					rendererFactory);
+					rendererFactory, clientFactory.getUserSession(), clientFactory.getEventBus());
 		}
 		return coursePresenter;
 	}
