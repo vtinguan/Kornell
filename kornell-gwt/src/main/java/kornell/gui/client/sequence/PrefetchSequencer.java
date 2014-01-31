@@ -206,41 +206,34 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	@Override
-	public void go() {
-		client.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
+	public void go(Contents contents) {
+		setContents(contents);
+		orientateAndSail();
+	}
 
+	private void orientateAndSail() {
+		UserSession.current(new Callback<UserSession>() {
 			@Override
-			public void ok(Contents contents) {
-				setContents(contents);
-				orientateAndSail();
+			public void ok(UserSession session) {
+				String currentKey = session.getItem(getBreadcrumbKey());
+				currentIndex = lookupCurrentIndex(currentKey);
+				currentActom = actoms.get(currentIndex);
+				initialLoad();
 			}
-
-			private void orientateAndSail() {
-				UserSession.current(new Callback<UserSession>() {
-					@Override
-					public void ok(UserSession session) {
-						String currentKey = session.getItem(getBreadcrumbKey());
-						currentIndex = lookupCurrentIndex(currentKey);
-						currentActom = actoms.get(currentIndex);
-						initialLoad();
-					}
-				});
-			}
-
-			private int lookupCurrentIndex(String currentKey) {
-				int currentIndex = 0;
-				if (currentKey != null && !currentKey.isEmpty()) {
-					for (int i = 0; i < actoms.size(); i++) {
-						Actom actom = actoms.get(i);
-						if (currentKey.equals(actom.getKey())) {
-							return i;
-						}
-					}
-				}
-				return currentIndex;
-			}
-
 		});
+	}
+
+	private int lookupCurrentIndex(String currentKey) {
+		int currentIndex = 0;
+		if (currentKey != null && !currentKey.isEmpty()) {
+			for (int i = 0; i < actoms.size(); i++) {
+				Actom actom = actoms.get(i);
+				if (currentKey.equals(actom.getKey())) {
+					return i;
+				}
+			}
+		}
+		return currentIndex;
 	}
 
 	class ShowWhenReady implements ViewReadyEventHandler {

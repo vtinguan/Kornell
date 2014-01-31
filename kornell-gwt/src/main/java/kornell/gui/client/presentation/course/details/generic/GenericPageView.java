@@ -15,6 +15,7 @@ import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.details.CourseDetailsView;
 import kornell.gui.client.sequence.PrefetchSequencer;
 
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,8 +30,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericPageView extends Composite implements
-		CourseDetailsView, ProgressChangeEventHandler {
+public class GenericPageView extends Composite implements ProgressChangeEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericPageView> {
 	}
 
@@ -72,6 +72,8 @@ public class GenericPageView extends Composite implements
 	}
 	
 	private void display(boolean enableAnchor) {
+		//TODO remove
+		enableAnchor = false;
 		String status = page.isVisited() ? "finished" : "toStart";
 		topicIcon.setUrl(IMAGES_PATH + "status_"+status+".png");
 		lblPage.clear();
@@ -98,7 +100,4 @@ public class GenericPageView extends Composite implements
 		display(page.getIndex() <= (event.getPagesVisitedCount() + 1));
 	}
 	
-	@Override
-	public void setPresenter(Presenter presenter) {
-	}
 }

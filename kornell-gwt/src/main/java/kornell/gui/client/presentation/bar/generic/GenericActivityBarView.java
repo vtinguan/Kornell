@@ -3,10 +3,10 @@ package kornell.gui.client.presentation.bar.generic;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.NavigationForecastEvent;
-import kornell.gui.client.event.NavigationForecastEventHandler;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
+import kornell.gui.client.event.ShowDetailsEvent;
+import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.ActivityBarView;
@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class GenericActivityBarView extends Composite implements ActivityBarView, NavigationForecastEventHandler, ProgressChangeEventHandler {
+public class GenericActivityBarView extends Composite implements ActivityBarView, ProgressChangeEventHandler, ShowDetailsEventHandler {
 	
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityBarView> {
 	}
@@ -56,6 +56,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private Image iconPrevious;
 	private Image iconNext;
+	
+	private boolean showDetails;
 
 	@UiField
 	FocusPanel btnPrevious;
@@ -79,30 +81,13 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		clientFactory.getEventBus().addHandler(NavigationForecastEvent.TYPE,this);
 		clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE,this);
-
-		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
-					@Override
-					public void onPlaceChange(PlaceChangeEvent event) {
-						Place newPlace = event.getNewPlace();
-						
-						if(newPlace instanceof ClassroomPlace){							
-							btnDetails.removeStyleName("btnSelected");
-							updateProgressBarPanel();
-						} else if(newPlace instanceof CourseDetailsPlace){
-							enableButton(BUTTON_PREVIOUS, false);
-							enableButton(BUTTON_NEXT, false);
-							btnDetails.addStyleName("btnSelected");
-							updateProgressBarPanel();
-						}
-						
-					}});
+		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
 
 		user = clientFactory.getUserSession().getUserInfo();
 		display();
 		
+		showDetails = true;
 		setUpArrowNavigation();
 		
 	}
@@ -119,7 +104,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
 		
 		displayProgressButton();
-		if (clientFactory.getPlaceController().getWhere() instanceof CourseDetailsPlace) {
+		
+		if(showDetails){
 			btnDetails.addStyleName("btnSelected");
 			enableButton(BUTTON_PREVIOUS, false);
 			enableButton(BUTTON_NEXT, false);
@@ -152,14 +138,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		pagePanel.addStyleName("pagePanel");
 		pagePanel.addStyleName("label");
 		
-		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
+		if(showDetails){
+			pagePanel.add(createSpan(progressPercent+"%", true));
+			pagePanel.add(createSpan("concluído", false));
+		} else {
 			pagePanel.add(createSpan("Página", false));
 			pagePanel.add(createSpan(""+currentPage, true));
 			pagePanel.add(createSpan("/", false));
 			pagePanel.add(createSpan(""+totalPages, false));
-		} else {
-			pagePanel.add(createSpan(progressPercent+"%", true));
-			pagePanel.add(createSpan("concluído", false));
 		}
 		
 		progressBarPanel.add(pagePanel);
@@ -240,20 +226,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			clientFactory.getEventBus().fireEvent(NavigationRequest.prev());		
 	}
 	
-	@UiHandler("btnDetails")
-	void handleClickBtnDetails(ClickEvent e) {
-		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
-			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
-			btnDetails.addStyleName("btnSelected");
-			GWT.log("btnSelected");
-		} else {
-			//TODO remove this
-			clientFactory.getPlaceController().goTo(new ClassroomPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
-			btnDetails.removeStyleName("btnSelected");
-		}
-		
-	}
-	
 	@UiHandler("btnNotes")
 	void handleClickBtnNotes(ClickEvent e) {
 		if(notesPopup == null){
@@ -286,17 +258,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			}
 		}
 	}
-
-	@Override
-	public void onNextActivityNotOK(NavigationForecastEvent evt) {
-		//TODO: uncomment
-		//enableButton(BUTTON_NEXT, true);
-	}
-
-	@Override
-	public void onNextActivityOK(NavigationForecastEvent evt) {
-		//enableButton(BUTTON_NEXT, true);
-	}
 	
 	@Override
 	public void setPresenter(Presenter presenter) {
@@ -307,6 +268,25 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
 		enableButton(BUTTON_PREVIOUS, event.hasPrevious() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
 		enableButton(BUTTON_NEXT, event.hasNext() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
+	}
+	
+	@UiHandler("btnDetails")
+	void handleClickBtnDetails(ClickEvent e) {
+		clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(!showDetails));
+	}
+
+	@Override
+	public void onShowDetails(ShowDetailsEvent event) {
+		this.showDetails = event.isShowDetails();
+
+		if(showDetails){	
+			btnDetails.addStyleName("btnSelected");	
+		} else {		
+			btnDetails.removeStyleName("btnSelected");
+		}
+		enableButton(BUTTON_PREVIOUS, !showDetails);
+		enableButton(BUTTON_NEXT, !showDetails);	
+		updateProgressBarPanel();
 	}
 	
 }

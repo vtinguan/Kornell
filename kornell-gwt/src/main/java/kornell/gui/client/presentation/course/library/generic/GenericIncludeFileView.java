@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class GenericIncludeFileView extends Composite  implements CourseDetailsView {
+public class GenericIncludeFileView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericIncludeFileView> {
 	}
 
@@ -92,10 +92,5 @@ public class GenericIncludeFileView extends Composite  implements CourseDetailsV
 		
 		btnPublish.setText("Publicar");
 		btnPublish.removeStyleName("btn");
-	}
-
-	@Override
-	public void setPresenter(Presenter presenter) {
-		// TODO Auto-generated method stub
 	}
 }
