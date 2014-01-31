@@ -2,31 +2,16 @@ package kornell.gui.client;
 
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
-import kornell.gui.client.presentation.atividade.generic.GenericCourseClassView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
 import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
-import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
-import kornell.gui.client.presentation.course.chat.CourseChatView;
-import kornell.gui.client.presentation.course.chat.generic.GenericCourseChatView;
-import kornell.gui.client.presentation.course.course.CourseHomePresenter;
-import kornell.gui.client.presentation.course.course.CourseHomeView;
-import kornell.gui.client.presentation.course.course.generic.GenericCourseHomeView;
-import kornell.gui.client.presentation.course.details.CourseDetailsPresenter;
-import kornell.gui.client.presentation.course.details.CourseDetailsView;
-import kornell.gui.client.presentation.course.details.generic.GenericCourseDetailsView;
-import kornell.gui.client.presentation.course.forum.CourseForumPresenter;
-import kornell.gui.client.presentation.course.forum.CourseForumView;
-import kornell.gui.client.presentation.course.forum.generic.GenericCourseForumView;
+import kornell.gui.client.presentation.course.generic.GenericClassroomView;
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.course.library.CourseLibraryView;
 import kornell.gui.client.presentation.course.library.generic.GenericCourseLibraryView;
-import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
-import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
-import kornell.gui.client.presentation.course.specialists.generic.GenericCourseSpecialistsView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.profile.ProfileView;
@@ -62,12 +47,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
 	private ClassroomPresenter coursePresenter;
-	private CourseHomePresenter courseHomePresenter;
-	private CourseDetailsPresenter courseDetailsPresenter;
 	private CourseLibraryPresenter courseLibraryPresenter;
-	private CourseForumPresenter courseForumPresenter;
-	private CourseChatPresenter courseChatPresenter;
-	private CourseSpecialistsPresenter courseSpecialistsPresenter;
 	private SandboxPresenter sandboxPresenter;
 	
 	private SimplePanel appPanel;
@@ -159,44 +139,12 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public ClassroomView getClassroomView() {
-		return new GenericCourseClassView(clientFactory.getEventBus());
+		return new GenericClassroomView(clientFactory.getPlaceController(), clientFactory.getUserSession(), clientFactory.getEventBus());
 	}
 
 	@Override
 	public TermsView getTermsView() {
 		return new GenericTermsView(clientFactory);
-	}
-
-	@Override
-	public CourseHomePresenter getCourseHomePresenter() {
-		if (courseHomePresenter == null) {
-			CourseHomeView courseHomeView = getCourseHomeView();
-
-			courseHomePresenter = new CourseHomePresenter(courseHomeView,
-					clientFactory.getPlaceController());
-		}
-		return courseHomePresenter;
-	}
-
-	@Override
-	public CourseHomeView getCourseHomeView() {
-		return new GenericCourseHomeView(clientFactory.getEventBus(), clientFactory.getUserSession(), clientFactory.getPlaceController());
-	}
-
-	@Override
-	public CourseDetailsPresenter getCourseDetailsPresenter() {
-		if (courseDetailsPresenter == null) {
-			CourseDetailsView courseDetailsView = getCourseDetailsView();
-
-			courseDetailsPresenter = new CourseDetailsPresenter(
-					courseDetailsView, clientFactory.getPlaceController());
-		}
-		return courseDetailsPresenter;
-	}
-
-	@Override
-	public CourseDetailsView getCourseDetailsView() {
-		return new GenericCourseDetailsView(clientFactory);
 	}
 
 	@Override
@@ -216,60 +164,13 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	}
 
 	@Override
-	public CourseForumPresenter getCourseForumPresenter() {
-		if (courseForumPresenter == null) {
-			CourseForumView courseForumView = getCourseForumView();
-
-			courseForumPresenter = new CourseForumPresenter(courseForumView,
-					clientFactory.getPlaceController());
-		}
-		return courseForumPresenter;
-	}
-
-	@Override
-	public CourseForumView getCourseForumView() {
-		return new GenericCourseForumView(clientFactory.getEventBus(), clientFactory.getUserSession(), clientFactory.getPlaceController());
-	}
-
-	@Override
-	public CourseChatPresenter getCourseChatPresenter() {
-		if (courseChatPresenter == null) {
-			CourseChatView courseChatView = getCourseChatView();
-			courseChatPresenter = new CourseChatPresenter(courseChatView,
-					clientFactory.getPlaceController());
-		}
-		return courseChatPresenter;
-	}
-
-	@Override
-	public CourseChatView getCourseChatView() {
-		return new GenericCourseChatView(clientFactory.getEventBus(), clientFactory.getUserSession(), clientFactory.getPlaceController());
-	}
-
-	@Override
-	public CourseSpecialistsPresenter getCourseSpecialistsPresenter() {
-		if (courseSpecialistsPresenter == null) {
-			CourseSpecialistsView courseSpecialistsView = getCourseSpecialistsView();
-
-			courseSpecialistsPresenter = new CourseSpecialistsPresenter(
-					courseSpecialistsView, clientFactory.getPlaceController());
-		}
-		return courseSpecialistsPresenter;
-	}
-
-	@Override
-	public CourseSpecialistsView getCourseSpecialistsView() {
-		return new GenericCourseSpecialistsView(clientFactory.getEventBus(), clientFactory.getUserSession(), clientFactory.getPlaceController());
-	}
-
-	@Override
 	public ClassroomPresenter getClassroomPresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(clientFactory.getEventBus(),
 				clientFactory.getPlaceController(), clientFactory.getUserSession());
 		if (coursePresenter == null) {
 			ClassroomView activityView = getClassroomView();
 			coursePresenter = new ClassroomPresenter(activityView, clientFactory.getPlaceController(),
-					rendererFactory);
+					rendererFactory, clientFactory.getUserSession(), clientFactory.getEventBus());
 		}
 		return coursePresenter;
 	}

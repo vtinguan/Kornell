@@ -5,9 +5,7 @@ import java.math.BigDecimal;
 
 import kornell.core.entity.Course;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.course.course.CourseHomePlace;
 
 import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Paragraph;
@@ -95,7 +93,7 @@ public class GenericCourseSummaryView extends Composite {
 		addHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				placeCtrl.goTo(new CourseHomePlace(course.getUUID()));
+				//placeCtrl.goTo(new CourseHomePlace(course.getUUID()));
 			}
 		}, ClickEvent.getType());
 		

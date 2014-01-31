@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.course.library.generic;
 
 import kornell.api.client.KornellClient;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.course.details.CourseDetailsView;
 
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
@@ -18,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class GenericIncludeFileView extends Composite  implements CourseDetailsView {
+public class GenericIncludeFileView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericIncludeFileView> {
 	}
 
@@ -92,10 +91,5 @@ public class GenericIncludeFileView extends Composite  implements CourseDetailsV
 		
 		btnPublish.setText("Publicar");
 		btnPublish.removeStyleName("btn");
-	}
-
-	@Override
-	public void setPresenter(Presenter presenter) {
-		// TODO Auto-generated method stub
 	}
 }

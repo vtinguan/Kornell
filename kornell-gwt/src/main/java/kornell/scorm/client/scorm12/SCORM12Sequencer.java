@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
 import kornell.api.client.KornellClient;
+import kornell.core.lom.Contents;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.Sequencer;
@@ -45,8 +46,9 @@ public class SCORM12Sequencer implements Sequencer{
 	}
 
 	@Override
-	public void go() {
-		// TODO Auto-generated method stub		
+	public void go(Contents contents) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

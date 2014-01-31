@@ -6,18 +6,8 @@ import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
-import kornell.gui.client.presentation.course.chat.CourseChatPresenter;
-import kornell.gui.client.presentation.course.chat.CourseChatView;
-import kornell.gui.client.presentation.course.course.CourseHomePresenter;
-import kornell.gui.client.presentation.course.course.CourseHomeView;
-import kornell.gui.client.presentation.course.details.CourseDetailsPresenter;
-import kornell.gui.client.presentation.course.details.CourseDetailsView;
-import kornell.gui.client.presentation.course.forum.CourseForumPresenter;
-import kornell.gui.client.presentation.course.forum.CourseForumView;
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.course.library.CourseLibraryView;
-import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPresenter;
-import kornell.gui.client.presentation.course.specialists.CourseSpecialistsView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;
@@ -43,19 +33,8 @@ public interface ViewFactory {
 	WelcomeView getWelcomeView();
 	ProfileView getProfileView();
 	
-	
-	CourseHomeView getCourseHomeView();
-	CourseHomePresenter getCourseHomePresenter();
-	CourseDetailsView getCourseDetailsView();
-	CourseDetailsPresenter getCourseDetailsPresenter();
 	CourseLibraryView getCourseLibraryView();
 	CourseLibraryPresenter getCourseLibraryPresenter();
-	CourseForumView getCourseForumView();
-	CourseForumPresenter getCourseForumPresenter();
-	CourseChatView getCourseChatView();
-	CourseChatPresenter getCourseChatPresenter();
-	CourseSpecialistsView getCourseSpecialistsView();
-	CourseSpecialistsPresenter getCourseSpecialistsPresenter();
 	
 	
 	ClassroomView getClassroomView();

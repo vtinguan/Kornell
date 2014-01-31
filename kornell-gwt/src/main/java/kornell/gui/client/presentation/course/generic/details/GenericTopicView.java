@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.details.generic;
+package kornell.gui.client.presentation.course.generic.details;
 
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
@@ -6,7 +6,6 @@ import kornell.core.lom.Content;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.course.details.CourseDetailsView;
 
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
@@ -19,6 +18,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -71,7 +72,6 @@ public class GenericTopicView extends Composite {
 		this.startOpened = startOpened;
 		this.enableAnchorOnFirstChild = enableAnchorOnFirstChild;
 		initWidget(uiBinder.createAndBindUi(this));
-		initData();
 		collapse.addShowHandler(new ShowHandler() {
 			@Override
 			public void onShow(ShowEvent showEvent) {
@@ -84,11 +84,12 @@ public class GenericTopicView extends Composite {
 				topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
 			}
 		});
-		display();
-	}
-
-	private void initData() {
-		
+		Timer timer = new Timer() {
+			public void run() {
+				display();
+			}
+		};
+		timer.schedule(10);
 	}
 
 	private void display() {
@@ -97,7 +98,6 @@ public class GenericTopicView extends Composite {
 		
 		trigger.setTarget("#toggle"+index);
 		collapse.setId("toggle"+index);
-		
 		ExternalPage page;
 		boolean isPreviousPageVisited = (index == 1);
 		int childrenIndex = 0;
@@ -124,5 +124,6 @@ public class GenericTopicView extends Composite {
 		} else {
 			topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
 		}
+		topicWrapper.removeStyleName("shy");
 	}
 }

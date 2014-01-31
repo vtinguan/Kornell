@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.details.data;
+package kornell.gui.client.presentation.course.generic.details;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ public class CourseDetailsTOBuilder {
 	private CourseDetailsTO courseDetailsTO;
 	
 	private enum ParseType {
-		TOPICS("topics"),
 		INFOS("infos"),
 		HINTS("hints");
 
