@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 	<g:FlowPanel>
 	    <b:CollapseTrigger ui:field="trigger">
-			<g:FlowPanel ui:field="topicWrapper" addStyleNames="topicWrapper">
+			<g:FlowPanel ui:field="topicWrapper" addStyleNames="topicWrapper shy">
 				<g:FlowPanel ui:field="topicPanel" addStyleNames="topicPanel">
 					<g:FlowPanel addStyleNames="topicImagePanel">
 						<g:Image ui:field="topicIcon" addStyleNames="topicIcon"></g:Image>

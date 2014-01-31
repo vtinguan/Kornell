@@ -1,6 +1,6 @@
 package kornell.gui.client.test;
 
-import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
+import kornell.gui.client.presentation.course.generic.details.CourseDetailsTOBuilder;
 
 import org.junit.Test;
 

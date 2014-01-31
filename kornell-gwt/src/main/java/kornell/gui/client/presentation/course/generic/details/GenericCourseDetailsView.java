@@ -1,8 +1,7 @@
-package kornell.gui.client.presentation.course.details.generic;
+package kornell.gui.client.presentation.course.generic.details;
 
 import java.util.List;
 
-import kornell.api.client.Callback;
 import kornell.api.client.UserSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
@@ -10,7 +9,6 @@ import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
@@ -18,19 +16,21 @@ import kornell.core.to.coursedetails.InfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.course.details.CourseDetailsView;
-import kornell.gui.client.presentation.course.details.data.CourseDetailsTOBuilder;
+import kornell.gui.client.presentation.course.ClassroomView.Presenter;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -38,8 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericCourseDetailsView extends Composite implements
-		CourseDetailsView {
+public class GenericCourseDetailsView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseDetailsView> {
 	}
 
@@ -68,6 +67,8 @@ public class GenericCourseDetailsView extends Composite implements
 	Button btnTopics;
 	@UiField
 	Button btnCertification;
+	@UiField
+	Button btnGoToCourse;
 
 	private Button btnCurrent;
 	private CourseClassTO courseClassTO;
@@ -78,43 +79,25 @@ public class GenericCourseDetailsView extends Composite implements
 	private FlowPanel certificationPanel;
 	private ClientFactory clientFactory;
 
+	private Presenter presenter;
+
 	private Contents contents;
 	private List<Actom> actoms;
 	private CourseClassTO currentCourseClass;
 	
-	public GenericCourseDetailsView(ClientFactory clientFactory) {
-		this.clientFactory = clientFactory;
-		this.bus = clientFactory.getEventBus();
-		this.session = clientFactory.getUserSession();
-		this.placeCtrl = clientFactory.getPlaceController();
+	public GenericCourseDetailsView(EventBus bus, UserSession session, PlaceController placeCtrl) {
+		this.bus = bus;
+		this.session = session;
+		this.placeCtrl = placeCtrl;
 		this.currentCourseClass = Dean.getInstance().getCourseClassTO();
 		initWidget(uiBinder.createAndBindUi(this));
-		initData();
 	}
 
-	private void initData() {
-		LoadingPopup.show();
+	public void initData() {
+		setContents(presenter.getContents());
 		certificationPanel = getCertificationPanel();
-		
-		session.getCourseClassesTO(new Callback<CourseClassesTO>() {
-			@Override
-			public void ok(CourseClassesTO courseClasses) {
-				for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
-					if(courseClassTmp.getCourseClass().getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())){
-						courseClassTO = courseClassTmp;
-					}
-				}
-				user = session.getUserInfo();
-				session.courseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()).contents(new Callback<Contents>() {
-					@Override
-					public void ok(Contents contents) {
-						setContents(contents);
-						display();
-						LoadingPopup.hide();
-					}
-				});
-			}
-		});
+		courseClassTO = Dean.getInstance().getCourseClassTO();
+		display();
 	}
 
 	private void setContents(Contents contents) {
@@ -146,22 +129,22 @@ public class GenericCourseDetailsView extends Composite implements
 				.getCourse().getInfoJson());
 		builder.buildCourseDetails();
 		courseDetails = builder.getCourseDetailsTO();
+
+		topicsPanel = new FlowPanel();
 		
 		aboutPanel = getAboutPanel();
-		
-		topicsPanel = new FlowPanel();
-		topicsPanel.addStyleName("topicsPanel");
-		topicsPanel.add(getTopicsTableHeader());
-		topicsPanel.add(getTopicsTableContent());
-
+		detailsContentPanel.add(aboutPanel);
 		btnCurrent = btnAbout;
+		displayContent(btnCurrent);
+
+		topicsPanel.addStyleName("topicsPanel");
+		displayTopics();
+
 		displayTitle();
 		displayButtons();
 
-		detailsContentPanel.add(aboutPanel);
 		detailsContentPanel.add(topicsPanel);
 		detailsContentPanel.add(certificationPanel);
-		displayContent(btnCurrent);
 	}
 
 	private void displayContent(Button btn) {
@@ -226,16 +209,14 @@ public class GenericCourseDetailsView extends Composite implements
 
 		return certificationHeaderPanel;
 	}
-	
-	private FlowPanel getTopicsTableContent() {
-		FlowPanel topicsContentPanel = new FlowPanel();
-		topicsContentPanel.addStyleName("topicsContentPanel");
+
+	private void displayTopics() {
 		boolean startOpened = (contents.getChildren().size() == 1);
 		int i = 0;
 		ExternalPage page;
 		boolean enableAnchorOnNextTopicsFirstChild = true;
 		for (Content content: contents.getChildren()) {
-			topicsContentPanel.add(new GenericTopicView(bus, session, placeCtrl, session, currentCourseClass, content, i++, startOpened, enableAnchorOnNextTopicsFirstChild));
+			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, currentCourseClass, content, i++, startOpened, enableAnchorOnNextTopicsFirstChild));
 			enableAnchorOnNextTopicsFirstChild = true;
 			for (Content contentItem : content.getTopic().getChildren()) {
 				page = contentItem.getExternalPage();
@@ -244,17 +225,7 @@ public class GenericCourseDetailsView extends Composite implements
 					break;
 				}
 			}
-		}	
-		return topicsContentPanel;
-	}
-
-	private FlowPanel getTopicsTableHeader() {
-		FlowPanel topicsHeaderPanel = new FlowPanel();
-		topicsHeaderPanel.addStyleName("topicsHeaderPanel");
-
-		topicsHeaderPanel.add(getHeaderButton(constants.topic(), "btnTopics",
-				"btnTopicsHeader"));
-		return topicsHeaderPanel;
+		}
 	}
 
 	private Button getHeaderButton(String label, String styleName,
@@ -311,6 +282,9 @@ public class GenericCourseDetailsView extends Composite implements
 				constants.btnTopicsInfo());
 		displayButton(btnCertification, constants.btnCertification(),
 				constants.btnCertificationInfo());
+		// TODO: i18n
+		displayButton(btnGoToCourse, "Ir para o curso",
+				"");
 	}
 
 	private void displayButton(Button btn, String title, String label) {
@@ -325,8 +299,18 @@ public class GenericCourseDetailsView extends Composite implements
 		btn.add(btnLabel);
 		
 		btn.addStyleName("gradient");
-
-		btn.addClickHandler(new DetailsButtonClickHandler());
+		
+			btn.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					Button btn = (Button) event.getSource();
+					if(!btnGoToCourse.equals(btn)){
+						handleEvent(btn);
+					} else {
+						bus.fireEvent(new ShowDetailsEvent(false));
+					}
+				}
+			});
 	}
 
 	private FlowPanel getHintsPanel() {
@@ -365,13 +349,7 @@ public class GenericCourseDetailsView extends Composite implements
 		btnCurrent = btn;
 	}
 
-	private final class DetailsButtonClickHandler implements ClickHandler {
-		public void onClick(ClickEvent event) {
-			handleEvent((Button) event.getSource());
-		}
-	}
-
-	@Override
 	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
 	}
 }
