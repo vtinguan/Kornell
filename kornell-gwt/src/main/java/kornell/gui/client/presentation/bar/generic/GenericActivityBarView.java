@@ -54,7 +54,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private Image iconPrevious;
 	private Image iconNext;
 	
-	private boolean showDetails = true;;
+	private boolean showDetails = true;
 
 	@UiField
 	FocusPanel btnPrevious;
@@ -84,6 +84,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		user = clientFactory.getUserSession().getUserInfo();
 		display();
 		
+		showDetails = true;
 		setUpArrowNavigation();
 		
 	}
