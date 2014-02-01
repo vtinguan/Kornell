@@ -5,6 +5,7 @@ import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
+//github.com/Craftware/Kornell.git
 import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
