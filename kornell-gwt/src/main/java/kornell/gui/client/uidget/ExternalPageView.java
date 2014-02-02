@@ -57,6 +57,10 @@ public class ExternalPageView extends Uidget {
 			iframe.addClassName("externalContent");
 			iframe.setAttribute("allowtransparency", "true");
 			iframe.setAttribute("style", "background-color: black;");
+			//allowing html5 video player to work on fullscreen inside the iframe
+			iframe.setAttribute("allowFullScreen", "true");
+			iframe.setAttribute("webkitallowfullscreen", "true");
+			iframe.setAttribute("mozallowfullscreen", "true");
 			Event.sinkEvents(iframe, Event.ONLOAD);
 			Event.setEventListener(iframe, new EventListener() {
 
