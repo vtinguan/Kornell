@@ -53,7 +53,9 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 	}
 
 	public void go(Callback callback) {
+		if(callback != null){
 		setCallback(callback);
+		}
 		go();
 	}
 
