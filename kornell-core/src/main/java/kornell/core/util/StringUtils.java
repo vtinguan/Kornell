@@ -1,6 +1,9 @@
 package kornell.core.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.http.client.UrlBuilder;
@@ -46,31 +49,36 @@ public class StringUtils {
 		return new URLBuilder(base);
 	}
 
-	public static String composeURL(String baseURL, String... path) {
+	public static String composeURL(String base,String... path) {		
 		StringBuffer buf = new StringBuffer();
-		if(isSome(baseURL)){
-			if (baseURL.endsWith("/"))
-				buf.append(baseURL.substring(0, baseURL.length() - 1));
-			else
-				buf.append(baseURL);
-		}
-		
-		if (path != null)
-			for (String segment : path) {
-				if (segment != null) {
-					if (!(segment.startsWith("/") || segment.isEmpty()))
-						buf.append("/");
-					buf.append(segment);
-				}
+		List<String> tokens = new ArrayList<String>();
+		if(isSome(base))
+			buf.append(removeTrailingSlashes(base));
+		if(path != null)
+			tokens.addAll(Arrays.asList(path));
+		for (String segment : tokens) {			
+			if (isSome(segment)) {
+				if (!segment.startsWith("/"))
+					buf.append("/");
+				segment = removeTrailingSlashes(segment);
+				buf.append(segment);
 			}
+		}
 		return buf.toString();
 	}
-	
-	public static final boolean isNone (String str){
-		return str == null || "".equals(str);	
+
+	private static String removeTrailingSlashes(String segment) {
+		while(isSome(segment) && segment.endsWith("/"))
+			segment = segment.substring(0,segment.length()-1);
+		return segment;
 	}
-	
-	public static final boolean isSome (String str){
-		return ! isNone(str);
+
+	public static final boolean isNone(String str) {
+		return str == null || "".equals(str);
 	}
+
+	public static final boolean isSome(String str) {
+		return !isNone(str);
+	}
+
 }

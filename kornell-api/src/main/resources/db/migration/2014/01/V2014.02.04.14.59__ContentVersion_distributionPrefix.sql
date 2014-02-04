@@ -1,0 +1,1 @@
+update CourseVersion set distributionPrefix ='' where distributionPrefix is null; 
