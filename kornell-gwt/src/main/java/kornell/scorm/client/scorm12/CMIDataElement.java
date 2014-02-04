@@ -16,6 +16,10 @@ public class CMIDataElement {
 		this(key,defaultValue,null);
 	}
 	
+	public CMIDataElement(String key) {
+		this(key,"",null);
+	}
+	
 	public String getKey() {
 		return key;
 	}

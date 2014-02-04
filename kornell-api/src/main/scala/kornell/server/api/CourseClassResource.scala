@@ -12,6 +12,7 @@ import kornell.server.dev.util.ContentsParser
 import kornell.server.repository.s3.S3
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.CourseClassesRepo
+import javax.servlet.http.HttpServletRequest
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -38,11 +39,11 @@ class CourseClassResource(uuid: String) {
         null
       }else{ 
       }*/
-      val structureSrc = repo.source("structure.knl")
+      val structureSrc = repo.source(version.getDistributionPrefix(),"structure.knl")
       val structureText = structureSrc.mkString("")
       val baseURL = repo.baseURL
       val visited = classRepo.actomsVisitedBy(person)
-      val contents = ContentsParser.parse(baseURL, repo.prefix, structureText, visited)
+      val contents = ContentsParser.parse(baseURL, repo.prefix + "/" +version.getDistributionPrefix() , structureText, visited)
 
       //contents.setCourseClass(classRepo.get)
       contents

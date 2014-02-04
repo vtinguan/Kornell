@@ -1,11 +1,15 @@
 package kornell.scorm.client.scorm12;
 
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import kornell.api.client.Callback;
 import kornell.core.entity.ActomEntries;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class CMIDataModel extends CMICoreModel {
@@ -49,23 +53,38 @@ public class CMIDataModel extends CMICoreModel {
 
 	public String setValue(String elementKey, String value) {
 		CMIDataElement element = elements.get(elementKey);
-		if (element != null) {
-			setElementValue(element, value);
-			return TRUE;
-		} else {
-			// TODO: SetLastError, etc
-			return FALSE;
+		if (element == null) {
+			Set<Entry<String, CMIDataElement>> entries = elements.entrySet();
+			for (Entry<String, CMIDataElement> entry : entries) {
+				String key = entry.getKey();
+				RegExp regExp = RegExp.compile(key);
+				MatchResult matcher = regExp.exec(elementKey);
+				boolean matchFound = (matcher != null);
+				//GWT.log("Matching (" + elementKey + ") against (" + key+ ") = " + matchFound);
+				if (matchFound) {
+					element = entry.getValue();
+				}
+			}
 		}
+		String result = FALSE;
+		if (element != null) {
+			setElementValue(element, elementKey, value);
+			result = TRUE;
+		}		
+		return result;
 	}
 
-	private void setElementValue(final CMIDataElement element, final String value) {
-		entries.put(element.getKey(), value);
+	private void setElementValue(final CMIDataElement element,
+			final String elementKey,
+			final String value) {
+		entries.put(elementKey, value);
 		final Action onSet = element.getOnSet();
 		api.onDirtyData(new Callback<ActomEntries>() {
 			@Override
 			public void ok(ActomEntries to) {
-				if (onSet != null){
-					GWT.log("Executing onSet action for ["+element.getKey()+"]");
+				if (onSet != null) {
+					GWT.log("Executing onSet action for [" + element.getKey()
+							+ "]");
 					onSet.execute(bus);
 				}
 			}
