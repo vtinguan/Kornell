@@ -42,6 +42,7 @@ public class CourseDetailsTOBuilder {
 	public boolean buildCourseDetails(){
 		JSONValue jsonValue;
 	    JSONObject jsonObject;
+	    
 	    jsonValue = JSONParser.parseStrict(jsonString);
 	
 		if ((jsonObject = jsonValue.isObject()) == null) {

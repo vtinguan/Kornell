@@ -1,9 +1,14 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
 import kornell.core.lom.Content;
+import kornell.core.lom.ContentFormat;
 import kornell.core.lom.ExternalPage;
+import kornell.core.lom.Topic;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 
@@ -43,7 +48,7 @@ public class GenericTopicView extends Composite {
 	private int index;
 	private boolean startOpened;
 	private boolean enableAnchorOnFirstChild;
-	
+
 	@UiField
 	CollapseTrigger trigger;
 	@UiField
@@ -59,9 +64,10 @@ public class GenericTopicView extends Composite {
 	@UiField
 	FluidRow childrenPanel;
 
-
 	public GenericTopicView(EventBus eventBus, KornellClient client,
-			PlaceController placeCtrl, UserSession session, CourseClassTO currentCourse, Content content, int index, boolean startOpened, boolean enableAnchorOnFirstChild) {
+			PlaceController placeCtrl, UserSession session,
+			CourseClassTO currentCourse, Content content, int index,
+			boolean startOpened, boolean enableAnchorOnFirstChild) {
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
@@ -93,32 +99,42 @@ public class GenericTopicView extends Composite {
 	}
 
 	private void display() {
-		String topicName = content.getTopic().getName();
+		String topicName = "???Topic???";
+		Topic topic = content.getTopic();
+		List<Content> children = new ArrayList<Content>();
+		if (ContentFormat.Topic.equals(content.getFormat())) {			
+			topicName = topic.getName();
+			children = topic.getChildren();
+		}
 		lblTopic.setText(topicName);
-		
-		trigger.setTarget("#toggle"+index);
-		collapse.setId("toggle"+index);
+
+		trigger.setTarget("#toggle" + index);
+		collapse.setId("toggle" + index);
 		ExternalPage page;
 		boolean isPreviousPageVisited = (index == 1);
 		int childrenIndex = 0;
-		for (Content contentItem : content.getTopic().getChildren()) {
+		 
+		for (Content contentItem : children) {
 			page = contentItem.getExternalPage();
-			if(!page.getTitle().startsWith("###")){ //TODO MDA 
-				boolean enableAnchor = page.isVisited() || isPreviousPageVisited || (childrenIndex == 0 && enableAnchorOnFirstChild);
-				childrenPanel.add(new GenericPageView(bus, client, placeCtrl, session, page, currentCourse, enableAnchor));
+			if (!page.getTitle().startsWith("###")) { // TODO MDA
+				boolean enableAnchor = page.isVisited()
+						|| isPreviousPageVisited
+						|| (childrenIndex == 0 && enableAnchorOnFirstChild);
+				childrenPanel.add(new GenericPageView(bus, client, placeCtrl,
+						session, page, currentCourse, enableAnchor));
 			}
 			isPreviousPageVisited = page.isVisited();
 			childrenIndex++;
 		}
-		
-		if(childrenPanel.getWidgetCount() > 0){
+
+		if (childrenPanel.getWidgetCount() > 0) {
 			this.addStyleName("cursorPointer");
 		} else {
 			topicIcon.addStyleName("shy");
 			this.addStyleName("cursorDefault");
 		}
-		
-		if(startOpened){
+
+		if (startOpened) {
 			topicIcon.setUrl(IMAGES_PATH + "topic-expanded.png");
 			collapse.setDefaultOpen(true);
 		} else {
