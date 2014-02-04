@@ -61,16 +61,11 @@ public class UserSession extends KornellClient {
 	}
 
 	public String getItem(String key) {
-		Storage localStorage = Storage.getLocalStorageIfSupported();
-		if (localStorage != null)
-			return localStorage.getItem(prefixed(key));
-		return null;
+		return ClientProperties.get(prefixed(key));
 	}
 
 	public void setItem(String key, String value) {
-		Storage localStorage = Storage.getLocalStorageIfSupported();
-		if (localStorage != null)
-			localStorage.setItem(prefixed(key), value);
+		ClientProperties.set(prefixed(key), value);
 	}
 
 	private String prefixed(String key) {

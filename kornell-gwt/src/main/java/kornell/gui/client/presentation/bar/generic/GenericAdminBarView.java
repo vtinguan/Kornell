@@ -7,15 +7,12 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
-import kornell.gui.client.presentation.course.notes.NotesPopup;
+import kornell.gui.client.presentation.course.generic.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -70,7 +67,7 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		
-		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
+		/*clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
@@ -84,7 +81,7 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 							btnDetails.addStyleName("btnSelected");
 						}
 						
-					}});
+					}});*/
 
 		user = clientFactory.getUserSession().getUserInfo();
 		display();
@@ -104,11 +101,11 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
 		
 		
-		if (clientFactory.getPlaceController().getWhere() instanceof CourseDetailsPlace) {
+		/*if (clientFactory.getPlaceController().getWhere() instanceof CourseDetailsPlace) {
 			btnDetails.addStyleName("btnSelected");
 			//enableButton(BUTTON_PREVIOUS, false);
 			//enableButton(BUTTON_NEXT, false);
-		}
+		}*/
 	}
 
 	private void displayButton(final Button btn, final String buttonType, Image icon) {
@@ -178,7 +175,7 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
 		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
-			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
+			//clientFactory.getPlaceController().goTo(new CourseDetailsPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
 			btnDetails.addStyleName("btnSelected");
 			GWT.log("btnSelected");
 		} else {

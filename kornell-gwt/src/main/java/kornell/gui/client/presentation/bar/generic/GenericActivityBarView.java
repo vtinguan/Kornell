@@ -3,23 +3,20 @@ package kornell.gui.client.presentation.bar.generic;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.NavigationForecastEvent;
-import kornell.gui.client.event.NavigationForecastEventHandler;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
+import kornell.gui.client.event.ShowDetailsEvent;
+import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
-import kornell.gui.client.presentation.course.notes.NotesPopup;
+import kornell.gui.client.presentation.course.generic.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
 
 import com.github.gwtbootstrap.client.ui.ProgressBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -32,7 +29,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class GenericActivityBarView extends Composite implements ActivityBarView, NavigationForecastEventHandler, ProgressChangeEventHandler {
+public class GenericActivityBarView extends Composite implements ActivityBarView, ProgressChangeEventHandler, ShowDetailsEventHandler {
 	
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityBarView> {
 	}
@@ -56,6 +53,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private Image iconPrevious;
 	private Image iconNext;
+	
+	private boolean showDetails = true;
 
 	@UiField
 	FocusPanel btnPrevious;
@@ -79,30 +78,13 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		clientFactory.getEventBus().addHandler(NavigationForecastEvent.TYPE,this);
 		clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE,this);
-
-		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
-					@Override
-					public void onPlaceChange(PlaceChangeEvent event) {
-						Place newPlace = event.getNewPlace();
-						
-						if(newPlace instanceof ClassroomPlace){							
-							btnDetails.removeStyleName("btnSelected");
-							updateProgressBarPanel();
-						} else if(newPlace instanceof CourseDetailsPlace){
-							enableButton(BUTTON_PREVIOUS, false);
-							enableButton(BUTTON_NEXT, false);
-							btnDetails.addStyleName("btnSelected");
-							updateProgressBarPanel();
-						}
-						
-					}});
+		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
 
 		user = clientFactory.getUserSession().getUserInfo();
 		display();
 		
+		showDetails = true;
 		setUpArrowNavigation();
 		
 	}
@@ -119,7 +101,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
 		
 		displayProgressButton();
-		if (clientFactory.getPlaceController().getWhere() instanceof CourseDetailsPlace) {
+		
+		if(showDetails){
 			btnDetails.addStyleName("btnSelected");
 			enableButton(BUTTON_PREVIOUS, false);
 			enableButton(BUTTON_NEXT, false);
@@ -152,14 +135,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		pagePanel.addStyleName("pagePanel");
 		pagePanel.addStyleName("label");
 		
-		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
+		if(showDetails){
+			pagePanel.add(createSpan(progressPercent+"%", true));
+			pagePanel.add(createSpan("concluído", false));
+		} else {
 			pagePanel.add(createSpan("Página", false));
 			pagePanel.add(createSpan(""+currentPage, true));
 			pagePanel.add(createSpan("/", false));
 			pagePanel.add(createSpan(""+totalPages, false));
-		} else {
-			pagePanel.add(createSpan(progressPercent+"%", true));
-			pagePanel.add(createSpan("concluído", false));
 		}
 		
 		progressBarPanel.add(pagePanel);
@@ -230,28 +213,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@UiHandler("btnNext")
 	public void btnNextClicked(ClickEvent e){
-		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace)
+		if(!showDetails)
 			clientFactory.getEventBus().fireEvent(NavigationRequest.next());
 	}
 
 	@UiHandler("btnPrevious")
 	public void btnPrevClicked(ClickEvent e){
-		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace)
+		if(!showDetails)
 			clientFactory.getEventBus().fireEvent(NavigationRequest.prev());		
-	}
-	
-	@UiHandler("btnDetails")
-	void handleClickBtnDetails(ClickEvent e) {
-		if(clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace){
-			clientFactory.getPlaceController().goTo(new CourseDetailsPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
-			btnDetails.addStyleName("btnSelected");
-			GWT.log("btnSelected");
-		} else {
-			//TODO remove this
-			clientFactory.getPlaceController().goTo(new ClassroomPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
-			btnDetails.removeStyleName("btnSelected");
-		}
-		
 	}
 	
 	@UiHandler("btnNotes")
@@ -268,7 +237,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	private void enableButton(String btn, boolean enable){
 		if(BUTTON_NEXT.equals(btn)){
-			if(enable){
+			if(enable && !showDetails){
 				iconNext.setUrl(IMAGES_PATH + getItemName(BUTTON_NEXT)+".png");
 				btnNext.removeStyleName("disabled");
 			} else {
@@ -277,7 +246,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			}
 		}
 		else if(BUTTON_PREVIOUS.equals(btn)){
-			if(enable){
+			if(enable && !showDetails){
 				iconPrevious.setUrl(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+".png");
 				btnPrevious.removeStyleName("disabled");
 			} else {
@@ -285,17 +254,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				btnPrevious.addStyleName("disabled");
 			}
 		}
-	}
-
-	@Override
-	public void onNextActivityNotOK(NavigationForecastEvent evt) {
-		//TODO: uncomment
-		//enableButton(BUTTON_NEXT, true);
-	}
-
-	@Override
-	public void onNextActivityOK(NavigationForecastEvent evt) {
-		//enableButton(BUTTON_NEXT, true);
 	}
 	
 	@Override
@@ -307,6 +265,25 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
 		enableButton(BUTTON_PREVIOUS, event.hasPrevious() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
 		enableButton(BUTTON_NEXT, event.hasNext() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
+	}
+	
+	@UiHandler("btnDetails")
+	void handleClickBtnDetails(ClickEvent e) {
+		clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(!showDetails));
+	}
+
+	@Override
+	public void onShowDetails(ShowDetailsEvent event) {
+		this.showDetails = event.isShowDetails();
+
+		if(showDetails){	
+			btnDetails.addStyleName("btnSelected");	
+		} else {		
+			btnDetails.removeStyleName("btnSelected");
+		}
+		enableButton(BUTTON_PREVIOUS, !showDetails);
+		enableButton(BUTTON_NEXT, !showDetails);	
+		updateProgressBarPanel();
 	}
 	
 }

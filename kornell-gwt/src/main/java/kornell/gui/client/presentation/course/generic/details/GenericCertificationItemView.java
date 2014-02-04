@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.details.generic;
+package kornell.gui.client.presentation.course.generic.details;
 
 import kornell.api.client.UserSession;
 import kornell.core.to.CourseClassTO;
