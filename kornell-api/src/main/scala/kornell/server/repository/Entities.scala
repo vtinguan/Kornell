@@ -152,13 +152,14 @@ object Entities {
     role
   }
  
-  def newCourseVersion(uuid:String,name:String,courseUUID:String,repositoryUUID:String,versionCreatedAt:Date = new Date)={
+  def newCourseVersion(uuid:String,name:String,courseUUID:String,repositoryUUID:String,versionCreatedAt:Date = new Date,distributionPrefix:String)={
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
     version.setCourseUUID(courseUUID);
     version.setRepositoryUUID(repositoryUUID);
     version.setVersionCreatedAt(versionCreatedAt)
+    version.setDistributionPrefix(distributionPrefix)
     version
   }
   

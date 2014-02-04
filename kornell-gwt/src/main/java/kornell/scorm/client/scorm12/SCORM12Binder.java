@@ -26,9 +26,21 @@ public class SCORM12Binder {
 		API.LMSGetValue = function(param) {
 			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSGetValue(Ljava/lang/String;)(param);			
 		} 
+
+		API.LMSCommit = function(param) {
+			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSCommit(Ljava/lang/String;)(param);			
+		}
 		
 		API.LMSSetValue = function(param,value) {
-			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSSetValue(Ljava/lang/String;Ljava/lang/String;)(param,value);			
+			switch(typeof value){
+				case "number":
+					var dbl = @java.lang.Double::valueOf(D)(value);
+					return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSSetDouble(Ljava/lang/String;Ljava/lang/Double;)(param,dbl);
+				case "string":
+					return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSSetString(Ljava/lang/String;Ljava/lang/String;)(param,value);
+				default:
+					throw "SCORM 1.2 Unsupported value type"
+			}
 		} 
 		
 		$wnd.API = API;

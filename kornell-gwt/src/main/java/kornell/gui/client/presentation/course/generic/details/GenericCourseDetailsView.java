@@ -1,10 +1,12 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.UserSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
+import kornell.core.lom.ContentFormat;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
@@ -218,7 +220,11 @@ public class GenericCourseDetailsView extends Composite {
 		for (Content content: contents.getChildren()) {
 			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, currentCourseClass, content, i++, startOpened, enableAnchorOnNextTopicsFirstChild));
 			enableAnchorOnNextTopicsFirstChild = true;
-			for (Content contentItem : content.getTopic().getChildren()) {
+			List<Content> children = new ArrayList<Content>();
+			if(ContentFormat.Topic.equals(content.getFormat()) ){
+				children = content.getTopic().getChildren();
+			}
+			for (Content contentItem : children) {
 				page = contentItem.getExternalPage();
 				if(!page.isVisited()){
 					enableAnchorOnNextTopicsFirstChild = false;

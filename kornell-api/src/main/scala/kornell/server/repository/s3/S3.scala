@@ -16,7 +16,10 @@ import org.apache.http.impl.client.HttpClients
 import org.apache.http.client.methods.HttpHead
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.server.jdbc.SQL._
+import kornell.core.util.StringUtils._
+import javax.servlet.http.HttpServletRequest
 
+//TODO: Change to HTTP
 class S3(regionName: String,
   val accessKey: String,
   val secretKey: String,
@@ -55,26 +58,13 @@ class S3(regionName: String,
   def getObject(key: String) =
     s3.getObject(bucket, prefix + "/" + key)
 
-  def source(key: String) = Source.fromURL(url(key), "utf-8")
+  def source(ditributionPrefix: String, key: String) = Source.fromURL(url(ditributionPrefix, key), "utf-8")
 
-  def exists(key: String):Boolean = {
-    val httpClient = HttpClients.createDefault();
-    val head = new HttpHead(url(key))
-    val response = httpClient.execute(head)
-    try {
-      response.getStatusLine().getStatusCode() == 200
-    }finally {
-      response.close()      
-    }
-  }
-
-  def url(key: String) = composeURL(baseURL, prefix, key)
+  def url(ditributionPrefix: String, key: String) = composeURL(baseURL, prefix, ditributionPrefix, key)
 
   //TODO: Resolve base url from region
-  lazy val baseURL =
-    if (distributionURL != null)
-      distributionURL
-    else s"http://${bucket}.s3-sa-east-1.amazonaws.com/"
+  //TODO: Stinking (set and/or get)
+  lazy val baseURL = distributionURL  
 
 }
 
@@ -92,27 +82,4 @@ object S3 {
     	where uuid=$repository_uuid
     """.first[S3].getOrElse({ throw new IllegalArgumentException(s"Could not find repository [$repository_uuid]") })
 
-  def main(args: Array[String]) {
-
-    /*S3("F7A4A77F-D519-4348-8F62-EDB0C2C48395")
-      .actoms
-      .foreach { println(_) }*/
-
-    val classRepo = CourseClassesRepo("B6A60AB5-3889-47B4-93DA-60E515309DAF")
-    val versionRepo = classRepo.version
-    val version = versionRepo.get
-    val repositoryUUID = version.getRepositoryUUID();
-    val s3 = S3(repositoryUUID)
-    val structureSrc = s3.source("structure.knl")
-    val structureText = structureSrc.mkString("")
-    val baseURL = s3.baseURL
-    printf(baseURL)
-    //val visited = classRepo.actomsVisitedBy(person) 
-    //val contents = ContentsParser.parse(baseURL, s3.prefix, structureText, visited)
-    /*
-    val s3 = new S3("sa-east-1","AKIAJZREK4G3OPFKQQTA","vFn6ZEE9PjKxDJ0Sqe2fit5wqL8AeFExVHELUtJ2","aws-examples","ten-thousand")
-    s3.actoms.foreach {println(_)} 
-    */
-
-  }
 }
