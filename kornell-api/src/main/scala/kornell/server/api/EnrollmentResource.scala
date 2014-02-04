@@ -14,8 +14,9 @@ import javax.ws.rs.core.Context
 import kornell.core.lom.Contents
 import kornell.core.entity.Registrations
 import kornell.core.entity.Enrollments
-import kornell.server.jdbc.SQL._ 
+import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.RegistrationsRepo
+import javax.servlet.http.HttpServletRequest
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {

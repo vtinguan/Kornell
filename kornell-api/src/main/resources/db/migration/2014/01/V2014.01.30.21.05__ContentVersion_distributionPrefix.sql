@@ -1,0 +1,1 @@
+alter table CourseVersion add column distributionPrefix varchar(255);

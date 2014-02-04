@@ -36,6 +36,7 @@ object CourseClassesRepo {
 			    cv.name as courseVersionName,
 			    cv.repository_uuid as repositoryUUID, 
 			    cv.versionCreatedAt,
+		  		cv.distributionPrefix,
 			    cc.uuid as courseClassUUID,
 			    cc.name as courseClassName,
 			    cc.institution_uuid as institutionUUID,

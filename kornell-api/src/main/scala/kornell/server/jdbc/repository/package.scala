@@ -37,6 +37,7 @@ package object repository {
     r.getString("courseVersionName"), 
     r.getString("repositoryUUID"), 
     r.getDate("versionCreatedAt"),
+    r.getString("distributionPrefix"),
     //courseClass
     r.getString("courseClassUUID"),
     r.getString("courseClassName"), 

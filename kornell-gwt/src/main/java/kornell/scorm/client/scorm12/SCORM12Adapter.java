@@ -37,7 +37,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		GWT.log("LMSInitialize[" + param + "]");
 		if (dataModel == null) {
 			logger.warning("Can not initialize API Adapter without a Data Model");
-			//TODO: Wait for data model
+			// TODO: Wait for data model
 			return FALSE;
 		}
 		return TRUE;
@@ -61,15 +61,27 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		return result;
 	}
 
+	public String LMSCommit(String param) {
+		String result = TRUE;
+		onDirtyData(null);
+		GWT.log("LMSCommit[" + param + "] = " + result);
+		return result;
+	}
+
 	private boolean isCMIElement(String param) {
 		return param != null && param.startsWith("cmi");
 	}
 
-	public String LMSSetValue(String param, String value) {
+	public String LMSSetDouble(String key, Double value) {
+		String strValue = Double.toString(value);
+		return LMSSetString(key,strValue);
+	}
+	
+	public String LMSSetString(String key, String value) {
 		String result = FALSE;
-		if (isCMIElement(param))
-			result = dataModel.setValue(param, value);
-		GWT.log("LMSSetValue[" + param + "," + value + "] = " + result);
+		if (isCMIElement(key))
+			result = dataModel.setValue(key, value);
+		GWT.log("LMSSetValue[" + key + "," + value + "] = " + result);
 		return result;
 	}
 
@@ -82,7 +94,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 				@Override
 				public void ok(ActomEntries to) {
 					GWT.log("Data model put without action");
-					
+
 				}
 			});
 		this.currentActomKey = event.getActomKey();
@@ -92,20 +104,21 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	}
 
 	private void getDataModel() {
-		client.enrollment(currentEnrollmentUUID)
-			  .actom(currentActomKey)
-			  .get(new Callback<ActomEntries>() {
-				@Override
-				public void ok(ActomEntries to) {
-					GWT.log("Populating new data model");
-					dataModel = new CMIDataModel(SCORM12Adapter.this,bus, to.getEntries());
-				}
-			  });
+		client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
+				.get(new Callback<ActomEntries>() {
+					@Override
+					public void ok(ActomEntries to) {
+						GWT.log("Populating new data model");
+						dataModel = new CMIDataModel(SCORM12Adapter.this, bus,
+								to.getEntries());
+					}
+				});
 	}
 
 	private void putDataModel(Callback<ActomEntries> callback) {
-		client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
-				.put(dataModel.getValues(),callback);
+		if (dataModel != null)
+			client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
+					.put(dataModel.getValues(), callback);
 	}
 
 	public void onDirtyData(final Callback<ActomEntries> callback) {
