@@ -7,12 +7,6 @@ import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.course.chat.CourseChatPlace;
-import kornell.gui.client.presentation.course.course.CourseHomePlace;
-import kornell.gui.client.presentation.course.details.CourseDetailsPlace;
-import kornell.gui.client.presentation.course.forum.CourseForumPlace;
-import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
-import kornell.gui.client.presentation.course.specialists.CourseSpecialistsPlace;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
@@ -58,18 +52,9 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 					southBar.clear();
 					//southBar.add(getAdminBarView(newPlace));
 					visible = false;
-				} else if (newPlace instanceof CourseDetailsPlace
-						|| newPlace instanceof ClassroomPlace) {
+				} else if (newPlace instanceof ClassroomPlace) {
 					southBar.clear();
 					southBar.add(getActivityBarView());
-					visible = true;
-				} else if (newPlace instanceof CourseHomePlace
-						|| newPlace instanceof CourseLibraryPlace
-						|| newPlace instanceof CourseForumPlace
-						|| newPlace instanceof CourseChatPlace
-						|| newPlace instanceof CourseSpecialistsPlace) {
-					southBar.clear();
-					southBar.add(getCourseBarView(newPlace));
 					visible = true;
 				} else {
 					visible = false;
@@ -83,13 +68,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 		if (activityBarView == null)
 			activityBarView = new GenericActivityBarView(clientFactory);
 		return activityBarView;
-	}
-
-	private CourseBarView getCourseBarView(Place newPlace) {
-		if (courseBarView == null)
-			courseBarView = new GenericCourseBarView(clientFactory.getEventBus(), clientFactory.getPlaceController());
-		courseBarView.updateSelection(newPlace);
-		return courseBarView;
 	}
 
 	private AdminBarView getAdminBarView(Place newPlace) {
