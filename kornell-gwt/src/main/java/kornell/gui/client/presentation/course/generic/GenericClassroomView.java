@@ -40,6 +40,8 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		this.bus = bus;
 		bus.addHandler(ShowDetailsEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
+		detailsPanel.setVisible(true);
+		contentPanel.setVisible(false);
 	}
 
 	@Override
@@ -47,7 +49,6 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl);
 		detailsView.setPresenter(presenter);
 		detailsView.initData();
-		contentPanel.setVisible(false);
 		detailsPanel.clear();
 		detailsPanel.add(detailsView);
 	}

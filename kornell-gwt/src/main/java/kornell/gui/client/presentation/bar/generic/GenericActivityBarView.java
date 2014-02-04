@@ -55,6 +55,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private Image iconNext;
 	
 	private boolean showDetails = true;
+	private boolean enableNext = false;
+	private boolean enablePrev = false;
 
 	@UiField
 	FocusPanel btnPrevious;
@@ -263,8 +265,10 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
 		updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
-		enableButton(BUTTON_PREVIOUS, event.hasPrevious() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
-		enableButton(BUTTON_NEXT, event.hasNext() && clientFactory.getPlaceController().getWhere() instanceof ClassroomPlace);
+		enablePrev = event.hasPrevious();
+		enableNext = event.hasNext();
+		enableButton(BUTTON_PREVIOUS, enablePrev);
+		enableButton(BUTTON_NEXT, enableNext);
 	}
 	
 	@UiHandler("btnDetails")
@@ -281,8 +285,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		} else {		
 			btnDetails.removeStyleName("btnSelected");
 		}
-		enableButton(BUTTON_PREVIOUS, !showDetails);
-		enableButton(BUTTON_NEXT, !showDetails);	
+		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev);
+		enableButton(BUTTON_NEXT, !showDetails && enableNext);	
 		updateProgressBarPanel();
 	}
 	
