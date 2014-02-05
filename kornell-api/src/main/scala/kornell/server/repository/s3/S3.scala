@@ -64,7 +64,12 @@ class S3(regionName: String,
 
   //TODO: Resolve base url from region
   //TODO: Stinking (set and/or get)
-  lazy val baseURL = distributionURL  
+  lazy val baseURL = {
+    if(distributionURL == null)
+    	"https://s3-" + regionName + ".amazonaws.com/" + bucket + "/"
+    else
+    	distributionURL
+  }
 
 }
 
