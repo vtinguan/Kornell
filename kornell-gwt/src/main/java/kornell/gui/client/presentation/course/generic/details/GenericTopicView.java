@@ -20,11 +20,11 @@ import com.github.gwtbootstrap.client.ui.event.HideHandler;
 import com.github.gwtbootstrap.client.ui.event.ShowEvent;
 import com.github.gwtbootstrap.client.ui.event.ShowHandler;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -67,7 +67,7 @@ public class GenericTopicView extends Composite {
 	public GenericTopicView(EventBus eventBus, KornellClient client,
 			PlaceController placeCtrl, UserSession session,
 			CourseClassTO currentCourse, Content content, int index,
-			boolean startOpened, boolean enableAnchorOnFirstChild) {
+			final boolean startOpened, boolean enableAnchorOnFirstChild) {
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
@@ -78,16 +78,17 @@ public class GenericTopicView extends Composite {
 		this.startOpened = startOpened;
 		this.enableAnchorOnFirstChild = enableAnchorOnFirstChild;
 		initWidget(uiBinder.createAndBindUi(this));
+		
 		collapse.addShowHandler(new ShowHandler() {
 			@Override
 			public void onShow(ShowEvent showEvent) {
-				topicIcon.setUrl(IMAGES_PATH + "topic-expanded.png");
+				updateIconURL(true);
 			}
 		});
 		collapse.addHideHandler(new HideHandler() {
 			@Override
 			public void onHide(HideEvent hideEvent) {
-				topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
+				updateIconURL(false);
 			}
 		});
 		Timer timer = new Timer() {
@@ -99,6 +100,11 @@ public class GenericTopicView extends Composite {
 	}
 
 	private void display() {
+		trigger.setTarget("#toggle" + index);
+		collapse.setId("toggle" + index);
+		updateIconURL(startOpened);
+		collapse.setDefaultOpen(startOpened);
+		
 		String topicName = "???Topic???";
 		Topic topic = content.getTopic();
 		List<Content> children = new ArrayList<Content>();
@@ -107,9 +113,7 @@ public class GenericTopicView extends Composite {
 			children = topic.getChildren();
 		}
 		lblTopic.setText(topicName);
-
-		trigger.setTarget("#toggle" + index);
-		collapse.setId("toggle" + index);
+		
 		ExternalPage page;
 		boolean isPreviousPageVisited = (index == 1);
 		int childrenIndex = 0;
@@ -134,12 +138,13 @@ public class GenericTopicView extends Composite {
 			this.addStyleName("cursorDefault");
 		}
 
-		if (startOpened) {
-			topicIcon.setUrl(IMAGES_PATH + "topic-expanded.png");
-			collapse.setDefaultOpen(true);
-		} else {
-			topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
-		}
 		topicWrapper.removeStyleName("shy");
+	}
+
+	private void updateIconURL(boolean isOpened) {
+		if(isOpened)
+			topicIcon.setUrl(IMAGES_PATH + "topic-expanded.png");
+		else
+			topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
 	}
 }
