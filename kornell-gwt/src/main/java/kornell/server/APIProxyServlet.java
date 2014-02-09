@@ -20,11 +20,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-public class RepositoryProxyServlet extends HttpServlet{
+public class APIProxyServlet extends HttpServlet{
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
 			throws ServletException, IOException {
-		String distributionURL = "http://localhost:8080";			
+		String distributionURL = "http://eduvem.com";			
 		String uri = req.getRequestURI(); 
 		StringBuilder log = new StringBuilder();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
