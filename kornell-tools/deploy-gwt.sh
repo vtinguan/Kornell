@@ -22,7 +22,7 @@ REGION=${REGION:-"sa-east-1"}
 AWS_CLI=${AWS_CLI:-"aws"}
 S3CMD_CFG=${S3CMD_CFG:-".s3cfg-kornell"} 
 SRC_DIR=${SRC_DIR:-"${PWD}/kornell-gwt/target/kornell-gwt"}
-KNL_CFG=${KNL_CFG:-$SRC_DIR"/KornellConfig.js"}
+KNL_CFG=${KNL_CFG:-$SRC_DIR"/KornellConfig.nocache.js"}
 
 log "=== GWT Deployment Variables ==="
 log "KNL_API_URL=$KNL_API_URL"
