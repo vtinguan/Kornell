@@ -55,7 +55,7 @@ object EmailService {
   
   def sendEmailEnrolled(person: Person, institution: Institution, course: Course) = {
     val subject = "Você foi matriculado no curso " + course.getTitle()
-    val from = getFromEmail(institution)
+    val from ="cdf@craftware.com.br" //getFromEmail(institution)
     val to = person.getEmail
     val actionLink = institution.getBaseURL() + "#vitrine:"
     val body = wrapBody("""

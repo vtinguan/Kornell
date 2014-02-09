@@ -11,19 +11,29 @@
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
 	</servlet>
-	
+
 	<servlet>
-	    <servlet-name>repositoryProxy</servlet-name>
-	    <servlet-class>kornell.server.RepositoryProxyServlet</servlet-class>
+		<servlet-name>repositoryServlet</servlet-name>
+		<servlet-class>kornell.server.ProxyServlet</servlet-class>
+		<init-param>
+			<param-name>targetUri</param-name>
+			<param-value>http://eduvem.com</param-value>
+		</init-param>		
+		<init-param>
+			<param-name>log</param-name>
+			<param-value>true</param-value>
+		</init-param>
 	</servlet>
-	
+
+	<servlet-mapping>
+		<servlet-name>repositoryServlet</servlet-name>
+		<url-pattern>/repository/*</url-pattern>
+	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<url-pattern>/Kornell/junithost/*</url-pattern>
 	</servlet-mapping>
-	
-	<servlet-mapping>
-	    <servlet-name>repositoryProxy</servlet-name>
-	    <url-pattern>/repository/*</url-pattern>	    
-	</servlet-mapping>
+
+
 </web-app>
