@@ -68,7 +68,7 @@ object EmailSender {
   }
 
   lazy val SMTP_HOST = Settings.get("SMTP_HOST")
-  lazy val SMTP_PORT = Settings.get("SMTP_HOST").get
+  lazy val SMTP_PORT = Settings.get("SMTP_PORT").get
   lazy val SMTP_USERNAME = Settings.get("SMTP_USERNAME").get
   lazy val SMTP_PASSWORD = Settings.get("SMTP_PASSWORD").get
 
