@@ -24,14 +24,14 @@ public class RepositoryProxyServlet extends HttpServlet{
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
 			throws ServletException, IOException {
-		String distributionURL = "http://localhost:8000";			
-		String uri = req.getRequestURI();
-		String ctype = null;
+		String distributionURL = "http://eduvem.com";			
+		String uri = req.getRequestURI(); 
+		StringBuilder log = new StringBuilder();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		try {
 			HttpGet httpget = new HttpGet(StringUtils.composeURL(distributionURL,uri));
 
-			System.out.println("executing request " + httpget.getURI());
+			log.append("Requesting " + uri);
 
 			// Create a custom response handler
 			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
@@ -58,6 +58,16 @@ public class RepositoryProxyServlet extends HttpServlet{
 
 			};
 			String responseBody = httpclient.execute(httpget, responseHandler);
+			if(uri.endsWith("html")){
+				resp.setContentType("text/html");
+			}else if (uri.endsWith("css")){
+				resp.setContentType("text/css");
+			}else if (uri.endsWith("js")){
+				resp.setContentType("application/javascript");
+			}
+			resp.setCharacterEncoding("UTF-8");
+					
+			System.out.println(log);
 			resp.getWriter().print(responseBody);
 		} finally {
 			httpclient.close();
