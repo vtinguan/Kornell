@@ -146,7 +146,6 @@
 	<build>
 		<!-- Generate compiled stuff in the folder used for development mode -->
 		<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
-		<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>br.com.ingenieux</groupId>
@@ -190,7 +189,7 @@
 					documentation at codehaus.org -->
 				<configuration>
 					<!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
-					<runTarget>Kornell.html</runTarget>
+					<runTarget>Kornell.nocache.html</runTarget>
 					<!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
 					<compileReport>true</compileReport>
 					<module>kornell.gui.Kornell</module>

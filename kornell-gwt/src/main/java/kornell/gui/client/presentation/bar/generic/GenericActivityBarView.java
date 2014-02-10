@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentState;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
@@ -76,6 +78,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private ClientFactory clientFactory;
 	
 	private Integer currentPage, totalPages, progressPercent;
+
+	private boolean isEnrolled;
 	
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -86,12 +90,25 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		user = clientFactory.getUserSession().getUserInfo();
 		display();
 		
-		showDetails = true;
 		setUpArrowNavigation();
 		
 	}
 
 	private void display(){
+
+		isEnrolled = false;
+		UserInfoTO user = clientFactory.getUserSession().getUserInfo();
+		for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
+			if(enrollment.getUUID().equals(((ClassroomPlace)clientFactory.getPlaceController().getWhere()).getEnrollmentUUID())
+					&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||
+							(EnrollmentState.enrolled.equals(enrollment.getState())))){
+				isEnrolled = true;
+				break;
+			}
+		}
+		
+		showDetails = !isEnrolled;
+		
 		iconPrevious = new Image(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+".png");
 		displayButton(btnPrevious, BUTTON_PREVIOUS, iconPrevious);
 		
@@ -273,7 +290,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
-		clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(!showDetails));
+		if(isEnrolled)
+			clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(!showDetails));
 	}
 
 	@Override

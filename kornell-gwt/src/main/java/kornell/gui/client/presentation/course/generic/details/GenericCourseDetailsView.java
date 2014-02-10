@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.UserSession;
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
 import kornell.core.lom.ContentFormat;
@@ -21,18 +23,17 @@ import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomView.Presenter;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -63,14 +64,10 @@ public class GenericCourseDetailsView extends Composite {
 	@UiField
 	FlowPanel detailsContentPanel;
 
-	@UiField
-	Button btnAbout;
-	@UiField
-	Button btnTopics;
-	@UiField
-	Button btnCertification;
-	@UiField
-	Button btnGoToCourse;
+	private Button btnAbout;
+	private Button btnTopics;
+	private Button btnCertification;
+	private Button btnGoToCourse;
 
 	private Button btnCurrent;
 	private CourseClassTO courseClassTO;
@@ -86,6 +83,8 @@ public class GenericCourseDetailsView extends Composite {
 	private Contents contents;
 	private List<Actom> actoms;
 	private CourseClassTO currentCourseClass;
+
+	private boolean isEnrolled;
 	
 	public GenericCourseDetailsView(EventBus bus, UserSession session, PlaceController placeCtrl) {
 		this.bus = bus;
@@ -127,6 +126,18 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private void display() {
+		isEnrolled = false;
+		UserInfoTO user = session.getUserInfo();
+		for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
+			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())
+					&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||
+							(EnrollmentState.enrolled.equals(enrollment.getState())))){
+				isEnrolled = true;
+				break;
+			}
+		}
+		displayButtons();
+		
 		CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(courseClassTO.getCourseVersionTO()
 				.getCourse().getInfoJson());
 		builder.buildCourseDetails();
@@ -143,7 +154,6 @@ public class GenericCourseDetailsView extends Composite {
 		displayTopics();
 
 		displayTitle();
-		displayButtons();
 
 		detailsContentPanel.add(topicsPanel);
 		detailsContentPanel.add(certificationPanel);
@@ -159,7 +169,7 @@ public class GenericCourseDetailsView extends Composite {
 	private FlowPanel getAboutPanel(){
 		FlowPanel aboutPanel = new FlowPanel();
 		aboutPanel.add(getInfosPanel());
-		aboutPanel.add(getHintsPanel());
+		aboutPanel.add(getSidePanel());
 		return aboutPanel;
 	}
 
@@ -267,7 +277,7 @@ public class GenericCourseDetailsView extends Composite {
 		return infoPanel;
 	}
 
-	private FlowPanel getInfoPanel(String title, String text) {
+	private FlowPanel getInfoPanel(String title, String text) {		
 		FlowPanel info = new FlowPanel();
 		info.addStyleName("infoDetails");
 
@@ -283,17 +293,23 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private void displayButtons() {
-		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo());
+		btnAbout = new Button();
+		btnTopics = new Button();
+		btnCertification = new Button();
+		btnGoToCourse = new Button();
+		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(), true);
 		displayButton(btnTopics, constants.btnTopics(),
-				constants.btnTopicsInfo());
+				constants.btnTopicsInfo(), false);
 		displayButton(btnCertification, constants.btnCertification(),
-				constants.btnCertificationInfo());
+				constants.btnCertificationInfo(), false);
 		// TODO: i18n
-		displayButton(btnGoToCourse, "Ir para o curso",
-				"");
+		if(isEnrolled){
+			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
+		}
 	}
 
-	private void displayButton(Button btn, String title, String label) {
+	private void displayButton(Button btn, String title, String label, boolean isSelected) {
+		btn.addStyleName("btnDetails " + (isSelected ? "btnSelected" : "btnNotSelected"));
 		btn.removeStyleName("btn");
 
 		Label btnTitle = new Label(title);
@@ -306,17 +322,39 @@ public class GenericCourseDetailsView extends Composite {
 		
 		btn.addStyleName("gradient");
 		
-			btn.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					Button btn = (Button) event.getSource();
-					if(!btnGoToCourse.equals(btn)){
-						handleEvent(btn);
-					} else {
-						bus.fireEvent(new ShowDetailsEvent(false));
-					}
+		btn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Button btn = (Button) event.getSource();
+				if(!btnGoToCourse.equals(btn)){
+					handleEvent(btn);
+				} else {
+					bus.fireEvent(new ShowDetailsEvent(false));
 				}
-			});
+			}
+		});
+		
+		buttonsPanel.add(btn);
+	}
+	
+	private FlowPanel getSidePanel(){
+		FlowPanel sidePanel = new FlowPanel();
+		sidePanel.addStyleName("sidePanel");
+
+
+		if(!isEnrolled){
+			FlowPanel notEnrolledPanel = new FlowPanel();
+			notEnrolledPanel.addStyleName("notEnrolledPanel");
+			
+			notEnrolledPanel.add(new Label("Sua matríula ainda não foi aprovada pela instituição. Você receberá um e-mail no momento da aprovação."));
+			
+			sidePanel.add(notEnrolledPanel);
+			//"Você receberá um email quando ela for aprovada."
+		}
+		
+		sidePanel.add(getHintsPanel());
+		
+		return sidePanel;
 	}
 
 	private FlowPanel getHintsPanel() {

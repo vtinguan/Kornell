@@ -3,12 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 	<g:FlowPanel ui:field="detailsPanel" addStyleNames="detailsPanel">
 		<g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel"></g:FlowPanel>
-		<g:FlowPanel ui:field="buttonsPanel" addStyleNames="buttonsPanel">
-		    <b:Button ui:field="btnAbout" addStyleNames="btnDetails btnSelected"></b:Button>
-		    <b:Button ui:field="btnTopics" addStyleNames="btnDetails btnNotSelected"></b:Button>
-		    <b:Button ui:field="btnCertification" addStyleNames="btnDetails btnNotSelected"></b:Button>
-		    <b:Button ui:field="btnGoToCourse" addStyleNames="btnDetails btnNotSelected"></b:Button>
-		</g:FlowPanel>
+		<g:FlowPanel ui:field="buttonsPanel" addStyleNames="buttonsPanel"></g:FlowPanel>
 		<g:FlowPanel ui:field="detailsContentPanel" addStyleNames="detailsContentPanel"></g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder> 
