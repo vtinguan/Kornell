@@ -17,7 +17,7 @@
 		<servlet-class>kornell.server.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>targetUri</param-name>
-			<param-value>http://eduvem.com</param-value>
+			<param-value>http://unicc.s3.amazonaws.com</param-value>
 		</init-param>		
 		<init-param>
 			<param-name>log</param-name>

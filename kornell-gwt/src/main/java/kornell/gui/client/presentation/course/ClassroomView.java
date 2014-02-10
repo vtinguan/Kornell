@@ -8,13 +8,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface ClassroomView  extends IsWidget{
 	public interface Presenter extends IsWidget {
-
 		Contents getContents();
-	
 	}
 
 	FlowPanel getContentPanel();
 	void setPresenter(Presenter presenter);
-	void display();
+	void display(boolean isEnrolled);
 
 }

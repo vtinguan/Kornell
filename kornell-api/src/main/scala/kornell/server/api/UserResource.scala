@@ -175,6 +175,10 @@ class UserResource{
   def update(implicit @Context sc: SecurityContext, userInfo: UserInfoTO,
 	    @PathParam("personUUID") personUUID: String) = AuthRepo.withPerson{ p =>
     PersonRepo(personUUID).update(userInfo.getPerson())
+	val roles = AuthRepo.rolesOf(userInfo.getUsername)
+	userInfo.setRoles((Set.empty ++ roles).asJava)
+	userInfo.setRegistrationsTO(RegistrationsRepo.getAll(p))
+	userInfo.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
     userInfo
   }
   

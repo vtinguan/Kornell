@@ -29,7 +29,7 @@ object ContentsParser {
           result += LOM.newContent(topic) 
         }
         
-        case pagePattern(key, index, extension, title) => { 
+        case pagePattern(key, index, extension, title) => {
           val page = LOM.newExternalPage(baseURL,prefix,index,key,title)
           page.setVisited(visited.contains(page.getKey()))
           val content = LOM.newContent(page)

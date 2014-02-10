@@ -89,27 +89,35 @@
 				}
 			}
 		}
-		.hintsPanel{
+		.sidePanel{
+			float: left;	
 			margin-top: @detailsPanelMargin * 3;
-			width: @hintsPanelWidth;
-			float: left;
-			background-color: @menuLeftItemGradientEndColor;
-			border-radius: 8px;
-			color: @niceTextColor;
-			font-size: 12px;
-			line-height: 14px;
-			padding: @detailsPanelMargin;
-			.hintDetails{
-				padding-top: @detailsPanelMargin;
-				padding-bottom: @detailsPanelMargin;
-				.hintImg{
-					float: left;
+			.hintsPanel{
+				width: @hintsPanelWidth;
+				background-color: @menuLeftItemGradientEndColor;
+				border-radius: 8px;
+				color: @niceTextColor;
+				font-size: 12px;
+				line-height: 14px;
+				padding: @detailsPanelMargin;
+				.hintDetails{
+					padding-top: @detailsPanelMargin;
+					padding-bottom: @detailsPanelMargin;
+					.hintImg{
+						float: left;
+					}
+					.hintText{
+						padding-left: @detailsPanelMargin * 1.5;
+					}
 				}
-				.hintText{
-					padding-left: @detailsPanelMargin * 1.5;
-				}
+			}	
+			.notEnrolledPanel{
+				width: @hintsPanelWidth;
+				color: @textHighlightColor2;
+				padding: 10px;
+				padding-left: 22px;
 			}
-		}	
+		}
 		.topicsPanel{
 			@topicsPanelWidth: .75 * @wrapperWidth;
 			@topicsWidth: @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
