@@ -1,6 +1,6 @@
 JDBC_URL=${JDBC_CONNECTION_STRING:-'jdbc:mysql://db.kornell.com.br:3306/ebdb?useUnicode=true&amp;characterEncoding=utf8'}
 CONTEXT=$( cat <<EOF
-<Context path="">
+<Context path="/api">
 	<!-- TODO: Make this file development only, generate from environment variables in production  -->
 	<!-- TODO: Consider Read Replicas http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-replication-connection.html -->	    	
 	<Resource name="jdbc/KornellDS" 

@@ -7,40 +7,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 
 public class RESTClient {
-	private static String apiURL = null;
-
-	public RESTClient() {
-		if (RESTClient.apiURL == null){
-			RESTClient.discoverApiUrl();
-		}
-	}
-
-	private static void discoverApiUrl() {
-		apiURL = RESTClient.getFromEnvironment();
-		if (apiURL == null || apiURL.length() == 0) {
-			useDefaultUrl();
-		} else {
-			GWT.log("API url already discovered");
-		}
-		GWT.log("Using API Endpoint: " + apiURL);
-	}
-
-	private static native String getFromEnvironment() /*-{
-		//console.debug("Using API Endpoint: "+$wnd.KornellConfig.apiEndpoint);
-		//console.debug($wnd.KornellConfig.apiEndpoint);
-		return $wnd.KornellConfig.apiEndpoint;
-	}-*/;
-
-	private static void useDefaultUrl() {
-		apiURL = "http://localhost:8080";
-	}
-
-	public String getApiUrl() {
-		while (apiURL == null) {
-			GWT.log("Could not find API URL. Looking up again");
-			discoverApiUrl();
-		}
-		return apiURL;
+	public String getApiUrl() {		
+		return "/api";
 	}
 
 	protected ExceptionalRequestBuilder GET(String... path) {
@@ -69,7 +37,9 @@ public class RESTClient {
 
 	protected void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
 		String auth = ClientProperties.get("Authorization");
-		if (auth != null && auth.length() > 0)
+		if (auth != null && auth.length() > 0) {
 			reqBuilder.setHeader("Authorization", auth);
+			reqBuilder.setHeader("X-KNL-A", auth);
+		}
 	}
 }
