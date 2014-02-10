@@ -38,8 +38,10 @@ class BasicAuthFilter extends Filter {
   def doFilter(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) =
     if (hasCredentials(req) || isPrivate(req, resp))
       checkCredentials(req, resp, chain)
-    else
+    else {
+      println(s"-- Authorizing [bypass]" )
       chain.doFilter(req, resp)
+    }
 
   def isPublic(req: HttpServletRequest, resp: HttpServletResponse) = {
     val path = req.getRequestURI
@@ -50,10 +52,12 @@ class BasicAuthFilter extends Filter {
 
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
     val auth = req.getHeader("Authorization");
+    println(s"-- Authorizing [$auth]" )
     if (auth != null && auth.length() > 0) {
       try {
     	val (username, password) = extractCredentials(auth)
         req.login(username, password);
+    	println(s"-- Authorizing [$username]" )
         chain.doFilter(req, resp);
       } catch {
         case e: Exception =>
