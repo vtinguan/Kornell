@@ -113,6 +113,7 @@ public class UserSession extends KornellClient {
 				setCurrentUser(user);
 				// TODO: https://github.com/Craftware/Kornell/issues/7
 				ClientProperties.set("Authorization", auth);
+				ClientProperties.set("X-KNL-A", auth);
 				callback.ok(user);
 			}
 
@@ -122,8 +123,10 @@ public class UserSession extends KornellClient {
 			}
 		};
 		confirmation = "".equals(confirmation) ? "NONE" : confirmation;
-		GET("/user/login/" + confirmation).addHeader("Authorization", auth)
-				.sendRequest(null, wrapper);
+		GET("/user/login/" + confirmation)
+			.addHeader("Authorization", auth)
+			.addHeader("X-KNL-A", auth)
+			.sendRequest(null, wrapper);
 
 	}
 

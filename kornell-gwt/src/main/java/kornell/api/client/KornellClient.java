@@ -134,6 +134,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 
 	private void forgetCredentials() {
 		ClientProperties.remove("Authorization");
+		ClientProperties.remove("X-KNL-A");
 	}
 
 	public CourseClassClient courseClass(String courseClassUUID) {

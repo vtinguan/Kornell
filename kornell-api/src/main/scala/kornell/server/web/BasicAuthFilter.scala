@@ -5,6 +5,7 @@ import javax.servlet.http._
 import javax.servlet.annotation.WebFilter
 import org.apache.commons.codec.binary.Base64
 import java.util.logging.Logger
+import kornell.core.util.StringUtils
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
@@ -38,22 +39,29 @@ class BasicAuthFilter extends Filter {
   def doFilter(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) =
     if (hasCredentials(req) || isPrivate(req, resp))
       checkCredentials(req, resp, chain)
-    else
+    else {
+      println(s"-- Authorizing [bypass]" )
       chain.doFilter(req, resp)
+    }
 
   def isPublic(req: HttpServletRequest, resp: HttpServletResponse) = {
     val path = req.getRequestURI
-    val isPublic = path == "/" || pubPaths.exists { path.startsWith(_) }
+    val isPublic = path == "/api" || pubPaths.exists { p => path.startsWith(s"/api${p}") }
     val isOption = "OPTIONS".equals(req.getMethod)
     isOption || isPublic
   }
 
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
-    val auth = req.getHeader("Authorization");
+    var auth = req.getHeader("Authorization");
+    if(StringUtils.isNone(auth)){
+      auth = req.getHeader("X-KNL-A");
+    }
+    println(s"-- Authorizing [$auth]" )
     if (auth != null && auth.length() > 0) {
       try {
     	val (username, password) = extractCredentials(auth)
         req.login(username, password);
+    	println(s"-- Authorizing [$username]" )
         chain.doFilter(req, resp);
       } catch {
         case e: Exception =>
