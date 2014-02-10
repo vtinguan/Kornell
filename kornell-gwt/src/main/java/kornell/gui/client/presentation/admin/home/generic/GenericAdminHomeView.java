@@ -72,7 +72,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	private TextBox txtSearch;
 	private Button btnSearch;
-	private String currentSearch;
 	
 	private boolean forbidProfileView;
 	
@@ -119,6 +118,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		
 		table = new CellTable<Enrollment>();
 		initTable();
+
+		initSearch();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
 		
 		trigger.setTarget("#toggle");
@@ -128,6 +129,40 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
+	}
+
+	private void initSearch() {
+		txtSearch = new TextBox();
+		txtSearch.addStyleName("txtSearch");
+		txtSearch.setTitle("nome, email, matrícula ou progresso");
+		txtSearch.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				filterEnrollments();
+			}
+		});
+		txtSearch.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				filterEnrollments();
+			}
+		});
+		txtSearch.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				filterEnrollments();
+				
+			}
+		});
+		btnSearch = new Button("Pesquisar");
+		btnSearch.addStyleName("btnNotSelected btnSearch");
+		btnSearch.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				filterEnrollments();
+			}
+		});
 	}
 
 	private void initTable() {
@@ -266,39 +301,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		});		
 		pageSizeListBox.addStyleName("pageSizeListBox");
 		
-		txtSearch = new TextBox();
-		txtSearch.addStyleName("txtSearch");
-		txtSearch.setTitle("nome, email, matrícula ou progresso");
-		txtSearch.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				filterEnrollments();
-			}
-		});
-		txtSearch.addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				filterEnrollments();
-			}
-		});
-		txtSearch.addValueChangeHandler(new ValueChangeHandler<String>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				filterEnrollments();
-				
-			}
-		});
-		btnSearch = new Button("Pesquisar");
-		btnSearch.addStyleName("btnNotSelected btnSearch");
-		btnSearch.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				filterEnrollments();
-			}
-		});
-	
-	
 		
 		enrollmentsWrapper.add(separatorBar);
 		enrollmentsWrapper.add(txtSearch);
@@ -309,31 +311,31 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		
 		pagination.setRowData(enrollmentsCurrent);
 		pagination.displayTableData(1);
+		
+		filterEnrollments();
 	}
 
 	private void filterEnrollments() {
-		if(!txtSearch.getText().equals(currentSearch)){
-			enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
-			Enrollment enrollment;
-			GWT.log("size: "+enrollmentsCurrent.size());
-			for (int i = 0; i < enrollmentsCurrent.size(); i++) {
-		    	enrollment = enrollmentsCurrent.get(i);
-				boolean fullNameMatch = enrollment.getPerson() != null && enrollment.getPerson().getFullName() != null &&
-						enrollment.getPerson().getFullName().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-				boolean emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getEmail() != null &&
-						enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-				boolean enrollmentStateMatch = enrollment.getPerson() != null && enrollment.getState() != null &&
-						getEnrollmentStateAsText(enrollment.getState()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-				boolean enrollmentProgressMatch = enrollment.getPerson() != null && enrollment.getProgress() != null &&
-						getEnrollmentProgressAsText(enrollment.getProgress()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-				if(!fullNameMatch && !emailMatch && !enrollmentStateMatch && !enrollmentProgressMatch){
-					enrollmentsCurrent.remove(i);
-					i--;
-				}
+		enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
+		Enrollment enrollment;
+		GWT.log("size: "+enrollmentsCurrent.size());
+		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
+	    	enrollment = enrollmentsCurrent.get(i);
+			boolean fullNameMatch = enrollment.getPerson() != null && enrollment.getPerson().getFullName() != null &&
+					enrollment.getPerson().getFullName().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+			boolean emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getEmail() != null &&
+					enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+			boolean enrollmentStateMatch = enrollment.getPerson() != null && enrollment.getState() != null &&
+					getEnrollmentStateAsText(enrollment.getState()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+			boolean enrollmentProgressMatch = enrollment.getPerson() != null && enrollment.getProgress() != null &&
+					getEnrollmentProgressAsText(enrollment.getProgress()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+			if(!fullNameMatch && !emailMatch && !enrollmentStateMatch && !enrollmentProgressMatch){
+				enrollmentsCurrent.remove(i);
+				i--;
 			}
-			pagination.setRowData(enrollmentsCurrent);
-			pagination.displayTableData(1);
 		}
+		pagination.setRowData(enrollmentsCurrent);
+		pagination.displayTableData(1);
 	}
 
 	private String getEnrollmentProgressAsText(Integer progress) {
@@ -374,8 +376,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		return new Delegate<Enrollment>() {
 	        @Override
 	        public void execute(Enrollment object) {
+	        	if(forbidProfileView){
+		        	presenter.changeEnrollmentState(object, state);
+	        	}
 	        	forbidProfileView = true;
-	        	presenter.changeEnrollmentState(object, state);
 	        }
 	    };
 	}
@@ -392,7 +396,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				NativeEvent event, ValueUpdater<Enrollment> valueUpdater) {
 			event.stopPropagation();
 			event.preventDefault();
-			event.stopPropagation();
 			super.onBrowserEvent(context, parent, value, event, valueUpdater);
 			if (CLICK.equals(event.getType())) {
 				EventTarget eventTarget = event.getEventTarget();

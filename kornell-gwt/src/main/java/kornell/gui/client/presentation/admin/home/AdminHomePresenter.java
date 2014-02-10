@@ -88,14 +88,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				clientFactory
 						.getKornellClient()
 						.events()
-						.enrollmentStateChanged(enrollment.getUUID(),
-								personUUID, enrollment.getState(), toState)
+						.enrollmentStateChanged(enrollment.getUUID(), personUUID, enrollment.getState(), toState)
 						.fire(new Callback<Void>() {
 							@Override
 							public void ok(Void to) {
-								getEnrollments(Dean.getInstance()
-										.getCourseClassTO().getCourseClass()
-										.getUUID());
+								getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 							}
 						});
 			}
