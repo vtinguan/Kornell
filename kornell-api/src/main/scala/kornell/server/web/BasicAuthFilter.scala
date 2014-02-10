@@ -43,7 +43,7 @@ class BasicAuthFilter extends Filter {
 
   def isPublic(req: HttpServletRequest, resp: HttpServletResponse) = {
     val path = req.getRequestURI
-    val isPublic = path == "/" || pubPaths.exists { path.startsWith(_) }
+    val isPublic = path == "/api" || pubPaths.exists { p => path.startsWith(s"/api${p}") }
     val isOption = "OPTIONS".equals(req.getMethod)
     isOption || isPublic
   }
