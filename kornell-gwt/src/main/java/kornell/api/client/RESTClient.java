@@ -37,7 +37,9 @@ public class RESTClient {
 
 	protected void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
 		String auth = ClientProperties.get("Authorization");
-		if (auth != null && auth.length() > 0)
+		if (auth != null && auth.length() > 0) {
 			reqBuilder.setHeader("Authorization", auth);
+			reqBuilder.setHeader("X-KNL-A", auth);
+		}
 	}
 }

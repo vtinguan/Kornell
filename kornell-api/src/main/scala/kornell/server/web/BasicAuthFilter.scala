@@ -5,6 +5,7 @@ import javax.servlet.http._
 import javax.servlet.annotation.WebFilter
 import org.apache.commons.codec.binary.Base64
 import java.util.logging.Logger
+import kornell.core.util.StringUtils
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
@@ -51,7 +52,10 @@ class BasicAuthFilter extends Filter {
   }
 
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
-    val auth = req.getHeader("Authorization");
+    var auth = req.getHeader("Authorization");
+    if(StringUtils.isNone(auth)){
+      auth = req.getHeader("X-KNL-A");
+    }
     println(s"-- Authorizing [$auth]" )
     if (auth != null && auth.length() > 0) {
       try {
