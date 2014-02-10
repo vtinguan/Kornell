@@ -20,8 +20,8 @@ class CacheControlFilter extends Filter {
     chain.doFilter(hreq, hres)
     val cacheControl = hreq.getHeader("Cache-Control")
     if (StringUtils.isNone(cacheControl)) {
-    	hres.setHeader("Cache-Control", "0");
-    	hres.setHeader("Cache-Control-By", this.getClass.getName)
+    	hres.setHeader("Cache-Control", "max-age=0");
+    	hres.setHeader("Cache-Control-By", this.getClass.getName+"-2014-02-10-1")
     }
   }
 
