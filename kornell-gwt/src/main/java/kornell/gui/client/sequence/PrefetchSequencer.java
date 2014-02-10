@@ -9,6 +9,7 @@ import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ViewReadyEvent;
@@ -153,7 +154,13 @@ public class PrefetchSequencer implements Sequencer {
 			@Override
 			public void ok(UserSession session) {
 				session.setItem(getBreadcrumbKey(), currentKey());
-				bus.fireEvent(new ActomEnteredEvent(enrollmentUUID,currentActom.getKey()));
+				String key="";
+				if(currentActom != null){
+					key = currentActom.getKey();
+				}
+				if(StringUtils.isNone(key))
+					key = "????????????????";
+				bus.fireEvent(new ActomEnteredEvent(enrollmentUUID,key));
 				currentActom.setVisited(true);
 				fireProgressChangeEvent();
 			}

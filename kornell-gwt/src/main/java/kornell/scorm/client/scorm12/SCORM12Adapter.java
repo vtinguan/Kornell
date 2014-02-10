@@ -74,9 +74,9 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 
 	public String LMSSetDouble(String key, Double value) {
 		String strValue = Double.toString(value);
-		return LMSSetString(key,strValue);
+		return LMSSetString(key, strValue);
 	}
-	
+
 	public String LMSSetString(String key, String value) {
 		String result = FALSE;
 		if (isCMIElement(key))
@@ -88,7 +88,27 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	@Override
 	public void onActomEntered(ActomEnteredEvent event) {
 		GWT.log("ACTOM ENTERED");
-		// TODO: Make reliable, offlineable, what not-able...
+		saveDataModel(event);
+		GWT.log("stopAllVideos - Java");
+		stopAllVideos();
+	}
+
+	//TODO: Fire an event
+	public static native void stopAllVideos() /*-{					
+		var frms = $wnd.parent.document.getElementsByTagName("IFRAME")
+		if(console){
+		console.debug("Stopping videos in # iframes: "+frms.length);
+		}
+		for(var i = 0; i< frms.length; i++){
+			var frm = frms[i];
+			var stopThem = frm.contentWindow.stopAllVideos;
+			if (stopThem)
+				stopThem(); 
+		}
+	}-*/;
+
+	private void saveDataModel(ActomEnteredEvent event) {
+		// TODO: Make reliable, offlineable, what not-able.
 		if (dataModel != null)
 			putDataModel(new Callback<ActomEntries>() {
 				@Override
