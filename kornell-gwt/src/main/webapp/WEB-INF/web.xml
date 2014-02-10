@@ -13,7 +13,7 @@
 	</servlet>
 
 	<servlet>
-		<servlet-name>repositoryServlet</servlet-name>
+		<servlet-name>repositoryProxy</servlet-name>
 		<servlet-class>kornell.server.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>targetUri</param-name>
@@ -25,10 +25,28 @@
 		</init-param>
 	</servlet>
 
+	<servlet>
+		<servlet-name>apiProxy</servlet-name>
+		<servlet-class>kornell.server.ProxyServlet</servlet-class>
+		<init-param>
+			<param-name>targetUri</param-name>
+			<param-value>http://localhost:8080</param-value>
+		</init-param>		
+		<init-param>
+			<param-name>log</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</servlet>	
+	
 	<servlet-mapping>
-		<servlet-name>repositoryServlet</servlet-name>
+		<servlet-name>repositoryProxy</servlet-name>
 		<url-pattern>/repository/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>apiProxy</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>	
 
 	<servlet-mapping>
 		<servlet-name>jUnitHostImpl</servlet-name>
