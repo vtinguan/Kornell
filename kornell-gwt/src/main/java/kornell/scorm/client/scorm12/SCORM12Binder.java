@@ -41,7 +41,7 @@ public class SCORM12Binder {
 				default:
 					throw "SCORM 1.2 Unsupported value type"
 			}
-		} 
+		}
 		
 		$wnd.API = API;
 	}-*/;
