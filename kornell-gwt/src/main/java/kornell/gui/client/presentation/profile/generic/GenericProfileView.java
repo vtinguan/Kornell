@@ -209,7 +209,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 					form.addStyleName("shy");
 					placeCtrl.goTo(defaultPlace);
 				}
-			});
+			});   
 		} else {
 			btnOK.setEnabled(true);
 		}
