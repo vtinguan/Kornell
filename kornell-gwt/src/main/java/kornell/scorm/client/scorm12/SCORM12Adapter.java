@@ -90,7 +90,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		GWT.log("ACTOM ENTERED");
 		saveDataModel(event);
 		GWT.log("stopAllVideos - Java");
-		stopAllVideos();
+		//stopAllVideos();
 	}
 
 	//TODO: Fire an event
