@@ -97,7 +97,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	public static native void stopAllVideos() /*-{					
 		var frms = $wnd.parent.document.getElementsByTagName("IFRAME")
 		if(console){
-		console.debug("Stopping videos in # iframes: "+frms.length);
+			console.debug("Stopping videos in # iframes: "+frms.length);
 		}
 		for(var i = 0; i< frms.length; i++){
 			var frm = frms[i];
