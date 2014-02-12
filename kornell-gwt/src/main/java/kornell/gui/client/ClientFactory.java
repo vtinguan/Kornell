@@ -32,5 +32,7 @@ public interface ClientFactory {
 	
 	UserSession getUserSession();
 
+	void logState();
+
 
 }
