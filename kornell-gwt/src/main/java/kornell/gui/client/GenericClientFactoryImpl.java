@@ -1,5 +1,9 @@
 package kornell.gui.client;
 
+import java.util.logging.Logger;
+
+import org.mortbay.log.Log;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
@@ -10,6 +14,7 @@ import kornell.core.lom.LOMFactory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
@@ -29,10 +34,12 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus; 
+import com.google.web.bindery.event.shared.SimpleEventBus;
 
 //TODO: Organize this big, messy class and interface
 public class GenericClientFactoryImpl implements ClientFactory {
+	Logger logger = Logger.getLogger(GenericClientFactoryImpl.class.getName());
+
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
 	public static final TOFactory toFactory = GWT.create(TOFactory.class);
 	public static final LOMFactory lomFactory = GWT.create(LOMFactory.class);
@@ -243,5 +250,33 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public ViewFactory getViewFactory() {
 		return viewFactory;
+	}
+
+	@Override
+	public void logState() {
+		UserSession.current(new Callback<UserSession>() {
+
+			@Override
+			public void ok(UserSession to) {
+				to.getCurrentUser(new Callback<UserInfoTO>() {
+
+					@Override
+					public void ok(UserInfoTO to) {
+						// TODO Auto-generated method stub
+						logger.info("Current User (UserSession.current.getCurrentUser) ["+to.getUsername()+ "]");
+					}
+					
+				});
+				
+			}
+		});
+		logger.info("Current User (session.getUserInfo()) "+session.getUserInfo().getUsername()); 
+		session.getCurrentUser(new Callback<UserInfoTO>() {			
+			@Override
+			public void ok(UserInfoTO to) {
+				logger.info("Current User (CB TO) ["+to.getUsername()+ "]");
+				
+			}
+		});
 	}
 }

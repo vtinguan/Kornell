@@ -27,7 +27,10 @@ class BasicAuthFilter extends Filter {
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
     (sreq, sres) match {
       case (hreq: HttpServletRequest, hres: HttpServletResponse) =>
-        doFilter(hreq, hres, chain)
+        {
+          doFilter(hreq, hres, chain)
+          hres.setHeader("X-KNL-PRINCIPAL", Option(hreq.getUserPrincipal()).map(_.getName).getOrElse("Anonymous"))
+        }
     }
   }
 
@@ -39,8 +42,7 @@ class BasicAuthFilter extends Filter {
   def doFilter(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) =
     if (hasCredentials(req) || isPrivate(req, resp))
       checkCredentials(req, resp, chain)
-    else {
-      println(s"-- Authorizing [bypass]" )
+    else {     
       chain.doFilter(req, resp)
     }
 

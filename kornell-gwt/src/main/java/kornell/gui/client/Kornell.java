@@ -13,7 +13,9 @@ public class Kornell implements EntryPoint {
 	public void onModuleLoad() {
 		ClientFactory clientFactory = GWT.create(ClientFactory.class);
 		clientFactory.startApp();
-		logger.log(Level.INFO, "Application started.");
+		logger.log(Level.INFO, " === Application started ===");
+		clientFactory.logState();
+		
 	}
 
 }
