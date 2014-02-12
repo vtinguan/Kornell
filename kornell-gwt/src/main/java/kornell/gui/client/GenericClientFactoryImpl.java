@@ -2,8 +2,6 @@ package kornell.gui.client;
 
 import java.util.logging.Logger;
 
-import org.mortbay.log.Log;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.api.client.UserSession;
