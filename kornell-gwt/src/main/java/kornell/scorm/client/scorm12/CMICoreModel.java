@@ -20,11 +20,16 @@ public class CMICoreModel extends DataModel implements CMIConstants {
 		register(new CMIDataElement("cmi.core.lesson_status", NOT_ATTEMPTED));
 		register(new CMIDataElement("cmi.core.session_time"));
 		register(new CMIDataElement("cmi.core.score.raw"));
+		register(new CMIDataElement("cmi.core.score.min"));
+		register(new CMIDataElement("cmi.core.score.max"));
+		register(new CMIDataElement("cmi.core.score.scaled"));
 		register(new CMIDataElement("cmi\\.interactions\\.[\\d]+\\.id"));
 		register(new CMIDataElement("cmi\\.interactions\\.[\\d]+\\.type"));
 		register(new CMIDataElement("cmi\\.interactions\\.[\\d]+\\.correct_responses\\.[\\d]+\\.pattern"));
 		register(new CMIDataElement("cmi\\.interactions\\.[\\d]+\\.student_response"));
 		register(new CMIDataElement("cmi\\.interactions\\.[\\d]+\\.result"));
+		
+		
 	}
 
 }
