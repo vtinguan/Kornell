@@ -128,7 +128,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 			@Override
 			public void unauthorized() {
-				ClientProperties.remove("Authorization");
+				ClientProperties.remove("X-KNL-A");
 			}
 
 			private String getInstitutionNameFromLocation() {
@@ -143,7 +143,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void startAnonymous(UserSession session) {
-		ClientProperties.remove("Authorization");
+		ClientProperties.remove("X-KNL-A");
 		defaultPlace = new VitrinePlace();
 		startClient();
 	}
@@ -268,7 +268,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				
 			}
 		});
-		logger.info("Current User (session.getUserInfo()) "+session.getUserInfo().getUsername()); 
+		
+		
+		UserInfoTO userInfo = session != null ? session.getUserInfo() : null;
+		logger.info("Current User (session.getUserInfo()) "+( userInfo != null ? userInfo.getUsername() : "userInfo or session is NULL"));
+		if(session != null){
 		session.getCurrentUser(new Callback<UserInfoTO>() {			
 			@Override
 			public void ok(UserInfoTO to) {
@@ -276,5 +280,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				
 			}
 		});
+		}
 	}
 }

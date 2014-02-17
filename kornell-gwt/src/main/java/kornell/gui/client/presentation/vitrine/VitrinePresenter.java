@@ -97,7 +97,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						if(!isRegistered){
 							view.setMessage("Usuário não registrado nesta instituição.");
 							view.showMessage();
-							ClientProperties.remove("Authorization");
+							//TODO: logout?
+							//ClientProperties.remove("X-KNL-AUTH"); 
 						} else {
 							clientFactory.getEventBus().fireEvent(new LoginEvent(user));
 							if(user.isSigningNeeded()){

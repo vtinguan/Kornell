@@ -1,9 +1,8 @@
 package kornell.api.client;
 
-import kornell.core.util.StringUtils;
+import static kornell.core.util.StringUtils.*;
 import kornell.gui.client.util.ClientProperties;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 
 public class RESTClient {
@@ -12,7 +11,7 @@ public class RESTClient {
 	}
 
 	protected ExceptionalRequestBuilder GET(String... path) {
-		String url = StringUtils.composeURL(getApiUrl(), path);
+		String url = composeURL(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.GET, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -20,7 +19,7 @@ public class RESTClient {
 	}
 
 	protected ExceptionalRequestBuilder HEAD(String... path) {
-		String url = StringUtils.composeURL(getApiUrl(), path);
+		String url = composeURL(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.HEAD, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -28,7 +27,7 @@ public class RESTClient {
 	}
 
 	protected ExceptionalRequestBuilder PUT(String... path) {
-		String url = StringUtils.composeURL(getApiUrl(), path);
+		String url = composeURL(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.PUT, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -36,9 +35,8 @@ public class RESTClient {
 	}
 
 	protected void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
-		String auth = ClientProperties.get("Authorization");
-		if (auth != null && auth.length() > 0) {
-			reqBuilder.setHeader("Authorization", auth);
+		String auth = ClientProperties.get("X-KNL-A");
+		if (isSome(auth)) {
 			reqBuilder.setHeader("X-KNL-A", auth);
 		}
 	}
