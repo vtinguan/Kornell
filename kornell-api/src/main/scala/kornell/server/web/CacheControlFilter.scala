@@ -6,9 +6,13 @@ import javax.servlet.annotation.WebFilter
 import org.apache.commons.codec.binary.Base64
 import java.util.logging.Logger
 import kornell.core.util.StringUtils
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class CacheControlFilter extends Filter {
 
+  val dateFmt:SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")
+  
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
     (sreq, sres) match {
       case (hreq: HttpServletRequest, hres: HttpServletResponse) =>
@@ -17,9 +21,11 @@ class CacheControlFilter extends Filter {
   }
 
   def doFilter(hreq: HttpServletRequest, hres: HttpServletResponse, chain: FilterChain) {
+    assert(! hres.isCommitted())
+    hres.setHeader("X-KNL-TSTAMP", dateFmt.format(new Date()))
+    hres.setHeader("Cache-Control", "max-age=0")
     chain.doFilter(hreq, hres)
-    hres.setHeader("X-KNL-CC", this.getClass.getName + "-2014-02-10-1")
-    hres.setHeader("Cache-Control", "max-age=0");
+    
   }
 
   override def init(cfg: FilterConfig) {}

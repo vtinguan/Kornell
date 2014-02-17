@@ -36,7 +36,6 @@ public class Captain implements LogoutEventHandler, LoginEventHandler{
 		//logged in with another one
 		//Window.Location.reload();
 		//TODO remove this also
-		ClientProperties.remove("Authorization");
 		placeCtrl.goTo(VitrinePlace.instance);
 	}
 

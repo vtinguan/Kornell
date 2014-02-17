@@ -10,39 +10,34 @@ import kornell.core.util.StringUtils
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
   val pubPaths = Set(
-      "/checkup", 
-      "/sandbox", 
-      "/sync", 
-      "/report", 
-      "/user/check", 
-      "/user/create", 
-      "/user/registrationRequest", 
-      "/user/requestPasswordChange",
-      "/user/changePassword",
-      "/user/uploadProfileImage",
-      "/email/welcome", 
-      "/institutions",
-      "/repository")
+    "/checkup",
+    "/sandbox",
+    "/sync",
+    "/report",
+    "/user/check",
+    "/user/create",
+    "/user/registrationRequest",
+    "/user/requestPasswordChange",
+    "/user/changePassword",
+    "/user/uploadProfileImage",
+    "/email/welcome",
+    "/institutions",
+    "/repository")
 
-  override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) {
+  override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
     (sreq, sres) match {
-      case (hreq: HttpServletRequest, hres: HttpServletResponse) =>
-        {
-          doFilter(hreq, hres, chain)
-          hres.setHeader("X-KNL-PRINCIPAL", Option(hreq.getUserPrincipal()).map(_.getName).getOrElse("Anonymous"))
-        }
+      case (hreq: HttpServletRequest, hres: HttpServletResponse) => doFilter(hreq, hres, chain)
     }
-  }
 
   def hasCredentials(req: HttpServletRequest) =
-    req.getHeader("Authorization") != null
-  
-  def isPrivate(req: HttpServletRequest, resp: HttpServletResponse) = ! isPublic(req,resp)
-  
+    req.getHeader("X-KNL-A") != null
+
+  def isPrivate(req: HttpServletRequest, resp: HttpServletResponse) = !isPublic(req, resp)
+
   def doFilter(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) =
     if (hasCredentials(req) || isPrivate(req, resp))
       checkCredentials(req, resp, chain)
-    else {     
+    else {
       chain.doFilter(req, resp)
     }
 
@@ -54,23 +49,18 @@ class BasicAuthFilter extends Filter {
   }
 
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
-    var auth = req.getHeader("Authorization");
-    if(StringUtils.isNone(auth)){
-      auth = req.getHeader("X-KNL-A");
-    }
-    println(s"-- Authorizing [$auth]" )
+    val auth = req.getHeader("X-KNL-A");
     if (auth != null && auth.length() > 0) {
       try {
-    	val (username, password) = extractCredentials(auth)
+        val (username, password) = extractCredentials(auth)
         req.login(username, password);
-    	println(s"-- Authorizing [$username]" )
         chain.doFilter(req, resp);
       } catch {
         case e: Exception =>
           e.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED,
             s"Authentication failed at uri ${req.getRequestURI}")
       }
-    } else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You should authenticate")
+    } else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You must authenticate to access [" + req.getRequestURI + "]")
   }
 
   def extractCredentials(auth: String) = {
