@@ -13,6 +13,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.Kornell;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.presentation.util.LoadingPopup;
+import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.sequence.SequencerFactory;
 
 import com.google.gwt.place.shared.PlaceController;
@@ -24,10 +25,12 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	Logger logger = Logger.getLogger(Kornell.class.getName());
 	private ClassroomView view;
 	private ClassroomPlace place;
+	private PlaceController placeCtrl;
 	private SequencerFactory sequencer;
 	private KornellClient client;
 	private EventBus bus;
 	private UserSession session;
+	
 	private Contents contents;
 
 	public ClassroomPresenter(ClassroomView view,
@@ -35,6 +38,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 			SequencerFactory seqFactory, KornellClient client, EventBus bus, UserSession session) {
 		this.view = view;
 		view.setPresenter(this);
+		this.placeCtrl = placeCtrl;
 		this.sequencer = seqFactory;
 		this.client = client;
 		this.bus = bus;
@@ -43,6 +47,10 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 
 	private void displayPlace() {
 		final String enrollmentUUID = place.getEnrollmentUUID();
+		if(session.getUserInfo() == null){
+			placeCtrl.goTo(new VitrinePlace());
+			return;
+		}
 		LoadingPopup.show();				
 		client.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
 			@Override

@@ -103,7 +103,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		initWidget(uiBinder.createAndBindUi(this));
 		displayView(VitrineViewType.login);
 		
-		pwdPassword.addKeyPressHandler(new KeyPressHandler() {
+		KeyPressHandler kpHandler = new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
 				if (KeyCodes.KEY_ENTER == event.getCharCode()){
@@ -121,7 +121,8 @@ public class GenericVitrineView extends Composite implements VitrineView {
 					}
 				}
 			}
-		});
+		};
+		pwdPassword.addKeyPressHandler(kpHandler);
 		
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");
