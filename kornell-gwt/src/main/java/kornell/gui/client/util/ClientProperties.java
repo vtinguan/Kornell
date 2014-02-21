@@ -11,6 +11,7 @@ public class ClientProperties {
 	public static String COURSE_NOTES = "courseNotes";
 	public static String INSTITUTION_NAME = "institutionName";
 	public static String INSTITUTION_ASSETS_URL = "institutionAssetsURL";
+	public static String X_KNL_A = "X-KNL-A";
 	
 	public static String get(String propertyName){
 		if(localStorage != null){
