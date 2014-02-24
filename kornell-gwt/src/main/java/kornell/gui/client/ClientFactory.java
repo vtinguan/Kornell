@@ -19,10 +19,6 @@ public interface ClientFactory {
 	
 	ViewFactory getViewFactory();
 	
-	//TODO: Remove
-	@Deprecated() //Use KornellSession
-	KornellClient getKornellClient();
-	
 	PlaceController getPlaceController();
 	HistoryMapper getHistoryMapper();
 	EventBus getEventBus();
