@@ -7,11 +7,9 @@ import kornell.core.event.ActomEntered;
 import kornell.core.event.EnrollmentStateChanged;
 import kornell.core.event.Event;
 import kornell.core.event.EventFactory;
-import kornell.core.lom.Actom;
 import kornell.core.util.UUID;
 
 import com.google.gwt.core.client.GWT;
-import com.google.web.bindery.autobean.shared.AutoBean;
 
 public class EventsClient extends RESTClient {
 	// TODO: Move all object creation to client factory

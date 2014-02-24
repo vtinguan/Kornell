@@ -2,7 +2,6 @@ package kornell.gui.client.uidget;
 
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
-import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;

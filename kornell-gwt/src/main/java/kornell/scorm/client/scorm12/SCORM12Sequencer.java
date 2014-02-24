@@ -1,16 +1,15 @@
 package kornell.scorm.client.scorm12;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.web.bindery.event.shared.EventBus;
-
 import kornell.api.client.KornellClient;
 import kornell.core.lom.Contents;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.Sequencer;
+
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Sequencer implements Sequencer{
 	

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.Callback;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
@@ -60,7 +60,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-	private UserSession session;
+	private KornellSession session;
 	private PlaceController placeCtrl;
 	private final EventBus bus;
 	private Place defaultPlace;
@@ -91,8 +91,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	public GenericProfileView(ClientFactory clientFactory) {
 		this.bus = clientFactory.getEventBus();
-		this.session = clientFactory.getUserSession();
-		this.user = session.getUserInfo();
+		this.session = clientFactory.getKornellSession();
+		this.user = session.getCurrentUser();
 		this.placeCtrl = clientFactory.getPlaceController();
 		this.currentCourseClass = Dean.getInstance().getCourseClassTO();
 		this.defaultPlace = clientFactory.getDefaultPlace();
@@ -131,10 +131,10 @@ public class GenericProfileView extends Composite implements ProfileView {
 	}
 
 	private void initData() {
-		isCurrentUser = session.getUserInfo().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
+		isCurrentUser = session.getCurrentUser().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
 		boolean isInstitutionAdmin = false;
-		for (Registration registration : session.getUserInfo().getRegistrationsTO().getRegistrations()) {
+		for (Registration registration : session.getCurrentUser().getRegistrationsTO().getRegistrations()) {
 			if(registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())){
 				isInstitutionAdmin = session.isInstitutionAdmin();
 				break;
@@ -240,7 +240,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
-		if(showContactDetails && session.getUserInfo().getPerson().getCity() == null){
+		if(showContactDetails && session.getCurrentUser().getPerson().getCity() == null){
 			bus.fireEvent(new LogoutEvent());
 		} else {
 			isEditMode = false;
@@ -294,7 +294,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 			return;
 		}
 		
-		if(isEditMode && showContactDetails && session.getUserInfo().getPerson().getCity() == null){
+		if(isEditMode && showContactDetails && session.getCurrentUser().getPerson().getCity() == null){
 			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO);
 		}
 

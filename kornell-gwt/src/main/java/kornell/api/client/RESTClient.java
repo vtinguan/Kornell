@@ -1,6 +1,7 @@
 package kornell.api.client;
 
-import static kornell.core.util.StringUtils.*;
+import static kornell.core.util.StringUtils.composeURL;
+import static kornell.core.util.StringUtils.isSome;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.http.client.RequestBuilder;

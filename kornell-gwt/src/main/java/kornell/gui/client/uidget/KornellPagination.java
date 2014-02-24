@@ -8,7 +8,6 @@ import com.github.gwtbootstrap.client.ui.Pagination;
 import com.github.gwtbootstrap.client.ui.base.IconAnchor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.ListBox;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class KornellPagination extends Pagination{

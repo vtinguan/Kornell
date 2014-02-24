@@ -118,7 +118,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public HomeView getHomeView() {
 		if (genericHomeView == null) {
-			genericHomeView = new GenericHomeView(clientFactory, clientFactory.getEventBus(), clientFactory.getUserSession(), appPanel);
+			genericHomeView = new GenericHomeView(clientFactory, clientFactory.getEventBus(), clientFactory.getKornellSession(), appPanel);
 		}
 		return genericHomeView;
 	}
@@ -130,7 +130,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(clientFactory.getEventBus(), clientFactory.getUserSession(), clientFactory.getPlaceController());
+		return new GenericWelcomeView(clientFactory.getEventBus(), clientFactory.getKornellSession(), clientFactory.getPlaceController());
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public ClassroomView getClassroomView() {
-		return new GenericClassroomView(clientFactory.getPlaceController(), clientFactory.getUserSession(), clientFactory.getEventBus());
+		return new GenericClassroomView(clientFactory.getPlaceController(), clientFactory.getKornellSession(), clientFactory.getEventBus());
 	}
 
 	@Override
@@ -161,17 +161,17 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public CourseLibraryView getCourseLibraryView() {
-		return new GenericCourseLibraryView(clientFactory.getEventBus(), clientFactory.getUserSession(), clientFactory.getPlaceController());
+		return new GenericCourseLibraryView(clientFactory.getEventBus(), clientFactory.getKornellSession(), clientFactory.getPlaceController());
 	}
 
 	@Override
 	public ClassroomPresenter getClassroomPresenter() {
 		SequencerFactory rendererFactory = new SequencerFactoryImpl(clientFactory.getEventBus(),
-				clientFactory.getPlaceController(), clientFactory.getUserSession());
+				clientFactory.getPlaceController(), clientFactory.getKornellSession());
 		if (coursePresenter == null) {
 			ClassroomView activityView = getClassroomView();
 			coursePresenter = new ClassroomPresenter(activityView, clientFactory.getPlaceController(),
-					rendererFactory, clientFactory.getUserSession(), clientFactory.getEventBus(), clientFactory.getUserSession());
+					rendererFactory, clientFactory.getKornellSession(), clientFactory.getEventBus());
 		}
 		return coursePresenter;
 	}

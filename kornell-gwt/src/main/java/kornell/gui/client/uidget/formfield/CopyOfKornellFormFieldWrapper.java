@@ -1,7 +1,6 @@
 package kornell.gui.client.uidget.formfield;
 
 import java.util.Date;
-import java.util.List;
 
 import kornell.gui.client.presentation.profile.ProfileView;
 

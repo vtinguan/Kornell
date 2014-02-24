@@ -1,7 +1,7 @@
 package kornell.gui.client.personnel;
 
 import kornell.api.client.Callback;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
@@ -19,7 +19,7 @@ public class Dean implements ProgressChangeEventHandler{
 	
 	private static Dean instance;
 	private EventBus bus;
-	private UserSession session;
+	private KornellSession session;
 
 	private Institution institution;
 	private CourseClassTO courseClassTO;
@@ -28,11 +28,11 @@ public class Dean implements ProgressChangeEventHandler{
 	   return instance;
 	}
 
-	public static void init(UserSession session, EventBus bus, Institution institution){
+	public static void init(KornellSession session, EventBus bus, Institution institution){
 	   instance = new Dean(session, bus, institution);
 	}
 	
-	private Dean(UserSession session, EventBus bus, Institution institution) { 
+	private Dean(KornellSession session, EventBus bus, Institution institution) { 
 		this.bus = bus;
 		this.institution = institution;
 		this.session = session;
@@ -73,7 +73,7 @@ public class Dean implements ProgressChangeEventHandler{
 
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
-		UserInfoTO user = session.getUserInfo();
+		UserInfoTO user = session.getCurrentUser();
 		Enrollment enrollment =  courseClassTO.getEnrollment();
 		enrollment.setProgress(event.getProgressPercent());
 		session.updateEnrollment(enrollment, new Callback<Enrollment>() {

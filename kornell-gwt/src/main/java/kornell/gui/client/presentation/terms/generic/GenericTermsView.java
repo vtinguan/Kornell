@@ -1,24 +1,19 @@
 package kornell.gui.client.presentation.terms.generic;
 
 import kornell.api.client.Callback;
-import kornell.api.client.UserSession;
-import kornell.core.entity.Institution;
-import kornell.core.entity.Person;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Registration;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsView;
-import kornell.gui.client.presentation.welcome.generic.GenericMenuLeftView;
 
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -48,7 +43,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	Image institutionLogo;
 
 	private ClientFactory clientFactory;
-	private UserSession session;
+	private KornellSession session;
 	private PlaceController placeCtrl;
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
@@ -58,7 +53,7 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	public GenericTermsView(ClientFactory clientFactory) {
 		this.bus = clientFactory.getEventBus();
-		this.session = clientFactory.getUserSession();
+		this.session = clientFactory.getKornellSession();
 		this.placeCtrl = clientFactory.getPlaceController();
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -70,7 +65,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void initData() {
-		for (Registration registration : session.getUserInfo().getRegistrationsTO().getRegistrations()) {
+		for (Registration registration : session.getCurrentUser().getRegistrationsTO().getRegistrations()) {
 			if(Dean.getInstance().getInstitution().getUUID().equals(registration.getInstitutionUUID()) && registration.getTermsAcceptedOn() != null){
 				GWT.log("OPS! Should not be here if there's nothing to sign.");
 				goStudy();
@@ -80,7 +75,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void paint() {
-		titleUser.setText(session.getUserInfo().getPerson().getFullName());
+		titleUser.setText(session.getCurrentUser().getPerson().getFullName());
 		if (Dean.getInstance().getInstitution() != null) {
 			txtTerms.getElement().setInnerHTML(Dean.getInstance().getInstitution().getTerms());
 			institutionLogo.setUrl(Dean.getInstance().getInstitution().getAssetsURL() + barLogoFileName);
@@ -109,7 +104,7 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	private void goStudy() {
 		if(Dean.getInstance().getInstitution().isDemandsPersonContactDetails()){
-			placeCtrl.goTo(new ProfilePlace(session.getUserInfo().getPerson().getUUID(), true));
+			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), true));
 		} else {
 			placeCtrl.goTo(clientFactory.getDefaultPlace());
 		}

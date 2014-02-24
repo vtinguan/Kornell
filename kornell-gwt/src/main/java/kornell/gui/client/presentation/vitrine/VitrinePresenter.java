@@ -19,7 +19,6 @@ import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
-import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -67,7 +66,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		Callback<UserInfoTO> callback = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(final UserInfoTO user) {
-				clientFactory.getUserSession().setCurrentUser(user);
+				//TODO: Do not set current user outside KornellSession
+				clientFactory.getKornellSession().setCurrentUser(user);
 				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
 				//if("".equals(user.getPerson().getConfirmation())){
 					doLogin(user);
@@ -79,7 +79,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			}
 
 			private void doLogin(final UserInfoTO user) {
-				clientFactory.getUserSession().getCourseClassesTO(new Callback<CourseClassesTO>(){
+				clientFactory.getKornellSession().getCourseClassesTO(new Callback<CourseClassesTO>(){
 					@Override
 					public void ok(CourseClassesTO courseClasses) {
 						for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
@@ -90,7 +90,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 							}
 						}
 						boolean isRegistered = false;
-						for (Registration registration : clientFactory.getUserSession().getUserInfo().getRegistrationsTO().getRegistrations()) {
+						for (Registration registration : clientFactory.getKornellSession().getCurrentUser().getRegistrationsTO().getRegistrations()) {
 							if(registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID()))
 								isRegistered = true;
 						}
@@ -104,12 +104,12 @@ public class VitrinePresenter implements VitrineView.Presenter {
 							if(user.isSigningNeeded()){
 								clientFactory.getPlaceController().goTo(new TermsPlace());
 							} else if(Dean.getInstance().getInstitution().isDemandsPersonContactDetails() && 
-									clientFactory.getUserSession().getUserInfo().getPerson().getCity() == null){
-								clientFactory.getPlaceController().goTo(new ProfilePlace(clientFactory.getUserSession().getUserInfo().getPerson().getUUID(), true));
+									clientFactory.getKornellSession().getCurrentUser().getPerson().getCity() == null){
+								clientFactory.getPlaceController().goTo(new ProfilePlace(clientFactory.getKornellSession().getCurrentUser().getPerson().getUUID(), true));
 							} else {
 								//TODO what if the user visited a class from another institution?
 								//place = clientFactory.getHistoryMapper().getPlace(user.getLastPlaceVisited());
-								if(clientFactory.getUserSession().isCourseClassAdmin()){
+								if(clientFactory.getKornellSession().isCourseClassAdmin()){
 									clientFactory.getPlaceController().goTo(new AdminHomePlace());
 								} else {
 									clientFactory.getPlaceController().goTo(clientFactory.getDefaultPlace());
@@ -128,7 +128,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		};
 		String confirmation = "";//((VitrinePlace)clientFactory.getPlaceController().getWhere()).getConfirmation();
 		//GWT.log("Confirmation: " + confirmation);
-		clientFactory.getUserSession().login(view.getEmail().toLowerCase().trim(),
+		clientFactory.getKornellSession().login(view.getEmail().toLowerCase().trim(),
 				view.getPassword(),
 				confirmation,
 				callback);

@@ -1,17 +1,15 @@
 package kornell.gui.client.presentation.course;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Contents;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.Kornell;
-import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.sequence.SequencerFactory;
 
@@ -25,31 +23,30 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private ClassroomView view;
 	private ClassroomPlace place;
 	private SequencerFactory sequencer;
-	private KornellClient client;
+	private KornellSession session;
 	private EventBus bus;
-	private UserSession session;
 	private Contents contents;
 
 	public ClassroomPresenter(ClassroomView view,
 			PlaceController placeCtrl,
-			SequencerFactory seqFactory, KornellClient client, EventBus bus, UserSession session) {
+			SequencerFactory seqFactory, KornellSession session, EventBus bus) {
 		this.view = view;
 		view.setPresenter(this);
 		this.sequencer = seqFactory;
-		this.client = client;
 		this.bus = bus;
 		this.session = session;		
 	}
 
 	private void displayPlace() {
 		final String enrollmentUUID = place.getEnrollmentUUID();
-		LoadingPopup.show();				
-		client.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
+		LoadingPopup.show();
+
+		session.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
 			@Override
 			public void ok(Contents contents) {
 				// check if user has a valid enrollment to this course
 				boolean isEnrolled = false;
-				UserInfoTO user = session.getUserInfo();
+				UserInfoTO user = session.getCurrentUser();
 				for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
 					if(enrollment.getUUID().equals(enrollmentUUID)
 							&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||

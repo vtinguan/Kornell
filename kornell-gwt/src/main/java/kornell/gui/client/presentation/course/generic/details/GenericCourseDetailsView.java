@@ -3,7 +3,7 @@ package kornell.gui.client.presentation.course.generic.details;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Actom;
@@ -49,7 +49,7 @@ public class GenericCourseDetailsView extends Composite {
 
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 
-	private UserSession session;
+	private KornellSession session;
 	private PlaceController placeCtrl;
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
@@ -86,7 +86,7 @@ public class GenericCourseDetailsView extends Composite {
 
 	private boolean isEnrolled;
 	
-	public GenericCourseDetailsView(EventBus bus, UserSession session, PlaceController placeCtrl) {
+	public GenericCourseDetailsView(EventBus bus, KornellSession session, PlaceController placeCtrl) {
 		this.bus = bus;
 		this.session = session;
 		this.placeCtrl = placeCtrl;
@@ -127,7 +127,7 @@ public class GenericCourseDetailsView extends Composite {
 
 	private void display() {
 		isEnrolled = false;
-		UserInfoTO user = session.getUserInfo();
+		UserInfoTO user = session.getCurrentUser();
 		for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
 			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())
 					&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||

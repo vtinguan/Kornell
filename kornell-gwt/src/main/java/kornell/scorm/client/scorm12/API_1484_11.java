@@ -5,8 +5,8 @@ import java.util.Map;
 
 import kornell.gui.client.sequence.NavigationRequest;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.web.bindery.event.shared.EventBus;
 

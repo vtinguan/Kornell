@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.KornellClient;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.lom.Content;
 import kornell.core.lom.ContentFormat;
 import kornell.core.lom.ExternalPage;
@@ -20,7 +20,6 @@ import com.github.gwtbootstrap.client.ui.event.HideHandler;
 import com.github.gwtbootstrap.client.ui.event.ShowEvent;
 import com.github.gwtbootstrap.client.ui.event.ShowHandler;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -43,7 +42,7 @@ public class GenericTopicView extends Composite {
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
 	private Content content;
-	private UserSession session;
+	private KornellSession session;
 	private CourseClassTO currentCourse;
 	private int index;
 	private boolean startOpened;
@@ -65,7 +64,7 @@ public class GenericTopicView extends Composite {
 	FluidRow childrenPanel;
 
 	public GenericTopicView(EventBus eventBus, KornellClient client,
-			PlaceController placeCtrl, UserSession session,
+			PlaceController placeCtrl, KornellSession session,
 			CourseClassTO currentCourse, Content content, int index,
 			final boolean startOpened, boolean enableAnchorOnFirstChild) {
 		this.bus = eventBus;
@@ -124,8 +123,7 @@ public class GenericTopicView extends Composite {
 				boolean enableAnchor = page.isVisited()
 						|| isPreviousPageVisited
 						|| (childrenIndex == 0 && enableAnchorOnFirstChild);
-				childrenPanel.add(new GenericPageView(bus, client, placeCtrl,
-						session, page, currentCourse, enableAnchor));
+				childrenPanel.add(new GenericPageView(bus, session, placeCtrl, page, currentCourse, enableAnchor));
 			}
 			isPreviousPageVisited = page.isVisited();
 			childrenIndex++;

@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.event.EventFactory;
@@ -57,7 +57,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private Place defaultPlace;
 	
 	
-	private UserSession session;
+	private KornellSession session = new KornellSession();
 
 	public GenericClientFactoryImpl() {
 	}
@@ -92,10 +92,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if(courseClassTO != null){
 					Dean.getInstance().setCourseClassTO(courseClassTO);
 					setDefaultPlace(new ClassroomPlace(courseClassTO.getEnrollment().getUUID()));
-					startAuthenticated(session);
+					startAuthenticated();
 				} else {
 					setDefaultPlace(new VitrinePlace());
-					startAnonymous(session);
+					startAnonymous();
 				}
 			}
 		};
@@ -107,22 +107,21 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if (session.isAuthenticated()) {
 					session.getCourseClassesTO(courseClassesCallback);
 				} else {
-					startAnonymous(session);
+					startAnonymous();
 				}
 			}
 			
 			@Override
 			public void unauthorized(){
-				startAnonymous(session);
+				startAnonymous();
 			}
 		};
 		
 		
 		
-		UserSession.current(new Callback<UserSession>() {
+		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			public void ok(UserSession userSession) {
-				session = userSession;
+			public void ok(UserInfoTO user) {
 				session.getInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
 			}
 
@@ -142,13 +141,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		});
 	}
 
-	private void startAnonymous(UserSession session) {
+	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");
 		defaultPlace = new VitrinePlace();
 		startClient();
 	}
 
-	private void startAuthenticated(UserSession session) {
+	private void startAuthenticated() {
 		if (session.isCourseClassAdmin()) {
 			defaultPlace = new AdminHomePlace();
 			startClient();
@@ -216,6 +215,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
+	@Deprecated
+	/***
+	 * @deprecated see getKornellSession()
+	 */
 	public KornellClient getKornellClient() {
 		return session;
 	}
@@ -241,45 +244,23 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public UserSession getUserSession() {
-		return session;
-	}
-
-	@Override
 	public ViewFactory getViewFactory() {
 		return viewFactory;
 	}
 
 	@Override
 	public void logState() {
-		UserSession.current(new Callback<UserSession>() {
-
-			@Override
-			public void ok(UserSession to) {
-				to.getCurrentUser(new Callback<UserInfoTO>() {
-
-					@Override
-					public void ok(UserInfoTO to) {
-						// TODO Auto-generated method stub
-						logger.info("Current User (UserSession.current.getCurrentUser) ["+to.getUsername()+ "]");
-					}
-					
-				});
-				
-			}
-		});
-		
-		
-		UserInfoTO userInfo = session != null ? session.getUserInfo() : null;
-		logger.info("Current User (session.getUserInfo()) "+( userInfo != null ? userInfo.getUsername() : "userInfo or session is NULL"));
-		if(session != null){
-		session.getCurrentUser(new Callback<UserInfoTO>() {			
+		session.getCurrentUser(new Callback<UserInfoTO>() {
+			
 			@Override
 			public void ok(UserInfoTO to) {
-				logger.info("Current User (CB TO) ["+to.getUsername()+ "]");
-				
+				logger.info("Current User (UserSession.current.getCurrentUser) ["+to.getUsername()+ "]");		
 			}
 		});
-		}
+	}
+
+	@Override
+	public KornellSession getKornellSession() {
+		return session;
 	}
 }

@@ -83,7 +83,7 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 						
 					}});*/
 
-		user = clientFactory.getUserSession().getUserInfo();
+		user = clientFactory.getKornellSession().getCurrentUser();
 		display();
 		
 		setUpArrowNavigation();
@@ -189,7 +189,7 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	@UiHandler("btnNotes")
 	void handleClickBtnNotes(ClickEvent e) {
 		if(notesPopup == null){
-			notesPopup = new NotesPopup(clientFactory.getUserSession(), 
+			notesPopup = new NotesPopup(clientFactory.getKornellSession(), 
 					Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), 
 					Dean.getInstance().getCourseClassTO().getEnrollment().getNotes());
 			notesPopup.show();

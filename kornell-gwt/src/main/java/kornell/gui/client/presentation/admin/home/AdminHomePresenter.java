@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.Callback;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
@@ -12,8 +12,9 @@ import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentRequestTO;
 import kornell.core.to.EnrollmentRequestsTO;
-import kornell.gui.client.ClientFactory;
+import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -23,51 +24,57 @@ import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AdminHomePresenter implements AdminHomeView.Presenter {
-	private final ClientFactory clientFactory;
 	private AdminHomeView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String batchEnrollmentErrors;
 	private List<EnrollmentRequestTO> batchEnrollments;
 	FormHelper formHelper;
+	private KornellSession session;
+	private PlaceController placeController;
+	private Place defaultPlace;
+	TOFactory toFactory;
+	private ViewFactory viewFactory;
 
-	public AdminHomePresenter(ClientFactory factory) {
-		clientFactory = factory;
+	public AdminHomePresenter(KornellSession session,
+			PlaceController placeController, Place defaultPlace,
+			TOFactory toFactory, ViewFactory viewFactory) {
+		this.session = session;
+		this.placeController = placeController;
+		this.defaultPlace = defaultPlace;
+		this.toFactory = toFactory;
+		this.viewFactory = viewFactory;
 		formHelper = new FormHelper();
 		// TODO refactor permissions per session/activity
-		UserSession.current(new Callback<UserSession>() {
-			@Override
-			public void ok(UserSession session) {
-				init(session.isInstitutionAdmin());
-			}
-		});
+		init(session.isInstitutionAdmin());
 	}
 
 	private void init(boolean isDean) {
 		if (isDean) {
 			view = getView();
 			view.setPresenter(this);
-			
-			CourseClassTO to = Dean.getInstance().getCourseClassTO(); 
-			
+
+			CourseClassTO to = Dean.getInstance().getCourseClassTO();
+
 			view.setCourseClassName(to.getCourseClass().getName());
 			view.setCourseName(to.getCourseVersionTO().getCourse().getTitle());
-			
+
 			getEnrollments(to.getCourseClass().getUUID());
 		} else {
 			GWT.log("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
-			clientFactory.getPlaceController().goTo(
-					clientFactory.getDefaultPlace());
+			placeController.goTo(defaultPlace);
 		}
 	}
 
 	private List<Enrollment> getEnrollments(String courseClassUUID) {
 		LoadingPopup.show();
-		clientFactory.getKornellClient().getEnrollmentsByCourseClass(
-				courseClassUUID, new Callback<Enrollments>() {
+		session.getEnrollmentsByCourseClass(courseClassUUID,
+				new Callback<Enrollments>() {
 					@Override
 					public void ok(Enrollments enrollments) {
 						view.setEnrollmentList(enrollments.getEnrollments());
@@ -81,22 +88,19 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	public void changeEnrollmentState(final Enrollment enrollment,
 			final EnrollmentState toState) {
 		LoadingPopup.show();
-		UserSession.current(new Callback<UserSession>() {
-			@Override
-			public void ok(UserSession session) {
-				String personUUID = session.getUserInfo().getPerson().getUUID();
-				clientFactory
-						.getKornellClient()
-						.events()
-						.enrollmentStateChanged(enrollment.getUUID(), personUUID, enrollment.getState(), toState)
-						.fire(new Callback<Void>() {
-							@Override
-							public void ok(Void to) {
-								getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-							}
-						});
-			}
-		});
+
+		String personUUID = session.getCurrentUser().getPerson().getUUID();
+		session.events()
+				.enrollmentStateChanged(enrollment.getUUID(), personUUID,
+						enrollment.getState(), toState)
+				.fire(new Callback<Void>() {
+					@Override
+					public void ok(Void to) {
+						getEnrollments(Dean.getInstance().getCourseClassTO()
+								.getCourseClass().getUUID());
+					}
+				});
+
 	}
 
 	@Override
@@ -136,8 +140,9 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private EnrollmentRequestsTO createEnrollments() {
-		EnrollmentRequestsTO enrollmentRequestsTO = clientFactory
-				.getTOFactory().newEnrollmentRequestsTO().as();
+
+		EnrollmentRequestsTO enrollmentRequestsTO = toFactory
+				.newEnrollmentRequestsTO().as();
 		enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
 		return enrollmentRequestsTO;
 	}
@@ -165,7 +170,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private EnrollmentRequestTO createEnrollment(String fullName, String email) {
-		EnrollmentRequestTO enrollmentRequestTO = clientFactory.getTOFactory()
+		EnrollmentRequestTO enrollmentRequestTO = toFactory
 				.newEnrollmentRequestTO().as();
 
 		enrollmentRequestTO.setInstitutionUUID(Dean.getInstance()
@@ -192,7 +197,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		} else {
 			LoadingPopup.show();
 		}
-		clientFactory.getKornellClient().createEnrollments(enrollmentRequests,
+		session.createEnrollments(enrollmentRequests,
 				new Callback<Enrollments>() {
 					@Override
 					public void ok(Enrollments to) {
@@ -211,15 +216,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	@Override
 	public void onGoToCourseButtonClicked() {
-		clientFactory.getPlaceController().goTo(
-				new ClassroomPlace(Dean.getInstance().getCourseClassTO()
-						.getEnrollment().getUUID()));
+		placeController.goTo(new ClassroomPlace(Dean.getInstance()
+				.getCourseClassTO().getEnrollment().getUUID()));
 	}
 
 	private void updateInstitution() {
-		clientFactory
-				.getUserSession()
-				.institution(Dean.getInstance().getInstitution().getUUID())
+		session.institution(Dean.getInstance().getInstitution().getUUID())
 				.update(Dean.getInstance().getInstitution(),
 						new Callback<Institution>() {
 							@Override
@@ -235,12 +237,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private AdminHomeView getView() {
-		return clientFactory.getViewFactory().getDeanHomeView();
+		return viewFactory.getDeanHomeView();
 	}
 
 	@Override
 	public void onUserClicked(String uuid) {
 		ProfilePlace place = new ProfilePlace(uuid, false);
-		clientFactory.getPlaceController().goTo(place);
+		placeController.goTo(place);
 	}
 }

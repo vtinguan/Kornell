@@ -1,10 +1,5 @@
 package kornell.gui.client.uidget.formfield;
 
-import java.util.Date;
-import java.util.List;
-
-import kornell.gui.client.presentation.profile.ProfileView;
-
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;

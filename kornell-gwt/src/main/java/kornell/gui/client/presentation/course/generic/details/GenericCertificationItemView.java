@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation.course.generic.details;
 
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
@@ -28,7 +28,7 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
-	private UserSession session;
+	private KornellSession session;
 	private CourseClassTO currentCourseClass;
 	private String type;
 	private String name;
@@ -55,7 +55,7 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 	Anchor lblActions;
 
 
-	public GenericCertificationItemView(EventBus eventBus, UserSession session, CourseClassTO currentCourseClass,
+	public GenericCertificationItemView(EventBus eventBus, KornellSession session, CourseClassTO currentCourseClass,
 			String type) {
 		this.bus = eventBus;
 		this.session = session;
@@ -99,7 +99,7 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 				@Override
 				public void onClick(ClickEvent event) {
 					Window.Location.assign(session.getApiUrl() + "/report/certificate/"
-							+ session.getUserInfo().getPerson().getUUID() + "/"
+							+ session.getCurrentUser().getPerson().getUUID() + "/"
 							+ currentCourseClass.getCourseClass().getUUID());
 				}
 			});

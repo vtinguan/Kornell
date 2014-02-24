@@ -1,8 +1,8 @@
 package kornell.gui.client.sequence;
 
 import kornell.api.client.KornellClient;
+import kornell.api.client.KornellSession;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.scorm.client.scorm12.SCORM12Sequencer;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
@@ -10,14 +10,14 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class SequencerFactoryImpl implements SequencerFactory {
 
-	private KornellClient client;
+	private KornellSession session;
 	private EventBus bus;
 	private PlaceController ctrl;
 	
 
 	public SequencerFactoryImpl(EventBus bus, PlaceController ctrl,
-			KornellClient client) {
-		this.client = client;
+			KornellSession session) {
+		this.session = session;
 		this.bus = bus;
 		this.ctrl = ctrl;
 	}
@@ -26,7 +26,7 @@ public class SequencerFactoryImpl implements SequencerFactory {
 	public Sequencer withPlace(ClassroomPlace place) {
 		GWT.log("Creating course sequencer");		
 		Sequencer sequencer = null;
-		sequencer = new PrefetchSequencer(bus,client);
+		sequencer = new PrefetchSequencer(bus,session);
 		return sequencer.withPlace(place);
 	}
 
