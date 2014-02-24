@@ -147,4 +147,8 @@ public class KornellSession extends KornellClient {
 		setCurrentUser(null);
 	}
 
+	public boolean isAnonymous() {
+		return ! isAuthenticated();
+	}
+
 }
