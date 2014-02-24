@@ -10,8 +10,10 @@ import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
+import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.PrefetchSequencer;
 
 import com.google.gwt.core.client.GWT;
@@ -69,8 +71,6 @@ public class GenericPageView extends Composite implements ProgressChangeEventHan
 	}
 	
 	private void display(boolean enableAnchor) {
-		//TODO remove
-		enableAnchor = false;
 		String status = page.isVisited() ? "finished" : "toStart";
 		topicIcon.setUrl(IMAGES_PATH + "status_"+status+".png");
 		lblPage.clear();
@@ -79,9 +79,8 @@ public class GenericPageView extends Composite implements ProgressChangeEventHan
 			pageAnchor.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					String breadCrumb = PrefetchSequencer.class.getName() + "." + currentCourse.getCourseClass().getUUID() + ".CURRENT_KEY";
-					placeCtrl.goTo(new ClassroomPlace(currentCourse.getEnrollment().getUUID()));
-					session.setItem(breadCrumb, page.getKey());
+					bus.fireEvent(NavigationRequest.direct(page.getKey()));
+					bus.fireEvent(new ShowDetailsEvent(false));
 				}
 			});
 			lblPage.add(pageAnchor);

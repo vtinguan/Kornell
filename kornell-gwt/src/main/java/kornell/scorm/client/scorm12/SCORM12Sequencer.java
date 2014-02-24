@@ -32,6 +32,11 @@ public class SCORM12Sequencer implements Sequencer{
 	}
 
 	@Override
+	public void onDirect(NavigationRequest event) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
 	public Sequencer withPanel(FlowPanel contentPanel) {
 		IFrameElement iframe = Document.get().createIFrameElement();
 		iframe.setSrc("http://eduvem.com/repository/fc68f492-8646-4ec1-8ca7-a5a8e9c63dee/SingleLocalSCOEx/sco06.htm");

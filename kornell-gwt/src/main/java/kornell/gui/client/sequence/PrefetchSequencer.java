@@ -9,6 +9,7 @@ import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
 import kornell.core.lom.ExternalPage;
+import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ProgressChangeEvent;
@@ -76,6 +77,12 @@ public class PrefetchSequencer implements Sequencer {
 	private String getBreadcrumbKey() {
 		return PrefetchSequencer.class.getName() + "." + enrollmentUUID
 				+ ".CURRENT_KEY";
+	}
+	
+	@Override
+	public void onDirect(NavigationRequest event){
+		removeCurrent();
+		orientateAndSail(event.getDestination());
 	}
 
 	private void debug(String event) {
@@ -190,6 +197,12 @@ public class PrefetchSequencer implements Sequencer {
 		nextActom = null;
 	}
 
+	private void removeCurrent() {
+		if (currentUidget != null)
+			contentPanel.remove(currentUidget);
+		currentActom = null;
+	}
+
 	private void makePrevCurrent() {
 		currentActom = prevActom;
 		currentUidget = prevUidget;
@@ -215,12 +228,18 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void orientateAndSail() {
+		session.getCurrentUser(new Callback<UserInfoTO>() {
+			@Override
+			public void ok(UserInfoTO userInfo) {
+				orientateAndSail(session.getItem(getBreadcrumbKey()));
+			}
+		});
+	}
 
-		String currentKey = session.getItem(getBreadcrumbKey());
-		currentIndex = lookupCurrentIndex(currentKey);
+	private void orientateAndSail(String key) {
+		currentIndex = lookupCurrentIndex(key);
 		currentActom = actoms.get(currentIndex);
 		initialLoad();
-
 	}
 
 	private int lookupCurrentIndex(String currentKey) {

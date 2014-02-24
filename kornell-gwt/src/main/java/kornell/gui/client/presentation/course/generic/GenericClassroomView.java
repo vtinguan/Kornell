@@ -54,8 +54,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		detailsView.initData();
 		detailsPanel.clear();
 		detailsPanel.add(detailsView);
-		contentPanel.setVisible(isEnrolled);
-		detailsPanel.setVisible(!isEnrolled);
+		bus.fireEvent(new ShowDetailsEvent(!isEnrolled));
 	}
 
 	@Override

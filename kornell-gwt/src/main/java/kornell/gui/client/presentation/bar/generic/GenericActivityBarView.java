@@ -97,13 +97,16 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private void display(){
 
 		isEnrolled = false;
+
 		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
-		for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
-			if(enrollment.getUUID().equals(((ClassroomPlace)clientFactory.getPlaceController().getWhere()).getEnrollmentUUID())
-					&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||
-							(EnrollmentState.enrolled.equals(enrollment.getState())))){
-				isEnrolled = true;
-				break;
+		if(user != null){
+			for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
+				if(enrollment.getUUID().equals(((ClassroomPlace)clientFactory.getPlaceController().getWhere()).getEnrollmentUUID())
+						&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||
+								(EnrollmentState.enrolled.equals(enrollment.getState())))){
+					isEnrolled = true;
+					break;
+				}
 			}
 		}
 		

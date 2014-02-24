@@ -141,5 +141,10 @@ public class KornellSession extends KornellClient {
 				.sendRequest(null, wrapper);
 
 	}
+	
+	public void logout(){
+		ClientProperties.remove(ClientProperties.X_KNL_A);
+		setCurrentUser(null);
+	}
 
 }
