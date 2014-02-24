@@ -4,7 +4,7 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsCategory;
@@ -19,13 +19,14 @@ import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dev.ModuleTabPanel.Session;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class PrefetchSequencer implements Sequencer {
 	private FlowPanel contentPanel;
 	private String enrollmentUUID;
-	private KornellClient client;
+	private KornellSession session;
 	private EventBus bus;
 	private List<Actom> actoms;
 
@@ -38,8 +39,8 @@ public class PrefetchSequencer implements Sequencer {
 	private Actom prevActom;
 	private Uidget prevUidget;
 
-	public PrefetchSequencer(EventBus bus, KornellClient client) {
-		this.client = client;
+	public PrefetchSequencer(EventBus bus, KornellSession session) {
+		this.session = session;
 		this.bus = bus;
 		bus.addHandler(NavigationRequest.TYPE, this);
 	}
@@ -150,21 +151,16 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void dropBreadcrumb() {
-		UserSession.current(new Callback<UserSession>() {
-			@Override
-			public void ok(UserSession session) {
-				session.setItem(getBreadcrumbKey(), currentKey());
-				String key="";
-				if(currentActom != null){
-					key = currentActom.getKey();
-				}
-				if(StringUtils.isNone(key))
-					key = "????????????????";
-				bus.fireEvent(new ActomEnteredEvent(enrollmentUUID,key));
-				currentActom.setVisited(true);
-				fireProgressChangeEvent();
-			}
-		});
+		session.setItem(getBreadcrumbKey(), currentKey());
+		String key = "";
+		if (currentActom != null) {
+			key = currentActom.getKey();
+		}
+		if (StringUtils.isNone(key))
+			key = "????????????????";
+		bus.fireEvent(new ActomEnteredEvent(enrollmentUUID, key));
+		currentActom.setVisited(true);
+		fireProgressChangeEvent();
 	}
 
 	private boolean doesntHavePrev() {
@@ -219,15 +215,12 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void orientateAndSail() {
-		UserSession.current(new Callback<UserSession>() {
-			@Override
-			public void ok(UserSession session) {
-				String currentKey = session.getItem(getBreadcrumbKey());
-				currentIndex = lookupCurrentIndex(currentKey);
-				currentActom = actoms.get(currentIndex);
-				initialLoad();
-			}
-		});
+
+		String currentKey = session.getItem(getBreadcrumbKey());
+		currentIndex = lookupCurrentIndex(currentKey);
+		currentActom = actoms.get(currentIndex);
+		initialLoad();
+
 	}
 
 	private int lookupCurrentIndex(String currentKey) {
@@ -301,7 +294,7 @@ public class PrefetchSequencer implements Sequencer {
 		if (actom == null)
 			return null;
 		if (actom instanceof ExternalPage)
-			return new ExternalPageView(client, (ExternalPage) actom);
+			return new ExternalPageView(session, (ExternalPage) actom);
 		throw new IllegalArgumentException("Do not know how to view [" + actom
 				+ "]");
 	}
@@ -314,15 +307,15 @@ public class PrefetchSequencer implements Sequencer {
 		int pagesVisitedCount = 0;
 		int totalPages = actoms.size();
 		for (Actom actom : actoms) {
-			if(actom.isVisited()){
+			if (actom.isVisited()) {
 				pagesVisitedCount++;
 				continue;
 			}
 			break;
 		}
 		ProgressChangeEvent progressChangeEvent = new ProgressChangeEvent();
-		progressChangeEvent.setCurrentPage(currentIndex+1);
-		progressChangeEvent.setTotalPages(totalPages);		
+		progressChangeEvent.setCurrentPage(currentIndex + 1);
+		progressChangeEvent.setTotalPages(totalPages);
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
 		progressChangeEvent.setEnrollmentUUID(enrollmentUUID);
 		bus.fireEvent(progressChangeEvent);

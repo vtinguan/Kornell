@@ -1,6 +1,10 @@
 package kornell.api.client;
 
-import static com.google.gwt.http.client.Response.*;
+import static com.google.gwt.http.client.Response.SC_FORBIDDEN;
+import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
+import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
+import static com.google.gwt.http.client.Response.SC_OK;
+import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import kornell.core.entity.EntityFactory;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;

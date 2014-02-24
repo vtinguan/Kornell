@@ -4,7 +4,6 @@ package kornell.gui.client.presentation.welcome.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.CoursesTO;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;

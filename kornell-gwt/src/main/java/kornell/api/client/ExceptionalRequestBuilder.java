@@ -1,6 +1,5 @@
 package kornell.api.client;
 
-import kornell.core.event.ActomEntered;
 import kornell.core.event.EventFactory;
 
 import com.google.gwt.core.client.GWT;

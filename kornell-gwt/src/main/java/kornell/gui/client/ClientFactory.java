@@ -2,7 +2,7 @@
 package kornell.gui.client;
 
 import kornell.api.client.KornellClient;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
@@ -18,7 +18,11 @@ public interface ClientFactory {
 	void startApp();
 	
 	ViewFactory getViewFactory();
+	
+	//TODO: Remove
+	@Deprecated() //Use KornellSession
 	KornellClient getKornellClient();
+	
 	PlaceController getPlaceController();
 	HistoryMapper getHistoryMapper();
 	EventBus getEventBus();
@@ -29,10 +33,10 @@ public interface ClientFactory {
 	TOFactory getTOFactory();
 	LOMFactory getLOMFactory();
 	EventFactory getEventFactory();
-	
-	UserSession getUserSession();
 
 	void logState();
+
+	KornellSession getKornellSession();
 
 
 }

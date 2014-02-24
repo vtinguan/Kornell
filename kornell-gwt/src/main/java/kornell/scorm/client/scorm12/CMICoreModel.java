@@ -2,8 +2,6 @@ package kornell.scorm.client.scorm12;
 
 import com.google.web.bindery.event.shared.EventBus;
 
-import kornell.gui.client.event.LogoutEvent;
-
 public class CMICoreModel extends DataModel implements CMIConstants {
 	//TODO: Enforce read-only, write-only and enumerations
 	

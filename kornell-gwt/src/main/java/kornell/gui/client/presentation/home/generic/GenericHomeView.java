@@ -5,7 +5,6 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.home.HomeView;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;

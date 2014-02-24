@@ -1,8 +1,6 @@
 package kornell.gui.client.presentation.sandbox;
 
 
-import kornell.gui.client.ClientFactory;
-
 import com.google.gwt.user.client.ui.Widget;
 
 public class SandboxPresenter implements SandboxView.Presenter {

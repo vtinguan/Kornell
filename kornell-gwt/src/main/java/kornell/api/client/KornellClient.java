@@ -4,7 +4,6 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.CoursesTO;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.RegistrationsTO;
@@ -56,10 +55,6 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		GET("/courseClasses?institutionUUID="+institutionUUID).sendRequest(null, cb);
 	}
 
-	public static KornellClient getInstance() {
-		return new KornellClient();
-	}
-
 	public class RegistrationsClient {
 		public void getUnsigned(Callback<RegistrationsTO> callback) {
 			GET("/registrations").sendRequest("", callback);
@@ -88,6 +83,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		
 	}
 
+	//TODO: findXxxx is better
 	public void getInstitutionByName(String name, Callback<Institution> cb) {
 		GET("/institutions/?name=" + name).sendRequest(null, cb);
 	}

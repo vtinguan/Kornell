@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation.course.generic;
 
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.presentation.course.ClassroomView;
@@ -19,7 +19,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	interface MyUiBinder extends UiBinder<Widget, GenericClassroomView> {
 	}
 	private PlaceController placeCtrl;
-	private UserSession session;
+	private KornellSession session;
 	private EventBus bus;
 	
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -35,7 +35,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 
 	private Presenter presenter;
 
-	public GenericClassroomView(PlaceController placeCtrl, UserSession session, EventBus bus) {
+	public GenericClassroomView(PlaceController placeCtrl, KornellSession session, EventBus bus) {
 		GWT.log("new GenericClassroomView");
 		this.placeCtrl = placeCtrl;
 		this.session = session;

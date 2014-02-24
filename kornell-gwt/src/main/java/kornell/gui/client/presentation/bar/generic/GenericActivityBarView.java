@@ -87,7 +87,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE,this);
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
 
-		user = clientFactory.getUserSession().getUserInfo();
+		user = clientFactory.getKornellSession().getCurrentUser();
 		display();
 		
 		setUpArrowNavigation();
@@ -97,7 +97,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private void display(){
 
 		isEnrolled = false;
-		UserInfoTO user = clientFactory.getUserSession().getUserInfo();
+		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
 		for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
 			if(enrollment.getUUID().equals(((ClassroomPlace)clientFactory.getPlaceController().getWhere()).getEnrollmentUUID())
 					&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||
@@ -245,7 +245,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@UiHandler("btnNotes")
 	void handleClickBtnNotes(ClickEvent e) {
 		if(notesPopup == null){
-			notesPopup = new NotesPopup(clientFactory.getUserSession(), 
+			notesPopup = new NotesPopup(clientFactory.getKornellSession(), 
 					Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), 
 					Dean.getInstance().getCourseClassTO().getEnrollment().getNotes());
 			notesPopup.show();

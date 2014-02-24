@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kornell.api.client.KornellClient;
 import kornell.core.util.StringUtils;
 
 import org.apache.http.Header;

@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.api.client.Callback;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
@@ -10,8 +8,6 @@ import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
-import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -21,7 +17,6 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -75,7 +70,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 				} else {
 					if(newPlace instanceof TermsPlace || 
 							(newPlace instanceof ProfilePlace && Dean.getInstance().getInstitution().isDemandsPersonContactDetails() &&
-									clientFactory.getUserSession().getUserInfo().getPerson().getCity() == null)){
+									clientFactory.getKornellSession().getCurrentUser().getPerson().getCity() == null)){
 						showButtons(false);
 					} else {
 						showButtons(true);
@@ -89,7 +84,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	private void showButtons(boolean show) {
 		showButton(btnProfile, show);
 		showButton(btnHome, show);
-		showButton(btnAdmin, show && clientFactory.getUserSession().isCourseClassAdmin());
+		showButton(btnAdmin, show && clientFactory.getKornellSession().isCourseClassAdmin());
 		showButton(btnNotifications, false);
 		showButton(btnMessages, false);
 		showButton(btnHelp, false);
@@ -160,7 +155,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 
 	@UiHandler("btnProfile")
 	void handleProfile(ClickEvent e) {
-		clientFactory.getPlaceController().goTo(new ProfilePlace(clientFactory.getUserSession().getUserInfo().getPerson().getUUID(), false));
+		clientFactory.getPlaceController().goTo(new ProfilePlace(clientFactory.getKornellSession().getCurrentUser().getPerson().getUUID(), false));
 	}
 
 	@UiHandler("btnHome")

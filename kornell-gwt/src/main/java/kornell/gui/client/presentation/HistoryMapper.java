@@ -2,7 +2,6 @@ package kornell.gui.client.presentation;
 
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.sandbox.SandboxPlace;

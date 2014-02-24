@@ -3,7 +3,7 @@ package kornell.gui.client.presentation.course.generic.details;
 import java.util.List;
 
 import kornell.api.client.KornellClient;
-import kornell.api.client.UserSession;
+import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
@@ -36,7 +36,7 @@ public class GenericPageView extends Composite implements ProgressChangeEventHan
 
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 
-	private KornellClient client;
+	private KornellSession session;
 	private PlaceController placeCtrl;
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
@@ -54,12 +54,11 @@ public class GenericPageView extends Composite implements ProgressChangeEventHan
 	private ExternalPage page;
 	private List<Actom> actoms;
 	private CourseClassTO currentCourse;
-	private UserSession session;
 	
-	public GenericPageView(EventBus eventBus, KornellClient client,
-			final PlaceController placeCtrl, UserSession session, final ExternalPage page, CourseClassTO currentCourse, boolean enableAnchor) {
+	public GenericPageView(EventBus eventBus, KornellSession session,
+			final PlaceController placeCtrl, final ExternalPage page, CourseClassTO currentCourse, boolean enableAnchor) {
 		this.bus = eventBus;
-		this.client = client;
+		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.page = page;
 		this.currentCourse = currentCourse;

@@ -7,7 +7,7 @@ import org.apache.commons.codec.binary.Base64
 import java.util.logging.Logger
 import kornell.core.util.StringUtils
 
-class BasicAuthFilter extends Filter {
+class BasicAuthFilter extends Filter { 
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
   val pubPaths = Set(
     "/checkup",

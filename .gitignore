@@ -32,3 +32,5 @@ AwsCredentials.properties
 *.cache
 *.swp
 .elasticbeanstalk/
+
+kornell-admin
