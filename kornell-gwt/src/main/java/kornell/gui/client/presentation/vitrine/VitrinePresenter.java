@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Registration;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
@@ -211,10 +212,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	public void onSignUpButtonClicked() {
 		view.hideMessage();
 		List<String> errors = validateFields();
-
+		KornellSession session = clientFactory.getKornellSession();
 		if (errors.size() == 0) {
 			// TODO improve
-			clientFactory.getKornellClient().checkUser(
+			session.checkUser(
 					view.getSuEmail().toLowerCase().trim(),
 					new Callback<UserInfoTO>() {
 						@Override
@@ -225,8 +226,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 								return;
 							}
 							RegistrationRequestTO registrationRequestTO = buildRegistrationRequestTO();
-							clientFactory.getKornellClient()
-									.requestRegistration(registrationRequestTO,
+							KornellSession session = clientFactory.getKornellSession();
+							session.requestRegistration(registrationRequestTO,
 											new Callback<UserInfoTO>() {
 												@Override
 												public void ok(UserInfoTO user) {
@@ -278,7 +279,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onRequestPasswordChangeButtonClicked() {
-		clientFactory.getKornellClient().requestPasswordChange(
+		KornellSession session = clientFactory.getKornellSession();
+		session.requestPasswordChange(
 				view.getFpEmail().toLowerCase().trim(),
 				Dean.getInstance().getInstitution().getName(),
 				new Callback<Void>() {
@@ -317,7 +319,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			errors.add("As senhas não conferem.");
 		}
 		if (errors.size() == 0) {
-			clientFactory.getKornellClient().changePassword(
+			KornellSession session = clientFactory.getKornellSession();
+			session.changePassword(
 					view.getNewPassword(), passwordChangeUUID,
 					new Callback<UserInfoTO>() {
 						@Override
