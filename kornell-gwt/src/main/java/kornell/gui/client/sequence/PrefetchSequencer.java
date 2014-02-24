@@ -3,7 +3,6 @@ package kornell.gui.client.sequence;
 import java.util.List;
 
 import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
@@ -20,7 +19,6 @@ import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dev.ModuleTabPanel.Session;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
