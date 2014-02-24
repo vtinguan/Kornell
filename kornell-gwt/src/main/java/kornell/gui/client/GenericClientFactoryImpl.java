@@ -11,6 +11,7 @@ import kornell.core.lom.LOMFactory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
@@ -92,7 +93,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					startAuthenticated(session);
 				} else {
 					setDefaultPlace(new VitrinePlace());
-					startAnonymous(session);
+					startAnonymous();
 				}
 			}
 		};
@@ -104,17 +105,27 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if (session.isAuthenticated()) {
 					session.getCourseClassesTO(courseClassesCallback);
 				} else {
-					startAnonymous(session);
+					startAnonymous();
 				}
 			}
 			
 			@Override
 			public void unauthorized(){
-				startAnonymous(session);
+				startAnonymous();
 			}
 		};		
 		
-		session.getInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
+		session.getCurrentUser(new Callback<UserInfoTO>() {
+			public void ok(UserInfoTO to) {
+				session.getInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
+			};
+			
+			@Override
+			protected void unauthorized() {
+				startAnonymous();
+			}
+			
+		});		
 
 	}
 	
@@ -125,8 +136,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		}
 		return institutionName;
 	}
+	
 
-	private void startAnonymous(KornellSession session) {
+	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");
 		defaultPlace = new VitrinePlace();
 		startClient();

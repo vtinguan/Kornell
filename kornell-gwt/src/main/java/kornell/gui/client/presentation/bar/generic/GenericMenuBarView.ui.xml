@@ -1,5 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+	xmlns:uv='urn:import:kornell.gui.client.presentation.uservoice.generic'>
 	<g:FlowPanel>
 		<g:FlowPanel ui:field="menuBar" addStyleNames="menuBar">
 			<g:Image ui:field="imgMenuBar" addStyleNames="imgMenuBar"/>
@@ -9,7 +11,7 @@
 				<b:Button ui:field="btnHome" addStyleNames="menuBarButton"></b:Button>		
 				<b:Button ui:field="btnAdmin" addStyleNames="menuBarButton"></b:Button>		
 				<b:Button ui:field="btnNotifications" addStyleNames="menuBarButton"></b:Button>		
-				<b:Button ui:field="btnMessages" addStyleNames="menuBarButton"></b:Button>		
+				<b:Button ui:field="btnMessages" addStyleNames="menuBarButton"></b:Button>
 				<b:Button ui:field="btnHelp" addStyleNames="menuBarButton"></b:Button>		
 				<b:Button ui:field="btnMenu" addStyleNames="menuBarButton"></b:Button>		
 				<b:Button ui:field="btnExit" addStyleNames="menuBarButton last"></b:Button>		
