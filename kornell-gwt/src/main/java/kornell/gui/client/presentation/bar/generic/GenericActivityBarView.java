@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.UserInfoTO;
@@ -86,8 +87,11 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		initWidget(uiBinder.createAndBindUi(this));
 		clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE,this);
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
-
-		user = clientFactory.getKornellSession().getCurrentUser();
+		
+		KornellSession session = clientFactory.getKornellSession();
+		if(session.isAuthenticated()){
+			user = clientFactory.getKornellSession().getCurrentUser();
+		}
 		display();
 		
 		setUpArrowNavigation();

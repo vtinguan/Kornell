@@ -43,10 +43,11 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private void displayPlace() {
 		final String enrollmentUUID = place.getEnrollmentUUID();
 
-		if(session.getCurrentUser() == null){
+		if(session.isAnonymous()){
 			placeCtrl.goTo(new VitrinePlace());
 			return;
 		}
+		
 		LoadingPopup.show();				
 		session.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
 			@Override
