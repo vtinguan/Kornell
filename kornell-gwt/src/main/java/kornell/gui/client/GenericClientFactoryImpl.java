@@ -55,9 +55,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	/* GUI */
 	private ViewFactory viewFactory;
 	private Place defaultPlace;
-	
-	
 	private KornellSession session = new KornellSession();
+	
 
 	public GenericClientFactoryImpl() {
 	}
@@ -92,10 +91,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if(courseClassTO != null){
 					Dean.getInstance().setCourseClassTO(courseClassTO);
 					setDefaultPlace(new ClassroomPlace(courseClassTO.getEnrollment().getUUID()));
-					startAuthenticated();
+					startAuthenticated(session);
 				} else {
 					setDefaultPlace(new VitrinePlace());
-					startAnonymous();
+					startAnonymous(session);
 				}
 			}
 		};
@@ -107,47 +106,35 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if (session.isAuthenticated()) {
 					session.getCourseClassesTO(courseClassesCallback);
 				} else {
-					startAnonymous();
+					startAnonymous(session);
 				}
 			}
 			
 			@Override
 			public void unauthorized(){
-				startAnonymous();
+				startAnonymous(session);
 			}
-		};
+		};		
 		
-		
-		
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO user) {
-				session.getInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
-			}
+		session.getInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
 
-			@Override
-			public void unauthorized() {
-				ClientProperties.remove("X-KNL-A");
-			}
-
-			private String getInstitutionNameFromLocation() {
-				String institutionName = Window.Location.getParameter("institution");
-				if (institutionName == null) {
-					institutionName = Window.Location.getHostName().split("\\.")[0];
-				}
-				return institutionName;
-			}
-
-		});
+	}
+	
+	private String getInstitutionNameFromLocation() {
+		String institutionName = Window.Location.getParameter("institution");
+		if (institutionName == null) {
+			institutionName = Window.Location.getHostName().split("\\.")[0];
+		}
+		return institutionName;
 	}
 
-	private void startAnonymous() {
+	private void startAnonymous(KornellSession session) {
 		ClientProperties.remove("X-KNL-A");
 		defaultPlace = new VitrinePlace();
 		startClient();
 	}
 
-	private void startAuthenticated() {
+	private void startAuthenticated(KornellSession session) {
 		if (session.isCourseClassAdmin()) {
 			defaultPlace = new AdminHomePlace();
 			startClient();
@@ -171,7 +158,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initPersonnel() {
-		new Captain(bus, placeCtrl, Dean.getInstance().getInstitution().getUUID());
+		new Captain(bus, session, placeCtrl);
 		new Stalker(bus, session);
 	}
 
@@ -215,10 +202,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	@Deprecated
-	/***
-	 * @deprecated see getKornellSession()
-	 */
 	public KornellClient getKornellClient() {
 		return session;
 	}
@@ -243,6 +226,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		return eventFactory;
 	}
 
+
+
 	@Override
 	public ViewFactory getViewFactory() {
 		return viewFactory;
@@ -250,13 +235,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void logState() {
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			
-			@Override
-			public void ok(UserInfoTO to) {
-				logger.info("Current User (UserSession.current.getCurrentUser) ["+to.getUsername()+ "]");		
-			}
-		});
+		//TODO
 	}
 
 	@Override

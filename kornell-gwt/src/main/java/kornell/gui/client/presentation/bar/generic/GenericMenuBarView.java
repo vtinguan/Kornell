@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import kornell.core.entity.Institution;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
@@ -59,8 +61,14 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
-		imgMenuBar.setUrl(Dean.getInstance().getInstitution().getAssetsURL() + barLogoFileName);
-		
+		Dean localDean = Dean.getInstance();
+		//TODO: Consider anonynous 
+		if(localDean != null){
+		Institution localInstitution = localDean.getInstitution();
+		String assetsURL = localInstitution.getAssetsURL();
+		//TODO: Add composeUrl to best practices 
+		imgMenuBar.setUrl(StringUtils.composeURL(assetsURL, barLogoFileName));
+		}
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
 			public void onPlaceChange(PlaceChangeEvent event) {
