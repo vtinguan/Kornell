@@ -39,5 +39,18 @@
         in order for this application to display correctly.
       </div>
     </noscript>
+
+<script>
+	//Include the UserVoice JavaScript SDK (only needed once on a page)
+	UserVoice = window.UserVoice || [];
+	(function() {
+		var uv = document.createElement('script');
+		uv.type = 'text/javascript';
+		uv.async = true;
+		uv.src = '//widget.uservoice.com/L32dx5oBK6bbGCjfz0ZOQ.js';
+		var s = document.getElementsByTagName('script')[0];
+		s.parentNode.insertBefore(uv, s)
+	})();
+</script>
   </body>
 </html>
