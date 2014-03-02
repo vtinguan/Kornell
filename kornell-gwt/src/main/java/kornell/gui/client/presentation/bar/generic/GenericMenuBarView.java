@@ -10,6 +10,7 @@ import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.scorm.client.scorm12.SCORM12Adapter;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -117,6 +118,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	static native void initUserVoice() /*-{
 		$wnd.UserVoice.push([ 'set', {
 			locale: 'pt-BR',
+			screenshot_enabled: false,
 			accent_color : 'black'
 		} ]);
 		$wnd.UserVoice.push([ 'addTrigger', '#btnHelp', {} ]);
@@ -126,7 +128,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		showButton(btnProfile, show);
 		showButton(btnHome, show);
 		showButton(btnAdmin, show
-				&& clientFactory.getKornellSession().isCourseClassAdmin());
+				&& clientFactory.getKornellSession().isInstitutionAdmin());
 		showButton(btnNotifications, false);
 		showButton(btnMessages, false);
 		showButton(btnHelp, true);
@@ -207,8 +209,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 
 	@UiHandler("btnHome")
 	void handleHome(ClickEvent e) {
-		clientFactory.getPlaceController()
-				.goTo(clientFactory.getDefaultPlace());
+		clientFactory.getPlaceController().goTo(new WelcomePlace());
 	}
 
 	@UiHandler("btnAdmin")

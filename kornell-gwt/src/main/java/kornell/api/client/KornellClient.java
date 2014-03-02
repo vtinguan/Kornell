@@ -55,6 +55,10 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		GET("/courseClasses?institutionUUID="+institutionUUID).sendRequest(null, cb);
 	}
 
+	public void getAdministratedCourseClassesTOByInstitution(String institutionUUID, Callback<CourseClassesTO> cb) {
+		GET("/courseClasses/administrated?institutionUUID="+institutionUUID).sendRequest(null, cb);
+	}
+	
 	public class RegistrationsClient {
 		public void getUnsigned(Callback<RegistrationsTO> callback) {
 			GET("/registrations").sendRequest("", callback);
@@ -107,6 +111,10 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 
 	public void updateEnrollment(Enrollment enrollment, Callback<Enrollment> cb) {
 		PUT("/enrollments/" + enrollment.getUUID()).withContentType(Enrollment.TYPE).withEntityBody(enrollment).go(cb);
+	}
+
+	public void createEnrollment(Enrollment enrollment, Callback<Enrollment> cb) {
+		POST("/enrollments").withContentType(Enrollment.TYPE).withEntityBody(enrollment).go(cb);
 	}
 	
 	public void notesUpdated(String courseClassUUID, String notes) {

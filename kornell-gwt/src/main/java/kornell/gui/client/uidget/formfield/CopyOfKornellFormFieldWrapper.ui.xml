@@ -1,9 +1,0 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
-	<g:FlowPanel addStyleNames="fieldPanelWrapper">
-		<g:FlowPanel addStyleNames="labelPanel">
-			<g:Label ui:field="fieldLabel" addStyleNames="lblLabel"></g:Label>
-		</g:FlowPanel>
-		<g:FlowPanel ui:field="fieldPanel" addStyleNames="fieldPanel">
-		</g:FlowPanel>
-	</g:FlowPanel>
-</ui:UiBinder>

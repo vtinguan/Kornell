@@ -10,6 +10,9 @@ import kornell.server.repository.Entities
 import kornell.server.repository.Entities.newPerson
 import kornell.core.util.UUID
 import kornell.server.jdbc.SQL._
+import kornell.core.lom.Content
+import kornell.core.lom.ContentsCategory
+import kornell.core.lom.Contents
 
 object AuthRepo {
   //TODO: importing ScurityContext smells bad
@@ -98,14 +101,14 @@ object AuthRepo {
   def sha256(plain: String): String = DigestUtils.sha256Hex(plain)
 
   def rolesOf(username: String) = sql"""
-  	select username,role,institution_uuid from Role where username = $username
+  	select username,role,institution_uuid, course_class_uuid from Role where username = $username
   """.map[Role] { rs =>
     val roleType = RoleType.valueOf(rs.getString("role"))
     val role = roleType match {
       case RoleType.user => Entities.newUserRole
       case RoleType.platformAdmin => Entities.newPlatformAdminRole
       case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("institution_uuid"))
-      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("institution_uuid"))//TODO courseClassUUID
+      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("course_class_uuid"))//TODO courseClassUUID
     }
     role
   }

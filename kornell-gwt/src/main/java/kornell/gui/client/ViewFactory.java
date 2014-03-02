@@ -42,7 +42,7 @@ public interface ViewFactory {
 	SandboxView getSandboxView();
 	SandboxPresenter getSandboxPresenter();
 	
-	//dean
-	AdminHomeView getDeanHomeView();
+	//admin
+	AdminHomeView getAdminHomeView();
 
 }

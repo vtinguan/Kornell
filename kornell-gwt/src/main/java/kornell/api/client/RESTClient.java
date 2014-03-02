@@ -35,6 +35,14 @@ public class RESTClient {
 		return reqBuilder;
 	}
 
+	protected ExceptionalRequestBuilder POST(String... path) {
+		String url = composeURL(getApiUrl(), path);
+		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
+				RequestBuilder.POST, url);
+		setAuthenticationHeaders(reqBuilder);
+		return reqBuilder;
+	}
+
 	protected void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
 		String auth = ClientProperties.get("X-KNL-A");
 		if (isSome(auth)) {

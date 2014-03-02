@@ -2,6 +2,10 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
 	<g:FlowPanel addStyleNames="deanHome">
+		<g:FlowPanel addStyleNames="courseClassesHeaderWrapper">
+			<g:HTMLPanel addStyleNames="title left">Gerenciar Turma: </g:HTMLPanel>
+			<b:ListBox ui:field="listBoxCourseClasses" addStyleNames="listBoxCourseClasses"></b:ListBox>
+		</g:FlowPanel>
 		<g:HTMLPanel addStyleNames="title">Matricular Participante</g:HTMLPanel>
 		<g:FlowPanel addStyleNames="controlsPanel">
 			<g:FlowPanel addStyleNames="insertPanel">

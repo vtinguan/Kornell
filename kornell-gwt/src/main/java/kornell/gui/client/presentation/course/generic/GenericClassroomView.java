@@ -49,6 +49,8 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	@Override
 	public void display(boolean isEnrolled) {
 		this.isEnrolled = isEnrolled;
+		if(isEnrolled)
+			presenter.startSequencer();
 		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl);
 		detailsView.setPresenter(presenter);
 		detailsView.initData();

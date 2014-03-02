@@ -10,6 +10,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentRequestTO;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.TOFactory;
@@ -58,12 +59,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			view = getView();
 			view.setPresenter(this);
 
-			CourseClassTO to = Dean.getInstance().getCourseClassTO();
-
-			view.setCourseClassName(to.getCourseClass().getName());
-			view.setCourseName(to.getCourseVersionTO().getCourse().getTitle());
-
-			getEnrollments(to.getCourseClass().getUUID());
+			session.getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
+				@Override
+				public void ok(CourseClassesTO tos) {
+					view.setCourseClasses(tos.getCourseClasses());
+				}
+			});
 		} else {
 			GWT.log("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
@@ -82,6 +83,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					}
 				});
 		return null;
+	}
+	
+	@Override
+	public void updateCourseClass(CourseClassTO courseClass){
+		Dean.getInstance().setCourseClassTO(courseClass);
+		view.setCourseClassName(courseClass.getCourseClass().getName());
+		view.setCourseName(courseClass.getCourseVersionTO().getCourse().getTitle());
+		getEnrollments(courseClass.getCourseClass().getUUID());
 	}
 
 	@Override
@@ -237,7 +246,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private AdminHomeView getView() {
-		return viewFactory.getDeanHomeView();
+		return viewFactory.getAdminHomeView();
 	}
 
 	@Override

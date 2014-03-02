@@ -5,6 +5,7 @@ import java.util.List;
 
 import kornell.api.client.KornellClient;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Content;
 import kornell.core.lom.ContentFormat;
 import kornell.core.lom.ExternalPage;
@@ -120,9 +121,11 @@ public class GenericTopicView extends Composite {
 		for (Content contentItem : children) {
 			page = contentItem.getExternalPage();
 			if (!page.getTitle().startsWith("###")) { // TODO MDA
-				boolean enableAnchor = page.isVisited()
-						|| isPreviousPageVisited
-						|| (childrenIndex == 0 && enableAnchorOnFirstChild);
+				boolean enableAnchor = (page.isVisited()
+							|| isPreviousPageVisited
+							|| (childrenIndex == 0 && enableAnchorOnFirstChild))
+						&& (EnrollmentState.enrolled.equals(currentCourse.getEnrollment().getState())
+							|| EnrollmentState.preEnrolled.equals(currentCourse.getEnrollment().getState()));
 				childrenPanel.add(new GenericPageView(bus, session, placeCtrl, page, currentCourse, enableAnchor));
 			}
 			isPreviousPageVisited = page.isVisited();
