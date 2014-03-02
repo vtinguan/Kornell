@@ -40,6 +40,7 @@ object CourseClassesRepo {
 			    cc.uuid as courseClassUUID,
 			    cc.name as courseClassName,
 			    cc.institution_uuid as institutionUUID,
+		  		cc.requiredScore,
 			    e.uuid as enrollmentUUID, 
 			    e.enrolledOn, 
 			    e.person_uuid as personUUID, 

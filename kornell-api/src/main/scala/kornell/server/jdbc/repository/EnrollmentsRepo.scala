@@ -23,13 +23,25 @@ import kornell.core.entity.CourseClass
 import kornell.core.util.UUID
 import kornell.server.repository.service.RegistrationEnrollmentService
 
-object EnrollmentsRepo {
+class EnrollmentsRepo() {
 
-  def byUUID(enrollmentUUID: String): Option[Enrollment] =
+  def update(enrollment: Enrollment): Enrollment = {
     sql"""
-	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
-      	| from Enrollment e where uuid = ${enrollmentUUID} 
-	    """.first[Enrollment]
+    | update Enrollment e
+    | set e.enrolledOn = ${enrollment.getEnrolledOn},
+    | e.class_uuid = ${enrollment.getCourseClassUUID},
+    | e.person_uuid = ${enrollment.getPerson.getUUID},
+    | e.progress = ${enrollment.getProgress.intValue},
+    | e.notes = ${enrollment.getNotes},
+    | e.state = ${enrollment.getState.toString}
+    | where e.uuid = ${enrollment.getUUID}""".executeUpdate
+    enrollment
+  }
+
+}
+
+object EnrollmentsRepo {
+  def apply() = new EnrollmentsRepo
 
   def byCourseClass(courseClassUUID: String) = newEnrollments(
     sql"""
@@ -70,19 +82,11 @@ object EnrollmentsRepo {
     	values($randomUUID,$courseClassUUID,$person_uuid,now(),${state.toString()})
     """.executeUpdate
   }
-  
-  def update(enrollment: Enrollment): Enrollment = {    
-    sql"""
-    | update Enrollment e
-    | set e.enrolledOn = ${enrollment.getEnrolledOn},
-    | e.class_uuid = ${enrollment.getCourseClassUUID},
-    | e.person_uuid = ${enrollment.getPerson.getUUID},
-    | e.progress = ${enrollment.getProgress.intValue},
-    | e.notes = ${enrollment.getNotes},
-    | e.state = ${enrollment.getState.toString}
-    | where e.uuid = ${enrollment.getUUID}""".executeUpdate
-    enrollment
-  }
 
+  def find(person: PersonRepo, course_uuid: String): Enrollment = sql"""
+	  select * from Enrollment 
+	  were person_uuid=${person.uuid}
+	   and course_uuid=${course_uuid}"""
+    .first[Enrollment]
+    .get
 }
-

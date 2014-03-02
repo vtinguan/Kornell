@@ -117,6 +117,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	static native void initUserVoice() /*-{
 		$wnd.UserVoice.push([ 'set', {
 			locale: 'pt-BR',
+			screenshot_enabled: false,
 			accent_color : 'black'
 		} ]);
 		$wnd.UserVoice.push([ 'addTrigger', '#btnHelp', {} ]);

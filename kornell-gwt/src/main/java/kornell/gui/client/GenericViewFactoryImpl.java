@@ -178,7 +178,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public SandboxView getSandboxView() {
-		return new GenericSandboxView();
+		return new GenericSandboxView(clientFactory.getKornellSession());
 	}
 
 	@Override

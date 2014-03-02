@@ -80,6 +80,7 @@ object TOs {
     courseClassUUID: String,
     courseClassName: String,
     institutionUUID: String,
+    requiredScore:BigDecimal,
     //enrollment
     enrollmentUUID: String, 
     enrolledOn: Date, 
@@ -91,7 +92,7 @@ object TOs {
 	    val versionTO = tos.newCourseVersionTO.as
 	    val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
 	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt,distributionPrefix)
-	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID)
+	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID,requiredScore)
 	    val s3 = S3(version.getRepositoryUUID)
 	    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL , s3.prefix))
 	    versionTO.setCourse(course)
