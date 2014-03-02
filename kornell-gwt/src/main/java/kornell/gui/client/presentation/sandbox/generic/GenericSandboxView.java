@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.sandbox.generic;
 
 import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
 import kornell.gui.client.presentation.sandbox.SandboxView;
 
 import com.google.gwt.core.client.GWT;
@@ -17,27 +18,22 @@ public class GenericSandboxView  extends Composite implements SandboxView {
 	
 	@UiField FlowPanel panel;
 	
-	public GenericSandboxView() {
+	public GenericSandboxView(KornellSession session) {
 		GWT.log("GenericSandboxView()");		
 	    initWidget(uiBinder.createAndBindUi(this));
 	    panel.add(new Label("Loading some stuff..."));
-	    //TODO: Demo authentication
-	    /*
-	    session.current(new Callback<UserSession>(){			
-			@Override
-			public void ok(UserSession session) {
-				if(session.isAuthenticated())
-					panel.add(new Label("And i am authenticated as "+session.getUserInfo().getPerson().getFullName()));
-				else
-					panel.add(new Label("And i am not authenticated."));
-				
-				if(session.isPlatformAdmin())
-					panel.add(new Label("And i am a dean."));
-				else
-					panel.add(new Label("And i am not dean."));
-			}
+	    session.enrollment("8002f404-8488-4fb3-b69e-9828f6fe396b")
+	    .isApproved(new Callback<Boolean>() {
+	    	@Override
+	    	public void ok(Boolean approved) {
+	    		if(approved){
+	    			panel.add(new Label("Approved!!!!"));
+	    		}else {
+	    			panel.add(new Label("Not this time :("));
+	    		}
+	    		
+	    	}
 		});
-		*/
 	}
 	
 	@Override

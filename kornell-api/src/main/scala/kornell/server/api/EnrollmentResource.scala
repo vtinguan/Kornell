@@ -17,12 +17,19 @@ import kornell.core.entity.Enrollments
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.RegistrationsRepo
 import javax.servlet.http.HttpServletRequest
+import kornell.server.jdbc.repository.CourseClassRepo
+import kornell.server.jdbc.repository.EnrollmentRepo
+import scala.math.BigDecimal
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
+  lazy val enrollment = get
+  lazy val enrollmentRepo = EnrollmentRepo(uuid)
+
+  def get = enrollmentRepo.get
 
   @GET
-  def get = EnrollmentsRepo.byUUID(uuid)
+  def first = enrollmentRepo.first
 
   @PUT
   @Produces(Array("text/plain"))
@@ -34,8 +41,9 @@ class EnrollmentResource(uuid: String) {
   @PUT
   @Produces(Array("text/plain"))
   @Consumes(Array(Enrollment.TYPE))
-  def update(implicit @Context sc: SecurityContext, enrollment: Enrollment) = AuthRepo.withPerson { p => 
-    EnrollmentsRepo.update(enrollment)
+  def update(implicit @Context sc: SecurityContext, enrollment: Enrollment) = AuthRepo.withPerson { p =>
+    //TODO: Security: restrict to own enrollments
+    EnrollmentsRepo().update(enrollment)
   }
 
   @Path("actoms/{actomKey}")
@@ -44,7 +52,21 @@ class EnrollmentResource(uuid: String) {
   @GET
   @Path("contents")
   @Produces(Array(Contents.TYPE))
-  def contents(implicit @Context sc: SecurityContext):Option[Contents] = get.map { e =>
-   CourseClassResource(e.getCourseClassUUID()).getLatestContents(sc)
+  def contents(implicit @Context sc: SecurityContext): Option[Contents] = first map { e =>
+    CourseClassResource(e.getCourseClassUUID()).getLatestContents(sc)
   }
+
+  @GET
+  @Path("approved")
+  @Produces(Array("application/boolean"))
+  def approved = {
+    val courseClass = CourseClassRepo(enrollment.getCourseClassUUID()).get
+    val reqScore = courseClass.getRequiredScore
+    reqScore == null || {
+      val grades = enrollmentRepo.findGrades
+      val approved = grades forall { BigDecimal(_) > reqScore }
+      approved
+    }
+  }
+
 }

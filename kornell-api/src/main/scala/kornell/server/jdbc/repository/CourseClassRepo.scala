@@ -9,10 +9,13 @@ import kornell.core.to.CourseClassTO
 import kornell.core.to.CourseClassesTO
 
 class CourseClassRepo(uuid:String) {
-  
-  def get = sql"""
+  lazy val finder = sql"""
   select * from CourseClass where uuid=$uuid
-  """.get[CourseClass]
+  """
+  
+  def first = finder.first[CourseClass]
+  
+  def get = finder.get[CourseClass] 
   
   def version = CourseVersionRepo(get.getCourseVersionUUID())
   
