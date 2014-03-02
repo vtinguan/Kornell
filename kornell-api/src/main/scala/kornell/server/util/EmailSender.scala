@@ -15,18 +15,36 @@ import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 import javax.mail.Authenticator
+import kornell.core.util.StringUtils
 
 object EmailSender {
 
-  def sendEmail(subject: String, from: String, to: String, body: String, imgFile: File): Unit =
+  def sendEmail(subject: String,
+    from: String,
+    to: String,
+    body: String,
+    imgFile: File): Unit = sendEmail(subject,
+    from,
+    to,
+    REPLY_TO,
+    body,
+    imgFile)
+
+  def sendEmail(subject: String,
+    from: String,
+    to: String,
+    replyTo: String,
+    body: String,
+    imgFile: File): Unit =
     getEmailSession match {
       case Some(session) => {
+        val reply = Option(replyTo).getOrElse(from)
         val message = new MimeMessage(session);
         message.setFrom(new InternetAddress(from))
         message.setRecipients(Message.RecipientType.TO, to)
         message.setSentDate(new Date())
         message.setSubject(subject, "UTF-8")
-
+        message.setReplyTo(Array(new InternetAddress(reply)))
         // creates message part
         val messageBodyPart: MimeBodyPart = new MimeBodyPart()
         messageBodyPart.setContent(body, "text/html; charset=utf-8")
@@ -62,13 +80,12 @@ object EmailSender {
     props.put("mail.smtp.host", cfg.host)
     props.put("mail.smtp.port", cfg.port)
     props.put("mail.smtp.ssl.enable", "true");
-    
+
     props.put("mail.transport.protocol", "smtp");
     /*
     props.put("mail.smtp.starttls.enable", "true");
     props.put("mail.smtp.starttls.required", "true");
     */
-  
 
     Session.getDefaultInstance(props);
   }
@@ -77,6 +94,7 @@ object EmailSender {
   lazy val SMTP_PORT = Settings.get("SMTP_PORT").get
   lazy val SMTP_USERNAME = Settings.get("SMTP_USERNAME").get
   lazy val SMTP_PASSWORD = Settings.get("SMTP_PASSWORD").get
+  lazy val REPLY_TO = Settings.get("REPLY_TO").get
 
   lazy val smtp: Option[SMTPConfig] = environmentCfg
 
@@ -84,9 +102,6 @@ object EmailSender {
     new SMTPConfig(host, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD)
   }
 
-  //def main(args: Array[String]) {
-  //  EmailSender.sendEmail("teste", "cdf@craftware.com.br", "jfaerman@gmail.com", "9:02", null)
-  //}
 }
 
 case class SMTPConfig(host: String, port: String, username: String, password: String)

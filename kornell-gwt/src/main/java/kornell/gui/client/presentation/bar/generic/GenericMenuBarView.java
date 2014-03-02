@@ -139,6 +139,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 			name : name,			
 			id : personUUID
 		} ]);
+		$wnd.UserVoice.push([ 'identify', {
+			email : email, 
+			name : name,			
+			id : personUUID
+		} ]);
 		$wnd.UserVoice.push([ 'addTrigger', '#btnHelp', {} ]);
 	}-*/;
 
