@@ -1,6 +1,10 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
+import kornell.core.entity.Person;
+import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
@@ -62,9 +66,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	Button btnExit;
 	@UiField
 	Image imgMenuBar;
+	private KornellSession session;
 
 	public GenericMenuBarView(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
+		this.session = clientFactory.getKornellSession();
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		Dean localDean = Dean.getInstance();
@@ -107,19 +113,31 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		Element elHelp = btnHelp.getElement();
 		elHelp.setId("btnHelp");
 		elHelp.setAttribute("data-uv-trigger", "contact");
-		Scheduler.get().scheduleDeferred(new Command() {
+		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
-			public void execute() {
-				initUserVoice();
+			public void ok(final UserInfoTO user) {
+				Scheduler.get().scheduleDeferred(new Command() {
+					@Override
+					public void execute() {
+						Person person = user.getPerson();
+						initUserVoice(person.getUUID(), person.getFullName(),person.getEmail());
+					}
+				});
 			}
 		});
+
 	}
 
-	static native void initUserVoice() /*-{
+	static native void initUserVoice(String personUUID, String name, String email) /*-{
 		$wnd.UserVoice.push([ 'set', {
-			locale: 'pt-BR',
-			screenshot_enabled: false,
+			locale : 'pt-BR',
+			screenshot_enabled : false,
 			accent_color : 'black'
+		} ]);
+		$wnd.UserVoice.push([ 'identify', {
+			email : email, 
+			name : name,			
+			id : personUUID
 		} ]);
 		$wnd.UserVoice.push([ 'addTrigger', '#btnHelp', {} ]);
 	}-*/;

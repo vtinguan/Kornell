@@ -11,6 +11,15 @@ import kornell.core.to.CourseClassTO
 import kornell.core.entity.Course
 import kornell.server.repository.TOs
 
+/**
+ * Classes in this package are Data Access Objects for JDBC Databases
+ *
+ * This is the naming convention for methods in this package:
+ *
+ * first() => Return Option[T], when the result may not exist
+ * get() => Returns T, presuming the result exists
+ * find() => Return Collection[T], as the result of a query
+ */
 package object repository {
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
@@ -56,5 +65,5 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),
       EnrollmentState.valueOf(rs.getString("state")))
-      
+
 }
