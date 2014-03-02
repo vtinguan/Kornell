@@ -1,12 +1,15 @@
 package kornell.gui.client.presentation.welcome.generic;
 
 import kornell.api.client.KornellClient;
+import kornell.api.client.KornellSession;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.MenuLeftWelcomeEvent;
 import kornell.gui.client.event.MenuLeftWelcomeEventHandler;
+import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -26,10 +29,11 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	@UiField
 	FlowPanel pnlMenuLeft;
 	
-	private KornellClient client;
+	private KornellSession session;
 	private PlaceController placeCtrl;
 	private final EventBus bus;
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
+	private WelcomeView.Presenter presenter;
 	
 	private GenericMenuLeftView menuLeftView;	
 	private GenericWelcomeCoursesView coursesView;
@@ -43,10 +47,11 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	private static String PROFILE_VIEW = constants.profile();
 		
 	
-	public GenericWelcomeView(EventBus bus, KornellClient client, PlaceController placeCtrl) {
-		this.client = client;
+	public GenericWelcomeView(EventBus bus, KornellSession session, PlaceController placeCtrl) {
+		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.bus = bus;
+		initWidget(uiBinder.createAndBindUi(this));
 		
 		bus.addHandler(MenuLeftWelcomeEvent.TYPE, new MenuLeftWelcomeEventHandler() {
 			@Override
@@ -55,12 +60,21 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 			}
 		});
 		
-		initWidget(uiBinder.createAndBindUi(this));
+		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				if(event.getNewPlace() instanceof WelcomePlace)
+					initData();		
+			}
+		});
+		
 		initData();		
+		
 	}
 	
 	private void initData() {
-		pnlMenuLeft.add(getMenuLeft());
+		//pnlMenuLeft.add(getMenuLeft());
+		pnlMenuLeft.setVisible(false);
 		display(COURSES_VIEW);
 	}
 
@@ -82,36 +96,37 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 
 	private Widget getMenuLeft() {
 		if(menuLeftView == null)
-			menuLeftView = new GenericMenuLeftView(bus, client, placeCtrl);
+			menuLeftView = new GenericMenuLeftView(bus, session, placeCtrl);
 		return menuLeftView;
 	}
 
 	private Widget getCoursesView() {
-		if(coursesView == null)
-			coursesView = new GenericWelcomeCoursesView(client, placeCtrl);
+		coursesView = new GenericWelcomeCoursesView(bus, session, placeCtrl);
+		coursesView.setPresenter(presenter);
 		return coursesView;
 	}
 
 	private Widget getNotificationsView() {
 		if(notificationsView == null)
-			notificationsView = new GenericWelcomeNotificationsView(client, placeCtrl);
+			notificationsView = new GenericWelcomeNotificationsView(session, placeCtrl);
 		return notificationsView;
 	}
 
 	private Widget getMyParticipationView() {
 		if(myParticipationView == null)
-			myParticipationView = new GenericWelcomeMyParticipationView(client, placeCtrl);
+			myParticipationView = new GenericWelcomeMyParticipationView(session, placeCtrl);
 		return myParticipationView;
 	}
 
 	private Widget getProfileView() {
 		if(profileView == null)
-			profileView = new GenericWelcomeProfileView(client, placeCtrl);
+			profileView = new GenericWelcomeProfileView(session, placeCtrl);
 		return profileView;
 	}
-	
+
 	@Override
 	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
 	}
 
 }

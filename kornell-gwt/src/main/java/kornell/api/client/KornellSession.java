@@ -1,12 +1,13 @@
 package kornell.api.client;
 
-import com.google.gwt.core.shared.GWT;
-
 import kornell.core.entity.Role;
+import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
+
+import com.google.gwt.core.shared.GWT;
 
 public class KornellSession extends KornellClient {
 	private static final String SEPARATOR = ".";
@@ -57,50 +58,32 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isPlatformAdmin() {
-		return hasRole(RoleType.platformAdmin);
+		return hasRole(RoleType.platformAdmin, null, null);
+	}
+
+	public boolean isInstitutionAdmin(String institutionUUID) {
+		return hasRole(RoleType.institutionAdmin, institutionUUID, null) || isPlatformAdmin();
 	}
 
 	public boolean isInstitutionAdmin() {
-		return hasRole(RoleType.institutionAdmin) || isPlatformAdmin();
+		return isInstitutionAdmin(Dean.getInstance().getInstitution().getUUID());
+	}
+
+	public boolean isCourseClassAdmin(String courseClassUUID) {
+		return hasRole(RoleType.courseClassAdmin, null, courseClassUUID) || isInstitutionAdmin();
 	}
 
 	public boolean isCourseClassAdmin() {
-		return hasRole(RoleType.courseClassAdmin) || isInstitutionAdmin();
+		if(Dean.getInstance().getCourseClassTO() == null) return false;
+		return isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 	}
 
-	public boolean hasRole(RoleType type) {
+	private boolean hasRole(RoleType type, String institutionUUID, String courseClassUUID) {
 		if (currentUser == null)
 			return false;
 		for (Role role : currentUser.getRoles()) {
-			switch (role.getRoleType()) {
-			case user:
-				if (RoleType.user.equals(type))
-					return true;
-				break;
-			case courseClassAdmin:
-				if (Dean.getInstance().getCourseClassTO() != null
-						&& RoleType.courseClassAdmin.equals(type)
-						&& role.getCourseClassAdminRole()
-								.getCourseClassUUID()
-								.equals(Dean.getInstance().getCourseClassTO()
-										.getCourseClass().getUUID()))
-					return true;
-				break;
-			case institutionAdmin:
-				if (RoleType.institutionAdmin.equals(type)
-						&& role.getInstitutionAdminRole()
-								.getInstitutionUUID()
-								.equals(Dean.getInstance().getInstitution()
-										.getUUID()))
-					return true;
-				break;
-			case platformAdmin:
-				if (RoleType.platformAdmin.equals(type))
-					return true;
-				break;
-			default:
-				break;
-			}
+			if(RoleCategory.isValidRole(role, type, institutionUUID, courseClassUUID))
+				return true;
 		}
 		return false;
 	}

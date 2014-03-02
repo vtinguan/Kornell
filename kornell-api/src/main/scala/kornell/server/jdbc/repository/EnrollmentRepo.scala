@@ -8,30 +8,33 @@ import kornell.server.repository.Entities._
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 
+class EnrollmentRepo(enrollmentUUID: String) {
+  lazy val finder = sql"""
+	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
+      	| from Enrollment e where uuid = ${enrollmentUUID} 
+	    """
 
-class EnrollmentRepo (person: PersonRepo, course_uuid: String) {
+  def get:Enrollment = finder.get[Enrollment]
+  
+  def first: Option[Enrollment] =
+    finder.first[Enrollment]
 
-  def getPerson = person.get
-
-  def get: Enrollment = sql"""
-	  select * from Enrollment 
-	  were person_uuid=${person.uuid}
-	   and course_uuid=${course_uuid}"""
-    .first[Enrollment]
-    .get
-
-  def enroll() = {
+  def enroll(courseUUID: String, personUUID: String) = {
     val uuid = randomUUID
     sql""" 
     	insert into Enrollment(uuid,course_uuid,person_uuid,enrolledOn)
-    	values($randomUUID,$course_uuid,$person.uuid,now())
+    	values($randomUUID,${courseUUID},${personUUID} ,now())
     """.executeUpdate
     None
   }
 
+  def findGrades: List[String] = sql"""
+    	select * from ActomEntries
+    	where enrollment_uuid = ${enrollmentUUID}
+    	and entryKey = 'cmi.core.score.raw'
+    """.map { rs => rs.getString("entryValue") }
 }
 
 object EnrollmentRepo {
-  def apply(person: PersonRepo, course_uuid: String) =
-    new EnrollmentRepo(person, course_uuid)
+  def apply(uuid: String) = new EnrollmentRepo(uuid)
 }

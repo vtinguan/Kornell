@@ -80,18 +80,63 @@ object TOs {
     courseClassUUID: String,
     courseClassName: String,
     institutionUUID: String,
+    requiredScore:BigDecimal,
+    publicClass: Boolean): CourseClassTO = {
+      newCourseClassTO(
+          courseUUID, 
+          code, 
+          title, 
+          description, 
+          infoJson, 
+          courseVersionUUID, 
+          courseVersionName, 
+          repositoryUUID, 
+          versionCreatedAt, 
+          distributionPrefix, 
+          courseClassUUID,
+          courseClassName, 
+          institutionUUID, 
+          requiredScore,
+          publicClass,
+          null, 
+          null, 
+          null, 
+          null, 
+          null, 
+          null)
+    }
+  
+  def newCourseClassTO(
+    //course
+    courseUUID: String, 
+    code: String,
+    title: String, 
+    description: String,
+    infoJson: String,
+    //courseVersion
+    courseVersionUUID: String,
+    courseVersionName: String,
+    repositoryUUID: String, 
+    versionCreatedAt: Date,
+    distributionPrefix:String,
+    //courseClass
+    courseClassUUID: String,
+    courseClassName: String,
+    institutionUUID: String,
+    requiredScore: BigDecimal,
+    publicClass: Boolean,
     //enrollment
     enrollmentUUID: String, 
     enrolledOn: Date, 
     personUUID: String, 
     progress: String,
     notes: String,
-    enrollmentState: String) = {
+    enrollmentState: String): CourseClassTO = {
 	    val classTO = tos.newCourseClassTO.as
 	    val versionTO = tos.newCourseVersionTO.as
 	    val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
 	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt,distributionPrefix)
-	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID)
+	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID, requiredScore, publicClass)
 	    val s3 = S3(version.getRepositoryUUID)
 	    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL , s3.prefix))
 	    versionTO.setCourse(course)

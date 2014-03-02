@@ -4,6 +4,7 @@ import java.util.List;
 
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.to.CourseClassTO;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -16,6 +17,7 @@ public interface AdminHomeView extends IsWidget {
 		void onGoToCourseButtonClicked();
 		void onModalOkButtonClicked();
 		void onUserClicked(String uuid);
+		void updateCourseClass(CourseClassTO courseClass);
 	}
 
 	void setPresenter(Presenter presenter);
@@ -24,4 +26,5 @@ public interface AdminHomeView extends IsWidget {
 	void setModalErrors(String errors);
 	void setCourseClassName(String courseClassName);
 	void setCourseName(String courseName);
+	void setCourseClasses(List<CourseClassTO> courseClasses);
 }

@@ -15,6 +15,7 @@ import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.jdbc.SQL._
 import kornell.core.entity.Enrollment
 import kornell.core.entity.Enrollments
+import javax.ws.rs.POST
 
 //TODO: Rename path to "enrollment"
 @Path("enrollments")
@@ -23,6 +24,15 @@ class EnrollmentsResource {
 
   @Path("{uuid}")
   def get(@PathParam("uuid") uuid: String): EnrollmentResource = new EnrollmentResource(uuid)
+  
+  @POST
+  @Consumes(Array(Enrollment.TYPE))
+  @Produces(Array(Enrollment.TYPE))
+  def requestEnrollment(implicit @Context sc: SecurityContext, enrollment: Enrollment) = 
+    AuthRepo.withPerson { p => 
+    	val uuid = EnrollmentsRepo.createEnrollment(enrollment.getCourseClassUUID(), enrollment.getPerson().getUUID(), enrollment.getState())
+    	EnrollmentsRepo.byUUID(uuid).get
+  	}
 
   @GET
   @Produces(Array(Enrollments.TYPE))

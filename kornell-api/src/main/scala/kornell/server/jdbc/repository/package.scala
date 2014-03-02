@@ -15,7 +15,8 @@ package object repository {
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
-        r.getString("courseVersion_uuid"), r.getString("institution_uuid")) 
+        r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
+        r.getBigDecimal("requiredScore"), r.getBoolean("publicClass")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -42,13 +43,8 @@ package object repository {
     r.getString("courseClassUUID"),
     r.getString("courseClassName"), 
     r.getString("institutionUUID"),
-    //enrollment
-    r.getString("enrollmentUUID"), 
-    r.getDate("enrolledOn"), 
-    r.getString("personUUID"), 
-    r.getString("progress"), 
-    r.getString("notes"), 
-    r.getString("enrollmentState"))
+    r.getBigDecimal("requiredScore"),
+    r.getBoolean("publicClass"))
     
 
   implicit def toEnrollment(rs: ResultSet): Enrollment =

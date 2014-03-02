@@ -78,7 +78,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private UserInfoTO user;
 	private ClientFactory clientFactory;
 	
-	private Integer currentPage, totalPages, progressPercent;
+	private Integer currentPage = 1, totalPages = 1, progressPercent = 0;
 
 	private boolean isEnrolled;
 	
@@ -151,7 +151,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		updateProgressBarPanel();
 	}
 	
-	private void updateProgressBarPanel(){
+	private void updateProgressBarPanel(){		
 		progressBarPanel.clear();
 		
 		ProgressBar  progressBar = new ProgressBar();
@@ -166,7 +166,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			pagePanel.add(createSpan("concluído", false));
 		} else {
 			pagePanel.add(createSpan("Página", false));
-			pagePanel.add(createSpan(""+currentPage, true));
+			pagePanel.add(createSpan(currentPage == 0 ? "-" : ""+currentPage, true));
 			pagePanel.add(createSpan("/", false));
 			pagePanel.add(createSpan(""+totalPages, false));
 		}
@@ -288,11 +288,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	@Override
 	public void onProgressChange(ProgressChangeEvent event) {
-		updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
-		enablePrev = event.hasPrevious();
-		enableNext = event.hasNext();
-		enableButton(BUTTON_PREVIOUS, enablePrev);
-		enableButton(BUTTON_NEXT, enableNext);
+		if(event.getCurrentPage() != 0){
+			updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
+			enablePrev = event.hasPrevious();
+			enableNext = event.hasNext();
+			enableButton(BUTTON_PREVIOUS, enablePrev);
+			enableButton(BUTTON_NEXT, enableNext);
+			clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(showDetails));
+		}
 	}
 	
 	@UiHandler("btnDetails")
