@@ -23,12 +23,13 @@ object EmailSender {
     from: String,
     to: String,
     body: String,
-    imgFile: File): Unit = sendEmail(subject,
-    from,
-    to,
-    REPLY_TO,
-    body,
-    imgFile)
+    imgFile: File): Unit =
+    sendEmail(subject,
+      from,
+      to,
+      Settings.get("REPLY_TO").getOrElse(from),
+      body,
+      imgFile)
 
   def sendEmail(subject: String,
     from: String,
@@ -38,13 +39,12 @@ object EmailSender {
     imgFile: File): Unit =
     getEmailSession match {
       case Some(session) => {
-        val reply = Option(replyTo).getOrElse(from)
         val message = new MimeMessage(session);
         message.setFrom(new InternetAddress(from))
         message.setRecipients(Message.RecipientType.TO, to)
         message.setSentDate(new Date())
         message.setSubject(subject, "UTF-8")
-        message.setReplyTo(Array(new InternetAddress(reply)))
+        message.setReplyTo(Array(new InternetAddress(replyTo)))
         // creates message part
         val messageBodyPart: MimeBodyPart = new MimeBodyPart()
         messageBodyPart.setContent(body, "text/html; charset=utf-8")
@@ -94,7 +94,6 @@ object EmailSender {
   lazy val SMTP_PORT = Settings.get("SMTP_PORT").get
   lazy val SMTP_USERNAME = Settings.get("SMTP_USERNAME").get
   lazy val SMTP_PASSWORD = Settings.get("SMTP_PASSWORD").get
-  lazy val REPLY_TO = Settings.get("REPLY_TO").get
 
   lazy val smtp: Option[SMTPConfig] = environmentCfg
 
