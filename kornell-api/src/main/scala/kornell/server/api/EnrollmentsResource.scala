@@ -3,6 +3,7 @@ package kornell.server.api
 import javax.ws.rs.Produces
 import javax.ws.rs.Consumes
 import javax.ws.rs.core.SecurityContext
+import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.jdbc.repository.EnrollmentsRepo
 import javax.ws.rs.PathParam
 import javax.ws.rs.QueryParam
@@ -31,7 +32,7 @@ class EnrollmentsResource {
   def requestEnrollment(implicit @Context sc: SecurityContext, enrollment: Enrollment) = 
     AuthRepo.withPerson { p => 
     	val uuid = EnrollmentsRepo.createEnrollment(enrollment.getCourseClassUUID(), enrollment.getPerson().getUUID(), enrollment.getState())
-    	EnrollmentsRepo.byUUID(uuid).get
+    	EnrollmentRepo(uuid).get
   	}
 
   @GET

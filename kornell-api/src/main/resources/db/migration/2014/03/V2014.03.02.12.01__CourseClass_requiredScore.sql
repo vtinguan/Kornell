@@ -1,0 +1,1 @@
+alter table CourseClass add column requiredScore decimal(5,2);

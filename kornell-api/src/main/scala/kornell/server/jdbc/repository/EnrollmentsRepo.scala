@@ -79,8 +79,9 @@ object EnrollmentsRepo {
     val uuid = randomUUID
     sql""" 
     	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state)
-    	values($randomUUID,$courseClassUUID,$person_uuid,now(),${state.toString()})
+    	values($uuid,$courseClassUUID,$person_uuid,now(),${state.toString()})
     """.executeUpdate
+    uuid
   }
 
   def find(person: PersonRepo, course_uuid: String): Enrollment = sql"""

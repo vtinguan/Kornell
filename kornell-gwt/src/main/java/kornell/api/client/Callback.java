@@ -66,7 +66,11 @@ public abstract class Callback<T> implements RequestCallback {
 		String contentType = contentTypeHeader.toLowerCase();
 		String responseText = response.getText();
 
-		if (contentType.contains("json")) {
+		if (contentType.equals("application/boolean")){
+			T bool = bool(responseText);
+			ok(bool);
+		}
+		else if (contentType.contains("json")) {
 			if (MediaTypes.get().containsType(contentType)) {
 				@SuppressWarnings("unchecked")
 				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
@@ -89,6 +93,12 @@ public abstract class Callback<T> implements RequestCallback {
 				ok(Callback.parseJson(responseText));
 
 		} else ok((T) null); //TODO: Consider throwing exception "unknow response type" instead, but map "text/*" and "application/*" first
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	private T bool(String responseText) {		
+		return (T) Boolean.valueOf(responseText);
 	}
 
 	private AutoBeanFactory factoryFor(String contentType) {

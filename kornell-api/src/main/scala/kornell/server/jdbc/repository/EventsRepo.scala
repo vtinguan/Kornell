@@ -9,8 +9,9 @@ import kornell.core.entity.EnrollmentState
 import kornell.server.util.EmailService
 import kornell.core.entity.CourseClass
 import kornell.core.entity.Enrollment
-import kornell.server.jdbc.SQL._ 
+import kornell.server.jdbc.SQL._
 import kornell.core.event.ActomEntered
+import kornell.server.jdbc.repository.EnrollmentRepo
 
 
 object EventsRepo {
@@ -43,7 +44,7 @@ object EventsRepo {
 		""".executeUpdate
 		
 	  if(EnrollmentState.preEnrolled.equals(toState) || EnrollmentState.enrolled.equals(toState)){
-	    val enrollment = EnrollmentsRepo.byUUID(enrollmentUUID).get
+	    val enrollment = EnrollmentRepo(enrollmentUUID).get
 	    val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
 	    val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
 	    val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get

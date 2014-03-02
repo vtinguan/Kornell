@@ -102,7 +102,7 @@ object CourseClassesRepo {
   }
 
   private def bindEnrollment(personUUID: String, courseClassTO: CourseClassTO) = {
-    val enrollment = EnrollmentRepo(personUUID, courseClassTO.getCourseClass().getUUID()).get
+    val enrollment = EnrollmentsRepo.byCourseClassAndPerson(courseClassTO.getCourseClass().getUUID(), personUUID)
     if(enrollment.isDefined)
     	courseClassTO.setEnrollment(enrollment.get)
   }
