@@ -78,7 +78,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private UserInfoTO user;
 	private ClientFactory clientFactory;
 	
-	private Integer currentPage = 1, totalPages = 1, progressPercent = 0;
+	private Integer currentPage = 0, totalPages = 0, progressPercent = 0;
 
 	private boolean isEnrolled;
 	

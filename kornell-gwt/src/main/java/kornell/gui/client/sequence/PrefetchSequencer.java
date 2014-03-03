@@ -60,13 +60,13 @@ public class PrefetchSequencer implements Sequencer {
 
 	@Override
 	public void onPrevious(NavigationRequest event) {
-		if (doesntHavePrev())
+		if (doesntHavePrevious())
 			return;
 		removeNext();
 		makeCurrentNext();
 		makePrevCurrent();
 		currentIndex--;
-		preloadPrev();
+		preloadPrevious();
 		makeCurrentVisible();
 		dropBreadcrumb();
 		debug("PREVED");
@@ -123,20 +123,12 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private boolean doesntHavePrevious() {
-		return actoms != null && currentIndex <= 1;
+		return actoms != null && currentIndex <= 0;
 	}
 
 	private void makeCurrentPrevious() {
 		prevActom = currentActom;
 		prevUidget = currentUidget;
-	}
-
-	private void removePrevious() {
-		if (contentPanel.getWidgetIndex(prevUidget) == -1)
-			return;
-
-		contentPanel.remove(prevUidget);
-		prevActom = null;
 	}
 
 	private void makeNextCurrent() {
@@ -167,38 +159,36 @@ public class PrefetchSequencer implements Sequencer {
 		currentActom.setVisited(true);
 		fireProgressChangeEvent();
 	}
-
-	private boolean doesntHavePrev() {
-		return currentIndex == 0;
-	}
-
-	private void preloadPrev() {
-		if (currentIndex > 0) {
-			prevActom = actoms.get(currentIndex - 1);
-			prevUidget = uidgetFor(prevActom);
-			prevUidget.setVisible(false);
-			contentPanel.add(prevUidget);
-		} else {
-			prevActom = null;
-			prevUidget = null;
-		}
-	}
-
+	
 	private void makeCurrentNext() {
 		nextUidget = currentUidget;
 		nextActom = currentActom;
 	}
 
+	private void removePrevious() {
+		prevUidget = null;
+		prevActom = null;
+		updateContentPanel();
+	}
+
 	private void removeNext() {
-		if (nextUidget != null)
-			contentPanel.remove(nextUidget);
+		nextUidget = null;
 		nextActom = null;
+		updateContentPanel();
 	}
 
 	private void removeCurrent() {
-		if (currentUidget != null)
-			contentPanel.remove(currentUidget);
+		currentUidget = null;
 		currentActom = null;
+		updateContentPanel();
+	}
+	
+	private void updateContentPanel(){
+		contentPanel.clear();
+		if(currentUidget != null) contentPanel.add(currentUidget);
+		if(nextUidget != null) contentPanel.add(nextUidget);
+		if(prevUidget != null) contentPanel.add(prevUidget);
+		makeCurrentVisible();
 	}
 
 	private void makePrevCurrent() {
@@ -267,6 +257,7 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void initialLoad() {
+		contentPanel.clear();
 		showCurrentASAP();
 		preloadNext();
 		preloadPrevious();
@@ -281,8 +272,7 @@ public class PrefetchSequencer implements Sequencer {
 			int nextIndex = currentIndex + 1;
 			nextActom = actoms.get(nextIndex);
 			nextUidget = uidgetFor(nextActom);
-			nextUidget.setVisible(false);
-			contentPanel.add(nextUidget);
+			updateContentPanel();
 		}
 	}
 
@@ -294,14 +284,13 @@ public class PrefetchSequencer implements Sequencer {
 			int previousIndex = currentIndex - 1;
 			prevActom = actoms.get(previousIndex);
 			prevUidget = uidgetFor(prevActom);
-			prevUidget.setVisible(false);
-			contentPanel.add(prevUidget);
+			updateContentPanel();
 		}
 	}
 
 	private void showCurrentASAP() {
 		currentUidget = uidgetFor(currentActom);
-		contentPanel.add(currentUidget);
+		updateContentPanel();
 		currentUidget.setVisible(false);
 		currentUidget.onViewReady(new ShowWhenReady(currentUidget));
 		dropBreadcrumb();
@@ -336,5 +325,12 @@ public class PrefetchSequencer implements Sequencer {
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
 		progressChangeEvent.setEnrollmentUUID(enrollmentUUID);
 		bus.fireEvent(progressChangeEvent);
+	}
+
+	@Override
+	public void stop() {
+		removeCurrent();
+		removeNext();
+		removePrevious();
 	}
 }
