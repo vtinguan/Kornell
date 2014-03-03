@@ -91,6 +91,11 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				.withPanel(getPanel())
 				.go(contents);
 	}
+
+	@Override
+	public void stopSequencer() {
+		sequencer.withPlace(place).stop();
+	}
 	
 	@Override
 	public Contents getContents(){

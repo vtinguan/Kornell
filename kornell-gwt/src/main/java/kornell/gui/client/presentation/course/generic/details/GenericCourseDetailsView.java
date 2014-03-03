@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.course.generic.details;
 import java.util.ArrayList;
 import java.util.List;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
@@ -21,9 +22,11 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
+import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.ClassroomView.Presenter;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.sequence.PrefetchSequencer;
@@ -223,12 +226,11 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private void displayTopics() {
-		boolean startOpened = (contents.getChildren().size() == 1);
 		int i = 0;
 		ExternalPage page;
 		boolean enableAnchorOnNextTopicsFirstChild = true;
 		for (Content content: contents.getChildren()) {
-			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, Dean.getInstance().getCourseClassTO(), content, i++, startOpened, enableAnchorOnNextTopicsFirstChild));
+			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, Dean.getInstance().getCourseClassTO(), content, i++, enableAnchorOnNextTopicsFirstChild));
 			enableAnchorOnNextTopicsFirstChild = true;
 			List<Content> children = new ArrayList<Content>();
 			if(ContentFormat.Topic.equals(content.getFormat()) ){

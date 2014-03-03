@@ -66,8 +66,7 @@ public class GenericTopicView extends Composite {
 
 	public GenericTopicView(EventBus eventBus, KornellClient client,
 			PlaceController placeCtrl, KornellSession session,
-			CourseClassTO currentCourse, Content content, int index,
-			final boolean startOpened, boolean enableAnchorOnFirstChild) {
+			CourseClassTO currentCourse, Content content, int index, boolean enableAnchorOnFirstChild) {
 		this.bus = eventBus;
 		this.client = client;
 		this.placeCtrl = placeCtrl;
@@ -75,7 +74,6 @@ public class GenericTopicView extends Composite {
 		this.content = content;
 		this.currentCourse = currentCourse;
 		this.index = index;
-		this.startOpened = startOpened;
 		this.enableAnchorOnFirstChild = enableAnchorOnFirstChild;
 		initWidget(uiBinder.createAndBindUi(this));
 		
@@ -102,8 +100,7 @@ public class GenericTopicView extends Composite {
 	private void display() {
 		trigger.setTarget("#toggle" + index);
 		collapse.setId("toggle" + index);
-		updateIconURL(startOpened);
-		collapse.setDefaultOpen(startOpened);
+		updateIconURL(false);
 		
 		String topicName = "???Topic???";
 		Topic topic = content.getTopic();
@@ -113,10 +110,11 @@ public class GenericTopicView extends Composite {
 			children = topic.getChildren();
 		}
 		lblTopic.setText(topicName);
-		
+			
 		ExternalPage page;
-		boolean isPreviousPageVisited = (index == 1);
+		boolean isPreviousPageVisited = (index == 0);
 		int childrenIndex = 0;
+		
 		 
 		for (Content contentItem : children) {
 			page = contentItem.getExternalPage();
