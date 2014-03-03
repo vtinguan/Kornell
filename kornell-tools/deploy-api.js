@@ -4,8 +4,7 @@ var fileName = process.env.KNL_API_WAR || 'kornell-api/kornell-api.war';
 var environment = process.env.EB_ENVIRONMENT;
 
 var version = 'kornell-api-'
-		+ new Date().toISOString().replace(/T/, '_').replace(/\:/g, '_')
-				.replace(/\..+/, '')
+		+ new Date().toISOString().replace(/T/, '_').replace(/\:/g, '_').replace(/\..+/, '')
 var bucket = "kornell-artifacts";
 var key = 'kornell-api/' + version + '.war';
 var application = 'eduvem-api'
@@ -123,7 +122,7 @@ function createVersion(err, data) {
 }
 
 function uploadBundle(err, data) {
-	console.log("* Uploading Bundle")
+	console.log("* Uploading Bundle [s3://"+bucket+"/"+key+"] ["+data+"]")
 	if (err)
 		throw err
 	S3.putObject({
