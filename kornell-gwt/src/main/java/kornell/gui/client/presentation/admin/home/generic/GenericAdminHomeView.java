@@ -8,6 +8,7 @@ import java.util.List;
 
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.uidget.KornellPagination;
@@ -69,11 +70,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private List<Enrollment> enrollmentsCurrent;
 	private List<Enrollment> enrollments;
 	private KornellPagination pagination;
-
 	private TextBox txtSearch;
 	private Button btnSearch;
+	private List<CourseClassTO> courseClasses;
 	
 	private boolean forbidProfileView;
+
+	@UiField
+	ListBox listBoxCourseClasses;
 	
 	@UiField
 	Button btnAddEnrollment;
@@ -129,6 +133,19 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
+		
+		listBoxCourseClasses.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
+				for (CourseClassTO courseClassTO : courseClasses) {
+					if(newCourseClassUUID.equals(courseClassTO.getCourseClass().getUUID())){
+						presenter.updateCourseClass(courseClassTO);
+						break;
+					}
+				}
+			}
+		});
 	}
 
 	private void initSearch() {
@@ -456,5 +473,18 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@Override
 	public void setCourseName(String courseName) {
 		this.lblCourseName.setText(courseName);
+	}
+
+	@Override
+	public void setCourseClasses(List<CourseClassTO> courseClasses) {
+		this.courseClasses = courseClasses;
+		listBoxCourseClasses.clear();
+		String name, value;
+		for (CourseClassTO courseClassTO : courseClasses) {
+			name = courseClassTO.getCourseVersionTO().getCourse().getTitle() + " - " + courseClassTO.getCourseClass().getName();
+			value = courseClassTO.getCourseClass().getUUID();
+			listBoxCourseClasses.addItem(name, value);
+		}		
+		presenter.updateCourseClass(courseClasses.get(0));
 	}
 }

@@ -65,9 +65,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 	}
 
 	private ActivityBarView getActivityBarView() {
-		if (activityBarView == null)
-			activityBarView = new GenericActivityBarView(clientFactory);
-		return activityBarView;
+		return new GenericActivityBarView(clientFactory);
 	}
 
 	private AdminBarView getAdminBarView(Place newPlace) {

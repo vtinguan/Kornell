@@ -33,6 +33,7 @@ public class Captain implements LogoutEventHandler, LoginEventHandler{
 	@Override
 	public void onLogout() {		
 		session.logout();
+		Window.Location.reload();
 		placeCtrl.goTo(VitrinePlace.instance);
 	}
 

@@ -4,6 +4,7 @@ package kornell.gui.client.presentation.welcome.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.to.CourseClassesTO;
+import kornell.gui.client.personnel.Dean;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
@@ -44,13 +45,13 @@ public class GenericMenuLeftView extends Composite {
 		this.client = client;
 		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
-		initData();		
+		//initData();		
 	}
 
 	private void initData() {
 		
 
-		client.getCourseClassesTO(new Callback<CourseClassesTO>() {
+		client.getCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO tos) {
 				courseClassesTO = tos;

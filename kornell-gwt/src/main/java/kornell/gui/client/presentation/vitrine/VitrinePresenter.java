@@ -13,12 +13,12 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -82,7 +82,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			}
 
 			private void doLogin(final UserInfoTO user) {
-				clientFactory.getKornellSession().getCourseClassesTO(
+				clientFactory.getKornellSession().getCourseClassesTOByInstitution(
+						Dean.getInstance().getInstitution().getUUID(),
 						new Callback<CourseClassesTO>() {
 							@Override
 							public void ok(CourseClassesTO courseClasses) {
@@ -144,12 +145,11 @@ public class VitrinePresenter implements VitrineView.Presenter {
 									} else {
 										// TODO what if the user visited a class
 										// from another institution?
-										// place =
-										// clientFactory.getHistoryMapper().getPlace(user.getLastPlaceVisited());
 										if (clientFactory.getKornellSession()
 												.isCourseClassAdmin()) {
 											clientFactory.getPlaceController()
-													.goTo(new AdminHomePlace());
+													.goTo(new WelcomePlace());
+											//TODO adminhome
 										} else {
 											clientFactory.getPlaceController()
 													.goTo(clientFactory

@@ -46,7 +46,6 @@ public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
 	}
 
 	public Integer getProgressPercent() {
-		if(pagesVisitedCount == 1) return 0;
 		return (pagesVisitedCount * 100)/totalPages;
 	}
 

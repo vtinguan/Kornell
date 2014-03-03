@@ -190,9 +190,8 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		return sandboxPresenter;
 	}
 
-	// dean
 	@Override
-	public AdminHomeView getDeanHomeView() {
+	public AdminHomeView getAdminHomeView() {
 		return new GenericAdminHomeView();
 	}
 

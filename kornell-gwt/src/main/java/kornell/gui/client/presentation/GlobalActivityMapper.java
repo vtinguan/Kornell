@@ -32,52 +32,55 @@ import com.google.gwt.place.shared.Place;
  * A mapping of places to activities used by this application.
  */
 public class GlobalActivityMapper implements ActivityMapper {
-	private ClientFactory factory;
+	private ClientFactory clientFactory;
 
 	public GlobalActivityMapper(ClientFactory clientFactory) {
-		this.factory = clientFactory;
+		this.clientFactory = clientFactory;
 	}
 
 	/** TODO: This may suck fast */
 	public Activity getActivity(final Place place) {
 		GWT.log("GlobalActivityMapper " + place.toString());
 		
+		if(!clientFactory.getKornellSession().isAuthenticated())
+			return new VitrineActivity(clientFactory);
+		
 		// TODO: Cache and log mapping
 		if (place instanceof HomePlace) {
-			return new HomeActivity(factory);
+			return new HomeActivity(clientFactory);
 		}
 		if (place instanceof VitrinePlace) {
-			return new VitrineActivity(factory);
+			return new VitrineActivity(clientFactory);
 		}
 		if (place instanceof TermsPlace) {
-			return new TermsActivity(factory);
+			return new TermsActivity(clientFactory);
 		}
 		if (place instanceof WelcomePlace) {
-			return new WelcomeActivity(factory);
+			return new WelcomeActivity(clientFactory);
 		}
 		if (place instanceof ProfilePlace) {
-			return new ProfileActivity(factory);
+			return new ProfileActivity(clientFactory);
 		}
 		if (place instanceof CourseLibraryPlace) {
-			CourseLibraryPresenter courseLibraryPresenter = factory
+			CourseLibraryPresenter courseLibraryPresenter = clientFactory
 					.getViewFactory().getCourseLibraryPresenter();
 			courseLibraryPresenter.setPlace((CourseLibraryPlace) place);
 			return new CourseLibraryActivity(courseLibraryPresenter);
 		}
 		if (place instanceof ClassroomPlace) {
-			ClassroomPresenter coursePresenter = factory.getViewFactory().getClassroomPresenter();
+			ClassroomPresenter coursePresenter = clientFactory.getViewFactory().getClassroomPresenter();
 			coursePresenter.setPlace((ClassroomPlace) place);
 			ClassroomActivity courseActivity = new ClassroomActivity(coursePresenter);
 			return courseActivity;
 		}
 		if (place instanceof SandboxPlace) {
-			SandboxPresenter sandboxPresenter = factory.getViewFactory().getSandboxPresenter();
+			SandboxPresenter sandboxPresenter = clientFactory.getViewFactory().getSandboxPresenter();
 			sandboxPresenter.setPlace((SandboxPlace) place);
 			return new SandboxActivity(sandboxPresenter);
 		}
 		//dean
 		if (place instanceof AdminHomePlace) {
-			return new AdminHomeActivity(factory);
+			return new AdminHomeActivity(clientFactory);
 		}
 		return null;
 	}

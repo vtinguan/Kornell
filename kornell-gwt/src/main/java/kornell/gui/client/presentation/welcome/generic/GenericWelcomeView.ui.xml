@@ -1,17 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
-	<g:HorizontalPanel>
+	<g:FlowPanel styleName="welcomePanel">
 		<g:FlowPanel ui:field="pnlMenuLeft"/>
 		<g:FlowPanel ui:field="pnlWelcome"/>
-	</g:HorizontalPanel>
+	</g:FlowPanel>
 </ui:UiBinder>
-
-
-
-
-
-
-
-
-
-
