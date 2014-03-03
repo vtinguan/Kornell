@@ -1,1 +1,0 @@
-alter table CourseClass add column public boolean default false;
