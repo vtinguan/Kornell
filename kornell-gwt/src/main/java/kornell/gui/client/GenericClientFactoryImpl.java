@@ -20,6 +20,7 @@ import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
 import kornell.scorm.client.scorm12.SCORM12Adapter;
 import kornell.scorm.client.scorm12.SCORM12Binder;
@@ -71,9 +72,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
-		historyHandler.handleCurrentHistory();
-		if (!session.isAuthenticated())
+		if (!session.isAuthenticated()){
 			placeCtrl.goTo(defaultPlace);
+		}
+		historyHandler.handleCurrentHistory();
 	}
 
 	@Override
@@ -81,20 +83,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(final CourseClassesTO courseClasses) {
-				CourseClassTO courseClassTO = null;
-				for (CourseClassTO courseClassTmp : courseClasses.getCourseClasses()) {
-					if (courseClassTmp.getCourseClass().getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())) {
-						courseClassTO = courseClassTmp;
-					}
-				}
-				if(courseClassTO != null){
-					Dean.getInstance().setCourseClassTO(courseClassTO);
-					setDefaultPlace(new ClassroomPlace(courseClassTO.getEnrollment().getUUID()));
-					startAuthenticated(session);
-				} else {
-					setDefaultPlace(new VitrinePlace());
-					startAnonymous();
-				}
+				Dean.getInstance().setCourseClassesTO(courseClasses);
+				setDefaultPlace(new WelcomePlace());
+				startAuthenticated(session);
 			}
 		};
 		
@@ -103,7 +94,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			public void ok(final Institution institution) {
 				Dean.init(session, bus, institution);
 				if (session.isAuthenticated()) {
-					session.getCourseClassesTO(courseClassesCallback);
+					session.getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 				} else {
 					startAnonymous();
 				}
@@ -122,7 +113,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			
 			@Override
 			protected void unauthorized() {
-				startAnonymous();
+				session.getInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
 			}
 			
 		});		

@@ -163,13 +163,14 @@ object Entities {
     version
   }
   
-  def newCourseClass(uuid:String,name:String,courseVersionUUID:String,institutionUUID:String, requiredScore:BigDecimal) = {
+  def newCourseClass(uuid:String,name:String,courseVersionUUID:String,institutionUUID:String,requiredScore:BigDecimal,publicClass:Boolean) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
     clazz.setCourseVersionUUID(courseVersionUUID)
     clazz.setInstitutionUUID(institutionUUID)
     clazz.setRequiredScore(requiredScore)
+    clazz.setPublicClass(publicClass)
     clazz
   }
   

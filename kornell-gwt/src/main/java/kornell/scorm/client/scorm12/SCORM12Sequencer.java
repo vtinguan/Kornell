@@ -52,7 +52,11 @@ public class SCORM12Sequencer implements Sequencer{
 	@Override
 	public void go(Contents contents) {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
 	}
 
 }

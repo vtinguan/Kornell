@@ -1,10 +1,13 @@
 package kornell.gui.client.personnel;
 
+import java.util.List;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
@@ -23,7 +26,8 @@ public class Dean implements ProgressChangeEventHandler{
 
 	private Institution institution;
 	private CourseClassTO courseClassTO;
-	
+	private CourseClassesTO courseClassesTO; 
+
 	public static Dean getInstance() {
 	   return instance;
 	}
@@ -94,6 +98,23 @@ public class Dean implements ProgressChangeEventHandler{
 
 	public void setCourseClassTO(CourseClassTO courseClassTO) {
 		this.courseClassTO = courseClassTO;
+	}
+	
+	public void setCourseClassTO(String uuid){
+		for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+			if(courseClassTO.getCourseClass().getUUID().equals(uuid)){
+				this.courseClassTO = courseClassTO;
+				return;
+			}
+		}
+	}
+	
+	public CourseClassesTO getCourseClassesTO() {
+		return courseClassesTO;
+	}
+
+	public void setCourseClassesTO(CourseClassesTO courseClassesTO) {
+		this.courseClassesTO = courseClassesTO;
 	}
 
 }

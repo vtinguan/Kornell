@@ -16,4 +16,9 @@ public class WelcomePlace extends Place{
 			return "";
 		}
 	}
+	
+	@Override
+	public String toString() {		
+		return new Tokenizer().getToken(this);
+	}
 }

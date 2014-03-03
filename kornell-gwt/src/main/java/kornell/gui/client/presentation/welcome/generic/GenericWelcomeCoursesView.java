@@ -1,9 +1,15 @@
 package kornell.gui.client.presentation.welcome.generic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.Enrollment;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
+import kornell.core.to.EnrollmentsTO;
+import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.welcome.WelcomeView;
@@ -80,7 +86,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	private static String COURSES_TO_ACQUIRE = "toAcquire";
 	private static String COURSES_FINISHED = "finished";
 	
-	private KornellClient client;
+	private KornellSession session;
 
 	private PlaceController placeCtrl;
 	
@@ -89,31 +95,48 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	private final EventBus eventBus = new SimpleEventBus();
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
+
+	public static final TOFactory toFactory = GWT.create(TOFactory.class);
+	private WelcomeView.Presenter presenter;
 	
 	
-	public GenericWelcomeCoursesView(KornellClient client, PlaceController placeCtrl) {
-		this.client = client;
+	public GenericWelcomeCoursesView(EventBus bus, KornellSession session, PlaceController placeCtrl) {
+		this.session = session;
 		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();		
 	}
 	
 	private void initData() {
-		client.getCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
+		session.getCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO tos) {
+				Dean.getInstance().setCourseClassesTO(tos);
 				if(displayCourses == null)
 					displayCourses = COURSES_ALL;
+				updateUserEnrollments(tos);
 				display(tos);
 			}
 		});
+	}
+
+	private void updateUserEnrollments(CourseClassesTO tos) {
+		EnrollmentsTO enrollmentsTO = toFactory.newEnrollmentsTO().as();
+		List<Enrollment> enrollments = new ArrayList<Enrollment>();
+		for (CourseClassTO courseClassTO : tos.getCourseClasses()) {
+			if(courseClassTO.getEnrollment() != null){
+				enrollments.add(courseClassTO.getEnrollment());
+			}
+		}
+		enrollmentsTO.setEnrollments(enrollments);
+		session.getCurrentUser().setEnrollmentsTO(enrollmentsTO);
 	}
 
 
 	private void display(CourseClassesTO tos) {
 		clearPanels();
 		for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
-			GenericCourseSummaryView courseSummaryView = new GenericCourseSummaryView(placeCtrl,courseClassTO);
+			GenericCourseSummaryView courseSummaryView = new GenericCourseSummaryView(placeCtrl,courseClassTO, session);
 			if(courseClassTO.getEnrollment() == null){
 				pnlCoursesToAcquire.add(courseSummaryView);
 			}
@@ -130,6 +153,14 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		disablePanels();
 		refreshButtonsSelection();
 		btnCoursesAll.setText(constants.allCourses());
+		
+		if(tos.getCourseClasses().size() <= 1){
+			btnCoursesAll.setVisible(false);
+			btnCoursesInProgress.setVisible(false);
+			btnCoursesToStart.setVisible(false);
+			btnCoursesToAcquire.setVisible(false);
+			btnCoursesFinished.setVisible(false);
+		}
 
 		if(pnlCoursesInProgress.getWidgetCount() > 0){
 			labelCoursesInProgress.setText(constants.coursesInProgress());
@@ -265,6 +296,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 
 	@Override
 	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
 	}
 
 }

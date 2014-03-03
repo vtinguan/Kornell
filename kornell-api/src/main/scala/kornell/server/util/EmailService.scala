@@ -69,6 +69,7 @@ object EmailService {
     		getSignature(institution, from))
 			
     val imgFile = getInstitutionLogoImage(institution)
+    println("about to send email...")
     EmailSender.sendEmail(subject, from, to, body, imgFile)
   }
   

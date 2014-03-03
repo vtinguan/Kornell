@@ -10,6 +10,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Contents;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.Kornell;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.sequence.SequencerFactory;
@@ -28,6 +29,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private KornellSession session;
 	private EventBus bus;
 	private Contents contents;
+	private boolean sequencerInitialized = false;
 
 	public ClassroomPresenter(ClassroomView view,
 			PlaceController placeCtrl,
@@ -47,7 +49,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 			placeCtrl.goTo(new VitrinePlace());
 			return;
 		}
-		
+		view.asWidget().setVisible(false);
 		LoadingPopup.show();				
 		session.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
 			@Override
@@ -56,21 +58,22 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				boolean isEnrolled = false;
 				UserInfoTO user = session.getCurrentUser();
 				for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
-					if(enrollment.getUUID().equals(enrollmentUUID)
-							&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||
-									(EnrollmentState.enrolled.equals(enrollment.getState())))){
-						isEnrolled = true;
+					if(enrollment.getUUID().equals(enrollmentUUID)){
+						Dean.getInstance().setCourseClassTO(enrollment.getCourseClassUUID());
+						if(EnrollmentState.enrolled.equals(enrollment.getState()) ||
+									(EnrollmentState.enrolled.equals(enrollment.getState()))){
+							isEnrolled = true;
+						}
 						break;
 					}
 				}
-
 				LoadingPopup.hide();
 				setContents(contents);
-				view.display(isEnrolled);
-				sequencer.withPlace(place)
-						.withPanel(getPanel())
-						.go(contents);
-				
+				view.display(isEnrolled);			
+				if(isEnrolled){
+					startSequencer();
+				}
+				view.asWidget().setVisible(true);
 			}
 
 		});
@@ -78,6 +81,20 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 
 	private FlowPanel getPanel() {
 		return view.getContentPanel();
+	}
+
+	@Override
+	public void startSequencer() {
+		/*if(this.sequencerInitialized) return;
+		this.sequencerInitialized = true;*/
+		sequencer.withPlace(place)
+				.withPanel(getPanel())
+				.go(contents);
+	}
+
+	@Override
+	public void stopSequencer() {
+		sequencer.withPlace(place).stop();
 	}
 	
 	@Override

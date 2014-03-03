@@ -12,4 +12,7 @@ public interface CourseClass extends Named{
 	
 	BigDecimal getRequiredScore();
 	void setRequiredScore(BigDecimal requiredScore);
+	
+	Boolean isPublicClass();
+	void setPublicClass(Boolean publicClass);
 }

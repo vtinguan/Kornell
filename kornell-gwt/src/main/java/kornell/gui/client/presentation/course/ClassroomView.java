@@ -9,6 +9,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface ClassroomView  extends IsWidget{
 	public interface Presenter extends IsWidget {
 		Contents getContents();
+		void startSequencer();
+		void stopSequencer();
 	}
 
 	FlowPanel getContentPanel();

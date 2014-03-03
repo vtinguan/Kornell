@@ -1,10 +1,14 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
+import kornell.gui.client.event.ShowDetailsEvent;
+import kornell.gui.client.event.ShowDetailsEventHandler;
+import kornell.gui.client.personnel.Dean;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,7 +24,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericCertificationItemView extends Composite implements ProgressChangeEventHandler {
+public class GenericCertificationItemView extends Composite implements ProgressChangeEventHandler, ShowDetailsEventHandler{
 	interface MyUiBinder extends UiBinder<Widget, GenericCertificationItemView> {
 	}
 
@@ -53,6 +57,8 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 	Label lblGrade;
 	@UiField
 	Anchor lblActions;
+	
+	private boolean courseClassComplete, approvedOnTest;
 
 
 	public GenericCertificationItemView(EventBus eventBus, KornellSession session, CourseClassTO currentCourseClass,
@@ -62,6 +68,7 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 		this.currentCourseClass = currentCourseClass;
 		this.type = type;
 		bus.addHandler(ProgressChangeEvent.TYPE,this);
+		bus.addHandler(ShowDetailsEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 		display();
@@ -76,8 +83,8 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 		} else if(CERTIFICATION.equals(type)){
 			this.name = "Certificado";
 			this.description = "Impressão do certificado. Uma vez que o curso for terminado, você poderá gerar o certificado aqui.";
-			this.status = "Não disponível";
 			this.grade = "-";
+			updateCertificationLinkAndLabel();
 		}
 	}
 
@@ -116,11 +123,34 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 	public void onProgressChange(ProgressChangeEvent event) {
 		// TODO Auto-generated method stub
 		if(CERTIFICATION.equals(type)){
-			if(event.getProgressPercent() >= 100 || session.isPlatformAdmin()){
-				displayActionCell(true);
-				status = "Disponível";
-				lblStatus.setText(status);
+			if(event.getProgressPercent() >= 100/* || session.isPlatformAdmin()*/){
+				courseClassComplete = true;
 			}
+			updateCertificationLinkAndLabel();
 		}
+	}
+
+	private void updateCertificationLinkAndLabel(){
+		boolean allowCertificateGeneration = courseClassComplete && approvedOnTest;
+		status = allowCertificateGeneration ? "Disponível" : "Não disponível";
+		lblStatus.setText(status);
+		displayActionCell(allowCertificateGeneration);
+	}
+	
+	@Override
+	public void onShowDetails(ShowDetailsEvent event) {
+		if(CERTIFICATION.equals(type) && event.isShowDetails())
+			checkCertificateAvailability();
+	}
+	
+	private void checkCertificateAvailability() {
+	    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
+	    .isApproved(new Callback<Boolean>() {
+	    	@Override
+	    	public void ok(Boolean approved) {
+	    		approvedOnTest = approved;
+	    		updateCertificationLinkAndLabel();
+	    	}
+		});
 	}
 }

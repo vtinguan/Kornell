@@ -10,4 +10,5 @@ public interface Sequencer
 	Sequencer withPanel(FlowPanel contentPanel);
 	Sequencer withPlace(ClassroomPlace place);
 	void go(Contents contents);
+	void stop();
 }
