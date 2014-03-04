@@ -122,7 +122,7 @@ function createVersion(err, data) {
 }
 
 function uploadBundle(err, data) {
-	console.log("* Uploading Bundle [s3://"+bucket+"/"+key+"] ["+data+"]")
+	console.log("* Uploading Bundle [s3://"+bucket+"/"+key+"]")
 	if (err)
 		throw err
 	S3.putObject({
