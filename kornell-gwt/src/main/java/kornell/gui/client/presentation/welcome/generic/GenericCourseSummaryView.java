@@ -8,6 +8,7 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
@@ -102,7 +103,7 @@ public class GenericCourseSummaryView extends Composite {
 		
 		String assetsURL = courseClassTO.getCourseVersionTO().getDistributionURL() + "/" +
 				courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix();
-		imgThumb.setUrl(assetsURL + "/images/thumb.jpg");
+		imgThumb.setUrl(StringUtils.composeURL(assetsURL, "/images/thumb.jpg"));
 		imgIconCourse.setUrl(iconCourseURL);
 		
 		sinkEvents(Event.ONCLICK);
