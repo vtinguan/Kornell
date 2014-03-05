@@ -9,8 +9,6 @@ function log(){
   echo "[$0] $1"
 }
 
-if [[ -z "$KNL_API_URL" ]]; 
-	then suicide "Set KNL_API_URL to the url of the API environment."; fi
 if [ -z "$KNL_BUCKET" ]; 
 	then suicide "Set KNL_BUCKET to the name of the deployment bucket"; fi
 if [ -z "$AWS_ACCESS_KEY_ID" ]; 
@@ -22,21 +20,14 @@ REGION=${REGION:-"sa-east-1"}
 AWS_CLI=${AWS_CLI:-"aws"}
 S3CMD_CFG=${S3CMD_CFG:-".s3cfg-kornell"} 
 SRC_DIR=${SRC_DIR:-"${PWD}/kornell-gwt/target/kornell-gwt"}
-KNL_CFG=${KNL_CFG:-$SRC_DIR"/KornellConfig.nocache.js"}
 
 log "=== GWT Deployment Variables ==="
 log "KNL_API_URL=$KNL_API_URL"
 log "KNL_BUCKET=$KNL_BUCKET"
 log "S3CMD=$S3CMD"
 log "S3CMD_CFG=$S3CMD_CFG"
-log "KNL_CFG=$KNL_CFG"
 log "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
 log "================================"
-
-log "Setting API Endpoint"
-echo -n 'KornellConfig.apiEndpoint = "' > $KNL_CFG
-echo -n $KNL_API_URL >> $KNL_CFG
-echo -n '";' >> $KNL_CFG
 
 log "[$0] Deploying Cacheable Files to S3"
 
