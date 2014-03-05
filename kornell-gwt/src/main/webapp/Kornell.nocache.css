@@ -4,21 +4,8 @@ html, body {
 	height: 100% !important;
 	background-color: #000000 !important;	
 }
-.WelcomePlace {
-	position: absolute;
-	bottom: 0px;
-	top: 42px;
-}
-.WelcomePlace .contentWrapper {
-	position: absolute;
-	bottom: 0px;
-	top: 42px;
-} 
 
 .AtividadePlace .contentWrapper {
-	position: absolute;
-	bottom: 42px;
-	top: 42px;
 	width: 100%;
 }
 

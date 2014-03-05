@@ -312,7 +312,7 @@ public class FormHelper {
 		states.addItem("Mato Grosso");
 		states.addItem("Mato Grosso do Sul");
 		states.addItem("Minas Gerais");
-		states.addItem("Pará ");
+		states.addItem("Pará");
 		states.addItem("Paraíba");
 		states.addItem("Paraná");
 		states.addItem("Pernambuco");

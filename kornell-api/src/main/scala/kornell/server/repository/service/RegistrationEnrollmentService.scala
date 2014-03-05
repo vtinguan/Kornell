@@ -43,20 +43,20 @@ object RegistrationEnrollmentService {
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) =
     EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
       case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean)
-      case None => createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
+      case None => {
+    	PersonRepo(person.getUUID).registerOn(enrollmentRequest.getInstitutionUUID)
+        createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
+      }
     }
 
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person) = {
-    if (EnrollmentState.cancelled.equals(enrollment.getState)) {
-      EventsRepo.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.preEnrolled)
-      val course = CoursesRepo.byCourseClassUUID(enrollment.getCourseClassUUID).get
-      val institution = InstitutionsRepo.byUUID(institutionUUID).get
-      EmailService.sendEmailEnrolled(person, institution, course)
-    } else if (EnrollmentState.requested.equals(enrollment.getState()) || EnrollmentState.denied.equals(enrollment.getState())) {
+    if (EnrollmentState.cancelled.equals(enrollment.getState) 
+        || EnrollmentState.requested.equals(enrollment.getState()) 
+        || EnrollmentState.denied.equals(enrollment.getState())) {
       EventsRepo.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
       val course = CoursesRepo.byCourseClassUUID(enrollment.getCourseClassUUID).get
       val institution = InstitutionsRepo.byUUID(institutionUUID).get
-      //EmailService.sendEmailEnrolled(person, institution, course)
+      EmailService.sendEmailEnrolled(person, institution, course)
     }
   }
 

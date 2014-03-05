@@ -9,6 +9,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
 import com.github.gwtbootstrap.client.ui.Heading;
@@ -24,7 +25,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericCourseSummaryView extends Composite {
@@ -133,6 +133,12 @@ public class GenericCourseSummaryView extends Composite {
 					@Override
 					public void ok(Enrollment to) {
 						session.getCurrentUser().getEnrollmentsTO().getEnrollments().add(to);
+						for (CourseClassTO courseClassTO : Dean.getInstance().getCourseClassesTO().getCourseClasses()) {
+							if(courseClassTO.getCourseClass().getUUID().equals(to.getCourseClassUUID())){
+								Dean.getInstance().setCourseClassTO(courseClassTO);
+								break;
+							}
+						}
 						placeCtrl.goTo(new ClassroomPlace(to.getUUID()));
 					}
 				});

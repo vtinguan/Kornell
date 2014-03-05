@@ -1,5 +1,9 @@
 package kornell.api.client;
 
+import java.util.List;
+
+import kornell.core.entity.Institution;
+import kornell.core.entity.Registration;
 import kornell.core.entity.Role;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
@@ -20,7 +24,11 @@ public class KornellSession extends KornellClient {
 	}
 	
 	public void getCurrentUser(final Callback<UserInfoTO> callback) {
-		if (currentUser != null) {
+		getCurrentUser(false, callback);
+	}
+	
+	public void getCurrentUser(boolean skipCache, final Callback<UserInfoTO> callback) {
+		if (currentUser != null && !skipCache) {
 			callback.ok(currentUser);
 		} else {
 			Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
@@ -40,7 +48,7 @@ public class KornellSession extends KornellClient {
 		}
 	}
 
-	public void setCurrentUser(UserInfoTO userInfo) {
+	private void setCurrentUser(UserInfoTO userInfo) {
 		this.currentUser = userInfo;
 	}
 
@@ -99,16 +107,13 @@ public class KornellSession extends KornellClient {
 		return currentUser != null;
 	}
 
-	public void login(String username, String password, String confirmation,
-			final Callback<UserInfoTO> callback) {
-		final String auth = "Basic "
-				+ ClientProperties.base64Encode(username + ":" + password);
+	public void login(String username, String password, final Callback<UserInfoTO> callback) {
+		final String auth = "Basic " + ClientProperties.base64Encode(username + ":" + password);
 
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO user) {
 				setCurrentUser(user);
-				// TODO: https://github.com/Craftware/Kornell/issues/7
 				ClientProperties.set("X-KNL-A", auth);
 				callback.ok(user);
 				//TODO: fire event
@@ -116,13 +121,11 @@ public class KornellSession extends KornellClient {
 
 			@Override
 			protected void unauthorized() {
+				setCurrentUser(null);
 				callback.unauthorized();
 			}
 		};
-		confirmation = "".equals(confirmation) ? "NONE" : confirmation;
-		GET("/user/login/" + confirmation).addHeader("X-KNL-A", auth)
-				.sendRequest(null, wrapper);
-
+		GET("/user").addHeader(ClientProperties.X_KNL_A, auth).sendRequest(null, wrapper);
 	}
 	
 	public void logout(){
@@ -132,6 +135,17 @@ public class KornellSession extends KornellClient {
 
 	public boolean isAnonymous() {
 		return ! isAuthenticated();
+	}
+
+	public boolean isRegistered() {
+		if (currentUser == null)
+			return false;
+		final List<Registration> registrations = currentUser.getRegistrationsTO().getRegistrations();
+		for (Registration registration : registrations) {
+			if (registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID()))
+				return true;
+		}
+		return false;
 	}
 
 }

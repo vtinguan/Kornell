@@ -198,16 +198,20 @@ public class GenericProfileView extends Composite implements ProfileView {
 				@Override
 				public void ok(UserInfoTO userInfo){
 					if(isCurrentUser){
-						session.setCurrentUser(userInfo);
+						LoadingPopup.hide();
+						KornellNotification.show("Alterações salvas com sucesso!");
+						btnOK.setEnabled(true);
+						isEditMode = false;
+						display();
+						form.addStyleName("shy");
+						placeCtrl.goTo(defaultPlace);
+						session.getCurrentUser(true, new Callback<UserInfoTO>() {
+							@Override
+							public void ok(UserInfoTO to) {
+								user = to;
+							}
+						});
 					}
-					user = userInfo;
-					LoadingPopup.hide();
-					KornellNotification.show("Alterações salvas com sucesso!");
-					btnOK.setEnabled(true);
-					isEditMode = false;
-					display();
-					form.addStyleName("shy");
-					placeCtrl.goTo(defaultPlace);
 				}
 			});   
 		} else {
