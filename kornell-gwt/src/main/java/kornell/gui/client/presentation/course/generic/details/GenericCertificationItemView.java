@@ -144,13 +144,15 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 	}
 	
 	private void checkCertificateAvailability() {
-	    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
-	    .isApproved(new Callback<Boolean>() {
-	    	@Override
-	    	public void ok(Boolean approved) {
-	    		approvedOnTest = approved;
-	    		updateCertificationLinkAndLabel();
-	    	}
-		});
+		if(Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
+		    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
+		    .isApproved(new Callback<Boolean>() {
+		    	@Override
+		    	public void ok(Boolean approved) {
+		    		approvedOnTest = approved;
+		    		updateCertificationLinkAndLabel();
+		    	}
+			});
+		}
 	}
 }

@@ -67,12 +67,6 @@ object AuthRepo {
 		from Person p join Password pwd on pwd.person_uuid = p.uuid
 		where pwd.requestPasswordChangeUUID = $passwordChangeUUID
 	""".first[Person]
-
-  def confirmAccount(personUUID: String) = 
-    sql"""
-		update Person set confirmation = ""
-		where uuid = $personUUID
-	""".executeUpdate
   
 
   def hasPassword(username: String) = 

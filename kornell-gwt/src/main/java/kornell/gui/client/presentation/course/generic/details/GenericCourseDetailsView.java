@@ -41,6 +41,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -134,7 +135,7 @@ public class GenericCourseDetailsView extends Composite {
 		for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
 			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())
 					&& (EnrollmentState.enrolled.equals(enrollment.getState()) ||
-							(EnrollmentState.enrolled.equals(enrollment.getState())))){
+							(EnrollmentState.preEnrolled.equals(enrollment.getState())))){
 				isEnrolled = true;
 				break;
 			}
@@ -304,8 +305,7 @@ public class GenericCourseDetailsView extends Composite {
 				constants.btnTopicsInfo(), false);
 		// TODO: i18n
 		if(isEnrolled){
-			displayButton(btnCertification, constants.btnCertification(),
-					constants.btnCertificationInfo(), false);
+			displayButton(btnCertification, constants.btnCertification(), constants.btnCertificationInfo(), false);
 			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
 		}
 	}
@@ -347,8 +347,8 @@ public class GenericCourseDetailsView extends Composite {
 		if(!isEnrolled){
 			FlowPanel notEnrolledPanel = new FlowPanel();
 			notEnrolledPanel.addStyleName("notEnrolledPanel");
-			
-			notEnrolledPanel.add(new Label("Sua matríula ainda não foi aprovada pela instituição. Você receberá um e-mail no momento da aprovação."));
+			HTMLPanel panel = new HTMLPanel("Sua matríula ainda não foi aprovada pela instituição.<br><br> Você receberá um e-mail no momento da aprovação.<br>");
+			notEnrolledPanel.add(panel);
 			
 			sidePanel.add(notEnrolledPanel);
 			//"Você receberá um email quando ela for aprovada."

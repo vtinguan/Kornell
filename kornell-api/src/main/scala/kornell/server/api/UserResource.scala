@@ -48,32 +48,6 @@ class UserResource{
     	
     	Option(user)
   }
-
-  @GET
-  @Path("login/{confirmation}")
-  @Produces(Array(UserInfoTO.TYPE))
-  def login(implicit @Context sc: SecurityContext,
-	    @PathParam("confirmation") confirmation:String):Option[UserInfoTO] =
-    AuthRepo.withPerson { p =>
-    	val user = newUserInfoTO
-    	user.setUsername(sc.getUserPrincipal().getName())
-    	user.setPerson(p)
-	    user.setEmail(user.getPerson().getEmail())
-    	val signingNeeded = RegistrationsRepo.signingNeeded(p)
-    	user.setSigningNeeded(signingNeeded)
-    	user.setLastPlaceVisited(p.getLastPlaceVisited)
-    	
-    	if(confirmation.equals(user.getPerson().getConfirmation())){
-    		AuthRepo.confirmAccount(user.getPerson().getUUID())
-    		user.getPerson().setConfirmation("")
-    	}
-    	val roles = AuthRepo.rolesOf(user.getUsername)
-    	user.setRoles((Set.empty ++ roles).asJava)
-    	user.setRegistrationsTO(RegistrationsRepo.getAll(p))
-    	user.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
-    	
-    	Option(user)
-  }
   
   @GET
   @Path("{personUUID}")
