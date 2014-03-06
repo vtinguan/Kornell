@@ -94,7 +94,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 
 	@Override
 	public void stopSequencer() {
-		sequencer.withPlace(place).stop();
+		sequencer.withPlace(place).withPanel(getPanel()).stop();
 	}
 	
 	@Override
