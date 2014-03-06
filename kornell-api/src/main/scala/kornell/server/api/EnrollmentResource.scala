@@ -65,7 +65,7 @@ class EnrollmentResource(uuid: String) {
     reqScore == null || {
       val grades = enrollmentRepo.findGrades
       val approved = grades forall { BigDecimal(_) > reqScore }
-      approved
+      approved && grades.size > 0
     }
   }
 

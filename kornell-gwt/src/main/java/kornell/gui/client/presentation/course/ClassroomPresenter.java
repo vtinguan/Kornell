@@ -3,7 +3,6 @@ package kornell.gui.client.presentation.course;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
@@ -13,6 +12,7 @@ import kornell.gui.client.Kornell;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SequencerFactory;
 
 import com.google.gwt.place.shared.PlaceController;
@@ -25,11 +25,12 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private ClassroomView view;
 	private ClassroomPlace place;
 	private PlaceController placeCtrl;
-	private SequencerFactory sequencer;
+	private SequencerFactory sequencerFactory;
 	private KornellSession session;
 	private EventBus bus;
 	private Contents contents;
 	private boolean sequencerInitialized = false;
+	private Sequencer sequencer;
 
 	public ClassroomPresenter(ClassroomView view,
 			PlaceController placeCtrl,
@@ -37,7 +38,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		this.view = view;
 		view.setPresenter(this);
 		this.placeCtrl = placeCtrl;
-		this.sequencer = seqFactory;
+		this.sequencerFactory = seqFactory;
 		this.bus = bus;
 		this.session = session;		
 	}
@@ -69,10 +70,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				}
 				LoadingPopup.hide();
 				setContents(contents);
-				view.display(isEnrolled);			
-				if(isEnrolled){
-					startSequencer();
-				}
+				view.display(isEnrolled);		
 				view.asWidget().setVisible(true);
 			}
 
@@ -85,16 +83,14 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 
 	@Override
 	public void startSequencer() {
-		/*if(this.sequencerInitialized) return;
-		this.sequencerInitialized = true;*/
-		sequencer.withPlace(place)
-				.withPanel(getPanel())
-				.go(contents);
+		sequencer = sequencerFactory.withPlace(place).withPanel(getPanel());
+		sequencer.go(contents);
 	}
 
 	@Override
 	public void stopSequencer() {
-		sequencer.withPlace(place).withPanel(getPanel()).stop();
+		if(sequencer != null)
+			sequencer.stop();
 	}
 	
 	@Override
