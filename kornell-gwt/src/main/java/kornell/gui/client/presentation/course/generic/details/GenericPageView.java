@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.course.generic.details;
 
 import java.util.List;
 
-import kornell.api.client.KornellClient;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.ExternalPage;
@@ -12,9 +11,7 @@ import kornell.gui.client.event.ProgressChangeEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.presentation.HistoryMapper;
-import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.sequence.NavigationRequest;
-import kornell.gui.client.sequence.PrefetchSequencer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
