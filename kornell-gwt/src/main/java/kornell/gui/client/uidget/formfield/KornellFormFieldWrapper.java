@@ -45,6 +45,7 @@ public class KornellFormFieldWrapper extends Composite {
 	
 	public void initData(KornellFormField<?> formField) {
 		fieldPanel.clear();
+		this.formField = formField;
 		if(!isEditMode){
 			fieldTxt = new Label();
 			fieldTxt.addStyleName("lblValue");

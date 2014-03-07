@@ -32,8 +32,11 @@ class PreparedStmt(query: String, params: List[Any]) {
       params
         .zipWithIndex
         .foreach(setQueryParam)
- 
-      //println("Executing query: " + pstmt.toString())  
+   
+      //TODO proper logging  
+      if(System.getProperty("DEV_MODE") != null){
+    	  println("Executing query: " + pstmt.toString())  
+      }  
         
       try fun(pstmt)
       finally pstmt.close

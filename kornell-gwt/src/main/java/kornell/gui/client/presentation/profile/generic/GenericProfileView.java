@@ -189,7 +189,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) { 
-		btnOK.setEnabled(false);
 		formHelper.clearErrors(fields);
 
 		if(isEditMode && validateFields()){
@@ -214,8 +213,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 					}
 				}
 			});   
-		} else {
-			btnOK.setEnabled(true);
 		}
 	}
 
@@ -417,7 +414,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 				if("BR".equals(countries.getValue())){
 					state.initData(new ListBoxFormField(formHelper.getBrazilianStatesList()));
 				} else {
-					state.initData(new TextBoxFormField(new TextBox()));
+					if(!(state.getFieldWidget() instanceof TextBox))
+						state.initData(new TextBoxFormField(new TextBox()));
 				}
 			}
 		});
@@ -427,6 +425,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		profileFields.add(getPrivatePanel());
 
 		if("BR".equals(countries.getValue())){
+			//state.getFormField().clear();
 			final ListBox states = formHelper.getBrazilianStatesList();
 			if(user.getPerson().getState() != null){
 				states.setSelectedValue(user.getPerson().getState());
