@@ -36,7 +36,7 @@ object EventsRepo {
 	  and institutionUUID=${event.getInstitutionUUID()}
 	  and eventFiredAt between ${todayStart} and ${todayEnd}"""
     .first
-    println("---------attendanceSheetSignedUUID----------- "+attendanceSheetSignedUUID)
+    //println("---------attendanceSheetSignedUUID----------- "+attendanceSheetSignedUUID)
     if(!attendanceSheetSignedUUID.isDefined)
 		sql"""
 	    insert into AttendanceSheetSigned(uuid,eventFiredAt,institutionUUID,personUUID)
