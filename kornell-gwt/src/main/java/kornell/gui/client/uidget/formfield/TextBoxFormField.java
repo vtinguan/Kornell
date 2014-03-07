@@ -9,6 +9,8 @@ public class TextBoxFormField implements KornellFormField<TextBox> {
 	
 	public TextBoxFormField(TextBox field) {
 		this.field = field;
+		field.addStyleName("field");
+		field.addStyleName("textField");
 	}
 
 	@Override
