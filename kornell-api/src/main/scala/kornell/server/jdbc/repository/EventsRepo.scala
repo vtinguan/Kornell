@@ -1,17 +1,15 @@
 package kornell.server.jdbc.repository
 
-import kornell.core.event.EnrollmentStateChanged
-import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-import kornell.core.event.EventFactory
-import kornell.core.event.EnrollmentStateChanged
 import java.util.Date
+import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
 import kornell.core.entity.EnrollmentState
-import kornell.server.util.EmailService
-import kornell.core.entity.CourseClass
-import kornell.core.entity.Enrollment
-import kornell.server.jdbc.SQL._
 import kornell.core.event.ActomEntered
-import kornell.server.jdbc.repository.EnrollmentRepo
+import kornell.core.event.AttendanceSheetSigned
+import kornell.core.event.EnrollmentStateChanged
+import kornell.core.event.EventFactory
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.util.EmailService
+import java.text.SimpleDateFormat
 
 
 object EventsRepo {
@@ -20,13 +18,35 @@ object EventsRepo {
   def newEnrollmentStateChanged = events.newEnrollmentStateChanged.as
   
   def logActomEntered(event: ActomEntered) = sql"""
-    insert into ActomEntered(uuid,eventFiredAt,enrollmentUUID,actomKey)
+    insert into ActomEntered(uuid,eventFiredAt,enrollmentUUID,actomKey) 
     values(${event.getUUID},
   		   ${event.getEventFiredAt},
            ${event.getEnrollmentUUID},
-		   ${event.getActomKey});
+		   ${event.getActomKey}); 
 	""".executeUpdate
 
+  
+  def logAttendanceSheetSigned(event: AttendanceSheetSigned) = { 
+	val todayStart = new SimpleDateFormat("yyyy-MM-dd  00:00:00").format(event.getEventFiredAt())
+	val todayEnd = new SimpleDateFormat("yyyy-MM-dd 23:59:59").format(event.getEventFiredAt())
+    // don't log more than once a day
+	val attendanceSheetSignedUUID = sql"""
+	  select uuid from AttendanceSheetSigned
+	  where personUUID=${event.getPersonUUID()}
+	  and institutionUUID=${event.getInstitutionUUID()}
+	  and eventFiredAt between ${todayStart} and ${todayEnd}"""
+    .first
+    println("---------attendanceSheetSignedUUID----------- "+attendanceSheetSignedUUID)
+    if(!attendanceSheetSignedUUID.isDefined)
+		sql"""
+	    insert into AttendanceSheetSigned(uuid,eventFiredAt,institutionUUID,personUUID)
+	    values(${event.getUUID},
+	  		   ${event.getEventFiredAt},
+	           ${event.getInstitutionUUID},
+			   ${event.getPersonUUID});
+		""".executeUpdate
+	  
+  }
 	
   def logEnrollmentStateChanged(uuid: String, eventFiredAt: Date, fromPersonUUID: String, 
       enrollmentUUID: String, fromState: EnrollmentState, toState: EnrollmentState) = {

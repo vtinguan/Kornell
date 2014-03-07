@@ -7,6 +7,7 @@ import kornell.core.event.ActomEntered
 import kornell.core.event.EnrollmentStateChanged
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.EventsRepo
+import kornell.core.event.AttendanceSheetSigned
 
 @Path("events")
 class EventsResource {
@@ -23,6 +24,13 @@ class EventsResource {
   @Consumes(Array(EnrollmentStateChanged.TYPE))
   def putEnrollmentStateChanged(event:EnrollmentStateChanged){
      EventsRepo.logEnrollmentStateChanged(event)
+  }
+  
+  @PUT
+  @Path("attendanceSheetSigned")
+  @Consumes(Array(AttendanceSheetSigned.TYPE))
+  def putAttendanceSheetSigned(event:AttendanceSheetSigned){
+     EventsRepo.logAttendanceSheetSigned(event)
   }
 	
 }
