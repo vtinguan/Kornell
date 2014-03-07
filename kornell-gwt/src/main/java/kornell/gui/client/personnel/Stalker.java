@@ -1,10 +1,12 @@
 package kornell.gui.client.personnel;
 
-import kornell.api.client.KornellClient;
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -14,19 +16,48 @@ import com.google.web.bindery.event.shared.EventBus;
  */
 public class Stalker implements ActomEnteredEventHandler {
 	EventBus bus;
-	KornellClient client;
+	KornellSession session;
 	PlaceHistoryMapper mapper;
 
-	
-	public Stalker(EventBus bus, KornellClient client) {
+	private Timer seuInacioTimer;
+
+	public Stalker(EventBus bus, KornellSession session) {
 		this.bus = bus;
-		this.client = client;
+		this.session = session;
+
+		signAttendanceSheet();
+
+		seuInacioTimer = new Timer() {
+			public void run() {
+				signAttendanceSheet();
+			}
+		};
+
+		// Schedule the timer to run daily
+		seuInacioTimer.scheduleRepeating(24 * 60 * 60 * 1000);
 		
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
 	}
 
+	private void signAttendanceSheet() {
+		if (session.isAnonymous())
+			return;
+		session.events()
+				.attendanceSheetSigned(
+						Dean.getInstance().getInstitution().getUUID(),
+						session.getCurrentUser().getPerson().getUUID())
+				.fire(new Callback<Void>() {
+					@Override
+					public void ok(Void to) {
+						//
+					}
+				});
+	}
+
 	@Override
 	public void onActomEntered(ActomEnteredEvent event) {
-		client.events().actomEntered(event.getEnrollmentUUID(), event.getActomKey()).fire();		
+		session.events()
+				.actomEntered(event.getEnrollmentUUID(), event.getActomKey())
+				.fire();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import kornell.core.entity.EnrollmentState;
 import kornell.core.event.ActomEntered;
+import kornell.core.event.AttendanceSheetSigned;
 import kornell.core.event.EnrollmentStateChanged;
 import kornell.core.event.Event;
 import kornell.core.event.EventFactory;
@@ -22,6 +23,15 @@ public class EventsClient extends RESTClient {
 		actomEntered.setEventFiredAt(new Date());
 		actomEntered.setUUID(UUID.random());
 		return withEvent("/events/actomEntered",ActomEntered.TYPE,actomEntered);
+	}
+
+	public EventClient attendanceSheetSigned(String institutionUUID, String personUUID) {
+		AttendanceSheetSigned attendanceSheetSigned = factory.newAttendanceSheetSigned().as();
+		attendanceSheetSigned.setInstitutionUUID(institutionUUID);
+		attendanceSheetSigned.setPersonUUID(personUUID);	
+		attendanceSheetSigned.setEventFiredAt(new Date());
+		attendanceSheetSigned.setUUID(UUID.random());
+		return withEvent("/events/attendanceSheetSigned",AttendanceSheetSigned.TYPE,attendanceSheetSigned);
 	}
 
 	public EventClient enrollmentStateChanged(String enrollmentUUID, String personUUID, EnrollmentState fromState, EnrollmentState toState) {
