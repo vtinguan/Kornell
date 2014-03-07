@@ -74,8 +74,7 @@ object EmailService {
   }
   
 
-  private def getFromEmail(institution: kornell.core.entity.Institution) = 
-    institution.getName().toLowerCase() + "@eduvem.com.br"
+  private def getFromEmail(institution: kornell.core.entity.Institution):String = EmailSender.SMTP_FROM
   
   
   private def wrapBody(bodyText: String) = 
