@@ -1,52 +1,52 @@
 NEWRELIC=$(cat <<EOF
 \ncommon: &default_settings
-\n  license_key: $NEWRELIC_KEY
-\n  # agent_enabled: true
-\n  enable_auto_app_naming: false
-\n  enable_auto_transaction_naming: false
-\n  app_name: Eduvem
-\n  log_level: info
-\n  #audit_mode: true
-\n  #log_file_count: 1
-\n  #log_limit_in_kbytes: 0
-\n  #log_daily: false
-\n  #log_file_path:
-\n  ssl: true
-\n  # proxy_host: hostname
-\n  # proxy_port: 8080
-\n  # proxy_user: username
-\n  # proxy_password: password
-\n  capture_params: false
-\n  # ignored_params: credit_card, ssn, password
-\n
-\n  transaction_tracer:
-\n    enabled: true
-\n    transaction_threshold: apdex_f
-\n    record_sql: obfuscated
-\n    #obfuscated_sql_fields: credit_card, ssn, password
-\n    log_sql: false
-\n
-\n    stack_trace_threshold: 0.5
-\n    explain_enabled: true
-\n    explain_threshold: 0.5
-\n    top_n: 20
-\n
-\n  error_collector:
-\n    enabled: true
-\n    # ignore_errors:
-\n    # ignore_status_codes: 404
-\n
-\n  cross_application_tracer:
-\n    enabled: true
-\n
-\n  thread_profiler:
-\n    enabled: true
-\n
-\n  #============================== Browser Monitoring ===============================
-\n  browser_monitoring:
-\n    auto_instrument: true
-\n    enabled: false
-\n
+\n\040  license_key: $NEWRELIC_KEY
+\n\040  # agent_enabled: true
+\n\040  enable_auto_app_naming: false
+\n\040  enable_auto_transaction_naming: false
+\n\040  app_name: Eduvem
+\n\040  log_level: info
+\n\040  #audit_mode: true
+\n\040  #log_file_count: 1
+\n\040  #log_limit_in_kbytes: 0
+\n\040  #log_daily: false
+\n\040  #log_file_path:
+\n\040  ssl: true
+\n\040  # proxy_host: hostname
+\n\040  # proxy_port: 8080
+\n\040  # proxy_user: username
+\n\040  # proxy_password: password
+\n\040  capture_params: false
+\n\040  # ignored_params: credit_card, ssn, password
+\n\040
+\n\040  transaction_tracer:
+\n\040    enabled: true
+\n\040    transaction_threshold: apdex_f
+\n\040    record_sql: obfuscated
+\n\040    #obfuscated_sql_fields: credit_card, ssn, password
+\n\040    log_sql: false
+\n\040
+\n\040    stack_trace_threshold: 0.5
+\n\040    explain_enabled: true
+\n\040    explain_threshold: 0.5
+\n\040    top_n: 20
+\n\040
+\n\040  error_collector:
+\n\040    enabled: true
+\n\040    # ignore_errors:
+\n\040    # ignore_status_codes: 404
+\n\040
+\n\040  cross_application_tracer:
+\n\040    enabled: true
+\n\040
+\n\040  thread_profiler:
+\n\040    enabled: true
+\n\040
+\n\040  #============================== Browser Monitoring ===============================
+\n\040  browser_monitoring:
+\n\040    auto_instrument: true
+\n\040    enabled: false
+\n\040
 \n# Application Environments
 \n# ------------------------------------------
 \ndevelopment:
@@ -63,5 +63,6 @@ NEWRELIC=$(cat <<EOF
 \nstaging:
 \n  <<: *default_settings
 \n  app_name: Eduvem (Staging)
-EOF)
+EOF
+)
 echo -e $NEWRELIC
