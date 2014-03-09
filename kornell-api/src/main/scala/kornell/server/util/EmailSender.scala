@@ -90,10 +90,12 @@ object EmailSender {
     Session.getDefaultInstance(props);
   }
 
+  val DEFAULT_SMTP_FROM = "cdf@craftware.com.br"
   lazy val SMTP_HOST = Settings.get("SMTP_HOST")
   lazy val SMTP_PORT = Settings.get("SMTP_PORT").get
   lazy val SMTP_USERNAME = Settings.get("SMTP_USERNAME").get
   lazy val SMTP_PASSWORD = Settings.get("SMTP_PASSWORD").get
+  lazy val SMTP_FROM = Settings.get("SMTP_FROM").getOrElse(DEFAULT_SMTP_FROM)
 
   lazy val smtp: Option[SMTPConfig] = environmentCfg
 
