@@ -4,5 +4,5 @@ import com.google.gwt.event.shared.EventHandler;
 
 public interface ProgressChangeEventHandler extends EventHandler{
 	
-	void onProgressChange(ProgressChangeEvent event);
+	void onProgressChange(ProgressEvent event);
 }

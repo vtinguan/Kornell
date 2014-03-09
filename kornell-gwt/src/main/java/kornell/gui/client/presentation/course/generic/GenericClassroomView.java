@@ -76,5 +76,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		boolean showDetails = event.isShowDetails();
 		contentPanel.setVisible(!showDetails);
 		detailsPanel.setVisible(showDetails);
+		if(showDetails)
+			presenter.fireProgressEvent();
 	}
 }

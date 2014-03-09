@@ -9,7 +9,7 @@ import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UserInfoTO;
-import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 
 import com.google.gwt.dom.client.Document;
@@ -41,7 +41,7 @@ public class Dean implements ProgressChangeEventHandler{
 		this.institution = institution;
 		this.session = session;
 		
-		bus.addHandler(ProgressChangeEvent.TYPE, this);
+		bus.addHandler(ProgressEvent.TYPE, this);
 		
 		String url = institution.getAssetsURL();
 		if(url != null){
@@ -76,7 +76,7 @@ public class Dean implements ProgressChangeEventHandler{
 	}-*/;
 
 	@Override
-	public void onProgressChange(ProgressChangeEvent event) {
+	public void onProgressChange(ProgressEvent event) {
 		UserInfoTO user = session.getCurrentUser();
 		Enrollment enrollment =  courseClassTO.getEnrollment();
 		enrollment.setProgress(event.getProgressPercent());

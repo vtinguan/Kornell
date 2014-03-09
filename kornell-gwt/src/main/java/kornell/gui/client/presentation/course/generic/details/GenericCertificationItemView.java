@@ -4,7 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
@@ -67,7 +67,7 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 		this.session = session;
 		this.currentCourseClass = currentCourseClass;
 		this.type = type;
-		bus.addHandler(ProgressChangeEvent.TYPE,this);
+		bus.addHandler(ProgressEvent.TYPE,this);
 		bus.addHandler(ShowDetailsEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
@@ -120,7 +120,7 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 	}
 
 	@Override
-	public void onProgressChange(ProgressChangeEvent event) {
+	public void onProgressChange(ProgressEvent event) {
 		// TODO Auto-generated method stub
 		if(CERTIFICATION.equals(type)){
 			if(event.getProgressPercent() >= 100/* || session.isPlatformAdmin()*/){

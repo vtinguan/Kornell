@@ -111,4 +111,10 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		this.place = place;
 		displayPlace();
 	}
+
+	@Override
+	public void fireProgressEvent() {
+		if(sequencer != null)
+			sequencer.fireProgressEvent();
+	}
 }

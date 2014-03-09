@@ -6,7 +6,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
@@ -85,7 +85,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE,this);
+		clientFactory.getEventBus().addHandler(ProgressEvent.TYPE,this);
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
 		
 		KornellSession session = clientFactory.getKornellSession();
@@ -287,14 +287,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	}
 
 	@Override
-	public void onProgressChange(ProgressChangeEvent event) {
+	public void onProgressChange(ProgressEvent event) {
 		if(event.getCurrentPage() != 0){
 			updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
 			enablePrev = event.hasPrevious();
 			enableNext = event.hasNext();
 			enableButton(BUTTON_PREVIOUS, enablePrev);
 			enableButton(BUTTON_NEXT, enableNext);
-			clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(showDetails));
+			//clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(showDetails));
 		}
 	}
 	

@@ -2,7 +2,7 @@ package kornell.gui.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
+public class ProgressEvent extends GwtEvent<ProgressChangeEventHandler>{
 
 	public static Type<ProgressChangeEventHandler> TYPE = new Type<ProgressChangeEventHandler>();
 	

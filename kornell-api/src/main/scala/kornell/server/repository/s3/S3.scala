@@ -1,23 +1,20 @@
 package kornell.server.repository.s3
 
+import java.io.ByteArrayInputStream
 import java.sql.ResultSet
+
+import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.immutable.Stream.consWrapper
+import scala.io.Source
+
 import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.regions.Region
-import scala.collection.JavaConverters._
 import com.amazonaws.services.s3.model.ObjectListing
-import com.amazonaws.services.s3.model.S3ObjectSummary
-import java.io.ByteArrayInputStream
-import com.amazonaws.services.s3.model.PutObjectRequest
-import scala.io.Source
-import kornell.core.util.StringUtils._
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.client.methods.HttpHead
-import kornell.server.jdbc.repository.CourseClassesRepo
-import kornell.server.jdbc.SQL._
-import kornell.core.util.StringUtils._
-import javax.servlet.http.HttpServletRequest
+
+import kornell.core.util.StringUtils.composeURL
+import kornell.server.jdbc.SQL.SQLHelper
 
 //TODO: Change to HTTP
 class S3(regionName: String,

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
 import java.sql.Timestamp
 import DataSources._
+import kornell.server.util.Settings
 
 class PreparedStmt(query: String, params: List[Any]) {
 
@@ -33,8 +34,8 @@ class PreparedStmt(query: String, params: List[Any]) {
         .zipWithIndex
         .foreach(setQueryParam)
    
-      //TODO proper logging  
-      if(System.getProperty("DEV_MODE") != null){
+      //TODO proper logging
+      if(Settings.get("DEV_MODE") != null){
     	  println("Executing query: " + pstmt.toString())  
       }  
         

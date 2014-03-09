@@ -48,20 +48,24 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 			@Override
 			public void onPlaceChange(PlaceChangeEvent event) {
 				Place newPlace = event.getNewPlace();
-				if(newPlace instanceof AdminPlace){
-					southBar.clear();
-					//southBar.add(getAdminBarView(newPlace));
-					visible = false;
-				} else if (newPlace instanceof ClassroomPlace) {
-					southBar.clear();
-					southBar.add(getActivityBarView());
-					visible = true;
-				} else {
-					visible = false;
-				}
+				pickSouthBar(newPlace);
 
 			}
 		});
+	}
+
+	private void pickSouthBar(Place newPlace) {
+		if(newPlace instanceof AdminPlace){
+			southBar.clear();
+			//southBar.add(getAdminBarView(newPlace));
+			visible = false;
+		} else if (newPlace instanceof ClassroomPlace) {
+			southBar.clear();
+			southBar.add(getActivityBarView());
+			visible = true;
+		} else {
+			visible = false;
+		}
 	}
 
 	private ActivityBarView getActivityBarView() {

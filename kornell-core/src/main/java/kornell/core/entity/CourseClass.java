@@ -3,6 +3,7 @@ package kornell.core.entity;
 import java.math.BigDecimal;
 
 public interface CourseClass extends Named{
+	public static String TYPE = EntityFactory.PREFIX + "courseClass+json";
 	
 	String getInstitutionUUID();
 	void setInstitutionUUID(String institutionUUID);

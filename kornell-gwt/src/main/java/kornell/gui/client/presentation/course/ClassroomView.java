@@ -11,6 +11,7 @@ public interface ClassroomView  extends IsWidget{
 		Contents getContents();
 		void startSequencer();
 		void stopSequencer();
+		void fireProgressEvent();
 	}
 
 	FlowPanel getContentPanel();

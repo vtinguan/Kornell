@@ -7,7 +7,7 @@ import kornell.core.lom.Actom;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressChangeEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.presentation.HistoryMapper;
@@ -62,7 +62,7 @@ public class GenericPageView extends Composite implements ProgressChangeEventHan
 		this.page = page;
 		this.currentCourse = currentCourse;
 		this.session = session;
-		bus.addHandler(ProgressChangeEvent.TYPE,this);
+		bus.addHandler(ProgressEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display(enableAnchor);
 	}
@@ -87,7 +87,7 @@ public class GenericPageView extends Composite implements ProgressChangeEventHan
 	}
 
 	@Override
-	public void onProgressChange(ProgressChangeEvent event) {
+	public void onProgressChange(ProgressEvent event) {
 		page.setVisited(page.getIndex().intValue() <= event.getPagesVisitedCount().intValue());
 		// enable the anchor until the next one after the current
 		display(page.getIndex() <= (event.getPagesVisitedCount() + 1));

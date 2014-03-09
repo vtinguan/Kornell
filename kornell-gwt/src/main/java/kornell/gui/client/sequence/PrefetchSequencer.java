@@ -11,7 +11,7 @@ import kornell.core.lom.ExternalPage;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ActomEnteredEvent;
-import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
@@ -157,7 +157,7 @@ public class PrefetchSequencer implements Sequencer {
 			key = "????????????????";
 		bus.fireEvent(new ActomEnteredEvent(enrollmentUUID, key));
 		currentActom.setVisited(true);
-		fireProgressChangeEvent();
+		fireProgressEvent();
 	}
 	
 	private void makeCurrentNext() {
@@ -309,7 +309,9 @@ public class PrefetchSequencer implements Sequencer {
 		this.actoms = ContentsCategory.collectActoms(contents);
 	}
 
-	private void fireProgressChangeEvent() {
+	@Override
+	public void fireProgressEvent() {
+		if(actoms == null) return;
 		int pagesVisitedCount = 0;
 		int totalPages = actoms.size();
 		for (Actom actom : actoms) {
@@ -319,12 +321,12 @@ public class PrefetchSequencer implements Sequencer {
 			}
 			break;
 		}
-		ProgressChangeEvent progressChangeEvent = new ProgressChangeEvent();
-		progressChangeEvent.setCurrentPage(currentIndex + 1);
-		progressChangeEvent.setTotalPages(totalPages);
-		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
-		progressChangeEvent.setEnrollmentUUID(enrollmentUUID);
-		bus.fireEvent(progressChangeEvent);
+		ProgressEvent progressEvent = new ProgressEvent();
+		progressEvent.setCurrentPage(currentIndex + 1);
+		progressEvent.setTotalPages(totalPages);
+		progressEvent.setPagesVisitedCount(pagesVisitedCount);
+		progressEvent.setEnrollmentUUID(enrollmentUUID);
+		bus.fireEvent(progressEvent);
 	}
 
 	@Override

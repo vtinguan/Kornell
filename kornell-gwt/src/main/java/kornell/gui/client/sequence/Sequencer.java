@@ -11,4 +11,5 @@ public interface Sequencer
 	Sequencer withPlace(ClassroomPlace place);
 	void go(Contents contents);
 	void stop();
+	void fireProgressEvent();
 }
