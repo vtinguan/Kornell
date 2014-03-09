@@ -291,7 +291,6 @@ public class PrefetchSequencer implements Sequencer {
 	private void showCurrentASAP() {
 		currentUidget = uidgetFor(currentActom);
 		updateContentPanel();
-		currentUidget.setVisible(false);
 		currentUidget.onViewReady(new ShowWhenReady(currentUidget));
 		dropBreadcrumb();
 	}

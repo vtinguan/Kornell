@@ -75,6 +75,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
+		// sessions that arent authenticated, go to the default place
+		// except if it's a vitrineplace, then let the history take care of it
 		if (!session.isAuthenticated() && historian.getToken().indexOf("vitrine") == -1){
 			placeCtrl.goTo(defaultPlace);
 		}
