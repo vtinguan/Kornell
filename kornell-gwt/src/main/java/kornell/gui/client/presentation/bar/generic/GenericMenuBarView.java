@@ -132,7 +132,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 		$wnd.UserVoice.push([ 'set', {
 			locale : 'pt-BR',
 			screenshot_enabled : false,
-			accent_color : 'black'
+			accent_color : '#9b020a'
 		} ]);
 		$wnd.UserVoice.push([ 'identify', {
 			email : email, 

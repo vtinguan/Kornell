@@ -6,8 +6,8 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.ProgressChangeEvent;
-import kornell.gui.client.event.ProgressChangeEventHandler;
+import kornell.gui.client.event.ProgressEvent;
+import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class GenericActivityBarView extends Composite implements ActivityBarView, ProgressChangeEventHandler, ShowDetailsEventHandler {
+public class GenericActivityBarView extends Composite implements ActivityBarView, ProgressEventHandler, ShowDetailsEventHandler {
 	
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityBarView> {
 	}
@@ -85,7 +85,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		clientFactory.getEventBus().addHandler(ProgressChangeEvent.TYPE,this);
+		clientFactory.getEventBus().addHandler(ProgressEvent.TYPE,this);
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
 		
 		KornellSession session = clientFactory.getKornellSession();
@@ -100,6 +100,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private void display(){
 
+		this.setVisible(false);
 		isEnrolled = false;
 
 		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
@@ -287,15 +288,23 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	}
 
 	@Override
-	public void onProgressChange(ProgressChangeEvent event) {
+	public void onProgress(ProgressEvent event) {
+		boolean isMonoSCO = (event.getTotalPages() <= 1);
 		if(event.getCurrentPage() != 0){
 			updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
 			enablePrev = event.hasPrevious();
 			enableNext = event.hasNext();
 			enableButton(BUTTON_PREVIOUS, enablePrev);
 			enableButton(BUTTON_NEXT, enableNext);
-			clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(showDetails));
 		}
+		btnNext.setVisible(!isMonoSCO);
+		btnPrevious.setVisible(!isMonoSCO);		
+		progressBarPanel.setVisible(!isMonoSCO);
+		if(isMonoSCO)
+			btnDetails.addStyleName("firstMonoSCO");
+		else
+			btnDetails.removeStyleName("firstMonoSCO");
+		this.setVisible(true);
 	}
 	
 	@UiHandler("btnDetails")

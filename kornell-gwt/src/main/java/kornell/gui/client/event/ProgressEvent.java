@@ -2,9 +2,9 @@ package kornell.gui.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
+public class ProgressEvent extends GwtEvent<ProgressEventHandler>{
 
-	public static Type<ProgressChangeEventHandler> TYPE = new Type<ProgressChangeEventHandler>();
+	public static Type<ProgressEventHandler> TYPE = new Type<ProgressEventHandler>();
 	
 	private Integer totalPages;
 	private Integer currentPage;
@@ -12,13 +12,13 @@ public class ProgressChangeEvent extends GwtEvent<ProgressChangeEventHandler>{
 	private String enrollmentUUID;
 	
 	@Override
-	public Type<ProgressChangeEventHandler> getAssociatedType() {
+	public Type<ProgressEventHandler> getAssociatedType() {
 		return TYPE;
 	}
 
 	@Override
-	protected void dispatch(ProgressChangeEventHandler handler) {
-		handler.onProgressChange(this);		
+	protected void dispatch(ProgressEventHandler handler) {
+		handler.onProgress(this);		
 	}
 	
 	public boolean hasNext(){

@@ -19,6 +19,14 @@ class CourseClassRepo(uuid:String) {
   
   def version = CourseVersionRepo(get.getCourseVersionUUID())
   
+  def update(courseClass: CourseClass): CourseClass = {    
+    sql"""
+    | update Institution i
+    | set i.name = ${courseClass.getName},
+    | where i.uuid = ${courseClass.getUUID}""".executeUpdate
+    courseClass
+  }
+  
   def actomsVisitedBy(p: Person): List[String] = sql"""
   	select actomKey from ActomEntered ae
   	join Enrollment e on ae.enrollmentUUID=e.uuid

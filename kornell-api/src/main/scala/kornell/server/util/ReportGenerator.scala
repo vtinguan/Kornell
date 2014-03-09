@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils
 import java.io.File
 import java.net.URL
 import java.sql.ResultSet
+import kornell.core.util.StringUtils.composeURL
 
 object ReportGenerator extends App {
 
@@ -35,10 +36,10 @@ object ReportGenerator extends App {
     params.put("userUuid", userUUID)
     params.put("name", certificateData._1.toUpperCase())
     params.put("course", certificateData._2.toUpperCase())
-    val assetsURL: String = certificateData._3 + certificateData._4 + "/reports/"
-    params.put("assetsURL", assetsURL)
+    val assetsURL: String = composeURL(certificateData._3, certificateData._4, "/reports")
+    params.put("assetsURL", assetsURL + "/")
 
-    generateEmptyDataSourceReport(assetsURL + "certificate.jrxml", params)
+    generateEmptyDataSourceReport(composeURL(assetsURL, "certificate.jrxml"), params)
   }
 
   def generateEmptyDataSourceReport(jrxmlPath: String, params: HashMap[String, Object]): Array[Byte] = {

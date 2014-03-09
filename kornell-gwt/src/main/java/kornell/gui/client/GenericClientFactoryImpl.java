@@ -30,6 +30,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.place.shared.PlaceHistoryHandler.DefaultHistorian;
+import com.google.gwt.place.shared.PlaceHistoryHandler.Historian;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -47,6 +49,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private final EventBus bus = new SimpleEventBus();
 	private final PlaceController placeCtrl = new PlaceController(bus);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
+	private final DefaultHistorian historian = GWT.create(DefaultHistorian.class);
 	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 
 	/* Activity Managers */
@@ -72,7 +75,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
-		if (!session.isAuthenticated()){
+		// sessions that arent authenticated, go to the default place
+		// except if it's a vitrineplace, then let the history take care of it
+		if (!session.isAuthenticated() && historian.getToken().indexOf("vitrine") == -1){
 			placeCtrl.goTo(defaultPlace);
 		}
 		historyHandler.handleCurrentHistory();

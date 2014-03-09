@@ -19,7 +19,7 @@ import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.ProgressChangeEvent;
+import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.HistoryMapper;
@@ -116,7 +116,7 @@ public class GenericCourseDetailsView extends Composite {
 			}
 			break;
 		}
-		ProgressChangeEvent progressChangeEvent = new ProgressChangeEvent();
+		ProgressEvent progressChangeEvent = new ProgressEvent();
 		progressChangeEvent.setCurrentPage(0);
 		progressChangeEvent.setTotalPages(totalPages);		
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
@@ -192,7 +192,7 @@ public class GenericCourseDetailsView extends Composite {
 		certificationInfo.add(infoTitle);
 
 		Label infoText = new Label(
-				"Confira abaixo o status dos testes e avaliações presentes neste curso. Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e tenha sido aprovado na avaliação final.");
+				/*"Confira abaixo o status dos testes e avaliações presentes neste curso. " + */"Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e tenha sido aprovado na avaliação final.");
 		infoText.addStyleName("certificationInfoText");
 		certificationInfo.add(infoText);
 
@@ -203,7 +203,7 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel certificationContentPanel = new FlowPanel();
 		certificationContentPanel.addStyleName("certificationContentPanel");
 
-		certificationContentPanel.add(new GenericCertificationItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCertificationItemView.TEST));
+		//certificationContentPanel.add(new GenericCertificationItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCertificationItemView.TEST));
 		certificationContentPanel.add(new GenericCertificationItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCertificationItemView.CERTIFICATION)); 
 
 		return certificationContentPanel;
@@ -296,11 +296,14 @@ public class GenericCourseDetailsView extends Composite {
 		btnCertification = new Button();
 		btnGoToCourse = new Button();
 		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(), true);
-		displayButton(btnTopics, constants.btnTopics(),
-				constants.btnTopicsInfo(), false);
+		if(actoms.size() > 1){
+			displayButton(btnTopics, constants.btnTopics(),
+					constants.btnTopicsInfo(), false);
+		}
 		// TODO: i18n
 		if(isEnrolled){
-			displayButton(btnCertification, constants.btnCertification(), constants.btnCertificationInfo(), false);
+			//TODO comment
+			displayButton(btnCertification, constants.btnCertification(), "Imprimir Certificado"/*constants.btnCertificationInfo()*/, false);
 			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
 		}
 	}

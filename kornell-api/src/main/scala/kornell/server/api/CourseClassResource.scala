@@ -13,6 +13,10 @@ import kornell.server.repository.s3.S3
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.CourseClassesRepo
 import javax.servlet.http.HttpServletRequest
+import kornell.core.entity.CourseClass
+import javax.ws.rs.PUT
+import javax.ws.rs.Consumes
+import kornell.server.jdbc.repository.CourseClassRepo
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -24,8 +28,15 @@ class CourseClassResource(uuid: String) {
     AuthRepo.withPerson { person =>
       //CourseClasses(uuid).byPerson(person.getUUID)
     }
+  
+  @PUT
+  @Produces(Array("text/plain"))
+  @Consumes(Array(CourseClass.TYPE))
+  def update(implicit @Context sc: SecurityContext, courseClass: CourseClass) = AuthRepo.withPerson{ p =>
+    CourseClassRepo(uuid).update(courseClass)
+  }
 
-  @Produces(Array(Contents.TYPE))
+  @Produces(Array(Contents.TYPE)) 
   @Path("contents")
   @GET
   def getLatestContents(implicit @Context sc: SecurityContext): Contents =

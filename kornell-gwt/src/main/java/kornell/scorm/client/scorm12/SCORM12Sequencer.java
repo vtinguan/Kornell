@@ -59,4 +59,10 @@ public class SCORM12Sequencer implements Sequencer{
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public void fireProgressEvent() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
