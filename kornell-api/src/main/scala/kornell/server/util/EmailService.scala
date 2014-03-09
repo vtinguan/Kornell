@@ -11,18 +11,13 @@ import kornell.core.entity.Course
 
 object EmailService {
   def sendEmailConfirmation(person: Person, institution: Institution) = {
-    val sex = person.getSex() match { 
-      case "F" => "a"
-      case "M" => "o"
-      case  _  => "o(a)"
-  	}
-    val subject = "Bem-vind" + sex + " à " + institution.getFullName() + "!"
+    val subject = "Bem-vind" + getSexSuffix(person) + " à " + institution.getFullName() + "!"
     val from = getFromEmail(institution)
     val to = person.getEmail
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
     		<p>&nbsp;</p>
-    		<p>Bem-vind""" + sex + """ &agrave; """ + institution.getFullName() + """.</p>
+    		<p>Bem-vind""" + getSexSuffix(person) + """ &agrave; """ + institution.getFullName() + """.</p>
     		<p>Por favor, confirme seu cadastro para ativarmos a sua conta.</p> """ +
     		getActionButton(institution.getBaseURL()+"#vitrine:", "Confirmar agora") + """
     		<p>Depois da ativa&ccedil;&atilde;o voc&ecirc;  poder&aacute; acessar os cursos dispon&iacute;veis para voc&ecirc;, assim como todos os recursos deste ambiente.</p>
@@ -61,17 +56,23 @@ object EmailService {
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
     		<p>&nbsp;</p>
-    		<p>Voc&ecirc; foi matriculado no curso """+ course.getTitle() +""" oferecido pela """+ institution.getFullName() +""".</p> 
+    		<p>Voc&ecirc; foi matriculad""" + getSexSuffix(person) + """ no curso """+ course.getTitle() +""" oferecido pela """+ institution.getFullName() +""".</p> 
     		<p>Clique no bot&atilde;o abaixo para ir ao curso.</p> """ +
     		getActionButton(actionLink, "Acessar o Curso") + """
-    		<p>É necess&aacute;rio criar um usu&aacute;rio antes de acessar o curso, caso ainda n&atilde;o tenha criado.</p>
+    		<p>Caso seja seu primeiro acesso, cadastre-se primeiro no sistema utilizando este email: """ + to + """</p>
     		<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
     val imgFile = getInstitutionLogoImage(institution)
-    println("about to send email...")
     EmailSender.sendEmail(subject, from, to, body, imgFile)
   }
+
+  private def getSexSuffix(person: kornell.core.entity.Person) =
+    person.getSex() match { 
+      case "F" => "a"
+      case "M" => "o"
+      case  _  => "o(a)"
+  	}
   
 
   private def getFromEmail(institution: kornell.core.entity.Institution):String = EmailSender.SMTP_FROM
