@@ -1,7 +1,7 @@
 NEWRELIC=$(cat <<EOF
 \ncommon: &default_settings
 \n\040  license_key: $NEWRELIC_KEY
-\n\040  # agent_enabled: true
+\n\040  agent_enabled: true
 \n\040  enable_auto_app_naming: false
 \n\040  enable_auto_transaction_naming: false
 \n\040  app_name: Eduvem
