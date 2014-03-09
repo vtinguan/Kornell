@@ -296,8 +296,10 @@ public class GenericCourseDetailsView extends Composite {
 		btnCertification = new Button();
 		btnGoToCourse = new Button();
 		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(), true);
-		displayButton(btnTopics, constants.btnTopics(),
-				constants.btnTopicsInfo(), false);
+		if(actoms.size() > 1){
+			displayButton(btnTopics, constants.btnTopics(),
+					constants.btnTopicsInfo(), false);
+		}
 		// TODO: i18n
 		if(isEnrolled){
 			//TODO comment

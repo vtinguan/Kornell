@@ -53,7 +53,7 @@ public class PrefetchSequencer implements Sequencer {
 		makeNextCurrent();
 		currentIndex++;
 		preloadNext();
-		makeCurrentVisible();
+		updateContentPanel();
 		dropBreadcrumb();
 		debug("CONTINUED");
 	}
@@ -145,6 +145,7 @@ public class PrefetchSequencer implements Sequencer {
 			nextUidget.setVisible(false);
 		if (prevUidget != null)
 			prevUidget.setVisible(false);
+		updateContentPanel();
 	}
 
 	private void dropBreadcrumb() {
@@ -188,7 +189,6 @@ public class PrefetchSequencer implements Sequencer {
 		if(currentUidget != null) contentPanel.add(currentUidget);
 		if(nextUidget != null) contentPanel.add(nextUidget);
 		if(prevUidget != null) contentPanel.add(prevUidget);
-		makeCurrentVisible();
 	}
 
 	private void makePrevCurrent() {
