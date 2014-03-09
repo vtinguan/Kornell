@@ -89,7 +89,6 @@ object EmailService {
     """
 	  	<p>Cordialmente,</p>
 	  	<p><b>Equipe """ + institution.getFullName() + """</b></p>
-	  	<p>""" + from + """</p>
 	  	<img alt="" src="cid:logo" style="width: 300px;height: 80px;margin: 0 auto;display: block;">
 	"""
 
