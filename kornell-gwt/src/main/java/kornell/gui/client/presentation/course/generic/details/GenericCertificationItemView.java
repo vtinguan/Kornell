@@ -5,7 +5,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
-import kornell.gui.client.event.ProgressChangeEventHandler;
+import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericCertificationItemView extends Composite implements ProgressChangeEventHandler, ShowDetailsEventHandler{
+public class GenericCertificationItemView extends Composite implements ProgressEventHandler, ShowDetailsEventHandler{
 	interface MyUiBinder extends UiBinder<Widget, GenericCertificationItemView> {
 	}
 
@@ -120,7 +120,7 @@ public class GenericCertificationItemView extends Composite implements ProgressC
 	}
 
 	@Override
-	public void onProgressChange(ProgressEvent event) {
+	public void onProgress(ProgressEvent event) {
 		// TODO Auto-generated method stub
 		if(CERTIFICATION.equals(type)){
 			if(event.getProgressPercent() >= 100/* || session.isPlatformAdmin()*/){
