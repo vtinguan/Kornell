@@ -1,0 +1,16 @@
+packages: 
+  rpm:
+    newrelic-repo: http://download.newrelic.com/pub/newrelic/el5/i386/newrelic-repo-5-3.noarch.rpm
+  yum:
+    newrelic-sysmond: []
+    aws-cli: []
+commands:
+  0_install_newrelic:
+    command: wget -O /usr/share/tomcat7/lib/newrelic.jar http://s3-sa-east-1.amazonaws.com/beanstalk-support/newrelic/newrelic-agent-3.1.0.jar
+container_commands:    
+  0_config_nrsysmond:
+    command: /usr/sbin/nrsysmond-config --set license_key="$NEWRELIC_KEY"
+  1_start_nrsysmond_service:
+    command: /sbin/service newrelic-sysmond start
+  2_config_java_agent:
+    command: /usr/bin/aws s3 cp s3://beanstalk-support/newrelic/newrelic.yml /usr/share/tomcat7/lib/newrelic.yml --region=sa-east-1    
