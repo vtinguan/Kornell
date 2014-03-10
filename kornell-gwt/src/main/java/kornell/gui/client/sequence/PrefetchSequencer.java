@@ -53,7 +53,7 @@ public class PrefetchSequencer implements Sequencer {
 		makeNextCurrent();
 		currentIndex++;
 		preloadNext();
-		updateContentPanel();
+		makeCurrentVisible();
 		dropBreadcrumb();
 		debug("CONTINUED");
 	}
@@ -167,28 +167,35 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void removePrevious() {
+		contentPanel.remove(prevUidget);
 		prevUidget = null;
 		prevActom = null;
 		updateContentPanel();
 	}
 
 	private void removeNext() {
+		contentPanel.remove(nextUidget);
 		nextUidget = null;
 		nextActom = null;
 		updateContentPanel();
 	}
 
 	private void removeCurrent() {
+		contentPanel.remove(currentUidget);
 		currentUidget = null;
 		currentActom = null;
 		updateContentPanel();
 	}
 	
 	private void updateContentPanel(){
-		contentPanel.clear();
-		if(currentUidget != null) contentPanel.add(currentUidget);
-		if(nextUidget != null) contentPanel.add(nextUidget);
-		if(prevUidget != null) contentPanel.add(prevUidget);
+		//contentPanel.clear();
+		
+		if(currentUidget != null && !contentPanel.getElement().isOrHasChild(currentUidget.getElement()))
+			contentPanel.add(currentUidget);
+		if(nextUidget != null && !contentPanel.getElement().isOrHasChild(nextUidget.getElement()))
+			contentPanel.add(nextUidget);
+		if(prevUidget != null && !contentPanel.getElement().isOrHasChild(prevUidget.getElement()))
+			contentPanel.add(prevUidget);
 	}
 
 	private void makePrevCurrent() {
@@ -290,9 +297,10 @@ public class PrefetchSequencer implements Sequencer {
 
 	private void showCurrentASAP() {
 		currentUidget = uidgetFor(currentActom);
-		updateContentPanel();
+		currentUidget.setVisible(false);
 		currentUidget.onViewReady(new ShowWhenReady(currentUidget));
 		dropBreadcrumb();
+		updateContentPanel();
 	}
 
 	private Uidget uidgetFor(Actom actom) {

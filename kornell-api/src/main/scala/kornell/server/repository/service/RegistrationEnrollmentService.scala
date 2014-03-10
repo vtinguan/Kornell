@@ -79,12 +79,6 @@ object RegistrationEnrollmentService {
     user.setPerson(personRepo.get.get)
     user.setUsername(email)
     personRepo.setPassword(email, password).registerOn(institutionUUID)
-    //if there's only one class offered by the institution, request an enrollment
-    val classes = CourseClassesRepo.byInstitution(institutionUUID)
-    if (classes.length == 1) {
-      val person = personRepo.get
-      createEnrollment(person.get.getUUID, classes.head.getUUID, EnrollmentState.requested, person.get.getUUID)
-    }
     user
   }
 
