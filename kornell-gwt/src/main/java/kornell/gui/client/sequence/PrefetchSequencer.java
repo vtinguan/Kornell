@@ -167,21 +167,21 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void removePrevious() {
-		contentPanel.remove(prevUidget);
+		if(prevUidget != null) contentPanel.remove(prevUidget);
 		prevUidget = null;
 		prevActom = null;
 		updateContentPanel();
 	}
 
 	private void removeNext() {
-		contentPanel.remove(nextUidget);
+		if(nextUidget != null) contentPanel.remove(nextUidget);
 		nextUidget = null;
 		nextActom = null;
 		updateContentPanel();
 	}
 
 	private void removeCurrent() {
-		contentPanel.remove(currentUidget);
+		if(currentUidget != null) contentPanel.remove(currentUidget);
 		currentUidget = null;
 		currentActom = null;
 		updateContentPanel();
@@ -300,7 +300,7 @@ public class PrefetchSequencer implements Sequencer {
 		currentUidget.setVisible(false);
 		currentUidget.onViewReady(new ShowWhenReady(currentUidget));
 		dropBreadcrumb();
-		updateContentPanel();
+		makeCurrentVisible();
 	}
 
 	private Uidget uidgetFor(Actom actom) {
