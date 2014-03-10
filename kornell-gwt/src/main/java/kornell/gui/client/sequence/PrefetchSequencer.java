@@ -79,7 +79,7 @@ public class PrefetchSequencer implements Sequencer {
 	
 	@Override
 	public void onDirect(NavigationRequest event){
-		removeCurrent();
+		stop();
 		orientateAndSail(event.getDestination());
 	}
 
@@ -268,6 +268,7 @@ public class PrefetchSequencer implements Sequencer {
 		showCurrentASAP();
 		preloadNext();
 		preloadPrevious();
+		makeCurrentVisible();
 		debug("INITIAL");
 	}
 
