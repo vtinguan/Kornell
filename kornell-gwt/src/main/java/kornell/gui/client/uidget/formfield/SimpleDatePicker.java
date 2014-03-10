@@ -102,7 +102,7 @@ public class SimpleDatePicker extends FlowPanel{
         for (int day = 1; day <= maxDays; day++){
         	dropBoxDay.addItem(""+day);
         }
-        dropBoxDay.setSelectedIndex(index > maxDays - 1 ? maxDays - 1 : index);
+        dropBoxDay.setSelectedIndex(index > maxDays ? maxDays  : index);
 	}
     
     private int getMaxDays() {
