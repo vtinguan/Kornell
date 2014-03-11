@@ -1,6 +1,6 @@
 package kornell;
 
-import static kornell.core.util.StringUtils.composeURL;
+import static kornell.core.util.StringUtils.*;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -16,5 +16,13 @@ public class TestStringUtils {
 		assertEquals("http://slash/segments/also",composeURL("http://slash","/segments","/","/also") );
 		assertEquals("/relative/path/welcome",composeURL(null,"/relative","/path","/welcome") );
 		assertEquals("/composite/segments/too",composeURL(null,"/composite/segments","/too") );
+	}
+	
+	@Test
+	public void testParseInstitutionName(){
+		assertEquals("institution",parseInstitutionNameFromHostName("institution.eduvem.com"));
+		assertEquals("institution",parseInstitutionNameFromHostName("institution.test.eduvem.com"));
+		assertEquals("institution",parseInstitutionNameFromHostName("institution-test.eduvem.com"));
+		assertEquals("institution",parseInstitutionNameFromHostName("institution-test.outrodominio.com.br"));
 	}
 }
