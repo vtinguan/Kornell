@@ -23,6 +23,7 @@
 .paddingTop44{padding-top:44px;}
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
+.marginLeft25{margin-left:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -40,7 +41,7 @@
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
-.detailsPanel{width:962px;margin:0 auto;}.detailsPanel .titlePanel{padding-top:20px;font-size:18px;line-height:20px;}.detailsPanel .titlePanel .titleImage{padding-left:20px;float:left;}
+.detailsPanel{width:962px;margin:0 auto;}.detailsPanel .titlePanel{padding-top:20px;font-size:18px;line-height:20px;}.detailsPanel .titlePanel .titleImage{padding-left:20px;padding-right:5px;margin-top:-3px;float:left;height:28px;width:28px;}
 .detailsPanel .titlePanel .titleLabel{color:#b6b6b6;padding-left:8px;padding-right:8px;float:left;}
 .detailsPanel .titlePanel .courseNameLabel{color:#d61609;float:left;}
 .detailsPanel .titlePanel .closePanel .closeImage{float:right;}
