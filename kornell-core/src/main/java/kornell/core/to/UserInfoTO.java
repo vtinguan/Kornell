@@ -14,9 +14,6 @@ public interface UserInfoTO {
 	String getUsername();
 	void setUsername(String username);
 	
-	String getEmail();
-	void setEmail(String email);
-	
 	boolean isSigningNeeded();
 	void setSigningNeeded(boolean siginingNeeded);
 	

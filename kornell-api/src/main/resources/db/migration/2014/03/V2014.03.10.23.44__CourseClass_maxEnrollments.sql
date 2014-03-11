@@ -1,0 +1,1 @@
+alter table CourseClass add column maxEnrollments integer;

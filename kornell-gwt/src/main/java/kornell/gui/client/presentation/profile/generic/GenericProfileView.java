@@ -67,7 +67,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private Institution institution;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
-	private boolean isEditMode, isCurrentUser, isAdmin, showContactDetails;
+	private boolean isEditMode, isCurrentUser, isAdmin, showContactDetails, isRegisteredWithCPF;
 
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
@@ -141,6 +141,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 			}
 		}
 		isAdmin = isInstitutionAdmin || session.isPlatformAdmin();
+		
 		form.addStyleName("shy");
 		session.getUser(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID(), new Callback<UserInfoTO>() {
 			@Override
@@ -218,7 +219,11 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	private UserInfoTO getUserInfoFromForm() {
 		Person person = user.getPerson();
-		person.setEmail(email.getFieldPersistText());
+		if(isRegisteredWithCPF){
+			person.setCPF(email.getFieldPersistText());
+		} else {
+			person.setEmail(email.getFieldPersistText());
+		}
 		person.setFullName(fullName.getFieldPersistText());
 		person.setCompany(company.getFieldPersistText());
 		person.setTitle(position.getFieldPersistText());
@@ -284,6 +289,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 			return;
 		} 
 		
+		//TODO stinky
+		isRegisteredWithCPF = user.getPerson().getEmail() == null;
 
 		boolean isRegistered = false;
 		for (Registration registration : user.getRegistrationsTO().getRegistrations()) {
@@ -304,7 +311,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 		// the email is shown only to the current user or the admin
 		if(isCurrentUser || isAdmin){
-			email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), false);
+			email = new KornellFormFieldWrapper(isRegisteredWithCPF?"CPF":"Email", 
+					formHelper.createTextBoxFormField(isRegisteredWithCPF?user.getPerson().getCPF():user.getPerson().getEmail()), false);
 			fields.add(email);
 			profileFields.add(email);
 			profileFields.add(getPrivatePanel());

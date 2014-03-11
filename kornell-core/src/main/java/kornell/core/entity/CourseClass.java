@@ -16,4 +16,10 @@ public interface CourseClass extends Named{
 	
 	Boolean isPublicClass();
 	void setPublicClass(Boolean publicClass);
+	
+	Boolean isEnrollWithCPF();
+	void setEnrollWithCPF(Boolean enrollWithCPF);
+	
+	Integer getMaxEnrollments();
+	void setMaxEnrollments(Integer maxEnrollments);
 }

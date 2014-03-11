@@ -10,6 +10,7 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.uidget.KornellPagination;
 
@@ -73,6 +74,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private TextBox txtSearch;
 	private Button btnSearch;
 	private List<CourseClassTO> courseClasses;
+	private Boolean enrollWithCPF = false;
+	private Integer maxEnrollments = 0;
+	private Integer numEnrollments = 0;
 	
 	private boolean forbidProfileView;
 
@@ -97,8 +101,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	CollapseTrigger trigger;
 	@UiField
 	Collapse collapse;
+	@UiField
+	Label identifierLabel;
+	@UiField
+	FlowPanel infoPanelEmail;
+	@UiField
+	FlowPanel infoPanelCPF;
 	
-
 	@UiField
 	Modal errorModal;
 	@UiField
@@ -112,6 +121,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	Label lblCourseClassName;
 	@UiField
 	Label lblCourseName;
+	@UiField
+	Label lblEnrollmentsCount;
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
@@ -119,11 +130,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	// TODO i18n xml
 	public GenericAdminHomeView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		
 		table = new CellTable<Enrollment>();
-		initTable();
-
-		initSearch();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
 		
 		trigger.setTarget("#toggle");
@@ -133,17 +140,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
+				
+		btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText()+"&nbsp;&nbsp;&#x25BC;");
 		
 		listBoxCourseClasses.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
 				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
-				for (CourseClassTO courseClassTO : courseClasses) {
-					if(newCourseClassUUID.equals(courseClassTO.getCourseClass().getUUID())){
-						presenter.updateCourseClass(courseClassTO);
-						break;
-					}
-				}
+				if(!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()))
+					presenter.updateCourseClass(newCourseClassUUID);
 			}
 		});
 	}
@@ -151,7 +156,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private void initSearch() {
 		txtSearch = new TextBox();
 		txtSearch.addStyleName("txtSearch");
-		txtSearch.setTitle("nome, email, matrícula ou progresso");
+		txtSearch.setTitle("nome, "+ (enrollWithCPF?"CPF":"email") +", matrícula ou progresso");
 		txtSearch.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -186,6 +191,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	    
 		table.addStyleName("enrollmentsCellTable");
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		for (int i = 0; table.getColumnCount() > 0;) {
+			table.removeColumn(i);
+		}
 				
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override
@@ -197,9 +205,12 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override
 			public String getValue(Enrollment enrollment) {
-				return enrollment.getPerson().getEmail();
+				if(enrollWithCPF)
+					return enrollment.getPerson().getCPF();
+				else
+					return enrollment.getPerson().getEmail();
 			}
-		}, "Email");
+		}, (enrollWithCPF?"CPF":"Email"));
 
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override	
@@ -291,6 +302,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@Override
 	public void setEnrollmentList(List<Enrollment> enrollmentsIn) {
+		numEnrollments = enrollmentsIn.size();
+		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
+		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
+				
 		enrollmentsCurrent = new ArrayList<Enrollment>(enrollmentsIn);
 		enrollments = new ArrayList<Enrollment>(enrollmentsIn);
 		enrollmentsWrapper.clear();
@@ -340,8 +355,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	    	enrollment = enrollmentsCurrent.get(i);
 			boolean fullNameMatch = enrollment.getPerson() != null && enrollment.getPerson().getFullName() != null &&
 					enrollment.getPerson().getFullName().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-			boolean emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getEmail() != null &&
+			boolean emailMatch = false;
+			if(enrollWithCPF){
+				emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getCPF() != null &&
+						enrollment.getPerson().getCPF().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+			} else {
+				emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getEmail() != null &&
 					enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+			}
 			boolean enrollmentStateMatch = enrollment.getPerson() != null && enrollment.getState() != null &&
 					getEnrollmentStateAsText(enrollment.getState()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
 			boolean enrollmentProgressMatch = enrollment.getPerson() != null && enrollment.getProgress() != null &&
@@ -485,6 +506,26 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			value = courseClassTO.getCourseClass().getUUID();
 			listBoxCourseClasses.addItem(name, value);
 		}		
-		presenter.updateCourseClass(courseClasses.get(0));
+	}
+
+	@Override
+	public void setUserEnrollmentIdentificationType(Boolean enrollWithCPF) {
+		this.enrollWithCPF = enrollWithCPF;
+		if(enrollWithCPF){
+			identifierLabel.setText("CPF");
+			infoPanelEmail.addStyleName("shy");
+			infoPanelCPF.removeStyleName("shy");
+		} else {
+			identifierLabel.setText("Email");
+			infoPanelEmail.removeStyleName("shy");
+			infoPanelCPF.addStyleName("shy");
+		}
+		initTable();
+		initSearch();
+	}
+
+	@Override
+	public void setSelectedCourseClass(String uuid) {
+		listBoxCourseClasses.setSelectedValue(uuid);
 	}
 }

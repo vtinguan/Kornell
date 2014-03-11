@@ -65,10 +65,12 @@ object EventsRepo {
 		
 	  if(EnrollmentState.preEnrolled.equals(toState) || EnrollmentState.enrolled.equals(toState)){
 	    val enrollment = EnrollmentRepo(enrollmentUUID).get
-	    val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
-	    val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
-	    val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get
-	    EmailService.sendEmailEnrolled(enrollment.getPerson, institution, course)
+	    if(enrollment.getPerson.getEmail != null){
+		    val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
+		    val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
+		    val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get
+		    EmailService.sendEmailEnrolled(enrollment.getPerson, institution, course)
+	    }
 	  }
   }
 	

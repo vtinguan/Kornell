@@ -10,6 +10,7 @@ import kornell.core.entity.CourseClass
 import kornell.core.to.CourseClassTO
 import kornell.core.entity.Course
 import kornell.server.repository.TOs
+import kornell.core.entity.Person
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -25,7 +26,8 @@ package object repository {
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
         r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
-        r.getBigDecimal("requiredScore"), r.getBoolean("publicClass")) 
+        r.getBigDecimal("requiredScore"), r.getBoolean("publicClass"), 
+        r.getBoolean("enrollWithCPF"), r.getInt("maxEnrollments")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -53,7 +55,9 @@ package object repository {
     r.getString("courseClassName"), 
     r.getString("institutionUUID"),
     r.getBigDecimal("requiredScore"),
-    r.getBoolean("publicClass"))
+    r.getBoolean("publicClass"),
+    r.getBoolean("enrollWithCPF"),
+    r.getInt("maxEnrollments"))
     
 
   implicit def toEnrollment(rs: ResultSet): Enrollment =
@@ -65,5 +69,24 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),
       EnrollmentState.valueOf(rs.getString("state")))
+	
+	implicit def toPerson(rs:ResultSet):Person = newPerson(
+	    rs.getString("uuid"),
+	    rs.getString("fullName"), 
+	    rs.getString("lastPlaceVisited"),
+	    rs.getString("email"),
+	    rs.getString("company"),
+	    rs.getString("title"),
+	    rs.getString("sex"),
+	    rs.getDate("birthDate"),
+	    rs.getString("confirmation"),
+	    rs.getString("telephone"),
+	    rs.getString("country"),
+	    rs.getString("state"),
+	    rs.getString("city"),
+	    rs.getString("addressLine1"),
+	    rs.getString("addressLine2"),
+	    rs.getString("postalCode"),
+	    rs.getString("cpf"))
 
 }

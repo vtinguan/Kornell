@@ -29,13 +29,25 @@ object RegistrationEnrollmentService {
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
 
   private def deanRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, dean: Person) =
-    AuthRepo.getPersonByEmail(enrollmentRequest.getEmail) match {
+    PeopleRepo.getByUsername({
+      if(enrollmentRequest.getEmail != null)
+        enrollmentRequest.getEmail
+      else
+        enrollmentRequest.getCPF
+    }) match {
       case Some(one) => deanEnrollExistingPerson(one, enrollmentRequest, dean)
       case None => deanEnrollNewPerson(enrollmentRequest, dean)
     }
 
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
-    val personRepo = PeopleRepo.createPerson(enrollmentRequest.getEmail, enrollmentRequest.getFullName)
+    val personRepo = {
+      if(enrollmentRequest.getEmail() != null) {
+        PeopleRepo.createPerson(enrollmentRequest.getEmail, enrollmentRequest.getFullName)
+      } else {
+        PeopleRepo.createPersonCPF(enrollmentRequest.getCPF, enrollmentRequest.getFullName)
+          .setPassword(enrollmentRequest.getCPF, enrollmentRequest.getCPF)
+      }
+    }
     personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
     createEnrollment(personRepo.get.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
   }
@@ -56,7 +68,6 @@ object RegistrationEnrollmentService {
       EventsRepo.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
       val course = CoursesRepo.byCourseClassUUID(enrollment.getCourseClassUUID).get
       val institution = InstitutionsRepo.byUUID(institutionUUID).get
-      EmailService.sendEmailEnrolled(person, institution, course)
     }
   }
 
@@ -66,7 +77,7 @@ object RegistrationEnrollmentService {
     val password = regReq.getPassword
     val fullName = regReq.getFullName
 
-    AuthRepo.getPersonByEmail(email) match {
+    PeopleRepo.getByUsername(email) match {
       case Some(one) => userUpdateExistingPerson(email, fullName, password, one)
       case None => userCreateNewPerson(email, fullName, password, institutionUUID)
     }

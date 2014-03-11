@@ -184,7 +184,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		Callback<UserInfoTO> checkUserCallback = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO user) {
-				if (user.getEmail() != null) {
+				if (user.getUsername() != null) {
 					view.setMessage("O email já existe.");
 					view.showMessage();
 					return;
@@ -258,7 +258,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						public void ok(UserInfoTO to) {
 							view.displayView(VitrineViewType.login);
 							KornellNotification.show("Senha alterada com sucesso.");
-							view.setEmail(to.getEmail());
+							view.setEmail(to.getUsername());
 							view.setPassword(view.getNewPassword());
 							doLogin();
 						}

@@ -49,7 +49,9 @@ object CourseClassesRepo {
 			    cc.name as courseClassName,
 			    cc.institution_uuid as institutionUUID,
 		  		cc.requiredScore,
-		  		cc.publicClass as publicClass
+		  		cc.publicClass as publicClass,
+		  		cc.enrollWithCPF as enrollWithCPF,
+		  		cc.maxEnrollments as maxEnrollments
 			from Course c
 			join CourseVersion cv on cv.course_uuid = c.uuid
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid

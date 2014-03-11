@@ -26,7 +26,8 @@ object Entities {
   def newPerson(uuid: String, fullName: String, lastPlaceVisited: String = null,
       	email: String, company: String, title: String, sex: String, 
       	birthDate: Date, confirmation: String, telephone: String, country: String, 
-      	state: String, city: String, addressLine1: String, addressLine2: String, postalCode: String) = {
+      	state: String, city: String, addressLine1: String, addressLine2: String, 
+      	postalCode: String, cpf: String) = {
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
@@ -44,6 +45,7 @@ object Entities {
     person.setAddressLine1(addressLine1)
     person.setAddressLine2(addressLine2)
     person.setPostalCode(postalCode)
+    person.setCPF(cpf)
     person
   }
 
@@ -163,7 +165,7 @@ object Entities {
     version
   }
   
-  def newCourseClass(uuid:String,name:String,courseVersionUUID:String,institutionUUID:String,requiredScore:BigDecimal,publicClass:Boolean) = {
+  def newCourseClass(uuid:String,name:String,courseVersionUUID:String,institutionUUID:String,requiredScore:BigDecimal,publicClass:Boolean,enrollWithCPF:Boolean,maxEnrollments:Integer) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -171,6 +173,8 @@ object Entities {
     clazz.setInstitutionUUID(institutionUUID)
     clazz.setRequiredScore(requiredScore)
     clazz.setPublicClass(publicClass)
+    clazz.setEnrollWithCPF(enrollWithCPF)
+    clazz.setMaxEnrollments(maxEnrollments)
     clazz
   }
   

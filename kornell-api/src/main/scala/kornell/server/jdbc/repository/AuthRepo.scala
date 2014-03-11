@@ -33,7 +33,8 @@ object AuthRepo {
     rs.getString("city"),
     rs.getString("addressLine1"),
     rs.getString("addressLine2"),
-    rs.getString("postalCode"))
+    rs.getString("postalCode"),
+    rs.getString("cpf"))
 
   implicit def toString(rs: ResultSet): String = rs.getString(1) 
   
@@ -44,7 +45,7 @@ object AuthRepo {
         sc.getUserPrincipal().getName()
       else "AUTH_SHOULD_HAVE_FAILED" //TODO
 
-    val person: Option[Person] = getPersonByEmail(username)
+    val person: Option[Person] = PeopleRepo.getByUsername(username)
 
     if (person.isDefined)
       fun(person.get)
@@ -58,6 +59,14 @@ object AuthRepo {
 		select * from Person p
 		where p.email = $email
 	""".first[Person]
+  }
+
+  //TODO: Cache
+  def getPersonByCPF(cpf: String) = {
+	    sql"""
+			select * from Person p
+			where p.cpf = $cpf
+		""".first[Person]
   }
 
   //TODO: Cache

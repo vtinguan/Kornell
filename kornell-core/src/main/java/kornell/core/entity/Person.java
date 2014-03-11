@@ -13,6 +13,8 @@ public interface Person {
 	void setLastPlaceVisited(String lastPlaceVisited);
 	String getEmail();
 	void setEmail(String email);
+	String getCPF();
+	void setCPF(String cpf);
 	String getCompany();
 	void setCompany(String company);
 	String getTitle();

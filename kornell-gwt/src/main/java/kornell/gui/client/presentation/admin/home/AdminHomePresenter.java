@@ -40,6 +40,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private Place defaultPlace;
 	TOFactory toFactory;
 	private ViewFactory viewFactory;
+	private Boolean enrollWithCPF = false;
+	private Integer maxEnrollments = 0;
+	private Integer numEnrollments = 0;
+	private CourseClassesTO courseClassesTO;
 
 	public AdminHomePresenter(KornellSession session,
 			PlaceController placeController, Place defaultPlace,
@@ -61,8 +65,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 			session.getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 				@Override
-				public void ok(CourseClassesTO tos) {
-					view.setCourseClasses(tos.getCourseClasses());
+				public void ok(CourseClassesTO to) {
+					courseClassesTO = to;
+					view.setCourseClasses(courseClassesTO.getCourseClasses());
+					updateCourseClass(courseClassesTO.getCourseClasses().get(0));
 				}
 			});
 		} else {
@@ -78,6 +84,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				new Callback<Enrollments>() {
 					@Override
 					public void ok(Enrollments enrollments) {
+						numEnrollments = enrollments.getEnrollments().size();
+						maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 						view.setEnrollmentList(enrollments.getEnrollments());
 						LoadingPopup.hide();
 					}
@@ -86,11 +94,32 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 	
 	@Override
-	public void updateCourseClass(CourseClassTO courseClass){
-		Dean.getInstance().setCourseClassTO(courseClass);
-		view.setCourseClassName(courseClass.getCourseClass().getName());
-		view.setCourseName(courseClass.getCourseVersionTO().getCourse().getTitle());
-		getEnrollments(courseClass.getCourseClass().getUUID());
+	public void updateCourseClass(final String courseClassUUID){
+
+		session.getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
+			@Override
+			public void ok(CourseClassesTO to) {
+				courseClassesTO = to;
+				view.setCourseClasses(courseClassesTO.getCourseClasses());
+				
+				for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+					if(courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)){
+						updateCourseClass(courseClassTO);
+						break;
+					}
+				}
+			}
+		});
+	}
+
+	private void updateCourseClass(CourseClassTO courseClassTO) {
+		enrollWithCPF = courseClassTO.getCourseClass().isEnrollWithCPF();
+		Dean.getInstance().setCourseClassTO(courseClassTO);
+		view.setCourseClassName(courseClassTO.getCourseClass().getName());
+		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse().getTitle());
+		view.setUserEnrollmentIdentificationType(enrollWithCPF);
+		view.setSelectedCourseClass(courseClassTO.getCourseClass().getUUID());
+		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 
 	@Override
@@ -128,13 +157,19 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	@Override
 	public void onAddEnrollmentButtonClicked(String fullName, String email) {
+		email = formHelper.stripCPF(email);
 		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
 		batchEnrollments.add(createEnrollment(fullName, email));
-		if (formHelper.isEmailValid(email)) {
+		if(isIdentifierValid(email)){
 			saveEnrollments(createEnrollments());
 		} else {
-			KornellNotification.show("Email inválido.", AlertType.ERROR);
+			KornellNotification.show((enrollWithCPF?"CPF":"Email") +" inválido.", AlertType.ERROR);
 		}
+	}
+
+	private boolean isIdentifierValid(String email) {
+		return (!enrollWithCPF && formHelper.isEmailValid(email)) || 
+			(enrollWithCPF && formHelper.isCPFValid(email));
 	}
 
 	@Override
@@ -170,7 +205,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1]
 					: enrollmentStrA[0]);
 			GWT.log("*** Validating: " + fullName + " - " + email);
-			if (formHelper.isEmailValid(email)) {
+			if (isIdentifierValid(email)) {
 				batchEnrollments.add(createEnrollment(fullName, email));
 			} else {
 				batchEnrollmentErrors += enrollmentsA[i] + "\n";
@@ -186,8 +221,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				.getInstitution().getUUID());
 		enrollmentRequestTO.setCourseClassUUID(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getUUID());
-		enrollmentRequestTO.setEmail(email);
 		enrollmentRequestTO.setFullName(fullName);
+		if(enrollWithCPF)
+			enrollmentRequestTO.setCPF(formHelper.stripCPF(email));
+		else
+			enrollmentRequestTO.setEmail(email);
 
 		return enrollmentRequestTO;
 	}
@@ -195,14 +233,19 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private void saveEnrollments(EnrollmentRequestsTO enrollmentRequests) {
 		if (enrollmentRequests.getEnrollmentRequests().size() == 0) {
 			KornellNotification
-					.show("Verifique se os nomes/emails dos usuários estão corretos. Nenhuma matrícula encontrada.",
+					.show("Verifique se os nomes/"+ (enrollWithCPF?"cpfs":"emails") +" dos usuários estão corretos. Nenhuma matrícula encontrada.",
 							AlertType.WARNING);
 			return;
-		} else if (enrollmentRequests.getEnrollmentRequests().size() > 5) {
+		} else if((enrollmentRequests.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments){
+			KornellNotification
+			.show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
+					AlertType.ERROR, 5000);
+			return;
+		} else if (!enrollWithCPF && enrollmentRequests.getEnrollmentRequests().size() > 5) {
 			KornellNotification
 					.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
 							+ enrollmentRequests.getEnrollmentRequests().size()
-							* 2 + " segundos).", AlertType.INFO);
+							* 2 + " segundos).", AlertType.INFO, 6000);
 		} else {
 			LoadingPopup.show();
 		}
@@ -213,7 +256,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 						getEnrollments(Dean.getInstance().getCourseClassTO()
 								.getCourseClass().getUUID());
 						KornellNotification
-								.show("Matrículas feitas com sucesso.");
+								.show("Matrículas feitas com sucesso.", 1500);
 					}
 				});
 	}

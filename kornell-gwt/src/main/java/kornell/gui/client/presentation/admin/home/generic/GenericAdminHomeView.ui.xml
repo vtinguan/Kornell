@@ -11,7 +11,7 @@
 			<g:FlowPanel addStyleNames="insertPanel">
 				<g:Label addStyleNames="inlineLabel">Nome Completo: </g:Label>
 				<b:TextBox ui:field="txtFullName"></b:TextBox>
-				<g:Label addStyleNames="inlineLabel">Email: </g:Label>
+				<g:Label ui:field="identifierLabel" addStyleNames="inlineLabel">Email: </g:Label>
 				<b:TextBox ui:field="txtEmail"></b:TextBox>
 				<g:Button ui:field="btnAddEnrollment" addStyleNames="btnAction">Matricular</g:Button>
 			</g:FlowPanel>
@@ -25,13 +25,24 @@
 			<g:FlowPanel addStyleNames="addEnrollmentBatchPanel">
 				<b:TextArea ui:field="txtAddEnrollmentBatch"></b:TextArea>
 				<g:FlowPanel addStyleNames="infoPanel">
-					<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
-					<g:Label addStyleNames="highlightText">"nome;email" ou somente "email".</g:Label>
-					<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
-					<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
-					<g:Label addStyleNames="highlightText">Nome Sobrenome;email@example.com </g:Label>
-					<g:Label addStyleNames="highlightText">email1@example.com</g:Label>
-					<g:Label addStyleNames="highlightText">email2@example.com</g:Label>
+					<g:FlowPanel ui:field="infoPanelEmail" addStyleNames="shy">
+						<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
+						<g:Label addStyleNames="highlightText">"nome;email" ou somente "email".</g:Label>
+						<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
+						<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
+						<g:Label addStyleNames="highlightText">Nome Sobrenome;email@example.com </g:Label>
+						<g:Label addStyleNames="highlightText">email1@example.com</g:Label>
+						<g:Label addStyleNames="highlightText">email2@example.com</g:Label>
+					</g:FlowPanel>
+					<g:FlowPanel ui:field="infoPanelCPF" addStyleNames="shy">
+						<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
+						<g:Label addStyleNames="highlightText">"nome;cpf" ou somente "cpf".</g:Label>
+						<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
+						<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
+						<g:Label addStyleNames="highlightText">Nome Sobrenome;123.456.789-13</g:Label>
+						<g:Label addStyleNames="highlightText">123.456.987-13</g:Label>
+						<g:Label addStyleNames="highlightText">12345687913</g:Label>
+					</g:FlowPanel>
 					<g:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnNotSelected btnAddEnrollmentBatch">Matricular</g:Button>
 				</g:FlowPanel>
 			</g:FlowPanel>
@@ -42,10 +53,13 @@
 			<g:Label ui:field="lblCourseClassName" addStyleNames="inlineLabel lblHighlight"></g:Label>
 			<g:Label addStyleNames="inlineLabel">do curso</g:Label>
 			<g:Label ui:field="lblCourseName" addStyleNames="inlineLabel lblHighlight"></g:Label>
+			<g:Label addStyleNames="inlineLabel marginLeft25"> (</g:Label>
+			<g:Label ui:field="lblEnrollmentsCount" addStyleNames="inlineLabel lblHighlight"></g:Label>
+			<g:Label addStyleNames="inlineLabel">matrículas efetuadas )</g:Label>
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="enrollmentsWrapper">
 		</g:FlowPanel>
-		<g:Button ui:field="btnGoToCourse" addStyleNames="btnAction">Ir para o curso</g:Button>
+		<g:Button ui:field="btnGoToCourse" addStyleNames="btnAction shy">Ir para o curso</g:Button>
 		<b:Modal ui:field="errorModal" title="Erros ao inserir matrículas" backdrop="STATIC" addStyleNames="forgotPasswordModal">
 			<g:FlowPanel>
 				<g:Label>As seguintes linhas contém erros:</g:Label>

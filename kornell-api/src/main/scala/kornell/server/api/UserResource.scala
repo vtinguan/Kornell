@@ -24,6 +24,7 @@ import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.PeopleRepo
 
 @Path("user")
 class UserResource{
@@ -37,7 +38,6 @@ class UserResource{
     	val username =  sc.getUserPrincipal().getName()
     	user.setUsername(username)
     	user.setPerson(p)
-	    user.setEmail(user.getPerson().getEmail())
     	val signingNeeded = RegistrationsRepo.signingNeeded(p)
     	user.setSigningNeeded(signingNeeded)
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
@@ -61,7 +61,6 @@ class UserResource{
 	    if (person.isDefined){
 	    	user.setPerson(person.get)
 		    user.setUsername(user.getPerson().getEmail())
-		    user.setEmail(user.getPerson().getEmail())
 	    	user.setRegistrationsTO(RegistrationsRepo.getAll(person.get))
 	    	//val signingNeeded = RegistrationsRepo.signingNeeded(p)
 	    	//user.setSigningNeeded(signingNeeded)
@@ -77,15 +76,15 @@ class UserResource{
   }
   
   @GET
-  @Path("check/{email}")
+  @Path("check/{username}")
   @Produces(Array(UserInfoTO.TYPE))
-  def checkUsernameAndEmail(@PathParam("email") email:String):Option[UserInfoTO] = {
+  def checkUsernameAndEmail(@PathParam("username") username:String):Option[UserInfoTO] = {
   	val user = newUserInfoTO
 	//verify if there's a password set for this email
   	//if an admin created this user, there will be an entry on the person table, 
   	//but not one on the Password table
-	if(AuthRepo.hasPassword(email))
-		user.setEmail(email)
+	if(AuthRepo.hasPassword(username))
+		user.setUsername(username)
 	Option(user)
   }
   
@@ -95,14 +94,14 @@ class UserResource{
   def requestPasswordChange(@Context resp:HttpServletResponse,
       @PathParam("email") email:String, 
       @PathParam("institutionName") institutionName:String) = {
-    val person = AuthRepo.getPersonByEmail(email)
+    val person = PeopleRepo.getByUsername(email)
     val institution = InstitutionsRepo.byName(institutionName)
     if(person.isDefined && institution.isDefined){
     	val requestPasswordChangeUUID = UUID.random
     	AuthRepo.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)
     	EmailService.sendEmailRequestPasswordChange(person.get, institution.get, requestPasswordChangeUUID)
     } else {
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person or Institution not found.");
+      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person or Institution not found."); 
     }
   }
 
@@ -116,7 +115,7 @@ class UserResource{
 	  	if(person.isDefined){
 	  	  PersonRepo(person.get.getUUID).setPassword(person.get.getEmail, password)
 		  	val user = newUserInfoTO
-			user.setEmail(person.get.getEmail())
+			user.setUsername(person.get.getEmail())
 			Option(user)
 	  	} else {
 	  	  resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "It wasn't possible to change your password.")

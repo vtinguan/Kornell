@@ -1,0 +1,1 @@
+alter table Person add column cpf varchar(255);

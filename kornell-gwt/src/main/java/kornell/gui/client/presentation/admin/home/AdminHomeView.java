@@ -17,7 +17,7 @@ public interface AdminHomeView extends IsWidget {
 		void onGoToCourseButtonClicked();
 		void onModalOkButtonClicked();
 		void onUserClicked(String uuid);
-		void updateCourseClass(CourseClassTO courseClass);
+		void updateCourseClass(String courseClassUUID);
 	}
 
 	void setPresenter(Presenter presenter);
@@ -27,4 +27,6 @@ public interface AdminHomeView extends IsWidget {
 	void setCourseClassName(String courseClassName);
 	void setCourseName(String courseName);
 	void setCourseClasses(List<CourseClassTO> courseClasses);
+	void setUserEnrollmentIdentificationType(Boolean enrollWithCPF);
+	void setSelectedCourseClass(String uuid);
 }

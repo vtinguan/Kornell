@@ -12,4 +12,6 @@ public interface EnrollmentRequestTO {
 	void setFullName(String fullName);
 	String getEmail();
 	void setEmail(String email);
+	String getCPF();
+	void setCPF(String cpf);
 }

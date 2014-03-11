@@ -97,6 +97,11 @@ object EmailService {
     val tDir: String = System.getProperty("java.io.tmpdir")
     val path: String = tDir + institution.getFullName() + "-" + logoImageName
     val imgFile: File = new File(path)
+    
+    val purgeTime = System.currentTimeMillis() - (1 * 24 * 60 * 60 * 1000) //one day
+    if(imgFile.lastModified() < purgeTime && !imgFile.delete())
+      System.err.println("Unable to delete file: " + imgFile)
+      
     if (!imgFile.exists()) {
       val url: URL = new URL(institution.getAssetsURL() + logoImageName)
       FileUtils.copyURLToFile(url, imgFile)

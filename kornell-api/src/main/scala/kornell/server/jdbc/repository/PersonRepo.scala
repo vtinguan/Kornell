@@ -16,24 +16,6 @@ class PersonRepo(val uuid:String) {
 	def registerOn(institution_uuid:String):RegistrationRepo = {
 	  (RegistrationRepo(PersonRepo.this, institution_uuid)).register
 	}
-	
-	implicit def toPerson(rs:ResultSet):Person = newPerson(
-	    rs.getString("uuid"),
-	    rs.getString("fullName"), 
-	    rs.getString("lastPlaceVisited"),
-	    rs.getString("email"),
-	    rs.getString("company"),
-	    rs.getString("title"),
-	    rs.getString("sex"),
-	    rs.getDate("birthDate"),
-	    rs.getString("confirmation"),
-	    rs.getString("telephone"),
-	    rs.getString("country"),
-	    rs.getString("state"),
-	    rs.getString("city"),
-	    rs.getString("addressLine1"),
-	    rs.getString("addressLine2"),
-	    rs.getString("postalCode"))
 	    
 	def get = sql"""select * from Person where uuid=$uuid""".first[Person]
 
@@ -43,7 +25,8 @@ class PersonRepo(val uuid:String) {
 	    	email = ${person.getEmail}, company = ${person.getCompany}, title = ${person.getTitle},
 	    	sex = ${person.getSex}, birthDate = ${person.getBirthDate}, confirmation = ${person.getConfirmation},
 	    	telephone = ${person.getTelephone}, country = ${person.getCountry}, state = ${person.getState}, city = ${person.getCity}, 
-	    	addressLine1 = ${person.getAddressLine1}, addressLine2 = ${person.getAddressLine2}, postalCode = ${person.getPostalCode}
+	    	addressLine1 = ${person.getAddressLine1}, addressLine2 = ${person.getAddressLine2}, postalCode = ${person.getPostalCode},
+	    	cpf = ${person.getCPF}
 	    	where uuid = $uuid
 	    """.executeUpdate
       PersonRepo.this

@@ -94,7 +94,7 @@ public class GenericTopicView extends Composite {
 				display();
 			}
 		};
-		timer.schedule(10);
+		timer.schedule(500);
 	}
 
 	private void display() {

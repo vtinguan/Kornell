@@ -81,7 +81,9 @@ object TOs {
     courseClassName: String,
     institutionUUID: String,
     requiredScore:BigDecimal,
-    publicClass: Boolean): CourseClassTO = {
+    publicClass: Boolean,
+    enrollWithCPF: Boolean,
+    maxEnrollments: Integer): CourseClassTO = {
       newCourseClassTO(
           courseUUID, 
           code, 
@@ -98,6 +100,8 @@ object TOs {
           institutionUUID, 
           requiredScore,
           publicClass,
+          enrollWithCPF,
+          maxEnrollments,
           null, 
           null, 
           null, 
@@ -125,6 +129,8 @@ object TOs {
     institutionUUID: String,
     requiredScore: BigDecimal,
     publicClass: Boolean,
+    enrollWithCPF: Boolean,
+    maxEnrollments: Integer,
     //enrollment
     enrollmentUUID: String, 
     enrolledOn: Date, 
@@ -136,7 +142,7 @@ object TOs {
 	    val versionTO = tos.newCourseVersionTO.as
 	    val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
 	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt,distributionPrefix)
-	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID, requiredScore, publicClass)
+	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID, requiredScore, publicClass, enrollWithCPF, maxEnrollments)
 	    val s3 = S3(version.getRepositoryUUID)
 	    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL , s3.prefix))
 	    versionTO.setCourse(course)

@@ -15,12 +15,12 @@ object ReportGenerator extends App {
 
   def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
     
-    type ReportData = Tuple4[String,String, String, String]
+    type ReportData = Tuple5[String,String, String, String, String]
     
-    implicit def myConvertion(rs:ResultSet):ReportData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4))
+    implicit def myConvertion(rs:ResultSet):ReportData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5))
 
     val certificateData = sql"""
-			select p.fullName, c.title, i.assetsURL, cv.distributionPrefix
+			select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf
     		from Person p
 			join Enrollment e on p.uuid = e.person_uuid
 			join CourseClass cc on cc.uuid = e.class_uuid
@@ -36,6 +36,7 @@ object ReportGenerator extends App {
     params.put("userUuid", userUUID)
     params.put("name", certificateData._1.toUpperCase())
     params.put("course", certificateData._2.toUpperCase())
+    params.put("cpf", certificateData._5.toUpperCase())
     val assetsURL: String = composeURL(certificateData._3, certificateData._4, "/reports")
     params.put("assetsURL", assetsURL + "/")
 
