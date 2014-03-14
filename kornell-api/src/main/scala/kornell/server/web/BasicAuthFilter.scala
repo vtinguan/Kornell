@@ -10,6 +10,7 @@ import kornell.core.util.StringUtils
 class BasicAuthFilter extends Filter { 
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
   val pubPaths = Set(
+    "/api",
     "/checkup",
     "/sandbox",
     "/sync",
@@ -43,7 +44,7 @@ class BasicAuthFilter extends Filter {
 
   def isPublic(req: HttpServletRequest, resp: HttpServletResponse) = {
     val path = req.getRequestURI
-    val isPublic = path == "/api" || pubPaths.exists { p => path.startsWith(s"/api${p}") }
+    val isPublic = path == "/api" || path == "/api/" || pubPaths.exists { p => path.startsWith(s"/api${p}") }
     val isOption = "OPTIONS".equals(req.getMethod)
     isOption || isPublic
   }
