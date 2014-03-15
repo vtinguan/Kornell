@@ -66,11 +66,11 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isPlatformAdmin() {
-		return hasRole(RoleType.platformAdmin, null, null);
+		return isValidRole(RoleType.platformAdmin, null, null);
 	}
 
 	public boolean isInstitutionAdmin(String institutionUUID) {
-		return hasRole(RoleType.institutionAdmin, institutionUUID, null) || isPlatformAdmin();
+		return isValidRole(RoleType.institutionAdmin, institutionUUID, null) || isPlatformAdmin();
 	}
 
 	public boolean isInstitutionAdmin() {
@@ -78,7 +78,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassAdmin(String courseClassUUID) {
-		return hasRole(RoleType.courseClassAdmin, null, courseClassUUID) || isInstitutionAdmin();
+		return isValidRole(RoleType.courseClassAdmin, null, courseClassUUID) || isInstitutionAdmin();
 	}
 
 	public boolean isCourseClassAdmin() {
@@ -86,7 +86,7 @@ public class KornellSession extends KornellClient {
 		return isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 	}
 
-	private boolean hasRole(RoleType type, String institutionUUID, String courseClassUUID) {
+	private boolean isValidRole(RoleType type, String institutionUUID, String courseClassUUID) {
 		if (currentUser == null)
 			return false;
 		for (Role role : currentUser.getRoles()) {
@@ -96,8 +96,18 @@ public class KornellSession extends KornellClient {
 		return false;
 	}
 
+	public boolean hasRole(RoleType type) {
+		if (currentUser == null)
+			return false;
+		for (Role role : currentUser.getRoles()) {
+			if(RoleCategory.isRole(role, type))
+				return true;
+		}
+		return false;
+	}
+	
 	public UserInfoTO getCurrentUser() {
-		if (currentUser != null) {
+		if (currentUser == null) {
 			GWT.log("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
 		}
 		return currentUser;

@@ -3,7 +3,10 @@ package kornell.api.client;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
+import kornell.core.entity.People;
 import kornell.core.to.CourseClassesTO;
+import kornell.core.to.CourseVersionsTO;
+import kornell.core.to.CoursesTO;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.RegistrationsTO;
@@ -13,6 +16,7 @@ import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
 
 public class KornellClient extends RESTClient implements LogoutEventHandler {
 
@@ -58,12 +62,6 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	public void getAdministratedCourseClassesTOByInstitution(String institutionUUID, Callback<CourseClassesTO> cb) {
 		GET("/courseClasses/administrated?institutionUUID="+institutionUUID).sendRequest(null, cb);
 	}
-	
-	public class RegistrationsClient {
-		public void getUnsigned(Callback<RegistrationsTO> callback) {
-			GET("/registrations").sendRequest("", callback);
-		}
-	}
 
 	// TODO: extract those inner classes
 	public class InstitutionClient {
@@ -91,14 +89,56 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	public void getInstitutionByName(String name, Callback<Institution> cb) {
 		GET("/institutions/?name=" + name).sendRequest(null, cb);
 	}
+	
+	public class RegistrationsClient {
+		public void getUnsigned(Callback<RegistrationsTO> callback) {
+			GET("/registrations").sendRequest("", callback);
+		}
+	}
+	
+	public class CoursesClient {
+		public void findByInstitution(String institutionUUID, Callback<CoursesTO> callback) {
+			GET("/courses?institutionUUID=" + institutionUUID).go(callback);
+		}
+	}
+	
+	public class CourseVersionsClient {
+		public void findByCourse(String courseUUID, Callback<CourseVersionsTO> callback) {
+			GET("/courseVersions?courseUUID=" + courseUUID).go(callback);
+		}
+	}
+	
+	public class PeopleClient {
+		public void findBySearchTerm(String search, Callback<People> callback) {
+			try {
+				GET("/people/?search="+URL.encodePathSegment(search)).sendRequest("", callback);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public RegistrationsClient registrations() {
 		// TODO: Consider lifecycle
 		return new RegistrationsClient();
 	}
 
+	public CoursesClient courses() {
+		return new CoursesClient();
+	}
+
+	public CourseVersionsClient courseVersions() {
+		return new CourseVersionsClient();
+	}
+
 	public InstitutionClient institution(String uuid) {
 		return new InstitutionClient(uuid);
+	}
+
+	public PeopleClient people() {
+		// TODO: Consider lifecycle
+		return new PeopleClient();
 	}
 	
 	public void getEnrollmentsByCourseClass(String courseClassUUID, Callback<Enrollments> cb) {

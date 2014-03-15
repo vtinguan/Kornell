@@ -1,27 +1,10 @@
 package kornell.server.jdbc.repository
 
-import kornell.server.repository.TOs
-import kornell.core.to.RegistrationsTO
-import kornell.server.jdbc.SQL._
-import kornell.server.repository.Entities
-import java.sql.ResultSet
-import kornell.core.entity.Registration
-import kornell.core.entity.Institution
-import scala.collection.JavaConverters._
-import kornell.core.entity.Person
-import kornell.server.repository.Entities._
-import kornell.server.repository.TOs._
 import kornell.core.entity.Enrollment
-import scala.collection.mutable.ListBuffer
-import kornell.core.to.CourseTO
 import kornell.core.entity.EnrollmentState
-import scala.None
-import java.util.Date
-import kornell.server.util.EmailSender
-import kornell.core.entity.Course
-import kornell.core.entity.CourseClass
-import kornell.core.util.UUID
-import kornell.server.repository.service.RegistrationEnrollmentService
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.jdbc.SQL.randomUUID
+import kornell.server.repository.Entities.newEnrollments
 
 class EnrollmentsRepo() {
 

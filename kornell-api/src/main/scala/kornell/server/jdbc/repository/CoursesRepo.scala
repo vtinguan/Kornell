@@ -1,15 +1,17 @@
 package kornell.server.jdbc.repository
 
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.SecurityContext
-import kornell.core.to.CourseTO
-import kornell.server.jdbc.SQL._
+import java.sql.ResultSet
+
+import scala.collection.JavaConverters._
+
 import kornell.core.entity.Course
+import kornell.core.entity.Course
+import kornell.server.jdbc.SQL._ 
+import kornell.server.jdbc.SQL._
+import kornell.server.repository.Entities._
+import kornell.server.repository.TOs._
 
 object CoursesRepo {
-  @Deprecated //use withEnrollment
-  def byUUID(uuid: String)(implicit @Context sc: SecurityContext): Option[CourseTO] =
-    AuthRepo.withPerson { p => apply(uuid).withEnrollment(p) }
 
   def apply(uuid:String) = CourseRepo(uuid)
   
@@ -18,4 +20,13 @@ object CoursesRepo {
 	  CourseVersion cv on cv.course_uuid = c.uuid join
 	  CourseClass cc on cc.courseVersion_uuid = cv.uuid where cc.uuid = $courseClassUUID
   """.first[Course]
+  
+  def byInstitution(institutionUUID: String) = newCoursesTO(
+    sql"""
+	  	select c.* from Course c
+		join Curriculum cu on cu.courseUUID = c.uuid
+		join Institution i on cu.institutionUUID = i.uuid
+		where cu.institutionUUID = $institutionUUID
+	  """.map[Course](toCourse))
+  
 }

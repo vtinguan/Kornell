@@ -25,7 +25,7 @@ import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PeopleRepo
-
+//TOOD Person/People Resource
 @Path("user")
 class UserResource{
 
@@ -60,7 +60,10 @@ class UserResource{
 	    val person = PersonRepo(personUUID).get 
 	    if (person.isDefined){
 	    	user.setPerson(person.get)
-		    user.setUsername(user.getPerson().getEmail())
+	    	if(user.getPerson().getEmail() != null)
+	    		user.setUsername(user.getPerson().getEmail())
+	    	else
+	    		user.setUsername(user.getPerson().getCPF())
 	    	user.setRegistrationsTO(RegistrationsRepo.getAll(person.get))
 	    	//val signingNeeded = RegistrationsRepo.signingNeeded(p)
 	    	//user.setSigningNeeded(signingNeeded)

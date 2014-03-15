@@ -30,8 +30,8 @@ class CourseClassResource(uuid: String) {
     }
   
   @PUT
-  @Produces(Array("text/plain"))
   @Consumes(Array(CourseClass.TYPE))
+  @Produces(Array(CourseClass.TYPE))
   def update(implicit @Context sc: SecurityContext, courseClass: CourseClass) = AuthRepo.withPerson{ p =>
     CourseClassRepo(uuid).update(courseClass)
   }

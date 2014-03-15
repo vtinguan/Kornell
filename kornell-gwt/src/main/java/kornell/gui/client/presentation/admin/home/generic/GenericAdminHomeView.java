@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
@@ -19,6 +20,7 @@ import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.cell.client.ActionCell;
@@ -66,6 +68,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private KornellConstants constants = GWT.create(KornellConstants.class);
+	private KornellSession session;
 	private AdminHomeView.Presenter presenter;
 	final CellTable<Enrollment> table;
 	private List<Enrollment> enrollmentsCurrent;
@@ -77,12 +80,24 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Boolean enrollWithCPF = false;
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
-	
+		
 	private boolean forbidProfileView;
-
+	
+	@UiField
+	FlowPanel enrollmentsPanel;
 	@UiField
 	ListBox listBoxCourseClasses;
-	
+	@UiField
+	Tab enrollmentsTab;
+	@UiField
+	Tab configTab;
+	@UiField
+	FlowPanel configPanel;
+	@UiField
+	Tab adminsTab;
+	@UiField
+	FlowPanel adminsPanel;
+	 
 	@UiField
 	Button btnAddEnrollment;
 	@UiField
@@ -128,7 +143,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	FlowPanel enrollmentsWrapper;
 
 	// TODO i18n xml
-	public GenericAdminHomeView() {
+	public GenericAdminHomeView(final KornellSession session) {
+		this.session = session;
 		initWidget(uiBinder.createAndBindUi(this));
 		table = new CellTable<Enrollment>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
@@ -147,10 +163,46 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			@Override
 			public void onChange(ChangeEvent event) {
 				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
-				if(!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()))
+				if(!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
 					presenter.updateCourseClass(newCourseClassUUID);
+				}
 			}
 		});
+		
+		enrollmentsTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				showEnrollmentsPanel(false);
+				presenter.updateCourseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+			}
+		});
+		
+		configTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				buildConfigView();
+			}
+		});
+		
+		adminsTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				buildAdminsView();
+			}
+		});
+	}
+
+	@Override
+	public void buildConfigView() {
+		configPanel.clear();
+		configPanel.add(new GenericCourseClassConfigView(session, presenter, Dean.getInstance().getCourseClassTO()));
+	}
+
+	@Override
+	public void buildAdminsView() {
+		adminsPanel.clear();
+		CrapGenericCourseClassAdminsView view = new CrapGenericCourseClassAdminsView(session);
+		adminsPanel.add(view.createCourseClassAdminsPanel());
 	}
 
 	private void initSearch() {
@@ -527,5 +579,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@Override
 	public void setSelectedCourseClass(String uuid) {
 		listBoxCourseClasses.setSelectedValue(uuid);
+	}
+	
+	@Override
+	public void setHomeTabActive(){
+		enrollmentsTab.setActive(true);
+		configTab.setActive(false);
+	}
+
+	@Override
+	public void showEnrollmentsPanel(boolean visible) {
+		enrollmentsPanel.setVisible(visible);
 	}
 }

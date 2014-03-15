@@ -4,6 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
+import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
@@ -150,8 +151,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	private void showButtons(boolean show) {
 		showButton(btnProfile, show);
 		showButton(btnHome, show);
-		showButton(btnAdmin, show
-				&& clientFactory.getKornellSession().isInstitutionAdmin());
+		showButton(btnAdmin, show && 
+				(clientFactory.getKornellSession().hasRole(RoleType.courseClassAdmin) 
+						|| clientFactory.getKornellSession().isInstitutionAdmin()));
 		showButton(btnNotifications, false);
 		showButton(btnMessages, false);
 		showButton(btnHelp, true);

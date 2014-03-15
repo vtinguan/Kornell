@@ -192,7 +192,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public AdminHomeView getAdminHomeView() {
-		return new GenericAdminHomeView();
+		return new GenericAdminHomeView(clientFactory.getKornellSession());
 	}
 
 	@Override

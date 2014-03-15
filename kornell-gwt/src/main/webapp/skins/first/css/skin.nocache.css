@@ -25,6 +25,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -35,9 +36,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -86,6 +88,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -96,9 +99,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -129,6 +133,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -139,9 +144,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -183,6 +189,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -193,9 +200,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -232,6 +240,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -242,9 +251,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -284,6 +294,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -294,9 +305,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -333,6 +345,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -343,9 +356,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -376,6 +390,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -386,9 +401,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -444,6 +460,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -454,9 +471,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -532,6 +550,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -542,9 +561,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -576,6 +596,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -586,9 +607,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -633,7 +655,11 @@
 .activityBarWrapper .activityBar .disabled .label{color:#6a6a6a;}
 .activityBarWrapper .activityBar .btnProgress{cursor:default;}.activityBarWrapper .activityBar .btnProgress .progressBarPanel{border-left:1px solid #505864;border-right:1px solid #181c22;height:35px;}.activityBarWrapper .activityBar .btnProgress .progressBarPanel .progress{width:150px;height:10px;margin:0 auto;margin-top:2px;}.activityBarWrapper .activityBar .btnProgress .progressBarPanel .progress .bar{background-color:#9b020a;background:-webkit-gradient(linear, left top, left bottom, from(#9b020a), to(#4b0105));background:-webkit-linear-gradient(top, #9b020a, #4b0105);background:-moz-linear-gradient(top, #9b020a, #4b0105);background:-ms-linear-gradient(top, #9b020a, #4b0105);background:-o-linear-gradient(top, #9b020a, #4b0105);background:#9b020a;background:-moz-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #9b020a), color-stop(100%, #4b0105));background:-webkit-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-o-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-ms-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:linear-gradient(to bottom, #9b020a 0%, #4b0105 100%);}
 .activityBarWrapper .activityBar .btnProgress .progressBarPanel .pagePanel{height:10px;line-height:11px;margin-top:3px;display:block;}.activityBarWrapper .activityBar .btnProgress .progressBarPanel .pagePanel div{display:inline;}
-@media screen and (max-width:962px){.activityBarWrapper .activityBar{width:600px;height:35px;}.activityBarWrapper .activityBar .progress{width:100px !important;}}.pnlRight{width:962px;}.pnlRight .btnPanel{height:30px;margin-top:9px;}.pnlRight .btnPanel .btnCourses{color:#b6b6b6;border-left:2px solid #474747;float:right;height:24px;padding-left:24px;padding-right:24px;font-size:11px;display:block;border-left:1px solid #505864;border-right:1px solid #181c22;border-top:0;border-bottom:0;}
+@media screen and (max-width:962px){.activityBarWrapper .activityBar{width:600px;height:35px;}.activityBarWrapper .activityBar .progress{width:100px !important;}}.courseClassAdminField{height:auto !important;width:750px !important;}.courseClassAdminField .fieldPanel{width:400px;}.courseClassAdminField .fieldPanel .textField{float:left;}
+.courseClassAdminField .fieldPanel .btnAction{float:left;margin-left:15px;margin-top:4px;}
+.courseClassAdminField .fieldPanel .selectField{margin-top:15px;margin-bottom:25px;float:left;height:100px;}
+.courseClassAdminField .fieldPanel .btnNotSelected{float:left;margin-left:15px;margin-top:92px;}
+.pnlRight{width:962px;}.pnlRight .btnPanel{height:30px;margin-top:9px;}.pnlRight .btnPanel .btnCourses{color:#b6b6b6;border-left:2px solid #474747;float:right;height:24px;padding-left:24px;padding-right:24px;font-size:11px;display:block;border-left:1px solid #505864;border-right:1px solid #181c22;border-top:0;border-bottom:0;}
 .pnlRight .pnlCoursesWrapper{margin-right:30px;}.pnlRight .pnlCoursesWrapper .btnPanel{width:962px;}
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle{height:20px;}.pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .imgPnlCourses{margin-left:24px;float:left;}
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .labelPnlCourses{color:#b6b6b6;font-size:15px;line-height:23px;padding-left:14px;padding-bottom:12px;float:left;}

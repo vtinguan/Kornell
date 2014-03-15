@@ -1,16 +1,18 @@
 package kornell.gui.client.presentation.util;
 
 import java.util.Date;
-import java.util.InputMismatchException;
 import java.util.List;
 
+import kornell.gui.client.uidget.formfield.CheckBoxFormField;
 import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.uidget.formfield.TextBoxFormField;
 
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
+import com.google.gwt.user.client.ui.Image;
 
 //TODO i18n
 public class FormHelper {
@@ -29,6 +31,14 @@ public class FormHelper {
 	
 	public boolean isPasswordValid(String field){
 		return field == null ? false : field.trim().matches(PASSWORD_PATTERN);
+	}
+
+	public boolean isValidNumber(String field){
+		return field == null ? false : field.trim().matches("^[-+]?[0-9]*\\.?[0-9]+$");
+	}
+
+	public boolean isValidInteger(String field){
+		return field == null ? false : field.trim().matches("[0-9]*");
 	}
 	
 	public boolean isLengthValid(String field, int minLength, int maxLength){
@@ -342,7 +352,7 @@ public class FormHelper {
 	}
 
 	public boolean isListBoxSelected(ListBox value) {
-		return value != null && !"-".equals(((ListBox)value).getValue());
+		return value != null && !("-".equals(((ListBox)value).getValue()) || ((ListBox)value).getValue() == null);
 	}
 
 	public Date getDateFromString(String dateStr) {
@@ -360,6 +370,12 @@ public class FormHelper {
 		fieldTextBox.setValue(text);
 		return new TextBoxFormField(fieldTextBox);
 	}
+	
+	public CheckBoxFormField createCheckBoxFormField(Boolean value){
+		CheckBox fieldCheckBox = new CheckBox();
+		fieldCheckBox.setValue(value);
+		return new CheckBoxFormField(fieldCheckBox);
+	}
 
 	public void clearErrors(List<KornellFormFieldWrapper> fields) {
 		for (KornellFormFieldWrapper field : fields) {
@@ -370,6 +386,14 @@ public class FormHelper {
 	public String stripCPF(String cpf){
 		if(cpf == null) return null;
 		return cpf.replaceAll("[^0-9]+","");
+	}
+	
+	public boolean isItemInListBox(String item, ListBox listBox){
+		for(int i = 0; i < listBox.getItemCount(); i++){
+			if(item.equals(listBox.getItemText(i)))
+				return true;
+		}
+		return false;
 	}
 
 	public boolean isCPFValid(String cpf) {
@@ -429,5 +453,11 @@ public class FormHelper {
 		} catch (Exception erro) {
 			return false;
 		}
+	}
+
+	public Image getImageSeparator() {
+		Image image = new Image("skins/first/icons/profile/separatorBar.png");
+		image.addStyleName("profileSeparatorBar");
+		return image;
 	}
 }

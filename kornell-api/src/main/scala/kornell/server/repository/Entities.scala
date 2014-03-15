@@ -15,6 +15,7 @@ import kornell.core.entity.Registration
 import kornell.core.entity.RoleType
 import kornell.server.jdbc.repository.PersonRepo
 import java.util.Map
+import kornell.core.entity.CourseVersion
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -32,7 +33,7 @@ object Entities {
     person.setUUID(uuid)
     person.setFullName(fullName)
     person.setLastPlaceVisited(lastPlaceVisited)
-	person.setEmail(email)
+		person.setEmail(email)
     person.setCompany(company)
     person.setTitle(title)
     person.setSex(sex)
@@ -47,6 +48,12 @@ object Entities {
     person.setPostalCode(postalCode)
     person.setCPF(cpf)
     person
+  }
+  
+  def newPeople(people: List[Person]) = {
+    val ps = factory.newPeople.as
+    ps.setPeople(people.asJava)
+    ps
   }
 
   def newPrincipal(uuid: String, personUUID: String, username: String) = {
@@ -69,6 +76,20 @@ object Entities {
     c.setTitle(title)
     c.setInfoJson(infoJson)
     c
+  }
+  
+  def newCourseVersion: CourseVersion = factory.newCourseVersion.as
+
+  def newCourseVersion(uuid: String, name: String,
+    repositoryUUID: String, versionCreatedAt: Date,
+    distributionPrefix: String): CourseVersion = {
+    val cv = newCourseVersion
+    cv.setUUID(uuid)
+    cv.setName(name)
+    cv.setRepositoryUUID(repositoryUUID)
+    cv.setVersionCreatedAt(versionCreatedAt)
+    cv.setDistributionPrefix(distributionPrefix)
+    cv
   }
   
   def newEnrollments(enrollments: List[Enrollment]) = {

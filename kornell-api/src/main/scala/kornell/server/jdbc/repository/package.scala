@@ -1,7 +1,6 @@
 package kornell.server.jdbc
 import java.sql.Connection
 import java.sql.ResultSet
-import kornell.core.to.CourseTO
 import kornell.core.entity.Enrollment
 import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
@@ -11,6 +10,7 @@ import kornell.core.to.CourseClassTO
 import kornell.core.entity.Course
 import kornell.server.repository.TOs
 import kornell.core.entity.Person
+import kornell.core.entity.CourseVersion
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -35,29 +35,36 @@ package object repository {
     rs.getString("title"),
     rs.getString("description"),
     rs.getString("infoJson"))    
+
+  implicit def toCourseVersion(rs: ResultSet): CourseVersion = newCourseVersion(
+    rs.getString("uuid"), 
+    rs.getString("name"), 
+    rs.getString("repository_uuid"), 
+    rs.getDate("versionCreatedAt"),
+    rs.getString("distributionPrefix"))    
   
-  implicit def toCourseClassTO(r: ResultSet): CourseClassTO = 
+  implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = 
     TOs.newCourseClassTO(   
     //course    
-    r.getString("courseUUID"), 
-    r.getString("code"), 
-    r.getString("title"),
-    r.getString("description"), 
-    r.getString("infoJson"),
+    rs.getString("courseUUID"), 
+    rs.getString("code"), 
+    rs.getString("title"),
+    rs.getString("description"), 
+    rs.getString("infoJson"),
     //courseVersion
-    r.getString("courseVersionUUID"), 
-    r.getString("courseVersionName"), 
-    r.getString("repositoryUUID"), 
-    r.getDate("versionCreatedAt"),
-    r.getString("distributionPrefix"),
+    rs.getString("courseVersionUUID"), 
+    rs.getString("courseVersionName"), 
+    rs.getString("repositoryUUID"), 
+    rs.getDate("versionCreatedAt"),
+    rs.getString("distributionPrefix"),
     //courseClass
-    r.getString("courseClassUUID"),
-    r.getString("courseClassName"), 
-    r.getString("institutionUUID"),
-    r.getBigDecimal("requiredScore"),
-    r.getBoolean("publicClass"),
-    r.getBoolean("enrollWithCPF"),
-    r.getInt("maxEnrollments"))
+    rs.getString("courseClassUUID"),
+    rs.getString("courseClassName"), 
+    rs.getString("institutionUUID"),
+    rs.getBigDecimal("requiredScore"),
+    rs.getBoolean("publicClass"),
+    rs.getBoolean("enrollWithCPF"),
+    rs.getInt("maxEnrollments"))
     
 
   implicit def toEnrollment(rs: ResultSet): Enrollment =

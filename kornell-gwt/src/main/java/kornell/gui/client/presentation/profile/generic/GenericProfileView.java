@@ -8,6 +8,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
+import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.S3PolicyTO;
 import kornell.core.to.UserInfoTO;
@@ -140,7 +141,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 				break;
 			}
 		}
-		isAdmin = isInstitutionAdmin || session.isPlatformAdmin();
+		isAdmin = session.hasRole(RoleType.courseClassAdmin) || isInstitutionAdmin || session.isPlatformAdmin();
 		
 		form.addStyleName("shy");
 		session.getUser(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID(), new Callback<UserInfoTO>() {

@@ -20,6 +20,17 @@ object PeopleRepo {
 	""".first[Person]
   }
   
+  def findBySearchTerm(search: String) ={ 
+    println("dfsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa " + search )
+    newPeople(
+    sql"""
+      	| select p.* from Person p 
+      	| where p.email like ${search + "%"}
+      	| or p.cpf like ${search + "%"}
+      	| order by p.email, p.cpf
+	    """.map[Person](toPerson))
+  }
+	    
   def createPerson(email: String, fullName:String, 
       company: String="", title: String="", sex: String="", 
       birthDate: String="1800-01-01", confirmation: String = "", cpf: String) = {

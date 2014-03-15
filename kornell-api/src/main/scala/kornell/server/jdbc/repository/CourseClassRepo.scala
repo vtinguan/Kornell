@@ -21,11 +21,22 @@ class CourseClassRepo(uuid:String) {
   
   def update(courseClass: CourseClass): CourseClass = {    
     sql"""
+      update CourseClass cc set
+		    cc.name = ${courseClass.getName},
+		    cc.institution_uuid = ${courseClass.getInstitutionUUID},
+	  		cc.requiredScore = ${courseClass.getRequiredScore},
+	  		cc.publicClass = ${courseClass.isPublicClass},
+	  		cc.enrollWithCPF = ${courseClass.isEnrollWithCPF},
+	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments}
+      where cc.uuid = ${courseClass.getUUID}""".executeUpdate
+    courseClass
+  }
+
+ /*   sql"""
     | update Institution i
     | set i.name = ${courseClass.getName},
     | where i.uuid = ${courseClass.getUUID}""".executeUpdate
-    courseClass
-  }
+    courseClass*/
   
   def actomsVisitedBy(p: Person): List[String] = sql"""
   	select actomKey from ActomEntered ae

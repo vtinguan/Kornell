@@ -24,6 +24,7 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.heightAuto{height:auto !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -34,9 +35,10 @@
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 @media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}

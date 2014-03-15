@@ -78,7 +78,7 @@ iframe {
 }
 
 .ajaxLoaderPanel {
-	width: 126px;
+	width: 80px;
 }
 
 .ajaxLoaderPanel span{
@@ -89,4 +89,9 @@ iframe {
 
 object{
 	display: none;
+}
+
+.nav-tabs{
+	font-size: 15px;
+	font-weight: bold;
 }
