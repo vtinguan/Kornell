@@ -38,12 +38,9 @@ class PreparedStmt(query: String, params: List[Any]) {
 
       params
         .zipWithIndex
-        .foreach(setQueryParam)
-   
-      //TODO proper logging
-      if(Settings.get("DEV_MODE") != null){
-    	  println("Executing query: " + pstmt.toString())  
-      }  
+        .foreach(setQueryParam)   
+      
+      logger.finer(s"Executing query [$query].")        
         
       try fun(pstmt)
       finally pstmt.close
@@ -87,4 +84,6 @@ class PreparedStmt(query: String, params: List[Any]) {
   }
   
   def get[T](implicit conversion: ResultSet => T): T = first(conversion).get
+  
+  override def toString = query
 } 

@@ -12,6 +12,7 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
@@ -32,6 +33,8 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryHandler.DefaultHistorian;
 import com.google.gwt.place.shared.PlaceHistoryHandler.Historian;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -40,17 +43,21 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 public class GenericClientFactoryImpl implements ClientFactory {
 	Logger logger = Logger.getLogger(GenericClientFactoryImpl.class.getName());
 
-	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
+	public static final EntityFactory entityFactory = GWT
+			.create(EntityFactory.class);
 	public static final TOFactory toFactory = GWT.create(TOFactory.class);
 	public static final LOMFactory lomFactory = GWT.create(LOMFactory.class);
-	public static final EventFactory eventFactory = GWT.create(EventFactory.class);
+	public static final EventFactory eventFactory = GWT
+			.create(EventFactory.class);
 
 	/* History Management */
 	private final EventBus bus = new SimpleEventBus();
 	private final PlaceController placeCtrl = new PlaceController(bus);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
-	private final DefaultHistorian historian = GWT.create(DefaultHistorian.class);
-	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+	private final DefaultHistorian historian = GWT
+			.create(DefaultHistorian.class);
+	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
+			historyMapper);
 
 	/* Activity Managers */
 	private ActivityManager globalActivityManager;
@@ -59,7 +66,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private ViewFactory viewFactory;
 	private Place defaultPlace;
 	private KornellSession session = new KornellSession();
-	
 
 	public GenericClientFactoryImpl() {
 	}
@@ -69,7 +75,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initGlobalActivityManager() {
-		globalActivityManager = new ActivityManager(new GlobalActivityMapper(this), bus);
+		globalActivityManager = new ActivityManager(new GlobalActivityMapper(
+				this), bus);
 		globalActivityManager.setDisplay(viewFactory.getShell());
 	}
 
@@ -77,7 +84,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		historyHandler.register(placeCtrl, bus, defaultPlace);
 		// sessions that arent authenticated, go to the default place
 		// except if it's a vitrineplace, then let the history take care of it
-		if (!session.isAuthenticated() && historian.getToken().indexOf("vitrine") == -1){
+		if (!session.isAuthenticated()
+				&& historian.getToken().indexOf("vitrine") == -1) {
 			placeCtrl.goTo(defaultPlace);
 		}
 		historyHandler.handleCurrentHistory();
@@ -93,46 +101,49 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				startAuthenticated(session);
 			}
 		};
-		
+
 		final Callback<Institution> institutionCallback = new Callback<Institution>() {
 			@Override
 			public void ok(final Institution institution) {
 				Dean.init(session, bus, institution);
 				if (session.isAuthenticated()) {
-					session.getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
+					session.getCourseClassesTOByInstitution(
+							institution.getUUID(), courseClassesCallback);
 				} else {
 					startAnonymous();
 				}
 			}
-			
+
 			@Override
-			public void unauthorized(){
+			public void unauthorized() {
 				startAnonymous();
 			}
-		};		
-		
+		};
+
 		session.getCurrentUser(new Callback<UserInfoTO>() {
 			public void ok(UserInfoTO to) {
 				session.findInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
 			};
-			
+
 			@Override
 			protected void unauthorized() {
 				session.findInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
 			}
-			
-		});		
+
+		});
 
 	}
-	
+
 	private String getInstitutionNameFromLocation() {
 		String institutionName = Window.Location.getParameter("institution");
 		if (institutionName == null) {
-			institutionName = Window.Location.getHostName().split("\\.")[0];
+			String hostName = Window.Location.getHostName();
+			institutionName = StringUtils.parseInstitutionNameFromHostName(hostName);
 		}
 		return institutionName;
 	}
 	
+
 
 	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");
@@ -168,8 +179,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		new Stalker(bus, session);
 	}
 
-	private void initSCORM12() {				
-		SCORM12Binder.bind(new SCORM12Adapter(bus,session));
+	private void initSCORM12() {
+		SCORM12Binder.bind(new SCORM12Adapter(bus, session));
 	}
 
 	private void initException() {
@@ -227,8 +238,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		return eventFactory;
 	}
 
-
-
 	@Override
 	public ViewFactory getViewFactory() {
 		return viewFactory;
@@ -236,7 +245,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void logState() {
-		//TODO
+		// TODO
 	}
 
 	@Override

@@ -8,6 +8,8 @@ import java.util.Map;
 
 import com.google.gwt.http.client.URL;
 import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 public class StringUtils {
 
@@ -50,14 +52,14 @@ public class StringUtils {
 		return new URLBuilder(base);
 	}
 
-	public static String composeURL(String base,String... path) {		
+	public static String composeURL(String base, String... path) {
 		StringBuffer buf = new StringBuffer();
 		List<String> tokens = new ArrayList<String>();
-		if(isSome(base))
+		if (isSome(base))
 			buf.append(removeTrailingSlashes(base));
-		if(path != null)
+		if (path != null)
 			tokens.addAll(Arrays.asList(path));
-		for (String segment : tokens) {			
+		for (String segment : tokens) {
 			if (isSome(segment)) {
 				if (!segment.startsWith("/"))
 					buf.append("/");
@@ -69,8 +71,8 @@ public class StringUtils {
 	}
 
 	private static String removeTrailingSlashes(String segment) {
-		while(isSome(segment) && segment.endsWith("/"))
-			segment = segment.substring(0,segment.length()-1);
+		while (isSome(segment) && segment.endsWith("/"))
+			segment = segment.substring(0, segment.length() - 1);
 		return segment;
 	}
 
@@ -82,4 +84,17 @@ public class StringUtils {
 		return !isNone(str);
 	}
 
+	public static String parseInstitutionNameFromHostName(String hostName) {
+		String institutionName = null;
+		String[] split = hostName.split("\\.");
+		if(split.length >= 1){
+			institutionName = split[0];
+			RegExp instRegex = RegExp.compile("(.*)-test", "i");
+			MatchResult instMatcher = instRegex.exec(institutionName);
+			if (instMatcher != null && instMatcher.getGroupCount() >= 2) {
+				institutionName = instMatcher.getGroup(1);
+			}
+		}		
+		return institutionName;
+	}
 }
