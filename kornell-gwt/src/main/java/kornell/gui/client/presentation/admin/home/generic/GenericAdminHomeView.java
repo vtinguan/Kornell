@@ -21,8 +21,10 @@ import com.github.gwtbootstrap.client.ui.CollapseTrigger;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
+import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell;
@@ -84,6 +86,12 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private boolean forbidProfileView;
 	
 	@UiField
+	FlowPanel adminHomePanel;
+	@UiField
+	FlowPanel courseClassesPanel;
+	@UiField
+	Button btnAddCourseClass;
+	@UiField
 	FlowPanel enrollmentsPanel;
 	@UiField
 	ListBox listBoxCourseClasses;
@@ -93,10 +101,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	Tab configTab;
 	@UiField
 	FlowPanel configPanel;
-	@UiField
-	Tab adminsTab;
-	@UiField
-	FlowPanel adminsPanel;
 	 
 	@UiField
 	Button btnAddEnrollment;
@@ -141,6 +145,12 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
+	
+	@UiField
+	TabPanel tabsPanel;
+	
+	Tab adminsTab;
+	FlowPanel adminsPanel;
 
 	// TODO i18n xml
 	public GenericAdminHomeView(final KornellSession session) {
@@ -156,6 +166,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
+		btnAddCourseClass.setText("Criar Nova Turma");
 				
 		btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText()+"&nbsp;&nbsp;&#x25BC;");
 		
@@ -165,6 +176,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
 				if(!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
 					presenter.updateCourseClass(newCourseClassUUID);
+				}
+			}
+		});
+		
+		btnAddCourseClass.addClickHandler(new ClickHandler() {	
+			@Override
+			public void onClick(ClickEvent event) {
+				if(session.isInstitutionAdmin()){
+					buildConfigView(true);
 				}
 			}
 		});
@@ -180,29 +200,56 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		configTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				buildConfigView();
+				buildConfigView(false);
 			}
 		});
 		
-		adminsTab.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				buildAdminsView();
-			}
-		});
+		if(session.isInstitutionAdmin()){
+			adminsTab = new Tab();
+			adminsTab.setIcon(IconType.GROUP);
+			adminsTab.setHeading("Administradores");
+			adminsTab.setActive(false);
+			adminsPanel = new FlowPanel();
+			adminsTab.add(adminsPanel);
+			adminsTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildAdminsView();
+				}
+			});
+			
+			tabsPanel.add(adminsTab);
+		}
+	}
+	
+	@Override
+	public void prepareAddNewCourseClass(boolean addingNewCourseClass){
+		adminHomePanel.clear();
+		if(!addingNewCourseClass){
+			adminHomePanel.add(courseClassesPanel);
+			adminHomePanel.add(tabsPanel);
+			configPanel.clear();
+			configTab.setActive(false);
+			adminsTab.setActive(false);
+			enrollmentsTab.setActive(true);
+		}
 	}
 
 	@Override
-	public void buildConfigView() {
-		configPanel.clear();
-		configPanel.add(new GenericCourseClassConfigView(session, presenter, Dean.getInstance().getCourseClassTO()));
+	public void buildConfigView(boolean isCreationMode) {
+		prepareAddNewCourseClass(isCreationMode);
+		if(isCreationMode){
+			adminHomePanel.add(new GenericCourseClassConfigView(session, presenter, null));
+		} else {
+			configPanel.add(new GenericCourseClassConfigView(session, presenter, Dean.getInstance().getCourseClassTO()));
+		}
 	}
 
 	@Override
 	public void buildAdminsView() {
 		adminsPanel.clear();
-		CrapGenericCourseClassAdminsView view = new CrapGenericCourseClassAdminsView(session);
-		adminsPanel.add(view.createCourseClassAdminsPanel());
+		if(!session.isInstitutionAdmin()) return;
+		adminsPanel.add(new GenericCourseClassAdminsView(session, presenter, Dean.getInstance().getCourseClassTO()));
 	}
 
 	private void initSearch() {
@@ -370,8 +417,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		separatorBar.addStyleName("fillWidth");
 		
 		final ListBox pageSizeListBox = new ListBox();
-		pageSizeListBox.addItem("1");
-		pageSizeListBox.addItem("10");
+		//pageSizeListBox.addItem("1");
+		//pageSizeListBox.addItem("10");
 		pageSizeListBox.addItem("20");
 		pageSizeListBox.addItem("50");
 		pageSizeListBox.addItem("100");

@@ -11,6 +11,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseVersion;
+import kornell.core.entity.EntityFactory;
 import kornell.core.entity.People;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
@@ -45,6 +46,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
@@ -55,6 +57,7 @@ public class GenericCourseClassConfigView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
 
 	private KornellSession session;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
@@ -64,6 +67,10 @@ public class GenericCourseClassConfigView extends Composite {
 
 	private Presenter presenter;
 
+	@UiField
+	HTMLPanel titleEdit;
+	@UiField
+	HTMLPanel titleCreate;
 	@UiField
 	Form form;
 	@UiField
@@ -75,6 +82,7 @@ public class GenericCourseClassConfigView extends Composite {
 
 	private UserInfoTO user;
 	private CourseClassTO courseClassTO;
+	private CourseClass courseClass;
 	private KornellFormFieldWrapper course, courseVersion, name, publicClass,
 			requiredScore, enrollWithCPF, maxEnrollments;
 	private FileUpload fileUpload;
@@ -85,6 +93,7 @@ public class GenericCourseClassConfigView extends Composite {
 		this.session = session;
 		this.presenter = presenter;
 		this.user = session.getCurrentUser();
+		this.isCreationMode = (courseClassTO == null);
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -92,6 +101,9 @@ public class GenericCourseClassConfigView extends Composite {
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
 
+		this.titleEdit.setVisible(!isCreationMode);
+		this.titleCreate.setVisible(isCreationMode);
+		
 		this.courseClassTO = courseClassTO;
 		
 		initData();
@@ -100,17 +112,15 @@ public class GenericCourseClassConfigView extends Composite {
 	public void initData() {
 		profileFields.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
-		CourseClass courseClass = courseClassTO.getCourseClass();
+		courseClass = isCreationMode ? entityFactory.newCourseClass().as() : courseClassTO.getCourseClass();
 		isInstitutionAdmin = session.isInstitutionAdmin();
 
 		profileFields.clear();
-
-		isCreationMode = false;
 		
 		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
 		btnCancel.setVisible(isInstitutionAdmin);
 
-		if (!isCreationMode && isInstitutionAdmin) {
+		if (isCreationMode) {
 			session.courses().findByInstitution(Dean.getInstance().getInstitution().getUUID(),
 				new Callback<CoursesTO>() {
 					@Override
@@ -168,7 +178,7 @@ public class GenericCourseClassConfigView extends Composite {
 		if (!isCreationMode) {
 			courses.setSelectedValue(courseClassTO.getCourseVersionTO().getCourse().getUUID());
 		}
-		course = new KornellFormFieldWrapper("Curso", new ListBoxFormField(courses), isInstitutionAdmin);
+		course = new KornellFormFieldWrapper("Curso", new ListBoxFormField(courses), (isCreationMode || presenter.getEnrollments().size() == 0));
 				
 		
 		fields.add(course);
@@ -178,7 +188,7 @@ public class GenericCourseClassConfigView extends Composite {
 	}
 
 	private void loadCourseVersions() {
-		if (!isCreationMode && isInstitutionAdmin) {
+		if (isCreationMode && isInstitutionAdmin) {
 			session.courseVersions().findByCourse(course.getFieldPersistText(), new Callback<CourseVersionsTO>() {
 				@Override
 				public void ok(CourseVersionsTO to) {
@@ -206,7 +216,7 @@ public class GenericCourseClassConfigView extends Composite {
 		if (!isCreationMode) {
 			courseVersions.setSelectedValue(courseClassTO.getCourseVersionTO().getCourseVersion().getUUID());
 		}
-		courseVersion = new KornellFormFieldWrapper("Versão do Curso", new ListBoxFormField(courseVersions), isInstitutionAdmin);
+		courseVersion = new KornellFormFieldWrapper("Versão do Curso", new ListBoxFormField(courseVersions), (isCreationMode || presenter.getEnrollments().size() == 0));
 		
 		fields.add(courseVersion);
 		profileFields.insert(courseVersion, 1);
@@ -250,24 +260,38 @@ public class GenericCourseClassConfigView extends Composite {
 		formHelper.clearErrors(fields);
 		if (isInstitutionAdmin && validateFields()) {
 			LoadingPopup.show();
-			session.courseClass(courseClassTO.getCourseClass().getUUID()).update(getCourseClassInfoFromForm(), new Callback<CourseClass>() {
-				@Override
-				public void ok(CourseClass courseClass) {
-						LoadingPopup.hide();
-						KornellNotification.show("Alterações salvas com sucesso!");
-						Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
-						courseClassTO = Dean.getInstance().getCourseClassTO();
-				}
-			});
+			if(isCreationMode){
+				session.courseClasses().create(getCourseClassInfoFromForm(), new Callback<CourseClass>() {
+					@Override
+					public void ok(CourseClass courseClass) {
+							LoadingPopup.hide();
+							KornellNotification.show("Alterações salvas com sucesso!");
+							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
+							courseClassTO = Dean.getInstance().getCourseClassTO();
+							presenter.updateCourseClass(Dean.getInstance().getCourseClassesTO().getCourseClasses().get(0).getCourseClass().getUUID());
+					}
+				});
+			} else {
+				session.courseClass(courseClassTO.getCourseClass().getUUID()).update(getCourseClassInfoFromForm(), new Callback<CourseClass>() {
+					@Override
+					public void ok(CourseClass courseClass) {
+							LoadingPopup.hide();
+							KornellNotification.show("Alterações salvas com sucesso!");
+							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
+							courseClassTO = Dean.getInstance().getCourseClassTO();
+					}
+				});
+			}
 
 		}
 	}
 
 	private CourseClass getCourseClassInfoFromForm() {
-		CourseClass courseClass = courseClassTO.getCourseClass();
+		courseClass.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+		courseClass.setName(name.getFieldPersistText());
 		courseClass.setCourseVersionUUID(courseVersion.getFieldPersistText());
-		courseClass.setEnrollWithCPF(true);
-		courseClass.setPublicClass(false);
+		courseClass.setEnrollWithCPF(enrollWithCPF.getFieldPersistText().equals("true"));
+		courseClass.setPublicClass(publicClass.getFieldPersistText().equals("true"));
 		courseClass.setMaxEnrollments(new Integer(maxEnrollments.getFieldPersistText()));
 		courseClass.setRequiredScore(new BigDecimal(requiredScore.getFieldPersistText()));
 		return courseClass;
@@ -275,7 +299,11 @@ public class GenericCourseClassConfigView extends Composite {
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
-		initData();
+		if(isCreationMode){
+			presenter.updateCourseClass(Dean.getInstance().getCourseClassesTO().getCourseClasses().get(0).getCourseClass().getUUID());
+		} else {
+			initData();
+		}
 	}
 
 	private boolean checkErrors() {

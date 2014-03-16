@@ -26,6 +26,8 @@ public interface EntityFactory extends AutoBeanFactory {
 
 	AutoBean<Role> newRole();
 
+	AutoBean<Roles> newRoles();
+
 	AutoBean<UserRole> newUserRole();
 
 	AutoBean<PlatformAdminRole> newPlatformAdminRole();

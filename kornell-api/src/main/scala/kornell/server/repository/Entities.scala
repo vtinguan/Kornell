@@ -16,6 +16,7 @@ import kornell.core.entity.RoleType
 import kornell.server.jdbc.repository.PersonRepo
 import java.util.Map
 import kornell.core.entity.CourseVersion
+import kornell.core.entity.Role
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -97,6 +98,12 @@ object Entities {
     es.setEnrollments(enrollments.asJava)
     es
   }
+  
+  def newRoles(roles: List[Role]) = {
+    val rs = factory.newRoles.as
+    rs.setRoles(roles.asJava)
+    rs
+  }
 
   def newEnrollment(uuid: String, enrolledOn: Date, courseClassUUID: String, personUUID: String, progress: Integer, notes: String, state: EnrollmentState): Enrollment = {
     val e = factory.newEnrollment.as
@@ -150,15 +157,17 @@ object Entities {
     role
   }
   
-  lazy val newPlatformAdminRole = {
+  def newPlatformAdminRole(username:String) = {
     val role = factory.newRole().as
+    role.setUsername(username)
     role.setRoleType(RoleType.platformAdmin)
     role.setPlatformAdminRole(factory.newPlatformAdminRole().as())
     role
   }
   
-  def newInstitutionAdminRole(institutionUUID:String) = {
+  def newInstitutionAdminRole(username:String, institutionUUID:String) = {
     val role = factory.newRole().as
+    role.setUsername(username)
     val institutionAdminRole = factory.newInstitutionAdminRole().as
     institutionAdminRole.setInstitutionUUID(institutionUUID)
     role.setRoleType(RoleType.institutionAdmin)    
@@ -166,8 +175,9 @@ object Entities {
     role
   }
   
-  def newCourseClassAdminRole(courseClassUUID:String) = {
+  def newCourseClassAdminRole(username:String, courseClassUUID:String) = {
     val role = factory.newRole().as
+    role.setUsername(username)
     val courseClassAdminRole = factory.newCourseClassAdminRole().as
     courseClassAdminRole.setCourseClassUUID(courseClassUUID)
     role.setRoleType(RoleType.courseClassAdmin)    

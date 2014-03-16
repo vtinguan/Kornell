@@ -120,6 +120,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private void updateCourseClass(CourseClassTO courseClassTO) {
 		enrollWithCPF = courseClassTO.getCourseClass().isEnrollWithCPF();
 		Dean.getInstance().setCourseClassTO(courseClassTO);
+		view.prepareAddNewCourseClass(false);
 		view.showEnrollmentsPanel(false);
 		view.setCourseClassName(courseClassTO.getCourseClass().getName());
 		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse().getTitle());

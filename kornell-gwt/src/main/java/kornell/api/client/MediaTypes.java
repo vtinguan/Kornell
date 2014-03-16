@@ -12,6 +12,7 @@ import kornell.core.entity.People;
 import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
 import kornell.core.entity.Registrations;
+import kornell.core.entity.Roles;
 import kornell.core.lom.Contents;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
@@ -43,6 +44,7 @@ public class MediaTypes {
 		register(Registrations.TYPE,Registrations.class);
 		register(RegistrationsTO.TYPE,RegistrationsTO.class);
 		register(Institution.TYPE,Institution.class);
+		register(Roles.TYPE,Roles.class);
 		register(Contents.TYPE,Contents.class);
 		register(Enrollment.TYPE,Enrollment.class);
 		register(Enrollments.TYPE,Enrollments.class);

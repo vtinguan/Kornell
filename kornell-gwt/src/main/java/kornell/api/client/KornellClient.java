@@ -1,5 +1,6 @@
 package kornell.api.client;
 
+import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
@@ -85,8 +86,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		
 	}
 
-	//TODO: findXxxx is better
-	public void getInstitutionByName(String name, Callback<Institution> cb) {
+	public void findInstitutionByName(String name, Callback<Institution> cb) {
 		GET("/institutions/?name=" + name).sendRequest(null, cb);
 	}
 	
@@ -108,14 +108,15 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		}
 	}
 	
+	public class CourseClassesClient {
+		public void create(CourseClass courseClass, Callback<CourseClass> callback) {
+			PUT("/courseClasses").withContentType(CourseClass.TYPE).withEntityBody(courseClass).go(callback);
+		}
+	}
+	
 	public class PeopleClient {
 		public void findBySearchTerm(String search, Callback<People> callback) {
-			try {
-				GET("/people/?search="+URL.encodePathSegment(search)).sendRequest("", callback);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			GET("/people/?search="+URL.encodePathSegment(search)).sendRequest("", callback);
 		}
 	}
 
@@ -132,12 +133,15 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new CourseVersionsClient();
 	}
 
+	public CourseClassesClient courseClasses() {
+		return new CourseClassesClient();
+	}
+
 	public InstitutionClient institution(String uuid) {
 		return new InstitutionClient(uuid);
 	}
 
 	public PeopleClient people() {
-		// TODO: Consider lifecycle
 		return new PeopleClient();
 	}
 	

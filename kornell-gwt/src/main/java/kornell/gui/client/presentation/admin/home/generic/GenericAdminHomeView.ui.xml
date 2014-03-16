@@ -1,12 +1,13 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-	<g:FlowPanel addStyleNames="deanHome">
-		<g:FlowPanel addStyleNames="courseClassesHeaderWrapper">
+	<g:FlowPanel ui:field="adminHomePanel" addStyleNames="deanHome">
+		<g:FlowPanel ui:field="courseClassesPanel" addStyleNames="courseClassesHeaderWrapper">
 			<g:HTMLPanel addStyleNames="title left">Gerenciar Turma: </g:HTMLPanel>
 			<b:ListBox ui:field="listBoxCourseClasses" addStyleNames="listBoxCourseClasses"></b:ListBox>
+			<g:Button ui:field="btnAddCourseClass" addStyleNames="btnAction"/>
 		</g:FlowPanel>
-		<b:TabPanel tabPosition="top" ui:field="tabsPanel">
+		<b:TabPanel tabPosition="middle" ui:field="tabsPanel">
 			<b:Tab ui:field="enrollmentsTab" icon="BOOK" heading="Matrículas" active="true">
 				<g:FlowPanel ui:field="enrollmentsPanel">
 					<g:HTMLPanel addStyleNames="title">Matricular Participante</g:HTMLPanel>
@@ -77,9 +78,6 @@
 		    </b:Tab>
 			<b:Tab ui:field="configTab" icon="COGS" heading="Configuração" active="false">
 		        <g:FlowPanel ui:field="configPanel"></g:FlowPanel >
-		    </b:Tab>
-			<b:Tab ui:field="adminsTab" icon="GROUP" heading="Administradores" active="false">
-		        <g:FlowPanel ui:field="adminsPanel"></g:FlowPanel >
 		    </b:Tab>
 		</b:TabPanel>
 		

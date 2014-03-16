@@ -17,6 +17,9 @@ import kornell.core.entity.CourseClass
 import javax.ws.rs.PUT
 import javax.ws.rs.Consumes
 import kornell.server.jdbc.repository.CourseClassRepo
+import javax.ws.rs.QueryParam
+import kornell.core.entity.Role
+import kornell.core.entity.Roles
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -59,6 +62,25 @@ class CourseClassResource(uuid: String) {
       //contents.setCourseClass(classRepo.get)
       contents
     }
+  
+  @PUT
+  @Consumes(Array(Roles.TYPE))
+  @Produces(Array(Roles.TYPE))
+  @Path("admins")
+  def updateAdmins(implicit @Context sc: SecurityContext, roles: Roles) =
+	  AuthRepo.withPerson { person => {
+    	 CourseClassRepo(uuid).updateAdmins(roles)
+	  }
+  }
+  
+  @GET
+  @Produces(Array(Roles.TYPE))
+  @Path("admins")
+  def getAdmins(implicit @Context sc: SecurityContext) =
+	  AuthRepo.withPerson { person => {
+    	 CourseClassRepo(uuid).getAdmins
+	  }
+  }
 
 }
 

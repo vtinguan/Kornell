@@ -11,6 +11,10 @@ import kornell.core.to.CourseClassesTO
 import javax.ws.rs.QueryParam
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.core.entity.CourseClass
+import kornell.server.jdbc.repository.CourseClassRepo
+import javax.ws.rs.PUT
+import javax.ws.rs.Consumes
 
 
 @Path("courseClasses")
@@ -18,7 +22,13 @@ class CourseClassesResource {
   
   @Path("{uuid}")
   def getCourseClassResource(@PathParam("uuid") uuid:String) = CourseClassResource(uuid)
-  
+    
+  @PUT
+  @Consumes(Array(CourseClass.TYPE))
+  @Produces(Array(CourseClass.TYPE))
+  def create(implicit @Context sc: SecurityContext, courseClass: CourseClass) = AuthRepo.withPerson{ p =>
+    CourseClassesRepo.create(courseClass)
+  }
   
   @GET
   @Produces(Array(CourseClassesTO.TYPE))

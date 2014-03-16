@@ -11,6 +11,8 @@ import kornell.core.entity.Course
 import kornell.server.repository.TOs
 import kornell.core.entity.Person
 import kornell.core.entity.CourseVersion
+import kornell.core.entity.RoleType
+import kornell.server.repository.Entities
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -95,5 +97,16 @@ package object repository {
 	    rs.getString("addressLine2"),
 	    rs.getString("postalCode"),
 	    rs.getString("cpf"))
+
+  implicit def toRole(rs: java.sql.ResultSet): kornell.core.entity.Role = {
+    val roleType = RoleType.valueOf(rs.getString("role"))
+    val role = roleType match {
+      case RoleType.user => Entities.newUserRole
+      case RoleType.platformAdmin => Entities.newPlatformAdminRole(rs.getString("username"))
+      case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("username"), rs.getString("institution_uuid"))
+      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("username"), rs.getString("course_class_uuid"))
+    }
+    role
+  }
 
 }

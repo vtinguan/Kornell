@@ -28,6 +28,7 @@ object PeopleRepo {
       	| where p.email like ${search + "%"}
       	| or p.cpf like ${search + "%"}
       	| order by p.email, p.cpf
+      	| limit 8
 	    """.map[Person](toPerson))
   }
 	    

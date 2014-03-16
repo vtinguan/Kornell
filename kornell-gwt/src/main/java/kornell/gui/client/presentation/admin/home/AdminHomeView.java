@@ -30,8 +30,9 @@ public interface AdminHomeView extends IsWidget {
 	void setCourseClasses(List<CourseClassTO> courseClasses);
 	void setUserEnrollmentIdentificationType(Boolean enrollWithCPF);
 	void setSelectedCourseClass(String uuid);
-	void buildConfigView();
 	void setHomeTabActive();
 	void showEnrollmentsPanel(boolean visible);
 	void buildAdminsView();
+	void buildConfigView(boolean isCreationMode);
+	void prepareAddNewCourseClass(boolean addingNewCourseClass);
 }
