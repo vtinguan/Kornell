@@ -5,10 +5,12 @@ import java.util.List;
 
 import kornell.gui.client.uidget.formfield.CheckBoxFormField;
 import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.uidget.formfield.PasswordTextBoxFormField;
 import kornell.gui.client.uidget.formfield.TextBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
@@ -369,6 +371,14 @@ public class FormHelper {
 		fieldTextBox.addStyleName("textField");
 		fieldTextBox.setValue(text);
 		return new TextBoxFormField(fieldTextBox);
+	}
+	
+	public PasswordTextBoxFormField createPasswordTextBoxFormField(String text){
+		PasswordTextBox fieldPasswordTextBox = new PasswordTextBox();
+		fieldPasswordTextBox.addStyleName("field");
+		fieldPasswordTextBox.addStyleName("textField");
+		fieldPasswordTextBox.setValue(text);
+		return new PasswordTextBoxFormField(fieldPasswordTextBox);
 	}
 	
 	public CheckBoxFormField createCheckBoxFormField(Boolean value){

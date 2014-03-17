@@ -57,5 +57,6 @@ object InstitutionsRepo {
   
   def byName(institutionName:String) = 
 	sql"select * from Institution where name = ${institutionName}".first[Institution]
+	
 
 }

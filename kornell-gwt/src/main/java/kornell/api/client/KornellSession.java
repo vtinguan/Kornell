@@ -89,21 +89,7 @@ public class KornellSession extends KornellClient {
 	private boolean isValidRole(RoleType type, String institutionUUID, String courseClassUUID) {
 		if (currentUser == null)
 			return false;
-		for (Role role : currentUser.getRoles()) {
-			if(RoleCategory.isValidRole(role, type, institutionUUID, courseClassUUID))
-				return true;
-		}
-		return false;
-	}
-
-	public boolean hasRole(RoleType type) {
-		if (currentUser == null)
-			return false;
-		for (Role role : currentUser.getRoles()) {
-			if(RoleCategory.isRole(role, type))
-				return true;
-		}
-		return false;
+		return RoleCategory.isValidRole(currentUser.getRoles(), type, institutionUUID, courseClassUUID);
 	}
 	
 	public UserInfoTO getCurrentUser() {
@@ -118,13 +104,13 @@ public class KornellSession extends KornellClient {
 	}
 
 	public void login(String username, String password, final Callback<UserInfoTO> callback) {
-		final String auth = "Basic " + ClientProperties.base64Encode(username + ":" + password);
+		final String auth = ClientProperties.getAuthString(username, password);
 
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO user) {
 				setCurrentUser(user);
-				ClientProperties.set("X-KNL-A", auth);
+				ClientProperties.set(ClientProperties.X_KNL_A, auth);
 				callback.ok(user);
 				//TODO: fire event
 			}

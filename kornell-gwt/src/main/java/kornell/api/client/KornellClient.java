@@ -44,6 +44,10 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		GET("/user/changePassword/" + password + "/" + passwordChangeUUID).sendRequest(null, cb);
 	}
 
+	public void hasPowerOver(String targetPersonUUID, Callback<Boolean> cb) {
+		GET("/user/hasPowerOver/" + targetPersonUUID).sendRequest(null, cb);
+	}
+
 	public void updateUser(UserInfoTO userInfo, Callback<UserInfoTO> cb) {
 		PUT("/user/" + userInfo.getPerson().getUUID()).withContentType(UserInfoTO.TYPE).withEntityBody(userInfo).go(cb);
 	}

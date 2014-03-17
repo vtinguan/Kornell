@@ -9,6 +9,7 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
+import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
@@ -61,7 +62,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private void init() {
-		if (session.hasRole(RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
+		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
 

@@ -8,6 +8,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
+import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.S3PolicyTO;
@@ -36,6 +37,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -81,14 +83,15 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField Button btnClose;
 	@UiField Button btnOK;
 	@UiField Button btnCancel;
-
+	@UiField GenericPasswordChangeView passwordChangeWidget;
+	
 	private UserInfoTO user;
 	private CourseClassTO currentCourseClass;
 	private KornellFormFieldWrapper email, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private S3PolicyTO s3Policy;
-
+	private Button btnChangePassword;
 
 	public GenericProfileView(ClientFactory clientFactory) {
 		this.bus = clientFactory.getEventBus();
@@ -107,6 +110,16 @@ public class GenericProfileView extends Composite implements ProfileView {
 		btnClose.setText("Fechar".toUpperCase());
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
+		
+		btnChangePassword = new Button();
+		btnChangePassword.setText("Alterar Senha".toUpperCase());
+		btnChangePassword.addStyleName("btnSelected btnStandard btnChangePassword");
+		btnChangePassword.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				passwordChangeWidget.show();
+			}
+		});
 
 		imgTitle.setUrl(IMAGE_PATH + "course.png");
 		lblTitle.setText("Perfil");
@@ -121,6 +134,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		});*/
 
 		initData();
+		
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 			@Override
@@ -141,10 +155,11 @@ public class GenericProfileView extends Composite implements ProfileView {
 				break;
 			}
 		}
-		isAdmin = session.hasRole(RoleType.courseClassAdmin) || isInstitutionAdmin || session.isPlatformAdmin();
+		isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(),RoleType.courseClassAdmin) || isInstitutionAdmin || session.isPlatformAdmin();
 		
 		form.addStyleName("shy");
-		session.getUser(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID(), new Callback<UserInfoTO>() {
+		String profileUserUUID = ((ProfilePlace) placeCtrl.getWhere()).getPersonUUID();
+		session.getUser(profileUserUUID, new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO to) {
 				user = to;
@@ -154,6 +169,16 @@ public class GenericProfileView extends Composite implements ProfileView {
 			public void unauthorized(){
 				user = null;
 				display();
+			}
+		});
+
+		session.hasPowerOver(profileUserUUID, new Callback<Boolean>() {
+			@Override
+			public void ok(Boolean hasPowerOver) {
+				if(hasPowerOver){
+					//titlePanel.remove(titlePanel);
+					//titlePanel.add(btnChangePassword);
+				}
 			}
 		});
 	}
@@ -352,8 +377,12 @@ public class GenericProfileView extends Composite implements ProfileView {
 		if((isCurrentUser || isAdmin)&& showContactDetails){
 			displayContactDetails();
 		}
-	
+
+		profileFields.add(formHelper.getImageSeparator());
+		
 		form.removeStyleName("shy");
+		
+		passwordChangeWidget.initData(session, user, isCurrentUser);
 	}
 
 	private FormPanel getPictureUploadFormPanel() {

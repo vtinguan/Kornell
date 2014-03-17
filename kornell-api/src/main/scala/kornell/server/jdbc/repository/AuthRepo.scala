@@ -48,24 +48,6 @@ object AuthRepo {
     else throw new IllegalArgumentException(s"User [$username] not found.")
   }
 
-  //TODO: Cache
-  def getPersonByEmail(email: String) = {
-    //println(email)
-    sql"""
-		select * from Person p
-		where p.email = $email
-	""".first[Person]
-  }
-
-  //TODO: Cache
-  def getPersonByCPF(cpf: String) = {
-	    sql"""
-			select * from Person p
-			where p.cpf = $cpf
-		""".first[Person]
-  }
-
-  //TODO: Cache
   def getPersonByPasswordChangeUUID(passwordChangeUUID: String) = 
     sql"""
 		select p.*
@@ -73,6 +55,11 @@ object AuthRepo {
 		where pwd.requestPasswordChangeUUID = $passwordChangeUUID
 	""".first[Person]
   
+  def getUsernameByPersonUUID(personUUID: String) = 
+    sql"""
+    	select pwd.username from Password pwd
+    	where pwd.person_uuid = $personUUID
+    """.first[String].get
 
   def hasPassword(username: String) = 
     sql"""
