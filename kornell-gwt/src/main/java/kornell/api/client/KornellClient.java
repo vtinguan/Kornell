@@ -37,11 +37,15 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	}
 
 	public void requestPasswordChange(String email, String institutionName, Callback<Void> cb) {
-		GET("/user/requestPasswordChange/" + email + "/" + institutionName).sendRequest(null, cb);
+		GET("/user/requestPasswordChange/" + URL.encodePathSegment(email) + "/" + institutionName).sendRequest(null, cb);
 	}
 
 	public void changePassword(String password, String passwordChangeUUID, Callback<UserInfoTO> cb) {
-		GET("/user/changePassword/" + password + "/" + passwordChangeUUID).sendRequest(null, cb);
+		GET("/user/changePassword/" + URL.encodePathSegment(password) + "/" + passwordChangeUUID).sendRequest(null, cb);
+	}
+
+	public void changeTargetPassword(String targetPersonUUID, String password, Callback<Void> cb) {
+		PUT("/user/changePassword/" + targetPersonUUID + "/?password=" + URL.encodePathSegment(password)).sendRequest(null, cb);
 	}
 
 	public void hasPowerOver(String targetPersonUUID, Callback<Boolean> cb) {

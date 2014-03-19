@@ -110,29 +110,61 @@ class UserResource{
     }
   }
 
+  @GET
+  @Path("changePassword/{password}/{passwordChangeUUID}")
+  @Produces(Array(UserInfoTO.TYPE))
+  def changePassword(@Context resp:HttpServletResponse,
+      @PathParam("password") password:String, 
+      @PathParam("passwordChangeUUID") passwordChangeUUID:String) = {
+	  	val person = AuthRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
+	  	if(person.isDefined){
+	  	  PersonRepo(person.get.getUUID).setPassword(person.get.getEmail, password)
+		  	val user = newUserInfoTO
+			user.setUsername(person.get.getEmail())
+			Option(user)
+	  	} else {
+	  	  resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "It wasn't possible to change your password.")
+	  	}
+  }
+
   @PUT
   @Path("changePassword/{targetPersonUUID}/")
   @Produces(Array("text/plain"))
   def changePassword(implicit @Context sc: SecurityContext,
     @Context resp: HttpServletResponse,
     @PathParam("targetPersonUUID") targetPersonUUID: String,
-    @QueryParam("password") password: String,
-    @QueryParam("currentPassword") currentPassword: String) = {
+    @QueryParam("password") password: String) = {
     AuthRepo.withPerson { p =>	    
 	    if(!PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID))
-	    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password."); 
-      PersonRepo(targetPersonUUID).setPassword(AuthRepo.getUsernameByPersonUUID(targetPersonUUID), password)
+	    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password.");
+	    else {
+	      val targetPersonRepo = PersonRepo(targetPersonUUID)
+		    val username = AuthRepo.getUsernameByPersonUUID(targetPersonUUID)
+		    
+	      targetPersonRepo.setPassword(
+	          if(username.isDefined){
+				     username.get 
+				    } else {
+				      val targetPerson = targetPersonRepo.get.get
+				      if(targetPerson.getEmail() != null)
+				        targetPerson.getEmail()
+				      else
+				        targetPerson.getCPF()
+				    }, password)
+		    
+	    }
     }
   }
 
+
   @GET
-  @Path("hasPowerOver/{targetPersonUUID}/")
+  @Path("hasPowerOver/{targetPersonUUID}")
   @Produces(Array("application/boolean"))
   def changePassword(implicit @Context sc: SecurityContext,
     @Context resp: HttpServletResponse,
     @PathParam("targetPersonUUID") targetPersonUUID: String) = {
     AuthRepo.withPerson { p =>	    
-	    PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID)
+    PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID)
     }
   }
 	  

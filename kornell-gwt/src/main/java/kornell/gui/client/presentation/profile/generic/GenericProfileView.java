@@ -70,7 +70,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private Institution institution;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
-	private boolean isEditMode, isCurrentUser, isAdmin, showContactDetails, isRegisteredWithCPF;
+	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showContactDetails, isRegisteredWithCPF;
 
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
@@ -158,27 +158,28 @@ public class GenericProfileView extends Composite implements ProfileView {
 		isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(),RoleType.courseClassAdmin) || isInstitutionAdmin || session.isPlatformAdmin();
 		
 		form.addStyleName("shy");
-		String profileUserUUID = ((ProfilePlace) placeCtrl.getWhere()).getPersonUUID();
-		session.getUser(profileUserUUID, new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO to) {
-				user = to;
-				display();
-			}
-			@Override
-			public void unauthorized(){
-				user = null;
-				display();
-			}
-		});
+		
+		final String profileUserUUID = ((ProfilePlace) placeCtrl.getWhere()).getPersonUUID();
 
 		session.hasPowerOver(profileUserUUID, new Callback<Boolean>() {
 			@Override
-			public void ok(Boolean hasPowerOver) {
-				if(hasPowerOver){
-					//titlePanel.remove(titlePanel);
-					//titlePanel.add(btnChangePassword);
+			public void ok(Boolean hasPowerOverTargetUser) {
+				if(hasPowerOverTargetUser){
+					titlePanel.add(btnChangePassword);
 				}
+				hasPowerOver = hasPowerOverTargetUser;
+				session.getUser(profileUserUUID, new Callback<UserInfoTO>() {
+					@Override
+					public void ok(UserInfoTO to) {
+						user = to;
+						display();
+					}
+					@Override
+					public void unauthorized(){
+						user = null;
+						display();
+					}
+				});
 			}
 		});
 	}
@@ -294,6 +295,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		placeCtrl.goTo(defaultPlace);
 	}
 
+
 	private boolean checkErrors() {
 		for (KornellFormFieldWrapper field : fields) 
 			if(!"".equals(field.getError()))
@@ -307,7 +309,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 		btnOK.setVisible(isEditMode);
 		btnCancel.setVisible(isEditMode);
 		btnClose.setVisible(!isEditMode);
-		btnEdit.setVisible(!isEditMode && (isCurrentUser || isAdmin));
+		btnChangePassword.setVisible(isEditMode && (isCurrentUser || hasPowerOver));
+		btnEdit.setVisible(!isEditMode && (isCurrentUser || hasPowerOver));
 
 		profileFields.clear();
 		if(user == null){

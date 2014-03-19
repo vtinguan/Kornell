@@ -50,16 +50,16 @@ object AuthRepo {
 
   def getPersonByPasswordChangeUUID(passwordChangeUUID: String) = 
     sql"""
-		select p.*
-		from Person p join Password pwd on pwd.person_uuid = p.uuid
-		where pwd.requestPasswordChangeUUID = $passwordChangeUUID
-	""".first[Person]
+    	select p.* from Person p 
+    	join Password pwd on pwd.person_uuid = p.uuid 
+    	where pwd.requestPasswordChangeUUID = $passwordChangeUUID
+    """.first[Person]
   
   def getUsernameByPersonUUID(personUUID: String) = 
     sql"""
     	select pwd.username from Password pwd
     	where pwd.person_uuid = $personUUID
-    """.first[String].get
+    """.first[String]
 
   def hasPassword(username: String) = 
     sql"""
