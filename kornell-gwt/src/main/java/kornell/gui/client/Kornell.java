@@ -1,6 +1,5 @@
 package kornell.gui.client;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -11,11 +10,16 @@ public class Kornell implements EntryPoint {
 	
 	@Override
 	public void onModuleLoad() {
+		long t0 = System.currentTimeMillis();
+		startLMS();
+		long t1 = System.currentTimeMillis();
+		logger.info("Kornell GWT started in ["+(t1-t0)+" ms]" );
+	}
+
+	private void startLMS() {
 		ClientFactory clientFactory = GWT.create(ClientFactory.class);
 		clientFactory.startApp();
-		logger.log(Level.INFO, " === Application started ===");
 		clientFactory.logState();
-		
 	}
 
 }

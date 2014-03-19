@@ -1,26 +1,34 @@
 package kornell.api.client;
 
 import java.util.List;
+import java.util.logging.Logger;
 
-import kornell.core.entity.Institution;
 import kornell.core.entity.Registration;
 import kornell.core.entity.Role;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.web.bindery.event.shared.EventBus;
+
 
 public class KornellSession extends KornellClient {
+	Logger logger = Logger.getLogger(KornellSession.class.getName());
+
 	private static final String SEPARATOR = ".";
 	private static final String PREFIX = "Kornell.v1.UserSession";
 
 	private UserInfoTO currentUser = null;
 
-	public KornellSession() {
-		GWT.log("Instantiated new session");
+	private EventBus bus;
+
+	public KornellSession(EventBus bus) {
+		this.bus = bus;
+		logger.info("Instantiated new Kornell Session");
 	}
 	
 	public void getCurrentUser(final Callback<UserInfoTO> callback) {
@@ -115,8 +123,8 @@ public class KornellSession extends KornellClient {
 			public void ok(UserInfoTO user) {
 				setCurrentUser(user);
 				ClientProperties.set("X-KNL-A", auth);
-				callback.ok(user);
-				//TODO: fire event
+				bus.fireEvent(new LoginEvent(user));
+				callback.ok(user);				
 			}
 
 			@Override

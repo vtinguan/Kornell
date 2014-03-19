@@ -1,15 +1,13 @@
 package kornell.scorm.client.scorm12;
-
+import static kornell.scorm.client.scorm12.Scorm12.*;
 public class SCORM12Binder {
-	public static native void bind(SCORM12Adapter api) /*-{
-		
-		
-		//if (typeof console == "undefined" || typeof console.log == "undefined" || typeof console.debug == "undefined"){
-		//   var console = { log: function(){}, debug: function(){} }; 
-		//}
-		
+	public static void bind(SCORM12Adapter api){
+		nativeBind(api);
+		logger.info("SCORM 1.2 API Adapter bound to window.");
+	}
+	
+	public static native void nativeBind(SCORM12Adapter api) /*-{		
 		var API = $wnd.API || {};
-		
 		//[instance-expr.]@class-name::method-name(param-signature)(arguments)
 		API.LMSInitialize = function(param) {
 			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSInitialize(Ljava/lang/String;)(param);			

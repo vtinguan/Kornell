@@ -1,7 +1,6 @@
 package kornell.scorm.client.scorm12;
 
-import java.util.logging.Logger;
-
+import static kornell.scorm.client.scorm12.Scorm12.logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.entity.ActomEntries;
@@ -14,7 +13,6 @@ import com.google.gwt.core.shared.GWT;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
-	Logger logger = Logger.getLogger(SCORM12Adapter.class.getName());
 
 	private String lastError = NoError;
 
@@ -34,22 +32,24 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	}
 
 	public String LMSInitialize(String param) {
-		GWT.log("LMSInitialize[" + param + "]");
+		String result = TRUE;
 		if (dataModel == null) {
 			logger.warning("Can not initialize API Adapter without a Data Model");
 			// TODO: Wait for data model
-			return FALSE;
+			result = FALSE;
 		}
-		return TRUE;
+		logger.finer("LMSInitialize[" + param + "] = " + result);
+		return result;
 	}
 
 	public String LMSFinish(String param) {
-		GWT.log("LMSFinish[" + param + "]");
-		return TRUE;
+		String result = TRUE;
+		logger.finer("LMSFinish[" + param + "]");
+		return result;
 	}
 
 	public String LMSGetLastError() {
-		GWT.log("LMSGetLastError[]");
+		logger.finer("LMSGetLastError[]");
 		return lastError;
 	}
 
@@ -57,14 +57,14 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		String result = null;
 		if (isCMIElement(param))
 			result = dataModel.getValue(param);
-		GWT.log("LMSGetValue[" + param + "] = " + result);
+		logger.finer("LMSGetValue[" + param + "] = " + result);
 		return result;
 	}
 
 	public String LMSCommit(String param) {
 		String result = TRUE;
 		onDirtyData(null);
-		GWT.log("LMSCommit[" + param + "] = " + result);
+		logger.finer("LMSCommit[" + param + "] = " + result);
 		return result;
 	}
 
@@ -81,39 +81,36 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		String result = FALSE;
 		if (isCMIElement(key))
 			result = dataModel.setValue(key, value);
-		GWT.log("LMSSetValue[" + key + "," + value + "] = " + result);
+		GWT.log("LMSSetValue [" + key + " = " + value + "] = " + result);
 		return result;
 	}
 
 	@Override
 	public void onActomEntered(ActomEnteredEvent event) {
-		GWT.log("ACTOM ENTERED");
-		saveDataModel(event);
-		GWT.log("stopAllVideos - Java");
-		//stopAllVideos();
+		logger.finer("ActomEntered [" + event.getActomKey() + "]");
+		refreshDataModel(event);
 	}
 
-	//TODO: Fire an event
-	public static native void stopAllVideos() /*-{					
+	// TODO: Fire an event
+	public static native void stopAllVideos() /*-{
 		var frms = $wnd.parent.document.getElementsByTagName("IFRAME")
-		if(console){
-			console.debug("Stopping videos in # iframes: "+frms.length);
+		if (console) {
+			console.debug("Stopping videos in # iframes: " + frms.length);
 		}
-		for(var i = 0; i< frms.length; i++){
+		for (var i = 0; i < frms.length; i++) {
 			var frm = frms[i];
 			var stopThem = frm.contentWindow.stopAllVideos;
 			if (stopThem)
-				stopThem(); 
+				stopThem();
 		}
 	}-*/;
 
-	private void saveDataModel(ActomEnteredEvent event) {
-		// TODO: Make reliable, offlineable, what not-able.
+	private void refreshDataModel(ActomEnteredEvent event) {
 		if (dataModel != null)
 			putDataModel(new Callback<ActomEntries>() {
 				@Override
 				public void ok(ActomEntries to) {
-					GWT.log("Data model put without action");
+					logger.finest("Saved data model for [enrollment:"+to.getEnrollmentUUID()+",actomKey:"+to.getActomKey()+"] with ["+to.getEntries().size()+"] entries");
 
 				}
 			});
@@ -128,9 +125,9 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 				.get(new Callback<ActomEntries>() {
 					@Override
 					public void ok(ActomEntries to) {
-						GWT.log("Populating new data model");
 						dataModel = new CMIDataModel(SCORM12Adapter.this, bus,
 								to.getEntries());
+						logger.finest("Loaded data model for [enrollment:"+to.getEnrollmentUUID()+",actomKey:"+to.getActomKey()+"] with ["+to.getEntries().size()+"] entries");
 					}
 				});
 	}
