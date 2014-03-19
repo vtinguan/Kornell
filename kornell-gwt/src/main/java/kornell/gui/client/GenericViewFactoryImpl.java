@@ -51,8 +51,6 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private CourseLibraryPresenter courseLibraryPresenter;
 	private SandboxPresenter sandboxPresenter;
 	
-	private SimplePanel appPanel;
-	
 	SimplePanel shell = new SimplePanel();
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory) {
@@ -118,7 +116,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public HomeView getHomeView() {
 		if (genericHomeView == null) {
-			genericHomeView = new GenericHomeView(clientFactory, clientFactory.getEventBus(), clientFactory.getKornellSession(), appPanel);
+			genericHomeView = new GenericHomeView(clientFactory, clientFactory.getEventBus(), clientFactory.getKornellSession());
 		}
 		return genericHomeView;
 	}

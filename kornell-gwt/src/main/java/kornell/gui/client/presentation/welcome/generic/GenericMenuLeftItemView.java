@@ -36,10 +36,10 @@ public class GenericMenuLeftItemView extends Composite {
 	
 	private String menuItemType;
 
-	public static String MENU_ITEM_COURSES = constants.courses();
-	public static String MENU_ITEM_NOTIFICATIONS = constants.notifications();
-	public static String MENU_ITEM_MY_PARTICIPATION = constants.myParticipation();
-	public static String MENU_ITEM_PROFILE = constants.profile();
+	public static final String MENU_ITEM_COURSES = constants.courses();
+	public static final String MENU_ITEM_NOTIFICATIONS = constants.notifications();
+	public static final String MENU_ITEM_MY_PARTICIPATION = constants.myParticipation();
+	public static final String MENU_ITEM_PROFILE = constants.profile();
 
 	public GenericMenuLeftItemView(final EventBus bus, final String menuItemType, final GenericMenuLeftView genericMenuLeftView) {
 		this.bus = bus; 

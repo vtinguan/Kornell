@@ -116,7 +116,7 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 
 		if(validateFields()){
 			LoadingPopup.show();
-			session.updateUser(null, new Callback<UserInfoTO>(){
+			/*session.updateUser(null, new Callback<UserInfoTO>(){
 				@Override
 				public void ok(UserInfoTO userInfo){
 					if(isCurrentUser){
@@ -128,7 +128,7 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 						KornellNotification.show("Senha alterada com sucesso!");
 					}
 				}
-			});  
+			});  */
 		}
 	}
 

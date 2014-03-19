@@ -12,12 +12,13 @@ public class LoadingPopup {
 	private static PopupPanel popup;
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	
+	
 	public static void show() {
 		//TODO: i18n
 		show(null);
 	}
 	
-	public static void show(String message) {	
+	public synchronized static void show(String message) {	
 		if(popup == null){
 			popup = new PopupPanel(false, false); // Create a non-modal dialog box that will not auto-hide
 			FlowPanel panel = new FlowPanel();

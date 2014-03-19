@@ -385,7 +385,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 		passwordChangeWidget.initData(session, user, isCurrentUser);
 	}
 
-	private FormPanel getPictureUploadFormPanel() {
+	/*private FormPanel getPictureUploadFormPanel() {
 		final FormPanel formPanel = new FormPanel();
 		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		formPanel.setMethod(FormPanel.METHOD_POST);
@@ -430,7 +430,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 		formPanel.setWidget(fileUploadWrapper);
 		return formPanel;
-	}
+	}*/
 
 	private void displayContactDetails() {
 		profileFields.add(getImageSeparator());

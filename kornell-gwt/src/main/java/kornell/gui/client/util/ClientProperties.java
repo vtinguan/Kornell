@@ -7,7 +7,7 @@ import com.google.gwt.user.client.Cookies;
 public class ClientProperties {
 	private static Storage localStorage = Storage.getLocalStorageIfSupported();
 	
-	public static String X_KNL_A = "X-KNL-A";
+	public static final String X_KNL_A = "X-KNL-A";
 	
 	public static String get(String propertyName){
 		if(localStorage != null){

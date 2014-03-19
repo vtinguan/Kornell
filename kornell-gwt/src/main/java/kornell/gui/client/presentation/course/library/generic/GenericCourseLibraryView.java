@@ -157,7 +157,7 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		if (list.size() > 0) {
 			if(btnIcon.equals(btn)){
 			    Collections.sort(list, new FileTypeComparator());
-		    	if(btnIcon.equals(btnLastClicked) && order == ORDER_ASCENDING){
+		    	if(btnIcon.equals(btnLastClicked) && ORDER_ASCENDING.equals(order)){
 		    		Collections.reverse(list);
 		    		order = ORDER_DESCENDING;
 		    	} else {
@@ -165,7 +165,7 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		    	}
 			} else if(btnSize.equals(btn)) {
 			    Collections.sort(list, new FileSizeComparator());
-		    	if(btnSize.equals(btnLastClicked) && order == ORDER_DESCENDING){
+		    	if(btnSize.equals(btnLastClicked) && ORDER_DESCENDING.equals(order)){
 		    		Collections.reverse(list);
 		    		order = ORDER_ASCENDING;
 		    	} else {
@@ -173,7 +173,7 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		    	}
 			} else if(btnClassification.equals(btn)) {
 			    Collections.sort(list, new FileClassificationComparator());
-		    	if(btnClassification.equals(btnLastClicked) && order == ORDER_DESCENDING){
+		    	if(btnClassification.equals(btnLastClicked) && ORDER_DESCENDING.equals(order)){
 		    		Collections.reverse(list);
 		    		order = ORDER_ASCENDING;
 		    	} else {
@@ -181,7 +181,7 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		    	}
 			} else if(btnPublishingDate.equals(btn)) {
 			    Collections.sort(list, new FilePublishingDateComparator());
-		    	if(btnPublishingDate.equals(btnLastClicked) && order == ORDER_ASCENDING){
+		    	if(btnPublishingDate.equals(btnLastClicked) && ORDER_ASCENDING.equals(order)){
 		    		Collections.reverse(list);
 		    		order = ORDER_DESCENDING;
 		    	} else {
@@ -189,7 +189,7 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		    	}
 			} else {
 			    Collections.sort(list, new FileNameComparator());
-		    	if(btnName.equals(btnLastClicked) && order == ORDER_ASCENDING){
+		    	if(btnName.equals(btnLastClicked) && ORDER_ASCENDING.equals(order)){
 		    		Collections.reverse(list);
 		    		order = ORDER_DESCENDING;
 		    	} else {
@@ -403,7 +403,7 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		btn.addStyleName("btnSelected");
 		btn.removeStyleName("btnNotSelected");
 
-		order = order == ORDER_ASCENDING ? ORDER_DESCENDING : ORDER_ASCENDING;
+		order = (ORDER_ASCENDING.equals(order)  ? ORDER_DESCENDING : ORDER_ASCENDING);
 		displayContent(btn, btnLastClicked);
 		btnCurrent = btn;
 	}

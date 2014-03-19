@@ -3,7 +3,7 @@ package kornell.gui.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class NavigationForecastEvent extends GwtEvent<NavigationForecastEventHandler> {
-	public static Type<NavigationForecastEventHandler> TYPE = new Type<NavigationForecastEventHandler>();
+	public static final Type<NavigationForecastEventHandler> TYPE = new Type<NavigationForecastEventHandler>();
 	
 	public enum Forecast {
 		NEXT_OK,

@@ -3,7 +3,7 @@ package kornell.gui.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class ActomEnteredEvent extends GwtEvent<ActomEnteredEventHandler>{
-	public static Type<ActomEnteredEventHandler> TYPE = new Type<ActomEnteredEventHandler>();
+	public static final Type<ActomEnteredEventHandler> TYPE = new Type<ActomEnteredEventHandler>();
 	
 	private String actomKey;
 	private String enrollmentUUID;

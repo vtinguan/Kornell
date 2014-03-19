@@ -153,11 +153,11 @@ public class PrefetchSequencer implements Sequencer {
 		String key = "";
 		if (currentActom != null) {
 			key = currentActom.getKey();
+			currentActom.setVisited(true);
 		}
 		if (StringUtils.isNone(key))
 			key = "????????????????";
 		bus.fireEvent(new ActomEnteredEvent(enrollmentUUID, key));
-		currentActom.setVisited(true);
 		fireProgressEvent();
 	}
 	

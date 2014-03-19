@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class CourseBarEvent extends GwtEvent<CourseBarEventHandler>{
 
-	public static Type<CourseBarEventHandler> TYPE = new Type<CourseBarEventHandler>();
+	public static final Type<CourseBarEventHandler> TYPE = new Type<CourseBarEventHandler>();
 	
 	private String courseBarItemSelected;
 	
