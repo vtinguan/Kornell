@@ -120,7 +120,7 @@ public class KornellSession extends KornellClient {
 				setCurrentUser(user);
 				ClientProperties.set(ClientProperties.X_KNL_A, auth);
 				bus.fireEvent(new LoginEvent(user));
-				callback.ok(user);				
+				callback.ok(user);
 			}
 
 			@Override

@@ -153,20 +153,23 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	void identifyUserVoice(UserInfoTO user) {
 		Person person = user.getPerson();
+		boolean hasEmail = false;
 		if (person != null) {
 			final String email = person.getEmail();
 			final String personUUID = person.getUUID();
 			final String name = person.getFullName();
 			if (isSome(email)) {
+				hasEmail = true;
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					@Override
 					public void execute() {
-						identifyUserVoiceNative(personUUID, name, email);
+						identifyUserVoiceNative(personUUID, name, email);						
 					}
 				});
-				btnHelp.setVisible(true);
-			}
+			}			
+
 		}
+		btnHelp.setVisible(hasEmail);
 	}
 
 	static native void identifyUserVoiceNative(String personUUID, String name,
