@@ -1,5 +1,6 @@
 //UTILS
 @import "utils/bars";
+@import "utils/forms";
 @import "utils/mixins";
 @import "utils/colors";
 @import "utils/lesshat";
@@ -44,6 +45,11 @@ body {
     border-radius: 5px;
 }
 
+
+
+
+
+
 .deanHome{
 	width: @wrapperWidth;
 	margin: 0 auto;
@@ -74,6 +80,11 @@ body {
 			margin-left: 15px;
 			width: 400px;
 			font-size: 12px;
+		}
+		.btnAction{
+			float: right;
+			width: 140px;
+			margin-top: 4px;
 		}
 	}
 	.controlsPanel{
@@ -217,6 +228,27 @@ body {
 	background-color: transparent !important;
 	border: 1px solid @buttonBorderLeftColor !important;
 }
+.deanHome .nav-tabs{
+	font-size: 15px;
+	font-weight: bold;
+	margin-bottom: 30px !important;
+}
+
+.dropdown-menu .active>a, 
+.dropdown-menu .active>a:hover,
+.dropdown-menu li>a:hover, 
+.dropdown-menu li>a:focus, 
+.dropdown-submenu:hover>a{
+	background-color: #8381B7 !important;
+	background-image: webkit-gradient(linear, 0 0, 0 100%, from(#8381B7), to(#8381B7)) !important;
+	background-image: linear-gradient(to bottom, #8381B7, #8381B7) !important;
+}
+
+
+
+
+
+
 
 
 
@@ -322,6 +354,32 @@ body {
 
 
 
+.courseClassAdminField{
+	height: auto !important;
+	width: 750px !important;
+	.fieldPanel{
+		width: 400px;
+		.textField{
+			float: left;
+		}
+		.btnAction{
+			float: left;
+			margin-left: 15px;
+			margin-top: 4px;
+		}
+		.selectField{
+			margin-top: 15px;
+			margin-bottom: 25px;
+			float: left;
+			height: 100px;
+		}
+		.btnNotSelected{
+			float: left;
+			margin-left: 15px;
+			margin-top: 92px;
+		}
+	}
+}
 
 
 
@@ -462,6 +520,23 @@ body {
 					overflow: hidden;
 				}
 			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+.forgotPasswordModal {
+	.fieldPanelWrapper{
+		width: auto !important;
+		.labelPanel{
+			width: 140px !important;
 		}
 	}
 }

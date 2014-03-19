@@ -8,6 +8,8 @@ public interface EntityFactory extends AutoBeanFactory {
 
 	AutoBean<Person> newPerson();
 
+	AutoBean<People> newPeople();
+
 	AutoBean<Principal> newPrincipal();
 
 	AutoBean<Course> newCourse();
@@ -23,6 +25,8 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<Registrations> newRegistrations();
 
 	AutoBean<Role> newRole();
+
+	AutoBean<Roles> newRoles();
 
 	AutoBean<UserRole> newUserRole();
 

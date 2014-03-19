@@ -25,20 +25,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .menuBar{top:0px;left:0px;width:100%;height:45px;background-color:#45484d;background:-webkit-gradient(linear, left top, left bottom, from(#45484d), to(#000000));background:-webkit-linear-gradient(top, #45484d, #000000);background:-moz-linear-gradient(top, #45484d, #000000);background:-ms-linear-gradient(top, #45484d, #000000);background:-o-linear-gradient(top, #45484d, #000000);background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);}.menuBar .imgMenuBar{float:left;margin-left:0px;}
@@ -61,6 +53,17 @@
 .courseBar .notes{width:118.25px;}
 .courseBar .back{width:118.25px;border-right:0px;}
 @media screen and (max-width:962px){.courseBar{}.courseBar .courseBarButton .label{visibility:hidden;width:0px;border:0;margin:0;padding:0;} .courseBar .course{width:73px;border-left:0px;} .courseBar .details{width:73px;} .courseBar .library{width:73px;} .courseBar .forum{width:73px;} .courseBar .chat{width:73px;} .courseBar .specialists{width:75px;} .courseBar .notes{width:73px;} .courseBar .back{width:73px;border-right:0px;}}.background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
+.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
+.fieldPanelWrapper .fieldPanelImage{height:100px;}
+.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
+.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
+.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
+.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
+.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
+.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
+.fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
+@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
 .btn-primary{text-shadow:1px 1px 1px rgba(0, 0, 0, 0.5);font-size:12px;font-weight:bold;color:#e9e9e9;border-radius:5px;display:block;border:0px;background-color:#9b020a;background:-webkit-gradient(linear, left top, left bottom, from(#9b020a), to(#4b0105));background:-webkit-linear-gradient(top, #9b020a, #4b0105);background:-moz-linear-gradient(top, #9b020a, #4b0105);background:-ms-linear-gradient(top, #9b020a, #4b0105);background:-o-linear-gradient(top, #9b020a, #4b0105);background:#9b020a;background:-moz-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #9b020a), color-stop(100%, #4b0105));background:-webkit-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-o-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-ms-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:linear-gradient(to bottom, #9b020a 0%, #4b0105 100%);}
 .btnDefault{text-shadow:1px 1px 1px rgba(0, 0, 0, 0.5);font-size:12px;font-weight:bold;color:#e9e9e9;border-radius:5px;display:block;border:0px;}
 .btnNotSelected{text-shadow:1px 1px 1px rgba(0, 0, 0, 0.5);font-size:12px;font-weight:bold;color:#e9e9e9;border-radius:5px;display:block;border:0px;background-color:#4c4f54;background:-webkit-gradient(linear, left top, left bottom, from(#4c4f54), to(#2a2d32));background:-webkit-linear-gradient(top, #4c4f54, #2a2d32);background:-moz-linear-gradient(top, #4c4f54, #2a2d32);background:-ms-linear-gradient(top, #4c4f54, #2a2d32);background:-o-linear-gradient(top, #4c4f54, #2a2d32);background:#4c4f54;background:-moz-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c4f54), color-stop(100%, #2a2d32));background:-webkit-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-o-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-ms-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:linear-gradient(to bottom, #4c4f54 0%, #2a2d32 100%);}
@@ -86,20 +89,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
@@ -129,20 +124,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
@@ -183,20 +170,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .termsPanel{width:962px;margin:0 auto;text-align:left;padding-top:20px;}.termsPanel .institutionLogo{margin:0 auto;width:250px;display:block;margin-bottom:30px;}
@@ -232,20 +211,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
@@ -284,26 +255,19 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
-.profileForm{width:944px;height:100%;margin:0 auto;border-radius:0px 0px 15px 15px;}.profileForm .titlePanel{height:30px;padding-top:20px;}.profileForm .titlePanel .imgTitle{float:left;padding-left:20px;padding-right:20px;}
+.profileForm{width:944px;height:100%;margin:0 auto;border-radius:0px 0px 15px 15px;}.profileForm .titlePanel{height:30px;padding-top:20px;margin-bottom:30px;}.profileForm .titlePanel .imgTitle{float:left;padding-left:20px;padding-right:20px;}
 .profileForm .titlePanel .lblTitle{font-size:17px;color:#ffffff;float:left;}
 .profileForm .titlePanel .editPanel{float:right;padding-right:30px;}.profileForm .titlePanel .editPanel .lblEdit{color:white;}
+.profileForm .titlePanel .btnChangePassword{float:right;margin-right:40px;width:150px;}
 .profileForm .fieldsWrapper{padding-left:100px;}.profileForm .fieldsWrapper .profileSeparatorBar{margin-bottom:25px;float:left;}
 .profileForm .privatePanel{float:left;width:80px;}.profileForm .privatePanel div{color:#696769;font-size:12px;line-height:26px;font-weight:bold;}
 .profileForm .privatePanel img{float:left;}
@@ -333,20 +297,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
@@ -376,20 +332,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
@@ -444,20 +392,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
@@ -532,20 +472,12 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
@@ -576,26 +508,19 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
-.profileForm{width:944px;height:100%;margin:0 auto;border-radius:0px 0px 15px 15px;}.profileForm .titlePanel{height:30px;padding-top:20px;}.profileForm .titlePanel .imgTitle{float:left;padding-left:20px;padding-right:20px;}
+.profileForm{width:944px;height:100%;margin:0 auto;border-radius:0px 0px 15px 15px;}.profileForm .titlePanel{height:30px;padding-top:20px;margin-bottom:30px;}.profileForm .titlePanel .imgTitle{float:left;padding-left:20px;padding-right:20px;}
 .profileForm .titlePanel .lblTitle{font-size:17px;color:#ffffff;float:left;}
 .profileForm .titlePanel .editPanel{float:right;padding-right:30px;}.profileForm .titlePanel .editPanel .lblEdit{color:white;}
+.profileForm .titlePanel .btnChangePassword{float:right;margin-right:40px;width:150px;}
 .profileForm .fieldsWrapper{padding-left:100px;}.profileForm .fieldsWrapper .profileSeparatorBar{margin-bottom:25px;float:left;}
 .profileForm .privatePanel{float:left;width:80px;}.profileForm .privatePanel div{color:#696769;font-size:12px;line-height:26px;font-weight:bold;}
 .profileForm .privatePanel img{float:left;}
@@ -609,6 +534,7 @@
 .deanHome .lblHighlight{color:#d6d5d5;font-weight:bold;font-size:13px;}
 .deanHome .title{color:#d88709;font-size:18px;line-height:28px;clear:both;}
 .deanHome .courseClassesHeaderWrapper{margin-top:20px;height:45px;}.deanHome .courseClassesHeaderWrapper .listBoxCourseClasses{float:left;height:26px;margin-left:15px;width:400px;font-size:12px;}
+.deanHome .courseClassesHeaderWrapper .btnAction{float:right;width:140px;margin-top:4px;}
 .deanHome .controlsPanel{float:left;width:100%;}.deanHome .controlsPanel .insertPanel{float:left;height:45px;line-height:45px;}.deanHome .controlsPanel .insertPanel .btnAction{margin-left:20px;display:inline;width:85px;}
 .deanHome .controlsPanel .insertPanel input{margin-top:10px;width:180px;height:14px;font-size:12px;margin-left:5px;margin-right:10px;}
 .deanHome .controlsPanel .insertBatchPanel{float:right;height:45px;}.deanHome .controlsPanel .insertBatchPanel .btnNotSelected{margin-top:12px;margin-right:12px;width:140px;}
@@ -626,6 +552,8 @@
 .modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}
 .pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;}
 .pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;}
+.deanHome .nav-tabs{font-size:15px;font-weight:bold;margin-bottom:30px !important;}
+.dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{background-color:#8381B7 !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#8381b7), to(#8381b7)) !important;background-image:linear-gradient(to bottom, #8381b7, #8381b7) !important;}
 .activityBarWrapper{background-color:#45484d;background:-webkit-gradient(linear, left top, left bottom, from(#45484d), to(#000000));background:-webkit-linear-gradient(top, #45484d, #000000);background:-moz-linear-gradient(top, #45484d, #000000);background:-ms-linear-gradient(top, #45484d, #000000);background:-o-linear-gradient(top, #45484d, #000000);background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}.activityBarWrapper .activityBar{bottom:0px;left:0px;background-color:#45484d;background:-webkit-gradient(linear, left top, left bottom, from(#45484d), to(#000000));background:-webkit-linear-gradient(top, #45484d, #000000);background:-moz-linear-gradient(top, #45484d, #000000);background:-ms-linear-gradient(top, #45484d, #000000);background:-o-linear-gradient(top, #45484d, #000000);background:#45484d;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000));background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%);background:-o-linear-gradient(top, #45484d 0%, #000000 100%);background:-ms-linear-gradient(top, #45484d 0%, #000000 100%);background:linear-gradient(to bottom, #45484d 0%, #000000 100%);width:962px;height:35px;margin:0 auto;}.activityBarWrapper .activityBar .btnPanel{border-left:1px solid #505864;border-right:1px solid #181c22;cursor:pointer;}
 .activityBarWrapper .activityBar .activityBarButton{width:20%;height:35px;float:left;line-height:35px;text-align:center;padding:0;border:0;text-decoration:none;}.activityBarWrapper .activityBar .activityBarButton .label{background:transparent;color:#b6b6b6;font-size:11px;margin-left:4px;}
 .activityBarWrapper .activityBar .selected{border-top:3px solid #9b020a;line-height:32px;}
@@ -633,7 +561,11 @@
 .activityBarWrapper .activityBar .disabled .label{color:#6a6a6a;}
 .activityBarWrapper .activityBar .btnProgress{cursor:default;}.activityBarWrapper .activityBar .btnProgress .progressBarPanel{border-left:1px solid #505864;border-right:1px solid #181c22;height:35px;}.activityBarWrapper .activityBar .btnProgress .progressBarPanel .progress{width:150px;height:10px;margin:0 auto;margin-top:2px;}.activityBarWrapper .activityBar .btnProgress .progressBarPanel .progress .bar{background-color:#9b020a;background:-webkit-gradient(linear, left top, left bottom, from(#9b020a), to(#4b0105));background:-webkit-linear-gradient(top, #9b020a, #4b0105);background:-moz-linear-gradient(top, #9b020a, #4b0105);background:-ms-linear-gradient(top, #9b020a, #4b0105);background:-o-linear-gradient(top, #9b020a, #4b0105);background:#9b020a;background:-moz-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #9b020a), color-stop(100%, #4b0105));background:-webkit-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-o-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:-ms-linear-gradient(top, #9b020a 0%, #4b0105 100%);background:linear-gradient(to bottom, #9b020a 0%, #4b0105 100%);}
 .activityBarWrapper .activityBar .btnProgress .progressBarPanel .pagePanel{height:10px;line-height:11px;margin-top:3px;display:block;}.activityBarWrapper .activityBar .btnProgress .progressBarPanel .pagePanel div{display:inline;}
-@media screen and (max-width:962px){.activityBarWrapper .activityBar{width:600px;height:35px;}.activityBarWrapper .activityBar .progress{width:100px !important;}}.pnlRight{width:962px;}.pnlRight .btnPanel{height:30px;margin-top:9px;}.pnlRight .btnPanel .btnCourses{color:#b6b6b6;border-left:2px solid #474747;float:right;height:24px;padding-left:24px;padding-right:24px;font-size:11px;display:block;border-left:1px solid #505864;border-right:1px solid #181c22;border-top:0;border-bottom:0;}
+@media screen and (max-width:962px){.activityBarWrapper .activityBar{width:600px;height:35px;}.activityBarWrapper .activityBar .progress{width:100px !important;}}.courseClassAdminField{height:auto !important;width:750px !important;}.courseClassAdminField .fieldPanel{width:400px;}.courseClassAdminField .fieldPanel .textField{float:left;}
+.courseClassAdminField .fieldPanel .btnAction{float:left;margin-left:15px;margin-top:4px;}
+.courseClassAdminField .fieldPanel .selectField{margin-top:15px;margin-bottom:25px;float:left;height:100px;}
+.courseClassAdminField .fieldPanel .btnNotSelected{float:left;margin-left:15px;margin-top:92px;}
+.pnlRight{width:962px;}.pnlRight .btnPanel{height:30px;margin-top:9px;}.pnlRight .btnPanel .btnCourses{color:#b6b6b6;border-left:2px solid #474747;float:right;height:24px;padding-left:24px;padding-right:24px;font-size:11px;display:block;border-left:1px solid #505864;border-right:1px solid #181c22;border-top:0;border-bottom:0;}
 .pnlRight .pnlCoursesWrapper{margin-right:30px;}.pnlRight .pnlCoursesWrapper .btnPanel{width:962px;}
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle{height:20px;}.pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .imgPnlCourses{margin-left:24px;float:left;}
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .labelPnlCourses{color:#b6b6b6;font-size:15px;line-height:23px;padding-left:14px;padding-bottom:12px;float:left;}
@@ -647,4 +579,4 @@
 .pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .courseSummaryBar .courseProgressCertificate{float:right;}
 .pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .courseSummaryBar .iconCertificate{float:right;}
 .pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .description{height:80px;}
-@media screen and (max-width:962px){.pnlRight{width:362px;}.pnlRight .btnPanel{height:60px;width:362px;} .pnlRight .pnlCoursesWrapper{width:362px;}.pnlRight .pnlCoursesWrapper .pnlCourses{width:362px;} .pnlRight .pnlCoursesWrapper .courseSummary{width:314px !important;}.pnlRight .pnlCoursesWrapper .courseSummary .description{overflow:hidden;}}
+@media screen and (max-width:962px){.pnlRight{width:362px;}.pnlRight .btnPanel{height:60px;width:362px;} .pnlRight .pnlCoursesWrapper{width:362px;}.pnlRight .pnlCoursesWrapper .pnlCourses{width:362px;} .pnlRight .pnlCoursesWrapper .courseSummary{width:314px !important;}.pnlRight .pnlCoursesWrapper .courseSummary .description{overflow:hidden;}}.forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}

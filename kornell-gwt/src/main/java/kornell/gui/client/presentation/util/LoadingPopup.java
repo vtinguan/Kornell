@@ -19,16 +19,17 @@ public class LoadingPopup {
 	
 	public static void show(String message) {	
 		if(popup == null){
-			popup = new PopupPanel(false, true); // Create a modal dialog box that will not auto-hide
+			popup = new PopupPanel(false, false); // Create a non-modal dialog box that will not auto-hide
 			FlowPanel panel = new FlowPanel();
 			panel.addStyleName("ajaxLoaderPanel");
 			if(message != null){
 				panel.add(new Label(" " + message + " "));
 			}
 			panel.add(new Image("skins/first/ajax-loader.gif"));
-			popup.setGlassEnabled(true);
+			//popup.setGlassEnabled(true);
 			popup.add(panel);
 			popup.center();
+			popup.setPopupPosition(popup.getAbsoluteLeft(), 11);
 		}
 		popup.show();
 	}

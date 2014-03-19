@@ -1,22 +1,23 @@
 package kornell.server.repository
 
-import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-import kornell.core.to.TOFactory
-import kornell.core.entity.Institution
-import kornell.core.entity.Registration
-import kornell.core.to.RegistrationsTO
-import scala.collection.JavaConverters._
-import java.util.Date
 import java.math.BigDecimal
-import java.sql.ResultSet
-import kornell.core.to.CourseTO
-import kornell.server.repository.s3.S3
-import kornell.core.util.StringUtils
-import kornell.core.entity.EnrollmentState
-import kornell.core.to.RegistrationRequestTO
-import kornell.core.to.CourseClassTO
-import kornell.core.to.EnrollmentsTO
+import java.util.Date
+import scala.collection.JavaConverters._
+import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+import kornell.core.entity.Course
 import kornell.core.entity.Enrollment
+import kornell.core.entity.EnrollmentState
+import kornell.core.entity.Registration
+import kornell.core.to.CourseClassTO
+import kornell.core.to.CoursesTO
+import kornell.core.to.EnrollmentsTO
+import kornell.core.to.RegistrationRequestTO
+import kornell.core.to.RegistrationsTO
+import kornell.core.to.TOFactory
+import kornell.core.util.StringUtils
+import kornell.server.repository.s3.S3
+import kornell.core.entity.CourseVersion
+import kornell.core.to.CourseVersionsTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -25,6 +26,8 @@ object TOs {
   def newUserInfoTO = tos.newUserInfoTO.as
   def newRegistrationsTO: RegistrationsTO = tos.newRegistrationsTO.as
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
+  def newCoursesTO: CoursesTO = tos.newCoursesTO.as
+  def newCourseVersionsTO: CourseVersionsTO = tos.newCourseVersionsTO.as
   
   def newRegistrationsTO(registrationList: List[Registration]): RegistrationsTO = {
     val registrations = newRegistrationsTO
@@ -36,6 +39,18 @@ object TOs {
     val enrollments = newEnrollmentsTO
     enrollments.setEnrollments(enrollmentList asJava)
     enrollments
+  }
+  
+  def newCoursesTO(coursesList: List[Course]): CoursesTO = {
+    val courses = newCoursesTO
+    courses.setCourses(coursesList asJava)
+    courses
+  }
+  
+  def newCourseVersionsTO(courseVersionsList: List[CourseVersion]): CourseVersionsTO = {
+    val courseVersions = newCourseVersionsTO
+    courseVersions.setCourseVersions(courseVersionsList asJava)
+    courseVersions
   }
   
   /*def newCourseClassTO(
@@ -157,12 +172,6 @@ object TOs {
 	    classTO
   }
  
-
-  def newCoursesTO(l: List[CourseTO]) = {
-    val to = tos.newCoursesTO.as
-    to.setCourses(l asJava)
-    to
-  } 
   
   def newRegistrationRequestTO:RegistrationRequestTO = tos.newRegistrationRequestTO.as
   def newRegistrationRequestTO(institutionUUID:String,fullName:String,email:String,password:String):RegistrationRequestTO = {

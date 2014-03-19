@@ -1,10 +1,14 @@
 package kornell.server.jdbc
-import java.sql.ResultSet
+
 import java.sql.Connection
-import java.util.Date
 import java.sql.PreparedStatement
-import scala.collection.mutable.ListBuffer
+import java.sql.ResultSet
 import java.sql.Timestamp
+import java.util.Date
+import java.math.BigDecimal
+
+import scala.collection.mutable.ListBuffer
+
 import DataSources._
 import kornell.server.util.Settings
 
@@ -26,6 +30,8 @@ class PreparedStmt(query: String, params: List[Any]) {
         case (p: Integer, i) => pstmt.setInt(i + 1, p)
         case (p: Double, i) => pstmt.setDouble(i + 1, p)
         case (p: Date, i) => pstmt.setTimestamp(i + 1, new Timestamp(p.getTime))
+        case (p: BigDecimal, i) => pstmt.setBigDecimal(i + 1, p)
+        case (p: Boolean, i) => pstmt.setBoolean(i + 1, p)
         //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 
         case (p, i) => throw new IllegalArgumentException(s"Can not set param [$p]")
       }

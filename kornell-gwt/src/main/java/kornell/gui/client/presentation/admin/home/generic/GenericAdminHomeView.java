@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
@@ -19,8 +20,11 @@ import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.Tab;
+import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell;
@@ -66,6 +70,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private KornellConstants constants = GWT.create(KornellConstants.class);
+	private KornellSession session;
 	private AdminHomeView.Presenter presenter;
 	final CellTable<Enrollment> table;
 	private List<Enrollment> enrollmentsCurrent;
@@ -77,12 +82,26 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Boolean enrollWithCPF = false;
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
-	
+		
 	private boolean forbidProfileView;
-
+	
+	@UiField
+	FlowPanel adminHomePanel;
+	@UiField
+	FlowPanel courseClassesPanel;
+	@UiField
+	Button btnAddCourseClass;
+	@UiField
+	FlowPanel enrollmentsPanel;
 	@UiField
 	ListBox listBoxCourseClasses;
-	
+	@UiField
+	Tab enrollmentsTab;
+	@UiField
+	Tab configTab;
+	@UiField
+	FlowPanel configPanel;
+	 
 	@UiField
 	Button btnAddEnrollment;
 	@UiField
@@ -126,9 +145,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
+	
+	@UiField
+	TabPanel tabsPanel;
+	
+	Tab adminsTab;
+	FlowPanel adminsPanel;
 
 	// TODO i18n xml
-	public GenericAdminHomeView() {
+	public GenericAdminHomeView(final KornellSession session) {
+		this.session = session;
 		initWidget(uiBinder.createAndBindUi(this));
 		table = new CellTable<Enrollment>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
@@ -140,6 +166,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
+		btnAddCourseClass.setText("Criar Nova Turma");
 				
 		btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText()+"&nbsp;&nbsp;&#x25BC;");
 		
@@ -147,10 +174,83 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			@Override
 			public void onChange(ChangeEvent event) {
 				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
-				if(!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()))
+				if(!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
 					presenter.updateCourseClass(newCourseClassUUID);
+				}
 			}
 		});
+		
+		btnAddCourseClass.addClickHandler(new ClickHandler() {	
+			@Override
+			public void onClick(ClickEvent event) {
+				if(session.isInstitutionAdmin()){
+					buildConfigView(true);
+				}
+			}
+		});
+		
+		enrollmentsTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				showEnrollmentsPanel(false);
+				presenter.updateCourseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+			}
+		});
+		
+		configTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				buildConfigView(false);
+			}
+		});
+		
+		if(session.isInstitutionAdmin()){
+			adminsTab = new Tab();
+			adminsTab.setIcon(IconType.GROUP);
+			adminsTab.setHeading("Administradores");
+			adminsTab.setActive(false);
+			adminsPanel = new FlowPanel();
+			adminsTab.add(adminsPanel);
+			adminsTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildAdminsView();
+				}
+			});
+			
+			tabsPanel.add(adminsTab);
+		}
+	}
+	
+	@Override
+	public void prepareAddNewCourseClass(boolean addingNewCourseClass){
+		adminHomePanel.clear();
+		if(!addingNewCourseClass){
+			adminHomePanel.add(courseClassesPanel);
+			adminHomePanel.add(tabsPanel);
+			configPanel.clear();
+			configTab.setActive(false);
+			if(adminsTab != null)
+				adminsTab.setActive(false);
+			enrollmentsTab.setActive(true);
+		}
+	}
+
+	@Override
+	public void buildConfigView(boolean isCreationMode) {
+		prepareAddNewCourseClass(isCreationMode);
+		if(isCreationMode){
+			adminHomePanel.add(new GenericCourseClassConfigView(session, presenter, null));
+		} else {
+			configPanel.add(new GenericCourseClassConfigView(session, presenter, Dean.getInstance().getCourseClassTO()));
+		}
+	}
+
+	@Override
+	public void buildAdminsView() {
+		adminsPanel.clear();
+		if(!session.isInstitutionAdmin()) return;
+		adminsPanel.add(new GenericCourseClassAdminsView(session, presenter, Dean.getInstance().getCourseClassTO()));
 	}
 
 	private void initSearch() {
@@ -318,8 +418,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		separatorBar.addStyleName("fillWidth");
 		
 		final ListBox pageSizeListBox = new ListBox();
-		pageSizeListBox.addItem("1");
-		pageSizeListBox.addItem("10");
+		//pageSizeListBox.addItem("1");
+		//pageSizeListBox.addItem("10");
 		pageSizeListBox.addItem("20");
 		pageSizeListBox.addItem("50");
 		pageSizeListBox.addItem("100");
@@ -527,5 +627,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@Override
 	public void setSelectedCourseClass(String uuid) {
 		listBoxCourseClasses.setSelectedValue(uuid);
+	}
+	
+	@Override
+	public void setHomeTabActive(){
+		enrollmentsTab.setActive(true);
+		configTab.setActive(false);
+	}
+
+	@Override
+	public void showEnrollmentsPanel(boolean visible) {
+		enrollmentsPanel.setVisible(visible);
 	}
 }

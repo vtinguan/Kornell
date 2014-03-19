@@ -10,6 +10,7 @@ public class ListBoxFormField implements KornellFormField<TextBox> {
 	
 	public ListBoxFormField(ListBox field) {
 		this.field = field;
+		field.addStyleName("selectField");
 	}
 
 	@Override

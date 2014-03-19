@@ -156,6 +156,9 @@
 .marginLeft25{
 	margin-left: 25px;
 }
+.marginTop25{
+	margin-top: 25px;
+}
 .test{
 	color: red;
 }
@@ -170,114 +173,6 @@
 	color: @errorMessageColor;
 }
 
-.fieldPanelWrapper{
-	width: 525px;
-	height: 55px;
-	float: left;
-	.labelPanelImg{
-		height: 98px;
-	}
-	.fieldPanelImage{
-		height: 100px;	
-	}
-	.labelPanel{
-		width: 230px;
-		margin-right: 15px;
-		float: left;
-		.lblLabelImg{
-			color: @profileLabelColor;
-			font-size: 16px;
-			padding-top: 25px;
-			line-height: 25px;
-		}
-		.lblLabel{
-			color: @profileLabelColor;
-			font-size: 14px;
-			line-height: 46px;
-			text-align: right;
-			line-height: 25px;
-			padding-top: 6px;
-		}
-		.lblExtraInfo{
-			color:	@profileLabelExtraInfoColor;
-			font-size: 10px;
-			line-height: 10px;
-			text-align: right;
-		}
-	}
-	.fieldPanel{
-		float: left;
-		width: 275px;
-		.textField{
-			width: 248px;
-			margin-bottom: 0px;
-		}
-		.selectField{
-			width: 160px;
-		}
-		.lblValue{
-			color:	@profileLabelValueColor;
-			margin-top: -4px;
-			line-height: 45px;
-			font-size: 14px;
-		}
-		.lblValueAdd{
-			color:	@profileLabelValueAddColor;
-		}
-	}
-}
-@media screen and (max-width: @wrapperWidth) {
-	.profileFields{
-		@profileWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
-		@profilePadding: 10px;
-		width: @profileWidth;
-		.fieldPanelWrapper{
-				width: @wrapperWidthUnder990;
-				height: auto;
-			.labelPanelImg{
-				height: auto;
-			}
-			.labelPanel{
-				width: auto;
-				float: none;
-				text-align: left;
-				.lblLabelImg{
-					float: left;
-					padding-right: 40px;
-					padding-left: 15px;
-					text-decoration: underline;
-				}
-				.lblLabel{
-					float: none;
-					padding-left: 15px;
-					text-decoration: underline;
-				}
-				.lblExtraInfo{
-					float: none;
-					text-align: left;
-					padding-left: 20px;
-				}
-			}
-			.labelPanelImg{
-				float: left;
-			}
-			.lblValue{
-				width: auto;
-				float: none;
-				padding-left: 50px;
-			}
-			.lblValueAdd{
-				width: auto;
-				float: none;
-				padding-left: 50px;
-			}
-			.publicPanel{
-				float: none;
-				padding-left: 50px;
-			}
-		}
-	}
-}
 
 .fileUploadWrapper{
 	float: left;

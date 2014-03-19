@@ -1,17 +1,17 @@
 package kornell.server.api
 
-import javax.ws.rs.Produces
-import javax.ws.rs.core.SecurityContext
-import kornell.server.jdbc.repository.CoursesRepo
 import javax.ws.rs.GET
+import javax.ws.rs.Produces
 import javax.ws.rs.core.Context
-import kornell.core.to.CourseTO
+import javax.ws.rs.core.SecurityContext
+import kornell.server.jdbc.repository.CourseRepo
+import kornell.core.entity.Course
 
 class CourseResource(uuid: String) {
   @GET
-  @Produces(Array(CourseTO.TYPE))
+  @Produces(Array(Course.TYPE))
   def getCourse(implicit @Context sc: SecurityContext) =
-    CoursesRepo.byUUID(uuid)
+    CourseRepo(uuid).get
 
 }
 

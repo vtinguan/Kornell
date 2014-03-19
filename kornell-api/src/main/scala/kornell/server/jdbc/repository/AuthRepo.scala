@@ -1,18 +1,14 @@
 package kornell.server.jdbc.repository
 
 import java.sql.ResultSet
+
 import org.apache.commons.codec.digest.DigestUtils
+
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Person
 import kornell.core.entity.Role
-import kornell.core.entity.RoleType
-import kornell.server.repository.Entities
+import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.Entities.newPerson
-import kornell.core.util.UUID
-import kornell.server.jdbc.SQL._
-import kornell.core.lom.Content
-import kornell.core.lom.ContentsCategory
-import kornell.core.lom.Contents
 
 object AuthRepo {
   //TODO: importing ScurityContext smells bad
@@ -52,24 +48,6 @@ object AuthRepo {
     else throw new IllegalArgumentException(s"User [$username] not found.")
   }
 
-  //TODO: Cache
-  def getPersonByEmail(email: String) = {
-    //println(email)
-    sql"""
-		select * from Person p
-		where p.email = $email
-	""".first[Person]
-  }
-
-  //TODO: Cache
-  def getPersonByCPF(cpf: String) = {
-	    sql"""
-			select * from Person p
-			where p.cpf = $cpf
-		""".first[Person]
-  }
-
-  //TODO: Cache
   def getPersonByPasswordChangeUUID(passwordChangeUUID: String) = 
     sql"""
 		select p.*
@@ -77,6 +55,11 @@ object AuthRepo {
 		where pwd.requestPasswordChangeUUID = $passwordChangeUUID
 	""".first[Person]
   
+  def getUsernameByPersonUUID(personUUID: String) = 
+    sql"""
+    	select pwd.username from Password pwd
+    	where pwd.person_uuid = $personUUID
+    """.first[String].get
 
   def hasPassword(username: String) = 
     sql"""
@@ -105,15 +88,6 @@ object AuthRepo {
 
   def rolesOf(username: String) = sql"""
   	select username,role,institution_uuid, course_class_uuid from Role where username = $username
-  """.map[Role] { rs =>
-    val roleType = RoleType.valueOf(rs.getString("role"))
-    val role = roleType match {
-      case RoleType.user => Entities.newUserRole
-      case RoleType.platformAdmin => Entities.newPlatformAdminRole
-      case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("institution_uuid"))
-      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("course_class_uuid"))//TODO courseClassUUID
-    }
-    role
-  }
+  """.map[Role] { rs => toRole(rs) }
 
 }

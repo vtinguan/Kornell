@@ -1,30 +1,41 @@
 package kornell.server.jdbc.repository
 
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.SecurityContext
-import kornell.core.to.CourseTO
+import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.JavaConverters.bufferAsJavaListConverter
 import kornell.core.entity.CourseClass
-import kornell.core.entity.CourseClass
-import java.sql.ResultSet
-import kornell.server.repository.Entities
-import kornell.core.to.CourseClassTO
-import kornell.server.repository.TOs
-import kornell.server.repository.Entities
-import kornell.server.jdbc.SQL._
-import scala.collection.JavaConverters._
-import kornell.core.to.CourseClassesTO
 import kornell.core.entity.Person
-import com.google.gwt.aria.client.Roles
 import kornell.core.entity.Role
-import kornell.core.entity.RoleType
 import kornell.core.entity.RoleCategory
+import kornell.core.entity.RoleType
+import kornell.core.to.CourseClassTO
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.repository.TOs
+import kornell.core.entity.Roles
+import kornell.core.util.UUID
 
 class CourseClassesRepo {
 }
 
 object CourseClassesRepo {
   
-  def apply(uuid:String) = CourseClassRepo(uuid);
+  def apply(uuid:String) = CourseClassRepo(uuid)
+  
+  def create(courseClass: CourseClass) = {
+    if(courseClass.getUUID == null)
+      courseClass.setUUID(UUID.random)
+    sql""" 
+    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,enrollWithCPF,maxEnrollments)
+    	values(${courseClass.getUUID},
+             ${courseClass.getName},
+             ${courseClass.getCourseVersionUUID},
+             ${courseClass.getInstitutionUUID},
+             ${courseClass.isPublicClass},
+             ${courseClass.getRequiredScore},
+             ${courseClass.isEnrollWithCPF},
+             ${courseClass.getMaxEnrollments})
+    """.executeUpdate
+    courseClass
+  }
 
   def byInstitution(institutionUUID: String) =
     sql"""
@@ -43,12 +54,12 @@ object CourseClassesRepo {
 			    cv.uuid as courseVersionUUID,
 			    cv.name as courseVersionName,
 			    cv.repository_uuid as repositoryUUID, 
-			    cv.versionCreatedAt,
+			    cv.versionCreatedAt as versionCreatedAt,
 		  		cv.distributionPrefix as distributionPrefix,
 			    cc.uuid as courseClassUUID,
 			    cc.name as courseClassName,
 			    cc.institution_uuid as institutionUUID,
-		  		cc.requiredScore,
+		  		cc.requiredScore as requiredScore,
 		  		cc.publicClass as publicClass,
 		  		cc.enrollWithCPF as enrollWithCPF,
 		  		cc.maxEnrollments as maxEnrollments
@@ -72,14 +83,14 @@ object CourseClassesRepo {
   }
     
   def administratedByPersonOnInstitution(person: Person, institutionUUID: String, roles: List[Role]) = {
-	val courseClassesTO = getAllClassesByInstitution(institutionUUID)
-	val classes = courseClassesTO.getCourseClasses().asScala
-	courseClassesTO.setCourseClasses(classes.filter(cc => isCourseClassAdmin(cc.getCourseClass().getUUID(), institutionUUID, roles)).asJava)
-	courseClassesTO
+	  val courseClassesTO = getAllClassesByInstitution(institutionUUID)
+	  val classes = courseClassesTO.getCourseClasses().asScala
+	  courseClassesTO.setCourseClasses(classes.filter(cc => isCourseClassAdmin(cc.getCourseClass().getUUID(), institutionUUID, roles)).asJava)
+	  courseClassesTO
   }
   
   private def isValidClass(cc: CourseClassTO): Boolean = {
-	cc.getCourseClass().isPublicClass() || cc.getEnrollment() != null
+	  cc.getCourseClass().isPublicClass() || cc.getEnrollment() != null
   }
 	
   private def isPlatformAdmin(roles: List[Role]) = {

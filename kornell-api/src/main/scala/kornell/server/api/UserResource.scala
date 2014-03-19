@@ -25,7 +25,11 @@ import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PeopleRepo
-
+import kornell.core.entity.RoleCategory
+import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.core.entity.Role
+import kornell.core.entity.RoleType
+//TOOD Person/People Resource
 @Path("user")
 class UserResource{
 
@@ -43,7 +47,7 @@ class UserResource{
     	user.setLastPlaceVisited(p.getLastPlaceVisited)
     	val roles = AuthRepo.rolesOf(username)
     	user.setRoles((Set.empty ++ roles).asJava)
-    	user.setRegistrationsTO(RegistrationsRepo.getAll(p))
+    	user.setRegistrationsTO(RegistrationsRepo.getAll(p.getUUID))
     	user.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
     	
     	Option(user)
@@ -60,8 +64,11 @@ class UserResource{
 	    val person = PersonRepo(personUUID).get 
 	    if (person.isDefined){
 	    	user.setPerson(person.get)
-		    user.setUsername(user.getPerson().getEmail())
-	    	user.setRegistrationsTO(RegistrationsRepo.getAll(person.get))
+	    	if(user.getPerson().getEmail() != null)
+	    		user.setUsername(user.getPerson().getEmail())
+	    	else
+	    		user.setUsername(user.getPerson().getCPF())
+	    	user.setRegistrationsTO(RegistrationsRepo.getAll(person.get.getUUID))
 	    	//val signingNeeded = RegistrationsRepo.signingNeeded(p)
 	    	//user.setSigningNeeded(signingNeeded)
 	    	//user.setLastPlaceVisited(p.getLastPlaceVisited)
@@ -81,8 +88,6 @@ class UserResource{
   def checkUsernameAndEmail(@PathParam("username") username:String):Option[UserInfoTO] = {
   	val user = newUserInfoTO
 	//verify if there's a password set for this email
-  	//if an admin created this user, there will be an entry on the person table, 
-  	//but not one on the Password table
 	if(AuthRepo.hasPassword(username))
 		user.setUsername(username)
 	Option(user)
@@ -105,21 +110,30 @@ class UserResource{
     }
   }
 
+  @PUT
+  @Path("changePassword/{targetPersonUUID}/")
+  @Produces(Array("text/plain"))
+  def changePassword(implicit @Context sc: SecurityContext,
+    @Context resp: HttpServletResponse,
+    @PathParam("targetPersonUUID") targetPersonUUID: String,
+    @QueryParam("password") password: String,
+    @QueryParam("currentPassword") currentPassword: String) = {
+    AuthRepo.withPerson { p =>	    
+	    if(!PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID))
+	    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password."); 
+      PersonRepo(targetPersonUUID).setPassword(AuthRepo.getUsernameByPersonUUID(targetPersonUUID), password)
+    }
+  }
+
   @GET
-  @Path("changePassword/{password}/{passwordChangeUUID}")
-  @Produces(Array(UserInfoTO.TYPE))
-  def changePassword(@Context resp:HttpServletResponse,
-      @PathParam("password") password:String, 
-      @PathParam("passwordChangeUUID") passwordChangeUUID:String) = {
-	  	val person = AuthRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
-	  	if(person.isDefined){
-	  	  PersonRepo(person.get.getUUID).setPassword(person.get.getEmail, password)
-		  	val user = newUserInfoTO
-			user.setUsername(person.get.getEmail())
-			Option(user)
-	  	} else {
-	  	  resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "It wasn't possible to change your password.")
-	  	}
+  @Path("hasPowerOver/{targetPersonUUID}/")
+  @Produces(Array("application/boolean"))
+  def changePassword(implicit @Context sc: SecurityContext,
+    @Context resp: HttpServletResponse,
+    @PathParam("targetPersonUUID") targetPersonUUID: String) = {
+    AuthRepo.withPerson { p =>	    
+	    PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID)
+    }
   }
 	  
   
@@ -150,7 +164,7 @@ class UserResource{
     PersonRepo(personUUID).update(userInfo.getPerson())
 	val roles = AuthRepo.rolesOf(userInfo.getUsername)
 	userInfo.setRoles((Set.empty ++ roles).asJava)
-	userInfo.setRegistrationsTO(RegistrationsRepo.getAll(p))
+	userInfo.setRegistrationsTO(RegistrationsRepo.getAll(p.getUUID))
 	userInfo.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
     userInfo
   }

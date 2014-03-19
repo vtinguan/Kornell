@@ -9,6 +9,8 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
+import kornell.core.entity.RoleCategory;
+import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentRequestTO;
@@ -32,6 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private AdminHomeView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
+	private List<Enrollment> enrollments;
 	private String batchEnrollmentErrors;
 	private List<EnrollmentRequestTO> batchEnrollments;
 	FormHelper formHelper;
@@ -55,11 +58,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		this.viewFactory = viewFactory;
 		formHelper = new FormHelper();
 		// TODO refactor permissions per session/activity
-		init(session.isInstitutionAdmin());
+		init();
 	}
 
-	private void init(boolean isDean) {
-		if (isDean) {
+	private void init() {
+		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
 
@@ -82,11 +85,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		LoadingPopup.show();
 		session.getEnrollmentsByCourseClass(courseClassUUID,
 				new Callback<Enrollments>() {
+
 					@Override
-					public void ok(Enrollments enrollments) {
-						numEnrollments = enrollments.getEnrollments().size();
+					public void ok(Enrollments e) {
+						numEnrollments = e.getEnrollments().size();
 						maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
-						view.setEnrollmentList(enrollments.getEnrollments());
+						enrollments = e.getEnrollments();
+						view.setEnrollmentList(e.getEnrollments());
+						view.showEnrollmentsPanel(true);
 						LoadingPopup.hide();
 					}
 				});
@@ -115,10 +121,13 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private void updateCourseClass(CourseClassTO courseClassTO) {
 		enrollWithCPF = courseClassTO.getCourseClass().isEnrollWithCPF();
 		Dean.getInstance().setCourseClassTO(courseClassTO);
+		view.prepareAddNewCourseClass(false);
+		view.showEnrollmentsPanel(false);
 		view.setCourseClassName(courseClassTO.getCourseClass().getName());
 		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse().getTitle());
 		view.setUserEnrollmentIdentificationType(enrollWithCPF);
 		view.setSelectedCourseClass(courseClassTO.getCourseClass().getUUID());
+		view.setHomeTabActive();
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 
@@ -156,18 +165,25 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	@Override
-	public void onAddEnrollmentButtonClicked(String fullName, String email) {
-		email = formHelper.stripCPF(email);
+	public void onAddEnrollmentButtonClicked(String fullName, String username) {
+		if("".equals(fullName) && "".equals(username)){
+			return;
+		}
+		if(enrollWithCPF){
+			username = formHelper.stripCPF(username);
+		}
 		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
-		batchEnrollments.add(createEnrollment(fullName, email));
-		if(isIdentifierValid(email)){
-			saveEnrollments(createEnrollments());
-		} else {
+		batchEnrollments.add(createEnrollment(fullName, username));
+		if(!formHelper.isLengthValid(fullName, 2, 50)){
+			KornellNotification.show("O nome deve ter no mínimo 2 caracteres.", AlertType.ERROR);
+		} else if(!isUsernameValid(username)){
 			KornellNotification.show((enrollWithCPF?"CPF":"Email") +" inválido.", AlertType.ERROR);
+		} else {
+			saveEnrollments(createEnrollments());
 		}
 	}
 
-	private boolean isIdentifierValid(String email) {
+	private boolean isUsernameValid(String email) {
 		return (!enrollWithCPF && formHelper.isEmailValid(email)) || 
 			(enrollWithCPF && formHelper.isCPFValid(email));
 	}
@@ -205,7 +221,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1]
 					: enrollmentStrA[0]);
 			GWT.log("*** Validating: " + fullName + " - " + email);
-			if (isIdentifierValid(email)) {
+			if (isUsernameValid(email)) {
 				batchEnrollments.add(createEnrollment(fullName, email));
 			} else {
 				batchEnrollmentErrors += enrollmentsA[i] + "\n";
@@ -296,5 +312,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	public void onUserClicked(String uuid) {
 		ProfilePlace place = new ProfilePlace(uuid, false);
 		placeController.goTo(place);
+	}
+
+	@Override
+	public List<Enrollment> getEnrollments() {
+		return enrollments;
 	}
 }

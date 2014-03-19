@@ -1,6 +1,7 @@
 package kornell.core.entity;
 
 public interface Course extends Entity{
+	public static String TYPE = EntityFactory.PREFIX + "course+json";
 
 	String getCode();
 	void setCode(String code);
@@ -13,10 +14,5 @@ public interface Course extends Entity{
 	
 	String getInfoJson();
 	void setInfoJson(String infoJson);
-
-	//TODO: Delete
-	@Deprecated
-	String getThumbDataURI();
-	@Deprecated
-	void setThumbDataURI(String thumbDataURI); 
+	
 }

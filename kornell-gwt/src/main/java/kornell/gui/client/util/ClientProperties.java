@@ -49,5 +49,9 @@ public class ClientProperties {
 
 	public static String base64Decode(String base64) {
 		return new String(Base64Utils.fromBase64(base64));
+	}
+
+	public static String getAuthString(String username, String password) {
+		return  "Basic " + base64Encode(username + ":" + password);
 	};
 }

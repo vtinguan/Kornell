@@ -2,10 +2,12 @@ package kornell.core.to;
 
 import java.util.List;
 
+import kornell.core.entity.Course;
+
 public interface CoursesTO {
 	public static final String TYPE = TOFactory.PREFIX + "courses+json";
 	
-	List<CourseTO> getCourses(); 
-	void setCourses(List<CourseTO> courses);
+	List<Course> getCourses(); 
+	void setCourses(List<Course> courses);
 
 }

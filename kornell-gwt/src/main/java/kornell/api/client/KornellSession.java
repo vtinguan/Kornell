@@ -74,11 +74,11 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isPlatformAdmin() {
-		return hasRole(RoleType.platformAdmin, null, null);
+		return isValidRole(RoleType.platformAdmin, null, null);
 	}
 
 	public boolean isInstitutionAdmin(String institutionUUID) {
-		return hasRole(RoleType.institutionAdmin, institutionUUID, null) || isPlatformAdmin();
+		return isValidRole(RoleType.institutionAdmin, institutionUUID, null) || isPlatformAdmin();
 	}
 
 	public boolean isInstitutionAdmin() {
@@ -86,7 +86,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassAdmin(String courseClassUUID) {
-		return hasRole(RoleType.courseClassAdmin, null, courseClassUUID) || isInstitutionAdmin();
+		return isValidRole(RoleType.courseClassAdmin, null, courseClassUUID) || isInstitutionAdmin();
 	}
 
 	public boolean isCourseClassAdmin() {
@@ -94,18 +94,14 @@ public class KornellSession extends KornellClient {
 		return isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 	}
 
-	private boolean hasRole(RoleType type, String institutionUUID, String courseClassUUID) {
+	private boolean isValidRole(RoleType type, String institutionUUID, String courseClassUUID) {
 		if (currentUser == null)
 			return false;
-		for (Role role : currentUser.getRoles()) {
-			if(RoleCategory.isValidRole(role, type, institutionUUID, courseClassUUID))
-				return true;
-		}
-		return false;
+		return RoleCategory.isValidRole(currentUser.getRoles(), type, institutionUUID, courseClassUUID);
 	}
-
+	
 	public UserInfoTO getCurrentUser() {
-		if (currentUser != null) {
+		if (currentUser == null) {
 			GWT.log("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
 		}
 		return currentUser;
@@ -116,13 +112,13 @@ public class KornellSession extends KornellClient {
 	}
 
 	public void login(String username, String password, final Callback<UserInfoTO> callback) {
-		final String auth = "Basic " + ClientProperties.base64Encode(username + ":" + password);
+		final String auth = ClientProperties.getAuthString(username, password);
 
 		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO user) {
 				setCurrentUser(user);
-				ClientProperties.set("X-KNL-A", auth);
+				ClientProperties.set(ClientProperties.X_KNL_A, auth);
 				bus.fireEvent(new LoginEvent(user));
 				callback.ok(user);				
 			}

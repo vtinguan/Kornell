@@ -117,14 +117,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 		session.getCurrentUser(new Callback<UserInfoTO>() {
 			public void ok(UserInfoTO to) {
-				session.getInstitutionByName(getInstitutionNameFromLocation(),
-						institutionCallback);
+				session.findInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
 			};
 
 			@Override
 			protected void unauthorized() {
-				session.getInstitutionByName(getInstitutionNameFromLocation(),
-						institutionCallback);
+				session.findInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
 			}
 
 		});

@@ -36,7 +36,7 @@ object ReportGenerator extends App {
     params.put("userUuid", userUUID)
     params.put("name", certificateData._1.toUpperCase())
     params.put("course", certificateData._2.toUpperCase())
-    params.put("cpf", certificateData._5.toUpperCase())
+    params.put("cpf", certificateData._5)
     val assetsURL: String = composeURL(certificateData._3, certificateData._4, "/reports")
     params.put("assetsURL", assetsURL + "/")
 

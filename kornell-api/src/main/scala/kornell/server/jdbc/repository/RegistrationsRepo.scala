@@ -44,13 +44,13 @@ object RegistrationsRepo {
     newRegistrationsTO(registrationList)
   }
 
-  def getAll(implicit person: Person): RegistrationsTO = {
+  def getAll(implicit personUUID: String): RegistrationsTO = {
     val registrationList = sql"""
 	select r.person_uuid, r.institution_uuid, r.termsAcceptedOn, 
 		i.name, i.terms, i.assetsURL, i.baseURL
 	from Registration r
 	join Institution i  on r.institution_uuid = i.uuid
-	where r.person_uuid=${person.getUUID}
+	where r.person_uuid=${personUUID}
 	""".map[Registration](toRegistration)
     newRegistrationsTO(registrationList)
   }

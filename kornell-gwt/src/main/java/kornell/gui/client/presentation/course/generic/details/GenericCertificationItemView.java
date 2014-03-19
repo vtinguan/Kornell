@@ -9,7 +9,9 @@ import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.util.KornellNotification;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -105,6 +107,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			actionHandler = lblActions.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
+					KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
 					Window.Location.assign(session.getApiUrl() + "/report/certificate/"
 							+ session.getCurrentUser().getPerson().getUUID() + "/"
 							+ currentCourseClass.getCourseClass().getUUID());
@@ -123,7 +126,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	public void onProgress(ProgressEvent event) {
 		// TODO Auto-generated method stub
 		if(CERTIFICATION.equals(type)){
-			if(event.getProgressPercent() >= 100/* || session.isPlatformAdmin()*/){
+			if(event.getProgressPercent() >= 100){
 				courseClassComplete = true;
 			}
 			updateCertificationLinkAndLabel();
@@ -131,7 +134,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 
 	private void updateCertificationLinkAndLabel(){
-		boolean allowCertificateGeneration = courseClassComplete && approvedOnTest;
+		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest)  || session.isPlatformAdmin();
 		status = allowCertificateGeneration ? "Disponível" : "Não disponível";
 		lblStatus.setText(status);
 		displayActionCell(allowCertificateGeneration);
