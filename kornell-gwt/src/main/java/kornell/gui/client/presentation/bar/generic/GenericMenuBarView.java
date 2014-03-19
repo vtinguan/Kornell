@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import java.util.logging.Logger;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
@@ -9,6 +11,9 @@ import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.Kornell;
+import kornell.gui.client.event.LoginEvent;
+import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
@@ -17,7 +22,6 @@ import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
-import kornell.scorm.client.scorm12.SCORM12Adapter;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -35,11 +39,19 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
-public class GenericMenuBarView extends Composite implements MenuBarView {
+import static kornell.core.util.StringUtils.*;
+
+public class GenericMenuBarView extends Composite implements MenuBarView,
+		LoginEventHandler {
+	Logger logger = Logger.getLogger(GenericMenuBarView.class.getName());
+
 	interface MyUiBinder extends UiBinder<Widget, GenericMenuBarView> {
 	}
 
+	// TODO: Dependency Injection
 	ClientFactory clientFactory;
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
@@ -69,10 +81,13 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	@UiField
 	Image imgMenuBar;
 	private KornellSession session;
+	private EventBus bus;
 
 	public GenericMenuBarView(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
+		this.bus = clientFactory.getEventBus();
+		bus.addHandler(LoginEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		Dean localDean = Dean.getInstance();
@@ -112,39 +127,65 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 	}
 
 	private void initHelp() {
+		btnHelp.setVisible(false);
 		Element elHelp = btnHelp.getElement();
 		elHelp.setId("btnHelp");
 		elHelp.setAttribute("data-uv-trigger", "contact");
+		scheduleInitUserVoice();
+		
 		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
 			public void ok(final UserInfoTO user) {
-				Scheduler.get().scheduleDeferred(new Command() {
-					@Override
-					public void execute() {
-						Person person = user.getPerson();
-						initUserVoice(person.getUUID(), person.getFullName(),person.getEmail());
-					}
-				});
+				identifyUserVoice(user);
 			}
 		});
 
 	}
 
-	static native void initUserVoice(String personUUID, String name, String email) /*-{
+	private void scheduleInitUserVoice() {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				GenericMenuBarView.initUserVoice();
+			}
+		});
+	}
+
+	void identifyUserVoice(UserInfoTO user) {
+		Person person = user.getPerson();
+		boolean hasEmail = false;
+		if (person != null) {
+			final String email = person.getEmail();
+			final String personUUID = person.getUUID();
+			final String name = person.getFullName();
+			if (isSome(email)) {
+				hasEmail = true;
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						identifyUserVoiceNative(personUUID, name, email);						
+					}
+				});
+			}			
+
+		}
+		btnHelp.setVisible(hasEmail);
+	}
+
+	static native void identifyUserVoiceNative(String personUUID, String name,
+			String email) /*-{
+		$wnd.UserVoice.push([ 'identify', {
+			email : email,
+			name : name,
+			id : personUUID
+		} ]);
+	}-*/;
+
+	static native void initUserVoice() /*-{
 		$wnd.UserVoice.push([ 'set', {
 			locale : 'pt-BR',
 			screenshot_enabled : false,
 			accent_color : '#9b020a'
-		} ]);
-		$wnd.UserVoice.push([ 'identify', {
-			email : email, 
-			name : name,			
-			id : personUUID
-		} ]);
-		$wnd.UserVoice.push([ 'identify', {
-			email : email, 
-			name : name,			
-			id : personUUID
 		} ]);
 		$wnd.UserVoice.push([ 'addTrigger', '#btnHelp', {} ]);
 	}-*/;
@@ -250,6 +291,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView {
 
 	@Override
 	public void setPresenter(Presenter presenter) {
+	}
+
+	@Override
+	public void onLogin(UserInfoTO user) {
+		identifyUserVoice(user);
 	}
 
 }

@@ -48,6 +48,7 @@ object EmailService {
     EmailSender.sendEmail(subject, from, to, body, imgFile)
   }
   
+  //TODO: Consider ASYNC
   def sendEmailEnrolled(person: Person, institution: Institution, course: Course) = {
     val subject = "Você foi matriculado no curso " + course.getTitle()
     val from ="cdf@craftware.com.br" //getFromEmail(institution)
@@ -68,7 +69,7 @@ object EmailService {
   }
 
   private def getSexSuffix(person: kornell.core.entity.Person) =
-    person.getSex() match { 
+    person.getSex match { 
       case "F" => "a"
       case "M" => "o"
       case  _  => "o(a)"
