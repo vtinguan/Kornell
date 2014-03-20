@@ -48,11 +48,14 @@ class PreparedStmt(query: String, params: List[Any]) {
 
   def executeUpdate: Int = prepared { stmt => stmt.executeUpdate }
 
-  def executeQuery[T](fun: ResultSet => T): T = prepared { stmt =>
+  
+  def executeQuery[T](fun: ResultSet => T ): T = prepared { stmt =>
     val rs = stmt.executeQuery
     try fun(rs)
     finally rs.close
   }
+  
+  def executeQuery:ResultSet = executeQuery{ rs => rs }
 
   def foreach(fun: ResultSet => Unit): Unit = executeQuery { rs =>
     while (rs.next) fun(rs)

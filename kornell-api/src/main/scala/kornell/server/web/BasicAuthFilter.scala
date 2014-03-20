@@ -11,6 +11,7 @@ class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
   val pubPaths = Set(
     "/api",
+    "/probes",
     "/checkup",
     "/sandbox",
     "/sync",
@@ -23,7 +24,8 @@ class BasicAuthFilter extends Filter {
     "/user/uploadProfileImage",
     "/email/welcome",
     "/institutions",
-    "/repository")
+    "/repository",
+    "/healthCheck")
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
     (sreq, sres) match {
