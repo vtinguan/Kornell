@@ -41,7 +41,8 @@ class KornellAPI extends Application {
       classOf[ActomResource],
       
       classOf[ProbesResource],
-      classOf[SandboxResource]
+      classOf[SandboxResource],
+      classOf[HealthCheckResource]
   ) asJava
   
   override def getSingletons() = Collections.emptySet()

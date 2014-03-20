@@ -290,9 +290,9 @@
 								<tstamp>
 									<format property="last.updated" pattern="yyyy-MM-dd HH:mm:ss z" />
 								</tstamp>
-								<echo file="${project.build.outputDirectory}/version.properties"
+								<echo file="${project.build.outputDirectory}/kornell.properties"
 									message="built.on=${last.updated}" />
-								<echo file="${project.build.outputDirectory}/version.properties"
+								<echo file="${project.build.outputDirectory}/kornell.properties"
 									message="build.number=${buildNumber}" />
 							</tasks>
 						</configuration>
