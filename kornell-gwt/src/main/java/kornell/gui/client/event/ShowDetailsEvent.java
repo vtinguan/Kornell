@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class ShowDetailsEvent extends GwtEvent<ShowDetailsEventHandler>{
 
-	public static Type<ShowDetailsEventHandler> TYPE = new Type<ShowDetailsEventHandler>();
+	public static final Type<ShowDetailsEventHandler> TYPE = new Type<ShowDetailsEventHandler>();
 	
 	private boolean showDetails;
 	

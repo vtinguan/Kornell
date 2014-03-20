@@ -11,10 +11,10 @@ public class Positioning {
 
 	// TODO: fetch these dynamically
 	// TODO: Extract view
-	public static int NORTH_BAR = 45;
-	public static int SOUTH_BAR = 35;
-	public static int BAR_WIDTH = 962;
-	public static int NOTES_MIN_HEIGHT = 300;
+	public static final int NORTH_BAR = 45;
+	public static final int SOUTH_BAR = 35;
+	public static final int BAR_WIDTH = 962;
+	public static final int NOTES_MIN_HEIGHT = 300;
 
 	
 	

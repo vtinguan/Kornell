@@ -179,7 +179,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				}
 			}
 		});
-		
+		btnAddCourseClass.setVisible(session.isInstitutionAdmin());
 		btnAddCourseClass.addClickHandler(new ClickHandler() {	
 			@Override
 			public void onClick(ClickEvent event) {

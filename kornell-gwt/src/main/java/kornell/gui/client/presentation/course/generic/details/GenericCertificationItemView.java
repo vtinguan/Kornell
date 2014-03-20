@@ -44,8 +44,8 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	
 	private HandlerRegistration actionHandler;
 	
-	public static String TEST = "test";
-	public static String CERTIFICATION = "certification";
+	public static final String TEST = "test";
+	public static final String CERTIFICATION = "certification";
 	
 	@UiField
 	Image certificationIcon;

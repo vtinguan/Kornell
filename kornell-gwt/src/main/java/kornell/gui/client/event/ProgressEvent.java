@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class ProgressEvent extends GwtEvent<ProgressEventHandler>{
 
-	public static Type<ProgressEventHandler> TYPE = new Type<ProgressEventHandler>();
+	public static final Type<ProgressEventHandler> TYPE = new Type<ProgressEventHandler>();
 	
 	private Integer totalPages;
 	private Integer currentPage;

@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class MenuLeftWelcomeEvent extends GwtEvent<MenuLeftWelcomeEventHandler>{
 
-	public static Type<MenuLeftWelcomeEventHandler> TYPE = new Type<MenuLeftWelcomeEventHandler>();
+	public static final Type<MenuLeftWelcomeEventHandler> TYPE = new Type<MenuLeftWelcomeEventHandler>();
 	
 	private String menuLeftItemSelected;
 	

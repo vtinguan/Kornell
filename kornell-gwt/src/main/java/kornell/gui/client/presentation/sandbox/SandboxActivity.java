@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class SandboxActivity extends AbstractActivity {
 	
-	static SandboxPresenter presenter;
+	SandboxPresenter presenter;
 	public SandboxActivity(SandboxPresenter presenter) {
 	    this.presenter = presenter;
 	  }

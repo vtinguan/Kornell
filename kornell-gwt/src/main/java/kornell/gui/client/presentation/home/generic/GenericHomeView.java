@@ -18,7 +18,7 @@ public class GenericHomeView  extends Composite implements HomeView {
 	public GenericHomeView(
 			ClientFactory factory,
 			EventBus eventBus,
-			KornellClient client, SimplePanel appPanel) {
+			KornellClient client) {
 		GWT.log("GenericHomeView()");		
 	    initWidget(uiBinder.createAndBindUi(this));
 	}
