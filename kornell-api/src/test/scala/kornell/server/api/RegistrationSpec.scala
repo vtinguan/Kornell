@@ -25,4 +25,7 @@ class RegistrationSpec extends UnitSpec {
     val userInfo = userResource.get(new MockSecurityContext(email))
     userInfo should not be (None)
   }
+  
+  
+  
 }

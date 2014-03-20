@@ -41,6 +41,7 @@ package object repository {
   implicit def toCourseVersion(rs: ResultSet): CourseVersion = newCourseVersion(
     rs.getString("uuid"), 
     rs.getString("name"), 
+    rs.getString("course_uuid"), 
     rs.getString("repository_uuid"), 
     rs.getDate("versionCreatedAt"),
     rs.getString("distributionPrefix"))    

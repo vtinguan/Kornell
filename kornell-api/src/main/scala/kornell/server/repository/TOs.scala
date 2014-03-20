@@ -18,6 +18,8 @@ import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.entity.CourseVersion
 import kornell.core.to.CourseVersionsTO
+import kornell.core.to.EnrollmentRequestTO
+import kornell.core.to.EnrollmentRequestsTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -180,6 +182,25 @@ object TOs {
     to.setFullName(fullName)
     to.setEmail(email)
     to.setPassword(password)
+    to
+  }
+ 
+  
+  def newEnrollmentRequestTO:EnrollmentRequestTO = tos.newEnrollmentRequestTO.as
+  def newEnrollmentRequestTO(institutionUUID:String,courseClassUUID:String,fullName: String, email:String,cpf:String):EnrollmentRequestTO = {
+    val to = newEnrollmentRequestTO
+    to.setInstitutionUUID(institutionUUID)
+    to.setCourseClassUUID(courseClassUUID)
+    to.setFullName(fullName)
+    to.setEmail(email)
+    to.setCPF(cpf)
+    to
+  }
+  
+  def newEnrollmentRequestsTO:EnrollmentRequestsTO = tos.newEnrollmentRequestsTO.as
+  def newEnrollmentRequestsTO(enrollmentRequests: java.util.List[EnrollmentRequestTO]):EnrollmentRequestsTO = {
+    val to = newEnrollmentRequestsTO
+    to.setEnrollmentRequests(enrollmentRequests)
     to
   }
   
