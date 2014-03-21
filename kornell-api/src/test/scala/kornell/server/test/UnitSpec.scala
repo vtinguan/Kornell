@@ -9,6 +9,8 @@ import java.util.UUID
 import kornell.server.jdbc.Migration
 
 class UnitSpec extends FlatSpec with Matchers with OptionValues with Inside {
+  
+  System.setProperty("TEST_MODE", "true")
   //create database kornell_tests
   System.setProperty("JDBC_CONNECTION_STRING", "jdbc:mysql:///kornell_tests")
   //grant all on kornell_tests.* to kornell@'localhost' identified by '42kornell_tests42'; 

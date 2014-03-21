@@ -78,21 +78,7 @@ object Entities {
     c.setInfoJson(infoJson)
     c
   }
-  
-  def newCourseVersion: CourseVersion = factory.newCourseVersion.as
-
-  def newCourseVersion(uuid: String, name: String,
-    repositoryUUID: String, versionCreatedAt: Date,
-    distributionPrefix: String): CourseVersion = {
-    val cv = newCourseVersion
-    cv.setUUID(uuid)
-    cv.setName(name)
-    cv.setRepositoryUUID(repositoryUUID)
-    cv.setVersionCreatedAt(versionCreatedAt)
-    cv.setDistributionPrefix(distributionPrefix)
-    cv
-  }
-  
+    
   def newEnrollments(enrollments: List[Enrollment]) = {
     val es = factory.newEnrollments.as
     es.setEnrollments(enrollments.asJava)

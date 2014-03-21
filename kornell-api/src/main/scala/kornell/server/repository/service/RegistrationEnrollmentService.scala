@@ -29,7 +29,7 @@ object RegistrationEnrollmentService {
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
 
   private def deanRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, dean: Person) =
-    PeopleRepo.getByUsername({
+    PeopleRepo.getByEmailOrCPF({
       if(enrollmentRequest.getEmail != null)
         enrollmentRequest.getEmail
       else

@@ -65,7 +65,7 @@ object EventsRepo {
 		
 	  if(EnrollmentState.preEnrolled.equals(toState) || EnrollmentState.enrolled.equals(toState)){
 	    val enrollment = EnrollmentRepo(enrollmentUUID).get
-	    if(enrollment.getPerson.getEmail != null){
+	    if(enrollment.getPerson.getEmail != null && (System.getProperty("TEST_MODE") == null || !System.getProperty("TEST_MODE").equals("true"))){
 		    val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
 		    val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
 		    val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get

@@ -22,7 +22,7 @@ class EnrollmentsRepo() {
   }
 
 }
-
+ 
 object EnrollmentsRepo {
   def apply() = new EnrollmentsRepo
 

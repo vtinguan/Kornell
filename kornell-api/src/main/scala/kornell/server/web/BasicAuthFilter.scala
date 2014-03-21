@@ -32,7 +32,7 @@ class BasicAuthFilter extends Filter {
       case (hreq: HttpServletRequest, hres: HttpServletResponse) => doFilter(hreq, hres, chain)
     }
 
-  def hasCredentials(req: HttpServletRequest) =
+  def hasCredentials(req: HttpServletRequest):Boolean =
     req.getHeader("X-KNL-A") != null
 
   def isPrivate(req: HttpServletRequest, resp: HttpServletResponse) = !isPublic(req, resp)

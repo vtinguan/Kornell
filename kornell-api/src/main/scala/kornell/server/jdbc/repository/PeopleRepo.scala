@@ -20,6 +20,14 @@ object PeopleRepo {
 	""".first[Person]
   }
   
+  def getByEmailOrCPF(username: String) = {
+    sql"""
+		select p.* from Person p
+		where p.email = $username
+		or p.cpf = $username
+	""".first[Person]
+  }
+  
   def findBySearchTerm(search: String) ={ 
     println("dfsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa " + search )
     newPeople(
