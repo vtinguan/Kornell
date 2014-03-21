@@ -55,7 +55,7 @@ class PreparedStmt(query: String, params: List[Any]) {
     finally rs.close
   }
   
-  def executeQuery:ResultSet = executeQuery{ rs => rs }
+  def executeQuery:Unit = executeQuery{ rs => () }
 
   def foreach(fun: ResultSet => Unit): Unit = executeQuery { rs =>
     while (rs.next) fun(rs)
