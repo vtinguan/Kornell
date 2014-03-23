@@ -17,12 +17,12 @@ import java.sql.ResultSet
 class HealthCheckResource {
 	
   @GET
-  def isHealthy = checkDatabase   match {
+  def isHealthy = checkDatabase match {
     case Success(_) => ok.entity("System seems healthy.").build
     case Failure(ex) => serverError.entity(ex.getMessage).build
   }
 
   def checkDatabase = Try {  sql"select 'Health Check'".executeQuery }
-  //TODO: def checkMail =  Try { sendmail("Health Check", HEALTH_TO,"Hello. Are you feeling OK?") }  
+   
   
 }
