@@ -74,7 +74,7 @@ object EmailSender {
         val username = smtp.get.username
         val password = smtp.get.password
         transport.connect(username, password)
-        if(Settings.get("TEST_MODE").getOrElse("false").equals("true")){
+        if(!Settings.get("TEST_MODE").getOrElse("false").equals("true")){
         	transport.sendMessage(message, Array(new InternetAddress(to)))
         }
 

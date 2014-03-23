@@ -96,8 +96,6 @@ class EnrollmentsSpec extends UnitSpec with BeforeAndAfter{
   }
   
   "The platformAdmin" should "be able to create a class" in {
-    val x = System.getProperty("TEST_MODE")
-    val y = System.getProperty("TEST_MODEx")
     val courseClassNew = courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass).asInstanceOf[CourseClass]
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1 && mockHttpServletResponse.getStatus == 0 && courseClassNew != null && courseClassNew.getCourseVersionUUID == courseVersion.getUUID)
   } 
