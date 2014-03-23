@@ -16,6 +16,10 @@ public class CourseClassClient extends RESTClient {
 		PUT("courseClasses",courseClass.getUUID()).withContentType(CourseClass.TYPE).withEntityBody(courseClass).go(cb);
 	}
 
+	public void delete(Callback<CourseClass> cb) {
+		DELETE("courseClasses",courseClassUUID).go(cb);
+	}
+
 	public void contents(Callback<Contents> callback) {
 		GET("courseClasses",courseClassUUID,"contents").go(callback);
 	}

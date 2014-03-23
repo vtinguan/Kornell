@@ -11,7 +11,7 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.Entities.newPerson
 
 object AuthRepo {
-  //TODO: importing ScurityContext smells bad
+  //TODO: importing SecurityContext smells bad
 
   implicit def toPerson(rs: ResultSet): Person = newPerson(
     rs.getString("uuid"),

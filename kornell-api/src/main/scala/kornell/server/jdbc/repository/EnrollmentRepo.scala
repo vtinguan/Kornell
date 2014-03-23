@@ -19,13 +19,17 @@ class EnrollmentRepo(enrollmentUUID: String) {
   def first: Option[Enrollment] =
     finder.first[Enrollment]
 
-  def enroll(courseUUID: String, personUUID: String) = {
-    val uuid = randomUUID
-    sql""" 
-    	insert into Enrollment(uuid,course_uuid,person_uuid,enrolledOn)
-    	values($randomUUID,${courseUUID},${personUUID} ,now())
-    """.executeUpdate
-    None
+  def update(enrollment: Enrollment): Enrollment = {
+    sql"""
+    | update Enrollment e
+    | set e.enrolledOn = ${enrollment.getEnrolledOn},
+    | e.class_uuid = ${enrollment.getCourseClassUUID},
+    | e.person_uuid = ${enrollment.getPerson.getUUID},
+    | e.progress = ${enrollment.getProgress},
+    | e.notes = ${enrollment.getNotes},
+    | e.state = ${enrollment.getState.toString}
+    | where e.uuid = ${enrollment.getUUID}""".executeUpdate
+    enrollment
   }
 
   def findGrades: List[String] = sql"""

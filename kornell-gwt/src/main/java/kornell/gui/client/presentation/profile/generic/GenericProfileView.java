@@ -175,7 +175,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 						display();
 					}
 					@Override
-					public void unauthorized(){
+					public void unauthorized(String errorMessage) {
+						GWT.log(this.getClass().getName() + " - " + errorMessage);
 						user = null;
 						display();
 					}

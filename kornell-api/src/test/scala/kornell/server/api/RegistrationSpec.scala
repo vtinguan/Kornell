@@ -15,6 +15,7 @@ import kornell.server.repository.Entities
 class RegistrationSpec extends UnitSpec {
   val userResource = new UserResource
   val institution = Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false)
+  val mockHttpServletResponse = new MockHttpServletResponse(0, "")
 
   "A new user" should "login sucessfully (even if not confirmed yet)." in {
     val fullName = randName
@@ -22,7 +23,7 @@ class RegistrationSpec extends UnitSpec {
     val password = randStr
     val regreq = TOs.newRegistrationRequestTO(institution.getUUID, fullName, email, password)
     userResource.createUser(regreq)
-    val userInfo = userResource.get(new MockSecurityContext(email))
+    val userInfo = userResource.get(new MockSecurityContext(email), mockHttpServletResponse)
     userInfo should not be (None)
   }
   

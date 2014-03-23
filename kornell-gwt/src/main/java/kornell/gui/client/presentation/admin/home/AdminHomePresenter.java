@@ -108,17 +108,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
 
-		session.getAdministratedCourseClassesTOByInstitution(Dean.getInstance()
-				.getInstitution().getUUID(), new Callback<CourseClassesTO>() {
+		session.getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
+				new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO to) {
 				courseClassesTO = to;
 				view.setCourseClasses(courseClassesTO.getCourseClasses());
-
-				for (CourseClassTO courseClassTO : courseClassesTO
-						.getCourseClasses()) {
-					if (courseClassTO.getCourseClass().getUUID()
-							.equals(courseClassUUID)) {
+				for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+					if (courseClassUUID == null || courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)) {
 						updateCourseClass(courseClassTO);
 						break;
 					}

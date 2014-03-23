@@ -7,7 +7,7 @@ import scala.util.Random
 
 
 object ProduceUser extends App {
-  def randomString = Stream
+  /*def randomString = Stream
     .continually { Random.nextPrintableChar }
     .filter { _.isLetter }
     .take(10)
@@ -24,5 +24,5 @@ object ProduceUser extends App {
  
   println(" Full Name: "+fullName)
   println("  Username: "+username)
-  println("  Password: "+password)
+  println("  Password: "+password)*/
 }

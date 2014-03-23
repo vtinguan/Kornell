@@ -110,7 +110,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 
 			@Override
-			public void unauthorized() {
+			public void unauthorized(String errorMessage) {
+				GWT.log(this.getClass().getName() + " - " + errorMessage);
 				startAnonymous();
 			}
 		};
@@ -121,7 +122,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			};
 
 			@Override
-			protected void unauthorized() {
+			protected void unauthorized(String errorMessage) {
+				GWT.log(this.getClass().getName() + " - " + errorMessage);
 				session.findInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
 			}
 

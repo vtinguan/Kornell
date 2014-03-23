@@ -33,7 +33,7 @@ class PersonRepo(val uuid:String) {
 	    	where uuid = $uuid
 	    """.executeUpdate
       PersonRepo.this
-    }
+    } 
 
   def hasPowerOver(targetPersonUUID: String) = {
       val actorRoles = AuthRepo.rolesOf(AuthRepo.getUsernameByPersonUUID(uuid).get)

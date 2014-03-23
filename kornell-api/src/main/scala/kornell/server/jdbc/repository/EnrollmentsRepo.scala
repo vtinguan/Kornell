@@ -6,25 +6,7 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.jdbc.SQL.randomUUID
 import kornell.server.repository.Entities.newEnrollments
 
-class EnrollmentsRepo() {
-
-  def update(enrollment: Enrollment): Enrollment = {
-    sql"""
-    | update Enrollment e
-    | set e.enrolledOn = ${enrollment.getEnrolledOn},
-    | e.class_uuid = ${enrollment.getCourseClassUUID},
-    | e.person_uuid = ${enrollment.getPerson.getUUID},
-    | e.progress = ${enrollment.getProgress.intValue},
-    | e.notes = ${enrollment.getNotes},
-    | e.state = ${enrollment.getState.toString}
-    | where e.uuid = ${enrollment.getUUID}""".executeUpdate
-    enrollment
-  }
-
-}
- 
 object EnrollmentsRepo {
-  def apply() = new EnrollmentsRepo
 
   def byCourseClass(courseClassUUID: String) = newEnrollments(
     sql"""
@@ -58,13 +40,19 @@ object EnrollmentsRepo {
         | order by e.state desc, p.fullName, p.email
 	    """.map[Enrollment](toEnrollment)
 
-  def createEnrollment(courseClassUUID: String, person_uuid: String, state: EnrollmentState) = {
-    val uuid = randomUUID
+  def create(enrollment: Enrollment) = {
+    if(enrollment.getUUID == null)
+    	enrollment.setUUID(randomUUID)
     sql""" 
     	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state)
-    	values($uuid,$courseClassUUID,$person_uuid,now(),${state.toString()})
-    """.executeUpdate
-    uuid
+    	values(
+    		${enrollment.getUUID},
+    		${enrollment.getCourseClassUUID},
+    		${enrollment.getPerson.getUUID}, 
+    		now(),
+    		${enrollment.getState.toString}
+    	)""".executeUpdate
+    enrollment
   }
 
   def find(person: PersonRepo, course_uuid: String): Enrollment = sql"""

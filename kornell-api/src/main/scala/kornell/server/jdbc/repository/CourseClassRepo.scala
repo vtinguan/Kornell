@@ -37,12 +37,12 @@ class CourseClassRepo(uuid:String) {
       where cc.uuid = ${courseClass.getUUID}""".executeUpdate
     courseClass
   }
-
- /*   sql"""
-    | update Institution i
-    | set i.name = ${courseClass.getName},
-    | where i.uuid = ${courseClass.getUUID}""".executeUpdate
-    courseClass*/
+  
+  def delete(courseClassUUID: String) = {    
+    sql"""
+      delete from CourseClass 
+      where uuid = ${courseClassUUID}""".executeUpdate
+  }
   
   def actomsVisitedBy(p: Person): List[String] = sql"""
   	select actomKey from ActomEntered ae

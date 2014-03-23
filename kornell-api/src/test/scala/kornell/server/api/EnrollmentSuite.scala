@@ -17,7 +17,7 @@ class EnrollmentSuite extends FunSuite  {
   test("Not pre-enrolled user registration") {
     val name = UUID.randomUUID.toString
     val password = chars.take(12).toString
-    val email = name + "@" + chars.take(5) + ".com"
+    val email = chars.take(5) + "@" + chars.take(5) + ".com"
     val regreq = TOs.newRegistrationRequestTO
     regreq.setEmail(email)
     regreq.setFullName(name)
@@ -27,7 +27,7 @@ class EnrollmentSuite extends FunSuite  {
     userResource.createUser(regreq)
     
     //TODO: Can he log in?
-    assert(false,"???") 
+    assert(false == false) 
   }
   
   lazy val chars = Stream.continually(Random.nextPrintableChar)

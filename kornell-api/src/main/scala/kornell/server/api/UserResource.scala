@@ -36,7 +36,8 @@ class UserResource{
   @GET
   @Produces(Array(UserInfoTO.TYPE))
   //TODO: Cache
-  def get(implicit @Context sc: SecurityContext):Option[UserInfoTO] =
+  def get(implicit @Context sc: SecurityContext, 
+      @Context resp: HttpServletResponse):Option[UserInfoTO] =
     AuthRepo.withPerson { p =>
     	val user = newUserInfoTO
     	val username =  sc.getUserPrincipal().getName()

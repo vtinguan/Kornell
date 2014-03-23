@@ -18,6 +18,7 @@ import kornell.core.entity.Roles;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -117,7 +118,7 @@ public class GenericCourseClassAdminsView extends Composite {
 	}
 
 	private void searchChanged(String search) {
-		session.people().findBySearchTerm(search, new Callback<People>() {
+		session.people().findBySearchTerm(search, Dean.getInstance().getInstitution().getUUID(), new Callback<People>() {
 			@Override
 			public void ok(People to) {
 				oraclePeople = new HashMap<String, Person>();
@@ -157,7 +158,7 @@ public class GenericCourseClassAdminsView extends Composite {
 		multipleSelectPanel.add(multipleSelect);
 		
 		Button btnRemove = new Button("REMOVER");
-		btnRemove.addStyleName("btnNotSelected btnStandard");
+		btnRemove.addStyleName("btnSelected btnStandard");
 		
 		btnRemove.addClickHandler(new ClickHandler() {
 			@Override

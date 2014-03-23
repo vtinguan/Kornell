@@ -20,6 +20,9 @@ import javax.servlet.http.HttpServletRequest
 import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.EnrollmentRepo
 import scala.math.BigDecimal
+import kornell.server.repository.service.RegistrationEnrollmentService
+import javax.servlet.http.HttpServletResponse
+import kornell.server.jdbc.repository.PersonRepo
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -41,9 +44,12 @@ class EnrollmentResource(uuid: String) {
   @PUT
   @Produces(Array("text/plain"))
   @Consumes(Array(Enrollment.TYPE))
-  def update(implicit @Context sc: SecurityContext, enrollment: Enrollment) = AuthRepo.withPerson { p =>
-    //TODO: Security: restrict to own enrollments
-    EnrollmentsRepo().update(enrollment)
+  def update(implicit @Context sc: SecurityContext, 
+      @Context resp: HttpServletResponse, enrollment: Enrollment) = AuthRepo.withPerson { p =>
+    if(!PersonRepo(p.getUUID).hasPowerOver(enrollment.getPerson.getUUID))
+    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update an enrollment of another person.");
+    else
+    	EnrollmentRepo(enrollment.getUUID).update(enrollment)
   }
 
   @Path("actoms/{actomKey}")

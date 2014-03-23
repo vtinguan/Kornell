@@ -79,6 +79,8 @@ public class GenericCourseClassConfigView extends Composite {
 	Button btnOK;
 	@UiField
 	Button btnCancel;
+	@UiField
+	Button btnDelete;
 
 	private UserInfoTO user;
 	private CourseClassTO courseClassTO;
@@ -100,6 +102,7 @@ public class GenericCourseClassConfigView extends Composite {
 		// i18n
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
+		btnDelete.setText("Excluir".toUpperCase());
 
 		this.titleEdit.setVisible(!isCreationMode);
 		this.titleCreate.setVisible(isCreationMode);
@@ -119,6 +122,8 @@ public class GenericCourseClassConfigView extends Composite {
 		
 		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
 		btnCancel.setVisible(isInstitutionAdmin);
+		
+		btnDelete.setVisible(!isCreationMode && presenter.getEnrollments().size() == 0);
 
 		if (isCreationMode) {
 			session.courses().findByInstitution(Dean.getInstance().getInstitution().getUUID(),
@@ -238,9 +243,7 @@ public class GenericCourseClassConfigView extends Composite {
 			name.setError("Insira o nome da turma.");
 		}
 		
-		if (!formHelper.isLengthValid(requiredScore.getFieldPersistText(), 1, 20)) {
-			requiredScore.setError("Insira a nota para aprovação.");
-		} else if (!formHelper.isValidNumber(requiredScore.getFieldPersistText())) {
+		if (requiredScore.getFieldPersistText().length() > 0 && !formHelper.isValidNumber(requiredScore.getFieldPersistText())) {
 			requiredScore.setError("Número inválido.");
 		}
 		
@@ -268,7 +271,13 @@ public class GenericCourseClassConfigView extends Composite {
 							KornellNotification.show("Alterações salvas com sucesso!");
 							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
 							courseClassTO = Dean.getInstance().getCourseClassTO();
-							presenter.updateCourseClass(Dean.getInstance().getCourseClassesTO().getCourseClasses().get(0).getCourseClass().getUUID());
+							presenter.updateCourseClass(courseClass.getUUID());
+					}
+					
+					@Override
+					public void unauthorized(String errorMessage){
+						LoadingPopup.hide();
+						name.setError("Já existe uma turma com esse nome.");
 					}
 				});
 			} else {
@@ -279,6 +288,13 @@ public class GenericCourseClassConfigView extends Composite {
 							KornellNotification.show("Alterações salvas com sucesso!");
 							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
 							courseClassTO = Dean.getInstance().getCourseClassTO();
+							presenter.updateCourseClass(courseClass.getUUID());
+					}
+					
+					@Override
+					public void unauthorized(String errorMessage){
+						LoadingPopup.hide();
+						name.setError("Já existe uma turma com esse nome.");
 					}
 				});
 			}
@@ -293,14 +309,39 @@ public class GenericCourseClassConfigView extends Composite {
 		courseClass.setEnrollWithCPF(enrollWithCPF.getFieldPersistText().equals("true"));
 		courseClass.setPublicClass(publicClass.getFieldPersistText().equals("true"));
 		courseClass.setMaxEnrollments(new Integer(maxEnrollments.getFieldPersistText()));
-		courseClass.setRequiredScore(new BigDecimal(requiredScore.getFieldPersistText()));
+		courseClass.setRequiredScore(requiredScore.getFieldPersistText().length() > 0 ?
+				new BigDecimal(requiredScore.getFieldPersistText()) :
+					null);
 		return courseClass;
 	}
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
 		if(isCreationMode){
-			presenter.updateCourseClass(Dean.getInstance().getCourseClassesTO().getCourseClasses().get(0).getCourseClass().getUUID());
+			presenter.updateCourseClass(null);
+		} else {
+			initData();
+		}
+	}
+
+	@UiHandler("btnDelete")
+	void doDelete(ClickEvent e) {
+		if(!isCreationMode && presenter.getEnrollments().size() == 0){
+			LoadingPopup.show();
+			session.courseClass(courseClassTO.getCourseClass().getUUID()).delete(new Callback<CourseClass>() {
+				@Override
+				public void ok(CourseClass courseClass) {
+						LoadingPopup.hide();
+						KornellNotification.show("Turma excluída com sucesso!");
+						presenter.updateCourseClass(null);
+				}
+				
+				@Override
+				public void unauthorized(String errorMessage){
+					LoadingPopup.hide();
+					GWT.log(this.getClass().getName() + " - " + errorMessage);
+				}
+			});
 		} else {
 			initData();
 		}

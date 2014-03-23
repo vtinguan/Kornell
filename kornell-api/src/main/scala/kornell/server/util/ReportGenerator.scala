@@ -10,6 +10,9 @@ import java.io.File
 import java.net.URL
 import java.sql.ResultSet
 import kornell.core.util.StringUtils.composeURL
+import net.sf.jasperreports.engine.JasperReport
+import net.sf.jasperreports.engine.util.JRLoader
+import java.util.Date
 
 object ReportGenerator extends App {
 
@@ -33,20 +36,29 @@ object ReportGenerator extends App {
 		""".first[ReportData].get
 
     val params: HashMap[String, Object] = new HashMap()
-    params.put("userUuid", userUUID)
+    params.put("courseClassUUID", courseClassUUID)
     params.put("name", certificateData._1.toUpperCase())
     params.put("course", certificateData._2.toUpperCase())
     params.put("cpf", certificateData._5)
     val assetsURL: String = composeURL(certificateData._3, certificateData._4, "/reports")
     params.put("assetsURL", assetsURL + "/")
 
-    generateEmptyDataSourceReport(composeURL(assetsURL, "certificate.jrxml"), params)
+    generateEmptyDataSourceReport(composeURL(assetsURL, "certificate.jasper"), params)
   }
 
   def generateEmptyDataSourceReport(jrxmlPath: String, params: HashMap[String, Object]): Array[Byte] = {
-    val file: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + params.get("userUuid") + ".jrxml")
-    FileUtils.copyURLToFile(new URL(jrxmlPath), file)
-    val jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath())
+  	//store one jasperfile per courseclass
+    val file: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + params.get("courseClassUUID") + ".jasper")
+
+    if(!file.exists())
+    	FileUtils.copyURLToFile(new URL(jrxmlPath), file)
+    
+    val jasperReport = JRLoader.loadObject(file).asInstanceOf[JasperReport]
+    
+    val diff = new Date().getTime() - file.lastModified();
+    if(diff > 1 * 24 * 60 * 60 * 1000) //delete if older than 1 day
+		  file.delete()
+		
     JasperRunManager.runReportToPdf(jasperReport, params, new JREmptyDataSource())
   }
 }
