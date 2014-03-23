@@ -114,12 +114,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			public void ok(CourseClassesTO to) {
 				courseClassesTO = to;
 				view.setCourseClasses(courseClassesTO.getCourseClasses());
-
-				for (CourseClassTO courseClassTO : courseClassesTO
-						.getCourseClasses()) {
+				boolean found = false;
+				for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
 					if (courseClassTO.getCourseClass().getUUID()
 							.equals(courseClassUUID)) {
 						updateCourseClass(courseClassTO);
+						found = true;
 						break;
 					}
 				}

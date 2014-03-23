@@ -268,7 +268,13 @@ public class GenericCourseClassConfigView extends Composite {
 							KornellNotification.show("Alterações salvas com sucesso!");
 							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
 							courseClassTO = Dean.getInstance().getCourseClassTO();
-							presenter.updateCourseClass(Dean.getInstance().getCourseClassesTO().getCourseClasses().get(0).getCourseClass().getUUID());
+							presenter.updateCourseClass(courseClass.getUUID());
+					}
+					
+					@Override
+					public void unauthorized(String errorMessage){
+						LoadingPopup.hide();
+						name.setError("Já existe uma turma com esse nome.");
 					}
 				});
 			} else {
@@ -279,6 +285,13 @@ public class GenericCourseClassConfigView extends Composite {
 							KornellNotification.show("Alterações salvas com sucesso!");
 							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
 							courseClassTO = Dean.getInstance().getCourseClassTO();
+							presenter.updateCourseClass(courseClass.getUUID());
+					}
+					
+					@Override
+					public void unauthorized(String errorMessage){
+						LoadingPopup.hide();
+						name.setError("Já existe uma turma com esse nome.");
 					}
 				});
 			}
