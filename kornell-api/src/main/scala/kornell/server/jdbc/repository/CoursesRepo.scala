@@ -15,6 +15,18 @@ object CoursesRepo {
 
   def apply(uuid:String) = CourseRepo(uuid)
   
+  def create(course: Course): Course = {    
+    sql"""
+    | insert into Course (uuid,code,title,description,infoJson) 
+    | values(
+    | ${course.getUUID},
+    | ${course.getCode},
+    | ${course.getTitle}, 
+    | ${course.getDescription},
+    | ${course.getInfoJson})""".executeUpdate
+    course
+  }  
+  
   def byCourseClassUUID(courseClassUUID: String) = sql"""
 	  select * from Course c join
 	  CourseVersion cv on cv.course_uuid = c.uuid join

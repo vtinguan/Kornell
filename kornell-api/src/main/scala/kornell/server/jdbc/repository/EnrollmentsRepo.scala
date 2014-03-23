@@ -48,7 +48,7 @@ object EnrollmentsRepo {
     	values(
     		${enrollment.getUUID},
     		${enrollment.getCourseClassUUID},
-    		${enrollment.getPerson.getUUID},
+    		${enrollment.getPerson.getUUID}, 
     		now(),
     		${enrollment.getState.toString}
     	)""".executeUpdate

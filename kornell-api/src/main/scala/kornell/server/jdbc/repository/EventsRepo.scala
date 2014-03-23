@@ -55,9 +55,9 @@ object EventsRepo {
 	  sql"""insert into EnrollmentStateChanged(uuid,eventFiredAt,person_uuid,enrollment_uuid,fromState,toState)
 	    values(${uuid},
 			   ${eventFiredAt},
-	           ${fromPersonUUID},
-	           ${enrollmentUUID},
-	           ${fromState.toString},
+         ${fromPersonUUID},
+         ${enrollmentUUID},
+         ${fromState.toString},
 			   ${toState.toString});
 		""".executeUpdate
 		
@@ -66,7 +66,7 @@ object EventsRepo {
 		
 	  if(EnrollmentState.preEnrolled.equals(toState) || EnrollmentState.enrolled.equals(toState)){
 	    val enrollment = EnrollmentRepo(enrollmentUUID).get
-	    if(enrollment.getPerson.getEmail != null && !Settings.get("TEST_MODE").getOrElse("false").equals("true")){
+	    if(enrollment.getPerson.getEmail != null && !(Settings.get("TEST_MODE").isDefined && "true".equals(Settings.get("TEST_MODE").get))){
 		    val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
 		    val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
 		    val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get

@@ -14,6 +14,19 @@ object CourseVersionsRepo {
 
   def apply(uuid:String) = CourseVersionRepo(uuid)
   
+  def create(courseVersion: CourseVersion): CourseVersion = {    
+    sql"""
+    | insert into CourseVersion (uuid,name,repository_uuid,course_uuid,versionCreatedAt,distributionPrefix) 
+    | values(
+    | ${courseVersion.getUUID},
+    | ${courseVersion.getName},
+    | ${courseVersion.getRepositoryUUID},
+    | ${courseVersion.getCourseUUID}, 
+    | ${courseVersion.getVersionCreatedAt},
+    | ${courseVersion.getDistributionPrefix})""".executeUpdate
+    courseVersion
+  }  
+  
   def byCourse(courseUUID: String) = newCourseVersionsTO(
     sql"""
 	  	select cv.* from CourseVersion cv

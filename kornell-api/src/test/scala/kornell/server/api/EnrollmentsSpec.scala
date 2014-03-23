@@ -1,25 +1,31 @@
 package kornell.server.api
 
 import java.util.ArrayList
+import java.util.Date
 import scala.collection.JavaConverters.asScalaBufferConverter
 import org.junit.runner.RunWith
-import org.scalatest._
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.junit.JUnitRunner
+import org.scalatest.BeforeAndAfter
+import javax.ws.rs.Consumes
+import javax.ws.rs.POST
+import javax.ws.rs.PUT
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import kornell.core.entity.CourseClass
+import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.RoleType
 import kornell.core.to.EnrollmentRequestTO
-import kornell.server.jdbc.SQL._
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.jdbc.repository.CourseVersionsRepo
+import kornell.server.jdbc.repository.CoursesRepo
 import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.repository.Entities
 import kornell.server.repository.TOs
-import kornell.server.repository.TOs
 import kornell.server.test.UnitSpec
-import kornell.core.entity.Enrollment
-import kornell.core.entity.CourseClass
+import org.scalatest.junit.JUnitRunner
 import kornell.server.jdbc.repository.CourseClassesRepo
 
 
@@ -29,10 +35,11 @@ class EnrollmentsSpec extends UnitSpec with BeforeAndAfter{
   val courseClassesResource = new CourseClassesResource
   val enrollmentsResource = new EnrollmentsResource
   val institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false))
-	val course = Entities.newCourse(randUUID, randStr, randStr, randStr, randStr)
-	val courseVersion = Entities.newCourseVersion(randUUID, randStr, course.getUUID, randStr, null, randStr)
+	val course = CoursesRepo.create(Entities.newCourse(randUUID, randStr, randStr, randStr, randStr))
+	val courseVersion = CourseVersionsRepo.create(Entities.newCourseVersion(randUUID, randStr, course.getUUID, randUUID, new Date, randStr))
 	val className = randStr
-	val courseClass = Entities.newCourseClass(randUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 1000)
+	val classUUID = randUUID
+	val courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 1000)
 	val courseClass2 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 1000)
 	val courseClass3 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 1000)
 	val fullName = randName
@@ -41,7 +48,7 @@ class EnrollmentsSpec extends UnitSpec with BeforeAndAfter{
   val platformAdminCPF = randStr
   val institutionAdminCPF = randStr
   val notAnAdminCPF = randStr
-  var mockHttpServletResponse = new MockHttpServletResponse(0, "")
+  val mockHttpServletResponse = new MockHttpServletResponse(0, "")
   
   
   val platformAdmin = {
@@ -156,7 +163,6 @@ class EnrollmentsSpec extends UnitSpec with BeforeAndAfter{
   "The institutionAdmin" should "be able to register and enroll one participant with the email" in {
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])    
     enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, "institutionAdmin"+fullName, "institutionAdmin"+email, null))
-    val x = institutionAdminSecurityContext.getUserPrincipal().getName()
     enrollmentsResource.putEnrollments(institutionAdminSecurityContext, mockHttpServletResponse, enrollmentRequestsTO)
     
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
