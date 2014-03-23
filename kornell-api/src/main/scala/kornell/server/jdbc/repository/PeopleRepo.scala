@@ -30,13 +30,14 @@ object PeopleRepo {
 	""".first[Person]
   }
   
-  def findBySearchTerm(search: String) ={ 
-    println("dfsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa " + search )
+  def findBySearchTerm(search: String, institutionUUID: String) ={
     newPeople(
     sql"""
       	| select p.* from Person p 
-      	| where p.email like ${search + "%"}
-      	| or p.cpf like ${search + "%"}
+    		| join Registration r on r.person_uuid = p.uuid
+      	| where (p.email like ${search + "%"}
+      	| or p.cpf like ${search + "%"})
+      	| and r.institution_uuid = ${institutionUUID}
       	| order by p.email, p.cpf
       	| limit 8
 	    """.map[Person](toPerson))

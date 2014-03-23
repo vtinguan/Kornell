@@ -38,6 +38,12 @@ class CourseClassRepo(uuid:String) {
     courseClass
   }
   
+  def delete(courseClassUUID: String) = {    
+    sql"""
+      delete from CourseClass 
+      where uuid = ${courseClassUUID}""".executeUpdate
+  }
+  
   def actomsVisitedBy(p: Person): List[String] = sql"""
   	select actomKey from ActomEntered ae
   	join Enrollment e on ae.enrollmentUUID=e.uuid
