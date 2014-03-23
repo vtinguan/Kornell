@@ -18,8 +18,11 @@ import javax.mail.Authenticator
 import kornell.core.util.StringUtils
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.logging.Logger
 
 object EmailSender {
+  val logger = Logger.getLogger("kornell.server.email")
+  
   val executor = Executors.newSingleThreadExecutor
 
   def sendmail(subject: String, to: String, body: String) =
@@ -77,9 +80,9 @@ object EmailSender {
         transport.sendMessage(message, Array(new InternetAddress(to)))
       //}
 
-      System.out.println("Email sent!")
+      logger.finer(s"Email with subject [$subject] sent to [$to] by [$from]")
     }
-    case None => System.err.println(s"No SMTP configured. If it was, a email would have been sent to $to")
+    case None => logger.warning(s"No SMTP configured. Email could not be sent to [$to]")
   }
 
   def sendEmail(subject: String,
