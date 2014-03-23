@@ -5,6 +5,8 @@ import kornell.server.repository.Entities
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import java.sql.ResultSet
+import kornell.core.util.UUID
+import kornell.server.repository.TOs
 
 object PeopleRepo {
   
@@ -39,24 +41,35 @@ object PeopleRepo {
       	| limit 8
 	    """.map[Person](toPerson))
   }
-	    
-  def createPerson(email: String, fullName:String, 
-      company: String="", title: String="", sex: String="", 
-      birthDate: String="1800-01-01", confirmation: String = "", cpf: String) = {
-    
-    val uuid = randUUID
-    sql"""
-    	insert into Person(uuid, fullName, email,
-    		company, title, sex, birthDate, confirmation, cpf
-    	) values ($uuid, $fullName, $email, 
-    		$company, $title, $sex, $birthDate, $confirmation, $cpf)
-    """.executeUpdate
-    PersonRepo(uuid)
+
+  def createPerson(email: String, fullName:String):Person = {
+    create(
+    		Entities.newPerson(null, fullName, null, email, null, null, null, null, null, null, null, null, null, null, null, null, null)
+	  )
   }
 
-  def createPerson(email: String, fullName:String): PersonRepo = 
-    createPerson(email, fullName, null, null, null, null, "", null)
-    
-  def createPersonCPF(cpf: String, fullName:String): PersonRepo = 
-    createPerson(null, fullName, null, null, null, null, "", cpf)
+  def createPersonCPF(cpf: String, fullName:String):Person = {
+    create(
+    		Entities.newPerson(null, fullName, null, null, null, null, null, null, null, null, null, null, null, null, null, null, cpf)
+	  )
+  }
+  
+  def create(person: Person):Person = {
+    if(person.getUUID == null)
+      person.setUUID(randUUID)
+    sql""" 
+    	insert into Person(uuid, fullName, email,
+    		company, title, sex, birthDate, confirmation, cpf
+    	) values (${person.getUUID},
+             ${person.getFullName},
+             ${person.getEmail},
+             ${person.getCompany},
+             ${person.getTitle},
+             ${person.getSex},
+             ${person.getBirthDate},
+             ${person.getConfirmation},
+             ${person.getCPF})
+    """.executeUpdate
+    person 
+  }
 }

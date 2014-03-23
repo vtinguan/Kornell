@@ -1,6 +1,7 @@
 package kornell.server.api
 
 import javax.ws.rs.Produces
+import scala.collection.JavaConverters._
 import javax.ws.rs.Consumes
 import javax.ws.rs.core.SecurityContext
 import kornell.server.jdbc.repository.EnrollmentRepo
@@ -17,8 +18,10 @@ import kornell.server.jdbc.SQL._
 import kornell.core.entity.Enrollment
 import kornell.core.entity.Enrollments
 import javax.ws.rs.POST
+import javax.servlet.http.HttpServletResponse
+import kornell.core.to.EnrollmentRequestsTO
+import kornell.server.repository.Entities
 
-//TODO: Rename path to "enrollment"
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentsResource {
@@ -29,10 +32,9 @@ class EnrollmentsResource {
   @POST
   @Consumes(Array(Enrollment.TYPE))
   @Produces(Array(Enrollment.TYPE))
-  def requestEnrollment(implicit @Context sc: SecurityContext, enrollment: Enrollment) = 
+  def create(implicit @Context sc: SecurityContext, enrollment: Enrollment) = 
     AuthRepo.withPerson { p => 
-    	val uuid = EnrollmentsRepo.createEnrollment(enrollment.getCourseClassUUID(), enrollment.getPerson().getUUID(), enrollment.getState())
-    	EnrollmentRepo(uuid).get
+    	EnrollmentsRepo.create(enrollment)
   	}
 
   @GET
@@ -42,8 +44,16 @@ class EnrollmentsResource {
   @PUT
   @Path("requests")
   @Consumes(Array(kornell.core.to.EnrollmentRequestsTO.TYPE))
-  def putEnrollments(implicit @Context sc: SecurityContext, enrollmentRequests: kornell.core.to.EnrollmentRequestsTO) =
-    AuthRepo.withPerson { p => RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p) }
+  def putEnrollments(implicit @Context sc: SecurityContext, 
+      @Context resp: HttpServletResponse,
+      enrollmentRequests: EnrollmentRequestsTO) =
+    AuthRepo.withPerson { p => 
+	    if(enrollmentRequests.getEnrollmentRequests.asScala exists (e => RegistrationEnrollmentService.isInvalidRequestEnrollment(e, sc.getUserPrincipal.getName))){
+	    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to enroll participants.");
+	    } else {
+	      RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p)
+	    }
+    }
 
   @PUT
   @Path("{courseClassUUID}/notesUpdated")

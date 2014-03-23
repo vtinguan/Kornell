@@ -22,11 +22,20 @@ import java.util.Date
 import kornell.server.jdbc.SQL._
 import scala.collection.JavaConverters._
 import kornell.server.jdbc.repository.PersonRepo
+import kornell.core.entity.RoleCategory
+import kornell.server.repository.Entities
 
 object RegistrationEnrollmentService {
 
-  def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) =
-    enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
+  def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) = 
+    	enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean)) 
+  
+
+  def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUsername: String) = {
+    val roles = (Set.empty ++ AuthRepo.rolesOf(deanUsername)).asJava
+    !(RoleCategory.isPlatformAdmin(roles) ||
+        RoleCategory.isInstitutionAdmin(roles, enrollmentRequest.getInstitutionUUID))
+  }
 
   private def deanRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, dean: Person) =
     PeopleRepo.getByEmailOrCPF({
@@ -40,13 +49,16 @@ object RegistrationEnrollmentService {
     }
 
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
-    val personRepo = {
+    val person = {
       if(enrollmentRequest.getEmail() != null) {
         PeopleRepo.createPerson(enrollmentRequest.getEmail, enrollmentRequest.getFullName)
       } else {
         PeopleRepo.createPersonCPF(enrollmentRequest.getCPF, enrollmentRequest.getFullName)
-          .setPassword(enrollmentRequest.getCPF, enrollmentRequest.getCPF)
       }
+    }
+    val personRepo = PersonRepo(person.getUUID)
+    if(enrollmentRequest.getEmail() == null) {
+        personRepo.setPassword(enrollmentRequest.getCPF, enrollmentRequest.getCPF)
     }
     personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
     createEnrollment(personRepo.get.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
@@ -84,12 +96,12 @@ object RegistrationEnrollmentService {
   }
 
   private def userCreateNewPerson(email: String, fullName: String, password: String, institutionUUID: String) = {
-    val personRepo = PeopleRepo.createPerson(email, fullName)
+    val person = PeopleRepo.createPerson(email, fullName)
 
     val user = newUserInfoTO
-    user.setPerson(personRepo.get.get)
+    user.setPerson(person)
     user.setUsername(email)
-    personRepo.setPassword(email, password).registerOn(institutionUUID)
+    PersonRepo(person.getUUID).setPassword(email, password).registerOn(institutionUUID)
     user
   }
 
@@ -116,8 +128,7 @@ object RegistrationEnrollmentService {
   }
 
   private def createEnrollment(personUUID: String, courseClassUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
-    EnrollmentsRepo.createEnrollment(courseClassUUID, personUUID, EnrollmentState.notEnrolled)
-    val enrollment = EnrollmentsRepo.byCourseClassAndPerson(courseClassUUID, personUUID).get
+    val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled))
     EventsRepo.logEnrollmentStateChanged(
       UUID.random, new Date, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState)

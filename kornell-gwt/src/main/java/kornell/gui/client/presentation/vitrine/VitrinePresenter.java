@@ -113,7 +113,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				session.getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 			}
 			@Override
-			protected void unauthorized() {
+			protected void unauthorized(String errorMessage) {
+				GWT.log(this.getClass().getName() + " - " + errorMessage);
 				view.setMessage("Usuário ou senha incorretos, por favor tente novamente.");
 				view.showMessage();
 			}
@@ -225,7 +226,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 					}
 
 					@Override
-					public void unauthorized() {
+					public void unauthorized(String errorMessage) {
+						GWT.log(this.getClass().getName() + " - " + errorMessage);
 						KornellNotification
 								.show("Não foi possivel fazer a requisição. Confira se o seu email foi digitado corretamente.",
 										AlertType.ERROR);
@@ -264,7 +266,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						}
 
 						@Override
-						public void unauthorized() {
+						public void unauthorized(String errorMessage) {
+							GWT.log(this.getClass().getName() + " - " + errorMessage);
 							KornellNotification
 									.show("Não foi possível alterar a senha. Verifique seu email ou faça uma nova requisição de alteração de senha.",
 											AlertType.ERROR, 8000);

@@ -17,15 +17,21 @@ object InstitutionsRepo {
         rs.getString("terms"),
         rs.getString("assetsURL"),
         rs.getString("baseURL"),
-        rs.getBoolean("demandsPersonContactDetails")) 
-
-  def create(name: String, fullName: String, terms: String, baseURL: String): Institution = {
-    val i = newInstitution(randUUID, name, fullName, terms, "", baseURL, false)
+        rs.getBoolean("demandsPersonContactDetails"))   
+  
+  def create(institution: Institution): Institution = {    
     sql"""
-    | insert into Institution(uuid,name,fullName,baseURL,terms) 
-    | values ($i.getUUID,$i.getName,$i.getFullName,$i.getBaseURL,$i.terms)""".executeUpdate
-    i
-  }
+    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,fullName) 
+    | values(
+    | ${institution.getUUID},
+    | ${institution.getName},
+    | ${institution.getTerms},
+    | ${institution.getAssetsURL},
+    | ${institution.getBaseURL},
+    | ${institution.isDemandsPersonContactDetails},
+    | ${institution.getFullName})""".executeUpdate
+    institution
+  }  
   
   def update(institution: Institution): Institution = {    
     sql"""

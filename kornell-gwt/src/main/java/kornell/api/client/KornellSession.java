@@ -47,9 +47,9 @@ public class KornellSession extends KornellClient {
 				}
 
 				@Override
-				public void unauthorized() {
+				public void unauthorized(String errorMessage) {
 					setCurrentUser(null);
-					callback.unauthorized();
+					callback.unauthorized(errorMessage);
 				}
 			};
 			GET("/user").sendRequest(null, wrapper);
@@ -124,9 +124,9 @@ public class KornellSession extends KornellClient {
 			}
 
 			@Override
-			protected void unauthorized() {
+			protected void unauthorized(String errorMessage) {
 				setCurrentUser(null);
-				callback.unauthorized();
+				callback.unauthorized(errorMessage);
 			}
 		};
 		GET("/user").addHeader(ClientProperties.X_KNL_A, auth).sendRequest(null, wrapper);

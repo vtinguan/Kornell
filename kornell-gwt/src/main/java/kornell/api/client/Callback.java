@@ -22,9 +22,11 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  
 public abstract class Callback<T> implements RequestCallback {
+	
+	private String responseText;
 
 	@Override
-	public void onResponseReceived(Request request, Response response) {
+	public void onResponseReceived(Request request, Response response) {		
 		if (!isTrusted(response))
 			throw new RuntimeException("Won't touch untrusted response");
 		int statusCode = response.getStatusCode();
@@ -36,7 +38,7 @@ public abstract class Callback<T> implements RequestCallback {
 			forbidden();
 			break;
 		case SC_UNAUTHORIZED:
-			unauthorized();
+			unauthorized(getResponseTextMDA(response));
 			break;
 		case SC_NOT_FOUND:
 			notFound();
@@ -134,7 +136,7 @@ public abstract class Callback<T> implements RequestCallback {
 		GWT.log("Your request failed. Please check that the API is running and responding cross-origin requests.");
 	}
 
-	protected void unauthorized() {
+	protected void unauthorized(String errorMessage) {
 	}
 
 	protected void forbidden() {
@@ -149,5 +151,18 @@ public abstract class Callback<T> implements RequestCallback {
 	private void error(Request request, Throwable exception) {
 		GWT.log("Error!", exception);
 	}
+
+	private String getResponseTextMDA(Response response) {
+	  String text = response.getText();
+		String[] parts = text.split("<body><h1>HTTP Status ");
+		if(parts.length > 1){
+			String[] parts2 = parts[1].split(" - ");
+			if(parts2.length > 1){
+				String[] parts3 = parts2[1].split("</h1>");
+				return parts3[0];
+			}			
+		}
+		return null;
+  }
 
 }
