@@ -96,24 +96,21 @@ class EnrollmentsSpec extends UnitSpec with BeforeAndAfter{
   }
   
   "The platformAdmin" should "be able to create a class" in {
-    val x = courseClass.getUUID
+    val x = System.getProperty("TEST_MODE")
+    val y = System.getProperty("TEST_MODEx")
     val courseClassNew = courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass).asInstanceOf[CourseClass]
-    val x2 = courseClass.getUUID
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1 && mockHttpServletResponse.getStatus == 0 && courseClassNew != null && courseClassNew.getCourseVersionUUID == courseVersion.getUUID)
   } 
   
   "The platformAdmin" should "not be able to create a class with the same uuid" in {
-    val x3 = courseClass.getUUID
     courseClass.setName(randStr)
     courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass)
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1 && mockHttpServletResponse.getStatus != 0)
   }
   
   "The platformAdmin" should "not be able to create a class with the same name" in {
-    val x4 = courseClass.getUUID
     courseClass.setUUID(randUUID)
     courseClass.setName(className)
-    val x5 = courseClass.getUUID
     courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass)
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1 && mockHttpServletResponse.getStatus != 0)
   }

@@ -80,7 +80,7 @@ object EmailSender {
 
         System.out.println("Email sent!")
       }
-      case None => System.err.println(s"No SMTP configured. If it was, a email would have been sent to $to")
+      case None => System.err.println(s"No SMTP configured. If it was, an email would have been sent to $to")
     }
 
   
