@@ -22,7 +22,7 @@ import java.util.logging.Logger
 
 object EmailSender {
   val logger = Logger.getLogger("kornell.server.email")
-  
+
   val executor = Executors.newSingleThreadExecutor
 
   def sendmail(subject: String, to: String, body: String) =
@@ -71,14 +71,14 @@ object EmailSender {
 
       message.setContent(multipart)
 
-        val transport = session.getTransport
-        val username = smtp.get.username
-        val password = smtp.get.password
-        transport.connect(username, password)
-        
-        if(!"true".equals(Settings.get("TEST_MODE").orNull)){
-        	transport.sendMessage(message, Array(new InternetAddress(to)))
-        }
+      val transport = session.getTransport
+      val username = SMTP_USERNAME
+      val password = SMTP_PASSWORD
+      transport.connect(username, password)
+
+      if (!"true".equals(Settings.get("TEST_MODE").orNull)) {
+        transport.sendMessage(message, Array(new InternetAddress(to)))
+      }
 
       logger.finer(s"Email with subject [$subject] sent to [$to] by [$from]")
     }
@@ -94,21 +94,16 @@ object EmailSender {
     override def run: Unit = sendEmailSync(subject, from, to, replyTo, body, imgFile)
   })
 
-  private def getEmailSession = smtp.map { cfg =>
-    val props = new Properties()
-    props.put("mail.smtp.auth", "true")
-    props.put("mail.smtp.host", cfg.host)
-    props.put("mail.smtp.port", cfg.port)
-    props.put("mail.smtp.ssl.enable", "true");
-
-    props.put("mail.transport.protocol", "smtp");
-    /*
-    props.put("mail.smtp.starttls.enable", "true");
-    props.put("mail.smtp.starttls.required", "true");
-    */
-
-    Session.getDefaultInstance(props);
-  }
+  private def getEmailSession =
+    SMTP_HOST map { host =>
+      val props = new Properties()
+      props.put("mail.smtp.auth", "true")
+      props.put("mail.smtp.host", host)
+      props.put("mail.smtp.port", SMTP_PORT)
+      props.put("mail.smtp.ssl.enable", "true");
+      props.put("mail.transport.protoc ol", "smtp");
+      Session.getDefaultInstance(props);
+    }
 
   val DEFAULT_SMTP_FROM = "cdf@craftware.com.br"
   lazy val SMTP_HOST = Settings.get("SMTP_HOST")
@@ -118,12 +113,4 @@ object EmailSender {
   lazy val SMTP_FROM = Settings.get("SMTP_FROM").getOrElse(DEFAULT_SMTP_FROM)
   lazy val REPLY_TO = Settings.get("REPLY_TO")
   lazy val HEALTH_TO = SMTP_FROM
-  lazy val smtp: Option[SMTPConfig] = environmentCfg
-
-  lazy val environmentCfg: Option[SMTPConfig] = SMTP_HOST.map { host =>
-    new SMTPConfig(host, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD)
-  }
-
 }
-
-case class SMTPConfig(host: String, port: String, username: String, password: String)
