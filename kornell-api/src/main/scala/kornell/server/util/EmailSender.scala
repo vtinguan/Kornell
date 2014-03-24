@@ -96,6 +96,7 @@ object EmailSender {
 
   private def getEmailSession =
     SMTP_HOST map { host =>
+      println (s"Creating smtp session for host [$host]")
       val props = new Properties()
       props.put("mail.smtp.auth", "true")
       props.put("mail.smtp.host", host)
