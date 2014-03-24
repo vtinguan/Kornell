@@ -10,11 +10,13 @@ class ProbesResource {
   @GET
   @Path("sendEmail")
   def sendEmail = {
-    EmailSender.sendEmail("Hello from Kornell",
+    val msg = "Email sent at " + new Date(); 
+    EmailSender.sendEmailSync("Hello from Kornell",
       "cdf@craftware.com.br",
       "jfaerman@gmail.com",
-      "Email sent " + new Date(),
+      "jfaerman@gmail.com",
+      msg,
       null)
-    "Email Sent!"
+    msg
   }
 }
