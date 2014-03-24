@@ -26,9 +26,10 @@ object Migration {
     DataSources.JNDI match {
       case Success(_) => flyway.setDataSource(DataSources.KornellDS)
       case Failure(_) => DataSources.SYSPROPS match {
-        case Success(_) => flyway.setDataSource(Settings.get("JDBC_CONNECTION_STRING").orElse(Option(prop("JDBC_CONNECTION_STRING"))).get,
-          prop("JDBC_USERNAME"),
-          prop("JDBC_PASSWORD"))
+        case Success(_) => flyway.setDataSource(
+            prop("JDBC_CONNECTION_STRING"),
+            prop("JDBC_USERNAME"),
+            prop("JDBC_PASSWORD"))
         case Failure(_) => flyway.setDataSource(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD)
       }
     }

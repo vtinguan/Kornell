@@ -224,14 +224,14 @@ class EnrollmentsSpec extends UnitSpec with BeforeAndAfter{
   //TODO find a better way to do this, maybe use another database
   //either way, seeing this made me see how many constraints are missing on the database
   "This test" should "cleanup its own mess" in {
-    sql""" delete from Enrollment where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%') """.executeUpdate
+    sql""" delete from Enrollment where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%'); """.executeUpdate
     sql""" delete from Role where username in (select username from Password where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%')); """.executeUpdate
     sql""" delete from Password where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%'); """.executeUpdate
     sql""" delete from Person where email like '%[_test_]%' or cpf like '%[_test_]%'; """.executeUpdate
     sql""" delete from CourseClass where uuid like '[_test_]%'; """.executeUpdate
     sql""" delete from CourseVersion where uuid like '[_test_]%'; """.executeUpdate
     sql""" delete from Course where uuid like '[_test_]%'; """.executeUpdate
-    sql""" delete from Institution where uuid like '[_test_]%' limit 1000; """.executeUpdate
+    sql""" delete from Institution where uuid like '[_test_]%'; """.executeUpdate
     sql""" delete from Registration where person_uuid not in (select uuid from Person); """.executeUpdate
     sql""" delete from EnrollmentStateChanged where person_uuid not in (select uuid from Person); """.executeUpdate
   } 
