@@ -71,14 +71,14 @@ object EmailSender {
 
       message.setContent(multipart)
 
-      val transport = session.getTransport
-      val username = smtp.get.username
-      val password = smtp.get.password
-      transport.connect(username, password)
-      
-      //if (System.getProperty("TEST_MODE") == null || !System.getProperty("TEST_MODE").equals("true")) {
-        transport.sendMessage(message, Array(new InternetAddress(to)))
-      //}
+        val transport = session.getTransport
+        val username = smtp.get.username
+        val password = smtp.get.password
+        transport.connect(username, password)
+        
+        if(!"true".equals(Settings.get("TEST_MODE").orNull)){
+        	transport.sendMessage(message, Array(new InternetAddress(to)))
+        }
 
       logger.finer(s"Email with subject [$subject] sent to [$to] by [$from]")
     }

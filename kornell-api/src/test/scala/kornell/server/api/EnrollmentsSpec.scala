@@ -39,9 +39,9 @@ class EnrollmentsSpec extends UnitSpec with BeforeAndAfter{
 	val courseVersion = CourseVersionsRepo.create(Entities.newCourseVersion(randUUID, randStr, course.getUUID, randUUID, new Date, randStr))
 	val className = randStr
 	val classUUID = randUUID
-	val courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 1000)
-	val courseClass2 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 1000)
-	val courseClass3 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 1000)
+	val courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451)
+	val courseClass2 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451)
+	val courseClass3 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451)
 	val fullName = randName
   val email = randEmail
   val cpf = randStr
@@ -219,6 +219,21 @@ class EnrollmentsSpec extends UnitSpec with BeforeAndAfter{
     enrollment.setNotes(x)
     enrollmentResource.update(notAnAdminSecurityContext, mockHttpServletResponse, enrollment)
     assert(mockHttpServletResponse.getStatus != 0)
+  } 
+  
+  //TODO find a better way to do this, maybe use another database
+  //either way, seeing this made me see how many constraints are missing on the database
+  "This test" should "cleanup its own mess" in {
+    sql""" delete from Enrollment where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%'); """.executeUpdate
+    sql""" delete from Role where username in (select username from Password where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%')); """.executeUpdate
+    sql""" delete from Password where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%'); """.executeUpdate
+    sql""" delete from Person where email like '%[_test_]%' or cpf like '%[_test_]%'; """.executeUpdate
+    sql""" delete from CourseClass where uuid like '[_test_]%'; """.executeUpdate
+    sql""" delete from CourseVersion where uuid like '[_test_]%'; """.executeUpdate
+    sql""" delete from Course where uuid like '[_test_]%'; """.executeUpdate
+    sql""" delete from Institution where uuid like '[_test_]%'; """.executeUpdate
+    sql""" delete from Registration where person_uuid not in (select uuid from Person); """.executeUpdate
+    sql""" delete from EnrollmentStateChanged where person_uuid not in (select uuid from Person); """.executeUpdate
   } 
   
 }
