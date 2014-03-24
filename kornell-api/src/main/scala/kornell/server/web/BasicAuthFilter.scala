@@ -10,6 +10,7 @@ import kornell.core.util.StringUtils
 class BasicAuthFilter extends Filter { 
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
   val pubPaths = Set(
+    "/newrelic",  
     "/api",
     "/probes",
     "/checkup",

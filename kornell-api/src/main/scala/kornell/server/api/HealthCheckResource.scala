@@ -22,7 +22,5 @@ class HealthCheckResource {
     case Failure(ex) => serverError.entity(ex.getMessage).build
   }
 
-  def checkDatabase = Try {  sql"select 'Health Check'".executeQuery }
-   
-  
+  def checkDatabase = Try {  sql"select 'Health Check'".executeQuery } 
 }
