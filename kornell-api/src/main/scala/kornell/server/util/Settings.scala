@@ -15,8 +15,8 @@ object Settings {
     props
   }
 
-  private def fromProperties(implicit key: String) = properties map { _.getProperty(key) }
-  private def fromSystem(implicit key: String) = Option(System.getProperty(key))
-  private def fromEnv(implicit key: String) = Option(System.getenv(key))
+  def fromProperties(implicit key: String):Option[String] = properties flatMap {props => Option(props.getProperty(key))}
+  def fromSystem(implicit key: String):Option[String] = Option(System.getProperty(key))
+  def fromEnv(implicit key: String):Option[String] = Option(System.getenv(key))
 
 }
