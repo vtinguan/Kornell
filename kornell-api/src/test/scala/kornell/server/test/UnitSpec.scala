@@ -21,9 +21,9 @@ class UnitSpec extends FlatSpec with Matchers with OptionValues with Inside {
   
   def chars = Stream continually {Random.nextPrintableChar}
   def randStr(length: Int): String = chars take length mkString
-  def randStr: String = randStr(42)
+  def randStr: String = "[_test_]"+randStr(42)
+  def randUUID: String = "[_test_]"+UUID.randomUUID.toString.substring(8)
+  def randURL() = s"[_test_]https://${randStr}"
+  def randEmail = s"[_test_]${randStr(2)}@${randStr(5)}.com"
   def randName = randStr + " " + randStr
-  def randUUID: String = UUID.randomUUID.toString
-  def randURL() = s"https://${randStr}"
-  def randEmail = s"${randStr(10)}@${randStr(5)}.com"
 }

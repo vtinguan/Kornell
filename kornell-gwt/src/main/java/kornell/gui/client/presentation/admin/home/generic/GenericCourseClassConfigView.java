@@ -101,7 +101,7 @@ public class GenericCourseClassConfigView extends Composite {
 
 		// i18n
 		btnOK.setText("OK".toUpperCase());
-		btnCancel.setText("Cancelar".toUpperCase());
+		btnCancel.setText(isCreationMode ? "Cancelar".toUpperCase() : "Limpar".toUpperCase());
 		btnDelete.setText("Excluir".toUpperCase());
 
 		this.titleEdit.setVisible(!isCreationMode);

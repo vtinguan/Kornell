@@ -89,7 +89,7 @@ public class GenericCourseClassAdminsView extends Composite {
 
 		// i18n
 		btnOK.setText("OK".toUpperCase());
-		btnCancel.setText("Cancelar".toUpperCase());
+		btnCancel.setText("Limpar".toUpperCase());
 
 		this.courseClassTO = courseClassTO;
 		
@@ -192,6 +192,7 @@ public class GenericCourseClassAdminsView extends Composite {
 	    
 	    search.addKeyUpHandler(new KeyUpHandler() {
 	    	String currentSearch = "";
+	    	String previousSearch = "";
 	    	
 			Timer searchChangesTimer = new Timer() {
 				@Override
@@ -202,11 +203,12 @@ public class GenericCourseClassAdminsView extends Composite {
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				searchChangesTimer.cancel();
-				if(currentSearch.length() >= 1 && !currentSearch.equals(search.getText())){
+				currentSearch = search.getText();
+				if(currentSearch.length() >= 1 && !currentSearch.equals(previousSearch)){
+					searchChangesTimer.cancel();
 					searchChangesTimer.schedule(100);
 				}
-				currentSearch = search.getText();
+				previousSearch = currentSearch;
 			}
 		});
 	    
