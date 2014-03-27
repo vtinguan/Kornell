@@ -1,4 +1,5 @@
 package kornell.core.to;
+
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
@@ -15,5 +16,4 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<RegistrationRequestTO> newRegistrationRequestTO();
 	AutoBean<EnrollmentRequestTO> newEnrollmentRequestTO();
 	AutoBean<EnrollmentRequestsTO> newEnrollmentRequestsTO();
-	AutoBean<S3PolicyTO> newS3PolicyTO();
 }

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassAdminRole;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.People;
@@ -114,7 +113,6 @@ public class GenericCourseClassAdminsView extends Composite {
 		fieldPanelWrapper.add(formHelper.getImageSeparator());
 		
 		adminsFields.add(fieldPanelWrapper);
-		
 	}
 
 	private void searchChanged(String search) {
@@ -132,7 +130,7 @@ public class GenericCourseClassAdminsView extends Composite {
 								" (" + person.getFullName() + ")" : "");
 					oracle.add(oracleStr);
 					oraclePeople.put(username, person);
-					if(++i == 8) break;
+					if(++i == 10) break;
 				}
 			}
 		});		

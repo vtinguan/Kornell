@@ -10,12 +10,11 @@ import java.util.UUID
 import javax.ws.rs.core.SecurityContext
 import kornell.server.test.UnitSpec
 import kornell.server.repository.Entities
+import kornell.server.helper.SimpleInstitution
+import kornell.server.helper.MockSecurityContext
 
 @RunWith(classOf[JUnitRunner])
-class RegistrationSpec extends UnitSpec {
-  val userResource = new UserResource
-  val institution = Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false)
-  val mockHttpServletResponse = new MockHttpServletResponse(0, "")
+class RegistrationSpec extends UnitSpec with SimpleInstitution{
 
   "A new user" should "login sucessfully (even if not confirmed yet)." in {
     val fullName = randName

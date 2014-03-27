@@ -1,4 +1,4 @@
-package kornell.server.api
+package kornell.server.helper
 
 import java.security.Principal
 

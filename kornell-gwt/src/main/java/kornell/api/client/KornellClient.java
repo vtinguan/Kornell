@@ -11,7 +11,6 @@ import kornell.core.to.CoursesTO;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.RegistrationsTO;
-import kornell.core.to.S3PolicyTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.util.ClientProperties;
@@ -177,10 +176,6 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 						GWT.log("notes updated");
 					}
 				});
-	}
-
-	public void getS3PolicyTO(Callback<S3PolicyTO> cb) {
-		GET("/s3").sendRequest(null, cb);
 	}
 
 	@Override

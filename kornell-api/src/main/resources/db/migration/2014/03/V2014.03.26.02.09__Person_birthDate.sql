@@ -1,0 +1,1 @@
+ALTER TABLE Person MODIFY birthDate date;

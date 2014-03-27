@@ -1,6 +1,5 @@
-package kornell.server.api
+package kornell.server.helper
 
-import javax.ws.rs.core.SecurityContext
 import javax.servlet.http.HttpServletResponse
 
 class MockHttpServletResponse(var status: Int, var message: String) extends HttpServletResponse {

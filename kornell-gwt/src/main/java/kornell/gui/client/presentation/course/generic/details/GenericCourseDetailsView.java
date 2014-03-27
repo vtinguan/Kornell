@@ -345,11 +345,12 @@ public class GenericCourseDetailsView extends Composite {
 		if(!isEnrolled){
 			FlowPanel notEnrolledPanel = new FlowPanel();
 			notEnrolledPanel.addStyleName("notEnrolledPanel");
-			HTMLPanel panel = new HTMLPanel("Sua matríula ainda não foi aprovada pela instituição.<br><br> Você receberá um e-mail no momento da aprovação.<br>");
+			String text = "Sua matrícula ainda não foi aprovada pela instituição."
+					+ (Dean.getInstance().getCourseClassTO().getCourseClass().isEnrollWithCPF() ? "" : "<br><br> Você receberá um email no momento da aprovação.<br>");
+			HTMLPanel panel = new HTMLPanel(text);
 			notEnrolledPanel.add(panel);
 			
 			sidePanel.add(notEnrolledPanel);
-			//"Você receberá um email quando ela for aprovada."
 		}
 		
 		sidePanel.add(getHintsPanel());

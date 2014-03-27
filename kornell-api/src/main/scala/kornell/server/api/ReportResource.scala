@@ -6,7 +6,7 @@ import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
 import javax.ws.rs.core.Context
-import kornell.server.util.ReportGenerator
+import kornell.server.report.ReportGenerator
 
 @Path("/report")
 class ReportResource {

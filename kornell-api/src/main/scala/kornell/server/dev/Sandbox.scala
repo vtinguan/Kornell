@@ -1,6 +1,7 @@
 package kornell.server.dev
 
 import kornell.core.util.UUID
+import kornell.server.report.ReportGenerator
 
 object Sandbox extends App {
 
@@ -27,5 +28,8 @@ object Sandbox extends App {
     println(UUID.random)
     println(UUID.random)
     println(UUID.random)
+    
+    //ReportGenerator.generateCertificate2("839D06CA-6297-40E8-A39D-82DBED7970D9")
+    //ReportGenerator.generateCertificateByCourseClass("dd342fea-3210-4cb6-84f1-0b91fc4173dd")
   
 }

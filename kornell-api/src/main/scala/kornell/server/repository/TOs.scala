@@ -20,6 +20,7 @@ import kornell.core.entity.CourseVersion
 import kornell.core.to.CourseVersionsTO
 import kornell.core.to.EnrollmentRequestTO
 import kornell.core.to.EnrollmentRequestsTO
+import kornell.core.to.CertificateInformationTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -53,26 +54,7 @@ object TOs {
     val courseVersions = newCourseVersionsTO
     courseVersions.setCourseVersions(courseVersionsList asJava)
     courseVersions
-  }
-  
-  /*def newCourseClassTO(
-    courseUUID: String, code: String,
-    title: String, description: String,
-    objectives: String,
-    enrollmentUUID: String, enrolledOn: Date, 
-    personUUID: String, progress: String,
-    repository_uuid:String, notes: String) = {
-    val to = tos.newCourseClassTO.as
-    val prog = if (progress != null) new BigDecimal(progress) else null
-    val course = Entities.newCourse(courseUUID, code, title, description, objectives, repository_uuid)
-    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseUUID, personUUID, prog, notes,EnrollmentState.notEnrolled)
-    to setCourse(course)
-    to setEnrollment(enrollment)
-    val s3 = S3(to.getCourse.getRepositoryUUID)
-    to setDistributionURL( StringUtils.composeURL(s3.baseURL , s3.prefix))
-    to
-  }*/
- 
+  } 
 
   def newCourseClassesTO(l: List[CourseClassTO]) = {
     val to = tos.newCourseClassesTO.as
@@ -203,6 +185,18 @@ object TOs {
     to.setEnrollmentRequests(enrollmentRequests)
     to
   }
+ 
   
-  def newS3PolicyTO = tos.newS3PolicyTO.as
+  //def newCertificateInformationTO:CertificateInformationTO = tos.newCertificateInformationTO.as
+  def newCertificateInformationTO:CertificateInformationTO = new CertificateInformationTO
+  def newCertificateInformationTO(personFullName:String,personCPF:String,courseTitle: String, courseClassFinishedDate:Date,assetsURL:String, distributionPrefix:String):CertificateInformationTO = {
+    val to = newCertificateInformationTO
+    to.setPersonFullName(personFullName)
+    to.setPersonCPF(personCPF)
+    to.setCourseTitle(courseTitle)
+    to.setCourseClassFinishedDate(courseClassFinishedDate)
+    to.setAssetsURL(assetsURL)
+    to.setDistributionPrefix(distributionPrefix)
+    to
+  }
 }
