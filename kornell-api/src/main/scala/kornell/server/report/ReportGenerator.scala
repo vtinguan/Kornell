@@ -68,22 +68,24 @@ object ReportGenerator {
     val assetsURL: String = composeURL(certificateData.head.getAssetsURL(), certificateData.head.getDistributionPrefix(), "/reports")
     parameters.put("assetsURL", assetsURL + "/")
     val jasperPath = composeURL(assetsURL, "certificate.jasper")
-    //val jasperPrint = JasperFillManager.fillReportToFile("...certificate.jasper", parameters, collectionDS)
-    //JasperExportManager.exportReportToPdfFile(jasperPrint, "C://test.pdf");
 	  
   	//store one jasperfile per courseclass
-    val file: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + parameters.get("courseClassUUID") + ".jasper")
+    val file: File = new File("D:\\test.jasper");//System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle() + ".jasper")
     
-    val diff = new Date().getTime() - file.lastModified();
+    val diff = new Date().getTime - file.lastModified;
     //if(diff > 1 * 24 * 60 * 60 * 1000) //delete if older than 1 day
-		  file.delete()
+    if(file.exists)
+		  file.delete
 
-    if(!file.exists())
+    if(!file.exists)
     	FileUtils.copyURLToFile(new URL(jasperPath), file)
     
     val jasperReport = JRLoader.loadObject(file).asInstanceOf[JasperReport]
     
     JasperRunManager.runReportToPdf(jasperReport, parameters, collectionDS)
+    
+    //val jasperPrint = JasperFillManager.fillReportToFile(jasperPath, parameters, collectionDS)
+    //JasperExportManager.exportReportToPdfFile(jasperPrint, "C://test.pdf");
   }
   
 }
