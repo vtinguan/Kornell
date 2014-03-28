@@ -88,7 +88,7 @@ object S3 {
   val certificates = new S3("sa-east-1",
     null, null,
     USER_CONTENT_BUCKET,
-    "userconent/certificates", null)
+    "usercontent/certificates", null)
 
   implicit def toS3(rs: ResultSet) = new S3(
     rs.getString("region"),
