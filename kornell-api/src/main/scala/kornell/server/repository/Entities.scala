@@ -18,7 +18,8 @@ import java.util.Map
 import kornell.core.entity.CourseVersion
 import kornell.core.entity.Role
 import java.text.SimpleDateFormat
-import kornell.server.util.TimeUtil
+import kornell.server.util.ValueFactory
+import kornell.core.util.TimeUtil
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -35,7 +36,7 @@ object Entities {
         val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
 
     println(s"*#* Loaded birthdate of person [${uuid}] as [${sdf.format(birthDate)}] time [${birthDate.getTime}] zone offset [${birthDate.getTimezoneOffset()}] server timezone is [${System.getProperty("user.timezone")}]")
-    
+    val bday = ValueFactory.newDate
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
@@ -44,7 +45,7 @@ object Entities {
     person.setCompany(company)
     person.setTitle(title)
     person.setSex(sex)
-    person.setBirthDate(TimeUtil.newDate.fromJUD(birthDate))
+    person.setBirthDate(TimeUtil.fromJUD(bday,birthDate))
     person.setConfirmation(confirmation)
     person.setTelephone(telephone)
     person.setCountry(country)

@@ -12,8 +12,4 @@ public interface Date {
 	int getYear();
 
 	void setYear(int year);
-	
-	java.util.Date toJUD();
-	Date fromJUD(java.util.Date jud);
-	String toString();
 }

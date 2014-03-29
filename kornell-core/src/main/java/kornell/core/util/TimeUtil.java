@@ -1,11 +1,11 @@
-package kornell.core.value;
+package kornell.core.util;
 
-import com.google.web.bindery.autobean.shared.AutoBean;
+import kornell.core.value.Date;
 
-public class DateCategory {
+//TODO: Make this a GWT AutoBean Category
+public class TimeUtil {
 	@SuppressWarnings("deprecation")
-	public static java.util.Date toJUD(AutoBean<Date> datebean) {
-		Date date = datebean.as();
+	public static java.util.Date toJUD(Date date) {
 	    java.util.Date jud = new java.util.Date(0);
 	    jud.setYear(date.getYear());
 	    jud.setMonth(date.getMonth());
@@ -13,20 +13,19 @@ public class DateCategory {
 	    return jud;
 	}
 	
-	public static Date fromJUD(AutoBean<Date> datebean, java.util.Date jud) {
-		Date date = datebean.as();
+	
+	public static Date fromJUD(Date date, java.util.Date jud) {
 		date.setDay(jud.getDate());
 		date.setMonth(jud.getMonth());
 		date.setYear(jud.getYear());
 	    return date;
 	}
 	
-	public static String toString(AutoBean<Date> datebean) {
-		Date date = datebean.as();
+	public static String toString(Date date) {
 		return padded(date.getYear()) + "-"+ padded(date.getMonth()) + "-" + padded(date.getDay());
 	}
-	
-	public static String padded(int x){
+	private static String padded(int x){
 		return (x < 10 ? "0" : "") + x;
 	}
+	
 }

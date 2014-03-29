@@ -10,6 +10,7 @@ import scala.collection.JavaConverters._
 import kornell.core.entity.RoleType
 import java.text.SimpleDateFormat
 import java.text.DateFormat
+import kornell.core.util.TimeUtil
 
 class PersonRepo(val uuid: String) {
 
@@ -28,7 +29,7 @@ class PersonRepo(val uuid: String) {
     //TODO timezone issue 
     //person.getBirthDate.setHours(5)
     val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-    val msg = s"*#* Changing birth date of person [${person.getUUID()}] to [${sdf.format(person.getBirthDate())}] time [${person.getBirthDate().toJUD().getTime()}]"
+    val msg = s"*#* Changing birth date of person [${person.getUUID()}] to [${sdf.format(person.getBirthDate())}] time [${TimeUtil.toJUD( person.getBirthDate() ).getTime()}]"
     println(msg)
     logger.warning(msg)
     

@@ -12,6 +12,7 @@ import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
+import kornell.core.util.TimeUtil;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
@@ -363,7 +364,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 			SimpleDatePicker datePicker = new SimpleDatePicker();
 			if(isEditMode || isCurrentUser || isAdmin){
-				datePicker.setFields(user.getPerson().getBirthDate().toJUD());
+				datePicker.setFields(TimeUtil.toJUD(user.getPerson().getBirthDate()));
 			}
 			birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
 			fields.add(birthDate);
