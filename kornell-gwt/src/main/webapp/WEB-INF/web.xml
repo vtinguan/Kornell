@@ -14,15 +14,7 @@
 
 	<servlet>
 		<servlet-name>repositoryProxy</servlet-name>
-		<servlet-class>kornell.server.ProxyServlet</servlet-class>
-		<init-param>
-			<param-name>targetUri</param-name>
-			<param-value>http://localhost:8000</param-value>
-		</init-param>
-		<init-param>
-			<param-name>log</param-name>
-			<param-value>true</param-value>
-		</init-param>
+		<servlet-class>kornell.server.LocalRepositoryServlet</servlet-class>
 	</servlet>
 
 	<servlet>
