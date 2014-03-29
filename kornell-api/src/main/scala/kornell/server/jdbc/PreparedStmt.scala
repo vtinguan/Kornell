@@ -4,13 +4,15 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
-import java.util.Date
+import java.sql.{Date => SQLDate}
+import java.util.{Date => JDate}
+import kornell.core.value.{Date => KDate}
 import java.math.BigDecimal
-
 import scala.collection.mutable.ListBuffer
-
 import DataSources._
 import kornell.server.util.Settings
+import java.sql.Date
+import kornell.core.util.TimeUtil
 
 class PreparedStmt(query: String, params: List[Any]) {
 
@@ -29,7 +31,8 @@ class PreparedStmt(query: String, params: List[Any]) {
         case (p: String, i) => pstmt.setString(i + 1, p)
         case (p: Integer, i) => pstmt.setInt(i + 1, p)
         case (p: Double, i) => pstmt.setDouble(i + 1, p)
-        case (p: Date, i) => pstmt.setTimestamp(i + 1, new Timestamp(p.getTime))
+        case (p: JDate, i) => pstmt.setTimestamp(i + 1, new Timestamp(p.getTime))
+        case (p: KDate, i) => pstmt.setDate(i + 1, new SQLDate(TimeUtil.toJUD(p).getTime()) )
         case (p: BigDecimal, i) => pstmt.setBigDecimal(i + 1, p)
         case (p: Boolean, i) => pstmt.setBoolean(i + 1, p)
         //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 
