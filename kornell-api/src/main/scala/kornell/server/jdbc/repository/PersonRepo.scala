@@ -25,14 +25,7 @@ class PersonRepo(val uuid: String) {
 
   def get = sql"""select * from Person where uuid=$uuid""".first[Person]
 
-  def update(person: Person) = {
-    //TODO timezone issue 
-    //person.getBirthDate.setHours(5)
-    val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-    val msg = s"*#* Changing birth date of person [${person.getUUID()}] to [${sdf.format(person.getBirthDate())}] time [${TimeUtil.toJUD( person.getBirthDate() ).getTime()}]"
-    println(msg)
-    logger.warning(msg)
-    
+  def update(person: Person) = {    
     sql"""
 	    	update Person set fullName = ${person.getFullName},
 	    	email = ${person.getEmail}, company = ${person.getCompany}, title = ${person.getTitle},

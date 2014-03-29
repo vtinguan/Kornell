@@ -29,23 +29,21 @@ object Entities {
   def newPerson: Person = factory.newPerson.as
 
   def newPerson(uuid: String, fullName: String, lastPlaceVisited: String = null,
-      	email: String, company: String, title: String, sex: String, 
-      	birthDate: Date, confirmation: String, telephone: String, country: String, 
-      	state: String, city: String, addressLine1: String, addressLine2: String, 
-      	postalCode: String, cpf: String) = {
-        val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+    email: String, company: String, title: String, sex: String,
+    birthDate: Date, confirmation: String, telephone: String, country: String,
+    state: String, city: String, addressLine1: String, addressLine2: String,
+    postalCode: String, cpf: String) = {
 
-    println(s"*#* Loaded birthdate of person [${uuid}] as [${sdf.format(birthDate)}] time [${birthDate.getTime}] zone offset [${birthDate.getTimezoneOffset()}] server timezone is [${System.getProperty("user.timezone")}]")
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
     person.setLastPlaceVisited(lastPlaceVisited)
-	person.setEmail(email)
+    person.setEmail(email)
     person.setCompany(company)
     person.setTitle(title)
     person.setSex(sex)
-    person.setBirthDate(TimeUtil.fromJUD(bday,birthDate))
+    person.setBirthDate(TimeUtil.fromJUD(bday, birthDate))
     person.setConfirmation(confirmation)
     person.setTelephone(telephone)
     person.setCountry(country)
@@ -57,7 +55,7 @@ object Entities {
     person.setCPF(cpf)
     person
   }
-  
+
   def newPeople(people: List[Person]) = {
     val ps = factory.newPeople.as
     ps.setPeople(people.asJava)
@@ -85,13 +83,13 @@ object Entities {
     c.setInfoJson(infoJson)
     c
   }
-    
+
   def newEnrollments(enrollments: List[Enrollment]) = {
     val es = factory.newEnrollments.as
     es.setEnrollments(enrollments.asJava)
     es
   }
-  
+
   def newRoles(roles: List[Role]) = {
     val rs = factory.newRoles.as
     rs.setRoles(roles.asJava)
@@ -142,43 +140,42 @@ object Entities {
 
   def newRegistrations = factory.newRegistrations.as
 
-  
   lazy val newUserRole = {
     val role = factory.newRole().as
     role.setRoleType(RoleType.user)
     role.setUserRole(factory.newUserRole().as())
     role
   }
-  
-  def newPlatformAdminRole(username:String) = {
+
+  def newPlatformAdminRole(username: String) = {
     val role = factory.newRole().as
     role.setUsername(username)
     role.setRoleType(RoleType.platformAdmin)
     role.setPlatformAdminRole(factory.newPlatformAdminRole().as())
     role
   }
-  
-  def newInstitutionAdminRole(username:String, institutionUUID:String) = {
+
+  def newInstitutionAdminRole(username: String, institutionUUID: String) = {
     val role = factory.newRole().as
     role.setUsername(username)
     val institutionAdminRole = factory.newInstitutionAdminRole().as
     institutionAdminRole.setInstitutionUUID(institutionUUID)
-    role.setRoleType(RoleType.institutionAdmin)    
+    role.setRoleType(RoleType.institutionAdmin)
     role.setInstitutionAdminRole(institutionAdminRole)
     role
   }
-  
-  def newCourseClassAdminRole(username:String, courseClassUUID:String) = {
+
+  def newCourseClassAdminRole(username: String, courseClassUUID: String) = {
     val role = factory.newRole().as
     role.setUsername(username)
     val courseClassAdminRole = factory.newCourseClassAdminRole().as
     courseClassAdminRole.setCourseClassUUID(courseClassUUID)
-    role.setRoleType(RoleType.courseClassAdmin)    
+    role.setRoleType(RoleType.courseClassAdmin)
     role.setCourseClassAdminRole(courseClassAdminRole)
     role
   }
- 
-  def newCourseVersion(uuid:String,name:String,courseUUID:String,repositoryUUID:String,versionCreatedAt:Date = new Date,distributionPrefix:String)={
+
+  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String) = {
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
@@ -188,8 +185,8 @@ object Entities {
     version.setDistributionPrefix(distributionPrefix)
     version
   }
-  
-  def newCourseClass(uuid:String,name:String,courseVersionUUID:String,institutionUUID:String,requiredScore:BigDecimal,publicClass:Boolean,enrollWithCPF:Boolean,maxEnrollments:Integer) = {
+
+  def newCourseClass(uuid: String, name: String, courseVersionUUID: String, institutionUUID: String, requiredScore: BigDecimal, publicClass: Boolean, enrollWithCPF: Boolean, maxEnrollments: Integer) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -201,16 +198,16 @@ object Entities {
     clazz.setMaxEnrollments(maxEnrollments)
     clazz
   }
-  
-  def newWebRepository(uuid:String,distributionURL:String,prefix:String) = {
+
+  def newWebRepository(uuid: String, distributionURL: String, prefix: String) = {
     val webRepo = factory.newWebReposiory.as
     webRepo.setUUID(uuid)
     webRepo.setPrefix(prefix)
     webRepo.setDistributionURL(distributionURL)
     webRepo
   }
-  
-  def newActomEntries(enrollmentUUID:String,actomKey:String, entriesMap:Map[String,String]) = {
+
+  def newActomEntries(enrollmentUUID: String, actomKey: String, entriesMap: Map[String, String]) = {
     val entries = factory.newActomEntries.as
     entries.setActomKey(actomKey)
     entries.setEnrollmentUUID(enrollmentUUID)
