@@ -75,6 +75,7 @@ object TOs {
     repositoryUUID: String, 
     versionCreatedAt: Date,
     distributionPrefix:String,
+    contentSpec:String,
     //courseClass
     courseClassUUID: String,
     courseClassName: String,
@@ -93,7 +94,8 @@ object TOs {
           courseVersionName, 
           repositoryUUID, 
           versionCreatedAt, 
-          distributionPrefix, 
+          distributionPrefix,
+          contentSpec,
           courseClassUUID,
           courseClassName, 
           institutionUUID, 
@@ -122,6 +124,7 @@ object TOs {
     repositoryUUID: String, 
     versionCreatedAt: Date,
     distributionPrefix:String,
+    contentSpec:String,
     //courseClass
     courseClassUUID: String,
     courseClassName: String,
@@ -140,12 +143,12 @@ object TOs {
 	    val classTO = tos.newCourseClassTO.as
 	    val versionTO = tos.newCourseVersionTO.as
 	    val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
-	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt,distributionPrefix)
+	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt,distributionPrefix,contentSpec)
 	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID, requiredScore, publicClass, enrollWithCPF, maxEnrollments)
 	    val s3 = S3(version.getRepositoryUUID)
 	    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL , s3.prefix))
 	    versionTO.setCourse(course)
-	    versionTO.setCourseVersion(version)
+	    versionTO.setCourseVersion(version)	    
 	    classTO.setCourseVersionTO(versionTO)
 	    classTO.setCourseClass(clazz)
 	    if(enrollmentUUID != null){

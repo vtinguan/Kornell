@@ -43,4 +43,6 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<WebRepository> newWebReposiory();
 	
 	AutoBean<ActomEntries> newActomEntries();
+
+	AutoBean<EnrollmentProgress> newEnrollmentProgress();
 }

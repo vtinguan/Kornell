@@ -1,0 +1,1 @@
+alter table CourseVersion add column contentSpec varchar(255);

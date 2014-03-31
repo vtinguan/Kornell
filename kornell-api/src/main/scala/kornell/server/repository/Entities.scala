@@ -20,6 +20,7 @@ import kornell.core.entity.Role
 import java.text.SimpleDateFormat
 import kornell.server.util.ValueFactory
 import kornell.core.util.TimeUtil
+import kornell.core.entity.ContentSpec
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -175,7 +176,7 @@ object Entities {
     role
   }
 
-  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String) = {
+  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String, contentSpec:String) = {
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
@@ -183,6 +184,10 @@ object Entities {
     version.setRepositoryUUID(repositoryUUID);
     version.setVersionCreatedAt(versionCreatedAt)
     version.setDistributionPrefix(distributionPrefix)
+    Option(contentSpec) foreach { spec =>
+      val cSpec =  ContentSpec.valueOf(spec)
+      version.setContentSpec(cSpec);
+    }
     version
   }
 

@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kornell.core.util.StringUtils;
+
 public class LocalRepositoryServlet extends HttpServlet {
 	static final Pattern pattern = Pattern.compile("[/]?repository/([^/]*)/.*");
-	static final Map<String, Path> repoPaths = new HashMap<>();
+	static final Map<String, Path> repoPaths = new HashMap<String,Path>();
 	static final Path home = Paths.get(System.getProperty("user.home"));
 	static final Path dropbox = home.resolve("Dropbox");
 	static {	
@@ -38,15 +40,32 @@ public class LocalRepositoryServlet extends HttpServlet {
 		if(matcher.matches()){
 			String repositoryUUID = matcher.group(1);
 			Path repoPath = repoPaths.get(repositoryUUID);
-			Path file = repoPath.resolve(uri);
-			if (file.toFile().exists()){
-				Files.copy(file, resp.getOutputStream());
-			}else {
-				resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			}
+			if(repoPath != null){			
+				Path file = repoPath.resolve(uri);
+				if (file.toFile().exists()){
+					setContentTye(file,req,resp);
+					Files.copy(file, resp.getOutputStream());
+				}else {
+					resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+				}
+			}else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}else {
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
+	}
+
+	static final Map<String,String> mimeTypes = new HashMap<String,String>(){{
+		put(".html","text/html");
+	}};
+	private void setContentTye(Path file, HttpServletRequest req,
+			HttpServletResponse resp) {
+		String fname = file.toString();
+		String ext =  fname.substring(fname.lastIndexOf("."));
+		String type = mimeTypes.get(ext);
+		if(StringUtils.isSome(type)){
+			resp.setContentType(type);
+		}
+		
 	}
 	
 }

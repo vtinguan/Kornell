@@ -25,4 +25,7 @@ public interface Enrollment extends Entity{
 	
 	EnrollmentState getState();
 	void setState(EnrollmentState state);
+	
+	boolean isCompleted();
+	void setCompleted(boolean completed);
 }

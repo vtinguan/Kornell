@@ -17,11 +17,11 @@ class CourseClassesRepo {
 }
 
 object CourseClassesRepo {
-  
-  def apply(uuid:String) = CourseClassRepo(uuid)
-  
+
+  def apply(uuid: String) = CourseClassRepo(uuid)
+
   def create(courseClass: CourseClass) = {
-    if(courseClass.getUUID == null)
+    if (courseClass.getUUID == null)
       courseClass.setUUID(UUID.random)
     sql""" 
     	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,enrollWithCPF,maxEnrollments)
@@ -40,11 +40,11 @@ object CourseClassesRepo {
   def byInstitution(institutionUUID: String) =
     sql"""
     | select * from CourseClass where institution_uuid = $institutionUUID
-    """.map[CourseClass](toCourseClass) 
+    """.map[CourseClass](toCourseClass)
 
   private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = {
     TOs.newCourseClassesTO(
-		  sql"""
+      sql"""
 			select     
 				c.uuid as courseUUID, 
 			    c.code,
@@ -56,6 +56,7 @@ object CourseClassesRepo {
 			    cv.repository_uuid as repositoryUUID, 
 			    cv.versionCreatedAt as versionCreatedAt,
 		  		cv.distributionPrefix as distributionPrefix,
+      			cv.contentSpec as contentSpec,
 			    cc.uuid as courseClassUUID,
 			    cc.name as courseClassName,
 			    cc.institution_uuid as institutionUUID,
@@ -68,10 +69,9 @@ object CourseClassesRepo {
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid
 		    and cc.institution_uuid = ${institutionUUID}
 		  	order by c.title, cc.name;
-		""".map[CourseClassTO](toCourseClassTO)
-    )
+		""".map[CourseClassTO](toCourseClassTO))
   }
-    
+
   def byPersonAndInstitution(personUUID: String, institutionUUID: String) = {
     val courseClassesTO = getAllClassesByInstitution(institutionUUID)
     val classes = courseClassesTO.getCourseClasses().asScala
@@ -81,43 +81,42 @@ object CourseClassesRepo {
     courseClassesTO.setCourseClasses(classes.filter(isValidClass _).asJava)
     courseClassesTO
   }
-    
+
   def administratedByPersonOnInstitution(person: Person, institutionUUID: String, roles: List[Role]) = {
-	  val courseClassesTO = getAllClassesByInstitution(institutionUUID)
-	  val classes = courseClassesTO.getCourseClasses().asScala
-	  courseClassesTO.setCourseClasses(classes.filter(cc => isCourseClassAdmin(cc.getCourseClass().getUUID(), institutionUUID, roles)).asJava)
-	  courseClassesTO
+    val courseClassesTO = getAllClassesByInstitution(institutionUUID)
+    val classes = courseClassesTO.getCourseClasses().asScala
+    courseClassesTO.setCourseClasses(classes.filter(cc => isCourseClassAdmin(cc.getCourseClass().getUUID(), institutionUUID, roles)).asJava)
+    courseClassesTO
   }
-  
+
   private def isValidClass(cc: CourseClassTO): Boolean = {
-	  cc.getCourseClass().isPublicClass() || cc.getEnrollment() != null
+    cc.getCourseClass().isPublicClass() || cc.getEnrollment() != null
   }
-	
+
   private def isPlatformAdmin(roles: List[Role]) = {
     var hasRole: Boolean = false
-    roles.foreach(role => hasRole = hasRole 
-        || RoleCategory.isValidRole(role, RoleType.platformAdmin, null, null))
-	hasRole
+    roles.foreach(role => hasRole = hasRole
+      || RoleCategory.isValidRole(role, RoleType.platformAdmin, null, null))
+    hasRole
   }
-  
+
   private def isInstitutionAdmin(institutionUUID: String, roles: List[Role]) = {
     var hasRole: Boolean = isPlatformAdmin(roles)
-    roles.foreach(role => hasRole = hasRole 
-        || RoleCategory.isValidRole(role, RoleType.institutionAdmin, institutionUUID, null))
-	hasRole
+    roles.foreach(role => hasRole = hasRole
+      || RoleCategory.isValidRole(role, RoleType.institutionAdmin, institutionUUID, null))
+    hasRole
   }
 
   private def isCourseClassAdmin(courseClassUUID: String, institutionUUID: String, roles: List[Role]) = {
     var hasRole: Boolean = isInstitutionAdmin(institutionUUID, roles)
-    roles.foreach(role => hasRole = hasRole 
-        || RoleCategory.isValidRole(role, RoleType.courseClassAdmin, null, courseClassUUID))
-	hasRole
+    roles.foreach(role => hasRole = hasRole
+      || RoleCategory.isValidRole(role, RoleType.courseClassAdmin, null, courseClassUUID))
+    hasRole
   }
 
   private def bindEnrollment(personUUID: String, courseClassTO: CourseClassTO) = {
     val enrollment = EnrollmentsRepo.byCourseClassAndPerson(courseClassTO.getCourseClass().getUUID(), personUUID)
-    if(enrollment.isDefined)
-    	courseClassTO.setEnrollment(enrollment.get)
+    enrollment foreach courseClassTO.setEnrollment    
   }
 
 }

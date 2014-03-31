@@ -14,4 +14,8 @@ public interface CourseVersion extends Named {
 	
 	Date getVersionCreatedAt();
 	void setVersionCreatedAt(Date versionCreatedAt);
+	
+	ContentSpec getContentSpec();
+	void setContentSpec(ContentSpec contentSpec);
+	
 }

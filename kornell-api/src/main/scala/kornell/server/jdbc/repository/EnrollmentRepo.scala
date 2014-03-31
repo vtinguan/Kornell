@@ -7,6 +7,7 @@ import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
+import kornell.core.entity.ContentSpec._
 
 class EnrollmentRepo(enrollmentUUID: String) {
   lazy val finder = sql"""
@@ -14,8 +15,8 @@ class EnrollmentRepo(enrollmentUUID: String) {
       	| from Enrollment e where uuid = ${enrollmentUUID} 
 	    """
 
-  def get:Enrollment = finder.get[Enrollment]
-  
+  def get: Enrollment = finder.get[Enrollment]
+
   def first: Option[Enrollment] =
     finder.first[Enrollment]
 
