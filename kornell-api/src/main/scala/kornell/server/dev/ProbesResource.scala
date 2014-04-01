@@ -12,6 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @Path("/probes")
 @Produces(Array("text/plain"))
 class ProbesResource {
+  
   @GET
   @Path("putToS3Sync")
   def putToS3Sync = {

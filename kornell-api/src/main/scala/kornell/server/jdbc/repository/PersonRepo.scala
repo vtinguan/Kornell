@@ -8,6 +8,8 @@ import java.util.Date
 import kornell.core.entity.RoleCategory
 import scala.collection.JavaConverters._
 import kornell.core.entity.RoleType
+import java.text.SimpleDateFormat
+import java.text.DateFormat
 
 class PersonRepo(val uuid: String) {
 
@@ -24,7 +26,12 @@ class PersonRepo(val uuid: String) {
 
   def update(person: Person) = {
     //TODO timezone issue 
-    person.getBirthDate.setHours(5)
+    //person.getBirthDate.setHours(5)
+    val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+    val msg = s"*#* Changing birth date of person [${person.getUUID()}] to [${sdf.format(person.getBirthDate())}]"
+    println(msg)
+    logger.warning(msg)
+    
     sql"""
 	    	update Person set fullName = ${person.getFullName},
 	    	email = ${person.getEmail}, company = ${person.getCompany}, title = ${person.getTitle},

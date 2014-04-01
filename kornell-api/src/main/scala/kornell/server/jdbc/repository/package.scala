@@ -13,6 +13,7 @@ import kornell.core.entity.Person
 import kornell.core.entity.CourseVersion
 import kornell.core.entity.RoleType
 import kornell.server.repository.Entities
+import java.util.logging.Logger
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -24,6 +25,7 @@ import kornell.server.repository.Entities
  * find() => Return Collection[T], as the result of a query
  */
 package object repository {
+  val logger = Logger.getLogger("kornell.server.jdbc")
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 

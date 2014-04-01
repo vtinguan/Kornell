@@ -57,7 +57,7 @@ class UserResource{
   @GET
   @Path("{personUUID}")
   @Produces(Array(UserInfoTO.TYPE))
-  def getByUsername(implicit @Context sc: SecurityContext,
+  def getByPersonUUID(implicit @Context sc: SecurityContext,
 	    @Context resp:HttpServletResponse,
 	    @PathParam("personUUID") personUUID:String):Option[UserInfoTO] =
     AuthRepo.withPerson { p =>
