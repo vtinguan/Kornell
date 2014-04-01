@@ -363,7 +363,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 			SimpleDatePicker datePicker = new SimpleDatePicker();
 			if(isEditMode || isCurrentUser || isAdmin){
-				datePicker.setFields(user.getPerson().getBirthDate());
+				datePicker.setFields(user.getPerson().getBirthDate().toJUD());
 			}
 			birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
 			fields.add(birthDate);

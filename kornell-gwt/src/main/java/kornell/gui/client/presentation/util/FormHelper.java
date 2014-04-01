@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.util;
 import java.util.Date;
 import java.util.List;
 
+import kornell.core.value.ValueFactory;
 import kornell.gui.client.uidget.formfield.CheckBoxFormField;
 import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.uidget.formfield.PasswordTextBoxFormField;
@@ -358,13 +359,22 @@ public class FormHelper {
 		return value != null && !("-".equals(((ListBox)value).getValue()) || ((ListBox)value).getValue() == null);
 	}
 
-	public Date getDateFromString(String dateStr) {
+	static final ValueFactory valueFactory = GWT.create(ValueFactory.class);
+	
+	@SuppressWarnings("deprecation")
+	public kornell.core.value.Date getDateFromString(String dateStr) {
 		if(dateStr == null)
 			return null;
 		DateTimeFormat dtf = new DateTimeFormat("yyyy-MM-dd", new DefaultDateTimeFormatInfo()) {};  // <= trick here
-		Date date = dtf.parse(dateStr);
-		return date;
+		Date jdate = dtf.parse(dateStr);
+		kornell.core.value.Date kdate = valueFactory.newDate().as();
+		kdate.setDay(jdate.getDate());
+		kdate.setMonth(jdate.getMonth());
+		kdate.setYear(jdate.getYear());
+		return kdate;
 	}
+	
+	
 	
 	public TextBoxFormField createTextBoxFormField(String text){
 		TextBox fieldTextBox = new TextBox();

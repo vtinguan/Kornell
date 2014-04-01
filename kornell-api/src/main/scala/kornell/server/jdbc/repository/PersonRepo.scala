@@ -28,7 +28,7 @@ class PersonRepo(val uuid: String) {
     //TODO timezone issue 
     //person.getBirthDate.setHours(5)
     val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-    val msg = s"*#* Changing birth date of person [${person.getUUID()}] to [${sdf.format(person.getBirthDate())}] time [${person.getBirthDate().getTime()}] zone offset [${person.getBirthDate().getTimezoneOffset()}]"
+    val msg = s"*#* Changing birth date of person [${person.getUUID()}] to [${sdf.format(person.getBirthDate())}] time [${person.getBirthDate().toJUD().getTime()}]"
     println(msg)
     logger.warning(msg)
     

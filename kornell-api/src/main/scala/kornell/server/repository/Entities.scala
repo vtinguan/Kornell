@@ -18,6 +18,7 @@ import java.util.Map
 import kornell.core.entity.CourseVersion
 import kornell.core.entity.Role
 import java.text.SimpleDateFormat
+import kornell.server.util.TimeUtil
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -43,7 +44,7 @@ object Entities {
     person.setCompany(company)
     person.setTitle(title)
     person.setSex(sex)
-    person.setBirthDate(birthDate)
+    person.setBirthDate(TimeUtil.newDate.fromJUD(birthDate))
     person.setConfirmation(confirmation)
     person.setTelephone(telephone)
     person.setCountry(country)

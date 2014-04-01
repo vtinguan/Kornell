@@ -1,6 +1,6 @@
 package kornell.core.entity;
 
-import java.util.Date;
+import kornell.core.value.Date;
 
 public interface Person {
 	public static String TYPE = EntityFactory.PREFIX + "person+json";
