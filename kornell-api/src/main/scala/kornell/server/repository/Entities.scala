@@ -17,6 +17,7 @@ import kornell.server.jdbc.repository.PersonRepo
 import java.util.Map
 import kornell.core.entity.CourseVersion
 import kornell.core.entity.Role
+import java.text.SimpleDateFormat
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -30,11 +31,14 @@ object Entities {
       	birthDate: Date, confirmation: String, telephone: String, country: String, 
       	state: String, city: String, addressLine1: String, addressLine2: String, 
       	postalCode: String, cpf: String) = {
+        val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+
+    println(s"*#* Loaded birthdate of person [${uuid}] as [${sdf.format(birthDate)}] time [$birthDate.getTime] zone offset [${birthDate.getTimezoneOffset()}] ")
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
     person.setLastPlaceVisited(lastPlaceVisited)
-		person.setEmail(email)
+	person.setEmail(email)
     person.setCompany(company)
     person.setTitle(title)
     person.setSex(sex)
