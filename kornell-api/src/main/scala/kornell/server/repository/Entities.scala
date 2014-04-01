@@ -33,7 +33,8 @@ object Entities {
       	postalCode: String, cpf: String) = {
         val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
 
-    println(s"*#* Loaded birthdate of person [${uuid}] as [${sdf.format(birthDate)}] time [$birthDate.getTime] zone offset [${birthDate.getTimezoneOffset()}] ")
+    println(s"*#* Loaded birthdate of person [${uuid}] as [${sdf.format(birthDate)}] time [${birthDate.getTime}] zone offset [${birthDate.getTimezoneOffset()}] server timezone is [${System.getProperty("user.timezone")}]")
+    
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
