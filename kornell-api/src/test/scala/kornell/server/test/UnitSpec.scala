@@ -17,6 +17,6 @@ class UnitSpec extends FlatSpec with Matchers with OptionValues with Inside with
   //grant all on kornell_tests.* to kornell@'localhost' identified by '42kornell_tests42'; 
   System.setProperty("JDBC_USERNAME", "kornell")
   System.setProperty("JDBC_PASSWORD", "42kornell_tests42")
-
+ 
   Migration()
 }

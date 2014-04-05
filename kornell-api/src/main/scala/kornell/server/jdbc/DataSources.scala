@@ -11,7 +11,7 @@ import scala.util.Success
 import scala.util.Failure
 import SQL._
 
-object DataSources {
+object DataSources { 
   val log = Logger.getLogger(getClass.getName)
 
   def ping(cf: ConnectionFactory): ConnectionFactory = {

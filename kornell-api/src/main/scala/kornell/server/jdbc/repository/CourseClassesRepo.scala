@@ -20,7 +20,7 @@ object CourseClassesRepo {
 
   def apply(uuid: String) = CourseClassRepo(uuid)
 
-  def create(courseClass: CourseClass) = {
+  def create(courseClass: CourseClass):CourseClass = {
     if (courseClass.getUUID == null)
       courseClass.setUUID(UUID.random)
     sql""" 

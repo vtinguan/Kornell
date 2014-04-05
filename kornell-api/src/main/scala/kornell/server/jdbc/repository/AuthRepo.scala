@@ -86,7 +86,7 @@ object AuthRepo {
 
   def sha256(plain: String): String = DigestUtils.sha256Hex(plain)
 
-  def rolesOf(username: String) = sql"""
+  def rolesOf(username: String):Set[Role] = Set.empty ++ sql"""
   	select username,role,institution_uuid, course_class_uuid from Role where username = $username
   """.map[Role] { rs => toRole(rs) }
 

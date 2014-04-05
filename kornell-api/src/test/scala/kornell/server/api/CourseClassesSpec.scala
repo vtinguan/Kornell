@@ -34,7 +34,7 @@ import kornell.server.helper.SimpleInstitution
 class CourseClassesSpec extends UnitSpec with SimpleInstitution {
   
   "The platformAdmin" should "be able to create a class" in {
-    val courseClassNew = courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass).asInstanceOf[CourseClass]
+    val courseClassNew = courseClassesResource.create(platformAdminSecurityContext, courseClass).asInstanceOf[CourseClass]
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
     assert(mockHttpServletResponse.getStatus == 0)
     assert(courseClassNew != null)
@@ -42,24 +42,24 @@ class CourseClassesSpec extends UnitSpec with SimpleInstitution {
   } 
   
   "The platformAdmin" should "not be able to create a class with the same uuid" in {
-    courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass)
+    courseClassesResource.create(platformAdminSecurityContext, courseClass)
     courseClass.setName(randStr)
-    courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass)
+    courseClassesResource.create(platformAdminSecurityContext, courseClass)
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
     assert(mockHttpServletResponse.getStatus != 0)
   }
   
   "The platformAdmin" should "not be able to create a class with the same name" in {
-    courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass)
+    courseClassesResource.create(platformAdminSecurityContext, courseClass)
     courseClass.setUUID(randUUID)
     courseClass.setName(className)
-    courseClassesResource.create(platformAdminSecurityContext, mockHttpServletResponse, courseClass)
+    courseClassesResource.create(platformAdminSecurityContext, courseClass)
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
     assert(mockHttpServletResponse.getStatus != 0)
   }
   
   "The institutionAdmin" should "be able to create a class" in {
-    val courseClassNew = courseClassesResource.create(institutionAdminSecurityContext, mockHttpServletResponse, courseClass).asInstanceOf[CourseClass]
+    val courseClassNew = courseClassesResource.create(institutionAdminSecurityContext, courseClass).asInstanceOf[CourseClass]
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
     assert(mockHttpServletResponse.getStatus == 0)
     assert(courseClassNew != null)
@@ -67,7 +67,7 @@ class CourseClassesSpec extends UnitSpec with SimpleInstitution {
   }
   
   "A user that's not a platform or institutionAdmin" should "not be able to create a class" in {
-    courseClassesResource.create(notAnAdminSecurityContext, mockHttpServletResponse, courseClass3)
+    courseClassesResource.create(notAnAdminSecurityContext, courseClass3)
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 0)
     assert(mockHttpServletResponse.getStatus != 0)
   }

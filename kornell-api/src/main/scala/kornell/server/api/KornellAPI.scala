@@ -1,17 +1,17 @@
 package kornell.server.api
 
-import javax.ws.rs.core.Application
-import scala.collection.JavaConverters._
-import javax.ws.rs.ApplicationPath
-import kornell.server.ws.rs.AutoBeanWriter
-import org.jboss.resteasy.plugins.providers.DefaultTextPlain
 import java.util.Collections
+
+import scala.collection.JavaConverters.setAsJavaSetConverter
+
+import javax.ws.rs.core.Application
+import kornell.server.dev.ProbesResource
+import kornell.server.ws.rs.AutoBeanWriter
+import kornell.server.ws.rs.TOReader
+import kornell.server.ws.rs.exception.NoSuchElementMapper
+import kornell.server.ws.rs.reader.EntityReader
 import kornell.server.ws.rs.reader.EventsReader
 import kornell.server.ws.rs.reader.LOMReader
-import kornell.server.ws.rs.reader.EntityReader
-import kornell.server.ws.rs.TOReader
-import kornell.server.dev.ProbesResource
-import kornell.server.ws.rs.exception.NoSuchElementMapper
 import kornell.server.ws.rs.writer.BooleanWriter
 
 class KornellAPI extends Application {
