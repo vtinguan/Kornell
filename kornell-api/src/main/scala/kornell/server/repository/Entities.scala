@@ -85,7 +85,7 @@ object Entities {
     c
   }
 
-  def newEnrollments(enrollments: List[Enrollment]) = {
+  implicit def toEnrollments(enrollments: List[Enrollment]) = {
     val es = factory.newEnrollments.as
     es.setEnrollments(enrollments.asJava)
     es

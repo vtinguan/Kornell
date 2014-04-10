@@ -14,6 +14,7 @@ import kornell.core.entity.CourseVersion
 import kornell.core.entity.RoleType
 import kornell.server.repository.Entities
 import java.util.logging.Logger
+import kornell.core.util.UUID
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -113,5 +114,7 @@ package object repository {
     }
     role
   }
+  
+
 
 }

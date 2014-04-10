@@ -5,13 +5,11 @@ case class StringErr(val e: String) extends Err
 case object RequirementNotMet extends Err
 
 
-
 abstract class Conditional[+T] {    
   def isPassed: Boolean
   def get: T
   def err: Err
   def requiring(newcond: => Boolean, e: => Err = RequirementNotMet): Conditional[T]
-  //def requiring(c: Condition): Conditional[T] = requiring(c._1, c._2)
   def or(newcond: => Boolean, e: => Err = RequirementNotMet): Conditional[T]
 }
 
@@ -44,9 +42,7 @@ object Failed {
 }
 
 object Conditional {
-
   implicit def toConditional[T](expr: => T) = Conditional(expr)
   implicit def toErr(s: String) = new StringErr(s)
   def apply[T](expr: => T) = new Passed(expr)
-
 }

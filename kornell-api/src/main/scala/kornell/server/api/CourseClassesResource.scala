@@ -16,39 +16,22 @@ import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.server.util.Conditional.toConditional
 import kornell.core.to.CourseClassesTO
-import kornell.server.util.Errors
-import kornell.server.util.Errors
+import kornell.server.util.Errors._
 
 @Path("courseClasses")
 class CourseClassesResource {
 
-  //TODO: Cache 
-
-  @Path("{uuid}")
-  def getCourseClassResource(@PathParam("uuid") uuid: String)(implicit sc:SecurityContext) = 
-    CourseClassResource(uuid) 
-  
- 
-
-  //TODO: Refactor: auth,excep
-  //TOOD: Error cases
-  //TODO: Test
-  //resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to create a class without platformAdmin or institutionAdmin rights.");
-  //case ioe: MySQLIntegrityConstraintViolationException => resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
   @PUT
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
   def create(implicit @Context sc: SecurityContext, courseClass: CourseClass) = {
     CourseClassesRepo.create(courseClass)
-  }.requiring(isPlatformAdmin, Errors.UserNotInRole )
-   .or(isInstitutionAdmin(courseClass.getInstitutionUUID) , Errors.UserNotInRole)
+  }.requiring(isPlatformAdmin, UserNotInRole)
+    .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
 
-  /*
-    Require.PlatformAdmin
-      .or(Require.InstitutionAdmin(courseClass.getInstitutionUUID))
-      .map 
-      .get
-*/
+  @Path("{uuid}")
+  def getCourseClassResource(@PathParam("uuid") uuid: String)(implicit sc: SecurityContext) =
+    CourseClassResource(uuid)
 
   @GET
   @Produces(Array(CourseClassesTO.TYPE))

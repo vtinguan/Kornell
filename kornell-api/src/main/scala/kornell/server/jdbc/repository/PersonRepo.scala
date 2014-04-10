@@ -19,7 +19,7 @@ class PersonRepo(val uuid: String) {
     PersonRepo.this
   }
 
-  def registerOn(institution_uuid: String): RegistrationRepo = {
+  def registerOn(institution_uuid: String): RegistrationRepo = { 
     (RegistrationRepo(PersonRepo.this, institution_uuid)).register
   }
 

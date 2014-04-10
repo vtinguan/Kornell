@@ -92,4 +92,4 @@ class PreparedStmt(query: String, params: List[Any]) {
   def get[T](implicit conversion: ResultSet => T): T = first(conversion).get
   
   override def toString = query
-} 
+}

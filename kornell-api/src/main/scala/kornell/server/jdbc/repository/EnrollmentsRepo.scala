@@ -2,26 +2,26 @@ package kornell.server.jdbc.repository
 
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
-import kornell.server.jdbc.SQL.SQLHelper
-import kornell.server.jdbc.SQL.randomUUID
-import kornell.server.repository.Entities.newEnrollments
+import kornell.server.jdbc.SQL._
+import kornell.server.repository.Entities._
+import kornell.core.entity.Enrollments
 
 object EnrollmentsRepo {
 
-  def byCourseClass(courseClassUUID: String) = newEnrollments(
-    sql"""
+  //QCON: Implicit conversion: Good or Evil?
+  def byCourseClass(courseClassUUID: String):Enrollments = sql"""
 	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
       	| from Enrollment e join Person p on e.person_uuid = p.uuid
         | where e.class_uuid = ${courseClassUUID}
         | order by e.state desc, p.fullName, p.email
-	    """.map[Enrollment](toEnrollment))
+	    """.map[Enrollment]
 
   def byPerson(personUUID: String) =
     sql"""
 	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
       	| from Enrollment e join Person p on e.person_uuid = p.uuid where
         | e.person_uuid = ${personUUID}
-	    """.map[Enrollment](toEnrollment)
+	    """.map[Enrollment]
 
   def byCourseClassAndPerson(courseClassUUID: String, personUUID: String): Option[Enrollment] =
     sql"""
@@ -38,11 +38,11 @@ object EnrollmentsRepo {
         | where e.person_uuid = ${personUUID}
 	    | and e.state = ${state.toString()}
         | order by e.state desc, p.fullName, p.email
-	    """.map[Enrollment](toEnrollment)
+	    """.map[Enrollment]
 
   def create(enrollment: Enrollment) = {
-    if(enrollment.getUUID == null)
-    	enrollment.setUUID(randomUUID)
+    if (enrollment.getUUID == null)
+      enrollment.setUUID(randomUUID)
     sql""" 
     	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state)
     	values(
