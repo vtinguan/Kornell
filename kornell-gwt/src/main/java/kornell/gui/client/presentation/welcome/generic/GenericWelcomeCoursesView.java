@@ -97,17 +97,16 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 
 	private String displayCourses;
 
-	private final EventBus eventBus = new SimpleEventBus();
-
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
-	public static final TOFactory toFactory = GWT.create(TOFactory.class);
+	public TOFactory toFactory;
 	private WelcomeView.Presenter presenter;
 
 	public GenericWelcomeCoursesView(EventBus bus, KornellSession session,
-			PlaceController placeCtrl) {
+			PlaceController placeCtrl, TOFactory toFactory) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
+		this.toFactory = toFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
 	}

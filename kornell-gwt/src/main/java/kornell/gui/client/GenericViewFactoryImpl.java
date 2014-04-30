@@ -128,7 +128,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(clientFactory.getEventBus(), clientFactory.getKornellSession(), clientFactory.getPlaceController());
+		return new GenericWelcomeView(clientFactory.getEventBus(), clientFactory.getKornellSession(), clientFactory.getPlaceController(), clientFactory.getTOFactory());
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package kornell.gui.client.presentation.welcome.generic;
 
-import kornell.api.client.KornellClient;
 import kornell.api.client.KornellSession;
+import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.MenuLeftWelcomeEvent;
 import kornell.gui.client.event.MenuLeftWelcomeEventHandler;
@@ -34,6 +34,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	private final EventBus bus;
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private WelcomeView.Presenter presenter;
+	private TOFactory toFactory;
 	
 	private GenericMenuLeftView menuLeftView;	
 	private GenericWelcomeCoursesView coursesView;
@@ -47,9 +48,10 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	private static String PROFILE_VIEW = constants.profile();
 		
 	
-	public GenericWelcomeView(EventBus bus, KornellSession session, PlaceController placeCtrl) {
+	public GenericWelcomeView(EventBus bus, KornellSession session, PlaceController placeCtrl, TOFactory toFactory) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
+		this.toFactory = toFactory;
 		this.bus = bus;
 		initWidget(uiBinder.createAndBindUi(this));
 		
@@ -101,7 +103,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	}
 
 	private Widget getCoursesView() {
-		coursesView = new GenericWelcomeCoursesView(bus, session, placeCtrl);
+		coursesView = new GenericWelcomeCoursesView(bus, session, placeCtrl, toFactory);
 		coursesView.setPresenter(presenter);
 		return coursesView;
 	}
