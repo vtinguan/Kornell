@@ -25,7 +25,7 @@ public class CourseClassClient extends RESTClient {
 	}
 
 	public void getAdmins(Callback<Roles> cb) {
-		GET("courseClasses",courseClassUUID,"admins").go(cb);
+		GET("courseClasses",courseClassUUID,"admins").withContentType(CourseClass.TYPE).go(cb);
 	}
 
 	public void updateAdmins(Roles roles, Callback<Roles> cb) {

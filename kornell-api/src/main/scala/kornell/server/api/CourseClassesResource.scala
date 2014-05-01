@@ -29,9 +29,10 @@ class CourseClassesResource {
   }.requiring(isPlatformAdmin, UserNotInRole)
     .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
 
+  //def get(@PathParam("uuid") uuid:String):PersonResource = new PersonResource(uuid) 
+  
   @Path("{uuid}")
-  def getCourseClassResource(@PathParam("uuid") uuid: String)(implicit sc: SecurityContext) =
-    CourseClassResource(uuid)
+  def get(@PathParam("uuid") uuid: String):CourseClassResource = CourseClassResource(uuid)
 
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
