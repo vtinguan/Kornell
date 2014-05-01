@@ -3,7 +3,7 @@ package kornell.core.lom;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContentsCategory {
+public class ContentsOps {
 	//TODO: bind directly to Contents.collectActoms
 	public static List<Actom> collectActoms(Contents contents) {
 		List<Actom> actoms = new ArrayList<Actom>();

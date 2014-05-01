@@ -6,7 +6,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
-import kornell.core.lom.ContentsCategory;
+import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
@@ -314,7 +314,7 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void setContents(Contents contents) {
-		this.actoms = ContentsCategory.collectActoms(contents);
+		this.actoms = ContentsOps.collectActoms(contents);
 	}
 
 	@Override

@@ -19,6 +19,9 @@ import java.io.InputStream
 import kornell.core.util.StringUtils._
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.auth.AWSCredentials
+import java.io.BufferedInputStream
+import com.google.gwt.http.client.URL
+import java.net.URL
 class S3(regionName: String,
   val accessKey: String,
   val secretKey: String,
@@ -26,12 +29,10 @@ class S3(regionName: String,
   val prefix: String,
   distributionURL: String) {
 
-  
-
   val region = Region.getRegion(Regions.fromName(regionName))
-  
+
   //TODO: Option instead of null checks
-  val creds:AWSCredentials = if (accessKey != null)
+  val creds: AWSCredentials = if (accessKey != null)
     new BasicAWSCredentials(accessKey, secretKey)
   else if (getClass().getResourceAsStream("/AwsCredentials.properties") != null)
     new ClasspathPropertiesFileCredentialsProvider().getCredentials()
@@ -58,7 +59,6 @@ class S3(regionName: String,
     .flatten(_.getObjectSummaries.asScala)
     .map(_.getKey)
 
-
   def put(key: String, value: String) =
     s3.putObject(bucket, composeURL(prefix, key), new ByteArrayInputStream(value.getBytes()), null)
 
@@ -74,6 +74,13 @@ class S3(regionName: String,
     s3.getObject(bucket, prefix + "/" + key)
 
   def source(ditributionPrefix: String, key: String) = Source.fromURL(url(ditributionPrefix, key), "utf-8")
+
+  def inputStream(ditributionPrefix: String, key: String) = {
+    val keyURL = new java.net.URL(url(ditributionPrefix, key))
+    val urlConnection = keyURL.openConnection
+    val in = new BufferedInputStream(urlConnection.getInputStream());
+    in
+  }
 
   def url(ditributionPrefix: String, key: String) = composeURL(baseURL, prefix, ditributionPrefix, key)
 

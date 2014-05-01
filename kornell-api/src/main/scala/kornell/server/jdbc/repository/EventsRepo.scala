@@ -11,6 +11,7 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.util.EmailService
 import java.text.SimpleDateFormat
 import kornell.server.util.Settings
+import kornell.server.cep.EnrollmentCEP
 
 
 object EventsRepo {
@@ -18,13 +19,17 @@ object EventsRepo {
   
   def newEnrollmentStateChanged = events.newEnrollmentStateChanged.as
   
-  def logActomEntered(event: ActomEntered) = sql"""
+  def logActomEntered(event: ActomEntered) = {
+    sql"""
     insert into ActomEntered(uuid,eventFiredAt,enrollmentUUID,actomKey) 
     values(${event.getUUID},
   		   ${event.getEventFiredAt},
            ${event.getEnrollmentUUID},
 		   ${event.getActomKey}); 
 	""".executeUpdate
+	
+	EnrollmentCEP.onProgress(event.getEnrollmentUUID)
+  }
 
   
   def logAttendanceSheetSigned(event: AttendanceSheetSigned) = { 

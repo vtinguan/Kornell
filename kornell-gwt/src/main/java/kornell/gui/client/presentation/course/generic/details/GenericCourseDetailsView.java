@@ -10,7 +10,7 @@ import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
 import kornell.core.lom.ContentFormat;
 import kornell.core.lom.Contents;
-import kornell.core.lom.ContentsCategory;
+import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
@@ -102,7 +102,7 @@ public class GenericCourseDetailsView extends Composite {
 
 	private void setContents(Contents contents) {
 		this.contents = contents;
-		this.actoms = ContentsCategory.collectActoms(contents);
+		this.actoms = ContentsOps.collectActoms(contents);
 		//fireProgressChangeEvent();
 	}
 

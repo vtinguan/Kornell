@@ -8,7 +8,7 @@ import kornell.core.event.EnrollmentStateChanged
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.EventsRepo
 import kornell.core.event.AttendanceSheetSigned
-
+//TODO: Why are these returning Unit?
 @Path("events")
 class EventsResource {
   

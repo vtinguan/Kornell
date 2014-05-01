@@ -28,9 +28,14 @@ trait AutoBeanReader extends MessageBodyReader[Any] {
     arg3: MediaType,
     arg4: MultivaluedMap[String, String],
     in: InputStream): Any = {
-    val text = Source.fromInputStream(in).getLines().mkString("")
-    val bean = AutoBeanCodex.decode(getAutoBeanFactory, clazz, text)
-    bean.as
+    val src = Source.fromInputStream(in)
+    if (! src.isEmpty) {
+      val lines = src.getLines()
+      val text = lines.mkString("")
+      val bean = AutoBeanCodex.decode(getAutoBeanFactory, clazz, text)
+      bean.as
+    } else null
+
   }
 
 }

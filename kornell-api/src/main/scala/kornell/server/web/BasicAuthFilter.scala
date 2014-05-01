@@ -30,7 +30,8 @@ class BasicAuthFilter extends Filter {
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
     (sreq, sres) match {
-      case (hreq: HttpServletRequest, hres: HttpServletResponse) => doFilter(hreq, hres, chain)
+      case (hreq: HttpServletRequest, hres: HttpServletResponse) =>  
+        doFilter(hreq, hres, chain)
     }
 
   def hasCredentials(req: HttpServletRequest):Boolean =
@@ -52,7 +53,7 @@ class BasicAuthFilter extends Filter {
     isOption || isPublic
   }
 
-  def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
+  def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {   
     val auth = req.getHeader("X-KNL-A");
     if (auth != null && auth.length() > 0) {
       try {

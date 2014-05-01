@@ -25,6 +25,7 @@ import javax.ws.rs.DELETE
 import kornell.core.entity.RoleCategory
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import javax.servlet.http.HttpServletResponse
+import kornell.server.repository.ContentRepository
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -36,88 +37,75 @@ class CourseClassResource(uuid: String) {
     AuthRepo.withPerson { person =>
       //CourseClasses(uuid).byPerson(person.getUUID)
     }
-  
+
   @PUT
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
   def update(implicit @Context sc: SecurityContext,
-      @Context resp: HttpServletResponse, courseClass: CourseClass) = AuthRepo.withPerson{ p =>
-        val roles = (Set.empty ++ AuthRepo.rolesOf(sc.getUserPrincipal.getName)).asJava
-		    if(!(RoleCategory.isPlatformAdmin(roles) ||
-				        RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID)))
-		    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
-		    else
-					try { 
-						CourseClassRepo(uuid).update(courseClass)
-					} catch {
-						case ioe: MySQLIntegrityConstraintViolationException => 
-						  resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
-					}
+    @Context resp: HttpServletResponse, courseClass: CourseClass) = AuthRepo.withPerson { p =>
+    val roles = (Set.empty ++ AuthRepo.rolesOf(sc.getUserPrincipal.getName)).asJava
+    if (!(RoleCategory.isPlatformAdmin(roles) ||
+      RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID)))
+      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
+    else
+      try {
+        CourseClassRepo(uuid).update(courseClass)
+      } catch {
+        case ioe: MySQLIntegrityConstraintViolationException =>
+          resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
+      }
   }
-  
+
   @DELETE
   @Produces(Array(CourseClass.TYPE))
   def delete(implicit @Context sc: SecurityContext,
-      @Context resp: HttpServletResponse) = AuthRepo.withPerson{ p =>
-        val courseClass = CourseClassRepo(uuid).get
-        val roles = (Set.empty ++ AuthRepo.rolesOf(sc.getUserPrincipal.getName)).asJava
-        if(courseClass == null)
-		    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Can't delete a class that doesn't exist.");
-        else if(!(RoleCategory.isPlatformAdmin(roles) ||  
-				        RoleCategory.isInstitutionAdmin(roles, CourseClassRepo(uuid).get.getInstitutionUUID)))
-		    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
-		    else
-					try { 
-						CourseClassRepo(uuid).delete(uuid)
-						courseClass
-					} catch {
-						case ioe: MySQLIntegrityConstraintViolationException => 
-						  resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
-					}
+    @Context resp: HttpServletResponse) = AuthRepo.withPerson { p =>
+    val courseClass = CourseClassRepo(uuid).get
+    val roles = (Set.empty ++ AuthRepo.rolesOf(sc.getUserPrincipal.getName)).asJava
+    if (courseClass == null)
+      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Can't delete a class that doesn't exist.");
+    else if (!(RoleCategory.isPlatformAdmin(roles) ||
+      RoleCategory.isInstitutionAdmin(roles, CourseClassRepo(uuid).get.getInstitutionUUID)))
+      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
+    else
+      try {
+        CourseClassRepo(uuid).delete(uuid)
+        courseClass
+      } catch {
+        case ioe: MySQLIntegrityConstraintViolationException =>
+          resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
+      }
   }
 
-  @Produces(Array(Contents.TYPE)) 
+  @Produces(Array(Contents.TYPE))
   @Path("contents")
   @GET
   def getLatestContents(implicit @Context sc: SecurityContext): Contents =
-    AuthRepo.withPerson { person =>
-      val classRepo = CourseClassesRepo(uuid)
-      val versionRepo = classRepo.version
-      val version = versionRepo.get
-      val repositoryUUID = version.getRepositoryUUID();
-      val repo = S3(repositoryUUID)
-      /*val contents = if (repo.exists("imsmanifest.xml")) {
-        null
-      }else{ 
-      }*/
-      val structureSrc = repo.source(version.getDistributionPrefix(),"structure.knl")
-      val structureText = structureSrc.mkString("")
-      val baseURL = repo.baseURL
-      val visited = classRepo.actomsVisitedBy(person)
-      val contents = ContentsParser.parse(baseURL, repo.prefix + "/" +version.getDistributionPrefix() , structureText, visited)
-
-      //contents.setCourseClass(classRepo.get)
-      contents
+    //TODO: Refactor to Option.map
+    AuthRepo.withPerson { person =>            
+      ContentRepository.findKNLVisitedContent(uuid,person)
     }
-  
+
   @PUT
   @Consumes(Array(Roles.TYPE))
   @Produces(Array(Roles.TYPE))
   @Path("admins")
   def updateAdmins(implicit @Context sc: SecurityContext, roles: Roles) =
-	  AuthRepo.withPerson { person => {
-    	 CourseClassRepo(uuid).updateAdmins(roles)
-	  }
-  }
-  
+    AuthRepo.withPerson { person =>
+      {
+        CourseClassRepo(uuid).updateAdmins(roles)
+      }
+    }
+
   @GET
   @Produces(Array(Roles.TYPE))
   @Path("admins")
   def getAdmins(implicit @Context sc: SecurityContext) =
-	  AuthRepo.withPerson { person => {
-    	 CourseClassRepo(uuid).getAdmins
-	  }
-  }
+    AuthRepo.withPerson { person =>
+      {
+        CourseClassRepo(uuid).getAdmins
+      }
+    }
 
 }
 

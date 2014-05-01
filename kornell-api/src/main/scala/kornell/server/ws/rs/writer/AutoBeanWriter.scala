@@ -36,15 +36,12 @@ class AutoBeanWriter extends MessageBodyWriter[Any] {
     mediaType: MediaType,
     httpHeaders: MultivaluedMap[java.lang.String, java.lang.Object],
     out: java.io.OutputStream) {
-    println("Outputting  "+ t)
     t match {
-      case Some(thing) => { println ("SOME"); outputPayload(thing,out) }
-      case Passed(block) => { println ("PASSED"); outputPayload(block,out) }
-      case Failed(err) => { println ("FAILED"); spitErr(err) }
-      case _ => { println ("OTHER"); outputPayload(t,out)}
+      case Some(thing) => {outputPayload(thing,out) }
+      case Passed(block) => {outputPayload(block,out) }
+      case Failed(err) => {spitErr(err) }
+      case _ => {outputPayload(t,out)}
     }
-
-    println("EOF")
   }
   
   def spitErr(e:Err) = {
@@ -55,7 +52,7 @@ class AutoBeanWriter extends MessageBodyWriter[Any] {
   private def outputPayload(content: Any,out:OutputStream) = {    
     val bean = AutoBeanUtils.getAutoBean(content)
     val payload = AutoBeanCodex.encode(bean).getPayload
-    println("Payloading "+content +" = " +payload)
+    //println("Payloading "+content +" = " +payload)
     out.write(payload.getBytes)
   }
 }

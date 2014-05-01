@@ -81,7 +81,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		String result = FALSE;
 		if (isCMIElement(key))
 			result = dataModel.setValue(key, value);
-		GWT.log("LMSSetValue [" + key + " = " + value + "] = " + result);
+		logger.finer("LMSSetValue [" + key + " = " + value + "] = " + result);
 		return result;
 	}
 

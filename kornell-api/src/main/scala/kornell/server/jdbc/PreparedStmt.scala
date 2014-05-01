@@ -4,15 +4,16 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
-import java.sql.{Date => SQLDate}
-import java.util.{Date => JDate}
-import kornell.core.value.{Date => KDate}
+import java.sql.{ Date => SQLDate }
+import java.util.{ Date => JDate }
+import kornell.core.value.{ Date => KDate }
 import java.math.BigDecimal
 import scala.collection.mutable.ListBuffer
 import DataSources._
 import kornell.server.util.Settings
 import java.sql.Date
 import kornell.core.util.TimeUtil
+import java.sql.SQLException
 
 class PreparedStmt(query: String, params: List[Any]) {
 
@@ -25,40 +26,43 @@ class PreparedStmt(query: String, params: List[Any]) {
   def prepared[T](fun: PreparedStatement => T): T =
     connected { conn =>
       val pstmt = conn.prepareStatement(query.stripMargin.trim)
-
-      def setQueryParam(param: Tuple2[Any, Int]) = param match {
-        case (null,i) => pstmt.setObject(i+1,null)
-        case (p: String, i) => pstmt.setString(i + 1, p)
-        case (p: Integer, i) => pstmt.setInt(i + 1, p)
-        case (p: Double, i) => pstmt.setDouble(i + 1, p)
-        case (p: JDate, i) => pstmt.setTimestamp(i + 1, new Timestamp(p.getTime))
-        case (p: KDate, i) => pstmt.setDate(i + 1, new SQLDate(TimeUtil.toJUD(p).getTime()) )
-        case (p: BigDecimal, i) => pstmt.setBigDecimal(i + 1, p)
-        case (p: Boolean, i) => pstmt.setBoolean(i + 1, p)
-        //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 
-        case (p, i) => throw new IllegalArgumentException(s"Can not set param [$p]")
+      
+      def setQueryParam(i:Int,param:Any) = try {
+        param match {
+          case null => pstmt.setObject(i, null)
+          case p: String => pstmt.setString(i, p)
+          case p: Integer => pstmt.setInt(i, p)
+          case p: Double => pstmt.setDouble(i, p)
+          case p: JDate => pstmt.setTimestamp(i, new Timestamp(p.getTime))
+          case p: KDate => pstmt.setDate(i, new SQLDate(TimeUtil.toJUD(p).getTime()))
+          case p: BigDecimal => pstmt.setBigDecimal(i, p)
+          case p: Boolean  => pstmt.setBoolean(i, p)
+          //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 
+          case _ => throw new IllegalArgumentException(s"Can not set param [$param]")
+        }
+      } catch {
+      	case e:SQLException => logger.severe(s"Failed to set param [${i}] value to [${param}] on query ${query}")
       }
 
       params
         .zipWithIndex
-        .foreach(setQueryParam)   
-      
-      logger.finer(s"Executing query [$query].")        
-        
+        .foreach(param => setQueryParam(param._2 + 1, param._1))
+
+      logger.finer(s"Executing query [$query].")
+
       try fun(pstmt)
       finally pstmt.close
     }
 
   def executeUpdate: Int = prepared { stmt => stmt.executeUpdate }
 
-  
-  def executeQuery[T](fun: ResultSet => T ): T = prepared { stmt =>
+  def executeQuery[T](fun: ResultSet => T): T = prepared { stmt =>
     val rs = stmt.executeQuery
     try fun(rs)
     finally rs.close
   }
-  
-  def executeQuery:Unit = executeQuery{ rs => () }
+
+  def executeQuery: Unit = executeQuery { rs => () }
 
   def foreach(fun: ResultSet => Unit): Unit = executeQuery { rs =>
     while (rs.next) fun(rs)
@@ -83,13 +87,13 @@ class PreparedStmt(query: String, params: List[Any]) {
   def isPositive: Boolean = executeQuery { rs =>
     rs.next && rs.getInt(1) > 0
   }
-  
+
   def getUUID = executeQuery { rs =>
     if (rs.next) rs.getString("uuid")
     else throw new IllegalStateException("Can not get on empty result")
   }
-  
+
   def get[T](implicit conversion: ResultSet => T): T = first(conversion).get
-  
+
   override def toString = query
 }

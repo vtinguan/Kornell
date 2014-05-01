@@ -15,7 +15,8 @@ import kornell.gui.client.event.ProgressEventHandler;
 import com.google.gwt.dom.client.Document;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class Dean implements ProgressEventHandler{
+
+public class Dean{
 	
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
@@ -40,8 +41,6 @@ public class Dean implements ProgressEventHandler{
 		this.bus = bus;
 		this.institution = institution;
 		this.session = session;
-		
-		bus.addHandler(ProgressEvent.TYPE, this);
 		
 		String url = institution.getAssetsURL();
 		if(url != null){
@@ -75,19 +74,7 @@ public class Dean implements ProgressEventHandler{
 		$wnd.document.getElementsByTagName('head')[0].appendChild(link);
 	}-*/;
 
-	@Override
-	public void onProgress(ProgressEvent event) {
-		UserInfoTO user = session.getCurrentUser();
-		Enrollment enrollment =  courseClassTO.getEnrollment();
-		enrollment.setProgress(event.getProgressPercent());
-		session.updateEnrollment(enrollment, new Callback<Enrollment>() {
-			@Override
-			public void ok(Enrollment enrollmentUpdated) {
-				//
-			}
-		});
-	}
-
+	
 	public Institution getInstitution() {
 		return institution;
 	}

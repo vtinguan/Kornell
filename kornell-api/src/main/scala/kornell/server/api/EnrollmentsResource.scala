@@ -26,7 +26,7 @@ import kornell.server.repository.Entities
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentsResource {
 
-  @Path("{uuid}")
+  @Path("{uuid}")	
   def get(@PathParam("uuid") uuid: String): EnrollmentResource = new EnrollmentResource(uuid)
   
   @POST
