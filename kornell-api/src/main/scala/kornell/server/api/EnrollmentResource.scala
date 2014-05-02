@@ -59,7 +59,7 @@ class EnrollmentResource(uuid: String) {
   @Path("contents")
   @Produces(Array(Contents.TYPE))
   def contents(implicit @Context sc: SecurityContext): Option[Contents] = first map { e =>
-    CourseClassResource(e.getCourseClassUUID()).getLatestContents(sc)
+    CourseClassResource(e.getCourseClassUUID).getLatestContents(sc)
   }
 
   @GET

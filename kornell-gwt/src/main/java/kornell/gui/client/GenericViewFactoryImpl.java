@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class GenericViewFactoryImpl implements ViewFactory {
 
 	private ClientFactory clientFactory;
-	
+
 	/* Views */
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
@@ -50,13 +50,13 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private ClassroomPresenter coursePresenter;
 	private CourseLibraryPresenter courseLibraryPresenter;
 	private SandboxPresenter sandboxPresenter;
-	
+
 	SimplePanel shell = new SimplePanel();
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 	}
-	
+
 	@Override
 	public void initGUI() {
 		final RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
@@ -71,32 +71,34 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		dockLayoutPanel.addStyleName("wrapper");
 		rootLayoutPanel.add(dockLayoutPanel);
 
-		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
-			@Override
-			public void onPlaceChange(PlaceChangeEvent event) {
-				setPlaceNameAsBodyStyle(event);
-				dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(),
-						!getSouthBarView().isVisible());
-				if (clientFactory.getPlaceController().getWhere() instanceof VitrinePlace) {
-					dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(),
-							0);
-				} else {
-					dockLayoutPanel.setWidgetSize(getMenuBarView().asWidget(),
-							45);
-					getMenuBarView().display();
-				}
-			}
+		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						setPlaceNameAsBodyStyle(event);
+						dockLayoutPanel.setWidgetHidden(
+								(Widget) getSouthBarView(), !getSouthBarView()
+										.isVisible());
+						if (clientFactory.getPlaceController().getWhere() instanceof VitrinePlace) {
+							dockLayoutPanel.setWidgetSize(getMenuBarView()
+									.asWidget(), 0);
+						} else {
+							dockLayoutPanel.setWidgetSize(getMenuBarView()
+									.asWidget(), 45);
+							getMenuBarView().display();
+						}
+					}
 
-			private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
-				String styleName = rootLayoutPanel.getStyleName();
-				if (!styleName.isEmpty())
-					rootLayoutPanel.removeStyleName(styleName);
-				String[] split = event.getNewPlace().getClass().getName()
-						.split("\\.");
-				String newStyle = split[split.length - 1];
-				rootLayoutPanel.addStyleName(newStyle);
-			}
-		});
+					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
+						String styleName = rootLayoutPanel.getStyleName();
+						if (!styleName.isEmpty())
+							rootLayoutPanel.removeStyleName(styleName);
+						String[] split = event.getNewPlace().getClass()
+								.getName().split("\\.");
+						String newStyle = split[split.length - 1];
+						rootLayoutPanel.addStyleName(newStyle);
+					}
+				});
 	}
 
 	@Override
@@ -116,7 +118,9 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public HomeView getHomeView() {
 		if (genericHomeView == null) {
-			genericHomeView = new GenericHomeView(clientFactory, clientFactory.getEventBus(), clientFactory.getKornellSession());
+			genericHomeView = new GenericHomeView(clientFactory,
+					clientFactory.getEventBus(),
+					clientFactory.getKornellSession());
 		}
 		return genericHomeView;
 	}
@@ -128,7 +132,10 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(clientFactory.getEventBus(), clientFactory.getKornellSession(), clientFactory.getPlaceController(), clientFactory.getTOFactory());
+		return new GenericWelcomeView(clientFactory.getEventBus(),
+				clientFactory.getKornellSession(),
+				clientFactory.getPlaceController(),
+				clientFactory.getTOFactory());
 	}
 
 	@Override
@@ -138,7 +145,8 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public ClassroomView getClassroomView() {
-		return new GenericClassroomView(clientFactory.getPlaceController(), clientFactory.getKornellSession(), clientFactory.getEventBus());
+		return new GenericClassroomView(clientFactory.getPlaceController(),
+				clientFactory.getKornellSession(), clientFactory.getEventBus());
 	}
 
 	@Override
@@ -159,17 +167,22 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public CourseLibraryView getCourseLibraryView() {
-		return new GenericCourseLibraryView(clientFactory.getEventBus(), clientFactory.getKornellSession(), clientFactory.getPlaceController());
+		return new GenericCourseLibraryView(clientFactory.getEventBus(),
+				clientFactory.getKornellSession(),
+				clientFactory.getPlaceController());
 	}
 
 	@Override
 	public ClassroomPresenter getClassroomPresenter() {
-		SequencerFactory rendererFactory = new SequencerFactoryImpl(clientFactory.getEventBus(),
-				clientFactory.getPlaceController(), clientFactory.getKornellSession());
+		SequencerFactory rendererFactory = new SequencerFactoryImpl(
+				clientFactory.getEventBus(),
+				clientFactory.getPlaceController(),
+				clientFactory.getKornellSession());
 		if (coursePresenter == null) {
 			ClassroomView activityView = getClassroomView();
-			coursePresenter = new ClassroomPresenter(activityView, clientFactory.getPlaceController(),
-					rendererFactory, clientFactory.getKornellSession(), clientFactory.getEventBus());
+			coursePresenter = new ClassroomPresenter(activityView,
+					clientFactory.getPlaceController(), rendererFactory,
+					clientFactory.getKornellSession());
 		}
 		return coursePresenter;
 	}

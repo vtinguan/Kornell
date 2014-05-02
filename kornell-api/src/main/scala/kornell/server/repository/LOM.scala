@@ -40,7 +40,7 @@ object LOM {
       case e: NumberFormatException => page.setIndex(-666)
     }
     
-    page.setKey(composeURL(prefix,key))
+    page.setKey(key)
     page.setURL(composeURL(baseURL,prefix,key))
     page    
   }

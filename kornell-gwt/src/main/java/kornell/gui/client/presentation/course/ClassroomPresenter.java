@@ -27,19 +27,16 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private PlaceController placeCtrl;
 	private SequencerFactory sequencerFactory;
 	private KornellSession session;
-	private EventBus bus;
 	private Contents contents;
-	private boolean sequencerInitialized = false;
 	private Sequencer sequencer;
 
 	public ClassroomPresenter(ClassroomView view,
 			PlaceController placeCtrl,
-			SequencerFactory seqFactory, KornellSession session, EventBus bus) {
+			SequencerFactory seqFactory, KornellSession session) {
 		this.view = view;
 		view.setPresenter(this);
 		this.placeCtrl = placeCtrl;
 		this.sequencerFactory = seqFactory;
-		this.bus = bus;
 		this.session = session;		
 	}
 
@@ -50,14 +47,17 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 			placeCtrl.goTo(new VitrinePlace());
 			return;
 		}
+		
 		view.asWidget().setVisible(false);
 		LoadingPopup.show();				
+		
 		session.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
 			@Override
 			public void ok(Contents contents) {
 				// check if user has a valid enrollment to this course
 				boolean isEnrolled = false;
 				UserInfoTO user = session.getCurrentUser();
+				//TODO: Consider moving this to the server
 				for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
 					if(enrollment.getUUID().equals(enrollmentUUID)){
 						Dean.getInstance().setCourseClassTO(enrollment.getCourseClassUUID());
