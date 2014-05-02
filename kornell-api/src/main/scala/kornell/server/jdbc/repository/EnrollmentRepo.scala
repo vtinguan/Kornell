@@ -63,7 +63,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
     setEnrollmentProgress(e, newProgressPerc)
   }
 
-  def findProgressMilestone(e: Enrollment, actomKey: String): Option[Int] =   
+  def findProgressMilestone(e: Enrollment, actomKey: String): Option[Int] =
     try {
       val actomLike = "%" + actomKey
       val enrollmentUUID = e.getUUID
@@ -73,20 +73,19 @@ class EnrollmentRepo(enrollmentUUID: String) {
 	where AE.enrollment_uuid = ${enrollmentUUID}
 		and AE.actomKey LIKE ${actomLike}
 		and AE.entryKey = 'cmi.core.lesson_location'
-  """.map[Integer]{rs => rs.getInt("progress")}
+  """.map[Integer] { rs => rs.getInt("progress") }
 
-      if(progress.isEmpty) None else Some(progress.head)    
-  }
+      if (progress.isEmpty) None else Some(progress.head)
+    }
 
   def updateSCORM12Progress(e: Enrollment) = {
     //TODO: Consider lesson_status
     val actomKeys = ContentRepository.findSCORM12Actoms(e.getCourseClassUUID)
-    val progresses = actomKeys
+    val progress = actomKeys
       .flatMap { actomKey => findProgressMilestone(e, actomKey) }
-    if (!progresses.isEmpty) {
-      val progress = progresses.max
-      setEnrollmentProgress(e, progress)
-    }
+      .foldLeft(1)(_ max _)
+
+    setEnrollmentProgress(e, progress)
   }
 
   def setEnrollmentProgress(e: Enrollment, newProgress: Int) = {
