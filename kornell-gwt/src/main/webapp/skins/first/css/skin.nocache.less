@@ -169,6 +169,7 @@ body {
 			tr{
 				background-color: @tableBackgroundColor;
 				font-size: 12px;
+				cursor: pointer;
 				td{
 					border: 0;
 					padding: 3px;
@@ -356,10 +357,14 @@ body {
 .courseClassAdminField{
 	height: auto !important;
 	width: 750px !important;
+	.labelPanel{
+		width: 180px;
+	}
 	.fieldPanel{
-		width: 400px;
+		width: 540px;
 		.textField{
 			float: left;
+			width: 400px;
 		}
 		.btnAction{
 			float: left;
@@ -371,6 +376,7 @@ body {
 			margin-bottom: 25px;
 			float: left;
 			height: 100px;
+			width: 414px;
 		}
 		.btnSelected{
 			float: left;
@@ -501,7 +507,7 @@ body {
 } 
 @media screen and (max-width: @wrapperWidth) {
 	.pnlRight{
-		@pnlRightWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
+		@pnlRightWidth: @wrapperWidthUnder990 - 18px;
 		width: @pnlRightWidth;
 		.btnPanel{
 			width: @pnlRightWidth;
@@ -511,10 +517,11 @@ body {
 		.pnlCoursesWrapper {
 			width: @pnlRightWidth;
 			.pnlCourses { 
-				width: @pnlRightWidth;
+				width: @pnlRightWidth + 30px;
 			}
 			.courseSummary {
-				width: 314px !important;
+			width: @pnlRightWidth !important;
+				//width: 314px !important;
 				.description {
 					overflow: hidden;
 				}

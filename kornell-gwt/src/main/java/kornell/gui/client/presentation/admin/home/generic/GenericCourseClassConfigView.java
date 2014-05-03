@@ -251,7 +251,7 @@ public class GenericCourseClassConfigView extends Composite {
 			maxEnrollments.setError("Insira a quantidade máxima de matrículas.");
 		} else if (!formHelper.isValidNumber(maxEnrollments.getFieldPersistText())) {
 			maxEnrollments.setError("Número inteiro inválido.");
-        } else if (Integer.parseInt(maxEnrollments.getFieldPersistText()) < presenter.getEnrollments().size()){
+    } else if (!isCreationMode && Integer.parseInt(maxEnrollments.getFieldPersistText()) < presenter.getEnrollments().size()){
 			maxEnrollments.setError("Menor que o número atual de matrículas.");
 		}
 
@@ -289,9 +289,8 @@ public class GenericCourseClassConfigView extends Composite {
 							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
 							courseClassTO = Dean.getInstance().getCourseClassTO();
 							presenter.updateCourseClass(courseClass.getUUID());
-					}
-					
-					@Override
+					}					
+					@Override 
 					public void unauthorized(String errorMessage){
 						LoadingPopup.hide();
 						name.setError("Já existe uma turma com esse nome.");
