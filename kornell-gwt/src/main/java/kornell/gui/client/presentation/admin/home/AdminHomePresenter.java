@@ -191,6 +191,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			saveEnrollments(createEnrollments());
 		}
 	}
+	
 
 	private boolean isUsernameValid(String email) {
 		return (!enrollWithCPF && formHelper.isEmailValid(email))
@@ -236,7 +237,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				batchEnrollmentErrors += enrollmentsA[i] + "\n";
 			}
 		}
-	}
+	} 
 
 	private EnrollmentRequestTO createEnrollment(String fullName, String email) {
 		EnrollmentRequestTO enrollmentRequestTO = toFactory
