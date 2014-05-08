@@ -112,6 +112,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		this.placeCtrl = placeCtrl;
 		this.toFactory = toFactory;
 		initWidget(uiBinder.createAndBindUi(this));
+		coursesPanel.setVisible(false);
 		initData();
 	}
 
@@ -146,7 +147,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		
 		if(tos.getCourseClasses().size() == 0){
 			coursesPanel.setVisible(false);
-			KornellNotification.show("Você não está matriculado em nenhuma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.INFO, 12000);
+			KornellNotification.show("Você não está matriculado em alguma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.INFO, 8000);
 		} else {
 			coursesPanel.setVisible(true);
 		}
