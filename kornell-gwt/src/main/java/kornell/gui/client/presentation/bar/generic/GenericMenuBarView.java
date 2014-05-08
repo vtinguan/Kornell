@@ -214,15 +214,15 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	public void display() {
 		displayButton(btnFake, "btnFake", "", false, "");
 		displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
-		displayButton(btnHome, "btnHome", "home", true, "");
+		displayButton(btnHome, "btnHome", "home", true, "Página Inicial");
 		displayButton(btnAdmin, "btnAdmin", "admin", true, "Administração");
 		displayButtonWithCount(btnNotifications, "btnNotifications",
 				"notifications", "countNotifications", 19);
 		displayButtonWithCount(btnMessages, "btnMessages", "messages",
 				"countMessages", 99);
-		displayButton(btnHelp, "btnHelp", "help", true, "");
+		displayButton(btnHelp, "btnHelp", "help", true, "Ajuda");
 		displayButton(btnMenu, "btnMenu", "MENU", false, "");
-		displayButton(btnExit, "btnExit", "SAIR", false, "");
+		displayButton(btnExit, "btnExit", "SAIR", false, "Encerrar sessão");
 	}
 
 	private void displayButtonWithCount(Button btn, final String buttonType,
