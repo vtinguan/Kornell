@@ -305,12 +305,12 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override
 			public String getValue(Enrollment enrollment) {
-				if(enrollWithCPF)
-					return enrollment.getPerson().getCPF();
-				else
+				if(enrollment.getPerson().getEmail() != null && !"".equals(enrollment.getPerson().getEmail()))
 					return enrollment.getPerson().getEmail();
+				else
+					return enrollment.getPerson().getCPF();
 			}
-		}, (enrollWithCPF?"CPF":"Email"));
+		}, "Email/CPF");
 
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override	
@@ -615,6 +615,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			identifierLabel.setText("CPF");
 			infoPanelEmail.addStyleName("shy");
 			infoPanelCPF.removeStyleName("shy");
+			infoPanelEmail.removeStyleName("shy");
 		} else {
 			identifierLabel.setText("Email");
 			infoPanelEmail.removeStyleName("shy");
