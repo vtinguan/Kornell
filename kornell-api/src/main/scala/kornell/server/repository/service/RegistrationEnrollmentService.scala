@@ -89,7 +89,7 @@ object RegistrationEnrollmentService {
     val password = regReq.getPassword
     val fullName = regReq.getFullName
 
-    PeopleRepo.getByUsername(email) match {
+    PeopleRepo.getByEmailOrCPF(email) match {
       case Some(one) => userUpdateExistingPerson(email, fullName, password, one)
       case None => userCreateNewPerson(email, fullName, password, institutionUUID)
     }
