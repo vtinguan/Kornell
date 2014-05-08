@@ -18,8 +18,10 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teacher;
 import kornell.gui.client.personnel.Teachers;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -42,6 +44,8 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
+	@UiField
+	FlowPanel coursesPanel;
 	@UiField
 	FlowPanel pnlInProgress;
 	@UiField
@@ -139,6 +143,14 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 
 	private void display(final CourseClassesTO tos) {
 		clearPanels();
+		
+		if(tos.getCourseClasses().size() == 0){
+			coursesPanel.setVisible(false);
+			KornellNotification.show("Você não está matriculado em nenhuma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.INFO, 12000);
+		} else {
+			coursesPanel.setVisible(true);
+		}
+		
 		for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
 			final GenericCourseSummaryView courseSummaryView = new GenericCourseSummaryView(
 					placeCtrl, courseClassTO, session);
