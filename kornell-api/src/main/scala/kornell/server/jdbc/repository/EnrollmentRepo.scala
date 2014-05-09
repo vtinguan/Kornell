@@ -16,9 +16,10 @@ import kornell.core.entity.ActomEntries
 
 class EnrollmentRepo(enrollmentUUID: String) {
   lazy val finder = sql"""
-	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
-      	| from Enrollment e where uuid = ${enrollmentUUID} 
-	    """
+  select e.uuid, e.enrolledOn, e.class_uuid,
+  e.person_uuid, e.progress, e.notes, e.state, e.lastProgressUpdate  
+  from Enrollment e where uuid = ${enrollmentUUID} 
+"""
 
   def get: Enrollment = finder.get[Enrollment]
 
@@ -34,7 +35,8 @@ class EnrollmentRepo(enrollmentUUID: String) {
     | e.person_uuid = ${enrollment.getPerson.getUUID},
     | e.progress = ${enrollment.getProgress},
     | e.notes = ${enrollment.getNotes},
-    | e.state = ${enrollment.getState.toString}
+    | e.state = ${enrollment.getState.toString},
+    | e.lastProgressUpdate = ${enrollment.getLastProgressUpdate}
     | where e.uuid = ${enrollment.getUUID}""".executeUpdate
     enrollment
   }
@@ -81,20 +83,22 @@ class EnrollmentRepo(enrollmentUUID: String) {
   def updateSCORM12Progress(e: Enrollment) = {
     //TODO: Consider lesson_status
     val actomKeys = ContentRepository.findSCORM12Actoms(e.getCourseClassUUID)
-    val progress = actomKeys
+    val progresses = actomKeys
       .flatMap { actomKey => findProgressMilestone(e, actomKey) }
-      .foldLeft(1)(_ max _)
+    val progress = progresses.foldLeft(1)(_ max _)
 
     setEnrollmentProgress(e, progress)
   }
 
   def setEnrollmentProgress(e: Enrollment, newProgress: Int) = {
     val currentProgress = e.getProgress
-    if (newProgress >= currentProgress) {
+    val isProgress = newProgress > currentProgress
+    val isValid = newProgress >= 0 && newProgress <= 100    
+    if (isValid && isProgress) {
       e.setProgress(newProgress)
       update(e)
     } else {
-      logger.warning(s"Ignored regress on enrollment [${e.getUUID}]")
+      logger.warning(s"Invalid progress [${currentProgress} to ${newProgress}] on enrollment [${e.getUUID}]")
     }
   }
 }

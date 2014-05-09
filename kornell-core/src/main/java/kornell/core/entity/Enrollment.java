@@ -25,4 +25,10 @@ public interface Enrollment extends Entity{
 	
 	EnrollmentState getState();
 	void setState(EnrollmentState state);
+	
+	Date getLastProgressUpdate();
+	void setLastProgressUpdate(Date lastProgressUpdate);
+	
+	Date getCompletionDate();
+	void setCompletionDate(Date completionDate);
 }

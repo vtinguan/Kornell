@@ -97,7 +97,7 @@ object Entities {
     rs
   }
 
-  def newEnrollment(uuid: String, enrolledOn: Date, courseClassUUID: String, personUUID: String, progress: Integer, notes: String, state: EnrollmentState): Enrollment = {
+  def newEnrollment(uuid: String, enrolledOn: Date, courseClassUUID: String, personUUID: String, progress: Integer, notes: String, state: EnrollmentState, lastProgressUpdate:Date = null): Enrollment = {
     val e = factory.newEnrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -106,6 +106,7 @@ object Entities {
     e.setProgress(progress)
     e.setNotes(notes)
     e.setState(state)
+    e.setLastProgressUpdate(lastProgressUpdate)
     e
   }
 

@@ -46,7 +46,8 @@ class ActomResource(enrollmentUUID: String, actomKey: String) {
   @Produces(Array(ActomEntries.TYPE))
   @PUT
   def putEntries(entries: ActomEntries) = if (entries != null) {
-    for ((key, value) <- entries.getEntries()) putValue(key, value)
+    val actomEntries = entries.getEntries
+    for ((key, value) <- actomEntries) putValue(key, value)
     //TODO: Recalculate progress only on progress changed
     EnrollmentCEP.onProgress(enrollmentUUID)
     entries
