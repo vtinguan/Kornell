@@ -247,6 +247,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			adminHomePanel.add(tabsPanel);
 			configPanel.clear();
 			configTab.setActive(false);
+			reportsPanel.clear();
+			reportsTab.setActive(false);
+			reportsView = null;
 			if(adminsTab != null)
 				adminsTab.setActive(false);
 			enrollmentsTab.setActive(true);
