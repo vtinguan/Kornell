@@ -13,6 +13,7 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class CMIDataModel extends CMICoreModel {
+	/*
 	boolean dirty;
 	private SCORM12Adapter api;
 	private EventBus bus;
@@ -78,7 +79,7 @@ public class CMIDataModel extends CMICoreModel {
 			final String elementKey,
 			final String value) {
 		entries.put(elementKey, value);
-		final Action onSet = element.getOnSet();
+		
 		api.onDirtyData(new Callback<ActomEntries>() {
 			@Override
 			public void ok(ActomEntries to) {
@@ -98,4 +99,6 @@ public class CMIDataModel extends CMICoreModel {
 	public Map<String, String> getValues() {
 		return entries;
 	}
+	*/
+	//TODO: Remove dead code
 }

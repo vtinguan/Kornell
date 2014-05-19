@@ -128,7 +128,7 @@ object RegistrationEnrollmentService {
   }
 
   private def createEnrollment(personUUID: String, courseClassUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
-    val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled))
+    val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled,null,null,null))
     EventsRepo.logEnrollmentStateChanged(
       UUID.random, new Date, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState)

@@ -13,32 +13,31 @@ import kornell.server.repository.ContentRepository
 import kornell.core.lom.ContentsOps
 import scala.collection.JavaConverters._
 import kornell.core.entity.ActomEntries
+import kornell.core.entity.Assessment
+import java.util.Date
 
+//TODO: Specific column names and proper sql
 class EnrollmentRepo(enrollmentUUID: String) {
-  lazy val finder = sql"""
-  select e.uuid, e.enrolledOn, e.class_uuid,
-  e.person_uuid, e.progress, e.notes, e.state, e.lastProgressUpdate  
-  from Enrollment e where uuid = ${enrollmentUUID} 
-"""
+  lazy val finder = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
 
   def get: Enrollment = finder.get[Enrollment]
 
   def first: Option[Enrollment] =
     finder.first[Enrollment]
 
-  def update(enrollment: Enrollment): Enrollment = {
-    val progress = enrollment.getProgress
+  def update(e: Enrollment): Enrollment = {
     sql"""
-    | update Enrollment e
-    | set e.enrolledOn = ${enrollment.getEnrolledOn},
-    | e.class_uuid = ${enrollment.getCourseClassUUID},
-    | e.person_uuid = ${enrollment.getPerson.getUUID},
-    | e.progress = ${enrollment.getProgress},
-    | e.notes = ${enrollment.getNotes},
-    | e.state = ${enrollment.getState.toString},
-    | e.lastProgressUpdate = ${enrollment.getLastProgressUpdate}
-    | where e.uuid = ${enrollment.getUUID}""".executeUpdate
-    enrollment
+    UPDATE Enrollment    
+     SET 
+				enrolledOn = ${e.getEnrolledOn},
+				progress = ${e.getProgress},
+				notes = ${e.getNotes},
+				state = ${e.getState.toString},
+				lastProgressUpdate = ${e.getLastProgressUpdate},
+				assessment = ${Option(e.getAssessment).map(_.toString).getOrElse(null)},
+				lastAssessmentUpdate = ${e.getLastAssessmentUpdate}
+      where uuid = ${e.getUUID} """.executeUpdate
+    e
   }
 
   def findGrades: List[String] = sql"""
@@ -47,6 +46,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
     	and entryKey = 'cmi.core.score.raw'
     """.map { rs => rs.getString("entryValue") }
 
+  //TODO: Convert to map/flatmat and dedup updateAssessment
   def updateProgress = for {
     e <- first
     cc <- CourseClassesRepo(e.getCourseClassUUID).first
@@ -93,14 +93,45 @@ class EnrollmentRepo(enrollmentUUID: String) {
   def setEnrollmentProgress(e: Enrollment, newProgress: Int) = {
     val currentProgress = e.getProgress
     val isProgress = newProgress > currentProgress
-    val isValid = newProgress >= 0 && newProgress <= 100    
+    val isValid = newProgress >= 0 && newProgress <= 100
     if (isValid && isProgress) {
+      e.setLastProgressUpdate(new Date)
       e.setProgress(newProgress)
       update(e)
     } else {
       logger.warning(s"Invalid progress [${currentProgress} to ${newProgress}] on enrollment [${e.getUUID}]")
     }
   }
+
+  //TODO: wrong impl: should be across all grades
+  def maxGradetoInt(rs: ResultSet): BigDecimal = rs.getBigDecimal("maxScore")
+  def findMaxScore(enrollmentUUID: String) = sql"""
+  		SELECT  MAX(CAST(entryValue AS DECIMAL(7,5))) as maxScore
+  		FROM ActomEntries
+  		WHERE enrollment_uuid = ${enrollmentUUID}
+  		AND entryKey = 'cmi.core.score.raw'
+  """.first(maxGradetoInt)
+
+  def updateAssessment = first map { e =>
+    val cc = first.flatMap { e => CourseClassRepo(e.getCourseClassUUID).first }
+    val requiredScore: Option[BigDecimal] = cc.map { _.getRequiredScore }
+    requiredScore map { reqScore =>
+      val maxScore = findMaxScore(e.getUUID)
+      maxScore.map { mScore =>
+        val isUnassessed = e.getAssessment() == null
+        if (isUnassessed) {
+          val assessment = if (mScore.compare(reqScore) >= 0)
+            Assessment.PASSED
+          else
+            Assessment.FAILED
+          e.setAssessment(assessment)
+          e.setLastAssessmentUpdate(new Date)
+          update(e)
+        }
+      }
+    }
+  }
+
 }
 
 object EnrollmentRepo {

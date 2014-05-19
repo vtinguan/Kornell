@@ -99,7 +99,7 @@ class EnrollmentsSpec extends UnitSpec with SimpleInstitution {
   }  
   
   "A user" should "be able to request enrollment to a class" in {
-    val enrollment = Entities.newEnrollment(randUUID, null, courseClass.getUUID, notAnAdmin.getUUID, null, null, EnrollmentState.requested)
+    val enrollment = Entities.newEnrollment(randUUID, null, courseClass.getUUID, notAnAdmin.getUUID, null, null, EnrollmentState.requested,null,null,null)
     enrollmentsResource.create(notAnAdminSecurityContext, enrollment)
     
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)

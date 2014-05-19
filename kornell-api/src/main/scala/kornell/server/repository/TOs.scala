@@ -111,6 +111,7 @@ object TOs {
           null)
     }
   
+  //TODO: Smelling...
   def newCourseClassTO(
     //course
     courseUUID: String, 
@@ -153,7 +154,7 @@ object TOs {
 	    classTO.setCourseClass(clazz)
 	    if(enrollmentUUID != null){
 		    val prog = if (progress != null) Integer.parseInt(progress) else 0
-		    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseClassUUID, personUUID, prog, notes,EnrollmentState.valueOf(enrollmentState))
+		    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseClassUUID, personUUID, prog, notes,EnrollmentState.valueOf(enrollmentState),null,null,null)
 		    classTO.setEnrollment(enrollment)
 	    }
 	    classTO

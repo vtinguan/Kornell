@@ -1,25 +1,32 @@
 package kornell.scorm.client.scorm12;
 
 import static kornell.scorm.client.scorm12.Scorm12.logger;
+
+import java.util.Map;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.entity.ActomEntries;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
+
+	/**
+	 * How much time a client can stay unsynced with the server after setting a data model value, in milliseconds. 
+	 */
+	private static final int DIRTY_TOLERANCE = 2000;
 
 	private String lastError = NoError;
 
 	private String currentEnrollmentUUID;
 	private String currentActomKey;
 
-	private CMIDataModel dataModel;
+	private CMITree dataModel = new CMINode();
 
 	private KornellClient client;
 
@@ -34,9 +41,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	public String LMSInitialize(String param) {
 		String result = TRUE;
 		if (dataModel == null) {
-			logger.warning("Can not initialize API Adapter without a Data Model");
-			// TODO: Wait for data model
-			result = FALSE;
+			logger.warning("LMS initialized without a data model ready.");
 		}
 		logger.finer("LMSInitialize[" + param + "] = " + result);
 		return result;
@@ -63,9 +68,13 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 
 	public String LMSCommit(String param) {
 		String result = TRUE;
-		onDirtyData(null);
+		syncOnLMSCommit();
 		logger.finer("LMSCommit[" + param + "] = " + result);
 		return result;
+	}
+
+	private void syncOnLMSCommit() {
+		sync();		
 	}
 
 	private boolean isCMIElement(String param) {
@@ -79,10 +88,42 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 
 	public String LMSSetString(String key, String value) {
 		String result = FALSE;
-		if (isCMIElement(key))
+		if (isCMIElement(key)){
 			result = dataModel.setValue(key, value);
+			scheduleSync();
+		}
 		logger.finer("LMSSetValue [" + key + " = " + value + "] = " + result);
 		return result;
+	}
+
+	private void scheduleSync() {
+		(new Timer() {
+      public void run() {
+       syncAfterSet();
+      }
+
+			private void syncAfterSet() {
+				sync();
+			}
+    }).schedule(DIRTY_TOLERANCE);		
+	}
+	
+	
+	
+	private void sync() {
+		 class Scrub extends Callback<ActomEntries>{
+			@Override
+			public void ok(ActomEntries to) {
+				//TODO: Scrub only verified
+				dataModel.scrub();
+			}
+		}
+		
+		if(dataModel != null && dataModel.isDirty()){
+			client.enrollment(currentEnrollmentUUID)
+				.actom(currentActomKey)
+				.put(CMITree.collectDirty(dataModel), new Scrub());
+		}
 	}
 
 	@Override
@@ -106,45 +147,29 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	}-*/;
 
 	private void refreshDataModel(ActomEnteredEvent event) {
-		if (dataModel != null)
-			putDataModel(new Callback<ActomEntries>() {
-				@Override
-				public void ok(ActomEntries to) {
-					logger.finest("Saved data model for [enrollment:"+to.getEnrollmentUUID()+",actomKey:"+to.getActomKey()+"] with ["+to.getEntries().size()+"] entries");
-
-				}
-			});
+		syncBeforeLoadinNewActom();
 		this.currentActomKey = event.getActomKey();
-		this.currentEnrollmentUUID = event.getEnrollmentUUID();
-		dataModel = null;
-		getDataModel();
+		this.currentEnrollmentUUID = event.getEnrollmentUUID();		
+		loadDataModel();
 	}
 
-	private void getDataModel() {
+	private void syncBeforeLoadinNewActom() {
+		sync();		
+	}
+
+	private void loadDataModel() {
 		client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
 				.get(new Callback<ActomEntries>() {
 					@Override
 					public void ok(ActomEntries to) {
-						dataModel = new CMIDataModel(SCORM12Adapter.this, bus,
-								to.getEntries());
-						logger.finest("Loaded data model for [enrollment:"+to.getEnrollmentUUID()+",actomKey:"+to.getActomKey()+"] with ["+to.getEntries().size()+"] entries");
+						dataModel = CMITree.create(to.getEntries());
+						logger.finest("Loaded data model for [enrollment:"
+								+ to.getEnrollmentUUID() + ",actomKey:"
+								+ to.getActomKey() + "] with ["
+								+ to.getEntries().size() + "] entries");						
 					}
 				});
 	}
 
-	private void putDataModel(Callback<ActomEntries> callback) {
-		if (dataModel != null)
-			client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
-					.put(dataModel.getValues(), callback);
-	}
-
-	public void onDirtyData(final Callback<ActomEntries> callback) {
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				putDataModel(callback);
-			}
-		});
-	}
 
 }

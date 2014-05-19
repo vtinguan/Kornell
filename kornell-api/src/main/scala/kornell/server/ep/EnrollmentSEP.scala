@@ -1,14 +1,20 @@
-package kornell.server.cep
+package kornell.server.ep
 
 import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.core.entity.ContentSpec._
 
-object EnrollmentCEP {
-  //TODO: Consider new query (join) or Slick
-  //TODO: ASYNC / NOTIFY
+/**
+ * Simple Event Processing
+ */
+object EnrollmentSEP {
+
   def onProgress(enrollmentUUID: String) = 
-    EnrollmentRepo(enrollmentUUID).updateProgress    
+    EnrollmentRepo(enrollmentUUID).updateProgress
+    
+  def onAssessment(enrollmentUUID: String) = 
+    EnrollmentRepo(enrollmentUUID).updateAssessment
+    
 
 }

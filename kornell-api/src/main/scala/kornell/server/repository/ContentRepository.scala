@@ -12,9 +12,8 @@ import javax.xml.xpath.XPathConstants
 import java.io.ByteArrayInputStream
 
 object ContentRepository {
-  
-  
-  def findKNLVisitedContent(courseClassUUID:String, person:Person) = {
+
+  def findKNLVisitedContent(courseClassUUID: String, person: Person) = {
     val classRepo = CourseClassesRepo(courseClassUUID)
     val visited = classRepo.actomsVisitedBy(person)
     val versionRepo = classRepo.version
@@ -27,27 +26,29 @@ object ContentRepository {
     val contents = ContentsParser.parse(baseURL, repo.prefix + "/" + version.getDistributionPrefix(), structureText, visited)
     contents
   }
-  
-  lazy val builderFactory = DocumentBuilderFactory.newInstance
-  lazy val builder = builderFactory.newDocumentBuilder
-  lazy val xPath = XPathFactory.newInstance().newXPath()
+
   val expression = "//resource/@href"
-  lazy val expr = xPath.compile(expression) 
-    
-  def findSCORM12Actoms(courseClassUUID:String) = {
+  lazy val xPath = XPathFactory.newInstance().newXPath()
+  lazy val expr = xPath.compile(expression)
+  
+  def findSCORM12Actoms(courseClassUUID: String) = {
+    /* i wish they were thread safe */
+    val builderFactory = DocumentBuilderFactory.newInstance
+    val builder = builderFactory.newDocumentBuilder
+    /* </rant> */
     val classRepo = CourseClassesRepo(courseClassUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
     val repositoryUUID = version.getRepositoryUUID();
     val repo = S3(repositoryUUID)
-	val structureIn = repo.inputStream(version.getDistributionPrefix(), "imsmanifest.xml")	
-	val document = builder.parse(structureIn)	
-	val result = ListBuffer[String]()
-	val nodes:NodeList = expr.evaluate(document, XPathConstants.NODESET).asInstanceOf[NodeList]
-	for (i <- 0 until nodes.getLength) {
-		result += nodes.item(i).getFirstChild.getNodeValue 
+    val structureIn = repo.inputStream(version.getDistributionPrefix(), "imsmanifest.xml")
+    val document = builder.parse(structureIn)
+    val result = ListBuffer[String]()
+    val nodes: NodeList = expr.evaluate(document, XPathConstants.NODESET).asInstanceOf[NodeList]
+    for (i <- 0 until nodes.getLength) {
+      result += nodes.item(i).getFirstChild.getNodeValue
     }
     structureIn.close
-	result.toList
+    result.toList
   }
 }

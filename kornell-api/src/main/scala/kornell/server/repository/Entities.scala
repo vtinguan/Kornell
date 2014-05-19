@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat
 import kornell.server.util.ValueFactory
 import kornell.core.util.TimeUtil
 import kornell.core.entity.ContentSpec
+import kornell.core.entity.Assessment
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -97,7 +98,11 @@ object Entities {
     rs
   }
 
-  def newEnrollment(uuid: String, enrolledOn: Date, courseClassUUID: String, personUUID: String, progress: Integer, notes: String, state: EnrollmentState, lastProgressUpdate:Date = null): Enrollment = {
+  def newEnrollment(uuid: String, enrolledOn: Date,
+    courseClassUUID: String, personUUID: String,
+    progress: Integer, notes: String,
+    state: EnrollmentState, lastProgressUpdate: Date = null,
+    assessment: Assessment, lastAssessmentUpdate: Date): Enrollment = {
     val e = factory.newEnrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -107,6 +112,8 @@ object Entities {
     e.setNotes(notes)
     e.setState(state)
     e.setLastProgressUpdate(lastProgressUpdate)
+    e.setAssessment(assessment)
+    e.setLastAssessmentUpdate(lastAssessmentUpdate)
     e
   }
 
@@ -177,7 +184,7 @@ object Entities {
     role
   }
 
-  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String, contentSpec:String) = {
+  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String, contentSpec: String) = {
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
@@ -186,7 +193,7 @@ object Entities {
     version.setVersionCreatedAt(versionCreatedAt)
     version.setDistributionPrefix(distributionPrefix)
     Option(contentSpec) foreach { spec =>
-      val cSpec =  ContentSpec.valueOf(spec)
+      val cSpec = ContentSpec.valueOf(spec)
       version.setContentSpec(cSpec);
     }
     version

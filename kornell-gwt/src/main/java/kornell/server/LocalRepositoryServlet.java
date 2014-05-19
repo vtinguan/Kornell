@@ -56,7 +56,9 @@ public class LocalRepositoryServlet extends HttpServlet {
 
 	static final Map<String,String> mimeTypes = new HashMap<String,String>(){{
 		put(".html","text/html");
+		put(".js","application/javascript");
 	}};
+	
 	private void setContentTye(Path file, HttpServletRequest req,
 			HttpServletResponse resp) {
 		String fname = file.toString();

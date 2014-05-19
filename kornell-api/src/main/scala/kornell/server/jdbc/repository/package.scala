@@ -15,6 +15,7 @@ import kornell.core.entity.RoleType
 import kornell.server.repository.Entities
 import java.util.logging.Logger
 import kornell.core.util.UUID
+import kornell.core.entity.Assessment
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -82,8 +83,14 @@ package object repository {
       rs.getString("class_uuid"),
       rs.getString("person_uuid"),
       rs.getInt("progress"),
-      rs.getString("notes"),
-      EnrollmentState.valueOf(rs.getString("state")))
+      rs.getString("notes"),      
+      EnrollmentState.valueOf(rs.getString("state")),
+      rs.getDate("lastProgressUpdate"),
+      Option(rs.getString("assessment"))
+      	.map(Assessment.valueOf)
+      	.getOrElse(null),
+      rs.getDate("lastAssessmentUpdate")
+    )
 	
 	implicit def toPerson(rs:ResultSet):Person = newPerson(
 	    rs.getString("uuid"),

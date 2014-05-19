@@ -23,6 +23,7 @@ import scala.math.BigDecimal
 import kornell.server.repository.service.RegistrationEnrollmentService
 import javax.servlet.http.HttpServletResponse
 import kornell.server.jdbc.repository.PersonRepo
+import kornell.core.entity.Assessment
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -65,14 +66,5 @@ class EnrollmentResource(uuid: String) {
   @GET
   @Path("approved")
   @Produces(Array("application/boolean"))
-  def approved = {
-    val courseClass = CourseClassRepo(enrollment.getCourseClassUUID()).get
-    val reqScore = courseClass.getRequiredScore
-    reqScore == null || {
-      val grades = enrollmentRepo.findGrades
-      val approved = grades forall { BigDecimal(_) > reqScore }
-      approved && grades.size > 0
-    }
-  }
-
+  def approved =  first map { Assessment.PASSED == _.getAssessment }
 }

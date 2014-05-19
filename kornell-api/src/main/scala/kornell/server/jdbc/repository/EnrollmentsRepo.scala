@@ -8,38 +8,40 @@ import kornell.core.entity.Enrollments
 
 object EnrollmentsRepo {
 
-  //QCON: Implicit conversion: Good or Evil?
-  def byCourseClass(courseClassUUID: String):Enrollments = sql"""
-	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
-      	| from Enrollment e join Person p on e.person_uuid = p.uuid
-        | where e.class_uuid = ${courseClassUUID}
-        | order by e.state desc, p.fullName, p.email
+  //TODO: use specific column names?
+  def byCourseClass(courseClassUUID: String): Enrollments = sql"""
+	  SELECT e.*, p.* 
+    FROM Enrollment e join Person p on e.person_uuid = p.uuid
+    WHERE e.class_uuid = ${courseClassUUID}
+    ORDER BY e.state desc, p.fullName, p.email
 	    """.map[Enrollment]
 
   def byPerson(personUUID: String) =
     sql"""
-	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
-      	| from Enrollment e join Person p on e.person_uuid = p.uuid where
-        | e.person_uuid = ${personUUID}
+    SELECT 
+    	e.*,p.*
+	  FROM Enrollment e join Person p on e.person_uuid = p.uuid 
+    WHERE e.person_uuid = ${personUUID}
 	    """.map[Enrollment]
 
   def byCourseClassAndPerson(courseClassUUID: String, personUUID: String): Option[Enrollment] =
     sql"""
-	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
-      	| from Enrollment e join Person p on e.person_uuid = p.uuid
-        | where e.class_uuid = ${courseClassUUID} and
-        | e.person_uuid = ${personUUID}
+	  SELECT e.*, p.* 
+    FROM Enrollment e join Person p on e.person_uuid = p.uuid
+    WHERE e.class_uuid = ${courseClassUUID} 
+	    AND e.person_uuid = ${personUUID}
 	    """.first[Enrollment]
 
   def byStateAndPerson(state: EnrollmentState, personUUID: String) =
     sql"""
-	    | select e.uuid, e.enrolledOn, e.class_uuid, e.person_uuid, e.progress, e.notes, e.state
-      	| from Enrollment e join Person p on e.person_uuid = p.uuid
-        | where e.person_uuid = ${personUUID}
-	    | and e.state = ${state.toString()}
-        | order by e.state desc, p.fullName, p.email
+	  SELECT e.*, p.* 
+    FROM Enrollment e join Person p on e.person_uuid = p.uuid
+    WHERE e.person_uuid = ${personUUID}
+	    AND e.state = ${state.toString()}
+    ORDER BY e.state desc, p.fullName, p.email
 	    """.map[Enrollment]
 
+	//TODO: ADD MISSING COLUMNS
   def create(enrollment: Enrollment) = {
     if (enrollment.getUUID == null)
       enrollment.setUUID(randomUUID)

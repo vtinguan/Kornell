@@ -29,6 +29,18 @@ public interface Enrollment extends Entity{
 	Date getLastProgressUpdate();
 	void setLastProgressUpdate(Date lastProgressUpdate);
 	
+	/**
+	 * use lastProgressUpdate / lastAssessmentUpdate
+	 * @return
+	 */
+	@Deprecated
 	Date getCompletionDate();
+	@Deprecated
 	void setCompletionDate(Date completionDate);
+	
+	Assessment getAssessment();
+	void setAssessment(Assessment assessment);
+	
+	Date getLastAssessmentUpdate();
+	void setLastAssessmentUpdate(Date lastAssessmentUpdate);
 }

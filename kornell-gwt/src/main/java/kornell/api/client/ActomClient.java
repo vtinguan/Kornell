@@ -9,17 +9,15 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.URL;
 
 public class ActomClient extends RESTClient {
-	//TODO: Consider not hurting DI
-	private static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
-	
-	private String actomKey;
+	// TODO: Consider not hurting DI
+	private static final EntityFactory entityFactory = GWT
+			.create(EntityFactory.class);
+
 	private String enrollmentUUID;
 	private String encodedActomKey;
-	
 
-	public ActomClient(EnrollmentClient enrollmentClient,String actomKey) {
+	public ActomClient(EnrollmentClient enrollmentClient, String actomKey) {
 		this.enrollmentUUID = enrollmentClient.getEnrollmentUUID();
-		this.actomKey = actomKey;
 		this.encodedActomKey = URL.encodePathSegment(actomKey);
 
 	}
@@ -29,16 +27,15 @@ public class ActomClient extends RESTClient {
 		actomEntries.setActomKey(encodedActomKey);
 		actomEntries.setEnrollmentUUID(enrollmentUUID);
 		actomEntries.setEntries(entries);
-		PUT("enrollments",enrollmentUUID,"actoms",encodedActomKey,"entries")
-			.withContentType(ActomEntries.TYPE)
-			.withEntityBody(actomEntries)
-			.go(callback);
+		PUT("enrollments", enrollmentUUID, "actoms", encodedActomKey, "entries")
+				.withContentType(ActomEntries.TYPE)
+				.withEntityBody(actomEntries)
+				.go(callback);
 	}
 
 	public void get(Callback<ActomEntries> callback) {
-		GET("enrollments",enrollmentUUID,"actoms",encodedActomKey,"entries").go(callback);
+		GET("enrollments", enrollmentUUID, "actoms", encodedActomKey, "entries")
+				.go(callback);
 	}
-
-	
 
 }
