@@ -221,6 +221,16 @@ public class GenericCourseDetailsView extends Composite {
 		return certificationHeaderPanel;
 	}
 
+	private Button getHeaderButton(String label, String styleName,
+			String styleNameGlobal) {
+		Button btn = new Button(label);
+		btn.removeStyleName("btn");
+		btn.addStyleName(styleNameGlobal);
+		btn.addStyleName(styleName);
+		btn.addStyleName("btnNotSelected");
+		return btn;
+	}
+
 	private void displayTopics() {
 		int i = 0;
 		ExternalPage page;
@@ -240,16 +250,6 @@ public class GenericCourseDetailsView extends Composite {
 				}
 			}
 		}
-	}
-
-	private Button getHeaderButton(String label, String styleName,
-			String styleNameGlobal) {
-		Button btn = new Button(label);
-		btn.removeStyleName("btn");
-		btn.addStyleName(styleNameGlobal);
-		btn.addStyleName(styleName);
-		btn.addStyleName("btnNotSelected");
-		return btn;
 	}
 
 	private void displayTitle() {

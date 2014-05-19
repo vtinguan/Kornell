@@ -5,6 +5,7 @@ import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
 import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
+import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
 import kornell.core.entity.EntityFactory;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
@@ -46,6 +47,9 @@ public abstract class Callback<T> implements RequestCallback {
 		case SC_NO_CONTENT:
 			ok((T)null);
 			break;
+		case SC_INTERNAL_SERVER_ERROR:
+			internalServerError();
+			break;
 		case 0:
 			failed();
 			break;
@@ -53,10 +57,6 @@ public abstract class Callback<T> implements RequestCallback {
 			GWT.log("Got a response, but don't know what to do about it");
 			break;
 		}
-	}
-
-	protected void notFound() {
-
 	}
 
 	protected void ok(Response response) {
@@ -91,10 +91,21 @@ public abstract class Callback<T> implements RequestCallback {
 							+ "] to this callback. Please check that your callback type mapping matches the response ContentType and you are hitting the correct URL.";
 					throw new RuntimeException(message, ex);
 				}
-			} else
+			}
+			else
 				ok(Callback.parseJson(responseText));
 
+		} 
+		else if (contentType.contains("application/octet-stream")) { 
+			T txt = (T) responseText;
+			ok(txt);
 		} else ok((T) null); //TODO: Consider throwing exception "unknow response type" instead, but map "text/*" and "application/*" first
+	}
+
+	protected void notFound() {
+	}
+
+	protected void internalServerError() {
 	}
 
 	

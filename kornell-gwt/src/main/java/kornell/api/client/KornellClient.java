@@ -1,5 +1,6 @@
 package kornell.api.client;
 
+import static kornell.core.util.StringUtils.composeURL;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
@@ -16,6 +17,7 @@ import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.URL;
 
 public class KornellClient extends RESTClient implements LogoutEventHandler {
@@ -91,6 +93,14 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 			PUT("/institutions/" + uuid).withContentType(Institution.TYPE).withEntityBody(institution).go(cb);
 		}
 		
+	}
+	
+	public void courseClassCertificateExists(String courseClassUUID, Callback<String> callback){
+		GET("/report/courseClassCertificateExists?courseClassUUID="+courseClassUUID).go(callback);		
+	}
+	
+	public void generateCourseClassCertificate(String courseClassUUID, Callback<String> callback){
+		GET("/report/certificate?courseClassUUID="+courseClassUUID).go(callback);		
 	}
 
 	public void findInstitutionByName(String name, Callback<Institution> cb) {

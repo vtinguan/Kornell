@@ -70,7 +70,7 @@ object ReportGenerator {
     val jasperPath = composeURL(assetsURL, "certificate.jasper")
 	  
   	//store one jasperfile per courseclass
-    val file: File = new File("D:\\test.jasper");//System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle() + ".jasper")
+    val file: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle() + ".jasper")
     
     val diff = new Date().getTime - file.lastModified;
     //if(diff > 1 * 24 * 60 * 60 * 1000) //delete if older than 1 day

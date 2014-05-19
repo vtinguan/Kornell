@@ -203,7 +203,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public AdminHomeView getAdminHomeView() {
-		return new GenericAdminHomeView(clientFactory.getKornellSession());
+		return new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus());
 	}
 
 	@Override
