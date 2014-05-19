@@ -50,8 +50,9 @@ class ReportResource {
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to generate the class' certificates without admin rights.");
     else
       try {
-		    val bs = new ByteArrayInputStream(ReportGenerator.generateCertificateByCourseClass(courseClassUUID))
 				var filename = p.getUUID + courseClassUUID + ".pdf"
+				S3.certificates.delete(filename)
+		    val bs = new ByteArrayInputStream(ReportGenerator.generateCertificateByCourseClass(courseClassUUID))
 		    S3.certificates.put(filename,
 		      bs,
 		      "application/pdf", 
@@ -79,6 +80,8 @@ class ReportResource {
       con.setRequestMethod("HEAD")
       if(con.getResponseCode() == HttpURLConnection.HTTP_OK)
         url
+      else
+        ""
     } catch {
       case e: Exception => ""
     }

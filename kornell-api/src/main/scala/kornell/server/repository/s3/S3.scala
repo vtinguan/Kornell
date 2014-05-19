@@ -68,7 +68,10 @@ class S3(regionName: String,
     Option(contentType).foreach { metadata.setContentType(_) }
     Option(contentDisposition).foreach { metadata.setContentDisposition(_) }
     s3.putObject(bucket, composeURL(prefix, key), value, metadata)
-    
+  }
+
+  def delete(key: String) = {
+    s3.deleteObject(bucket, composeURL(prefix, key))
   }
 
   def getObject(key: String) =

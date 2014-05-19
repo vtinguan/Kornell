@@ -79,6 +79,7 @@ public class GenericReportItemView extends Composite {
 		lblName.setText(name);
 		lblDescription.setText(description);
 		lblGenerate.setText("Gerar");
+		lblGenerate.addStyleName("cursorPointer");
 		
 		lblGenerate.addClickHandler(new ClickHandler() {
 			@Override
@@ -112,15 +113,18 @@ public class GenericReportItemView extends Composite {
 		if(url != null && !"".equals(url)) {
 			lblDownload.setText("Baixar");
 			lblDownload.addStyleName("cursorPointer");
+			lblDownload.removeStyleName("anchorToLabel");
 			downloadHandler = lblDownload.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					Window.open(url,"_blank","");
+					Window.open(url,"","");
 				}
 			});
 		} else {
 			lblDownload.setText("Não disponível");
 			lblDownload.removeStyleName("cursorPointer");
+			lblDownload.addStyleName("anchorToLabel");
+			lblDownload.setEnabled(false);
 			if(downloadHandler != null){
 				downloadHandler.removeHandler();
 			}

@@ -84,6 +84,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Boolean enrollWithCPF = false;
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
+	private GenericCourseClassReportsView reportsView;
 		
 	private boolean forbidProfileView;
 	
@@ -264,8 +265,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@Override
 	public void buildReportsView() {
+		if(reportsView == null){
+			reportsView = new GenericCourseClassReportsView(session, bus, presenter, Dean.getInstance().getCourseClassTO());
+		}
 		reportsPanel.clear();
-		reportsPanel.add(new GenericCourseClassReportsView(session, bus, presenter, Dean.getInstance().getCourseClassTO()));
+		reportsPanel.add(reportsView);
 	}
  
 	@Override
