@@ -603,3 +603,14 @@
 .pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .courseSummaryBar .iconCertificate{float:right;}
 .pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .description{height:80px;}
 @media screen and (max-width:962px){.pnlRight{width:582px;}.pnlRight .btnPanel{height:60px;width:582px;} .pnlRight .pnlCoursesWrapper{width:582px;}.pnlRight .pnlCoursesWrapper .pnlCourses{width:612px;} .pnlRight .pnlCoursesWrapper .courseSummary{width:582px !important;}.pnlRight .pnlCoursesWrapper .courseSummary .description{overflow:hidden;}}.forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
+.reportPanel{float:left;}.reportPanel .reportInfo{width:942px;margin-bottom:20px;}.reportPanel .reportInfo .reportInfoTitle{color:#d88709;font-weight:bold;font-size:18px;line-height:28px;margin-bottom:10px;}
+.reportPanel .reportInfo .reportInfoText{color:#b6b6b6;padding-right:20px;}
+.reportPanel .reportHeaderPanel{height:24px;margin-bottom:10px;}.reportPanel .reportHeaderPanel .btnReportHeader{box-sizing:border-box;border-radius:0px;height:24px;line-height:24px;border:0;color:#b6b6b6;padding-left:10px;padding-right:10px;font-size:12px;font-weight:bold;text-align:center;border-left:1px solid #505864;border-right:1px solid #181c22;display:block;float:left;}.reportPanel .reportHeaderPanel .btnReportHeader:hover{text-decoration:none;cursor:default;}
+.reportPanel .reportHeaderPanel .btnReport{width:565.1999999999999px;text-align:left;}
+.reportPanel .reportHeaderPanel .btnGenerate{width:188.4px;}
+.reportPanel .reportHeaderPanel .btnDownload{width:188.4px;}
+.reportPanel .reportWrapper{height:78px;line-height:78px;background-color:#0d0b0c;margin-top:10px;color:#b6b6b6;font-size:13px;}.reportPanel .reportWrapper .itemPanel{box-sizing:border-box;float:left;padding-left:10px;padding-right:10px;width:567.1999999999999px;}.reportPanel .reportWrapper .itemPanel .reportIcon{float:left;padding-top:30px;padding-bottom:30px;padding-left:10px;padding-right:20px;}
+.reportPanel .reportWrapper .itemPanel .lblName{color:#e9e9e9;padding-left:20px;line-height:15px;padding-top:13.333333333333334px;padding-bottom:5px;}
+.reportPanel .reportWrapper .itemPanel .lblDescription{color:#78af73;padding-left:20px;font-size:9px;line-height:11px;}
+.reportPanel .reportWrapper .lblGenerate{box-sizing:border-box;float:left;width:188.4px;padding-left:10px;padding-right:10px;text-align:center;}
+.reportPanel .reportWrapper .lblDownload{box-sizing:border-box;float:left;width:188.4px;text-align:center;padding-left:10px;padding-right:10px;}

@@ -1,9 +1,12 @@
 package kornell.gui.client.presentation.admin.home;
 
+import static kornell.core.util.StringUtils.composeURL;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.Callback;
+import kornell.api.client.ExceptionalRequestBuilder;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
@@ -27,6 +30,7 @@ import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;

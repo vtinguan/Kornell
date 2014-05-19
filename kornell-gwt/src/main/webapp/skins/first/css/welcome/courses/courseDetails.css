@@ -13,6 +13,7 @@
 .noTextSelect{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 .marginLogo{margin-left:0px;}
 .BMP0{border:0;margin:0;padding:0;}
+.standardButtonBarSmall{width:130px !important;}
 .standardButtonBar{width:260px;margin:0 auto;clear:both;}.standardButtonBar .btnStandard{margin:15px;}
 .btnStandard{font-weight:bold;color:#b6b6b6;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
 .highlightText{color:#d88709;}
@@ -24,20 +25,13 @@
 .width120{widht:120px;}
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
+.marginTop25{margin-top:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
+.unclear{clear:none !important;}
 .error{color:#ca2828;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
-.fieldPanelWrapper .fieldPanelImage{height:100px;}
-.fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
-.fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:160px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e0dfe0;margin-top:-4px;line-height:45px;font-size:14px;}
-.fieldPanelWrapper .fieldPanel .lblValueAdd{color:#b795a4;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
+.fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#b6b6b6;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}

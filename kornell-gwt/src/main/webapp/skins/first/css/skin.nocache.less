@@ -546,3 +546,117 @@ body {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+		.reportPanel{
+			@detailsPanelMargin: 20px;
+			@reportPanelWidth: @wrapperWidth - @detailsPanelMargin;
+
+			@reportWidth: .6 * @reportPanelWidth;
+			@generateWidth: .2 * @reportPanelWidth;
+			@downloadWidth: .2 * @reportPanelWidth;
+			float: left;
+			.reportInfo{
+				width: @reportPanelWidth;
+				margin-bottom: @detailsPanelMargin;
+				.reportInfoTitle{
+					color: @textHighlightColor;
+					font-weight: bold;
+					font-size: 18px;
+					line-height: 28px;
+					margin-bottom:  @detailsPanelMargin / 2;
+				}
+				.reportInfoText{
+					color: @niceTextColor;
+					padding-right: @detailsPanelMargin;
+				}
+			}
+			.reportHeaderPanel{
+				@reportHeaderPanelHeight: 24px;
+				height: @reportHeaderPanelHeight;
+				margin-bottom: 10px;
+				.btnReportHeader{
+					box-sizing: border-box;
+					border-radius: 0px;
+					height: @reportHeaderPanelHeight;
+					line-height: @reportHeaderPanelHeight;
+					border: 0;
+					color: @niceTextColor;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					font-size: 12px;
+					font-weight: bold;
+					text-align: center;
+					.btnBorder;
+					display: block;
+					float: left;
+					&:hover{
+						text-decoration: none;
+						cursor: default;
+					}
+				}
+				.btnReport{width: @reportWidth; text-align: left;}
+				.btnGenerate{width: @generateWidth;}
+				.btnDownload{width: @downloadWidth;}
+			}
+			.reportWrapper{
+				@reportWrapperHeight: 78px;
+				height: @reportWrapperHeight;
+				line-height: @reportWrapperHeight;
+				background-color: @detailsItemWrapperColor;
+				margin-top: @detailsPanelMargin / 2;
+				color: @niceTextColor;
+				font-size: 13px;
+				.itemPanel{
+					box-sizing: border-box;
+					float: left;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					width: @reportWidth + 2px;
+					.reportIcon{
+						float: left;
+						padding-top: (@reportWrapperHeight - 18px) / 2;
+						padding-bottom: (@reportWrapperHeight - 18px) / 2;
+						padding-left: @detailsPanelMargin / 2;
+						padding-right: @detailsPanelMargin;
+					}
+					.lblName{
+						color: lighten(@niceTextColor, 20%);
+						padding-left: @detailsPanelMargin;
+						line-height: 15px;
+						padding-top: @detailsPanelMargin * 2 / 3;
+						padding-bottom: @detailsPanelMargin / 4;
+					}
+					.lblDescription{
+						color: @textInfoColor;
+						padding-left: @detailsPanelMargin;
+						font-size: 9px;
+						line-height: 11px;
+					}
+				}
+				.lblGenerate{
+					box-sizing: border-box;
+					float: left;
+					width: @generateWidth;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					text-align: center;
+				}
+				.lblDownload{
+					box-sizing: border-box;
+					float: left;
+					width: @downloadWidth;
+					text-align: center;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+				}
+			}
+		}

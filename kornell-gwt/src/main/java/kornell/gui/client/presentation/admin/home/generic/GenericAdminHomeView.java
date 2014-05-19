@@ -62,6 +62,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
@@ -71,6 +72,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private KornellSession session;
+	private EventBus bus;
 	private AdminHomeView.Presenter presenter;
 	final CellTable<Enrollment> table;
 	private List<Enrollment> enrollmentsCurrent;
@@ -101,6 +103,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	Tab configTab;
 	@UiField
 	FlowPanel configPanel;
+	@UiField
+	Tab reportsTab;
+	@UiField
+	FlowPanel reportsPanel;
 	 
 	@UiField
 	Button btnAddEnrollment;
@@ -153,8 +159,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	FlowPanel adminsPanel;
 
 	// TODO i18n xml
-	public GenericAdminHomeView(final KornellSession session) {
+	public GenericAdminHomeView(final KornellSession session, EventBus bus) {
 		this.session = session;
+		this.bus = bus;
 		initWidget(uiBinder.createAndBindUi(this));
 		table = new CellTable<Enrollment>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
@@ -204,6 +211,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			}
 		});
 		
+		reportsTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				buildReportsView();
+			}
+		});
+		
 		if(session.isInstitutionAdmin()){
 			adminsTab = new Tab();
 			adminsTab.setIcon(IconType.GROUP);
@@ -220,6 +234,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			
 			tabsPanel.add(adminsTab);
 		}
+		
+		//new ExceptionalRequestBuilder(RequestBuilder.PUT, url)
 	}
 	
 	@Override
@@ -246,6 +262,12 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		}
 	}
 
+	@Override
+	public void buildReportsView() {
+		reportsPanel.clear();
+		reportsPanel.add(new GenericCourseClassReportsView(session, bus, presenter, Dean.getInstance().getCourseClassTO()));
+	}
+ 
 	@Override
 	public void buildAdminsView() {
 		adminsPanel.clear();
