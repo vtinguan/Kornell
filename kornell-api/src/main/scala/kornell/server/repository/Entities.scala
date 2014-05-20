@@ -102,7 +102,8 @@ object Entities {
     courseClassUUID: String, personUUID: String,
     progress: Integer, notes: String,
     state: EnrollmentState, lastProgressUpdate: Date = null,
-    assessment: Assessment, lastAssessmentUpdate: Date): Enrollment = {
+    assessment: Assessment = null, lastAssessmentUpdate: Date = null,
+    assessmentScore:BigDecimal = null, certifiedAt:Date = null ): Enrollment = {
     val e = factory.newEnrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -114,6 +115,8 @@ object Entities {
     e.setLastProgressUpdate(lastProgressUpdate)
     e.setAssessment(assessment)
     e.setLastAssessmentUpdate(lastAssessmentUpdate)
+    e.setAssessmentScore(assessmentScore)
+    e.setCertifiedAt(certifiedAt)
     e
   }
 

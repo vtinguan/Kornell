@@ -1,5 +1,6 @@
 package kornell.core.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public interface Enrollment extends Entity{
@@ -43,4 +44,10 @@ public interface Enrollment extends Entity{
 	
 	Date getLastAssessmentUpdate();
 	void setLastAssessmentUpdate(Date lastAssessmentUpdate);
+	
+	Date getCertifiedAt();
+	void setCertifiedAt(Date certifiedAt);
+	
+	BigDecimal getAssessmentScore();
+	void setAssessmentScore(BigDecimal assessmentScore);
 }

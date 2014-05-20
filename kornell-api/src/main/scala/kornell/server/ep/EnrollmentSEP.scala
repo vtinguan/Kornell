@@ -10,8 +10,9 @@ import kornell.core.entity.ContentSpec._
  */
 object EnrollmentSEP {
 
-  def onProgress(enrollmentUUID: String) = 
+  def onProgress(enrollmentUUID: String) = {
     EnrollmentRepo(enrollmentUUID).updateProgress
+  }
     
   def onAssessment(enrollmentUUID: String) = 
     EnrollmentRepo(enrollmentUUID).updateAssessment

@@ -15,6 +15,8 @@ import scala.collection.JavaConverters._
 import kornell.core.entity.ActomEntries
 import kornell.core.entity.Assessment
 import java.util.Date
+import kornell.server.ep.EnrollmentSEP
+import java.math.BigDecimal
 
 //TODO: Specific column names and proper sql
 class EnrollmentRepo(enrollmentUUID: String) {
@@ -35,7 +37,9 @@ class EnrollmentRepo(enrollmentUUID: String) {
 				state = ${e.getState.toString},
 				lastProgressUpdate = ${e.getLastProgressUpdate},
 				assessment = ${Option(e.getAssessment).map(_.toString).getOrElse(null)},
-				lastAssessmentUpdate = ${e.getLastAssessmentUpdate}
+				lastAssessmentUpdate = ${e.getLastAssessmentUpdate},
+				assessmentScore = ${e.getAssessmentScore},
+				certifiedAt = ${e.getCertifiedAt}
       where uuid = ${e.getUUID} """.executeUpdate
     e
   }
@@ -98,19 +102,20 @@ class EnrollmentRepo(enrollmentUUID: String) {
       e.setLastProgressUpdate(new Date)
       e.setProgress(newProgress)
       update(e)
+      checkCompletion(e);
     } else {
       logger.warning(s"Invalid progress [${currentProgress} to ${newProgress}] on enrollment [${e.getUUID}]")
     }
   }
 
   //TODO: wrong impl: should be across all grades
-  def maxGradetoInt(rs: ResultSet): BigDecimal = rs.getBigDecimal("maxScore")
-  def findMaxScore(enrollmentUUID: String) = sql"""
+  def maxGradetoDec(rs: ResultSet): BigDecimal = rs.getBigDecimal("maxScore")
+  def findMaxScore(enrollmentUUID: String):Option[BigDecimal] = sql"""
   		SELECT  MAX(CAST(entryValue AS DECIMAL(7,5))) as maxScore
   		FROM ActomEntries
   		WHERE enrollment_uuid = ${enrollmentUUID}
   		AND entryKey = 'cmi.core.score.raw'
-  """.first(maxGradetoInt)
+  """.first(maxGradetoDec)
 
   def updateAssessment = first map { e =>
     val cc = first.flatMap { e => CourseClassRepo(e.getCourseClassUUID).first }
@@ -118,17 +123,30 @@ class EnrollmentRepo(enrollmentUUID: String) {
     requiredScore map { reqScore =>
       val maxScore = findMaxScore(e.getUUID)
       maxScore.map { mScore =>
-        val isUnassessed = e.getAssessment() == null
-        if (isUnassessed) {
-          val assessment = if (mScore.compare(reqScore) >= 0)
+        if (! Assessment.PASSED.equals(e.getAssessment())) {
+          val assessment = if (mScore.compareTo(reqScore) >= 0)
             Assessment.PASSED
           else
             Assessment.FAILED
+          e.setAssessmentScore(mScore)
           e.setAssessment(assessment)
           e.setLastAssessmentUpdate(new Date)
           update(e)
+          checkCompletion(e)
         }
       }
+    }
+  }
+  
+  def checkCompletion(e:Enrollment) = {
+    val isPassed = Assessment.PASSED == e.getAssessment
+    val isCompleted = e.getProgress() == 100
+    val isUncertified = e.getCertifiedAt() == null
+    if( isPassed
+        && isCompleted 
+        && isUncertified ){
+      e.setCertifiedAt(new Date)
+      update(e)
     }
   }
 

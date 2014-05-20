@@ -8,7 +8,7 @@ public enum EnrollmentState {
 	enrolled,    //Course has been started
 	requested,   //Requested participation in a private course
 	denied,      //Participation request denied 
-	cancelled,   //Participation canceled by institution (payment, timeout, ?)
-	finished     //All content seen and all required evaluations either passed or failed 
+	cancelled    //Participation canceled by institution (payment, timeout, ?)
+	//finished     All content seen and all required evaluations either passed or failed 
 	//TODO: Abandoned?
 }	

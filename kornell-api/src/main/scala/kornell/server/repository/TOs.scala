@@ -154,7 +154,8 @@ object TOs {
 	    classTO.setCourseClass(clazz)
 	    if(enrollmentUUID != null){
 		    val prog = if (progress != null) Integer.parseInt(progress) else 0
-		    val enrollment = Entities.newEnrollment(enrollmentUUID, enrolledOn, courseClassUUID, personUUID, prog, notes,EnrollmentState.valueOf(enrollmentState),null,null,null)
+		    val enrollment = 
+		      Entities.newEnrollment(enrollmentUUID, enrolledOn, courseClassUUID, personUUID, prog, notes,EnrollmentState.valueOf(enrollmentState),null,null,null,null,null)
 		    classTO.setEnrollment(enrollment)
 	    }
 	    classTO
