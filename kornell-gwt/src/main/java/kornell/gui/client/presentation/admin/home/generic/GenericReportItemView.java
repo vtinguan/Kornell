@@ -92,6 +92,12 @@ public class GenericReportItemView extends Composite {
 						KornellNotification.show("Os certificados foram gerados.", AlertType.INFO, 2000);
 						displayActionCell(url);
 					}
+					
+					@Override
+					public void internalServerError() {
+						KornellNotification.show("Erro na geração dos certificados.", AlertType.ERROR, 2000);
+						displayActionCell(null);
+					}
 				});
 			}
 		});

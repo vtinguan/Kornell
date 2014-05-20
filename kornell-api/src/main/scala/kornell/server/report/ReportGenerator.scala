@@ -47,7 +47,15 @@ object ReportGenerator {
   }
   
   def generateCertificateByCourseClass(courseClassUUID: String): Array[Byte] = {
-    generateReport(sql"""
+    generateReport(getCertificateInformationTOsByCourseClass(courseClassUUID))
+  }
+  
+  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO]): Array[Byte] = {
+    generateReport(certificateInformationTOs)
+  }
+  
+  def getCertificateInformationTOsByCourseClass(courseClassUUID: String) = 
+    sql"""
 				select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf, e.enrolledOn
 	    	from Person p
 				  join Enrollment e on p.uuid = e.person_uuid
@@ -56,11 +64,15 @@ object ReportGenerator {
 	    		join Course c on c.uuid = cv.course_uuid
 					join S3ContentRepository s on s.uuid = cv.repository_uuid
 					join Institution i on i.uuid = cc.institution_uuid
-				where cc.uuid = $courseClassUUID
-		    """.map[CertificateInformationTO](toCertificateInformationTO))
-  }
+				where e.certifiedAt is not null and 
+        	cc.uuid = $courseClassUUID
+		    """.map[CertificateInformationTO](toCertificateInformationTO)
 
   private def generateReport(certificateData: List[CertificateInformationTO]): Array[Byte] = {
+    if(certificateData.length == 0){
+    	return null;
+    }
+    
     val collectionDS = new JRBeanCollectionDataSource(certificateData asJava)
     
     //Preparing parameters

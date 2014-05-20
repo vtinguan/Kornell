@@ -48,21 +48,28 @@ class ReportResource {
         RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
         RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID)))
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to generate the class' certificates without admin rights.");
-    else
-      try {
-				var filename = p.getUUID + courseClassUUID + ".pdf"
-				S3.certificates.delete(filename)
-		    val bs = new ByteArrayInputStream(ReportGenerator.generateCertificateByCourseClass(courseClassUUID))
-		    S3.certificates.put(filename,
-		      bs,
-		      "application/pdf", 
-		      "Content-Disposition: attachment; filename=\""+filename+".pdf\"",
-		      Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()))
-		    S3.certificates.url(filename)
+    else {
+			try {
+				val certificateInformationTOsByCourseClass = ReportGenerator.getCertificateInformationTOsByCourseClass(courseClassUUID)
+				if(certificateInformationTOsByCourseClass.length == 0){
+	        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating the report.");
+				} else {
+					var filename = p.getUUID + courseClassUUID + ".pdf"
+					S3.certificates.delete(filename)
+					val report = ReportGenerator.generateCertificate(certificateInformationTOsByCourseClass)
+			    val bs = new ByteArrayInputStream(report)
+			    S3.certificates.put(filename,
+			      bs,
+			      "application/pdf", 
+			      "Content-Disposition: attachment; filename=\""+filename+".pdf\"",
+			      Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()))
+			    S3.certificates.url(filename)
+				}
       } catch {
         case e: Exception =>
           resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating the report.");
       }
+    }
   }
 
   @GET

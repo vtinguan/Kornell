@@ -89,7 +89,7 @@ class S3(regionName: String,
   def url(ditributionPrefix: String, key: String) = composeURL(baseURL, prefix, ditributionPrefix, key)
 
   //TODO: https is giving security warnings on chrome
-  def url(key: String) = s3.getResourceUrl(bucket,composeURL(prefix, key)).replace("https", "http")
+  def url(key: String) = s3.getResourceUrl(bucket,composeURL(prefix, key)).replace("https://", "http://")
   
   lazy val baseURL = distributionURL
 
