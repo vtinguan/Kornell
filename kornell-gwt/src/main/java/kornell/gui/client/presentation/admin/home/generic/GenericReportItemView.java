@@ -10,6 +10,7 @@ import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -85,18 +86,21 @@ public class GenericReportItemView extends Composite {
 			@Override
 			public void onClick(ClickEvent event) {
 				displayActionCell(null);
+				LoadingPopup.show();
 				session.generateCourseClassCertificate(currentCourseClass.getCourseClass().getUUID(), new Callback<String>() {
 					
 					@Override
 					public void ok(String url) {
 						KornellNotification.show("Os certificados foram gerados.", AlertType.INFO, 2000);
 						displayActionCell(url);
+						LoadingPopup.hide();
 					}
 					
 					@Override
 					public void internalServerError() {
-						KornellNotification.show("Erro na geração dos certificados.", AlertType.ERROR, 2000);
+						KornellNotification.show("Erro na geração dos certificados. Certifique-se que existem alunos que concluíram o curso nessa turma.", AlertType.ERROR, 3000);
 						displayActionCell(null);
+						LoadingPopup.hide();
 					}
 				});
 			}
