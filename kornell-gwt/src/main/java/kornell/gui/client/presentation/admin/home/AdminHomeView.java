@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface AdminHomeView extends IsWidget {
 	public interface Presenter extends IsWidget {
 		void changeEnrollmentState(Enrollment enrollment, EnrollmentState state);
-		boolean showActionButton(String actionName, EnrollmentState state);
+		boolean showActionButton(String actionName, Enrollment enrollment);
 		void onAddEnrollmentButtonClicked(String fullName, String email);
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);
 		void onGoToCourseButtonClicked();
@@ -19,6 +19,7 @@ public interface AdminHomeView extends IsWidget {
 		void onUserClicked(String uuid);
 		void updateCourseClass(String courseClassUUID);
 		List<Enrollment> getEnrollments();
+		void deleteEnrollment(Enrollment enrollment);
 	}
 
 	void setPresenter(Presenter presenter);

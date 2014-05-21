@@ -3,7 +3,9 @@ package kornell.gui.client.presentation.util;
 import java.util.Date;
 import java.util.List;
 
+import kornell.core.entity.EnrollmentState;
 import kornell.core.value.ValueFactory;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.uidget.formfield.CheckBoxFormField;
 import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.uidget.formfield.PasswordTextBoxFormField;
@@ -20,6 +22,7 @@ import com.google.gwt.user.client.ui.Image;
 
 //TODO i18n
 public class FormHelper {
+	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
 	private final String USERNAME_PATTERN = "^[^0-9.][A-z0-9.]{2,}$";
@@ -480,5 +483,22 @@ public class FormHelper {
 		Image image = new Image("skins/first/icons/profile/separatorBar.png");
 		image.addStyleName("profileSeparatorBar");
 		return image;
+	}
+	
+	public String getEnrollmentStateAsText(EnrollmentState state){
+		switch (state) {
+		case notEnrolled:
+			return constants.notEnrolled();
+		case enrolled:
+			return constants.enrolled();
+		case requested:
+			return constants.requested();
+		case denied:
+			return constants.denied();
+		case cancelled:
+			return constants.cancelled();
+		default:
+			return "";
+		}
 	}
 }

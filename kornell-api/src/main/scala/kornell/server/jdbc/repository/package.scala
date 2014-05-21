@@ -76,7 +76,7 @@ package object repository {
     rs.getInt("maxEnrollments"))
     
 
-  implicit def toEnrollment(rs: ResultSet): Enrollment =
+  implicit def toEnrollment(rs: ResultSet): Enrollment = {
     newEnrollment(
       rs.getString("uuid"),
       rs.getDate("enrolledOn"),
@@ -89,8 +89,11 @@ package object repository {
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getDate("lastAssessmentUpdate")
+      rs.getDate("lastAssessmentUpdate"),
+      rs.getBigDecimal("assessmentScore"),
+      rs.getDate("certifiedAt")
     )
+  }
 	
 	implicit def toPerson(rs:ResultSet):Person = newPerson(
 	    rs.getString("uuid"),

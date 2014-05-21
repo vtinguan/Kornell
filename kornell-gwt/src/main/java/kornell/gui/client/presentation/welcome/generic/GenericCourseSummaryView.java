@@ -174,7 +174,7 @@ public class GenericCourseSummaryView extends Composite {
 			@Override
 			public void onClick(ClickEvent event) {
 				EntityFactory entityFactory = GWT.create(EntityFactory.class);
-				Enrollment enrollment = entityFactory.newEnrollment().as();
+				Enrollment enrollment = entityFactory.enrollment().as();
 				enrollment.setCourseClassUUID(courseClassTO.getCourseClass()
 						.getUUID());
 				enrollment.setPerson(session.getCurrentUser().getPerson());

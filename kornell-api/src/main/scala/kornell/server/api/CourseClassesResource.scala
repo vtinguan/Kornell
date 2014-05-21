@@ -28,8 +28,6 @@ class CourseClassesResource {
     CourseClassesRepo.create(courseClass)
   }.requiring(isPlatformAdmin, UserNotInRole)
     .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
-
-  //def get(@PathParam("uuid") uuid:String):PersonResource = new PersonResource(uuid) 
   
   @Path("{uuid}")
   def get(@PathParam("uuid") uuid: String):CourseClassResource = CourseClassResource(uuid)

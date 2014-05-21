@@ -67,7 +67,7 @@ object EventsRepo {
     sql"""update Enrollment set state = ${toState.toString} where uuid = ${enrollmentUUID};
 		""".executeUpdate
 
-    if (EnrollmentState.preEnrolled.equals(toState) || EnrollmentState.enrolled.equals(toState)) {
+    if (EnrollmentState.enrolled.equals(toState)) {
       val enrollment = EnrollmentRepo(enrollmentUUID).get
       val x =
         if (enrollment.getPerson.getEmail != null && !"true".equals(Settings.get("TEST_MODE").orNull)) {

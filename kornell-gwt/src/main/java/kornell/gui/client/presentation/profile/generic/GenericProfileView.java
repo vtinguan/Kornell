@@ -61,7 +61,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private final EventBus bus;
-	private Place defaultPlace;
 	private Institution institution;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
@@ -86,14 +85,15 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private Button btnChangePassword;
+	private ClientFactory clientFactory;
 
 	public GenericProfileView(ClientFactory clientFactory) {
+		this.clientFactory = clientFactory;
 		this.bus = clientFactory.getEventBus();
 		this.session = clientFactory.getKornellSession();
 		this.user = session.getCurrentUser();
 		this.placeCtrl = clientFactory.getPlaceController();
 		this.currentCourseClass = Dean.getInstance().getCourseClassTO();
-		this.defaultPlace = clientFactory.getDefaultPlace();
 		this.institution = Dean.getInstance().getInstitution();
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		formHelper = new FormHelper();
@@ -219,21 +219,21 @@ public class GenericProfileView extends Composite implements ProfileView {
 			session.updateUser(getUserInfoFromForm(), new Callback<UserInfoTO>(){
 				@Override
 				public void ok(UserInfoTO userInfo){
-					if(isCurrentUser){
+					//if(isCurrentUser){
 						LoadingPopup.hide();
 						KornellNotification.show("Alterações salvas com sucesso!");
 						btnOK.setEnabled(true);
 						isEditMode = false;
 						display();
 						form.addStyleName("shy");
-						placeCtrl.goTo(defaultPlace);
+						placeCtrl.goTo(clientFactory.getDefaultPlace());
 						session.getCurrentUser(true, new Callback<UserInfoTO>() {
 							@Override
 							public void ok(UserInfoTO to) {
 								user = to;
 							}
 						});
-					}
+					//}
 				}
 			});   
 		}
@@ -287,7 +287,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiHandler("btnClose")
 	void doClose(ClickEvent e) {
 		form.addStyleName("shy");
-		placeCtrl.goTo(defaultPlace);
+		placeCtrl.goTo(clientFactory.getDefaultPlace());
 	}
 
 

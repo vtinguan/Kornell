@@ -1,14 +1,13 @@
 package kornell.gui.client.presentation.admin.home;
 
-import static kornell.core.util.StringUtils.composeURL;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.Callback;
-import kornell.api.client.ExceptionalRequestBuilder;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentCategory;
+import kornell.core.entity.EnrollmentProgressState;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
@@ -30,7 +29,6 @@ import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;
@@ -162,15 +160,18 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	@Override
-	public boolean showActionButton(String actionName, EnrollmentState state) {
+	public boolean showActionButton(String actionName, Enrollment enrollment) {
+		EnrollmentState state = enrollment.getState();
+		EnrollmentProgressState progressState = EnrollmentCategory.getEnrollmentProgressState(enrollment);
 		if ("Aceitar".equals(actionName) || "Negar".equals(actionName)) {
 			return EnrollmentState.requested.equals(state);
 		} else if ("Cancelar".equals(actionName)) {
-			return EnrollmentState.preEnrolled.equals(state)
-					|| EnrollmentState.enrolled.equals(state);
+			return EnrollmentState.enrolled.equals(state);
 		} else if ("Matricular".equals(actionName)) {
 			return EnrollmentState.denied.equals(state)
 					|| EnrollmentState.cancelled.equals(state);
+		} else if ("Excluir".equals(actionName)){
+			return EnrollmentProgressState.toStart.equals(progressState);
 		}
 		return false;
 	}
@@ -335,4 +336,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	public List<Enrollment> getEnrollments() {
 		return enrollments;
 	}
+
+	@Override
+  public void deleteEnrollment(Enrollment enrollment) {
+	  // TODO Auto-generated method stub
+		GWT.log("deleted");
+	  
+  }
 }

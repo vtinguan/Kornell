@@ -41,7 +41,6 @@ object EnrollmentsRepo {
     ORDER BY e.state desc, p.fullName, p.email
 	    """.map[Enrollment]
 
-	//TODO: ADD MISSING COLUMNS
   def create(enrollment: Enrollment) = {
     if (enrollment.getUUID == null)
       enrollment.setUUID(randomUUID)
@@ -59,7 +58,7 @@ object EnrollmentsRepo {
 
   def find(person: PersonRepo, course_uuid: String): Enrollment = sql"""
 	  select * from Enrollment 
-	  were person_uuid=${person.uuid}
+	  where person_uuid=${person.uuid}
 	   and course_uuid=${course_uuid}"""
     .first[Enrollment]
     .get

@@ -5,7 +5,6 @@ import java.net.URL
 import org.apache.commons.io.FileUtils
 import kornell.core.entity.Institution
 import kornell.core.entity.Person
-import kornell.server.util.EmailSender
 import java.util.UUID
 import kornell.core.entity.Course
 

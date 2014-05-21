@@ -50,9 +50,5 @@ public interface Enrollment extends Entity{
 	
 	BigDecimal getAssessmentScore();
 	void setAssessmentScore(BigDecimal assessmentScore);
-	
-	
-	/***/
-	
-	boolean isFinished();
+
 }

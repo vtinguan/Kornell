@@ -34,15 +34,16 @@ import kornell.server.helper.SimpleInstitution
 class CourseClassesSpec extends UnitSpec with SimpleInstitution {
   
   "The platformAdmin" should "be able to create a class" in {
-    val courseClassNew = courseClassesResource.create(platformAdminSecurityContext, courseClass).asInstanceOf[CourseClass]
+    val courseClassNew = courseClassesResource.create(platformAdminSecurityContext, courseClass)
+    assert(courseClassNew.isPassed)
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
     assert(mockHttpServletResponse.getStatus == 0)
     assert(courseClassNew != null)
-    assert(courseClassNew.getCourseVersionUUID == courseVersion.getUUID)
+    assert(courseClassNew.asInstanceOf[CourseClass].getCourseVersionUUID == courseVersion.getUUID)
   } 
   
   "The platformAdmin" should "not be able to create a class with the same uuid" in {
-    courseClassesResource.create(platformAdminSecurityContext, courseClass)
+    assert(courseClassesResource.create(platformAdminSecurityContext, courseClass).isPassed)
     courseClass.setName(randStr)
     courseClassesResource.create(platformAdminSecurityContext, courseClass)
     assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)

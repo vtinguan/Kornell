@@ -8,11 +8,14 @@ import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentCategory;
+import kornell.core.entity.EnrollmentProgressState;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -85,6 +88,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
 	private GenericCourseClassReportsView reportsView;
+	private FormHelper formHelper;
 		
 	private boolean forbidProfileView;
 	
@@ -166,6 +170,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		initWidget(uiBinder.createAndBindUi(this));
 		table = new CellTable<Enrollment>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
+		formHelper = new FormHelper();
 		
 		trigger.setTarget("#toggle");
 		collapse.setId("toggle");
@@ -344,14 +349,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override	
 			public String getValue(Enrollment enrollment) {
-				return getEnrollmentStateAsText(enrollment.getState());
+				return formHelper.getEnrollmentStateAsText(enrollment.getState());
 			}
 		}, "Matrícula");
 
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override	
 			public String getValue(Enrollment enrollment) {
-				return getEnrollmentProgressAsText(enrollment.getProgress());
+				return getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressState(enrollment));
 			}
 		}, "Progresso");
 	
@@ -360,6 +365,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	    cells.add(new EnrollmentActionsHasCell("Negar", getStateChangeDelegate(EnrollmentState.denied)));
 	    cells.add(new EnrollmentActionsHasCell("Cancelar", getStateChangeDelegate(EnrollmentState.cancelled)));
 	    cells.add(new EnrollmentActionsHasCell("Matricular", getStateChangeDelegate(EnrollmentState.enrolled)));
+	    cells.add(new EnrollmentActionsHasCell("Excluir", getDeleteEnrollmentDelegate()));
 	    
 	    CompositeCell<Enrollment> cell = new CompositeCell<Enrollment>(cells);
 	    table.addColumn(new Column<Enrollment, Enrollment>(cell) {
@@ -493,9 +499,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 					enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
 			}
 			boolean enrollmentStateMatch = enrollment.getPerson() != null && enrollment.getState() != null &&
-					getEnrollmentStateAsText(enrollment.getState()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+					formHelper.getEnrollmentStateAsText(enrollment.getState()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
 			boolean enrollmentProgressMatch = enrollment.getPerson() != null && enrollment.getProgress() != null &&
-					getEnrollmentProgressAsText(enrollment.getProgress()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
+					getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressState(enrollment)).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
 			if(!fullNameMatch && !emailMatch && !enrollmentStateMatch && !enrollmentProgressMatch){
 				enrollmentsCurrent.remove(i);
 				i--;
@@ -505,32 +511,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		pagination.displayTableData(1);
 	}
 
-	private String getEnrollmentProgressAsText(Integer progress) {
-		if(progress == null || progress == 0){
-			return "A Iniciar";
-		} else if(progress < 100){
+	private String getEnrollmentProgressAsText(EnrollmentProgressState progressState) {
+		switch (progressState) {
+		case toStart:
+			return "A iniciar";
+		case inProgress:
 			return "Em andamento";
-		} else {
+		case finished:
 			return "Concluído";
-		}
-	}
-	
-	private String getEnrollmentStateAsText(EnrollmentState state){
-		switch (state) {
-		case notEnrolled:
-			return constants.notEnrolled();
-		case preEnrolled:
-			return constants.preEnrolled();
-		case enrolled:
-			return constants.enrolled();
-		case requested:
-			return constants.requested();
-		case denied:
-			return constants.denied();
-		case cancelled:
-			return constants.cancelled();
 		default:
-			return "";
+			return "???";
 		}
 	}
 
@@ -545,6 +535,18 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	        public void execute(Enrollment object) {
 	        	if(forbidProfileView){
 		        	presenter.changeEnrollmentState(object, state);
+	        	}
+	        	forbidProfileView = true;
+	        }
+	    };
+	}
+
+	private Delegate<Enrollment> getDeleteEnrollmentDelegate() {
+		return new Delegate<Enrollment>() {
+	        @Override
+	        public void execute(Enrollment object) {
+	        	if(forbidProfileView){
+	        		presenter.deleteEnrollment(object);
 	        	}
 	        	forbidProfileView = true;
 	        }
@@ -585,11 +587,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			cell = new EnrollmentActionsActionCell<Enrollment>(text, delegate){
 				@Override
 				public void render(com.google.gwt.cell.client.Cell.Context context, Enrollment object, SafeHtmlBuilder sb) {
-			        if(presenter.showActionButton(actionName, object.getState())){
+			        if(presenter.showActionButton(actionName, object)){
+			        	String buttonClass = "Excluir".equals(actionName) ? "btnNotSelected" : (("Cancelar".equals(actionName) || "Negar".equals(actionName)) ? "btnSelected" : "btnAction");
 			        	//super.render(context, object, sb);
 			        	SafeHtml html = SafeHtmlUtils.fromTrustedString("<button type=\"button\" class=\"gwt-Button btnEnrollmentsCellTable "+
-			        			(("Cancelar".equals(actionName) || "Negar".equals(actionName)) ? "btnSelected" : "btnAction")
-			        			+"\">"+actionName.toUpperCase()+"</button>");
+			        			buttonClass + "\">" + actionName.toUpperCase() + "</button>");
 			            sb.append(html);
 			        }
 			        else

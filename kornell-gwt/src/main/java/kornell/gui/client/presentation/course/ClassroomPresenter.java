@@ -61,10 +61,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
 					if(enrollment.getUUID().equals(enrollmentUUID)){
 						Dean.getInstance().setCourseClassTO(enrollment.getCourseClassUUID());
-						if(EnrollmentState.enrolled.equals(enrollment.getState()) ||
-									(EnrollmentState.preEnrolled.equals(enrollment.getState()))){
-							isEnrolled = true;
-						}
+						isEnrolled = EnrollmentState.enrolled.equals(enrollment.getState());
 						break;
 					}
 				}

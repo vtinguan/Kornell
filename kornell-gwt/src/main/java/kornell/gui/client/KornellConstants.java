@@ -199,8 +199,6 @@ public interface KornellConstants extends Constants {
 	 */
 	@DefaultStringValue("notEnrolled")
 	String notEnrolled();
-	@DefaultStringValue("preEnrolled")
-	String preEnrolled();
 	@DefaultStringValue("enrolled")
 	String enrolled();
 	@DefaultStringValue("requested")

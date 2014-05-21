@@ -122,8 +122,7 @@ public class GenericTopicView extends Composite {
 				boolean enableAnchor = (page.isVisited()
 							|| isPreviousPageVisited
 							|| (childrenIndex == 0 && enableAnchorOnFirstChild))
-						&& (EnrollmentState.enrolled.equals(currentCourse.getEnrollment().getState())
-							|| EnrollmentState.preEnrolled.equals(currentCourse.getEnrollment().getState()));
+						&& EnrollmentState.enrolled.equals(currentCourse.getEnrollment().getState());
 				childrenPanel.add(new GenericPageView(bus, session, placeCtrl, page, currentCourse, enableAnchor));
 			}
 			isPreviousPageVisited = page.isVisited();

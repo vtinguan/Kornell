@@ -6,6 +6,8 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
+import kornell.core.entity.RoleCategory;
+import kornell.core.entity.RoleType;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.CourseClassesTO;
@@ -92,7 +94,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			@Override
 			public void ok(final CourseClassesTO courseClasses) {
 				Dean.getInstance().setCourseClassesTO(courseClasses);
-				setDefaultPlace(new WelcomePlace());
+				boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+						|| session.isInstitutionAdmin());
+				setDefaultPlace(isAdmin ? new AdminHomePlace() : new WelcomePlace());
 				startAuthenticated(session);
 			}
 		};

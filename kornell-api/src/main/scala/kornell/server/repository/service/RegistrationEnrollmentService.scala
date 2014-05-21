@@ -61,7 +61,7 @@ object RegistrationEnrollmentService {
         personRepo.setPassword(enrollmentRequest.getCPF, enrollmentRequest.getCPF)
     }
     personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
-    createEnrollment(personRepo.get.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
+    createEnrollment(personRepo.get.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
   }
 
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) =
@@ -69,7 +69,7 @@ object RegistrationEnrollmentService {
       case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean)
       case None => {
     	PersonRepo(person.getUUID).registerOn(enrollmentRequest.getInstitutionUUID)
-        createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.preEnrolled, dean.getUUID)
+        createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
       }
     }
 
@@ -119,16 +119,12 @@ object RegistrationEnrollmentService {
     user.setUsername(email)
 
     personRepo.setPassword(email, password)
-    //for each existing pre-enrollment of this student, enroll
-    EnrollmentsRepo.byStateAndPerson(EnrollmentState.preEnrolled, personRepo.get.get.getUUID).foreach(
-      enrollment => EventsRepo.logEnrollmentStateChanged(
-        UUID.random, new Date, enrollment.getPerson.getUUID,
-        enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled))
+    
     user
   }
 
   private def createEnrollment(personUUID: String, courseClassUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
-    val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled,null,null,null))
+    val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled,null,null,null,null,null))
     EventsRepo.logEnrollmentStateChanged(
       UUID.random, new Date, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState)
