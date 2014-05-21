@@ -26,14 +26,14 @@ object ReportGenerator {
       rs.getString("fullName"),
       rs.getString("cpf"),
       rs.getString("title"),
-      rs.getDate("enrolledOn"),
+      rs.getDate("certifiedAt"),
       rs.getString("assetsURL"),
       rs.getString("distributionPrefix"))
       
   
   def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
     generateReport(sql"""
-				select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf, e.enrolledOn
+				select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
 	    	from Person p
 					join Enrollment e on p.uuid = e.person_uuid
 					join CourseClass cc on cc.uuid = e.class_uuid
@@ -41,7 +41,8 @@ object ReportGenerator {
 		    	join Course c on c.uuid = cv.course_uuid
 					join S3ContentRepository s on s.uuid = cv.repository_uuid
 					join Institution i on i.uuid = cc.institution_uuid
-				where p.uuid = $userUUID and
+				where e.certifiedAt is not null and 
+        	p.uuid = $userUUID and
 				  cc.uuid = $courseClassUUID
 		    """.map[CertificateInformationTO](toCertificateInformationTO))
   }
@@ -56,7 +57,7 @@ object ReportGenerator {
   
   def getCertificateInformationTOsByCourseClass(courseClassUUID: String) = 
     sql"""
-				select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf, e.enrolledOn
+				select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
 	    	from Person p
 				  join Enrollment e on p.uuid = e.person_uuid
 				  join CourseClass cc on cc.uuid = e.class_uuid
