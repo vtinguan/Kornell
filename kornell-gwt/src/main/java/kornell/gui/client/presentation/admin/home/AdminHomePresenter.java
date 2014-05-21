@@ -339,8 +339,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	@Override
   public void deleteEnrollment(Enrollment enrollment) {
-	  // TODO Auto-generated method stub
-		GWT.log("deleted");
-	  
+		session.enrollment(enrollment.getUUID()).delete(new Callback<Enrollment>() {
+			@Override
+			public void ok(Enrollment to) {
+				KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
+				getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+			}
+		});
   }
 }

@@ -18,4 +18,7 @@ package object api {
     
   def isInstitutionAdmin(institutionUUID:String)(implicit sc:SecurityContext):Boolean = 
     RoleCategory.isInstitutionAdmin(rolesOf(sc.getUserPrincipal.getName), institutionUUID)
+    
+  def isCourseClassAdmin(courseClassUUID:String)(implicit sc:SecurityContext):Boolean = 
+    RoleCategory.isCourseClassAdmin(rolesOf(sc.getUserPrincipal.getName), courseClassUUID)
 }

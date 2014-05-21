@@ -43,6 +43,12 @@ class EnrollmentRepo(enrollmentUUID: String) {
       where uuid = ${e.getUUID} """.executeUpdate
     e
   }
+  
+  def delete(enrollmentUUID: String) = {    
+    sql"""
+      delete from Enrollment 
+      where uuid = ${enrollmentUUID}""".executeUpdate
+  }
 
   def findGrades: List[String] = sql"""
     	select * from ActomEntries
