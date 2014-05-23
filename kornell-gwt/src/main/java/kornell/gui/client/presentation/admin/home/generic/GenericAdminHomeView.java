@@ -485,7 +485,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private void filterEnrollments() {
 		enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
 		Enrollment enrollment;
-		GWT.log("size: "+enrollmentsCurrent.size());
 		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
 	    	enrollment = enrollmentsCurrent.get(i);
 			boolean fullNameMatch = enrollment.getPerson() != null && enrollment.getPerson().getFullName() != null &&

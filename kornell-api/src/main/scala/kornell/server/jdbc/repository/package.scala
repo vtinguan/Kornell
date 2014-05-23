@@ -16,6 +16,7 @@ import kornell.server.repository.Entities
 import java.util.logging.Logger
 import kornell.core.util.UUID
 import kornell.core.entity.Assessment
+import kornell.core.entity.Institution
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -28,6 +29,16 @@ import kornell.core.entity.Assessment
  */
 package object repository {
   val logger = Logger.getLogger("kornell.server.jdbc")
+  
+  implicit def toInstitution(rs:ResultSet):Institution = 
+    newInstitution(rs.getString("uuid"), 
+        rs.getString("name"),  
+        rs.getString("fullName"), 
+        rs.getString("terms"),
+        rs.getString("assetsURL"),
+        rs.getString("baseURL"),
+        rs.getBoolean("demandsPersonContactDetails"),
+        rs.getDate("activatedAt"))   
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 

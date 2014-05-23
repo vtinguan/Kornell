@@ -1,5 +1,8 @@
 package kornell.core.entity;
 
+import java.util.Date;
+
+
 public interface Institution extends Named {
 	public static String TYPE = EntityFactory.PREFIX + "institution+json";
 
@@ -17,4 +20,7 @@ public interface Institution extends Named {
 	
 	boolean isDemandsPersonContactDetails();
 	void setDemandsPersonContactDetails(boolean demandsPersonContactDetails);
+	
+	Date getActivatedAt();
+	void setActivatedAt(Date activatedAt);
 }

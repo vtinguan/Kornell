@@ -291,6 +291,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 								.getCourseClass().getUUID());
 						KornellNotification.show(
 								"Matrículas feitas com sucesso.", 1500);
+						LoadingPopup.hide();
+					}
+					
+					@Override
+					public void unauthorized(String error){
+						GWT.log("Error AdminHomePresenter: " + error);
+						KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
+						LoadingPopup.hide();
 					}
 				});
 	}
