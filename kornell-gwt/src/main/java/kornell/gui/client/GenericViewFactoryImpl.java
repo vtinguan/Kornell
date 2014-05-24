@@ -22,7 +22,6 @@ import kornell.gui.client.presentation.sandbox.SandboxView;
 import kornell.gui.client.presentation.sandbox.generic.GenericSandboxView;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.terms.generic.GenericTermsView;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.generic.GenericVitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
@@ -49,6 +48,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private ClientFactory clientFactory;
 
 	/* Views */
+	final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
@@ -65,7 +65,6 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public void initGUI() {
 		final RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
-		final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.addNorth(getMenuBarView(), 45);
 		dockLayoutPanel.addSouth(getSouthBarView(), 35);
 
@@ -88,29 +87,24 @@ public class GenericViewFactoryImpl implements ViewFactory {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						setPlaceNameAsBodyStyle(event);
-						dockLayoutPanel.setWidgetHidden(
-								(Widget) getSouthBarView(), !getSouthBarView()
-										.isVisible());
-						if (clientFactory.getPlaceController().getWhere() instanceof VitrinePlace) {
-							dockLayoutPanel.setWidgetSize(getMenuBarView()
-									.asWidget(), 0);
-						} else {
-							dockLayoutPanel.setWidgetSize(getMenuBarView()
-									.asWidget(), 45);
-							getMenuBarView().display();
-						}
+						dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(), !getSouthBarView().isVisible());
+						dockLayoutPanel.setWidgetHidden((Widget) getMenuBarView(), !getMenuBarView().isVisible());
 					}
 
 					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
 						String styleName = rootLayoutPanel.getStyleName();
 						if (!styleName.isEmpty())
 							rootLayoutPanel.removeStyleName(styleName);
-						String[] split = event.getNewPlace().getClass()
-								.getName().split("\\.");
+						String[] split = event.getNewPlace().getClass().getName().split("\\.");
 						String newStyle = split[split.length - 1];
 						rootLayoutPanel.addStyleName(newStyle);
 					}
 				});
+	}
+
+	@Override
+	public DockLayoutPanel getDockLayoutPanel() {
+		return dockLayoutPanel;
 	}
 
 	@Override

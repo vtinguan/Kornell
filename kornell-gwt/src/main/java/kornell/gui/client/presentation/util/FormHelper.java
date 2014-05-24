@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.util;
 import java.util.Date;
 import java.util.List;
 
+import kornell.core.entity.EnrollmentProgressState;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
@@ -499,6 +500,19 @@ public class FormHelper {
 			return constants.cancelled();
 		default:
 			return "";
+		}
+	}
+
+	public String getEnrollmentProgressAsText(EnrollmentProgressState progressState) {
+		switch (progressState) {
+		case toStart:
+			return "A iniciar";
+		case inProgress:
+			return "Em andamento";
+		case finished:
+			return "Concluído";
+		default:
+			return "???";
 		}
 	}
 }

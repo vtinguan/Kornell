@@ -57,7 +57,6 @@ public class GenericCourseClassAdminsView extends Composite {
 
 	private KornellSession session;
 	private FormHelper formHelper;
-	private boolean isCreationMode, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 	
 	private TextBox search;
@@ -65,7 +64,6 @@ public class GenericCourseClassAdminsView extends Composite {
 	private ListBox multipleSelect;
 	private Map<String, Person> oraclePeople;
 
-	private Presenter presenter;
 
 	@UiField
 	Form form;
@@ -83,7 +81,6 @@ public class GenericCourseClassAdminsView extends Composite {
 	public GenericCourseClassAdminsView(final KornellSession session,
 			Presenter presenter, CourseClassTO courseClassTO) {
 		this.session = session;
-		this.presenter = presenter;
 		this.user = session.getCurrentUser();
 		this.courseClassTO = courseClassTO;
 		formHelper = new FormHelper();

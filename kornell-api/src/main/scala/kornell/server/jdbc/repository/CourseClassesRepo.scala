@@ -12,6 +12,7 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 import kornell.core.entity.Roles
 import kornell.core.util.UUID
+import java.util.Date
 
 class CourseClassesRepo {
 }
@@ -33,7 +34,7 @@ object CourseClassesRepo {
              ${courseClass.getRequiredScore},
              ${courseClass.isEnrollWithCPF},
              ${courseClass.getMaxEnrollments},
-             ${courseClass.getCreatedAt},
+             ${new Date()},
              ${courseClass.getCreatedBy})
     """.executeUpdate
     courseClass
