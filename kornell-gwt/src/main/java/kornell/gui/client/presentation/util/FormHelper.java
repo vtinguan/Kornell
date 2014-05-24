@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Image;
 
 //TODO i18n
 public class FormHelper {
+	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
@@ -481,7 +482,7 @@ public class FormHelper {
 	}
 
 	public Image getImageSeparator() {
-		Image image = new Image("skins/first/icons/profile/separatorBar.png");
+		Image image = new Image(SEPARATOR_BAR_IMG_PATH);
 		image.addStyleName("profileSeparatorBar");
 		return image;
 	}

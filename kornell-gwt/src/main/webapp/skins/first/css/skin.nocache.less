@@ -460,12 +460,20 @@ body {
 				}
 				h1 {
 					margin: 0px;
+					margin-top: -7px;
 					padding: 5px 0px 5px 0px;
 					font-size: 1.1em;
 					font-weight: bold;
 					text-align: left;
 					line-height: 1.231;	
 					color: @textHighlightDiscreteColor;
+				}
+				.lblSubTitle {
+					color: @plainTextDiscreteColor;
+					font-style: italic;
+					font-size: 12px;
+					margin-top: -7px;
+					margin-bottom: -10px;
 				}
 				.details {
 					height: 100%;
@@ -499,8 +507,40 @@ body {
 						float: right;
 					}
 				}
-				.description {
-					height: 80px;
+				.ellipsis {
+					font-size: 14px;
+					overflow: hidden;
+					height: 54px;
+					line-height: 18px;
+					margin-right: 10px;
+				}
+				.ellipsis:before {
+					content:"";
+					float: left;
+					width: 5px; 
+					height: 60px; 
+				}
+				.ellipsis > *:first-child {
+					float: right;
+					width: 100%;
+					margin-left: -5px; 
+				}		
+				.ellipsis:after {
+					content: "\02026";  
+
+					box-sizing: content-box;
+					-webkit-box-sizing: content-box;
+					-moz-box-sizing: content-box;
+
+					float: right; 
+					position: relative;
+					top: -25px; 
+					left: 100%; 
+					width: 3em; 
+					margin-left: -3em;
+					padding-right: 5px;
+
+					text-align: right;
 				}
 			}
 		}

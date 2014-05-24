@@ -5,7 +5,6 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentProgress;
-import static kornell.core.entity.EnrollmentProgress.*;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
@@ -31,6 +30,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericCourseSummaryView extends Composite {
@@ -43,6 +43,9 @@ public class GenericCourseSummaryView extends Composite {
 
 	@UiField
 	Heading hTitle;
+	
+	@UiField
+	Label lblSubTitle;
 
 	@UiField
 	Paragraph pDescription;
@@ -73,8 +76,8 @@ public class GenericCourseSummaryView extends Composite {
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		Course course = courseClassTO.getCourseVersionTO().getCourse();
-		hTitle.setText("Curso: " + course.getTitle() + " - Turma: "
-				+ courseClassTO.getCourseClass().getName());
+		hTitle.setText("Curso: " + course.getTitle());
+		lblSubTitle.setText("Turma: " + courseClassTO.getCourseClass().getName());
 		pDescription.setText(course.getDescription());
 
 		final Teacher teacher = Teachers.of(courseClassTO);

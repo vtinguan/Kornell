@@ -570,16 +570,22 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				@Override
 				public void render(com.google.gwt.cell.client.Cell.Context context, Enrollment object, SafeHtmlBuilder sb) {
 					if (presenter.showActionButton(actionName, object)) {
-						String buttonClass = "Excluir".equals(actionName) ? "btnNotSelected"
-						    : (("Cancelar".equals(actionName) || "Negar".equals(actionName)) ? "btnSelected" : "btnAction");
 						// super.render(context, object, sb);
-						SafeHtml html = SafeHtmlUtils.fromTrustedString("<button type=\"button\" class=\"gwt-Button btnEnrollmentsCellTable " + buttonClass
-						    + "\">" + actionName.toUpperCase() + "</button>");
+						SafeHtml html = SafeHtmlUtils.fromTrustedString("<button type=\"button\" class=\"gwt-Button btnEnrollmentsCellTable " + 
+								getButtonClass(actionName) + "\">" + actionName.toUpperCase() + "</button>");
 						sb.append(html);
 					} else
 						sb.appendEscaped("");
 				}
-
+				
+				private String getButtonClass(String actionName){
+					if("Excluir".equals(actionName))
+						return "btnNotSelected";
+					else if("Cancelar".equals(actionName) || "Negar".equals(actionName))
+						return "btnSelected";
+					else 
+						return "btnAction";
+				}
 			};
 		}
 
