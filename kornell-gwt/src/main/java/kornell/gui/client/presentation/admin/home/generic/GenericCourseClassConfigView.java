@@ -264,7 +264,9 @@ public class GenericCourseClassConfigView extends Composite {
 		if (isInstitutionAdmin && validateFields()) {
 			LoadingPopup.show();
 			if(isCreationMode){
-				session.courseClasses().create(getCourseClassInfoFromForm(), new Callback<CourseClass>() {
+				CourseClass courseClass = getCourseClassInfoFromForm();
+				courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
+				session.courseClasses().create(courseClass, new Callback<CourseClass>() {
 					@Override
 					public void ok(CourseClass courseClass) {
 							LoadingPopup.hide();

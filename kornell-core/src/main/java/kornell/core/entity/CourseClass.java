@@ -1,6 +1,7 @@
 package kornell.core.entity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public interface CourseClass extends Named{
 	public static String TYPE = EntityFactory.PREFIX + "courseClass+json";
@@ -22,4 +23,10 @@ public interface CourseClass extends Named{
 	
 	Integer getMaxEnrollments();
 	void setMaxEnrollments(Integer maxEnrollments);
+	
+	Date getCreatedAt();
+	void setCreatedAt(Date createdAt);
+	
+	String getCreatedBy();
+	void setCreatedBy(String createdBy);
 }
