@@ -26,6 +26,7 @@ import kornell.core.entity.RoleCategory
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import javax.servlet.http.HttpServletResponse
 import kornell.server.repository.ContentRepository
+import kornell.core.to.RolesTO
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -98,12 +99,13 @@ class CourseClassResource(uuid: String) {
     }
 
   @GET
-  @Produces(Array(Roles.TYPE))
+  @Produces(Array(RolesTO.TYPE))
   @Path("admins")
-  def getAdmins(implicit @Context sc: SecurityContext) =
+  def getAdmins(implicit @Context sc: SecurityContext,
+      @QueryParam("bind") bindMode:String) =
     AuthRepo.withPerson { person =>
       {
-        CourseClassRepo(uuid).getAdmins
+        CourseClassRepo(uuid).getAdmins(bindMode)
       }
     }
 

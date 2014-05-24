@@ -12,9 +12,12 @@ import kornell.core.entity.EntityFactory;
 import kornell.core.entity.People;
 import kornell.core.entity.Person;
 import kornell.core.entity.Role;
+import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.entity.Roles;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.RoleTO;
+import kornell.core.to.RolesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
@@ -168,12 +171,17 @@ public class GenericCourseClassAdminsView extends Composite {
 		});
 		multipleSelectPanel.add(btnRemove);
 		
-		session.courseClass(courseClassTO.getCourseClass().getUUID()).getAdmins(new Callback<Roles>() {
+		session.courseClass(courseClassTO.getCourseClass().getUUID()).getAdmins(RoleCategory.BIND_WITH_PERSON,
+				new Callback<RolesTO>() {
 			
 			@Override
-			public void ok(Roles to) {
-				for (Role role : to.getRoles()) {
-					multipleSelect.addItem(role.getUsername());
+			public void ok(RolesTO to) {
+				for (RoleTO roleTO : to.getRoleTOs()) {
+					String item = roleTO.getRole().getUsername();
+					if(roleTO.getPerson().getFullName() != null && !"".equals(roleTO.getPerson().getFullName())){
+						item += " (" +roleTO.getPerson().getFullName()+")";
+					}
+					multipleSelect.addItem(item);
 				}
 			}
 		});

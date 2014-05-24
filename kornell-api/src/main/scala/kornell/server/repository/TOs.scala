@@ -21,6 +21,9 @@ import kornell.core.to.CourseVersionsTO
 import kornell.core.to.EnrollmentRequestTO
 import kornell.core.to.EnrollmentRequestsTO
 import kornell.core.to.CertificateInformationTO
+import kornell.core.entity.Person
+import kornell.core.entity.Role
+import kornell.core.to.RoleTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -203,5 +206,18 @@ object TOs {
     to.setAssetsURL(assetsURL)
     to.setDistributionPrefix(distributionPrefix)
     to
+  }
+  
+  def newRoleTO(role: Role, person: Person) = {
+    val r = tos.newRoleTO.as
+    r.setRole(role)
+    r.setPerson(person)
+    r
+  }
+
+  def newRolesTO(roleTOs: List[RoleTO]) = {
+    val rs = tos.newRolesTO.as
+    rs.setRoleTOs(roleTOs.asJava)
+    rs
   }
 }

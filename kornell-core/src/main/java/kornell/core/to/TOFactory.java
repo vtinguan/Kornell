@@ -16,4 +16,6 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<RegistrationRequestTO> newRegistrationRequestTO();
 	AutoBean<EnrollmentRequestTO> newEnrollmentRequestTO();
 	AutoBean<EnrollmentRequestsTO> newEnrollmentRequestsTO();
+	AutoBean<RoleTO> newRoleTO();
+	AutoBean<RolesTO> newRolesTO();
 }
