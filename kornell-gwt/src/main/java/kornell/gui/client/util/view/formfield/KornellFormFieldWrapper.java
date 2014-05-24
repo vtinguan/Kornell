@@ -1,4 +1,4 @@
-package kornell.gui.client.uidget.formfield;
+package kornell.gui.client.util.view.formfield;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;

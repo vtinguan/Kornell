@@ -24,7 +24,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
-import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;

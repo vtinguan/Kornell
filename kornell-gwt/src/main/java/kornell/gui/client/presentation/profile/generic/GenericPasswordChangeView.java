@@ -5,15 +5,14 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Person;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.ClientProperties;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.core.client.GWT;

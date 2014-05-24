@@ -29,9 +29,14 @@ import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
+import kornell.gui.client.util.orientation.IpadIos7HeightFix;
+import kornell.gui.client.util.orientation.OrientationChangeEvent;
+import kornell.gui.client.util.orientation.OrientationResizeHandler;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -70,6 +75,13 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		sp.addStyleName("vScrollBar");
 		dockLayoutPanel.addStyleName("wrapper");
 		rootLayoutPanel.add(dockLayoutPanel);
+		
+		final String userAgent = Navigator.getUserAgent();
+		if (userAgent.contains("iPad") && userAgent.contains("OS 7")) {
+			IpadIos7HeightFix.fixHeight();
+			clientFactory.getEventBus().addHandler(OrientationChangeEvent.TYPE, new IpadIos7HeightFix());
+		}
+		Window.addResizeHandler(new OrientationResizeHandler(clientFactory.getEventBus()));
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {

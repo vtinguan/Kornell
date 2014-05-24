@@ -6,10 +6,10 @@ import java.util.List;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.uidget.formfield.CheckBoxFormField;
-import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.uidget.formfield.PasswordTextBoxFormField;
-import kornell.gui.client.uidget.formfield.TextBoxFormField;
+import kornell.gui.client.util.view.formfield.CheckBoxFormField;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.PasswordTextBoxFormField;
+import kornell.gui.client.util.view.formfield.TextBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;

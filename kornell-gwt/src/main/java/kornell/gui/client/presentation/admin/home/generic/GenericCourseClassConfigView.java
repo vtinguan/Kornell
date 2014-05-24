@@ -2,9 +2,7 @@ package kornell.gui.client.presentation.admin.home.generic;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -12,8 +10,6 @@ import kornell.core.entity.Course;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.People;
-import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
@@ -24,32 +20,23 @@ import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.uidget.formfield.ListBoxFormField;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.Typeahead;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericCourseClassConfigView extends Composite {
@@ -270,7 +257,7 @@ public class GenericCourseClassConfigView extends Composite {
 					@Override
 					public void ok(CourseClass courseClass) {
 							LoadingPopup.hide();
-							KornellNotification.show("Alterações salvas com sucesso!");
+							KornellNotification.show("Turma criada com sucesso!");
 							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
 							courseClassTO = Dean.getInstance().getCourseClassTO();
 							presenter.updateCourseClass(courseClass.getUUID());

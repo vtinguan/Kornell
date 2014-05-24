@@ -1,4 +1,4 @@
-package kornell.gui.client.uidget.formfield;
+package kornell.gui.client.util.view.formfield;
 
 import java.util.ArrayList;
 import java.util.Date;
