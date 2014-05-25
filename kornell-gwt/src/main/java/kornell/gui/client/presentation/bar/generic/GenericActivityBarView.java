@@ -6,6 +6,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
@@ -94,7 +95,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		}
 		display();
 		
-		setUpArrowNavigation();
+		setupArrowsNavigation();
 		
 	}
 
@@ -222,7 +223,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		}
 	}
 
-	private static native void setUpArrowNavigation() /*-{
+	private static native void setupArrowsNavigation() /*-{
 		$doc.onkeydown = function() {
 			if($wnd.event.target.nodeName != "TEXTAREA"){
 			    switch ($wnd.event.keyCode) {
@@ -303,7 +304,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			btnDetails.addStyleName("firstMonoSCO");
 		else
 			btnDetails.removeStyleName("firstMonoSCO");
-		this.setVisible(true);
+		clientFactory.getEventBus().fireEvent(new HideSouthBarEvent(!isEnrolled));
+		this.setVisible(isEnrolled);
 	}
 	
 	@UiHandler("btnDetails")
