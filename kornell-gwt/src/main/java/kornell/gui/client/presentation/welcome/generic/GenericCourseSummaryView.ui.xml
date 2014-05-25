@@ -15,7 +15,9 @@
 	    <g:FlowPanel ui:field="pnlCourseSummaryBar" addStyleNames="courseSummaryBar">
         <g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="profileSeparatorBar"></g:Image>
 				<b:Image ui:field="imgIconCourse" addStyleNames="icon" />
-				<b:Paragraph addStyleNames="courseProgress" ui:field="pProgress"/>
+        <b:Paragraph addStyleNames="courseStatus" ui:field="pStatus"/>
+        <b:ProgressBar addStyleNames="progressBar shy" ui:field="progressBar"/>
+        <b:Paragraph addStyleNames="courseStatusInfo" ui:field="pStatusInfo"/>
 			</g:FlowPanel>	
 		</g:FlowPanel>
 	</g:FlowPanel>

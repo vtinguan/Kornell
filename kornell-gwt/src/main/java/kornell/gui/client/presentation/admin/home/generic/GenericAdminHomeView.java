@@ -356,7 +356,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override
 			public String getValue(Enrollment enrollment) {
-				return formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressState(enrollment));
+				return formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollment));
 			}
 		}, "Progresso");
 
@@ -495,7 +495,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		boolean emailMatch = enrollWithCPF ? matchesWithSearch(p.getCPF()) : matchesWithSearch(p.getEmail());
 		boolean enrollmentStateMatch = matchesWithSearch(formHelper.getEnrollmentStateAsText(one.getState()));
 		boolean enrollmentProgressMatch = one.getProgress() != null && 
-				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressState(one)).toLowerCase());
+				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(one)).toLowerCase());
 		
 		return fullNameMatch || emailMatch || enrollmentStateMatch || enrollmentProgressMatch;
 	}
