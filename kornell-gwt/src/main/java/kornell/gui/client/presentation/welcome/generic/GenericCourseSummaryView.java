@@ -160,8 +160,14 @@ public class GenericCourseSummaryView extends Composite {
 	}
 
 	private void onCourseNotStarted() {
-		pStatus.setText(constants.toStart());
-		iconCourseURL += "iconNotStarted.png";
+		if(courseClassTO.getEnrollment() != null &&
+				EnrollmentState.requested.equals(courseClassTO.getEnrollment().getState())){
+			pStatus.setText("Aguardando aprovação da matrícula");
+			iconCourseURL += "iconWaiting.png";
+		} else {
+			pStatus.setText(constants.toStart());
+			iconCourseURL += "iconNotStarted.png";
+		}
 	}
 
 	private void onCourseCompleted(Date certifiedAt) {
