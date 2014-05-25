@@ -22,11 +22,11 @@
 		width: 300px;
 	}
 	.boxLogin {
-		background-color: rgba(0, 0, 0, 0.8);
+		background-color: fade(@contentBoxBackgroundColor, 80%);
 		width: 225px;
 		padding: 15px 50px;
 		border-radius:8px;
-		box-shadow: 0px 0px 2px 8px rgba(109,103,99,0.25);	
+		box-shadow: 0px 0px 2px 8px fade(@contentBoxBackgroundColor, 25%);	
 		min-height: 200px;
 		margin-top: 30px;
 		margin-left: 50px;
@@ -66,13 +66,13 @@
 			padding-left: 10px;
 			padding-top: 6px;
 			padding-bottom: 6px;
-			border: 1px solid #cccccc;
+			border: 1px solid @bordersColor;
 			margin-bottom: 14px;
 			.inputBar{
 				height: 20px;
 				float: left;
 				width: 3px;
-				background: #9b0b05;
+				background: @textHighlightColor2;
 				margin-right: 5px;
 				margin-top: -2px;
 			}

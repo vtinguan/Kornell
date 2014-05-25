@@ -98,7 +98,6 @@
 			margin-top: @detailsPanelMargin * 3;
 			.hintsPanel{
 				width: @hintsPanelWidth;
-				background-color: @menuLeftItemGradientEndColor;
 				border-radius: 8px;
 				color: @niceTextColor;
 				font-size: 12px;
@@ -169,14 +168,14 @@
 				}
 				.topicPanel{
 					width: @topicsWidth + @detailsPanelMargin + 2px - 50px !important;
-					background-color: lighten(@detailsItemWrapperColor, 5%);
+					background-color: lighten(@contentBoxBackgroundColor, 5%);
 				}
 			}
 			.topicWrapper{
 				@topicWrapperHeight: 30px;
 				height: @topicWrapperHeight;
 				line-height: @topicWrapperHeight;
-				background-color: @detailsItemWrapperColor;
+				background-color: @contentBoxBackgroundColor;
 				margin-top: @detailsPanelMargin / 2;
 				color: @niceTextColor;
 				font-size: 14px;
@@ -212,7 +211,7 @@
 					width: @statusWidth + @detailsPanelMargin + 2px;
 					padding-left: @detailsPanelMargin / 2;
 					padding-right: @detailsPanelMargin / 2;
-					color: @detailsCertificationStatusColor;
+					color: @linkTextColor;
 				}
 				.lblTime{
 					float: left;
@@ -311,7 +310,7 @@
 				@certificationWrapperHeight: 78px;
 				height: @certificationWrapperHeight;
 				line-height: @certificationWrapperHeight;
-				background-color: @detailsItemWrapperColor;
+				background-color: @contentBoxBackgroundColor;
 				margin-top: @detailsPanelMargin / 2;
 				color: @niceTextColor;
 				font-size: 13px;
@@ -355,7 +354,7 @@
 					text-align: center;
 					padding-left: @detailsPanelMargin / 2;
 					padding-right: @detailsPanelMargin / 2;
-					color: @detailsCertificationStatusColor;
+					color: @linkTextColor;
 				}
 				.lblActions{
 					float: left;

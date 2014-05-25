@@ -501,9 +501,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	private FlowPanel getPrivatePanel(){
 		FlowPanel privatePanel = new FlowPanel();
-		privatePanel.addStyleName("privatePanel");
+		/*privatePanel.addStyleName("privatePanel");
 		privatePanel.add(new Image("skins/first/icons/profile/notPublic.png"));
-		privatePanel.add(new Label("Privado"));
+		privatePanel.add(new Label("Privado"));*/
 		return privatePanel;
 	}
 
