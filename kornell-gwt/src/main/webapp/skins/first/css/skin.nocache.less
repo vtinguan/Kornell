@@ -396,6 +396,8 @@ body {
 	.btnPanel{
 		height: 30px;
 		margin-top: 9px;
+		margin-right: 22px;
+		margin-bottom: 10px;
 		.btnCourses{
 			border-left: 2px solid @bordersColor;
 			float:right;
@@ -410,158 +412,153 @@ body {
 			border-bottom: 0;
 		}
 	}
-	.pnlCoursesWrapper{
-		margin-right: 30px;
-		.btnPanel{
-			width: @pnlRightWidth;
+	.pnlCoursesWrapperTitle{
+		height: 20px;
+		.imgPnlCourses{
+			margin-left: 24px;
+			float: left;
 		}
-		.pnlCoursesWrapperTitle{
-			height: 20px;
-			.imgPnlCourses{
-				margin-left: 24px;
-				float: left;
+		.labelPnlCourses { 
+			color: @niceTextColor;
+			font-size: 15px;
+			line-height: 23px;
+			padding-left: 14px;
+			padding-bottom: 12px;
+			float: left;
+		}
+		.labelPnlCoursesHighlight { 
+			color: @highlightCoursesCountColor;
+			padding-left: 5px;
+		}
+	}
+	.pnlCourses { 
+		display: block;
+		overflow: auto;
+		width: @pnlRightWidth;
+		.courseSummary {
+			.sizepx(@pnlRightWidth - 50px,140);
+			background-color: @tableBackgroundColor;
+			border-radius:5px;  
+			padding: 10px;
+			margin-bottom: 10px;
+			margin-left: 10px;
+			float: left;
+			&:hover {
+				cursor: pointer;
+				background-color: @tableBackgroundHoverColor;
 			}
-			.labelPnlCourses { 
+			h1 {
+				margin: 0px;
+				margin-top: -3px;
+				padding: 5px 0px 5px 0px;
+				font-size: 1.1em;
+				font-weight: bold;
+				text-align: left;
+				line-height: 1.231;	
+				color: @textHighlightDiscreteColor;
+			}
+			.lblSubTitle {
+				color: @plainDiscreteTextColor;
+				font-style: italic;
+				font-size: 12px;
+				margin-top: -7px;
+				margin-bottom: -5px;
+			}
+			.details {
+				height: 100%;
+				margin-left: 150px;
 				color: @niceTextColor;
-				font-size: 15px;
-				line-height: 23px;
-				padding-left: 14px;
-				padding-bottom: 12px;
-				float: left;
 			}
-			.labelPnlCoursesHighlight { 
-				color: @highlightCoursesCountColor;
-				padding-left: 5px;
+			img.thumb {
+				.size(130px);
+				float: left;	
+				border: 1px solid @bordersColor;
+				margin: 5px;
 			}
-		}
-		.pnlCourses { 
-			display: block;
-			overflow: auto;
-			width: @pnlRightWidth;
-			.courseSummary {
-				.sizepx(@pnlRightWidth - 50px,140);
-				background-color: @tableBackgroundColor;
-				border-radius:5px;  
-				padding: 10px;
-				margin-bottom: 10px;
-				margin-left: 10px;
-				float: left;
-				&:hover {
-					cursor: pointer;
-					.changeBackgroundColorOnHover(@tableBackgroundColor, 2%);
-				}
-				h1 {
-					margin: 0px;
-					margin-top: -3px;
-					padding: 5px 0px 5px 0px;
-					font-size: 1.1em;
-					font-weight: bold;
-					text-align: left;
-					line-height: 1.231;	
-					color: @textHighlightDiscreteColor;
-				}
-				.lblSubTitle {
-					color: @plainDiscreteTextColor;
-					font-style: italic;
-					font-size: 12px;
-					margin-top: -7px;
-					margin-bottom: -5px;
-				}
-				.details {
-					height: 100%;
-					margin-left: 150px;
-					color: @niceTextColor;
-				}
-				img.thumb {
-					.size(130px);
-					float: left;	
-					border: 1px solid @bordersColor;
-					margin: 5px;
-				}
-				.courseSummaryBar {
-					margin-top: -9px;
-					.icon {
-						float: left;
-						width: 20px;
-						height: 20px;
-					}
-					.courseStatus {
-						display: inline;
-						text-align: right;
-						font-size: 11px;
-						font-weight: bold;
-						line-height: 23px;
-						padding-left: 7px;
-						color: @niceTextColor;
-						float: left;
-					}
-					.progress{
-						width: 250px;
-						height: 10px;
-						float: left;
-						margin: 6px 3px 0px 10px;
-						background-color: @contentBoxBackgroundColor;
-						background-image: linear-gradient(to bottom, @contentBoxBackgroundColor, @contentBoxBackgroundColor);
-						.bar{
-							.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
-						}
-					}
-					.courseStatusInfo {
-						display: inline;
-						color: @textInfoColor;
-						text-align: right;
-						font-size: 11px;
-						font-weight: bold;
-						line-height: 23px;
-						padding-left: 7px;
-					}
-					.courseProgressCertificate {
-						float: right; 
-					}
-					.iconCertificate {
-						float: right;
-					}
-				}
-				.ellipsis {
-					font-size: 14px;
-					overflow: hidden;
-					height: 48px;
-					line-height: 16px;
-					margin-right: 10px;
-					margin-bottom: 5px;
-					margin-top: 3px;
-				}
-				.ellipsis:before {
-					content:"";
+			.courseSummaryBar {
+				margin-top: -9px;
+				.icon {
 					float: left;
-					width: 5px; 
-					height: 58px; 
+					width: 20px;
+					height: 20px;
 				}
-				.ellipsis > *:first-child {
-					float: right;
-					width: 100%;
-					margin-left: -5px; 
-				}		
-				.ellipsis:after {
-					content: "\02026";  
-
-					box-sizing: content-box;
-					-webkit-box-sizing: content-box;
-					-moz-box-sizing: content-box;
-
-					float: right; 
-					position: relative;
-					top: -25px; 
-					left: 100%; 
-					width: 3em; 
-					margin-left: -3em;
-					padding-right: 5px;
-
+				.courseStatus {
+					display: inline;
 					text-align: right;
+					font-size: 11px;
+					font-weight: bold;
+					line-height: 23px;
+					padding-left: 7px;
+					color: @niceTextColor;
+					float: left;
 				}
+				.progress{
+					width: 250px;
+					height: 10px;
+					float: left;
+					margin: 6px 3px 0px 10px;
+					background-color: @contentBoxBackgroundColor;
+					background-image: linear-gradient(to bottom, @contentBoxBackgroundColor, @contentBoxBackgroundColor);
+					.bar{
+						.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
+					}
+				}
+				.courseStatusInfo {
+					display: inline;
+					color: @textInfoColor;
+					text-align: right;
+					font-size: 11px;
+					font-weight: bold;
+					line-height: 23px;
+					padding-left: 7px;
+				}
+				.courseProgressCertificate {
+					float: right; 
+				}
+				.iconCertificate {
+					float: right;
+				}
+			}
+			.ellipsis {
+				font-size: 14px;
+				overflow: hidden;
+				height: 48px;
+				line-height: 16px;
+				margin-right: 10px;
+				margin-bottom: 5px;
+				margin-top: 3px;
+			}
+			.ellipsis:before {
+				content:"";
+				float: left;
+				width: 5px; 
+				height: 58px; 
+			}
+			.ellipsis > *:first-child {
+				float: right;
+				width: 100%;
+				margin-left: -5px; 
+			}		
+			.ellipsis:after {
+				content: "\02026";  
+
+				box-sizing: content-box;
+				-webkit-box-sizing: content-box;
+				-moz-box-sizing: content-box;
+
+				float: right; 
+				position: relative;
+				top: -25px; 
+				left: 100%; 
+				width: 3em; 
+				margin-left: -3em;
+				padding-right: 5px;
+
+				text-align: right;
 			}
 		}
 	}
+	
 } 
 @media screen and (max-width: @wrapperWidth) {
 	.pnlRight{

@@ -47,37 +47,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	@UiField
 	FlowPanel coursesPanel;
 	@UiField
-	FlowPanel pnlInProgress;
-	@UiField
-	FlowPanel pnlToStart;
-	@UiField
-	FlowPanel pnlToAcquire;
-	@UiField
-	FlowPanel pnlFinished;
-	@UiField
-	FlowPanel pnlCoursesInProgress;
-	@UiField
-	FlowPanel pnlCoursesToStart;
-	@UiField
-	FlowPanel pnlCoursesToAcquire;
-	@UiField
-	FlowPanel pnlCoursesFinished;
-	@UiField
-	Label labelCoursesInProgress;
-	@UiField
-	Label labelCoursesToStart;
-	@UiField
-	Label labelCoursesToAcquire;
-	@UiField
-	Label labelCoursesFinished;
-	@UiField
-	Label labelCoursesInProgressCount;
-	@UiField
-	Label labelCoursesToStartCount;
-	@UiField
-	Label labelCoursesToAcquireCount;
-	@UiField
-	Label labelCoursesFinishedCount;
+	FlowPanel pnlCourses;
 	@UiField
 	Button btnCoursesAll;
 	@UiField
@@ -113,10 +83,16 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		this.toFactory = toFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		coursesPanel.setVisible(false);
+		btnCoursesAll.setText(constants.allCourses());
+		btnCoursesInProgress.setText(constants.inProgress());
+		btnCoursesToStart.setText(constants.toStart());
+		btnCoursesToAcquire.setText("Disponíveis");
+		btnCoursesFinished.setText(constants.finished());
 		initData();
 	}
 
 	private void initData() {
+		refreshButtonsSelection();
 		session.getCourseClassesTOByInstitution(Dean.getInstance()
 				.getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 			@Override
@@ -143,18 +119,21 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	}
 
 	private void display(final CourseClassesTO tos) {
-		clearPanels();
-		
+		pnlCourses.clear();
 		if(tos.getCourseClasses().size() == 0){
 			coursesPanel.setVisible(false);
 			KornellNotification.show("Você não está matriculado em alguma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.INFO, 8000);
 		} else {
 			coursesPanel.setVisible(true);
 		}
+		btnCoursesAll.setVisible(true);
+		btnCoursesFinished.setVisible(false);
+		btnCoursesInProgress.setVisible(false);
+		btnCoursesToStart.setVisible(false);
+		btnCoursesToAcquire.setVisible(false);
+		refreshButtonsSelection();
 		
 		for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
-			final GenericCourseSummaryView courseSummaryView = new GenericCourseSummaryView(
-					placeCtrl, courseClassTO, session);
 			final Teacher teacher = Teachers.of(courseClassTO);
 
 			session.getCurrentUser(new Callback<UserInfoTO>() {
@@ -162,81 +141,49 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 				public void ok(UserInfoTO userInfoTO) {
 					Student student = teacher.student(userInfoTO);
 					if (student.isEnrolled()) {
-						EnrollmentProgressDescription description = student
-								.getEnrollmentProgress().getDescription();
+						EnrollmentProgressDescription description = student.getEnrollmentProgress().getDescription();
 						switch (description) {
 						case completed:
-							pnlCoursesFinished.add(courseSummaryView);
+							addPanelIfFiltered(COURSES_FINISHED, courseClassTO);
+							btnCoursesFinished.setVisible(true);
 							break;
 						case inProgress:
-							pnlCoursesInProgress.add(courseSummaryView);
+							addPanelIfFiltered(COURSES_IN_PROGRESS, courseClassTO);
+							btnCoursesInProgress.setVisible(true);
 							break;
 						case notStarted:
-							pnlCoursesToStart.add(courseSummaryView);
+							addPanelIfFiltered(COURSES_TO_START, courseClassTO);
+							btnCoursesToStart.setVisible(true);
 							break;
 						}
-					} else
-						pnlCoursesToAcquire.add(courseSummaryView);
+					} else {
+						addPanelIfFiltered(COURSES_TO_ACQUIRE, courseClassTO);
+						btnCoursesToAcquire.setVisible(true);
+					}
 					display(tos);
+				}
+				
+				private void addPanelIfFiltered(String filter, CourseClassTO courseClassTO){
+					if(filter != null && (COURSES_ALL.equals(displayCourses) || filter.equals(displayCourses))){
+						pnlCourses.add(new GenericCourseSummaryView(placeCtrl, courseClassTO, session));
+						GWT.log("Added: " + courseClassTO.getCourseClass().getName());
+					}
 				}
 
 				private void display(CourseClassesTO tos) {
-					disablePanels();
-					refreshButtonsSelection();
-					btnCoursesAll.setText(constants.allCourses());
-					
 					if(tos.getCourseClasses().size() <= 1){
 						btnCoursesAll.setVisible(false);
 						btnCoursesInProgress.setVisible(false);
 						btnCoursesToStart.setVisible(false);
 						btnCoursesToAcquire.setVisible(false);
 						btnCoursesFinished.setVisible(false);
-					}
-
-					if(pnlCoursesInProgress.getWidgetCount() > 0){
-						labelCoursesInProgress.setText(constants.coursesInProgress());
-						btnCoursesInProgress.setText(constants.inProgress());
-						labelCoursesInProgressCount.setText(""+pnlCoursesInProgress.getWidgetCount());
-					} else {
-						pnlInProgress.setVisible(false);
-						btnCoursesInProgress.setVisible(false);
-					}
-					
-					
-					if(pnlCoursesToStart.getWidgetCount() > 0){
-						labelCoursesToStart.setText(constants.coursesToStart());
-						btnCoursesToStart.setText(constants.toStart());
-						labelCoursesToStartCount.setText(""+pnlCoursesToStart.getWidgetCount());
-					} else {
-						pnlToStart.setVisible(false);
-						btnCoursesToStart.setVisible(false);
-					}
-					
-					
-					if(pnlCoursesToAcquire.getWidgetCount() > 0){
-						labelCoursesToAcquire.setText(constants.coursesToAcquire());
-						btnCoursesToAcquire.setText(constants.toAcquire());
-						labelCoursesToAcquireCount.setText(""+pnlCoursesToAcquire.getWidgetCount());
-					} else {
-						pnlToAcquire.setVisible(false);
-						btnCoursesToAcquire.setVisible(false);
-					}
-					
-					
-					if(pnlCoursesFinished.getWidgetCount() > 0){
-						labelCoursesFinished.setText(constants.coursesFinished());
-						btnCoursesFinished.setText(constants.finished());
-						labelCoursesFinishedCount.setText(""+pnlCoursesFinished.getWidgetCount());
-					} else {
-						pnlFinished.setVisible(false);
-						btnCoursesFinished.setVisible(false);
-					}
-					
+					}					
 				}
 			});
 		}
 
 	}
+
 
 	@UiHandler("btnCoursesAll")
 	void handleClickAll(ClickEvent e) {
@@ -296,37 +243,6 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 			btnCoursesFinished.addStyleName("btnSelected");
 			btnCoursesFinished.removeStyleName("btnNotSelected");
 		}
-	}
-
-	private void disablePanels() {
-		pnlInProgress.setVisible(true);
-		pnlToStart.setVisible(true);
-		pnlToAcquire.setVisible(true);
-		pnlFinished.setVisible(true);
-		if (COURSES_IN_PROGRESS.equals(displayCourses)) {
-			pnlToStart.setVisible(false);
-			pnlToAcquire.setVisible(false);
-			pnlFinished.setVisible(false);
-		} else if (COURSES_TO_ACQUIRE.equals(displayCourses)) {
-			pnlInProgress.setVisible(false);
-			pnlToStart.setVisible(false);
-			pnlFinished.setVisible(false);
-		} else if (COURSES_TO_START.equals(displayCourses)) {
-			pnlInProgress.setVisible(false);
-			pnlToAcquire.setVisible(false);
-			pnlFinished.setVisible(false);
-		} else if (COURSES_FINISHED.equals(displayCourses)) {
-			pnlInProgress.setVisible(false);
-			pnlToStart.setVisible(false);
-			pnlToAcquire.setVisible(false);
-		}
-	}
-
-	private void clearPanels() {
-		pnlCoursesToAcquire.clear();
-		pnlCoursesFinished.clear();
-		pnlCoursesInProgress.clear();
-		pnlCoursesToStart.clear();
 	}
 
 	@Override
