@@ -419,7 +419,7 @@
 .detailsPanel .buttonsPanel .btnDetails .btnLabel{font-size:12px;line-height:14px;color:#bec1c3;padding-bottom:8px;}
 .detailsPanel .detailsContentPanel .infoPanel{width:432.90000000000003px;margin-top:20px;float:left;}.detailsPanel .detailsContentPanel .infoPanel .infoDetails{margin-top:20px;}.detailsPanel .detailsContentPanel .infoPanel .infoDetails .infoTitle{color:#d88709;font-weight:bold;font-size:16px;margin-bottom:10px;}
 .detailsPanel .detailsContentPanel .infoPanel .infoDetails .infoText{color:#bec1c3;padding-right:20px;}
-.detailsPanel .detailsContentPanel .sidePanel{float:left;margin-top:60px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel{width:240.5px;border-radius:8px;color:#bec1c3;font-size:12px;line-height:14px;padding:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails{padding-top:20px;padding-bottom:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintImg{float:left;}
+.detailsPanel .detailsContentPanel .sidePanel{float:left;margin-top:60px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel{width:240.5px;background-color:#0d0b0c;border-radius:8px;color:#bec1c3;font-size:12px;line-height:14px;padding:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails{padding-top:20px;padding-bottom:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintImg{float:left;}
 .detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintText{padding-left:30px;}
 .detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel{width:240.5px;color:#be150e;padding:10px;padding-left:22px;}
 .detailsPanel .detailsContentPanel .topicsPanel{width:721.5px;margin-top:20px;float:left;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel{height:24px;margin-bottom:10px;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopicsHeader{border-radius:0px;height:24px;line-height:24px;border:0;color:#bec1c3;padding-left:10px;padding-right:10px;font-size:12px;font-weight:bold;border-left:1px solid #505864;border-right:1px solid #181c22;display:block;float:left;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopicsHeader:hover{text-decoration:none;cursor:default;}
@@ -539,7 +539,7 @@
 @media screen and (max-width:962px){}
 ::-webkit-scrollbar{width:18px;height:18px;}
 ::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(13, 11, 12, 0.5) !important;border-radius:5px;}
-::-webkit-scrollbar-thumb{-webkit-box-shadow:inset 0 0 6px rgba(43, 32, 35, 0.5) !important;border-radius:5px;}
+::-webkit-scrollbar-thumb{-webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.5) !important;border-radius:5px;}
 .deanHome{width:962px;margin:0 auto;}.deanHome .inlineLabel{margin-right:5px;display:inline;color:#bec1c3;font-size:12px;}
 .deanHome .lblHighlight{color:#e3e3e3;font-weight:bold;font-size:13px;}
 .deanHome .title{color:#d88709;font-size:18px;line-height:28px;clear:both;}
@@ -553,7 +553,7 @@
 .deanHome .addEnrollmentBatchPanel button{margin-top:15px;width:75px;}
 .deanHome .enrollmentsCellTable{width:962px;color:#bec1c3;margin-bottom:0;border:0;border-collapse:separate;border-spacing:0 5px;}.deanHome .enrollmentsCellTable .btnEnrollmentsCellTable{float:left;margin-right:10px;height:18px;line-height:14px;font-size:10px;}
 .deanHome .enrollmentsCellTable thead tr{background-color:transparent !important;background-color:#4c4f54;background:-webkit-gradient(linear, left top, left bottom, from(#4c4f54), to(#2a2d32));background:-webkit-linear-gradient(top, #4c4f54, #2a2d32);background:-moz-linear-gradient(top, #4c4f54, #2a2d32);background:-ms-linear-gradient(top, #4c4f54, #2a2d32);background:-o-linear-gradient(top, #4c4f54, #2a2d32);background:#4c4f54;background:-moz-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c4f54), color-stop(100%, #2a2d32));background:-webkit-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-o-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:-ms-linear-gradient(top, #4c4f54 0%, #2a2d32 100%);background:linear-gradient(to bottom, #4c4f54 0%, #2a2d32 100%);}.deanHome .enrollmentsCellTable thead tr th{border-right:1px solid #505864;padding:3px;}
-.deanHome .enrollmentsCellTable tbody tr{background-color:#2b2023;font-size:12px;cursor:pointer;}.deanHome .enrollmentsCellTable tbody tr td{border:0;padding:3px;line-height:16px;}
+.deanHome .enrollmentsCellTable tbody tr{background-color:rgba(0, 0, 0, 0.1);font-size:12px;cursor:pointer;}.deanHome .enrollmentsCellTable tbody tr td{border:0;padding:3px;line-height:16px;}
 .deanHome table{border-color:transparent !important;}
 .deanHome .pageSizeListBox{font-size:12px;width:65px;height:26px;margin-left:5px;margin-right:5px;float:right;background-color:transparent;border:1px solid #505864;color:#bec1c3;}
 .deanHome .txtSearch{font-size:12px;height:17px;margin-right:5px;float:left;background-color:transparent;border:1px solid #505864;color:#bec1c3;}
@@ -581,7 +581,7 @@
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle{height:20px;}.pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .imgPnlCourses{margin-left:24px;float:left;}
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .labelPnlCourses{color:#bec1c3;font-size:15px;line-height:23px;padding-left:14px;padding-bottom:12px;float:left;}
 .pnlRight .pnlCoursesWrapper .pnlCoursesWrapperTitle .labelPnlCoursesHighlight{color:#be150e;padding-left:5px;}
-.pnlRight .pnlCoursesWrapper .pnlCourses{display:block;overflow:auto;width:962px;}.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary{width:912px;height:140px;background-color:#2b2023;border-radius:5px;padding:10px;margin-bottom:10px;margin-left:10px;float:left;}.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary:hover{cursor:pointer;background-color:#312428;}
+.pnlRight .pnlCoursesWrapper .pnlCourses{display:block;overflow:auto;width:962px;}.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary{width:912px;height:140px;background-color:rgba(0, 0, 0, 0.1);border-radius:5px;padding:10px;margin-bottom:10px;margin-left:10px;float:left;}.pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary:hover{cursor:pointer;background-color:rgba(5, 5, 5, 0.1);}
 .pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary h1{margin:0px;margin-top:-3px;padding:5px 0px 5px 0px;font-size:1.1em;font-weight:bold;text-align:left;line-height:1.231;color:#e3e3e3;}
 .pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .lblSubTitle{color:#888888;font-style:italic;font-size:12px;margin-top:-7px;margin-bottom:-5px;}
 .pnlRight .pnlCoursesWrapper .pnlCourses .courseSummary .details{height:100%;margin-left:150px;color:#bec1c3;}
