@@ -61,7 +61,8 @@ package object repository {
     rs.getString("repository_uuid"), 
     rs.getDate("versionCreatedAt"),
     rs.getString("distributionPrefix"),
-    rs.getString("contentSpec"))    
+    rs.getString("contentSpec"),
+    rs.getBoolean("disabled"))    
   
   implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = 
     TOs.newCourseClassTO(   
@@ -78,6 +79,7 @@ package object repository {
     rs.getDate("versionCreatedAt"),
     rs.getString("distributionPrefix"),
     rs.getString("contentSpec"),
+    rs.getBoolean("disabled"),
     //courseClass
     rs.getString("courseClassUUID"),
     rs.getString("courseClassName"), 

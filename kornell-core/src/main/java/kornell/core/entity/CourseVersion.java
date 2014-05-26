@@ -18,4 +18,7 @@ public interface CourseVersion extends Named {
 	ContentSpec getContentSpec();
 	void setContentSpec(ContentSpec contentSpec);
 	
+	boolean isDisabled();
+	void setDisabled(boolean disabled);
+	
 }

@@ -184,6 +184,7 @@ public class GenericCourseClassConfigView extends Composite {
 			session.courseVersions().findByCourse(course.getFieldPersistText(), new Callback<CourseVersionsTO>() {
 				@Override
 				public void ok(CourseVersionsTO to) {
+					GWT.log("fsdafasfas " + to.getCourseVersions().get(0).isDisabled());
 					createCourseVersionsField(to);
 				}
 			});

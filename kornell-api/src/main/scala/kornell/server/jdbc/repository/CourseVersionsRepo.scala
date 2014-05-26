@@ -16,14 +16,15 @@ object CourseVersionsRepo {
   
   def create(courseVersion: CourseVersion): CourseVersion = {    
     sql"""
-    | insert into CourseVersion (uuid,name,repository_uuid,course_uuid,versionCreatedAt,distributionPrefix) 
+    | insert into CourseVersion (uuid,name,repository_uuid,course_uuid,versionCreatedAt,distributionPrefix,disabled) 
     | values(
     | ${courseVersion.getUUID},
     | ${courseVersion.getName},
     | ${courseVersion.getRepositoryUUID},
     | ${courseVersion.getCourseUUID}, 
     | ${courseVersion.getVersionCreatedAt},
-    | ${courseVersion.getDistributionPrefix})""".executeUpdate
+    | ${courseVersion.getDistributionPrefix},
+    | ${courseVersion.isDisabled})""".executeUpdate
     courseVersion
   }  
   
@@ -31,7 +32,7 @@ object CourseVersionsRepo {
     sql"""
 	  	select cv.* from CourseVersion cv
 		join Course c on cv.course_uuid = c.uuid
-		where c.uuid = $courseUUID
+		where cv.disabled = 0 and c.uuid = $courseUUID
 	  """.map[CourseVersion](toCourseVersion))
   
 }

@@ -188,7 +188,7 @@ object Entities {
     role
   }
 
-  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String, contentSpec: String) = {
+  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String, contentSpec: String, disabled: Boolean) = {
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
@@ -196,6 +196,7 @@ object Entities {
     version.setRepositoryUUID(repositoryUUID);
     version.setVersionCreatedAt(versionCreatedAt)
     version.setDistributionPrefix(distributionPrefix)
+    version.setDisabled(disabled)
     Option(contentSpec) foreach { spec =>
       val cSpec = ContentSpec.valueOf(spec)
       version.setContentSpec(cSpec);
