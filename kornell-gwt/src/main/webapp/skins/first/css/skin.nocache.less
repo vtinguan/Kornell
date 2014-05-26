@@ -391,8 +391,7 @@ body {
 
 
 .pnlRight{
-	@pnlRightWidth: @wrapperWidth;// - @menuLeftWidth - 18px;
-	width: @pnlRightWidth;
+	width: @wrapperWidth;
 	.btnPanel{
 		height: 30px;
 		margin-top: 9px;
@@ -434,9 +433,9 @@ body {
 	.pnlCourses { 
 		display: block;
 		overflow: auto;
-		width: @pnlRightWidth;
+		width: @wrapperWidth;
 		.courseSummary {
-			.sizepx(@pnlRightWidth - 50px,140);
+			.sizepx(@wrapperWidth - 50px,140);
 			background-color: @tableBackgroundColor;
 			border-radius:5px;  
 			padding: 10px;
@@ -562,24 +561,21 @@ body {
 } 
 @media screen and (max-width: @wrapperWidth) {
 	.pnlRight{
-		@pnlRightWidth: @wrapperWidthUnder990 - 18px;
-		width: @pnlRightWidth;
+		@wrapperWidth: @wrapperWidthUnder990 - 18px;
+		width: @wrapperWidth;
 		.btnPanel{
-			width: @pnlRightWidth;
+			width: @wrapperWidth;
 			height:	60px;
-			width: @pnlRightWidth;
+			width: @wrapperWidth;
 		}
-		.pnlCoursesWrapper {
-			width: @pnlRightWidth;
-			.pnlCourses { 
-				width: @pnlRightWidth + 30px;
-			}
-			.courseSummary {
-			width: @pnlRightWidth !important;
-				//width: 314px !important;
-				.description {
-					overflow: hidden;
-				}
+		.pnlCourses { 
+			width: @wrapperWidth;
+		}
+		.courseSummary {
+		width: @wrapperWidth - 30px !important;
+			//width: 314px !important;
+			.description {
+				overflow: hidden;
 			}
 		}
 	}
