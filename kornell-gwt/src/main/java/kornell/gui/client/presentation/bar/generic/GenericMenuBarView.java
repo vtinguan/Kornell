@@ -16,8 +16,10 @@ import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -57,6 +59,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	private static final String IMAGES_PATH = "skins/first/icons/menuBar/";
 	private String barLogoFileName = "logo250x45.png";
+
+	private boolean visible = false;
 
 	@UiField
 	FlowPanel menuBar;
@@ -106,7 +110,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 						Place newPlace = event.getNewPlace();
 						if (newPlace instanceof VitrinePlace) {
 							GenericMenuBarView.this.setVisible(false);
+							setVisible(false);
 						} else {
+							setVisible(true);
 							if (newPlace instanceof TermsPlace
 									|| (newPlace instanceof ProfilePlace
 											&& Dean.getInstance()
@@ -296,6 +302,15 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	@Override
 	public void onLogin(UserInfoTO user) {
 		identifyUserVoice(user);
+	}
+
+	@Override
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 }

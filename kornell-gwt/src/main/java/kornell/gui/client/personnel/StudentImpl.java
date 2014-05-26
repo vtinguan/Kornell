@@ -1,9 +1,10 @@
 package kornell.gui.client.personnel;
 
+import static kornell.core.entity.EnrollmentProgressDescription.completed;
+import static kornell.core.entity.EnrollmentProgressDescription.inProgress;
+import static kornell.core.entity.EnrollmentProgressDescription.notStarted;
+import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentProgress;
-import kornell.core.entity.EnrollmentProgressDescription;
-import static kornell.core.entity.EnrollmentProgressDescription.*;
-import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.entity.Entities;
@@ -24,15 +25,14 @@ public class StudentImpl implements Student {
 
 	@Override
 	public EnrollmentProgress getEnrollmentProgress() {
-		Integer progress = courseClassTO.getEnrollment().getProgress();
-		if (progress != null) {
-			return enrollmentProgressOf(progress);
+		if (courseClassTO.getEnrollment().getProgress() != null) {
+			return enrollmentProgressOf(courseClassTO.getEnrollment());
 		} else
 			return null;
 	}
 
-	private EnrollmentProgress enrollmentProgressOf(Integer progress) {
-
+	private EnrollmentProgress enrollmentProgressOf(Enrollment enrollment) {
+		Integer progress = enrollment.getProgress();
 		EnrollmentProgress ep = Entities.get().newEnrollmentProgress();
 		if (progress != null) {
 			if (progress <= 0) {
@@ -45,6 +45,7 @@ public class StudentImpl implements Student {
 				ep.setProgress(progress);
 				ep.setDescription(inProgress);
 			}
+			ep.setCertifiedAt(enrollment.getCertifiedAt());
 			return ep;
 		} else
 			return null;

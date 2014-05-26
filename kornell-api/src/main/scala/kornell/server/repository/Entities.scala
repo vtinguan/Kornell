@@ -121,7 +121,7 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean) = {
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, activatedAt: Date) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -130,6 +130,7 @@ object Entities {
     i.setAssetsURL(assetsURL)
     i.setBaseURL(baseURL)
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
+    i.setActivatedAt(activatedAt)
     i
   }
 
@@ -187,7 +188,7 @@ object Entities {
     role
   }
 
-  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String, contentSpec: String) = {
+  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String, contentSpec: String, disabled: Boolean) = {
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
@@ -195,6 +196,7 @@ object Entities {
     version.setRepositoryUUID(repositoryUUID);
     version.setVersionCreatedAt(versionCreatedAt)
     version.setDistributionPrefix(distributionPrefix)
+    version.setDisabled(disabled)
     Option(contentSpec) foreach { spec =>
       val cSpec = ContentSpec.valueOf(spec)
       version.setContentSpec(cSpec);
@@ -202,7 +204,7 @@ object Entities {
     version
   }
 
-  def newCourseClass(uuid: String, name: String, courseVersionUUID: String, institutionUUID: String, requiredScore: BigDecimal, publicClass: Boolean, enrollWithCPF: Boolean, maxEnrollments: Integer) = {
+  def newCourseClass(uuid: String, name: String, courseVersionUUID: String, institutionUUID: String, requiredScore: BigDecimal, publicClass: Boolean, enrollWithCPF: Boolean, maxEnrollments: Integer, createdAt: Date,createdBy: String) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -212,6 +214,8 @@ object Entities {
     clazz.setPublicClass(publicClass)
     clazz.setEnrollWithCPF(enrollWithCPF)
     clazz.setMaxEnrollments(maxEnrollments)
+    clazz.setCreatedAt(createdAt)
+    clazz.setCreatedBy(createdBy)
     clazz
   }
 

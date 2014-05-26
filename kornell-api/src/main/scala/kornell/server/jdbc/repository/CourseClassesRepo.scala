@@ -12,6 +12,7 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 import kornell.core.entity.Roles
 import kornell.core.util.UUID
+import java.util.Date
 
 class CourseClassesRepo {
 }
@@ -24,7 +25,7 @@ object CourseClassesRepo {
     if (courseClass.getUUID == null)
       courseClass.setUUID(UUID.random)
     sql""" 
-    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,enrollWithCPF,maxEnrollments)
+    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,enrollWithCPF,maxEnrollments,createdAt,createdBy)
     	values(${courseClass.getUUID},
              ${courseClass.getName},
              ${courseClass.getCourseVersionUUID},
@@ -32,7 +33,9 @@ object CourseClassesRepo {
              ${courseClass.isPublicClass},
              ${courseClass.getRequiredScore},
              ${courseClass.isEnrollWithCPF},
-             ${courseClass.getMaxEnrollments})
+             ${courseClass.getMaxEnrollments},
+             ${new Date()},
+             ${courseClass.getCreatedBy})
     """.executeUpdate
     courseClass
   }
@@ -56,14 +59,17 @@ object CourseClassesRepo {
 			    cv.repository_uuid as repositoryUUID, 
 			    cv.versionCreatedAt as versionCreatedAt,
 		  		cv.distributionPrefix as distributionPrefix,
-      			cv.contentSpec as contentSpec,
+      		cv.contentSpec as contentSpec,
+      		cv.disabled as disabled,
 			    cc.uuid as courseClassUUID,
 			    cc.name as courseClassName,
 			    cc.institution_uuid as institutionUUID,
 		  		cc.requiredScore as requiredScore,
 		  		cc.publicClass as publicClass,
 		  		cc.enrollWithCPF as enrollWithCPF,
-		  		cc.maxEnrollments as maxEnrollments
+		  		cc.maxEnrollments as maxEnrollments,
+      		cc.createdAt as createdAt,
+      		cc.createdBy as createdBy
 			from Course c
 			join CourseVersion cv on cv.course_uuid = c.uuid
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid

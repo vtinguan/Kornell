@@ -12,16 +12,19 @@ import kornell.core.entity.EntityFactory;
 import kornell.core.entity.People;
 import kornell.core.entity.Person;
 import kornell.core.entity.Role;
+import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.entity.Roles;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.RoleTO;
+import kornell.core.to.RolesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
-import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -54,7 +57,6 @@ public class GenericCourseClassAdminsView extends Composite {
 
 	private KornellSession session;
 	private FormHelper formHelper;
-	private boolean isCreationMode, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 	
 	private TextBox search;
@@ -62,7 +64,6 @@ public class GenericCourseClassAdminsView extends Composite {
 	private ListBox multipleSelect;
 	private Map<String, Person> oraclePeople;
 
-	private Presenter presenter;
 
 	@UiField
 	Form form;
@@ -80,7 +81,6 @@ public class GenericCourseClassAdminsView extends Composite {
 	public GenericCourseClassAdminsView(final KornellSession session,
 			Presenter presenter, CourseClassTO courseClassTO) {
 		this.session = session;
-		this.presenter = presenter;
 		this.user = session.getCurrentUser();
 		this.courseClassTO = courseClassTO;
 		formHelper = new FormHelper();
@@ -168,12 +168,17 @@ public class GenericCourseClassAdminsView extends Composite {
 		});
 		multipleSelectPanel.add(btnRemove);
 		
-		session.courseClass(courseClassTO.getCourseClass().getUUID()).getAdmins(new Callback<Roles>() {
+		session.courseClass(courseClassTO.getCourseClass().getUUID()).getAdmins(RoleCategory.BIND_WITH_PERSON,
+				new Callback<RolesTO>() {
 			
 			@Override
-			public void ok(Roles to) {
-				for (Role role : to.getRoles()) {
-					multipleSelect.addItem(role.getUsername());
+			public void ok(RolesTO to) {
+				for (RoleTO roleTO : to.getRoleTOs()) {
+					String item = roleTO.getRole().getUsername();
+					if(roleTO.getPerson().getFullName() != null && !"".equals(roleTO.getPerson().getFullName())){
+						item += " (" +roleTO.getPerson().getFullName()+")";
+					}
+					multipleSelect.addItem(item);
 				}
 			}
 		});

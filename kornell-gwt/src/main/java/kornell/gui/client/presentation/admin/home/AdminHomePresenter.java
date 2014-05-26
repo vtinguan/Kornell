@@ -7,7 +7,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
-import kornell.core.entity.EnrollmentProgressState;
+import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
@@ -162,7 +162,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	@Override
 	public boolean showActionButton(String actionName, Enrollment enrollment) {
 		EnrollmentState state = enrollment.getState();
-		EnrollmentProgressState progressState = EnrollmentCategory.getEnrollmentProgressState(enrollment);
+		EnrollmentProgressDescription progressDescription = EnrollmentCategory.getEnrollmentProgressDescription(enrollment);
 		if ("Aceitar".equals(actionName) || "Negar".equals(actionName)) {
 			return EnrollmentState.requested.equals(state);
 		} else if ("Cancelar".equals(actionName)) {
@@ -171,7 +171,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			return EnrollmentState.denied.equals(state)
 					|| EnrollmentState.cancelled.equals(state);
 		} else if ("Excluir".equals(actionName)){
-			return EnrollmentProgressState.toStart.equals(progressState);
+			return EnrollmentProgressDescription.notStarted.equals(progressDescription);
 		}
 		return false;
 	}
@@ -291,6 +291,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 								.getCourseClass().getUUID());
 						KornellNotification.show(
 								"Matrículas feitas com sucesso.", 1500);
+						LoadingPopup.hide();
+					}
+					
+					@Override
+					public void unauthorized(String error){
+						GWT.log("Error AdminHomePresenter: " + error);
+						KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
+						LoadingPopup.hide();
 					}
 				});
 	}

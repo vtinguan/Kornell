@@ -1,4 +1,4 @@
-package kornell.gui.client.uidget.formfield;
+package kornell.gui.client.util.view.formfield;
 
 public enum KornellFormFieldType {
 	TextBox, ListBox, SimpleDatePicker; 

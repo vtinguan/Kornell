@@ -1,6 +1,8 @@
 package kornell.gui.client.presentation.bar.generic;
 
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.event.HideSouthBarEvent;
+import kornell.gui.client.event.HideSouthBarEventHandler;
 import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
@@ -18,7 +20,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class GenericSouthBarView extends Composite implements SouthBarView {
+public class GenericSouthBarView extends Composite implements SouthBarView, HideSouthBarEventHandler {
 
 	interface MyUiBinder extends UiBinder<Widget, GenericSouthBarView> {
 	}
@@ -42,6 +44,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 
 	public GenericSouthBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
+		clientFactory.getEventBus().addHandler(HideSouthBarEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
@@ -89,5 +92,10 @@ public class GenericSouthBarView extends Composite implements SouthBarView {
 	@Override
 	public void setPresenter(Presenter presenter) {
 	}
+
+	@Override
+  public void onHideSouthBar(HideSouthBarEvent event) {
+		clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
+  }
 
 }

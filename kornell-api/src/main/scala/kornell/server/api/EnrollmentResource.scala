@@ -67,7 +67,7 @@ class EnrollmentResource(uuid: String) {
   @GET
   @Path("approved")
   @Produces(Array("application/boolean"))
-  def approved =  first map { Assessment.PASSED == _.getAssessment }
+  def approved =  first map { Assessment.PASSED == _.getAssessment } get
   
   
   @DELETE

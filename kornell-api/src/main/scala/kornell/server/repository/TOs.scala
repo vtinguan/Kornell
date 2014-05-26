@@ -21,6 +21,9 @@ import kornell.core.to.CourseVersionsTO
 import kornell.core.to.EnrollmentRequestTO
 import kornell.core.to.EnrollmentRequestsTO
 import kornell.core.to.CertificateInformationTO
+import kornell.core.entity.Person
+import kornell.core.entity.Role
+import kornell.core.to.RoleTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -62,55 +65,6 @@ object TOs {
     to
   } 
   
-  def newCourseClassTO(
-    //course
-    courseUUID: String, 
-    code: String,
-    title: String, 
-    description: String,
-    infoJson: String,
-    //courseVersion
-    courseVersionUUID: String,
-    courseVersionName: String,
-    repositoryUUID: String, 
-    versionCreatedAt: Date,
-    distributionPrefix:String,
-    contentSpec:String,
-    //courseClass
-    courseClassUUID: String,
-    courseClassName: String,
-    institutionUUID: String,
-    requiredScore:BigDecimal,
-    publicClass: Boolean,
-    enrollWithCPF: Boolean,
-    maxEnrollments: Integer): CourseClassTO = {
-      newCourseClassTO(
-          courseUUID, 
-          code, 
-          title, 
-          description, 
-          infoJson, 
-          courseVersionUUID, 
-          courseVersionName, 
-          repositoryUUID, 
-          versionCreatedAt, 
-          distributionPrefix,
-          contentSpec,
-          courseClassUUID,
-          courseClassName, 
-          institutionUUID, 
-          requiredScore,
-          publicClass,
-          enrollWithCPF,
-          maxEnrollments,
-          null, 
-          null, 
-          null, 
-          null, 
-          null, 
-          null)
-    }
-  
   //TODO: Smelling...
   def newCourseClassTO(
     //course
@@ -126,40 +80,30 @@ object TOs {
     versionCreatedAt: Date,
     distributionPrefix:String,
     contentSpec:String,
+    disabled:Boolean,
     //courseClass
     courseClassUUID: String,
     courseClassName: String,
     institutionUUID: String,
-    requiredScore: BigDecimal,
+    requiredScore:BigDecimal,
     publicClass: Boolean,
     enrollWithCPF: Boolean,
     maxEnrollments: Integer,
-    //enrollment
-    enrollmentUUID: String, 
-    enrolledOn: Date, 
-    personUUID: String, 
-    progress: String,
-    notes: String,
-    enrollmentState: String): CourseClassTO = {
+    createdAt: Date,
+    createdBy: String): CourseClassTO = {
 	    val classTO = tos.newCourseClassTO.as
 	    val versionTO = tos.newCourseVersionTO.as
 	    val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
-	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt,distributionPrefix,contentSpec)
-	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID, requiredScore, publicClass, enrollWithCPF, maxEnrollments)
+	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt,distributionPrefix,contentSpec,disabled)
+	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID, requiredScore, publicClass, enrollWithCPF, maxEnrollments, createdAt, createdBy)
 	    val s3 = S3(version.getRepositoryUUID)
 	    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL , s3.prefix))
 	    versionTO.setCourse(course)
 	    versionTO.setCourseVersion(version)	    
 	    classTO.setCourseVersionTO(versionTO)
 	    classTO.setCourseClass(clazz)
-	    if(enrollmentUUID != null){
-		    val prog = if (progress != null) Integer.parseInt(progress) else 0
-		    val enrollment = 
-		      Entities.newEnrollment(enrollmentUUID, enrolledOn, courseClassUUID, personUUID, prog, notes,EnrollmentState.valueOf(enrollmentState),null,null,null,null,null)
-		    classTO.setEnrollment(enrollment)
-	    }
 	    classTO
-  }
+    }
  
   
   def newRegistrationRequestTO:RegistrationRequestTO = tos.newRegistrationRequestTO.as
@@ -172,7 +116,7 @@ object TOs {
     to
   }
  
-  
+ 
   def newEnrollmentRequestTO:EnrollmentRequestTO = tos.newEnrollmentRequestTO.as
   def newEnrollmentRequestTO(institutionUUID:String,courseClassUUID:String,fullName: String, email:String,cpf:String):EnrollmentRequestTO = {
     val to = newEnrollmentRequestTO
@@ -191,8 +135,6 @@ object TOs {
     to
   }
  
-  
-  //def newCertificateInformationTO:CertificateInformationTO = tos.newCertificateInformationTO.as
   def newCertificateInformationTO:CertificateInformationTO = new CertificateInformationTO
   def newCertificateInformationTO(personFullName:String,personCPF:String,courseTitle: String, courseClassFinishedDate:Date,assetsURL:String, distributionPrefix:String):CertificateInformationTO = {
     val to = newCertificateInformationTO
@@ -203,5 +145,18 @@ object TOs {
     to.setAssetsURL(assetsURL)
     to.setDistributionPrefix(distributionPrefix)
     to
+  }
+  
+  def newRoleTO(role: Role, person: Person) = {
+    val r = tos.newRoleTO.as
+    r.setRole(role)
+    r.setPerson(person)
+    r
+  }
+
+  def newRolesTO(roleTOs: List[RoleTO]) = {
+    val rs = tos.newRolesTO.as
+    rs.setRoleTOs(roleTOs.asJava)
+    rs
   }
 }

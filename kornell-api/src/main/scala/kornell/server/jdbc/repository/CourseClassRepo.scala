@@ -13,6 +13,10 @@ import kornell.core.entity.RoleType
 import scala.collection.JavaConverters._
 import kornell.core.util.UUID
 import kornell.server.repository.Entities.newRoles
+import kornell.core.to.RoleTO
+import kornell.core.to.TOFactory
+import kornell.server.repository.TOs
+import kornell.core.entity.RoleCategory
 
 class CourseClassRepo(uuid:String) {
   lazy val finder = sql"""
@@ -52,13 +56,22 @@ class CourseClassRepo(uuid:String) {
   	order by eventFiredAt
   	""".map[String]({ rs => rs.getString("actomKey") })
   	
-  def getAdmins = newRoles(
-    sql"""
-	    | select *
-      	| from Role r
-        | where r.course_class_uuid = ${uuid}
-        | order by r.username
-	    """.map[Role](toRole))
+  def getAdmins(bindMode: String) =
+	  TOs.newRolesTO(sql"""
+		    | select *
+	      	| from Role r
+	        | where r.course_class_uuid = ${uuid}
+	        | order by r.username
+		    """.map[Role](toRole).map(bindRole(_, bindMode)))	
+
+  private def bindRole(role: Role, bindMode: String) =
+    TOs.newRoleTO(role, {
+      if(RoleCategory.BIND_WITH_PERSON == bindMode)
+        PeopleRepo.getByEmailOrCPF(role.getUsername).get
+      else
+        null
+    })
+  
   
   def updateAdmins(roles: Roles) = removeAdmins.addAdmins(roles)
   

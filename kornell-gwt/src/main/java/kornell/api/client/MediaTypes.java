@@ -20,6 +20,7 @@ import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.RegistrationsTO;
+import kornell.core.to.RolesTO;
 import kornell.core.to.UserInfoTO;
 
 public class MediaTypes {
@@ -44,6 +45,7 @@ public class MediaTypes {
 		register(RegistrationsTO.TYPE,RegistrationsTO.class);
 		register(Institution.TYPE,Institution.class);
 		register(Roles.TYPE,Roles.class);
+		register(RolesTO.TYPE,RolesTO.class);
 		register(Contents.TYPE,Contents.class);
 		register(Enrollment.TYPE,Enrollment.class);
 		register(Enrollments.TYPE,Enrollments.class);

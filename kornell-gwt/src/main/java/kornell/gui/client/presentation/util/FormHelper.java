@@ -3,13 +3,14 @@ package kornell.gui.client.presentation.util;
 import java.util.Date;
 import java.util.List;
 
+import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.uidget.formfield.CheckBoxFormField;
-import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.uidget.formfield.PasswordTextBoxFormField;
-import kornell.gui.client.uidget.formfield.TextBoxFormField;
+import kornell.gui.client.util.view.formfield.CheckBoxFormField;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.PasswordTextBoxFormField;
+import kornell.gui.client.util.view.formfield.TextBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -22,6 +23,7 @@ import com.google.gwt.user.client.ui.Image;
 
 //TODO i18n
 public class FormHelper {
+	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
@@ -377,6 +379,14 @@ public class FormHelper {
 		return kdate;
 	}
 	
+	public String getStringFromDate(Date date) {
+		if(date == null)
+			return null;
+		String pattern = "yyyy-MM-dd"; /*your pattern here*/ 
+		DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
+		DateTimeFormat dtf = new DateTimeFormat(pattern, info) {};
+		return dtf.format(date).toString();
+	}
 	
 	
 	public TextBoxFormField createTextBoxFormField(String text){
@@ -480,7 +490,7 @@ public class FormHelper {
 	}
 
 	public Image getImageSeparator() {
-		Image image = new Image("skins/first/icons/profile/separatorBar.png");
+		Image image = new Image(SEPARATOR_BAR_IMG_PATH);
 		image.addStyleName("profileSeparatorBar");
 		return image;
 	}
@@ -499,6 +509,19 @@ public class FormHelper {
 			return constants.cancelled();
 		default:
 			return "";
+		}
+	}
+
+	public String getEnrollmentProgressAsText(EnrollmentProgressDescription progressDescription) {
+		switch (progressDescription) {
+		case notStarted:
+			return "A iniciar";
+		case inProgress:
+			return "Em andamento";
+		case completed:
+			return "Concluído";
+		default:
+			return "???";
 		}
 	}
 }

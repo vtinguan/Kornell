@@ -16,6 +16,7 @@ import kornell.server.repository.Entities
 import java.util.logging.Logger
 import kornell.core.util.UUID
 import kornell.core.entity.Assessment
+import kornell.core.entity.Institution
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -29,11 +30,22 @@ import kornell.core.entity.Assessment
 package object repository {
   val logger = Logger.getLogger("kornell.server.jdbc")
   
+  implicit def toInstitution(rs:ResultSet):Institution = 
+    newInstitution(rs.getString("uuid"), 
+        rs.getString("name"),  
+        rs.getString("fullName"), 
+        rs.getString("terms"),
+        rs.getString("assetsURL"),
+        rs.getString("baseURL"),
+        rs.getBoolean("demandsPersonContactDetails"),
+        rs.getDate("activatedAt"))   
+  
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
         r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
         r.getBigDecimal("requiredScore"), r.getBoolean("publicClass"), 
-        r.getBoolean("enrollWithCPF"), r.getInt("maxEnrollments")) 
+        r.getBoolean("enrollWithCPF"), r.getInt("maxEnrollments"), 
+        r.getDate("createdAt"), r.getString("createdBy")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -49,7 +61,8 @@ package object repository {
     rs.getString("repository_uuid"), 
     rs.getDate("versionCreatedAt"),
     rs.getString("distributionPrefix"),
-    rs.getString("contentSpec"))    
+    rs.getString("contentSpec"),
+    rs.getBoolean("disabled"))    
   
   implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = 
     TOs.newCourseClassTO(   
@@ -66,6 +79,7 @@ package object repository {
     rs.getDate("versionCreatedAt"),
     rs.getString("distributionPrefix"),
     rs.getString("contentSpec"),
+    rs.getBoolean("disabled"),
     //courseClass
     rs.getString("courseClassUUID"),
     rs.getString("courseClassName"), 
@@ -73,7 +87,9 @@ package object repository {
     rs.getBigDecimal("requiredScore"),
     rs.getBoolean("publicClass"),
     rs.getBoolean("enrollWithCPF"),
-    rs.getInt("maxEnrollments"))
+    rs.getInt("maxEnrollments"),
+    rs.getDate("createdAt"),
+    rs.getString("createdBy"))
     
 
   implicit def toEnrollment(rs: ResultSet): Enrollment = {

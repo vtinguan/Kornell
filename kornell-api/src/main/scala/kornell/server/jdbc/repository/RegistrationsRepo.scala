@@ -23,15 +23,6 @@ object RegistrationsRepo {
     rs.getString("institution_uuid"),
     rs.getDate("termsAcceptedOn"))
 
-  def toInstitution(rs: ResultSet) = newInstitution(
-    rs.getString("institution_uuid"),
-    rs.getString("name"),
-    rs.getString("fullName"),
-    rs.getString("terms"),
-    rs.getString("assetsURL"),
-    rs.getString("baseURL"),
-    rs.getBoolean("demandsPersonContactDetails"))
-
   def unsigned(implicit person: Person): RegistrationsTO = {
     val registrationList = sql"""
 	select r.person_uuid, r.institution_uuid, r.termsAcceptedOn, 

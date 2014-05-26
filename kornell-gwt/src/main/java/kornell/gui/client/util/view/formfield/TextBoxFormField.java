@@ -1,14 +1,13 @@
-package kornell.gui.client.uidget.formfield;
+package kornell.gui.client.util.view.formfield;
 
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PasswordTextBoxFormField implements KornellFormField<TextBox> {
+public class TextBoxFormField implements KornellFormField<TextBox> {
 
-	PasswordTextBox field;
+	TextBox field;
 	
-	public PasswordTextBoxFormField(PasswordTextBox field) {
+	public TextBoxFormField(TextBox field) {
 		this.field = field;
 		field.addStyleName("field");
 		field.addStyleName("textField");

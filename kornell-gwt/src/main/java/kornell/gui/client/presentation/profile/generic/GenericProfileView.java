@@ -22,11 +22,11 @@ import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.uidget.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.uidget.formfield.ListBoxFormField;
-import kornell.gui.client.uidget.formfield.SimpleDatePicker;
-import kornell.gui.client.uidget.formfield.SimpleDatePickerFormField;
-import kornell.gui.client.uidget.formfield.TextBoxFormField;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.ListBoxFormField;
+import kornell.gui.client.util.view.formfield.SimpleDatePicker;
+import kornell.gui.client.util.view.formfield.SimpleDatePickerFormField;
+import kornell.gui.client.util.view.formfield.TextBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -37,7 +37,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -502,9 +501,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	private FlowPanel getPrivatePanel(){
 		FlowPanel privatePanel = new FlowPanel();
-		privatePanel.addStyleName("privatePanel");
+		/*privatePanel.addStyleName("privatePanel");
 		privatePanel.add(new Image("skins/first/icons/profile/notPublic.png"));
-		privatePanel.add(new Label("Privado"));
+		privatePanel.add(new Label("Privado"));*/
 		return privatePanel;
 	}
 

@@ -15,7 +15,7 @@ public interface KornellConstants extends Constants {
 	 * GenericWelcomeView
 	 * 
 	 */
-	@DefaultStringValue("All Courses")
+	@DefaultStringValue("All courses")
 	String allCourses();
 
 	@DefaultStringValue("Courses finished:")
@@ -27,13 +27,13 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("Courses to acquire:")
 	String coursesToAcquire();
 
-	@DefaultStringValue("To Acquire")
+	@DefaultStringValue("To acquire")
 	String toAcquire();
 
 	@DefaultStringValue("Courses to start:")
 	String coursesToStart();
 
-	@DefaultStringValue("To Start")
+	@DefaultStringValue("To start")
 	String toStart();
 
 	@DefaultStringValue("Courses in progress:")

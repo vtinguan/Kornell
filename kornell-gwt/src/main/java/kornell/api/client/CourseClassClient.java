@@ -3,6 +3,7 @@ package kornell.api.client;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Roles;
 import kornell.core.lom.Contents;
+import kornell.core.to.RolesTO;
 
 public class CourseClassClient extends RESTClient {
 
@@ -24,8 +25,8 @@ public class CourseClassClient extends RESTClient {
 		GET("courseClasses",courseClassUUID,"contents").go(callback);
 	}
 
-	public void getAdmins(Callback<Roles> cb) {
-		GET("courseClasses",courseClassUUID,"admins").withContentType(CourseClass.TYPE).go(cb);
+	public void getAdmins(String bindMode, Callback<RolesTO> cb) {
+		GET("courseClasses",courseClassUUID,"admins","?bind="+bindMode).withContentType(CourseClass.TYPE).go(cb);
 	}
 
 	public void updateAdmins(Roles roles, Callback<Roles> cb) {

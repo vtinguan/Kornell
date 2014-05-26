@@ -1,11 +1,13 @@
 package kornell.gui.client.presentation.welcome.generic;
 
+import java.util.Date;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentProgress;
-import static kornell.core.entity.EnrollmentProgress.*;
+import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
@@ -17,9 +19,11 @@ import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teacher;
 import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.util.FormHelper;
 
 import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Paragraph;
+import com.github.gwtbootstrap.client.ui.ProgressBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -31,6 +35,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericCourseSummaryView extends Composite {
@@ -40,15 +45,26 @@ public class GenericCourseSummaryView extends Composite {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
+	
+	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	@UiField
 	Heading hTitle;
+	
+	@UiField
+	Label lblSubTitle;
 
 	@UiField
 	Paragraph pDescription;
 
 	@UiField
-	Paragraph pProgress;
+	Paragraph pStatus;
+	
+	@UiField
+	Paragraph pStatusInfo;
+	
+	@UiField
+	ProgressBar progressBar;
 
 	@UiField
 	Image imgThumb;
@@ -59,7 +75,7 @@ public class GenericCourseSummaryView extends Composite {
 	@UiField
 	FlowPanel pnlCourseSummaryBar;
 
-	String iconCourseURL = "skins/first/icons/";
+	String iconCourseURL = "skins/first/icons/welcomeCourses/";
 
 	private CourseClassTO courseClassTO;
 	private PlaceController placeCtrl;
@@ -73,8 +89,8 @@ public class GenericCourseSummaryView extends Composite {
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		Course course = courseClassTO.getCourseVersionTO().getCourse();
-		hTitle.setText("Curso: " + course.getTitle() + " - Turma: "
-				+ courseClassTO.getCourseClass().getName());
+		hTitle.setText(course.getTitle());
+		lblSubTitle.setText("Turma: " + courseClassTO.getCourseClass().getName());
 		pDescription.setText(course.getDescription());
 
 		final Teacher teacher = Teachers.of(courseClassTO);
@@ -91,13 +107,9 @@ public class GenericCourseSummaryView extends Composite {
 			}
 
 			private void onEnrolledOrNot() {
-				String assetsURL = courseClassTO.getCourseVersionTO()
-						.getDistributionURL()
-						+ "/"
-						+ courseClassTO.getCourseVersionTO().getCourseVersion()
-								.getDistributionPrefix();
-				imgThumb.setUrl(StringUtils.composeURL(assetsURL,
-						"/images/thumb.jpg"));
+				String assetsURL = StringUtils.composeURL(courseClassTO.getCourseVersionTO().getDistributionURL(),
+						courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix());
+				imgThumb.setUrl(StringUtils.composeURL(assetsURL, "/images/thumb.jpg"));
 				imgIconCourse.setUrl(iconCourseURL);
 
 				sinkEvents(Event.ONCLICK);
@@ -117,8 +129,8 @@ public class GenericCourseSummaryView extends Composite {
 				Button requestEnrollmentBtn = getRequestEnrollmentButton();
 				pnlCourseSummaryBar.add(requestEnrollmentBtn);
 
-				pProgress.setText(constants.toAcquire());
-				iconCourseURL += "iconToAcquire.png";
+				pStatus.setText("Disponível");
+				iconCourseURL += "iconAcquire.png";
 			}
 
 			private void onEnrolled(Student student) {
@@ -128,7 +140,7 @@ public class GenericCourseSummaryView extends Composite {
 					onCourseNotStarted();
 					break;
 				case completed:
-					onCourseCompleted();
+					onCourseCompleted(progress.getCertifiedAt());
 					break;
 				case inProgress:
 					onCourseInProgress(progress.getProgress());
@@ -140,29 +152,28 @@ public class GenericCourseSummaryView extends Composite {
 	}
 
 	private void onCourseInProgress(Integer progress) {
-		pProgress.setText(progress + "% " + constants.complete().toLowerCase());
-		iconCourseURL += "iconCurrent.png";
+		pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.inProgress)+": ");
+		progressBar.removeStyleName("shy");
+		progressBar.setPercent(progress);
+		pStatusInfo.setText(progress + "% ");
+		iconCourseURL += "iconInProgress.png";
 	}
 
 	private void onCourseNotStarted() {
-		pProgress.setText(constants.toStart());
-		iconCourseURL += "iconToStart.png";
+		if(courseClassTO.getEnrollment() != null &&
+				EnrollmentState.requested.equals(courseClassTO.getEnrollment().getState())){
+			pStatus.setText("Aguardando aprovação da matrícula");
+			iconCourseURL += "iconWaiting.png";
+		} else {
+			pStatus.setText(constants.toStart());
+			iconCourseURL += "iconNotStarted.png";
+		}
 	}
 
-	private void onCourseCompleted() {
-		/*
-		 * Label certificate = new Label(constants.certificate());
-		 * certificate.addStyleName("courseProgress");
-		 * certificate.addStyleName("courseProgressCertificate");
-		 * pnlCourseSummaryBar.add(certificate);
-		 * 
-		 * Image iconCertificate = new Image();
-		 * iconCertificate.setUrl(iconCourseURL+"iconPDF.png");
-		 * iconCertificate.addStyleName("iconCertificate");
-		 * pnlCourseSummaryBar.add(iconCertificate);
-		 */
-
-		pProgress.setText(constants.courseFinished());
+	private void onCourseCompleted(Date certifiedAt) {
+		pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.completed)+" em: ");
+		if(certifiedAt != null)
+			pStatusInfo.setText(formHelper.getStringFromDate(certifiedAt));
 		iconCourseURL += "iconFinished.png";
 	}
 

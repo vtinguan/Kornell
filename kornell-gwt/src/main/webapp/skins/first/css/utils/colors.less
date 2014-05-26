@@ -1,3 +1,6 @@
+
+//***********************************************************************************
+
 //STRUCTURE
 @wrapperWidth: 962px; 
 @wrapperWidthUnder990: 600px;
@@ -12,18 +15,17 @@
 }
 
 // GENERAL
-@niceTextColor: #B6B6B6;
+@niceTextColor: #bec1c3;
 @plainTextColor: #d9dadb;
+@plainDiscreteTextColor: #888888;
+@linkTextColor: #0088cc;
 @bordersColor: #474747;
 @textHighlightColor: #d88709;
-@textHighlightColor2: #D61609;
-@textHighlightDiscreteColor: #d6d5d5;
+@textHighlightColor2: #BE150E;
+@textHighlightDiscreteColor: #e3e3e3;
 @textInfoColor: #78af73;
 @errorMessageColor: #CA2828;
-
-// BACKGROUND
-@bodyGradientStartColor: #000;
-@bodyGradientEndColor: #543846;
+@blackOrWhite: #000;
 
 // BARS
 @barGradientStartColor: #45484D;
@@ -37,24 +39,23 @@
 
 // WELCOME
 @courseSummaryBackgroundColor: #3D3133;
-@courseSummaryThumbBorderColor: lighten(@courseSummaryBackgroundColor, 20%);
 @highlightCoursesCountColor: @textHighlightColor2;
 
 // PROFILE
-@profileLabelValueColor: #e0dfe0;
-@profileLabelValueAddColor: #b795a4;
-@profileLabelPublicColor: #696769;
-@profileLabelColor: #bec1c3;
+@profileLabelValueColor: @textHighlightDiscreteColor;
+@profileLabelColor: @niceTextColor;
 @profileLabelExtraInfoColor: @textInfoColor;
-@profileLabelTitleColor: #fff;
+@profileLabelTitleColor: @plainTextColor;
 
-// MENULEFT
-@menuLeftGradientStartColor: #3e3a42;
-@menuLeftGradientEndColor: #271e22;
-@menuLeftItemGradientStartColor: #101013;
-@menuLeftItemGradientEndColor: #110f13;
+// BACKGROUND
+@bodyGradientStartColor: #000;
+@bodyGradientEndColor: #543846;
+@contentBoxBackgroundColor: #0D0B0C;
+@tableBackgroundColor: fade(@blackOrWhite, 10%);
+@tableBackgroundHoverColor: fade(@blackOrWhite, 20%);
 
 // BUTTONS
+@buttonTextColor: lighten(@niceTextColor, 20%);
 @buttonNotSelectedGradientStart: #4c4f54;
 @buttonNotSelectedGradientEnd: #2a2d32;
 @buttonSelectedGradientStart: #9b020a;
@@ -65,30 +66,39 @@
 @buttonActionGradientStart: #027e39;
 @buttonActionGradientEnd: #01401f;
 
-//DETAILS
-@detailsItemWrapperColor: #0D0B0C;
-@detailsCertificationStatusColor: #129af5;
 
-//NOTES
-@notesBackgroundColor: #000;
+//***********************************************************************************
 
-//TABLE
-@tableBackgroundColor: #2b2023;
+
+// //STRUCTURE
+// @wrapperWidth: 962px; 
+// @wrapperWidthUnder990: 600px;
+// @menuLeftWidth: 220px;
+// @imagesPath: ~"../icons/";
+// @defaultFont: "Helvetica Neue",Helvetica,Arial,sans-serif;
+// @marginLeftLogo: 0px;
+// .background{
+// 	background: @bodyGradientStartColor;
+// 	background-size: 100% 100%;
+// }
+
 
 // // GENERAL
-// @niceTextColor: #7e8991;
-// @bordersColor: #f1f6f7;
-// @textHighlightColor: #01a8d3;
-// @textHighlightDiscreteColor: #01a8d3;
-
-// // BACKGROUND
-// @bodyGradientStartColor: #000;
-// @bodyGradientEndColor: #3e4d52;
+// @niceTextColor: #6c7881;
+// @plainTextColor: #d9dadb;
+// @plainDiscreteTextColor: #888888;
+// @linkTextColor: #0088cc;
+// @bordersColor: #474747;
+// @textHighlightColor: #008f83;
+// @textHighlightColor2: #BE150E;
+// @textHighlightDiscreteColor: #283541;
+// @textInfoColor: #78af73;
+// @errorMessageColor: #CA2828;
 
 // // BARS
-// @barGradientStartColor: #555f62;
-// @barGradientEndColor: #2f3537;
-// @barButtonTextColor: #d7d8d9;
+// @barGradientStartColor: #45484D;
+// @barGradientEndColor: #000;
+// @barButtonTextColor: #fff;
 // @barButtonSeparatorColor: @bordersColor;
 
 // // VITRINE
@@ -96,36 +106,29 @@
 // @boxLoginBorderColor: @bordersColor;
 
 // // WELCOME
-// @courseSummaryBackgroundColor: #ecf3f5;
-// @courseSummaryThumbBorderColor: lighten(@courseSummaryBackgroundColor, 20%);
-// @highlightCoursesCountColor: #01a8d3;
+// @courseSummaryBackgroundColor: #e7ece8;
+// @highlightCoursesCountColor: @textHighlightColor2;
 
 // // PROFILE
-// @profileBackgroundColor: @menuLeftItemGradientEndColor;
-// @profileLabelValueColor: #e0dfe0;
-// @profileLabelValueAddColor: #b795a4;
-// @profileLabelPublicColor: #696769;
-// @profileLabelColor: #bec1c3;
-// @profileLabelExtraInfoColor: #78af73;
-// @profileLabelTitleColor: #ffffff;;
+// @profileLabelValueColor: @textHighlightDiscreteColor;
+// @profileLabelColor: @niceTextColor;
+// @profileLabelExtraInfoColor: @textInfoColor;
+// @profileLabelTitleColor: @plainTextColor;
 
-// // MENULEFT
-// @menuLeftGradientStartColor: #3f4e53;
-// @menuLeftGradientEndColor: #28363b;
-// @menuLeftItemGradientStartColor: #101013;
-// @menuLeftItemGradientEndColor: #110f13;
+// // BACKGROUND
+// @bodyGradientStartColor: #fff;
+// @bodyGradientEndColor: #fff;
+// @contentBoxBackgroundColor: #f4f4f4;
+// @tableBackgroundColor: #f4f4f4;
 
 // // BUTTONS
+// @buttonTextColor: #fff;
 // @buttonNotSelectedGradientStart: #4c4f54;
 // @buttonNotSelectedGradientEnd: #2a2d32;
 // @buttonSelectedGradientStart: #9b020a;
 // @buttonSelectedGradientEnd: #4b0105;
-// @buttonBorderLeftColor: #2a343c;
-// @buttonBorderRightColor: #090d10;
+// @buttonBorderLeftColor: #505864;
+// @buttonBorderRightColor: #181c22;
 // @buttonBorderBottomColor: #0c0c0d;
-
-// @wrapperWidth: 1024px;
-// @menuLeftWidth: 220px;
-// @imagesPath: ~"icons/";
-// @defaultFont: Helvetica, arial, freesans, clean, sans-serif;
-// @marginLeftLogo: 42px;
+// @buttonActionGradientStart: #2ca095;
+// @buttonActionGradientEnd: #2ca095;

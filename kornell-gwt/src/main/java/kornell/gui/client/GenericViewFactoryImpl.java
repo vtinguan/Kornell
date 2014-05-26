@@ -22,16 +22,20 @@ import kornell.gui.client.presentation.sandbox.SandboxView;
 import kornell.gui.client.presentation.sandbox.generic.GenericSandboxView;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.terms.generic.GenericTermsView;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.generic.GenericVitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
+import kornell.gui.client.util.orientation.IpadIos7HeightFix;
+import kornell.gui.client.util.orientation.OrientationChangeEvent;
+import kornell.gui.client.util.orientation.OrientationResizeHandler;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -44,6 +48,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private ClientFactory clientFactory;
 
 	/* Views */
+	final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
@@ -60,7 +65,6 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public void initGUI() {
 		final RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
-		final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.addNorth(getMenuBarView(), 45);
 		dockLayoutPanel.addSouth(getSouthBarView(), 35);
 
@@ -70,35 +74,37 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		sp.addStyleName("vScrollBar");
 		dockLayoutPanel.addStyleName("wrapper");
 		rootLayoutPanel.add(dockLayoutPanel);
+		
+		final String userAgent = Navigator.getUserAgent();
+		if (userAgent.contains("iPad") && userAgent.contains("OS 7")) {
+			IpadIos7HeightFix.fixHeight();
+			clientFactory.getEventBus().addHandler(OrientationChangeEvent.TYPE, new IpadIos7HeightFix());
+		}
+		Window.addResizeHandler(new OrientationResizeHandler(clientFactory.getEventBus()));
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						setPlaceNameAsBodyStyle(event);
-						dockLayoutPanel.setWidgetHidden(
-								(Widget) getSouthBarView(), !getSouthBarView()
-										.isVisible());
-						if (clientFactory.getPlaceController().getWhere() instanceof VitrinePlace) {
-							dockLayoutPanel.setWidgetSize(getMenuBarView()
-									.asWidget(), 0);
-						} else {
-							dockLayoutPanel.setWidgetSize(getMenuBarView()
-									.asWidget(), 45);
-							getMenuBarView().display();
-						}
+						dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(), !getSouthBarView().isVisible());
+						dockLayoutPanel.setWidgetHidden((Widget) getMenuBarView(), !getMenuBarView().isVisible());
 					}
 
 					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
 						String styleName = rootLayoutPanel.getStyleName();
 						if (!styleName.isEmpty())
 							rootLayoutPanel.removeStyleName(styleName);
-						String[] split = event.getNewPlace().getClass()
-								.getName().split("\\.");
+						String[] split = event.getNewPlace().getClass().getName().split("\\.");
 						String newStyle = split[split.length - 1];
 						rootLayoutPanel.addStyleName(newStyle);
 					}
 				});
+	}
+
+	@Override
+	public DockLayoutPanel getDockLayoutPanel() {
+		return dockLayoutPanel;
 	}
 
 	@Override

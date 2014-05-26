@@ -9,12 +9,12 @@ import java.util.List;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
-import kornell.core.entity.EnrollmentProgressState;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
@@ -73,7 +73,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private KornellSession session;
 	private EventBus bus;
 	private AdminHomeView.Presenter presenter;
@@ -89,9 +88,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Integer numEnrollments = 0;
 	private GenericCourseClassReportsView reportsView;
 	private FormHelper formHelper;
-		
+
 	private boolean forbidProfileView;
-	
+
 	@UiField
 	FlowPanel adminHomePanel;
 	@UiField
@@ -112,7 +111,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	Tab reportsTab;
 	@UiField
 	FlowPanel reportsPanel;
-	 
+
 	@UiField
 	Button btnAddEnrollment;
 	@UiField
@@ -137,7 +136,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	FlowPanel infoPanelEmail;
 	@UiField
 	FlowPanel infoPanelCPF;
-	
+
 	@UiField
 	Modal errorModal;
 	@UiField
@@ -156,10 +155,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
-	
+
 	@UiField
 	TabPanel tabsPanel;
-	
+
 	Tab adminsTab;
 	FlowPanel adminsPanel;
 
@@ -171,37 +170,37 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table = new CellTable<Enrollment>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
 		formHelper = new FormHelper();
-		
+
 		trigger.setTarget("#toggle");
 		collapse.setId("toggle");
-		
+
 		txtModalError.setReadOnly(true);
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		btnAddCourseClass.setText("Criar Nova Turma");
-				
-		btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText()+"&nbsp;&nbsp;&#x25BC;");
-		
+
+		btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText() + "&nbsp;&nbsp;&#x25BC;");
+
 		listBoxCourseClasses.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
 				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
-				if(!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
+				if (!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
 					presenter.updateCourseClass(newCourseClassUUID);
 				}
 			}
 		});
 		btnAddCourseClass.setVisible(session.isInstitutionAdmin());
-		btnAddCourseClass.addClickHandler(new ClickHandler() {	
+		btnAddCourseClass.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if(session.isInstitutionAdmin()){
+				if (session.isInstitutionAdmin()) {
 					buildConfigView(true);
 				}
 			}
 		});
-		
+
 		enrollmentsTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -209,22 +208,22 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				presenter.updateCourseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 			}
 		});
-		
+
 		configTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				buildConfigView(false);
 			}
 		});
-		
+
 		reportsTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				buildReportsView();
 			}
 		});
-		
-		if(session.isInstitutionAdmin()){
+
+		if (session.isInstitutionAdmin()) {
 			adminsTab = new Tab();
 			adminsTab.setIcon(IconType.GROUP);
 			adminsTab.setHeading("Administradores");
@@ -237,17 +236,17 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 					buildAdminsView();
 				}
 			});
-			
+
 			tabsPanel.add(adminsTab);
 		}
-		
-		//new ExceptionalRequestBuilder(RequestBuilder.PUT, url)
+
+		// new ExceptionalRequestBuilder(RequestBuilder.PUT, url)
 	}
-	
+
 	@Override
-	public void prepareAddNewCourseClass(boolean addingNewCourseClass){
+	public void prepareAddNewCourseClass(boolean addingNewCourseClass) {
 		adminHomePanel.clear();
-		if(!addingNewCourseClass){
+		if (!addingNewCourseClass) {
 			adminHomePanel.add(courseClassesPanel);
 			adminHomePanel.add(tabsPanel);
 			configPanel.clear();
@@ -255,7 +254,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			reportsPanel.clear();
 			reportsTab.setActive(false);
 			reportsView = null;
-			if(adminsTab != null)
+			if (adminsTab != null)
 				adminsTab.setActive(false);
 			enrollmentsTab.setActive(true);
 		}
@@ -264,7 +263,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@Override
 	public void buildConfigView(boolean isCreationMode) {
 		prepareAddNewCourseClass(isCreationMode);
-		if(isCreationMode){
+		if (isCreationMode) {
 			adminHomePanel.add(new GenericCourseClassConfigView(session, presenter, null));
 		} else {
 			configPanel.add(new GenericCourseClassConfigView(session, presenter, Dean.getInstance().getCourseClassTO()));
@@ -273,24 +272,25 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@Override
 	public void buildReportsView() {
-		if(reportsView == null){
+		if (reportsView == null) {
 			reportsView = new GenericCourseClassReportsView(session, bus, presenter, Dean.getInstance().getCourseClassTO());
 		}
 		reportsPanel.clear();
 		reportsPanel.add(reportsView);
 	}
- 
+
 	@Override
 	public void buildAdminsView() {
 		adminsPanel.clear();
-		if(!session.isInstitutionAdmin()) return;
+		if (!session.isInstitutionAdmin())
+			return;
 		adminsPanel.add(new GenericCourseClassAdminsView(session, presenter, Dean.getInstance().getCourseClassTO()));
 	}
 
 	private void initSearch() {
 		txtSearch = new TextBox();
 		txtSearch.addStyleName("txtSearch");
-		txtSearch.setTitle("nome, "+ (enrollWithCPF?"CPF":"email") +", matrícula ou progresso");
+		txtSearch.setTitle("nome, " + (enrollWithCPF ? "CPF" : "email") + ", matrícula ou progresso");
 		txtSearch.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -304,11 +304,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			}
 		});
 		txtSearch.addValueChangeHandler(new ValueChangeHandler<String>() {
-			
+
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				filterEnrollments();
-				
+
 			}
 		});
 		btnSearch = new Button("Pesquisar");
@@ -322,24 +322,24 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	private void initTable() {
-	    
+
 		table.addStyleName("enrollmentsCellTable");
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		for (int i = 0; table.getColumnCount() > 0;) {
 			table.removeColumn(i);
 		}
-				
+
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override
 			public String getValue(Enrollment enrollment) {
 				return enrollment.getPerson().getFullName();
 			}
 		}, "Nome");
-		
+
 		table.addColumn(new TextColumn<Enrollment>() {
 			@Override
 			public String getValue(Enrollment enrollment) {
-				if(enrollment.getPerson().getEmail() != null && !"".equals(enrollment.getPerson().getEmail()))
+				if (enrollment.getPerson().getEmail() != null && !"".equals(enrollment.getPerson().getEmail()))
 					return enrollment.getPerson().getEmail();
 				else
 					return enrollment.getPerson().getCPF();
@@ -347,50 +347,49 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		}, "Email/CPF");
 
 		table.addColumn(new TextColumn<Enrollment>() {
-			@Override	
+			@Override
 			public String getValue(Enrollment enrollment) {
 				return formHelper.getEnrollmentStateAsText(enrollment.getState());
 			}
 		}, "Matrícula");
 
 		table.addColumn(new TextColumn<Enrollment>() {
-			@Override	
+			@Override
 			public String getValue(Enrollment enrollment) {
-				return getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressState(enrollment));
+				return formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollment));
 			}
 		}, "Progresso");
-	
-	    List<HasCell<Enrollment, ?>> cells = new LinkedList<HasCell<Enrollment, ?>>();
-	    cells.add(new EnrollmentActionsHasCell("Aceitar", getStateChangeDelegate(EnrollmentState.enrolled)));
-	    cells.add(new EnrollmentActionsHasCell("Negar", getStateChangeDelegate(EnrollmentState.denied)));
-	    cells.add(new EnrollmentActionsHasCell("Cancelar", getStateChangeDelegate(EnrollmentState.cancelled)));
-	    cells.add(new EnrollmentActionsHasCell("Matricular", getStateChangeDelegate(EnrollmentState.enrolled)));
-	    cells.add(new EnrollmentActionsHasCell("Excluir", getDeleteEnrollmentDelegate()));
-	    
-	    CompositeCell<Enrollment> cell = new CompositeCell<Enrollment>(cells);
-	    table.addColumn(new Column<Enrollment, Enrollment>(cell) {
-	        @Override
-	        public Enrollment getValue(Enrollment enrollment) {
-	            return enrollment;
-	        }
-	    }, "Ações");
+
+		List<HasCell<Enrollment, ?>> cells = new LinkedList<HasCell<Enrollment, ?>>();
+		cells.add(new EnrollmentActionsHasCell("Aceitar", getStateChangeDelegate(EnrollmentState.enrolled)));
+		cells.add(new EnrollmentActionsHasCell("Negar", getStateChangeDelegate(EnrollmentState.denied)));
+		cells.add(new EnrollmentActionsHasCell("Cancelar", getStateChangeDelegate(EnrollmentState.cancelled)));
+		cells.add(new EnrollmentActionsHasCell("Matricular", getStateChangeDelegate(EnrollmentState.enrolled)));
+		cells.add(new EnrollmentActionsHasCell("Excluir", getDeleteEnrollmentDelegate()));
+
+		CompositeCell<Enrollment> cell = new CompositeCell<Enrollment>(cells);
+		table.addColumn(new Column<Enrollment, Enrollment>(cell) {
+			@Override
+			public Enrollment getValue(Enrollment enrollment) {
+				return enrollment;
+			}
+		}, "Ações");
 
 		// Add a selection model to handle user selection.
 		final SingleSelectionModel<Enrollment> selectionModel = new SingleSelectionModel<Enrollment>();
 		table.setSelectionModel(selectionModel);
-		selectionModel
-				.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-					public void onSelectionChange(SelectionChangeEvent event) {
-			        	if(forbidProfileView){
-				        	forbidProfileView = false;
-			        	} else {
-							Enrollment selected = selectionModel.getSelectedObject();
-							if (selected != null) {
-								presenter.onUserClicked(selected.getPerson().getUUID());
-							}
-			        	}
+		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			public void onSelectionChange(SelectionChangeEvent event) {
+				if (forbidProfileView) {
+					forbidProfileView = false;
+				} else {
+					Enrollment selected = selectionModel.getSelectedObject();
+					if (selected != null) {
+						presenter.onUserClicked(selected.getPerson().getUUID());
 					}
-				});
+				}
+			}
+		});
 	}
 
 	@Override
@@ -398,31 +397,26 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		this.presenter = presenter;
 	}
 
-
 	@UiHandler("btnModalOK")
 	void onModalOkButtonClicked(ClickEvent e) {
 		presenter.onModalOkButtonClicked();
-    	errorModal.hide();
+		errorModal.hide();
 	}
-
 
 	@UiHandler("btnModalCancel")
 	void onModalCancelButtonClicked(ClickEvent e) {
-    	errorModal.hide();
+		errorModal.hide();
 	}
-
 
 	@UiHandler("btnGoToCourse")
 	void onGoToCourseButtonClicked(ClickEvent e) {
 		presenter.onGoToCourseButtonClicked();
 	}
 
-
 	@UiHandler("btnAddEnrollment")
 	void onAddEnrollmentButtonClicked(ClickEvent e) {
 		presenter.onAddEnrollmentButtonClicked(txtFullName.getText(), txtEmail.getText());
 	}
-
 
 	@UiHandler("btnAddEnrollmentBatch")
 	void doLogin(ClickEvent e) {
@@ -440,69 +434,51 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		numEnrollments = enrollmentsIn.size();
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
-				
+
 		enrollmentsCurrent = new ArrayList<Enrollment>(enrollmentsIn);
 		enrollments = new ArrayList<Enrollment>(enrollmentsIn);
 		enrollmentsWrapper.clear();
-		
+
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
 		panel.add(table);
-		
+
 		Image separatorBar = new Image("skins/first/icons/profile/separatorBar.png");
 		separatorBar.addStyleName("fillWidth");
-		
+
 		final ListBox pageSizeListBox = new ListBox();
-		//pageSizeListBox.addItem("1");
-		//pageSizeListBox.addItem("10");
+		// pageSizeListBox.addItem("1");
+		// pageSizeListBox.addItem("10");
 		pageSizeListBox.addItem("20");
 		pageSizeListBox.addItem("50");
 		pageSizeListBox.addItem("100");
-		pageSizeListBox.setSelectedValue(""+pagination.getPageSize());
+		pageSizeListBox.setSelectedValue("" + pagination.getPageSize());
 		pageSizeListBox.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				if(pageSizeListBox.getValue().matches("[0-9]*"))
+				if (pageSizeListBox.getValue().matches("[0-9]*"))
 					pagination.setPageSize(Integer.parseInt(pageSizeListBox.getValue()));
 			}
-		});		
+		});
 		pageSizeListBox.addStyleName("pageSizeListBox");
-		
-		
+
 		enrollmentsWrapper.add(separatorBar);
 		enrollmentsWrapper.add(txtSearch);
 		enrollmentsWrapper.add(btnSearch);
 		enrollmentsWrapper.add(pageSizeListBox);
 		enrollmentsWrapper.add(panel);
 		enrollmentsWrapper.add(pagination);
-		
+
 		pagination.setRowData(enrollmentsCurrent);
 		pagination.displayTableData(1);
-		
+
 		filterEnrollments();
 	}
 
 	private void filterEnrollments() {
 		enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
-		Enrollment enrollment;
-		GWT.log("size: "+enrollmentsCurrent.size());
 		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
-	    	enrollment = enrollmentsCurrent.get(i);
-			boolean fullNameMatch = enrollment.getPerson() != null && enrollment.getPerson().getFullName() != null &&
-					enrollment.getPerson().getFullName().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-			boolean emailMatch = false;
-			if(enrollWithCPF){
-				emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getCPF() != null &&
-						enrollment.getPerson().getCPF().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-			} else {
-				emailMatch = enrollment.getPerson() != null && enrollment.getPerson().getEmail() != null &&
-					enrollment.getPerson().getEmail().toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-			}
-			boolean enrollmentStateMatch = enrollment.getPerson() != null && enrollment.getState() != null &&
-					formHelper.getEnrollmentStateAsText(enrollment.getState()).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-			boolean enrollmentProgressMatch = enrollment.getPerson() != null && enrollment.getProgress() != null &&
-					getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressState(enrollment)).toLowerCase().indexOf(txtSearch.getText().toLowerCase()) >= 0;
-			if(!fullNameMatch && !emailMatch && !enrollmentStateMatch && !enrollmentProgressMatch){
+			if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
 				enrollmentsCurrent.remove(i);
 				i--;
 			}
@@ -511,58 +487,64 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		pagination.displayTableData(1);
 	}
 
-	private String getEnrollmentProgressAsText(EnrollmentProgressState progressState) {
-		switch (progressState) {
-		case toStart:
-			return "A iniciar";
-		case inProgress:
-			return "Em andamento";
-		case finished:
-			return "Concluído";
-		default:
-			return "???";
-		}
+	private boolean matchesWithSearch(Enrollment one){
+		Person p = one.getPerson();
+		if(p == null) return false;
+		
+		boolean fullNameMatch = matchesWithSearch(p.getFullName());
+		boolean emailMatch = enrollWithCPF ? matchesWithSearch(p.getCPF()) : matchesWithSearch(p.getEmail());
+		boolean enrollmentStateMatch = matchesWithSearch(formHelper.getEnrollmentStateAsText(one.getState()));
+		boolean enrollmentProgressMatch = one.getProgress() != null && 
+				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(one)).toLowerCase());
+		
+		return fullNameMatch || emailMatch || enrollmentStateMatch || enrollmentProgressMatch;
 	}
 
+	private boolean matchesWithSearch(String one){
+		if(one == null) return false;
+		one = AsciiUtils.convertNonAscii(one);
+		String another = AsciiUtils.convertNonAscii(txtSearch.getText().toLowerCase());
+		return one.toLowerCase().indexOf(another) >= 0;
+	}
+	
 	@Override
-	public void showModal(){
-    	errorModal.show();
+	public void showModal() {
+		errorModal.show();
 	}
 
 	private Delegate<Enrollment> getStateChangeDelegate(final EnrollmentState state) {
 		return new Delegate<Enrollment>() {
-	        @Override
-	        public void execute(Enrollment object) {
-	        	if(forbidProfileView){
-		        	presenter.changeEnrollmentState(object, state);
-	        	}
-	        	forbidProfileView = true;
-	        }
-	    };
+			@Override
+			public void execute(Enrollment object) {
+				if (forbidProfileView) {
+					presenter.changeEnrollmentState(object, state);
+				}
+				forbidProfileView = true;
+			}
+		};
 	}
 
 	private Delegate<Enrollment> getDeleteEnrollmentDelegate() {
 		return new Delegate<Enrollment>() {
-	        @Override
-	        public void execute(Enrollment object) {
-	        	if(forbidProfileView){
-	        		presenter.deleteEnrollment(object);
-	        	}
-	        	forbidProfileView = true;
-	        }
-	    };
+			@Override
+			public void execute(Enrollment object) {
+				if (forbidProfileView) {
+					presenter.deleteEnrollment(object);
+				}
+				forbidProfileView = true;
+			}
+		};
 	}
-	
-	private class EnrollmentActionsActionCell<Enrollment> extends ActionCell<Enrollment> {
-		Delegate<Enrollment> delegate;
+
+	@SuppressWarnings("hiding")
+  private class EnrollmentActionsActionCell<Enrollment> extends ActionCell<Enrollment> {
+		
 		public EnrollmentActionsActionCell(String message, Delegate<Enrollment> delegate) {
 			super(message, delegate);
-			this.delegate = delegate;
 		}
 
 		@Override
-		public void onBrowserEvent(Context context, Element parent, Enrollment value,
-				NativeEvent event, ValueUpdater<Enrollment> valueUpdater) {
+		public void onBrowserEvent(Context context, Element parent, Enrollment value, NativeEvent event, ValueUpdater<Enrollment> valueUpdater) {
 			event.stopPropagation();
 			event.preventDefault();
 			super.onBrowserEvent(context, parent, value, event, valueUpdater);
@@ -578,26 +560,32 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			}
 		}
 	}
-	
+
 	private class EnrollmentActionsHasCell implements HasCell<Enrollment, Enrollment> {
 		private EnrollmentActionsActionCell<Enrollment> cell;
 
 		public EnrollmentActionsHasCell(String text, Delegate<Enrollment> delegate) {
 			final String actionName = text;
-			cell = new EnrollmentActionsActionCell<Enrollment>(text, delegate){
+			cell = new EnrollmentActionsActionCell<Enrollment>(text, delegate) {
 				@Override
 				public void render(com.google.gwt.cell.client.Cell.Context context, Enrollment object, SafeHtmlBuilder sb) {
-			        if(presenter.showActionButton(actionName, object)){
-			        	String buttonClass = "Excluir".equals(actionName) ? "btnNotSelected" : (("Cancelar".equals(actionName) || "Negar".equals(actionName)) ? "btnSelected" : "btnAction");
-			        	//super.render(context, object, sb);
-			        	SafeHtml html = SafeHtmlUtils.fromTrustedString("<button type=\"button\" class=\"gwt-Button btnEnrollmentsCellTable "+
-			        			buttonClass + "\">" + actionName.toUpperCase() + "</button>");
-			            sb.append(html);
-			        }
-			        else
-			             sb.appendEscaped("");
+					if (presenter.showActionButton(actionName, object)) {
+						// super.render(context, object, sb);
+						SafeHtml html = SafeHtmlUtils.fromTrustedString("<button type=\"button\" class=\"gwt-Button btnEnrollmentsCellTable " + 
+								getButtonClass(actionName) + "\">" + actionName.toUpperCase() + "</button>");
+						sb.append(html);
+					} else
+						sb.appendEscaped("");
 				}
 				
+				private String getButtonClass(String actionName){
+					if("Excluir".equals(actionName))
+						return "btnNotSelected";
+					else if("Cancelar".equals(actionName) || "Negar".equals(actionName))
+						return "btnSelected";
+					else 
+						return "btnAction";
+				}
 			};
 		}
 
@@ -636,13 +624,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			name = courseClassTO.getCourseVersionTO().getCourse().getTitle() + " - " + courseClassTO.getCourseClass().getName();
 			value = courseClassTO.getCourseClass().getUUID();
 			listBoxCourseClasses.addItem(name, value);
-		}		
+		}
 	}
 
 	@Override
 	public void setUserEnrollmentIdentificationType(Boolean enrollWithCPF) {
 		this.enrollWithCPF = enrollWithCPF;
-		if(enrollWithCPF){
+		if (enrollWithCPF) {
 			identifierLabel.setText("CPF");
 			infoPanelEmail.addStyleName("shy");
 			infoPanelCPF.removeStyleName("shy");
@@ -660,9 +648,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	public void setSelectedCourseClass(String uuid) {
 		listBoxCourseClasses.setSelectedValue(uuid);
 	}
-	
+
 	@Override
-	public void setHomeTabActive(){
+	public void setHomeTabActive() {
 		enrollmentsTab.setActive(true);
 		configTab.setActive(false);
 	}

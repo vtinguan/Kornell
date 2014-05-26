@@ -6,13 +6,13 @@ public class EnrollmentCategory {
 		return enrollment.getCertifiedAt() != null;
 	}
 
-	public static EnrollmentProgressState getEnrollmentProgressState(Enrollment enrollment) {
+	public static EnrollmentProgressDescription getEnrollmentProgressDescription(Enrollment enrollment) {
 		if(isFinished(enrollment)){
-			return EnrollmentProgressState.finished;
+			return EnrollmentProgressDescription.completed;
 		} else if(enrollment.getProgress() == null || enrollment.getProgress() == 0){
-			return EnrollmentProgressState.toStart;
+			return EnrollmentProgressDescription.notStarted;
 		} else {
-			return EnrollmentProgressState.inProgress;
+			return EnrollmentProgressDescription.inProgress;
 		}
 	}
 }

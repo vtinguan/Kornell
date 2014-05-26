@@ -6,11 +6,18 @@
 			<b:Image ui:field="imgThumb" addStyleNames="thumb" />
 		</g:SimplePanel>
 		<g:FlowPanel addStyleNames="details">
-			<b:Heading size="1" ui:field="hTitle" />
-			<b:Paragraph addStyleNames="description" ui:field="pDescription" />
-	    	<g:FlowPanel ui:field="pnlCourseSummaryBar" addStyleNames="courseSummaryBar">
+      <b:Heading size="1" ui:field="hTitle" />
+      <g:Label addStyleNames="lblSubTitle" ui:field="lblSubTitle" />
+      <g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="profileSeparatorBar"></g:Image>
+      <g:FlowPanel addStyleNames="ellipsis">
+				<b:Paragraph ui:field="pDescription" />  
+	    </g:FlowPanel>
+	    <g:FlowPanel ui:field="pnlCourseSummaryBar" addStyleNames="courseSummaryBar">
+        <g:Image url="skins/first/icons/profile/separatorBar.png" addStyleNames="profileSeparatorBar"></g:Image>
 				<b:Image ui:field="imgIconCourse" addStyleNames="icon" />
-				<b:Paragraph addStyleNames="courseProgress" ui:field="pProgress"/>
+        <b:Paragraph addStyleNames="courseStatus" ui:field="pStatus"/>
+        <b:ProgressBar addStyleNames="progressBar shy" ui:field="progressBar"/>
+        <b:Paragraph addStyleNames="courseStatusInfo" ui:field="pStatusInfo"/>
 			</g:FlowPanel>	
 		</g:FlowPanel>
 	</g:FlowPanel>
