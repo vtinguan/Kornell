@@ -16,6 +16,7 @@
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
 		<buildNumber>Development Build</buildNumber>
+		<scala.version>2.10.4</scala.version>
 	</properties>
 
 	<repositories>
@@ -78,7 +79,7 @@
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
-			<version>2.10.0</version>
+			<version>${scala.version}</version>
 		</dependency>
 
 		<dependency>
@@ -161,11 +162,14 @@
 			<groupId>com.newrelic.agent.java</groupId>
 			<artifactId>newrelic-agent</artifactId>
 			<version>3.1.0</version>
+			<scope>compile</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.newrelic.agent.java</groupId>
 			<artifactId>newrelic-api</artifactId>
 			<version>3.1.0</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -207,7 +211,7 @@
 			</execution>
 		</executions>
 		<configuration>
-			<scalaVersion>2.10.0</scalaVersion>
+			<scalaVersion>${scala.version}</scalaVersion>
 			<javacArgs>
 				<javacArg>-source 1.7</javacArg>
 				<javacArg>-target 1.7</javacArg>
