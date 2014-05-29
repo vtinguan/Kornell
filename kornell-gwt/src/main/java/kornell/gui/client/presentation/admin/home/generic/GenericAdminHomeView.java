@@ -18,6 +18,7 @@ import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
@@ -28,6 +29,7 @@ import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell;
@@ -56,9 +58,9 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -89,8 +91,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private GenericCourseClassReportsView reportsView;
 	private FormHelper formHelper;
 
-	private boolean forbidProfileView;
-
 	@UiField
 	FlowPanel adminHomePanel;
 	@UiField
@@ -114,8 +114,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@UiField
 	Button btnAddEnrollment;
-	@UiField
-	Button btnGoToCourse;
 	@UiField
 	Button btnAddEnrollmentBatch;
 	@UiField
@@ -180,7 +178,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		btnAddCourseClass.setText("Criar Nova Turma");
 
-		btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText() + "&nbsp;&nbsp;&#x25BC;");
+		//btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText() + "&nbsp;&nbsp;&#x25BC;");
 
 		listBoxCourseClasses.addChangeHandler(new ChangeHandler() {
 			@Override
@@ -312,6 +310,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			}
 		});
 		btnSearch = new Button("Pesquisar");
+		btnSearch.setSize(ButtonSize.MINI);
+		btnSearch.setIcon(IconType.SEARCH);
 		btnSearch.addStyleName("btnNotSelected btnSearch");
 		btnSearch.addClickHandler(new ClickHandler() {
 			@Override
@@ -361,11 +361,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		}, "Progresso");
 
 		List<HasCell<Enrollment, ?>> cells = new LinkedList<HasCell<Enrollment, ?>>();
-		cells.add(new EnrollmentActionsHasCell("Aceitar", getStateChangeDelegate(EnrollmentState.enrolled)));
-		cells.add(new EnrollmentActionsHasCell("Negar", getStateChangeDelegate(EnrollmentState.denied)));
-		cells.add(new EnrollmentActionsHasCell("Cancelar", getStateChangeDelegate(EnrollmentState.cancelled)));
-		cells.add(new EnrollmentActionsHasCell("Matricular", getStateChangeDelegate(EnrollmentState.enrolled)));
+		cells.add(new EnrollmentActionsHasCell("Certificado", getGenerateCertificateDelegate()));
+		cells.add(new EnrollmentActionsHasCell("Perfil", getGoToProfileDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Excluir", getDeleteEnrollmentDelegate()));
+		cells.add(new EnrollmentActionsHasCell("Matricular", getStateChangeDelegate(EnrollmentState.enrolled)));
+		cells.add(new EnrollmentActionsHasCell("Cancelar", getStateChangeDelegate(EnrollmentState.cancelled)));
+		cells.add(new EnrollmentActionsHasCell("Negar", getStateChangeDelegate(EnrollmentState.denied)));
+		cells.add(new EnrollmentActionsHasCell("Aceitar", getStateChangeDelegate(EnrollmentState.enrolled)));
 
 		CompositeCell<Enrollment> cell = new CompositeCell<Enrollment>(cells);
 		table.addColumn(new Column<Enrollment, Enrollment>(cell) {
@@ -380,14 +382,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table.setSelectionModel(selectionModel);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			public void onSelectionChange(SelectionChangeEvent event) {
-				if (forbidProfileView) {
-					forbidProfileView = false;
-				} else {
-					Enrollment selected = selectionModel.getSelectedObject();
-					if (selected != null) {
-						presenter.onUserClicked(selected.getPerson().getUUID());
-					}
-				}
+				//
 			}
 		});
 	}
@@ -406,11 +401,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@UiHandler("btnModalCancel")
 	void onModalCancelButtonClicked(ClickEvent e) {
 		errorModal.hide();
-	}
-
-	@UiHandler("btnGoToCourse")
-	void onGoToCourseButtonClicked(ClickEvent e) {
-		presenter.onGoToCourseButtonClicked();
 	}
 
 	@UiHandler("btnAddEnrollment")
@@ -516,10 +506,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		return new Delegate<Enrollment>() {
 			@Override
 			public void execute(Enrollment object) {
-				if (forbidProfileView) {
-					presenter.changeEnrollmentState(object, state);
-				}
-				forbidProfileView = true;
+				presenter.changeEnrollmentState(object, state);
 			}
 		};
 	}
@@ -528,10 +515,25 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		return new Delegate<Enrollment>() {
 			@Override
 			public void execute(Enrollment object) {
-				if (forbidProfileView) {
-					presenter.deleteEnrollment(object);
-				}
-				forbidProfileView = true;
+				presenter.deleteEnrollment(object);
+			}
+		};
+	}
+
+	private Delegate<Enrollment> getGoToProfileDelegate() {
+		return new Delegate<Enrollment>() {
+			@Override
+			public void execute(Enrollment object) {
+				presenter.onUserClicked(object);
+			}
+		};
+	}
+
+	private Delegate<Enrollment> getGenerateCertificateDelegate() {
+		return new Delegate<Enrollment>() {
+			@Override
+			public void execute(Enrollment object) {
+				presenter.onGenerateCertificate(object);
 			}
 		};
 	}
@@ -570,21 +572,43 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				@Override
 				public void render(com.google.gwt.cell.client.Cell.Context context, Enrollment object, SafeHtmlBuilder sb) {
 					if (presenter.showActionButton(actionName, object)) {
-						// super.render(context, object, sb);
-						SafeHtml html = SafeHtmlUtils.fromTrustedString("<button type=\"button\" class=\"gwt-Button btnEnrollmentsCellTable " + 
-								getButtonClass(actionName) + "\">" + actionName.toUpperCase() + "</button>");
+						SafeHtml html = SafeHtmlUtils.fromTrustedString(buildButton(actionName).toString());
 						sb.append(html);
 					} else
 						sb.appendEscaped("");
 				}
 				
-				private String getButtonClass(String actionName){
-					if("Excluir".equals(actionName))
-						return "btnNotSelected";
-					else if("Cancelar".equals(actionName) || "Negar".equals(actionName))
-						return "btnSelected";
-					else 
-						return "btnAction";
+				private Button buildButton(String actionName){
+					Button btn = new Button();
+					btn.setSize(ButtonSize.SMALL);
+					btn.addStyleName("paddingRight5");
+					btn.addStyleName("marginRight5");
+					btn.addStyleName("right");
+					btn.addStyleName("btnIcon");
+					btn.setTitle(actionName);
+					if("Excluir".equals(actionName)){
+						btn.setIcon(IconType.TRASH);
+						btn.addStyleName("btnNotSelected");
+					} else if("Cancelar".equals(actionName)){
+						btn.setIcon(IconType.REMOVE);
+						btn.addStyleName("btnSelected");
+					} else if("Negar".equals(actionName)){
+						btn.setIcon(IconType.THUMBS_DOWN);
+						btn.addStyleName("btnSelected");
+					} else if("Matricular".equals(actionName)){
+						btn.setIcon(IconType.BOOK);
+						btn.addStyleName("btnAction");
+					} else if("Aceitar".equals(actionName)){
+						btn.setIcon(IconType.THUMBS_UP);
+						btn.addStyleName("btnAction");
+					} else if("Perfil".equals(actionName)){
+						btn.setIcon(IconType.USER);
+						btn.addStyleName("btnNotSelected");
+					} else if("Certificado".equals(actionName)){
+						btn.setIcon(IconType.DOWNLOAD_ALT);
+						btn.addStyleName("btnNotSelected");
+					} 
+					return btn;
 				}
 			};
 		}

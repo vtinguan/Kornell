@@ -16,10 +16,11 @@ public interface AdminHomeView extends IsWidget {
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);
 		void onGoToCourseButtonClicked();
 		void onModalOkButtonClicked();
-		void onUserClicked(String uuid);
+		void onUserClicked(Enrollment enrollment);
 		void updateCourseClass(String courseClassUUID);
 		List<Enrollment> getEnrollments();
 		void deleteEnrollment(Enrollment enrollment);
+		void onGenerateCertificate(kornell.core.entity.Enrollment object);
 	}
 
 	void setPresenter(Presenter presenter);

@@ -83,9 +83,6 @@ body {
 		}
 		.btnAction{
 			float: right;
-			width: 140px;
-			margin-top: 4px;
-			margin-right: 20px;
 		}
 	}
 	.controlsPanel{
@@ -93,12 +90,9 @@ body {
 		width: 100%;
 		.insertPanel{
 			float: left;
-			height: @insertPanelHeight;
 			line-height: 45px;
 			.btnAction{
 				margin-left: 20px;
-				display: inline;
-				width: 85px;
 			}
 			input{
 				margin-top: 10px;
@@ -115,7 +109,6 @@ body {
 			.btnNotSelected{
 				margin-top: 12px;
 				margin-right: 12px;
-				width: 140px;
 			}
 		}	
 	}
@@ -170,11 +163,10 @@ body {
 			tr{
 				background-color: @tableBackgroundColor;
 				font-size: 12px;
-				cursor: pointer;
 				td{
 					border: 0;
 					padding: 3px;
-					line-height: 16px;
+					line-height: 22px;
 				}
 			}
 		}
@@ -204,8 +196,10 @@ body {
 	}
 	.btnSearch{
 		float: left;
-		height: 28px;
-		padding: 0px 20px;
+		margin-top: 3px;
+	}
+	.tab-content {
+		overflow: hidden;
 	}
 }
 .modal{
@@ -279,7 +273,8 @@ body {
 			float: left;
 			line-height: @barSouthHeight;
 			text-align: center;
-			padding: 0;
+			padding: 0 !important;
+			border-radius: 0px !important;
 			border: 0;
 			text-decoration: none;
 			.label{
@@ -398,17 +393,12 @@ body {
 		margin-right: 22px;
 		margin-bottom: 10px;
 		.btnCourses{
-			border-left: 2px solid @bordersColor;
-			float:right;
-			height: 24px; 
-			padding-left: 24px;
-			padding-right: 24px;
-			font-size: 11px;
-			display: block;
-			border-left: 1px solid @buttonBorderLeftColor;
-			border-right: 1px solid @buttonBorderRightColor;
-			border-top: 0;
-			border-bottom: 0;
+			float: right;
+			height: 24px;
+			padding-left: 24px !important;
+			padding-right: 24px !important;
+			border-left: 1px solid #505864 !important;
+			border-right: 1px solid #181c22 !important;
 		}
 	}
 	.pnlCoursesWrapperTitle{
@@ -636,16 +626,11 @@ body {
 				margin-bottom: 10px;
 				.btnReportHeader{
 					box-sizing: border-box;
-					border-radius: 0px;
+					border-radius: 0px !important;
 					height: @reportHeaderPanelHeight;
 					line-height: @reportHeaderPanelHeight;
-					border: 0;
-					color: @niceTextColor;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					font-size: 12px;
-					font-weight: bold;
-					text-align: center;
+					padding-left: @detailsPanelMargin / 2 !important;
+					padding-right: @detailsPanelMargin / 2 !important;
 					.btnBorder;
 					display: block;
 					float: left;

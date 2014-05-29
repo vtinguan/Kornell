@@ -31,6 +31,7 @@ import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AdminHomePresenter implements AdminHomeView.Presenter {
@@ -172,6 +173,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					|| EnrollmentState.cancelled.equals(state);
 		} else if ("Excluir".equals(actionName)){
 			return EnrollmentProgressDescription.notStarted.equals(progressDescription);
+		} else if("Perfil".equals(actionName)){
+			return true;
+		} else if("Certificado".equals(actionName)){
+			return EnrollmentCategory.isFinished(enrollment);
 		}
 		return false;
 	}
@@ -335,11 +340,19 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	@Override
-	public void onUserClicked(String uuid) {
-		ProfilePlace place = new ProfilePlace(uuid, false);
+	public void onUserClicked(Enrollment enrollment) {
+		ProfilePlace place = new ProfilePlace(enrollment.getPerson().getUUID(), false);
 		placeController.goTo(place);
 	}
 
+	@Override
+	public void onGenerateCertificate(Enrollment enrollment) {
+		KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+		Window.Location.assign(session.getApiUrl() + "/report/certificate/"
+				+ enrollment.getPerson().getUUID() + "/"
+				+ enrollment.getCourseClassUUID());
+	}
+	
 	@Override
 	public List<Enrollment> getEnrollments() {
 		return enrollments;

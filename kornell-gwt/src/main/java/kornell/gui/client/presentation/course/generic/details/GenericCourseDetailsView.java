@@ -309,7 +309,6 @@ public class GenericCourseDetailsView extends Composite {
 
 	private void displayButton(Button btn, String title, String label, boolean isSelected) {
 		btn.addStyleName("btnDetails " + (isSelected ? "btnSelected" : "btnNotSelected"));
-		btn.removeStyleName("btn");
 
 		Label btnTitle = new Label(title);
 		btnTitle.addStyleName("btnTitle");

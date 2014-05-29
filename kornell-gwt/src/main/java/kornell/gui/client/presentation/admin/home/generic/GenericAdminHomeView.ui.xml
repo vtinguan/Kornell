@@ -5,7 +5,7 @@
 		<g:FlowPanel ui:field="courseClassesPanel" addStyleNames="courseClassesHeaderWrapper">
 			<g:HTMLPanel addStyleNames="title left">Gerenciar Turma: </g:HTMLPanel>
 			<b:ListBox ui:field="listBoxCourseClasses" addStyleNames="listBoxCourseClasses"></b:ListBox>
-			<g:Button ui:field="btnAddCourseClass" addStyleNames="btnAction"/>
+			<b:Button ui:field="btnAddCourseClass" addStyleNames="btnAction btnIcon" size="MINI" icon="PLUS_SIGN"/>
 		</g:FlowPanel>
 		<b:TabPanel tabPosition="middle" ui:field="tabsPanel">
 			<b:Tab ui:field="enrollmentsTab" icon="BOOK" heading="Matrículas" active="true">
@@ -17,11 +17,11 @@
 							<b:TextBox ui:field="txtFullName"></b:TextBox>
 							<g:Label ui:field="identifierLabel" addStyleNames="inlineLabel">Email: </g:Label>
 							<b:TextBox ui:field="txtEmail"></b:TextBox>
-							<g:Button ui:field="btnAddEnrollment" addStyleNames="btnAction">Matricular</g:Button>
+							<b:Button ui:field="btnAddEnrollment" addStyleNames="btnAction btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
 						</g:FlowPanel>
 				    	<b:CollapseTrigger ui:field="trigger">
 							<g:FlowPanel addStyleNames="insertBatchPanel">
-								<g:Button ui:field="btnAddEnrollmentBatchEnable" addStyleNames="btnNotSelected btnAddEnrollmentBatchEnable">Matricular em lote</g:Button>
+								<b:Button ui:field="btnAddEnrollmentBatchEnable" addStyleNames="btnNotSelected btnAddEnrollmentBatchEnable btnIcon" size="MINI" icon="CHEVRON_DOWN">Matricular em lote</b:Button>
 							</g:FlowPanel>
 				    	</b:CollapseTrigger>
 					</g:FlowPanel>
@@ -46,7 +46,7 @@
 									<g:Label addStyleNames="highlightText">Nome Sobrenome;123.456.789-13</g:Label>
 									<g:Label addStyleNames="highlightText">Nome2 Sobrenome2;12345687913</g:Label>
 								</g:FlowPanel>
-								<g:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnNotSelected btnAddEnrollmentBatch">Matricular</g:Button>
+								<b:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnNotSelected btnAddEnrollmentBatch btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
 							</g:FlowPanel>
 						</g:FlowPanel>
 					</b:Collapse>
@@ -62,15 +62,14 @@
 					</g:FlowPanel>
 					<g:FlowPanel ui:field="enrollmentsWrapper">
 					</g:FlowPanel>
-					<g:Button ui:field="btnGoToCourse" addStyleNames="btnAction shy">Ir para o curso</g:Button>
 					<b:Modal ui:field="errorModal" title="Erros ao inserir matrículas" backdrop="STATIC" addStyleNames="forgotPasswordModal">
 						<g:FlowPanel>
 							<g:Label>As seguintes linhas contém erros:</g:Label>
 							<b:TextArea ui:field="txtModalError"></b:TextArea>
 							<g:Label>Deseja ignorar essas linhas e continuar?</g:Label>
 							<g:FlowPanel addStyleNames="standardButtonBar">
-								<g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
-								<g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
+								<b:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard" size="MINI"/>
+								<b:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard" size="MINI"/>
 							</g:FlowPanel>
 						</g:FlowPanel>
 					</b:Modal>
