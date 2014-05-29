@@ -361,8 +361,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		}, "Progresso");
 
 		List<HasCell<Enrollment, ?>> cells = new LinkedList<HasCell<Enrollment, ?>>();
-		cells.add(new EnrollmentActionsHasCell("Certificado", getGenerateCertificateDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Perfil", getGoToProfileDelegate()));
+		cells.add(new EnrollmentActionsHasCell("Certificado", getGenerateCertificateDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Excluir", getDeleteEnrollmentDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Matricular", getStateChangeDelegate(EnrollmentState.enrolled)));
 		cells.add(new EnrollmentActionsHasCell("Cancelar", getStateChangeDelegate(EnrollmentState.cancelled)));
