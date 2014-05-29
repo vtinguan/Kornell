@@ -581,10 +581,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				private Button buildButton(String actionName){
 					Button btn = new Button();
 					btn.setSize(ButtonSize.SMALL);
-					btn.addStyleName("paddingRight5");
-					btn.addStyleName("marginRight5");
-					btn.addStyleName("right");
-					btn.addStyleName("btnIcon");
 					btn.setTitle(actionName);
 					if("Excluir".equals(actionName)){
 						btn.setIcon(IconType.TRASH);
@@ -608,6 +604,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 						btn.setIcon(IconType.DOWNLOAD_ALT);
 						btn.addStyleName("btnNotSelected");
 					} 
+					btn.addStyleName("btnIconSolo");
 					return btn;
 				}
 			};
