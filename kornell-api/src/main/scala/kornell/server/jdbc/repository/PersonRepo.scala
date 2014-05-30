@@ -23,7 +23,12 @@ class PersonRepo(val uuid: String) {
     (RegistrationRepo(PersonRepo.this, institution_uuid)).register
   }
 
-  def get = sql"""select * from Person where uuid=$uuid""".first[Person]
+  lazy val finder = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
+
+  def get: Person = finder.get[Person]
+
+  def first: Option[Person] =
+    finder.first[Person]
 
   def update(person: Person) = {    
     sql"""
@@ -67,12 +72,12 @@ class PersonRepo(val uuid: String) {
               }
           } || {
             //courseClassAdmin doesn't have power over platformAdmins, institutionAdmins, other courseClassAdmins or non enrolled users
-            val enrollments = EnrollmentsRepo.byPerson(targetPersonUUID)
+            val enrollmentTOs = EnrollmentsRepo.byPerson(targetPersonUUID)
             !RoleCategory.isPlatformAdmin(targetRolesSet) &&
               !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) &&
               !RoleCategory.hasRole(targetRolesSet, RoleType.courseClassAdmin) && {
-                enrollments exists {
-                  e => RoleCategory.isCourseClassAdmin(actorRolesSet, e.getCourseClassUUID)
+                enrollmentTOs exists {
+                  to => RoleCategory.isCourseClassAdmin(actorRolesSet, to.getEnrollment.getCourseClassUUID)
                 }
               }
           }

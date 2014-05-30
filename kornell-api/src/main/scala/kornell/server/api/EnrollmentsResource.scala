@@ -21,6 +21,7 @@ import javax.ws.rs.POST
 import javax.servlet.http.HttpServletResponse
 import kornell.core.to.EnrollmentRequestsTO
 import kornell.server.repository.Entities
+import kornell.core.to.EnrollmentsTO
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
@@ -38,7 +39,7 @@ class EnrollmentsResource {
   	}
 
   @GET
-  @Produces(Array(Enrollments.TYPE))
+  @Produces(Array(EnrollmentsTO.TYPE))
   def getByCourseUUID(@QueryParam("courseClassUUID") courseClassUUID: String) = EnrollmentsRepo.byCourseClass(courseClassUUID)
 
   @PUT

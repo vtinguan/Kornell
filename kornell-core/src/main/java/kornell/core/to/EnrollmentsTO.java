@@ -7,7 +7,7 @@ import kornell.core.entity.Enrollment;
 public interface EnrollmentsTO {
 	public static final String TYPE = TOFactory.PREFIX + "enrollments+json";
 	
-	List<Enrollment> getEnrollments();
-	void setEnrollments(List<Enrollment> enrollments);
+	List<EnrollmentTO> getEnrollmentTOs();
+	void setEnrollmentTOs(List<EnrollmentTO> enrollmentTOs);
 	
 }

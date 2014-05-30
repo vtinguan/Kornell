@@ -62,13 +62,13 @@ class UserResource {
     AuthRepo.withPerson { p =>
       val user = newUserInfoTO
       val person = PersonRepo(personUUID).get
-      if (person.isDefined) {
-        user.setPerson(person.get)
+      if (person != null) {
+        user.setPerson(person)
         if (user.getPerson().getEmail() != null)
           user.setUsername(user.getPerson().getEmail())
         else
           user.setUsername(user.getPerson().getCPF())
-        user.setRegistrationsTO(RegistrationsRepo.getAll(person.get.getUUID))
+        user.setRegistrationsTO(RegistrationsRepo.getAll(person.getUUID))
         //val signingNeeded = RegistrationsRepo.signingNeeded(p)
         //user.setSigningNeeded(signingNeeded)
         //user.setLastPlaceVisited(p.getLastPlaceVisited)
@@ -144,7 +144,7 @@ class UserResource {
           if (username.isDefined) {
             username.get
           } else {
-            val targetPerson = targetPersonRepo.get.get
+            val targetPerson = targetPersonRepo.get
             if (targetPerson.getEmail() != null)
               targetPerson.getEmail()
             else

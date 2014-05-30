@@ -84,7 +84,7 @@ class CourseClassResource(uuid: String) {
   def getLatestContents(implicit @Context sc: SecurityContext): Contents =
     //TODO: Refactor to Option.map
     AuthRepo.withPerson { person =>            
-      ContentRepository.findKNLVisitedContent(uuid,person)
+      ContentRepository.findKNLVisitedContent(uuid,person.getUUID)
     }
 
   @PUT

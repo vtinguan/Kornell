@@ -6,7 +6,6 @@ import java.util.Map;
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
-import kornell.core.entity.Enrollments;
 import kornell.core.entity.Institution;
 import kornell.core.entity.People;
 import kornell.core.entity.Person;
@@ -19,6 +18,7 @@ import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
+import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.RolesTO;
 import kornell.core.to.UserInfoTO;
@@ -48,7 +48,7 @@ public class MediaTypes {
 		register(RolesTO.TYPE,RolesTO.class);
 		register(Contents.TYPE,Contents.class);
 		register(Enrollment.TYPE,Enrollment.class);
-		register(Enrollments.TYPE,Enrollments.class);
+		register(EnrollmentsTO.TYPE,EnrollmentsTO.class);
 		register(ActomEntries.TYPE,ActomEntries.class);
 	}
 

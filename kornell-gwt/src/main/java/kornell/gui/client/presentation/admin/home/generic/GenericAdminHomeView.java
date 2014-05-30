@@ -12,6 +12,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.EnrollmentTO;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.util.AsciiUtils;
@@ -60,7 +61,6 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -78,9 +78,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private KornellSession session;
 	private EventBus bus;
 	private AdminHomeView.Presenter presenter;
-	final CellTable<Enrollment> table;
-	private List<Enrollment> enrollmentsCurrent;
-	private List<Enrollment> enrollments;
+	final CellTable<EnrollmentTO> table;
+	private List<EnrollmentTO> enrollmentsCurrent;
+	private List<EnrollmentTO> enrollments;
 	private KornellPagination pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
@@ -165,7 +165,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		this.session = session;
 		this.bus = bus;
 		initWidget(uiBinder.createAndBindUi(this));
-		table = new CellTable<Enrollment>();
+		table = new CellTable<EnrollmentTO>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
 		formHelper = new FormHelper();
 
@@ -329,38 +329,38 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			table.removeColumn(i);
 		}
 
-		table.addColumn(new TextColumn<Enrollment>() {
+		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
-			public String getValue(Enrollment enrollment) {
-				return enrollment.getPerson().getFullName();
+			public String getValue(EnrollmentTO enrollmentTO) {
+				return enrollmentTO.getPerson().getFullName();
 			}
 		}, "Nome");
 
-		table.addColumn(new TextColumn<Enrollment>() {
+		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
-			public String getValue(Enrollment enrollment) {
-				if (enrollment.getPerson().getEmail() != null && !"".equals(enrollment.getPerson().getEmail()))
-					return enrollment.getPerson().getEmail();
+			public String getValue(EnrollmentTO enrollmentTO) {
+				if (enrollmentTO.getPerson().getEmail() != null && !"".equals(enrollmentTO.getPerson().getEmail()))
+					return enrollmentTO.getPerson().getEmail();
 				else
-					return formHelper.formatCPF(enrollment.getPerson().getCPF());
+					return formHelper.formatCPF(enrollmentTO.getPerson().getCPF());
 			}
 		}, "Email/CPF");
 
-		table.addColumn(new TextColumn<Enrollment>() {
+		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
-			public String getValue(Enrollment enrollment) {
-				return formHelper.getEnrollmentStateAsText(enrollment.getState());
+			public String getValue(EnrollmentTO enrollmentTO) {
+				return formHelper.getEnrollmentStateAsText(enrollmentTO.getEnrollment().getState());
 			}
 		}, "Matrícula");
 
-		table.addColumn(new TextColumn<Enrollment>() {
+		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
-			public String getValue(Enrollment enrollment) {
-				return formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollment));
+			public String getValue(EnrollmentTO enrollmentTO) {
+				return formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()));
 			}
 		}, "Progresso");
 
-		List<HasCell<Enrollment, ?>> cells = new LinkedList<HasCell<Enrollment, ?>>();
+		List<HasCell<EnrollmentTO, ?>> cells = new LinkedList<HasCell<EnrollmentTO, ?>>();
 		cells.add(new EnrollmentActionsHasCell("Perfil", getGoToProfileDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Certificado", getGenerateCertificateDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Excluir", getDeleteEnrollmentDelegate()));
@@ -369,16 +369,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		cells.add(new EnrollmentActionsHasCell("Negar", getStateChangeDelegate(EnrollmentState.denied)));
 		cells.add(new EnrollmentActionsHasCell("Aceitar", getStateChangeDelegate(EnrollmentState.enrolled)));
 
-		CompositeCell<Enrollment> cell = new CompositeCell<Enrollment>(cells);
-		table.addColumn(new Column<Enrollment, Enrollment>(cell) {
+		CompositeCell<EnrollmentTO> cell = new CompositeCell<EnrollmentTO>(cells);
+		table.addColumn(new Column<EnrollmentTO, EnrollmentTO>(cell) {
 			@Override
-			public Enrollment getValue(Enrollment enrollment) {
-				return enrollment;
+			public EnrollmentTO getValue(EnrollmentTO enrollmentTO) {
+				return enrollmentTO;
 			}
 		}, "Ações");
 
 		// Add a selection model to handle user selection.
-		final SingleSelectionModel<Enrollment> selectionModel = new SingleSelectionModel<Enrollment>();
+		final SingleSelectionModel<EnrollmentTO> selectionModel = new SingleSelectionModel<EnrollmentTO>();
 		table.setSelectionModel(selectionModel);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			public void onSelectionChange(SelectionChangeEvent event) {
@@ -420,13 +420,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	@Override
-	public void setEnrollmentList(List<Enrollment> enrollmentsIn) {
+	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn) {
 		numEnrollments = enrollmentsIn.size();
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
 
-		enrollmentsCurrent = new ArrayList<Enrollment>(enrollmentsIn);
-		enrollments = new ArrayList<Enrollment>(enrollmentsIn);
+		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsIn);
+		enrollments = new ArrayList<EnrollmentTO>(enrollmentsIn);
 		enrollmentsWrapper.clear();
 
 		VerticalPanel panel = new VerticalPanel();
@@ -466,7 +466,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	private void filterEnrollments() {
-		enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
+		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollments);
 		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
 			if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
 				enrollmentsCurrent.remove(i);
@@ -477,15 +477,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		pagination.displayTableData(1);
 	}
 
-	private boolean matchesWithSearch(Enrollment one){
+	private boolean matchesWithSearch(EnrollmentTO one){
 		Person p = one.getPerson();
+		Enrollment e = one.getEnrollment();
 		if(p == null) return false;
 		
 		boolean fullNameMatch = matchesWithSearch(p.getFullName());
 		boolean emailMatch = enrollWithCPF ? matchesWithSearch(p.getCPF()) : matchesWithSearch(p.getEmail());
-		boolean enrollmentStateMatch = matchesWithSearch(formHelper.getEnrollmentStateAsText(one.getState()));
-		boolean enrollmentProgressMatch = one.getProgress() != null && 
-				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(one)).toLowerCase());
+		boolean enrollmentStateMatch = matchesWithSearch(formHelper.getEnrollmentStateAsText(e.getState()));
+		boolean enrollmentProgressMatch = e.getProgress() != null && 
+				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(e)).toLowerCase());
 		
 		return fullNameMatch || emailMatch || enrollmentStateMatch || enrollmentProgressMatch;
 	}
@@ -505,51 +506,51 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		errorModal.show();
 	}
 
-	private Delegate<Enrollment> getStateChangeDelegate(final EnrollmentState state) {
-		return new Delegate<Enrollment>() {
+	private Delegate<EnrollmentTO> getStateChangeDelegate(final EnrollmentState state) {
+		return new Delegate<EnrollmentTO>() {
 			@Override
-			public void execute(Enrollment object) {
+			public void execute(EnrollmentTO object) {
 				presenter.changeEnrollmentState(object, state);
 			}
 		};
 	}
 
-	private Delegate<Enrollment> getDeleteEnrollmentDelegate() {
-		return new Delegate<Enrollment>() {
+	private Delegate<EnrollmentTO> getDeleteEnrollmentDelegate() {
+		return new Delegate<EnrollmentTO>() {
 			@Override
-			public void execute(Enrollment object) {
+			public void execute(EnrollmentTO object) {
 				presenter.deleteEnrollment(object);
 			}
 		};
 	}
 
-	private Delegate<Enrollment> getGoToProfileDelegate() {
-		return new Delegate<Enrollment>() {
+	private Delegate<EnrollmentTO> getGoToProfileDelegate() {
+		return new Delegate<EnrollmentTO>() {
 			@Override
-			public void execute(Enrollment object) {
+			public void execute(EnrollmentTO object) {
 				presenter.onUserClicked(object);
 			}
 		};
 	}
 
-	private Delegate<Enrollment> getGenerateCertificateDelegate() {
-		return new Delegate<Enrollment>() {
+	private Delegate<EnrollmentTO> getGenerateCertificateDelegate() {
+		return new Delegate<EnrollmentTO>() {
 			@Override
-			public void execute(Enrollment object) {
+			public void execute(EnrollmentTO object) {
 				presenter.onGenerateCertificate(object);
 			}
 		};
 	}
 
 	@SuppressWarnings("hiding")
-  private class EnrollmentActionsActionCell<Enrollment> extends ActionCell<Enrollment> {
+  private class EnrollmentActionsActionCell<EnrollmentTO> extends ActionCell<EnrollmentTO> {
 		
-		public EnrollmentActionsActionCell(String message, Delegate<Enrollment> delegate) {
+		public EnrollmentActionsActionCell(String message, Delegate<EnrollmentTO> delegate) {
 			super(message, delegate);
 		}
 
 		@Override
-		public void onBrowserEvent(Context context, Element parent, Enrollment value, NativeEvent event, ValueUpdater<Enrollment> valueUpdater) {
+		public void onBrowserEvent(Context context, Element parent, EnrollmentTO value, NativeEvent event, ValueUpdater<EnrollmentTO> valueUpdater) {
 			event.stopPropagation();
 			event.preventDefault();
 			super.onBrowserEvent(context, parent, value, event, valueUpdater);
@@ -566,14 +567,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		}
 	}
 
-	private class EnrollmentActionsHasCell implements HasCell<Enrollment, Enrollment> {
-		private EnrollmentActionsActionCell<Enrollment> cell;
+	private class EnrollmentActionsHasCell implements HasCell<EnrollmentTO, EnrollmentTO> {
+		private EnrollmentActionsActionCell<EnrollmentTO> cell;
 
-		public EnrollmentActionsHasCell(String text, Delegate<Enrollment> delegate) {
+		public EnrollmentActionsHasCell(String text, Delegate<EnrollmentTO> delegate) {
 			final String actionName = text;
-			cell = new EnrollmentActionsActionCell<Enrollment>(text, delegate) {
+			cell = new EnrollmentActionsActionCell<EnrollmentTO>(text, delegate) {
 				@Override
-				public void render(com.google.gwt.cell.client.Cell.Context context, Enrollment object, SafeHtmlBuilder sb) {
+				public void render(com.google.gwt.cell.client.Cell.Context context, EnrollmentTO object, SafeHtmlBuilder sb) {
 					if (presenter.showActionButton(actionName, object)) {
 						SafeHtml html = SafeHtmlUtils.fromTrustedString(buildButtonHTML(actionName));
 						sb.append(html);
@@ -614,17 +615,17 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		}
 
 		@Override
-		public Cell<Enrollment> getCell() {
+		public Cell<EnrollmentTO> getCell() {
 			return cell;
 		}
 
 		@Override
-		public FieldUpdater<Enrollment, Enrollment> getFieldUpdater() {
+		public FieldUpdater<EnrollmentTO, EnrollmentTO> getFieldUpdater() {
 			return null;
 		}
 
 		@Override
-		public Enrollment getValue(Enrollment object) {
+		public EnrollmentTO getValue(EnrollmentTO object) {
 			return object;
 		}
 	}

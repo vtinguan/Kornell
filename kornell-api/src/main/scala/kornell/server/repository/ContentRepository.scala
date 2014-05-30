@@ -13,9 +13,9 @@ import java.io.ByteArrayInputStream
 
 object ContentRepository {
 
-  def findKNLVisitedContent(courseClassUUID: String, person: Person) = {
+  def findKNLVisitedContent(courseClassUUID: String, personUUID: String) = {
     val classRepo = CourseClassesRepo(courseClassUUID)
-    val visited = classRepo.actomsVisitedBy(person)
+    val visited = classRepo.actomsVisitedBy(personUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
     val repositoryUUID = version.getRepositoryUUID();

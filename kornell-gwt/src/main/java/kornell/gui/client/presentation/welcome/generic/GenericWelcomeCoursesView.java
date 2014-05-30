@@ -7,9 +7,9 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentProgressDescription;
-import static kornell.core.entity.EnrollmentProgressDescription.*;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
+import kornell.core.to.EnrollmentTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
@@ -21,7 +21,6 @@ import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
-import com.github.gwtbootstrap.client.ui.ButtonGroup;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,10 +31,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 //TODO - Courses will overflow the screen
 
@@ -157,13 +154,17 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 
 	private void updateUserEnrollments(CourseClassesTO tos) {
 		EnrollmentsTO enrollmentsTO = toFactory.newEnrollmentsTO().as();
-		List<Enrollment> enrollments = new ArrayList<Enrollment>();
+		List<EnrollmentTO> enrollmentTOs = new ArrayList<EnrollmentTO>();
+		EnrollmentTO enrollmentTO;
 		for (CourseClassTO courseClassTO : tos.getCourseClasses()) {
 			if (courseClassTO.getEnrollment() != null) {
-				enrollments.add(courseClassTO.getEnrollment());
+				enrollmentTO = toFactory.newEnrollmentTO().as();
+				enrollmentTO.setEnrollment(courseClassTO.getEnrollment());
+				enrollmentTO.setPerson(session.getCurrentUser().getPerson());
+				enrollmentTOs.add(enrollmentTO);
 			}
 		}
-		enrollmentsTO.setEnrollments(enrollments);
+		enrollmentsTO.setEnrollmentTOs(enrollmentTOs);
 		session.getCurrentUser().setEnrollmentsTO(enrollmentsTO);
 	}
 

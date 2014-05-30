@@ -5,26 +5,27 @@ import java.util.List;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.EnrollmentTO;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AdminHomeView extends IsWidget {
 	public interface Presenter extends IsWidget {
-		void changeEnrollmentState(Enrollment enrollment, EnrollmentState state);
-		boolean showActionButton(String actionName, Enrollment enrollment);
+		void changeEnrollmentState(EnrollmentTO object, EnrollmentState state);
+		boolean showActionButton(String actionName, EnrollmentTO enrollmentTO);
 		void onAddEnrollmentButtonClicked(String fullName, String email);
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);
 		void onGoToCourseButtonClicked();
 		void onModalOkButtonClicked();
-		void onUserClicked(Enrollment enrollment);
+		void onUserClicked(EnrollmentTO enrollmentTO);
 		void updateCourseClass(String courseClassUUID);
-		List<Enrollment> getEnrollments();
-		void deleteEnrollment(Enrollment enrollment);
-		void onGenerateCertificate(kornell.core.entity.Enrollment object);
+		List<EnrollmentTO> getEnrollments();
+		void deleteEnrollment(EnrollmentTO enrollmentTO);
+		void onGenerateCertificate(EnrollmentTO enrollmentTO);
 	}
 
 	void setPresenter(Presenter presenter);
-	void setEnrollmentList(List<Enrollment> enrollments);
+	void setEnrollmentList(List<EnrollmentTO> enrollments);
 	void showModal();
 	void setModalErrors(String errors);
 	void setCourseClassName(String courseClassName);
