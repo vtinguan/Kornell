@@ -342,7 +342,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				if (enrollment.getPerson().getEmail() != null && !"".equals(enrollment.getPerson().getEmail()))
 					return enrollment.getPerson().getEmail();
 				else
-					return enrollment.getPerson().getCPF();
+					return formHelper.formatCPF(enrollment.getPerson().getCPF());
 			}
 		}, "Email/CPF");
 
@@ -492,9 +492,12 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	private boolean matchesWithSearch(String one){
 		if(one == null) return false;
-		one = AsciiUtils.convertNonAscii(one);
-		String another = AsciiUtils.convertNonAscii(txtSearch.getText().toLowerCase());
-		return one.toLowerCase().indexOf(another) >= 0;
+		return prepareForSearch(one).indexOf(prepareForSearch(txtSearch.getText())) >= 0;
+	}
+	
+	private String prepareForSearch(String str){
+		str = AsciiUtils.convertNonAscii(str).toLowerCase();
+		return str.replaceAll("-", "").replaceAll("\\.", "");
 	}
 	
 	@Override
@@ -572,13 +575,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				@Override
 				public void render(com.google.gwt.cell.client.Cell.Context context, Enrollment object, SafeHtmlBuilder sb) {
 					if (presenter.showActionButton(actionName, object)) {
-						SafeHtml html = SafeHtmlUtils.fromTrustedString(buildButton(actionName).toString());
+						SafeHtml html = SafeHtmlUtils.fromTrustedString(buildButtonHTML(actionName));
 						sb.append(html);
 					} else
 						sb.appendEscaped("");
 				}
 				
-				private Button buildButton(String actionName){
+				private String buildButtonHTML(String actionName){
 					Button btn = new Button();
 					btn.setSize(ButtonSize.SMALL);
 					btn.setTitle(actionName);
@@ -605,7 +608,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 						btn.addStyleName("btnNotSelected");
 					} 
 					btn.addStyleName("btnIconSolo");
-					return btn;
+					return btn.toString();
 				}
 			};
 		}
