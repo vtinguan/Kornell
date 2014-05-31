@@ -36,6 +36,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -62,6 +63,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	private boolean visible = false;
 
+	@UiField
+	FlowPanel testEnvWarning;
 	@UiField
 	FlowPanel menuBar;
 	@UiField
@@ -218,6 +221,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	}
 
 	public void display() {
+		if(Window.Location.getHostName().indexOf("-test.eduvem") >= 0){
+			testEnvWarning.removeStyleName("shy");
+		}
+		
 		displayButton(btnFake, "btnFake", "", false, "");
 		displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
 		displayButton(btnHome, "btnHome", "home", true, "Página Inicial");

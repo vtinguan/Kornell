@@ -5,7 +5,7 @@
 	<g:FlowPanel>
 		<g:FlowPanel ui:field="menuBar" addStyleNames="menuBar">
 			<g:Image ui:field="imgMenuBar" addStyleNames="imgMenuBar"/>
-		    <g:FlowPanel addStyleNames="buttons">
+		  <g:FlowPanel addStyleNames="buttons">
 				<b:Button ui:field="btnFake" addStyleNames="menuBarButton first"></b:Button>	
 				<b:Button ui:field="btnHome" addStyleNames="menuBarButton"></b:Button>		
 				<b:Button ui:field="btnAdmin" addStyleNames="menuBarButton"></b:Button>		
@@ -16,6 +16,10 @@
 				<b:Button ui:field="btnMenu" addStyleNames="menuBarButton"></b:Button>		
 				<b:Button ui:field="btnExit" addStyleNames="menuBarButton last"></b:Button>		
 			</g:FlowPanel>
+      <g:FlowPanel ui:field="testEnvWarning" addStyleNames="testEnvWarning shy">
+			   <g:Label>Você está no ambiente de testes</g:Label>
+         <g:Label addStyleNames="testEnvWarningText">Esse ambiente pode ficar fora do ar a qualquer momento e as informações aqui contidas são frequentemente apagadas.</g:Label>
+      </g:FlowPanel>
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>
