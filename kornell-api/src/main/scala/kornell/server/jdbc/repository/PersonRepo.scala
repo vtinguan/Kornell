@@ -78,6 +78,8 @@ class PersonRepo(val uuid: String) {
           }
       }
   }
+  
+  def getUsername = sql"""select username from Password where person_uuid=${uuid}""".first[String].getOrElse(null)
 
 }
 

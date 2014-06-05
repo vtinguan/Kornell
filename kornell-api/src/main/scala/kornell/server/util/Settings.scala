@@ -5,6 +5,9 @@ import java.util.Properties
 
 object Settings {
 
+  lazy val JNDI_ROOT = get("JNDI_ROOT").getOrElse("java:comp/env")
+  lazy val JNDI_DATASOURCE = get("JNDI_DATASOURCE").getOrElse("jdbc/KornellDS")
+  
   def get(implicit key: String): Option[String] =
     fromProperties orElse fromSystem orElse fromEnv
 

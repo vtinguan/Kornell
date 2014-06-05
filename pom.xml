@@ -13,6 +13,7 @@
         <module>kornell-api</module>
         <module>kornell-gwt</module>
     <!--  <module>kornell-admin</module> -->
+    <module>kornell-aping</module>
   </modules>
 
     <build>

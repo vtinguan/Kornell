@@ -39,7 +39,7 @@ class UserResource {
     @Context resp: HttpServletResponse): Option[UserInfoTO] =
     AuthRepo.withPerson { p =>
       val user = newUserInfoTO
-      val username = sc.getUserPrincipal().getName()
+      val username = PersonRepo(p.getUUID).getUsername
       user.setUsername(username)
       user.setPerson(p)
       val signingNeeded = RegistrationsRepo.signingNeeded(p)
