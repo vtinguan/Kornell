@@ -12,12 +12,14 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.EnrollmentTO;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
@@ -28,6 +30,7 @@ import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell;
@@ -56,7 +59,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -76,9 +78,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private KornellSession session;
 	private EventBus bus;
 	private AdminHomeView.Presenter presenter;
-	final CellTable<Enrollment> table;
-	private List<Enrollment> enrollmentsCurrent;
-	private List<Enrollment> enrollments;
+	final CellTable<EnrollmentTO> table;
+	private List<EnrollmentTO> enrollmentsCurrent;
+	private List<EnrollmentTO> enrollments;
 	private KornellPagination pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
@@ -88,8 +90,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Integer numEnrollments = 0;
 	private GenericCourseClassReportsView reportsView;
 	private FormHelper formHelper;
-
-	private boolean forbidProfileView;
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -114,8 +114,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@UiField
 	Button btnAddEnrollment;
-	@UiField
-	Button btnGoToCourse;
 	@UiField
 	Button btnAddEnrollmentBatch;
 	@UiField
@@ -167,7 +165,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		this.session = session;
 		this.bus = bus;
 		initWidget(uiBinder.createAndBindUi(this));
-		table = new CellTable<Enrollment>();
+		table = new CellTable<EnrollmentTO>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
 		formHelper = new FormHelper();
 
@@ -180,7 +178,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		btnAddCourseClass.setText("Criar Nova Turma");
 
-		btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText() + "&nbsp;&nbsp;&#x25BC;");
+		//btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText() + "&nbsp;&nbsp;&#x25BC;");
 
 		listBoxCourseClasses.addChangeHandler(new ChangeHandler() {
 			@Override
@@ -312,6 +310,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			}
 		});
 		btnSearch = new Button("Pesquisar");
+		btnSearch.setSize(ButtonSize.MINI);
+		btnSearch.setIcon(IconType.SEARCH);
 		btnSearch.addStyleName("btnNotSelected btnSearch");
 		btnSearch.addClickHandler(new ClickHandler() {
 			@Override
@@ -329,65 +329,60 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			table.removeColumn(i);
 		}
 
-		table.addColumn(new TextColumn<Enrollment>() {
+		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
-			public String getValue(Enrollment enrollment) {
-				return enrollment.getPerson().getFullName();
+			public String getValue(EnrollmentTO enrollmentTO) {
+				return enrollmentTO.getPerson().getFullName();
 			}
 		}, "Nome");
 
-		table.addColumn(new TextColumn<Enrollment>() {
+		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
-			public String getValue(Enrollment enrollment) {
-				if (enrollment.getPerson().getEmail() != null && !"".equals(enrollment.getPerson().getEmail()))
-					return enrollment.getPerson().getEmail();
+			public String getValue(EnrollmentTO enrollmentTO) {
+				if (enrollmentTO.getPerson().getEmail() != null && !"".equals(enrollmentTO.getPerson().getEmail()))
+					return enrollmentTO.getPerson().getEmail();
 				else
-					return enrollment.getPerson().getCPF();
+					return formHelper.formatCPF(enrollmentTO.getPerson().getCPF());
 			}
 		}, "Email/CPF");
 
-		table.addColumn(new TextColumn<Enrollment>() {
+		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
-			public String getValue(Enrollment enrollment) {
-				return formHelper.getEnrollmentStateAsText(enrollment.getState());
+			public String getValue(EnrollmentTO enrollmentTO) {
+				return formHelper.getEnrollmentStateAsText(enrollmentTO.getEnrollment().getState());
 			}
 		}, "Matrícula");
 
-		table.addColumn(new TextColumn<Enrollment>() {
+		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
-			public String getValue(Enrollment enrollment) {
-				return formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollment));
+			public String getValue(EnrollmentTO enrollmentTO) {
+				return formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()));
 			}
 		}, "Progresso");
 
-		List<HasCell<Enrollment, ?>> cells = new LinkedList<HasCell<Enrollment, ?>>();
-		cells.add(new EnrollmentActionsHasCell("Aceitar", getStateChangeDelegate(EnrollmentState.enrolled)));
-		cells.add(new EnrollmentActionsHasCell("Negar", getStateChangeDelegate(EnrollmentState.denied)));
-		cells.add(new EnrollmentActionsHasCell("Cancelar", getStateChangeDelegate(EnrollmentState.cancelled)));
-		cells.add(new EnrollmentActionsHasCell("Matricular", getStateChangeDelegate(EnrollmentState.enrolled)));
+		List<HasCell<EnrollmentTO, ?>> cells = new LinkedList<HasCell<EnrollmentTO, ?>>();
+		cells.add(new EnrollmentActionsHasCell("Perfil", getGoToProfileDelegate()));
+		cells.add(new EnrollmentActionsHasCell("Certificado", getGenerateCertificateDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Excluir", getDeleteEnrollmentDelegate()));
+		cells.add(new EnrollmentActionsHasCell("Matricular", getStateChangeDelegate(EnrollmentState.enrolled)));
+		cells.add(new EnrollmentActionsHasCell("Cancelar", getStateChangeDelegate(EnrollmentState.cancelled)));
+		cells.add(new EnrollmentActionsHasCell("Negar", getStateChangeDelegate(EnrollmentState.denied)));
+		cells.add(new EnrollmentActionsHasCell("Aceitar", getStateChangeDelegate(EnrollmentState.enrolled)));
 
-		CompositeCell<Enrollment> cell = new CompositeCell<Enrollment>(cells);
-		table.addColumn(new Column<Enrollment, Enrollment>(cell) {
+		CompositeCell<EnrollmentTO> cell = new CompositeCell<EnrollmentTO>(cells);
+		table.addColumn(new Column<EnrollmentTO, EnrollmentTO>(cell) {
 			@Override
-			public Enrollment getValue(Enrollment enrollment) {
-				return enrollment;
+			public EnrollmentTO getValue(EnrollmentTO enrollmentTO) {
+				return enrollmentTO;
 			}
 		}, "Ações");
 
 		// Add a selection model to handle user selection.
-		final SingleSelectionModel<Enrollment> selectionModel = new SingleSelectionModel<Enrollment>();
+		final SingleSelectionModel<EnrollmentTO> selectionModel = new SingleSelectionModel<EnrollmentTO>();
 		table.setSelectionModel(selectionModel);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			public void onSelectionChange(SelectionChangeEvent event) {
-				if (forbidProfileView) {
-					forbidProfileView = false;
-				} else {
-					Enrollment selected = selectionModel.getSelectedObject();
-					if (selected != null) {
-						presenter.onUserClicked(selected.getPerson().getUUID());
-					}
-				}
+				//
 			}
 		});
 	}
@@ -408,11 +403,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		errorModal.hide();
 	}
 
-	@UiHandler("btnGoToCourse")
-	void onGoToCourseButtonClicked(ClickEvent e) {
-		presenter.onGoToCourseButtonClicked();
-	}
-
 	@UiHandler("btnAddEnrollment")
 	void onAddEnrollmentButtonClicked(ClickEvent e) {
 		presenter.onAddEnrollmentButtonClicked(txtFullName.getText(), txtEmail.getText());
@@ -430,13 +420,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	@Override
-	public void setEnrollmentList(List<Enrollment> enrollmentsIn) {
+	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn) {
 		numEnrollments = enrollmentsIn.size();
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
 
-		enrollmentsCurrent = new ArrayList<Enrollment>(enrollmentsIn);
-		enrollments = new ArrayList<Enrollment>(enrollmentsIn);
+		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsIn);
+		enrollments = new ArrayList<EnrollmentTO>(enrollmentsIn);
 		enrollmentsWrapper.clear();
 
 		VerticalPanel panel = new VerticalPanel();
@@ -476,7 +466,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	private void filterEnrollments() {
-		enrollmentsCurrent = new ArrayList<Enrollment>(enrollments);
+		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollments);
 		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
 			if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
 				enrollmentsCurrent.remove(i);
@@ -487,24 +477,28 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		pagination.displayTableData(1);
 	}
 
-	private boolean matchesWithSearch(Enrollment one){
+	private boolean matchesWithSearch(EnrollmentTO one){
 		Person p = one.getPerson();
+		Enrollment e = one.getEnrollment();
 		if(p == null) return false;
 		
 		boolean fullNameMatch = matchesWithSearch(p.getFullName());
 		boolean emailMatch = enrollWithCPF ? matchesWithSearch(p.getCPF()) : matchesWithSearch(p.getEmail());
-		boolean enrollmentStateMatch = matchesWithSearch(formHelper.getEnrollmentStateAsText(one.getState()));
-		boolean enrollmentProgressMatch = one.getProgress() != null && 
-				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(one)).toLowerCase());
+		boolean enrollmentStateMatch = matchesWithSearch(formHelper.getEnrollmentStateAsText(e.getState()));
+		boolean enrollmentProgressMatch = e.getProgress() != null && 
+				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(e)).toLowerCase());
 		
 		return fullNameMatch || emailMatch || enrollmentStateMatch || enrollmentProgressMatch;
 	}
 
 	private boolean matchesWithSearch(String one){
 		if(one == null) return false;
-		one = AsciiUtils.convertNonAscii(one);
-		String another = AsciiUtils.convertNonAscii(txtSearch.getText().toLowerCase());
-		return one.toLowerCase().indexOf(another) >= 0;
+		return prepareForSearch(one).indexOf(prepareForSearch(txtSearch.getText())) >= 0;
+	}
+	
+	private String prepareForSearch(String str){
+		str = AsciiUtils.convertNonAscii(str).toLowerCase();
+		return str.replaceAll("-", "").replaceAll("\\.", "");
 	}
 	
 	@Override
@@ -512,39 +506,51 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		errorModal.show();
 	}
 
-	private Delegate<Enrollment> getStateChangeDelegate(final EnrollmentState state) {
-		return new Delegate<Enrollment>() {
+	private Delegate<EnrollmentTO> getStateChangeDelegate(final EnrollmentState state) {
+		return new Delegate<EnrollmentTO>() {
 			@Override
-			public void execute(Enrollment object) {
-				if (forbidProfileView) {
-					presenter.changeEnrollmentState(object, state);
-				}
-				forbidProfileView = true;
+			public void execute(EnrollmentTO object) {
+				presenter.changeEnrollmentState(object, state);
 			}
 		};
 	}
 
-	private Delegate<Enrollment> getDeleteEnrollmentDelegate() {
-		return new Delegate<Enrollment>() {
+	private Delegate<EnrollmentTO> getDeleteEnrollmentDelegate() {
+		return new Delegate<EnrollmentTO>() {
 			@Override
-			public void execute(Enrollment object) {
-				if (forbidProfileView) {
-					presenter.deleteEnrollment(object);
-				}
-				forbidProfileView = true;
+			public void execute(EnrollmentTO object) {
+				presenter.deleteEnrollment(object);
+			}
+		};
+	}
+
+	private Delegate<EnrollmentTO> getGoToProfileDelegate() {
+		return new Delegate<EnrollmentTO>() {
+			@Override
+			public void execute(EnrollmentTO object) {
+				presenter.onUserClicked(object);
+			}
+		};
+	}
+
+	private Delegate<EnrollmentTO> getGenerateCertificateDelegate() {
+		return new Delegate<EnrollmentTO>() {
+			@Override
+			public void execute(EnrollmentTO object) {
+				presenter.onGenerateCertificate(object);
 			}
 		};
 	}
 
 	@SuppressWarnings("hiding")
-  private class EnrollmentActionsActionCell<Enrollment> extends ActionCell<Enrollment> {
+  private class EnrollmentActionsActionCell<EnrollmentTO> extends ActionCell<EnrollmentTO> {
 		
-		public EnrollmentActionsActionCell(String message, Delegate<Enrollment> delegate) {
+		public EnrollmentActionsActionCell(String message, Delegate<EnrollmentTO> delegate) {
 			super(message, delegate);
 		}
 
 		@Override
-		public void onBrowserEvent(Context context, Element parent, Enrollment value, NativeEvent event, ValueUpdater<Enrollment> valueUpdater) {
+		public void onBrowserEvent(Context context, Element parent, EnrollmentTO value, NativeEvent event, ValueUpdater<EnrollmentTO> valueUpdater) {
 			event.stopPropagation();
 			event.preventDefault();
 			super.onBrowserEvent(context, parent, value, event, valueUpdater);
@@ -561,46 +567,65 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		}
 	}
 
-	private class EnrollmentActionsHasCell implements HasCell<Enrollment, Enrollment> {
-		private EnrollmentActionsActionCell<Enrollment> cell;
+	private class EnrollmentActionsHasCell implements HasCell<EnrollmentTO, EnrollmentTO> {
+		private EnrollmentActionsActionCell<EnrollmentTO> cell;
 
-		public EnrollmentActionsHasCell(String text, Delegate<Enrollment> delegate) {
+		public EnrollmentActionsHasCell(String text, Delegate<EnrollmentTO> delegate) {
 			final String actionName = text;
-			cell = new EnrollmentActionsActionCell<Enrollment>(text, delegate) {
+			cell = new EnrollmentActionsActionCell<EnrollmentTO>(text, delegate) {
 				@Override
-				public void render(com.google.gwt.cell.client.Cell.Context context, Enrollment object, SafeHtmlBuilder sb) {
+				public void render(com.google.gwt.cell.client.Cell.Context context, EnrollmentTO object, SafeHtmlBuilder sb) {
 					if (presenter.showActionButton(actionName, object)) {
-						// super.render(context, object, sb);
-						SafeHtml html = SafeHtmlUtils.fromTrustedString("<button type=\"button\" class=\"gwt-Button btnEnrollmentsCellTable " + 
-								getButtonClass(actionName) + "\">" + actionName.toUpperCase() + "</button>");
+						SafeHtml html = SafeHtmlUtils.fromTrustedString(buildButtonHTML(actionName));
 						sb.append(html);
 					} else
 						sb.appendEscaped("");
 				}
 				
-				private String getButtonClass(String actionName){
-					if("Excluir".equals(actionName))
-						return "btnNotSelected";
-					else if("Cancelar".equals(actionName) || "Negar".equals(actionName))
-						return "btnSelected";
-					else 
-						return "btnAction";
+				private String buildButtonHTML(String actionName){
+					Button btn = new Button();
+					btn.setSize(ButtonSize.SMALL);
+					btn.setTitle(actionName);
+					if("Excluir".equals(actionName)){
+						btn.setIcon(IconType.TRASH);
+						btn.addStyleName("btnNotSelected");
+					} else if("Cancelar".equals(actionName)){
+						btn.setIcon(IconType.REMOVE);
+						btn.addStyleName("btnSelected");
+					} else if("Negar".equals(actionName)){
+						btn.setIcon(IconType.THUMBS_DOWN);
+						btn.addStyleName("btnSelected");
+					} else if("Matricular".equals(actionName)){
+						btn.setIcon(IconType.BOOK);
+						btn.addStyleName("btnAction");
+					} else if("Aceitar".equals(actionName)){
+						btn.setIcon(IconType.THUMBS_UP);
+						btn.addStyleName("btnAction");
+					} else if("Perfil".equals(actionName)){
+						btn.setIcon(IconType.USER);
+						btn.addStyleName("btnNotSelected");
+					} else if("Certificado".equals(actionName)){
+						btn.setIcon(IconType.DOWNLOAD_ALT);
+						btn.addStyleName("btnNotSelected");
+					} 
+					btn.addStyleName("btnIconSolo");
+					return btn.toString();
 				}
 			};
 		}
 
 		@Override
-		public Cell<Enrollment> getCell() {
+		public Cell<EnrollmentTO> getCell() {
 			return cell;
 		}
 
 		@Override
-		public FieldUpdater<Enrollment, Enrollment> getFieldUpdater() {
+		public FieldUpdater<EnrollmentTO, EnrollmentTO> getFieldUpdater() {
 			return null;
 		}
 
 		@Override
-		public Enrollment getValue(Enrollment object) {
+		public EnrollmentTO getValue(EnrollmentTO object) {
 			return object;
 		}
 	}

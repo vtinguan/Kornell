@@ -24,6 +24,9 @@ import kornell.core.to.CertificateInformationTO
 import kornell.core.entity.Person
 import kornell.core.entity.Role
 import kornell.core.to.RoleTO
+import kornell.core.entity.CourseClass
+import kornell.core.to.CourseVersionTO
+import kornell.core.to.EnrollmentTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -34,80 +37,62 @@ object TOs {
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
   def newCourseVersionsTO: CourseVersionsTO = tos.newCourseVersionsTO.as
-  
+
   def newRegistrationsTO(registrationList: List[Registration]): RegistrationsTO = {
     val registrations = newRegistrationsTO
     registrations.setRegistrations(registrationList asJava)
     registrations
   }
-  
-  def newEnrollmentsTO(enrollmentList: List[Enrollment]): EnrollmentsTO = {
+
+  def newEnrollmentsTO(enrollmentList: List[EnrollmentTO]): EnrollmentsTO = {
     val enrollments = newEnrollmentsTO
-    enrollments.setEnrollments(enrollmentList asJava)
+    enrollments.setEnrollmentTOs(enrollmentList asJava)
     enrollments
   }
-  
+
   def newCoursesTO(coursesList: List[Course]): CoursesTO = {
     val courses = newCoursesTO
     courses.setCourses(coursesList asJava)
     courses
   }
-  
+
   def newCourseVersionsTO(courseVersionsList: List[CourseVersion]): CourseVersionsTO = {
     val courseVersions = newCourseVersionsTO
     courseVersions.setCourseVersions(courseVersionsList asJava)
     courseVersions
-  } 
+  }
 
   def newCourseClassesTO(l: List[CourseClassTO]) = {
     val to = tos.newCourseClassesTO.as
     to.setCourseClasses(l asJava)
     to
-  } 
-  
-  //TODO: Smelling...
-  def newCourseClassTO(
-    //course
-    courseUUID: String, 
-    code: String,
-    title: String, 
-    description: String,
-    infoJson: String,
-    //courseVersion
-    courseVersionUUID: String,
-    courseVersionName: String,
-    repositoryUUID: String, 
-    versionCreatedAt: Date,
-    distributionPrefix:String,
-    contentSpec:String,
-    disabled:Boolean,
-    //courseClass
-    courseClassUUID: String,
-    courseClassName: String,
-    institutionUUID: String,
-    requiredScore:BigDecimal,
-    publicClass: Boolean,
-    enrollWithCPF: Boolean,
-    maxEnrollments: Integer,
-    createdAt: Date,
-    createdBy: String): CourseClassTO = {
-	    val classTO = tos.newCourseClassTO.as
-	    val versionTO = tos.newCourseVersionTO.as
-	    val course = Entities.newCourse(courseUUID, code, title, description, infoJson)
-	    val version = Entities.newCourseVersion(courseVersionUUID, courseVersionName, courseUUID, repositoryUUID, versionCreatedAt,distributionPrefix,contentSpec,disabled)
-	    val clazz = Entities.newCourseClass(courseClassUUID, courseClassName, courseVersionUUID, institutionUUID, requiredScore, publicClass, enrollWithCPF, maxEnrollments, createdAt, createdBy)
-	    val s3 = S3(version.getRepositoryUUID)
-	    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL , s3.prefix))
-	    versionTO.setCourse(course)
-	    versionTO.setCourseVersion(version)	    
-	    classTO.setCourseVersionTO(versionTO)
-	    classTO.setCourseClass(clazz)
-	    classTO
-    }
- 
-  
-  def newRegistrationRequestTO:RegistrationRequestTO = tos.newRegistrationRequestTO.as
-  def newRegistrationRequestTO(institutionUUID:String,fullName:String,email:String,password:String):RegistrationRequestTO = {
+  }
+
+  def newCourseClassTO(course: Course, version: CourseVersion, clazz: CourseClass): CourseClassTO = {
+    val classTO = tos.newCourseClassTO.as
+    classTO.setCourseVersionTO(newCourseVersionTO(course, version))
+    classTO.setCourseClass(clazz)
+    classTO
+  }
+
+  def newEnrollmentTO(enrollment: Enrollment, person: Person): EnrollmentTO = {
+    val enrollmentTO = tos.newEnrollmentTO.as
+    enrollmentTO.setEnrollment(enrollment)
+    enrollmentTO.setPerson(person)
+    enrollmentTO
+  }
+
+  def newCourseVersionTO(course: Course, version: CourseVersion): CourseVersionTO = {
+    val versionTO = tos.newCourseVersionTO.as
+    val s3 = S3(version.getRepositoryUUID)
+    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL, s3.prefix))
+    versionTO.setCourse(course)
+    versionTO.setCourseVersion(version)
+    versionTO
+  }
+
+  def newRegistrationRequestTO: RegistrationRequestTO = tos.newRegistrationRequestTO.as
+  def newRegistrationRequestTO(institutionUUID: String, fullName: String, email: String, password: String): RegistrationRequestTO = {
     val to = newRegistrationRequestTO
     to.setInstitutionUUID(institutionUUID)
     to.setFullName(fullName)
@@ -115,10 +100,9 @@ object TOs {
     to.setPassword(password)
     to
   }
- 
- 
-  def newEnrollmentRequestTO:EnrollmentRequestTO = tos.newEnrollmentRequestTO.as
-  def newEnrollmentRequestTO(institutionUUID:String,courseClassUUID:String,fullName: String, email:String,cpf:String):EnrollmentRequestTO = {
+
+  def newEnrollmentRequestTO: EnrollmentRequestTO = tos.newEnrollmentRequestTO.as
+  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, email: String, cpf: String): EnrollmentRequestTO = {
     val to = newEnrollmentRequestTO
     to.setInstitutionUUID(institutionUUID)
     to.setCourseClassUUID(courseClassUUID)
@@ -127,16 +111,16 @@ object TOs {
     to.setCPF(cpf)
     to
   }
-  
-  def newEnrollmentRequestsTO:EnrollmentRequestsTO = tos.newEnrollmentRequestsTO.as
-  def newEnrollmentRequestsTO(enrollmentRequests: java.util.List[EnrollmentRequestTO]):EnrollmentRequestsTO = {
+
+  def newEnrollmentRequestsTO: EnrollmentRequestsTO = tos.newEnrollmentRequestsTO.as
+  def newEnrollmentRequestsTO(enrollmentRequests: java.util.List[EnrollmentRequestTO]): EnrollmentRequestsTO = {
     val to = newEnrollmentRequestsTO
     to.setEnrollmentRequests(enrollmentRequests)
     to
   }
- 
-  def newCertificateInformationTO:CertificateInformationTO = new CertificateInformationTO
-  def newCertificateInformationTO(personFullName:String,personCPF:String,courseTitle: String, courseClassFinishedDate:Date,assetsURL:String, distributionPrefix:String):CertificateInformationTO = {
+
+  def newCertificateInformationTO: CertificateInformationTO = new CertificateInformationTO
+  def newCertificateInformationTO(personFullName: String, personCPF: String, courseTitle: String, courseClassFinishedDate: Date, assetsURL: String, distributionPrefix: String): CertificateInformationTO = {
     val to = newCertificateInformationTO
     to.setPersonFullName(personFullName)
     to.setPersonCPF(personCPF)
@@ -146,7 +130,7 @@ object TOs {
     to.setDistributionPrefix(distributionPrefix)
     to
   }
-  
+
   def newRoleTO(role: Role, person: Person) = {
     val r = tos.newRoleTO.as
     r.setRole(role)

@@ -5,16 +5,20 @@ import kornell.core.entity.EnrollmentState
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.core.entity.Enrollments
+import kornell.core.to.EnrollmentTO
+import kornell.core.to.EnrollmentsTO
+import kornell.server.repository.TOs
 
 object EnrollmentsRepo {
 
-  //TODO: use specific column names?
-  def byCourseClass(courseClassUUID: String): Enrollments = sql"""
-	  SELECT e.*, p.* 
-    FROM Enrollment e join Person p on e.person_uuid = p.uuid
-    WHERE e.class_uuid = ${courseClassUUID}
-    ORDER BY e.state desc, p.fullName, p.email
-	    """.map[Enrollment]
+  def byCourseClass(courseClassUUID: String) =
+    TOs.newEnrollmentsTO(
+      sql"""
+			  SELECT e.*, p.* 
+		    FROM Enrollment e join Person p on e.person_uuid = p.uuid
+		    WHERE e.class_uuid = ${courseClassUUID}
+		    ORDER BY e.state desc, p.fullName, p.email
+			    """.map[EnrollmentTO](toEnrollmentTO))
 
   def byPerson(personUUID: String) =
     sql"""
@@ -22,7 +26,7 @@ object EnrollmentsRepo {
     	e.*,p.*
 	  FROM Enrollment e join Person p on e.person_uuid = p.uuid 
     WHERE e.person_uuid = ${personUUID}
-	    """.map[Enrollment]
+	    """.map[EnrollmentTO](toEnrollmentTO)
 
   def byCourseClassAndPerson(courseClassUUID: String, personUUID: String): Option[Enrollment] =
     sql"""
@@ -39,7 +43,7 @@ object EnrollmentsRepo {
     WHERE e.person_uuid = ${personUUID}
 	    AND e.state = ${state.toString()}
     ORDER BY e.state desc, p.fullName, p.email
-	    """.map[Enrollment]
+	    """.map[EnrollmentTO](toEnrollmentTO)
 
   def create(enrollment: Enrollment) = {
     if (enrollment.getUUID == null)
@@ -49,7 +53,7 @@ object EnrollmentsRepo {
     	values(
     		${enrollment.getUUID},
     		${enrollment.getCourseClassUUID},
-    		${enrollment.getPerson.getUUID}, 
+    		${enrollment.getPersonUUID}, 
     		now(),
     		${enrollment.getState.toString}
     	)""".executeUpdate

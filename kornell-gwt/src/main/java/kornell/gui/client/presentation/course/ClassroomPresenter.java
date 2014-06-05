@@ -7,6 +7,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Contents;
+import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.Kornell;
 import kornell.gui.client.personnel.Dean;
@@ -58,7 +59,9 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				boolean isEnrolled = false;
 				UserInfoTO user = session.getCurrentUser();
 				//TODO: Consider moving this to the server
-				for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
+				Enrollment enrollment;
+				for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
+					enrollment = enrollmentTO.getEnrollment();
 					if(enrollment.getUUID().equals(enrollmentUUID)){
 						Dean.getInstance().setCourseClassTO(enrollment.getCourseClassUUID());
 						isEnrolled = EnrollmentState.enrolled.equals(enrollment.getState());

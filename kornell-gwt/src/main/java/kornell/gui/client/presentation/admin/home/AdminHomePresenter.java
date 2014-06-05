@@ -17,6 +17,8 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentRequestTO;
 import kornell.core.to.EnrollmentRequestsTO;
+import kornell.core.to.EnrollmentTO;
+import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
@@ -31,12 +33,13 @@ import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private AdminHomeView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private List<Enrollment> enrollments;
+	private List<EnrollmentTO> enrollmentTO;
 	private String batchEnrollmentErrors;
 	private List<EnrollmentRequestTO> batchEnrollments;
 	FormHelper formHelper;
@@ -91,15 +94,15 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private List<Enrollment> getEnrollments(String courseClassUUID) {
 		LoadingPopup.show();
 		session.getEnrollmentsByCourseClass(courseClassUUID,
-				new Callback<Enrollments>() {
+				new Callback<EnrollmentsTO>() {
 
 					@Override
-					public void ok(Enrollments e) {
-						numEnrollments = e.getEnrollments().size();
+					public void ok(EnrollmentsTO e) {
+						numEnrollments = e.getEnrollmentTOs().size();
 						maxEnrollments = Dean.getInstance().getCourseClassTO()
 								.getCourseClass().getMaxEnrollments();
-						enrollments = e.getEnrollments();
-						view.setEnrollmentList(e.getEnrollments());
+						enrollmentTO = e.getEnrollmentTOs();
+						view.setEnrollmentList(e.getEnrollmentTOs());
 						view.showEnrollmentsPanel(true);
 						LoadingPopup.hide();
 					}
@@ -141,14 +144,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	@Override
-	public void changeEnrollmentState(final Enrollment enrollment,
+	public void changeEnrollmentState(final EnrollmentTO enrollmentTO,
 			final EnrollmentState toState) {
 		LoadingPopup.show();
 
 		String personUUID = session.getCurrentUser().getPerson().getUUID();
 		session.events()
-				.enrollmentStateChanged(enrollment.getUUID(), personUUID,
-						enrollment.getState(), toState)
+				.enrollmentStateChanged(enrollmentTO.getEnrollment().getUUID(), personUUID,
+						enrollmentTO.getEnrollment().getState(), toState)
 				.fire(new Callback<Void>() {
 					@Override
 					public void ok(Void to) {
@@ -160,9 +163,9 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	@Override
-	public boolean showActionButton(String actionName, Enrollment enrollment) {
-		EnrollmentState state = enrollment.getState();
-		EnrollmentProgressDescription progressDescription = EnrollmentCategory.getEnrollmentProgressDescription(enrollment);
+	public boolean showActionButton(String actionName, EnrollmentTO enrollmentTO) {
+		EnrollmentState state = enrollmentTO.getEnrollment().getState();
+		EnrollmentProgressDescription progressDescription = EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment());
 		if ("Aceitar".equals(actionName) || "Negar".equals(actionName)) {
 			return EnrollmentState.requested.equals(state);
 		} else if ("Cancelar".equals(actionName)) {
@@ -172,6 +175,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					|| EnrollmentState.cancelled.equals(state);
 		} else if ("Excluir".equals(actionName)){
 			return EnrollmentProgressDescription.notStarted.equals(progressDescription);
+		} else if("Perfil".equals(actionName)){
+			return true;
+		} else if("Certificado".equals(actionName)){
+			return EnrollmentCategory.isFinished(enrollmentTO.getEnrollment());
 		}
 		return false;
 	}
@@ -335,19 +342,27 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	@Override
-	public void onUserClicked(String uuid) {
-		ProfilePlace place = new ProfilePlace(uuid, false);
+	public void onUserClicked(EnrollmentTO enrollmentTO) {
+		ProfilePlace place = new ProfilePlace(enrollmentTO.getPerson().getUUID(), false);
 		placeController.goTo(place);
 	}
 
 	@Override
-	public List<Enrollment> getEnrollments() {
-		return enrollments;
+	public void onGenerateCertificate(EnrollmentTO enrollmentTO) {
+		KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+		Window.Location.assign(session.getApiUrl() + "/report/certificate/"
+				+ enrollmentTO.getPerson().getUUID() + "/"
+				+ enrollmentTO.getEnrollment().getCourseClassUUID());
+	}
+	
+	@Override
+	public List<EnrollmentTO> getEnrollments() {
+		return enrollmentTO;
 	}
 
 	@Override
-  public void deleteEnrollment(Enrollment enrollment) {
-		session.enrollment(enrollment.getUUID()).delete(new Callback<Enrollment>() {
+  public void deleteEnrollment(EnrollmentTO enrollmentTO) {
+		session.enrollment(enrollmentTO.getEnrollment().getUUID()).delete(new Callback<Enrollment>() {
 			@Override
 			public void ok(Enrollment to) {
 				KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);

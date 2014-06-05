@@ -1,5 +1,78 @@
 @import "colors";
+@import "mixins";
 
+.btn-primary {
+  .btnSelected;
+}
+.btnDefault{
+	//text-shadow: 1px 1px 1px fade(@contentBoxBackgroundColor, 50%);
+	font-size: 11px !important;	
+	font-weight: bold !important;
+	padding-left: 10px !important;
+	padding-right: 10px !important;
+	color: @buttonTextColor !important;
+	text-shadow: none !important;
+	border-radius: 5px !important;
+	display: block;
+	border: 0px !important;
+}
+.btnIcon{
+	i {
+		margin-right: 5px !important;
+		margin-left: 0px !important;
+		font-size: 15px;
+	}
+}
+.btnIconSolo{
+	i {
+		margin-right: 0px !important;
+		margin-left: 0px !important;
+		font-size: 15px;
+	}
+	float: right;
+	width: 14px !important;
+	margin-right: 5px;
+}
+.btnNotSelected{
+	.btnDefault;
+	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
+	.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+}
+.btnSelected{
+	.btnDefault;
+	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
+ 	.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
+}
+.btnAction{
+	.btnDefault;
+	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
+ 	.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
+}
+.standardButtonBarSmall{
+	width: 130px !important;
+}	
+.standardButtonBar{
+	width: 260px;
+	margin: 0 auto;
+	clear: both;
+	.btnStandard{
+		margin: 15px;
+	}
+}
+.btnStandard{
+	font-weight: bold;
+	font-size: 10px;
+	width: 100px;
+	height: 22px;
+	line-height: 21px;
+	border-radius: 5px;
+	border: 0;
+	display: inline-block;
+}
+.btnBorder{
+	border-left: 1px solid @buttonBorderLeftColor !important;
+	border-right: 1px solid @buttonBorderRightColor !important;
+}
 
 .fieldPanelWrapper{
 	width: 525px;
@@ -116,5 +189,30 @@
 		cursor: default;
 		color: @niceTextColor;
 		text-decoration: none;
+	}
+}
+
+
+
+
+.fileUploadWrapper{
+	float: left;
+	margin-bottom: 20px;
+	margin-left: 242px;
+	img{
+		float: left;
+		margin-bottom: 10px;
+	}
+	input[type="file"]{
+		float: left;
+		clear: both;
+		width: 284px !important;
+		color: @niceTextColor;
+		font-size: 12px;
+		line-height: 20px !important;
+		background: transparent;
+	}
+	button{
+		float: left;
 	}
 }

@@ -1,5 +1,6 @@
 @import "../../utils/mixins";
 @import "../../utils/colors";
+@import "../../utils/forms";
 
 .detailsPanel{
     width: @wrapperWidth;
@@ -51,11 +52,9 @@
 		float: left;
 		.btnDetails{
 			width: @buttonsPanelWidth - (@detailsPanelMargin * 2);
-			font-size: 14px;
 			text-align: right;
 			margin-top: @detailsPanelMargin;
-			padding: 4px 12px;
-			border-radius: 8px;
+			padding: 4px 12px !important;
 			display: inline-block;
 			&:hover{
 				text-decoration: none;
@@ -64,6 +63,7 @@
 				font-weight: bold;
 				color: @plainTextColor;
 				line-height: 28px;
+				font-size: 14px;
 			}
 			.btnLabel{
 				font-size: 12px;
@@ -284,19 +284,13 @@
 				height: @certificationHeaderPanelHeight;
 				margin-bottom: 10px;
 				.btnCertificationHeader{
-					border-radius: 0px;
-					height: @certificationHeaderPanelHeight;
-					line-height: @certificationHeaderPanelHeight;
-					border: 0;
-					color: @niceTextColor;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					font-size: 12px;
-					font-weight: bold;
-					text-align: center;
-					.btnBorder;
-					display: block;
 					float: left;
+					border-radius: 0px !important;
+					line-height: 24px;
+					padding-left: 10px !important;
+					padding-right: 10px !important;
+					font-size: 12px !important;
+					.btnBorder;
 					&:hover{
 						text-decoration: none;
 						cursor: default;

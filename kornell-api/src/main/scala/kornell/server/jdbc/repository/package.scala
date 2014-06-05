@@ -17,6 +17,7 @@ import java.util.logging.Logger
 import kornell.core.util.UUID
 import kornell.core.entity.Assessment
 import kornell.core.entity.Institution
+import kornell.core.to.EnrollmentTO
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -64,34 +65,39 @@ package object repository {
     rs.getString("contentSpec"),
     rs.getBoolean("disabled"))    
   
-  implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = 
-    TOs.newCourseClassTO(   
-    //course    
-    rs.getString("courseUUID"), 
-    rs.getString("code"), 
-    rs.getString("title"),
-    rs.getString("description"), 
-    rs.getString("infoJson"),
-    //courseVersion
-    rs.getString("courseVersionUUID"), 
-    rs.getString("courseVersionName"), 
-    rs.getString("repositoryUUID"), 
-    rs.getDate("versionCreatedAt"),
-    rs.getString("distributionPrefix"),
-    rs.getString("contentSpec"),
-    rs.getBoolean("disabled"),
-    //courseClass
-    rs.getString("courseClassUUID"),
-    rs.getString("courseClassName"), 
-    rs.getString("institutionUUID"),
-    rs.getBigDecimal("requiredScore"),
-    rs.getBoolean("publicClass"),
-    rs.getBoolean("enrollWithCPF"),
-    rs.getInt("maxEnrollments"),
-    rs.getDate("createdAt"),
-    rs.getString("createdBy"))
-    
+  implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = {
+    val course = newCourse(
+        rs.getString("courseUUID"), 
+		    rs.getString("code"), 
+		    rs.getString("title"),
+		    rs.getString("description"), 
+		    rs.getString("infoJson"));
 
+    val version = newCourseVersion(
+        rs.getString("courseVersionUUID"), 
+		    rs.getString("courseVersionName"), 
+		    rs.getString("courseUUID"), 
+		    rs.getString("repositoryUUID"), 
+		    rs.getDate("versionCreatedAt"),
+		    rs.getString("distributionPrefix"),
+		    rs.getString("contentSpec"),
+		    rs.getBoolean("disabled"));
+
+    val clazz = newCourseClass(
+        rs.getString("courseClassUUID"),
+		    rs.getString("courseClassName"), 
+		    rs.getString("courseVersionUUID"), 
+		    rs.getString("institutionUUID"),
+		    rs.getBigDecimal("requiredScore"),
+		    rs.getBoolean("publicClass"),
+		    rs.getBoolean("enrollWithCPF"),
+		    rs.getInt("maxEnrollments"),
+		    rs.getDate("createdAt"),
+		    rs.getString("createdBy"));
+    		
+    TOs.newCourseClassTO(course, version, clazz)
+  }
+  
   implicit def toEnrollment(rs: ResultSet): Enrollment = {
     newEnrollment(
       rs.getString("uuid"),
@@ -109,6 +115,28 @@ package object repository {
       rs.getBigDecimal("assessmentScore"),
       rs.getDate("certifiedAt")
     )
+  }
+    
+
+  implicit def toEnrollmentTO(rs: ResultSet): EnrollmentTO = {
+    val enrollment = newEnrollment(
+      rs.getString("uuid"),
+      rs.getDate("enrolledOn"),
+      rs.getString("class_uuid"),
+      rs.getString("person_uuid"),
+      rs.getInt("progress"),
+      rs.getString("notes"),      
+      EnrollmentState.valueOf(rs.getString("state")),
+      rs.getDate("lastProgressUpdate"),
+      Option(rs.getString("assessment"))
+      	.map(Assessment.valueOf)
+      	.getOrElse(null),
+      rs.getDate("lastAssessmentUpdate"),
+      rs.getBigDecimal("assessmentScore"),
+      rs.getDate("certifiedAt")
+    )
+    
+    TOs.newEnrollmentTO(enrollment, PersonRepo(enrollment.getPersonUUID()).get)
   }
 	
 	implicit def toPerson(rs:ResultSet):Person = newPerson(

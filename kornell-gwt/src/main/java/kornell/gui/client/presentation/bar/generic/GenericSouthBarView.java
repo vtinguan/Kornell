@@ -26,10 +26,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
-	private ActivityBarView activityBarView;
-
-	private CourseBarView courseBarView;
 	
 	private AdminBarView adminBarView;
 

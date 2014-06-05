@@ -69,13 +69,13 @@ object EventsRepo {
 
     if (EnrollmentState.enrolled.equals(toState)) {
       val enrollment = EnrollmentRepo(enrollmentUUID).get
-      val x =
-        if (enrollment.getPerson.getEmail != null && !"true".equals(Settings.get("TEST_MODE").orNull)) {
-          val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
-          val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
-          val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get
-          EmailService.sendEmailEnrolled(enrollment.getPerson, institution, course)
-        }
+      val person = PersonRepo(enrollment.getPersonUUID).get
+      if (person.getEmail != null && !"true".equals(Settings.get("TEST_MODE").orNull)) {
+        val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
+        val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
+        val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get
+        EmailService.sendEmailEnrolled(person, institution, course)
+      }
     }
   }
 

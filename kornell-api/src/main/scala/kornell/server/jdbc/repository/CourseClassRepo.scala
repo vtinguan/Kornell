@@ -48,11 +48,11 @@ class CourseClassRepo(uuid:String) {
       where uuid = ${courseClassUUID}""".executeUpdate
   }
   
-  def actomsVisitedBy(p: Person): List[String] = sql"""
+  def actomsVisitedBy(personUUID: String): List[String] = sql"""
   	select actomKey from ActomEntered ae
   	join Enrollment e on ae.enrollmentUUID=e.uuid
   	where e.class_uuid = ${uuid}
-  	and person_uuid = ${p.getUUID}
+  	and person_uuid = ${personUUID}
   	order by eventFiredAt
   	""".map[String]({ rs => rs.getString("actomKey") })
   	

@@ -65,13 +65,17 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void initData() {
+		boolean shouldBeHere = true;
 		for (Registration registration : session.getCurrentUser().getRegistrationsTO().getRegistrations()) {
 			if(Dean.getInstance().getInstitution().getUUID().equals(registration.getInstitutionUUID()) && registration.getTermsAcceptedOn() != null){
 				GWT.log("OPS! Should not be here if there's nothing to sign.");
-				goStudy();
+				shouldBeHere = false;
 			}
 		}
-		paint();
+		if(shouldBeHere)
+			paint();
+		else 
+			goStudy();
 	}
 
 	private void paint() {

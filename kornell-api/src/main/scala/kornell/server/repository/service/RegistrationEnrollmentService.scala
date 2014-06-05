@@ -62,7 +62,7 @@ object RegistrationEnrollmentService {
         personRepo.setPassword(enrollmentRequest.getCPF, enrollmentRequest.getCPF)
     }
     personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
-    createEnrollment(personRepo.get.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
+    createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
   }
 
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) =
@@ -116,7 +116,7 @@ object RegistrationEnrollmentService {
     personRepo.update(person)
 
     val user = newUserInfoTO
-    user.setPerson(personRepo.get.get)
+    user.setPerson(personRepo.get)
     user.setUsername(email)
 
     personRepo.setPassword(email, password)

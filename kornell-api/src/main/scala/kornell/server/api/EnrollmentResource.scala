@@ -48,7 +48,7 @@ class EnrollmentResource(uuid: String) {
   @Consumes(Array(Enrollment.TYPE))
   def update(implicit @Context sc: SecurityContext, 
       @Context resp: HttpServletResponse, enrollment: Enrollment) = AuthRepo.withPerson { p =>
-    if(!PersonRepo(p.getUUID).hasPowerOver(enrollment.getPerson.getUUID))
+    if(!PersonRepo(p.getUUID).hasPowerOver(enrollment.getPersonUUID))
     	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update an enrollment of another person.");
     else
     	EnrollmentRepo(enrollment.getUUID).update(enrollment)

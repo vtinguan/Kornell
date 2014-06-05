@@ -1,16 +1,30 @@
 package kornell.gui.client.util.view.formfield;
 
+import kornell.gui.client.presentation.util.FormHelper;
+
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TextBoxFormField implements KornellFormField<TextBox> {
 
-	TextBox field;
+	private final FormHelper formHelper = GWT.create(FormHelper.class);
 	
-	public TextBoxFormField(TextBox field) {
+	public static final String CPF = "cpf";
+	
+	TextBox field;
+	String textBoxFormFieldType;
+	
+	public TextBoxFormField(TextBox field, String textBoxFormFieldType) {
 		this.field = field;
+		this.textBoxFormFieldType = textBoxFormFieldType;
 		field.addStyleName("field");
 		field.addStyleName("textField");
+		
+	}
+	
+	public TextBoxFormField(TextBox field) {
+		this(field, null);
 	}
 
 	@Override
@@ -20,7 +34,10 @@ public class TextBoxFormField implements KornellFormField<TextBox> {
 
 	@Override
 	public String getDisplayText() {
-		return field.getValue();
+		if(CPF.equals(textBoxFormFieldType))
+			return formHelper.formatCPF(field.getValue());
+		else
+			return field.getValue();
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.bar.generic;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
@@ -106,7 +107,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
 		if(user != null){
-			for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
+			Enrollment enrollment;
+			for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
+				enrollment = enrollmentTO.getEnrollment();
 				if(enrollment.getUUID().equals(((ClassroomPlace)clientFactory.getPlaceController().getWhere()).getEnrollmentUUID())
 						&& EnrollmentState.enrolled.equals(enrollment.getState())){
 					isEnrolled = true;

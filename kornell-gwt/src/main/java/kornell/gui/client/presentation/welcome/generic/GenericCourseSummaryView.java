@@ -11,6 +11,8 @@ import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.EnrollmentTO;
+import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
@@ -188,26 +190,29 @@ public class GenericCourseSummaryView extends Composite {
 				Enrollment enrollment = entityFactory.enrollment().as();
 				enrollment.setCourseClassUUID(courseClassTO.getCourseClass()
 						.getUUID());
-				enrollment.setPerson(session.getCurrentUser().getPerson());
+				enrollment.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
 				enrollment.setState(EnrollmentState.requested);
 				session.createEnrollment(enrollment,
 						new Callback<Enrollment>() {
 							@Override
-							public void ok(Enrollment to) {
-								session.getCurrentUser().getEnrollmentsTO()
-										.getEnrollments().add(to);
+							public void ok(Enrollment enrollment) {
+								TOFactory toFactory = GWT.create(TOFactory.class);
+								EnrollmentTO enrollmentTO = toFactory.newEnrollmentTO().as();
+								enrollmentTO.setEnrollment(enrollment);
+								enrollmentTO.setPerson(session.getCurrentUser().getPerson());
+								session.getCurrentUser().getEnrollmentsTO().getEnrollmentTOs().add(enrollmentTO);
 								for (CourseClassTO courseClassTO : Dean
 										.getInstance().getCourseClassesTO()
 										.getCourseClasses()) {
 									if (courseClassTO.getCourseClass()
 											.getUUID()
-											.equals(to.getCourseClassUUID())) {
+											.equals(enrollment.getCourseClassUUID())) {
 										Dean.getInstance().setCourseClassTO(
 												courseClassTO);
 										break;
 									}
 								}
-								placeCtrl.goTo(new ClassroomPlace(to.getUUID()));
+								placeCtrl.goTo(new ClassroomPlace(enrollment.getUUID()));
 							}
 						});
 			}

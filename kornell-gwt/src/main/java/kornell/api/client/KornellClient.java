@@ -1,6 +1,5 @@
 package kornell.api.client;
 
-import static kornell.core.util.StringUtils.composeURL;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
@@ -10,6 +9,7 @@ import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.EnrollmentRequestsTO;
+import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.UserInfoTO;
@@ -17,7 +17,6 @@ import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.URL;
 
 public class KornellClient extends RESTClient implements LogoutEventHandler {
@@ -162,7 +161,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new PeopleClient();
 	}
 	
-	public void getEnrollmentsByCourseClass(String courseClassUUID, Callback<Enrollments> cb) {
+	public void getEnrollmentsByCourseClass(String courseClassUUID, Callback<EnrollmentsTO> cb) {
 		GET("/enrollments/?courseClassUUID=" + courseClassUUID).sendRequest(null, cb);
 	}
 

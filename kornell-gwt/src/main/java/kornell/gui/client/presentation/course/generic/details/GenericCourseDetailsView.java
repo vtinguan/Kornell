@@ -13,6 +13,7 @@ import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
@@ -127,7 +128,9 @@ public class GenericCourseDetailsView extends Composite {
 	private void display() {
 		isEnrolled = false;
 		UserInfoTO user = session.getCurrentUser();
-		for (Enrollment enrollment : user.getEnrollmentsTO().getEnrollments()) {
+		Enrollment enrollment;
+		for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
+			enrollment = enrollmentTO.getEnrollment();
 			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())
 					&& EnrollmentState.enrolled.equals(enrollment.getState())){
 				isEnrolled = true;
@@ -309,7 +312,6 @@ public class GenericCourseDetailsView extends Composite {
 
 	private void displayButton(Button btn, String title, String label, boolean isSelected) {
 		btn.addStyleName("btnDetails " + (isSelected ? "btnSelected" : "btnNotSelected"));
-		btn.removeStyleName("btn");
 
 		Label btnTitle = new Label(title);
 		btnTitle.addStyleName("btnTitle");

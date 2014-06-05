@@ -389,12 +389,16 @@ public class FormHelper {
 	}
 	
 	
-	public TextBoxFormField createTextBoxFormField(String text){
+	public TextBoxFormField createTextBoxFormField(String text, String textBoxFormFieldType){
 		TextBox fieldTextBox = new TextBox();
 		fieldTextBox.addStyleName("field");
 		fieldTextBox.addStyleName("textField");
 		fieldTextBox.setValue(text);
-		return new TextBoxFormField(fieldTextBox);
+		return new TextBoxFormField(fieldTextBox, textBoxFormFieldType);
+	}
+	
+	public TextBoxFormField createTextBoxFormField(String text){
+		return createTextBoxFormField(text, null);
 	}
 	
 	public PasswordTextBoxFormField createPasswordTextBoxFormField(String text){
@@ -524,4 +528,11 @@ public class FormHelper {
 			return "???";
 		}
 	}
+
+	public String formatCPF(String cpf) {
+	  cpf = stripCPF(cpf);
+	  if(cpf == null || cpf.length() != 11)
+	  	return "";
+	  return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
+  }
 }

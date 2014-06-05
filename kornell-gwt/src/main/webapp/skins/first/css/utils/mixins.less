@@ -1,52 +1,15 @@
 @import "colors";
 @import "lesshat";
 
-.btn-primary {
-  .btnSelected;
-}
-.btnDefault{
-	//text-shadow: 1px 1px 1px fade(@contentBoxBackgroundColor, 50%);
-	font-size: 12px;	
-	font-weight: bold;
-	color: @buttonTextColor;
-	border-radius: 5px;
-	display: block;
-	border: 0px;
-}
-.btnNotSelected{
-	.btnDefault;
-	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
-	.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
-}
-.btnSelected{
-	.btnDefault;
-	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
- 	.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
-}
-.btnAction{
-	.btnDefault;
-	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
- 	.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
-}
-.btnBorder{
-	border-left: 1px solid @buttonBorderLeftColor;
-	border-right: 1px solid @buttonBorderRightColor;
-}
-.cursorPointer{
-	cursor: pointer;
-}
-.cursorDefault{
-	cursor: default;
-}
 .gradient (@colorStart: #000, @colorEnd: #fff) {
-	background: @colorStart; /* Old browsers */
-	background: -moz-linear-gradient(top,  @colorStart 0%, @colorEnd 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@colorStart), color-stop(100%,@colorEnd)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  @colorStart 0%,@colorEnd 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  @colorStart 0%,@colorEnd 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  @colorStart 0%,@colorEnd 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  @colorStart 0%,@colorEnd 100%); /* W3C */
-	//filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 )"; /* IE6-9 */
+	background: @colorStart !important; /* Old browsers */
+	background: -moz-linear-gradient(top,  @colorStart 0%, @colorEnd 100%) !important; /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@colorStart), color-stop(100%,@colorEnd)) !important; /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  @colorStart 0%,@colorEnd 100%) !important; /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  @colorStart 0%,@colorEnd 100%) !important; /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  @colorStart 0%,@colorEnd 100%) !important; /* IE10+ */
+	background: linear-gradient(to bottom,  @colorStart 0%,@colorEnd 100%) !important; /* W3C */
+	//filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 )" !important; /* IE6-9 */
  }
 
 .size (@square) {
@@ -69,133 +32,14 @@
   box-shadow:         @string;
 }
 
-.fillWidth{
-	width: 100%;
-}
-
-.south{
-	bottom: 0px;
-	left: 0px;
-}
-.north{
-	top: 0px;
-	left: 0px;
-}
-
 .changeBackgroundColorOnHover (@color, @percent) when (lightness(@color) >= 50%) {
   	background-color: darken(@color, @percent);
 }
 .changeBackgroundColorOnHover (@color, @percent) when (lightness(@color) < 50%) {
   	background-color: lighten(@color, @percent);
 }
-
 .backgroundImage (@imageName) { 
    background: url('@{imagesPath}@{imageName}') no-repeat; 
 }
-.noTextSelect{
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-.marginLogo{
-	margin-left: @marginLeftLogo;
-}
-.BMP0{
-	border: 0;
-	margin: 0;
-	padding: 0;
-}
-
-.standardButtonBarSmall{
-	width: 130px !important;
-}	
-.standardButtonBar{
-	width: 260px;
-	margin: 0 auto;
-	clear: both;
-	.btnStandard{
-		margin: 15px;
-	}
-}
-.btnStandard{
-	font-weight: bold;
-	font-size: 10px;
-	width: 100px;
-	height: 22px;
-	line-height: 21px;
-	border-radius: 5px;
-	border: 0;
-	display: inline-block;
-}
-.highlightText{
-	color: @textHighlightColor;
-}
-.textInfoColor{
-	color: @textInfoColor;
-}
-.borderNone{
-	border: 0 !important;
-}
-.paddingTop30{
-	padding-top: 30px;
-} 
-.paddingTop37{
-	padding-top: 37px;
-}
-.paddingTop44{
-	padding-top: 44px;
-}
-.width120{
-	widht:	120px;
-}
-.marginLeft7{
-	margin-left: 7px;
-}
-.marginLeft25{
-	margin-left: 25px;
-}
-.marginTop25{
-	margin-top: 25px;
-}
-.test{
-	color: red;
-}
-.left{
-	float: left;
-}
-.right{
-	float: right;
-}
-.unclear{
-	clear: none !important;
-}
-
-.error {
-	color: @errorMessageColor;
-}
 
 
-.fileUploadWrapper{
-	float: left;
-	margin-bottom: 20px;
-	margin-left: 242px;
-	img{
-		float: left;
-		margin-bottom: 10px;
-	}
-	input[type="file"]{
-		float: left;
-		clear: both;
-		width: 284px !important;
-		color: @niceTextColor;
-		font-size: 12px;
-		line-height: 20px !important;
-		background: transparent;
-	}
-	button{
-		float: left;
-	}
-}

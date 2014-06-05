@@ -1,5 +1,7 @@
 @import "colors";
 @import "mixins";
+@import "constants";
+@import "forms";
 
 @barNorthHeight: 45px;
 @barSouthHeight: 35px;
@@ -23,9 +25,10 @@
 			line-height: @barNorthHeight - (@paddingTop*2);
 			float: left;
 			text-align: center;
-			padding-left: 10px;
-			padding-right: 10px;
-			padding-top: @paddingTop;;
+			padding: 10px 18px 0px 18px;
+			font-size: 18px;
+			color: @niceTextColor;
+			text-decoration: none;
 			.label{
 				background: transparent;
 				color: @niceTextColor;
@@ -54,12 +57,28 @@
 			}
 		}
 		.first{
-			border-left: 0px;
+			border-left: 0px !important;
 			padding: 0;
 			width: 0;
 		}
 		.last{
 			border-right: 0px;
+		}
+	}
+	.testEnvWarning{
+		color: @textHighlightColor;
+		width: 325px;
+		font-size: 20px;
+		line-height: 20px;
+		margin-top: 2px;
+		font-weight: bold;
+		float: right;
+		text-align: center;
+		.testEnvWarningText {
+			font-size: 10px;
+			line-height: 10px;
+			display: block;
+			text-align: center;
 		}
 	}
 }

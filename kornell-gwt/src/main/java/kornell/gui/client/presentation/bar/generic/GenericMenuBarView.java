@@ -36,6 +36,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -63,9 +64,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private boolean visible = false;
 
 	@UiField
+	FlowPanel testEnvWarning;
+	@UiField
 	FlowPanel menuBar;
 	@UiField
-	Button btnFake;
+	Button btnFullScreen;
 	@UiField
 	Button btnProfile;
 	@UiField
@@ -99,7 +102,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		if (localDean != null) {
 			Institution localInstitution = localDean.getInstitution();
 			String assetsURL = localInstitution.getAssetsURL();
-			// TODO: Add composeUrl to best practices
 			imgMenuBar.setUrl(StringUtils
 					.composeURL(assetsURL, barLogoFileName));
 		}
@@ -197,6 +199,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	}-*/;
 
 	private void showButtons(boolean show) {
+		showButton(btnFullScreen, show);
 		showButton(btnProfile, show);
 		showButton(btnHome, show);
 		showButton(btnAdmin, show &&  
@@ -218,17 +221,30 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	}
 
 	public void display() {
-		displayButton(btnFake, "btnFake", "", false, "");
-		displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
-		displayButton(btnHome, "btnHome", "home", true, "Página Inicial");
-		displayButton(btnAdmin, "btnAdmin", "admin", true, "Administração");
-		displayButtonWithCount(btnNotifications, "btnNotifications",
-				"notifications", "countNotifications", 19);
-		displayButtonWithCount(btnMessages, "btnMessages", "messages",
-				"countMessages", 99);
-		displayButton(btnHelp, "btnHelp", "help", true, "Ajuda");
-		displayButton(btnMenu, "btnMenu", "MENU", false, "");
-		displayButton(btnExit, "btnExit", "SAIR", false, "Encerrar sessão");
+		if(Window.Location.getHostName().indexOf("-test.eduvem") >= 0){
+			testEnvWarning.removeStyleName("shy");
+		}
+		btnFullScreen.removeStyleName("btn");
+		btnProfile.removeStyleName("btn");
+		btnHome.removeStyleName("btn");
+		btnAdmin.removeStyleName("btn");
+		btnHelp.removeStyleName("btn");
+		btnExit.removeStyleName("btn");
+
+		btnNotifications.removeStyleName("btn");
+		btnMessages.removeStyleName("btn");
+		btnMenu.removeStyleName("btn");
+		
+		//displayButton(btnFake, "btnFake", "", false, "");
+		//displayButton(btnFullScreen, "btnFullScreen", "", false, "Tela Cheia");
+		//displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
+		//displayButton(btnHome, "btnHome", "home", true, "Página Inicial");
+		//displayButton(btnAdmin, "btnAdmin", "admin", true, "Administração");
+		//displayButtonWithCount(btnNotifications, "btnNotifications","notifications", "countNotifications", 19);
+		//displayButtonWithCount(btnMessages, "btnMessages", "messages", "countMessages", 99);
+		//displayButton(btnHelp, "btnHelp", "help", true, "Ajuda");
+		//displayButton(btnMenu, "btnMenu", "MENU", false, "");
+		//displayButton(btnExit, "btnExit", "SAIR", false, "Encerrar sessão");
 	}
 
 	private void displayButtonWithCount(Button btn, final String buttonType,
@@ -252,7 +268,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	private void displayButton(Button btn, final String buttonType,
 			String content, boolean isImage, String title) {
-		btn.clear();
+		//btn.clear();
 
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
@@ -273,6 +289,19 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		btn.removeStyleName("btn");
 	}
 
+	static native void requestFullscreen() /*-{
+		if ($wnd.screenfull.enabled)
+			if(!$wnd.screenfull.isFullscreen)
+        $wnd.screenfull.request();
+			else
+        $wnd.screenfull.exit();
+	}-*/;
+	
+	@UiHandler("btnFullScreen")
+	void handleFullScreen(ClickEvent e) {
+		requestFullscreen();
+	}
+	
 	@UiHandler("btnProfile")
 	void handleProfile(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(
