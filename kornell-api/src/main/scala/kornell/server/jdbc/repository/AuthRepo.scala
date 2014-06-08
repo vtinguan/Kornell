@@ -39,7 +39,7 @@ object AuthRepo {
   def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T =
     ThreadLocalAuthenticator.getAuthenticatedPersonUUID match {
       case Some(personUUID) => {
-        val person = PersonRepo(personUUID).get //TODO: smell
+        val person = PersonRepo(personUUID).first //TODO: smell
         person match {
           case Some(one) => fun(one)
           case None => throw new IllegalArgumentException(s"Person [$personUUID] not found.")
