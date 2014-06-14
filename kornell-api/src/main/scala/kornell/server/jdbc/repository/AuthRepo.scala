@@ -11,6 +11,7 @@ import kornell.server.util.SHA256
 import kornell.server.authentication.ThreadLocalAuthenticator
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response
+import scala.collection.JavaConverters._
 
 object AuthRepo {
   //TODO: importing SecurityContext smells bad
@@ -36,10 +37,19 @@ object AuthRepo {
 
   implicit def toString(rs: ResultSet): String = rs.getString(1)
 
+  def userRoles = {
+    val roles = ThreadLocalAuthenticator.getAuthenticatedPersonUUID
+      .flatMap { usernameOf }
+      .map { rolesOf }
+      .getOrElse(Set.empty)
+      .asJava
+    roles
+  }
+
   def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T =
     ThreadLocalAuthenticator.getAuthenticatedPersonUUID match {
       case Some(personUUID) => {
-        val person = PersonRepo(personUUID).first //TODO: smell
+        val person = PersonRepo(personUUID).first
         person match {
           case Some(one) => fun(one)
           case None => throw new IllegalArgumentException(s"Person [$personUUID] not found.")
@@ -81,8 +91,15 @@ object AuthRepo {
     	where person_uuid = $personUUID
 	  """.executeUpdate
 
+  //TODO: Change Roles table to reference Person UUID instead of username
   def rolesOf(username: String): Set[Role] = Set.empty ++ sql"""
   	select username,role,institution_uuid, course_class_uuid from Role where username = $username
   """.map[Role] { rs => toRole(rs) }
 
+  def usernameOf(personUUID: String) = {
+    val username = sql"""
+  		select username from Password where person_uuid = $personUUID
+  	""".first[String]{ rs => rs.getString("username") }
+  	username
+  }
 }

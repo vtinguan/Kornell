@@ -45,6 +45,7 @@ class AutoBeanWriter extends MessageBodyWriter[Any] {
   }
   
   def spitErr(e:Err) = {
+    println(e)
     val response = Response.status(Response.Status.BAD_REQUEST).build();
     throw new WebApplicationException(response);
   } 
