@@ -24,6 +24,8 @@ import scala.collection.JavaConverters._
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.RoleCategory
 import kornell.server.repository.Entities
+import kornell.core.util.TimeUtil
+import kornell.server.util.ServerTime
 
 object RegistrationEnrollmentService {
 
@@ -78,7 +80,7 @@ object RegistrationEnrollmentService {
     if (EnrollmentState.cancelled.equals(enrollment.getState) 
         || EnrollmentState.requested.equals(enrollment.getState()) 
         || EnrollmentState.denied.equals(enrollment.getState())) {
-      EventsRepo.logEnrollmentStateChanged(UUID.random, new Date(), dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
+      EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
       val course = CoursesRepo.byCourseClassUUID(enrollment.getCourseClassUUID).get
       val institution = InstitutionsRepo.byUUID(institutionUUID).get
     }
@@ -127,7 +129,7 @@ object RegistrationEnrollmentService {
   private def createEnrollment(personUUID: String, courseClassUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
     val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled,null,null,null,null,null))
     EventsRepo.logEnrollmentStateChanged(
-      UUID.random, new Date, enrollerUUID,
+      UUID.random, ServerTime.now, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState)
   }
 }

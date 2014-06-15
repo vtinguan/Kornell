@@ -2,9 +2,7 @@ package kornell.server.api
 
 import java.sql.ResultSet
 import java.util.HashMap
-
 import scala.collection.JavaConversions._
-
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
@@ -18,6 +16,7 @@ import kornell.server.ep.EnrollmentSEP
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.ActomEntriesRepo
 import kornell.server.repository.Entities
+import kornell.server.util.ServerTime
 
 class ActomResource(enrollmentUUID: String, actomURL: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
@@ -40,16 +39,19 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   @Produces(Array("text/plain"))
   @Consumes(Array("text/plain"))
   @PUT
-  def putValue(@PathParam("entryKey") entryKey: String, entryValue: String) = {
-    updateEventModel(entryKey, entryValue)
+  def putValue(@PathParam("entryKey") entryKey: String, entryValue: String, modifiedAt: String) = {
+    updateEventModel(entryKey, entryValue, modifiedAt)
     updateQueryModel(entryKey, entryValue)
   }
 
-  def updateEventModel(entryKey: String, entryValue: String) = sql"""
-  	insert ignore into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) 
-  	values (${randomUUID}, ${enrollmentUUID} , ${actomKey}, ${entryKey}, ${entryValue}, now())
-  """.executeUpdate    
-  
+  def updateEventModel(entryKey: String, entryValue: String, modifiedAt: String) = {
+    val currentValue = getValue(entryKey)
+    if (entryValue != currentValue)
+      sql"""
+  		insert into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) 
+  		values (${randomUUID}, ${enrollmentUUID} , ${actomKey}, ${entryKey}, ${entryValue}, ${modifiedAt})
+  	  """.executeUpdate
+  }
 
   def updateQueryModel(entryKey: String, entryValue: String) = sql"""
   	insert into ActomEntries (uuid, enrollment_uuid, actomKey, entryKey, entryValue) 
@@ -62,18 +64,21 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   @Produces(Array(ActomEntries.TYPE))
   @PUT
   def putEntries(@Context req: HttpServletRequest, entries: ActomEntries) = {
+    val modifiedAt = entries.getLastModifiedAt()
     if (entries != null) {
       val actomEntries = entries.getEntries
-      for ((key, value) <- actomEntries) putValue(key, value)
+      for ((key, value) <- actomEntries) putValue(key, value, modifiedAt)
       val hasProgress = containsProgress(actomEntries)
       if (hasProgress)
         EnrollmentSEP.onProgress(enrollmentUUID)
       val hasAssessment = containsAssessment(actomEntries)
-	    if (hasAssessment) {
-	      EnrollmentSEP.onAssessment(enrollmentUUID);
-	    }  
+      if (hasAssessment) {
+        EnrollmentSEP.onAssessment(enrollmentUUID);
+      }
     }
+
     entries
+
   }
 
   def containsProgress(entries: java.util.Map[String, String]) =
@@ -81,8 +86,8 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
       entries.containsKey("cmi.core.lesson_location")
 
   def containsAssessment(entries: java.util.Map[String, String]) =
-    entries.containsKey("cmi.core.score.raw") 
-      
+    entries.containsKey("cmi.core.score.raw")
+
   @Path("entries")
   @Produces(Array(ActomEntries.TYPE))
   @GET

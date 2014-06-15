@@ -9,6 +9,6 @@ public interface EnrollmentProgress {
 	EnrollmentProgressDescription getDescription();
 	void setDescription(EnrollmentProgressDescription description);
 	
-	Date getCertifiedAt();
-	void setCertifiedAt(Date certifiedAt);
+	String getCertifiedAt();
+	void setCertifiedAt(String certifiedAt);
 }

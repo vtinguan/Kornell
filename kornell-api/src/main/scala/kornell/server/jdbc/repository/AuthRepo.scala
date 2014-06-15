@@ -37,16 +37,17 @@ object AuthRepo {
 
   implicit def toString(rs: ResultSet): String = rs.getString(1)
 
+  def getUserRoles = userRoles.asJava
+  
   def userRoles = {
     val roles = ThreadLocalAuthenticator.getAuthenticatedPersonUUID
       .flatMap { usernameOf }
       .map { rolesOf }
       .getOrElse(Set.empty)
-      .asJava
     roles
   }
 
-  def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T =
+  def withPerson[T](fun: Person => T): T =
     ThreadLocalAuthenticator.getAuthenticatedPersonUUID match {
       case Some(personUUID) => {
         val person = PersonRepo(personUUID).first

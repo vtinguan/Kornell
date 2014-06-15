@@ -9,7 +9,7 @@
 	<name>Shared Core</name>
 
 	<properties>
-		<gwtVersion>2.5.0</gwtVersion>
+		<gwtVersion>2.6.1</gwtVersion>
 
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
@@ -19,18 +19,20 @@
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
 			<version>${gwtVersion}</version>
 		</dependency>
+
 		<dependency>
-		    <groupId>org.json</groupId>
-		    <artifactId>json</artifactId>
-		    <version>20090211</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
 		</dependency>
-		
-				<dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>

@@ -1,9 +1,12 @@
 package kornell.core.util;
 
+import com.google.gwt.i18n.shared.DateTimeFormat;
+
 import kornell.core.value.Date;
 
-//TODO: Make this a GWT AutoBean Category
 public class TimeUtil {
+
+	
 	@SuppressWarnings("deprecation")
 	public static java.util.Date toJUD(Date date) {
 		java.util.Date jud = new java.util.Date(0);
@@ -30,5 +33,6 @@ public class TimeUtil {
 	private static String padded(int x) {
 		return (x < 10 ? "0" : "") + x;
 	}
+	
 
 }

@@ -8,6 +8,7 @@ import kornell.core.event.AttendanceSheetSigned;
 import kornell.core.event.EnrollmentStateChanged;
 import kornell.core.event.Event;
 import kornell.core.event.EventFactory;
+import kornell.core.util.TimeUtil;
 import kornell.core.util.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -20,7 +21,7 @@ public class EventsClient extends RESTClient {
 		ActomEntered actomEntered = factory.newActomEntered().as();
 		actomEntered.setEnrollmentUUID(enrollmentUUID);
 		actomEntered.setActomKey(actomKey);		
-		actomEntered.setEventFiredAt(new Date());
+		actomEntered.setEventFiredAt(ClientTime.now());
 		actomEntered.setUUID(UUID.random());
 		return withEvent("/events/actomEntered",ActomEntered.TYPE,actomEntered);
 	}
@@ -29,7 +30,7 @@ public class EventsClient extends RESTClient {
 		AttendanceSheetSigned attendanceSheetSigned = factory.newAttendanceSheetSigned().as();
 		attendanceSheetSigned.setInstitutionUUID(institutionUUID);
 		attendanceSheetSigned.setPersonUUID(personUUID);	
-		attendanceSheetSigned.setEventFiredAt(new Date());
+		attendanceSheetSigned.setEventFiredAt(ClientTime.now());
 		attendanceSheetSigned.setUUID(UUID.random());
 		return withEvent("/events/attendanceSheetSigned",AttendanceSheetSigned.TYPE,attendanceSheetSigned);
 	}
@@ -37,7 +38,7 @@ public class EventsClient extends RESTClient {
 	public EventClient enrollmentStateChanged(String enrollmentUUID, String personUUID, EnrollmentState fromState, EnrollmentState toState) {
 		EnrollmentStateChanged enrollmentStateChanged = factory.newEnrollmentStateChanged().as();
 		enrollmentStateChanged.setEnrollmentUUID(enrollmentUUID);
-		enrollmentStateChanged.setEventFiredAt(new Date());
+		enrollmentStateChanged.setEventFiredAt(ClientTime.now());
 		enrollmentStateChanged.setFromPersonUUID(personUUID);
 		enrollmentStateChanged.setFromState(fromState);
 		enrollmentStateChanged.setToState(toState);

@@ -43,7 +43,7 @@ class ReportResource {
 	    @Context resp:HttpServletResponse,
 	   @QueryParam("courseClassUUID") courseClassUUID:String) = AuthRepo.withPerson { p =>
 	  val courseClass = CourseClassesRepo(courseClassUUID).get
-    val roles = (Set.empty ++ AuthRepo.rolesOf(sc.getUserPrincipal.getName)).asJava
+    val roles = AuthRepo.getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) || 
         RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
         RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID)))
