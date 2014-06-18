@@ -23,9 +23,9 @@ public class LocalRepositoryServlet extends HttpServlet {
 	static final Path dropbox = home.resolve("Dropbox");
 	static {	
 		if (dropbox.toFile().exists()){
-			repoPaths.put("840e93aa-2373-4fb5-ba4a-999bb3f43888", dropbox.resolve("Craftware/Clientes/MIDWAY/content"));
-			repoPaths.put("42df235e-a2e8-455b-b341-84b4f8e5c88b", dropbox.resolve("Craftware/Clientes/VC/content"));
-			repoPaths.put("F7A4A77F-D519-4348-8F62-EDB0C2C48395", dropbox.resolve("PrismaFS-Craftware/content"));
+			repoPaths.put("840e93aa-2373-4fb5-ba4a-999bb3f43888", dropbox.resolve("Content/midway"));
+			repoPaths.put("42df235e-a2e8-455b-b341-84b4f8e5c88b", dropbox.resolve("Content/unicc/"));
+			repoPaths.put("F7A4A77F-D519-4348-8F62-EDB0C2C48395", dropbox.resolve("Content/prismafs"));
 		}
 	}
 	

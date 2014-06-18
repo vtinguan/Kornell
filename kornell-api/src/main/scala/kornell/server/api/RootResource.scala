@@ -14,8 +14,9 @@ class RootResource {
   @Produces(Array("text/plain"))
   @GET
   def get = 
-    s"""|Welcome to Kornell API\n  
+    s"""|Welcome to Kornell API  
 	  |
-	  |build #$buildDescription"""
+	  |build #$buildDescription
+	  |"""
     .stripMargin
 }
