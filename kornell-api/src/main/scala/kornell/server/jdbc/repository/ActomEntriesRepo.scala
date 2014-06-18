@@ -7,5 +7,5 @@ object ActomEntriesRepo {
   	where enrollment_uuid = $enrollmentUUID 
   	and actomKey = $actomKey
   	and entryKey = $entryKey
-  """.first map { _.getString("entryValue") } 
+  """.first[String]{ _.getString("entryValue") } 
 }

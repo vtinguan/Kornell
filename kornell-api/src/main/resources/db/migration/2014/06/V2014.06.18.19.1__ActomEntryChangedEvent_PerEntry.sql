@@ -1,0 +1,1 @@
+drop index ActomEntryChangedEvent_PerEntry on ActomEntryChangedEvent;
