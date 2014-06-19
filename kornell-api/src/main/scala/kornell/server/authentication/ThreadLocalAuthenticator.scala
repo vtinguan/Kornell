@@ -8,4 +8,6 @@ object ThreadLocalAuthenticator {
 	}
 	
 	def getAuthenticatedPersonUUID() = Option(threadLocal.get)
+	
+	def clearAuthenticatedPersonUUID = threadLocal.set(null)
 }

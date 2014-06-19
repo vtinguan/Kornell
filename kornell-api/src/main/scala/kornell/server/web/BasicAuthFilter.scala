@@ -64,6 +64,7 @@ class BasicAuthFilter extends Filter {
         val (username, password) = extractCredentials(auth)
         login(req, username, password)
         chain.doFilter(req, resp);
+        logout
       } catch {
         case e: Exception =>
           e.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED,
@@ -94,4 +95,5 @@ class BasicAuthFilter extends Filter {
     personUUID foreach ThreadLocalAuthenticator.setAuthenticatedPersonUUID    
   }
 
+  def logout = ThreadLocalAuthenticator.clearAuthenticatedPersonUUID
 }

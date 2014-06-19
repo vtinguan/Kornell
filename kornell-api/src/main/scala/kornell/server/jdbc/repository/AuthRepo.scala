@@ -47,8 +47,9 @@ object AuthRepo {
     roles
   }
 
-  def withPerson[T](fun: Person => T): T =
-    ThreadLocalAuthenticator.getAuthenticatedPersonUUID match {
+  def withPerson[T](fun: Person => T): T = {
+    val personUUID = ThreadLocalAuthenticator.getAuthenticatedPersonUUID
+    personUUID match {
       case Some(personUUID) => {
         val person = PersonRepo(personUUID).first
         person match {
@@ -58,7 +59,8 @@ object AuthRepo {
       }
       case None => throw new WebApplicationException(Response.Status.UNAUTHORIZED)
     }
-
+  }
+  
   def getPersonByPasswordChangeUUID(passwordChangeUUID: String) =
     sql"""
     	select p.* from Person p 
