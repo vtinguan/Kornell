@@ -72,13 +72,8 @@ object ReportGenerator {
 		    val parameters = getTotalsAsParameters(courseClassUUID)
 		    addInfoParameters(courseClassUUID, parameters)
 
-		    val jasperFile = getClass.getResource("/reports/report2.jasper").getFile()
+		    val jasperFile = getClass.getResource("/reports/courseClassInfo.jasper").getFile()
 		    val bytes = getReportBytes(courseClassReportTO, parameters, jasperFile)
-		    
-		    val fos = new FileOutputStream(new File("C://Users//kenk//Desktop//test.pdf"))
-		    fos.write(bytes)
-		    fos.close()
-		    System.out.println("fine")
 		    
 		    bytes
   }

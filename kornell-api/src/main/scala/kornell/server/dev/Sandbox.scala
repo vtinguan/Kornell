@@ -10,6 +10,8 @@ import java.io.FileInputStream
 import javax.xml.xpath.XPathFactory
 import javax.xml.xpath.XPathConstants
 import org.w3c.dom.NodeList
+import java.io.FileOutputStream
+import java.io.File
 
 object Sandbox extends App {
     println(UUID.random)
@@ -20,7 +22,12 @@ object Sandbox extends App {
     
     //ReportGenerator.generateCertificate2("839D06CA-6297-40E8-A39D-82DBED7970D9")
     //ReportGenerator.generateCertificateByCourseClass("dd342fea-3210-4cb6-84f1-0b91fc4173dd")
-    ReportGenerator.generateCourseClassReport("dd342fea-3210-4cb6-84f1-0b91fc4173dd")
+    
+		    
+    val fos = new FileOutputStream(new File("C://test.pdf"))
+    fos.write(ReportGenerator.generateCourseClassReport("dd342fea-3210-4cb6-84f1-0b91fc4173dd"))
+    fos.close()
+    System.out.println("fine")
   
     
   
