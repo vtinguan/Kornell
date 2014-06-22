@@ -10,6 +10,7 @@ import scala.collection.JavaConverters._
 import scala.util.Success
 import scala.util.Failure
 import SQL._
+import kornell.server.util.Settings._
 
 object DataSources { 
   val log = Logger.getLogger(getClass.getName)
@@ -25,9 +26,9 @@ object DataSources {
 
   lazy val KornellDS = {
     val context = new InitialContext()
-      .lookup("java:comp/env")
+      .lookup(JNDI_ROOT)
       .asInstanceOf[Context]
-    context.lookup("jdbc/KornellDS")
+    context.lookup(JNDI_DATASOURCE)
       .asInstanceOf[DataSource]
   }
 

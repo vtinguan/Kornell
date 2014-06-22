@@ -27,16 +27,16 @@ import kornell.core.to.EnrollmentsTO
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentsResource {
 
-  @Path("{uuid}")	
+  @Path("{uuid}")
   def get(@PathParam("uuid") uuid: String): EnrollmentResource = new EnrollmentResource(uuid)
-  
+
   @POST
   @Consumes(Array(Enrollment.TYPE))
   @Produces(Array(Enrollment.TYPE))
-  def create(implicit @Context sc: SecurityContext, enrollment: Enrollment) = 
-    AuthRepo.withPerson { p => 
-    	EnrollmentsRepo.create(enrollment)
-  	}
+  def create(implicit @Context sc: SecurityContext, enrollment: Enrollment) =
+    AuthRepo.withPerson { p =>
+      EnrollmentsRepo.create(enrollment)
+    }
 
   @GET
   @Produces(Array(EnrollmentsTO.TYPE))
@@ -45,22 +45,21 @@ class EnrollmentsResource {
   @PUT
   @Path("requests")
   @Consumes(Array(kornell.core.to.EnrollmentRequestsTO.TYPE))
-  def putEnrollments(implicit @Context sc: SecurityContext, 
-      @Context resp: HttpServletResponse,
-      enrollmentRequests: EnrollmentRequestsTO) =
-    AuthRepo.withPerson { p => 
-	    if(enrollmentRequests.getEnrollmentRequests.asScala exists (e => RegistrationEnrollmentService.isInvalidRequestEnrollment(e, sc.getUserPrincipal.getName))){
-	    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to enroll participants.");
-	    } else {
-	      RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p)
-	    }
+  def putEnrollments(@Context resp: HttpServletResponse,
+    enrollmentRequests: EnrollmentRequestsTO) =
+    AuthRepo.withPerson { p =>
+      //TODO: Understand and refactor
+      //if (enrollmentRequests.getEnrollmentRequests.asScala exists (e => RegistrationEnrollmentService.isInvalidRequestEnrollment(e, p.getFullName))) {
+
+      RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p)
+
     }
 
   @PUT
   @Path("{courseClassUUID}/notesUpdated")
   @Produces(Array("text/plain"))
   def putNotesChange(implicit @Context sc: SecurityContext,
-    @PathParam("courseClassUUID") courseClassUUID: String, 
+    @PathParam("courseClassUUID") courseClassUUID: String,
     notes: String) =
     AuthRepo.withPerson { p =>
       sql"""

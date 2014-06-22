@@ -39,7 +39,7 @@ class EnrollmentsSpec extends UnitSpec with SimpleInstitution {
     for(i <- 1 to totalEnrollments){
     	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+email, null))
     }
-    enrollmentsResource.putEnrollments(platformAdminSecurityContext, mockHttpServletResponse, enrollmentRequestsTO)
+    enrollmentsResource.putEnrollments( mockHttpServletResponse, enrollmentRequestsTO)
     
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
     //assert(enrollmentsCreated.getEnrollments.size == totalEnrollments)
@@ -52,7 +52,7 @@ class EnrollmentsSpec extends UnitSpec with SimpleInstitution {
     for(i <- 1 to totalEnrollments){
     	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, null, i+cpf))
     } 
-    enrollmentsResource.putEnrollments(platformAdminSecurityContext, mockHttpServletResponse, enrollmentRequestsTO)
+    enrollmentsResource.putEnrollments( mockHttpServletResponse, enrollmentRequestsTO)
     
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
     //assert(enrollmentsCreated.getEnrollments.size == totalEnrollments)
@@ -65,7 +65,7 @@ class EnrollmentsSpec extends UnitSpec with SimpleInstitution {
     enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, null, cpf))
     enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null))
     enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, null, cpf))
-    enrollmentsResource.putEnrollments(platformAdminSecurityContext, mockHttpServletResponse, enrollmentRequestsTO)
+    enrollmentsResource.putEnrollments( mockHttpServletResponse, enrollmentRequestsTO)
     
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
     //assert(enrollmentsCreated.getEnrollments.size == 2)

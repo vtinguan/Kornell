@@ -379,13 +379,15 @@ public class FormHelper {
 		return kdate;
 	}
 	
-	public String getStringFromDate(Date date) {
+	public String getStringFromDate(String date) {
 		if(date == null)
 			return null;
-		String pattern = "yyyy-MM-dd"; /*your pattern here*/ 
-		DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
-		DateTimeFormat dtf = new DateTimeFormat(pattern, info) {};
-		return dtf.format(date).toString();
+		//TODO: Adjust to locale pattern
+		//String pattern = "yyyy-MM-dd"; /*your pattern here*/ 
+		//DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
+		//DateTimeFormat dtf = new DateTimeFormat(pattern, info) {};
+		// return dtf.format(date).toString();
+		return date;
 	}
 	
 	

@@ -1,14 +1,17 @@
 package kornell.server.jdbc.repository
 
 import java.sql.ResultSet
-
 import org.apache.commons.codec.digest.DigestUtils
-
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Person
 import kornell.core.entity.Role
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.Entities.newPerson
+import kornell.server.util.SHA256
+import kornell.server.authentication.ThreadLocalAuthenticator
+import javax.ws.rs.WebApplicationException
+import javax.ws.rs.core.Response
+import scala.collection.JavaConverters._
 
 object AuthRepo {
   //TODO: importing SecurityContext smells bad
@@ -32,62 +35,74 @@ object AuthRepo {
     rs.getString("postalCode"),
     rs.getString("cpf"))
 
-  implicit def toString(rs: ResultSet): String = rs.getString(1) 
+  implicit def toString(rs: ResultSet): String = rs.getString(1)
+
+  def getUserRoles = userRoles.asJava
   
-  def withPerson[T](fun: Person => T)(implicit sc: SecurityContext): T = {
-    val principal = if (sc != null) sc.getUserPrincipal else null
-    val username =
-      if (principal != null)
-        sc.getUserPrincipal().getName()
-      else "AUTH_SHOULD_HAVE_FAILED" //TODO
-
-    val person: Option[Person] = PeopleRepo.getByUsername(username)
-
-    if (person.isDefined)
-      fun(person.get)
-    else throw new IllegalArgumentException(s"User [$username] not found.")
+  def userRoles = {
+    val roles = ThreadLocalAuthenticator.getAuthenticatedPersonUUID
+      .flatMap { usernameOf }
+      .map { rolesOf }
+      .getOrElse(Set.empty)
+    roles
   }
 
-  def getPersonByPasswordChangeUUID(passwordChangeUUID: String) = 
+  def withPerson[T](fun: Person => T): T = {
+    val personUUID = ThreadLocalAuthenticator.getAuthenticatedPersonUUID
+    personUUID match {
+      case Some(personUUID) => {
+        val person = PersonRepo(personUUID).first
+        person match {
+          case Some(one) => fun(one)
+          case None => throw new IllegalArgumentException(s"Person [$personUUID] not found.")
+        }
+      }
+      case None => throw new WebApplicationException(Response.Status.UNAUTHORIZED)
+    }
+  }
+  
+  def getPersonByPasswordChangeUUID(passwordChangeUUID: String) =
     sql"""
     	select p.* from Person p 
     	join Password pwd on pwd.person_uuid = p.uuid 
     	where pwd.requestPasswordChangeUUID = $passwordChangeUUID
     """.first[Person]
-  
-  def getUsernameByPersonUUID(personUUID: String) = 
+
+  def getUsernameByPersonUUID(personUUID: String) =
     sql"""
     	select pwd.username from Password pwd
     	where pwd.person_uuid = $personUUID
     """.first[String]
 
-  def hasPassword(username: String) = 
+  def hasPassword(username: String) =
     sql"""
     	select pwd.username from Password pwd
     	where pwd.username = $username
     """.first[String].isDefined
-  
 
-  def setPlainPassword(personUUID: String, username: String, plainPassword: String) = 
+  def setPlainPassword(personUUID: String, username: String, plainPassword: String) =
     sql"""
 	  	insert into Password (person_uuid,username,password,requestPasswordChangeUUID)
-	  	values ($personUUID,$username,${sha256(plainPassword)}, null)
+	  	values ($personUUID,$username,${SHA256(plainPassword)}, null)
 	  	on duplicate key update
-	  	username=$username,password=${sha256(plainPassword)},requestPasswordChangeUUID=null
+	  	username=$username,password=${SHA256(plainPassword)},requestPasswordChangeUUID=null
 	  """.executeUpdate
-  
 
-  def updateRequestPasswordChangeUUID(personUUID: String, requestPasswordChangeUUID: String) = 
+  def updateRequestPasswordChangeUUID(personUUID: String, requestPasswordChangeUUID: String) =
     sql"""
 	  	update Password set requestPasswordChangeUUID = $requestPasswordChangeUUID
     	where person_uuid = $personUUID
 	  """.executeUpdate
-  
 
-  def sha256(plain: String): String = DigestUtils.sha256Hex(plain)
-
-  def rolesOf(username: String):Set[Role] = Set.empty ++ sql"""
+  //TODO: Change Roles table to reference Person UUID instead of username
+  def rolesOf(username: String): Set[Role] = Set.empty ++ sql"""
   	select username,role,institution_uuid, course_class_uuid from Role where username = $username
   """.map[Role] { rs => toRole(rs) }
 
+  def usernameOf(personUUID: String) = {
+    val username = sql"""
+  		select username from Password where person_uuid = $personUUID
+  	""".first[String]{ rs => rs.getString("username") }
+  	username
+  }
 }

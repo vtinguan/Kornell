@@ -107,13 +107,13 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),      
       EnrollmentState.valueOf(rs.getString("state")),
-      rs.getDate("lastProgressUpdate"),
+      rs.getString("lastProgressUpdate"),
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getDate("lastAssessmentUpdate"),
+      rs.getString("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getDate("certifiedAt")
+      rs.getString("certifiedAt")
     )
   }
     
@@ -127,13 +127,13 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),      
       EnrollmentState.valueOf(rs.getString("state")),
-      rs.getDate("lastProgressUpdate"),
+      rs.getString("lastProgressUpdate"),
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getDate("lastAssessmentUpdate"),
+      rs.getString("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getDate("certifiedAt")
+      rs.getString("certifiedAt")
     )
     
     TOs.newEnrollmentTO(enrollment, PersonRepo(enrollment.getPersonUUID()).get)

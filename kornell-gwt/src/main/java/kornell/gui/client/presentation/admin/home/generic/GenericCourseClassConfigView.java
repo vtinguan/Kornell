@@ -259,8 +259,10 @@ public class GenericCourseClassConfigView extends Composite {
 					public void ok(CourseClass courseClass) {
 							LoadingPopup.hide();
 							KornellNotification.show("Turma criada com sucesso!");
-							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
-							courseClassTO = Dean.getInstance().getCourseClassTO();
+							CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
+							if(courseClassTO2 != null)
+								courseClassTO2.setCourseClass(courseClass);
+							courseClassTO = courseClassTO2;
 							presenter.updateCourseClass(courseClass.getUUID());
 					}
 					

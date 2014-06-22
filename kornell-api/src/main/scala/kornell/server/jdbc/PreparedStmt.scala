@@ -26,8 +26,8 @@ class PreparedStmt(query: String, params: List[Any]) {
   def prepared[T](fun: PreparedStatement => T): T =
     connected { conn =>
       val pstmt = conn.prepareStatement(query.stripMargin.trim)
-      
-      def setQueryParam(i:Int,param:Any) = try {
+
+      def setQueryParam(i: Int, param: Any) = try {
         param match {
           case null => pstmt.setObject(i, null)
           case p: String => pstmt.setString(i, p)
@@ -36,12 +36,12 @@ class PreparedStmt(query: String, params: List[Any]) {
           case p: JDate => pstmt.setTimestamp(i, new Timestamp(p.getTime))
           case p: KDate => pstmt.setDate(i, new SQLDate(TimeUtil.toJUD(p).getTime()))
           case p: BigDecimal => pstmt.setBigDecimal(i, p)
-          case p: Boolean  => pstmt.setBoolean(i, p)
+          case p: Boolean => pstmt.setBoolean(i, p)
           //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 
           case _ => throw new IllegalArgumentException(s"Can not set param [$param]")
         }
       } catch {
-      	case e:SQLException => logger.severe(s"Failed to set param [${i}] value to [${param}] on query ${query}")
+        case e: SQLException => logger.severe(s"Failed to set param [${i}] value to [${param}] on query ${query}")
       }
 
       params

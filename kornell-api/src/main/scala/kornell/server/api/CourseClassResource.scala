@@ -42,9 +42,8 @@ class CourseClassResource(uuid: String) {
   @PUT
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
-  def update(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse, courseClass: CourseClass) = AuthRepo.withPerson { p =>
-    val roles = (Set.empty ++ AuthRepo.rolesOf(sc.getUserPrincipal.getName)).asJava
+  def update(@Context resp: HttpServletResponse, courseClass: CourseClass) = AuthRepo.withPerson { p =>
+    val roles = AuthRepo.getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID)))
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
@@ -59,10 +58,9 @@ class CourseClassResource(uuid: String) {
 
   @DELETE
   @Produces(Array(CourseClass.TYPE))
-  def delete(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse) = AuthRepo.withPerson { p =>
+  def delete(@Context resp: HttpServletResponse) = AuthRepo.withPerson { p =>
     val courseClass = CourseClassRepo(uuid).get
-    val roles = (Set.empty ++ AuthRepo.rolesOf(sc.getUserPrincipal.getName)).asJava
+    val roles = AuthRepo.getUserRoles
     if (courseClass == null)
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Can't delete a class that doesn't exist.");
     else if (!(RoleCategory.isPlatformAdmin(roles) ||

@@ -12,6 +12,7 @@ import kornell.server.util.EmailService
 import java.text.SimpleDateFormat
 import kornell.server.util.Settings
 import kornell.server.ep.EnrollmentSEP
+import kornell.server.util.ServerTime
 
 object EventsRepo {
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
@@ -31,8 +32,8 @@ object EventsRepo {
   }
 
   def logAttendanceSheetSigned(event: AttendanceSheetSigned) = {
-    val todayStart = new SimpleDateFormat("yyyy-MM-dd  00:00:00").format(event.getEventFiredAt())
-    val todayEnd = new SimpleDateFormat("yyyy-MM-dd 23:59:59").format(event.getEventFiredAt())
+    val todayStart = ServerTime.todayStart
+    val todayEnd = ServerTime.todayEnd
     // don't log more than once a day
     val attendanceSheetSignedUUID = sql"""
 	  select uuid from AttendanceSheetSigned
@@ -52,7 +53,7 @@ object EventsRepo {
 
   }
 
-  def logEnrollmentStateChanged(uuid: String, eventFiredAt: Date, fromPersonUUID: String,
+  def logEnrollmentStateChanged(uuid: String, eventFiredAt: String, fromPersonUUID: String,
     enrollmentUUID: String, fromState: EnrollmentState, toState: EnrollmentState) = {
 
     sql"""insert into EnrollmentStateChanged(uuid,eventFiredAt,person_uuid,enrollment_uuid,fromState,toState)

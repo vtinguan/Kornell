@@ -50,8 +50,8 @@ class CourseClassesResource {
     AuthRepo.withPerson { person =>
       {
         if (institutionUUID != null) {
-          val roles = AuthRepo.rolesOf(sc.getUserPrincipal().getName())
-          CourseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList)
+          val roles = AuthRepo.userRoles
+          CourseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList )
         }
       }
     }

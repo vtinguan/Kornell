@@ -17,6 +17,7 @@ import kornell.core.entity.Assessment
 import java.util.Date
 import kornell.server.ep.EnrollmentSEP
 import java.math.BigDecimal
+import kornell.server.util.ServerTime
 
 //TODO: Specific column names and proper sql
 class EnrollmentRepo(enrollmentUUID: String) {
@@ -43,8 +44,8 @@ class EnrollmentRepo(enrollmentUUID: String) {
       where uuid = ${e.getUUID} """.executeUpdate
     e
   }
-  
-  def delete(enrollmentUUID: String) = {    
+
+  def delete(enrollmentUUID: String) = {
     sql"""
       delete from Enrollment 
       where uuid = ${enrollmentUUID}""".executeUpdate
@@ -101,11 +102,13 @@ class EnrollmentRepo(enrollmentUUID: String) {
   }
 
   def setEnrollmentProgress(e: Enrollment, newProgress: Int) = {
+    //TODO: Consider using client timestamp
+    val lastProgressUpdate = ServerTime.now
     val currentProgress = e.getProgress
     val isProgress = newProgress > currentProgress
     val isValid = newProgress >= 0 && newProgress <= 100
     if (isValid && isProgress) {
-      e.setLastProgressUpdate(new Date)
+      e.setLastProgressUpdate(lastProgressUpdate)
       e.setProgress(newProgress)
       update(e)
       checkCompletion(e);
@@ -114,44 +117,58 @@ class EnrollmentRepo(enrollmentUUID: String) {
     }
   }
 
-  //TODO: wrong impl: should be across all grades
-  def maxGradetoDec(rs: ResultSet): BigDecimal = rs.getBigDecimal("maxScore")
-  def findMaxScore(enrollmentUUID: String):Option[BigDecimal] = sql"""
-  		SELECT  MAX(CAST(entryValue AS DECIMAL(7,5))) as maxScore
+  //TODO: WRONG ASSUMPTION: Courses can have multiple assessments, should be across all grades
+  def findMaxScore(enrollmentUUID: String): Option[BigDecimal] = sql"""
+  		SELECT  MAX(CAST(entryValue AS DECIMAL(8,5))) as maxScore
   		FROM ActomEntries
   		WHERE enrollment_uuid = ${enrollmentUUID}
   		AND entryKey = 'cmi.core.score.raw'
-  """.first(maxGradetoDec)
+  """.first[BigDecimal] { rs => rs.getBigDecimal("maxScore") }
 
   def updateAssessment = first map { e =>
+    //TODO: Consider using client timestap
+    val lastAssessmentUpdate = ServerTime.now
     val cc = first.flatMap { e => CourseClassRepo(e.getCourseClassUUID).first }
     val requiredScore: Option[BigDecimal] = cc.map { _.getRequiredScore }
     requiredScore map { reqScore =>
       val maxScore = findMaxScore(e.getUUID)
       maxScore.map { mScore =>
-        if (! Assessment.PASSED.equals(e.getAssessment())) {
+        if (!Assessment.PASSED.equals(e.getAssessment())) {
           val assessment = if (mScore.compareTo(reqScore) >= 0)
             Assessment.PASSED
           else
             Assessment.FAILED
           e.setAssessmentScore(mScore)
           e.setAssessment(assessment)
-          e.setLastAssessmentUpdate(new Date)
+          e.setLastAssessmentUpdate(lastAssessmentUpdate)
           update(e)
           checkCompletion(e)
         }
       }
     }
   }
-  
-  def checkCompletion(e:Enrollment) = {
+
+  def findLastEventTime(e: Enrollment) = {
+    val lastActomEntered = sql"""
+select max(ingestedAt) as latestEvent
+from ActomEntryChangedEvent 
+where 
+  entryKey='cmi.core.score.raw' 
+  and enrollment_uuid=${e.getUUID()}
+    """
+      .first[String] { rs => rs.getString("latestEvent") }
+    lastActomEntered
+  }
+
+  def checkCompletion(e: Enrollment) = {
     val isPassed = Assessment.PASSED == e.getAssessment
     val isCompleted = e.getProgress() == 100
     val isUncertified = e.getCertifiedAt() == null
-    if( isPassed
-        && isCompleted 
-        && isUncertified ){
-      e.setCertifiedAt(new Date)
+    if (isPassed
+      && isCompleted
+      && isUncertified) {
+      val certifiedAt = findLastEventTime(e).getOrElse(ServerTime.now)
+      e.setCertifiedAt(certifiedAt)
       update(e)
     }
   }

@@ -27,6 +27,7 @@ public class ActomClient extends RESTClient {
 		actomEntries.setActomKey(encodedActomKey);
 		actomEntries.setEnrollmentUUID(enrollmentUUID);
 		actomEntries.setEntries(entries);
+		actomEntries.setLastModifiedAt(ClientTime.now());
 		PUT("enrollments", enrollmentUUID, "actoms", encodedActomKey, "entries")
 				.withContentType(ActomEntries.TYPE)
 				.withEntityBody(actomEntries)
