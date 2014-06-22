@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+	<property name="ireport.zoom" value="2.8531167061100033"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="284"/>
+	<parameter name="notStarted" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="completed" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="inProgress" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="institutionName" class="java.lang.String"/>
+	<parameter name="courseTitle" class="java.lang.String"/>
+	<parameter name="courseClassName" class="java.lang.String"/>
+	<parameter name="createdAt" class="java.util.Date"/>
+	<parameter name="assetsURL" class="java.lang.String"/>
+	<field name="fullName" class="java.lang.String"/>
+	<field name="username" class="java.lang.String"/>
+	<field name="state" class="java.lang.String"/>
+	<field name="progressState" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="169">
+			<textField>
+				<reportElement uuid="59896c45-7bce-4ab7-9585-85ff926ccb4e" x="404" y="81" width="140" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total de participantes: " + (new Integer(
+    $P{completed}.intValue() +
+    $P{notStarted}.intValue() +
+    $P{inProgress}.intValue()
+))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c8a1e273-10a0-49f7-b0ed-6c2ec620e514" x="404" y="101" width="140" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Concluídos: "+$P{completed}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5ab20460-f902-473b-af1a-9f3904b59339" x="404" y="141" width="140" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["A Iniciar: " + $P{notStarted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" x="404" y="121" width="140" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Em Andamento: "+$P{inProgress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" x="6" y="90" width="373" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Curso: " + $P{courseTitle}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame">
+				<reportElement uuid="cba6e633-23ad-49ef-babb-6d5a1bc1c4d2" x="401" y="3" width="150" height="40"/>
+				<imageExpression><![CDATA[$P{assetsURL} + "logo300x80.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="6dbfcfed-1df3-44cc-a3a9-c0ccf5bcbe77" x="12" y="4" width="368" height="33"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="24"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{institutionName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="daf65bc7-c4bc-4844-a765-3f6178c0866a" x="12" y="44" width="368" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Relatório de detalhes da turma"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1049025d-fb9b-4467-9ce5-40acac387c1d" x="7" y="111" width="373" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Turma: " + $P{courseClassName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="7" y="131" width="373" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data de criação da turma: " + $P{createdAt}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ce1d68c5-e63c-4ee8-944c-8ff1aa0eed4d" x="3" y="73" width="550" height="1"/>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<staticText>
+				<reportElement uuid="6819443a-52ef-4e41-8188-1e833724fde1" x="2" y="1" width="210" height="20"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
+				<text><![CDATA[Nome Completo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="46cc137d-88a7-4f81-846d-eb964d193747" x="224" y="0" width="210" height="20"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
+				<text><![CDATA[Usuário (email ou cpf)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="47c263a9-ad78-4a12-b3bb-3b9f596b0f4a" x="445" y="1" width="110" height="20"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="28">
+			<textField>
+				<reportElement uuid="7b168eb2-8cdb-4e75-9286-9ab667be349c" x="2" y="4" width="210" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ae1db390-f27c-45ac-8675-852637fedff1" x="224" y="4" width="210" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="63640519-bd0e-46e8-a16f-66dd400a6f38" x="445" y="4" width="110" height="20"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{progressState}.equals("completed") ?
+    "Concluído" :
+    ($F{progressState}.equals("inProgress") ?
+        "Em Andamento" :
+        "A Iniciar"
+    )    ]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="24">
+			<textField>
+				<reportElement uuid="1f5925ca-cff2-49f1-a8e0-b5353a984cc0" mode="Opaque" x="0" y="5" width="555" height="13" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="ac4aca35-ddf2-4535-9f96-bc53cc653de1" x="1" y="4" width="178" height="13"/>
+				<textElement>
+					<font fontName="Serif" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("d 'de' MMMM 'de' yyyy", new Locale("pt","BR")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

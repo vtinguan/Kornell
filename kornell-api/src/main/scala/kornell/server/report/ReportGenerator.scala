@@ -18,6 +18,11 @@ import kornell.core.to.CertificateInformationTO
 import net.sf.jasperreports.engine.JasperFillManager
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 import net.sf.jasperreports.engine.JasperExportManager
+import net.sf.jasperreports.engine.JasperCompileManager
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import net.sf.jasperreports.engine.data.JRBeanArrayDataSource
+import kornell.core.to.CourseClassReportTO
 
 object ReportGenerator {
 
@@ -29,10 +34,110 @@ object ReportGenerator {
       rs.getDate("certifiedAt"),
       rs.getString("assetsURL"),
       rs.getString("distributionPrefix"))
+
+  implicit def toCourseClassReportTO(rs: ResultSet): CourseClassReportTO =
+    TOs.newCourseClassReportTO(
+      rs.getString("fullName"),
+      rs.getString("username"),
+      rs.getString("state"),
+      rs.getString("progressState"))
       
+  type BreakdownData = Tuple2[String,Integer]
+  implicit def breakdownConvertion(rs:ResultSet): BreakdownData = (rs.getString(1), rs.getInt(2))
+  
+  def generateCourseClassReport(courseClassUUID: String): Array[Byte] = {
+    val courseClassReportTO = sql"""
+				select 
+					p.fullName,
+					case    
+						when p.cpf is null then p.email  
+						else p.cpf   
+					end as username,
+					e.state,
+					case    
+						when progress is null OR progress = 0 then 'notStarted'  
+						when progress > 0 and progress < 100 then 'inProgress'  
+						else 'completed'   
+					end as progressState
+				from 
+					Enrollment e 
+					join Person p on p.uuid = e.person_uuid
+				where
+					e.state = 'enrolled' and
+    		  e.class_uuid = ${courseClassUUID}
+				order by 
+					p.fullName
+		    """.map[CourseClassReportTO](toCourseClassReportTO)
+		    
+		    val parameters = getTotalsAsParameters(courseClassUUID)
+		    addInfoParameters(courseClassUUID, parameters)
+
+		    val jasperFile = getClass.getResource("/reports/report2.jasper").getFile()
+		    val bytes = getReportBytes(courseClassReportTO, parameters, jasperFile)
+		    
+		    val fos = new FileOutputStream(new File("C://Users//kenk//Desktop//test.pdf"))
+		    fos.write(bytes)
+		    fos.close()
+		    System.out.println("fine")
+		    
+		    bytes
+  }
+      
+  type ReportHeaderData = Tuple5[String,String, String, Date, String]
+  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5))
+  
+  private def addInfoParameters(courseClassUUID: String, parameters: HashMap[String, Object]) = {
+    val headerInfo = sql"""
+					select 
+						i.fullName as 'institutionName',
+						c.title as 'courseTitle',
+						cc.name as 'courseClassName',
+						cc.createdAt,
+						i.assetsURL
+					from
+						CourseClass cc
+						join CourseVersion cv on cc.courseVersion_uuid = cv.uuid
+						join Course c on cv.course_uuid = c.uuid
+						join Institution i on i.uuid = cc.institution_uuid
+					where cc.uuid = ${courseClassUUID}
+		    """.first[ReportHeaderData](headerDataConvertion)
+    parameters.put("institutionName", headerInfo.get._1)
+    parameters.put("courseTitle", headerInfo.get._2)
+    parameters.put("courseClassName", headerInfo.get._3)
+    parameters.put("createdAt", headerInfo.get._4)
+    parameters.put("assetsURL", headerInfo.get._5)
+    
+    parameters
+  }
+
+  private def getTotalsAsParameters(courseClassUUID: String): HashMap[String,Object] = {
+    val enrollmentStateBreakdown = sql"""select 
+					case    
+						when progress is null OR progress = 0 then 'notStarted'  
+						when progress > 0 and progress < 100 then 'inProgress'  
+						else 'completed'   
+					end as progressState,
+					count(*) as total
+				from 
+					Enrollment e 
+				where
+					e.state = 'enrolled' and
+    		  e.class_uuid = ${courseClassUUID}
+				group by 
+					case    
+						when progress is null OR progress = 0 then 'notStarted'  
+						when progress > 0 and progress < 100 then 'inProgress'  
+						else 'completed'   
+					end
+		    """.map[BreakdownData](breakdownConvertion)
+		    
+    val parameters: HashMap[String, Object] = new HashMap()
+    enrollmentStateBreakdown.foreach(rd => parameters.put(rd._1, rd._2)) 
+    parameters
+  }
   
   def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
-    generateReport(sql"""
+    generateCertificateReport(sql"""
 				select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
 	    	from Person p
 					join Enrollment e on p.uuid = e.person_uuid
@@ -47,12 +152,12 @@ object ReportGenerator {
 		    """.map[CertificateInformationTO](toCertificateInformationTO))
   }
   
-  def generateCertificateByCourseClass(courseClassUUID: String): Array[Byte] = {
-    generateReport(getCertificateInformationTOsByCourseClass(courseClassUUID))
+  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO]): Array[Byte] = {
+    generateCertificateReport(certificateInformationTOs)
   }
   
-  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO]): Array[Byte] = {
-    generateReport(certificateInformationTOs)
+  def generateCertificateByCourseClass(courseClassUUID: String): Array[Byte] = {
+    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID))
   }
   
   def getCertificateInformationTOsByCourseClass(courseClassUUID: String) = 
@@ -69,36 +174,37 @@ object ReportGenerator {
         	cc.uuid = $courseClassUUID
 		    """.map[CertificateInformationTO](toCertificateInformationTO)
 
-  private def generateReport(certificateData: List[CertificateInformationTO]): Array[Byte] = {
+  private def generateCertificateReport(certificateData: List[CertificateInformationTO]): Array[Byte] = {
     if(certificateData.length == 0){
-    	return null;
+    	return null
     }
-    
-    val collectionDS = new JRBeanCollectionDataSource(certificateData asJava)
-    
-    //Preparing parameters
     val parameters: HashMap[String, Object] = new HashMap()
     val assetsURL: String = composeURL(certificateData.head.getAssetsURL(), certificateData.head.getDistributionPrefix(), "/reports")
     parameters.put("assetsURL", assetsURL + "/")
     val jasperPath = composeURL(assetsURL, "certificate.jasper")
 	  
   	//store one jasperfile per courseclass
-    val file: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle() + ".jasper")
+    val jasperFile: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle() + ".jasper")
     
-    val diff = new Date().getTime - file.lastModified;
+    
+    val diff = new Date().getTime - jasperFile.lastModified
     //if(diff > 1 * 24 * 60 * 60 * 1000) //delete if older than 1 day
-    if(file.exists)
-		  file.delete
+    if(jasperFile.exists)
+		  jasperFile.delete
 
-    if(!file.exists)
-    	FileUtils.copyURLToFile(new URL(jasperPath), file)
-    
-    val jasperReport = JRLoader.loadObject(file).asInstanceOf[JasperReport]
-    
-    JasperRunManager.runReportToPdf(jasperReport, parameters, collectionDS)
-    
-    //val jasperPrint = JasperFillManager.fillReportToFile(jasperPath, parameters, collectionDS)
-    //JasperExportManager.exportReportToPdfFile(jasperPrint, "C://test.pdf");
+    if(!jasperFile.exists)
+    	FileUtils.copyURLToFile(new URL(jasperPath), jasperFile)
+    	
+    getReportBytes(certificateData, parameters, jasperFile)
   }
+
+  private def getReportBytes(certificateData: List[Any], parameters: HashMap[String, Object], jasperFile: File): Array[Byte] =
+    runReportToPdf(certificateData, parameters, JRLoader.loadObject(jasperFile).asInstanceOf[JasperReport])
+
+  private def getReportBytes(certificateData: List[Any], parameters: HashMap[String, Object], jasperFile: String): Array[Byte] = 
+    JasperRunManager.runReportToPdf(jasperFile, parameters, new JRBeanCollectionDataSource(certificateData asJava))
+  
+  private def runReportToPdf(certificateData: List[Any], parameters: HashMap[String, Object], jasperReport: JasperReport) = 
+    JasperRunManager.runReportToPdf(jasperReport, parameters, new JRBeanCollectionDataSource(certificateData asJava))
   
 }
