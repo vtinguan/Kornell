@@ -96,16 +96,8 @@ class ReportResource {
 
 	@GET
 	@Path("/courseClassInfo")
-	def getCourseClassInfo(implicit @Context sc:SecurityContext,
-	    @Context resp:HttpServletResponse,
-	   @QueryParam("courseClassUUID") courseClassUUID:String) = AuthRepo.withPerson { p =>
-	  val courseClass = CourseClassesRepo(courseClassUUID).get
-    val roles = AuthRepo.getUserRoles
-    if (!(RoleCategory.isPlatformAdmin(roles) || 
-        RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
-        RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID)))
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to generate the class' info report without admin rights.");
-    else {
+	def getCourseClassInfo(@Context resp:HttpServletResponse,
+	   @QueryParam("courseClassUUID") courseClassUUID:String) = 
 			try {
 				resp.addHeader("Content-disposition", "attachment; filename=info.pdf")
 				ReportGenerator.generateCourseClassReport(courseClassUUID)
@@ -115,6 +107,5 @@ class ReportResource {
           resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating the report.");
         }
       }
-    }
-  }
+  
 }
