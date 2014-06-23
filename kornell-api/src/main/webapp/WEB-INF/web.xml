@@ -2,6 +2,10 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
 
+    <context-param>
+    	<param-name>resteasy.use.builtin.providers</param-name>
+    	<param-value>true</param-value>
+    </context-param>
     
     <welcome-file-list>
 		<welcome-file>index.html</welcome-file>

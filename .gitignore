@@ -28,9 +28,9 @@ s3cfg
 # Credentials
 AwsCredentials.properties
 
+
+
 # Unknown
 *.cache
 *.swp
 .elasticbeanstalk/
-
-kornell-admin

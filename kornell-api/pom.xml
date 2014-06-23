@@ -153,12 +153,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.3</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.newrelic.agent.java</groupId>
 			<artifactId>newrelic-agent</artifactId>
 			<version>3.1.0</version>

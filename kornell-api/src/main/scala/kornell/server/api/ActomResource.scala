@@ -63,22 +63,19 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   @Consumes(Array(ActomEntries.TYPE))
   @Produces(Array(ActomEntries.TYPE))
   @PUT
-  def putEntries(@Context req: HttpServletRequest, entries: ActomEntries) = {
+  def putEntries(entries: ActomEntries) = {
     val modifiedAt = entries.getLastModifiedAt()
-    if (entries != null) {
-      val actomEntries = entries.getEntries
-      for ((key, value) <- actomEntries) putValue(key, value, modifiedAt)
-      val hasProgress = containsProgress(actomEntries)
-      if (hasProgress)
-        EnrollmentSEP.onProgress(enrollmentUUID)
-      val hasAssessment = containsAssessment(actomEntries)
-      if (hasAssessment) {
-        EnrollmentSEP.onAssessment(enrollmentUUID);
-      }
+    val actomEntries = entries.getEntries
+    for ((key, value) <- actomEntries) putValue(key, value, modifiedAt)
+    
+    val hasProgress = containsProgress(actomEntries)
+    if (hasProgress)
+      EnrollmentSEP.onProgress(enrollmentUUID)
+    val hasAssessment = containsAssessment(actomEntries)
+    if (hasAssessment) {
+      EnrollmentSEP.onAssessment(enrollmentUUID);
     }
-
     entries
-
   }
 
   def containsProgress(entries: java.util.Map[String, String]) =
