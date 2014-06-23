@@ -27,6 +27,7 @@ import kornell.core.to.RoleTO
 import kornell.core.entity.CourseClass
 import kornell.core.to.CourseVersionTO
 import kornell.core.to.EnrollmentTO
+import kornell.core.to.CourseClassReportTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -128,6 +129,16 @@ object TOs {
     to.setCourseClassFinishedDate(courseClassFinishedDate)
     to.setAssetsURL(assetsURL)
     to.setDistributionPrefix(distributionPrefix)
+    to
+  }
+
+  def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
+  def newCourseClassReportTO(fullName: String, username: String, state: String, progressState: String): CourseClassReportTO = {
+    val to = newCourseClassReportTO
+    to.setFullName(fullName)
+    to.setUsername(username)
+    to.setState(state)
+    to.setProgressState(progressState)
     to
   }
 

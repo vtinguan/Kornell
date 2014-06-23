@@ -93,4 +93,19 @@ class ReportResource {
       case e: Exception => ""
     }
   }
+
+	@GET
+	@Path("/courseClassInfo")
+	def getCourseClassInfo(@Context resp:HttpServletResponse,
+	   @QueryParam("courseClassUUID") courseClassUUID:String) = 
+			try {
+				resp.addHeader("Content-disposition", "attachment; filename=info.pdf")
+				ReportGenerator.generateCourseClassReport(courseClassUUID)
+      } catch {
+        case e: Exception => {
+          e.printStackTrace
+          resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating the report.");
+        }
+      }
+  
 }

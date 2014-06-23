@@ -34,7 +34,7 @@ public class GenericReportItemView extends Composite {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
+	private String IMAGES_PATH = "skins/first/icons/admin/";
 	private KornellSession session;
 	private CourseClassTO currentCourseClass;
 	private String type;
@@ -45,8 +45,8 @@ public class GenericReportItemView extends Composite {
 	
 	private HandlerRegistration downloadHandler;
 	
-	public static final String TEST = "test";
-	public static final String CERTIFICATION = "certification";
+	public static final String COURSE_CLASS_INFO = "courseClassInfo";
+	public static final String CERTIFICATE = "certificate";
 	
 	@UiField
 	Image certificationIcon;
@@ -58,8 +58,6 @@ public class GenericReportItemView extends Composite {
 	Anchor lblGenerate;
 	@UiField
 	Anchor lblDownload;
-	
-	private boolean courseClassComplete, approvedOnTest;
 
 
 	public GenericReportItemView(EventBus eventBus, KornellSession session, CourseClassTO currentCourseClass,
@@ -73,7 +71,39 @@ public class GenericReportItemView extends Composite {
 	}
 	
 	private void display() {
-		this.name = "Certificados de conclusão de curso";
+		if(CERTIFICATE.equals(this.type))
+			displayCertificate();
+		else
+			displayCourseClassInfo();
+	}
+
+	private void displayCourseClassInfo() {
+	  this.name = "Certificado de detalhes da turma";
+		this.description = "Geração do certificado de detalhes da turma, contendo os detalhes da turma e informações sobre as matrículas da mesma.";
+		
+		certificationIcon.setUrl(IMAGES_PATH + type + ".png");
+		lblName.setText(name);
+		lblDescription.setText(description);
+		lblGenerate.setText("Gerar");
+		lblGenerate.addStyleName("cursorPointer");
+
+		lblDownload.setText("-");
+		lblDownload.removeStyleName("cursorPointer");
+		lblDownload.addStyleName("anchorToLabel");
+		lblDownload.setEnabled(false);
+		
+		lblGenerate.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+				Window.Location.assign(session.getApiUrl() + "/report/courseClassInfo/?courseClassUUID="
+						+ currentCourseClass.getCourseClass().getUUID());
+			}
+		});
+  }
+
+	private void displayCertificate() {
+	  this.name = "Certificados de conclusão de curso";
 		this.description = "Geração do certificado de todos os alunos desta turma que concluíram o curso. A geração pode levar um tempo, dependendo do tamanho da turma. Assim que ele for gerado ele estará disponível para ser baixado aqui.";
 		
 		certificationIcon.setUrl(IMAGES_PATH + type + ".png");
@@ -85,21 +115,21 @@ public class GenericReportItemView extends Composite {
 		lblGenerate.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				displayActionCell(null);
+				displayCertificateActionCell(null);
 				LoadingPopup.show();
 				session.generateCourseClassCertificate(currentCourseClass.getCourseClass().getUUID(), new Callback<String>() {
 					
 					@Override
 					public void ok(String url) {
 						KornellNotification.show("Os certificados foram gerados.", AlertType.INFO, 2000);
-						displayActionCell(url);
+						displayCertificateActionCell(url);
 						LoadingPopup.hide();
 					}
 					
 					@Override
 					public void internalServerError() {
 						KornellNotification.show("Erro na geração dos certificados. Certifique-se que existem alunos que concluíram o curso nessa turma.", AlertType.ERROR, 3000);
-						displayActionCell(null);
+						displayCertificateActionCell(null);
 						LoadingPopup.hide();
 					}
 				});
@@ -109,18 +139,18 @@ public class GenericReportItemView extends Composite {
 		session.courseClassCertificateExists(currentCourseClass.getCourseClass().getUUID(), new Callback<String>() {
 			@Override
 			public void ok(String str) {
-				displayActionCell(str);
+				displayCertificateActionCell(str);
 			}
 			
 			@Override
 			public void internalServerError() {
-				displayActionCell(null);
+				displayCertificateActionCell(null);
 			}
 		});
-	}
+  }
 
-	private void displayActionCell(final String url) {
-		if(url != null && !"".equals(url)) {
+	private void displayCertificateActionCell(final String url) {
+	  if(url != null && !"".equals(url)) {
 			lblDownload.setText("Baixar");
 			lblDownload.addStyleName("cursorPointer");
 			lblDownload.removeStyleName("anchorToLabel");
@@ -139,6 +169,6 @@ public class GenericReportItemView extends Composite {
 				downloadHandler.removeHandler();
 			}
 		}
-	}
+  }
 
 }
