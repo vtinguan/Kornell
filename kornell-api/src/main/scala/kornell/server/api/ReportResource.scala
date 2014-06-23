@@ -96,6 +96,7 @@ class ReportResource {
 
 	@GET
 	@Path("/courseClassInfo")
+	@Produces(Array("application/pdf"))
 	def getCourseClassInfo(@Context resp:HttpServletResponse,
 	   @QueryParam("courseClassUUID") courseClassUUID:String) = 
 			try {
