@@ -99,7 +99,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 "Página: "+$V{PAGE_NUMBER}+"/"+$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="f6ac09cf-d162-4be1-9755-69de52522728" mode="Opaque" x="25" y="51" width="162" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<reportElement uuid="f6ac09cf-d162-4be1-9755-69de52522728" mode="Opaque" x="25" y="51" width="170" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -124,7 +124,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[PARTICIPAÇÕES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="25" y="210" width="222" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="25" y="210" width="230" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
