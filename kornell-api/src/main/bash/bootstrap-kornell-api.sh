@@ -4,13 +4,18 @@ mkdir -p /opt/kornell/
 
 # Setup Environment
 ENV=/opt/kornell/kornell.env
-echo JDBC_CONNECTION_STRING='"jdbc:mysql://eduvem-db-test.clogtolxeywz.sa-east-1.rds.amazonaws.com:3306/ebdb?useUnicode=true&amp;characterEncoding=utf8"' > $ENV
-echo JDBC_DRIVER='"mysql-connector-java.jar_com.mysql.jdbc.Driver_5_1"' >> $ENV
-echo JDBC_USERNAME='"kornell"' >> $ENV
-echo JDBC_PASSWORD='"42kornell73"' >> $ENV
+AWS_DEFAULT_REGION='sa-east-1'
+
+# Save Environment
+echo AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION" > $ENV
+echo JDBC_CONNECTION_STRING='' >> $ENV
+echo JDBC_DRIVER='' >> $ENV
+echo JDBC_USERNAME='' >> $ENV
+echo JDBC_PASSWORD='' >> $ENV
+echo NRELIC_YML_URL='' >> $ENV
 
 # Download Initialization Script
-curl -s -o /opt/kornell/standalone-kornell-api.sh https://s3-sa-east-1.amazonaws.com/dist-sa-east-1.craftware.com/Kornell/standalone-kornell-api.sh
+aws s3 cp s3://dist-sa-east-1.craftware.com/Kornell/standalone-kornell-api.sh /opt/kornell/standalone-kornell-api.sh
 chmod +x  /opt/kornell/standalone-kornell-api.sh
 
 # Add to system initialization

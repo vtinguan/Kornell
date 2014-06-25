@@ -41,7 +41,7 @@ function wait(msg, acc, callback) {
 }
 
 function scaleDown() {
-	console.log("Scaling down");
+	console.log("Scaling down ASG ["+asgDownPolicy+"@"+asgName+"]");
 	asg.executePolicy({
 		PolicyName : asgDownPolicy,
 		AutoScalingGroupName : asgName,
@@ -54,8 +54,9 @@ function waitScaleUp(err, data) {
 	wait("scale up", 0, scaleDown);
 }
 
-function scaleUp() {
-	console.log("Scaling up");
+function scaleUp(data,err) {
+	if(err) throw err;
+	console.log("Scaling up ASG ["+asgUpPolicy+"@"+asgName+"]");
 	asg.executePolicy({
 		PolicyName : asgUpPolicy,
 		AutoScalingGroupName : asgName,
