@@ -144,7 +144,7 @@ public class GenericCourseClassConfigView extends Composite {
 		profileFields.add(publicClass);
 
 		Boolean isEnrollWithCPF = courseClass.isEnrollWithCPF() == null ? false : courseClass.isEnrollWithCPF();
-		enrollWithCPF = new KornellFormFieldWrapper("Matricular com CPF?", formHelper.createCheckBoxFormField(isEnrollWithCPF), isCreationMode || session.isPlatformAdmin());
+		enrollWithCPF = new KornellFormFieldWrapper("Matricular com CPF?", formHelper.createCheckBoxFormField(isEnrollWithCPF), isInstitutionAdmin);
 		fields.add(enrollWithCPF);
 		profileFields.add(enrollWithCPF);
 		
