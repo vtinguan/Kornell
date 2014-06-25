@@ -99,12 +99,12 @@ $P{maxEnrollments}]]></textFieldExpression>
 "Página: "+$V{PAGE_NUMBER}+"/"+$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="f6ac09cf-d162-4be1-9755-69de52522728" mode="Opaque" x="25" y="51" width="136" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
-				<textElement verticalAlignment="Top" rotation="None" markup="none">
+				<reportElement uuid="f6ac09cf-d162-4be1-9755-69de52522728" mode="Opaque" x="25" y="51" width="151" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[ INFORMAÇÕES DA TURMA]]></text>
+				<text><![CDATA[INFORMAÇÕES DA TURMA]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="4d46551b-db2d-4924-9cce-aa1988bcafbe" x="3" y="131" width="550" height="1" forecolor="#666666"/>
@@ -116,20 +116,20 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<reportElement uuid="0c798490-8087-4299-9e4b-b8a178a11839" x="3" y="217" width="550" height="1" forecolor="#666666"/>
 			</line>
 			<staticText>
-				<reportElement uuid="0341aa1a-fa86-4d5a-9bd2-7cc8eb6296f4" mode="Opaque" x="25" y="124" width="91" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
-				<textElement verticalAlignment="Top" rotation="None" markup="none">
+				<reportElement uuid="0341aa1a-fa86-4d5a-9bd2-7cc8eb6296f4" mode="Opaque" x="25" y="124" width="98" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[ PARTICIPAÇÕES]]></text>
+				<text><![CDATA[PARTICIPAÇÕES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="25" y="210" width="207" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
-				<textElement verticalAlignment="Top" rotation="None" markup="none">
+				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="25" y="210" width="212" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[ VISÃO DETALHADA DOS PARTICIPANTES]]></text>
+				<text><![CDATA[VISÃO DETALHADA DOS PARTICIPANTES]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="74ed758a-e867-44ed-b909-d75889fe235c" mode="Opaque" x="3" y="70" width="142" height="16" forecolor="#525252" backcolor="#FFFFFF"/>
@@ -156,7 +156,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[Criada em: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="695a5f72-e44b-4a20-8fd7-c02f86d2c57e" mode="Opaque" x="166" y="10" width="223" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="695a5f72-e44b-4a20-8fd7-c02f86d2c57e" mode="Opaque" x="156" y="10" width="241" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
