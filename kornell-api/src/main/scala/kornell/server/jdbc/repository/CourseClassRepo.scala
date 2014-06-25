@@ -83,10 +83,11 @@ class CourseClassRepo(uuid:String) {
   private def addRole(role: Role) = {
     if(RoleType.courseClassAdmin.equals(role.getRoleType()))
 	    sql"""
-	    	insert into Role (uuid, username, role, course_class_uuid)
+	    	insert into Role (uuid, username, role, course_class_uuid, person_uuid)
 	    	values (${UUID.random}, ${role.getUsername}, 
 	    	${role.getRoleType.toString}, 
-	    	${role.getCourseClassAdminRole.getCourseClassUUID} )
+	    	${role.getCourseClassAdminRole.getCourseClassUUID},
+	    	${PeopleRepo.getByEmailOrCPF(role.getUsername).get.getUUID})
 	    """.executeUpdate
   }
   
