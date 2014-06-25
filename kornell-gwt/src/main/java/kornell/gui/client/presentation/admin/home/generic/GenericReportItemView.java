@@ -78,8 +78,8 @@ public class GenericReportItemView extends Composite {
 	}
 
 	private void displayCourseClassInfo() {
-	  this.name = "Certificado de detalhes da turma";
-		this.description = "Geração do certificado de detalhes da turma, contendo os detalhes da turma e informações sobre as matrículas da mesma.";
+	  this.name = "Relatório de detalhes da turma";
+		this.description = "Geração do relatório de detalhes da turma, contendo os dados da turma e informações sobre as matrículas da mesma.";
 		
 		certificationIcon.setUrl(IMAGES_PATH + type + ".png");
 		lblName.setText(name);

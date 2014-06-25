@@ -4,30 +4,30 @@ import java.math.BigDecimal
 import java.util.Date
 import scala.collection.JavaConverters._
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-import kornell.core.entity.Course
-import kornell.core.entity.Enrollment
-import kornell.core.entity.EnrollmentState
-import kornell.core.entity.Registration
-import kornell.core.to.CourseClassTO
-import kornell.core.to.CoursesTO
-import kornell.core.to.EnrollmentsTO
+import kornell.core.to.CourseVersionTO
+import kornell.core.to.report.CertificateInformationTO
 import kornell.core.to.RegistrationRequestTO
+import kornell.core.entity.CourseClass
 import kornell.core.to.RegistrationsTO
+import kornell.core.to.EnrollmentRequestsTO
+import kornell.core.to.EnrollmentRequestTO
+import kornell.core.to.report.CourseClassReportTO
+import kornell.core.to.EnrollmentsTO
+import kornell.core.to.RoleTO
+import kornell.core.to.CourseVersionsTO
+import kornell.core.to.CoursesTO
+import kornell.core.to.report.EnrollmentsBreakdownTO
+import kornell.core.entity.Person
+import kornell.core.entity.Course
+import kornell.core.entity.CourseVersion
+import kornell.core.entity.Enrollment
+import kornell.core.to.EnrollmentTO
 import kornell.core.to.TOFactory
+import kornell.core.to.CourseClassTO
+import kornell.core.entity.Role
+import kornell.core.entity.Registration
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
-import kornell.core.entity.CourseVersion
-import kornell.core.to.CourseVersionsTO
-import kornell.core.to.EnrollmentRequestTO
-import kornell.core.to.EnrollmentRequestsTO
-import kornell.core.to.CertificateInformationTO
-import kornell.core.entity.Person
-import kornell.core.entity.Role
-import kornell.core.to.RoleTO
-import kornell.core.entity.CourseClass
-import kornell.core.to.CourseVersionTO
-import kornell.core.to.EnrollmentTO
-import kornell.core.to.CourseClassReportTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -133,12 +133,21 @@ object TOs {
   }
 
   def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
-  def newCourseClassReportTO(fullName: String, username: String, state: String, progressState: String): CourseClassReportTO = {
+  def newCourseClassReportTO(fullName: String, username: String, state: String, progressState: String, progress: Int): CourseClassReportTO = {
     val to = newCourseClassReportTO
     to.setFullName(fullName)
     to.setUsername(username)
     to.setState(state)
     to.setProgressState(progressState)
+    to.setProgress(progress)
+    to
+  }
+
+  def newEnrollmentsBreakdownTO: EnrollmentsBreakdownTO = new EnrollmentsBreakdownTO
+  def newEnrollmentsBreakdownTO(name: String, count: Integer): EnrollmentsBreakdownTO = {
+    val to = newEnrollmentsBreakdownTO
+    to.setName(name)
+    to.setCount(count)
     to
   }
 

@@ -1,4 +1,4 @@
-package kornell.core.to;
+package kornell.core.to.report;
 
 import java.util.Date;
 

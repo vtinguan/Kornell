@@ -1,28 +1,26 @@
 package kornell.server.report
 
-import java.util.HashMap
-import scala.collection.JavaConverters._
-import kornell.server.jdbc.SQL._
-import net.sf.jasperreports.engine.JREmptyDataSource
-import net.sf.jasperreports.engine.JasperRunManager
-import org.apache.commons.io.FileUtils
 import java.io.File
 import java.net.URL
 import java.sql.ResultSet
-import kornell.core.util.StringUtils.composeURL
-import net.sf.jasperreports.engine.JasperReport
-import net.sf.jasperreports.engine.util.JRLoader
 import java.util.Date
+import java.util.HashMap
+
+import scala.collection.JavaConverters.seqAsJavaListConverter
+import scala.collection.mutable.ListBuffer
+
+import org.apache.commons.io.FileUtils
+
+import kornell.core.to.report.CertificateInformationTO
+import kornell.core.to.report.CourseClassReportTO
+import kornell.core.to.report.EnrollmentsBreakdownTO
+import kornell.core.util.StringUtils.composeURL
+import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
-import kornell.core.to.CertificateInformationTO
-import net.sf.jasperreports.engine.JasperFillManager
+import net.sf.jasperreports.engine.JasperReport
+import net.sf.jasperreports.engine.JasperRunManager
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
-import net.sf.jasperreports.engine.JasperExportManager
-import net.sf.jasperreports.engine.JasperCompileManager
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import net.sf.jasperreports.engine.data.JRBeanArrayDataSource
-import kornell.core.to.CourseClassReportTO
+import net.sf.jasperreports.engine.util.JRLoader
 
 object ReportGenerator {
 
@@ -40,9 +38,10 @@ object ReportGenerator {
       rs.getString("fullName"),
       rs.getString("username"),
       rs.getString("state"),
-      rs.getString("progressState"))
+      rs.getString("progressState"),
+      rs.getInt("progress"))
       
-  type BreakdownData = Tuple2[String,Integer]
+  type BreakdownData = Tuple2[String,Integer] 
   implicit def breakdownConvertion(rs:ResultSet): BreakdownData = (rs.getString(1), rs.getInt(2))
   
   def generateCourseClassReport(courseClassUUID: String): Array[Byte] = {
@@ -58,7 +57,8 @@ object ReportGenerator {
 						when progress is null OR progress = 0 then 'notStarted'  
 						when progress > 0 and progress < 100 then 'inProgress'  
 						else 'completed'   
-					end as progressState
+					end as progressState,
+    			e.progress
 				from 
 					Enrollment e 
 					join Person p on p.uuid = e.person_uuid
@@ -72,14 +72,20 @@ object ReportGenerator {
 		    val parameters = getTotalsAsParameters(courseClassUUID)
 		    addInfoParameters(courseClassUUID, parameters)
 
+    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
+    enrollmentBreakdowns += TOs.newEnrollmentsBreakdownTO("aa", new Integer(1))
+    enrollmentBreakdowns.toList
+		    
+		    
+		    
 		    val jasperFile = getClass.getResource("/reports/courseClassInfo.jasper").getFile()
 		    val bytes = getReportBytes(courseClassReportTO, parameters, jasperFile)
 		    
 		    bytes
   }
       
-  type ReportHeaderData = Tuple5[String,String, String, Date, String]
-  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5))
+  type ReportHeaderData = Tuple6[String,String, String, Date, String, String]
+  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6))
   
   private def addInfoParameters(courseClassUUID: String, parameters: HashMap[String, Object]) = {
     val headerInfo = sql"""
@@ -88,6 +94,7 @@ object ReportGenerator {
 						c.title as 'courseTitle',
 						cc.name as 'courseClassName',
 						cc.createdAt,
+    				cc.maxEnrollments,
 						i.assetsURL
 					from
 						CourseClass cc
@@ -100,7 +107,8 @@ object ReportGenerator {
     parameters.put("courseTitle", headerInfo.get._2)
     parameters.put("courseClassName", headerInfo.get._3)
     parameters.put("createdAt", headerInfo.get._4)
-    parameters.put("assetsURL", headerInfo.get._5)
+    parameters.put("maxEnrollments", headerInfo.get._5)
+    parameters.put("assetsURL", headerInfo.get._6)
     
     parameters
   }
