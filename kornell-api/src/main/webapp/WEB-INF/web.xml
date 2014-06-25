@@ -7,9 +7,6 @@
     	<param-value>true</param-value>
     </context-param>
     
-    <welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-	</welcome-file-list>
 
     <!-- 
 	<filter>
