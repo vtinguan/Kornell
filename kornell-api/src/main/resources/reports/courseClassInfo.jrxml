@@ -22,6 +22,7 @@
 	<field name="username" class="java.lang.String"/>
 	<field name="state" class="java.lang.String"/>
 	<field name="progressState" class="java.lang.String"/>
+	<field name="progress" class="java.lang.Integer"/>
 	<background>
 		<band/>
 	</background>
@@ -32,7 +33,7 @@
 				<imageExpression><![CDATA[$P{assetsURL} + "logo250x45.png"]]></imageExpression>
 			</image>
 			<line>
-				<reportElement uuid="ce1d68c5-e63c-4ee8-944c-8ff1aa0eed4d" x="3" y="58" width="550" height="1" forecolor="#666666"/>
+				<reportElement uuid="ce1d68c5-e63c-4ee8-944c-8ff1aa0eed4d" positionType="Float" x="12" y="58" width="540" height="1" forecolor="#666666"/>
 			</line>
 			<textField>
 				<reportElement uuid="59896c45-7bce-4ab7-9585-85ff926ccb4e" x="156" y="143" width="140" height="16"/>
@@ -99,37 +100,34 @@ $P{maxEnrollments}]]></textFieldExpression>
 "Página: "+$V{PAGE_NUMBER}+"/"+$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="f6ac09cf-d162-4be1-9755-69de52522728" mode="Opaque" x="25" y="51" width="170" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<reportElement uuid="f6ac09cf-d162-4be1-9755-69de52522728" mode="Opaque" x="4" y="51" width="170" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[  INFORMAÇÕES DA TURMA]]></text>
+				<text><![CDATA[ INFORMAÇÕES DA TURMA]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="4d46551b-db2d-4924-9cce-aa1988bcafbe" x="3" y="131" width="550" height="1" forecolor="#666666"/>
+				<reportElement uuid="4d46551b-db2d-4924-9cce-aa1988bcafbe" x="12" y="131" width="540" height="1" forecolor="#666666"/>
 			</line>
 			<line>
-				<reportElement uuid="45aed06e-f955-41cd-90f7-f7fa1ce779e1" x="3" y="131" width="550" height="1" forecolor="#666666"/>
-			</line>
-			<line>
-				<reportElement uuid="0c798490-8087-4299-9e4b-b8a178a11839" x="3" y="217" width="550" height="1" forecolor="#666666"/>
+				<reportElement uuid="0c798490-8087-4299-9e4b-b8a178a11839" x="12" y="217" width="540" height="1" forecolor="#666666"/>
 			</line>
 			<staticText>
-				<reportElement uuid="0341aa1a-fa86-4d5a-9bd2-7cc8eb6296f4" mode="Opaque" x="25" y="124" width="120" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<reportElement uuid="0341aa1a-fa86-4d5a-9bd2-7cc8eb6296f4" mode="Opaque" x="4" y="124" width="120" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[  PARTICIPAÇÕES]]></text>
+				<text><![CDATA[ PARTICIPAÇÕES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="25" y="210" width="246" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="4" y="210" width="246" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[  VISÃO DETALHADA DOS PARTICIPANTES]]></text>
+				<text><![CDATA[ VISÃO DETALHADA DOS PARTICIPANTES]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="74ed758a-e867-44ed-b909-d75889fe235c" mode="Opaque" x="3" y="70" width="142" height="16" forecolor="#525252" backcolor="#FFFFFF"/>
@@ -257,7 +255,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{progressState}.equals("completed") ?
     "Concluído" :
     ($F{progressState}.equals("inProgress") ?
-        "Em Andamento" :
+        "Em Andamento: " + $F{progress} + "%" :
         "A Iniciar"
     )]]></textFieldExpression>
 			</textField>

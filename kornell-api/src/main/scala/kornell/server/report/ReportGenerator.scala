@@ -66,22 +66,22 @@ object ReportGenerator {
 					e.state = 'enrolled' and
     		  e.class_uuid = ${courseClassUUID}
 				order by 
-					p.fullName
-		    """.map[CourseClassReportTO](toCourseClassReportTO)
+					progressState,
+    			progress,
+    			p.fullName
+	    """.map[CourseClassReportTO](toCourseClassReportTO)
+	    
+	    val parameters = getTotalsAsParameters(courseClassUUID)
+	    addInfoParameters(courseClassUUID, parameters)
+	
+	    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
+	    enrollmentBreakdowns += TOs.newEnrollmentsBreakdownTO("aa", new Integer(1))
+	    enrollmentBreakdowns.toList
 		    
-		    val parameters = getTotalsAsParameters(courseClassUUID)
-		    addInfoParameters(courseClassUUID, parameters)
-
-    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
-    enrollmentBreakdowns += TOs.newEnrollmentsBreakdownTO("aa", new Integer(1))
-    enrollmentBreakdowns.toList
-		    
-		    
-		    
-		    val jasperFile = getClass.getResource("/reports/courseClassInfo.jasper").getFile()
-		    val bytes = getReportBytes(courseClassReportTO, parameters, jasperFile)
-		    
-		    bytes
+	    val jasperFile = getClass.getResource("/reports/courseClassInfo.jasper").getFile()
+	    val bytes = getReportBytes(courseClassReportTO, parameters, jasperFile)
+	    
+	    bytes
   }
       
   type ReportHeaderData = Tuple6[String,String, String, Date, String, String]
