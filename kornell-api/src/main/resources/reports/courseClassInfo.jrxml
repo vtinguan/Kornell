@@ -74,14 +74,14 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{courseTitle}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{courseClassName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="1049025d-fb9b-4467-9ce5-40acac387c1d" x="156" y="85" width="385" height="15"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{courseClassName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{courseTitle}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="156" y="99" width="220" height="16"/>
@@ -209,7 +209,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[NOME COMPLETO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="46cc137d-88a7-4f81-846d-eb964d193747" mode="Opaque" x="255" y="4" width="185" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="46cc137d-88a7-4f81-846d-eb964d193747" mode="Opaque" x="255" y="4" width="175" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -217,7 +217,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[USUÁRIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="47c263a9-ad78-4a12-b3bb-3b9f596b0f4a" mode="Opaque" x="445" y="5" width="110" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="47c263a9-ad78-4a12-b3bb-3b9f596b0f4a" mode="Opaque" x="435" y="5" width="110" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -241,22 +241,22 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="ae1db390-f27c-45ac-8675-852637fedff1" x="255" y="2" width="185" height="12" forecolor="#525252"/>
+				<reportElement uuid="ae1db390-f27c-45ac-8675-852637fedff1" x="255" y="2" width="175" height="12" forecolor="#525252"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="63640519-bd0e-46e8-a16f-66dd400a6f38" x="445" y="2" width="75" height="12"/>
+				<reportElement uuid="63640519-bd0e-46e8-a16f-66dd400a6f38" x="435" y="2" width="101" height="12"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{progressState}.equals("completed") ?
-    "Concluído" :
-    ($F{progressState}.equals("inProgress") ?
-        "Em Andamento: " + $F{progress} + "%" :
-        "A Iniciar"
+				<textFieldExpression><![CDATA[$F{progressState}.equals("completed")
+    ?  "Concluído"
+    : ($F{progressState}.equals("inProgress")
+        ? "Em Andamento: " + $F{progress}.intValue() + "%"
+        : "A Iniciar"
     )]]></textFieldExpression>
 			</textField>
 			<textField>
