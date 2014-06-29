@@ -5,6 +5,7 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
@@ -80,7 +81,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 							courseClassesTO = to;
 							view.setCourseClasses(courseClassesTO
 									.getCourseClasses());
-							updateCourseClass(courseClassesTO
+							updateCourseClassUI(courseClassesTO
 									.getCourseClasses().get(0));
 						}
 					});
@@ -121,7 +122,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				view.setCourseClasses(courseClassesTO.getCourseClasses());
 				for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
 					if (courseClassUUID == null || courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)) {
-						updateCourseClass(courseClassTO);
+						updateCourseClassUI(courseClassTO);
 						break;
 					}
 				}
@@ -129,7 +130,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		});
 	}
 
-	private void updateCourseClass(CourseClassTO courseClassTO) {
+	private void updateCourseClassUI(CourseClassTO courseClassTO) {
 		enrollWithCPF = courseClassTO.getCourseClass().isEnrollWithCPF();
 		Dean.getInstance().setCourseClassTO(courseClassTO);
 		view.prepareAddNewCourseClass(false);
@@ -163,18 +164,46 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	@Override
+	public void changeCourseClassState(final CourseClassTO courseClassTO,
+			final CourseClassState toState) {
+		LoadingPopup.show();
+
+		String personUUID = session.getCurrentUser().getPerson().getUUID();
+		session.events()
+				.courseClassStateChanged(courseClassTO.getCourseClass().getUUID(), personUUID,
+						courseClassTO.getCourseClass().getState(), toState)
+				.fire(new Callback<Void>() {
+					@Override
+					public void ok(Void to) {
+						LoadingPopup.hide();
+						KornellNotification.show("Turma excluída com sucesso!");
+						updateCourseClass(null);
+					}
+					
+					@Override
+					public void unauthorized(String errorMessage){
+						LoadingPopup.hide();
+						GWT.log(this.getClass().getName() + " - " + errorMessage);
+					}
+				});
+
+	}
+
+	@Override
 	public boolean showActionButton(String actionName, EnrollmentTO enrollmentTO) {
+		boolean isEnabled = CourseClassState.active.equals(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getState());
 		EnrollmentState state = enrollmentTO.getEnrollment().getState();
 		EnrollmentProgressDescription progressDescription = EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment());
 		if ("Aceitar".equals(actionName) || "Negar".equals(actionName)) {
-			return EnrollmentState.requested.equals(state);
+			return isEnabled && EnrollmentState.requested.equals(state);
 		} else if ("Cancelar".equals(actionName)) {
-			return EnrollmentState.enrolled.equals(state);
+			return isEnabled && EnrollmentState.enrolled.equals(state);
 		} else if ("Matricular".equals(actionName)) {
-			return EnrollmentState.denied.equals(state)
-					|| EnrollmentState.cancelled.equals(state);
+			return isEnabled && (EnrollmentState.denied.equals(state)
+					|| EnrollmentState.cancelled.equals(state));
 		} else if ("Excluir".equals(actionName)){
-			return EnrollmentProgressDescription.notStarted.equals(progressDescription);
+			return isEnabled && EnrollmentProgressDescription.notStarted.equals(progressDescription);
 		} else if("Perfil".equals(actionName)){
 			return true;
 		} else if("Certificado".equals(actionName)){
@@ -269,13 +298,19 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private void saveEnrollments(EnrollmentRequestsTO enrollmentRequests) {
-		if (enrollmentRequests.getEnrollmentRequests().size() == 0) {
+		if (CourseClassState.inactive.equals(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getState())) {
 			KornellNotification
-					.show("Verifique se os nomes/"
-							+ (enrollWithCPF ? "cpfs" : "emails")
-							+ " dos usuários estão corretos. Nenhuma matrícula encontrada.",
-							AlertType.WARNING);
+					.show("Não é possível matricular alunos em uma turma desabilidada.",
+							AlertType.ERROR);
 			return;
+		} else if (enrollmentRequests.getEnrollmentRequests().size() == 0) {
+				KornellNotification
+						.show("Verifique se os nomes/"
+								+ (enrollWithCPF ? "cpfs" : "emails")
+								+ " dos usuários estão corretos. Nenhuma matrícula encontrada.",
+								AlertType.WARNING);
+				return;
 		} else if ((enrollmentRequests.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
 			KornellNotification
 					.show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",

@@ -387,6 +387,9 @@ public class FormHelper {
 		//DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
 		//DateTimeFormat dtf = new DateTimeFormat(pattern, info) {};
 		// return dtf.format(date).toString();
+		String[] dateArray = date.split(" ");
+		if(dateArray.length > 1)
+			return dateArray[0];
 		return date;
 	}
 	

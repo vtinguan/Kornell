@@ -84,8 +84,8 @@ object ReportGenerator {
 	    bytes
   }
       
-  type ReportHeaderData = Tuple6[String,String, String, Date, String, String]
-  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6))
+  type ReportHeaderData = Tuple7[String,String, String, Date, String, String, String]
+  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6), rs.getString(7))
   
   private def addInfoParameters(courseClassUUID: String, parameters: HashMap[String, Object]) = {
     val headerInfo = sql"""
@@ -95,7 +95,10 @@ object ReportGenerator {
 						cc.name as 'courseClassName',
 						cc.createdAt,
     				cc.maxEnrollments,
-						i.assetsURL
+						i.assetsURL,
+						(select eventFiredAt from CourseClassStateChanged 
+							where toState = 'inactive' and courseClassUUID = cc.uuid
+							order by eventFiredAt desc) as disabledAt
 					from
 						CourseClass cc
 						join CourseVersion cv on cc.courseVersion_uuid = cv.uuid
@@ -109,6 +112,9 @@ object ReportGenerator {
     parameters.put("createdAt", headerInfo.get._4)
     parameters.put("maxEnrollments", headerInfo.get._5)
     parameters.put("assetsURL", headerInfo.get._6)
+    parameters.put("disabledAt", headerInfo.get._7)
+    
+    println("&&&&&&&&&&&&&&&&&&&&&&&&&&&& "+headerInfo.get._7)
     
     parameters
   }

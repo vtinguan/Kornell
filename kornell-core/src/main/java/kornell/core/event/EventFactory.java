@@ -8,4 +8,5 @@ public interface EventFactory extends AutoBeanFactory  {
 	AutoBean<ActomEntered> newActomEntered();
 	AutoBean<AttendanceSheetSigned> newAttendanceSheetSigned();
 	AutoBean<EnrollmentStateChanged> newEnrollmentStateChanged();
+	AutoBean<CourseClassStateChanged> newCourseClassStateChanged();
 }

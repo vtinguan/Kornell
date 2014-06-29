@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.admin.home;
 
 import java.util.List;
 
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
@@ -12,6 +13,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface AdminHomeView extends IsWidget {
 	public interface Presenter extends IsWidget {
 		void changeEnrollmentState(EnrollmentTO object, EnrollmentState state);
+		void changeCourseClassState(CourseClassTO courseClassTO, CourseClassState toState);
 		boolean showActionButton(String actionName, EnrollmentTO enrollmentTO);
 		void onAddEnrollmentButtonClicked(String fullName, String email);
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);

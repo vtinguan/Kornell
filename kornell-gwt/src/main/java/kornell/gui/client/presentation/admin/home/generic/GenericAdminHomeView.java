@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentState;
@@ -86,6 +87,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Button btnSearch;
 	private List<CourseClassTO> courseClasses;
 	private Boolean enrollWithCPF = false;
+	private boolean isEnabled;
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
 	private GenericCourseClassReportsView reportsView;
@@ -99,6 +101,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	Button btnAddCourseClass;
 	@UiField
 	FlowPanel enrollmentsPanel;
+	@UiField
+	FlowPanel addEnrollmentsPanel;
 	@UiField
 	ListBox listBoxCourseClasses;
 	@UiField
@@ -421,6 +425,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@Override
 	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn) {
+		this.isEnabled = CourseClassState.active.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
+		addEnrollmentsPanel.setVisible(isEnabled);
+		
 		numEnrollments = enrollmentsIn.size();
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
@@ -646,8 +653,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		listBoxCourseClasses.clear();
 		String name, value;
 		for (CourseClassTO courseClassTO : courseClasses) {
-			name = courseClassTO.getCourseVersionTO().getCourse().getTitle() + " - " + courseClassTO.getCourseClass().getName();
 			value = courseClassTO.getCourseClass().getUUID();
+			name = courseClassTO.getCourseVersionTO().getCourse().getTitle() + " - " + courseClassTO.getCourseClass().getName();
+			if(CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState())){
+				name += " (Desabilitada)";
+			}
 			listBoxCourseClasses.addItem(name, value);
 		}
 	}

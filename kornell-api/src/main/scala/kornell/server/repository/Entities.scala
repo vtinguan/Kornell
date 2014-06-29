@@ -22,6 +22,7 @@ import kornell.server.util.ValueFactory
 import kornell.core.util.TimeUtil
 import kornell.core.entity.ContentSpec
 import kornell.core.entity.Assessment
+import kornell.core.entity.CourseClassState
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -205,7 +206,7 @@ object Entities {
     version
   }
 
-  def newCourseClass(uuid: String, name: String, courseVersionUUID: String, institutionUUID: String, requiredScore: BigDecimal, publicClass: Boolean, enrollWithCPF: Boolean, maxEnrollments: Integer, createdAt: Date,createdBy: String) = {
+  def newCourseClass(uuid: String, name: String, courseVersionUUID: String, institutionUUID: String, requiredScore: BigDecimal, publicClass: Boolean, enrollWithCPF: Boolean, maxEnrollments: Integer, createdAt: Date,createdBy: String, state: CourseClassState) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -217,6 +218,7 @@ object Entities {
     clazz.setMaxEnrollments(maxEnrollments)
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
+    clazz.setState(state)
     clazz
   }
 

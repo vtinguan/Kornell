@@ -18,6 +18,7 @@ import kornell.core.util.UUID
 import kornell.core.entity.Assessment
 import kornell.core.entity.Institution
 import kornell.core.to.EnrollmentTO
+import kornell.core.entity.CourseClassState
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -46,7 +47,8 @@ package object repository {
         r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
         r.getBigDecimal("requiredScore"), r.getBoolean("publicClass"), 
         r.getBoolean("enrollWithCPF"), r.getInt("maxEnrollments"), 
-        r.getDate("createdAt"), r.getString("createdBy")) 
+        r.getDate("createdAt"), r.getString("createdBy"), 
+        CourseClassState.valueOf(r.getString("state"))) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -93,7 +95,8 @@ package object repository {
 		    rs.getBoolean("enrollWithCPF"),
 		    rs.getInt("maxEnrollments"),
 		    rs.getDate("createdAt"),
-		    rs.getString("createdBy"));
+		    rs.getString("createdBy"), 
+        CourseClassState.valueOf(rs.getString("state")));
     		
     TOs.newCourseClassTO(course, version, clazz)
   }
