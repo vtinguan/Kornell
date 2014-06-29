@@ -10,6 +10,8 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
+import kornell.core.entity.EnrollmentProgress;
+import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
@@ -360,7 +362,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
 			public String getValue(EnrollmentTO enrollmentTO) {
-				return formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()));
+				String progressTxt = formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()));
+				if(EnrollmentProgressDescription.inProgress.equals(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()))){
+					progressTxt += " " + enrollmentTO.getEnrollment().getProgress() + "%";
+				}
+				return progressTxt;
 			}
 		}, "Progresso");
 
