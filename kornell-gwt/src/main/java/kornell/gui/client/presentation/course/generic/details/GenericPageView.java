@@ -71,8 +71,9 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 		String status = page.isVisited() ? "finished" : "toStart";
 		topicIcon.setUrl(IMAGES_PATH + "status_"+status+".png");
 		lblPage.clear();
+		String title = page.getIndex() + ".  " + page.getTitle();
 		if(enableAnchor){
-			Anchor pageAnchor = new Anchor(page.getTitle());
+			Anchor pageAnchor = new Anchor(title);
 			pageAnchor.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -82,7 +83,7 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 			});
 			lblPage.add(pageAnchor);
 		} else {
-			lblPage.add(new Label(page.getTitle()));
+			lblPage.add(new Label(title));
 		}
 	}
 
