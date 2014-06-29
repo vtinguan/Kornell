@@ -8,6 +8,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.CourseClass;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
@@ -49,7 +50,7 @@ public class GenericCourseClassConfigView extends Composite {
 	private KornellSession session;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
-	private boolean isCreationMode, isInstitutionAdmin;
+	private boolean isCreationMode, canDelete, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
@@ -83,13 +84,16 @@ public class GenericCourseClassConfigView extends Composite {
 		this.presenter = presenter;
 		this.user = session.getCurrentUser();
 		this.isCreationMode = (courseClassTO == null);
+		this.canDelete = presenter.getEnrollments().size() == 0;
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText(isCreationMode ? "Cancelar".toUpperCase() : "Limpar".toUpperCase());
-		btnDelete.setText("Excluir".toUpperCase());
+		btnDelete.setVisible(CourseClassState.active.equals(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getState()));
+		btnDelete.setText(canDelete?"Excluir".toUpperCase():"Desabilitar".toUpperCase());
 
 		this.titleEdit.setVisible(!isCreationMode);
 		this.titleCreate.setVisible(isCreationMode);
@@ -110,7 +114,6 @@ public class GenericCourseClassConfigView extends Composite {
 		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
 		btnCancel.setVisible(isInstitutionAdmin);
 		
-		btnDelete.setVisible(!isCreationMode && presenter.getEnrollments().size() == 0);
 
 		if (isCreationMode) {
 			session.courses().findByInstitution(Dean.getInstance().getInstitution().getUUID(),
@@ -317,24 +320,10 @@ public class GenericCourseClassConfigView extends Composite {
 
 	@UiHandler("btnDelete")
 	void doDelete(ClickEvent e) {
-		if(!isCreationMode && presenter.getEnrollments().size() == 0){
-			LoadingPopup.show();
-			session.courseClass(courseClassTO.getCourseClass().getUUID()).delete(new Callback<CourseClass>() {
-				@Override
-				public void ok(CourseClass courseClass) {
-						LoadingPopup.hide();
-						KornellNotification.show("Turma excluída com sucesso!");
-						presenter.updateCourseClass(null);
-				}
-				
-				@Override
-				public void unauthorized(String errorMessage){
-					LoadingPopup.hide();
-					GWT.log(this.getClass().getName() + " - " + errorMessage);
-				}
-			});
+		if(!isCreationMode && canDelete){
+			presenter.changeCourseClassState(courseClassTO, CourseClassState.deleted);
 		} else {
-			initData();
+			presenter.changeCourseClassState(courseClassTO, CourseClassState.inactive);
 		}
 	}
 

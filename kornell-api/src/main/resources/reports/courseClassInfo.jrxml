@@ -18,6 +18,7 @@
 	<parameter name="createdAt" class="java.util.Date"/>
 	<parameter name="maxEnrollments" class="java.lang.String"/>
 	<parameter name="assetsURL" class="java.lang.String"/>
+	<parameter name="disabledAt" class="java.lang.String"/>
 	<field name="fullName" class="java.lang.String"/>
 	<field name="username" class="java.lang.String"/>
 	<field name="state" class="java.lang.String"/>
@@ -84,11 +85,11 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$P{courseTitle}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="156" y="99" width="220" height="16"/>
+				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="156" y="99" width="122" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{createdAt}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd", new Locale("pt","BR")).format($P{createdAt})]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement uuid="69d298e4-fc42-403d-a5d3-c37b4694cedb" x="375" y="16" width="178" height="13" forecolor="#808080"/>
@@ -193,6 +194,25 @@ $P{maxEnrollments}]]></textFieldExpression>
 				</textElement>
 				<text><![CDATA[A iniciar:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="dad0275f-8f42-474e-a8ce-399a31a09aae" mode="Opaque" x="288" y="99" width="76" height="16" forecolor="#525252" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$P{disabledAt} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Desabilitada em: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="375" y="99" width="122" height="16">
+					<printWhenExpression><![CDATA[$P{disabledAt} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Serif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{disabledAt}.split("T").length > 1 ? $P{disabledAt}.split("T")[0] : "";]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>

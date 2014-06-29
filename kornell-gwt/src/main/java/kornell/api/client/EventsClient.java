@@ -1,14 +1,13 @@
 package kornell.api.client;
 
-import java.util.Date;
-
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.event.ActomEntered;
 import kornell.core.event.AttendanceSheetSigned;
+import kornell.core.event.CourseClassStateChanged;
 import kornell.core.event.EnrollmentStateChanged;
 import kornell.core.event.Event;
 import kornell.core.event.EventFactory;
-import kornell.core.util.TimeUtil;
 import kornell.core.util.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -44,6 +43,17 @@ public class EventsClient extends RESTClient {
 		enrollmentStateChanged.setToState(toState);
 		enrollmentStateChanged.setUUID(UUID.random());
 		return withEvent("/events/enrollmentStateChanged",EnrollmentStateChanged.TYPE,enrollmentStateChanged);
+	}
+
+	public EventClient courseClassStateChanged(String courseClassUUID, String personUUID, CourseClassState fromState, CourseClassState toState) {
+		CourseClassStateChanged courseClassStateChanged = factory.newCourseClassStateChanged().as();
+		courseClassStateChanged.setCourseClassUUID(courseClassUUID);
+		courseClassStateChanged.setEventFiredAt(ClientTime.now());
+		courseClassStateChanged.setFromPersonUUID(personUUID);
+		courseClassStateChanged.setFromState(fromState);
+		courseClassStateChanged.setToState(toState);
+		courseClassStateChanged.setUUID(UUID.random());
+		return withEvent("/events/courseClassStateChanged",CourseClassStateChanged.TYPE,courseClassStateChanged);
 	}
 
 	private EventClient withEvent(String path, String contentType, Event event) {

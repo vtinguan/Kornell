@@ -29,4 +29,7 @@ public interface CourseClass extends Named{
 	
 	String getCreatedBy();
 	void setCreatedBy(String createdBy);
+	
+	CourseClassState getState();
+	void setState(CourseClassState state);
 }

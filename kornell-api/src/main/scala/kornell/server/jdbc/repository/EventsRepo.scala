@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat
 import kornell.server.util.Settings
 import kornell.server.ep.EnrollmentSEP
 import kornell.server.util.ServerTime
+import kornell.core.event.CourseClassStateChanged
+import kornell.core.entity.CourseClassState
 
 object EventsRepo {
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
@@ -83,5 +85,26 @@ object EventsRepo {
   def logEnrollmentStateChanged(event: EnrollmentStateChanged): Unit =
     logEnrollmentStateChanged(event.getUUID, event.getEventFiredAt, event.getFromPersonUUID,
       event.getEnrollmentUUID, event.getFromState, event.getToState)
+
+  def logCourseClassStateChanged(uuid: String, eventFiredAt: String, fromPersonUUID: String,
+    courseClassUUID: String, fromState: CourseClassState, toState: CourseClassState) = {
+
+    sql"""insert into CourseClassStateChanged(uuid,eventFiredAt,personUUID,courseClassUUID,fromState,toState)
+	    values(${uuid},
+			   ${eventFiredAt},
+         ${fromPersonUUID},
+         ${courseClassUUID},
+         ${fromState.toString},
+			   ${toState.toString});
+		""".executeUpdate
+
+    sql"""update CourseClass set state = ${toState.toString} where uuid = ${courseClassUUID};
+		""".executeUpdate
+		
+  }
+
+  def logCourseClassStateChanged(event: CourseClassStateChanged): Unit =
+    logCourseClassStateChanged(event.getUUID, event.getEventFiredAt, event.getFromPersonUUID,
+      event.getCourseClassUUID, event.getFromState, event.getToState)
 
 }

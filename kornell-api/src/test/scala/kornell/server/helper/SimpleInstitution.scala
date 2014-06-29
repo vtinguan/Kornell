@@ -28,6 +28,7 @@ import kornell.server.jdbc.repository.CourseVersionsRepo
 import kornell.core.entity.EnrollmentState
 import java.util.Date
 import org.scalatest.BeforeAndAfter
+import kornell.core.entity.CourseClassState
 
 trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ this: Suite =>
 
@@ -66,9 +67,9 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
     institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, null))
 	  course = CoursesRepo.create(Entities.newCourse(randUUID, randStr, randStr, randStr, randStr))
 	  courseVersion = CourseVersionsRepo.create(Entities.newCourseVersion(randUUID, randStr, course.getUUID, randUUID, new Date, randStr, "KNL", false))
-	  courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451, new Date(), null)
-	  courseClass2 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451, new Date(), null)
-	  courseClass3 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451, new Date(), null)
+	  courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451, new Date(), null, CourseClassState.active)
+	  courseClass2 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451, new Date(), null, CourseClassState.active)
+	  courseClass3 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451, new Date(), null, CourseClassState.active)
     
 	  platformAdmin = {
 	    val platformAdmin = PeopleRepo.createPersonCPF(platformAdminCPF, randName)

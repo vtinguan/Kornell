@@ -10,46 +10,48 @@
 		<b:TabPanel tabPosition="middle" ui:field="tabsPanel">
 			<b:Tab ui:field="enrollmentsTab" icon="BOOK" heading="Matrículas" active="true">
 				<g:FlowPanel ui:field="enrollmentsPanel">
-					<g:HTMLPanel addStyleNames="title">Matricular Participante</g:HTMLPanel>
-					<g:FlowPanel addStyleNames="controlsPanel">
-						<g:FlowPanel addStyleNames="insertPanel">
-							<g:Label addStyleNames="inlineLabel">Nome Completo: </g:Label>
-							<b:TextBox ui:field="txtFullName"></b:TextBox>
-							<g:Label ui:field="identifierLabel" addStyleNames="inlineLabel">Email: </g:Label>
-							<b:TextBox ui:field="txtEmail"></b:TextBox>
-							<b:Button ui:field="btnAddEnrollment" addStyleNames="btnAction btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
-						</g:FlowPanel>
-				    	<b:CollapseTrigger ui:field="trigger">
-							<g:FlowPanel addStyleNames="insertBatchPanel">
-								<b:Button ui:field="btnAddEnrollmentBatchEnable" addStyleNames="btnNotSelected btnAddEnrollmentBatchEnable btnIcon" size="MINI" icon="CHEVRON_DOWN">Matricular em lote</b:Button>
+          <g:FlowPanel ui:field="addEnrollmentsPanel">
+						<g:HTMLPanel addStyleNames="title">Matricular Participante</g:HTMLPanel>
+						<g:FlowPanel addStyleNames="controlsPanel">
+							<g:FlowPanel addStyleNames="insertPanel">
+								<g:Label addStyleNames="inlineLabel">Nome Completo: </g:Label>
+								<b:TextBox ui:field="txtFullName"></b:TextBox>
+								<g:Label ui:field="identifierLabel" addStyleNames="inlineLabel">Email: </g:Label>
+								<b:TextBox ui:field="txtEmail"></b:TextBox>
+								<b:Button ui:field="btnAddEnrollment" addStyleNames="btnAction btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
 							</g:FlowPanel>
-				    	</b:CollapseTrigger>
-					</g:FlowPanel>
-					<b:Collapse ui:field="collapse" existTrigger="true" defaultOpen="false">
-						<g:FlowPanel addStyleNames="addEnrollmentBatchPanel">
-							<b:TextArea ui:field="txtAddEnrollmentBatch"></b:TextArea>
-							<g:FlowPanel addStyleNames="infoPanel">
-								<g:FlowPanel ui:field="infoPanelEmail" addStyleNames="shy">
-									<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
-									<g:Label addStyleNames="highlightText">"nome;email" ou somente "email".</g:Label>
-									<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
-									<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
-									<g:Label addStyleNames="highlightText">Nome Sobrenome;email@example.com </g:Label>
-									<g:Label addStyleNames="highlightText">email1@example.com</g:Label>
-									<g:Label addStyleNames="highlightText">email2@example.com</g:Label>
+					    	<b:CollapseTrigger ui:field="trigger">
+								<g:FlowPanel addStyleNames="insertBatchPanel">
+									<b:Button ui:field="btnAddEnrollmentBatchEnable" addStyleNames="btnNotSelected btnAddEnrollmentBatchEnable btnIcon" size="MINI" icon="CHEVRON_DOWN">Matricular em lote</b:Button>
 								</g:FlowPanel>
-								<g:FlowPanel ui:field="infoPanelCPF" addStyleNames="shy">
-									<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
-									<g:Label addStyleNames="highlightText">"nome;cpf"</g:Label>
-									<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
-									<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
-									<g:Label addStyleNames="highlightText">Nome Sobrenome;123.456.789-13</g:Label>
-									<g:Label addStyleNames="highlightText">Nome2 Sobrenome2;12345687913</g:Label>
-								</g:FlowPanel>
-								<b:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnNotSelected btnAddEnrollmentBatch btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
-							</g:FlowPanel>
+					    	</b:CollapseTrigger>
 						</g:FlowPanel>
-					</b:Collapse>
+						<b:Collapse ui:field="collapse" existTrigger="true" defaultOpen="false">
+							<g:FlowPanel addStyleNames="addEnrollmentBatchPanel">
+								<b:TextArea ui:field="txtAddEnrollmentBatch"></b:TextArea>
+								<g:FlowPanel addStyleNames="infoPanel">
+									<g:FlowPanel ui:field="infoPanelEmail" addStyleNames="shy">
+										<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
+										<g:Label addStyleNames="highlightText">"nome;email" ou somente "email".</g:Label>
+										<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
+										<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
+										<g:Label addStyleNames="highlightText">Nome Sobrenome;email@example.com </g:Label>
+										<g:Label addStyleNames="highlightText">email1@example.com</g:Label>
+										<g:Label addStyleNames="highlightText">email2@example.com</g:Label>
+									</g:FlowPanel>
+									<g:FlowPanel ui:field="infoPanelCPF" addStyleNames="shy">
+										<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
+										<g:Label addStyleNames="highlightText">"nome;cpf"</g:Label>
+										<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
+										<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
+										<g:Label addStyleNames="highlightText">Nome Sobrenome;123.456.789-13</g:Label>
+										<g:Label addStyleNames="highlightText">Nome2 Sobrenome2;12345687913</g:Label>
+									</g:FlowPanel>
+									<b:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnNotSelected btnAddEnrollmentBatch btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
+								</g:FlowPanel>
+							</g:FlowPanel>
+						</b:Collapse>
+          </g:FlowPanel>
 					<g:HTMLPanel addStyleNames="title">Participantes</g:HTMLPanel>
 					<g:FlowPanel>
 						<g:Label addStyleNames="inlineLabel">Matriculados na turma</g:Label>

@@ -13,6 +13,7 @@ import kornell.server.repository.TOs
 import kornell.core.entity.Roles
 import kornell.core.util.UUID
 import java.util.Date
+import kornell.core.entity.CourseClassState
 
 class CourseClassesRepo {
 }
@@ -43,6 +44,7 @@ object CourseClassesRepo {
   def byInstitution(institutionUUID: String) =
     sql"""
     | select * from CourseClass where institution_uuid = $institutionUUID
+    | where state <> ${CourseClassState.deleted}
     """.map[CourseClass](toCourseClass)
 
   private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = {
@@ -69,12 +71,14 @@ object CourseClassesRepo {
 		  		cc.enrollWithCPF as enrollWithCPF,
 		  		cc.maxEnrollments as maxEnrollments,
       		cc.createdAt as createdAt,
-      		cc.createdBy as createdBy
+      		cc.createdBy as createdBy,
+      		cc.state
 			from Course c
 			join CourseVersion cv on cv.course_uuid = c.uuid
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid
 		    and cc.institution_uuid = ${institutionUUID}
-		  	order by c.title, cc.name;
+      where cc.state <> ${CourseClassState.deleted.toString}
+		  order by c.title, cc.name;
 		""".map[CourseClassTO](toCourseClassTO))
   }
 
