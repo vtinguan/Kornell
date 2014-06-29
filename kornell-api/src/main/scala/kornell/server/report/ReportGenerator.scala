@@ -114,7 +114,6 @@ object ReportGenerator {
     parameters.put("assetsURL", headerInfo.get._6)
     parameters.put("disabledAt", headerInfo.get._7)
     
-    println("&&&&&&&&&&&&&&&&&&&&&&&&&&&& "+headerInfo.get._7)
     
     parameters
   }
