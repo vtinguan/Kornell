@@ -3,6 +3,7 @@ package kornell.api.client;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Roles;
 import kornell.core.lom.Contents;
+import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.RolesTO;
 
 public class CourseClassClient extends RESTClient {
@@ -33,4 +34,9 @@ public class CourseClassClient extends RESTClient {
 		PUT("courseClasses",courseClassUUID,"admins").withContentType(Roles.TYPE).withEntityBody(roles).go(cb);
 	}
 
+	public void libraryFiles(Callback<LibraryFilesTO> callback) {
+		GET("courseClasses",courseClassUUID,"libraryFiles").go(callback);
+	}
+	
+	
 }

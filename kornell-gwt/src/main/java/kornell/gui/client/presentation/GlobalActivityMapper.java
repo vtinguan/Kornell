@@ -61,12 +61,6 @@ public class GlobalActivityMapper implements ActivityMapper {
 		if (place instanceof ProfilePlace) {
 			return new ProfileActivity(clientFactory);
 		}
-		if (place instanceof CourseLibraryPlace) {
-			CourseLibraryPresenter courseLibraryPresenter = clientFactory
-					.getViewFactory().getCourseLibraryPresenter();
-			courseLibraryPresenter.setPlace((CourseLibraryPlace) place);
-			return new CourseLibraryActivity(courseLibraryPresenter);
-		}
 		if (place instanceof ClassroomPlace) {
 			ClassroomPresenter coursePresenter = clientFactory.getViewFactory().getClassroomPresenter();
 			coursePresenter.setPlace((ClassroomPlace) place);

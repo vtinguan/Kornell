@@ -98,6 +98,9 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("Course details: ")
 	String detailsHeader();
 	
+	@DefaultStringValue("Class: ")
+	String detailsSubHeader();
+	
 	@DefaultStringValue("About the course")
 	String btnAbout();
 	
@@ -106,6 +109,9 @@ public interface KornellConstants extends Constants {
 	
 	@DefaultStringValue("Certification")
 	String btnCertification();
+	
+	@DefaultStringValue("Library")
+	String btnLibrary();
 	
 	@DefaultStringValue("General view")
 	String btnAboutInfo();

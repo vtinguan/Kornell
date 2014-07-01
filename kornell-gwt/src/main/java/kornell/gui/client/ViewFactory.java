@@ -34,9 +34,6 @@ public interface ViewFactory {
 	WelcomeView getWelcomeView();
 	ProfileView getProfileView();
 	
-	CourseLibraryView getCourseLibraryView();
-	CourseLibraryPresenter getCourseLibraryPresenter();
-	
 	
 	ClassroomView getClassroomView();
 	ClassroomPresenter getClassroomPresenter();

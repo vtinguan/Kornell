@@ -1,33 +1,14 @@
 package kornell.server.api
 
 import java.util.ArrayList
-import java.util.Date
-import scala.collection.JavaConverters.asScalaBufferConverter
 import org.junit.runner.RunWith
-import org.scalatest.BeforeAndAfter
-import javax.ws.rs.Consumes
-import javax.ws.rs.POST
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import kornell.core.entity.CourseClass
-import kornell.core.entity.Enrollment
-import kornell.core.entity.EnrollmentState
-import kornell.core.entity.RoleType
 import kornell.core.to.EnrollmentRequestTO
-import kornell.server.jdbc.SQL.SQLHelper
-import kornell.server.jdbc.repository.CourseVersionsRepo
-import kornell.server.jdbc.repository.CoursesRepo
+import kornell.server.helper.SimpleInstitution
 import kornell.server.jdbc.repository.EnrollmentsRepo
-import kornell.server.jdbc.repository.InstitutionsRepo
-import kornell.server.jdbc.repository.PeopleRepo
-import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.repository.Entities
 import kornell.server.repository.TOs
 import kornell.server.test.UnitSpec
 import org.scalatest.junit.JUnitRunner
-import kornell.server.jdbc.repository.CourseClassesRepo
-import kornell.server.helper.SimpleInstitution
+import org.scalatest.junit.JUnitRunner
 
 
 @RunWith(classOf[JUnitRunner])

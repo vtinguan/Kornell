@@ -7,28 +7,10 @@
 	@buttonsPanelWidth: .18 * @wrapperWidth;
 	@filesPanelWidth: .75 * @wrapperWidth;
 	@fileIconWidth: .09 * @filesPanelWidth - @libraryPanelMargin;
-	@pnlFileNameWidth: .47 * @filesPanelWidth - @libraryPanelMargin;
+	@pnlFileNameWidth: .62 * @filesPanelWidth - @libraryPanelMargin;
 	@fileSizeWidth: .11 * @filesPanelWidth - @libraryPanelMargin;
-	@starsPanelWidth: .15 * @filesPanelWidth - @libraryPanelMargin;
 	@publishingDateWidth: .17 * @filesPanelWidth - @libraryPanelMargin;
-	.titlePanel{
-		padding-top: 20px;
-		font-size: 18px;
-		line-height: 20px;
-		.titleImage{
-			padding-left: 20px;
-			float: left;
-		}
-		.titleLabel{
-			color: @niceTextColor;
-			padding-left: 8px;
-			padding-right: 8px;
-			float: left;
-		}
-		.courseNameLabel{
-			color: @textHighlightColor2;
-		}
-	}
+	
 	.buttonsPanel{
 		width: @buttonsPanelWidth;
 		margin-left: @libraryPanelMargin;
@@ -56,72 +38,70 @@
 	}	
 	.filesPanel{
 		width: @filesPanelWidth - 7px;
-		margin-top: @libraryPanelMargin;
 		float: left;
 		.filesHeader{
 			.btnLibraryHeader{
 				border: 0;
+				border-radius: 0px !important;
 				text-align: left;
 				color: @niceTextColor;
 				padding-left: @libraryPanelMargin / 4;
 				font-size: 12px;
 				font-weight: bold;
-				border-left: 1px solid @buttonBorderLeftColor;
-				border-right: 1px solid @buttonBorderRightColor;
+				border-left: 1px solid @buttonBorderLeftColor !important;
+				border-right: 1px solid @buttonBorderRightColor !important;
+				float: left;
+				margin-bottom: 10px;
 			}
 			.btnIcon{width: @fileIconWidth + @libraryPanelMargin;}
 			.btnName{width: @pnlFileNameWidth + @libraryPanelMargin;}
 			.btnSize{width: @fileSizeWidth + @libraryPanelMargin;}
-			.btnClassification{width: @starsPanelWidth + @libraryPanelMargin;}
 			.btnPublishingDate{width: @publishingDateWidth + @libraryPanelMargin;}
 		}
-		.fileWrapper{
-			@fileWrapperHeight: 70px;
-			height: @fileWrapperHeight;
-			line-height: @fileWrapperHeight;
-			background-color: @contentBoxBackgroundColor;
-			margin-top: @libraryPanelMargin / 2;
-			color: @niceTextColor;
-			font-size: 13px;
-			.fileIcon{
-				float: left;
-				padding: 15px 10px;
-			}
-			.pnlFileName{
-				float: left;
-				width: @pnlFileNameWidth;
-				height: @fileWrapperHeight - @libraryPanelMargin;
-				padding: @libraryPanelMargin / 2;
-				.fileName{
-					line-height: 26px;
-					overflow: hidden;
+		.filesWrapper{
+			clear: both;
+			.fileWrapper{
+				@fileWrapperHeight: 70px;
+				height: @fileWrapperHeight;
+				line-height: @fileWrapperHeight;
+				background-color: @contentBoxBackgroundColor;
+				margin-top: @libraryPanelMargin / 2;
+				color: @niceTextColor;
+				font-size: 13px;
+				.fileIcon{
+					float: left;
+					padding: 15px 10px;
+				}
+				.pnlFileName{
+					float: left;
 					width: @pnlFileNameWidth;
-					text-overflow: ellipsis;
-					white-space: nowrap;
+					height: @fileWrapperHeight - @libraryPanelMargin;
+					padding: @libraryPanelMargin / 2;
+					.fileName{
+						line-height: 26px;
+						overflow: hidden;
+						width: @pnlFileNameWidth;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+					}
+					.fileDescription{
+						color: @textInfoColor;
+						font-size: 10px;
+						line-height: 12px;
+					}
 				}
-				.fileDescription{
-					color: @textInfoColor;
-					font-size: 10px;
-					line-height: 12px;
+				.fileSize{
+					float: left;
+					width: @fileSizeWidth;
+					padding-left: @libraryPanelMargin / 2;
+					padding-right: @libraryPanelMargin / 2;
 				}
-			}
-			.fileSize{
-				float: left;
-				width: @fileSizeWidth;
-				padding-left: @libraryPanelMargin / 2;
-				padding-right: @libraryPanelMargin / 2;
-			}
-			.starsPanel{
-				float: left;
-				width: @starsPanelWidth;
-				padding-left: @libraryPanelMargin / 2;
-				padding-right: @libraryPanelMargin / 2;
-			}
-			.publishingDate{
-				float: left;
-				width: @publishingDateWidth;
-				padding-left: @libraryPanelMargin / 2;
-				padding-right: @libraryPanelMargin / 2;
+				.publishingDate{
+					float: left;
+					width: @publishingDateWidth;
+					padding-left: @libraryPanelMargin / 2;
+					padding-right: @libraryPanelMargin / 2;
+				}
 			}
 		}
 	}

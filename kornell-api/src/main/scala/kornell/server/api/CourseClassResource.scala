@@ -27,6 +27,9 @@ import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationExceptio
 import javax.servlet.http.HttpServletResponse
 import kornell.server.repository.ContentRepository
 import kornell.core.to.RolesTO
+import kornell.core.to.LibraryFilesTO
+import kornell.server.repository.LibraryFilesRepository
+import java.io.IOException
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -83,6 +86,20 @@ class CourseClassResource(uuid: String) {
     //TODO: Refactor to Option.map
     AuthRepo.withPerson { person =>            
       ContentRepository.findKNLVisitedContent(uuid,person.getUUID)
+    }
+
+  @Produces(Array(LibraryFilesTO.TYPE))
+  @Path("libraryFiles")
+  @GET
+  def getLibraryFiles(implicit @Context sc: SecurityContext, @Context resp: HttpServletResponse) =
+    //TODO: Refactor to Option.map
+    AuthRepo.withPerson { person =>        
+      try {
+      	LibraryFilesRepository.findLibraryFiles(uuid)
+      } catch {
+        case ioe: IOException =>
+          resp.sendError(HttpServletResponse.SC_NO_CONTENT, "Library descriptor wasn't found.");
+      }    
     }
 
   @PUT
