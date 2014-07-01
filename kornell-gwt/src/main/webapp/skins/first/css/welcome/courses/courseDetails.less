@@ -9,6 +9,7 @@
 	@buttonsPanelWidth: .18 * @wrapperWidth;
 	@hintsPanelWidth: .25 * @wrapperWidth;
 	@infoPanelWidth: .45 * @wrapperWidth;
+	@rightPanelWidth: .75 * @wrapperWidth;
 	.titlePanel{
 		padding-top: 20px;
 		font-size: 18px;
@@ -27,7 +28,17 @@
 			padding-right: 8px;
 			float: left;
 		}
+		.subTitleLabel{
+			clear: both;
+			margin-left: 53px;
+			font-size: 14px;
+		}
 		.courseNameLabel{
+			color: @textHighlightColor2;
+			float: left;
+		}
+		.courseClassNameLabel{
+			font-size: 14px;
 			color: @textHighlightColor2;
 			float: left;
 		}
@@ -47,7 +58,7 @@
 		width: @buttonsPanelWidth;
 		margin-left: @detailsPanelMargin;
 		margin-right: @detailsPanelMargin;
-		margin-top: @detailsPanelMargin * 3;
+		margin-top: @detailsPanelMargin;
 		clear: both;
 		float: left;
 		.btnDetails{
@@ -130,7 +141,7 @@
 			@forumCommentsWidth: .21 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			@notesWidth: .12 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			width: @topicsPanelWidth;
-			margin-top: @detailsPanelMargin;
+			margin-top: @detailsPanelMargin * 1.5;
 			float: left;
 			.topicsHeaderPanel{
 				@topicsHeaderPanelHeight: 24px;
@@ -256,29 +267,13 @@
 
 		}
 		.certificationPanel{
-			@certificationPanelWidth: .75 * @wrapperWidth;
 
-			@itemWidth: .6 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@statusWidth: .15 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@gradeWidth: .07 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@actionsWidth: .18 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@itemWidth: .6 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@statusWidth: .15 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@gradeWidth: .07 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@actionsWidth: .18 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			margin-top: @detailsPanelMargin;
 			float: left;
-			.certificationInfo{
-				width: @certificationPanelWidth;
-				margin-top: @detailsPanelMargin;
-				margin-bottom: @detailsPanelMargin;
-				.certificationInfoTitle{
-					color: @textHighlightColor;
-					font-weight: bold;
-					font-size: 16px;
-					margin-bottom:  @detailsPanelMargin / 2;
-				}
-				.certificationInfoText{
-					color: @niceTextColor;
-					padding-right: @detailsPanelMargin;
-				}
-			}
 			.certificationHeaderPanel{
 				@certificationHeaderPanelHeight: 24px;
 				height: @certificationHeaderPanelHeight;
@@ -360,6 +355,25 @@
 				}
 			}
 		}
+		.libraryPanel{
+			float: left;
+			margin-top: 20px;
+		}
+		.detailsInfo{
+			width: @rightPanelWidth;
+			margin-top: @detailsPanelMargin;
+			margin-bottom: @detailsPanelMargin;
+			.detailsInfoTitle{
+				color: @textHighlightColor;
+				font-weight: bold;
+				font-size: 16px;
+				margin-bottom:  @detailsPanelMargin / 2;
+			}
+			.detailsInfoText{
+				color: @niceTextColor;
+				padding-right: @detailsPanelMargin;
+			}
+		}
 	}
 }
 
@@ -371,7 +385,7 @@
 		@infoPanelWidth: @detailsPanelWidth;
 		@topicsPanelWidth: @detailsPanelWidth;
 		@hintsPanelWidth: @detailsPanelWidth * 2 / 3;
-		@certificationPanelWidth: .85 * @wrapperWidthUnder990;
+		@rightPanelWidth: .85 * @wrapperWidthUnder990;
 		@detailsPanelMargin: 10px;
 		width:	@detailsPanelWidth;
 		.buttonsPanel{
@@ -383,7 +397,6 @@
 				width: @buttonsPanelWidth / 4;
 				margin-left: @detailsPanelMargin;
 				text-align: center;
-				float: left;
 			}
 		}
 		.contentPanel{
@@ -414,14 +427,14 @@
 				}
 			}
 
-			@itemWidth: .6 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@statusWidth: .15 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@gradeWidth: .07 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
-			@actionsWidth: .18 * @certificationPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@itemWidth: .6 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@statusWidth: .15 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@gradeWidth: .07 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@actionsWidth: .18 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
 			.certificationPanel{
 				margin-left: @detailsPanelMargin;
 				.certificationInfo{
-					width: @certificationPanelWidth;
+					width: @rightPanelWidth;
 				}
 				.certificationHeaderPanel{
 					.btnItem{width: @itemWidth + @detailsPanelMargin;}

@@ -10,9 +10,9 @@ import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.GenericClassroomView;
+import kornell.gui.client.presentation.course.generic.details.GenericCourseLibraryView;
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.course.library.CourseLibraryView;
-import kornell.gui.client.presentation.course.library.generic.GenericCourseLibraryView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.profile.ProfileView;
@@ -158,24 +158,6 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public TermsView getTermsView() {
 		return new GenericTermsView(clientFactory);
-	}
-
-	@Override
-	public CourseLibraryPresenter getCourseLibraryPresenter() {
-		if (courseLibraryPresenter == null) {
-			CourseLibraryView courseLibraryView = getCourseLibraryView();
-
-			courseLibraryPresenter = new CourseLibraryPresenter(
-					courseLibraryView, clientFactory.getPlaceController());
-		}
-		return courseLibraryPresenter;
-	}
-
-	@Override
-	public CourseLibraryView getCourseLibraryView() {
-		return new GenericCourseLibraryView(clientFactory.getEventBus(),
-				clientFactory.getKornellSession(),
-				clientFactory.getPlaceController());
 	}
 
 	@Override

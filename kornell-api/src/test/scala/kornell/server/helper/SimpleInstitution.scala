@@ -1,34 +1,28 @@
 package kornell.server.helper
 
+import java.util.Date
+
+import org.scalatest.BeforeAndAfter
 import org.scalatest.Suite
 import org.scalatest.SuiteMixin
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import kornell.core.entity.Institution
+
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClass
+import kornell.core.entity.CourseClassState
 import kornell.core.entity.CourseVersion
-import kornell.core.entity.Enrollment
+import kornell.core.entity.Institution
 import kornell.core.entity.Person
+import kornell.core.entity.RoleType
 import kornell.server.api.CourseClassesResource
-import kornell.server.api.EnrollmentResource
 import kornell.server.api.EnrollmentsResource
-import kornell.server.helper.MockHttpServletResponse
-import kornell.server.helper.MockSecurityContext
 import kornell.server.api.UserResource
 import kornell.server.jdbc.SQL.SQLHelper
-import kornell.server.repository.Entities
-import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.jdbc.repository.CourseVersionsRepo
 import kornell.server.jdbc.repository.CoursesRepo
-import kornell.core.entity.RoleType
+import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.InstitutionsRepo
-import kornell.server.jdbc.repository.CourseVersionsRepo
-import kornell.core.entity.EnrollmentState
-import java.util.Date
-import org.scalatest.BeforeAndAfter
-import kornell.core.entity.CourseClassState
+import kornell.server.repository.Entities
 
 trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ this: Suite =>
 

@@ -28,6 +28,7 @@ import kornell.core.entity.Role
 import kornell.core.entity.Registration
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
+import kornell.core.to.LibraryFileTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -38,6 +39,7 @@ object TOs {
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
   def newCourseVersionsTO: CourseVersionsTO = tos.newCourseVersionsTO.as
+  def newLibraryFileTO: LibraryFileTO = tos.newLibraryFileTO.as
 
   def newRegistrationsTO(registrationList: List[Registration]): RegistrationsTO = {
     val registrations = newRegistrationsTO
@@ -162,5 +164,11 @@ object TOs {
     val rs = tos.newRolesTO.as
     rs.setRoleTOs(roleTOs.asJava)
     rs
+  }
+
+  def newLibraryFilesTO(libraryFileTOs: List[LibraryFileTO]) = {
+    val lf = tos.newLibraryFilesTO.as
+    lf.setLibraryFiles(libraryFileTOs.asJava)
+    lf
   }
 }

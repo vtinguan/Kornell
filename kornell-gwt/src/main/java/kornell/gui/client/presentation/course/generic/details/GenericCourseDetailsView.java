@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.course.generic.details;
 import java.util.ArrayList;
 import java.util.List;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
@@ -14,6 +15,7 @@ import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
+import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
@@ -69,6 +71,7 @@ public class GenericCourseDetailsView extends Composite {
 	private Button btnAbout;
 	private Button btnTopics;
 	private Button btnCertification;
+	private Button btnLibrary;
 	private Button btnGoToCourse;
 
 	private Button btnCurrent;
@@ -78,6 +81,7 @@ public class GenericCourseDetailsView extends Composite {
 	private FlowPanel aboutPanel;
 	private FlowPanel topicsPanel;
 	private FlowPanel certificationPanel;
+	private FlowPanel libraryPanel;
 	private ClientFactory clientFactory;
 
 	private Presenter presenter;
@@ -158,12 +162,24 @@ public class GenericCourseDetailsView extends Composite {
 
 		detailsContentPanel.add(topicsPanel);
 		detailsContentPanel.add(certificationPanel);
+
+		btnLibrary.setVisible(false);
+		session.courseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()).libraryFiles(new Callback<LibraryFilesTO>() {
+			@Override
+			public void ok(LibraryFilesTO to) {		
+				libraryPanel = getLibraryPanel(to);
+				detailsContentPanel.add(libraryPanel);
+				btnLibrary.setVisible(true);	
+			}
+		});
 	}
 
 	private void displayContent(Button btn) {
 		aboutPanel.setVisible(btn.equals(btnAbout));
 		topicsPanel.setVisible(btn.equals(btnTopics));
 		certificationPanel.setVisible(btn.equals(btnCertification));
+		if(libraryPanel != null)
+			libraryPanel.setVisible(btn.equals(btnLibrary));
 		LoadingPopup.hide();
 	}
 	
@@ -185,17 +201,24 @@ public class GenericCourseDetailsView extends Composite {
 		return certificationPanel;
 	}
 
+	private FlowPanel getLibraryPanel(LibraryFilesTO libraryFilesTO) {
+		FlowPanel libraryPanel = new FlowPanel();
+		libraryPanel.add(new GenericCourseLibraryView(bus, session, placeCtrl, libraryFilesTO));
+
+		return libraryPanel;
+	}
+
 	private FlowPanel getCertificationInfo() {
 		FlowPanel certificationInfo = new FlowPanel();
-		certificationInfo.addStyleName("certificationInfo");
+		certificationInfo.addStyleName("detailsInfo");
 
 		Label infoTitle = new Label("Certificação");
-		infoTitle.addStyleName("certificationInfoTitle");
+		infoTitle.addStyleName("detailsInfoTitle");
 		certificationInfo.add(infoTitle);
 
 		Label infoText = new Label(
 				/*"Confira abaixo o status dos testes e avaliações presentes neste curso. " + */"Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e tenha sido aprovado na avaliação final.");
-		infoText.addStyleName("certificationInfoText");
+		infoText.addStyleName("detailsInfoText");
 		certificationInfo.add(infoText);
 
 		return certificationInfo;
@@ -266,6 +289,14 @@ public class GenericCourseDetailsView extends Composite {
 		Label courseNameLabel = new Label(courseClassTO.getCourseVersionTO().getCourse().getTitle());
 		courseNameLabel.addStyleName("courseNameLabel");
 		titlePanel.add(courseNameLabel);
+
+		Label subTitleLabel = new Label(constants.detailsSubHeader() + " ");
+		subTitleLabel.addStyleName("titleLabel subTitleLabel");
+		titlePanel.add(subTitleLabel);
+
+		Label courseClassNameLabel = new Label(courseClassTO.getCourseClass().getName());
+		courseClassNameLabel.addStyleName("courseClassNameLabel");
+		titlePanel.add(courseClassNameLabel);
 	}
 
 	private FlowPanel getInfosPanel() {
@@ -296,6 +327,7 @@ public class GenericCourseDetailsView extends Composite {
 		btnAbout = new Button();
 		btnTopics = new Button();
 		btnCertification = new Button();
+		btnLibrary = new Button();
 		btnGoToCourse = new Button();
 		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(), true);
 		if(actoms.size() > 1){
@@ -305,7 +337,8 @@ public class GenericCourseDetailsView extends Composite {
 		// TODO: i18n
 		if(isEnrolled){
 			//TODO comment
-			displayButton(btnCertification, constants.btnCertification(), "Imprimir Certificado"/*constants.btnCertificationInfo()*/, false);
+			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
+			displayButton(btnLibrary, constants.btnLibrary(), "Material complementar"/*constants.btnCertificationInfo()*/, false);
 			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
 		}
 	}

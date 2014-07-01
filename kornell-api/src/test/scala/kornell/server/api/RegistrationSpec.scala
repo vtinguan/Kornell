@@ -1,17 +1,11 @@
 package kornell.server.api
+
 import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.matchers.ShouldMatchers
-import kornell.core.to.RegistrationRequestTO
-import kornell.server.repository.TOs
-import scala.util.Random
-import java.util.UUID
-import javax.ws.rs.core.SecurityContext
-import kornell.server.test.UnitSpec
-import kornell.server.repository.Entities
-import kornell.server.helper.SimpleInstitution
 import kornell.server.helper.MockSecurityContext
+import kornell.server.helper.SimpleInstitution
+import kornell.server.repository.TOs
+import kornell.server.test.UnitSpec
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class RegistrationSpec extends UnitSpec with SimpleInstitution{

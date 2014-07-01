@@ -27,6 +27,8 @@ import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationExceptio
 import javax.servlet.http.HttpServletResponse
 import kornell.server.repository.ContentRepository
 import kornell.core.to.RolesTO
+import kornell.core.to.LibraryFilesTO
+import kornell.server.repository.LibraryFilesRepository
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -83,6 +85,15 @@ class CourseClassResource(uuid: String) {
     //TODO: Refactor to Option.map
     AuthRepo.withPerson { person =>            
       ContentRepository.findKNLVisitedContent(uuid,person.getUUID)
+    }
+
+  @Produces(Array(LibraryFilesTO.TYPE))
+  @Path("libraryFiles")
+  @GET
+  def getLibraryFiles(implicit @Context sc: SecurityContext): LibraryFilesTO =
+    //TODO: Refactor to Option.map
+    AuthRepo.withPerson { person =>            
+      LibraryFilesRepository.findLibraryFiles(uuid)
     }
 
   @PUT
