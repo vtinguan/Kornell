@@ -29,6 +29,7 @@ import kornell.server.repository.ContentRepository
 import kornell.core.to.RolesTO
 import kornell.core.to.LibraryFilesTO
 import kornell.server.repository.LibraryFilesRepository
+import java.io.IOException
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -90,10 +91,15 @@ class CourseClassResource(uuid: String) {
   @Produces(Array(LibraryFilesTO.TYPE))
   @Path("libraryFiles")
   @GET
-  def getLibraryFiles(implicit @Context sc: SecurityContext): LibraryFilesTO =
+  def getLibraryFiles(implicit @Context sc: SecurityContext, @Context resp: HttpServletResponse) =
     //TODO: Refactor to Option.map
-    AuthRepo.withPerson { person =>            
-      LibraryFilesRepository.findLibraryFiles(uuid)
+    AuthRepo.withPerson { person =>        
+      try {
+      	LibraryFilesRepository.findLibraryFiles(uuid)
+      } catch {
+        case ioe: IOException =>
+          resp.sendError(HttpServletResponse.SC_NO_CONTENT, "Library descriptor wasn't found.");
+      }    
     }
 
   @PUT
