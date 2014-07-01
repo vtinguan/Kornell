@@ -10,9 +10,9 @@ object ServerTime {
   val fmt = ISODateTimeFormat.dateTime
   
 
-  def now():String = fmt.print(new DateTime)
+  def now():String = fmt.print(DateTime.now)
   
-  def todayStart():String = fmt.print(new DateTime().withTimeAtStartOfDay)
+  def todayStart():String = fmt.print(DateTime.now().withTimeAtStartOfDay())
   
-  def todayEnd():String = fmt.print(new DateTime().plusDays(1).withTimeAtStartOfDay().minusMillis(1))
+  def todayEnd():String = fmt.print(DateTime.now().plusDays(1).withTimeAtStartOfDay().minusMillis(1))
 }

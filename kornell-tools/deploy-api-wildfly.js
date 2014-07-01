@@ -49,12 +49,11 @@ function scaleDown() {
 }
 
 function waitScaleUp(err, data) {
-	if (err)
-		throw err;
+	if (err) throw err;
 	wait("scale up", 0, scaleDown);
 }
 
-function scaleUp(data,err) {
+function scaleUp(err,data) {
 	if(err) throw err;
 	console.log("Scaling up ASG ["+asgUpPolicy+"@"+asgName+"]");
 	asg.executePolicy({

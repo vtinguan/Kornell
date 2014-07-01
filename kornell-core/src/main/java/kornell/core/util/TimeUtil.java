@@ -1,7 +1,5 @@
 package kornell.core.util;
 
-import com.google.gwt.i18n.shared.DateTimeFormat;
-
 import kornell.core.value.Date;
 
 public class TimeUtil {
@@ -9,6 +7,7 @@ public class TimeUtil {
 	
 	@SuppressWarnings("deprecation")
 	public static java.util.Date toJUD(Date date) {
+		if(date == null) return null;
 		java.util.Date jud = new java.util.Date(0);
 		jud.setYear(date.getYear());
 		jud.setMonth(date.getMonth());

@@ -80,7 +80,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	
 	private UserInfoTO user;
 	private CourseClassTO currentCourseClass;
-	private KornellFormFieldWrapper email, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
+	private KornellFormFieldWrapper cpf, email, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private Button btnChangePassword;
@@ -240,11 +240,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 	private UserInfoTO getUserInfoFromForm() {
 		Person person = user.getPerson();
-		if(isRegisteredWithCPF){
-			person.setCPF(email.getFieldPersistText());
-		} else {
-			person.setEmail(email.getFieldPersistText());
-		}
+
+		person.setCPF(cpf.getFieldPersistText());
+		person.setEmail(email.getFieldPersistText());
 		person.setFullName(fullName.getFieldPersistText());
 		person.setCompany(company.getFieldPersistText());
 		person.setTitle(position.getFieldPersistText());
@@ -334,17 +332,28 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 		// the email is shown only to the current user or the admin
 		if(isCurrentUser || isAdmin){
+			/*
 			TextBoxFormField formField;
+			
 			if(isRegisteredWithCPF)
 				formField = formHelper.createTextBoxFormField(user.getPerson().getCPF(), TextBoxFormField.CPF);
 			else
 				formField = formHelper.createTextBoxFormField(user.getPerson().getEmail());
-			email = new KornellFormFieldWrapper(isRegisteredWithCPF?"CPF":"Email", formField, false);
 			
-			fields.add(email);
-			profileFields.add(email);
+			email = new KornellFormFieldWrapper(isRegisteredWithCPF?"CPF":"Email", formField, false);
+			*/
+
 			profileFields.add(getPrivatePanel());
 		}
+		
+		email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), false);
+		cpf = new KornellFormFieldWrapper("CPF", formHelper.createTextBoxFormField(user.getPerson().getCPF()), false);
+		
+		fields.add(email);
+		fields.add(cpf);
+		
+		profileFields.add(email);
+		profileFields.add(cpf);
 
 		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode && isAdmin);
 		fields.add(fullName);
