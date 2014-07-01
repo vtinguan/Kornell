@@ -77,8 +77,9 @@ object ReportGenerator {
 	    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
 	    enrollmentBreakdowns += TOs.newEnrollmentsBreakdownTO("aa", new Integer(1))
 	    enrollmentBreakdowns.toList
-		    
-	    val jasperFile = getClass.getResource("/reports/courseClassInfo.jasper").getFile()
+		  
+	    val cl = Thread.currentThread.getContextClassLoader
+	    val jasperFile = cl.getResource("reports/courseClassInfo.jasper").getFile()
 	    val bytes = getReportBytes(courseClassReportTO, parameters, jasperFile)
 	    
 	    bytes
