@@ -168,6 +168,7 @@ public class GenericCourseDetailsView extends Composite {
 			@Override
 			public void ok(LibraryFilesTO to) {		
 				libraryPanel = getLibraryPanel(to);
+				libraryPanel.setVisible(false);
 				detailsContentPanel.add(libraryPanel);
 				btnLibrary.setVisible(true);	
 			}
