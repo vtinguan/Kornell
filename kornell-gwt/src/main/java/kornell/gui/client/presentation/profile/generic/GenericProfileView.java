@@ -63,7 +63,7 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private Institution institution;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
-	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showContactDetails, isRegisteredWithCPF;
+	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showContactDetails;
 
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
@@ -310,8 +310,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 			return;
 		} 
 		
-		//TODO stinky
-		isRegisteredWithCPF = user.getPerson().getEmail() == null;
 
 		boolean isRegistered = false;
 		for (Registration registration : user.getRegistrationsTO().getRegistrations()) {
@@ -346,8 +344,8 @@ public class GenericProfileView extends Composite implements ProfileView {
 			profileFields.add(getPrivatePanel());
 		}
 		
-		email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), false);
-		cpf = new KornellFormFieldWrapper("CPF", formHelper.createTextBoxFormField(user.getPerson().getCPF()), false);
+		email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), isEditMode);
+		cpf = new KornellFormFieldWrapper("CPF", formHelper.createTextBoxFormField(user.getPerson().getCPF()), isEditMode);
 		
 		fields.add(email);
 		fields.add(cpf);
