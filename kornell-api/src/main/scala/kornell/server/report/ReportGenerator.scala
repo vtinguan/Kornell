@@ -5,12 +5,9 @@ import java.net.URL
 import java.sql.ResultSet
 import java.util.Date
 import java.util.HashMap
-
 import scala.collection.JavaConverters.seqAsJavaListConverter
 import scala.collection.mutable.ListBuffer
-
 import org.apache.commons.io.FileUtils
-
 import kornell.core.to.report.CertificateInformationTO
 import kornell.core.to.report.CourseClassReportTO
 import kornell.core.to.report.EnrollmentsBreakdownTO
@@ -21,6 +18,7 @@ import net.sf.jasperreports.engine.JasperReport
 import net.sf.jasperreports.engine.JasperRunManager
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 import net.sf.jasperreports.engine.util.JRLoader
+import java.io.InputStream
 
 object ReportGenerator {
 
@@ -77,9 +75,10 @@ object ReportGenerator {
 	    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
 	    enrollmentBreakdowns += TOs.newEnrollmentsBreakdownTO("aa", new Integer(1))
 	    enrollmentBreakdowns.toList
-		    
-	    val jasperFile = getClass.getResource("/reports/courseClassInfo.jasper").getFile()
-	    val bytes = getReportBytes(courseClassReportTO, parameters, jasperFile)
+		  
+	    val cl = Thread.currentThread.getContextClassLoader
+	    val jasperStream = cl.getResourceAsStream("reports/courseClassInfo.jasper")
+	    val bytes = getReportBytesFromStream(courseClassReportTO, parameters, jasperStream)
 	    
 	    bytes
   }
@@ -208,6 +207,9 @@ object ReportGenerator {
 
   private def getReportBytes(certificateData: List[Any], parameters: HashMap[String, Object], jasperFile: File): Array[Byte] =
     runReportToPdf(certificateData, parameters, JRLoader.loadObject(jasperFile).asInstanceOf[JasperReport])
+
+  private def getReportBytesFromStream(certificateData: List[Any], parameters: HashMap[String, Object], jasperStream: InputStream): Array[Byte] =
+    runReportToPdf(certificateData, parameters, JRLoader.loadObject(jasperStream).asInstanceOf[JasperReport])
 
   private def getReportBytes(certificateData: List[Any], parameters: HashMap[String, Object], jasperFile: String): Array[Byte] = 
     JasperRunManager.runReportToPdf(jasperFile, parameters, new JRBeanCollectionDataSource(certificateData asJava))
