@@ -24,3 +24,5 @@
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
+.modal .standardButtonBar{width:280px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal .standardButtonBar .btnNotSelected{margin-left:20px;}

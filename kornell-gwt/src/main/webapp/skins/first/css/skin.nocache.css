@@ -52,6 +52,8 @@
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
+.modal .standardButtonBar{width:280px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal .standardButtonBar .btnNotSelected{margin-left:20px;}
 .menuBar{top:0px;left:0px;width:100%;height:45px;background-color:#45484d;background:-webkit-gradient(linear, left top, left bottom, from(#45484d), to(#000000));background:-webkit-linear-gradient(top, #45484d, #000000);background:-moz-linear-gradient(top, #45484d, #000000);background:-ms-linear-gradient(top, #45484d, #000000);background:-o-linear-gradient(top, #45484d, #000000);background:#45484d !important;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%) !important;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000)) !important;background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%) !important;background:-o-linear-gradient(top, #45484d 0%, #000000 100%) !important;background:-ms-linear-gradient(top, #45484d 0%, #000000 100%) !important;background:linear-gradient(to bottom, #45484d 0%, #000000 100%) !important;}.menuBar .imgMenuBar{float:left;margin-left:0px;}
 .menuBar .buttons{float:right;}
 .menuBar .buttons .menuBarButton{border-left:1px solid #505864 !important;border-right:1px solid #181c22 !important;height:35px;line-height:25px;float:left;text-align:center;padding:10px 18px 0px 18px;font-size:18px;color:#bec1c3;text-decoration:none;}.menuBar .buttons .menuBarButton .label{background:transparent;color:#bec1c3;font-size:12px;margin-left:4px;}
@@ -98,6 +100,8 @@
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
+.modal .standardButtonBar{width:280px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal .standardButtonBar .btnNotSelected{margin-left:20px;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
 .background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
@@ -140,6 +144,8 @@
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
+.modal .standardButtonBar{width:280px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal .standardButtonBar .btnNotSelected{margin-left:20px;}
 .termsPanel{width:962px;margin:0 auto;text-align:left;padding-top:20px;}.termsPanel .institutionLogo{margin:0 auto;width:250px;display:block;margin-bottom:30px;}
 .termsPanel .txtTitle{color:#bec1c3;font-size:25px;text-align:center;font-weight:bold;margin-top:5px;margin-bottom:20px;}
 .termsPanel .titleUser{color:#d88709;font-size:20px;padding-top:5px;padding-bottom:10px;}
@@ -187,6 +193,8 @@
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
+.modal .standardButtonBar{width:280px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal .standardButtonBar .btnNotSelected{margin-left:20px;}
 .libraryPanel .buttonsPanel{width:173.16px;margin-left:20px;margin-right:20px;float:left;}.libraryPanel .buttonsPanel .btnLibrary{width:133.16px;font-size:14px;text-align:right;margin-top:20px;padding:4px 12px;border-radius:8px;display:inline-block;}.libraryPanel .buttonsPanel .btnLibrary:hover{text-decoration:none;}
 .libraryPanel .buttonsPanel .btnLibrary .btnTitle{font-weight:bold;color:#d9dadb;height:60px;line-height:60px;}
 .libraryPanel .filesPanel{width:714.5px;float:left;}.libraryPanel .filesPanel .filesHeader .btnLibraryHeader{border:0;border-radius:0px !important;text-align:left;color:#bec1c3;padding-left:5px;font-size:12px;font-weight:bold;border-left:1px solid #505864 !important;border-right:1px solid #181c22 !important;float:left;margin-bottom:10px;}
@@ -235,6 +243,8 @@
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
+.modal .standardButtonBar{width:280px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal .standardButtonBar .btnNotSelected{margin-left:20px;}
 .detailsPanel{width:962px;margin:0 auto;}.detailsPanel .titlePanel{padding-top:20px;font-size:18px;line-height:20px;}.detailsPanel .titlePanel .titleImage{padding-left:20px;padding-right:5px;margin-top:-3px;float:left;height:28px;width:28px;}
 .detailsPanel .titlePanel .titleLabel{color:#bec1c3;padding-left:8px;padding-right:8px;float:left;}
 .detailsPanel .titlePanel .subTitleLabel{clear:both;margin-left:53px;font-size:14px;}

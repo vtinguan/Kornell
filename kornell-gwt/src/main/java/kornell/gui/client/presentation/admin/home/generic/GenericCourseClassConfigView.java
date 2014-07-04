@@ -24,12 +24,16 @@ import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -38,6 +42,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericCourseClassConfigView extends Composite {
@@ -46,6 +51,9 @@ public class GenericCourseClassConfigView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
+	private static final String MODAL_DELETE = "delete";
+	private static final String MODAL_DEACTIVATE = "deactivate";
+	private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
 
 	private KornellSession session;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
@@ -70,13 +78,23 @@ public class GenericCourseClassConfigView extends Composite {
 	@UiField
 	Button btnDelete;
 
+	@UiField
+	Modal confirmModal;
+	@UiField
+	Label confirmText;
+	@UiField
+	com.github.gwtbootstrap.client.ui.Button btnModalOK;
+	@UiField
+	com.github.gwtbootstrap.client.ui.Button btnModalCancel;
+
 	private UserInfoTO user;
 	private CourseClassTO courseClassTO;
 	private CourseClass courseClass;
 	private KornellFormFieldWrapper course, courseVersion, name, publicClass,
-			requiredScore, enrollWithCPF, maxEnrollments;
+			requiredScore, enrollWithCPF, maxEnrollments, overrideEnrollments;
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
+	private String modalMode;
 	
 	public GenericCourseClassConfigView(final KornellSession session,
 			Presenter presenter, CourseClassTO courseClassTO) {
@@ -91,9 +109,13 @@ public class GenericCourseClassConfigView extends Composite {
 		// i18n
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText(isCreationMode ? "Cancelar".toUpperCase() : "Limpar".toUpperCase());
-		btnDelete.setVisible(CourseClassState.active.equals(Dean.getInstance()
+		btnDelete.setVisible(!isCreationMode && CourseClassState.active.equals(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getState()));
 		btnDelete.setText(canDelete?"Excluir".toUpperCase():"Desabilitar".toUpperCase());
+		
+
+		btnModalOK.setText("OK".toUpperCase());
+		btnModalCancel.setText("Cancelar".toUpperCase());
 
 		this.titleEdit.setVisible(!isCreationMode);
 		this.titleCreate.setVisible(isCreationMode);
@@ -150,6 +172,20 @@ public class GenericCourseClassConfigView extends Composite {
 		enrollWithCPF = new KornellFormFieldWrapper("Matricular com CPF?", formHelper.createCheckBoxFormField(isEnrollWithCPF), isInstitutionAdmin);
 		fields.add(enrollWithCPF);
 		profileFields.add(enrollWithCPF);
+
+		/*Boolean isOverrideEnrollments = courseClass.isEnrollWithCPF() == null ? false : courseClass.isEnrollWithCPF();
+		overrideEnrollments = new KornellFormFieldWrapper("Sobrescrever matrículas em lote?", formHelper.createCheckBoxFormField(isOverrideEnrollments), isInstitutionAdmin);
+		fields.add(overrideEnrollments);
+		profileFields.add(overrideEnrollments);
+		((CheckBox)overrideEnrollments.getFieldWidget()).addMouseDownHandler(new MouseDownHandler() {
+			@Override
+			public void onMouseDown(MouseDownEvent event) {
+				if(!((CheckBox)overrideEnrollments.getFieldWidget()).getValue()){
+					((CheckBox)overrideEnrollments.getFieldWidget()).setValue(false);
+					showModal(MODAL_OVERRIDE_ENROLLMENTS);
+				}
+			}
+		});*/
 		
 		profileFields.add(formHelper.getImageSeparator());
 
@@ -321,10 +357,43 @@ public class GenericCourseClassConfigView extends Composite {
 	@UiHandler("btnDelete")
 	void doDelete(ClickEvent e) {
 		if(!isCreationMode && canDelete){
-			presenter.changeCourseClassState(courseClassTO, CourseClassState.deleted);
+			showModal(MODAL_DELETE);
 		} else {
-			presenter.changeCourseClassState(courseClassTO, CourseClassState.inactive);
+			showModal(MODAL_DEACTIVATE);
 		}
+	}
+
+	private void showModal(String mode) {
+		this.modalMode = mode;
+		if(MODAL_DELETE.equals(modalMode)){
+			confirmText.setText("Tem certeza que deseja excluir esta turma?"
+					+ "\nEsta operação não pode ser desfeita.");
+		} else if (MODAL_DEACTIVATE.equals(modalMode)){
+			confirmText.setText("Tem certeza que deseja desativar esta turma?"
+					+ "\nEsta operação não pode ser desfeita.");
+		} else if (MODAL_OVERRIDE_ENROLLMENTS.equals(modalMode)){
+			confirmText.setText("ATENÇÃO! Tem certeza que deseja habilitar a sobrescrita de matrículas? Toda vez que uma matrícula em lote for feita, todas as matrículas já existentes que não estão presentes no lote serão canceladas.");
+		}
+		confirmModal.show();
+	  // TODO Auto-generated method stub
+	  
+  }
+
+	@UiHandler("btnModalOK")
+	void onModalOkButtonClicked(ClickEvent e) {
+		if(MODAL_DELETE.equals(modalMode)){
+			presenter.changeCourseClassState(courseClassTO, CourseClassState.deleted);
+		} else if (MODAL_DEACTIVATE.equals(modalMode)){
+			presenter.changeCourseClassState(courseClassTO, CourseClassState.inactive);
+		} else if (MODAL_OVERRIDE_ENROLLMENTS.equals(modalMode)){
+			((CheckBox)overrideEnrollments.getFieldWidget()).setValue(true);
+		}
+		confirmModal.hide();
+	}
+
+	@UiHandler("btnModalCancel")
+	void onModalCancelButtonClicked(ClickEvent e) {
+		confirmModal.hide();
 	}
 
 	private boolean checkErrors() {
