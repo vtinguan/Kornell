@@ -87,14 +87,59 @@ public class StringUtils {
 	public static String parseInstitutionNameFromHostName(String hostName) {
 		String institutionName = null;
 		String[] split = hostName.split("\\.");
-		if(split.length >= 1){
+		if (split.length >= 1) {
 			institutionName = split[0];
 			RegExp instRegex = RegExp.compile("(.*)-test", "i");
 			MatchResult instMatcher = instRegex.exec(institutionName);
 			if (instMatcher != null && instMatcher.getGroupCount() >= 2) {
 				institutionName = instMatcher.getGroup(1);
 			}
-		}		
+		}
 		return institutionName;
+	}
+
+	public static OptionString opt(String str) {
+		if (isSome(str))
+			return new SomeString(str);
+		else
+			return new NoneString();
+	}
+
+	public interface OptionString {
+		OptionString orElse(String other);
+
+		String getOrNull();
+	}
+
+	public static class SomeString implements OptionString {
+		String str;
+
+		public SomeString(String str) {
+			this.str = str;
+		}
+
+		@Override
+		public OptionString orElse(String other) {
+			return this;
+		}
+
+		@Override
+		public String getOrNull() {
+			return str;
+		}
+	}
+
+	public static class NoneString implements OptionString {
+
+		@Override
+		public OptionString orElse(String other) {
+			return opt(other);
+		}
+
+		@Override
+		public String getOrNull() {
+			return null;
+		}
+
 	}
 }

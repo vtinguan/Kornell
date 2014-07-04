@@ -38,7 +38,7 @@ object AuthRepo {
   implicit def toString(rs: ResultSet): String = rs.getString(1)
 
   def getUserRoles = userRoles.asJava
-  
+
   def userRoles = {
     val roles = ThreadLocalAuthenticator.getAuthenticatedPersonUUID
       .flatMap { usernameOf }
@@ -60,7 +60,7 @@ object AuthRepo {
       case None => throw new WebApplicationException(Response.Status.UNAUTHORIZED)
     }
   }
-  
+
   def getPersonByPasswordChangeUUID(passwordChangeUUID: String) =
     sql"""
     	select p.* from Person p 
@@ -102,7 +102,35 @@ object AuthRepo {
   def usernameOf(personUUID: String) = {
     val username = sql"""
   		select username from Password where person_uuid = $personUUID
-  	""".first[String]{ rs => rs.getString("username") }
-  	username
+  	""".first[String] { rs => rs.getString("username") }
+    username
   }
+
+  def authenticate(userkey: String, password: String) = 
+    authByUsername(userkey, password)
+    .orElse(authByCPF(userkey, password))
+    .orElse(authByEmail(userkey, password))
+
+  def authByEmail(email: String, password: String) = sql"""
+   select person_uuid 
+   from Password pwd
+   join Person p on p.uuid = pwd.person_uuid
+   where p.email=${email}
+     and pwd.password=${SHA256(password)}
+    """.first[String]
+
+  def authByCPF(cpf: String, password: String) = sql"""
+   select person_uuid 
+   from Password pwd
+   join Person p on p.uuid = pwd.person_uuid
+   where p.cpf=${cpf}
+     and pwd.password=${SHA256(password)}
+    """.first[String]
+
+    def authByUsername(username: String, password: String) = sql"""
+    select person_uuid 
+    from Password
+    		where username=${username}
+    		and password=${SHA256(password)}
+    """.first[String]
 }

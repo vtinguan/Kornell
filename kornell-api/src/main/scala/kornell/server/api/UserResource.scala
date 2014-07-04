@@ -35,8 +35,7 @@ class UserResource {
 
   @GET
   @Produces(Array(UserInfoTO.TYPE)) //TODO: Cache
-  def get(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse): Option[UserInfoTO] =
+  def get: Option[UserInfoTO] =
     AuthRepo.withPerson { p =>
       val user = newUserInfoTO
       val username = PersonRepo(p.getUUID).getUsername
@@ -200,4 +199,13 @@ class UserResource {
     }
   }
 
+  def createUser(institutionUUID: String, fullName: String, email: String, cpf: String, username: String, password: String): String = {
+    val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username)
+    createUser(regreq).getPerson.getUUID
+  }
+
+}
+
+object UserResource {
+  def apply() = new UserResource()
 }

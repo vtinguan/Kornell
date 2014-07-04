@@ -14,6 +14,7 @@ import kornell.server.util.Conditional._
 import kornell.server.repository.Entities
 import kornell.core.entity.ActomEntries
 import kornell.server.util.RequirementNotMet
+import java.util.logging.Logger
 
 @Path("/probes")
 @Produces(Array("text/plain"))
@@ -22,10 +23,10 @@ class ProbesResource {
 
   @GET
   @Path("triple")
-  @Produces(Array(ActomEntries.TYPE))
+  @Produces(Array("text/plain"))
   def triple(@QueryParam("x") x: Int) = {
-    Entities.newActomEntries("TRIPLE", "" + 3 * x, null)
-  }.requiring({x > 10}, RequirementNotMet)
+     3 * x
+  }.requiring(x > 10, RequirementNotMet)
 
   @GET
   @Path("putToS3Sync")

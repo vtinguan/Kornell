@@ -31,11 +31,24 @@ object Entities {
 
   def newPerson: Person = factory.newPerson.as
 
-  def newPerson(uuid: String, fullName: String, lastPlaceVisited: String = null,
-    email: String, company: String, title: String, sex: String,
-    birthDate: Date, confirmation: String, telephone: String, country: String,
-    state: String, city: String, addressLine1: String, addressLine2: String,
-    postalCode: String, cpf: String) = {
+  def newPerson(
+    uuid: String = null,
+    fullName: String = null,
+    lastPlaceVisited: String = null,
+    email: String = null,
+    company: String = null,
+    title: String = null,
+    sex: String = null,
+    birthDate: Date = null,
+    confirmation: String = null,
+    telephone: String = null,
+    country: String = null,
+    state: String = null,
+    city: String = null,
+    addressLine1: String = null, 
+    addressLine2: String = null,
+    postalCode: String = null, 
+    cpf: String = null) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -104,7 +117,7 @@ object Entities {
     progress: Integer, notes: String,
     state: EnrollmentState, lastProgressUpdate: String = null,
     assessment: Assessment = null, lastAssessmentUpdate: String = null,
-    assessmentScore:BigDecimal = null, certifiedAt:String ): Enrollment = {
+    assessmentScore: BigDecimal = null, certifiedAt: String): Enrollment = {
     val e = factory.enrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -127,7 +140,7 @@ object Entities {
     i.setName(name)
     i.setFullName(fullName)
     i.setUUID(uuid)
-    if(terms != null)
+    if (terms != null)
       i.setTerms(terms.stripMargin)
     i.setAssetsURL(assetsURL)
     i.setBaseURL(baseURL)
@@ -206,7 +219,7 @@ object Entities {
     version
   }
 
-  def newCourseClass(uuid: String, name: String, courseVersionUUID: String, institutionUUID: String, requiredScore: BigDecimal, publicClass: Boolean, enrollWithCPF: Boolean, maxEnrollments: Integer, createdAt: Date,createdBy: String, state: CourseClassState) = {
+  def newCourseClass(uuid: String, name: String, courseVersionUUID: String, institutionUUID: String, requiredScore: BigDecimal, publicClass: Boolean, enrollWithCPF: Boolean, maxEnrollments: Integer, createdAt: Date, createdBy: String, state: CourseClassState) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)

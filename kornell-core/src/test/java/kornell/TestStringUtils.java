@@ -1,7 +1,8 @@
 package kornell;
 
 import static kornell.core.util.StringUtils.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import kornell.core.util.StringUtils;
 
 import org.junit.Test;
 
@@ -24,5 +25,13 @@ public class TestStringUtils {
 		assertEquals("institution",parseInstitutionNameFromHostName("institution.test.eduvem.com"));
 		assertEquals("institution",parseInstitutionNameFromHostName("institution-test.eduvem.com"));
 		assertEquals("institution",parseInstitutionNameFromHostName("institution-test.outrodominio.com.br"));
+	}
+	
+	@Test
+	public void testOptionalString(){
+		assertEquals(StringUtils.opt("uala").getOrNull(),"uala");
+		assertNull(StringUtils.opt(null).getOrNull());
+		assertEquals(StringUtils.opt("").orElse("uala").getOrNull(),"uala");
+		assertNull(StringUtils.opt(null).orElse("").getOrNull());
 	}
 }

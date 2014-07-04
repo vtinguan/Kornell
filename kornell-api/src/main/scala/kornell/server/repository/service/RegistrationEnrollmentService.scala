@@ -26,6 +26,7 @@ import kornell.core.entity.RoleCategory
 import kornell.server.repository.Entities
 import kornell.core.util.TimeUtil
 import kornell.server.util.ServerTime
+import kornell.core.util.StringUtils
 
 object RegistrationEnrollmentService {
 
@@ -40,15 +41,10 @@ object RegistrationEnrollmentService {
         RoleCategory.isCourseClassAdmin(roles, enrollmentRequest.getCourseClassUUID))
   }
 
-  private def deanRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, dean: Person) =
-    PeopleRepo.getByEmailOrCPF({
-      if(enrollmentRequest.getEmail != null)
-        enrollmentRequest.getEmail
-      else
-        enrollmentRequest.getCPF
-    }) match {
-      case Some(one) => deanEnrollExistingPerson(one, enrollmentRequest, dean)
-      case None => deanEnrollNewPerson(enrollmentRequest, dean)
+  private def deanRequestEnrollment(req: EnrollmentRequestTO, dean: Person) =
+    PeopleRepo.get(req.getCPF,req.getEmail) match {
+      case Some(one) => deanEnrollExistingPerson(one, req, dean)
+      case None => deanEnrollNewPerson(req, dean)
     }
 
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
@@ -88,40 +84,49 @@ object RegistrationEnrollmentService {
 
   def userRequestRegistration(regReq: RegistrationRequestTO): UserInfoTO = {
     val email = regReq.getEmail
-    val institutionUUID = regReq.getInstitutionUUID
-    val password = regReq.getPassword
-    val fullName = regReq.getFullName
+    val username = regReq.getUsername
+    val cpf = regReq.getCPF
 
-    PeopleRepo.getByEmailOrCPF(email) match {
-      case Some(one) => userUpdateExistingPerson(email, fullName, password, one)
-      case None => userCreateNewPerson(email, fullName, password, institutionUUID)
+    PeopleRepo.get(username,cpf,email) match {
+      case Some(one) => userUpdateExistingPerson(regReq, one)
+      case None => userCreateNewPerson(regReq)
     }
   }
 
-  private def userCreateNewPerson(email: String, fullName: String, password: String, institutionUUID: String) = {
-    val person = PeopleRepo.createPerson(email, fullName)
+  private def userCreateNewPerson(regReq: RegistrationRequestTO) = {
+    val person = PeopleRepo.createPerson(regReq.getEmail(), regReq.getFullName(), regReq.getCPF())
 
     val user = newUserInfoTO
+    val username = usernameOf(regReq)
     user.setPerson(person)
-    user.setUsername(email)
-    PersonRepo(person.getUUID).setPassword(email, password).registerOn(institutionUUID)
+    user.setUsername(username)
+    PersonRepo(person.getUUID).setPassword(username, regReq.getPassword).registerOn(regReq.getInstitutionUUID)
     user
   }
 
-  private def userUpdateExistingPerson(email: String, fullName: String, password: String, personOld: Person) = {
+      
+  def usernameOf(regReq:RegistrationRequestTO) = StringUtils.opt(regReq.getUsername())
+  		.orElse(regReq.getCPF)
+  		.orElse(regReq.getEmail)
+  		.getOrNull
+
+  private def userUpdateExistingPerson(regReq:RegistrationRequestTO, personOld: Person) = {
     val personRepo = PersonRepo(personOld.getUUID)
 
     //update the user's info
     val person = newPerson
-    person.setEmail(email)
-    person.setFullName(fullName)
+    person.setEmail(regReq.getEmail)
+    person.setFullName(regReq.getFullName)
+    person.setCPF(regReq.getCPF)
     personRepo.update(person)
 
+    val username = usernameOf(regReq)
+      
     val user = newUserInfoTO
     user.setPerson(personRepo.get)
-    user.setUsername(email)
+    user.setUsername(username)
 
-    personRepo.setPassword(email, password)
+    personRepo.setPassword(username, regReq.getPassword)
     
     user
   }
