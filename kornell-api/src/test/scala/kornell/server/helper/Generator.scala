@@ -24,7 +24,7 @@ trait Generator {
   def randName = randPick(names)
   def randInt(n: Int) = { Random.nextInt(n) }
   def randPick[T](l: Seq[T]): T = l(randInt(l.length))
-  def randDigits(n: Int) = (digits take n)
+  def randDigits(n: Int) = digits take n
   def randCPF = {    
     def addDigit(ds: Seq[Int]) = {
       val len = ds.length + 1
