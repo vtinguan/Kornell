@@ -144,6 +144,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@UiField
 	Modal errorModal;
 	@UiField
+	Label txtModal1;
+	@UiField
+	Label txtModal2;
+	@UiField
 	TextArea txtModalError;
 	@UiField
 	Button btnModalOK;
@@ -405,7 +409,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@UiHandler("btnModalOK")
 	void onModalOkButtonClicked(ClickEvent e) {
 		presenter.onModalOkButtonClicked();
-		errorModal.hide();
 	}
 
 	@UiHandler("btnModalCancel")
@@ -425,8 +428,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	@Override
-	public void setModalErrors(String errors) {
+	public void setModalErrors(String lbl1, String errors, String lbl2) {
+		txtModal1.setText(lbl1);
 		txtModalError.setText(errors);
+		txtModal2.setText(lbl2);
 	}
 
 	@Override
@@ -515,8 +520,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 	
 	@Override
-	public void showModal() {
-		errorModal.show();
+	public void showModal(boolean show) {
+		if(show)
+			errorModal.show();
+		else
+			errorModal.hide();
 	}
 
 	private Delegate<EnrollmentTO> getStateChangeDelegate(final EnrollmentState state) {

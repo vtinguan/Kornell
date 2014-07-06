@@ -66,9 +66,9 @@
 					</g:FlowPanel>
 					<b:Modal ui:field="errorModal" title="Erros ao inserir matrículas" backdrop="STATIC" addStyleNames="forgotPasswordModal">
 						<g:FlowPanel>
-							<g:Label>As seguintes linhas contém erros:</g:Label>
+							<g:Label ui:field="txtModal1"></g:Label>
 							<b:TextArea ui:field="txtModalError"></b:TextArea>
-							<g:Label>Deseja ignorar essas linhas e continuar?</g:Label>
+							<g:Label ui:field="txtModal2"></g:Label>
 							<g:FlowPanel addStyleNames="standardButtonBar">
 								<b:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard" size="MINI"/>
 								<b:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard" size="MINI"/>
