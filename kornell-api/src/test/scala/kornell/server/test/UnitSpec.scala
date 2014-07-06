@@ -8,15 +8,49 @@ import scala.util.Random
 import java.util.UUID
 import kornell.server.jdbc.Migration
 import org.scalatest.BeforeAndAfter
+import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.server.jdbc.SQL._
+import kornell.server.helper.Generator
 
-class UnitSpec extends FlatSpec with Matchers with OptionValues with Inside with BeforeAndAfter {
-  
-  System.setProperty("TEST_MODE", "true")
-  //create database kornell_tests
-  System.setProperty("JDBC_CONNECTION_STRING", "jdbc:mysql:///kornell_tests")
-  //grant all on kornell_tests.* to kornell@'localhost' identified by '42kornell_tests42'; 
-  System.setProperty("JDBC_USERNAME", "kornell")
-  System.setProperty("JDBC_PASSWORD", "42kornell_tests42")
- 
-  Migration()
+class UnitSpec extends FlatSpec
+  with Matchers
+  with OptionValues
+  with Inside
+  with BeforeAndAfter
+  with Generator { 
+  UnitSpec.init
+
+  def assumeIdentity(personUUID: String) =
+    ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
+
+  def yeldIdentity =
+    ThreadLocalAuthenticator.clearAuthenticatedPersonUUID
+
+  after {
+    yeldIdentity
+  }
 }
+
+object UnitSpec {
+  lazy val init = {
+    println("Initializing Unit Testing")
+    setEnv()
+    respawnDB()
+    Migration()
+  }
+
+  def setEnv() = {
+    println("Setting Environment")
+    System.setProperty("JDBC_CONNECTION_STRING", "jdbc:mysql:///kornell_tests?allowMultiQueries=true")
+    System.setProperty("TEST_MODE", "true")
+    System.setProperty("JDBC_USERNAME", "kornell_tests")
+    System.setProperty("JDBC_PASSWORD", "42kornell_tests42")
+  }
+  
+  def respawnDB() = {    
+    	println("Respawning Tests DB")
+    	sql"drop database if exists kornell_tests; create database kornell_tests;".executeUpdate
+  }
+
+}
+

@@ -68,7 +68,7 @@ class CourseClassRepo(uuid:String) {
   private def bindRole(role: Role, bindMode: String) =
     TOs.newRoleTO(role, {
       if(RoleCategory.BIND_WITH_PERSON == bindMode)
-        PeopleRepo.getByEmailOrCPF(role.getUsername).get
+        PeopleRepo.get(role.getUsername).get
       else
         null
     })
@@ -88,7 +88,7 @@ class CourseClassRepo(uuid:String) {
 	    	values (${UUID.random}, ${role.getUsername}, 
 	    	${role.getRoleType.toString}, 
 	    	${role.getCourseClassAdminRole.getCourseClassUUID},
-	    	${PeopleRepo.getByEmailOrCPF(role.getUsername).get.getUUID})
+	    	${PeopleRepo.get(role.getUsername).get.getUUID})
 	    """.executeUpdate
   }
   

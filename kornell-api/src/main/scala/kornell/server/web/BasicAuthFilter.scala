@@ -10,6 +10,7 @@ import kornell.server.jdbc.SQL._
 import kornell.server.util.SHA256
 import java.sql.ResultSet
 import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.server.jdbc.repository.AuthRepo
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
@@ -84,16 +85,10 @@ class BasicAuthFilter extends Filter {
 
   override def destroy() {}
 
-  def login(req: HttpServletRequest, username: String, password: String) = {
-    val personUUID = sql"""
-    select person_uuid 
-    from Password
-    where username=${username}
-    and password=${SHA256(password)}
-    """.first[String]
-    
-    personUUID foreach ThreadLocalAuthenticator.setAuthenticatedPersonUUID    
-  }
+  def login(req: HttpServletRequest, username: String, password: String) =
+    AuthRepo.authenticate(username, password).map {
+      ThreadLocalAuthenticator.setAuthenticatedPersonUUID(_)
+    }
 
   def logout = ThreadLocalAuthenticator.clearAuthenticatedPersonUUID
 }

@@ -25,7 +25,7 @@ import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.repository.Entities
 
 trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ this: Suite =>
-
+	
   val userResource = new UserResource
   val courseClassesResource = new CourseClassesResource
   val enrollmentsResource = new EnrollmentsResource
@@ -108,19 +108,6 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
     
     try super.withFixture(test) // To be stackable, must call super.withFixture
     
-	  //TODO find a better way to do this, maybe use another database
-	  //either way, seeing this made me see how many constraints are missing on the database
-    finally {
-	    sql""" delete from Enrollment where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%'); """.executeUpdate
-	    sql""" delete from Role where username in (select username from Password where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%')); """.executeUpdate
-	    sql""" delete from Password where person_uuid in (select uuid from Person where email like '%[_test_]%' or cpf like '%[_test_]%'); """.executeUpdate
-	    sql""" delete from Person where email like '%[_test_]%' or cpf like '%[_test_]%'; """.executeUpdate
-	    sql""" delete from CourseClass where uuid like '[_test_]%'; """.executeUpdate
-	    sql""" delete from CourseVersion where uuid like '[_test_]%'; """.executeUpdate
-	    sql""" delete from Course where uuid like '[_test_]%'; """.executeUpdate
-	    sql""" delete from Institution where uuid like '[_test_]%'; """.executeUpdate
-	    sql""" delete from Registration where person_uuid not in (select uuid from Person); """.executeUpdate
-	    sql""" delete from EnrollmentStateChanged where person_uuid not in (select uuid from Person); """.executeUpdate
-    }
+	  
   }
 }

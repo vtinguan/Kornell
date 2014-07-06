@@ -9,19 +9,38 @@ import kornell.core.util.UUID
 import kornell.server.repository.TOs
 
 object PeopleRepo {
-  
+
   implicit def toString(rs: ResultSet): String = rs.getString(1)
-  
+
   //TODO Cache
-  def getByUsername(username: String) = {
-    sql"""
+  def getByUsername(username: String) = sql"""
 		select p.* from Person p
 		join Password pwd
 		on p.uuid = pwd.person_uuid
 		where pwd.username = $username
 	""".first[Person]
-  }
-  
+
+  def getByCPF(cpf: String) = sql"""
+		select p.* from Person p	
+		where p.cpf = $cpf
+	""".first[Person]
+
+  def getByEmail(email: String) = sql"""
+		select p.* from Person p	
+		where p.email = $email
+	""".first[Person]
+
+  def get(any: String): Option[Person] = get(any, any, any)
+
+  def get(cpf: String, email: String): Option[Person] = getByCPF(cpf)
+    .orElse(getByEmail(email))
+
+  def get(username: String, cpf: String, email: String): Option[Person] =
+    getByUsername(username)
+      .orElse(getByCPF(cpf))
+      .orElse(getByEmail(email))
+
+  /*
   def getByEmailOrCPF(username: String) = {
     sql"""
 		select p.* from Person p
@@ -29,10 +48,12 @@ object PeopleRepo {
 		or p.cpf = $username
 	""".first[Person]
   }
-  
-  def findBySearchTerm(search: String, institutionUUID: String) ={
+  * 
+  */
+
+  def findBySearchTerm(search: String, institutionUUID: String) = {
     newPeople(
-    sql"""
+      sql"""
       	| select p.* from Person p 
     		| join Registration r on r.person_uuid = p.uuid
       	| where (p.email like ${search + "%"}
@@ -43,20 +64,16 @@ object PeopleRepo {
 	    """.map[Person](toPerson))
   }
 
-  def createPerson(email: String, fullName:String):Person = {
-    create(
-    		Entities.newPerson(null, fullName, null, email, null, null, null, null, null, null, null, null, null, null, null, null, null)
-	  )
-  }
+  def createPerson(email: String, fullName: String, cpf: String = null): Person =
+    create(Entities.newPerson(fullName = fullName,
+      email = email,
+      cpf = cpf))
 
-  def createPersonCPF(cpf: String, fullName:String):Person = {
-    create(
-    		Entities.newPerson(null, fullName, null, null, null, null, null, null, null, null, null, null, null, null, null, null, cpf)
-	  )
-  }
-  
-  def create(person: Person):Person = {
-    if(person.getUUID == null)
+  def createPersonCPF(cpf: String, fullName: String): Person =
+    create(Entities.newPerson(fullName = fullName, cpf = cpf))
+
+  def create(person: Person): Person = {
+    if (person.getUUID == null)
       person.setUUID(randUUID)
     sql""" 
     	insert into Person(uuid, fullName, email,
@@ -71,6 +88,6 @@ object PeopleRepo {
              ${person.getConfirmation},
              ${person.getCPF})
     """.executeUpdate
-    person 
+    person
   }
 }

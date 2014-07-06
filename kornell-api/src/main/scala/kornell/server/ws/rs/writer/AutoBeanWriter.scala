@@ -15,6 +15,7 @@ import kornell.server.util.Failed
 import kornell.server.util.Err
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response
+import java.util.logging.Logger
 
 @Provider
 class AutoBeanWriter extends MessageBodyWriter[Any] {
@@ -27,7 +28,8 @@ class AutoBeanWriter extends MessageBodyWriter[Any] {
   override def isWriteable(aType: java.lang.Class[_],
     genericType: java.lang.reflect.Type,
     annotations: Array[java.lang.annotation.Annotation],
-    mediaType: MediaType) = mediaType.toString().contains("vnd.kornell");
+    mediaType: MediaType) = mediaType.toString().contains("vnd.kornell")
+  
 
   override def writeTo(t: Any,
     aType: java.lang.Class[_],

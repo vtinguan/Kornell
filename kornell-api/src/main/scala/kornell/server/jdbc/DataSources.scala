@@ -33,10 +33,12 @@ object DataSources {
   }
 
   lazy val JNDI: Try[ConnectionFactory] = Try {
+    println(s"Trying to connect to ${JNDI_ROOT}/${JNDI_DATASOURCE}")
     ping { () => KornellDS.getConnection }
   }
 
   def getConnection(url: String, user: String, pass: String): Try[ConnectionFactory] = Try {
+    println(s"Trying to connect to ${url}")
     ping { () => DriverManager.getConnection(url, user, pass) }
   }
 
@@ -52,7 +54,7 @@ object DataSources {
   val connectionFactory = JNDI.orElse(SYSPROPS).orElse(LOCAL)
   
   connectionFactory match {
-    case Success(cf) => log.info("Connection Factory validated. Nice!");
+    case Success(cf) => log.info(s"Connection Factory validated ${connectionFactory} . Nice!");
     case Failure(e) => log.severe("Can't live without a databse, sorry :("); //TODO: DIE
   }
   

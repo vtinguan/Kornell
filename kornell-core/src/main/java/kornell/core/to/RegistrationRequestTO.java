@@ -11,4 +11,8 @@ public interface RegistrationRequestTO {
 	void setEmail(String email);
 	String getPassword();
 	void setPassword(String password);
+	String getCPF();
+	void setCPF(String CPF);
+	String getUsername();
+	void setUsername(String username);
 }
