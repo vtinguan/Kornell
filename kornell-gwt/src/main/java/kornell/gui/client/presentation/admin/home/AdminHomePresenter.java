@@ -338,7 +338,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private String validateEnrollmentsOverride(){
 		//enrollmentRequestsTO
 		//enrollmentTOs
-		return "x";
+		return "";
 	}
 	
 	private void createEnrollments() {
