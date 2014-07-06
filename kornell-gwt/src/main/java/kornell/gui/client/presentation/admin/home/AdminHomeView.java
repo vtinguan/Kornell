@@ -29,7 +29,7 @@ public interface AdminHomeView extends IsWidget {
 	void setPresenter(Presenter presenter);
 	void setEnrollmentList(List<EnrollmentTO> enrollments);
 	void showModal(boolean b);
-	void setModalErrors(String lbl1, String errors, String lbl2);
+	void setModalErrors(String title, String lbl1, String errors, String lbl2);
 	void setCourseClassName(String courseClassName);
 	void setCourseName(String courseName);
 	void setCourseClasses(List<CourseClassTO> courseClasses);

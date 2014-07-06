@@ -64,7 +64,7 @@
 					</g:FlowPanel>
 					<g:FlowPanel ui:field="enrollmentsWrapper">
 					</g:FlowPanel>
-					<b:Modal ui:field="errorModal" title="Erros ao inserir matrículas" backdrop="STATIC" addStyleNames="forgotPasswordModal">
+					<b:Modal ui:field="errorModal" backdrop="STATIC" addStyleNames="forgotPasswordModal">
 						<g:FlowPanel>
 							<g:Label ui:field="txtModal1"></g:Label>
 							<b:TextArea ui:field="txtModalError"></b:TextArea>

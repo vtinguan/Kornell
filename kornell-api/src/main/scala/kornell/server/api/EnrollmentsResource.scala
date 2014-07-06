@@ -50,9 +50,7 @@ class EnrollmentsResource {
     AuthRepo.withPerson { p =>
       //TODO: Understand and refactor
       //if (enrollmentRequests.getEnrollmentRequests.asScala exists (e => RegistrationEnrollmentService.isInvalidRequestEnrollment(e, p.getFullName))) {
-
       RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p)
-
     }
 
   @PUT

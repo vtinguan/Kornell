@@ -14,4 +14,6 @@ public interface EnrollmentRequestTO {
 	void setEmail(String email);
 	String getCPF();
 	void setCPF(String cpf);
+	Boolean isCancelEnrollment();
+	void setCancelEnrollment(Boolean cancelEnrollment);
 }

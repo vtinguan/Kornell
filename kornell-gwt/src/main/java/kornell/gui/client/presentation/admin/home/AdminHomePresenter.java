@@ -1,7 +1,10 @@
 package kornell.gui.client.presentation.admin.home;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -55,6 +58,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private CourseClassesTO courseClassesTO;
 	private boolean hasOverriddenEnrollments = false, overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
   private EnrollmentRequestsTO enrollmentRequestsTO;
+  private List<EnrollmentTO> enrollmentsToOverride;
 
 	public AdminHomePresenter(KornellSession session,
 			PlaceController placeController, Place defaultPlace,
@@ -224,7 +228,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			username = formHelper.stripCPF(username);
 		}
 		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
-		batchEnrollments.add(createEnrollment(fullName, username));
+		batchEnrollments.add(createEnrollment(fullName, username, false));
 		if (!formHelper.isLengthValid(fullName, 2, 50)) {
 			KornellNotification.show("O nome deve ter no mínimo 2 caracteres.",
 					AlertType.ERROR);
@@ -246,7 +250,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	public void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch) {
 		populateEnrollmentsList(txtAddEnrollmentBatch);
 		if (batchEnrollmentErrors == null || !"".equals(batchEnrollmentErrors)) {
-			view.setModalErrors("As seguintes linhas contém erros:", batchEnrollmentErrors, "Deseja ignorar essas linhas e continuar?");
+			view.setModalErrors("Erros ao inserir matrículas", "As seguintes linhas contém erros:", batchEnrollmentErrors, "Deseja ignorar essas linhas e continuar?");
 			overriddenEnrollmentsModalShown = false;
 			view.showModal(true);
 		} else {
@@ -269,26 +273,29 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1]
 					: enrollmentStrA[0]);
 			if (isUsernameValid(email)) {
-				batchEnrollments.add(createEnrollment(fullName, email));
+				batchEnrollments.add(createEnrollment(fullName, email, false));
 			} else {
 				batchEnrollmentErrors += enrollmentsA[i] + "\n";
 			}
 		}
 	} 
 
-	private EnrollmentRequestTO createEnrollment(String fullName, String email) {
+	private EnrollmentRequestTO createEnrollment(String fullName, String email, boolean cancelEnrollment) {
 		EnrollmentRequestTO enrollmentRequestTO = toFactory
 				.newEnrollmentRequestTO().as();
-
+		
+		enrollmentRequestTO.setCancelEnrollment(cancelEnrollment);
 		enrollmentRequestTO.setInstitutionUUID(Dean.getInstance()
 				.getInstitution().getUUID());
 		enrollmentRequestTO.setCourseClassUUID(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getUUID());
 		enrollmentRequestTO.setFullName(fullName);
-		if (enrollWithCPF)
+		if (enrollWithCPF || email.indexOf('@') == -1)
 			enrollmentRequestTO.setCPF(formHelper.stripCPF(email));
 		else
 			enrollmentRequestTO.setEmail(email);
+		
+	
 
 		return enrollmentRequestTO;
 	}
@@ -325,7 +332,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				} else {
 					hasOverriddenEnrollments = true;
 					overriddenEnrollmentsModalShown = true;
-					view.setModalErrors("Os seguintes participantes terão suas matrículas canceladas:", validation, "Deseja continuar?");
+					confirmedEnrollmentsModal = false;
+					view.setModalErrors("ATENÇÃO! Sobrescrita de matrículas!", "Os seguintes participantes terão suas matrículas canceladas:", validation, "Deseja continuar?");
 					view.showModal(true);
 				}
 			} else {
@@ -335,17 +343,47 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		
 	}
 	
-	private String validateEnrollmentsOverride(){
-		//enrollmentRequestsTO
-		//enrollmentTOs
-		return "";
+	private String validateEnrollmentsOverride(){		
+		Map<String, EnrollmentRequestTO> enrollmentRequestsMap = new HashMap<String, EnrollmentRequestTO>();
+		for (EnrollmentRequestTO enrollmentRequestTO : enrollmentRequestsTO.getEnrollmentRequests()) {
+			String username = enrollmentRequestTO.getCPF() != null ? 
+					enrollmentRequestTO.getCPF() :
+						enrollmentRequestTO.getEmail();
+				enrollmentRequestsMap.put(username, enrollmentRequestTO);
+    }
+
+		String validation = "";
+		
+		enrollmentsToOverride = new ArrayList<EnrollmentTO>();
+		for (Iterator<EnrollmentTO> iterator = enrollmentTOs.iterator(); iterator.hasNext();) {
+	    EnrollmentTO enrollmentTO = (EnrollmentTO) iterator.next();
+			String username = enrollmentTO.getPerson().getCPF() != null ? 
+					enrollmentTO.getPerson().getCPF() :
+						enrollmentTO.getPerson().getEmail();
+			//if the user was already enrolled and is not on the new list, cancel enrollment
+	    if(!enrollmentRequestsMap.containsKey(username) && EnrollmentState.enrolled.equals(enrollmentTO.getEnrollment().getState())){
+	    	enrollmentsToOverride.add(enrollmentTO);
+	    	validation += username + "\n";
+	    }
+    }
+		
+		return validation;
 	}
 	
 	private void createEnrollments() {
-		confirmedEnrollmentsModal = false;
-		KornellNotification.show(
-				"Matrículas feitas com sucesso.", 1500);
-		/*
+		
+		if(confirmedEnrollmentsModal && enrollmentsToOverride != null && enrollmentsToOverride.size() > 0){
+			for (EnrollmentTO enrollmentToOverrideTO : enrollmentsToOverride) {
+				String username = enrollmentToOverrideTO.getPerson().getCPF() != null ? 
+						enrollmentToOverrideTO.getPerson().getCPF() :
+							enrollmentToOverrideTO.getPerson().getEmail();
+				EnrollmentRequestTO enrollmentRequestTO = createEnrollment(enrollmentToOverrideTO.getPerson().getFullName(), username, true);
+				enrollmentRequestsTO.getEnrollmentRequests().add(enrollmentRequestTO);  
+      }
+			
+		}
+		
+		
 		LoadingPopup.show();
 		session.createEnrollments(enrollmentRequestsTO,
 				new Callback<Enrollments>() {
@@ -353,6 +391,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					public void ok(Enrollments to) {
 						getEnrollments(Dean.getInstance().getCourseClassTO()
 								.getCourseClass().getUUID());
+						confirmedEnrollmentsModal = false;
 						KornellNotification.show(
 								"Matrículas feitas com sucesso.", 1500);
 						LoadingPopup.hide();
@@ -364,7 +403,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 						KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
 						LoadingPopup.hide();
 					}
-				});*/
+				});
 	}
 	
 		

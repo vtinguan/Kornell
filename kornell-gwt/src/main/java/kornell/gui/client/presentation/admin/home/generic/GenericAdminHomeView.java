@@ -428,7 +428,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	@Override
-	public void setModalErrors(String lbl1, String errors, String lbl2) {
+	public void setModalErrors(String title, String lbl1, String errors, String lbl2) {
+		errorModal.setTitle(title);
 		txtModal1.setText(lbl1);
 		txtModalError.setText(errors);
 		txtModal2.setText(lbl2);
