@@ -72,7 +72,8 @@ object CourseClassesRepo {
 		  		cc.maxEnrollments as maxEnrollments,
       		cc.createdAt as createdAt,
       		cc.createdBy as createdBy,
-      		cc.state
+      		cc.state,
+      		cc.overrideEnrollments as overrideEnrollments
 			from Course c
 			join CourseVersion cv on cv.course_uuid = c.uuid
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid

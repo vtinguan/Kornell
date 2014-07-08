@@ -21,6 +21,9 @@ public interface CourseClass extends Named{
 	Boolean isEnrollWithCPF();
 	void setEnrollWithCPF(Boolean enrollWithCPF);
 	
+	Boolean isOverrideEnrollments();
+	void setOverrideEnrollments(Boolean overrideEnrollments);
+	
 	Integer getMaxEnrollments();
 	void setMaxEnrollments(Integer maxEnrollments);
 	

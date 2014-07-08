@@ -37,7 +37,8 @@ class CourseClassRepo(uuid:String) {
 	  		cc.requiredScore = ${courseClass.getRequiredScore},
 	  		cc.publicClass = ${courseClass.isPublicClass},
 	  		cc.enrollWithCPF = ${courseClass.isEnrollWithCPF},
-	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments}
+	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
+	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments}
       where cc.uuid = ${courseClass.getUUID}""".executeUpdate
     courseClass
   }

@@ -173,7 +173,7 @@ public class GenericCourseClassConfigView extends Composite {
 		fields.add(enrollWithCPF);
 		profileFields.add(enrollWithCPF);
 
-		/*Boolean isOverrideEnrollments = courseClass.isEnrollWithCPF() == null ? false : courseClass.isEnrollWithCPF();
+		Boolean isOverrideEnrollments = courseClass.isOverrideEnrollments() == null ? false : courseClass.isOverrideEnrollments();
 		overrideEnrollments = new KornellFormFieldWrapper("Sobrescrever matrículas em lote?", formHelper.createCheckBoxFormField(isOverrideEnrollments), isInstitutionAdmin);
 		fields.add(overrideEnrollments);
 		profileFields.add(overrideEnrollments);
@@ -185,7 +185,7 @@ public class GenericCourseClassConfigView extends Composite {
 					showModal(MODAL_OVERRIDE_ENROLLMENTS);
 				}
 			}
-		});*/
+		});
 		
 		profileFields.add(formHelper.getImageSeparator());
 
@@ -342,6 +342,7 @@ public class GenericCourseClassConfigView extends Composite {
 		courseClass.setRequiredScore(requiredScore.getFieldPersistText().length() > 0 ?
 				new BigDecimal(requiredScore.getFieldPersistText()) :
 					null);
+		courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
 		return courseClass;
 	}
 

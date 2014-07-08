@@ -1,7 +1,10 @@
 package kornell.gui.client.presentation.admin.home;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -40,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private AdminHomeView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private List<EnrollmentTO> enrollmentTO;
+	private List<EnrollmentTO> enrollmentTOs;
 	private String batchEnrollmentErrors;
 	private List<EnrollmentRequestTO> batchEnrollments;
 	FormHelper formHelper;
@@ -53,6 +56,9 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
 	private CourseClassesTO courseClassesTO;
+	private boolean hasOverriddenEnrollments = false, overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
+  private EnrollmentRequestsTO enrollmentRequestsTO;
+  private List<EnrollmentTO> enrollmentsToOverride;
 
 	public AdminHomePresenter(KornellSession session,
 			PlaceController placeController, Place defaultPlace,
@@ -63,6 +69,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		this.toFactory = toFactory;
 		this.viewFactory = viewFactory;
 		formHelper = new FormHelper();
+		enrollmentRequestsTO = toFactory.newEnrollmentRequestsTO().as();
 		// TODO refactor permissions per session/activity
 		init();
 	}
@@ -102,7 +109,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 						numEnrollments = e.getEnrollmentTOs().size();
 						maxEnrollments = Dean.getInstance().getCourseClassTO()
 								.getCourseClass().getMaxEnrollments();
-						enrollmentTO = e.getEnrollmentTOs();
+						enrollmentTOs = e.getEnrollmentTOs();
 						view.setEnrollmentList(e.getEnrollmentTOs());
 						view.showEnrollmentsPanel(true);
 						LoadingPopup.hide();
@@ -221,7 +228,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			username = formHelper.stripCPF(username);
 		}
 		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
-		batchEnrollments.add(createEnrollment(fullName, username));
+		batchEnrollments.add(createEnrollment(fullName, username, false));
 		if (!formHelper.isLengthValid(fullName, 2, 50)) {
 			KornellNotification.show("O nome deve ter no mínimo 2 caracteres.",
 					AlertType.ERROR);
@@ -229,7 +236,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			KornellNotification.show((enrollWithCPF ? "CPF" : "Email")
 					+ " inválido.", AlertType.ERROR);
 		} else {
-			saveEnrollments(createEnrollments());
+			prepareCreateEnrollments(false);
 		}
 	}
 	
@@ -243,20 +250,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	public void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch) {
 		populateEnrollmentsList(txtAddEnrollmentBatch);
 		if (batchEnrollmentErrors == null || !"".equals(batchEnrollmentErrors)) {
-			view.setModalErrors(batchEnrollmentErrors);
-			view.showModal();
+			view.setModalErrors("Erros ao inserir matrículas", "As seguintes linhas contém erros:", batchEnrollmentErrors, "Deseja ignorar essas linhas e continuar?");
+			overriddenEnrollmentsModalShown = false;
+			view.showModal(true);
 		} else {
-			saveEnrollments(createEnrollments());
+			prepareCreateEnrollments(true);
 		}
 	}
 
-	private EnrollmentRequestsTO createEnrollments() {
-
-		EnrollmentRequestsTO enrollmentRequestsTO = toFactory
-				.newEnrollmentRequestsTO().as();
-		enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
-		return enrollmentRequestsTO;
-	}
 
 	private void populateEnrollmentsList(String txtAddEnrollmentBatch) {
 		String[] enrollmentsA = txtAddEnrollmentBatch.split("\n");
@@ -271,66 +272,126 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
 			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1]
 					: enrollmentStrA[0]);
-			GWT.log("*** Validating: " + fullName + " - " + email);
 			if (isUsernameValid(email)) {
-				batchEnrollments.add(createEnrollment(fullName, email));
+				batchEnrollments.add(createEnrollment(fullName, email, false));
 			} else {
 				batchEnrollmentErrors += enrollmentsA[i] + "\n";
 			}
 		}
 	} 
 
-	private EnrollmentRequestTO createEnrollment(String fullName, String email) {
+	private EnrollmentRequestTO createEnrollment(String fullName, String email, boolean cancelEnrollment) {
 		EnrollmentRequestTO enrollmentRequestTO = toFactory
 				.newEnrollmentRequestTO().as();
-
+		
+		enrollmentRequestTO.setCancelEnrollment(cancelEnrollment);
 		enrollmentRequestTO.setInstitutionUUID(Dean.getInstance()
 				.getInstitution().getUUID());
 		enrollmentRequestTO.setCourseClassUUID(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getUUID());
 		enrollmentRequestTO.setFullName(fullName);
-		if (enrollWithCPF)
+		if (enrollWithCPF || email.indexOf('@') == -1)
 			enrollmentRequestTO.setCPF(formHelper.stripCPF(email));
 		else
 			enrollmentRequestTO.setEmail(email);
+		
+	
 
 		return enrollmentRequestTO;
 	}
 
-	private void saveEnrollments(EnrollmentRequestsTO enrollmentRequests) {
+	private void prepareCreateEnrollments(boolean isBatch) {
+		enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
 		if (CourseClassState.inactive.equals(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getState())) {
 			KornellNotification
 					.show("Não é possível matricular alunos em uma turma desabilidada.",
 							AlertType.ERROR);
 			return;
-		} else if (enrollmentRequests.getEnrollmentRequests().size() == 0) {
+		} else if (enrollmentRequestsTO.getEnrollmentRequests().size() == 0) {
 				KornellNotification
 						.show("Verifique se os nomes/"
 								+ (enrollWithCPF ? "cpfs" : "emails")
 								+ " dos usuários estão corretos. Nenhuma matrícula encontrada.",
 								AlertType.WARNING);
-				return;
-		} else if ((enrollmentRequests.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
+		} else if ((enrollmentRequestsTO.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
 			KornellNotification
 					.show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
 							AlertType.ERROR, 5000);
-			return;
 		} else if (!enrollWithCPF
-				&& enrollmentRequests.getEnrollmentRequests().size() > 5) {
+				&& enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
 			KornellNotification
 					.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
-							+ enrollmentRequests.getEnrollmentRequests().size()
-							* 2 + " segundos).", AlertType.INFO, 6000);
+							+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
 		} else {
-			LoadingPopup.show();
+			hasOverriddenEnrollments = false;
+			if(isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()){
+				String validation = validateEnrollmentsOverride();
+				if(confirmedEnrollmentsModal || "".equals(validation)){
+					createEnrollments();
+				} else {
+					hasOverriddenEnrollments = true;
+					overriddenEnrollmentsModalShown = true;
+					confirmedEnrollmentsModal = false;
+					view.setModalErrors("ATENÇÃO! Sobrescrita de matrículas!", "Os seguintes participantes terão suas matrículas canceladas:", validation, "Deseja continuar?");
+					view.showModal(true);
+				}
+			} else {
+				createEnrollments();
+			}
 		}
-		session.createEnrollments(enrollmentRequests,
+		
+	}
+	
+	private String validateEnrollmentsOverride(){		
+		Map<String, EnrollmentRequestTO> enrollmentRequestsMap = new HashMap<String, EnrollmentRequestTO>();
+		for (EnrollmentRequestTO enrollmentRequestTO : enrollmentRequestsTO.getEnrollmentRequests()) {
+			String username = enrollmentRequestTO.getCPF() != null ? 
+					enrollmentRequestTO.getCPF() :
+						enrollmentRequestTO.getEmail();
+				enrollmentRequestsMap.put(username, enrollmentRequestTO);
+    }
+
+		String validation = "";
+		
+		enrollmentsToOverride = new ArrayList<EnrollmentTO>();
+		for (Iterator<EnrollmentTO> iterator = enrollmentTOs.iterator(); iterator.hasNext();) {
+	    EnrollmentTO enrollmentTO = (EnrollmentTO) iterator.next();
+			String username = enrollmentTO.getPerson().getCPF() != null ? 
+					enrollmentTO.getPerson().getCPF() :
+						enrollmentTO.getPerson().getEmail();
+			//if the user was already enrolled and is not on the new list, cancel enrollment
+	    if(!enrollmentRequestsMap.containsKey(username) && EnrollmentState.enrolled.equals(enrollmentTO.getEnrollment().getState())){
+	    	enrollmentsToOverride.add(enrollmentTO);
+	    	validation += username + "\n";
+	    }
+    }
+		
+		return validation;
+	}
+	
+	private void createEnrollments() {
+		
+		if(confirmedEnrollmentsModal && enrollmentsToOverride != null && enrollmentsToOverride.size() > 0){
+			for (EnrollmentTO enrollmentToOverrideTO : enrollmentsToOverride) {
+				String username = enrollmentToOverrideTO.getPerson().getCPF() != null ? 
+						enrollmentToOverrideTO.getPerson().getCPF() :
+							enrollmentToOverrideTO.getPerson().getEmail();
+				EnrollmentRequestTO enrollmentRequestTO = createEnrollment(enrollmentToOverrideTO.getPerson().getFullName(), username, true);
+				enrollmentRequestsTO.getEnrollmentRequests().add(enrollmentRequestTO);  
+      }
+			
+		}
+		
+		
+		LoadingPopup.show();
+		session.createEnrollments(enrollmentRequestsTO,
 				new Callback<Enrollments>() {
 					@Override
 					public void ok(Enrollments to) {
 						getEnrollments(Dean.getInstance().getCourseClassTO()
 								.getCourseClass().getUUID());
+						confirmedEnrollmentsModal = false;
 						KornellNotification.show(
 								"Matrículas feitas com sucesso.", 1500);
 						LoadingPopup.hide();
@@ -344,10 +405,16 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					}
 				});
 	}
+	
+		
 
 	@Override
 	public void onModalOkButtonClicked() {
-		saveEnrollments(createEnrollments());
+		view.showModal(false);
+		if(overriddenEnrollmentsModalShown){
+			confirmedEnrollmentsModal = true;
+		}
+		prepareCreateEnrollments(true);
 	}
 
 	@Override
@@ -392,7 +459,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	
 	@Override
 	public List<EnrollmentTO> getEnrollments() {
-		return enrollmentTO;
+		return enrollmentTOs;
 	}
 
 	@Override
