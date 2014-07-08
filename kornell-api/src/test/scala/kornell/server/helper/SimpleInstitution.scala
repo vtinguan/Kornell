@@ -26,7 +26,7 @@ import kornell.server.repository.Entities
 
 trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ this: Suite =>
 	
-  val userResource = new UserResource
+  val userResource = UserResource()
   val courseClassesResource = new CourseClassesResource
   val enrollmentsResource = new EnrollmentsResource
 	val className = randStr

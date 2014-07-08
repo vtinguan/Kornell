@@ -64,13 +64,14 @@ class BasicAuthFilter extends Filter {
       try {
         val (username, password) = extractCredentials(auth)
         login(req, username, password)
-        chain.doFilter(req, resp);
-        logout
+        
       } catch {
         case e: Exception =>
           e.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED,
             s"Authentication failed at uri ${req.getRequestURI}")
       }
+      chain.doFilter(req, resp);
+      logout
     } else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You must authenticate to access [" + req.getRequestURI + "]")
   }
 
@@ -86,8 +87,8 @@ class BasicAuthFilter extends Filter {
   override def destroy() {}
 
   def login(req: HttpServletRequest, username: String, password: String) =
-    AuthRepo.authenticate(username, password).map {
-      ThreadLocalAuthenticator.setAuthenticatedPersonUUID(_)
+    AuthRepo().authenticate(username, password).map { personUUID =>
+      ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
     }
 
   def logout = ThreadLocalAuthenticator.clearAuthenticatedPersonUUID

@@ -40,9 +40,9 @@ class ReportResource {
   @Path("/certificate")
   def get(implicit @Context sc: SecurityContext,
     @Context resp: HttpServletResponse,
-    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo.withPerson { p =>
+    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
-    val roles = AuthRepo.getUserRoles
+    val roles = AuthRepo().getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID)))
@@ -75,7 +75,7 @@ class ReportResource {
   @Path("courseClassCertificateExists")
   def fileExists(implicit @Context sc: SecurityContext,
     @Context resp: HttpServletResponse,
-    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo.withPerson { p =>
+    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
       val url = S3.certificates.url(filename)

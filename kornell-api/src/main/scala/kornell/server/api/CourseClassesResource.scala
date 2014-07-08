@@ -35,7 +35,7 @@ class CourseClassesResource {
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
   def getClasses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID: String) =
-    AuthRepo.withPerson { person =>
+    AuthRepo().withPerson { person =>
       {
         if (institutionUUID != null) {
           CourseClassesRepo.byPersonAndInstitution(person.getUUID, institutionUUID)
@@ -47,10 +47,10 @@ class CourseClassesResource {
   @Produces(Array(CourseClassesTO.TYPE))
   @Path("administrated")
   def getAdministratedClasses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID: String) =
-    AuthRepo.withPerson { person =>
+    AuthRepo().withPerson { person =>
       {
         if (institutionUUID != null) {
-          val roles = AuthRepo.userRoles
+          val roles = AuthRepo().userRoles
           CourseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList )
         }
       }

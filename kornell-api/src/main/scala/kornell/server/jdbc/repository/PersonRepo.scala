@@ -11,17 +11,21 @@ import kornell.core.entity.RoleType
 import java.text.SimpleDateFormat
 import java.text.DateFormat
 import kornell.core.util.TimeUtil
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import java.util.concurrent.TimeUnit
 
 class PersonRepo(val uuid: String) {
 
   def setPassword(username: String, password: String): PersonRepo = {
-    AuthRepo.setPlainPassword(uuid, username, password)
+    AuthRepo().setPlainPassword(uuid, username, password)
     PersonRepo.this
   }
 
   def registerOn(institution_uuid: String): RegistrationRepo = { 
     (RegistrationRepo(PersonRepo.this, institution_uuid)).register
   }
+  
 
   lazy val finder = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
 
@@ -40,19 +44,20 @@ class PersonRepo(val uuid: String) {
 	    	cpf = ${person.getCPF}
 	    	where uuid = $uuid
 	    """.executeUpdate
+	  PeopleRepo.updateCaches(person)
     PersonRepo.this
   }
 
   def hasPowerOver(targetPersonUUID: String) = {
-    val actorRoles = AuthRepo.rolesOf(AuthRepo.getUsernameByPersonUUID(uuid).get)
+    val actorRoles = AuthRepo().rolesOf(AuthRepo().getUsernameByPersonUUID(uuid).get)
     val actorRolesSet = (Set.empty ++ actorRoles).asJava
 
-    val targetUsername = AuthRepo.getUsernameByPersonUUID(targetPersonUUID)
+    val targetUsername = AuthRepo().getUsernameByPersonUUID(targetPersonUUID)
 
     //if there's no username yet, any admin can have power
     (!targetUsername.isDefined) ||
       {
-        val targetRoles = AuthRepo.rolesOf(targetUsername.get)
+        val targetRoles = AuthRepo().rolesOf(targetUsername.get)
         val targetRolesSet = (Set.empty ++ targetRoles).asJava
 
         //people have power over themselves
@@ -89,5 +94,18 @@ class PersonRepo(val uuid: String) {
 }
 
 object PersonRepo {
+    
+  val uuidLoader = new CacheLoader[String, Option[Person]]() {
+    override def load(uuid: String): Option[Person] = PersonRepo(uuid).first
+  } 
+
+  val personCache = CacheBuilder
+    .newBuilder()
+    .expireAfterAccess(5, TimeUnit.MINUTES)
+    .maximumSize(1000)
+    .build(uuidLoader)
+    
+  
+    
   def apply(uuid: String) = new PersonRepo(uuid)
 }

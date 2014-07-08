@@ -35,7 +35,7 @@ object RegistrationEnrollmentService {
   
 
   def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUsername: String) = {
-    val roles = (Set.empty ++ AuthRepo.rolesOf(deanUsername)).asJava
+    val roles = (Set.empty ++ AuthRepo().rolesOf(deanUsername)).asJava
     !(RoleCategory.isPlatformAdmin(roles) ||
         RoleCategory.isInstitutionAdmin(roles, enrollmentRequest.getInstitutionUUID) ||
         RoleCategory.isCourseClassAdmin(roles, enrollmentRequest.getCourseClassUUID))

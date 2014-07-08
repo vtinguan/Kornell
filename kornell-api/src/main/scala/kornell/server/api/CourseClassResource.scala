@@ -38,15 +38,15 @@ class CourseClassResource(uuid: String) {
   @Path("to")
   @Produces(Array(CourseClassTO.TYPE))
   def get(implicit @Context sc: SecurityContext) =
-    AuthRepo.withPerson { person =>
+    AuthRepo().withPerson { person =>
       //CourseClasses(uuid).byPerson(person.getUUID)
     }
 
   @PUT
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
-  def update(@Context resp: HttpServletResponse, courseClass: CourseClass) = AuthRepo.withPerson { p =>
-    val roles = AuthRepo.getUserRoles
+  def update(@Context resp: HttpServletResponse, courseClass: CourseClass) = AuthRepo().withPerson { p =>
+    val roles = AuthRepo().getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID)))
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
@@ -61,9 +61,9 @@ class CourseClassResource(uuid: String) {
 
   @DELETE
   @Produces(Array(CourseClass.TYPE))
-  def delete(@Context resp: HttpServletResponse) = AuthRepo.withPerson { p =>
+  def delete(@Context resp: HttpServletResponse) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassRepo(uuid).get
-    val roles = AuthRepo.getUserRoles
+    val roles = AuthRepo().getUserRoles
     if (courseClass == null)
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Can't delete a class that doesn't exist.");
     else if (!(RoleCategory.isPlatformAdmin(roles) ||
@@ -84,7 +84,7 @@ class CourseClassResource(uuid: String) {
   @GET
   def getLatestContents(implicit @Context sc: SecurityContext): Contents =
     //TODO: Refactor to Option.map
-    AuthRepo.withPerson { person =>            
+    AuthRepo().withPerson { person =>            
       ContentRepository.findKNLVisitedContent(uuid,person.getUUID)
     }
 
@@ -93,7 +93,7 @@ class CourseClassResource(uuid: String) {
   @GET
   def getLibraryFiles(implicit @Context sc: SecurityContext, @Context resp: HttpServletResponse) =
     //TODO: Refactor to Option.map
-    AuthRepo.withPerson { person =>        
+    AuthRepo().withPerson { person =>        
       try {
       	LibraryFilesRepository.findLibraryFiles(uuid)
       } catch {
@@ -107,7 +107,7 @@ class CourseClassResource(uuid: String) {
   @Produces(Array(Roles.TYPE))
   @Path("admins")
   def updateAdmins(implicit @Context sc: SecurityContext, roles: Roles) =
-    AuthRepo.withPerson { person =>
+    AuthRepo().withPerson { person =>
       {
         CourseClassRepo(uuid).updateAdmins(roles)
       }
@@ -118,7 +118,7 @@ class CourseClassResource(uuid: String) {
   @Path("admins")
   def getAdmins(implicit @Context sc: SecurityContext,
       @QueryParam("bind") bindMode:String) =
-    AuthRepo.withPerson { person =>
+    AuthRepo().withPerson { person =>
       {
         CourseClassRepo(uuid).getAdmins(bindMode)
       }

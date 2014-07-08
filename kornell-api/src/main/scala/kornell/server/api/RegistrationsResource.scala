@@ -15,7 +15,7 @@ import kornell.core.to.RegistrationsTO
 class RegistrationsResource {
   @GET
   def get(implicit @Context sc: SecurityContext) =
-    AuthRepo.withPerson { implicit person =>
+    AuthRepo().withPerson { implicit person =>
       RegistrationsRepo.unsigned
     }
 }

@@ -34,7 +34,7 @@ class EnrollmentsResource {
   @Consumes(Array(Enrollment.TYPE))
   @Produces(Array(Enrollment.TYPE))
   def create(implicit @Context sc: SecurityContext, enrollment: Enrollment) =
-    AuthRepo.withPerson { p =>
+    AuthRepo().withPerson { p =>
       EnrollmentsRepo.create(enrollment)
     }
 
@@ -47,7 +47,7 @@ class EnrollmentsResource {
   @Consumes(Array(kornell.core.to.EnrollmentRequestsTO.TYPE))
   def putEnrollments(@Context resp: HttpServletResponse,
     enrollmentRequests: EnrollmentRequestsTO) =
-    AuthRepo.withPerson { p =>
+    AuthRepo().withPerson { p =>
       //TODO: Understand and refactor
       //if (enrollmentRequests.getEnrollmentRequests.asScala exists (e => RegistrationEnrollmentService.isInvalidRequestEnrollment(e, p.getFullName))) {
 
@@ -61,7 +61,7 @@ class EnrollmentsResource {
   def putNotesChange(implicit @Context sc: SecurityContext,
     @PathParam("courseClassUUID") courseClassUUID: String,
     notes: String) =
-    AuthRepo.withPerson { p =>
+    AuthRepo().withPerson { p =>
       sql"""
     	update Enrollment set notes=$notes
     	where person_uuid=${p.getUUID}

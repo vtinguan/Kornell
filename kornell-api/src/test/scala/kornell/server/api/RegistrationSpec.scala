@@ -19,7 +19,7 @@ class RegistrationSpec extends UnitSpec with GenInstitution {
     val createdUUID = UserResource().createUser(regreq)
       .getPerson
       .getUUID
-    val authUUID = AuthRepo.authenticate(email, password)
+    val authUUID = AuthRepo().authenticate(email, password)
     authUUID should be (Some(createdUUID))
   }
   
@@ -30,11 +30,12 @@ class RegistrationSpec extends UnitSpec with GenInstitution {
   	val passwd = randStr
   	val cpf = randCPF
   	val createdUUID = UserResource().createUser(institutionUUID,name,email,cpf,username,passwd)
-  	val authUUIDCPF = AuthRepo.authenticate(cpf, passwd)
-  	val authUUIDEmail = AuthRepo.authenticate(email, passwd)
-  	val authUUIDUsername = AuthRepo.authenticate(username, passwd)
+  	val authUUIDUsername = AuthRepo().authenticate(username, passwd)
+  	val authUUIDCPF = AuthRepo().authenticate(cpf, passwd)  	
+  	val authUUIDEmail = AuthRepo().authenticate(email, passwd)
+
   	authUUIDCPF should be (Some(createdUUID))
-  	authUUIDEmail should be (Some(createdUUID))
+  	authUUIDEmail should be (Some(createdUUID))  	
   	authUUIDUsername should be (Some(createdUUID))
   }
   

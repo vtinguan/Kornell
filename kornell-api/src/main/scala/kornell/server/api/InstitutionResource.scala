@@ -22,14 +22,14 @@ class InstitutionResource(uuid: String) {
   @PUT
   @Produces(Array("text/plain"))
   @Path("acceptTerms")
-  def acceptTerms(implicit @Context sc: SecurityContext) = AuthRepo.withPerson{ p =>
+  def acceptTerms(implicit @Context sc: SecurityContext) = AuthRepo().withPerson{ p =>
     RegistrationsRepo(p.getUUID, uuid).acceptTerms
   }
   
   @PUT
   @Produces(Array("text/plain"))
   @Consumes(Array(Institution.TYPE))
-  def update(implicit @Context sc: SecurityContext, institution: Institution) = AuthRepo.withPerson{ p =>
+  def update(implicit @Context sc: SecurityContext, institution: Institution) = AuthRepo().withPerson{ p =>
     InstitutionsRepo.update(institution)
   }
   

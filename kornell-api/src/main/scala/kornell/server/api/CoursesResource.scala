@@ -20,7 +20,7 @@ class CoursesResource {
   @GET
   @Produces(Array(CoursesTO.TYPE))
   def getCourses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID:String) =
-	  AuthRepo.withPerson { person => {
+	  AuthRepo().withPerson { person => {
 	     if(institutionUUID != null){
 	    	 CoursesRepo.byInstitution(institutionUUID)
 	     } 

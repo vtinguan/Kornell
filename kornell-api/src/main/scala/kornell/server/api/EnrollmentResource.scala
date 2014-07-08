@@ -39,7 +39,7 @@ class EnrollmentResource(uuid: String) {
   @PUT
   @Produces(Array("text/plain"))
   @Path("acceptTerms")
-  def acceptTerms(implicit @Context sc: SecurityContext) = AuthRepo.withPerson { p =>
+  def acceptTerms(implicit @Context sc: SecurityContext) = AuthRepo().withPerson { p =>
     RegistrationsRepo(p.getUUID, uuid).acceptTerms
   }
 
@@ -47,7 +47,7 @@ class EnrollmentResource(uuid: String) {
   @Produces(Array("text/plain"))
   @Consumes(Array(Enrollment.TYPE))
   def update(implicit @Context sc: SecurityContext, 
-      @Context resp: HttpServletResponse, enrollment: Enrollment) = AuthRepo.withPerson { p =>
+      @Context resp: HttpServletResponse, enrollment: Enrollment) = AuthRepo().withPerson { p =>
     if(!PersonRepo(p.getUUID).hasPowerOver(enrollment.getPersonUUID))
     	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update an enrollment of another person.");
     else
