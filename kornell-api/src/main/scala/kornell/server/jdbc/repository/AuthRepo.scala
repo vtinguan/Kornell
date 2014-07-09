@@ -15,6 +15,7 @@ import kornell.server.repository.Entities.newPerson
 import kornell.server.util.SHA256
 import com.google.common.cache.LoadingCache
 import scala.util.Try
+import kornell.core.entity.RoleType
 
 object AuthRepo {
   val AUTH_CACHE_SIZE = 300;
@@ -24,19 +25,19 @@ object AuthRepo {
     .expireAfterAccess(15, MINUTES)
     .maximumSize(AUTH_CACHE_SIZE)
 
-  def apply(pwdCache: AuthRepo.PasswordCache,rolesCache: AuthRepo.RolesCache) =
+  def apply(pwdCache: AuthRepo.PasswordCache, rolesCache: AuthRepo.RolesCache) =
     new AuthRepo(pwdCache, rolesCache)
 
   def apply() = new AuthRepo(newPasswordCache(), newRolesCache())
 
   val authLoader = new CacheLoader[UsrPwd, Option[String]]() {
     override def load(auth: UsrPwd): Option[String] =
-       lookup(auth._1, auth._2) match {
-      case s:Some[String] => s
-      case None => throw new CredentialsNotFound
-    }
+      lookup(auth._1, auth._2) match {
+        case s: Some[String] => s
+        case None => throw new CredentialsNotFound
+      }
   }
-  
+
   case class CredentialsNotFound extends Exception
 
   def lookup(userkey: String, password: String): Option[String] =
@@ -76,7 +77,7 @@ object AuthRepo {
     """.first[String]
 
   val rolesLoader = new CacheLoader[Option[String], Set[Role]]() {
-    override def load(personUUID: Option[String]): Set[Role] = 
+    override def load(personUUID: Option[String]): Set[Role] =
       lookupUserRoles(personUUID)
   }
 
@@ -124,9 +125,8 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
     rs.getString("cpf"))
 
   def authenticate(userkey: String, password: String): Option[String] = Try {
-     pwdCache.get((userkey, password))
+    pwdCache.get((userkey, password))
   }.getOrElse(None)
-  
 
   def getUserRoles = userRoles().asJava
 
@@ -185,4 +185,27 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 
   //TODO: Cache / remove external reference
   def rolesOf(username: String) = AuthRepo.lookupRolesOf(username)
+
+  def grantPlatformAdmin(personUUID: String) = {
+    val username = AuthRepo.usernameOf(personUUID).get
+    sql"""
+	    	insert into Role (uuid, username, role, institution_uuid, course_class_uuid)
+	    	values (${randomUUID}, ${username}, 
+	    	${RoleType.platformAdmin.toString}, 
+	    	${null}, 
+	    	${null})
+		    """.executeUpdate
+  }
+  
+  def grantInstitutionAdmin(personUUID:String,institutionUUID:String) = {
+    val username = AuthRepo.usernameOf(personUUID).get
+    sql"""
+	    	insert into Role (uuid, username, role, institution_uuid, course_class_uuid)
+	    	values (${randomUUID}, ${username}, 
+	    	${RoleType.institutionAdmin.toString}, 
+	    	${institutionUUID}, 
+	    	${null} )
+		    """.executeUpdate
+  }
+  
 }

@@ -7,23 +7,30 @@ import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.server.jdbc.repository.AuthRepo
-import kornell.server.jdbc.repository.CourseVersionsRepo
 import kornell.core.to.CourseVersionsTO
+import kornell.server.jdbc.repository.CourseVersionsRepo
+import kornell.server.repository.Entities
 
 @Path("courseVersions")
-class CourseVersionsResource {
-  /*
-  @Path("{uuid}")
-  def getCourseVersion(@PathParam("uuid") uuid:String) = CourseVersionResource(uuid)*/
+class CourseVersionsResource(val courseUUID: String) {
+	def this() = this(null)
   
+  def create(repositoryUUID:String) = {
+    Entities.newCourseVersion(repositoryUUID=repositoryUUID)
+  }
+
   @GET
   @Produces(Array(CourseVersionsTO.TYPE))
-  def getCourseVersions(implicit @Context sc: SecurityContext, @QueryParam("courseUUID") courseUUID:String) =
-	  AuthRepo().withPerson { person => {
-	     if(courseUUID != null){
-	    	 CourseVersionsRepo.byCourse(courseUUID)
-	     } 
-	  }
-  }
-  
+  def getCourseVersions(implicit @Context sc: SecurityContext, @QueryParam("courseUUID") courseUUID: String) =
+    AuthRepo().withPerson { person =>
+      {
+        if (courseUUID != null) {
+          CourseVersionsRepo.byCourse(courseUUID)
+        }
+      }
+    }
+}
+
+object CourseVersionsResource{
+  def apply(courseUUID:String) = new CourseVersionsResource(courseUUID)
 }

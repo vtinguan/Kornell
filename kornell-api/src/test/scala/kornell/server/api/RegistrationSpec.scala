@@ -38,7 +38,4 @@ class RegistrationSpec extends UnitSpec with GenInstitution {
   	authUUIDEmail should be (Some(createdUUID))  	
   	authUUIDUsername should be (Some(createdUUID))
   }
-  
-  //todo: CPF,email,username
-
 }

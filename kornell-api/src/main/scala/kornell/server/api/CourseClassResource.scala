@@ -91,16 +91,8 @@ class CourseClassResource(uuid: String) {
   @Produces(Array(LibraryFilesTO.TYPE))
   @Path("libraryFiles")
   @GET
-  def getLibraryFiles(implicit @Context sc: SecurityContext, @Context resp: HttpServletResponse) =
-    //TODO: Refactor to Option.map
-    AuthRepo().withPerson { person =>        
-      try {
-      	LibraryFilesRepository.findLibraryFiles(uuid)
-      } catch {
-        case ioe: IOException =>
-          resp.sendError(HttpServletResponse.SC_NO_CONTENT, "Library descriptor wasn't found.");
-      }    
-    }
+  def getLibraryFiles =  LibraryFilesRepository.findLibraryFiles(uuid)
+     
 
   @PUT
   @Consumes(Array(Roles.TYPE))

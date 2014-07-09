@@ -19,6 +19,7 @@ import kornell.core.entity.Assessment
 import kornell.core.entity.Institution
 import kornell.core.to.EnrollmentTO
 import kornell.core.entity.CourseClassState
+import kornell.server.authentication.ThreadLocalAuthenticator
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -166,13 +167,12 @@ package object repository {
     val roleType = RoleType.valueOf(rs.getString("role"))
     val role = roleType match {
       case RoleType.user => Entities.newUserRole
-      case RoleType.platformAdmin => Entities.newPlatformAdminRole(rs.getString("username"))
+      case RoleType.platformAdmin => Entities.newRoleAsPlatformAdmin(rs.getString("username"))
       case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("username"), rs.getString("institution_uuid"))
       case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("username"), rs.getString("course_class_uuid"))
     }
     role
   }
   
-
 
 }

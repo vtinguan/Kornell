@@ -23,6 +23,7 @@ import kornell.core.util.TimeUtil
 import kornell.core.entity.ContentSpec
 import kornell.core.entity.Assessment
 import kornell.core.entity.CourseClassState
+import kornell.core.entity.PlatformAdminRole
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -45,9 +46,9 @@ object Entities {
     country: String = null,
     state: String = null,
     city: String = null,
-    addressLine1: String = null, 
+    addressLine1: String = null,
     addressLine2: String = null,
-    postalCode: String = null, 
+    postalCode: String = null,
     cpf: String = null) = {
 
     val bday = ValueFactory.newDate
@@ -86,12 +87,10 @@ object Entities {
     principal
   }
 
-  def newCourse: Course = factory.newCourse.as
-
-  def newCourse(uuid: String, code: String,
-    title: String, description: String,
-    infoJson: String): Course = {
-    val c = newCourse
+  def newCourse(uuid: String = randUUID, code: String = null,
+    title: String = null, description: String = null,
+    infoJson: String = null): Course = {
+    val c = factory.newCourse.as
     c.setUUID(uuid)
     c.setCode(code)
     c.setDescription(description)
@@ -175,11 +174,14 @@ object Entities {
     role
   }
 
-  def newPlatformAdminRole(username: String) = {
+  def newPlatformAdminRole(): PlatformAdminRole =
+    factory.newPlatformAdminRole().as
+
+  def newRoleAsPlatformAdmin(username: String): Role = {
     val role = factory.newRole().as
     role.setUsername(username)
     role.setRoleType(RoleType.platformAdmin)
-    role.setPlatformAdminRole(factory.newPlatformAdminRole().as())
+    role.setPlatformAdminRole(newPlatformAdminRole())
     role
   }
 
@@ -203,7 +205,11 @@ object Entities {
     role
   }
 
-  def newCourseVersion(uuid: String, name: String, courseUUID: String, repositoryUUID: String, versionCreatedAt: Date = new Date, distributionPrefix: String, contentSpec: String, disabled: Boolean) = {
+  def newCourseVersion(
+    uuid: String = randUUID, name: String = null, 
+    courseUUID: String = null, repositoryUUID: String = null, 
+    versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
+    contentSpec: String = null, disabled: Boolean = false) = {
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
@@ -219,7 +225,12 @@ object Entities {
     version
   }
 
-  def newCourseClass(uuid: String, name: String, courseVersionUUID: String, institutionUUID: String, requiredScore: BigDecimal, publicClass: Boolean, enrollWithCPF: Boolean, maxEnrollments: Integer, createdAt: Date,createdBy: String, state: CourseClassState, overrideEnrollments: Boolean) = {
+  def newCourseClass(uuid: String = null, name: String = null,
+    courseVersionUUID: String = null, institutionUUID: String = null,
+    requiredScore: BigDecimal = null, publicClass: Boolean = false,
+    enrollWithCPF: Boolean = false, maxEnrollments: Integer = null,
+    createdAt: Date = null, createdBy: String = null,
+    state: CourseClassState = null, overrideEnrollments: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -250,6 +261,24 @@ object Entities {
     entries.setEnrollmentUUID(enrollmentUUID)
     entries.setEntries(entriesMap)
     entries
+  }
+
+  def newS3ContentRepository(uuid: String = null,
+    accessKeyId: String = null,
+    secretAccessKey: String = null,
+    bucketName: String = null,
+    prefix: String = null,
+    region: String = null,
+    distributionURL: String = null) = {
+    val repo = factory.newS3ContentRepository.as
+    repo.setUUID(uuid)
+    repo.setAccessKeyId(accessKeyId)
+    repo.setBucketName(bucketName)
+    repo.setPrefix(prefix)
+    repo.setRegion(region)
+    repo.setSecretAccessKey(secretAccessKey)
+    repo.setDistributionURL(distributionURL)
+    repo
   }
 
 }

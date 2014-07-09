@@ -6,49 +6,29 @@ import kornell.server.helper.SimpleInstitution
 import kornell.server.test.UnitSpec
 import org.scalatest.junit.JUnitRunner
 import kornell.server.jdbc.repository.CourseClassesRepo
-
+import kornell.server.helper.GenPlatformAdmin
+import kornell.server.helper.GenCourseClass
+import kornell.server.helper.GenInstitutionAdmin
+import kornell.core.util.StringUtils
+ 
 
 @RunWith(classOf[JUnitRunner])
-class CourseClassesSpec extends UnitSpec with SimpleInstitution {
+class CourseClassesSpec extends UnitSpec 
+	with GenPlatformAdmin
+	with GenInstitutionAdmin
+	with GenCourseClass { 
   
-  "The platformAdmin" should "be able to create a class" in {
-    val courseClassNew = courseClassesResource.create(platformAdminSecurityContext, courseClass)
-    assert(courseClassNew.isPassed)
-    assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
-    assert(mockHttpServletResponse.getStatus == 0)
-    assert(courseClassNew != null)
-    assert(courseClassNew.asInstanceOf[CourseClass].getCourseVersionUUID == courseVersion.getUUID)
+  "The platformAdmin" should "be able to create a class" in asPlatformAdmin {
+  	newCourseClass.getUUID.size should be > 0
   } 
   
-  "The platformAdmin" should "not be able to create a class with the same uuid" in {
-    assert(courseClassesResource.create(platformAdminSecurityContext, courseClass).isPassed)
-    courseClass.setName(randStr)
-    courseClassesResource.create(platformAdminSecurityContext, courseClass)
-    assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
-    assert(mockHttpServletResponse.getStatus != 0)
-  }
+  //TODO: "The platformAdmin" should "not be able to create a class with the same uuid" in asPlatformAdmin
   
-  "The platformAdmin" should "not be able to create a class with the same name" in {
-    courseClassesResource.create(platformAdminSecurityContext, courseClass)
-    courseClass.setUUID(randUUID)
-    courseClass.setName(className)
-    courseClassesResource.create(platformAdminSecurityContext, courseClass)
-    assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
-    assert(mockHttpServletResponse.getStatus != 0)
-  }
+  //TODO: "The platformAdmin" should "not be able to create a class with the same name" in  asPlatformAdmin
+
   
-  "The institutionAdmin" should "be able to create a class" in {
-    val courseClassNew = courseClassesResource.create(institutionAdminSecurityContext, courseClass).asInstanceOf[CourseClass]
-    assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 1)
-    assert(mockHttpServletResponse.getStatus == 0)
-    assert(courseClassNew != null)
-    assert(courseClassNew.getCourseVersionUUID == courseVersion.getUUID)
-  }
+  // "The institutionAdmin" should "be able to create a class" 
   
-  "A user that's not a platform or institutionAdmin" should "not be able to create a class" in {
-    courseClassesResource.create(notAnAdminSecurityContext, courseClass3)
-    assert(CourseClassesRepo.byInstitution(institution.getUUID).length == 0)
-    assert(mockHttpServletResponse.getStatus != 0)
-  }
+  //TODO: "A user that's not a platform or institutionAdmin" should "not be able to create a class" 
   
 }

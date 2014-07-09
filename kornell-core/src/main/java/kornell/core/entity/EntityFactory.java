@@ -46,4 +46,6 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<ActomEntries> newActomEntries();
 
 	AutoBean<EnrollmentProgress> newEnrollmentProgress();
+	
+	AutoBean<S3ContentRepository> newS3ContentRepository();
 }

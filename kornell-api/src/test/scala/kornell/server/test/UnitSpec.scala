@@ -11,6 +11,7 @@ import org.scalatest.BeforeAndAfter
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.SQL._
 import kornell.server.helper.Generator
+import kornell.core.util.StringUtils
 
 class UnitSpec extends FlatSpec
   with Matchers
@@ -20,15 +21,7 @@ class UnitSpec extends FlatSpec
   with Generator { 
   UnitSpec.init
 
-  def assumeIdentity(personUUID: String) =
-    ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
-
-  def yeldIdentity =
-    ThreadLocalAuthenticator.clearAuthenticatedPersonUUID
-
-  after {
-    yeldIdentity
-  }
+ 
 }
 
 object UnitSpec {

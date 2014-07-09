@@ -12,10 +12,11 @@ import javax.xml.xpath.XPathConstants
 import java.io.ByteArrayInputStream
 import kornell.server.dev.util.LibraryFilesParser
 import kornell.core.util.StringUtils
+import scala.util.Try
 
 object LibraryFilesRepository {
-
-  def findLibraryFiles(courseClassUUID: String) = {
+//TODO: Review
+  def findLibraryFiles(courseClassUUID: String) =  {
     val classRepo = CourseClassesRepo(courseClassUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get

@@ -5,7 +5,6 @@ import scala.collection.JavaConverters._
 import kornell.core.entity.Course
 import kornell.core.entity.Course
 import kornell.server.jdbc.SQL._
-import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
 import kornell.core.entity.CourseVersion

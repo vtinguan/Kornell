@@ -1,7 +1,6 @@
 package kornell.server.api
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
@@ -25,6 +24,9 @@ import kornell.server.jdbc.repository.RegistrationsRepo
 import scala.collection.JavaConverters._
 import kornell.server.util.Errors._
 import kornell.server.util.Conditional.toConditional
+import kornell.server.util.Err
+import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.server.util.RequirementNotMet
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -39,21 +41,20 @@ class EnrollmentResource(uuid: String) {
   @PUT
   @Produces(Array("text/plain"))
   @Path("acceptTerms")
-  def acceptTerms(implicit @Context sc: SecurityContext) = AuthRepo().withPerson { p =>
+  def acceptTerms() = AuthRepo().withPerson { p =>
     RegistrationsRepo(p.getUUID, uuid).acceptTerms
   }
 
   @PUT
   @Produces(Array("text/plain"))
   @Consumes(Array(Enrollment.TYPE))
-  def update(implicit @Context sc: SecurityContext, 
-      @Context resp: HttpServletResponse, enrollment: Enrollment) = AuthRepo().withPerson { p =>
-    if(!PersonRepo(p.getUUID).hasPowerOver(enrollment.getPersonUUID))
-    	resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update an enrollment of another person.");
-    else
-    	EnrollmentRepo(enrollment.getUUID).update(enrollment)
+  def update(enrollment: Enrollment) = {
+    EnrollmentRepo(enrollment.getUUID).update(enrollment)
   }
-
+  .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  RequirementNotMet )
+  .get
+  
+  
   @Path("actoms/{actomKey}")
   def actom(@PathParam("actomKey") actomKey: String) = ActomResource(uuid, actomKey)
 

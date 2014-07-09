@@ -45,8 +45,7 @@ class EnrollmentsResource {
   @PUT
   @Path("requests")
   @Consumes(Array(kornell.core.to.EnrollmentRequestsTO.TYPE))
-  def putEnrollments(@Context resp: HttpServletResponse,
-    enrollmentRequests: EnrollmentRequestsTO) =
+  def putEnrollments(enrollmentRequests: EnrollmentRequestsTO) =
     AuthRepo().withPerson { p =>
       //TODO: Understand and refactor
       //if (enrollmentRequests.getEnrollmentRequests.asScala exists (e => RegistrationEnrollmentService.isInvalidRequestEnrollment(e, p.getFullName))) {
@@ -67,4 +66,8 @@ class EnrollmentsResource {
     	""".executeUpdate
     }
 
+}
+
+object EnrollmentsResource {
+	def apply() = new EnrollmentsResource()
 }

@@ -2,6 +2,8 @@ package kornell.server.helper
 
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.repository.Entities
+import kornell.server.jdbc.repository.PeopleRepo
+import kornell.server.jdbc.repository.AuthRepo
 
 trait GenInstitution extends Generator {
   
@@ -10,5 +12,8 @@ trait GenInstitution extends Generator {
   )
   
   val institutionUUID = institution.getUUID()
+  
 
+  
+  
 }

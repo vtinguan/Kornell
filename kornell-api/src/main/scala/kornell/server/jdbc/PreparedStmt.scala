@@ -38,7 +38,7 @@ class PreparedStmt(query: String, params: List[Any]) {
           case p: BigDecimal => pstmt.setBigDecimal(i, p)
           case p: Boolean => pstmt.setBoolean(i, p)
           //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 
-          case _ => throw new IllegalArgumentException(s"Can not set param [$param]")
+          case _ => throw new IllegalArgumentException(s"Can not set param [${param.getClass.getName}::$param]")
         }
       } catch {
         case e: SQLException => logger.severe(s"Failed to set param [${i}] value to [${param}] on query ${query}")

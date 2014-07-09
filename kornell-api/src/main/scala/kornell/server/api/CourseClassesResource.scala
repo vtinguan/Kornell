@@ -17,18 +17,27 @@ import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.server.util.Conditional.toConditional
 import kornell.core.to.CourseClassesTO
 import kornell.server.util.Errors._
+import kornell.server.repository.Entities
 
 @Path("courseClasses")
-class CourseClassesResource {
-
+class CourseClassesResource(val courseVersionUUID:String) {
+  def this() = this(null) 
+  
+  def createCourseClass(institutionUUID:String):CourseClass = 
+    create((Entities.newCourseClass(
+        courseVersionUUID=courseVersionUUID,
+        institutionUUID=institutionUUID)))
+  
+  
   @PUT
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
-  def create(implicit @Context sc: SecurityContext, courseClass: CourseClass) = {
+  def create(courseClass: CourseClass) = {
     CourseClassesRepo.create(courseClass)
-  }.requiring(isPlatformAdmin, UserNotInRole)
-    .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
-  
+  }.requiring(isPlatformAdmin, UserNotInRole) 
+   .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
+   .get
+   
   @Path("{uuid}")
   def get(@PathParam("uuid") uuid: String):CourseClassResource = CourseClassResource(uuid)
 
@@ -55,4 +64,9 @@ class CourseClassesResource {
         }
       }
     }
+}
+
+object CourseClassesResource{
+  def apply() = new CourseClassesResource(null)
+  def apply(courseVersionUUID:String) = new CourseClassesResource(courseVersionUUID)
 }

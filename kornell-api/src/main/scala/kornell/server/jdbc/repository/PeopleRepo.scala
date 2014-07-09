@@ -93,11 +93,13 @@ object PeopleRepo {
 	    """.map[Person](toPerson))
   }
 
-  def createPerson(email: String, fullName: String, cpf: String = null): Person =
+  
+  def createPerson(email: String = null, fullName: String=null, cpf: String = null): Person =
     create(Entities.newPerson(fullName = fullName,
       email = email,
       cpf = cpf))
-
+	
+  
   def createPersonCPF(cpf: String, fullName: String): Person =
     create(Entities.newPerson(fullName = fullName, cpf = cpf))
 

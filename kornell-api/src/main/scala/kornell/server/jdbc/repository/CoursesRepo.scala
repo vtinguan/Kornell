@@ -1,19 +1,22 @@
 package kornell.server.jdbc.repository
 
 import java.sql.ResultSet
-
 import scala.collection.JavaConverters._
-
 import kornell.core.entity.Course
 import kornell.core.entity.Course
-import kornell.server.jdbc.SQL._ 
+import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
+import kornell.server.repository.Entities
 
 object CoursesRepo {
 
   def apply(uuid:String) = CourseRepo(uuid)
+  
+  def create(code:String):Course = 
+     create(Entities.newCourse(code = code))    
+  
   
   def create(course: Course): Course = {    
     sql"""
