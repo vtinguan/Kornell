@@ -174,7 +174,7 @@ public class GenericCourseClassAdminsView extends Composite {
 			@Override
 			public void ok(RolesTO to) {
 				for (RoleTO roleTO : to.getRoleTOs()) {
-					String item = roleTO.getRole().getUsername();
+					String item = roleTO.getRole().getPersonUUID();
 					if(roleTO.getPerson().getFullName() != null && !"".equals(roleTO.getPerson().getFullName())){
 						item += " (" +roleTO.getPerson().getFullName()+")";
 					}
@@ -256,7 +256,7 @@ public class GenericCourseClassAdminsView extends Composite {
 				String username = multipleSelect.getItemText(i);
 				Role role = entityFactory.newRole().as();
 				CourseClassAdminRole courseClassAdminRole = entityFactory.newCourseClassAdminRole().as();
-				role.setUsername(username);
+				role.setPersonUUID(username);
 				role.setRoleType(RoleType.courseClassAdmin);
 				courseClassAdminRole.setCourseClassUUID(courseClassTO.getCourseClass().getUUID());
 				role.setCourseClassAdminRole(courseClassAdminRole);

@@ -6,8 +6,8 @@ public interface Role {
 	RoleType getRoleType();
 	void setRoleType(RoleType roleType);
 	
-	String getUsername();
-	void setUsername(String username);
+	String getPersonUUID();
+	void setPersonUUID(String personUUID);
 	
 	UserRole getUserRole();
 	void setUserRole(UserRole userRole);

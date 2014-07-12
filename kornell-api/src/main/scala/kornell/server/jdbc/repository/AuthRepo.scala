@@ -96,9 +96,13 @@ object AuthRepo {
     username
   }
 
-  def lookupRolesOf(username: String): Set[Role] = Set.empty ++ sql"""
-  	select username,role,institution_uuid, course_class_uuid from Role where username = $username
+  def lookupRolesOf(username: String): Set[Role] = sql"""
+  	select r.person_uuid, r.role, r.institution_uuid, r.course_class_uuid 
+  	from Role r
+    join Password pw on r.person_uuid = pw.person_uuid
+  	where pw.username = $username
   """.map[Role] { rs => toRole(rs) }
+  	 .toSet
 
 }
 
@@ -187,25 +191,24 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
   def rolesOf(username: String) = AuthRepo.lookupRolesOf(username)
 
   def grantPlatformAdmin(personUUID: String) = {
-    val username = AuthRepo.usernameOf(personUUID).get
     sql"""
-	    	insert into Role (uuid, username, role, institution_uuid, course_class_uuid)
-	    	values (${randomUUID}, ${username}, 
+	    	insert into Role (uuid, person_uuid, role, institution_uuid, course_class_uuid)
+	    	values (${randomUUID}, ${personUUID}, 
 	    	${RoleType.platformAdmin.toString}, 
 	    	${null}, 
 	    	${null})
 		    """.executeUpdate
   }
   
-  def grantInstitutionAdmin(personUUID:String,institutionUUID:String) = {
-    val username = AuthRepo.usernameOf(personUUID).get
+  def grantInstitutionAdmin(personUUID:String,institutionUUID:String) = 
     sql"""
-	    	insert into Role (uuid, username, role, institution_uuid, course_class_uuid)
-	    	values (${randomUUID}, ${username}, 
+	    	insert into Role (uuid, person_uuid, role, institution_uuid, course_class_uuid)
+	    	values (${randomUUID}, 
+    		${personUUID}, 
 	    	${RoleType.institutionAdmin.toString}, 
 	    	${institutionUUID}, 
 	    	${null} )
 		    """.executeUpdate
-  }
+  
   
 }

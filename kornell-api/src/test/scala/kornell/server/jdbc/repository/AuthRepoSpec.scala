@@ -41,6 +41,14 @@ class AuthRepoSpec extends UnitSpec with GenInstitution {
 		hit should be (Some(personUUID))
 		pwdCache.size() should be (1)
 	}
+	
+	it should "retrieve granted privileges" in {
+	  val username = randUsername
+	  val password = randPassword
+		val personUUID = UserResource(authRepo).createUser(institutionUUID,randName,randEmail,randCPF,username,password)
+	  AuthRepo().grantInstitutionAdmin(personUUID, institutionUUID)
+	  val roles = AuthRepo().userRoles(Option(personUUID))
+	}
 
 
 }

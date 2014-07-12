@@ -167,9 +167,9 @@ package object repository {
     val roleType = RoleType.valueOf(rs.getString("role"))
     val role = roleType match {
       case RoleType.user => Entities.newUserRole
-      case RoleType.platformAdmin => Entities.newRoleAsPlatformAdmin(rs.getString("username"))
-      case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("username"), rs.getString("institution_uuid"))
-      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("username"), rs.getString("course_class_uuid"))
+      case RoleType.platformAdmin => Entities.newRoleAsPlatformAdmin(rs.getString("person_uuid"))
+      case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("person_uuid"), rs.getString("institution_uuid"))
+      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
     }
     role
   }

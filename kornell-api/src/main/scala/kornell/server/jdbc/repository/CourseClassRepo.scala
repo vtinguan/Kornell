@@ -68,7 +68,7 @@ class CourseClassRepo(uuid:String) {
   private def bindRole(role: Role, bindMode: String) =
     TOs.newRoleTO(role, {
       if(RoleCategory.BIND_WITH_PERSON == bindMode)
-        PeopleRepo.get(role.getUsername).get
+        PeopleRepo.get(role.getPersonUUID).get
       else
         null
     })
@@ -84,11 +84,11 @@ class CourseClassRepo(uuid:String) {
   private def addRole(role: Role) = {
     if(RoleType.courseClassAdmin.equals(role.getRoleType()))
 	    sql"""
-	    	insert into Role (uuid, username, role, course_class_uuid, person_uuid)
-	    	values (${UUID.random}, ${role.getUsername}, 
+	    	insert into Role (uuid, person_uuid, role, course_class_uuid)
+	    	values (${UUID.random}, 
+    		${role.getPersonUUID}, 
 	    	${role.getRoleType.toString}, 
-	    	${role.getCourseClassAdminRole.getCourseClassUUID},
-	    	${PeopleRepo.get(role.getUsername).get.getUUID})
+	    	${role.getCourseClassAdminRole.getCourseClassUUID}
 	    """.executeUpdate
   }
   

@@ -96,6 +96,16 @@ public class StringUtils {
 		return institutionName;
 	}
 
+	
+	public static String digitsOf(String orig) {
+		StringBuilder buf = new StringBuilder();
+		for (int i = 0; i < orig.length(); i++){
+	    char ch = orig.charAt(i);        
+	    if(Character.isDigit(ch) ) buf.append(ch);
+		}
+		return buf.toString();
+	}
+
 	public static OptionString opt(String str) {
 		if (isSome(str))
 			return new SomeString(str);
@@ -140,4 +150,5 @@ public class StringUtils {
 		}
 
 	}
+	
 }

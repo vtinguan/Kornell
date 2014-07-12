@@ -426,7 +426,7 @@ public class FormHelper {
 		}
 	}
 	
-	public String stripCPF(String cpf){
+	public static String stripCPF(String cpf){
 		if(cpf == null) return null;
 		return cpf.replaceAll("[^0-9]+","");
 	}
@@ -439,7 +439,7 @@ public class FormHelper {
 		return false;
 	}
 
-	public boolean isCPFValid(String cpf) {
+	public static boolean isCPFValid(String cpf) {
 		if(cpf == null) return false;
 		cpf = stripCPF(cpf);
 		// considera-se erro CPF's formados por uma sequencia de numeros iguais

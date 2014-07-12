@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.profile.generic;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import kornell.api.client.Callback;
@@ -10,11 +11,9 @@ import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
-import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.TimeUtil;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -27,6 +26,8 @@ import kornell.gui.client.util.view.formfield.ListBoxFormField;
 import kornell.gui.client.util.view.formfield.SimpleDatePicker;
 import kornell.gui.client.util.view.formfield.SimpleDatePickerFormField;
 import kornell.gui.client.util.view.formfield.TextBoxFormField;
+import kornell.gui.client.validation.CPFValidator;
+import kornell.gui.client.validation.ValidationChangedHandler;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -44,14 +45,14 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericProfileView extends Composite implements ProfileView {
+public class GenericProfileView extends Composite implements ProfileView,ValidationChangedHandler {
+	
 	interface MyUiBinder extends UiBinder<Widget, GenericProfileView> {
 	}
 
@@ -61,12 +62,14 @@ public class GenericProfileView extends Composite implements ProfileView {
 	private PlaceController placeCtrl;
 	private final EventBus bus;
 	private Institution institution;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
 	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showContactDetails;
 
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
+	private String DISABLED_CLASS = "btnNotSelected";
+	private String ENABLED_CLASS = "btnAction";
+	
 	@UiField Form form;
 	@UiField FlowPanel profileFields;
 	@UiField FlowPanel titlePanel;
@@ -79,9 +82,9 @@ public class GenericProfileView extends Composite implements ProfileView {
 	@UiField GenericPasswordChangeView passwordChangeWidget;
 	
 	private UserInfoTO user;
-	private CourseClassTO currentCourseClass;
+	
+	
 	private KornellFormFieldWrapper cpf, email, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
-	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private Button btnChangePassword;
 	private ClientFactory clientFactory;
@@ -92,7 +95,6 @@ public class GenericProfileView extends Composite implements ProfileView {
 		this.session = clientFactory.getKornellSession();
 		this.user = session.getCurrentUser();
 		this.placeCtrl = clientFactory.getPlaceController();
-		this.currentCourseClass = Dean.getInstance().getCourseClassTO();
 		this.institution = Dean.getInstance().getInstitution();
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		formHelper = new FormHelper();
@@ -330,22 +332,17 @@ public class GenericProfileView extends Composite implements ProfileView {
 
 		// the email is shown only to the current user or the admin
 		if(isCurrentUser || isAdmin){
-			/*
-			TextBoxFormField formField;
-			
-			if(isRegisteredWithCPF)
-				formField = formHelper.createTextBoxFormField(user.getPerson().getCPF(), TextBoxFormField.CPF);
-			else
-				formField = formHelper.createTextBoxFormField(user.getPerson().getEmail());
-			
-			email = new KornellFormFieldWrapper(isRegisteredWithCPF?"CPF":"Email", formField, false);
-			*/
-
 			profileFields.add(getPrivatePanel());
 		}
 		
 		email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), isEditMode);
-		cpf = new KornellFormFieldWrapper("CPF", formHelper.createTextBoxFormField(user.getPerson().getCPF()), isEditMode);
+		cpf = new KornellFormFieldWrapper
+				("CPF", 
+				formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
+				isEditMode,
+				CPFValidator.unregisteredCPFValidator(clientFactory.getKornellSession()));
+		
+		requireValid(cpf);
 		
 		fields.add(email);
 		fields.add(cpf);
@@ -440,6 +437,35 @@ public class GenericProfileView extends Composite implements ProfileView {
 		formPanel.setWidget(fileUploadWrapper);
 		return formPanel;
 	}*/
+
+	List<KornellFormFieldWrapper> requiredFields = new ArrayList<KornellFormFieldWrapper>();
+	
+	private void requireValid(KornellFormFieldWrapper field) {
+		requiredFields.add(field);
+		field.addValidationListener(this);
+	}
+	
+	@Override
+	public void onValidationChanged() {
+		boolean isValid = true;
+		for (Iterator<KornellFormFieldWrapper> it = requiredFields.iterator(); isValid && it.hasNext();) {
+			KornellFormFieldWrapper field = (KornellFormFieldWrapper) it.next();
+			isValid = field.isValid();		
+		}
+		setValidity(isValid);
+	}
+	
+	void setValidity(boolean isValid){
+		btnOK.setEnabled(isValid);
+		if(isValid){
+			btnOK.removeStyleName(DISABLED_CLASS);
+			btnOK.addStyleName(ENABLED_CLASS);			
+		}else{
+			btnOK.addStyleName(DISABLED_CLASS);
+			btnOK.removeStyleName(ENABLED_CLASS);
+		}
+	}
+	
 
 	private void displayContactDetails() {
 		profileFields.add(getImageSeparator());

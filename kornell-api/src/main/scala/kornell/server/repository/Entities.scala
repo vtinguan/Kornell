@@ -177,17 +177,17 @@ object Entities {
   def newPlatformAdminRole(): PlatformAdminRole =
     factory.newPlatformAdminRole().as
 
-  def newRoleAsPlatformAdmin(username: String): Role = {
+  def newRoleAsPlatformAdmin(person_uuid: String): Role = {
     val role = factory.newRole().as
-    role.setUsername(username)
+    role.setPersonUUID(person_uuid)
     role.setRoleType(RoleType.platformAdmin)
     role.setPlatformAdminRole(newPlatformAdminRole())
     role
   }
 
-  def newInstitutionAdminRole(username: String, institutionUUID: String) = {
+  def newInstitutionAdminRole(person_uuid: String, institutionUUID: String) = {
     val role = factory.newRole().as
-    role.setUsername(username)
+    role.setPersonUUID(person_uuid)
     val institutionAdminRole = factory.newInstitutionAdminRole().as
     institutionAdminRole.setInstitutionUUID(institutionUUID)
     role.setRoleType(RoleType.institutionAdmin)
@@ -195,9 +195,9 @@ object Entities {
     role
   }
 
-  def newCourseClassAdminRole(username: String, courseClassUUID: String) = {
+  def newCourseClassAdminRole(person_uuid: String, courseClassUUID: String) = {
     val role = factory.newRole().as
-    role.setUsername(username)
+    role.setPersonUUID(person_uuid)
     val courseClassAdminRole = factory.newCourseClassAdminRole().as
     courseClassAdminRole.setCourseClassUUID(courseClassUUID)
     role.setRoleType(RoleType.courseClassAdmin)

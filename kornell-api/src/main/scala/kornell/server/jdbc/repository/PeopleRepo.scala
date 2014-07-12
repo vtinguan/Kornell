@@ -27,13 +27,13 @@ object PeopleRepo {
   val emailLoader = new CacheLoader[String, Option[Person]]() {
     override def load(email: String): Option[Person] = lookupByEmail(email)
   }
-  
+
   val uuidLoader = new CacheLoader[String, Option[Person]]() {
     override def load(uuid: String): Option[Person] = PersonRepo(uuid).first
-  } 
+  }
 
   val DEFAULT_CACHE_SIZE = 1000
-  
+
   val cacheBuilder = CacheBuilder
     .newBuilder()
     .expireAfterAccess(5, MINUTES)
@@ -42,9 +42,9 @@ object PeopleRepo {
   val usernameCache = cacheBuilder.build(usernameLoader)
 
   val cpfCache = cacheBuilder.build(cpfLoader)
-  
+
   val emailCache = cacheBuilder.build(emailLoader)
-  
+
   val uuidCache = cacheBuilder.build(uuidLoader)
 
   def getByUsername(username: String) = Option(username) flatMap usernameCache.get
@@ -68,7 +68,6 @@ object PeopleRepo {
 		select p.* from Person p	
 		where p.email = $email
 	""".first[Person]
-  
 
   def get(any: String): Option[Person] = get(any, any, any)
 
@@ -93,13 +92,11 @@ object PeopleRepo {
 	    """.map[Person](toPerson))
   }
 
-  
-  def createPerson(email: String = null, fullName: String=null, cpf: String = null): Person =
+  def createPerson(email: String = null, fullName: String = null, cpf: String = null): Person =
     create(Entities.newPerson(fullName = fullName,
       email = email,
       cpf = cpf))
-	
-  
+
   def createPersonCPF(cpf: String, fullName: String): Person =
     create(Entities.newPerson(fullName = fullName, cpf = cpf))
 
@@ -122,13 +119,19 @@ object PeopleRepo {
     updateCaches(person)
     person
   }
-  
-  
-  def updateCaches(p:Person) = {
+
+  def updateCaches(p: Person) = {
     val op = Some(p)
     uuidCache.put(p.getUUID, op)
-    if(isSome(p.getCPF)) cpfCache.put(p.getCPF, op)
-    if(isSome(p.getEmail)) cpfCache.put(p.getEmail, op)
-  } 
-     
+    if (isSome(p.getCPF)) cpfCache.put(p.getCPF, op)
+    if (isSome(p.getEmail)) cpfCache.put(p.getEmail, op)
+  }
+
+  def isRegistered(personUUID: String, cpf: String): Boolean =
+    sql"""
+  		select count(*) from Person 
+  		where cpf = ${digitsOf(cpf)}
+  			and uuid != ${personUUID}
+  	""".get[Boolean]
+
 }

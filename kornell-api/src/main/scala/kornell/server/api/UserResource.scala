@@ -33,10 +33,12 @@ import kornell.core.entity.RoleType
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
   def this() = this(AuthRepo())
-
+  
+  def get = first.get
+  
   @GET
   @Produces(Array(UserInfoTO.TYPE)) //TODO: Cache
-  def get: Option[UserInfoTO] =
+  def first: Option[UserInfoTO] =
     authRepo.withPerson { p =>
       val user = newUserInfoTO
       val username = PersonRepo(p.getUUID).getUsername
