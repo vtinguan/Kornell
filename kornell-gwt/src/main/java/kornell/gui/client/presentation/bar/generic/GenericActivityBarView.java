@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
 import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.EnrollmentTO;
@@ -82,7 +83,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	private Integer currentPage = 0, totalPages = 0, progressPercent = 0;
 
-	private boolean isEnrolled;
+	private boolean shouldShowActivityBar;
 	
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -103,7 +104,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private void display(){
 
 		this.setVisible(false);
-		isEnrolled = false;
+		boolean isEnrolled = false;
 
 		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
 		if(user != null){
@@ -117,8 +118,10 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				}
 			}
 		}
+		shouldShowActivityBar = isEnrolled && Dean.getInstance().getCourseClassTO() != null &&
+				!CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 		
-		showDetails = !isEnrolled;
+		showDetails = !shouldShowActivityBar;
 		
 		iconPrevious = new Image(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+".png");
 		displayButton(btnPrevious, BUTTON_PREVIOUS, iconPrevious);
@@ -307,13 +310,13 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			btnDetails.addStyleName("firstMonoSCO");
 		else
 			btnDetails.removeStyleName("firstMonoSCO");
-		clientFactory.getEventBus().fireEvent(new HideSouthBarEvent(!isEnrolled));
-		this.setVisible(isEnrolled);
+		clientFactory.getEventBus().fireEvent(new HideSouthBarEvent(!shouldShowActivityBar));
+		this.setVisible(shouldShowActivityBar);
 	}
 	
 	@UiHandler("btnDetails")
 	void handleClickBtnDetails(ClickEvent e) {
-		if(isEnrolled)
+		if(shouldShowActivityBar)
 			clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(!showDetails));
 	}
 

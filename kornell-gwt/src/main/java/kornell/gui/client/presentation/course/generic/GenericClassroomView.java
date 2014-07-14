@@ -29,7 +29,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	@UiField
 	FlowPanel detailsPanel;
 	
-	private boolean isEnrolled;
+	private boolean showCourseClassContent;
 	
 	private GenericCourseDetailsView detailsView;
 
@@ -49,8 +49,8 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	@Override
 	public void display(boolean isEnrolled) {
 		presenter.stopSequencer();
-		this.isEnrolled = isEnrolled;
-		if(isEnrolled){
+		this.showCourseClassContent = isEnrolled;
+		if(this.showCourseClassContent){
 			presenter.startSequencer();
 		}
 		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl);

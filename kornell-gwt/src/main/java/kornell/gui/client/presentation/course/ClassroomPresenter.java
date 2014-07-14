@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Contents;
@@ -68,9 +69,10 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 						break;
 					}
 				}
+				boolean isInactiveCourseClass = CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 				LoadingPopup.hide();
 				setContents(contents);
-				view.display(isEnrolled);		
+				view.display(isEnrolled && !isInactiveCourseClass);		
 				view.asWidget().setVisible(true);
 			}
 

@@ -134,7 +134,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 
 	private void updateCertificationLinkAndLabel(){
-		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest)  || session.isPlatformAdmin();
+		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest);
 		status = allowCertificateGeneration ? "Disponível" : "Não disponível";
 		lblStatus.setText(status);
 		displayActionCell(allowCertificateGeneration);

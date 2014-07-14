@@ -5,6 +5,7 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Actom;
@@ -89,7 +90,7 @@ public class GenericCourseDetailsView extends Composite {
 	private Contents contents;
 	private List<Actom> actoms;
 
-	private boolean isEnrolled;
+	private boolean isEnrolled, isInactiveCourseClass;
 	
 	public GenericCourseDetailsView(EventBus bus, KornellSession session, PlaceController placeCtrl) {
 		this.bus = bus;
@@ -141,6 +142,7 @@ public class GenericCourseDetailsView extends Composite {
 				break;
 			}
 		}
+		isInactiveCourseClass = CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState());
 		displayButtons();
 		
 		CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(courseClassTO.getCourseVersionTO()
@@ -336,8 +338,9 @@ public class GenericCourseDetailsView extends Composite {
 					constants.btnTopicsInfo(), false);
 		}
 		// TODO: i18n
-		if(isEnrolled){
-			//TODO comment
+		if(isInactiveCourseClass){
+			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
+		} else if(isEnrolled){
 			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
 			displayButton(btnLibrary, constants.btnLibrary(), "Material complementar"/*constants.btnCertificationInfo()*/, false);
 			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
@@ -376,8 +379,17 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel sidePanel = new FlowPanel();
 		sidePanel.addStyleName("sidePanel");
 
-
-		if(!isEnrolled){
+		
+		if(isInactiveCourseClass){
+			FlowPanel inactiveCourseClassPanel = new FlowPanel();
+			inactiveCourseClassPanel.addStyleName("notEnrolledPanel");
+			String text = "Essa turma foi desabilitada pela instituição."
+					+ (Dean.getInstance().getCourseClassTO().getCourseClass().isEnrollWithCPF() ? "" : "<br><br> O material desta turma está inacessível.<br>");
+			HTMLPanel panel = new HTMLPanel(text);
+			inactiveCourseClassPanel.add(panel);
+			
+			sidePanel.add(inactiveCourseClassPanel);
+		} else if(!isEnrolled){
 			FlowPanel notEnrolledPanel = new FlowPanel();
 			notEnrolledPanel.addStyleName("notEnrolledPanel");
 			String text = "Sua matrícula ainda não foi aprovada pela instituição."
