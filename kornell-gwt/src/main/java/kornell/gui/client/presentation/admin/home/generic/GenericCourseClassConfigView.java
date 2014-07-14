@@ -370,7 +370,7 @@ public class GenericCourseClassConfigView extends Composite {
 			confirmText.setText("Tem certeza que deseja excluir esta turma?"
 					+ "\nEsta operação não pode ser desfeita.");
 		} else if (MODAL_DEACTIVATE.equals(modalMode)){
-			confirmText.setText("Tem certeza que deseja desativar esta turma?"
+			confirmText.setText("Tem certeza que deseja desabilitar esta turma?"
 					+ "\nEsta operação não pode ser desfeita.");
 		} else if (MODAL_OVERRIDE_ENROLLMENTS.equals(modalMode)){
 			confirmText.setText("ATENÇÃO! Tem certeza que deseja habilitar a sobrescrita de matrículas? Toda vez que uma matrícula em lote for feita, todas as matrículas já existentes que não estão presentes no lote serão canceladas.");

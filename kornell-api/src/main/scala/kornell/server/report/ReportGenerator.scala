@@ -54,6 +54,7 @@ object ReportGenerator {
 					case    
 						when progress is null OR progress = 0 then 'notStarted'  
 						when progress > 0 and progress < 100 then 'inProgress'  
+						when progress = 100 and certifiedAt is null then 'waitingEvaluation'  
 						else 'completed'   
 					end as progressState,
     			e.progress
@@ -118,10 +119,12 @@ object ReportGenerator {
   }
 
   private def getTotalsAsParameters(courseClassUUID: String): HashMap[String,Object] = {
-    val enrollmentStateBreakdown = sql"""select 
+    val enrollmentStateBreakdown = sql"""
+    		select 
 					case    
 						when progress is null OR progress = 0 then 'notStarted'  
 						when progress > 0 and progress < 100 then 'inProgress'  
+						when progress = 100 and certifiedAt is null then 'waitingEvaluation'  
 						else 'completed'   
 					end as progressState,
 					count(*) as total
@@ -133,7 +136,8 @@ object ReportGenerator {
 				group by 
 					case    
 						when progress is null OR progress = 0 then 'notStarted'  
-						when progress > 0 and progress < 100 then 'inProgress'  
+						when progress > 0 and progress < 100 then 'inProgress' 
+						when progress = 100 and certifiedAt is null then 'waitingEvaluation'  
 						else 'completed'   
 					end
 		    """.map[BreakdownData](breakdownConvertion)

@@ -6,10 +6,13 @@
 	<parameter name="notStarted" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
 	</parameter>
-	<parameter name="completed" class="java.lang.Integer">
+	<parameter name="inProgress" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
 	</parameter>
-	<parameter name="inProgress" class="java.lang.Integer">
+	<parameter name="waitingEvaluation" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="completed" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
 	</parameter>
 	<parameter name="institutionName" class="java.lang.String"/>
@@ -28,7 +31,7 @@
 		<band/>
 	</background>
 	<title>
-		<band height="226">
+		<band height="257">
 			<image scaleImage="FillFrame">
 				<reportElement uuid="4ae187a6-07c8-4f8b-bea5-4d8af25bef59" x="3" y="10" width="150" height="27"/>
 				<imageExpression><![CDATA[$P{assetsURL} + "logo250x45.png"]]></imageExpression>
@@ -57,18 +60,15 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[""+$P{completed}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="5ab20460-f902-473b-af1a-9f3904b59339" x="156" y="185" width="140" height="16" forecolor="#CB9902"/>
+				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" x="156" y="172" width="140" height="16" forecolor="#006AB7"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["" + $P{notStarted}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" x="156" y="171" width="140" height="16" forecolor="#006AB7"/>
-				<textElement>
-					<font fontName="Serif" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[""+$P{inProgress}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[""+($P{inProgress}+$P{waitingEvaluation}) +
+    ($P{waitingEvaluation} > 0
+        ? " (" + $P{waitingEvaluation} + " aguardando avaliação)"
+        : ""
+    )]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" x="155" y="70" width="385" height="16"/>
@@ -179,20 +179,12 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[Certificados:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="f27ba0f7-9258-419e-846a-fd91407659e8" mode="Opaque" x="3" y="171" width="142" height="16" forecolor="#006AB7" backcolor="#FFFFFF"/>
+				<reportElement uuid="f27ba0f7-9258-419e-846a-fd91407659e8" mode="Opaque" x="3" y="172" width="142" height="16" forecolor="#006AB7" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Em andamento:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="0b6cad4b-6f04-45e4-8e1f-4183afdfccbd" mode="Opaque" x="3" y="185" width="142" height="16" forecolor="#CB9902" backcolor="#FFFFFF"/>
-				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
-					<font fontName="Serif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[A iniciar:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="dad0275f-8f42-474e-a8ce-399a31a09aae" mode="Opaque" x="288" y="99" width="76" height="16" forecolor="#525252" backcolor="#FFFFFF">
@@ -205,7 +197,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[Desabilitada em: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="375" y="99" width="122" height="16">
+				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="387" y="99" width="122" height="16">
 					<printWhenExpression><![CDATA[$P{disabledAt} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -213,6 +205,21 @@ $P{maxEnrollments}]]></textFieldExpression>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{disabledAt}.split("T").length > 1 ? $P{disabledAt}.split("T")[0] : "";]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" x="156" y="187" width="140" height="16" forecolor="#CB9902"/>
+				<textElement>
+					<font fontName="Serif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $P{notStarted}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b00cce4f-2a34-4b27-a7b3-8c187cdcf68f" mode="Transparent" x="2" y="187" width="142" height="16" forecolor="#CB9902"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[A iniciar:]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -276,7 +283,10 @@ $P{maxEnrollments}]]></textFieldExpression>
     ?  "Concluído"
     : ($F{progressState}.equals("inProgress")
         ? "Em Andamento: " + $F{progress}.intValue() + "%"
-        : "A Iniciar"
+        : ($F{progressState}.equals("waitingEvaluation")
+            ? "Aguardando Avaliação"
+            : "A Iniciar"
+        )
     )]]></textFieldExpression>
 			</textField>
 			<textField>
