@@ -120,6 +120,7 @@ public class GenericCourseSummaryView extends Composite {
 					public void onClick(ClickEvent event) {
 						if (courseClassTO.getEnrollment() == null)
 							return;
+						Dean.getInstance().setCourseClassTO(courseClassTO);
 						placeCtrl.goTo(new ClassroomPlace(courseClassTO
 								.getEnrollment().getUUID()));
 					}

@@ -83,7 +83,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	private Integer currentPage = 0, totalPages = 0, progressPercent = 0;
 
-	private boolean shouldShowActivityBar;
+	private boolean shouldShowActivityBar, isEnrolled;
 	
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -104,7 +104,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private void display(){
 
 		this.setVisible(false);
-		boolean isEnrolled = false;
+		isEnrolled = false;
 
 		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
 		if(user != null){
@@ -121,7 +121,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		shouldShowActivityBar = isEnrolled && Dean.getInstance().getCourseClassTO() != null &&
 				!CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 		
-		showDetails = !shouldShowActivityBar;
+		showDetails = !isEnrolled;
 		
 		iconPrevious = new Image(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+".png");
 		displayButton(btnPrevious, BUTTON_PREVIOUS, iconPrevious);
@@ -310,6 +310,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			btnDetails.addStyleName("firstMonoSCO");
 		else
 			btnDetails.removeStyleName("firstMonoSCO");
+		shouldShowActivityBar = isEnrolled && Dean.getInstance().getCourseClassTO() != null &&
+				!CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 		clientFactory.getEventBus().fireEvent(new HideSouthBarEvent(!shouldShowActivityBar));
 		this.setVisible(shouldShowActivityBar);
 	}
