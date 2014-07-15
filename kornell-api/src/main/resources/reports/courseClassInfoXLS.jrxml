@@ -87,9 +87,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textElement textAlignment="Right">
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd", new Locale("pt","BR")).format(new java.util.Date()) +
-" - " +
-"Página: "+$V{PAGE_NUMBER}+"/"+$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd", new Locale("pt","BR")).format(new java.util.Date())]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="f6ac09cf-d162-4be1-9755-69de52522728" mode="Opaque" x="0" y="33" width="210" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
