@@ -197,7 +197,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[Desabilitada em: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="387" y="99" width="122" height="16">
+				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="375" y="99" width="122" height="16">
 					<printWhenExpression><![CDATA[$P{disabledAt} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
