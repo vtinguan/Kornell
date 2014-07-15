@@ -93,7 +93,6 @@ class ReportResource {
 
   @GET
   @Path("/courseClassInfo")
-  @Produces(Array("application/pdf"))
   def getCourseClassInfo(@Context resp: HttpServletResponse,
     @QueryParam("courseClassUUID") courseClassUUID: String,
     @QueryParam("fileType") fileType: String) = {
@@ -104,6 +103,10 @@ class ReportResource {
         "pdf"
     }
     resp.addHeader("Content-disposition", "attachment; filename=info."+fType)
+    if(fType != null && fType == "xls")
+    	resp.setContentType("application/vnd.ms-excel")
+    else
+    	resp.setContentType("application/pdf")
     ReportCourseClassGenerator.generateCourseClassReport(courseClassUUID, fType)
   }
 

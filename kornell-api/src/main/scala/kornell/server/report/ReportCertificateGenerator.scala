@@ -67,20 +67,18 @@ object ReportCertificateGenerator {
     	return null
     }
     val parameters: HashMap[String, Object] = new HashMap()
-    val assetsURL: String = composeURL(certificateData.head.getAssetsURL(), certificateData.head.getDistributionPrefix(), "/reports")
+    val assetsURL: String = composeURL(certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
     parameters.put("assetsURL", assetsURL + "/")
-    val jasperPath = composeURL(assetsURL, "certificate.jasper")
 	  
-  	//store one jasperfile per courseclass
-    val jasperFile: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle() + ".jasper")
-    
-    
+  	//store one jasperfile per course
+    val jasperFile: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle + ".jasper")
+        
     /*val diff = new Date().getTime - jasperFile.lastModified
     if(diff > 7 * 24 * 60 * 60 * 1000) //delete if older than 7 days
 		  jasperFile.delete*/
 
     if(!jasperFile.exists)
-    	FileUtils.copyURLToFile(new URL(jasperPath), jasperFile)
+    	FileUtils.copyURLToFile(new URL(composeURL(assetsURL, "certificate.jasper")), jasperFile)
     	
     ReportGenerator.getReportBytes(certificateData, parameters, jasperFile)
     

@@ -51,7 +51,9 @@ object ReportCourseClassGenerator {
 				order by 
 					progressState,
     			progress,
-    			p.fullName
+    			p.fullName,
+    			p.email,
+    			p.cpf
 	    """.map[CourseClassReportTO](toCourseClassReportTO)
 	    
 	    val parameters = getTotalsAsParameters(courseClassUUID)
@@ -62,10 +64,13 @@ object ReportCourseClassGenerator {
 	    enrollmentBreakdowns.toList
 		  
 	    val cl = Thread.currentThread.getContextClassLoader
-	    val jasperStream = cl.getResourceAsStream("reports/courseClassInfo.jasper")
-	    val bytes = ReportGenerator.getReportBytesFromStream(courseClassReportTO, parameters, jasperStream)
-	    
-	    bytes
+	    val jasperStream = {
+	      	if(fileType != null && fileType == "xls")
+	      	  cl.getResourceAsStream("reports/courseClassInfoXLS.jasper")
+	      	else
+	      	  cl.getResourceAsStream("reports/courseClassInfo.jasper")
+	    	}
+	    ReportGenerator.getReportBytesFromStream(courseClassReportTO, parameters, jasperStream, fileType)
   }
       
   type ReportHeaderData = Tuple7[String,String, String, Date, String, String, String]

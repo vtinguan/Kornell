@@ -3,15 +3,12 @@ package kornell.gui.client.presentation.admin.home.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.CourseClassTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.ProgressEvent;
-import kornell.gui.client.event.ProgressEventHandler;
-import kornell.gui.client.event.ShowDetailsEvent;
-import kornell.gui.client.event.ShowDetailsEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -22,6 +19,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,8 +38,8 @@ public class GenericReportItemView extends Composite {
 	private String type;
 	private String name;
 	private String description;
-	private String status;
-	private String grade;
+	
+	private CheckBox xlsCheckBox;
 	
 	private HandlerRegistration downloadHandler;
 	
@@ -54,6 +52,8 @@ public class GenericReportItemView extends Composite {
 	Label lblName;
 	@UiField
 	Label lblDescription;
+	@UiField
+	FlowPanel optionPanel;
 	@UiField
 	Anchor lblGenerate;
 	@UiField
@@ -92,12 +92,16 @@ public class GenericReportItemView extends Composite {
 		lblDownload.addStyleName("anchorToLabel");
 		lblDownload.setEnabled(false);
 		
+		xlsCheckBox = new CheckBox("XLS");
+		optionPanel.add(xlsCheckBox);
+		
 		lblGenerate.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
-				Window.Location.assign(session.getApiUrl() + "/report/courseClassInfo/?courseClassUUID="
-						+ currentCourseClass.getCourseClass().getUUID());
+				String url = StringUtils.composeURL(session.getApiUrl(), "/report/courseClassInfo/?courseClassUUID="
+						+ currentCourseClass.getCourseClass().getUUID() + "&fileType=" + (xlsCheckBox.getValue() ? "xls" : "pdf"));
+				Window.Location.assign(url);
 			}
 		});
   }

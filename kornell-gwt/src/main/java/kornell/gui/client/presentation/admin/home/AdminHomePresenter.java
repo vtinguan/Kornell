@@ -318,11 +318,6 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			KornellNotification
 					.show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
 							AlertType.ERROR, 5000);
-		} else if (!enrollWithCPF
-				&& enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
-			KornellNotification
-					.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
-							+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
 		} else {
 			hasOverriddenEnrollments = false;
 			if(isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()){
@@ -383,7 +378,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			
 		}
 		
-		
+		if (!enrollWithCPF
+				&& enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
+			KornellNotification
+					.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
+							+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
+		}
 		LoadingPopup.show();
 		session.createEnrollments(enrollmentRequestsTO,
 				new Callback<Enrollments>() {
