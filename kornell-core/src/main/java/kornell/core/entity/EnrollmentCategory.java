@@ -3,7 +3,7 @@ package kornell.core.entity;
 public class EnrollmentCategory {
 	
 	public static boolean isFinished(Enrollment enrollment) {
-		return enrollment.getCertifiedAt() != null;
+		return enrollment != null && enrollment.getCertifiedAt() != null;
 	}
 
 	public static EnrollmentProgressDescription getEnrollmentProgressDescription(Enrollment enrollment) {
