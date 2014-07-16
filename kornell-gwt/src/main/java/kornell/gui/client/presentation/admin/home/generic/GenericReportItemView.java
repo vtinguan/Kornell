@@ -9,6 +9,7 @@ import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,7 +33,9 @@ public class GenericReportItemView extends Composite {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private String IMAGES_PATH = "skins/first/icons/admin/";
+	private String BASE_IMAGES_PATH = "skins/first/icons/";
+	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
+	private String LIBRARY_IMAGES_PATH = BASE_IMAGES_PATH + "courseLibrary/";
 	private KornellSession session;
 	private CourseClassTO currentCourseClass;
 	private String type;
@@ -81,7 +84,7 @@ public class GenericReportItemView extends Composite {
 	  this.name = "Relatório de detalhes da turma";
 		this.description = "Geração do relatório de detalhes da turma, contendo os dados da turma e informações sobre as matrículas da mesma.";
 		
-		certificationIcon.setUrl(IMAGES_PATH + type + ".png");
+		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
 		lblName.setText(name);
 		lblDescription.setText(description);
 		lblGenerate.setText("Gerar");
@@ -92,8 +95,18 @@ public class GenericReportItemView extends Composite {
 		lblDownload.addStyleName("anchorToLabel");
 		lblDownload.setEnabled(false);
 		
-		xlsCheckBox = new CheckBox("XLS");
+		Image img = new Image(LIBRARY_IMAGES_PATH + "xls.png");
+		xlsCheckBox = new CheckBox("Gerar em formato Excel");
+		
+		optionPanel.add(img);
 		optionPanel.add(xlsCheckBox);
+		
+		img.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				xlsCheckBox.setValue(!xlsCheckBox.getValue());				
+			}
+		});
 		
 		lblGenerate.addClickHandler(new ClickHandler() {
 			@Override
@@ -110,7 +123,7 @@ public class GenericReportItemView extends Composite {
 	  this.name = "Certificados de conclusão de curso";
 		this.description = "Geração do certificado de todos os alunos desta turma que concluíram o curso. A geração pode levar um tempo, dependendo do tamanho da turma. Assim que ele for gerado ele estará disponível para ser baixado aqui.";
 		
-		certificationIcon.setUrl(IMAGES_PATH + type + ".png");
+		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
 		lblName.setText(name);
 		lblDescription.setText(description);
 		lblGenerate.setText("Gerar");
