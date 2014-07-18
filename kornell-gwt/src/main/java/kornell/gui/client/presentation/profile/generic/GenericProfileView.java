@@ -327,13 +327,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO);
 		}
 
-		//TODO: remove comment
 		//profileFields.add(getPictureUploadFormPanel());
-
-		// the email is shown only to the current user or the admin
-		if(isCurrentUser || isAdmin){
-			profileFields.add(getPrivatePanel());
-		}
 		
 		email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), isEditMode);
 		cpf = new KornellFormFieldWrapper
@@ -368,7 +362,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			sex = new KornellFormFieldWrapper("Sexo", new ListBoxFormField(sexes), isEditMode);
 			fields.add(sex);
 			profileFields.add(sex);
-			profileFields.add(getPrivatePanel());
 
 			SimpleDatePicker datePicker = new SimpleDatePicker();
 			if(isEditMode || isCurrentUser || isAdmin){
@@ -377,7 +370,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
 			fields.add(birthDate);
 			profileFields.add(birthDate);
-			profileFields.add(getPrivatePanel());
 		}
 
 		if((isCurrentUser || isAdmin)&& showContactDetails){
@@ -473,7 +465,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		telephone = new KornellFormFieldWrapper("Telefone", formHelper.createTextBoxFormField(user.getPerson().getTelephone()), isEditMode);
 		fields.add(telephone);
 		profileFields.add(telephone);
-		profileFields.add(getPrivatePanel());
 
 		final ListBox countries = formHelper.getCountriesList();
 		if(isEditMode && user.getPerson().getCountry() == null){
@@ -495,7 +486,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		country = new KornellFormFieldWrapper("País", new ListBoxFormField(countries), isEditMode);
 		fields.add(country);
 		profileFields.add(country);
-		profileFields.add(getPrivatePanel());
 
 		if("BR".equals(countries.getValue())){
 			//state.getFormField().clear();
@@ -509,40 +499,27 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		}
 		fields.add(state);
 		profileFields.add(state);
-		profileFields.add(getPrivatePanel());
 
 		city = new KornellFormFieldWrapper("Cidade", formHelper.createTextBoxFormField(user.getPerson().getCity()), isEditMode);
 		fields.add(city);
 		profileFields.add(city);
-		profileFields.add(getPrivatePanel());
 
 		addressLine1 = new KornellFormFieldWrapper("Endereço Linha 1", formHelper.createTextBoxFormField(user.getPerson().getAddressLine1()), isEditMode);
 		fields.add(addressLine1);
 		profileFields.add(addressLine1);
-		profileFields.add(getPrivatePanel());
 
 		addressLine2 = new KornellFormFieldWrapper("Endereço Linha 2", formHelper.createTextBoxFormField(user.getPerson().getAddressLine2()), isEditMode);
 		fields.add(addressLine2);
 		profileFields.add(addressLine2);
-		profileFields.add(getPrivatePanel());
 
 		postalCode = new KornellFormFieldWrapper("Código Postal", formHelper.createTextBoxFormField(user.getPerson().getPostalCode()), isEditMode);
 		fields.add(postalCode);
 		profileFields.add(postalCode);
-		profileFields.add(getPrivatePanel());
 	}
 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		// TODO Auto-generated method stub
-	}
-
-	private FlowPanel getPrivatePanel(){
-		FlowPanel privatePanel = new FlowPanel();
-		/*privatePanel.addStyleName("privatePanel");
-		privatePanel.add(new Image("skins/first/icons/profile/notPublic.png"));
-		privatePanel.add(new Label("Privado"));*/
-		return privatePanel;
 	}
 
 	private Image getImageSeparator(){

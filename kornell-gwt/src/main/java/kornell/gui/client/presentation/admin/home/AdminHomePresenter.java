@@ -127,10 +127,14 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			public void ok(CourseClassesTO to) {
 				courseClassesTO = to;
 				view.setCourseClasses(courseClassesTO.getCourseClasses());
-				for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-					if (courseClassUUID == null || courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)) {
-						updateCourseClassUI(courseClassTO);
-						break;
+				if(courseClassesTO.getCourseClasses().size() == 0){
+					updateCourseClassUI(null);
+				} else {
+					for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+						if (courseClassUUID == null || courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)) {
+							updateCourseClassUI(courseClassTO);
+							break;
+						}
 					}
 				}
 			}
@@ -138,16 +142,19 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	}
 
 	private void updateCourseClassUI(CourseClassTO courseClassTO) {
-		enrollWithCPF = courseClassTO.getCourseClass().isEnrollWithCPF();
-		Dean.getInstance().setCourseClassTO(courseClassTO);
+		view.showTabsPanel(courseClassTO != null);
 		view.prepareAddNewCourseClass(false);
 		view.showEnrollmentsPanel(false);
+		view.setHomeTabActive();
+		if(courseClassTO == null)
+			return;
+		enrollWithCPF = courseClassTO.getCourseClass().isEnrollWithCPF();
+		Dean.getInstance().setCourseClassTO(courseClassTO);
 		view.setCourseClassName(courseClassTO.getCourseClass().getName());
 		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse()
 				.getTitle());
 		view.setUserEnrollmentIdentificationType(enrollWithCPF);
 		view.setSelectedCourseClass(courseClassTO.getCourseClass().getUUID());
-		view.setHomeTabActive();
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 

@@ -102,7 +102,7 @@ public class GenericCourseClassConfigView extends Composite {
 		this.presenter = presenter;
 		this.user = session.getCurrentUser();
 		this.isCreationMode = (courseClassTO == null);
-		this.canDelete = presenter.getEnrollments().size() == 0;
+		this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 

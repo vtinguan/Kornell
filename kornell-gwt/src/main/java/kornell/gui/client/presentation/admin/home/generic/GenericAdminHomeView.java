@@ -175,6 +175,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		this.session = session;
 		this.bus = bus;
 		initWidget(uiBinder.createAndBindUi(this));
+		tabsPanel.setVisible(false);
 		table = new CellTable<EnrollmentTO>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
 		formHelper = new FormHelper();
@@ -713,5 +714,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@Override
 	public void showEnrollmentsPanel(boolean visible) {
 		enrollmentsPanel.setVisible(visible);
+	}
+	
+	@Override
+	public void showTabsPanel(boolean visible) {
+		tabsPanel.setVisible(visible);
 	}
 }

@@ -37,6 +37,7 @@ public interface AdminHomeView extends IsWidget {
 	void setSelectedCourseClass(String uuid);
 	void setHomeTabActive();
 	void showEnrollmentsPanel(boolean visible);
+	void showTabsPanel(boolean visible);
 	void buildAdminsView();
 	void buildConfigView(boolean isCreationMode);
 	void buildReportsView();
