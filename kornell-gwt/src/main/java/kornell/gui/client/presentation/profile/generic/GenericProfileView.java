@@ -27,6 +27,7 @@ import kornell.gui.client.util.view.formfield.SimpleDatePicker;
 import kornell.gui.client.util.view.formfield.SimpleDatePickerFormField;
 import kornell.gui.client.util.view.formfield.TextBoxFormField;
 import kornell.gui.client.validation.CPFValidator;
+import kornell.gui.client.validation.EmailValidator;
 import kornell.gui.client.validation.ValidationChangedHandler;
 
 import com.github.gwtbootstrap.client.ui.Form;
@@ -335,14 +336,20 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			profileFields.add(getPrivatePanel());
 		}
 		
-		email = new KornellFormFieldWrapper("Email", formHelper.createTextBoxFormField(user.getPerson().getEmail()), isEditMode);
+		KornellSession session = clientFactory.getKornellSession();
+		email = 
+				new KornellFormFieldWrapper("Email", 
+						formHelper.createTextBoxFormField(user.getPerson().getEmail()), 
+						isEditMode,
+						EmailValidator.unregisteredEmailValidator(session));
 		cpf = new KornellFormFieldWrapper
 				("CPF", 
 				formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
 				isEditMode,
-				CPFValidator.unregisteredCPFValidator(clientFactory.getKornellSession()));
+				CPFValidator.unregisteredCPFValidator(session));
 		
 		requireValid(cpf);
+		requireValid(email);
 		
 		fields.add(email);
 		fields.add(cpf);
@@ -448,9 +455,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	@Override
 	public void onValidationChanged() {
 		boolean isValid = true;
-		for (Iterator<KornellFormFieldWrapper> it = requiredFields.iterator(); isValid && it.hasNext();) {
+		for (Iterator<KornellFormFieldWrapper> it = requiredFields.iterator(); 
+				it.hasNext();) {
 			KornellFormFieldWrapper field = (KornellFormFieldWrapper) it.next();
-			isValid = field.isValid();		
+			isValid = field.isValid();			
 		}
 		setValidity(isValid);
 	}

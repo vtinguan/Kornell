@@ -12,18 +12,18 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CPFValidator implements Validator {
+public class EmailValidator implements Validator {
 	ValidationMessages msgs = GWT.create(ValidationMessages.class);
 	KornellSession session;
 
-	public CPFValidator(KornellSession session) {
+	public EmailValidator(KornellSession session) {
 		this.session = session;
 	}
 
-	public static final CPFValidator unregisteredCPFValidator(
+	public static final EmailValidator unregisteredEmailValidator(
 			KornellSession session) {
-		CPFValidator unregisteredCPFVal = new CPFValidator(session);
-		return unregisteredCPFVal;
+		EmailValidator validator = new EmailValidator(session);
+		return validator;
 	}
 
 	@Override
@@ -31,17 +31,17 @@ public class CPFValidator implements Validator {
 		final List<String> errors = new ArrayList<String>();
 		if (widget instanceof HasText) {
 			HasText txtWidget = (HasText) widget;
-			String cpf = txtWidget.getText();
-			if (StringUtils.isSome(cpf)) {
-				if (!isValidCPF(cpf)) {
-					errors.add(msgs.invalidCPF());
+			String email = txtWidget.getText();
+			if (StringUtils.isSome(email)) {
+				if (!isValidEmail(email)) {
+					errors.add(msgs.invalidEmail());
 					cb.ok(errors);
 				} else {
-					session.people().isCPFRegistered(cpf, new Callback<Boolean>() {
+					session.people().isEmailRegistered(email, new Callback<Boolean>() {
 						@Override
-						public void ok(Boolean to) {
-							if (to) {
-								errors.add(msgs.existingCPF());
+						public void ok(Boolean exists) {
+							if (exists) {
+								errors.add(msgs.existingEmail());
 							}
 							cb.ok(errors);
 						}
@@ -53,8 +53,9 @@ public class CPFValidator implements Validator {
 		}
 	}
 
-	private static boolean isValidCPF(String cpf) {
-		return FormHelper.isCPFValid(cpf);
+	private static boolean isValidEmail(String email) {
+		boolean emailValid = FormHelper.isEmailValid(email);
+		return emailValid;
 	}
 
 	

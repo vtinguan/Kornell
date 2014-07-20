@@ -26,11 +26,11 @@ public class FormHelper {
 	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
-	private final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
-	private final String USERNAME_PATTERN = "^[^0-9.][A-z0-9.]{2,}$";
-	private final String PASSWORD_PATTERN = "^[0-9a-zA-Z!@#$%¨&*()]{6,}$";
+	private static final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
+	private static final String USERNAME_PATTERN = "^[^0-9.][A-z0-9.]{2,}$";
+	private static final String PASSWORD_PATTERN = "^[0-9a-zA-Z!@#$%¨&*()]{6,}$";
 	
-	public boolean isEmailValid(String field){
+	public static boolean isEmailValid(String field){
 		return field == null ? false : field.trim().matches(EMAIL_PATTERN);
 	}
 	

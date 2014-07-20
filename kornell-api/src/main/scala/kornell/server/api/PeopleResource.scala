@@ -23,8 +23,10 @@ class PeopleResource() {
   @Path("isRegistered")
   @Produces(Array("application/boolean"))
   @GET
-  def isRegistered(@QueryParam("cpf") cpf:String):Boolean = AuthRepo().withPerson { person =>
-    	val result = PeopleRepo.isRegistered(person.getUUID,cpf)
+  def isRegistered(@QueryParam("cpf") cpf:String,
+      @QueryParam("email") email:String):Boolean = 
+    AuthRepo().withPerson { person =>
+    	val result = PeopleRepo.isRegistered(person.getUUID,cpf,email)
     	result
   }
 }
