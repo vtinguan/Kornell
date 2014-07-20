@@ -1,0 +1,1 @@
+create unique index Password_username on Password(username);
