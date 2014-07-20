@@ -11,6 +11,7 @@ import com.google.common.cache.CacheLoader
 import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit._
 import kornell.core.util.StringUtils._
+import kornell.server.jdbc.PreparedStmt
 
 object PeopleRepo {
 
@@ -127,11 +128,21 @@ object PeopleRepo {
     if (isSome(p.getEmail)) cpfCache.put(p.getEmail, op)
   }
 
-  def isRegistered(personUUID: String, cpf: String): Boolean =
-    sql"""
-  		select count(*) from Person 
-  		where cpf = ${digitsOf(cpf)}
-  			and uuid != ${personUUID}
-  	""".get[Boolean]
+  //TODO: Better security against SQLInjection?
+  //TODO: Better dynamic queries
+  //TODO: Teste BOTH args case!!
+  def isRegistered(personUUID: String, cpf: String,email:String): Boolean = {
+    var sql = s"select count(*) from Person where uuid != '${personUUID}' "
+    if (isSome(cpf)) {
+      sql = sql + s"and cpf = '${digitsOf(cpf)}'";
+    }
+    if (isSome(email)) {
+    	sql = sql + s"and email = '${email}'";
+    }
+    if (sql.contains("--")) throw new IllegalArgumentException
+    val pstmt = new PreparedStmt(sql,List())    
+    val result = pstmt.get[Boolean]
+    result
+  }
 
 }

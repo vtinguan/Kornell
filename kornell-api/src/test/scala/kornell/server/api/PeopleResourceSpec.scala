@@ -13,7 +13,7 @@ class PeopleResourceSpec extends UnitSpec with GenPerson {
 		val self = UserResource().get
 	  val ownCPF = self.getPerson.getCPF()
 	  assertResult(false){
-	    PeopleResource().isRegistered(ownCPF)
+	    PeopleResource().isRegistered(ownCPF,email = null)
 	  }
 	  	
 	}
