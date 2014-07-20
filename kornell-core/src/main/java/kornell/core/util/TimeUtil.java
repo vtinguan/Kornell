@@ -7,7 +7,7 @@ public class TimeUtil {
 	
 	@SuppressWarnings("deprecation")
 	public static java.util.Date toJUD(Date date) {
-		if(date == null) return null;
+		if(date == null || date.getYear() == 0) return null;
 		java.util.Date jud = new java.util.Date(0);
 		jud.setYear(date.getYear());
 		jud.setMonth(date.getMonth());
