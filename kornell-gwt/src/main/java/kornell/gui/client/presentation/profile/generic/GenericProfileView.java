@@ -247,7 +247,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private UserInfoTO getUserInfoFromForm() {
 		Person person = user.getPerson();
 
-		person.setCPF(cpf.getFieldPersistText());
+		person.setCPF(FormHelper.stripCPF(cpf.getFieldPersistText()));
 		person.setEmail(email.getFieldPersistText());
 		person.setFullName(fullName.getFieldPersistText());
 		person.setCompany(company.getFieldPersistText());
