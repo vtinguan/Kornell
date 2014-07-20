@@ -70,12 +70,15 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private String IMAGE_PATH = "skins/first/icons/profile/";
 	private String DISABLED_CLASS = "btnNotSelected";
 	private String ENABLED_CLASS = "btnAction";
+	private String CURSOR_DEFAULT_CLASS = "cursorDefault";
+	private String CURSOR_POINTER_CLASS = "cursorPointer";
 	
 	@UiField Form form;
 	@UiField FlowPanel profileFields;
 	@UiField FlowPanel titlePanel;
 	@UiField Image imgTitle;
 	@UiField Label lblTitle;
+	@UiField Label lblErrors;
 	@UiField Button btnEdit;
 	@UiField Button btnClose;
 	@UiField Button btnOK;
@@ -329,6 +332,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		}
 
 		//profileFields.add(getPictureUploadFormPanel());
+
+		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode && isAdmin);
+		fields.add(fullName);
+		profileFields.add(fullName);
 		
 		KornellSession session = clientFactory.getKornellSession();
 		email = 
@@ -350,10 +357,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		
 		profileFields.add(email);
 		profileFields.add(cpf);
-
-		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode && isAdmin);
-		fields.add(fullName);
-		profileFields.add(fullName);
 
 		company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
 		fields.add(company);
@@ -460,9 +463,17 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		if(isValid){
 			btnOK.removeStyleName(DISABLED_CLASS);
 			btnOK.addStyleName(ENABLED_CLASS);			
+			btnOK.removeStyleName(CURSOR_DEFAULT_CLASS);
+			btnOK.addStyleName(CURSOR_POINTER_CLASS);		
+			lblErrors.setVisible(false);
+			lblErrors.setText("");
 		}else{
 			btnOK.addStyleName(DISABLED_CLASS);
 			btnOK.removeStyleName(ENABLED_CLASS);
+			btnOK.removeStyleName(CURSOR_POINTER_CLASS);
+			btnOK.addStyleName(CURSOR_DEFAULT_CLASS);		
+			lblErrors.setVisible(true);
+			lblErrors.setText("Existem erros nos dados.");
 		}
 	}
 	
