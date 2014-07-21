@@ -16,11 +16,10 @@ public class TimeUtil {
 	}
 
 	public static Date fromJUD(Date date, java.util.Date jud) {
-		if (date != null && jud != null) {
-			date.setDay(jud.getDate());
-			date.setMonth(jud.getMonth());
-			date.setYear(jud.getYear());
-		}
+		if (date == null || jud == null) return null;
+		date.setDay(jud.getDate());
+		date.setMonth(jud.getMonth());
+		date.setYear(jud.getYear());
 		return date;
 	}
 

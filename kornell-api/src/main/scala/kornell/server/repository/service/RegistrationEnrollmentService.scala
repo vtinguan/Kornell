@@ -115,6 +115,7 @@ object RegistrationEnrollmentService {
 
     //update the user's info
     val person = newPerson
+    person.setUUID(personOld.getUUID)
     person.setEmail(regReq.getEmail)
     person.setFullName(regReq.getFullName)
     person.setCPF(regReq.getCPF)
