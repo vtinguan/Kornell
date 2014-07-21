@@ -54,6 +54,7 @@ object ReportGenerator {
     
   def clearJasperFiles = { 
     val folder = new File(System.getProperty("java.io.tmpdir"))
+    println(folder)
     folder.listFiles().foreach(file => 
 		    if (file.getName().endsWith(".jasper") || file.getName().endsWith(".xls")) 
 		        file.delete()

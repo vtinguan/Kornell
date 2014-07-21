@@ -6,6 +6,7 @@ public class CertificateInformationTO {
 	String personFullName;
 	String personCPF;
 	String courseTitle;
+	String courseClassName;
 	String assetsURL;
 	String distributionPrefix;
 	Date courseClassFinishedDate;
@@ -27,6 +28,12 @@ public class CertificateInformationTO {
 	}
 	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
+	}
+	public String getCourseClassName() {
+		return courseClassName;
+	}
+	public void setCourseClassName(String courseClassName) {
+		this.courseClassName = courseClassName;
 	}
 	public String getAssetsURL() {
 		return assetsURL;

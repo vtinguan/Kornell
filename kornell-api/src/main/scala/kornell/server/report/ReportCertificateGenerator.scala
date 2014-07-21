@@ -20,13 +20,14 @@ object ReportCertificateGenerator {
       rs.getString("fullName"),
       rs.getString("cpf"),
       rs.getString("title"),
+      rs.getString("name"),
       rs.getDate("certifiedAt"),
       rs.getString("assetsURL"),
       rs.getString("distributionPrefix"))
       
    def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
     generateCertificateReport(sql"""
-				select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
+				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
 	    	from Person p
 					join Enrollment e on p.uuid = e.person_uuid
 					join CourseClass cc on cc.uuid = e.class_uuid
@@ -50,7 +51,7 @@ object ReportCertificateGenerator {
   
   def getCertificateInformationTOsByCourseClass(courseClassUUID: String) = 
     sql"""
-				select p.fullName, c.title, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
+				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
 	    	from Person p
 				  join Enrollment e on p.uuid = e.person_uuid
 				  join CourseClass cc on cc.uuid = e.class_uuid
@@ -71,12 +72,13 @@ object ReportCertificateGenerator {
     parameters.put("assetsURL", assetsURL + "/")
 	  
   	//store one jasperfile per course
-    val jasperFile: File = new File(System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle + ".jasper")
+    val fileName = System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle + ".jasper"
+    val jasperFile: File = new File(fileName)
         
     /*val diff = new Date().getTime - jasperFile.lastModified
     if(diff > 7 * 24 * 60 * 60 * 1000) //delete if older than 7 days
 		  jasperFile.delete*/
-
+println(composeURL(assetsURL, "certificate.jasper"))
     if(!jasperFile.exists)
     	FileUtils.copyURLToFile(new URL(composeURL(assetsURL, "certificate.jasper")), jasperFile)
     	
