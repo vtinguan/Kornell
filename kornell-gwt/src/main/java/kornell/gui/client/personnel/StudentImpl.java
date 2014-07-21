@@ -4,6 +4,7 @@ import static kornell.core.entity.EnrollmentProgressDescription.completed;
 import static kornell.core.entity.EnrollmentProgressDescription.inProgress;
 import static kornell.core.entity.EnrollmentProgressDescription.notStarted;
 import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgress;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
@@ -37,14 +38,12 @@ public class StudentImpl implements Student {
 		if (progress != null) {
 			if (progress <= 0) {
 				ep.setProgress(0);
-				ep.setDescription(notStarted);
 			} else if (progress >= 100) {
 				ep.setProgress(100);
-				ep.setDescription(completed);
 			} else {
 				ep.setProgress(progress);
-				ep.setDescription(inProgress);
 			}
+			ep.setDescription(EnrollmentCategory.getEnrollmentProgressDescription(courseClassTO.getEnrollment()));
 			ep.setCertifiedAt(enrollment.getCertifiedAt());
 			return ep;
 		} else

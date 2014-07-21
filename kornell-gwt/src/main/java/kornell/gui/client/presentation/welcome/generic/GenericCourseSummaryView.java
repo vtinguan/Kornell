@@ -155,11 +155,16 @@ public class GenericCourseSummaryView extends Composite {
 	}
 
 	private void onCourseInProgress(Integer progress) {
-		pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.inProgress)+": ");
-		progressBar.removeStyleName("shy");
-		progressBar.setPercent(progress);
-		pStatusInfo.setText(progress + "% ");
+		if(progress >= 100){
+			pStatus.setText("Aguardando Avaliação");
+		} else {
+			pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.inProgress)+": ");
+			progressBar.removeStyleName("shy");
+			progressBar.setPercent(progress);
+			pStatusInfo.setText(progress + "% ");
+		}
 		iconCourseURL += "iconInProgress.png";
+		
 	}
 
 	private void onCourseNotStarted() {
