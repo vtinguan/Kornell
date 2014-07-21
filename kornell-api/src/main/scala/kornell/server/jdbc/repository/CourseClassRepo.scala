@@ -88,7 +88,7 @@ class CourseClassRepo(uuid:String) {
 	    	values (${UUID.random}, 
     		${role.getPersonUUID}, 
 	    	${role.getRoleType.toString}, 
-	    	${role.getCourseClassAdminRole.getCourseClassUUID}
+	    	${role.getCourseClassAdminRole.getCourseClassUUID})
 	    """.executeUpdate
   }
   
