@@ -62,7 +62,6 @@ class CourseClassRepo(uuid:String) {
 		    | select *
 	      	| from Role r
 	        | where r.course_class_uuid = ${uuid}
-	        | order by r.username
 		    """.map[Role](toRole).map(bindRole(_, bindMode)))	
 
   private def bindRole(role: Role, bindMode: String) =
