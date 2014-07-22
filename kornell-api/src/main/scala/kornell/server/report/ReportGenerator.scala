@@ -54,11 +54,14 @@ object ReportGenerator {
     
   def clearJasperFiles = { 
     val folder = new File(System.getProperty("java.io.tmpdir"))
-    println(folder)
+    var deleted = "Deleting files from folder " + folder.getAbsolutePath +": "
     folder.listFiles().foreach(file => 
-		    if (file.getName().endsWith(".jasper") || file.getName().endsWith(".xls")) 
+		    if (file.getName.endsWith(".jasper") || file.getName.endsWith(".xls")) {
 		        file.delete()
+		        deleted += file.getName + ", "
+		    }
     ) 
+    deleted
   }
     
 }

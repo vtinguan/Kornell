@@ -78,7 +78,7 @@ object ReportCertificateGenerator {
     /*val diff = new Date().getTime - jasperFile.lastModified
     if(diff > 7 * 24 * 60 * 60 * 1000) //delete if older than 7 days
 		  jasperFile.delete*/
-println(composeURL(assetsURL, "certificate.jasper"))
+
     if(!jasperFile.exists)
     	FileUtils.copyURLToFile(new URL(composeURL(assetsURL, "certificate.jasper")), jasperFile)
     	
