@@ -72,7 +72,7 @@ object ReportCertificateGenerator {
     parameters.put("assetsURL", assetsURL + "/")
 	  
   	//store one jasperfile per course
-    val fileName = System.getProperty("java.io.tmpdir") + "tmp-" + certificateData.head.getCourseTitle + ".jasper"
+    val fileName = System.getProperty("java.io.tmpdir") + "/tmp-" + certificateData.head.getCourseTitle + ".jasper"
     val jasperFile: File = new File(fileName)
         
     /*val diff = new Date().getTime - jasperFile.lastModified
