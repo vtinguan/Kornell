@@ -20,7 +20,7 @@ object LibraryFilesRepository {
     val classRepo = CourseClassesRepo(courseClassUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
-    val repositoryUUID = version.getRepositoryUUID();
+    val repositoryUUID = version.getRepositoryUUID
     val repo = S3(repositoryUUID)
     val filesURL = StringUtils.composeURL(version.getDistributionPrefix(), "library")
     val structureSrc = repo.source(filesURL, "libraryFiles.knl")

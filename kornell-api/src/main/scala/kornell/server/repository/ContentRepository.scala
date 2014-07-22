@@ -18,7 +18,7 @@ object ContentRepository {
     val visited = classRepo.actomsVisitedBy(personUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
-    val repositoryUUID = version.getRepositoryUUID();
+    val repositoryUUID = version.getRepositoryUUID
     val repo = S3(repositoryUUID)
     val structureSrc = repo.source(version.getDistributionPrefix(), "structure.knl")
     val structureText = structureSrc.mkString("")
