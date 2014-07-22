@@ -253,10 +253,10 @@ public class GenericCourseClassAdminsView extends Composite {
 			Roles roles = entityFactory.newRoles().as();
 			List<Role> rolesList = new ArrayList<Role>();
 			for (int i = 0; i < multipleSelect.getItemCount(); i++) {
-				String username = multipleSelect.getItemText(i);
+				String personUUID = multipleSelect.getValue(i);
 				Role role = entityFactory.newRole().as();
 				CourseClassAdminRole courseClassAdminRole = entityFactory.newCourseClassAdminRole().as();
-				role.setPersonUUID(username);
+				role.setPersonUUID(personUUID);
 				role.setRoleType(RoleType.courseClassAdmin);
 				courseClassAdminRole.setCourseClassUUID(courseClassTO.getCourseClass().getUUID());
 				role.setCourseClassAdminRole(courseClassAdminRole);
