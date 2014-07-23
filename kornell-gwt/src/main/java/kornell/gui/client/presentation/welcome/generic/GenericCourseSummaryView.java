@@ -64,6 +64,12 @@ public class GenericCourseSummaryView extends Composite {
 	
 	@UiField
 	Paragraph pStatusInfo;
+
+	@UiField
+	Paragraph pStatus2;
+	
+	@UiField
+	Paragraph pStatusInfo2;
 	
 	@UiField
 	ProgressBar progressBar;
@@ -179,9 +185,17 @@ public class GenericCourseSummaryView extends Composite {
 	}
 
 	private void onCourseCompleted(String certifiedAt) {
-		pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.completed)+" em: ");
-		if(certifiedAt != null)
+		String statusText = formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.completed);
+		if(certifiedAt != null) {
+			statusText += " em: ";
 			pStatusInfo.setText(formHelper.getStringFromDate(certifiedAt));
+		}
+		if(courseClassTO.getCourseClass().getRequiredScore() != null && 
+				courseClassTO.getCourseClass().getRequiredScore().intValue() != 0){
+			pStatus2.setText(" - Nota: ");
+			pStatusInfo2.setText(""+courseClassTO.getEnrollment().getAssessmentScore().intValue());
+		}
+		pStatus.setText(statusText);
 		iconCourseURL += "iconFinished.png";
 	}
 
