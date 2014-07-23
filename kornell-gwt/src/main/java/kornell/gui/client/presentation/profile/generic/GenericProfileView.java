@@ -1,6 +1,5 @@
 package kornell.gui.client.presentation.profile.generic;
 
-import java.awt.TextField;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +47,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -185,9 +185,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private boolean validateFields() {
-		if(!formHelper.isLengthValid(company.getFieldPersistText(), 7, 20)){
-			company.setError("Insira sua empresa.");
-		}
 		if(showContactDetails){
 			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
 				telephone.setError("Insira seu telefone.");
@@ -311,8 +308,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		for (KornellFormFieldWrapper field : fields) 
 			if(!"".equals(field.getError())){
 				KornellNotification.show("Existem erros nos dados.", AlertType.WARNING);
-				if(field.getFieldWidget() instanceof TextBox)
-					((TextBox)field.getFieldWidget()).setFocus(true);
+				if(field.getFieldWidget() instanceof FocusWidget)
+					((FocusWidget)field.getFieldWidget()).setFocus(true);
 				return true;		
 			}
 		return false;
@@ -473,6 +470,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			KornellFormFieldWrapper field = (KornellFormFieldWrapper) it.next();
 			isValid = field.isValid();			
 		}
+		validateFields();
 		setValidity(isValid);
 	}
 	
