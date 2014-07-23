@@ -373,6 +373,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 					progressTxt = "Aguardando Avaliação";
 				} else if(EnrollmentProgressDescription.inProgress.equals(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()))){
 					progressTxt += ": " + enrollmentTO.getEnrollment().getProgress() + "%";
+				} else if(EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment())) &&
+						Dean.getInstance().getCourseClassTO().getCourseClass().getRequiredScore() != null && 
+						Dean.getInstance().getCourseClassTO().getCourseClass().getRequiredScore().intValue() != 0){
+					progressTxt += " - Nota: " + enrollmentTO.getEnrollment().getAssessmentScore().intValue();
 				}
 				return progressTxt;
 			}
