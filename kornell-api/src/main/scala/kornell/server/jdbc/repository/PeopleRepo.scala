@@ -72,8 +72,9 @@ object PeopleRepo {
 
   def get(any: String): Option[Person] = get(any, any, any)
 
-  def get(cpf: String, email: String): Option[Person] = getByCPF(cpf)
-    .orElse(getByEmail(email))
+  def get(cpf: String, email: String): Option[Person] = 
+    get(cpf,cpf,email)
+    .orElse(get(email,cpf,email))
 
   def get(username: String, cpf: String, email: String): Option[Person] =
     getByUsername(username)
