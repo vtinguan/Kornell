@@ -387,10 +387,11 @@ public class FormHelper {
 		//DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
 		//DateTimeFormat dtf = new DateTimeFormat(pattern, info) {};
 		// return dtf.format(date).toString();
-		String[] dateArray = date.split(" ");
-		if(dateArray.length > 1)
-			return dateArray[0];
-		return date;
+		//TODO fix this poop
+		//dates could be '2014-07-08T09:40:00.098-03:00', '2014-07-08 09:40:00' or '2014-07-08'
+		String[] dateArraySplitBySpace = date.split(" ");
+		String[] dateArraySplitByT = dateArraySplitBySpace[0].split("T");
+		return dateArraySplitByT[0];
 	}
 	
 	
