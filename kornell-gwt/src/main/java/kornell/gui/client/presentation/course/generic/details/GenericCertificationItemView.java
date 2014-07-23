@@ -2,6 +2,8 @@ package kornell.gui.client.presentation.course.generic.details;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.EnrollmentCategory;
+import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
@@ -137,6 +139,17 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest);
 		status = allowCertificateGeneration ? "Disponível" : "Não disponível";
 		lblStatus.setText(status);
+
+		if(EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(currentCourseClass.getEnrollment())) &&
+				currentCourseClass.getCourseClass().getRequiredScore() != null && 
+				currentCourseClass.getCourseClass().getRequiredScore().intValue() != 0 &&
+				currentCourseClass.getEnrollment().getAssessmentScore() != null){
+			this.grade = ""+currentCourseClass.getEnrollment().getAssessmentScore().intValue();
+		} else {
+			this.grade = "-";
+		}
+		lblGrade.setText(grade);
+		
 		displayActionCell(allowCertificateGeneration);
 	}
 	
