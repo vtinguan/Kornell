@@ -77,7 +77,7 @@ class S3(regionName: String,
   def getObject(key: String) =
     s3.getObject(bucket, prefix + "/" + key)
 
-  def source(ditributionPrefix: String, key: String) = Source.fromURL(url(ditributionPrefix, key), "ISO-8859-1")
+  def source(ditributionPrefix: String, key: String) = Source.fromURL(url(ditributionPrefix, key), "UTF-8")
 
   def inputStream(ditributionPrefix: String, key: String) = {
     val keyURL = new java.net.URL(url(ditributionPrefix, key))
