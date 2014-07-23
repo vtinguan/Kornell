@@ -7,16 +7,17 @@ import kornell.core.entity.Institution
 import kornell.core.entity.Person
 import java.util.UUID
 import kornell.core.entity.Course
+import kornell.core.entity.PersonCategory
 
 object EmailService {
   def sendEmailConfirmation(person: Person, institution: Institution) = {
-    val subject = "Bem-vind" + getSexSuffix(person) + " à " + institution.getFullName() + "!"
+    val subject = "Bem-vind" + PersonCategory.getSexSuffix(person) + " à " + institution.getFullName() + "!"
     val from = getFromEmail(institution)
     val to = person.getEmail
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
     		<p>&nbsp;</p>
-    		<p>Bem-vind""" + getSexSuffix(person) + """ &agrave; """ + institution.getFullName() + """.</p>
+    		<p>Bem-vind""" + PersonCategory.getSexSuffix(person) + """ &agrave; """ + institution.getFullName() + """.</p>
     		<p>Por favor, confirme seu cadastro para ativarmos a sua conta.</p> """ +
     		getActionButton(institution.getBaseURL()+"#vitrine:", "Confirmar agora") + """
     		<p>Depois da ativa&ccedil;&atilde;o voc&ecirc;  poder&aacute; acessar os cursos dispon&iacute;veis para voc&ecirc;, assim como todos os recursos deste ambiente.</p>
@@ -50,13 +51,13 @@ object EmailService {
   //TODO: Consider ASYNC
   def sendEmailEnrolled(person: Person, institution: Institution, course: Course) = {
     val subject = "Você foi matriculado no curso " + course.getTitle()
-    val from ="cdf@craftware.com.br" //getFromEmail(institution)
+    val from = getFromEmail(institution)
     val to = person.getEmail
     val actionLink = institution.getBaseURL() + "#vitrine:"
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
     		<p>&nbsp;</p>
-    		<p>Voc&ecirc; foi matriculad""" + getSexSuffix(person) + """ no curso """+ course.getTitle() +""" oferecido pela """+ institution.getFullName() +""".</p> 
+    		<p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + """ no curso """+ course.getTitle() +""" oferecido pela """+ institution.getFullName() +""".</p> 
     		<p>Clique no bot&atilde;o abaixo para ir ao curso.</p> """ +
     		getActionButton(actionLink, "Acessar o Curso") + """
     		<p>Caso seja seu primeiro acesso, cadastre-se primeiro no sistema utilizando este email: """ + to + """</p>
@@ -66,15 +67,7 @@ object EmailService {
     val imgFile = getInstitutionLogoImage(institution)
     EmailSender.sendEmail(subject, from, to, body, imgFile)
   }
-
-  private def getSexSuffix(person: kornell.core.entity.Person) =
-    person.getSex match { 
-      case "F" => "a"
-      case "M" => "o"
-      case  _  => "o(a)"
-  	}
   
-
   private def getFromEmail(institution: kornell.core.entity.Institution):String = EmailSender.SMTP_FROM
   
   

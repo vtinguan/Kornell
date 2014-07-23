@@ -38,20 +38,16 @@ object EventsRepo {
     val todayEnd = ServerTime.todayEnd
     // don't log more than once a day
     val attendanceSheetSignedUUID = sql"""
-	  select uuid from AttendanceSheetSigned
-	  where personUUID=${event.getPersonUUID()}
-	  and institutionUUID=${event.getInstitutionUUID()}
-	  and eventFiredAt between ${todayStart} and ${todayEnd}"""
-      .first
-    //println("---------attendanceSheetSignedUUID----------- "+attendanceSheetSignedUUID)
+			  select uuid from AttendanceSheetSigned
+			  where personUUID=${event.getPersonUUID()}
+			  and institutionUUID=${event.getInstitutionUUID()}
+			  and eventFiredAt between ${todayStart} and ${todayEnd}
+		  """.first
     if (!attendanceSheetSignedUUID.isDefined)
       sql"""
-	    insert into AttendanceSheetSigned(uuid,eventFiredAt,institutionUUID,personUUID)
-	    values(${event.getUUID},
-	  		   ${event.getEventFiredAt},
-	           ${event.getInstitutionUUID},
-			   ${event.getPersonUUID});
-		""".executeUpdate
+		    insert into AttendanceSheetSigned(uuid,eventFiredAt,institutionUUID,personUUID)
+		    values(${event.getUUID}, ${event.getEventFiredAt}, ${event.getInstitutionUUID}, ${event.getPersonUUID});
+			""".executeUpdate
 
   }
 
