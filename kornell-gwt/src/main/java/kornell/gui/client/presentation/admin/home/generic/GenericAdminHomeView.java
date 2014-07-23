@@ -368,9 +368,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			@Override
 			public String getValue(EnrollmentTO enrollmentTO) {
 				String progressTxt = formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()));
-				if(!EnrollmentProgressDescription.inProgress.equals(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()))){
-					progressTxt = "-";
-				} else if(EnrollmentProgressDescription.inProgress.equals(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment())) &&
+				if(EnrollmentProgressDescription.inProgress.equals(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment())) &&
 						new Integer(100).equals(enrollmentTO.getEnrollment().getProgress())){
 					progressTxt = "Aguardando Avaliação";
 				} else if(EnrollmentProgressDescription.inProgress.equals(EnrollmentCategory.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()))){
