@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.profile.generic;
 
+import java.awt.TextField;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -78,7 +79,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	@UiField FlowPanel titlePanel;
 	@UiField Image imgTitle;
 	@UiField Label lblTitle;
-	@UiField Label lblErrors;
 	@UiField Button btnEdit;
 	@UiField Button btnClose;
 	@UiField Button btnOK;
@@ -185,6 +185,9 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private boolean validateFields() {
+		if(!formHelper.isLengthValid(company.getFieldPersistText(), 7, 20)){
+			company.setError("Insira sua empresa.");
+		}
 		if(showContactDetails){
 			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
 				telephone.setError("Insira seu telefone.");
@@ -306,8 +309,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	private boolean checkErrors() {
 		for (KornellFormFieldWrapper field : fields) 
-			if(!"".equals(field.getError()))
+			if(!"".equals(field.getError())){
+				KornellNotification.show("Existem erros nos dados.", AlertType.WARNING);
+				if(field.getFieldWidget() instanceof TextBox)
+					((TextBox)field.getFieldWidget()).setFocus(true);
 				return true;		
+			}
 		return false;
 	}
 
@@ -402,7 +409,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		
 		passwordChangeWidget.initData(session, user, isCurrentUser);
 		
-		lblErrors.setText("");
 	}
 
 	/*private FormPanel getPictureUploadFormPanel() {
@@ -477,15 +483,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			btnOK.addStyleName(ENABLED_CLASS);			
 			btnOK.removeStyleName(CURSOR_DEFAULT_CLASS);
 			btnOK.addStyleName(CURSOR_POINTER_CLASS);		
-			lblErrors.setVisible(false);
-			lblErrors.setText("");
 		}else{
 			btnOK.addStyleName(DISABLED_CLASS);
 			btnOK.removeStyleName(ENABLED_CLASS);
 			btnOK.removeStyleName(CURSOR_POINTER_CLASS);
 			btnOK.addStyleName(CURSOR_DEFAULT_CLASS);		
-			lblErrors.setVisible(true);
-			lblErrors.setText("Existem erros nos dados.");
+			KornellNotification.show("Existem erros nos dados.", AlertType.WARNING);
 		}
 	}
 	

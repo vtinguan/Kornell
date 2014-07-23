@@ -13,7 +13,6 @@
 					do perfil</g:Label> </g:FlowPanel> <g:FlowPanel addStyleNames="imagePanel"> 
 					<g:Image ui:field="imgProfile"></g:Image> </g:FlowPanel> </g:FlowPanel -->
 			</g:FlowPanel>
-        <g:Label ui:field="lblErrors" addStyleNames="lblErrors error left fillWidth centerText"></g:Label>
 			<g:FlowPanel addStyleNames="standardButtonBar">
 				<g:Button ui:field="btnEdit" addStyleNames="btnAction btnStandard" />
 				<g:Button ui:field="btnClose" addStyleNames="btnNotSelected btnStandard" />

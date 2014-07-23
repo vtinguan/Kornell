@@ -15,7 +15,7 @@ public class KornellNotification {
 	}
 
 	public static void show(String message, AlertType alertType) {
-		show(message, alertType, 2000);
+		show(message, alertType, 2500);
 	}
 
 	public static void show(String message, int timer) {
