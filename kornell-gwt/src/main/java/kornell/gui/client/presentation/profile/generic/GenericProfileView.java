@@ -240,6 +240,11 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 						});
 					//}
 				}
+				@Override
+				public void internalServerError(){
+					LoadingPopup.hide();
+					KornellNotification.show("Erros ao salvar usuário.", AlertType.ERROR);
+				}
 			});   
 		}
 	}
@@ -265,6 +270,11 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			person.setPostalCode(postalCode.getFieldPersistText());
 		}
 
+    if("".equals(person.getCPF())) 
+    	person.setCPF(null);
+    if("".equals(person.getEmail())) 
+    	person.setEmail(null);
+    
 		user.setPerson(person);
 		return user;
 	}
