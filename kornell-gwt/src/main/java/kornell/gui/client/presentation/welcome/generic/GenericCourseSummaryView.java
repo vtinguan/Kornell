@@ -191,7 +191,8 @@ public class GenericCourseSummaryView extends Composite {
 			pStatusInfo.setText(formHelper.getStringFromDate(certifiedAt));
 		}
 		if(courseClassTO.getCourseClass().getRequiredScore() != null && 
-				courseClassTO.getCourseClass().getRequiredScore().intValue() != 0){
+				courseClassTO.getCourseClass().getRequiredScore().intValue() != 0 &&
+				courseClassTO.getEnrollment().getAssessmentScore() != null){
 			pStatus2.setText(" - Nota: ");
 			pStatusInfo2.setText(""+courseClassTO.getEnrollment().getAssessmentScore().intValue());
 		}
