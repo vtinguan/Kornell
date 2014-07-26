@@ -507,16 +507,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	private boolean matchesWithSearch(EnrollmentTO one){
 		Person p = one.getPerson();
-		Enrollment e = one.getEnrollment();
 		if(p == null) return false;
+		Enrollment e = one.getEnrollment();
 		
 		boolean fullNameMatch = matchesWithSearch(p.getFullName());
-		boolean emailMatch = enrollWithCPF ? matchesWithSearch(p.getCPF()) : matchesWithSearch(p.getEmail());
+		boolean usernameMatch = matchesWithSearch(p.getCPF()) || matchesWithSearch(p.getEmail());
 		boolean enrollmentStateMatch = matchesWithSearch(formHelper.getEnrollmentStateAsText(e.getState()));
 		boolean enrollmentProgressMatch = e.getProgress() != null && 
 				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(e)).toLowerCase());
 		
-		return fullNameMatch || emailMatch || enrollmentStateMatch || enrollmentProgressMatch;
+		return fullNameMatch || usernameMatch || enrollmentStateMatch || enrollmentProgressMatch;
 	}
 
 	private boolean matchesWithSearch(String one){
