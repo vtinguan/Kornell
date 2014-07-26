@@ -188,28 +188,33 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		if(showContactDetails){
 			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
 				telephone.setError("Insira seu telefone.");
-			}
+			} else telephone.setError("");
+			
 			if(!formHelper.isLengthValid(country.getFieldPersistText(), 0, 2)){
 				country.setError("Selecione seu país.");
-			}
+			} else country.setError("");
+			
 			if("BR".equals(country.getFieldPersistText())){
 				if(!formHelper.isListBoxSelected(((ListBox) state.getFieldWidget()))){
 					state.setError("Selecione seu estado.");
-				}
+				} else state.setError("");
 			} else {
 				if(!formHelper.isLengthValid(state.getFieldPersistText(), 2, 100)){
 					state.setError("Insira seu estado.");
-				}
+				} else state.setError("");
 			}
 			if(!formHelper.isLengthValid(city.getFieldPersistText(), 2, 100)){
 				city.setError("Insira sua cidade.");
-			}
+			} else city.setError("");
+			
 			if(!formHelper.isLengthValid(addressLine1.getFieldPersistText(), 2, 100)){
 				addressLine1.setError("Insira seu endereço.");
-			}
+			} else addressLine1.setError("");
+			
 			if(!formHelper.isLengthValid(postalCode.getFieldPersistText(), 2, 100)){
 				postalCode.setError("Insira seu código postal.");
-			}
+			} else postalCode.setError("");
+			
 		}
 
 		return !checkErrors();
@@ -468,7 +473,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		for (Iterator<KornellFormFieldWrapper> it = requiredFields.iterator(); 
 				it.hasNext();) {
 			KornellFormFieldWrapper field = (KornellFormFieldWrapper) it.next();
-			isValid = field.isValid();			
+			isValid = isValid && field.isValid();			
 		}
 		validateFields();
 		setValidity(isValid);
