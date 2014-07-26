@@ -2,9 +2,13 @@ package kornell.gui.client.personnel;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
+import kornell.gui.client.event.LoginEvent;
+import kornell.gui.client.event.LoginEventHandler;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
@@ -14,7 +18,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * 
  * @author faermanj
  */
-public class Stalker implements ActomEnteredEventHandler {
+public class Stalker implements ActomEnteredEventHandler, LoginEventHandler {
 	EventBus bus;
 	KornellSession session;
 	PlaceHistoryMapper mapper;
@@ -37,6 +41,7 @@ public class Stalker implements ActomEnteredEventHandler {
 		seuInacioTimer.scheduleRepeating(24 * 60 * 60 * 1000);
 		
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
+		bus.addHandler(LoginEvent.TYPE, this);
 	}
 
 	private void signAttendanceSheet() {
@@ -59,5 +64,10 @@ public class Stalker implements ActomEnteredEventHandler {
 		session.events()
 				.actomEntered(event.getEnrollmentUUID(), event.getActomKey())
 				.fire();
+	}
+
+	@Override
+	public void onLogin(UserInfoTO user) {
+		signAttendanceSheet();
 	}
 }
