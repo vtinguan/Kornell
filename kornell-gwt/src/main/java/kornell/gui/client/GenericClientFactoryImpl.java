@@ -105,7 +105,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			@Override
 			public void ok(final Institution institution) {
 				Dean.init(session, bus, institution);
-				if (session.isAuthenticated()) {
+				if (session.isAuthenticated() && session.isRegistered()) {
 					session.getCourseClassesTOByInstitution(
 							institution.getUUID(), courseClassesCallback);
 				} else {
