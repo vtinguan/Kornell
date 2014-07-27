@@ -34,3 +34,5 @@ AwsCredentials.properties
 *.cache
 *.swp
 .elasticbeanstalk/
+sourcetree
+sourcetree.pub
