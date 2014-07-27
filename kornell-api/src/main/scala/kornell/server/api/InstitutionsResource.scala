@@ -11,6 +11,10 @@ class InstitutionsResource {
   def get(@PathParam("uuid") uuid:String):InstitutionResource = new InstitutionResource(uuid) 
   
   @GET
-  def getByName(@QueryParam("name") name:String) = InstitutionsRepo.byName(name)
+  def getBy(@QueryParam("name") name:String, @QueryParam("hostName") hostName:String) = 
+    if(name != null)
+      InstitutionsRepo.byName(name)
+    else
+      InstitutionsRepo.byHostName(hostName)
 
 }

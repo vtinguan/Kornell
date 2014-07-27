@@ -86,7 +86,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	}
 
 	private void initData() {
-		session.getCourseClassesTOByInstitution(Dean.getInstance()
+		session.courseClasses().getCourseClassesTOByInstitution(Dean.getInstance()
 				.getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO tos) {

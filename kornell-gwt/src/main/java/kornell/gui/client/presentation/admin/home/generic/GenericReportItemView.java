@@ -9,7 +9,6 @@ import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -134,7 +133,7 @@ public class GenericReportItemView extends Composite {
 			public void onClick(ClickEvent event) {
 				displayCertificateActionCell(null);
 				LoadingPopup.show();
-				session.generateCourseClassCertificate(currentCourseClass.getCourseClass().getUUID(), new Callback<String>() {
+				session.report().generateCourseClassCertificate(currentCourseClass.getCourseClass().getUUID(), new Callback<String>() {
 					
 					@Override
 					public void ok(String url) {
@@ -153,7 +152,7 @@ public class GenericReportItemView extends Composite {
 			}
 		});
 
-		session.courseClassCertificateExists(currentCourseClass.getCourseClass().getUUID(), new Callback<String>() {
+		session.report().courseClassCertificateExists(currentCourseClass.getCourseClass().getUUID(), new Callback<String>() {
 			@Override
 			public void ok(String str) {
 				displayCertificateActionCell(str);

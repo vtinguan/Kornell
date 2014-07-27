@@ -81,21 +81,6 @@ public class StringUtils {
 	public static final boolean isSome(String str) {
 		return !isNone(str);
 	}
-
-	public static String parseInstitutionNameFromHostName(String hostName) {
-		String institutionName = null;
-		String[] split = hostName.split("\\.");
-		if (split.length >= 1) {
-			institutionName = split[0];
-			RegExp instRegex = RegExp.compile("(.*)-test", "i");
-			MatchResult instMatcher = instRegex.exec(institutionName);
-			if (instMatcher != null && instMatcher.getGroupCount() >= 2) {
-				institutionName = instMatcher.getGroup(1);
-			}
-		}
-		return institutionName;
-	}
-
 	
 	public static String digitsOf(String orig) {
 		StringBuilder buf = new StringBuilder();

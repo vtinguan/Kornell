@@ -20,14 +20,6 @@ public class TestStringUtils {
 	}
 	
 	@Test
-	public void testParseInstitutionName(){
-		assertEquals("institution",parseInstitutionNameFromHostName("institution.eduvem.com"));
-		assertEquals("institution",parseInstitutionNameFromHostName("institution.test.eduvem.com"));
-		assertEquals("institution",parseInstitutionNameFromHostName("institution-test.eduvem.com"));
-		assertEquals("institution",parseInstitutionNameFromHostName("institution-test.outrodominio.com.br"));
-	}
-	
-	@Test
 	public void testOptionalString(){
 		assertEquals(StringUtils.opt("uala").getOrNull(),"uala");
 		assertNull(StringUtils.opt(null).getOrNull());

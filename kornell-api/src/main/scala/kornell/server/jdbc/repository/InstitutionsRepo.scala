@@ -57,6 +57,12 @@ object InstitutionsRepo {
   
   def byName(institutionName:String) = 
 	sql"select * from Institution where name = ${institutionName}".first[Institution]
-	
+  
+  def byHostName(hostName:String) =
+      sql"""
+      	| select i.* from Institution i 
+      	| join InstitutionHostName ihn on i.uuid = ihn.institutionUUID
+      	| where ihn.hostName like ${"%" + hostName}
+	    """.first[Institution]
 
 }

@@ -110,7 +110,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			@Override
 			public void ok(final UserInfoTO user) {
 				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
-				session.getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
+				session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 			}
 			@Override
 			protected void unauthorized(String errorMessage) {
@@ -191,10 +191,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 					return;
 				}
 				RegistrationRequestTO registrationRequestTO = buildRegistrationRequestTO(suName, suEmail, suPassword);
-				session.requestRegistration(registrationRequestTO, registrationCallback);
+				session.user().requestRegistration(registrationRequestTO, registrationCallback);
 			}
 		};
-		session.checkUser(suEmail, checkUserCallback);
+		session.user().checkUser(suEmail, checkUserCallback);
 	}
 
 	private RegistrationRequestTO buildRegistrationRequestTO(String name, String email, String password) {
@@ -214,7 +214,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onRequestPasswordChangeButtonClicked() {
-		session.requestPasswordChange(
+		session.user().requestPasswordChange(
 				view.getFpEmail().toLowerCase().trim(),
 				Dean.getInstance().getInstitution().getName(),
 				new Callback<Void>() {
@@ -254,7 +254,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			errors.add("As senhas não conferem.");
 		}
 		if (errors.size() == 0) {
-			session.changePassword(view.getNewPassword(), passwordChangeUUID,
+			session.user().changePassword(view.getNewPassword(), passwordChangeUUID,
 					new Callback<UserInfoTO>() {
 						@Override
 						public void ok(UserInfoTO to) {

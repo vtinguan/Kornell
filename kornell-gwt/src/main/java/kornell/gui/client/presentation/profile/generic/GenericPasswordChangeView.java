@@ -109,7 +109,7 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 
 		if(validateFields()){
 			LoadingPopup.show();
-			session.changeTargetPassword(user.getPerson().getUUID(), modalNewPassword.getFieldPersistText(), new Callback<Void>() {
+			session.user().changeTargetPassword(user.getPerson().getUUID(), modalNewPassword.getFieldPersistText(), new Callback<Void>() {
 				@Override
         public void ok(Void to) {
 					if(isCurrentUser){

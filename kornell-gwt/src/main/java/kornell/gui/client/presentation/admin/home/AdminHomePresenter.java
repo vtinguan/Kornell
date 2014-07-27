@@ -80,7 +80,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			view = getView();
 			view.setPresenter(this);
 
-			session.getAdministratedCourseClassesTOByInstitution(Dean
+			session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean
 					.getInstance().getInstitution().getUUID(),
 					new Callback<CourseClassesTO>() {
 						@Override
@@ -101,7 +101,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	private List<Enrollment> getEnrollments(String courseClassUUID) {
 		LoadingPopup.show();
-		session.getEnrollmentsByCourseClass(courseClassUUID,
+		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID,
 				new Callback<EnrollmentsTO>() {
 
 					@Override
@@ -121,7 +121,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
 
-		session.getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
+		session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
 				new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO to) {
@@ -392,7 +392,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 							+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
 		}
 		LoadingPopup.show();
-		session.createEnrollments(enrollmentRequestsTO,
+		session.enrollments().createEnrollments(enrollmentRequestsTO,
 				new Callback<Enrollments>() {
 					@Override
 					public void ok(Enrollments to) {

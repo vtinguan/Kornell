@@ -32,6 +32,8 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryHandler.DefaultHistorian;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -106,7 +108,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			public void ok(final Institution institution) {
 				Dean.init(session, bus, institution);
 				if (session.isAuthenticated() && session.isRegistered()) {
-					session.getCourseClassesTOByInstitution(
+					session.courseClasses().getCourseClassesTOByInstitution(
 							institution.getUUID(), courseClassesCallback);
 				} else {
 					startAnonymous();
@@ -122,27 +124,42 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 		session.getCurrentUser(new Callback<UserInfoTO>() {
 			public void ok(UserInfoTO to) {
-				session.findInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
+				getInstitutionFromLocation();
 			};
 
 			@Override
 			protected void unauthorized(String errorMessage) {
 				GWT.log(this.getClass().getName() + " - " + errorMessage);
-				session.findInstitutionByName(getInstitutionNameFromLocation(), institutionCallback);
+				getInstitutionFromLocation();
 			}
+
+			private void getInstitutionFromLocation() {
+				String institutionName = Window.Location.getParameter("institution");
+				institutionName = null;
+				if (institutionName != null) {
+					session.institutions().findInstitutionByName(institutionName, institutionCallback);
+				} else {
+					String hostName = Window.Location.getHostName();
+					hostName = "midwayuniversity.com";
+					session.institutions().findInstitutionByHostName(hostName, institutionCallback);
+					/*
+					//hostName = hostName.replaceAll("www.", "");
+					String[] split = hostName.split("\\.");
+					if (split.length >= 1) {
+						institutionName = split[0];
+						RegExp instRegex = RegExp.compile("(.*)-test", "i");
+						MatchResult instMatcher = instRegex.exec(institutionName);
+						if (instMatcher != null && instMatcher.getGroupCount() >= 2) {
+							institutionName = instMatcher.getGroup(1);
+						}
+					}*/
+				}
+			}	
 
 		});
 
 	}
-
-	private String getInstitutionNameFromLocation() {
-		String institutionName = Window.Location.getParameter("institution");
-		if (institutionName == null) {
-			String hostName = Window.Location.getHostName();
-			institutionName = StringUtils.parseInstitutionNameFromHostName(hostName);
-		}
-		return institutionName;
-	}
+	
 	
 
 

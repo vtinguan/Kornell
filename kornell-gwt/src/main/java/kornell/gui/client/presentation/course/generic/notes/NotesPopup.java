@@ -45,7 +45,7 @@ public class NotesPopup {
 	}
 	
 	private void updateNotes(){
-		client.notesUpdated(courseClassUUID, richTextArea.getText());
+		client.enrollments().notesUpdated(courseClassUUID, richTextArea.getText());
 	}
 	
 	private void placePopup() {

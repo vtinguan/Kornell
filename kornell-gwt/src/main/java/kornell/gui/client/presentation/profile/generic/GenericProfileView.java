@@ -160,14 +160,14 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		
 		final String profileUserUUID = ((ProfilePlace) placeCtrl.getWhere()).getPersonUUID();
 
-		session.hasPowerOver(profileUserUUID, new Callback<Boolean>() {
+		session.user().hasPowerOver(profileUserUUID, new Callback<Boolean>() {
 			@Override
 			public void ok(Boolean hasPowerOverTargetUser) {
 				if(hasPowerOverTargetUser){
 					titlePanel.add(btnChangePassword);
 				}
 				hasPowerOver = hasPowerOverTargetUser;
-				session.getUser(profileUserUUID, new Callback<UserInfoTO>() {
+				session.user().getUser(profileUserUUID, new Callback<UserInfoTO>() {
 					@Override
 					public void ok(UserInfoTO to) {
 						user = to;
@@ -226,7 +226,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 		if(isEditMode && validateFields()){
 			LoadingPopup.show();
-			session.updateUser(getUserInfoFromForm(), new Callback<UserInfoTO>(){
+			session.user().updateUser(getUserInfoFromForm(), new Callback<UserInfoTO>(){
 				@Override
 				public void ok(UserInfoTO userInfo){
 					//if(isCurrentUser){
