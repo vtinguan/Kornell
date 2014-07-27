@@ -135,24 +135,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 			private void getInstitutionFromLocation() {
 				String institutionName = Window.Location.getParameter("institution");
-				institutionName = null;
 				if (institutionName != null) {
 					session.institutions().findInstitutionByName(institutionName, institutionCallback);
 				} else {
 					String hostName = Window.Location.getHostName();
-					hostName = "midwayuniversity.com";
 					session.institutions().findInstitutionByHostName(hostName, institutionCallback);
-					/*
-					//hostName = hostName.replaceAll("www.", "");
-					String[] split = hostName.split("\\.");
-					if (split.length >= 1) {
-						institutionName = split[0];
-						RegExp instRegex = RegExp.compile("(.*)-test", "i");
-						MatchResult instMatcher = instRegex.exec(institutionName);
-						if (instMatcher != null && instMatcher.getGroupCount() >= 2) {
-							institutionName = instMatcher.getGroup(1);
-						}
-					}*/
 				}
 			}	
 
