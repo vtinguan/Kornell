@@ -20,12 +20,14 @@ import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
 import kornell.scorm.client.scorm12.SCORM12Adapter;
 import kornell.scorm.client.scorm12.SCORM12Binder;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
@@ -106,19 +108,22 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		final Callback<Institution> institutionCallback = new Callback<Institution>() {
 			@Override
 			public void ok(final Institution institution) {
-				Dean.init(session, bus, institution);
-				if (session.isAuthenticated() && session.isRegistered()) {
-					session.courseClasses().getCourseClassesTOByInstitution(
-							institution.getUUID(), courseClassesCallback);
+				if(institution == null) {
+					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {
-					startAnonymous();
+					Dean.init(session, bus, institution);
+					if (session.isAuthenticated() && session.isRegistered()) {
+						session.courseClasses().getCourseClassesTOByInstitution(
+								institution.getUUID(), courseClassesCallback);
+					} else {
+						startAnonymous();
+					}
 				}
 			}
 
 			@Override
 			public void unauthorized(String errorMessage) {
 				GWT.log(this.getClass().getName() + " - " + errorMessage);
-				startAnonymous();
 			}
 		};
 
