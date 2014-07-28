@@ -2,10 +2,8 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 	<g:FlowPanel addStyleNames="activityBarWrapper">
 		<g:FlowPanel ui:field="activityBar" addStyleNames="activityBar">
-			<b:Button type="LINK" ui:field="btnDetails" addStyleNames="activityBarButton first"></b:Button>	
-			<b:Button type="LINK" ui:field="btnNotes" addStyleNames="activityBarButton"></b:Button>	
-			<b:Button type="LINK" ui:field="btnPrevious" addStyleNames="activityBarButton"></b:Button>
-			<b:Button type="LINK" ui:field="btnNext" addStyleNames="activityBarButton last"></b:Button>	
+			<b:Button type="LINK" ui:field="btnCourseClass" addStyleNames="activityBarButton first"></b:Button>	
+			<b:Button type="LINK" ui:field="btnInstitution" addStyleNames="activityBarButton last"></b:Button>	
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

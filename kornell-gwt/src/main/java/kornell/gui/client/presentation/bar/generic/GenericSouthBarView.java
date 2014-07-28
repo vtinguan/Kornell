@@ -57,7 +57,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 		if(newPlace instanceof AdminPlace){
 			southBar.clear();
 			//southBar.add(getAdminBarView(newPlace));
-			visible = false;
+			//visible = true;
 		} else if (newPlace instanceof ClassroomPlace) {
 			southBar.clear();
 			southBar.add(getActivityBarView());
