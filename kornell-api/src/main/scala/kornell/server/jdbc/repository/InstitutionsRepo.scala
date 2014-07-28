@@ -62,7 +62,7 @@ object InstitutionsRepo {
       sql"""
       	| select i.* from Institution i 
       	| join InstitutionHostName ihn on i.uuid = ihn.institutionUUID
-      	| where ihn.hostName like ${"%" + hostName}
+      	| where ihn.hostName = ${hostName}
 	    """.first[Institution]
 
 }
