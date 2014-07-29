@@ -1,0 +1,1 @@
+alter table Enrollment add column lastBilledAt char(29);
