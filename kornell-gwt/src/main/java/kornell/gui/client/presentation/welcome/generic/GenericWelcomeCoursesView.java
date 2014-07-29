@@ -5,7 +5,6 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
@@ -31,6 +30,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -56,6 +56,8 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	Button btnCoursesToAcquire;
 	@UiField
 	Button btnCoursesFinished;
+	@UiField
+	Label headerText;
 
 	private KornellSession session;
 
@@ -75,11 +77,12 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		this.toFactory = toFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		coursesPanel.setVisible(false);
-		btnCoursesAll.setText(constants.allCourses());
+		btnCoursesAll.setText(constants.allClasses());
 		btnCoursesInProgress.setText(constants.inProgress());
 		btnCoursesToStart.setText(constants.toStart());
 		btnCoursesToAcquire.setText("Disponíveis");
 		btnCoursesFinished.setText(constants.finished());
+		headerText.setText(constants.selectClassBelow());
 		
 		selectedFilterButton = btnCoursesAll;
 		initData();
@@ -145,7 +148,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 					if(button.equals(selectedFilterButton)){
 						pnlCourses.add(new GenericCourseSummaryView(placeCtrl, courseClassTO, session));
 					}
-					if(classesCount > 1)
+					if(classesCount > 3)
 						button.setVisible(true);
 				}
 			});

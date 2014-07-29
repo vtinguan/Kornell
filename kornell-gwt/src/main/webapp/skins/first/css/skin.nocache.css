@@ -378,6 +378,7 @@
 .courseClassAdminField .fieldPanel .selectField{margin-top:15px;margin-bottom:25px;float:left;height:100px;width:414px;}
 .courseClassAdminField .fieldPanel .btnSelected{float:left;margin-left:15px;margin-top:92px;}
 .pnlRight{width:962px;}.pnlRight .btnPanel{height:30px;margin-top:9px;margin-right:22px;margin-bottom:10px;}.pnlRight .btnPanel .btnCourses{float:right;height:24px;padding-left:24px !important;padding-right:24px !important;border-left:1px solid #505864 !important;border-right:1px solid #181c22 !important;}
+.pnlRight .btnPanel .headerText{font-size:16px;color:#d88709;font-weight:bold;margin-left:10px;line-height:50px;display:block;float:left;}
 .pnlRight .pnlCoursesWrapperTitle{height:20px;}.pnlRight .pnlCoursesWrapperTitle .imgPnlCourses{margin-left:24px;float:left;}
 .pnlRight .pnlCoursesWrapperTitle .labelPnlCourses{color:#bec1c3;font-size:15px;line-height:23px;padding-left:14px;padding-bottom:12px;float:left;}
 .pnlRight .pnlCoursesWrapperTitle .labelPnlCoursesHighlight{color:#fd5656;padding-left:5px;}

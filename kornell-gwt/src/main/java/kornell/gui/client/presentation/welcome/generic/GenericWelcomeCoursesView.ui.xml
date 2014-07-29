@@ -9,6 +9,7 @@
 				<g:Button ui:field="btnCoursesToStart" addStyleNames="btnCourses"/>
 				<g:Button ui:field="btnCoursesInProgress" addStyleNames="btnCourses"/>
 				<g:Button ui:field="btnCoursesAll" addStyleNames="btnCourses borderNone"/>
+				<g:Label ui:field="headerText" addStyleNames="headerText"></g:Label>
 			</g:FlowPanel>
 			<g:FlowPanel ui:field="pnlCourses" addStyleNames="pnlCourses"/>
 		</g:FlowPanel>
