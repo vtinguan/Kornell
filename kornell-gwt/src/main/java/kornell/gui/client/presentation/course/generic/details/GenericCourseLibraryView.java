@@ -257,10 +257,7 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		pnlFileName.add(fileDescription);
 		
 		fileWrapper.add(pnlFileName);
-
-		int x = Random.nextInt() % 100;
-		x = x > 0 ? x : -1 * x;
-		fileTO.setFileSize(x + ( x % 2 == 0 ? " MB":" kB"));
+		
 		Label fileSize = new Label(fileTO.getFileSize());
 		fileSize.addStyleName("fileSize");
 		fileWrapper.add(fileSize);
