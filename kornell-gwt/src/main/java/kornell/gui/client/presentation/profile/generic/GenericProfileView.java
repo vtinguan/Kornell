@@ -51,6 +51,10 @@ import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanFactory;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericProfileView extends Composite implements ProfileView,ValidationChangedHandler {
@@ -145,6 +149,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private void initData() {
+		
 		isCurrentUser = session.getCurrentUser().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
 		boolean isInstitutionAdmin = false;
@@ -229,21 +234,19 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			session.user().updateUser(getUserInfoFromForm(), new Callback<UserInfoTO>(){
 				@Override
 				public void ok(UserInfoTO userInfo){
-					//if(isCurrentUser){
-						LoadingPopup.hide();
-						KornellNotification.show("Alterações salvas com sucesso!");
-						btnOK.setEnabled(true);
-						isEditMode = false;
-						display();
-						form.addStyleName("shy");
-						placeCtrl.goTo(clientFactory.getDefaultPlace());
-						session.getCurrentUser(true, new Callback<UserInfoTO>() {
-							@Override
-							public void ok(UserInfoTO to) {
-								user = to;
-							}
-						});
-					//}
+					LoadingPopup.hide();
+					KornellNotification.show("Alterações salvas com sucesso!");
+					btnOK.setEnabled(true);
+					isEditMode = false;
+					display();
+					form.addStyleName("shy");
+					placeCtrl.goTo(clientFactory.getDefaultPlace());
+					session.getCurrentUser(true, new Callback<UserInfoTO>() {
+						@Override
+						public void ok(UserInfoTO to) {
+							user = to;
+						}
+					});
 				}
 				@Override
 				public void internalServerError(){
@@ -255,8 +258,11 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private UserInfoTO getUserInfoFromForm() {
-		Person person = user.getPerson();
-
+		//"clone" user
+		String userPayload = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(user)).getPayload();
+		UserInfoTO userTmp = AutoBeanCodex.decode(clientFactory.getTOFactory(), kornell.core.to.UserInfoTO.class, userPayload).as();
+		Person person = userTmp.getPerson();
+		
 		person.setCPF(FormHelper.stripCPF(cpf.getFieldPersistText()));
 		person.setEmail(email.getFieldPersistText());
 		person.setFullName(fullName.getFieldPersistText());
@@ -280,8 +286,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
     if("".equals(person.getEmail())) 
     	person.setEmail(null);
     
-		user.setPerson(person);
-		return user;
+    userTmp.setPerson(person);
+		return userTmp;
 	}
 
 	@UiHandler("btnCancel")
@@ -322,7 +328,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	private void display() {
 		form.addStyleName("shy");
-
+		
 		btnOK.setVisible(isEditMode);
 		btnCancel.setVisible(isEditMode);
 		btnClose.setVisible(!isEditMode);
@@ -408,6 +414,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		profileFields.add(formHelper.getImageSeparator());
 		
 		form.removeStyleName("shy");
+		setValidity(true);
 		
 		passwordChangeWidget.initData(session, user, isCurrentUser);
 		
