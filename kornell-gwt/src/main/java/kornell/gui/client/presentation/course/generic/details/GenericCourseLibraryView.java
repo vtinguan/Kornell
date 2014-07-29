@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -257,6 +258,9 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		
 		fileWrapper.add(pnlFileName);
 
+		int x = Random.nextInt() % 100;
+		x = x > 0 ? x : -1 * x;
+		fileTO.setFileSize(x + ( x % 2 == 0 ? " MB":" kB"));
 		Label fileSize = new Label(fileTO.getFileSize());
 		fileSize.addStyleName("fileSize");
 		fileWrapper.add(fileSize);
@@ -313,17 +317,17 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 				String[] parts1 = object1.getFileSize().split(" ");
 				String[] parts2 = object2.getFileSize().split(" ");
 				Integer value1 = Integer.parseInt(parts1[0]);
-				String unit1 = parts1[1];
+				String unit1 = parts1[1].toUpperCase();
 				Integer value2 = Integer.parseInt(parts2[0]);
-				String unit2 = parts2[1];
-				if(unit1.equals(unit2))
-					ret = value2.compareTo(value1);
-				ret = unit2.compareTo(unit1);
+				String unit2 = parts2[1].toUpperCase();
+				ret = unit1.compareTo(unit2);
+				if(ret == 0)
+					ret = value1.compareTo(value2);
 				if(ret == 0)
 					return object1.getFileName().compareTo(object2.getFileName());
 				return ret;
 			} catch (Exception e) {
-		        return object2.getFileSize().compareTo(object1.getFileSize());
+		      return object2.getFileSize().compareTo(object1.getFileSize());
 			}
 		}
 	}
