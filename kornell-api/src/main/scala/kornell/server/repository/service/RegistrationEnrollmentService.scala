@@ -63,14 +63,21 @@ object RegistrationEnrollmentService {
     createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
   }
 
-  private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) =
+  private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
+    val personRepo = PersonRepo(person.getUUID)
     EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
       case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
       case None => {
-    	PersonRepo(person.getUUID).registerOn(enrollmentRequest.getInstitutionUUID)
+    	personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
         createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
       }
     }
+    //if there's no username set, get it from the enrollment request
+    if(StringUtils.isNone(person.getFullName)){
+      person.setFullName(enrollmentRequest.getFullName)
+      personRepo.update(person)
+    }
+  }
 
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person, cancelEnrollment: Boolean) = {
     if(cancelEnrollment && !EnrollmentState.cancelled.equals(enrollment.getState))
