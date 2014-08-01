@@ -305,7 +305,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	@Override
 	public void setLogoURL(String assetsURL) {
-		imgLogo.setUrl(composeURL(assetsURL, "logo300x80.png"));
+		imgLogo.setUrl(composeURL(assetsURL, "logo300x80_light.png"));
 	}
 
 	@Override
