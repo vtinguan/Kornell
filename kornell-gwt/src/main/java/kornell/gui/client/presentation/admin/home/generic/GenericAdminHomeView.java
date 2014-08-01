@@ -21,6 +21,7 @@ import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -195,7 +196,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			@Override
 			public void onChange(ChangeEvent event) {
 				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
-				if (!newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
+				if (Dean.getInstance().getCourseClassTO() == null || !newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
 					presenter.updateCourseClass(newCourseClassUUID);
 				}
 			}

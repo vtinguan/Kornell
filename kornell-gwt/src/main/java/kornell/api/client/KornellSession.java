@@ -19,8 +19,7 @@ import com.google.web.bindery.event.shared.EventBus;
 public class KornellSession extends KornellClient {
 	Logger logger = Logger.getLogger(KornellSession.class.getName());
 
-	private static final String SEPARATOR = ".";
-	private static final String PREFIX = "Kornell.v1.UserSession";
+	private static final String PREFIX = ClientProperties.PREFIX + "UserSession";
 
 	private UserInfoTO currentUser = null;
 
@@ -69,8 +68,8 @@ public class KornellSession extends KornellClient {
 	}
 
 	private String prefixed(String key) {
-		return PREFIX + SEPARATOR + currentUser.getPerson().getUUID()
-				+ SEPARATOR + key;
+		return PREFIX + ClientProperties.SEPARATOR + currentUser.getPerson().getUUID()
+				+ ClientProperties.SEPARATOR + key;
 	}
 
 	public boolean isPlatformAdmin() {

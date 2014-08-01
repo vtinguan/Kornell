@@ -24,6 +24,7 @@ import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
@@ -32,6 +33,7 @@ import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -59,6 +61,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private boolean hasOverriddenEnrollments = false, overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
   private EnrollmentRequestsTO enrollmentRequestsTO;
   private List<EnrollmentTO> enrollmentsToOverride;
+  
+	private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
 
 	public AdminHomePresenter(KornellSession session,
 			PlaceController placeController, Place defaultPlace,
@@ -80,18 +84,13 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			view = getView();
 			view.setPresenter(this);
 
-			session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean
-					.getInstance().getInstitution().getUUID(),
-					new Callback<CourseClassesTO>() {
-						@Override
-						public void ok(CourseClassesTO to) {
-							courseClassesTO = to;
-							view.setCourseClasses(courseClassesTO
-									.getCourseClasses());
-							updateCourseClassUI(courseClassesTO
-									.getCourseClasses().get(0));
-						}
-					});
+
+			String selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
+			if(StringUtils.isNone(selectedCourseClass) && courseClassesTO.getCourseClasses().size() > 0){
+				updateCourseClass(courseClassesTO.getCourseClasses().get(0).getCourseClass().getUUID());
+			} else {
+      	updateCourseClass(selectedCourseClass);
+			}
 		} else {
 			GWT.log("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
@@ -101,6 +100,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	private List<Enrollment> getEnrollments(String courseClassUUID) {
 		LoadingPopup.show();
+		ClientProperties.set(getLocalStoragePropertyName(), courseClassUUID);
 		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID,
 				new Callback<EnrollmentsTO>() {
 
@@ -133,9 +133,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
 						if (courseClassUUID == null || courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)) {
 							updateCourseClassUI(courseClassTO);
-							break;
+							return;
 						}
 					}
+					updateCourseClassUI(null);
 				}
 			}
 		});
@@ -156,6 +157,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		view.setUserEnrollmentIdentificationType(enrollWithCPF);
 		view.setSelectedCourseClass(courseClassTO.getCourseClass().getUUID());
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
+	}
+
+	private String getLocalStoragePropertyName() {
+		return PREFIX + ClientProperties.SEPARATOR + Dean.getInstance().getInstitution().getUUID() + ClientProperties.SEPARATOR + ClientProperties.SELECTED_COURSE_CLASS;
 	}
 
 	@Override

@@ -6,8 +6,11 @@ import com.google.gwt.user.client.Cookies;
 //TODO: if this is user specific, move to UserSession
 public class ClientProperties {
 	private static Storage localStorage = Storage.getLocalStorageIfSupported();
-	
+
+	public static final String SEPARATOR = ".";
+	public static final String PREFIX = "Kornell.v1.";
 	public static final String X_KNL_A = "X-KNL-A";
+	public static final String SELECTED_COURSE_CLASS = "SELECTED_COURSE_CLASS";
 	
 	public static String get(String propertyName){
 		if(localStorage != null){
