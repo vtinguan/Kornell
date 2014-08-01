@@ -86,7 +86,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 
 			String selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
-			if(StringUtils.isNone(selectedCourseClass) && courseClassesTO.getCourseClasses().size() > 0){
+			if(StringUtils.isNone(selectedCourseClass) && courseClassesTO != null && courseClassesTO.getCourseClasses().size() > 0){
 				updateCourseClass(courseClassesTO.getCourseClasses().get(0).getCourseClass().getUUID());
 			} else {
       	updateCourseClass(selectedCourseClass);
