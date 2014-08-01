@@ -48,7 +48,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
-	private String barLogoFileName = "logo300x80_light.png";
+	private String barLogoFileName = "logo300x80_light.png?1";
 
 
 	public GenericTermsView(ClientFactory clientFactory) {

@@ -59,7 +59,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	private static final String IMAGES_PATH = "skins/first/icons/menuBar/";
-	private String barLogoFileName = "logo250x45_light.png";
+	private String barLogoFileName = "logo250x45_light.png?1";
 
 	private boolean visible = false;
 
