@@ -14,9 +14,6 @@ public interface UserInfoTO {
 	String getUsername();
 	void setUsername(String username);
 	
-	boolean isSigningNeeded();
-	void setSigningNeeded(boolean siginingNeeded);
-	
 	String getLastPlaceVisited();
 	void setLastPlaceVisited(String lastPlaceVisited);
 	

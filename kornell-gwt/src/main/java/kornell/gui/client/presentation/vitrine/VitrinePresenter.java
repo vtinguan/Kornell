@@ -91,7 +91,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 					clientFactory.getEventBus().fireEvent(new LoginEvent(userInfoTO));
 					Place newPlace;
 					Place welcomePlace = new WelcomePlace();
-					if (userInfoTO.isSigningNeeded()) {
+					if (!session.hasSignedTerms()) {
 						 newPlace = new TermsPlace();
 					} else if (institution.isDemandsPersonContactDetails() && userInfoTO.getPerson().getCity() == null) {
 						newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);

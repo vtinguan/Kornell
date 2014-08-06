@@ -46,15 +46,6 @@ object RegistrationsRepo {
     newRegistrationsTO(registrationList)
   }
 
-  def signingNeeded(implicit person: Person): Boolean =
-    sql"""select count(*) 
-	from Registration r
-	join Institution i on r.institution_uuid=i.uuid
-	where 
-		i.terms is not null
-	  and r.termsAcceptedOn is null
-	  and r.person_uuid = ${person.getUUID}""".isPositive
-
   def apply(personUUID: String, uuid: String):RegistrationsRepo =
     new RegistrationsRepo(personUUID, uuid)
 }

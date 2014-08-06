@@ -151,4 +151,16 @@ public class KornellSession extends KornellClient {
 		return false;
 	}
 
+	public boolean hasSignedTerms() {
+		if (currentUser == null)
+			return false;
+		final List<Registration> registrations = currentUser.getRegistrationsTO().getRegistrations();
+		for (Registration registration : registrations) {
+			if (registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID()) && 
+					registration.getTermsAcceptedOn() != null)
+				return true;
+		}
+		return false;
+	}
+
 }

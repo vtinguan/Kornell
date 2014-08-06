@@ -44,8 +44,6 @@ class UserResource(private val authRepo:AuthRepo) {
       val username = PersonRepo(p.getUUID).getUsername
       user.setUsername(username)
       user.setPerson(p)
-      val signingNeeded = RegistrationsRepo.signingNeeded(p)
-      user.setSigningNeeded(signingNeeded)
       user.setLastPlaceVisited(p.getLastPlaceVisited)
       val roles = authRepo.rolesOf(username)
       user.setRoles((Set.empty ++ roles).asJava)
