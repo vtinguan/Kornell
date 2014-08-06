@@ -10,11 +10,11 @@ import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.GenericClassroomView;
-import kornell.gui.client.presentation.course.generic.details.GenericCourseLibraryView;
 import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
-import kornell.gui.client.presentation.course.library.CourseLibraryView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
+import kornell.gui.client.presentation.message.MessageView;
+import kornell.gui.client.presentation.message.generic.GenericMessageView;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.profile.generic.GenericProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;
@@ -147,6 +147,11 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public ProfileView getProfileView() {
 		return new GenericProfileView(clientFactory);
+	}
+
+	@Override
+	public MessageView getMessageView() {
+		return new GenericMessageView(clientFactory);
 	}
 
 	@Override

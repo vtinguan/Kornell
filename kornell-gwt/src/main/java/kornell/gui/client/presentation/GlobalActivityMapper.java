@@ -6,11 +6,10 @@ import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.ClassroomActivity;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
-import kornell.gui.client.presentation.course.library.CourseLibraryActivity;
-import kornell.gui.client.presentation.course.library.CourseLibraryPlace;
-import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.home.HomeActivity;
 import kornell.gui.client.presentation.home.HomePlace;
+import kornell.gui.client.presentation.message.MessageActivity;
+import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfileActivity;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.sandbox.SandboxActivity;
@@ -60,6 +59,9 @@ public class GlobalActivityMapper implements ActivityMapper {
 		}
 		if (place instanceof ProfilePlace) {
 			return new ProfileActivity(clientFactory);
+		}
+		if (place instanceof MessagePlace) {
+			return new MessageActivity(clientFactory);
 		}
 		if (place instanceof ClassroomPlace) {
 			ClassroomPresenter coursePresenter = clientFactory.getViewFactory().getClassroomPresenter();

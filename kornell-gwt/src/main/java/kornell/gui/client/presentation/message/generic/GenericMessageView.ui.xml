@@ -1,0 +1,25 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+	xmlns:knl="urn:import:kornell.gui.client.presentation.message.generic">
+	<g:FlowPanel>
+		<b:Form ui:field="form" addStyleNames="messageForm shy">
+			<g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel">
+				<g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
+				<g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>
+			</g:FlowPanel>
+			<g:FlowPanel ui:field="messageFields" addStyleNames="fieldsWrapper">
+				<!--g:FlowPanel addStyleNames="shy fieldPanel fieldPanelImage "> <g:FlowPanel 
+					addStyleNames="labelPanel labelPanelImg"> <g:Label addStyleNames="lblLabelImg">Imagem 
+					do perfil</g:Label> </g:FlowPanel> <g:FlowPanel addStyleNames="imagePanel"> 
+					<g:Image ui:field="imgMessage"></g:Image> </g:FlowPanel> </g:FlowPanel -->
+			</g:FlowPanel>
+			<g:FlowPanel addStyleNames="standardButtonBar">
+				<g:Button ui:field="btnEdit" addStyleNames="btnAction btnStandard" />
+				<g:Button ui:field="btnClose" addStyleNames="btnNotSelected btnStandard" />
+				<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard" />
+				<g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard" />
+			</g:FlowPanel>
+		</b:Form>
+		<!-- knl:GenericPasswordChangeView ui:field="passwordChangeWidget"></knl:GenericPasswordChangeView-->
+	</g:FlowPanel>
+</ui:UiBinder>

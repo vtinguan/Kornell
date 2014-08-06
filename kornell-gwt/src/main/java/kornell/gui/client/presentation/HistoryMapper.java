@@ -3,6 +3,7 @@ package kornell.gui.client.presentation;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.home.HomePlace;
+import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.sandbox.SandboxPlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
@@ -18,6 +19,7 @@ import com.google.gwt.place.shared.WithTokenizers;
 	TermsPlace.Tokenizer.class,
 	WelcomePlace.Tokenizer.class,
 	ProfilePlace.Tokenizer.class,
+	MessagePlace.Tokenizer.class,
 	
 	ClassroomPlace.Tokenizer.class,
 	

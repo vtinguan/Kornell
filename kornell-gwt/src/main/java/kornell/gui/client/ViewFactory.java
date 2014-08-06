@@ -6,9 +6,8 @@ import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
-import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
-import kornell.gui.client.presentation.course.library.CourseLibraryView;
 import kornell.gui.client.presentation.home.HomeView;
+import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;
 import kornell.gui.client.presentation.sandbox.SandboxView;
@@ -33,6 +32,7 @@ public interface ViewFactory {
 	TermsView getTermsView();
 	WelcomeView getWelcomeView();
 	ProfileView getProfileView();
+	MessageView getMessageView();
 	
 	
 	ClassroomView getClassroomView();
@@ -44,5 +44,6 @@ public interface ViewFactory {
 	AdminHomeView getAdminHomeView();
 
 	DockLayoutPanel getDockLayoutPanel();
+
 
 }
