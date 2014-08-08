@@ -187,16 +187,22 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("{personUUID}")
   @Consumes(Array(UserInfoTO.TYPE))
   @Produces(Array(UserInfoTO.TYPE))
-  def update(implicit @Context sc: SecurityContext, userInfo: UserInfoTO,
+  def update(implicit @Context sc: SecurityContext, 
+    @Context resp: HttpServletResponse,
+    userInfo: UserInfoTO,
     @PathParam("personUUID") personUUID: String) = authRepo.withPerson { p =>
     if (userInfo != null) {
-      PersonRepo(personUUID).update(userInfo.getPerson())
-
-      val roles = authRepo.rolesOf(userInfo.getUsername)
-      userInfo.setRoles((Set.empty ++ roles).asJava)
-      userInfo.setRegistrationsTO(RegistrationsRepo.getAll(p.getUUID))
-      userInfo.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
-      userInfo
+      if (!PersonRepo(p.getUUID).hasPowerOver(personUUID))
+        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password.");
+      else {
+	      PersonRepo(personUUID).update(userInfo.getPerson())
+	
+	      val roles = authRepo.rolesOf(userInfo.getUsername)
+	      userInfo.setRoles((Set.empty ++ roles).asJava)
+	      userInfo.setRegistrationsTO(RegistrationsRepo.getAll(p.getUUID))
+	      userInfo.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
+	      userInfo
+      }
     }
   }
 

@@ -74,28 +74,12 @@ public class SimpleDatePicker extends FlowPanel {
 
 	public void setFields(Date birthDate) {
 		if (birthDate != null) {
-			String pattern = "dd";
-			DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
-			DateTimeFormat dtf = new DateTimeFormat(pattern, info) {
-			};
-			String day = "" + Integer.parseInt(dtf.format(birthDate));
-			dropBoxDay.setSelectedValue(day);
-
-			pattern = "MM";
-			info = new DefaultDateTimeFormatInfo();
-			dtf = new DateTimeFormat(pattern, info) {
-			};
-			String month = "" + Integer.parseInt(dtf.format(birthDate));
-			dropBoxMonth.setSelectedValue(month);
-
-			pattern = "yyyy";
-			info = new DefaultDateTimeFormatInfo();
-			dtf = new DateTimeFormat(pattern, info) {
-			};
-			String year = dtf.format(birthDate);
-			dropBoxYear.setSelectedValue(year);
+			dropBoxDay.setSelectedValue(""+birthDate.getDate());
+			dropBoxMonth.setSelectedValue(""+(birthDate.getMonth()+1));
+			dropBoxYear.setSelectedValue(""+(birthDate.getYear()+1900));
 		}
 	}
+
 
 	private void updatePossibleDays() {
 		int maxDays = getMaxDays();
