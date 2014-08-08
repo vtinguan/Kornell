@@ -8,10 +8,13 @@ public class TimeUtil {
 	@SuppressWarnings("deprecation")
 	public static java.util.Date toJUD(Date date) {
 		if(date == null || date.getYear() == 0) return null;
-		java.util.Date jud = new java.util.Date(0);
+		java.util.Date jud = new java.util.Date();
 		jud.setYear(date.getYear());
 		jud.setMonth(date.getMonth());
 		jud.setDate(date.getDay());
+		jud.setHours(date.getHour());
+		jud.setMinutes(date.getMinutes());
+		jud.setSeconds(date.getSeconds());
 		return jud;
 	}
 
