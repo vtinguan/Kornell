@@ -37,6 +37,7 @@ public class PrefetchSequencer implements Sequencer {
 	private Uidget currentUidget;
 	private Actom prevActom;
 	private Uidget prevUidget;
+	private boolean isActive;
 
 	public PrefetchSequencer(EventBus bus, KornellSession session) {
 		this.session = session;
@@ -145,7 +146,6 @@ public class PrefetchSequencer implements Sequencer {
 			nextUidget.setVisible(false);
 		if (prevUidget != null)
 			prevUidget.setVisible(false);
-		updateContentPanel();
 	}
 
 	private void dropBreadcrumb() {
@@ -167,35 +167,24 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void removePrevious() {
-		if(prevUidget != null) contentPanel.remove(prevUidget);
+		if(prevUidget != null) 
+			contentPanel.remove(prevUidget);
 		prevUidget = null;
 		prevActom = null;
-		updateContentPanel();
 	}
 
 	private void removeNext() {
-		if(nextUidget != null) contentPanel.remove(nextUidget);
+		if(nextUidget != null) 
+			contentPanel.remove(nextUidget);
 		nextUidget = null;
 		nextActom = null;
-		updateContentPanel();
 	}
 
 	private void removeCurrent() {
-		if(currentUidget != null) contentPanel.remove(currentUidget);
+		if(currentUidget != null) 
+			contentPanel.remove(currentUidget);
 		currentUidget = null;
 		currentActom = null;
-		updateContentPanel();
-	}
-	
-	private void updateContentPanel(){
-		//contentPanel.clear();
-		
-		if(currentUidget != null && !contentPanel.getElement().isOrHasChild(currentUidget.getElement()))
-			contentPanel.add(currentUidget);
-		if(nextUidget != null && !contentPanel.getElement().isOrHasChild(nextUidget.getElement()))
-			contentPanel.add(nextUidget);
-		if(prevUidget != null && !contentPanel.getElement().isOrHasChild(prevUidget.getElement()))
-			contentPanel.add(prevUidget);
 	}
 
 	private void makePrevCurrent() {
@@ -206,7 +195,6 @@ public class PrefetchSequencer implements Sequencer {
 	@Override
 	public Sequencer withPanel(FlowPanel contentPanel) {
 		this.contentPanel = contentPanel;
-		contentPanel.clear();
 		return this;
 	}
 
@@ -264,6 +252,7 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void initialLoad() {
+		isActive = true;
 		contentPanel.clear();
 		showCurrentASAP();
 		preloadNext();
@@ -273,35 +262,41 @@ public class PrefetchSequencer implements Sequencer {
 	}
 
 	private void preloadNext() {
-		if (doesntHaveNext()) {
+		if (!isActive || doesntHaveNext()) {
 			nextActom = null;
 			nextUidget = null;
 		} else {
 			int nextIndex = currentIndex + 1;
 			nextActom = actoms.get(nextIndex);
 			nextUidget = uidgetFor(nextActom);
-			updateContentPanel();
+			contentPanel.add(nextUidget);
 		}
 	}
 
 	private void preloadPrevious() {
-		if (doesntHavePrevious()) {
+		if (!isActive || doesntHavePrevious()) {
 			prevActom = null;
 			prevUidget = null;
 		} else {
 			int previousIndex = currentIndex - 1;
 			prevActom = actoms.get(previousIndex);
 			prevUidget = uidgetFor(prevActom);
-			updateContentPanel();
+			contentPanel.add(prevUidget);
 		}
 	}
 
 	private void showCurrentASAP() {
-		currentUidget = uidgetFor(currentActom);
-		currentUidget.setVisible(false);
-		currentUidget.onViewReady(new ShowWhenReady(currentUidget));
-		dropBreadcrumb();
-		makeCurrentVisible();
+		if (!isActive) {
+			currentActom = null;
+			currentUidget = null;
+		} else {
+			currentUidget = uidgetFor(currentActom);
+			currentUidget.setVisible(false);
+			currentUidget.onViewReady(new ShowWhenReady(currentUidget));
+			contentPanel.add(currentUidget);
+			dropBreadcrumb();
+			makeCurrentVisible();
+		}
 	}
 
 	private Uidget uidgetFor(Actom actom) {
@@ -339,8 +334,10 @@ public class PrefetchSequencer implements Sequencer {
 
 	@Override
 	public void stop() {
+		isActive = false;
 		removeCurrent();
 		removeNext();
 		removePrevious();
+		contentPanel.clear();
 	}
 }
