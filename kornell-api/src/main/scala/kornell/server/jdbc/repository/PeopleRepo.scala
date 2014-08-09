@@ -132,7 +132,7 @@ object PeopleRepo {
     val op = Some(p)
     uuidCache.put(p.getUUID, op)
     if (isSome(p.getCPF)) cpfCache.put(p.getCPF, op)
-    if (isSome(p.getEmail)) cpfCache.put(p.getEmail, op)
+    if (isSome(p.getEmail)) emailCache.put(p.getEmail, op)
   }
 
   //TODO: Better security against SQLInjection?
