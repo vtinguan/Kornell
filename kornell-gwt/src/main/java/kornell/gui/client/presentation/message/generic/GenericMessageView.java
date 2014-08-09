@@ -328,7 +328,7 @@ public class GenericMessageView extends Composite implements MessageView,Validat
 		}
 		
 		if(isEditMode && showContactDetails && session.getCurrentUser().getPerson().getCity() == null){
-			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO);
+			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO, 5000);
 		}
 
 		//messageFields.add(getPictureUploadFormPanel());

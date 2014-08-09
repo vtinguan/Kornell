@@ -190,6 +190,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private boolean validateFields() {
+		if(!formHelper.isLengthValid(fullName.getFieldPersistText(), 5, 50)){
+			fullName.setError("Insira seu nome.");
+		} else fullName.setError("");
+		
 		if(showContactDetails){
 			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
 				telephone.setError("Insira seu telefone.");
@@ -353,7 +357,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		}
 		
 		if(isEditMode && showContactDetails && session.getCurrentUser().getPerson().getCity() == null){
-			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO);
+			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO, 5000);
 		}
 
 		//profileFields.add(getPictureUploadFormPanel());
