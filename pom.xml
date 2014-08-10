@@ -5,16 +5,18 @@
     <groupId>kornell</groupId>
     <artifactId>kornell</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>${kornell-version}</version>
     <name>Kornell E-Learning Platform</name>
 
     <modules>        
         <module>kornell-core</module>
         <module>kornell-api</module>
         <module>kornell-gwt</module>
-    <!--  <module>kornell-admin</module> -->
   </modules>
-
+  
+  <properties>
+  	<kornell-version>1.1</kornell-version>
+  </properties>
     <build>
         <pluginManagement>
             <plugins>
