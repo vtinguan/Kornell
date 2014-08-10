@@ -7,6 +7,7 @@ import com.google.gwt.place.shared.Prefix;
 public class MessagePlace extends Place{
 
 	public static final String INBOX = "inbox";
+	public static final String SENT = "sent";
 	public static final String ARCHIVED = "archived";
 	public static final String COMPOSE = "compose";
 	

@@ -53,7 +53,6 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
 	private ClassroomPresenter coursePresenter;
-	private CourseLibraryPresenter courseLibraryPresenter;
 	private SandboxPresenter sandboxPresenter;
 
 	SimplePanel shell = new SimplePanel();
@@ -151,7 +150,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public MessageView getMessageView() {
-		return new GenericMessageView(clientFactory);
+		return new GenericMessageView(clientFactory.getKornellSession(), clientFactory.getEventBus());
 	}
 
 	@Override
