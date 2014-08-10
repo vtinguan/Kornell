@@ -47,7 +47,7 @@ public class PrefetchSequencer implements Sequencer {
 
 	@Override
 	public void onContinue(NavigationRequest event) {
-		if (doesntHaveNext())
+		if (!isActive || doesntHaveNext())
 			return;
 		removePrevious();
 		makeCurrentPrevious();
@@ -61,7 +61,7 @@ public class PrefetchSequencer implements Sequencer {
 
 	@Override
 	public void onPrevious(NavigationRequest event) {
-		if (doesntHavePrevious())
+		if (!isActive || doesntHavePrevious())
 			return;
 		removeNext();
 		makeCurrentNext();
@@ -80,8 +80,10 @@ public class PrefetchSequencer implements Sequencer {
 	
 	@Override
 	public void onDirect(NavigationRequest event){
-		stop();
-		orientateAndSail(event.getDestination());
+		if(isActive){
+			stop();
+			orientateAndSail(event.getDestination());
+		}
 	}
 
 	private void debug(String event) {
@@ -253,7 +255,6 @@ public class PrefetchSequencer implements Sequencer {
 
 	private void initialLoad() {
 		isActive = true;
-		contentPanel.clear();
 		showCurrentASAP();
 		preloadNext();
 		preloadPrevious();

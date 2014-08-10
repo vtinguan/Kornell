@@ -140,7 +140,8 @@ public class KornellFormFieldWrapper extends Composite {
 	}
 
 	public void setError(String text) {
-		fieldError.setText(text);
+		if(fieldError != null)
+			fieldError.setText(text);
 	}
 
 	public String getError() {

@@ -167,11 +167,11 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public ClassroomPresenter getClassroomPresenter() {
-		SequencerFactory rendererFactory = new SequencerFactoryImpl(
-				clientFactory.getEventBus(),
-				clientFactory.getPlaceController(),
-				clientFactory.getKornellSession());
 		if (coursePresenter == null) {
+			SequencerFactory rendererFactory = new SequencerFactoryImpl(
+					clientFactory.getEventBus(),
+					clientFactory.getPlaceController(),
+					clientFactory.getKornellSession());
 			ClassroomView activityView = getClassroomView();
 			coursePresenter = new ClassroomPresenter(activityView,
 					clientFactory.getPlaceController(), rendererFactory,
