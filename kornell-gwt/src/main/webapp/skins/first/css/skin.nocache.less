@@ -563,7 +563,7 @@ body {
 } 
 @media screen and (max-width: @wrapperWidth) {
 	.pnlRight{
-		@wrapperWidth: @wrapperWidthUnder990 - 18px;
+		@wrapperWidth: @wrapperWidthUnder990;
 		width: @wrapperWidth;
 		.btnPanel{
 			width: @wrapperWidth;
@@ -572,9 +572,14 @@ body {
 		}
 		.pnlCourses { 
 			width: @wrapperWidth;
+			.courseSummary {
+				.ellipsis { 
+					margin-bottom: 0px;
+				}
+			}
 		}
 		.courseSummary {
-		width: @wrapperWidth - 30px !important;
+		width: @wrapperWidth !important;
 			//width: 314px !important;
 			.description {
 				overflow: hidden;
@@ -582,12 +587,6 @@ body {
 		}
 	}
 }
-
-
-
-
-
-
 
 
 
