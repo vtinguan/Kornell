@@ -26,11 +26,13 @@
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
+.modal .standardButtonBar{width:280px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal .standardButtonBar .btnNotSelected{margin-left:20px;}
 .detailsPanel{width:962px;margin:0 auto;}.detailsPanel .titlePanel{padding-top:20px;font-size:18px;line-height:20px;}.detailsPanel .titlePanel .titleImage{padding-left:20px;padding-right:5px;margin-top:-3px;float:left;height:28px;width:28px;}
 .detailsPanel .titlePanel .titleLabel{color:#bec1c3;padding-left:8px;padding-right:8px;float:left;}
 .detailsPanel .titlePanel .subTitleLabel{clear:both;margin-left:53px;font-size:14px;}
-.detailsPanel .titlePanel .courseNameLabel{color:#be150e;float:left;}
-.detailsPanel .titlePanel .courseClassNameLabel{font-size:14px;color:#be150e;float:left;}
+.detailsPanel .titlePanel .courseNameLabel{color:#fd5656;float:left;}
+.detailsPanel .titlePanel .courseClassNameLabel{font-size:14px;color:#fd5656;float:left;}
 .detailsPanel .titlePanel .closePanel .closeImage{float:right;}
 .detailsPanel .titlePanel .closePanel .closeLabel{float:right;line-height:40px;color:#d88709;padding-right:3px;}
 .detailsPanel .buttonsPanel{width:173.16px;margin-left:20px;margin-right:20px;margin-top:20px;clear:both;float:left;}.detailsPanel .buttonsPanel .btnDetails{width:133.16px;text-align:right;margin-top:20px;padding:4px 12px !important;display:inline-block;}.detailsPanel .buttonsPanel .btnDetails:hover{text-decoration:none;}
@@ -40,7 +42,7 @@
 .detailsPanel .detailsContentPanel .infoPanel .infoDetails .infoText{color:#bec1c3;padding-right:20px;}
 .detailsPanel .detailsContentPanel .sidePanel{float:left;margin-top:60px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel{width:240.5px;background-color:#0d0b0c;border-radius:8px;color:#bec1c3;font-size:12px;line-height:14px;padding:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails{padding-top:20px;padding-bottom:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintImg{float:left;}
 .detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintText{padding-left:30px;}
-.detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel{width:240.5px;color:#be150e;padding:10px;padding-left:22px;}
+.detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel{width:240.5px;color:#fd5656;padding:10px;padding-left:22px;}
 .detailsPanel .detailsContentPanel .topicsPanel{width:721.5px;margin-top:30px;float:left;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel{height:24px;margin-bottom:10px;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopicsHeader{border-radius:0px;height:24px;line-height:24px;border:0;color:#bec1c3;padding-left:10px;padding-right:10px;font-size:12px;font-weight:bold;border-left:1px solid #505864;border-right:1px solid #181c22;display:block;float:left;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopicsHeader:hover{text-decoration:none;cursor:default;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopics{width:699.5px;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnStatus{width:100.65500000000002px;}
