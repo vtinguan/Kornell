@@ -17,6 +17,7 @@ import kornell.core.entity.Assessment
 import java.util.Date
 import kornell.server.ep.EnrollmentSEP
 import java.math.BigDecimal
+import java.math.BigDecimal._
 import kornell.server.util.ServerTime
 
 //TODO: Specific column names and proper sql
@@ -126,27 +127,29 @@ class EnrollmentRepo(enrollmentUUID: String) {
   """.first[BigDecimal] { rs => rs.getBigDecimal("maxScore") }
 
   def updateAssessment = first map { e =>
-    //TODO: Consider using client timestap
-    val lastAssessmentUpdate = ServerTime.now
-    val cc = first.flatMap { e => CourseClassRepo(e.getCourseClassUUID).first }
-    val requiredScore: Option[BigDecimal] = cc.map { _.getRequiredScore }
-    requiredScore map { reqScore =>
-      val maxScore = findMaxScore(e.getUUID)
-      maxScore.map { mScore =>
-        if (!Assessment.PASSED.equals(e.getAssessment())) {
-          val assessment = if (mScore.compareTo(reqScore) >= 0)
-            Assessment.PASSED
-          else
-            Assessment.FAILED
-          e.setAssessmentScore(mScore)
-          e.setAssessment(assessment)
-          e.setLastAssessmentUpdate(lastAssessmentUpdate)
-          update(e)
-          checkCompletion(e)
-        }
-      }
+    val notPassed = !Assessment.PASSED.equals(e.getAssessment)
+    if (notPassed){
+    	val (maxScore,assessment) = assess(e)
+        e.setAssessmentScore(maxScore)
+        e.setAssessment(assessment)
+        //TODO: Add client timestap
+        e.setLastAssessmentUpdate(ServerTime.now)
+        update(e)
+        checkCompletion(e)
     }
   }
+
+  
+  def assess(e:Enrollment) = {
+    val cc = CourseClassRepo(e.getCourseClassUUID).get
+    	val reqScore: BigDecimal = Option(cc.getRequiredScore).getOrElse(ZERO)
+    	val maxScore = findMaxScore(e.getUUID).getOrElse(ZERO)
+    	val assessment = if (maxScore.compareTo(reqScore) >= 0)
+          Assessment.PASSED
+        else
+          Assessment.FAILED
+        (maxScore,assessment)
+  }  
 
   def findLastEventTime(e: Enrollment) = {
     val lastActomEntered = sql"""
