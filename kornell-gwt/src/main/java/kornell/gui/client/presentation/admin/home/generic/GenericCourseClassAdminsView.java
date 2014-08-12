@@ -241,7 +241,8 @@ public class GenericCourseClassAdminsView extends Composite {
 		String item = search.getText().split(" \\(")[0];
 		if(oraclePeople != null && oraclePeople.containsKey(item)){
 			if(!formHelper.isItemInListBox(item, multipleSelect)){
-				multipleSelect.addItem(item);
+				Person person = (Person) oraclePeople.get(item);
+				multipleSelect.addItem(item, person.getUUID());
 			}
 			search.setText("");
 		}
