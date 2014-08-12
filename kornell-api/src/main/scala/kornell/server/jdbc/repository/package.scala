@@ -33,6 +33,7 @@ import kornell.server.authentication.ThreadLocalAuthenticator
 package object repository {
   val logger = Logger.getLogger("kornell.server.jdbc")
   
+  //TODO: Move to Repositories
   implicit def toInstitution(rs:ResultSet):Institution = 
     newInstitution(rs.getString("uuid"), 
         rs.getString("name"),  

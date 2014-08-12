@@ -19,6 +19,7 @@ import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.EnrollmentsTO;
+import kornell.core.to.LaunchEnrollmentTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.RolesTO;
@@ -52,6 +53,7 @@ public class MediaTypes {
 		register(EnrollmentsTO.TYPE,EnrollmentsTO.class);
 		register(ActomEntries.TYPE,ActomEntries.class);
 		register(LibraryFilesTO.TYPE,LibraryFilesTO.class);
+		register(LaunchEnrollmentTO.TYPE,LaunchEnrollmentTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

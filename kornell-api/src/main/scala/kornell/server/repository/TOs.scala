@@ -29,6 +29,7 @@ import kornell.core.entity.Registration
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.to.LibraryFileTO
+import kornell.core.to.LaunchEnrollmentTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -174,4 +175,15 @@ object TOs {
     lf.setLibraryFiles(libraryFileTOs.asJava)
     lf
   }
+  
+  def newLaunchEnrollmentTO() = {
+    val to = tos.newLaunchEnrollmentTO.as
+    to
+  }
+  
+  def newActionTO() = {
+    val to = tos.newActionTO.as
+    to
+  }
+  
 }

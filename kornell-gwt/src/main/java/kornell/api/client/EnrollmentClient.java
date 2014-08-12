@@ -1,8 +1,8 @@
 package kornell.api.client;
 
-import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.lom.Contents;
+import kornell.core.to.LaunchEnrollmentTO;
 
 public class EnrollmentClient extends RESTClient{
 
@@ -30,6 +30,11 @@ public class EnrollmentClient extends RESTClient{
 	
 	public void isApproved(Callback<Boolean> callback){
 		GET("enrollments",enrollmentUUID,"approved").go(callback);		
+	}
+
+	//TODO: DRY GET("enrollments",enrollmentUUID)
+	public void launch(Callback<LaunchEnrollmentTO> callback) {
+		GET("enrollments",enrollmentUUID,"launch").go(callback);
 	}
 
 }

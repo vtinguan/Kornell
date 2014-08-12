@@ -1,22 +1,16 @@
 package kornell.gui.client.personnel;
 
-import java.util.List;
-
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.UserInfoTO;
-import kornell.gui.client.event.ProgressEvent;
-import kornell.gui.client.event.ProgressEventHandler;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class Dean{
+public class Dean {
 	
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
@@ -88,8 +82,10 @@ public class Dean{
 	}
 	
 	public void setCourseClassTO(String uuid){
+		GWT.log("CCSTOS: "+courseClassesTO.getCourseClasses().get(0).getCourseClass().getUUID());
 		for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
 			if(courseClassTO.getCourseClass().getUUID().equals(uuid)){
+				GWT.log("CCTO SET");
 				this.courseClassTO = courseClassTO;
 				return;
 			}

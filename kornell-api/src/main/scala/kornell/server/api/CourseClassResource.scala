@@ -33,7 +33,12 @@ import java.io.IOException
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
-
+  def this() = this(null)
+  
+  @GET
+  @Produces(Array(CourseClass.TYPE))
+  def get = CourseClassRepo(uuid).first
+  
   @GET
   @Path("to")
   @Produces(Array(CourseClassTO.TYPE))
@@ -82,16 +87,19 @@ class CourseClassResource(uuid: String) {
   @Produces(Array(Contents.TYPE))
   @Path("contents")
   @GET
-  def getLatestContents(implicit @Context sc: SecurityContext): Contents =
-    //TODO: Refactor to Option.map
+  def getLatestContents(): Contents =
     AuthRepo().withPerson { person =>            
-      ContentRepository.findKNLVisitedContent(uuid,person.getUUID)
+      val cr = ContentRepository
+      cr.findKNLVisitedContent(uuid,person.getUUID)
     }
 
   @Produces(Array(LibraryFilesTO.TYPE))
   @Path("libraryFiles")
   @GET
-  def getLibraryFiles =  LibraryFilesRepository.findLibraryFiles(uuid)
+  def getLibraryFiles =  {
+    val libRepo = LibraryFilesRepository
+    libRepo.findLibraryFiles(uuid)
+  }
      
 
   @PUT

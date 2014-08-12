@@ -1,6 +1,5 @@
 package kornell.server.api
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
@@ -27,6 +26,9 @@ import kornell.server.util.Conditional.toConditional
 import kornell.server.util.Err
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.util.RequirementNotMet
+import kornell.core.to.LaunchEnrollmentTO
+import kornell.server.repository.TOs
+import kornell.core.to.ActionType
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -51,36 +53,46 @@ class EnrollmentResource(uuid: String) {
   def update(enrollment: Enrollment) = {
     EnrollmentRepo(enrollment.getUUID).update(enrollment)
   }
-  .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  RequirementNotMet )
-  .get
-  
-  
+    .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID), RequirementNotMet)
+    .get
+
   @Path("actoms/{actomKey}")
   def actom(@PathParam("actomKey") actomKey: String) = ActomResource(uuid, actomKey)
 
   @GET
   @Path("contents")
   @Produces(Array(Contents.TYPE))
-  def contents(implicit @Context sc: SecurityContext): Option[Contents] = first map { e =>
-    CourseClassResource(e.getCourseClassUUID).getLatestContents(sc)
+  def contents: Option[Contents] = first map { e =>
+    val courseClassResource = CourseClassResource(e.getCourseClassUUID)
+    val contents = courseClassResource.getLatestContents()
+    contents
   }
 
   @GET
   @Path("approved")
   @Produces(Array("application/boolean"))
-  def approved =  first map { Assessment.PASSED == _.getAssessment } get
-  
-  
+  def approved = first map { Assessment.PASSED == _.getAssessment } get
+
   @DELETE
   @Produces(Array(Enrollment.TYPE))
-  def delete(implicit @Context sc: SecurityContext) = {
+  def delete() = {
     val enrollmentRepo = EnrollmentRepo(uuid)
-    val enrollment = enrollmentRepo.get   
+    val enrollment = enrollmentRepo.get
     enrollmentRepo.delete(uuid)
     enrollment
   }.requiring(isPlatformAdmin, UserNotInRole)
     .or(isInstitutionAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), UserNotInRole)
     .or(isCourseClassAdmin(EnrollmentRepo(uuid).get.getCourseClassUUID), UserNotInRole)
-    
-  
+
+  @GET
+  @Path("launch")
+  @Produces(Array(LaunchEnrollmentTO.TYPE))
+  def launch:LaunchEnrollmentTO = {
+	  val launchTO = TOs.newLaunchEnrollmentTO
+	  val action = TOs.newActionTO
+	  action.setType(ActionType.OpenURL);
+	  action.setProperties(Map("href" -> "http://www.test.com") asJava)
+	  launchTO.setActionTO(action);
+	  launchTO
+  }
 }

@@ -1,6 +1,7 @@
 package kornell.server.repository.s3
 
 import java.io.ByteArrayInputStream
+
 import java.sql.ResultSet
 import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.collection.immutable.Stream.consWrapper
@@ -31,20 +32,19 @@ class S3(regionName: String,
 
   val region = Region.getRegion(Regions.fromName(regionName))
 
-  //TODO: Option instead of null checks
-  val creds: AWSCredentials = if (accessKey != null)
+  val creds: AWSCredentials = if (isSome(accessKey))
     new BasicAWSCredentials(accessKey, secretKey)
   else if (getClass().getResourceAsStream("/AwsCredentials.properties") != null)
     new ClasspathPropertiesFileCredentialsProvider().getCredentials()
-  else null
-
-  val s3 = if (creds != null)
-    new AmazonS3Client(creds)
-  else new AmazonS3Client()
-
-  lazy val client = s3
-
-  s3.setRegion(region)
+  else null;
+ 
+  val s3 = {
+    val client = if (creds != null)
+    	new AmazonS3Client(creds)
+  	else new AmazonS3Client()
+    client.setRegion(region)
+    client
+  }
 
   lazy val first: ObjectListing = s3.listObjects(bucket, prefix)
   def next(prev: ObjectListing): ObjectListing = s3.listNextBatchOfObjects(prev)
@@ -77,7 +77,10 @@ class S3(regionName: String,
   def getObject(key: String) =
     s3.getObject(bucket, prefix + "/" + key)
 
-  def source(ditributionPrefix: String, key: String) = Source.fromURL(url(ditributionPrefix, key), "UTF-8")
+  def source(ditributionPrefix: String, key: String) = {
+    val href = url(ditributionPrefix, key)
+    Source.fromURL(href, "UTF-8")    
+  }
 
   def inputStream(ditributionPrefix: String, key: String) = {
     val keyURL = new java.net.URL(url(ditributionPrefix, key))

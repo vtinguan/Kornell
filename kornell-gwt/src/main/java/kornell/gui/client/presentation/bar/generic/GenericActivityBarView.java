@@ -86,6 +86,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private boolean shouldShowActivityBar, isEnrolled;
 	
 	public GenericActivityBarView(ClientFactory clientFactory) {
+		GWT.log("!!!!! YES I DO EXIST !!!!!");
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		clientFactory.getEventBus().addHandler(ProgressEvent.TYPE,this);
@@ -118,8 +119,15 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				}
 			}
 		}
-		shouldShowActivityBar = isEnrolled && Dean.getInstance().getCourseClassTO() != null &&
-				!CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
+		
+		shouldShowActivityBar = 
+				isEnrolled
+				&& Dean.getInstance().getCourseClassTO() != null 
+				&& !CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
+		GWT.log("SHOULD SHOW: "+shouldShowActivityBar);
+		GWT.log("IS ENROLLED: "+isEnrolled);
+		GWT.log("CCTO: "+Dean.getInstance().getCourseClassTO());
+
 		
 		showDetails = !isEnrolled;
 		

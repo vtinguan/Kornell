@@ -22,7 +22,7 @@ public class SequencerFactoryImpl implements SequencerFactory {
 	public Sequencer withPlace(ClassroomPlace place) {
 		GWT.log("Creating course sequencer");
 		Sequencer sequencer = null;
-		sequencer = new PrefetchSequencer(bus, session);
+		sequencer = new ThinSequencer(bus,session); //new PrefetchSequencer(bus, session);
 		return sequencer.withPlace(place);
 	}
 

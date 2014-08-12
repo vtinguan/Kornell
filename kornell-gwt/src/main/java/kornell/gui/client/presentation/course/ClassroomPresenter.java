@@ -17,6 +17,7 @@ import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SequencerFactory;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -64,6 +65,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
 					enrollment = enrollmentTO.getEnrollment();
 					if(enrollment.getUUID().equals(enrollmentUUID)){
+						GWT.log("SET DEAN CCTO: "+enrollment.getCourseClassUUID());
 						Dean.getInstance().setCourseClassTO(enrollment.getCourseClassUUID());
 						isEnrolled = EnrollmentState.enrolled.equals(enrollment.getState());
 						break;
