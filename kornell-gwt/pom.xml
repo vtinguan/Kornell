@@ -2,10 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+
 	<modelVersion>4.0.0</modelVersion>
+
+		<parent>
+		<groupId>kornell</groupId>
+		<artifactId>kornell</artifactId>
+		<version>${kornell-version}</version>
+	</parent>
+
 	<groupId>kornell</groupId>
 	<artifactId>kornell-gwt</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>GWT Client</name>
 
@@ -79,7 +86,7 @@
 		<dependency>
 			<groupId>kornell</groupId>
 			<artifactId>kornell-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${kornell-version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.google.gwt</groupId>
