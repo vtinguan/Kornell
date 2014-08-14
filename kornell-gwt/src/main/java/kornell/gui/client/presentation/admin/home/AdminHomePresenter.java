@@ -83,14 +83,9 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
-
-
+			
 			String selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
-			if(StringUtils.isNone(selectedCourseClass) && courseClassesTO != null && courseClassesTO.getCourseClasses().size() > 0){
-				updateCourseClass(courseClassesTO.getCourseClasses().get(0).getCourseClass().getUUID());
-			} else {
-      	updateCourseClass(selectedCourseClass);
-			}
+      updateCourseClass(selectedCourseClass);
 		} else {
 			GWT.log("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
@@ -136,7 +131,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 							return;
 						}
 					}
-					updateCourseClassUI(null);
+					if(courseClassesTO != null && courseClassesTO.getCourseClasses().size() > 0){
+						updateCourseClassUI(courseClassesTO.getCourseClasses().get(0));
+					} else {
+						updateCourseClassUI(null);
+					}
 				}
 			}
 		});
