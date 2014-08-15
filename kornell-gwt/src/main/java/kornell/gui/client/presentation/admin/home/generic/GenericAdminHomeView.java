@@ -16,6 +16,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.util.AsciiUtils;
@@ -447,6 +448,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	@Override
 	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn) {
+		
 		this.isEnabled = CourseClassState.active.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 		addEnrollmentsPanel.setVisible(isEnabled);
 		
@@ -454,40 +456,43 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
 
-		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsIn);
 		enrollments = new ArrayList<EnrollmentTO>(enrollmentsIn);
-		enrollmentsWrapper.clear();
+		if(enrollmentsCurrent == null){
 
-		VerticalPanel panel = new VerticalPanel();
-		panel.setWidth("400");
-		panel.add(table);
-
-		Image separatorBar = new Image("skins/first/icons/profile/separatorBar.png");
-		separatorBar.addStyleName("fillWidth");
-
-		final ListBox pageSizeListBox = new ListBox();
-		// pageSizeListBox.addItem("1");
-		// pageSizeListBox.addItem("10");
-		pageSizeListBox.addItem("20");
-		pageSizeListBox.addItem("50");
-		pageSizeListBox.addItem("100");
-		pageSizeListBox.setSelectedValue("" + pagination.getPageSize());
-		pageSizeListBox.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				if (pageSizeListBox.getValue().matches("[0-9]*"))
-					pagination.setPageSize(Integer.parseInt(pageSizeListBox.getValue()));
-			}
-		});
-		pageSizeListBox.addStyleName("pageSizeListBox");
-
-		enrollmentsWrapper.add(separatorBar);
-		enrollmentsWrapper.add(txtSearch);
-		enrollmentsWrapper.add(btnSearch);
-		enrollmentsWrapper.add(pageSizeListBox);
-		enrollmentsWrapper.add(panel);
-		enrollmentsWrapper.add(pagination);
-
+			enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollments);
+			enrollmentsWrapper.clear();
+	
+			VerticalPanel panel = new VerticalPanel();
+			panel.setWidth("400");
+			panel.add(table);
+	
+			Image separatorBar = new Image("skins/first/icons/profile/separatorBar.png");
+			separatorBar.addStyleName("fillWidth");
+	
+			final ListBox pageSizeListBox = new ListBox();
+			// pageSizeListBox.addItem("1");
+			// pageSizeListBox.addItem("10");
+			pageSizeListBox.addItem("20");
+			pageSizeListBox.addItem("50");
+			pageSizeListBox.addItem("100");
+			pageSizeListBox.setSelectedValue("" + pagination.getPageSize());
+			pageSizeListBox.addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					if (pageSizeListBox.getValue().matches("[0-9]*"))
+						pagination.setPageSize(Integer.parseInt(pageSizeListBox.getValue()));
+				}
+			});
+			pageSizeListBox.addStyleName("pageSizeListBox");
+	
+			enrollmentsWrapper.add(separatorBar);
+			enrollmentsWrapper.add(txtSearch);
+			enrollmentsWrapper.add(btnSearch);
+			enrollmentsWrapper.add(pageSizeListBox);
+			enrollmentsWrapper.add(panel);
+			enrollmentsWrapper.add(pagination);
+		}
+		
 		pagination.setRowData(enrollmentsCurrent);
 		pagination.displayTableData(1);
 
@@ -495,6 +500,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	private void filterEnrollments() {
+		if(StringUtils.isNone(txtSearch.getText())) return;
 		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollments);
 		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
 			if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
