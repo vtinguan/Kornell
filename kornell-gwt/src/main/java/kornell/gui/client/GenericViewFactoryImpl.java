@@ -14,6 +14,8 @@ import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.message.MessageView;
+import kornell.gui.client.presentation.message.compose.GenericMessageComposeView;
+import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.message.generic.GenericMessageView;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.profile.generic.GenericProfileView;
@@ -152,6 +154,11 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	public MessageView getMessageView() {
 		return new GenericMessageView(clientFactory.getKornellSession(), clientFactory.getEventBus());
 	}
+
+	@Override
+  public MessageComposeView getMessageComposeView() {
+		return new GenericMessageComposeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getEntityFactory());
+  }
 
 	@Override
 	public ClassroomView getClassroomView() {

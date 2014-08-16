@@ -56,7 +56,7 @@ public class KornellSession extends KornellClient {
 		}
 	}
 
-	private void setCurrentUser(UserInfoTO userInfo) {
+	public void setCurrentUser(UserInfoTO userInfo) {
 		this.currentUser = userInfo;
 	}
 

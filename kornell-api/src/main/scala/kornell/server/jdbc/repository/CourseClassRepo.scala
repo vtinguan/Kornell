@@ -66,8 +66,8 @@ class CourseClassRepo(uuid:String) {
 
   private def bindRole(role: Role, bindMode: String) =
     TOs.newRoleTO(role, {
-      if(RoleCategory.BIND_WITH_PERSON == bindMode)
-        PeopleRepo.get(role.getPersonUUID).get
+      if(RoleCategory.BIND_WITH_PERSON.equals(bindMode))
+        PeopleRepo.getByUUID(role.getPersonUUID).get
       else
         null
     })

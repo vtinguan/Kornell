@@ -8,6 +8,7 @@ import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.message.MessageView;
+import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;
 import kornell.gui.client.presentation.sandbox.SandboxView;
@@ -33,7 +34,8 @@ public interface ViewFactory {
 	WelcomeView getWelcomeView();
 	ProfileView getProfileView();
 	MessageView getMessageView();
-	
+	MessageComposeView getMessageComposeView();
+
 	
 	ClassroomView getClassroomView();
 	ClassroomPresenter getClassroomPresenter();

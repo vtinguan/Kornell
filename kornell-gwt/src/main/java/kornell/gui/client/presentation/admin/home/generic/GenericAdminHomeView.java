@@ -402,14 +402,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			}
 		}, "Ações");
 
-		// Add a selection model to handle user selection.
+		/*// Add a selection model to handle user selection.
 		final SingleSelectionModel<EnrollmentTO> selectionModel = new SingleSelectionModel<EnrollmentTO>();
 		table.setSelectionModel(selectionModel);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			public void onSelectionChange(SelectionChangeEvent event) {
 				//
 			}
-		});
+		});*/
 	}
 
 	@Override
@@ -455,11 +455,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		numEnrollments = enrollmentsIn.size();
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
-
+		
 		enrollments = new ArrayList<EnrollmentTO>(enrollmentsIn);
 		if(enrollmentsCurrent == null){
 
-			enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollments);
 			enrollmentsWrapper.clear();
 	
 			VerticalPanel panel = new VerticalPanel();
@@ -492,7 +491,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);
 		}
-		
+    enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsIn);
 		pagination.setRowData(enrollmentsCurrent);
 		pagination.displayTableData(1);
 

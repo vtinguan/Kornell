@@ -60,6 +60,10 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new EnrollmentsClient();
 	}
 
+	public MessagesClient messages() {
+		return new MessagesClient();
+	}
+
 	static final EventsClient eventsClient = new EventsClient();
 	public EventsClient events() {
 		return eventsClient;

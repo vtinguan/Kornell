@@ -13,7 +13,6 @@ import kornell.core.lom.LOMFactory;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Stalker;
@@ -34,8 +33,6 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryHandler.DefaultHistorian;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -261,5 +258,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public KornellSession getKornellSession() {
 		return session;
+	}
+
+	@Override
+	public void setKornellSession(KornellSession session) {
+		this.session = session;
 	}
 }

@@ -33,6 +33,8 @@ public interface ClientFactory {
 	void logState();
 
 	KornellSession getKornellSession();
+	void setKornellSession(KornellSession session);
+
 
 
 }

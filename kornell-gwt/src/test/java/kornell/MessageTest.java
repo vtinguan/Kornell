@@ -1,10 +1,6 @@
 package kornell;
 
-import static org.easymock.EasyMock.*;
 import junit.framework.TestCase;
-import kornell.gui.client.presentation.message.MessagePlace;
-import kornell.gui.client.presentation.message.MessagePresenter;
-import kornell.gui.client.presentation.message.MessageView;
 
 import org.junit.Test;
 
@@ -13,9 +9,10 @@ public class MessageTest extends TestCase {
 
    @Test
    public void testSendMessage() {
-/*
-  	 final MessageView view = createMock(MessageView.class);
-  	 final MessagePresenter presenter = createMock(MessagePresenter.class);
+  	 
+  	 /*
+  	 final MessageComposeView view = createMock(MessageComposeView.class);
+  	 final MessageComposePresenter presenter = createMock(MessageComposePresenter.class);
 
 	   expect(presenter.getView()).andReturn(false);
      replay(view);
