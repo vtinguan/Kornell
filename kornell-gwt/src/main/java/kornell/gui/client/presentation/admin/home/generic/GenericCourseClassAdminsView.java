@@ -174,11 +174,13 @@ public class GenericCourseClassAdminsView extends Composite {
 			@Override
 			public void ok(RolesTO to) {
 				for (RoleTO roleTO : to.getRoleTOs()) {
-					String item = roleTO.getRole().getPersonUUID();
+					String item = roleTO.getPerson().getEmail() != null ?
+							roleTO.getPerson().getEmail() :
+								roleTO.getPerson().getCPF();
 					if(roleTO.getPerson().getFullName() != null && !"".equals(roleTO.getPerson().getFullName())){
 						item += " (" +roleTO.getPerson().getFullName()+")";
 					}
-					multipleSelect.addItem(item);
+					multipleSelect.addItem(item, roleTO.getPerson().getUUID());
 				}
 			}
 		});
@@ -240,9 +242,9 @@ public class GenericCourseClassAdminsView extends Composite {
 	private void addAdmin() {
 		String item = search.getText().split(" \\(")[0];
 		if(oraclePeople != null && oraclePeople.containsKey(item)){
-			if(!formHelper.isItemInListBox(item, multipleSelect)){
+			if(!formHelper.isItemInListBox(search.getText(), multipleSelect)){
 				Person person = (Person) oraclePeople.get(item);
-				multipleSelect.addItem(item, person.getUUID());
+				multipleSelect.addItem(search.getText(), person.getUUID());
 			}
 			search.setText("");
 		}
