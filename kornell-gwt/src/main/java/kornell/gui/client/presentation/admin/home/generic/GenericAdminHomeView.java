@@ -64,6 +64,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -96,6 +97,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Integer numEnrollments = 0;
 	private GenericCourseClassReportsView reportsView;
 	private FormHelper formHelper;
+	private Timer updateTimer;
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -233,6 +235,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				buildReportsView();
 			}
 		});
+		
+		updateTimer = new Timer() {
+			@Override
+			public void run() {
+				filterEnrollments();
+			}
+		};
 
 		if (session.isInstitutionAdmin()) {
 			adminsTab = new Tab();
@@ -299,39 +308,42 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	private void initSearch() {
-		txtSearch = new TextBox();
-		txtSearch.addStyleName("txtSearch");
+		if(txtSearch == null){
+			txtSearch = new TextBox();
+			txtSearch.addStyleName("txtSearch");
+			txtSearch.addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					scheduleEnrollmentFilter();
+				}
+			});
+			txtSearch.addKeyUpHandler(new KeyUpHandler() {
+				@Override
+				public void onKeyUp(KeyUpEvent event) {
+					scheduleEnrollmentFilter();
+				}
+			});
+			txtSearch.addValueChangeHandler(new ValueChangeHandler<String>() {
+	
+				@Override
+				public void onValueChange(ValueChangeEvent<String> event) {
+					scheduleEnrollmentFilter();
+	
+				}
+			});
+			btnSearch = new Button("Pesquisar");
+			btnSearch.setSize(ButtonSize.MINI);
+			btnSearch.setIcon(IconType.SEARCH);
+			btnSearch.addStyleName("btnNotSelected btnSearch");
+			btnSearch.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					scheduleEnrollmentFilter();
+				}
+			});
+		}
+		txtSearch.setValue("");
 		txtSearch.setTitle("nome, " + (enrollWithCPF ? "CPF" : "email") + ", matrícula ou progresso");
-		txtSearch.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				filterEnrollments();
-			}
-		});
-		txtSearch.addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				filterEnrollments();
-			}
-		});
-		txtSearch.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				filterEnrollments();
-
-			}
-		});
-		btnSearch = new Button("Pesquisar");
-		btnSearch.setSize(ButtonSize.MINI);
-		btnSearch.setIcon(IconType.SEARCH);
-		btnSearch.addStyleName("btnNotSelected btnSearch");
-		btnSearch.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				filterEnrollments();
-			}
-		});
 	}
 
 	private void initTable() {
@@ -341,7 +353,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		for (int i = 0; table.getColumnCount() > 0;) {
 			table.removeColumn(i);
 		}
-
+		
 		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
 			public String getValue(EnrollmentTO enrollmentTO) {
@@ -494,12 +506,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
     enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsIn);
 		pagination.setRowData(enrollmentsCurrent);
 		pagination.displayTableData(1);
-
+		
 		filterEnrollments();
 	}
 
-	private void filterEnrollments() {
-		if(StringUtils.isNone(txtSearch.getText())) return;
+	private void scheduleEnrollmentFilter() {
+		updateTimer.cancel();
+		updateTimer.schedule(333);
+	}
+	
+	private void filterEnrollments(){
 		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollments);
 		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
 			if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
