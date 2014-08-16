@@ -176,6 +176,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					public void ok(Void to) {
 						getEnrollments(Dean.getInstance().getCourseClassTO()
 								.getCourseClass().getUUID());
+						view.setCanPerformEnrollmentAction(true);
 					}
 				});
 
@@ -480,6 +481,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			public void ok(Enrollment to) {
 				KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
 				getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+				view.setCanPerformEnrollmentAction(true);
 			}
 		});
   }

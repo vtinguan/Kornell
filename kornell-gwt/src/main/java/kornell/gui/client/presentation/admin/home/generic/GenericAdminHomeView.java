@@ -91,13 +91,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private TextBox txtSearch;
 	private Button btnSearch;
 	private List<CourseClassTO> courseClasses;
-	private Boolean enrollWithCPF = false;
+	private Boolean enrollWithCPF;
 	private boolean isEnabled;
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
 	private GenericCourseClassReportsView reportsView;
 	private FormHelper formHelper;
 	private Timer updateTimer;
+	private boolean canPerformEnrollmentAction = true;
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -558,12 +559,20 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		else
 			errorModal.hide();
 	}
+	
+	@Override
+	public void setCanPerformEnrollmentAction(boolean allow){
+		this.canPerformEnrollmentAction = allow;
+	}
 
 	private Delegate<EnrollmentTO> getStateChangeDelegate(final EnrollmentState state) {
 		return new Delegate<EnrollmentTO>() {
 			@Override
 			public void execute(EnrollmentTO object) {
-				presenter.changeEnrollmentState(object, state);
+				if(canPerformEnrollmentAction){
+					canPerformEnrollmentAction = false;
+					presenter.changeEnrollmentState(object, state);
+				}
 			}
 		};
 	}
@@ -572,7 +581,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		return new Delegate<EnrollmentTO>() {
 			@Override
 			public void execute(EnrollmentTO object) {
-				presenter.deleteEnrollment(object);
+				if(canPerformEnrollmentAction){
+					canPerformEnrollmentAction = false;
+					presenter.deleteEnrollment(object);
+				}
 			}
 		};
 	}
@@ -581,7 +593,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		return new Delegate<EnrollmentTO>() {
 			@Override
 			public void execute(EnrollmentTO object) {
-				presenter.onUserClicked(object);
+				if(canPerformEnrollmentAction){
+					presenter.onUserClicked(object);
+				}
 			}
 		};
 	}
@@ -590,7 +604,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		return new Delegate<EnrollmentTO>() {
 			@Override
 			public void execute(EnrollmentTO object) {
-				presenter.onGenerateCertificate(object);
+				if(canPerformEnrollmentAction){
+					presenter.onGenerateCertificate(object);
+				}
 			}
 		};
 	}

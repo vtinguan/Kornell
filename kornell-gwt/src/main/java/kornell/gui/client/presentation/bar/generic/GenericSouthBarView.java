@@ -29,8 +29,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	
 	private AdminBarView adminBarView;
 
-	private boolean visible = false;
-
 	private PlaceController placeCtrl;
 
 	@UiField
@@ -48,7 +46,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 			public void onPlaceChange(PlaceChangeEvent event) {
 				Place newPlace = event.getNewPlace();
 				pickSouthBar(newPlace);
-
 			}
 		});
 	}
@@ -57,13 +54,13 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 		if(newPlace instanceof AdminPlace){
 			southBar.clear();
 			//southBar.add(getAdminBarView(newPlace));
-			visible = false;
+			this.setVisible(false);
 		} else if (newPlace instanceof ClassroomPlace) {
 			southBar.clear();
 			southBar.add(getActivityBarView());
-			visible = true;
+			this.setVisible(true);
 		} else {
-			visible = false;
+			this.setVisible(false);
 		}
 	}
 
@@ -77,14 +74,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 		return adminBarView;
 	}
 
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
 	@Override
 	public void setPresenter(Presenter presenter) {
 	}
@@ -92,6 +81,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	@Override
   public void onHideSouthBar(HideSouthBarEvent event) {
 		clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
+		this.setVisible(!event.isHideSouthBar());
   }
 
 }
