@@ -1,5 +1,6 @@
 package kornell.gui.client;
 
+import kornell.core.entity.Message;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
 import kornell.gui.client.presentation.bar.MenuBarView;
@@ -157,7 +158,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
   public MessageComposeView getMessageComposeView() {
-		return new GenericMessageComposeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getEntityFactory());
+		return new GenericMessageComposeView();
   }
 
 	@Override

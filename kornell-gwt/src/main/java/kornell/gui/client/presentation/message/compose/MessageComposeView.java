@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation.message.compose;
 
-import kornell.core.entity.Message;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -13,6 +13,8 @@ public interface MessageComposeView  extends IsWidget {
 
 	void setPresenter(Presenter presenter);
 
-	Message getMessage();
+	KornellFormFieldWrapper getSubject();
+
+	KornellFormFieldWrapper getBody();
 
 }

@@ -10,14 +10,6 @@ public class RESTClient {
 	
 	private String apiURL = "/api";
 	
-	public String getApiUrl() {		
-		return apiURL;
-	}
-
-	public void setApiUrl(String apiURL) {		
-		this.apiURL = apiURL;
-	}
-	
 	protected ExceptionalRequestBuilder GET(String... path) {
 		String url = composeURL(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(

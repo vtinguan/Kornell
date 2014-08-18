@@ -1,6 +1,5 @@
 package kornell.core.entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public interface Message extends Entity {
