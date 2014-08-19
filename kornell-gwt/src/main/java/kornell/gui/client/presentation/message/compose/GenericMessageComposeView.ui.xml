@@ -2,8 +2,8 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
 	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
 	xmlns:knl="urn:import:kornell.gui.client.util.view.formfield">
-  <g:FlowPanel addStyleNames="xx">
-    <b:Form ui:field="form" addStyleNames="profileForm shy">
+  <g:FlowPanel ui:field="composeMessagePopup">
+    <b:Form ui:field="form" addStyleNames="profileForm">
       <g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel">
         <g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
         <g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>
@@ -11,8 +11,8 @@
       <g:FlowPanel ui:field="fieldsPanel" addStyleNames="fieldsWrapper">
       </g:FlowPanel>
       <g:FlowPanel addStyleNames="standardButtonBar">
-        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard" />
-        <g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard" />
+        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard">Enviar</g:Button>
+        <g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard">Cancelar</g:Button>
       </g:FlowPanel>
     </b:Form>
   </g:FlowPanel>

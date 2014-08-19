@@ -12,6 +12,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.Kornell;
+import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
@@ -324,6 +325,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		clientFactory.getEventBus().fireEvent(new LogoutEvent());
 	}
 
+	/*@UiHandler("btnHelp")
+	void handleHelp(ClickEvent e) {
+		bus.fireEvent(new ComposeMessageEvent(null));
+	}*/
+	
 	@Override
 	public void setPresenter(Presenter presenter) {
 	}

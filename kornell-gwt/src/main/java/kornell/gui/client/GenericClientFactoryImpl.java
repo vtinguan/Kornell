@@ -15,10 +15,12 @@ import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
@@ -184,6 +186,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void initPersonnel() {
 		new Captain(bus, session, placeCtrl);
 		new Stalker(bus, session);
+		new MrPostman(new MessageComposePresenter(session, viewFactory, entityFactory),  bus);
 	}
 
 	private void initSCORM12() {

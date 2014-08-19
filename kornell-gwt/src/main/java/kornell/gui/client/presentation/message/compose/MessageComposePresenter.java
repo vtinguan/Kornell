@@ -8,6 +8,7 @@ import kornell.api.client.MessagesClient;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Message;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.presentation.util.KornellNotification;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -17,27 +18,35 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 	private KornellSession session;
 	private MessagesClient messagesClient;
 	private EntityFactory entityFactory;
+	private ViewFactory viewFactory;
 	
 	private Message message;
 
-	public MessageComposePresenter(KornellSession session, ViewFactory viewFactory, MessagesClient messagesClient, EntityFactory entityFactory) {
-		view = viewFactory.getMessageComposeView();
+	public MessageComposePresenter(KornellSession session, ViewFactory viewFactory, EntityFactory entityFactory) {
 		this.entityFactory = entityFactory;
 		this.session = session;
-		this.messagesClient = messagesClient;
+		this.messagesClient = session.messages();
+		this.viewFactory = viewFactory;
 		
-		Message message = this.entityFactory.newMessage().as();
-		message.setSubject("");
-		message.setBody("");
-		message.setParentMessageUUID(null);
 		
-		setMessage(message);
 	}
 
-	private void setMessage(Message message) {
+	@Override
+	public void init(Message message) {
+		if(view == null){
+			view = viewFactory.getMessageComposeView();
+			view.setPresenter(this);
+		}
+		
+		if(message == null){
+			message = this.entityFactory.newMessage().as();
+			message.setSubject("");
+			message.setBody("");
+			message.setParentMessageUUID(null);
+		}
+		
 		this.message = message;
-		//view.setBody(message.getBody());
-		//view.setSubject(message.getSubject());
+		view.show(message);
 	}
 
 	private Message updateMessageFromUI() {
@@ -56,13 +65,19 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 				@Override
 				public void ok(Message message) {
 					KornellNotification.show("Mensagem enviada com sucesso!");
+					MrPostman.hide();
 				}
 			});
 		}
 	}
 
+	@Override
+  public void cancelButtonClicked() {
+		MrPostman.hide();
+  }
+
 	private boolean validateMessage() {
-	  return false;
+	  return true;
   }
 
 	@Override

@@ -10,11 +10,13 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.util.view.formfield.CheckBoxFormField;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PasswordTextBoxFormField;
+import kornell.gui.client.util.view.formfield.TextAreaFormField;
 import kornell.gui.client.util.view.formfield.TextBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
+import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -405,6 +407,13 @@ public class FormHelper {
 	
 	public TextBoxFormField createTextBoxFormField(String text){
 		return createTextBoxFormField(text, null);
+	}
+	public TextAreaFormField createTextAreaFormField(String text){
+		TextArea fieldTextArea = new TextArea();
+		fieldTextArea.addStyleName("field");
+		fieldTextArea.addStyleName("textField");
+		fieldTextArea.setValue(text);
+		return new TextAreaFormField(fieldTextArea);
 	}
 	
 	public PasswordTextBoxFormField createPasswordTextBoxFormField(String text){
