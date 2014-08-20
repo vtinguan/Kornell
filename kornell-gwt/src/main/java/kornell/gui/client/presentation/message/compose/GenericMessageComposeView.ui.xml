@@ -3,7 +3,7 @@
 	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
 	xmlns:knl="urn:import:kornell.gui.client.util.view.formfield">
   <g:FlowPanel ui:field="composeMessagePopup">
-    <b:Form ui:field="form" addStyleNames="profileForm">
+    <b:Form ui:field="form" addStyleNames="messagesPanel">
       <g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel">
         <g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
         <g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>

@@ -28,6 +28,8 @@
 .modal .standardButtonBar .btnNotSelected{margin:0;margin-left:20px;}
 .modal h3{color:#bec1c3;font-size:20px;}
 .modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}
+.titlePanel{height:30px;padding-top:20px;margin-bottom:30px;}.titlePanel .imgTitle{float:left;padding-left:20px;padding-right:20px;}
+.titlePanel .lblTitle{font-size:17px;color:#d9dadb;float:left;}
 .pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
 .pagination ul>li:first-child>a{border-left:1px solid #505864 !important;}
 .pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}

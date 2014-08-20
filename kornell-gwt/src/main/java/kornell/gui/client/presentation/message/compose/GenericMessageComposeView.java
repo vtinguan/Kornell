@@ -15,6 +15,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -31,6 +32,7 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	private List<KornellFormFieldWrapper> fields;
 	private boolean initialized;
 	
+	@UiField Label lblTitle;
   @UiField FlowPanel fieldsPanel;
   @UiField Button btnOK;
   @UiField Button btnCancel;
@@ -46,6 +48,8 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	}
  
   private void initialize(Message message) {
+  	lblTitle.setText("Escrever Mensagem");
+  	
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		fieldsPanel.clear();
 		

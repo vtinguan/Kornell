@@ -133,7 +133,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 						}
 					}
 				});
-		initHelp();
+		//initHelp();
 	}
 
 	private void initHelp() {
@@ -326,10 +326,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		clientFactory.getEventBus().fireEvent(new LogoutEvent());
 	}
 
-	/*@UiHandler("btnHelp")
+	@UiHandler("btnHelp")
 	void handleHelp(ClickEvent e) {
 		bus.fireEvent(new ComposeMessageEvent(null));
-	}*/
+	}
 	
 	@Override
 	public void setPresenter(Presenter presenter) {

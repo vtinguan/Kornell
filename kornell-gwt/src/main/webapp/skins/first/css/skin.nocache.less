@@ -47,8 +47,44 @@ body {
 }
 
 
-
-
+.messagesPopup{
+	right: 0 !important;
+	left: initial !important;
+	.messagesPanel{
+		width: 720px;
+		margin: 0 auto;
+		border-radius: 0px 0px 0px 15px;
+		background-color: @modalBackgroundColor;
+		.titlePanel{
+			.lblTitle{
+				color: @textHighlightColor;
+				font-size: 20px;
+				width: 100%;
+				text-align: center;
+			}
+		}
+		.fieldPanelWrapper{
+			height: auto;
+			width: 100%;
+			margin-bottom: 15px;
+			.labelPanel{
+				width: 150px;
+				.lblLabel{
+					line-height: 20px;
+				}
+			}
+			.textField{
+				width: 480px;
+			}
+			.gwt-TextArea{
+				height: 180px;
+			}
+		}
+		.standardButtonBar{
+			padding-top: 20px;
+		}
+	}
+}
 
 
 .deanHome{
@@ -134,6 +170,7 @@ body {
 		}
 		.btn{
 			margin-top: 15px !important;
+			display: inline-block;
 		}
 	}
 	.enrollmentsCellTable{
@@ -312,7 +349,7 @@ body {
 				padding-right: @detailsPanelMargin;
 			}
 			.lblName{
-				color: lighten(@niceTextColor, 20%);
+				.lightenOrDarkenColor(@niceTextColor, 20%);
 				padding-left: @detailsPanelMargin;
 				line-height: 15px;
 				padding-top: @detailsPanelMargin * 2 / 3;

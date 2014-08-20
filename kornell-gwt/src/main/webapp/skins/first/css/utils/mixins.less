@@ -39,4 +39,9 @@
   	background-color: lighten(@color, @percent);
 }
 
-
+.lightenOrDarkenColor (@color, @percent) when (lightness(@color) >= 50%) {
+  	color: darken(@color, @percent);
+}
+.lightenOrDarkenColor (@color, @percent) when (lightness(@color) < 50%) {
+  	color: lighten(@color, @percent);
+}
