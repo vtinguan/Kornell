@@ -38,8 +38,5 @@
 .changeBackgroundColorOnHover (@color, @percent) when (lightness(@color) < 50%) {
   	background-color: lighten(@color, @percent);
 }
-.backgroundImage (@imageName) { 
-   background: url('@{imagesPath}@{imageName}') no-repeat; 
-}
 
 

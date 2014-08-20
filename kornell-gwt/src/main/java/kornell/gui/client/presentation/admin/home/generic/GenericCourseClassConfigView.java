@@ -83,9 +83,9 @@ public class GenericCourseClassConfigView extends Composite {
 	@UiField
 	Label confirmText;
 	@UiField
-	com.github.gwtbootstrap.client.ui.Button btnModalOK;
+	Button btnModalOK;
 	@UiField
-	com.github.gwtbootstrap.client.ui.Button btnModalCancel;
+	Button btnModalCancel;
 
 	private UserInfoTO user;
 	private CourseClassTO courseClassTO;

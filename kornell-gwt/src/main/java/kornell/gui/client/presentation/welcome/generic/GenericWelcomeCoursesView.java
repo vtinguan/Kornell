@@ -43,7 +43,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	@UiField
-	FlowPanel coursesPanel;
+	FlowPanel coursesWrapper;
 	@UiField
 	FlowPanel pnlCourses;
 	@UiField
@@ -76,7 +76,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		this.placeCtrl = placeCtrl;
 		this.toFactory = toFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		coursesPanel.setVisible(false);
+		coursesWrapper.setVisible(false);
 		btnCoursesAll.setText(constants.allClasses());
 		btnCoursesInProgress.setText(constants.inProgress());
 		btnCoursesToStart.setText(constants.toStart());
@@ -105,10 +105,10 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		pnlCourses.clear();
 		final int classesCount = tos.getCourseClasses().size();
 		if(classesCount == 0){
-			coursesPanel.setVisible(false);
+			coursesWrapper.setVisible(false);
 			KornellNotification.show("Você não está matriculado em uma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.INFO, 8000);
 		} else {
-			coursesPanel.setVisible(true);
+			coursesWrapper.setVisible(true);
 		}
 		
 		prepareButtons(classesCount);

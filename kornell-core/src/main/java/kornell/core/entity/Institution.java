@@ -23,4 +23,7 @@ public interface Institution extends Named {
 	
 	Date getActivatedAt();
 	void setActivatedAt(Date activatedAt);
+	
+	String getSkin();
+	void setSkin(String skin);
 }

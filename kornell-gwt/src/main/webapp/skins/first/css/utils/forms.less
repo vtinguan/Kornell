@@ -71,6 +71,8 @@
 }
 .btnBorder{
 	border-left: 1px solid @buttonBorderLeftColor !important;
+}
+.last .btnPanel{
 	border-right: 1px solid @buttonBorderRightColor !important;
 }
 
@@ -131,54 +133,49 @@
 	}
 }
 @media screen and (max-width: @wrapperWidth) {
-	.profileFields{
-		@profileWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
-		@profilePadding: 10px;
-		width: @profileWidth;
-		.fieldPanelWrapper{
-				width: @wrapperWidthUnder990;
-				height: auto;
-			.labelPanelImg{
-				height: auto;
+	.fieldPanelWrapper{
+			width: @wrapperWidthUnder990;
+			height: auto;
+		.labelPanelImg{
+			height: auto;
+		}
+		.labelPanel{
+			width: auto;
+			float: none;
+			text-align: left;
+			.lblLabelImg{
+				float: left;
+				padding-right: 40px;
+				padding-left: 15px;
+				text-decoration: underline;
 			}
-			.labelPanel{
-				width: auto;
+			.lblLabel{
+				float: none;
+				padding-left: 15px;
+				text-decoration: underline;
+			}
+			.lblExtraInfo{
 				float: none;
 				text-align: left;
-				.lblLabelImg{
-					float: left;
-					padding-right: 40px;
-					padding-left: 15px;
-					text-decoration: underline;
-				}
-				.lblLabel{
-					float: none;
-					padding-left: 15px;
-					text-decoration: underline;
-				}
-				.lblExtraInfo{
-					float: none;
-					text-align: left;
-					padding-left: 20px;
-				}
+				padding-left: 20px;
 			}
-			.labelPanelImg{
-				float: left;
-			}
-			.lblValue{
-				width: auto;
-				float: none;
-				padding-left: 50px;
-			}
-			.lblValueAdd{
-				width: auto;
-				float: none;
-				padding-left: 50px;
-			}
-			.publicPanel{
-				float: none;
-				padding-left: 50px;
-			}
+		}
+		.labelPanelImg{
+			float: left;
+		}
+		.lblValue{
+			width: auto;
+			float: none;
+			padding-left: 50px;
+		}
+		.lblValueAdd{
+			width: auto;
+			float: none;
+			padding-left: 50px;
+		}
+		.publicPanel{
+			float: none;
+			padding-left: 50px;
 		}
 	}
 }
@@ -217,14 +214,66 @@
 	}
 }
 
+.modal-backdrop, .modal-backdrop.fade.in {
+	opacity: 0.5 !important;
+	filter: alpha(opacity=50) !important;
+}
 .modal{
+	width: 480px !important;
+	background: @modalBackgroundColor !important;
 	.standardButtonBar{
-		width: 280px;
+		width: 220px;
+		margin-top: 25px;
 		.btnAction{
 			margin: 0;
 		}
 		.btnNotSelected{
+			margin: 0;
 			margin-left: 20px;
+		}
+	}
+	h3{
+		color: @niceTextColor;
+		font-size: 20px;
+	}
+	textarea{
+		width: 434px;
+		height: 144px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+}
+
+.pagination ul>li>a{
+	background-color: transparent !important;
+	border: 1px solid @buttonBorderLeftColor !important;
+}
+.pagination ul>.active>a{
+	background-color: transparent !important;
+	border: 1px solid @buttonBorderLeftColor !important;
+}
+.nav-tabs{
+	font-size: 15px;
+	font-weight: bold;
+	margin-bottom: 30px !important;
+}
+
+.dropdown-menu .active>a, 
+.dropdown-menu .active>a:hover,
+.dropdown-menu li>a:hover, 
+.dropdown-menu li>a:focus, 
+.dropdown-submenu:hover>a{
+	color: @niceTextColor;
+	background-color: @contentBoxBackgroundColor !important;
+	background-image: webkit-gradient(linear, 0 0, 0 100%, from(@contentBoxBackgroundColor), to(@contentBoxBackgroundColor)) !important;
+	background-image: linear-gradient(to bottom, @contentBoxBackgroundColor, @contentBoxBackgroundColor) !important;
+}
+
+.forgotPasswordModal {
+	.fieldPanelWrapper{
+		width: auto !important;
+		.labelPanel{
+			width: 140px !important;
 		}
 	}
 }

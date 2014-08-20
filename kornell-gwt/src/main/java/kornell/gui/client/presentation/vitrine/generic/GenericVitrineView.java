@@ -4,6 +4,7 @@ import static kornell.core.util.StringUtils.composeURL;
 
 import java.util.List;
 
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.VitrineViewType;
 
@@ -305,7 +306,9 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	@Override
 	public void setLogoURL(String assetsURL) {
-		imgLogo.setUrl(composeURL(assetsURL, "logo300x80_light.png?1"));
+		String skin = Dean.getInstance().getInstitution().getSkin();
+		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png?2";
+		imgLogo.setUrl(composeURL(assetsURL, barLogoFileName));
 	}
 
 	@Override

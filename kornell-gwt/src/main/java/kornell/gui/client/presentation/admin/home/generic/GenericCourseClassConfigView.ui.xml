@@ -19,8 +19,8 @@
       <g:FlowPanel>
         <g:Label ui:field="confirmText"></g:Label>
         <g:FlowPanel addStyleNames="standardButtonBar">
-          <b:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard" size="MINI"/>
-          <b:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard" size="MINI"/>
+          <g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
+          <g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
         </g:FlowPanel>
       </g:FlowPanel>
     </b:Modal>

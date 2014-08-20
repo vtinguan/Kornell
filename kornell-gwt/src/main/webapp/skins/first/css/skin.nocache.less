@@ -19,7 +19,8 @@
 
 body {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	.background;
+	background: @background;
+	background-size: 100% 100%;
 }
 
 .wrapper {
@@ -92,7 +93,8 @@ body {
 			float: left;
 			line-height: 45px;
 			.btnAction{
-				margin-left: 20px;
+				margin-left: 10px;
+				display: inline-block;
 			}
 			input{
 				margin-top: 10px;
@@ -204,151 +206,6 @@ body {
 		overflow: hidden;
 	}
 }
-.modal{
-	.btnNotSelected;
-	width: 480px !important;
-	h3{
-		font-size: 20px;
-	}
-	textarea{
-		width: 434px;
-		height: 144px;
-		margin-top: 10px;
-		margin-bottom: 10px;
-	}
-}
-.pagination ul>li>a{
-	background-color: transparent !important;
-	border: 1px solid @buttonBorderLeftColor !important;
-}
-.pagination ul>.active>a{
-	background-color: transparent !important;
-	border: 1px solid @buttonBorderLeftColor !important;
-}
-.deanHome .nav-tabs{
-	font-size: 15px;
-	font-weight: bold;
-	margin-bottom: 30px !important;
-}
-
-.dropdown-menu .active>a, 
-.dropdown-menu .active>a:hover,
-.dropdown-menu li>a:hover, 
-.dropdown-menu li>a:focus, 
-.dropdown-submenu:hover>a{
-	color: @niceTextColor;
-	background-color: @contentBoxBackgroundColor !important;
-	background-image: webkit-gradient(linear, 0 0, 0 100%, from(@contentBoxBackgroundColor), to(@contentBoxBackgroundColor)) !important;
-	background-image: linear-gradient(to bottom, @contentBoxBackgroundColor, @contentBoxBackgroundColor) !important;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.activityBarWrapper{
-	.gradient (@barGradientStartColor, @barGradientEndColor);
-	.noTextSelect;
-
-	.activityBar{	
-		.south;
-		.gradient (@barGradientStartColor, @barGradientEndColor);
-		.size (@wrapperWidth,@barSouthHeight);
-		margin: 0 auto;
-		.btnPanel{
-			.btnBorder;
-			.cursorPointer;
-		}
-		.activityBarButton {
-			width: 20%;
-			height: @barSouthHeight;
-			float: left;
-			line-height: @barSouthHeight;
-			text-align: center;
-			padding: 0 !important;
-			border-radius: 0px !important;
-			border: 0;
-			text-decoration: none;
-			.label{
-				background: transparent;
-				color: @niceTextColor;
-				font-size: 11px;
-				margin-left: 4px;
-			}
-			.icon{}
-		}
-		.selected{
-			@borderTopHeight: 3px;
-			border-top: @borderTopHeight solid @buttonSelectedGradientStart;
-			line-height: @barSouthHeight - @borderTopHeight;
-		}
-		.firstMonoSCO{
-			margin-left: 288px;
-		}
-		.disabled {
-			.label{
-				color: darken(@niceTextColor, 30%);
-			}
-		}
-		.btnProgress{
-			cursor: default;
-			.progressBarPanel{
-				.btnBorder;
-				height: @barSouthHeight;
-				.progress{
-					width: 150px;
-					height: 10px;
-					margin: 0 auto;
-					margin-top: 2px;
-					.bar{
-						.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
-					}
-				}
-				.pagePanel{
-					height: 10px;
-					line-height: 11px;
-					margin-top: 3px;
-					display: block; 
-					div{
-						display: inline;
-					}
-				}
-			}
-		}
-	}
-}
-@media screen and (max-width: @wrapperWidth) {
-	.activityBarWrapper{
-		.activityBar{
-			.size (@wrapperWidthUnder990,@barSouthHeight);
-			.progress{
-				width: 100px !important;
-			}
-			/*.activityBarButton {
-				.label{
-					visibility: hidden;
-					width: 0px; 
-					border: 0;
-					margin: 0;
-					padding: 0;
-				}		
-			}*/
-		}
-	}
-}
-
-
-
 
 
 
@@ -387,343 +244,122 @@ body {
 
 
 
-.pnlRight{
-	width: @wrapperWidth;
-	.btnPanel{
-		height: 30px;
-		margin-top: 9px;
-		margin-right: 22px;
-		margin-bottom: 10px;
-		.btnCourses{
-			float: right;
-			height: 24px;
-			padding-left: 24px !important;
-			padding-right: 24px !important;
-			border-left: 1px solid #505864 !important;
-			border-right: 1px solid #181c22 !important;
-		}
-		.headerText{
-			font-size: 16px;
+.reportPanel{
+	@detailsPanelMargin: 20px;
+	@reportPanelWidth: @wrapperWidth - @detailsPanelMargin;
+
+	@reportWidth: .6 * @reportPanelWidth;
+	@generateWidth: .2 * @reportPanelWidth;
+	@downloadWidth: .2 * @reportPanelWidth;
+	float: left;
+	.reportInfo{
+		width: @reportPanelWidth;
+		margin-bottom: @detailsPanelMargin;
+		.reportInfoTitle{
 			color: @textHighlightColor;
 			font-weight: bold;
-			margin-left: 10px;
-			line-height: 50px;
+			font-size: 18px;
+			line-height: 28px;
+			margin-bottom:  @detailsPanelMargin / 2;
+		}
+		.reportInfoText{
+			color: @niceTextColor;
+			padding-right: @detailsPanelMargin;
+		}
+	}
+	.reportHeaderPanel{
+		@reportHeaderPanelHeight: 24px;
+		height: @reportHeaderPanelHeight;
+		margin-bottom: 10px;
+		.btnReportHeader{
+			box-sizing: border-box;
+			border-radius: 0px !important;
+			height: @reportHeaderPanelHeight;
+			line-height: @reportHeaderPanelHeight;
+			padding-left: @detailsPanelMargin / 2 !important;
+			padding-right: @detailsPanelMargin / 2 !important;
+			.btnBorder;
 			display: block;
 			float: left;
+			&:hover{
+				text-decoration: none;
+				cursor: default;
+			}
 		}
+		.btnReport{width: @reportWidth; text-align: left;}
+		.btnGenerate{width: @generateWidth;}
+		.btnDownload{width: @downloadWidth;}
 	}
-	.pnlCoursesWrapperTitle{
-		height: 20px;
-		.imgPnlCourses{
-			margin-left: 24px;
+	.reportWrapper{
+		@reportWrapperHeight: 78px;
+		height: @reportWrapperHeight;
+		line-height: @reportWrapperHeight;
+		background-color: @contentBoxBackgroundColor;
+		margin-top: @detailsPanelMargin / 2;
+		color: @niceTextColor;
+		font-size: 13px;
+		.itemPanel{
+			box-sizing: border-box;
 			float: left;
-		}
-		.labelPnlCourses { 
-			color: @niceTextColor;
-			font-size: 15px;
-			line-height: 23px;
-			padding-left: 14px;
-			padding-bottom: 12px;
-			float: left;
-		}
-		.labelPnlCoursesHighlight { 
-			color: @highlightCoursesCountColor;
-			padding-left: 5px;
-		}
-	}
-	.pnlCourses { 
-		display: block;
-		overflow: auto;
-		width: @wrapperWidth;
-		.courseSummary {
-			.sizepx(@wrapperWidth - 50px,140);
-			background-color: @tableBackgroundColor;
-			border-radius:5px;  
-			padding: 10px;
-			margin-bottom: 10px;
-			margin-left: 10px;
-			float: left;
-			&:hover {
-				cursor: pointer;
-				background-color: @tableBackgroundHoverColor;
-			}
-			h1 {
-				margin: 0px;
-				margin-top: -3px;
-				padding: 5px 0px 5px 0px;
-				font-size: 1.1em;
-				font-weight: bold;
-				text-align: left;
-				line-height: 1.231;	
-				color: @textHighlightDiscreteColor;
-			}
-			.lblSubTitle {
-				color: @plainDiscreteTextColor;
-				font-style: italic;
-				font-size: 12px;
-				margin-top: -7px;
-				margin-bottom: -5px;
-			}
-			.details {
-				height: 100%;
-				margin-left: 150px;
-				color: @niceTextColor;
-			}
-			img.thumb {
-				.size(130px);
-				float: left;	
-				border: 1px solid @bordersColor;
-				margin: 5px;
-			}
-			.courseSummaryBar {
-				margin-top: -9px;
-				.icon {
-					float: left;
-					width: 20px;
-					height: 20px;
-				}
-				.courseStatus {
-					display: inline;
-					text-align: right;
-					font-size: 11px;
-					font-weight: bold;
-					line-height: 23px;
-					padding-left: 7px;
-					color: @niceTextColor;
-					float: left;
-				}
-				.progress{
-					width: 250px;
-					height: 10px;
-					float: left;
-					margin: 6px 3px 0px 10px;
-					background-color: @contentBoxBackgroundColor;
-					background-image: linear-gradient(to bottom, @contentBoxBackgroundColor, @contentBoxBackgroundColor);
-					.bar{
-						.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
-					}
-				}
-				.courseStatusInfo {
-					display: inline;
-					color: @textInfoColor;
-					text-align: right;
-					font-size: 11px;
-					font-weight: bold;
-					line-height: 23px;
-					padding-left: 7px;
-					float: left;
-				}
-				.courseProgressCertificate {
-					float: right; 
-				}
-				.iconCertificate {
-					float: right;
-				}
-			}
-			.ellipsis {
-				font-size: 14px;
-				overflow: hidden;
-				height: 48px;
-				line-height: 16px;
-				margin-right: 10px;
-				margin-bottom: 5px;
-				margin-top: 3px;
-			}
-			.ellipsis:before {
-				content:"";
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+			width: @reportWidth + 2px;
+			.reportIcon{
 				float: left;
-				width: 5px; 
-				height: 58px; 
+				padding-top: (@reportWrapperHeight - 18px) / 2;
+				padding-bottom: (@reportWrapperHeight - 18px) / 2;
+				padding-left: @detailsPanelMargin / 2;
+				padding-right: @detailsPanelMargin;
 			}
-			.ellipsis > *:first-child {
-				float: right;
-				width: 100%;
-				margin-left: -5px; 
-			}		
-			.ellipsis:after {
-				content: "\02026";  
-
-				box-sizing: content-box;
-				-webkit-box-sizing: content-box;
-				-moz-box-sizing: content-box;
-
-				float: right; 
-				position: relative;
-				top: -25px; 
-				left: 100%; 
-				width: 3em; 
-				margin-left: -3em;
-				padding-right: 5px;
-
-				text-align: right;
+			.lblName{
+				color: lighten(@niceTextColor, 20%);
+				padding-left: @detailsPanelMargin;
+				line-height: 15px;
+				padding-top: @detailsPanelMargin * 2 / 3;
+				padding-bottom: @detailsPanelMargin / 4;
 			}
-		}
-	}
-	
-} 
-@media screen and (max-width: @wrapperWidth) {
-	.pnlRight{
-		@wrapperWidth: @wrapperWidthUnder990;
-		width: @wrapperWidth;
-		.btnPanel{
-			width: @wrapperWidth;
-			height:	60px;
-			width: @wrapperWidth;
-		}
-		.pnlCourses { 
-			width: @wrapperWidth;
-			.courseSummary {
-				.ellipsis { 
-					margin-bottom: 0px;
+			.lblDescription{
+				color: @textInfoColor;
+				padding-left: @detailsPanelMargin;
+				font-size: 9px;
+				line-height: 11px;
+			}
+			.optionPanel{
+				padding-left: 48px;
+				padding-top: 5px;
+				img{
+					height: 18px;
+					width: 18px;
+					float: left;
+					.cursorPointer;
+				}
+				input{
+					height: 12px;
+					margin-left: 6px;
+				}
+				span{
+					font-size: 10px;
+					margin-left: 2px;
+					float: left;
+					.cursorPointer;
 				}
 			}
 		}
-		.courseSummary {
-		width: @wrapperWidth !important;
-			//width: 314px !important;
-			.description {
-				overflow: hidden;
-			}
-		}
-	}
-}
-
-
-
-.forgotPasswordModal {
-	.fieldPanelWrapper{
-		width: auto !important;
-		.labelPanel{
-			width: 140px !important;
-		}
-	}
-}
-
-
-
-
-
-
-
-
-
-
-		.reportPanel{
-			@detailsPanelMargin: 20px;
-			@reportPanelWidth: @wrapperWidth - @detailsPanelMargin;
-
-			@reportWidth: .6 * @reportPanelWidth;
-			@generateWidth: .2 * @reportPanelWidth;
-			@downloadWidth: .2 * @reportPanelWidth;
+		.lblGenerate{
+			box-sizing: border-box;
 			float: left;
-			.reportInfo{
-				width: @reportPanelWidth;
-				margin-bottom: @detailsPanelMargin;
-				.reportInfoTitle{
-					color: @textHighlightColor;
-					font-weight: bold;
-					font-size: 18px;
-					line-height: 28px;
-					margin-bottom:  @detailsPanelMargin / 2;
-				}
-				.reportInfoText{
-					color: @niceTextColor;
-					padding-right: @detailsPanelMargin;
-				}
-			}
-			.reportHeaderPanel{
-				@reportHeaderPanelHeight: 24px;
-				height: @reportHeaderPanelHeight;
-				margin-bottom: 10px;
-				.btnReportHeader{
-					box-sizing: border-box;
-					border-radius: 0px !important;
-					height: @reportHeaderPanelHeight;
-					line-height: @reportHeaderPanelHeight;
-					padding-left: @detailsPanelMargin / 2 !important;
-					padding-right: @detailsPanelMargin / 2 !important;
-					.btnBorder;
-					display: block;
-					float: left;
-					&:hover{
-						text-decoration: none;
-						cursor: default;
-					}
-				}
-				.btnReport{width: @reportWidth; text-align: left;}
-				.btnGenerate{width: @generateWidth;}
-				.btnDownload{width: @downloadWidth;}
-			}
-			.reportWrapper{
-				@reportWrapperHeight: 78px;
-				height: @reportWrapperHeight;
-				line-height: @reportWrapperHeight;
-				background-color: @contentBoxBackgroundColor;
-				margin-top: @detailsPanelMargin / 2;
-				color: @niceTextColor;
-				font-size: 13px;
-				.itemPanel{
-					box-sizing: border-box;
-					float: left;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					width: @reportWidth + 2px;
-					.reportIcon{
-						float: left;
-						padding-top: (@reportWrapperHeight - 18px) / 2;
-						padding-bottom: (@reportWrapperHeight - 18px) / 2;
-						padding-left: @detailsPanelMargin / 2;
-						padding-right: @detailsPanelMargin;
-					}
-					.lblName{
-						color: lighten(@niceTextColor, 20%);
-						padding-left: @detailsPanelMargin;
-						line-height: 15px;
-						padding-top: @detailsPanelMargin * 2 / 3;
-						padding-bottom: @detailsPanelMargin / 4;
-					}
-					.lblDescription{
-						color: @textInfoColor;
-						padding-left: @detailsPanelMargin;
-						font-size: 9px;
-						line-height: 11px;
-					}
-					.optionPanel{
-						padding-left: 48px;
-						padding-top: 5px;
-						img{
-							height: 18px;
-							width: 18px;
-							float: left;
-							.cursorPointer;
-						}
-						input{
-							height: 12px;
-							margin-left: 6px;
-						}
-						span{
-							font-size: 10px;
-							margin-left: 2px;
-							float: left;
-							.cursorPointer;
-						}
-					}
-				}
-				.lblGenerate{
-					box-sizing: border-box;
-					float: left;
-					width: @generateWidth;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-					text-align: center;
-				}
-				.lblDownload{
-					box-sizing: border-box;
-					float: left;
-					width: @downloadWidth;
-					text-align: center;
-					padding-left: @detailsPanelMargin / 2;
-					padding-right: @detailsPanelMargin / 2;
-				}
-			}
+			width: @generateWidth;
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+			text-align: center;
 		}
+		.lblDownload{
+			box-sizing: border-box;
+			float: left;
+			width: @downloadWidth;
+			text-align: center;
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+		}
+	}
+}

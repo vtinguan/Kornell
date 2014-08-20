@@ -60,7 +60,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	private static final String IMAGES_PATH = "skins/first/icons/menuBar/";
-	private String barLogoFileName = "logo250x45_light.png?1";
 
 	private boolean visible = false;
 
@@ -103,6 +102,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		if (localDean != null) {
 			Institution localInstitution = localDean.getInstitution();
 			String assetsURL = localInstitution.getAssetsURL();
+			String skin = Dean.getInstance().getInstitution().getSkin();
+			String barLogoFileName = "logo250x45" + (!"_light".equals(skin) ? "_light" : "") + ".png?1";
 			imgMenuBar.setUrl(StringUtils
 					.composeURL(assetsURL, barLogoFileName));
 		}

@@ -41,7 +41,8 @@ package object repository {
         rs.getString("assetsURL"),
         rs.getString("baseURL"),
         rs.getBoolean("demandsPersonContactDetails"),
-        rs.getDate("activatedAt"))   
+        rs.getDate("activatedAt"),
+        rs.getString("skin"))   
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
