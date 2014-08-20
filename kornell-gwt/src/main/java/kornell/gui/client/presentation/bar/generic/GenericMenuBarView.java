@@ -89,6 +89,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	Image imgMenuBar;
 	private KornellSession session;
 	private EventBus bus;
+	private boolean hasEmail;
 
 	public GenericMenuBarView(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -133,15 +134,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 						}
 					}
 				});
-		//initHelp();
+		initHelp();
 	}
 
 	private void initHelp() {
 		btnHelp.setVisible(false);
-		Element elHelp = btnHelp.getElement();
-		elHelp.setId("btnHelp");
-		elHelp.setAttribute("data-uv-trigger", "contact");
-		scheduleInitUserVoice();
 		
 		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override
@@ -163,13 +160,19 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	void identifyUserVoice(UserInfoTO user) {
 		Person person = user.getPerson();
-		boolean hasEmail = false;
+		hasEmail = false;
 		if (person != null) {
 			final String email = person.getEmail();
 			final String personUUID = person.getUUID();
 			final String name = person.getFullName();
 			if (isSome(email)) {
 				hasEmail = true;
+				
+				Element elHelp = btnHelp.getElement();
+				elHelp.setId("btnHelp");
+				elHelp.setAttribute("data-uv-trigger", "contact");
+				scheduleInitUserVoice();
+				
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					@Override
 					public void execute() {
@@ -179,7 +182,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 			}			
 
 		}
-		btnHelp.setVisible(hasEmail);
+		btnHelp.setVisible(true);
 	}
 
 	static native void identifyUserVoiceNative(String personUUID, String name,
@@ -328,7 +331,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@UiHandler("btnHelp")
 	void handleHelp(ClickEvent e) {
-		bus.fireEvent(new ComposeMessageEvent(null));
+		if(!hasEmail)
+			bus.fireEvent(new ComposeMessageEvent(null));
 	}
 	
 	@Override
