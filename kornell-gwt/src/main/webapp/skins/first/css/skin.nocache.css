@@ -54,8 +54,9 @@
 .modal .standardButtonBar .btnNotSelected{margin:0;margin-left:20px;}
 .modal h3{color:#bec1c3;font-size:20px;}
 .modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}
-.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;}
-.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;}
+.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
+.pagination ul>li:first-child>a{border-left:1px solid #505864 !important;}
+.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
 .nav-tabs{font-size:15px;font-weight:bold;margin-bottom:30px !important;}
 .dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
 .forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
@@ -116,8 +117,9 @@
 .modal .standardButtonBar .btnNotSelected{margin:0;margin-left:20px;}
 .modal h3{color:#bec1c3;font-size:20px;}
 .modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}
-.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;}
-.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;}
+.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
+.pagination ul>li:first-child>a{border-left:1px solid #505864 !important;}
+.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
 .nav-tabs{font-size:15px;font-weight:bold;margin-bottom:30px !important;}
 .dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
 .forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
@@ -162,8 +164,9 @@
 .modal .standardButtonBar .btnNotSelected{margin:0;margin-left:20px;}
 .modal h3{color:#bec1c3;font-size:20px;}
 .modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}
-.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;}
-.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;}
+.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
+.pagination ul>li:first-child>a{border-left:1px solid #505864 !important;}
+.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
 .nav-tabs{font-size:15px;font-weight:bold;margin-bottom:30px !important;}
 .dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
 .forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
@@ -230,8 +233,9 @@
 .modal .standardButtonBar .btnNotSelected{margin:0;margin-left:20px;}
 .modal h3{color:#bec1c3;font-size:20px;}
 .modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}
-.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;}
-.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;}
+.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
+.pagination ul>li:first-child>a{border-left:1px solid #505864 !important;}
+.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
 .nav-tabs{font-size:15px;font-weight:bold;margin-bottom:30px !important;}
 .dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
 .forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
@@ -285,8 +289,9 @@
 .modal .standardButtonBar .btnNotSelected{margin:0;margin-left:20px;}
 .modal h3{color:#bec1c3;font-size:20px;}
 .modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}
-.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;}
-.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;}
+.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
+.pagination ul>li:first-child>a{border-left:1px solid #505864 !important;}
+.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
 .nav-tabs{font-size:15px;font-weight:bold;margin-bottom:30px !important;}
 .dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
 .forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
