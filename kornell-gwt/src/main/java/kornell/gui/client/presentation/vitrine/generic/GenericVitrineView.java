@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Timer;
 
 public class GenericVitrineView extends Composite implements VitrineView {
 	interface MyUiBinder extends UiBinder<Widget, GenericVitrineView> {
@@ -37,6 +38,9 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private VitrineView.Presenter presenter;
 	private VitrineViewType currentViewType = VitrineViewType.login;
 
+	@UiField
+	FlowPanel vitrineWrapper;
+	
 	@UiField
 	Image imgLogo;
 	
@@ -127,6 +131,15 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");
+		vitrineWrapper.setVisible(false);
+		
+		//wait a sec for the theme css
+		Timer mdaTimer = new Timer() {
+			public void run() {
+				vitrineWrapper.setVisible(true);
+			}
+		};
+		mdaTimer.schedule(2 * 1000);
 	}
 
 	@Override
