@@ -112,8 +112,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				} else {
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
-						session.courseClasses().getCourseClassesTOByInstitution(
-								institution.getUUID(), courseClassesCallback);
+						session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 					} else {
 						startAnonymous();
 					}

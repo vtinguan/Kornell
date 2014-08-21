@@ -28,6 +28,7 @@ import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -290,44 +291,8 @@ public class GenericCourseClassConfigView extends Composite {
 		formHelper.clearErrors(fields);
 		if (isInstitutionAdmin && validateFields()) {
 			LoadingPopup.show();
-			if(isCreationMode){
-				CourseClass courseClass = getCourseClassInfoFromForm();
-				courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
-				session.courseClasses().create(courseClass, new Callback<CourseClass>() {
-					@Override
-					public void ok(CourseClass courseClass) {
-							LoadingPopup.hide();
-							KornellNotification.show("Turma criada com sucesso!");
-							CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
-							if(courseClassTO2 != null)
-								courseClassTO2.setCourseClass(courseClass);
-							courseClassTO = courseClassTO2;
-							presenter.updateCourseClass(courseClass.getUUID());
-					}
-					
-					@Override
-					public void unauthorized(String errorMessage){
-						LoadingPopup.hide();
-						name.setError("Já existe uma turma com esse nome.");
-					}
-				});
-			} else {
-				session.courseClass(courseClassTO.getCourseClass().getUUID()).update(getCourseClassInfoFromForm(), new Callback<CourseClass>() {
-					@Override
-					public void ok(CourseClass courseClass) {
-							LoadingPopup.hide();
-							KornellNotification.show("Alterações salvas com sucesso!");
-							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
-							courseClassTO = Dean.getInstance().getCourseClassTO();
-							presenter.updateCourseClass(courseClass.getUUID());
-					}					
-					@Override 
-					public void unauthorized(String errorMessage){
-						LoadingPopup.hide();
-						name.setError("Já existe uma turma com esse nome.");
-					}
-				});
-			}
+			CourseClass courseClass = getCourseClassInfoFromForm();
+			presenter.upsertCourseClass(courseClass);
 
 		}
 	}

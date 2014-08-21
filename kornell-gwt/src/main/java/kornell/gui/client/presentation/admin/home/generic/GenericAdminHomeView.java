@@ -86,7 +86,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private AdminHomeView.Presenter presenter;
 	final CellTable<EnrollmentTO> table;
 	private List<EnrollmentTO> enrollmentsCurrent;
-	private List<EnrollmentTO> enrollments;
+	private List<EnrollmentTO> enrollmentsOriginal;
 	private KornellPagination pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
@@ -218,7 +218,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		enrollmentsTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				showEnrollmentsPanel(false);
 				presenter.updateCourseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 			}
 		});
@@ -460,8 +459,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 
 	@Override
-	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn) {
+	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, boolean refresh) {
 		
+		enrollmentsOriginal = enrollmentsIn;
 		this.isEnabled = CourseClassState.active.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 		addEnrollmentsPanel.setVisible(isEnabled);
 		
@@ -469,7 +469,9 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
 		
-		enrollments = new ArrayList<EnrollmentTO>(enrollmentsIn);
+		if(!refresh)
+			return;
+		
 		if(enrollmentsCurrent == null){
 
 			enrollmentsWrapper.clear();
@@ -517,7 +519,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	}
 	
 	private void filterEnrollments(){
-		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollments);
+		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsOriginal);
 		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
 			if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
 				enrollmentsCurrent.remove(i);

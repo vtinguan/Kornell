@@ -37,6 +37,7 @@ import kornell.gui.client.util.orientation.OrientationResizeHandler;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -67,6 +68,16 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public void initGUI() {
 		final RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
+		rootLayoutPanel.setVisible(false);
+		
+		//wait 1.5 secs for the theme css
+		Timer mdaTimer = new Timer() {
+			public void run() {
+				rootLayoutPanel.setVisible(true);
+			}
+		};
+		mdaTimer.schedule((int) (1 * 1000));
+		
 		dockLayoutPanel.addNorth(getMenuBarView(), 45);
 		dockLayoutPanel.addSouth(getSouthBarView(), 35);
 
