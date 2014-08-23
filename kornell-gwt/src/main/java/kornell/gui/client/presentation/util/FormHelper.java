@@ -435,6 +435,13 @@ public class FormHelper {
 			field.clearError();
 		}
 	}
+
+	public boolean checkErrors(List<KornellFormFieldWrapper> fields) {
+		for (KornellFormFieldWrapper field : fields)
+			if (!"".equals(field.getError()))
+				return true;
+		return false;
+	}
 	
 	public static String stripCPF(String cpf){
 		if(cpf == null) return null;

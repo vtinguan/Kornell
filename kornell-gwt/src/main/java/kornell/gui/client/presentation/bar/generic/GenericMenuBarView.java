@@ -134,7 +134,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 						}
 					}
 				});
-		initHelp();
+		//initHelp();
 	}
 
 	private void initHelp() {
@@ -331,7 +331,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@UiHandler("btnHelp")
 	void handleHelp(ClickEvent e) {
-		if(!hasEmail)
 			bus.fireEvent(new ComposeMessageEvent(null));
 	}
 	

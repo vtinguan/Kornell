@@ -282,4 +282,20 @@ object Entities {
     repo
   }
 
+  def newMessagePerson(uuid: String = null,
+    archivedAt: Date = null,
+    institutionUUID: String = null,
+    messageUUID: String = null,
+    readAt: Date = null,
+    recipientUUID: String = null) = {
+    val messagePerson = factory.newMessagePerson.as
+    messagePerson.setUUID(uuid)
+    messagePerson.setArchivedAt(archivedAt)
+    messagePerson.setInstitutionUUID(institutionUUID)
+    messagePerson.setMessageUUID(messageUUID)
+    messagePerson.setReadAt(readAt)
+    messagePerson.setRecipientUUID(recipientUUID)
+    messagePerson
+  }
+
 }

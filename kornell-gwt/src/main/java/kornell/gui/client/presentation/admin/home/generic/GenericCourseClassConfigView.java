@@ -58,7 +58,7 @@ public class GenericCourseClassConfigView extends Composite {
 
 	private KornellSession session;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private FormHelper formHelper;
+	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private boolean isCreationMode, canDelete, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
@@ -104,7 +104,6 @@ public class GenericCourseClassConfigView extends Composite {
 		this.user = session.getCurrentUser();
 		this.isCreationMode = (courseClassTO == null);
 		this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
-		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
@@ -283,7 +282,7 @@ public class GenericCourseClassConfigView extends Composite {
 			maxEnrollments.setError("Menor que o número atual de matrículas.");
 		}
 
-		return !checkErrors();
+		return !formHelper.checkErrors(fields);
 	}
 
 	@UiHandler("btnOK")
@@ -360,13 +359,6 @@ public class GenericCourseClassConfigView extends Composite {
 	@UiHandler("btnModalCancel")
 	void onModalCancelButtonClicked(ClickEvent e) {
 		confirmModal.hide();
-	}
-
-	private boolean checkErrors() {
-		for (KornellFormFieldWrapper field : fields)
-			if (!"".equals(field.getError()))
-				return true;
-		return false;
 	}
 
 }

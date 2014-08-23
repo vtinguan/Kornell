@@ -19,6 +19,12 @@ public interface MessageComposeView  extends IsWidget {
 
 	KornellFormFieldWrapper getBody();
 
+	KornellFormFieldWrapper getRecipient();
+
 	void show(Message message);
+
+	boolean checkErrors();
+
+	void clearErrors();
 
 }

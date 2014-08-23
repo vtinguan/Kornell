@@ -38,7 +38,7 @@ public class MrPostman implements ComposeMessageEventHandler {
 			if(presenter != null){
 				panel.add(presenter.asWidget());
 			}
-			popup.setGlassEnabled(true);
+			popup.setGlassEnabled(false);
 			popup.add(panel);
 			popup.center();
 			popup.setPopupPosition(popup.getAbsoluteLeft(), Positioning.NORTH_BAR);

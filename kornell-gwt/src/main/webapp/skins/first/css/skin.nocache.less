@@ -52,9 +52,13 @@ body {
 	left: initial !important;
 	.messagesPanel{
 		width: 720px;
+		height: 475px;
 		margin: 0 auto;
 		border-radius: 0px 0px 0px 15px;
 		background-color: @modalBackgroundColor;
+		border: 2px inset @buttonActionGradientStart;
+		border-top: 0;
+		border-right: 0;
 		.titlePanel{
 			.lblTitle{
 				color: @textHighlightColor;
@@ -75,6 +79,9 @@ body {
 			}
 			.textField{
 				width: 480px;
+			}
+			.selectField{
+				width: 493px;
 			}
 			.gwt-TextArea{
 				height: 180px;

@@ -25,7 +25,6 @@ import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
