@@ -32,13 +32,14 @@ object MessagesRepo {
     if (messagePerson.getUUID == null)
       messagePerson.setUUID(UUID.random)
     sql""" 
-    	insert into MessagePerson(uuid, messageUUID, recipientUUID, institutionUUID, readAt, archivedAt)
+    	insert into MessagePerson(uuid, messageUUID, recipientUUID, institutionUUID, readAt, archivedAt, messageType)
     	values(${messagePerson.getUUID},
 		    ${messagePerson.getMessageUUID},
 		    ${messagePerson.getRecipientUUID},
 		    ${messagePerson.getInstitutionUUID},
 		    ${messagePerson.getReadAt},
-		    ${messagePerson.getArchivedAt}) 	
+		    ${messagePerson.getArchivedAt},
+		    ${messagePerson.getMessageType.toString}) 	
     """.executeUpdate
     messagePerson
   }

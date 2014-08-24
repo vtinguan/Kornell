@@ -11,6 +11,9 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
+import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
+import kornell.gui.client.presentation.message.inbox.MessageInboxPresenter;
+import kornell.gui.client.presentation.message.inbox.MessageInboxView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
@@ -25,12 +28,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericCourseClassReportsView extends Composite {
-	interface MyUiBinder extends UiBinder<Widget, GenericCourseClassReportsView> {
+public class GenericCourseClassMessagesView extends Composite {
+	interface MyUiBinder extends UiBinder<Widget, GenericCourseClassMessagesView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
 
 	private EventBus bus;
 	private KornellSession session;
@@ -42,7 +44,7 @@ public class GenericCourseClassReportsView extends Composite {
 	private Presenter presenter;
 
 	@UiField
-	FlowPanel reportsPanel;
+	FlowPanel messagesPanel;
 
 	private UserInfoTO user;
 	private CourseClassTO courseClassTO;
@@ -50,7 +52,7 @@ public class GenericCourseClassReportsView extends Composite {
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	
-	public GenericCourseClassReportsView(final KornellSession session, EventBus bus,
+	public GenericCourseClassMessagesView(final KornellSession session, EventBus bus,
 			Presenter presenter, CourseClassTO courseClassTO) {
 		this.session = session;
 		this.bus = bus;
@@ -63,14 +65,14 @@ public class GenericCourseClassReportsView extends Composite {
 	}
 
 	public void initData() {
-		reportsPanel.setVisible(false);
+		messagesPanel.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		courseClass =  courseClassTO.getCourseClass();
 		isInstitutionAdmin = session.isInstitutionAdmin();
 
 
-		reportsPanel.add(getReportPanel());
-		reportsPanel.setVisible(true);
+		messagesPanel.add(getReportPanel());
+		messagesPanel.setVisible(true);
 
 	}
 
@@ -78,56 +80,34 @@ public class GenericCourseClassReportsView extends Composite {
 		FlowPanel reportPanel = new FlowPanel();
 		reportPanel.addStyleName("reportPanel");
 		// TODO: i18n
-		reportPanel.add(getReportInfo());
-		reportPanel.add(getReportTableHeader());
-		reportPanel.add(getReportTableContent());
+		reportPanel.add(getMessagesInfo());
+		reportPanel.add(getMessagesContent());
 
 		return reportPanel;
 	}
 
-	private FlowPanel getReportInfo() {
-		FlowPanel reportInfo = new FlowPanel();
-		reportInfo.addStyleName("titlePanel");
+	private FlowPanel getMessagesInfo() {
+		FlowPanel messagesInfo = new FlowPanel();
+		messagesInfo.addStyleName("titlePanel");
 
-		Label infoTitle = new Label("Relatórios");
+		Label infoTitle = new Label("Mensagens");
 		infoTitle.addStyleName("title");
-		reportInfo.add(infoTitle);
+		messagesInfo.add(infoTitle);
 
-		Label infoText = new Label("Geração dos relatórios administrativos.");
+		Label infoText = new Label("Mensagens entre os alunos e o responsável pela turma.");
 		infoText.addStyleName("subTitle");
-		reportInfo.add(infoText);
+		messagesInfo.add(infoText);
 
-		return reportInfo;
+		return messagesInfo;
 	}
 
-	private FlowPanel getReportTableContent() {
+	private FlowPanel getMessagesContent() {
 		FlowPanel reportContentPanel = new FlowPanel();
-		reportContentPanel.addStyleName("reportContentPanel");
-		reportContentPanel.add(new GenericReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericReportItemView.CERTIFICATE));
-		reportContentPanel.add(new GenericReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericReportItemView.COURSE_CLASS_INFO)); 
-
-		return reportContentPanel;
-	}
-
-	private FlowPanel getReportTableHeader() {
-		FlowPanel reportHeaderPanel = new FlowPanel();
-		reportHeaderPanel.addStyleName("reportHeaderPanel");
-
-		reportHeaderPanel.add(getHeaderButton("Relatório", "btnReport", "btnReportHeader"));
-		reportHeaderPanel.add(getHeaderButton("Geração", "btnGenerate", "btnReportHeader"));
-		reportHeaderPanel.add(getHeaderButton("Download", "btnDownload", "btnReportHeader"));
 		
-		return reportHeaderPanel;
-	}
-
-	private Button getHeaderButton(String label, String styleName,
-			String styleNameGlobal) {
-		Button btn = new Button(label);
-		btn.removeStyleName("btn");
-		btn.addStyleName(styleNameGlobal);
-		btn.addStyleName(styleName);
-		btn.addStyleName("btnNotSelected");
-		return btn;
+		MessageInboxView.Presenter messageInboxPresenter = new MessageInboxPresenter(session);
+		reportContentPanel.add(messageInboxPresenter.asWidget());
+		
+		return reportContentPanel;
 	}
 
 }

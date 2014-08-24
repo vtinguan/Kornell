@@ -154,7 +154,7 @@ public class GenericCourseClassConfigView extends Composite {
 		profileFields.add(name);
 
 		String requiredScoreStr = courseClass.getRequiredScore() == null ? "" : courseClass.getRequiredScore().toString();
-		requiredScore = new KornellFormFieldWrapper("Nota para Aprovação", formHelper.createTextBoxFormField(requiredScoreStr), isInstitutionAdmin);
+		requiredScore = new KornellFormFieldWrapper("Nota para Aprovação", formHelper.createTextBoxFormField(requiredScoreStr), isInstitutionAdmin, null, "Se a nota for deixada em branco ou for zero, a avaliação não será exigida para que os alunos matriculados finalizem o curso.");
 		fields.add(requiredScore);
 		profileFields.add(requiredScore);
 

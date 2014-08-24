@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.core.entity.Message;
+import kornell.core.entity.RoleCategory;
+import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
@@ -69,7 +71,11 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 				recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
 			}
 		}
-		recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getFullName(), Dean.getInstance().getInstitution().getUUID());
+		 
+		/*if(RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+				|| session.isInstitutionAdmin()){
+			recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getFullName(), Dean.getInstance().getInstitution().getUUID());
+		}*/
 
 		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), true);
 		fields.add(recipient);

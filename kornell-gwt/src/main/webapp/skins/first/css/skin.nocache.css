@@ -75,7 +75,7 @@
 .menuBar .buttons .menuBarButton .icon{height:200px;width:25px;height:25px;}
 .menuBar .buttons .menuBarButton .count{font-size:9px;font-weight:bold;position:relative;color:#d88709;}.menuBar .buttons .menuBarButton .count:hover{text-decoration:none;}
 .menuBar .buttons .menuBarButton .countNotifications{left:12px;top:-27px;}
-.menuBar .buttons .menuBarButton .countMessages{left:8px;top:-29px;}
+.menuBar .buttons .menuBarButton .countMessages{left:8px;top:-36px;}
 .menuBar .buttons .first{border-left:0px !important;padding:0;width:0;}
 .menuBar .buttons .last{border-right:0px;}
 .menuBar .testEnvWarning{color:#d88709;width:325px;font-size:20px;line-height:20px;margin-top:2px;font-weight:bold;float:right;text-align:center;}.menuBar .testEnvWarning .testEnvWarningText{font-size:10px;line-height:10px;display:block;text-align:center;}
@@ -387,15 +387,18 @@
 ::-webkit-scrollbar{width:18px;height:18px;}
 ::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(13, 11, 12, 0.5) !important;border-radius:5px;}
 ::-webkit-scrollbar-thumb{-webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.5) !important;border-radius:5px;}
-.messagesPopup{right:0 !important;left:initial !important;}.messagesPopup .messagesPanel{width:720px;height:475px;margin:0 auto;border-radius:0px 0px 0px 15px;background-color:#383235;border:2px inset #027e39;border-top:0;border-right:0;}.messagesPopup .messagesPanel .titlePanel .lblTitle{color:#d88709;font-size:20px;width:100%;text-align:center;}
-.messagesPopup .messagesPanel .fieldPanelWrapper{height:auto;width:100%;margin-bottom:15px;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel{width:150px;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel .lblLabel{line-height:20px;}
-.messagesPopup .messagesPanel .fieldPanelWrapper .textField{width:480px;}
-.messagesPopup .messagesPanel .fieldPanelWrapper .selectField{width:493px;}
+.messagesPopup{right:0 !important;left:initial !important;}.messagesPopup .messagesPanel{width:510px;margin:0 auto;border-radius:0px 0px 0px 15px;background-color:#383235;border:1px inset #bec1c3;border-top:0;border-right:0;}.messagesPopup .messagesPanel .titlePanel{height:25px;padding-top:6px;margin-bottom:0px;}.messagesPopup .messagesPanel .titlePanel .lblTitle{color:#d88709;font-size:15px;font-weight:bold;width:100%;text-align:center;}
+.messagesPopup .messagesPanel .fieldPanelWrapper{height:auto;margin-bottom:5px;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel{width:80px;margin-right:7px;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel .lblLabel{line-height:12px;font-size:12px;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .textField{width:380px;height:12px;font-size:12px;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .selectField{width:393px;height:24px;font-size:11px;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .error{font-size:10px;line-height:12px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .gwt-TextArea{height:180px;}
-.messagesPopup .messagesPanel .standardButtonBar{padding-top:20px;}
+.messagesPopup .messagesPanel .standardButtonBar{width:220px;}.messagesPopup .messagesPanel .standardButtonBar .btnStandard{margin:5px;margin-bottom:10px;}
 .deanHome{width:962px;margin:0 auto;}.deanHome .inlineLabel{margin-right:5px;display:inline;color:#bec1c3;font-size:12px;}
 .deanHome .lblHighlight{color:#e3e3e3;font-weight:bold;font-size:13px;}
+.deanHome .titlePanel{margin-bottom:20px;height:auto;padding-top:0;}
 .deanHome .title{color:#d88709;font-size:18px;line-height:28px;clear:both;}
+.deanHome .subTitle{color:#bec1c3;}
 .deanHome .courseClassesHeaderWrapper{margin-top:20px;height:45px;}.deanHome .courseClassesHeaderWrapper .listBoxCourseClasses{float:left;height:26px;margin-left:15px;width:550px;font-size:12px;}
 .deanHome .courseClassesHeaderWrapper .btnAction{float:right;}
 .deanHome .controlsPanel{float:left;width:100%;}.deanHome .controlsPanel .insertPanel{float:left;line-height:45px;}.deanHome .controlsPanel .insertPanel .btnAction{margin-left:10px;display:inline-block;}
@@ -418,14 +421,12 @@
 .courseClassAdminField .fieldPanel .btnAction{float:left;margin-left:15px;margin-top:4px;}
 .courseClassAdminField .fieldPanel .selectField{margin-top:15px;margin-bottom:25px;float:left;height:100px;width:414px;}
 .courseClassAdminField .fieldPanel .btnSelected{float:left;margin-left:15px;margin-top:92px;}
-.reportPanel{float:left;}.reportPanel .reportInfo{width:942px;margin-bottom:20px;}.reportPanel .reportInfo .reportInfoTitle{color:#d88709;font-weight:bold;font-size:18px;line-height:28px;margin-bottom:10px;}
-.reportPanel .reportInfo .reportInfoText{color:#bec1c3;padding-right:20px;}
-.reportPanel .reportHeaderPanel{height:24px;margin-bottom:10px;}.reportPanel .reportHeaderPanel .btnReportHeader{box-sizing:border-box;border-radius:0px !important;height:24px;line-height:24px;padding-left:10px !important;padding-right:10px !important;border-left:1px solid #505864 !important;display:block;float:left;}.reportPanel .reportHeaderPanel .btnReportHeader:hover{text-decoration:none;cursor:default;}
+.reportPanel{float:left;}.reportPanel .reportHeaderPanel{height:24px;margin-bottom:10px;}.reportPanel .reportHeaderPanel .btnReportHeader{box-sizing:border-box;border-radius:0px !important;height:24px;line-height:24px;padding-left:10px !important;padding-right:10px !important;border-left:1px solid #505864 !important;display:block;float:left;}.reportPanel .reportHeaderPanel .btnReportHeader:hover{text-decoration:none;cursor:default;}
 .reportPanel .reportHeaderPanel .btnReport{width:565.1999999999999px;text-align:left;}
 .reportPanel .reportHeaderPanel .btnGenerate{width:188.4px;}
 .reportPanel .reportHeaderPanel .btnDownload{width:188.4px;}
 .reportPanel .reportWrapper{height:78px;line-height:78px;background-color:#0d0b0c;margin-top:10px;color:#bec1c3;font-size:13px;}.reportPanel .reportWrapper .itemPanel{box-sizing:border-box;float:left;padding-left:10px;padding-right:10px;width:567.1999999999999px;}.reportPanel .reportWrapper .itemPanel .reportIcon{float:left;padding-top:30px;padding-bottom:30px;padding-left:10px;padding-right:20px;}
-.reportPanel .reportWrapper .itemPanel .lblName{color:#898e92;padding-left:20px;line-height:15px;padding-top:13.333333333333334px;padding-bottom:5px;}
+.reportPanel .reportWrapper .itemPanel .lblName{color:#898e92;padding-left:20px;line-height:10px;padding-top:13.333333333333334px;padding-bottom:5px;}
 .reportPanel .reportWrapper .itemPanel .lblDescription{color:#78af73;padding-left:20px;font-size:9px;line-height:11px;}
 .reportPanel .reportWrapper .itemPanel .optionPanel{padding-left:48px;padding-top:5px;}.reportPanel .reportWrapper .itemPanel .optionPanel img{height:18px;width:18px;float:left;cursor:pointer;}
 .reportPanel .reportWrapper .itemPanel .optionPanel input{height:12px;margin-left:6px;}

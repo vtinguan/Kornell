@@ -1,6 +1,5 @@
 package kornell.core.entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public interface MessagePerson extends Entity {
@@ -11,6 +10,9 @@ public interface MessagePerson extends Entity {
 
 	String getRecipientUUID();
 	void setRecipientUUID(String recipientUUID);
+	
+	MessageType getMessageType();
+	void setMessageType(MessageType messageType);
 
 	String getInstitutionUUID();
 	void setInstitutionUUID(String institutionUUID);

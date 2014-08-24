@@ -10,6 +10,7 @@ import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
+import kornell.gui.client.presentation.message.inbox.MessageInboxView;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;
 import kornell.gui.client.presentation.sandbox.SandboxView;
@@ -48,6 +49,7 @@ public interface ViewFactory {
 	AdminHomeView getAdminHomeView();
 
 	DockLayoutPanel getDockLayoutPanel();
+
 
 
 }

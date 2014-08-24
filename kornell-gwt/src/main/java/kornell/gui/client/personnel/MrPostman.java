@@ -5,9 +5,6 @@ import kornell.gui.client.event.ComposeMessageEventHandler;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.util.Positioning;
 
-import com.gargoylesoftware.htmlunit.javascript.host.geo.Position;
-import com.github.gwtbootstrap.client.ui.Image;
-import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -23,16 +20,19 @@ public class MrPostman implements ComposeMessageEventHandler {
 		this.presenter = presenter;
 		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
 	}
+	
 
 	@Override
 	public void onComposeMessage(ComposeMessageEvent event) {
-		presenter.init(event.getMessage());
-		show();
+		if(popup == null || !popup.isShowing()){
+			presenter.init(event.getMessage());
+			show();
+		}
 	}
 	
 	public synchronized void show() {	
 		if(popup == null){
-			popup = new PopupPanel(false, true);
+			popup = new PopupPanel(false, false);
 			popup.addStyleName("messagesPopup");
 			FlowPanel panel = new FlowPanel();
 			if(presenter != null){

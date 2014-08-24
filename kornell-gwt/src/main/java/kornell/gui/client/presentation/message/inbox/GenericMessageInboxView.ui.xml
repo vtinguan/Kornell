@@ -1,0 +1,11 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+	xmlns:knl="urn:import:kornell.gui.client.util.view.formfield">
+  <g:FlowPanel addStyleNames="messageInboxPanel">
+     <g:FlowPanel ui:field="sidePanel" addStyleNames="sidePanel">
+     </g:FlowPanel>
+     <g:FlowPanel ui:field="threadPanel" addStyleNames="threadPanel">
+     </g:FlowPanel>
+  </g:FlowPanel>
+</ui:UiBinder>

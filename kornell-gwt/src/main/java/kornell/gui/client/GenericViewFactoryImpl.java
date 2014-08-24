@@ -1,6 +1,5 @@
 package kornell.gui.client;
 
-import kornell.core.entity.Message;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
 import kornell.gui.client.presentation.bar.MenuBarView;
@@ -11,13 +10,14 @@ import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.GenericClassroomView;
-import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.message.compose.GenericMessageComposeView;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.message.generic.GenericMessageView;
+import kornell.gui.client.presentation.message.inbox.GenericMessageInboxView;
+import kornell.gui.client.presentation.message.inbox.MessageInboxView;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.profile.generic.GenericProfileView;
 import kornell.gui.client.presentation.sandbox.SandboxPresenter;

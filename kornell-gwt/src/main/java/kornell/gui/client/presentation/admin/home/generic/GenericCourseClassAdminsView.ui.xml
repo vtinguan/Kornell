@@ -3,6 +3,7 @@
 
 	<g:FlowPanel>
 		<g:HTMLPanel addStyleNames="title">Editar Administradores da Turma</g:HTMLPanel>
+		<g:Label addStyleNames="subTitle">Escolha na lista abaixo os administradores desta turma. Os administradores da turma podem matricular alunos e responder as mensagens da turma, mas não poderão alterar as configurações da turma ou adicionar novos administradores.</g:Label>
 		<b:Form ui:field="form" addStyleNames="profileForm">
 			<g:FlowPanel ui:field="adminsFields" addStyleNames="fieldsWrapper marginTop25">		
 			</g:FlowPanel>		

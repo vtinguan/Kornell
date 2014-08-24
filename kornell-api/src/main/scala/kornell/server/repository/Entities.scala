@@ -24,6 +24,7 @@ import kornell.core.entity.ContentSpec
 import kornell.core.entity.Assessment
 import kornell.core.entity.CourseClassState
 import kornell.core.entity.PlatformAdminRole
+import kornell.core.entity.MessageType
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -287,7 +288,8 @@ object Entities {
     institutionUUID: String = null,
     messageUUID: String = null,
     readAt: Date = null,
-    recipientUUID: String = null) = {
+    recipientUUID: String = null,
+    messageType: MessageType = null) = {
     val messagePerson = factory.newMessagePerson.as
     messagePerson.setUUID(uuid)
     messagePerson.setArchivedAt(archivedAt)
@@ -295,6 +297,7 @@ object Entities {
     messagePerson.setMessageUUID(messageUUID)
     messagePerson.setReadAt(readAt)
     messagePerson.setRecipientUUID(recipientUUID)
+    messagePerson.setMessageType(messageType)
     messagePerson
   }
 

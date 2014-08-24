@@ -149,9 +149,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		});
 
 	}
-	
-	
-
 
 	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");

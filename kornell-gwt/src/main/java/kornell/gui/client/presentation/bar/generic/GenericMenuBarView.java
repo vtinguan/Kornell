@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import static kornell.core.util.StringUtils.isSome;
+
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
@@ -11,16 +13,13 @@ import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.Kornell;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
-import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -29,13 +28,13 @@ import kornell.gui.client.presentation.welcome.WelcomePlace;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,9 +43,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-
-import static kornell.core.util.StringUtils.*;
 
 public class GenericMenuBarView extends Composite implements MenuBarView,
 		LoginEventHandler {
@@ -90,6 +86,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private KornellSession session;
 	private EventBus bus;
 	private boolean hasEmail;
+	private Label messagesCount;
 
 	public GenericMenuBarView(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -211,7 +208,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				(RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 						|| clientFactory.getKornellSession().isInstitutionAdmin()));
 		showButton(btnNotifications, false);
-		showButton(btnMessages, false);
+		showButton(btnMessages, true);
 		showButton(btnHelp, true);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
@@ -240,58 +237,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		btnMessages.removeStyleName("btn");
 		btnMenu.removeStyleName("btn");
 		
-		//displayButton(btnFake, "btnFake", "", false, "");
-		//displayButton(btnFullScreen, "btnFullScreen", "", false, "Tela Cheia");
-		//displayButton(btnProfile, "btnProfile", "profile", true, "Perfil");
-		//displayButton(btnHome, "btnHome", "home", true, "Página Inicial");
-		//displayButton(btnAdmin, "btnAdmin", "admin", true, "Administração");
-		//displayButtonWithCount(btnNotifications, "btnNotifications","notifications", "countNotifications", 19);
-		//displayButtonWithCount(btnMessages, "btnMessages", "messages", "countMessages", 99);
-		//displayButton(btnHelp, "btnHelp", "help", true, "Ajuda");
-		//displayButton(btnMenu, "btnMenu", "MENU", false, "");
-		//displayButton(btnExit, "btnExit", "SAIR", false, "Encerrar sessão");
-	}
-
-	private void displayButtonWithCount(Button btn, final String buttonType,
-			String content, String countStyleName, Integer value) {
-		FlowPanel buttonPanel = new FlowPanel();
-		buttonPanel.addStyleName("btnPanel");
-		buttonPanel.addStyleName(buttonType);
-
-		Image icon = new Image(IMAGES_PATH + content + ".png");
-		icon.addStyleName("icon");
-		buttonPanel.add(icon);
-
-		Label count = new Label("" + value);
-		count.addStyleName("count");
-		count.addStyleName(countStyleName);
-		buttonPanel.add(count);
-
-		btn.add(buttonPanel);
-		btn.removeStyleName("btn");
-	}
-
-	private void displayButton(Button btn, final String buttonType,
-			String content, boolean isImage, String title) {
-		//btn.clear();
-
-		FlowPanel buttonPanel = new FlowPanel();
-		buttonPanel.addStyleName("btnPanel");
-		buttonPanel.addStyleName(buttonType);
-
-		if (isImage) {
-			Image icon = new Image(IMAGES_PATH + content + ".png");
-			icon.addStyleName("icon");
-			icon.setTitle(title);
-			buttonPanel.add(icon);
-		} else {
-			Label label = new Label(content);
-			label.addStyleName("label");
-			buttonPanel.add(label);
-		}
-
-		btn.add(buttonPanel);
-		btn.removeStyleName("btn");
+		this.messagesCount = new Label("");
+		messagesCount.addStyleName("count");
+		messagesCount.addStyleName("countMessages");
+		btnMessages.add(messagesCount);
 	}
 
 	static native void requestFullscreen() /*-{

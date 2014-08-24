@@ -43,6 +43,7 @@ public interface AdminHomeView extends IsWidget {
 	void buildAdminsView();
 	void buildConfigView(boolean isCreationMode);
 	void buildReportsView();
+	void buildMessagesView();
 	void prepareAddNewCourseClass(boolean addingNewCourseClass);
 	void setCanPerformEnrollmentAction(boolean allow);
 }

@@ -51,44 +51,60 @@ body {
 	right: 0 !important;
 	left: initial !important;
 	.messagesPanel{
-		width: 720px;
-		height: 475px;
+		width: 510px;
 		margin: 0 auto;
 		border-radius: 0px 0px 0px 15px;
 		background-color: @modalBackgroundColor;
-		border: 2px inset @buttonActionGradientStart;
+		border: 1px inset @niceTextColor;
 		border-top: 0;
 		border-right: 0;
 		.titlePanel{
+			height: 25px;
+			padding-top: 6px;
+			margin-bottom: 0px;
 			.lblTitle{
 				color: @textHighlightColor;
-				font-size: 20px;
+				font-size: 15px;
+				font-weight: bold;
 				width: 100%;
 				text-align: center;
 			}
 		}
 		.fieldPanelWrapper{
 			height: auto;
-			width: 100%;
-			margin-bottom: 15px;
+			margin-bottom: 5px;
 			.labelPanel{
-				width: 150px;
+				width: 80px;
+				margin-right: 7px;
 				.lblLabel{
-					line-height: 20px;
+					line-height: 12px;
+					font-size: 12px;
 				}
 			}
 			.textField{
-				width: 480px;
+				width: 380px;
+				height: 12px;
+				font-size: 12px;
 			}
 			.selectField{
-				width: 493px;
+				width: 393px;
+				height: 24px;
+					font-size: 11px;
+			}
+			.error{
+				font-size: 10px;
+				line-height: 12px;
 			}
 			.gwt-TextArea{
 				height: 180px;
 			}
 		}
 		.standardButtonBar{
-			padding-top: 20px;
+			width: 220px;
+			.btnStandard{
+				margin: 5px;
+				margin-bottom: 10px;
+			}
 		}
 	}
 }
@@ -109,11 +125,19 @@ body {
 		font-weight: bold;
 		font-size: 13px;
 	}
+	.titlePanel{
+		margin-bottom: 20px;
+		height: auto;
+		padding-top: 0;
+	}
 	.title{
 		color: @textHighlightColor;
 		font-size: 18px;
 		line-height: 28px;
 		clear: both;
+	}
+	.subTitle{
+		color: @niceTextColor;
 	}
 	.courseClassesHeaderWrapper{
 		margin-top: 20px;
@@ -296,21 +320,6 @@ body {
 	@generateWidth: .2 * @reportPanelWidth;
 	@downloadWidth: .2 * @reportPanelWidth;
 	float: left;
-	.reportInfo{
-		width: @reportPanelWidth;
-		margin-bottom: @detailsPanelMargin;
-		.reportInfoTitle{
-			color: @textHighlightColor;
-			font-weight: bold;
-			font-size: 18px;
-			line-height: 28px;
-			margin-bottom:  @detailsPanelMargin / 2;
-		}
-		.reportInfoText{
-			color: @niceTextColor;
-			padding-right: @detailsPanelMargin;
-		}
-	}
 	.reportHeaderPanel{
 		@reportHeaderPanelHeight: 24px;
 		height: @reportHeaderPanelHeight;
@@ -358,7 +367,7 @@ body {
 			.lblName{
 				.lightenOrDarkenColor(@niceTextColor, 20%);
 				padding-left: @detailsPanelMargin;
-				line-height: 15px;
+				line-height: 10px;
 				padding-top: @detailsPanelMargin * 2 / 3;
 				padding-bottom: @detailsPanelMargin / 4;
 			}

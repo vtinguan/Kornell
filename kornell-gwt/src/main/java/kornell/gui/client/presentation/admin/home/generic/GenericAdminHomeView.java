@@ -96,6 +96,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
 	private GenericCourseClassReportsView reportsView;
+	private GenericCourseClassMessagesView messagesView;
 	private FormHelper formHelper;
 	private Timer updateTimer;
 	private boolean canPerformEnrollmentAction = true;
@@ -122,6 +123,10 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	Tab reportsTab;
 	@UiField
 	FlowPanel reportsPanel;
+	@UiField
+	Tab messagesTab;
+	@UiField
+	FlowPanel messagesPanel;
 
 	@UiField
 	Button btnAddEnrollment;
@@ -235,6 +240,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				buildReportsView();
 			}
 		});
+
+		messagesTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				buildMessagesView();
+			}
+		});
 		
 		updateTimer = new Timer() {
 			@Override
@@ -297,6 +309,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		}
 		reportsPanel.clear();
 		reportsPanel.add(reportsView);
+	}
+
+	@Override
+	public void buildMessagesView() {
+		if (messagesView == null) {
+			messagesView = new GenericCourseClassMessagesView(session, bus, presenter, Dean.getInstance().getCourseClassTO());
+		}
+		messagesPanel.clear();
+		messagesPanel.add(messagesView);
 	}
 
 	@Override
