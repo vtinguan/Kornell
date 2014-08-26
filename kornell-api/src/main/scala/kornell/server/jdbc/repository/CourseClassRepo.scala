@@ -40,6 +40,7 @@ class CourseClassRepo(uuid:String) {
 	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
 	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments}
       where cc.uuid = ${courseClass.getUUID}""".executeUpdate
+    ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID)
     courseClass
   }
   

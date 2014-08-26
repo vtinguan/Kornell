@@ -280,7 +280,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@UiHandler("btnHelp")
 	void handleHelp(ClickEvent e) {
-			bus.fireEvent(new ComposeMessageEvent(null));
+			bus.fireEvent(new ComposeMessageEvent());
 	}
 	
 	@Override

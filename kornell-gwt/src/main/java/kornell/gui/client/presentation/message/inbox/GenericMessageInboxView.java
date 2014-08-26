@@ -3,7 +3,7 @@ package kornell.gui.client.presentation.message.inbox;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.core.entity.Message;
+import kornell.core.entity.ChatThread;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;

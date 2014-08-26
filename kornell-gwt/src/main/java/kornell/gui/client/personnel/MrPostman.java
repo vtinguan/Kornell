@@ -25,7 +25,7 @@ public class MrPostman implements ComposeMessageEventHandler {
 	@Override
 	public void onComposeMessage(ComposeMessageEvent event) {
 		if(popup == null || !popup.isShowing()){
-			presenter.init(event.getMessage());
+			presenter.init();
 			show();
 		}
 	}

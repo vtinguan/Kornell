@@ -3,7 +3,7 @@ package kornell.gui.client.presentation.message.compose;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.core.entity.Message;
+import kornell.core.entity.ChatThread;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
@@ -36,9 +36,8 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private MessageComposeView.Presenter presenter;
 
-  KornellFormFieldWrapper recipient, subject, body;
+  KornellFormFieldWrapper recipient, messageText;
 	private List<KornellFormFieldWrapper> fields;
-	private boolean initialized;
 	
 	@UiField Label lblTitle;
   @UiField FlowPanel fieldsPanel;
@@ -51,11 +50,11 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	}
 	
 	@Override
-	public void show(Message message){
-			initialize(message);
+	public void show(){
+			initialize();
 	}
  
-  private void initialize(Message message) {
+  private void initialize() {
   	lblTitle.setText(constants.compose());
   	
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
@@ -71,31 +70,21 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 				recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
 			}
 		}
-		 
-		/*if(RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-				|| session.isInstitutionAdmin()){
-			recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getFullName(), Dean.getInstance().getInstitution().getUUID());
-		}*/
 
 		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), true);
 		fields.add(recipient);
 		recipients.setSelectedIndex(0);
 		fieldsPanel.add(recipient);
-		
-  	subject = new KornellFormFieldWrapper(constants.subject(), formHelper.createTextBoxFormField(message.getBody()), true);
-		fields.add(subject);
-		fieldsPanel.add(subject);
 
-  	body = new KornellFormFieldWrapper(constants.body(), formHelper.createTextAreaFormField(message.getBody()), true);
-		fields.add(body);
-		fieldsPanel.add(body);
+  	messageText = new KornellFormFieldWrapper(constants.body(), formHelper.createTextAreaFormField(""), true);
+		fields.add(messageText);
+		fieldsPanel.add(messageText);
   }
 
 	@Override
   protected void onEnsureDebugId(String baseID) {
 		recipient.ensureDebugId(baseID + "-recipient");
-  	subject.ensureDebugId(baseID + "-subject");
-  	body.ensureDebugId(baseID + "-body");
+  	messageText.ensureDebugId(baseID + "-messageText");
   	btnOK.ensureDebugId(baseID + "-btnOK");
   	btnCancel.ensureDebugId(baseID + "-btnCancel");
   }
@@ -121,13 +110,8 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
   }
 
   @Override
-	public KornellFormFieldWrapper getSubject() {
-		return subject;
-	}
-
-  @Override
-	public KornellFormFieldWrapper getBody() {
-		return body;
+	public KornellFormFieldWrapper getMessageText() {
+		return messageText;
 	}
 
 	@Override

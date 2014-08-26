@@ -31,6 +31,7 @@ import kornell.core.to.LibraryFilesTO
 import kornell.server.repository.LibraryFilesRepository
 import java.io.IOException
 import kornell.server.jdbc.repository.RolesRepo
+import kornell.server.jdbc.repository.ChatThreadsRepo
 
 @Path("courseClass")
 class CourseClassResource(uuid: String) {
@@ -102,7 +103,9 @@ class CourseClassResource(uuid: String) {
   def updateAdmins(implicit @Context sc: SecurityContext, roles: Roles) =
     AuthRepo().withPerson { person =>
       {
-        RolesRepo.updateCourseClassAdmins(uuid, roles)
+        val r = RolesRepo.updateCourseClassAdmins(uuid, roles)
+        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreads(uuid)
+        r
       }
     }
 

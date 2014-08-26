@@ -1,7 +1,7 @@
 
 package kornell.gui.client;
 
-import kornell.core.entity.Message;
+import kornell.core.entity.ChatThread;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;

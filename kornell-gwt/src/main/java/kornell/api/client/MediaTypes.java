@@ -7,7 +7,7 @@ import kornell.core.entity.ActomEntries;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Institution;
-import kornell.core.entity.Message;
+import kornell.core.entity.ChatThread;
 import kornell.core.entity.People;
 import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
@@ -53,7 +53,7 @@ public class MediaTypes {
 		register(EnrollmentsTO.TYPE,EnrollmentsTO.class);
 		register(ActomEntries.TYPE,ActomEntries.class);
 		register(LibraryFilesTO.TYPE,LibraryFilesTO.class);
-		register(Message.TYPE,Message.class);
+		register(ChatThread.TYPE,ChatThread.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

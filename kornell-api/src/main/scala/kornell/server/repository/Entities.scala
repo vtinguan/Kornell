@@ -2,29 +2,29 @@ package kornell.server.repository
 
 import java.math.BigDecimal
 import java.util.Date
+import java.util.Map
 import java.util.UUID
+
 import scala.collection.JavaConverters.seqAsJavaListConverter
+
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+
+import kornell.core.entity.Assessment
+import kornell.core.entity.ContentSpec
 import kornell.core.entity.Course
+import kornell.core.entity.CourseClassState
+import kornell.core.entity.CourseVersion
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.EntityFactory
 import kornell.core.entity.Institution
 import kornell.core.entity.Person
-import kornell.core.entity.Registration
-import kornell.core.entity.RoleType
-import kornell.server.jdbc.repository.PersonRepo
-import java.util.Map
-import kornell.core.entity.CourseVersion
-import kornell.core.entity.Role
-import java.text.SimpleDateFormat
-import kornell.server.util.ValueFactory
-import kornell.core.util.TimeUtil
-import kornell.core.entity.ContentSpec
-import kornell.core.entity.Assessment
-import kornell.core.entity.CourseClassState
 import kornell.core.entity.PlatformAdminRole
-import kornell.core.entity.MessageType
+import kornell.core.entity.Registration
+import kornell.core.entity.Role
+import kornell.core.entity.RoleType
+import kornell.core.util.TimeUtil
+import kornell.server.util.ValueFactory
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -283,22 +283,13 @@ object Entities {
     repo
   }
 
-  def newMessagePerson(uuid: String = null,
-    archivedAt: Date = null,
-    institutionUUID: String = null,
-    messageUUID: String = null,
-    readAt: Date = null,
-    recipientUUID: String = null,
-    messageType: MessageType = null) = {
-    val messagePerson = factory.newMessagePerson.as
-    messagePerson.setUUID(uuid)
-    messagePerson.setArchivedAt(archivedAt)
-    messagePerson.setInstitutionUUID(institutionUUID)
-    messagePerson.setMessageUUID(messageUUID)
-    messagePerson.setReadAt(readAt)
-    messagePerson.setRecipientUUID(recipientUUID)
-    messagePerson.setMessageType(messageType)
-    messagePerson
+  def newChatThread(uuid: String = null, name: String = null, createdAt: Date = null, institutionUUID: String = null) = {
+    val chatThread = factory.newChatThread.as
+    chatThread.setUUID(uuid)
+    chatThread.setName(name)
+    chatThread.setCreatedAt(createdAt)
+    chatThread.setInstitutionUUID(institutionUUID)
+    chatThread
   }
 
 }

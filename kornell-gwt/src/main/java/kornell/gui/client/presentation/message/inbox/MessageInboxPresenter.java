@@ -4,9 +4,9 @@ import java.util.Date;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.api.client.MessagesClient;
+import kornell.api.client.ChatThreadsClient;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Message;
+import kornell.core.entity.ChatThread;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;

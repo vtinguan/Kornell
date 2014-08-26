@@ -23,6 +23,15 @@ object RolesRepo {
 		    | select *
 	      	| from Role r
 	        | where r.course_class_uuid = ${courseClassUUID}
+	  			| and r.role = ${RoleType.courseClassAdmin.toString}
+		    """.map[Role](toRole).map(bindRole(_, bindMode)))	
+  	
+  def getInstitutionAdmins(institutionUUID: String, bindMode: String) =
+	  TOs.newRolesTO(sql"""
+		    | select *
+	      	| from Role r
+	        | where r.institution_uuid = ${institutionUUID}
+	  			| and r.role = ${RoleType.institutionAdmin.toString}
 		    """.map[Role](toRole).map(bindRole(_, bindMode)))	
   	
   def getCourseClassSupportResponsible(courseClassUUID: String) =
