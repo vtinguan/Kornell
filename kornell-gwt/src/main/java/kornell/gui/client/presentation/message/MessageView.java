@@ -8,6 +8,4 @@ public interface MessageView  extends IsWidget {
 	}
 
 	void setPresenter(Presenter presenter);
-
-	String getViewType();
 }

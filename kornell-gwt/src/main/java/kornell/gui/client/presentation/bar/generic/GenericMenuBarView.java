@@ -17,9 +17,12 @@ import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.event.UnreadMessagesFetchedEvent;
+import kornell.gui.client.event.UnreadMessagesFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
+import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -45,7 +48,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericMenuBarView extends Composite implements MenuBarView,
-		LoginEventHandler {
+		LoginEventHandler, UnreadMessagesFetchedEventHandler {
+
 	Logger logger = Logger.getLogger(GenericMenuBarView.class.getName());
 
 	interface MyUiBinder extends UiBinder<Widget, GenericMenuBarView> {
@@ -93,6 +97,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
 		bus.addHandler(LoginEvent.TYPE, this);
+		bus.addHandler(UnreadMessagesFetchedEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		Dean localDean = Dean.getInstance();
@@ -212,6 +217,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		showButton(btnHelp, true);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
+		
+		this.messagesCount = new Label("");
+		messagesCount.addStyleName("count");
+		messagesCount.addStyleName("countMessages");
+		btnMessages.add(messagesCount);
 	}
 
 	private void showButton(Button btn, boolean show) {
@@ -236,11 +246,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		btnNotifications.removeStyleName("btn");
 		btnMessages.removeStyleName("btn");
 		btnMenu.removeStyleName("btn");
-		
-		this.messagesCount = new Label("");
-		messagesCount.addStyleName("count");
-		messagesCount.addStyleName("countMessages");
-		btnMessages.add(messagesCount);
 	}
 
 	static native void requestFullscreen() /*-{
@@ -283,6 +288,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 			bus.fireEvent(new ComposeMessageEvent());
 	}
 	
+	@UiHandler("btnMessages")
+	void handleMessages(ClickEvent e) {
+		clientFactory.getPlaceController().goTo(new MessagePlace("INBOX"));
+	}
+	
 	@Override
 	public void setPresenter(Presenter presenter) {
 	}
@@ -300,5 +310,14 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
+
+	@Override
+  public void onUnreadMessagesFetched(UnreadMessagesFetchedEvent event) {
+		btnMessages.remove(messagesCount);
+		this.messagesCount = new Label(event.getUnreadMessagesCount());
+		messagesCount.addStyleName("count");
+		messagesCount.addStyleName("countMessages");
+		btnMessages.add(messagesCount);
+  }
 
 }

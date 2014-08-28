@@ -5,8 +5,9 @@
   <g:FlowPanel ui:field="composeMessagePopup">
     <b:Form ui:field="form" addStyleNames="messagesPanel">
       <g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel">
-        <g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
         <g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>
+        <g:Label ui:field="lblSubTitle" addStyleNames="lblSubTitle"></g:Label>
+        <g:Image ui:field="separatorBar"></g:Image>
       </g:FlowPanel>
       <g:FlowPanel ui:field="fieldsPanel" addStyleNames="fieldsWrapper">
       </g:FlowPanel>

@@ -34,12 +34,23 @@ object RolesRepo {
 	  			| and r.role = ${RoleType.institutionAdmin.toString}
 		    """.map[Role](toRole).map(bindRole(_, bindMode)))	
   	
-  def getCourseClassSupportResponsible(courseClassUUID: String) =
-	  bindRole(sql"""
+  def getPlatformAdmins(bindMode: String) =
+	  TOs.newRolesTO(sql"""
 		    | select *
 	      	| from Role r
-	        | where r.course_class_uuid = ${courseClassUUID}
-		    """.first[Role](toRole).get, RoleCategory.BIND_WITH_PERSON).getPerson
+	  			| and r.role = ${RoleType.platformAdmin.toString}
+		    """.map[Role](toRole).map(bindRole(_, bindMode)))	
+  	
+  def getCourseClassThreadSupportParticipants(courseClassUUID: String, institutionUUID: String, bindMode: String) =
+	  TOs.newRolesTO(sql"""
+		    | select *
+	      	| from Role r
+	        | where (r.course_class_uuid = ${courseClassUUID}
+	  			| 	and r.role = ${RoleType.courseClassAdmin.toString})
+	  			| or  (r.institution_uuid = ${institutionUUID}
+	  			| 	and r.role = ${RoleType.institutionAdmin.toString})
+	  			| or r.role = ${RoleType.platformAdmin.toString}
+		    """.map[Role](toRole).map(bindRole(_, bindMode)))	
   	
   def getInstitutionSupportResponsible(institutionUUID: String) =
 	  bindRole(sql"""

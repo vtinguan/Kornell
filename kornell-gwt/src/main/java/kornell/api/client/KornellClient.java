@@ -60,7 +60,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new EnrollmentsClient();
 	}
 
-	public ChatThreadsClient messages() {
+	public ChatThreadsClient chatThreads() {
 		return new ChatThreadsClient();
 	}
 

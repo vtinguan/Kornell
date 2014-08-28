@@ -10,6 +10,7 @@ public class MessagePresenter implements MessageView.Presenter{
 
 	public MessagePresenter(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
+		view = clientFactory.getViewFactory().getMessageView();
 	}
 	
 	@Override

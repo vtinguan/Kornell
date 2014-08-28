@@ -229,16 +229,16 @@ public interface KornellConstants extends Constants {
 	 * 
 	 * Message
 	 */
-	@DefaultStringValue("Compose")
-	String compose();
+	@DefaultStringValue("Help")
+	String composeTitle();
+	@DefaultStringValue("Leave your questions or suggestions here.")
+	String composeSubTitle();
 	@DefaultStringValue("Class")
 	String courseClassAdmin();
 	@DefaultStringValue("Institution")
 	String institutionAdmin();
-	@DefaultStringValue("Recipient")
+	@DefaultStringValue("Recipient:")
 	String recipient();
-	@DefaultStringValue("Subject")
-	String subject();
-	@DefaultStringValue("Body")
-	String body();
+	@DefaultStringValue("Message:")
+	String message();
 }

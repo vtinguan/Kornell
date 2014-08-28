@@ -5,22 +5,18 @@ import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
-import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
-import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
-import kornell.gui.client.presentation.message.inbox.MessageInboxPresenter;
-import kornell.gui.client.presentation.message.inbox.MessageInboxView;
+import kornell.gui.client.presentation.message.MessagePresenter;
+import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -104,7 +100,7 @@ public class GenericCourseClassMessagesView extends Composite {
 	private FlowPanel getMessagesContent() {
 		FlowPanel reportContentPanel = new FlowPanel();
 		
-		MessageInboxView.Presenter messageInboxPresenter = new MessageInboxPresenter(session);
+		MessageView.Presenter messageInboxPresenter = new MessagePresenter(null);
 		reportContentPanel.add(messageInboxPresenter.asWidget());
 		
 		return reportContentPanel;

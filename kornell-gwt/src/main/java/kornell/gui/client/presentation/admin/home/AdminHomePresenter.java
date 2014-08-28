@@ -244,6 +244,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					@Override
 					public void unauthorized(String errorMessage){
 						LoadingPopup.hide();
+						KornellNotification.show("Erro ao tentar excluir a turma.", AlertType.ERROR);
 						GWT.log(this.getClass().getName() + " - " + errorMessage);
 					}
 				});
@@ -322,7 +323,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		for (int i = 0; i < enrollmentsA.length; i++) {
 			if ("".equals(enrollmentsA[i].trim()))
 				continue;
-			enrollmentStrA = enrollmentsA[i].split(";");
+			enrollmentStrA = enrollmentsA[i].indexOf(';') >= 0 ? enrollmentsA[i].split(";") : enrollmentsA[i].split("\\t");
 			fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
 			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1]
 					: enrollmentStrA[0]);

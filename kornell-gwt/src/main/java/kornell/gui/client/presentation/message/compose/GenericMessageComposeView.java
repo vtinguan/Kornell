@@ -3,9 +3,6 @@ package kornell.gui.client.presentation.message.compose;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.core.entity.ChatThread;
-import kornell.core.entity.RoleCategory;
-import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
@@ -22,6 +19,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -38,8 +36,10 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 
   KornellFormFieldWrapper recipient, messageText;
 	private List<KornellFormFieldWrapper> fields;
-	
+
 	@UiField Label lblTitle;
+	@UiField Label lblSubTitle;
+	@UiField Image separatorBar;
   @UiField FlowPanel fieldsPanel;
   @UiField Button btnOK;
   @UiField Button btnCancel;
@@ -50,12 +50,15 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	}
 	
 	@Override
-	public void show(){
-			initialize();
+	public void show(String courseClassUUID){
+			initialize(courseClassUUID);
 	}
  
-  private void initialize() {
-  	lblTitle.setText(constants.compose());
+  private void initialize(String courseClassUUID) {
+  	lblTitle.setText(constants.composeTitle());
+  	lblSubTitle.setText(constants.composeSubTitle());
+  	separatorBar.setUrl(FormHelper.SEPARATOR_BAR_IMG_PATH);
+  	separatorBar.addStyleName(FormHelper.SEPARATOR_BAR_CLASS);
   	
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		fieldsPanel.clear();
@@ -71,12 +74,12 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 			}
 		}
 
-		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), true);
+		recipients.setSelectedValue(courseClassUUID);
+		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), courseClasses.size() > 1 && courseClassUUID == null);
 		fields.add(recipient);
-		recipients.setSelectedIndex(0);
 		fieldsPanel.add(recipient);
 
-  	messageText = new KornellFormFieldWrapper(constants.body(), formHelper.createTextAreaFormField(""), true);
+  	messageText = new KornellFormFieldWrapper(constants.message(), formHelper.createTextAreaFormField(""), true);
 		fields.add(messageText);
 		fieldsPanel.add(messageText);
   }

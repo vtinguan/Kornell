@@ -387,16 +387,21 @@
 ::-webkit-scrollbar{width:18px;height:18px;}
 ::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(244, 244, 244, 0.5) !important;border-radius:5px;}
 ::-webkit-scrollbar-thumb{-webkit-box-shadow:inset 0 0 6px rgba(250, 250, 250, 0.5) !important;border-radius:5px;}
-.messagesPopup{right:0 !important;left:initial !important;}.messagesPopup .messagesPanel{width:510px;margin:0 auto;border-radius:0px 0px 0px 15px;background-color:#f4f4f4;border:1px inset #839a9c;border-top:0;border-right:0;}.messagesPopup .messagesPanel .titlePanel{height:25px;padding-top:6px;margin-bottom:0px;}.messagesPopup .messagesPanel .titlePanel .lblTitle{color:#008f83;font-size:15px;font-weight:bold;width:100%;text-align:center;}
-.messagesPopup .messagesPanel .fieldPanelWrapper{height:auto;margin-bottom:5px;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel{width:80px;margin-right:7px;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel .lblLabel{line-height:12px;font-size:12px;}
-.messagesPopup .messagesPanel .fieldPanelWrapper .textField{width:380px;height:12px;font-size:12px;}
-.messagesPopup .messagesPanel .fieldPanelWrapper .selectField{width:393px;height:24px;font-size:11px;}
-.messagesPopup .messagesPanel .fieldPanelWrapper .error{font-size:10px;line-height:12px;}
-.messagesPopup .messagesPanel .fieldPanelWrapper .gwt-TextArea{height:180px;}
+.messagesPopup{right:0 !important;left:initial !important;}.messagesPopup .messagesPanel{width:510px;margin:0 auto;border-radius:0px 0px 0px 15px;background-color:#f4f4f4;border:1px inset #839a9c;border-top:0;border-right:0;}.messagesPopup .messagesPanel .titlePanel{height:auto;padding-top:12px;margin-left:13px;text-align:center;margin-bottom:3px;}.messagesPopup .messagesPanel .titlePanel .lblTitle{color:#008f83;font-size:15px;font-weight:bold;width:100%;text-align:center;}
+.messagesPopup .messagesPanel .titlePanel .lblSubTitle{color:#5492ff;font-size:10px;float:left;width:100%;}
+.messagesPopup .messagesPanel .titlePanel .profileSeparatorBar{width:100%;}
+.messagesPopup .messagesPanel .fieldPanelWrapper{height:auto;margin-bottom:5px;width:100%;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel{width:80px;margin-right:7px;text-align:initial;float:left;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel .lblLabel{line-height:12px;font-size:12px;text-decoration:none;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .lblValue{line-height:33px;margin-left:4px;font-size:14px;font-weight:bold;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .textField{width:380px;height:12px;font-size:12px;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .selectField{width:393px;height:24px;font-size:11px;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .error{font-size:10px;line-height:12px;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .gwt-TextArea{height:180px;}
 .messagesPopup .messagesPanel .standardButtonBar{width:220px;}.messagesPopup .messagesPanel .standardButtonBar .btnStandard{margin:5px;margin-bottom:10px;}
 .deanHome{width:962px;margin:0 auto;}.deanHome .inlineLabel{margin-right:5px;display:inline;color:#839a9c;font-size:12px;}
 .deanHome .lblHighlight{color:#283541;font-weight:bold;font-size:13px;}
+.deanHome .titlePanel{margin-bottom:20px;height:auto;padding-top:0;}
 .deanHome .title{color:#008f83;font-size:18px;line-height:28px;clear:both;}
+.deanHome .subTitle{color:#839a9c;}
 .deanHome .courseClassesHeaderWrapper{margin-top:20px;height:45px;}.deanHome .courseClassesHeaderWrapper .listBoxCourseClasses{float:left;height:26px;margin-left:15px;width:550px;font-size:12px;}
 .deanHome .courseClassesHeaderWrapper .btnAction{float:right;}
 .deanHome .controlsPanel{float:left;width:100%;}.deanHome .controlsPanel .insertPanel{float:left;line-height:45px;}.deanHome .controlsPanel .insertPanel .btnAction{margin-left:10px;display:inline-block;}
@@ -419,8 +424,7 @@
 .courseClassAdminField .fieldPanel .btnAction{float:left;margin-left:15px;margin-top:4px;}
 .courseClassAdminField .fieldPanel .selectField{margin-top:15px;margin-bottom:25px;float:left;height:100px;width:414px;}
 .courseClassAdminField .fieldPanel .btnSelected{float:left;margin-left:15px;margin-top:92px;}
-.reportPanel{float:left;}.reportPanel .reportInfo{width:942px;margin-bottom:20px;}.reportPanel .reportInfo .reportInfoText{color:#839a9c;padding-right:20px;}
-.reportPanel .reportHeaderPanel{height:24px;margin-bottom:10px;}.reportPanel .reportHeaderPanel .btnReportHeader{box-sizing:border-box;border-radius:0px !important;height:24px;line-height:24px;padding-left:10px !important;padding-right:10px !important;border-left:1px solid #505864 !important;display:block;float:left;}.reportPanel .reportHeaderPanel .btnReportHeader:hover{text-decoration:none;cursor:default;}
+.reportPanel{float:left;}.reportPanel .reportHeaderPanel{height:24px;margin-bottom:10px;}.reportPanel .reportHeaderPanel .btnReportHeader{box-sizing:border-box;border-radius:0px !important;height:24px;line-height:24px;padding-left:10px !important;padding-right:10px !important;border-left:1px solid #505864 !important;display:block;float:left;}.reportPanel .reportHeaderPanel .btnReportHeader:hover{text-decoration:none;cursor:default;}
 .reportPanel .reportHeaderPanel .btnReport{width:565.1999999999999px;text-align:left;}
 .reportPanel .reportHeaderPanel .btnGenerate{width:188.4px;}
 .reportPanel .reportHeaderPanel .btnDownload{width:188.4px;}

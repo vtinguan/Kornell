@@ -118,11 +118,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					}
 				}
 			}
-
-			@Override
-			public void unauthorized(String errorMessage) {
-				GWT.log(this.getClass().getName() + " - " + errorMessage);
-			}
 		};
 
 		session.getCurrentUser(new Callback<UserInfoTO>() {
@@ -182,7 +177,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void initPersonnel() {
 		new Captain(bus, session, placeCtrl);
 		new Stalker(bus, session);
-		new MrPostman(new MessageComposePresenter(session, viewFactory, entityFactory),  bus);
+		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads());
 	}
 
 	private void initSCORM12() {

@@ -39,7 +39,7 @@ public abstract class Callback<T> implements RequestCallback {
 			forbidden();
 			break;
 		case SC_UNAUTHORIZED:
-			unauthorized(getResponseTextMDA(response));
+			unauthorized(response.getText());
 			break;
 		case SC_NOT_FOUND:
 			notFound();
@@ -97,6 +97,10 @@ public abstract class Callback<T> implements RequestCallback {
 
 		} 
 		else if (contentType.contains("application/octet-stream")) { 
+			T txt = (T) responseText;
+			ok(txt);
+		}
+		else if (contentType.contains("text/plain")) { 
 			T txt = (T) responseText;
 			ok(txt);
 		} else ok((T) null); //TODO: Consider throwing exception "unknow response type" instead, but map "text/*" and "application/*" first
@@ -162,18 +166,5 @@ public abstract class Callback<T> implements RequestCallback {
 	private void error(Request request, Throwable exception) {
 		GWT.log("Error!", exception);
 	}
-
-	private String getResponseTextMDA(Response response) {
-	  String text = response.getText();
-		String[] parts = text.split("<body><h1>HTTP Status ");
-		if(parts.length > 1){
-			String[] parts2 = parts[1].split(" - ");
-			if(parts2.length > 1){
-				String[] parts3 = parts2[1].split("</h1>");
-				return parts3[0];
-			}			
-		}
-		return null;
-  }
 
 }

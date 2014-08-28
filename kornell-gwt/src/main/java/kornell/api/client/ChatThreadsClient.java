@@ -4,7 +4,7 @@ import kornell.core.entity.ChatThread;
 
 public class ChatThreadsClient extends RESTClient {
 	
-	public void postMessageToCourseClassThread(String message, String courseClassUUID, Callback<ChatThread> callback) {
+	public void postMessageToCourseClassThread(String message, String courseClassUUID, Callback<Void> callback) {
 		POST("/chatThreads/courseClass/" + courseClassUUID).sendRequest(message, callback);
 	}
 	
@@ -12,8 +12,8 @@ public class ChatThreadsClient extends RESTClient {
 		POST("/threads/institution/" + institutionUUID).sendRequest(message, callback);
 	}*/
 	
-	public void getCourseClassMessages(String courseClassUUID, Callback<ChatThread> callback) {
-		GET("/chatThreads/?courseClassUUID=" + courseClassUUID).sendRequest(null, callback);
+	public void getTotalUnreadCount(String institutionUUID, Callback<String> callback) {
+		GET("/chatThreads/unreadCount/?institutionUUID=" + institutionUUID).sendRequest(null, callback);
 	}
 
 }
