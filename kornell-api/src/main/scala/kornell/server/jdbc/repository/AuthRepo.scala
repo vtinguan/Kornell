@@ -38,7 +38,7 @@ object AuthRepo {
       }
   }
 
-  case class CredentialsNotFound extends Exception
+  case class CredentialsNotFound() extends Exception
 
   def lookup(userkey: String, password: String): Option[String] =
     authByUsername(userkey, password)

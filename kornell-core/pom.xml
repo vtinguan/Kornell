@@ -8,7 +8,6 @@
 		<version>${kornell-version}</version>
 	</parent>
 
-	<groupId>kornell</groupId>
 	<artifactId>kornell-core</artifactId>
 	<packaging>jar</packaging>
 	<name>Shared Core</name>

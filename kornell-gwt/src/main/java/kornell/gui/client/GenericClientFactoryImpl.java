@@ -1,5 +1,6 @@
 package kornell.gui.client;
 
+
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
@@ -24,12 +25,14 @@ import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
+import kornell.gui.client.util.Debugging;
 import kornell.scorm.client.scorm12.SCORM12Adapter;
 import kornell.scorm.client.scorm12.SCORM12Binder;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -37,6 +40,8 @@ import com.google.gwt.place.shared.PlaceHistoryHandler.DefaultHistorian;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
@@ -177,6 +182,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		initException();
 		initSCORM12();
 		initPersonnel();
+		initDebugger();
+	}
+
+	private void initDebugger() {
+		Debugging.init();
 	}
 
 	private void initGUI() {

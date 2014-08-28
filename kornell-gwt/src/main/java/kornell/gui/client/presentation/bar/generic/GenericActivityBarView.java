@@ -104,7 +104,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private void display(){
 
-		this.setVisible(false);
 		isEnrolled = false;
 
 		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
@@ -120,10 +119,12 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			}
 		}
 		
-		shouldShowActivityBar = 
-				isEnrolled
+		shouldShowActivityBar = true; 
+		
+		/* isEnrolled
 				&& Dean.getInstance().getCourseClassTO() != null 
-				&& !CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
+				&& !CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());*/
+		
 		GWT.log("SHOULD SHOW: "+shouldShowActivityBar);
 		GWT.log("IS ENROLLED: "+isEnrolled);
 		GWT.log("CCTO: "+Dean.getInstance().getCourseClassTO());
@@ -148,6 +149,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			enableButton(BUTTON_PREVIOUS, false);
 			enableButton(BUTTON_NEXT, false);
 		}
+		this.setVisible(shouldShowActivityBar);
 	}
 
 	private void displayProgressButton() {
