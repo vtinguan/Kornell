@@ -3,6 +3,8 @@ var AWS = require('aws-sdk');
 
 // Environment Variables
 var warFile = process.env.KNL_API_WAR || "kornell-api/kornell-api.war";
+var stackId = process.env.KNL_STACK_ID || (throw new "Stack ID is required");
+var appId = process.env.KNL_APP_ID || (throw new "Application ID is required");
 
 AWS.config.update({
 	region : 'sa-east-1',
@@ -26,8 +28,8 @@ function fireDeploy(data){
 		Command: {
 		  Name: 'deploy'		  
 		},
-		StackId: '3f80bebe-4020-4c80-a1a1-bb1490766691',
-		AppId: '944cc2e1-c240-4115-b7cf-faf4e22f6947'
+		StackId: stackId,
+		AppId: appId
 	};
 	opsworks.createDeployment(params,cb(done));
 }
