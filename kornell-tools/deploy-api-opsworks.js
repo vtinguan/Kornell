@@ -3,8 +3,8 @@ var AWS = require('aws-sdk');
 
 // Environment Variables
 var warFile = process.env.KNL_API_WAR || "kornell-api/kornell-api.war";
-var stackId = process.env.KNL_STACK_ID || (throw new "Stack ID is required");
-var appId = process.env.KNL_APP_ID || (throw new "Application ID is required");
+var stackId = process.env.KNL_STACK_ID;
+var appId = process.env.KNL_APP_ID;
 
 AWS.config.update({
 	region : 'sa-east-1',
