@@ -217,11 +217,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		showButton(btnHelp, true);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
-		
-		this.messagesCount = new Label("");
-		messagesCount.addStyleName("count");
-		messagesCount.addStyleName("countMessages");
-		btnMessages.add(messagesCount);
 	}
 
 	private void showButton(Button btn, boolean show) {
@@ -313,7 +308,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@Override
   public void onUnreadMessagesFetched(UnreadMessagesFetchedEvent event) {
-		btnMessages.remove(messagesCount);
+		if(btnMessages.getWidgetCount() == 3){
+			btnMessages.remove(2);
+		}
 		this.messagesCount = new Label(event.getUnreadMessagesCount());
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");

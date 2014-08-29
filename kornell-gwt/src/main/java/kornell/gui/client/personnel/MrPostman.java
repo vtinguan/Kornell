@@ -2,15 +2,21 @@ package kornell.gui.client.personnel;
 
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
+import kornell.core.to.UnreadChatThreadsTO;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.ComposeMessageEventHandler;
 import kornell.gui.client.event.UnreadMessagesFetchedEvent;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
+import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.util.Positioning;
 
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class MrPostman implements ComposeMessageEventHandler {
@@ -18,16 +24,21 @@ public class MrPostman implements ComposeMessageEventHandler {
 	private static PopupPanel popup;
 	private EventBus bus;
 	private ChatThreadsClient chatThreadsClient;
+	private PlaceController placeCtrl;
 	private MessageComposeView.Presenter presenter; 
 	private Timer unreadMessagesCountTimer;
+	private Timer unreadMessagesCountPerThreadTimer;
 	
-	public MrPostman(MessageComposeView.Presenter presenter, EventBus bus, ChatThreadsClient chatThreadsClient) {
+	public MrPostman(MessageComposeView.Presenter presenter, EventBus bus, ChatThreadsClient chatThreadsClient, PlaceController placeCtrl) {
 		this.bus = bus;
 		this.presenter = presenter;
 		this.chatThreadsClient = chatThreadsClient;
+		this.placeCtrl = placeCtrl;
 		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
 		
 		initializeUnreadMessagesCountTimer();
+		
+		initializeUnreadMessagesCountPerThreadTimer();
 	}
 	
 
@@ -43,7 +54,6 @@ public class MrPostman implements ComposeMessageEventHandler {
 		// Schedule the timer to run every 3 minutes
 		unreadMessagesCountTimer.scheduleRepeating(3 * 60 * 1000);
   }
-
 	private void getUnreadMessages() {
     chatThreadsClient.getTotalUnreadCount(Dean.getInstance().getInstitution().getUUID(), new Callback<String>() {
 			@Override
@@ -51,6 +61,37 @@ public class MrPostman implements ComposeMessageEventHandler {
 				bus.fireEvent(new UnreadMessagesFetchedEvent(unreadMessagesCount));
 			}
 		});
+  }
+
+	private void initializeUnreadMessagesCountPerThreadTimer() {
+		getUnreadMessagesPerThread();
+		
+		unreadMessagesCountPerThreadTimer = new Timer() {
+			public void run() {
+				getUnreadMessagesPerThread();
+			}
+		};
+
+		// Schedule the timer to run every minute
+		unreadMessagesCountPerThreadTimer.scheduleRepeating(1 * 60 * 1000);
+		
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						getUnreadMessagesPerThread();
+					}
+				});
+  }
+	private void getUnreadMessagesPerThread() {
+		if(placeCtrl.getWhere() instanceof MessagePlace){
+	    chatThreadsClient.getTotalUnreadCountsPerThread(Dean.getInstance().getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
+				@Override
+				public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
+					bus.fireEvent(new UnreadMessagesPerThreadFetchedEvent(unreadChatThreadsTO.getUnreadChatThreadTOs()));
+				}
+			});
+		}
   }
 
 

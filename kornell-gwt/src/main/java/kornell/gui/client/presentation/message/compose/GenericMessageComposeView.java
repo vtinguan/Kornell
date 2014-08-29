@@ -70,7 +70,9 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 		List<CourseClassTO> courseClasses = Dean.getInstance().getCourseClassesTO().getCourseClasses();
 		if(courseClasses != null){
 			for (CourseClassTO courseClassTO : courseClasses) {
-				recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
+				if(courseClassTO.getEnrollment() != null){
+					recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
+				}
 			}
 		}
 

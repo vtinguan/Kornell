@@ -100,10 +100,7 @@ public abstract class Callback<T> implements RequestCallback {
 			T txt = (T) responseText;
 			ok(txt);
 		}
-		else if (contentType.contains("text/plain")) { 
-			T txt = (T) responseText;
-			ok(txt);
-		} else ok((T) null); //TODO: Consider throwing exception "unknow response type" instead, but map "text/*" and "application/*" first
+		else ok((T) null); //TODO: Consider throwing exception "unknow response type" instead, but map "text/*" and "application/*" first
 	}
 
 	protected void notFound() {

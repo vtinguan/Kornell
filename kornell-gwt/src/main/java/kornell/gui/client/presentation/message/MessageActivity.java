@@ -11,7 +11,7 @@ public class MessageActivity extends AbstractActivity{
 	
 	public MessageActivity(ClientFactory clientFactory) {
 	    if(presenter == null){
-	    	presenter = new MessagePresenter(clientFactory);
+	    	presenter = clientFactory.getViewFactory().getMessagePresenter();
 	    }
 	 }
 	

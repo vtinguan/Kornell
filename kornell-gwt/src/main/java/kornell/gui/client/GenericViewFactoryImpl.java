@@ -12,6 +12,7 @@ import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.GenericClassroomView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
+import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.message.compose.GenericMessageComposeView;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
@@ -56,6 +57,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericHomeView genericHomeView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
+	private MessagePresenter messagePresenter;
 
 	SimplePanel shell = new SimplePanel();
 
@@ -219,4 +221,11 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	public SimplePanel getShell() {
 		return shell;
 	}
+
+	@Override
+  public MessagePresenter getMessagePresenter() {
+		if(messagePresenter == null)
+			messagePresenter = new MessagePresenter(clientFactory);
+	  return messagePresenter;
+  }
 }

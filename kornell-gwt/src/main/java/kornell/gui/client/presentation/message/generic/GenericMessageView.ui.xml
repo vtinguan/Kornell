@@ -3,9 +3,17 @@
   xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
   xmlns:knl="urn:import:kornell.gui.client.util.view.formfield">
   <g:FlowPanel addStyleNames="messageInboxPanel">
-     <g:FlowPanel ui:field="sidePanel" addStyleNames="sidePanel">
+     <g:FlowPanel ui:field="sidePanel" addStyleNames="sidePanel left">
      </g:FlowPanel>
-     <g:FlowPanel ui:field="threadPanel" addStyleNames="threadPanel">
+     <g:FlowPanel ui:field="threadPanel" addStyleNames="threadPanel left">
+       <g:Label ui:field="threadTitle" addStyleNames="threadTitle"></g:Label>
+       <g:ScrollPanel ui:field="threadPanelItemsScroll" addStyleNames="threadPanelItemsScroll">
+        <g:FlowPanel ui:field="threadPanelItems"></g:FlowPanel>
+       </g:ScrollPanel>
+       <g:FlowPanel addStyleNames="sendMessageWrapper">
+        <b:TextArea ui:field="messageTextArea" addStyleNames="messageTextArea"></b:TextArea>
+        <g:Button ui:field="btnSend" addStyleNames="btnSend btnAction">Enviar</g:Button>
+       </g:FlowPanel>
      </g:FlowPanel>
   </g:FlowPanel>
 </ui:UiBinder>

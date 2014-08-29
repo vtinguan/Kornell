@@ -8,6 +8,10 @@ import kornell.core.util.UUID
 import java.util.Date
 import kornell.server.repository.Entities
 import java.sql.ResultSet
+import kornell.core.to.UnreadChatThreadsTO
+import kornell.server.repository.TOs
+import kornell.core.to.UnreadChatThreadTO
+import kornell.core.to.ChatThreadMessageTO
 
 class ChatThreadsRepo {
 }
@@ -18,7 +22,7 @@ object ChatThreadsRepo {
 
   def postMessageToCourseClassSupportThread(personUUID: String, courseClassUUID: String, message: String) = {
       val courseClass = CourseClassRepo(courseClassUUID).get
-      val chatThreadUUID = getChatThreadUUID(personUUID, courseClass.getUUID)
+      val chatThreadUUID = getCourseClassSupportChatThreadUUID(personUUID, courseClass.getUUID)
       if(!chatThreadUUID.isDefined){
         val chatThread = createChatThread(getSupportChatThreadName(courseClass.getName), courseClass.getInstitutionUUID)
         updateChatThreadParticipants(personUUID, chatThread, courseClass.getUUID)
@@ -81,13 +85,13 @@ object ChatThreadsRepo {
 	  """.executeUpdate
   }
   
-  def getChatThreadUUID(personUUID: String, courseClassUUID: String) = {
+  def getCourseClassSupportChatThreadUUID(personUUID: String, courseClassUUID: String) = {
     sql"""
 		    | select st.chatThreadUUID
 	      	| from CourseClassSupportChatThread st
     			| where st.personUUID = ${personUUID}
     			| and st.courseClassUUID = ${courseClassUUID}
-		    """.first[String](toString)
+		    """.first[String]
   }
   
   def updateParticipantsInCourseClassSupportThreads(courseClassUUID: String) = {
@@ -105,7 +109,7 @@ object ChatThreadsRepo {
 		    | select ctp.uuid
 	      	| from ChatThreadParticipant ctp
     			| where ctp.chatThreadUUID = ${chatThreadUUID}
-		    """.map[String](toString)
+		    """.map[String]
   }
   
   def getTotalUnreadCountByPerson(personUUID: String, institutionUUID: String) = {
@@ -114,8 +118,7 @@ object ChatThreadsRepo {
 					| from ChatThreadMessage tm
 					| join (
 						| select t.uuid as chatThreadUUID,
-						| tp.lastReadAt as threadLastReadAt,
-						| ccs.courseClassUUID
+						| tp.lastReadAt as threadLastReadAt
 						| from ChatThread t
 						| join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID
 						| left join CourseClassSupportChatThread ccs on ccs.chatThreadUUID = t.uuid
@@ -123,6 +126,42 @@ object ChatThreadsRepo {
 						| and t.institutionUUID = ${institutionUUID}
 					| ) countByCC on tm.chatThreadUUID = countByCC.chatThreadUUID
 					| where (countByCC.threadLastReadAt < tm.sentAt or countByCC.threadLastReadAt is null)
-		    """.first[String](toString).get
+					| and tm.personUUID <> ${personUUID}
+		    """.first[String].get
   }
+  
+  def getTotalUnreadCountsByPersonPerThread(personUUID: String, institutionUUID: String) = {
+    TOs.newUnreadChatThreadsTO(sql"""
+				| select count(tm.uuid) as unreadMessages,
+					| countByCC.chatThreadUUID,
+					| countByCC.chatThreadName,
+					| countByCC.courseClassUUID
+				| from ChatThreadMessage tm
+				| join (
+					| select t.uuid as chatThreadUUID,
+					| tp.lastReadAt as threadLastReadAt,
+					| ccs.courseClassUUID,
+					| t.name as chatThreadName
+					| from ChatThread t
+					| join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID
+					| left join CourseClassSupportChatThread ccs on ccs.chatThreadUUID = t.uuid
+					| where tp.PersonUUID = ${personUUID}
+					| and t.institutionUUID = ${institutionUUID}
+				| ) countByCC on tm.chatThreadUUID = countByCC.chatThreadUUID
+				| where (countByCC.threadLastReadAt < tm.sentAt or countByCC.threadLastReadAt is null)
+				| and tm.personUUID <> ${personUUID}
+				| group by countByCC.chatThreadUUID
+				| order by max(tm.sentAt) desc
+		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
+  }
+
+  def getChatThreadMessages(chatThreadUUID: String) = {
+    TOs.newChatThreadMessagesTO(sql"""
+				| select p.fullName as senderFullName, tm.sentAt, tm.message from
+				| 	ChatThreadMessage tm 
+				| 	join Person p on p.uuid = tm.personUUID
+				| 	where tm.chatThreadUUID = ${chatThreadUUID}
+				| 	order by tm.sentAt
+		    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
+  } 
 }

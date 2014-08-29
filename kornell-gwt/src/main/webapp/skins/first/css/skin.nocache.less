@@ -45,17 +45,102 @@ body {
     -webkit-box-shadow: inset 0 0 6px fade(@tableBackgroundColor, 50%) !important; 
     border-radius: 5px;
 }
-.messagesPopup.fade {
-  left: -25%;
-  -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
-     -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
-       -o-transition: opacity 0.3s linear, left 0.3s ease-out;
-          transition: opacity 0.3s linear, left 0.3s ease-out;
+
+
+.messageInboxPanel{
+	width: @wrapperWidth;
+	margin: 0 auto;
+	height: 100%;
+	margin-top: 10px;
+	@border: 1px solid fade(@niceTextColor, 50%);
+	.sidePanel{
+		width: @wrapperWidth * .3;
+		.boxSizing;
+		.threadListItem{
+			.boxSizing;
+			color: @niceTextColor;
+			background-color: @tableBackgroundColor;
+			font-size: 12px;
+			line-height: 20px;
+			margin-bottom: 8px;
+			margin-right: 16px;
+			border-radius: 8px;
+			padding: 5px;
+			border: @border;
+			&:hover {
+				background-color: @tableBackgroundHoverColor;
+			}
+		}
+		.selected{
+			background-color: @tableBackgroundHoverColor;
+		}
+	}
+	.threadPanel{
+		width: @wrapperWidth * .7;
+		background-color: @tableBackgroundColor;
+		padding: 10px;
+		.boxSizing;
+		border: 1px solid rgba(128, 128, 128, 0.51);
+		border-radius: 8px;
+		.threadTitle{
+			font-size: 14px;
+			color: @textInfoColor;
+			padding-bottom: 15px;
+			margin-bottom: 5px;
+			border-bottom: @border;
+			text-align: center;
+		}
+		.threadPanelItemsScroll{
+			max-height: 400px;
+			margin-bottom: 20px;
+			padding-right: 5px;
+			.threadMessageWrapper{
+				.threadMessageHeader{
+					color: @textHighlightDiscreteColor;
+					font-size: 8px;
+					font-size: 10px;
+					margin-bottom: 5px;
+				}
+				.threadMessageItem{
+					color: @niceTextColor;
+					font-size: 12px;
+					min-height: 25px;
+					margin-bottom: 5px;
+					border-bottom: @border;
+					padding: 0px 10px;
+				}
+			}
+		}
+		.sendMessageWrapper{
+			.boxSizing;
+			.messageTextArea{
+				.boxSizing;
+				width: 83%;
+				float: left;
+				height: 60px;
+				font-size: 12px;
+				line-height: 14px;
+			}
+			.btnSend{
+				.boxSizing;
+				width: 15%;
+				float: left;
+				margin-top: 40px;
+				margin-left: 10px;
+			}
+		}
+	}
 }
 
-.messagesPopup.fade.in {
-  left: 50%;
-}​
+
+
+
+
+
+
+
+
+
 
 .messagesPopup{
 	right: 0 !important;
