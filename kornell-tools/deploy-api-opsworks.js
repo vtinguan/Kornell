@@ -3,6 +3,9 @@ var AWS = require('aws-sdk');
 
 // Environment Variables
 var warFile = process.env.KNL_API_WAR || "kornell-api/kornell-api.war";
+var warBucket = process.env.KNL_WAR_BUCKET || "dist-sa-east-1.craftware.com";
+var warKey = process.env.KNL_WAR_KEY || "Kornell/kornell-api.war"
+
 var stackId = process.env.KNL_STACK_ID;
 var appId = process.env.KNL_APP_ID;
 
@@ -11,8 +14,6 @@ AWS.config.update({
 	logger : process.stdout
 });
 
-var warBucket = "dist-sa-east-1.craftware.com";
-var warKey = "Kornell/kornell-api.war"
 var skipUpload = ("true" == process.env.KNL_SKIP_UPLOAD)
 var s3 = new AWS.S3();
 var opsworks = new AWS.OpsWorks({region: 'us-east-1'});
@@ -45,7 +46,6 @@ function withWarFile(data) {
 		}, fireDeploy);
 	} else
 		fireDeploy();
-
 }
 
 function uploadNewVersion() {
@@ -73,6 +73,5 @@ function suicide(msg){
 	console.error("ERROR: "+msg)
 	process.exit(1); 
 }
-
 
 main();
