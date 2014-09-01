@@ -285,7 +285,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	
 	@UiHandler("btnMessages")
 	void handleMessages(ClickEvent e) {
-		clientFactory.getPlaceController().goTo(new MessagePlace("INBOX"));
+		clientFactory.getPlaceController().goTo(new MessagePlace());
 	}
 	
 	@Override
@@ -311,7 +311,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		if(btnMessages.getWidgetCount() == 3){
 			btnMessages.remove(2);
 		}
-		this.messagesCount = new Label(event.getUnreadMessagesCount());
+		String labelText = "0".equals(event.getUnreadMessagesCount()) ? "" : event.getUnreadMessagesCount();
+		this.messagesCount = new Label(labelText);
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");
 		btnMessages.add(messagesCount);

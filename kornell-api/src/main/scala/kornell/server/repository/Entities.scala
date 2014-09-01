@@ -283,10 +283,9 @@ object Entities {
     repo
   }
 
-  def newChatThread(uuid: String = null, name: String = null, createdAt: Date = null, institutionUUID: String = null) = {
+  def newChatThread(uuid: String = null, createdAt: Date = null, institutionUUID: String = null) = {
     val chatThread = factory.newChatThread.as
     chatThread.setUUID(uuid)
-    chatThread.setName(name)
     chatThread.setCreatedAt(createdAt)
     chatThread.setInstitutionUUID(institutionUUID)
     chatThread

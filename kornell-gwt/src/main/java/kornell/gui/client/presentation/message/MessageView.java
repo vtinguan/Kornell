@@ -9,16 +9,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface MessageView  extends IsWidget {
 	public interface Presenter extends IsWidget {
-
 		void threadClicked(UnreadChatThreadTO unreadChatThreadTO);
-
 		void sendMessage(String text);
-
+		void filterAndShowThreads();
 	}
 
 	void setPresenter(Presenter presenter);
-
 	void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID);
-
 	void updateThreadPanel(List<ChatThreadMessageTO> chatThreadMessageTOs, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName);
+	void addMessagesToThreadPanel(List<ChatThreadMessageTO> chatThreadMessageTOs, String currentUserFullName);
 }

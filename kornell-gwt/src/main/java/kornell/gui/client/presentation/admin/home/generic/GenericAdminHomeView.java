@@ -15,8 +15,11 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
+import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.presentation.message.MessagePresenter;
+import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
@@ -52,6 +55,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -78,6 +82,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private KornellSession session;
 	private EventBus bus;
+	private PlaceController placeCtrl;
+	private ViewFactory viewFactory;
 	private AdminHomeView.Presenter presenter;
 	final CellTable<EnrollmentTO> table;
 	private List<EnrollmentTO> enrollmentsCurrent;
@@ -174,11 +180,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
+	private MessagePresenter messagePresenter;
 
 	// TODO i18n xml
-	public GenericAdminHomeView(final KornellSession session, EventBus bus) {
+	public GenericAdminHomeView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory, MessagePresenter messagePresenter) {
 		this.session = session;
 		this.bus = bus;
+		this.placeCtrl = placeCtrl;
+		this.viewFactory = viewFactory;
+		this.messagePresenter = messagePresenter;
 		initWidget(uiBinder.createAndBindUi(this));
 		tabsPanel.setVisible(false);
 		table = new CellTable<EnrollmentTO>();
@@ -281,6 +291,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			reportsPanel.clear();
 			reportsTab.setActive(false);
 			reportsView = null;
+			messagesTab.setActive(false);
+			messagesView = null;
 			if (adminsTab != null)
 				adminsTab.setActive(false);
 			enrollmentsTab.setActive(true);
@@ -309,7 +321,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	@Override
 	public void buildMessagesView() {
 		if (messagesView == null) {
-			messagesView = new GenericCourseClassMessagesView(session, bus, presenter, Dean.getInstance().getCourseClassTO());
+			messagesView = new GenericCourseClassMessagesView(session, bus, placeCtrl, viewFactory, messagePresenter, Dean.getInstance().getCourseClassTO());
+			messagePresenter.filterAndShowThreads();
 		}
 		messagesPanel.clear();
 		messagesPanel.add(messagesView);

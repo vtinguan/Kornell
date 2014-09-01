@@ -3,9 +3,12 @@ package kornell.gui.client.presentation.message.generic;
 import java.util.ArrayList;
 import java.util.List;
 
+import kornell.api.client.Callback;
 import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.UnreadMessagesFetchedEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
 
@@ -14,9 +17,14 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -34,6 +42,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	private static FormHelper formHelper = GWT.create(FormHelper.class);
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private MessageView.Presenter presenter;
+
 
 	private List<Label> sideItems;
 
@@ -69,7 +78,6 @@ public class GenericMessageView extends Composite implements MessageView {
 			final Label label = new Label(unreadChatThreadTO.getChatThreadName() + " (" + unreadChatThreadTO.getUnreadMessages() + ")");
 			label.addStyleName("threadListItem");
 			label.addClickHandler(new ClickHandler() {
-				
 				@Override
 				public void onClick(ClickEvent event) {
 					for (Label lbl : sideItems) {
@@ -92,7 +100,21 @@ public class GenericMessageView extends Composite implements MessageView {
 		threadTitle.setText(unreadChatThreadTO.getChatThreadName());
 		
 		threadPanelItems.clear();
-		for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessageTOs) {
+		addMessagesToThreadPanel(chatThreadMessageTOs, currentUserFullName);
+    
+    messageTextArea.setFocus(true);
+    messageTextArea.addKeyUpHandler(new KeyUpHandler() {
+        @Override
+        public void onKeyUp(KeyUpEvent event) {
+          if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && event.isAnyModifierKeyDown() && event.isControlKeyDown())
+            doSend(null);
+        }
+    });
+  }
+
+	@Override
+	public void addMessagesToThreadPanel(List<ChatThreadMessageTO> chatThreadMessageTOs, String currentUserFullName) {
+	  for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessageTOs) {
 			FlowPanel threadMessageWrapper = new FlowPanel();
 			threadMessageWrapper.addStyleName("threadMessageWrapper");
 			

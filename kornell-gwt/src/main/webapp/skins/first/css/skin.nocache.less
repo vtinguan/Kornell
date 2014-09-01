@@ -53,26 +53,33 @@ body {
 	height: 100%;
 	margin-top: 10px;
 	@border: 1px solid fade(@niceTextColor, 50%);
-	.sidePanel{
-		width: @wrapperWidth * .3;
-		.boxSizing;
-		.threadListItem{
+	.sidePanelScroll{
+		max-height: 433px;
+		margin-right: 10px;
+		border: @border;
+		padding: 5px;
+		border-radius: 8px;
+		.sidePanel{
+			width: @wrapperWidth * .25;
+			margin-right: 14px;
 			.boxSizing;
-			color: @niceTextColor;
-			background-color: @tableBackgroundColor;
-			font-size: 12px;
-			line-height: 20px;
-			margin-bottom: 8px;
-			margin-right: 16px;
-			border-radius: 8px;
-			padding: 5px;
-			border: @border;
-			&:hover {
+			.threadListItem{
+				.boxSizing;
+				color: @niceTextColor;
+				background-color: @tableBackgroundColor;
+				font-size: 12px;
+				line-height: 20px;
+				margin-bottom: 8px;
+				border-radius: 8px;
+				padding: 5px;
+				border: @border;
+				&:hover {
+					background-color: @tableBackgroundHoverColor;
+				}
+			}
+			.selected{
 				background-color: @tableBackgroundHoverColor;
 			}
-		}
-		.selected{
-			background-color: @tableBackgroundHoverColor;
 		}
 	}
 	.threadPanel{
@@ -91,7 +98,7 @@ body {
 			text-align: center;
 		}
 		.threadPanelItemsScroll{
-			max-height: 400px;
+			max-height: 300px;
 			margin-bottom: 20px;
 			padding-right: 5px;
 			.threadMessageWrapper{
@@ -108,6 +115,7 @@ body {
 					margin-bottom: 5px;
 					border-bottom: @border;
 					padding: 0px 10px;
+					white-space: pre-wrap;
 				}
 			}
 		}

@@ -9,8 +9,11 @@ public class ChatThreadsClient extends RESTClient {
 		POST("/chatThreads/courseClass/" + courseClassUUID).sendRequest(message, callback);
 	}
 	
-	public void postMessageToChatThread(String message, String chatThreadUUID, Callback<Void> callback) {
-		POST("/chatThreads/"+chatThreadUUID+"/message").sendRequest(message, callback);
+	public void postMessageToChatThread(String message, String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
+		postMessageToChatThread(message, chatThreadUUID, "", callback);
+	}
+	public void postMessageToChatThread(String message, String chatThreadUUID, String since, Callback<ChatThreadMessagesTO> callback) {
+		POST("/chatThreads/"+chatThreadUUID+"/message/?since="+since).sendRequest(message, callback);
 	}
 	
 	public void getTotalUnreadCount(String institutionUUID, Callback<String> callback) {
@@ -22,7 +25,11 @@ public class ChatThreadsClient extends RESTClient {
 	}
 	
 	public void getChatThreadMessages(String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
-		GET("/chatThreads/"+chatThreadUUID+"/messages").sendRequest(null, callback);
+		getChatThreadMessages(chatThreadUUID, "", callback);
+	}
+	
+	public void getChatThreadMessages(String chatThreadUUID, String since, Callback<ChatThreadMessagesTO> callback) {
+		GET("/chatThreads/"+chatThreadUUID+"/messages/?since="+since).sendRequest(null, callback);
 	}
 
 }

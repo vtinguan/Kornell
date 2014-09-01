@@ -1,4 +1,5 @@
 
+
 DROP TABLE IF EXISTS `ebdb`.`Message`;
 DROP TABLE IF EXISTS `ebdb`.`MessagePerson`;
 DROP TABLE IF EXISTS `ebdb`.`CourseClassSupportChatThread`;
@@ -8,9 +9,8 @@ DROP TABLE IF EXISTS `ebdb`.`ChatThread`;
 
 CREATE  TABLE IF NOT EXISTS `ebdb`.`ChatThread` (
   `uuid` CHAR(36) NOT NULL ,
-  `name` VARCHAR(255) ,
   `createdAt` CHAR(29) NULL ,
-  `institutionUUID` CHAR(29) NOT NULL,
+  `institutionUUID` CHAR(36) NOT NULL,
   PRIMARY KEY (`uuid`) ,
   INDEX `a_idx` (`institutionUUID` ASC) ,
   CONSTRAINT `fk_thread_institution_institutionUUID`
@@ -23,6 +23,7 @@ CREATE  TABLE IF NOT EXISTS `ebdb`.`ChatThreadParticipant` (
   `uuid` CHAR(36) NOT NULL ,
   `chatThreadUUID` CHAR(36) NOT NULL ,
   `personUUID` VARCHAR(45) NOT NULL ,
+  `chatThreadName` VARCHAR(255) ,
   `lastReadAt` CHAR(29) NULL ,
   PRIMARY KEY (`uuid`) ,
   INDEX `a_idx` (`chatThreadUUID` ASC) ,

@@ -12,6 +12,7 @@ import kornell.core.to.UnreadChatThreadsTO
 import kornell.server.repository.TOs
 import kornell.core.to.UnreadChatThreadTO
 import kornell.core.to.ChatThreadMessageTO
+import kornell.core.entity.CourseClass
 
 class ChatThreadsRepo {
 }
@@ -24,8 +25,8 @@ object ChatThreadsRepo {
       val courseClass = CourseClassRepo(courseClassUUID).get
       val chatThreadUUID = getCourseClassSupportChatThreadUUID(personUUID, courseClass.getUUID)
       if(!chatThreadUUID.isDefined){
-        val chatThread = createChatThread(getSupportChatThreadName(courseClass.getName), courseClass.getInstitutionUUID)
-        updateChatThreadParticipants(personUUID, chatThread, courseClass.getUUID)
+        val chatThread = createChatThread(courseClass.getInstitutionUUID)
+        updateChatThreadParticipants(personUUID, chatThread, courseClass)
         createCourseClassSupportChatThread(chatThread.getUUID, courseClass.getUUID, personUUID)
         createChatThreadMessage(chatThread.getUUID, personUUID, message)
       } else {
@@ -34,20 +35,20 @@ object ChatThreadsRepo {
       ""
   }
 
-  def updateChatThreadParticipants(personUUID: String, chatThread: ChatThread, courseClassUUID: String) = {
-    val participantsThatShouldExist = RolesRepo.getCourseClassThreadSupportParticipants(courseClassUUID, chatThread.getInstitutionUUID, null)
+  def updateChatThreadParticipants(personUUID: String, chatThread: ChatThread, courseClass: CourseClass) = {
+    val participantsThatShouldExist = RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, chatThread.getInstitutionUUID, null)
     		.getRoleTOs.asScala.map(_.getRole.getPersonUUID).union(List(personUUID))
     val participants = getChatTreadParticipantsUUIDs(chatThread.getUUID)
     val createThese = participantsThatShouldExist.filterNot(participants.contains)
     val removeThese = participants.filterNot(participantsThatShouldExist.contains)
-    createThese.foreach(createChatThreadParticipant(chatThread.getUUID, _))
+    createThese.foreach(createChatThreadParticipant(chatThread.getUUID, _, getSupportChatThreadName(courseClass.getName)))
     removeThese.foreach(removeChatThreadParticipant(chatThread.getUUID, _))
   }
 
-  def createChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
+  def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, chatThreadName: String) = {
     sql"""
-		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt)
-		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, null)""".executeUpdate
+		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, chatThreadName)
+		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, null, ${chatThreadName})""".executeUpdate
   }
 
   def removeChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
@@ -57,16 +58,16 @@ object ChatThreadsRepo {
     	and personUUID = ${personUUID}""".executeUpdate
   }
 
-  def createChatThread(name: String, institutionUUID: String): ChatThread = {
-      createChatThread(Entities.newChatThread(UUID.random, name, new Date(), institutionUUID))
+  def createChatThread(institutionUUID: String): ChatThread = {
+      createChatThread(Entities.newChatThread(UUID.random, new Date(), institutionUUID))
   }
 
   def createChatThread(chatThread: ChatThread): ChatThread = {
     if (chatThread.getUUID == null)
       chatThread.setUUID(UUID.random)
     sql"""
-		insert into ChatThread (uuid, name, createdAt, institutionUUID)
-		values (${chatThread.getUUID}, ${chatThread.getName} , ${chatThread.getCreatedAt}, ${chatThread.getInstitutionUUID})
+		insert into ChatThread (uuid, createdAt, institutionUUID)
+		values (${chatThread.getUUID}, ${chatThread.getCreatedAt}, ${chatThread.getInstitutionUUID})
 	  """.executeUpdate
 	  chatThread
   }
@@ -138,10 +139,10 @@ object ChatThreadsRepo {
 					| countByCC.courseClassUUID
 				| from ChatThreadMessage tm
 				| join (
-					| select t.uuid as chatThreadUUID,
+					| select distinct t.uuid as chatThreadUUID,
 					| tp.lastReadAt as threadLastReadAt,
 					| ccs.courseClassUUID,
-					| t.name as chatThreadName
+					| tp.chatThreadName as chatThreadName
 					| from ChatThread t
 					| join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID
 					| left join CourseClassSupportChatThread ccs on ccs.chatThreadUUID = t.uuid
@@ -161,6 +162,17 @@ object ChatThreadsRepo {
 				| 	ChatThreadMessage tm 
 				| 	join Person p on p.uuid = tm.personUUID
 				| 	where tm.chatThreadUUID = ${chatThreadUUID}
+				| 	order by tm.sentAt
+		    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
+  } 
+
+  def getChatThreadMessagesSince(chatThreadUUID: String, lastFetchedMessageSentAt: String) = {
+    TOs.newChatThreadMessagesTO(sql"""
+				| select p.fullName as senderFullName, tm.sentAt, tm.message from
+				| 	ChatThreadMessage tm 
+				| 	join Person p on p.uuid = tm.personUUID
+				| 	where tm.chatThreadUUID = ${chatThreadUUID}
+    	  |   and tm.sentAt > ${lastFetchedMessageSentAt}
 				| 	order by tm.sentAt
 		    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
   } 

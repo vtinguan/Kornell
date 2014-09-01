@@ -1,14 +1,14 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui' 
-  xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-  xmlns:knl="urn:import:kornell.gui.client.util.view.formfield">
+  xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
   <g:FlowPanel addStyleNames="messageInboxPanel">
-     <g:FlowPanel ui:field="sidePanel" addStyleNames="sidePanel left">
-     </g:FlowPanel>
+     <g:ScrollPanel addStyleNames="sidePanelScroll left">
+      <g:FlowPanel ui:field="sidePanel" addStyleNames="sidePanel left"></g:FlowPanel>
+     </g:ScrollPanel>
      <g:FlowPanel ui:field="threadPanel" addStyleNames="threadPanel left">
        <g:Label ui:field="threadTitle" addStyleNames="threadTitle"></g:Label>
        <g:ScrollPanel ui:field="threadPanelItemsScroll" addStyleNames="threadPanelItemsScroll">
-        <g:FlowPanel ui:field="threadPanelItems"></g:FlowPanel>
+        <g:FlowPanel ui:field="threadPanelItems" addStyleNames="threadPanelItems"></g:FlowPanel>
        </g:ScrollPanel>
        <g:FlowPanel addStyleNames="sendMessageWrapper">
         <b:TextArea ui:field="messageTextArea" addStyleNames="messageTextArea"></b:TextArea>

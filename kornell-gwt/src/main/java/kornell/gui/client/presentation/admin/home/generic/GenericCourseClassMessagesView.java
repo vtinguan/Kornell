@@ -8,6 +8,8 @@ import kornell.core.entity.CourseClass;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.message.MessageView;
@@ -15,6 +17,7 @@ import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -32,12 +35,14 @@ public class GenericCourseClassMessagesView extends Composite {
 
 	private EventBus bus;
 	private KornellSession session;
+	PlaceController placeCtrl;
+	ViewFactory viewFactory;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
 	private boolean isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
-	private Presenter presenter;
+	private MessagePresenter presenter;
 
 	@UiField
 	FlowPanel messagesPanel;
@@ -48,10 +53,12 @@ public class GenericCourseClassMessagesView extends Composite {
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	
-	public GenericCourseClassMessagesView(final KornellSession session, EventBus bus,
-			Presenter presenter, CourseClassTO courseClassTO) {
+	public GenericCourseClassMessagesView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory,
+			MessagePresenter presenter, CourseClassTO courseClassTO) {
 		this.session = session;
 		this.bus = bus;
+		this.placeCtrl = placeCtrl;
+		this.viewFactory = viewFactory;
 		this.presenter = presenter;
 		this.user = session.getCurrentUser();
 		formHelper = new FormHelper();
@@ -99,10 +106,7 @@ public class GenericCourseClassMessagesView extends Composite {
 
 	private FlowPanel getMessagesContent() {
 		FlowPanel reportContentPanel = new FlowPanel();
-		
-		MessageView.Presenter messageInboxPresenter = new MessagePresenter(null);
-		reportContentPanel.add(messageInboxPresenter.asWidget());
-		
+		reportContentPanel.add(presenter.asWidget());
 		return reportContentPanel;
 	}
 

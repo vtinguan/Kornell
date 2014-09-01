@@ -57,7 +57,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericHomeView genericHomeView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
-	private MessagePresenter messagePresenter;
+	private MessagePresenter messagePresenter, messagePresenterCourseClass;
 
 	SimplePanel shell = new SimplePanel();
 
@@ -214,7 +214,9 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public AdminHomeView getAdminHomeView() {
-		return new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus());
+		if(messagePresenterCourseClass == null)
+			messagePresenterCourseClass = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), true);
+		return new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), messagePresenterCourseClass);
 	}
 
 	@Override
@@ -225,7 +227,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
   public MessagePresenter getMessagePresenter() {
 		if(messagePresenter == null)
-			messagePresenter = new MessagePresenter(clientFactory);
+			messagePresenter = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 	  return messagePresenter;
   }
 }
