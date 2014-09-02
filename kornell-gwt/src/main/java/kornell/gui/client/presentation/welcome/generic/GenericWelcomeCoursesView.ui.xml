@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:ScrollPanel>
-		<g:FlowPanel ui:field="coursesPanel" addStyleNames="pnlRight">
+		<g:FlowPanel ui:field="coursesWrapper" addStyleNames="coursesWrapper">
 			<g:FlowPanel addStyleNames="btnPanel">
 				<g:Button ui:field="btnCoursesToAcquire" addStyleNames="btnCourses"/>
 				<g:Button ui:field="btnCoursesFinished" addStyleNames="btnCourses"/>

@@ -49,6 +49,8 @@ public class Dean{
 			setDefaultFavicon();
 		}
 		
+		updateSkin(institution.getSkin());
+		
 		String name = institution.getFullName();
 		if(name != null){
 			Document.get().setTitle(name);
@@ -62,12 +64,25 @@ public class Dean{
 	}
 
 	private static native void updateFavicon(String url) /*-{
-		var link = document.createElement('link'),
-		oldLink = document.getElementById('icon');
+		var link = $wnd.document.createElement('link'),
+		oldLink = $wnd.document.getElementById('icon');
 		link.id = 'icon';
 		link.rel = 'shortcut icon';
 		link.type = 'image/x-icon';
 		link.href = url;
+		if (oldLink) {
+		 	$wnd.document.head.removeChild(oldLink);
+		}
+		$wnd.document.getElementsByTagName('head')[0].appendChild(link);
+	}-*/;
+
+	private static native void updateSkin(String skinName) /*-{
+		var link = $wnd.document.createElement('link'),
+		oldLink = $wnd.document.getElementById('Skin');
+		link.id = 'Skin';
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = 'skins/first/css/skin'+ (skinName ? skinName : '') + '.nocache.css';
 		if (oldLink) {
 		 	$wnd.document.head.removeChild(oldLink);
 		}

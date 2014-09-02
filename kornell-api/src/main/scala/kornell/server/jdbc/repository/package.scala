@@ -20,6 +20,8 @@ import kornell.core.entity.Institution
 import kornell.core.to.EnrollmentTO
 import kornell.core.entity.CourseClassState
 import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.core.to.UnreadChatThreadTO
+import kornell.core.to.ChatThreadMessageTO
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -41,7 +43,8 @@ package object repository {
         rs.getString("assetsURL"),
         rs.getString("baseURL"),
         rs.getBoolean("demandsPersonContactDetails"),
-        rs.getDate("activatedAt"))   
+        rs.getDate("activatedAt"),
+        rs.getString("skin"))   
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
@@ -173,6 +176,17 @@ package object repository {
     }
     role
   }
+	
+	implicit def toUnreadChatThreadTO(rs:ResultSet):UnreadChatThreadTO = newUnreadChatThreadTO(
+	    rs.getString("unreadMessages"),
+	    rs.getString("chatThreadUUID"), 
+	    rs.getString("chatThreadName"),
+	    rs.getString("courseClassUUID"))
+	
+	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
+	    rs.getString("senderFullName"),
+	    rs.getString("sentAt"), 
+	    rs.getString("message"))
   
 
 }

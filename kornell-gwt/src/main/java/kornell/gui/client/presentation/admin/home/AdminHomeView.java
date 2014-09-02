@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.admin.home;
 
 import java.util.List;
 
+import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
@@ -24,10 +25,11 @@ public interface AdminHomeView extends IsWidget {
 		List<EnrollmentTO> getEnrollments();
 		void deleteEnrollment(EnrollmentTO enrollmentTO);
 		void onGenerateCertificate(EnrollmentTO enrollmentTO);
+		void upsertCourseClass(CourseClass courseClass);
 	}
 
 	void setPresenter(Presenter presenter);
-	void setEnrollmentList(List<EnrollmentTO> enrollments);
+	void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, boolean refresh);
 	void showModal(boolean b);
 	void setModalErrors(String title, String lbl1, String errors, String lbl2);
 	void setCourseClassName(String courseClassName);
@@ -41,6 +43,7 @@ public interface AdminHomeView extends IsWidget {
 	void buildAdminsView();
 	void buildConfigView(boolean isCreationMode);
 	void buildReportsView();
+	void buildMessagesView();
 	void prepareAddNewCourseClass(boolean addingNewCourseClass);
 	void setCanPerformEnrollmentAction(boolean allow);
 }

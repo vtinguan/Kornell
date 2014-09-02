@@ -11,6 +11,7 @@ import kornell.gui.client.validation.Validator;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -49,6 +50,7 @@ public class KornellFormFieldWrapper extends Composite {
 	KornellFormField<?> formField;
 
 	private Validator validator;
+	private String tooltipText;
 
 	public KornellFormFieldWrapper(String label, KornellFormField<?> formField) {
 		this(label, formField, true,null);
@@ -56,17 +58,23 @@ public class KornellFormFieldWrapper extends Composite {
 
 	public KornellFormFieldWrapper(String label, KornellFormField<?> formField,
 			boolean isEditMode){
-		this(label, formField, isEditMode,null);
+		this(label, formField, isEditMode, null);
 	}
 	
 	public KornellFormFieldWrapper(String label, KornellFormField<?> formField,
 			boolean isEditMode, Validator validator) {
+			this(label, formField, isEditMode, null, null);
+	}
+	
+	public KornellFormFieldWrapper(String label, KornellFormField<?> formField,
+			boolean isEditMode, Validator validator, String tooltipText) {
 
 		initWidget(uiBinder.createAndBindUi(this));
 		fieldLabel.setText(label);
 		this.formField = formField;
 		this.isEditMode = isEditMode;
 		this.validator = validator;
+		this.tooltipText = tooltipText;
 		initData(formField);
 	}
 
@@ -80,8 +88,13 @@ public class KornellFormFieldWrapper extends Composite {
 			fieldPanel.add(fieldTxt);
 		} else {
 			final Widget fieldWidget = formField.getFieldWidget();
-			
-			fieldPanel.add(fieldWidget);
+			if(tooltipText != null){
+				Tooltip tooltip = new Tooltip(tooltipText);
+				tooltip.add(fieldWidget);
+				fieldPanel.add(tooltip);
+			} else {
+				fieldPanel.add(fieldWidget);
+			}
 
 			if (fieldWidget instanceof HasChangeHandlers) {
 				HasChangeHandlers changeable = (HasChangeHandlers) fieldWidget;

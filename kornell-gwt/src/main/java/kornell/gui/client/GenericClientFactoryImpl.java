@@ -15,10 +15,12 @@ import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
@@ -110,17 +112,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				} else {
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
-						session.courseClasses().getCourseClassesTOByInstitution(
-								institution.getUUID(), courseClassesCallback);
+						session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 					} else {
 						startAnonymous();
 					}
 				}
-			}
-
-			@Override
-			public void unauthorized(String errorMessage) {
-				GWT.log(this.getClass().getName() + " - " + errorMessage);
 			}
 		};
 
@@ -148,9 +144,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		});
 
 	}
-	
-	
-
 
 	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");
@@ -184,6 +177,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void initPersonnel() {
 		new Captain(bus, session, placeCtrl);
 		new Stalker(bus, session);
+		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads(), placeCtrl);
 	}
 
 	private void initSCORM12() {

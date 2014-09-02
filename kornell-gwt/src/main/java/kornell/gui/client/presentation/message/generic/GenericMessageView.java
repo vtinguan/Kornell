@@ -1,214 +1,152 @@
 package kornell.gui.client.presentation.message.generic;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.KornellSession;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.EnrollmentTO;
-import kornell.gui.client.presentation.admin.home.generic.GenericCourseClassReportsView;
+import kornell.api.client.Callback;
+import kornell.core.to.ChatThreadMessageTO;
+import kornell.core.to.UnreadChatThreadTO;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.UnreadMessagesFetchedEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.uidget.KornellPagination;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.Collapse;
-import com.github.gwtbootstrap.client.ui.CollapseTrigger;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.Tab;
-import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextArea;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
+
 
 public class GenericMessageView extends Composite implements MessageView {
 
-	interface MyUiBinder extends UiBinder<Widget, GenericMessageView> {
+	interface GenericMessageUiBinder extends UiBinder<Widget, GenericMessageView> {
 	}
 
-	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private KornellSession session;
-	private EventBus bus;
+	private static GenericMessageUiBinder uiBinder = GWT.create(GenericMessageUiBinder.class);
+	private static FormHelper formHelper = GWT.create(FormHelper.class);
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private MessageView.Presenter presenter;
-	final CellTable<EnrollmentTO> table;
-	private List<EnrollmentTO> enrollmentsCurrent;
-	private List<EnrollmentTO> enrollments;
-	private KornellPagination pagination;
-	private TextBox txtSearch;
-	private Button btnSearch;
-	private List<CourseClassTO> courseClasses;
-	private Boolean enrollWithCPF = false;
-	private boolean isEnabled;
-	private Integer maxEnrollments = 0;
-	private Integer numEnrollments = 0;
-	private GenericCourseClassReportsView reportsView;
-	private FormHelper formHelper;
 
-	@UiField
-	FlowPanel adminHomePanel;
-	@UiField
-	FlowPanel courseClassesPanel;
-	@UiField
-	Button btnAddCourseClass;
-	@UiField
-	FlowPanel enrollmentsPanel;
-	@UiField
-	FlowPanel addEnrollmentsPanel;
-	@UiField
-	ListBox listBoxCourseClasses;
-	@UiField
-	Tab enrollmentsTab;
-	@UiField
-	Tab configTab;
-	@UiField
-	FlowPanel configPanel;
-	@UiField
-	Tab reportsTab;
-	@UiField
-	FlowPanel reportsPanel;
 
-	@UiField
-	Button btnAddEnrollment;
-	@UiField
-	Button btnAddEnrollmentBatch;
-	@UiField
-	Button btnAddEnrollmentBatchEnable;
-	@UiField
-	TextBox txtFullName;
-	@UiField
-	TextBox txtEmail;
-	@UiField
-	TextArea txtAddEnrollmentBatch;
-	@UiField
-	CollapseTrigger trigger;
-	@UiField
-	Collapse collapse;
-	@UiField
-	Label identifierLabel;
-	@UiField
-	FlowPanel infoPanelEmail;
-	@UiField
-	FlowPanel infoPanelCPF;
+	private List<Label> sideItems;
 
-	@UiField
-	Modal errorModal;
-	@UiField
-	Label txtModal1;
-	@UiField
-	Label txtModal2;
-	@UiField
-	TextArea txtModalError;
-	@UiField
-	Button btnModalOK;
-	@UiField
-	Button btnModalCancel;
+  @UiField FlowPanel sidePanel;
+  @UiField FlowPanel threadPanel;
+  @UiField ScrollPanel threadPanelItemsScroll;
+  @UiField FlowPanel threadPanelItems;
+  @UiField Label threadTitle;
+  @UiField TextArea messageTextArea;
+  @UiField Button btnSend;
 
-	@UiField
-	Label lblCourseClassName;
-	@UiField
-	Label lblCourseName;
-	@UiField
-	Label lblEnrollmentsCount;
-
-	@UiField
-	FlowPanel enrollmentsWrapper;
-
-	@UiField
-	TabPanel tabsPanel;
-
-	Tab adminsTab;
-	FlowPanel adminsPanel;
-	private String viewType;
-
-	// TODO i18n xml
-	public GenericMessageView(final KornellSession session, EventBus bus) {
-		this.session = session;
-		this.bus = bus;
+	public GenericMessageView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		tabsPanel.setVisible(false);
-		table = new CellTable<EnrollmentTO>();
-		pagination = new KornellPagination(table, enrollmentsCurrent);
-		formHelper = new FormHelper();
-
-		trigger.setTarget("#toggle");
-		collapse.setId("toggle");
-
-		txtModalError.setReadOnly(true);
-
-		btnModalOK.setText("OK".toUpperCase());
-		btnModalCancel.setText("Cancelar".toUpperCase());
-		btnAddCourseClass.setText("Criar Nova Turma");
-
-		//btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText() + "&nbsp;&nbsp;&#x25BC;");
-
-
-		enrollmentsTab.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				//presenter.updateCourseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-			}
-		});
-
-		configTab.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				buildConfigView(false);
-			}
-		});
-
-		// new ExceptionalRequestBuilder(RequestBuilder.PUT, url)
+    ensureDebugId("genericMessageInboxView");
 	}
 	
 	@Override
-	public String getViewType() {
-		return viewType;
-	}
-
-	//
-	public void prepareAddNewCourseClass(boolean addingNewCourseClass) {
-		adminHomePanel.clear();
-		if (!addingNewCourseClass) {
-			adminHomePanel.add(courseClassesPanel);
-			adminHomePanel.add(tabsPanel);
-			configPanel.clear();
-			configTab.setActive(false);
-			reportsPanel.clear();
-			reportsTab.setActive(false);
-			reportsView = null;
-			if (adminsTab != null)
-				adminsTab.setActive(false);
-			enrollmentsTab.setActive(true);
-		}
-	}
-
-	//@Override
-	public void buildConfigView(boolean isCreationMode) {
-		prepareAddNewCourseClass(isCreationMode);
-		if (isCreationMode) {
-			//adminHomePanel.add(new GenericCourseClassConfigView(session, presenter, null));
-		} else {
-			//configPanel.add(new GenericCourseClassConfigView(session, presenter, Dean.getInstance().getCourseClassTO()));
-		}
-	}
-	
-	//@Override
-	public void showTabsPanel(boolean visible) {
-		tabsPanel.setVisible(visible);
-	}
+  protected void onEnsureDebugId(String baseID) {
+		sidePanel.ensureDebugId(baseID + "-sidePanel");
+		threadPanel.ensureDebugId(baseID + "-threadPanel");
+  }
 
 	@Override
 	public void setPresenter(Presenter p) {
 		presenter = p;
-		// TODO Auto-generated method stub
+	}
+
+	@Override
+  public void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID) {
+		sidePanel.clear();
+		sideItems = new ArrayList<Label>();
+		for (final UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadsTO) {
+			String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
+			appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
+			final Label label = new Label();
+			label.addStyleName("threadListItem");
+			label.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					for (Label lbl : sideItems) {
+	          lbl.removeStyleName("selected");
+          }
+          label.addStyleName("selected");
+					presenter.threadClicked(unreadChatThreadTO);
+				}
+			});
+			if(unreadChatThreadTO.getChatThreadUUID().equals(selectedChatThreadUUID)){
+        label.addStyleName("selected");
+			}
+			label.getElement().setInnerHTML(unreadChatThreadTO.getChatThreadName() + appendCount);
+			sidePanel.add(label);
+			sideItems.add(label);
+    }
+  }
+
+	@Override
+  public void updateThreadPanel(List<ChatThreadMessageTO> chatThreadMessageTOs, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
+		threadTitle.setText(unreadChatThreadTO.getChatThreadName());
+		
+		threadPanelItems.clear();
+		addMessagesToThreadPanel(chatThreadMessageTOs, currentUserFullName);
+    
+    messageTextArea.setFocus(true);
+    messageTextArea.addKeyUpHandler(new KeyUpHandler() {
+        @Override
+        public void onKeyUp(KeyUpEvent event) {
+          if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && event.isAnyModifierKeyDown() && event.isControlKeyDown())
+            doSend(null);
+        }
+    });
+		
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		    		threadPanelItemsScroll.scrollToBottom();
+		      }
+		});
+  }
+
+	@Override
+	public void addMessagesToThreadPanel(List<ChatThreadMessageTO> chatThreadMessageTOs, String currentUserFullName) {
+	  for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessageTOs) {
+			FlowPanel threadMessageWrapper = new FlowPanel();
+			threadMessageWrapper.addStyleName("threadMessageWrapper");
+			
+			Label header = new Label(chatThreadMessageTO.getSenderFullName() + " em " + formHelper.getStringFromDate(chatThreadMessageTO.getSentAt()));
+			header.addStyleName("threadMessageHeader");
+			if(!currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
+				header.addStyleName("rightText");
+			}
+			threadMessageWrapper.add(header);
+			
+			Label item = new Label(chatThreadMessageTO.getMessage());
+			item.addStyleName("threadMessageItem");
+			threadMessageWrapper.add(item);
+			
+			threadPanelItems.add(threadMessageWrapper);
+    }
+  }
+
+	@UiHandler("btnSend")
+	void doSend(ClickEvent e) {
+		if(messageTextArea.getText().length() > 0)
+			presenter.sendMessage(messageTextArea.getText());
+		messageTextArea.setText("");
 	}
 }

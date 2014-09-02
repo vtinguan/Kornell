@@ -70,8 +70,8 @@
 							<b:TextArea ui:field="txtModalError"></b:TextArea>
 							<g:Label ui:field="txtModal2"></g:Label>
 							<g:FlowPanel addStyleNames="standardButtonBar">
-								<b:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard" size="MINI"/>
-								<b:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard" size="MINI"/>
+								<g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
+								<g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
 							</g:FlowPanel>
 						</g:FlowPanel>
 					</b:Modal>
@@ -82,6 +82,9 @@
 		  </b:Tab>
       <b:Tab ui:field="reportsTab" icon="BAR_CHART" heading="Relatórios" active="false">
         <g:FlowPanel ui:field="reportsPanel"></g:FlowPanel >
+      </b:Tab>
+      <b:Tab ui:field="messagesTab" icon="ENVELOPE" heading="Mensagens" active="false">
+        <g:FlowPanel ui:field="messagesPanel"></g:FlowPanel >
       </b:Tab>
 		</b:TabPanel>
 		

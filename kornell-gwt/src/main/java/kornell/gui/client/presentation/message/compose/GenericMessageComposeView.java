@@ -1,77 +1,131 @@
 package kornell.gui.client.presentation.message.compose;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Message;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.EnrollmentTO;
-import kornell.gui.client.presentation.admin.home.generic.GenericCourseClassReportsView;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.uidget.KornellPagination;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.Collapse;
-import com.github.gwtbootstrap.client.ui.CollapseTrigger;
 import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.Tab;
-import com.github.gwtbootstrap.client.ui.TabPanel;
-import com.github.gwtbootstrap.client.ui.TextArea;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
+
 
 public class GenericMessageComposeView extends Composite implements MessageComposeView {
 
-	interface MyUiBinder extends UiBinder<Widget, GenericMessageComposeView> {
+	interface GenericMessageComposeUiBinder extends UiBinder<Widget, GenericMessageComposeView> {
 	}
 
-	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private KornellSession session;
-	private EventBus bus;
-	private EntityFactory entityFactory;
+	private static GenericMessageComposeUiBinder uiBinder = GWT.create(GenericMessageComposeUiBinder.class);
+	private static FormHelper formHelper = GWT.create(FormHelper.class);
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private MessageComposeView.Presenter presenter;
 
+  KornellFormFieldWrapper recipient, messageText;
+	private List<KornellFormFieldWrapper> fields;
 
-	Tab adminsTab;
-	FlowPanel adminsPanel;
-	private String viewType;
+	@UiField Label lblTitle;
+	@UiField Label lblSubTitle;
+	@UiField Image separatorBar;
+  @UiField FlowPanel fieldsPanel;
+  @UiField Button btnOK;
+  @UiField Button btnCancel;
 
-	// TODO i18n xml
-	public GenericMessageComposeView(final KornellSession session, EventBus bus, EntityFactory entityFactory) {
-		this.session = session;
-		this.bus = bus;
-		this.entityFactory = entityFactory;
+	public GenericMessageComposeView() {
 		initWidget(uiBinder.createAndBindUi(this));
+    ensureDebugId("genericMessageComposeView");
 	}
 	
 	@Override
-	public Message getMessage(){
-		Message message = entityFactory.newMessage().as();
-		message.setSubject("");
-		message.setBody("");
-		message.setSenderUUID(session.getCurrentUser().getPerson().getUUID());
-		message.setParentMessageUUID(null);
-		message.setSentAt(new Date());
-		message.setUUID(null);
-		return message;
+	public void show(String courseClassUUID){
+			initialize(courseClassUUID);
 	}
+ 
+  private void initialize(String courseClassUUID) {
+  	lblTitle.setText(constants.composeTitle());
+  	lblSubTitle.setText(constants.composeSubTitle());
+  	separatorBar.setUrl(FormHelper.SEPARATOR_BAR_IMG_PATH);
+  	separatorBar.addStyleName(FormHelper.SEPARATOR_BAR_CLASS);
+  	
+		this.fields = new ArrayList<KornellFormFieldWrapper>();
+		fieldsPanel.clear();
 
+		final ListBox recipients = new ListBox();
+
+		
+		
+		List<CourseClassTO> courseClasses = Dean.getInstance().getCourseClassesTO().getCourseClasses();
+		if(courseClasses != null){
+			for (CourseClassTO courseClassTO : courseClasses) {
+				if(courseClassTO.getEnrollment() != null){
+					recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
+				}
+			}
+		}
+
+		recipients.setSelectedValue(courseClassUUID);
+		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), courseClasses.size() > 1 && courseClassUUID == null);
+		fields.add(recipient);
+		fieldsPanel.add(recipient);
+
+  	messageText = new KornellFormFieldWrapper(constants.message(), formHelper.createTextAreaFormField(""), true);
+		fields.add(messageText);
+		fieldsPanel.add(messageText);
+  }
+
+	@Override
+  protected void onEnsureDebugId(String baseID) {
+		recipient.ensureDebugId(baseID + "-recipient");
+  	messageText.ensureDebugId(baseID + "-messageText");
+  	btnOK.ensureDebugId(baseID + "-btnOK");
+  	btnCancel.ensureDebugId(baseID + "-btnCancel");
+  }
+
+  @UiHandler("btnOK")
+  void onOkButtonClicked(ClickEvent e) {
+    presenter.okButtonClicked();
+  }
+
+  @UiHandler("btnCancel")
+  void onCancelButtonClicked(ClickEvent e) {
+  	presenter.cancelButtonClicked();
+  }
+  
 	@Override
 	public void setPresenter(Presenter p) {
 		presenter = p;
-		// TODO Auto-generated method stub
 	}
+
+	@Override
+  public KornellFormFieldWrapper getRecipient() {
+	  return recipient;
+  }
+
+  @Override
+	public KornellFormFieldWrapper getMessageText() {
+		return messageText;
+	}
+
+	@Override
+  public boolean checkErrors() {
+	  return formHelper.checkErrors(fields);
+  }
+
+	@Override
+  public void clearErrors() {
+		formHelper.clearErrors(fields);
+  }
 }

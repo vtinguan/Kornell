@@ -8,10 +8,10 @@
 		  <g:FlowPanel addStyleNames="buttons">
         <b:Button ui:field="btnFullScreen" addStyleNames="menuBarButton" icon="FULLSCREEN" title="Tela Cheia"></b:Button>	
 				<b:Button ui:field="btnHome" addStyleNames="menuBarButton" icon="HOME" title="Página Inicial"></b:Button>		
-				<b:Button ui:field="btnAdmin" addStyleNames="menuBarButton" icon="BAR_CHART" title="Administração"></b:Button>		
+				<b:Button ui:field="btnAdmin" addStyleNames="menuBarButton" icon="COGS" title="Administração"></b:Button>		
 				<b:Button ui:field="btnProfile" addStyleNames="menuBarButton" icon="USER" title="Perfil"></b:Button>	
 				<b:Button ui:field="btnNotifications" addStyleNames="menuBarButton shy"></b:Button>		
-				<b:Button ui:field="btnMessages" addStyleNames="menuBarButton shy"></b:Button>
+				<b:Button ui:field="btnMessages" addStyleNames="menuBarButton" icon="ENVELOPE" title="Mensagens"></b:Button>
 				<b:Button ui:field="btnHelp" addStyleNames="menuBarButton" icon="QUESTION_SIGN" title="Ajuda"></b:Button>		
 				<b:Button ui:field="btnMenu" addStyleNames="menuBarButton shy"></b:Button>		
 				<b:Button ui:field="btnExit" addStyleNames="menuBarButton last" icon="OFF" title="Sair"></b:Button>		

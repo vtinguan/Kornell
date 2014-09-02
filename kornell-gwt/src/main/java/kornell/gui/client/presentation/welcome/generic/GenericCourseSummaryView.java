@@ -222,14 +222,10 @@ public class GenericCourseSummaryView extends Composite {
 								enrollmentTO.setEnrollment(enrollment);
 								enrollmentTO.setPerson(session.getCurrentUser().getPerson());
 								session.getCurrentUser().getEnrollmentsTO().getEnrollmentTOs().add(enrollmentTO);
-								for (CourseClassTO courseClassTO : Dean
-										.getInstance().getCourseClassesTO()
-										.getCourseClasses()) {
-									if (courseClassTO.getCourseClass()
-											.getUUID()
-											.equals(enrollment.getCourseClassUUID())) {
-										Dean.getInstance().setCourseClassTO(
-												courseClassTO);
+								for (CourseClassTO courseClassTO : Dean.getInstance().getCourseClassesTO().getCourseClasses()) {
+									if (courseClassTO.getCourseClass().getUUID().equals(enrollment.getCourseClassUUID())) {
+										courseClassTO.setEnrollment(enrollment);
+										Dean.getInstance().setCourseClassTO(courseClassTO);
 										break;
 									}
 								}

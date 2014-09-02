@@ -48,7 +48,6 @@ public class GenericTermsView extends Composite implements TermsView {
 	private EventBus bus;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
-	private String barLogoFileName = "logo300x80_light.png?1";
 
 
 	public GenericTermsView(ClientFactory clientFactory) {
@@ -82,6 +81,8 @@ public class GenericTermsView extends Composite implements TermsView {
 		titleUser.setText(session.getCurrentUser().getPerson().getFullName());
 		if (Dean.getInstance().getInstitution() != null) {
 			txtTerms.getElement().setInnerHTML(Dean.getInstance().getInstitution().getTerms());
+			String skin = Dean.getInstance().getInstitution().getSkin();
+			String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png?1";
 			institutionLogo.setUrl(Dean.getInstance().getInstitution().getAssetsURL() + barLogoFileName);
 		}
 	}
