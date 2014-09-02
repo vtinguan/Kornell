@@ -55,6 +55,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
+	private GenericAdminHomeView genericAdminHomeView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
 	private MessagePresenter messagePresenter, messagePresenterCourseClass;
@@ -216,7 +217,9 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	public AdminHomeView getAdminHomeView() {
 		if(messagePresenterCourseClass == null)
 			messagePresenterCourseClass = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), true);
-		return new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), messagePresenterCourseClass);
+		if(genericAdminHomeView == null)
+			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), messagePresenterCourseClass);
+		return genericAdminHomeView;
 	}
 
 	@Override

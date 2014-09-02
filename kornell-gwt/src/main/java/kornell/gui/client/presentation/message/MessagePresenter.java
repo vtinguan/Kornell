@@ -79,15 +79,9 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
   public void filterAndShowThreads() {
 	  this.unreadChatThreadsTO = filterTOWhenInsideAdminPanel(unreadChatThreadsTOFetchedFromEvent);
 		asWidget().setVisible(unreadChatThreadsTO.size() > 0);
-	  if(selectedChatThreadInfo == null && unreadChatThreadsTO.size() > 0){
-	  	threadClicked(unreadChatThreadsTO.get(0));
-	  	selectedChatThreadInfo = unreadChatThreadsTO.get(0);
-	  }
 	  if(unreadChatThreadsTO.size() == 0 && !isClassPresenter){
 	  	KornellNotification.show("Você não tem nenhuma conversa criada.", AlertType.INFO, 5000);
-	  } else if(unreadChatThreadsTO.size() > 0){
-	  	view.updateSidePanel(unreadChatThreadsTO, selectedChatThreadInfo.getChatThreadUUID());
-	  }
+	  } 
   }
 
 	private List<UnreadChatThreadTO> filterTOWhenInsideAdminPanel(List<UnreadChatThreadTO> unreadChatThreadTOs) {
@@ -98,6 +92,13 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	    	newUnreadChatThreadTOs.add(unreadChatThreadTO);
 	    }
     }
+	  if(selectedChatThreadInfo == null && newUnreadChatThreadTOs.size() > 0){
+	  	threadClicked(newUnreadChatThreadTOs.get(0));
+	  	selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
+	  }
+	  if(newUnreadChatThreadTOs.size() > 0){
+	  	view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID());
+	  }
 	  return newUnreadChatThreadTOs;
   }
 
@@ -140,12 +141,12 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 	
 	private void getChatThreadMessagesSinceLast() {
-		if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminHomePlace){
+		if((placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminHomePlace && isClassPresenter)){
 		  session.chatThreads().getChatThreadMessages(selectedChatThreadInfo.getChatThreadUUID(), lastFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
 				@Override
 				public void ok(ChatThreadMessagesTO to) {
 					chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
-				  view.addMessagesToThreadPanel(to.getChatThreadMessageTOs(), session.getCurrentUser().getPerson().getFullName());
+ 				  view.addMessagesToThreadPanel(to.getChatThreadMessageTOs(), session.getCurrentUser().getPerson().getFullName());
 				}
 			});
 		}

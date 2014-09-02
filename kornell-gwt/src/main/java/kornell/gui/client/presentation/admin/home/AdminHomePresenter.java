@@ -111,7 +111,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		ClientProperties.set(getLocalStoragePropertyName(), courseClassUUID);
 		EnrollmentsTO enrollments = getCachedEnrollments(courseClassUUID);
 		if(enrollments != null){
-			showEnrollments(enrollments, false);
+			showEnrollments(enrollments, true);
 		} else {
 		LoadingPopup.show();
 		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID,

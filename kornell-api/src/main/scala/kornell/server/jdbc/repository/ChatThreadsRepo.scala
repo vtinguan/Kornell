@@ -158,6 +158,7 @@ object ChatThreadsRepo {
 				| ) as threadMessages
 				| where (threadLastReadAt < sentAt or threadLastReadAt is null)
 				| group by chatThreadUUID
+				| order by max(sentAt) desc
 		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
   }
 

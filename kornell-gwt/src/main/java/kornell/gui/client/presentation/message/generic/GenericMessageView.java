@@ -72,11 +72,12 @@ public class GenericMessageView extends Composite implements MessageView {
 
 	@Override
   public void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID) {
-		//sidePanel.clear();
+		sidePanel.clear();
 		sideItems = new ArrayList<Label>();
 		for (final UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadsTO) {
 			String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
-			final Label label = new Label(unreadChatThreadTO.getChatThreadName() + appendCount);
+			appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
+			final Label label = new Label();
 			label.addStyleName("threadListItem");
 			label.addClickHandler(new ClickHandler() {
 				@Override
@@ -91,6 +92,7 @@ public class GenericMessageView extends Composite implements MessageView {
 			if(unreadChatThreadTO.getChatThreadUUID().equals(selectedChatThreadUUID)){
         label.addStyleName("selected");
 			}
+			label.getElement().setInnerHTML(unreadChatThreadTO.getChatThreadName() + appendCount);
 			sidePanel.add(label);
 			sideItems.add(label);
     }
@@ -111,6 +113,13 @@ public class GenericMessageView extends Composite implements MessageView {
             doSend(null);
         }
     });
+		
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		    		threadPanelItemsScroll.scrollToBottom();
+		      }
+		});
   }
 
 	@Override
@@ -132,13 +141,6 @@ public class GenericMessageView extends Composite implements MessageView {
 			
 			threadPanelItems.add(threadMessageWrapper);
     }
-		
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		    		threadPanelItemsScroll.scrollToBottom();
-		      }
-		});
   }
 
 	@UiHandler("btnSend")
