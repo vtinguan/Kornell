@@ -223,7 +223,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	}
 
 	public void display() {
-		if(Window.Location.getHostName().indexOf("-test.eduvem") >= 0){
+		if(Window.Location.getHostName().indexOf("-test.eduvem") >= 0 || Window.Location.getHostName().indexOf("-develop.eduvem") >= 0){
 			testEnvWarning.removeStyleName("shy");
 		}
 		btnFullScreen.removeStyleName("btn");
