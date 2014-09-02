@@ -405,7 +405,7 @@
 .messagesPopup .messagesPanel .titlePanel .lblSubTitle{color:#78af73;font-size:10px;float:left;width:100%;}
 .messagesPopup .messagesPanel .titlePanel .profileSeparatorBar{width:100%;}
 .messagesPopup .messagesPanel .fieldPanelWrapper{height:auto;margin-bottom:5px;width:100%;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel{width:80px;margin-right:7px;text-align:initial;float:left;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel .lblLabel{line-height:12px;font-size:12px;text-decoration:none;}
-.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .lblValue{line-height:33px;margin-left:4px;font-size:14px;font-weight:bold;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .lblValue{line-height:14px;margin-left:2px;margin-top:5px;margin-bottom:5px;font-size:14px;font-weight:bold;width:400px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .textField{width:380px;height:12px;font-size:12px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .selectField{width:393px;height:24px;font-size:11px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .error{font-size:10px;line-height:12px;}
