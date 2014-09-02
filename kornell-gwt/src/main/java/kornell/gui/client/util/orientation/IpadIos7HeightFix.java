@@ -16,7 +16,7 @@ public final class IpadIos7HeightFix implements IOrientationChangeHandler {
 
 	@Override
 	public void onOrientationChange(final OrientationChangeEvent event) {
-		fixHeight();
+		//fixHeight();
 	}
 
 }
