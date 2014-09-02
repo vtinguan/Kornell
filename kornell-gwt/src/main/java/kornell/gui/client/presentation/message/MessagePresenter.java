@@ -17,6 +17,7 @@ import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.util.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
@@ -50,6 +51,14 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		view.setPresenter(this);
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		init();
+		
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						selectedChatThreadInfo = null;
+					}
+				});
 	}
 	
 	private void init() {
@@ -74,10 +83,11 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	  	threadClicked(unreadChatThreadsTO.get(0));
 	  	selectedChatThreadInfo = unreadChatThreadsTO.get(0);
 	  }
-	  if(unreadChatThreadsTO.size() == 0){
+	  if(unreadChatThreadsTO.size() == 0 && !isClassPresenter){
 	  	KornellNotification.show("Você não tem nenhuma conversa criada.", AlertType.INFO, 5000);
+	  } else if(unreadChatThreadsTO.size() > 0){
+	  	view.updateSidePanel(unreadChatThreadsTO, selectedChatThreadInfo.getChatThreadUUID());
 	  }
-	  view.updateSidePanel(unreadChatThreadsTO, selectedChatThreadInfo.getChatThreadUUID());
   }
 
 	private List<UnreadChatThreadTO> filterTOWhenInsideAdminPanel(List<UnreadChatThreadTO> unreadChatThreadTOs) {
@@ -125,8 +135,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				getChatThreadMessagesSinceLast();
 			}
 		};
-		// Schedule the timer to run every 10 secs
-		chatThreadMessagesTimer.scheduleRepeating(30 * 1000);
+		// Schedule the timer to run every 20 secs
+		chatThreadMessagesTimer.scheduleRepeating(20 * 1000);
 	}
 	
 	private void getChatThreadMessagesSinceLast() {

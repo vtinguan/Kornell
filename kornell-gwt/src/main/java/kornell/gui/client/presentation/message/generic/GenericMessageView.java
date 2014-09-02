@@ -72,10 +72,11 @@ public class GenericMessageView extends Composite implements MessageView {
 
 	@Override
   public void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID) {
-		sidePanel.clear();
+		//sidePanel.clear();
 		sideItems = new ArrayList<Label>();
 		for (final UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadsTO) {
-			final Label label = new Label(unreadChatThreadTO.getChatThreadName() + " (" + unreadChatThreadTO.getUnreadMessages() + ")");
+			String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
+			final Label label = new Label(unreadChatThreadTO.getChatThreadName() + appendCount);
 			label.addStyleName("threadListItem");
 			label.addClickHandler(new ClickHandler() {
 				@Override

@@ -133,26 +133,31 @@ object ChatThreadsRepo {
   
   def getTotalUnreadCountsByPersonPerThread(personUUID: String, institutionUUID: String) = {
     TOs.newUnreadChatThreadsTO(sql"""
-				| select count(tm.uuid) as unreadMessages,
-					| countByCC.chatThreadUUID,
-					| countByCC.chatThreadName,
-					| countByCC.courseClassUUID
-				| from ChatThreadMessage tm
-				| join (
-					| select distinct t.uuid as chatThreadUUID,
-					| tp.lastReadAt as threadLastReadAt,
-					| ccs.courseClassUUID,
-					| tp.chatThreadName as chatThreadName
+				| select count(unreadMessages) as unreadMessages, chatThreadUUID, chatThreadName, courseClassUUID
+				| from (
+					| select tm.uuid as unreadMessages,
+						| countByCC.chatThreadUUID,
+						| countByCC.chatThreadName,
+						| countByCC.courseClassUUID,
+						| countByCC.threadLastReadAt,
+						| tm.personUUID,
+						| tm.sentAt
 					| from ChatThread t
-					| join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID
-					| left join CourseClassSupportChatThread ccs on ccs.chatThreadUUID = t.uuid
-					| where tp.PersonUUID = ${personUUID}
-					| and t.institutionUUID = ${institutionUUID}
-				| ) countByCC on tm.chatThreadUUID = countByCC.chatThreadUUID
-				| where (countByCC.threadLastReadAt < tm.sentAt or countByCC.threadLastReadAt is null)
-				| and tm.personUUID <> ${personUUID}
-				| group by countByCC.chatThreadUUID
-				| order by max(tm.sentAt) desc
+					| left join ChatThreadMessage tm on tm.chatThreadUUID = t.uuid and tm.personUUID <> ${personUUID}
+					| join (
+						| select distinct t.uuid as chatThreadUUID,
+						| tp.lastReadAt as threadLastReadAt,
+						| ccs.courseClassUUID,
+						| tp.chatThreadName as chatThreadName
+						| from ChatThread t
+						| join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID
+						| left join CourseClassSupportChatThread ccs on ccs.chatThreadUUID = t.uuid
+						| where tp.PersonUUID = ${personUUID}
+						| and t.institutionUUID = ${institutionUUID}
+					| ) countByCC on t.uuid = countByCC.chatThreadUUID
+				| ) as threadMessages
+				| where (threadLastReadAt < sentAt or threadLastReadAt is null)
+				| group by chatThreadUUID
 		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
   }
 

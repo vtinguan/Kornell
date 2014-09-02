@@ -53,8 +53,9 @@ body {
 	height: 100%;
 	margin-top: 10px;
 	@border: 1px solid fade(@niceTextColor, 50%);
+	@borderHighlight: 1px solid fade(@textInfoColor, 50%);
 	.sidePanelScroll{
-		max-height: 433px;
+		max-height: 429px;
 		margin-right: 10px;
 		border: @border;
 		padding: 5px;
@@ -94,12 +95,12 @@ body {
 			color: @textInfoColor;
 			padding-bottom: 15px;
 			margin-bottom: 5px;
-			border-bottom: @border;
+			border-bottom: @borderHighlight;
 			text-align: center;
 		}
 		.threadPanelItemsScroll{
 			max-height: 300px;
-			margin-bottom: 20px;
+			margin-bottom: 5px;
 			padding-right: 5px;
 			.threadMessageWrapper{
 				.threadMessageHeader{
@@ -121,6 +122,8 @@ body {
 		}
 		.sendMessageWrapper{
 			.boxSizing;
+			border-top: @borderHighlight;
+			padding-top: 10px;
 			.messageTextArea{
 				.boxSizing;
 				width: 83%;

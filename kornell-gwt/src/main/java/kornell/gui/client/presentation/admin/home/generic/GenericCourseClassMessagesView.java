@@ -97,7 +97,7 @@ public class GenericCourseClassMessagesView extends Composite {
 		infoTitle.addStyleName("title");
 		messagesInfo.add(infoTitle);
 
-		Label infoText = new Label("Mensagens entre os alunos e o responsável pela turma.");
+		Label infoText = new Label("Mensagens entre os alunos e os responsáveis pela turma.");
 		infoText.addStyleName("subTitle");
 		messagesInfo.add(infoText);
 
