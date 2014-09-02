@@ -1,5 +1,14 @@
 package kornell.gui.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import kornell.core.to.CourseClassTO;
+import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.ListBoxFormField;
+
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.i18n.client.Constants;
 
 public interface KornellConstants extends Constants {
@@ -211,4 +220,25 @@ public interface KornellConstants extends Constants {
 	String denied();
 	@DefaultStringValue("cancelled")
 	String cancelled();
+	
+
+
+	
+
+	/**
+	 * 
+	 * Message
+	 */
+	@DefaultStringValue("Help")
+	String composeTitle();
+	@DefaultStringValue("Leave your questions or suggestions here.")
+	String composeSubTitle();
+	@DefaultStringValue("Class")
+	String courseClassAdmin();
+	@DefaultStringValue("Institution")
+	String institutionAdmin();
+	@DefaultStringValue("Recipient:")
+	String recipient();
+	@DefaultStringValue("Message:")
+	String message();
 }

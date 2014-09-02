@@ -131,15 +131,6 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");
-		vitrineWrapper.setVisible(false);
-		
-		//wait a sec for the theme css
-		Timer mdaTimer = new Timer() {
-			public void run() {
-				vitrineWrapper.setVisible(true);
-			}
-		};
-		mdaTimer.schedule(2 * 1000);
 	}
 
 	@Override

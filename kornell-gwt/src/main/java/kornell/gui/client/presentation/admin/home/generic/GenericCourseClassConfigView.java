@@ -28,6 +28,7 @@ import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -57,7 +58,7 @@ public class GenericCourseClassConfigView extends Composite {
 
 	private KornellSession session;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private FormHelper formHelper;
+	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private boolean isCreationMode, canDelete, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
@@ -103,7 +104,6 @@ public class GenericCourseClassConfigView extends Composite {
 		this.user = session.getCurrentUser();
 		this.isCreationMode = (courseClassTO == null);
 		this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
-		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
@@ -154,7 +154,7 @@ public class GenericCourseClassConfigView extends Composite {
 		profileFields.add(name);
 
 		String requiredScoreStr = courseClass.getRequiredScore() == null ? "" : courseClass.getRequiredScore().toString();
-		requiredScore = new KornellFormFieldWrapper("Nota para Aprovação", formHelper.createTextBoxFormField(requiredScoreStr), isInstitutionAdmin);
+		requiredScore = new KornellFormFieldWrapper("Nota para Aprovação", formHelper.createTextBoxFormField(requiredScoreStr), isInstitutionAdmin, null, "Se a nota for deixada em branco ou for zero, a avaliação não será exigida para que os alunos matriculados finalizem o curso.");
 		fields.add(requiredScore);
 		profileFields.add(requiredScore);
 
@@ -282,7 +282,7 @@ public class GenericCourseClassConfigView extends Composite {
 			maxEnrollments.setError("Menor que o número atual de matrículas.");
 		}
 
-		return !checkErrors();
+		return !formHelper.checkErrors(fields);
 	}
 
 	@UiHandler("btnOK")
@@ -290,44 +290,8 @@ public class GenericCourseClassConfigView extends Composite {
 		formHelper.clearErrors(fields);
 		if (isInstitutionAdmin && validateFields()) {
 			LoadingPopup.show();
-			if(isCreationMode){
-				CourseClass courseClass = getCourseClassInfoFromForm();
-				courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
-				session.courseClasses().create(courseClass, new Callback<CourseClass>() {
-					@Override
-					public void ok(CourseClass courseClass) {
-							LoadingPopup.hide();
-							KornellNotification.show("Turma criada com sucesso!");
-							CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
-							if(courseClassTO2 != null)
-								courseClassTO2.setCourseClass(courseClass);
-							courseClassTO = courseClassTO2;
-							presenter.updateCourseClass(courseClass.getUUID());
-					}
-					
-					@Override
-					public void unauthorized(String errorMessage){
-						LoadingPopup.hide();
-						name.setError("Já existe uma turma com esse nome.");
-					}
-				});
-			} else {
-				session.courseClass(courseClassTO.getCourseClass().getUUID()).update(getCourseClassInfoFromForm(), new Callback<CourseClass>() {
-					@Override
-					public void ok(CourseClass courseClass) {
-							LoadingPopup.hide();
-							KornellNotification.show("Alterações salvas com sucesso!");
-							Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
-							courseClassTO = Dean.getInstance().getCourseClassTO();
-							presenter.updateCourseClass(courseClass.getUUID());
-					}					
-					@Override 
-					public void unauthorized(String errorMessage){
-						LoadingPopup.hide();
-						name.setError("Já existe uma turma com esse nome.");
-					}
-				});
-			}
+			CourseClass courseClass = getCourseClassInfoFromForm();
+			presenter.upsertCourseClass(courseClass);
 
 		}
 	}
@@ -395,13 +359,6 @@ public class GenericCourseClassConfigView extends Composite {
 	@UiHandler("btnModalCancel")
 	void onModalCancelButtonClicked(ClickEvent e) {
 		confirmModal.hide();
-	}
-
-	private boolean checkErrors() {
-		for (KornellFormFieldWrapper field : fields)
-			if (!"".equals(field.getError()))
-				return true;
-		return false;
 	}
 
 }

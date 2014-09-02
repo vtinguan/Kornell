@@ -87,14 +87,14 @@ public class GenericCourseClassReportsView extends Composite {
 
 	private FlowPanel getReportInfo() {
 		FlowPanel reportInfo = new FlowPanel();
-		reportInfo.addStyleName("reportInfo");
+		reportInfo.addStyleName("titlePanel");
 
 		Label infoTitle = new Label("Relatórios");
-		infoTitle.addStyleName("reportInfoTitle");
+		infoTitle.addStyleName("title");
 		reportInfo.add(infoTitle);
 
 		Label infoText = new Label("Geração dos relatórios administrativos.");
-		infoText.addStyleName("reportInfoText");
+		infoText.addStyleName("subTitle");
 		reportInfo.add(infoText);
 
 		return reportInfo;

@@ -112,17 +112,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				} else {
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
-						session.courseClasses().getCourseClassesTOByInstitution(
-								institution.getUUID(), courseClassesCallback);
+						session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 					} else {
 						startAnonymous();
 					}
 				}
-			}
-
-			@Override
-			public void unauthorized(String errorMessage) {
-				GWT.log(this.getClass().getName() + " - " + errorMessage);
 			}
 		};
 
@@ -150,9 +144,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		});
 
 	}
-	
-	
-
 
 	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");
@@ -186,7 +177,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void initPersonnel() {
 		new Captain(bus, session, placeCtrl);
 		new Stalker(bus, session);
-		new MrPostman(new MessageComposePresenter(session, viewFactory, entityFactory),  bus);
+		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads(), placeCtrl);
 	}
 
 	private void initSCORM12() {

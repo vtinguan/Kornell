@@ -69,11 +69,11 @@ iframe {
 
 .gwt-PopupPanelGlass{
 	background-color: #000;
-	opacity: 0.50;
-	-moz-opacity: 0.50;
-	filter:alpha(opacity=50);
-	width: 100%;
-	height: 100%;
+	opacity: 0.40;
+	-moz-opacity: 0.40;
+	filter:alpha(opacity=40);
+	width: 100% !important;
+	height: 100% !important;
 }
 
 .ajaxLoaderPanel {

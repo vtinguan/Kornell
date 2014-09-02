@@ -121,17 +121,18 @@ object RegistrationEnrollmentService {
     val personRepo = PersonRepo(personOld.getUUID)
 
     //update the user's info
-    val person = newPerson
-    person.setUUID(personOld.getUUID)
-    person.setEmail(regReq.getEmail)
+    val person = personRepo.get
     person.setFullName(regReq.getFullName)
-    person.setCPF(regReq.getCPF)
+    if(regReq.getEmail != null)
+    	person.setEmail(regReq.getEmail)
+    if(regReq.getCPF != null)
+    	person.setCPF(regReq.getCPF)
     personRepo.update(person)
 
     val username = usernameOf(regReq)
       
     val user = newUserInfoTO
-    user.setPerson(personRepo.get)
+    user.setPerson(person)
     user.setUsername(username)
 
     personRepo.setPassword(username, regReq.getPassword)

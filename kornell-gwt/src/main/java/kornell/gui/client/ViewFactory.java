@@ -1,13 +1,14 @@
 
 package kornell.gui.client;
 
-import kornell.core.entity.Message;
+import kornell.core.entity.ChatThread;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.home.HomeView;
+import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.profile.ProfileView;
@@ -48,6 +49,9 @@ public interface ViewFactory {
 	AdminHomeView getAdminHomeView();
 
 	DockLayoutPanel getDockLayoutPanel();
+
+	MessagePresenter getMessagePresenter();
+
 
 
 }

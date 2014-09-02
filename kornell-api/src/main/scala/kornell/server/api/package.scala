@@ -22,5 +22,6 @@ package object api {
     RoleCategory.isCourseClassAdmin(AuthRepo().getUserRoles, courseClassUUID)
     
   def getAuthenticatedPersonUUID = ThreadLocalAuthenticator.getAuthenticatedPersonUUID.getOrElse(null)
+  
  
 }
