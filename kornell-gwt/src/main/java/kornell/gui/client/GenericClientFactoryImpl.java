@@ -120,8 +120,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 						}
 					};
 
-					//wait 1.5 secs for the theme css
-					mdaTimer.schedule((int) (1.5 * 1000));
+					//wait 2 secs for the theme css
+					mdaTimer.schedule((int) (2 * 1000));
 					
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
