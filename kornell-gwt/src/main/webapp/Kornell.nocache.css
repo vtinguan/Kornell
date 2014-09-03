@@ -78,6 +78,7 @@ iframe {
 
 .ajaxLoaderPanel {
 	width: 80px;
+	margin: 0 auto;
 }
 
 .ajaxLoaderPanel span{
