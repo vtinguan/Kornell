@@ -10,6 +10,7 @@ import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
+import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -55,12 +56,14 @@ public class MrPostman implements ComposeMessageEventHandler {
 		unreadMessagesCountTimer.scheduleRepeating(2 * 60 * 1000);
   }
 	private void getUnreadMessages() {
-    chatThreadsClient.getTotalUnreadCount(Dean.getInstance().getInstitution().getUUID(), new Callback<String>() {
-			@Override
-			public void ok(String unreadMessagesCount) {
-				bus.fireEvent(new UnreadMessagesFetchedEvent(unreadMessagesCount));
-			}
-		});
+		if(!(placeCtrl.getWhere() instanceof VitrinePlace)){
+	    chatThreadsClient.getTotalUnreadCount(Dean.getInstance().getInstitution().getUUID(), new Callback<String>() {
+				@Override
+				public void ok(String unreadMessagesCount) {
+					bus.fireEvent(new UnreadMessagesFetchedEvent(unreadMessagesCount));
+				}
+			});
+		}
   }
 
 	private void initializeUnreadMessagesCountPerThreadTimer() {
