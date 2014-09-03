@@ -35,6 +35,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryHandler.DefaultHistorian;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -110,6 +111,18 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if(institution == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {
+
+					showBody(false);
+					
+					Timer mdaTimer = new Timer() {
+						public void run() {
+							showBody(true);
+						}
+					};
+
+					//wait 1.5 secs for the theme css
+					mdaTimer.schedule((int) (1.5 * 1000));
+					
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
 						session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
@@ -144,6 +157,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		});
 
 	}
+	
+	private static native void showBody(boolean show) /*-{
+		$wnd.document.getElementsByTagName('body')[0].setAttribute('style', 'display: ' + (show ? 'block' : 'none'));
+	}-*/;
 
 	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");

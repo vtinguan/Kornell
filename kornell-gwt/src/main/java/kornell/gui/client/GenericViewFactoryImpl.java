@@ -69,15 +69,6 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public void initGUI() {
 		final RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
-		rootLayoutPanel.setVisible(false);
-		
-		//wait 1.5 secs for the theme css
-		Timer mdaTimer = new Timer() {
-			public void run() {
-				rootLayoutPanel.setVisible(true);
-			}
-		};
-		mdaTimer.schedule((int) (1 * 1000));
 		
 		dockLayoutPanel.addNorth(getMenuBarView(), 45);
 		dockLayoutPanel.addSouth(getSouthBarView(), 35);
