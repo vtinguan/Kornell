@@ -8,7 +8,7 @@ import kornell.server.jdbc.repository.AuthRepo
 trait GenInstitution extends Generator {
   
   val institution = InstitutionsRepo.create(
-      Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, null, "")
+      Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, null, "")
   )
   
   val institutionUUID = institution.getUUID()

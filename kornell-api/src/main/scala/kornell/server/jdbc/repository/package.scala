@@ -43,6 +43,7 @@ package object repository {
         rs.getString("assetsURL"),
         rs.getString("baseURL"),
         rs.getBoolean("demandsPersonContactDetails"),
+        rs.getBoolean("allowRegistration"),
         rs.getDate("activatedAt"),
         rs.getString("skin"))   
   

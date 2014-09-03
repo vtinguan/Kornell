@@ -20,10 +20,13 @@ public interface Institution extends Named {
 	
 	boolean isDemandsPersonContactDetails();
 	void setDemandsPersonContactDetails(boolean demandsPersonContactDetails);
+
+	boolean isAllowRegistration();
+	void setAllowRegistration(boolean allowRegistration);
 	
 	Date getActivatedAt();
 	void setActivatedAt(Date activatedAt);
-	
+
 	String getSkin();
 	void setSkin(String skin);
 }
