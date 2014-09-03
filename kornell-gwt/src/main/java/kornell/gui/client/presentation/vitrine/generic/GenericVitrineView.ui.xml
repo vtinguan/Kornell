@@ -17,8 +17,11 @@
 					</g:FlowPanel>
 					<b:Controls>
 						<g:Button ui:field="btnLogin" addStyleNames="btnVitrine btnAction">ENTRAR</g:Button>
-			    		<g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnSelected">CADASTRAR-SE</g:Button>
-			    		<g:Button ui:field="btnForgotPassword" addStyleNames="btnVitrine btnNotSelected">ESQUECI A SENHA</g:Button>
+			    		<g:Button ui:field="btnForgotPassword" addStyleNames="btnVitrine btnNotSelected linkButton">Esqueci a senha</g:Button>
+			    		 <g:HTMLPanel ui:field="panelHR" addStyleNames="panelHR" visible="false">
+							  <hr/>
+							 </g:HTMLPanel>
+              <g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnSelected" visible="false">CADASTRAR-SE</g:Button>
 					</b:Controls>
 				</b:Form>
 			</g:FlowPanel>

@@ -25,6 +25,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -96,6 +97,8 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	Button btnOKNewPassword;
 	@UiField
 	Button btnCancelNewPassword;
+	@UiField
+	HTMLPanel panelHR;
 	
 	
 	// TODO i18n xml
@@ -306,6 +309,12 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@Override
 	public void setLogoURL(String assetsURL) {
 		imgLogo.setUrl(composeURL(assetsURL, "logo300x80_light.png?1"));
+	}
+
+	@Override
+	public void showRegistrationOption(boolean show) {
+		btnRegister.setVisible(show);
+		panelHR.setVisible(show);
 	}
 
 	@Override

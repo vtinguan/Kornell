@@ -58,7 +58,7 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
   
   abstract override def withFixture(test: NoArgTest) = {
     
-    institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, null))
+    institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, null))
 	  course = CoursesRepo.create(Entities.newCourse(randUUID, randStr, randStr, randStr, randStr))
 	  courseVersion = CourseVersionsRepo.create(Entities.newCourseVersion(randUUID, randStr, course.getUUID, randUUID, new Date, randStr, "KNL", false))
 	  courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, 23451, new Date(), null, CourseClassState.active, false)

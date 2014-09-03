@@ -41,6 +41,7 @@ package object repository {
         rs.getString("assetsURL"),
         rs.getString("baseURL"),
         rs.getBoolean("demandsPersonContactDetails"),
+        rs.getBoolean("allowRegistration"),
         rs.getDate("activatedAt"))   
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 

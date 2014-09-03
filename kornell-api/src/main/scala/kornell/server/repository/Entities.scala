@@ -134,7 +134,7 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, activatedAt: Date) = {
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, allowRegistration: Boolean, activatedAt: Date) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -144,6 +144,7 @@ object Entities {
     i.setAssetsURL(assetsURL)
     i.setBaseURL(baseURL)
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
+    i.setAllowRegistration(allowRegistration)
     i.setActivatedAt(activatedAt)
     i
   }

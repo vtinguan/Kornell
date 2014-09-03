@@ -23,4 +23,7 @@ public interface Institution extends Named {
 	
 	Date getActivatedAt();
 	void setActivatedAt(Date activatedAt);
+	
+	boolean isAllowRegistration();
+	void setAllowRegistration(boolean allowRegistration);
 }
