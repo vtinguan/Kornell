@@ -51,9 +51,10 @@ package object repository {
     newCourseClass(r.getString("uuid"), r.getString("name"), 
         r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
         r.getBigDecimal("requiredScore"), r.getBoolean("publicClass"), 
-        r.getBoolean("enrollWithCPF"), r.getInt("maxEnrollments"), 
+        r.getBoolean("enrollWithCPF"), r.getBoolean("overrideEnrollments"),
+        r.getBoolean("invisible"), r.getInt("maxEnrollments"), 
         r.getDate("createdAt"), r.getString("createdBy"), 
-        CourseClassState.valueOf(r.getString("state")), r.getBoolean("overrideEnrollments")) 
+        CourseClassState.valueOf(r.getString("state"))) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -97,12 +98,13 @@ package object repository {
 		    rs.getString("institutionUUID"),
 		    rs.getBigDecimal("requiredScore"),
 		    rs.getBoolean("publicClass"),
-		    rs.getBoolean("enrollWithCPF"),
+		    rs.getBoolean("enrollWithCPF"), 
+        rs.getBoolean("overrideEnrollments"),
+        rs.getBoolean("invisible"),
 		    rs.getInt("maxEnrollments"),
 		    rs.getDate("createdAt"),
 		    rs.getString("createdBy"), 
-        CourseClassState.valueOf(rs.getString("state")), 
-        rs.getBoolean("overrideEnrollments"));
+        CourseClassState.valueOf(rs.getString("state")));
     		
     TOs.newCourseClassTO(course, version, clazz)
   }

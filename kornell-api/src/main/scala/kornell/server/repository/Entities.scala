@@ -231,9 +231,10 @@ object Entities {
   def newCourseClass(uuid: String = null, name: String = null,
     courseVersionUUID: String = null, institutionUUID: String = null,
     requiredScore: BigDecimal = null, publicClass: Boolean = false,
-    enrollWithCPF: Boolean = false, maxEnrollments: Integer = null,
+    enrollWithCPF: Boolean = false, overrideEnrollments: Boolean = false,
+    invisible: Boolean = false, maxEnrollments: Integer = null,
     createdAt: Date = null, createdBy: String = null,
-    state: CourseClassState = null, overrideEnrollments: Boolean = false) = {
+    state: CourseClassState = null) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -242,11 +243,12 @@ object Entities {
     clazz.setRequiredScore(requiredScore)
     clazz.setPublicClass(publicClass)
     clazz.setEnrollWithCPF(enrollWithCPF)
+    clazz.setOverrideEnrollments(overrideEnrollments)
+    clazz.setInvisible(invisible)
     clazz.setMaxEnrollments(maxEnrollments)
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
-    clazz.setOverrideEnrollments(overrideEnrollments)
     clazz
   }
 

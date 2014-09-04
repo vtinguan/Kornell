@@ -37,8 +37,9 @@ class CourseClassRepo(uuid:String) {
 	  		cc.requiredScore = ${courseClass.getRequiredScore},
 	  		cc.publicClass = ${courseClass.isPublicClass},
 	  		cc.enrollWithCPF = ${courseClass.isEnrollWithCPF},
-	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
-	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments}
+	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments},
+	  		cc.invisible = ${courseClass.isInvisible},
+	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments}
       where cc.uuid = ${courseClass.getUUID}""".executeUpdate
     //ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID)
     courseClass

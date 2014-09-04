@@ -54,7 +54,9 @@ public class GenericCourseClassConfigView extends Composite {
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
 	private static final String MODAL_DELETE = "delete";
 	private static final String MODAL_DEACTIVATE = "deactivate";
+	private static final String MODAL_PUBLIC = "public";
 	private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
+	private static final String MODAL_INVISIBLE = "invisible";
 
 	private KornellSession session;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
@@ -92,7 +94,7 @@ public class GenericCourseClassConfigView extends Composite {
 	private CourseClassTO courseClassTO;
 	private CourseClass courseClass;
 	private KornellFormFieldWrapper course, courseVersion, name, publicClass,
-			requiredScore, enrollWithCPF, maxEnrollments, overrideEnrollments;
+			requiredScore, enrollWithCPF, maxEnrollments, overrideEnrollments, invisible;
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
@@ -167,6 +169,29 @@ public class GenericCourseClassConfigView extends Composite {
 		publicClass = new KornellFormFieldWrapper("Turma pública?", formHelper.createCheckBoxFormField(isPublicClass), isInstitutionAdmin);
 		fields.add(publicClass);
 		profileFields.add(publicClass);
+		((CheckBox)publicClass.getFieldWidget()).addMouseDownHandler(new MouseDownHandler() {
+			@Override
+			public void onMouseDown(MouseDownEvent event) {
+				if(!((CheckBox)publicClass.getFieldWidget()).getValue()){
+					((CheckBox)publicClass.getFieldWidget()).setValue(false);
+					showModal(MODAL_PUBLIC);
+				}
+			}
+		});
+
+		Boolean isInvisible = courseClass.isInvisible() == null ? false : courseClass.isInvisible();
+		invisible = new KornellFormFieldWrapper("Turma invisível?", formHelper.createCheckBoxFormField(isInvisible), isInstitutionAdmin);
+		fields.add(invisible);
+		profileFields.add(invisible);
+		((CheckBox)invisible.getFieldWidget()).addMouseDownHandler(new MouseDownHandler() {
+			@Override
+			public void onMouseDown(MouseDownEvent event) {
+				if(!((CheckBox)invisible.getFieldWidget()).getValue()){
+					((CheckBox)invisible.getFieldWidget()).setValue(false);
+					showModal(MODAL_INVISIBLE);
+				}
+			}
+		});
 
 		Boolean isEnrollWithCPF = courseClass.isEnrollWithCPF() == null ? false : courseClass.isEnrollWithCPF();
 		enrollWithCPF = new KornellFormFieldWrapper("Matricular com CPF?", formHelper.createCheckBoxFormField(isEnrollWithCPF), isInstitutionAdmin);
@@ -223,7 +248,6 @@ public class GenericCourseClassConfigView extends Composite {
 			session.courseVersions().findByCourse(course.getFieldPersistText(), new Callback<CourseVersionsTO>() {
 				@Override
 				public void ok(CourseVersionsTO to) {
-					GWT.log("fsdafasfas " + to.getCourseVersions().get(0).isDisabled());
 					createCourseVersionsField(to);
 				}
 			});
@@ -307,6 +331,7 @@ public class GenericCourseClassConfigView extends Composite {
 				new BigDecimal(requiredScore.getFieldPersistText()) :
 					null);
 		courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
+		courseClass.setInvisible(invisible.getFieldPersistText().equals("true"));
 		return courseClass;
 	}
 
@@ -334,14 +359,16 @@ public class GenericCourseClassConfigView extends Composite {
 			confirmText.setText("Tem certeza que deseja excluir esta turma?"
 					+ "\nEsta operação não pode ser desfeita.");
 		} else if (MODAL_DEACTIVATE.equals(modalMode)){
-			confirmText.setText("Tem certeza que deseja desabilitar esta turma?"
+			confirmText.setText("Tem certeza que deseja desabilitar esta turma? Os participantes matriculados ainda poderão acessar os detalhes da turma e emitir o certificado, mas não terão acesso ao material relacionado à turma."
 					+ "\nEsta operação não pode ser desfeita.");
+		} else if (MODAL_PUBLIC.equals(modalMode)){
+			confirmText.setText("ATENÇÃO! Tem certeza que deseja tornar esta turma pública? Ela será visível e disponível para solicitação de matrícula para TODOS os alunos registrados nesta instituição.");
 		} else if (MODAL_OVERRIDE_ENROLLMENTS.equals(modalMode)){
 			confirmText.setText("ATENÇÃO! Tem certeza que deseja habilitar a sobrescrita de matrículas? Toda vez que uma matrícula em lote for feita, todas as matrículas já existentes que não estão presentes no lote serão canceladas.");
+		} else if (MODAL_INVISIBLE.equals(modalMode)){
+			confirmText.setText("ATENÇÃO! Tem certeza que deseja tornar esta turma invisível? Nenhum participante que esteja matriculado poderá ver essa turma, nem será capaz de gerar o certificado caso tenha sido aprovado.");
 		}
 		confirmModal.show();
-	  // TODO Auto-generated method stub
-	  
   }
 
 	@UiHandler("btnModalOK")
@@ -350,14 +377,21 @@ public class GenericCourseClassConfigView extends Composite {
 			presenter.changeCourseClassState(courseClassTO, CourseClassState.deleted);
 		} else if (MODAL_DEACTIVATE.equals(modalMode)){
 			presenter.changeCourseClassState(courseClassTO, CourseClassState.inactive);
+		} else if (MODAL_PUBLIC.equals(modalMode)){
+			((CheckBox)publicClass.getFieldWidget()).setValue(true);
+			((CheckBox)invisible.getFieldWidget()).setValue(false);
 		} else if (MODAL_OVERRIDE_ENROLLMENTS.equals(modalMode)){
 			((CheckBox)overrideEnrollments.getFieldWidget()).setValue(true);
+		} else if (MODAL_INVISIBLE.equals(modalMode)){
+			((CheckBox)invisible.getFieldWidget()).setValue(true);
+			((CheckBox)publicClass.getFieldWidget()).setValue(false);
 		}
 		confirmModal.hide();
 	}
 
 	@UiHandler("btnModalCancel")
 	void onModalCancelButtonClicked(ClickEvent e) {
+		this.modalMode = null;
 		confirmModal.hide();
 	}
 
