@@ -7,10 +7,13 @@ import kornell.gui.client.util.ClientProperties;
 import com.google.gwt.http.client.RequestBuilder;
 
 public class RESTClient {
+	
+	private String apiURL = "/api";
+	
 	public String getApiUrl() {		
-		return "/api";
+		return apiURL;
 	}
-
+	
 	protected ExceptionalRequestBuilder GET(String... path) {
 		String url = composeURL(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(

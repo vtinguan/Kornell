@@ -1,7 +1,3 @@
-.background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
-.background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
-.background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
-.background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
 .btn-primary{font-size:11px !important;font-weight:bold !important;padding-left:10px !important;padding-right:10px !important;color:#d9dadb !important;text-shadow:none !important;border-radius:5px !important;display:block;border:0px !important;background-color:#9b020a;background:-webkit-gradient(linear, left top, left bottom, from(#9b020a), to(#4b0105));background:-webkit-linear-gradient(top, #9b020a, #4b0105);background:-moz-linear-gradient(top, #9b020a, #4b0105);background:-ms-linear-gradient(top, #9b020a, #4b0105);background:-o-linear-gradient(top, #9b020a, #4b0105);background:#9b020a !important;background:-moz-linear-gradient(top, #9b020a 0%, #4b0105 100%) !important;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #9b020a), color-stop(100%, #4b0105)) !important;background:-webkit-linear-gradient(top, #9b020a 0%, #4b0105 100%) !important;background:-o-linear-gradient(top, #9b020a 0%, #4b0105 100%) !important;background:-ms-linear-gradient(top, #9b020a 0%, #4b0105 100%) !important;background:linear-gradient(to bottom, #9b020a 0%, #4b0105 100%) !important;}
 .btnDefault{font-size:11px !important;font-weight:bold !important;padding-left:10px !important;padding-right:10px !important;color:#d9dadb !important;text-shadow:none !important;border-radius:5px !important;display:block;border:0px !important;}
 .btnIcon i{margin-right:5px !important;margin-left:0px !important;font-size:15px;}
@@ -12,7 +8,8 @@
 .standardButtonBarSmall{width:130px !important;}
 .standardButtonBar{width:260px;margin:0 auto;clear:both;}.standardButtonBar .btnStandard{margin:15px;}
 .btnStandard{font-weight:bold;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
-.btnBorder{border-left:1px solid #505864 !important;border-right:1px solid #181c22 !important;}
+.btnBorder{border-left:1px solid #505864 !important;}
+.last .btnPanel{border-right:1px solid #181c22 !important;}
 .fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
 .fieldPanelWrapper .fieldPanelImage{height:100px;}
 .fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
@@ -22,15 +19,28 @@
 .fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
-@media screen and (max-width:962px){.profileFields{width:362px;}.profileFields .fieldPanelWrapper{width:600px;height:auto;}.profileFields .fieldPanelWrapper .labelPanelImg{height:auto;} .profileFields .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.profileFields .fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .profileFields .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .profileFields .fieldPanelWrapper .labelPanelImg{float:left;} .profileFields .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .profileFields .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.anchorToLabel{color:#bec1c3;}.anchorToLabel:hover{cursor:default;color:#bec1c3;text-decoration:none;}
+@media screen and (max-width:962px){.fieldPanelWrapper{width:600px;height:auto;}.fieldPanelWrapper .labelPanelImg{height:auto;} .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .fieldPanelWrapper .labelPanelImg{float:left;} .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.anchorToLabel{color:#bec1c3;}.anchorToLabel:hover{cursor:default;color:#bec1c3;text-decoration:none;}
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
+.modal-backdrop,.modal-backdrop.fade.in{opacity:0.5 !important;filter:alpha(opacity=50) !important;}
+.modal{width:480px !important;background:#383235 !important;}.modal .standardButtonBar{width:220px;margin-top:25px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal .standardButtonBar .btnNotSelected{margin:0;margin-left:20px;}
+.modal h3{color:#bec1c3;font-size:20px;}
+.modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}
+.titlePanel{height:30px;padding-top:20px;margin-bottom:30px;}.titlePanel .imgTitle{float:left;padding-left:20px;padding-right:20px;}
+.titlePanel .lblTitle{font-size:17px;color:#d9dadb;float:left;}
+.pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
+.pagination ul>li:first-child>a{border-left:1px solid #505864 !important;}
+.pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
+.nav-tabs{font-size:15px;font-weight:bold;margin-bottom:30px !important;}
+.dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
+.forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
 .detailsPanel{width:962px;margin:0 auto;}.detailsPanel .titlePanel{padding-top:20px;font-size:18px;line-height:20px;}.detailsPanel .titlePanel .titleImage{padding-left:20px;padding-right:5px;margin-top:-3px;float:left;height:28px;width:28px;}
 .detailsPanel .titlePanel .titleLabel{color:#bec1c3;padding-left:8px;padding-right:8px;float:left;}
 .detailsPanel .titlePanel .subTitleLabel{clear:both;margin-left:53px;font-size:14px;}
-.detailsPanel .titlePanel .courseNameLabel{color:#be150e;float:left;}
-.detailsPanel .titlePanel .courseClassNameLabel{font-size:14px;color:#be150e;float:left;}
+.detailsPanel .titlePanel .courseNameLabel{color:#fd5656;float:left;}
+.detailsPanel .titlePanel .courseClassNameLabel{font-size:14px;color:#fd5656;float:left;}
 .detailsPanel .titlePanel .closePanel .closeImage{float:right;}
 .detailsPanel .titlePanel .closePanel .closeLabel{float:right;line-height:40px;color:#d88709;padding-right:3px;}
 .detailsPanel .buttonsPanel{width:173.16px;margin-left:20px;margin-right:20px;margin-top:20px;clear:both;float:left;}.detailsPanel .buttonsPanel .btnDetails{width:133.16px;text-align:right;margin-top:20px;padding:4px 12px !important;display:inline-block;}.detailsPanel .buttonsPanel .btnDetails:hover{text-decoration:none;}
@@ -40,7 +50,7 @@
 .detailsPanel .detailsContentPanel .infoPanel .infoDetails .infoText{color:#bec1c3;padding-right:20px;}
 .detailsPanel .detailsContentPanel .sidePanel{float:left;margin-top:60px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel{width:240.5px;background-color:#0d0b0c;border-radius:8px;color:#bec1c3;font-size:12px;line-height:14px;padding:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails{padding-top:20px;padding-bottom:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintImg{float:left;}
 .detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintText{padding-left:30px;}
-.detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel{width:240.5px;color:#be150e;padding:10px;padding-left:22px;}
+.detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel{width:240.5px;color:#fd5656;padding:10px;padding-left:22px;}
 .detailsPanel .detailsContentPanel .topicsPanel{width:721.5px;margin-top:30px;float:left;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel{height:24px;margin-bottom:10px;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopicsHeader{border-radius:0px;height:24px;line-height:24px;border:0;color:#bec1c3;padding-left:10px;padding-right:10px;font-size:12px;font-weight:bold;border-left:1px solid #505864;border-right:1px solid #181c22;display:block;float:left;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopicsHeader:hover{text-decoration:none;cursor:default;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopics{width:699.5px;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnStatus{width:100.65500000000002px;}
@@ -48,7 +58,7 @@
 .detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnForumComments{width:129.515px;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnNotes{width:64.58px;}
 .detailsPanel .detailsContentPanel .topicsPanel .pageWrapper{background-color:transparent !important;font-size:12px !important;}.detailsPanel .detailsContentPanel .topicsPanel .pageWrapper .identImage{float:left;}
-.detailsPanel .detailsContentPanel .topicsPanel .pageWrapper .topicPanel{width:651.5px !important;background-color:#1b1719;}
+.detailsPanel .detailsContentPanel .topicsPanel .pageWrapper .topicPanel{width:651.5px !important;background-color:#0d0b0c;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper{height:30px;line-height:30px;background-color:#0d0b0c;margin-top:10px;color:#bec1c3;font-size:14px;border-radius:5px;}.detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .topicPanel{float:left;padding-right:10px;width:691.5px;border-radius:5px;}.detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .topicPanel .topicIcon{float:left;padding:5px;padding-right:8px;width:20px;display:block;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .topicPanel .shy{visibility:hidden;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .topicPanel .lblTopic{float:left;color:#f3f4f4;}
@@ -60,7 +70,7 @@
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .pnlForumComments .lblNew{float:left;padding-right:5px;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .pnlForumComments .lblNewForumComments{float:left;color:#d88709;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .lblNotes{float:left;width:66.58px;text-align:center;padding-left:10px;padding-right:10px;}
-.detailsPanel .detailsContentPanel .certificationPanel{margin-top:20px;float:left;}.detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel{height:24px;margin-bottom:10px;}.detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnCertificationHeader{float:left;border-radius:0px !important;line-height:24px;padding-left:10px !important;padding-right:10px !important;font-size:12px !important;border-left:1px solid #505864 !important;border-right:1px solid #181c22 !important;}.detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnCertificationHeader:hover{text-decoration:none;cursor:default;}
+.detailsPanel .detailsContentPanel .certificationPanel{margin-top:20px;float:left;}.detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel{height:24px;margin-bottom:10px;}.detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnCertificationHeader{float:left;border-radius:0px !important;line-height:24px;padding-left:10px !important;padding-right:10px !important;font-size:12px !important;border-left:1px solid #505864 !important;}.detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnCertificationHeader:hover{text-decoration:none;cursor:default;}
 .detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnItem{width:410.9px;text-align:left;}
 .detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnStatus{width:86.225px;}
 .detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnGrade{width:28.505000000000003px;}

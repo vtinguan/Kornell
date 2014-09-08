@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-	<g:FlowPanel addStyleNames="vitrine">
+	<g:FlowPanel ui:field="vitrineWrapper" addStyleNames="vitrine">
 		<g:FlowPanel addStyleNames="boxLogin">
 			<b:Image ui:field="imgLogo" addStyleNames="logo"></b:Image>
 			<b:Alert ui:field="alertError" type="ERROR" close="false" animation="true" visible="false"></b:Alert>
@@ -17,8 +17,11 @@
 					</g:FlowPanel>
 					<b:Controls>
 						<g:Button ui:field="btnLogin" addStyleNames="btnVitrine btnAction">ENTRAR</g:Button>
-			    		<g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnSelected">CADASTRAR-SE</g:Button>
-			    		<g:Button ui:field="btnForgotPassword" addStyleNames="btnVitrine btnNotSelected">ESQUECI A SENHA</g:Button>
+			    		<g:Button ui:field="btnForgotPassword" addStyleNames="btnVitrine btnNotSelected linkButton">Esqueci a senha</g:Button>
+			    		 <g:HTMLPanel ui:field="panelHR" addStyleNames="panelHR" visible="false">
+							  <hr/>
+							 </g:HTMLPanel>
+              <g:Button ui:field="btnRegister" addStyleNames="btnVitrine btnSelected" visible="false">CADASTRAR-SE</g:Button>
 					</b:Controls>
 				</b:Form>
 			</g:FlowPanel>

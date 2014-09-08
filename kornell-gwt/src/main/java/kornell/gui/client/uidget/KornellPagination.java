@@ -56,7 +56,7 @@ public class KornellPagination extends Pagination{
     		add(createNavLink(">", navLinkCount));
     	} else if(page > navLinkCount - (maxPaginationTabs / 2)){
     		add(createNavLink("<", 1));
-    		for(int i = (navLinkCount - maxPaginationTabs); i <= navLinkCount; i++){
+    		for(int i = (navLinkCount - maxPaginationTabs) + 1; i <= navLinkCount; i++){
     			add(createNavLink(i, i==page));
     		}
     	} else {
@@ -71,6 +71,7 @@ public class KornellPagination extends Pagination{
 	private NavLink createNavLink(int i, boolean active) {
 		return createNavLink(""+i, i, active);
 	}
+	
 	private NavLink createNavLink(String text, int pageNumber) {
 		return createNavLink(text, pageNumber, false);
 	}
@@ -91,16 +92,20 @@ public class KornellPagination extends Pagination{
 		}
 		return navLink;
 	}
+	
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 		displayTableData(1);
 	}
+	
 	public int getPageSize() {
 		return this.pageSize;
 	}
+	
 	public int getTotalRowCount() {
 		return totalRowCount;
 	}
+	
 	public void setRowData(List rowData) {
 		this.rowData = rowData;
 		this.totalRowCount = rowData.size();

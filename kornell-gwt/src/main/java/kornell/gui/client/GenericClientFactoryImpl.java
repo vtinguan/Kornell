@@ -14,13 +14,14 @@ import kornell.core.lom.LOMFactory;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.GlobalActivityMapper;
 import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
@@ -37,8 +38,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryHandler.DefaultHistorian;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -116,19 +116,25 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if(institution == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {
+
+					showBody(false);
+					
+					Timer mdaTimer = new Timer() {
+						public void run() {
+							showBody(true);
+						}
+					};
+
+					//wait 2 secs for the theme css
+					mdaTimer.schedule((int) (2 * 1000));
+					
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
-						session.courseClasses().getCourseClassesTOByInstitution(
-								institution.getUUID(), courseClassesCallback);
+						session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 					} else {
 						startAnonymous();
 					}
 				}
-			}
-
-			@Override
-			public void unauthorized(String errorMessage) {
-				GWT.log(this.getClass().getName() + " - " + errorMessage);
 			}
 		};
 
@@ -157,8 +163,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	}
 	
-	
-
+	private static native void showBody(boolean show) /*-{
+		$wnd.document.getElementsByTagName('body')[0].setAttribute('style', 'display: ' + (show ? 'block' : 'none'));
+	}-*/;
 
 	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");
@@ -197,6 +204,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void initPersonnel() {
 		new Captain(bus, session, placeCtrl);
 		new Stalker(bus, session);
+		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads(), placeCtrl);
 	}
 
 	private void initSCORM12() {
@@ -271,5 +279,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public KornellSession getKornellSession() {
 		return session;
+	}
+
+	@Override
+	public void setKornellSession(KornellSession session) {
+		this.session = session;
 	}
 }

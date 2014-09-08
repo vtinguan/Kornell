@@ -45,6 +45,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			String assetsURL = localdean.getInstitution().getAssetsURL();
 			view.setLogoURL(assetsURL);
 			view.setBackgroundImage(assetsURL);
+			view.showRegistrationOption(localdean.getInstitution().isAllowRegistration());
 		}
 	}
 
@@ -126,8 +127,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onRegisterButtonClicked() {
-		view.hideMessage();
-		view.displayView(VitrineViewType.register);
+		if(Dean.getInstance().getInstitution().isAllowRegistration()){
+			view.hideMessage();
+			view.displayView(VitrineViewType.register);
+		}
 	}
 
 	@Override
@@ -156,13 +159,15 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onSignUpButtonClicked() {
-		view.hideMessage();
-		List<String> errors = validateFields();
-		if (errors.size() == 0) {
-			signUp();
-		} else {
-			view.setMessage(errors);
-			view.showMessage();
+		if(Dean.getInstance().getInstitution().isAllowRegistration()){
+			view.hideMessage();
+			List<String> errors = validateFields();
+			if (errors.size() == 0) {
+				signUp();
+			} else {
+				view.setMessage(errors);
+				view.showMessage();
+			}
 		}
 	}
 

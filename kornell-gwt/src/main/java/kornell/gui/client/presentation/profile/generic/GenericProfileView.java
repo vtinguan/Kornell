@@ -365,7 +365,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 		//profileFields.add(getPictureUploadFormPanel());
 
-		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode && isAdmin);
+		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode);
 		fields.add(fullName);
 		profileFields.add(fullName);
 		

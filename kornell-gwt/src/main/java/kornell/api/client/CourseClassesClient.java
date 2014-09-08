@@ -6,7 +6,7 @@ import kornell.core.to.CourseClassesTO;
 public class CourseClassesClient extends RESTClient {
 	
 	public void create(CourseClass courseClass, Callback<CourseClass> callback) {
-		PUT("/courseClasses").withContentType(CourseClass.TYPE).withEntityBody(courseClass).go(callback);
+		POST("/courseClasses").withContentType(CourseClass.TYPE).withEntityBody(courseClass).go(callback);
 	}
 
 	public void getCourseClassesTO(Callback<CourseClassesTO> cb) {

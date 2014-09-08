@@ -29,7 +29,9 @@ import kornell.core.entity.Registration
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.to.LibraryFileTO
-import kornell.core.to.LaunchEnrollmentTO
+import kornell.core.to.UnreadChatThreadsTO
+import kornell.core.to.UnreadChatThreadTO
+import kornell.core.to.ChatThreadMessageTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -175,15 +177,35 @@ object TOs {
     lf.setLibraryFiles(libraryFileTOs.asJava)
     lf
   }
-  
-  def newLaunchEnrollmentTO() = {
-    val to = tos.newLaunchEnrollmentTO.as
+
+  def newUnreadChatThreadsTO(l: List[UnreadChatThreadTO]) = {
+    val to = tos.newUnreadChatThreadsTO.as
+    to.setUnreadChatThreadTOs(l asJava)
     to
   }
-  
-  def newActionTO() = {
-    val to = tos.newActionTO.as
+
+  def newUnreadChatThreadTO: UnreadChatThreadTO = tos.newUnreadChatThreadTO.as 
+  def newUnreadChatThreadTO(unreadMessages: String, chatThreadUUID: String, chatThreadName: String, courseClassUUID: String): UnreadChatThreadTO = {
+    val to = newUnreadChatThreadTO
+    to.setUnreadMessages(unreadMessages)
+    to.setChatThreadUUID(chatThreadUUID)
+    to.setChatThreadName(chatThreadName)
+    to.setCourseClassUUID(courseClassUUID)
     to
   }
-  
+
+  def newChatThreadMessagesTO(l: List[ChatThreadMessageTO]) = {
+    val to = tos.newChatThreadMessagesTO.as
+    to.setChatThreadMessageTOs(l asJava)
+    to
+  }
+
+  def newChatThreadMessageTO: ChatThreadMessageTO = tos.newChatThreadMessageTO.as 
+  def newChatThreadMessageTO(senderFullName: String, sentAt: String, message: String): ChatThreadMessageTO = {
+    val to = newChatThreadMessageTO
+    to.setSenderFullName(senderFullName)
+    to.setSentAt(sentAt)
+    to.setMessage(message)
+    to
+  }
 }

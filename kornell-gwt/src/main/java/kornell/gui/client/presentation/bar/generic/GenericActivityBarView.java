@@ -97,6 +97,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			user = clientFactory.getKornellSession().getCurrentUser();
 		}
 		display();
+
 		
 		setupArrowsNavigation();
 		
@@ -138,7 +139,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		iconNext = new Image(IMAGES_PATH + getItemName(BUTTON_NEXT)+".png");
 		displayButton(btnNext, BUTTON_NEXT, iconNext, true);	
 		
-		displayButton(btnDetails, BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
+		displayButton(btnDetails, showDetails ? constants.course() : BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
 		
 		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
 		
@@ -206,6 +207,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	}
 	
 	private void displayButton(final FocusPanel btn, final String buttonType, Image icon, boolean invertIcon) {
+		btn.clear();
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
 		buttonPanel.addStyleName(getItemName(buttonType));
@@ -338,8 +340,10 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 		if(showDetails){	
 			btnDetails.addStyleName("btnSelected");	
+			displayButton(btnDetails, constants.course(), new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
 		} else {		
 			btnDetails.removeStyleName("btnSelected");
+			displayButton(btnDetails, BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
 		}
 		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev);
 		enableButton(BUTTON_NEXT, !showDetails && enableNext);	

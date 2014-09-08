@@ -11,7 +11,9 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 
 public class Kornell implements EntryPoint {
+	
 	Logger logger = Logger.getLogger(Kornell.class.getName());
+	ClientFactory clientFactory = GWT.create(ClientFactory.class);
 
 	@Override
 	public void onModuleLoad() {
@@ -37,9 +39,12 @@ public class Kornell implements EntryPoint {
 	}-*/;
 
 	private void startLMS() {
-		ClientFactory clientFactory = GWT.create(ClientFactory.class);
 		clientFactory.startApp();
 		clientFactory.logState();
+	}
+	
+	public ClientFactory getClientFactory(){
+		return clientFactory;
 	}
 
 }

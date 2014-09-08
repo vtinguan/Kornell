@@ -8,6 +8,7 @@ import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
@@ -24,7 +25,6 @@ import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
@@ -39,6 +39,7 @@ import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -61,6 +62,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private boolean hasOverriddenEnrollments = false, overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
   private EnrollmentRequestsTO enrollmentRequestsTO;
   private List<EnrollmentTO> enrollmentsToOverride;
+  private Map<String, EnrollmentsTO> enrollmentsCacheMap;
   
 	private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
 
@@ -74,7 +76,17 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		this.viewFactory = viewFactory;
 		formHelper = new FormHelper();
 		enrollmentRequestsTO = toFactory.newEnrollmentRequestsTO().as();
+		enrollmentsCacheMap = new HashMap<String, EnrollmentsTO>();
 		// TODO refactor permissions per session/activity
+
+		Timer cacheCleanerTimer = new Timer() {
+			public void run() {
+	      clearEnrollmentsCache();
+			}
+		};
+
+		// Schedule the timer to run every 15 minutes
+		cacheCleanerTimer.scheduleRepeating(15 * 60 * 1000);
 		init();
 	}
 
@@ -83,14 +95,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
-
-
+			
 			String selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
-			if(StringUtils.isNone(selectedCourseClass) && courseClassesTO != null && courseClassesTO.getCourseClasses().size() > 0){
-				updateCourseClass(courseClassesTO.getCourseClasses().get(0).getCourseClass().getUUID());
-			} else {
-      	updateCourseClass(selectedCourseClass);
-			}
+      updateCourseClass(selectedCourseClass);
+      
+      clearEnrollmentsCache();
 		} else {
 			GWT.log("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
@@ -98,29 +107,53 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		}
 	}
 
-	private List<Enrollment> getEnrollments(String courseClassUUID) {
-		LoadingPopup.show();
+	private void getEnrollments(final String courseClassUUID) {
 		ClientProperties.set(getLocalStoragePropertyName(), courseClassUUID);
+		EnrollmentsTO enrollments = getCachedEnrollments(courseClassUUID);
+		if(enrollments != null){
+			showEnrollments(enrollments, true);
+		} else {
+		LoadingPopup.show();
 		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID,
 				new Callback<EnrollmentsTO>() {
-
 					@Override
-					public void ok(EnrollmentsTO e) {
-						numEnrollments = e.getEnrollmentTOs().size();
-						maxEnrollments = Dean.getInstance().getCourseClassTO()
-								.getCourseClass().getMaxEnrollments();
-						enrollmentTOs = e.getEnrollmentTOs();
-						view.setEnrollmentList(e.getEnrollmentTOs());
-						view.showEnrollmentsPanel(true);
+					public void ok(EnrollmentsTO enrollments) {
+						showEnrollments(enrollments, true);
+						updateCachedEnrollments(courseClassUUID, enrollments);
 						LoadingPopup.hide();
 					}
 				});
-		return null;
+		}
 	}
+
+	private synchronized EnrollmentsTO getCachedEnrollments(String courseClassUUID) {
+	  return enrollmentsCacheMap == null ? null : enrollmentsCacheMap.get(courseClassUUID);
+  }
+
+	private synchronized void updateCachedEnrollments(String courseClassUUID, EnrollmentsTO enrollments) {
+	  if(courseClassUUID != null && enrollments != null){
+	  	enrollmentsCacheMap.put(courseClassUUID, enrollments);
+	  }
+  }
+
+	private synchronized void clearEnrollmentsCache() {
+		enrollmentsCacheMap.clear();
+  }
+
+	private void showEnrollments(EnrollmentsTO e, boolean refreshView) {
+    numEnrollments = e.getEnrollmentTOs().size();
+		maxEnrollments = Dean.getInstance().getCourseClassTO()
+				.getCourseClass().getMaxEnrollments();
+		enrollmentTOs = e.getEnrollmentTOs();
+		view.setEnrollmentList(e.getEnrollmentTOs(), refreshView);
+		view.showEnrollmentsPanel(true);
+  }
 
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
-
+		if(!enrollmentsCacheMap.containsKey(courseClassUUID)){
+			view.showEnrollmentsPanel(false);
+		}
 		session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
 				new Callback<CourseClassesTO>() {
 			@Override
@@ -136,7 +169,11 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 							return;
 						}
 					}
-					updateCourseClassUI(null);
+					if(courseClassesTO != null && courseClassesTO.getCourseClasses().size() > 0){
+						updateCourseClassUI(courseClassesTO.getCourseClasses().get(0));
+					} else {
+						updateCourseClassUI(null);
+					}
 				}
 			}
 		});
@@ -168,6 +205,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			final EnrollmentState toState) {
 		LoadingPopup.show();
 
+  	enrollmentsCacheMap.remove(enrollmentTO.getEnrollment().getCourseClassUUID());
+  	
 		String personUUID = session.getCurrentUser().getPerson().getUUID();
 		session.events()
 				.enrollmentStateChanged(enrollmentTO.getEnrollment().getUUID(), personUUID,
@@ -177,6 +216,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					public void ok(Void to) {
 						getEnrollments(Dean.getInstance().getCourseClassTO()
 								.getCourseClass().getUUID());
+						view.setCanPerformEnrollmentAction(true);
 					}
 				});
 
@@ -187,6 +227,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			final CourseClassState toState) {
 		LoadingPopup.show();
 
+  	enrollmentsCacheMap.remove(courseClassTO.getCourseClass().getUUID());
+  	
 		String personUUID = session.getCurrentUser().getPerson().getUUID();
 		session.events()
 				.courseClassStateChanged(courseClassTO.getCourseClass().getUUID(), personUUID,
@@ -202,6 +244,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 					@Override
 					public void unauthorized(String errorMessage){
 						LoadingPopup.hide();
+						KornellNotification.show("Erro ao tentar excluir a turma.", AlertType.ERROR);
 						GWT.log(this.getClass().getName() + " - " + errorMessage);
 					}
 				});
@@ -280,7 +323,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		for (int i = 0; i < enrollmentsA.length; i++) {
 			if ("".equals(enrollmentsA[i].trim()))
 				continue;
-			enrollmentStrA = enrollmentsA[i].split(";");
+			enrollmentStrA = enrollmentsA[i].indexOf(';') >= 0 ? enrollmentsA[i].split(";") : enrollmentsA[i].split("\\t");
 			fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
 			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1]
 					: enrollmentStrA[0]);
@@ -397,6 +440,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 							+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
 		}
 		LoadingPopup.show();
+
+  	enrollmentsCacheMap.remove(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 		session.enrollments().createEnrollments(enrollmentRequestsTO,
 				new Callback<Enrollments>() {
 					@Override
@@ -476,12 +521,49 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	@Override
   public void deleteEnrollment(EnrollmentTO enrollmentTO) {
+  	enrollmentsCacheMap.remove(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 		session.enrollment(enrollmentTO.getEnrollment().getUUID()).delete(new Callback<Enrollment>() {
 			@Override
 			public void ok(Enrollment to) {
 				KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
 				getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+				view.setCanPerformEnrollmentAction(true);
 			}
 		});
+  }
+
+	@Override
+  public void upsertCourseClass(CourseClass courseClass) {
+		if(courseClass.getUUID() == null){
+			courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
+			session.courseClasses().create(courseClass, new Callback<CourseClass>() {
+				@Override
+				public void ok(CourseClass courseClass) {
+						LoadingPopup.hide();
+						KornellNotification.show("Turma criada com sucesso!");
+						CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
+						if(courseClassTO2 != null)
+							courseClassTO2.setCourseClass(courseClass);
+						updateCourseClass(courseClass.getUUID());
+				}
+				
+				@Override
+				public void unauthorized(String errorMessage){
+					LoadingPopup.hide();
+					KornellNotification.show("Já existe uma turma com esse nome.", AlertType.ERROR, 2500);
+				}
+			});
+		} else {
+	  	enrollmentsCacheMap.remove(courseClass.getUUID());
+			session.courseClass(courseClass.getUUID()).update(courseClass, new Callback<CourseClass>() {
+				@Override
+				public void ok(CourseClass courseClass) {
+						LoadingPopup.hide();
+						KornellNotification.show("Alterações salvas com sucesso!");
+						Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
+						updateCourseClass(courseClass.getUUID());
+				}		
+			});
+		}
   }
 }

@@ -36,3 +36,5 @@ AwsCredentials.properties
 .elasticbeanstalk/
 sourcetree
 sourcetree.pub
+kornell-gwt/gwt-unitCache/
+*.orig

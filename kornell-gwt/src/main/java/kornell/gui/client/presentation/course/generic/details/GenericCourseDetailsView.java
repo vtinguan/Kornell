@@ -90,7 +90,7 @@ public class GenericCourseDetailsView extends Composite {
 	private Contents contents;
 	private List<Actom> actoms;
 
-	private boolean isEnrolled, isInactiveCourseClass;
+	private boolean isEnrolled, isCancelled, isInactiveCourseClass;
 	
 	public GenericCourseDetailsView(EventBus bus, KornellSession session, PlaceController placeCtrl) {
 		this.bus = bus;
@@ -132,14 +132,17 @@ public class GenericCourseDetailsView extends Composite {
 
 	private void display() {
 		isEnrolled = false;
+		isCancelled = false;
 		UserInfoTO user = session.getCurrentUser();
 		Enrollment enrollment;
 		for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
 			enrollment = enrollmentTO.getEnrollment();
-			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())
-					&& EnrollmentState.enrolled.equals(enrollment.getState())){
-				isEnrolled = true;
-				break;
+			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())){
+				if(EnrollmentState.enrolled.equals(enrollment.getState())){
+					isEnrolled = true;
+				} else if(EnrollmentState.cancelled.equals(enrollment.getState())){
+					isCancelled = true;
+				}
 			}
 		}
 		isInactiveCourseClass = CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState());
@@ -340,7 +343,7 @@ public class GenericCourseDetailsView extends Composite {
 		// TODO: i18n
 		if(isInactiveCourseClass){
 			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
-		} else if(isEnrolled){
+		} else if(isEnrolled && !isCancelled){
 			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
 			displayButton(btnLibrary, constants.btnLibrary(), "Material complementar"/*constants.btnCertificationInfo()*/, false);
 			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
@@ -380,24 +383,22 @@ public class GenericCourseDetailsView extends Composite {
 		sidePanel.addStyleName("sidePanel");
 
 		
-		if(isInactiveCourseClass){
-			FlowPanel inactiveCourseClassPanel = new FlowPanel();
-			inactiveCourseClassPanel.addStyleName("notEnrolledPanel");
-			String text = "Essa turma foi desabilitada pela instituição."
-					+ (Dean.getInstance().getCourseClassTO().getCourseClass().isEnrollWithCPF() ? "" : "<br><br> O material desta turma está inacessível.<br>");
+		if(isInactiveCourseClass || isCancelled || !isEnrolled){
+			FlowPanel warningPanel = new FlowPanel();
+			warningPanel.addStyleName("notEnrolledPanel");
+			String text = "";
+			if(isInactiveCourseClass){
+				text = "Essa turma foi desabilitada pela instituição."
+						+ "<br><br> O material desta turma está inacessível.<br>";
+			} else if(isCancelled) {
+				text = "Sua matrícula foi cancelada pela instituição.";
+			} else if(!isEnrolled) {
+				text = "Sua matrícula ainda não foi aprovada pela instituição."
+						+ (Dean.getInstance().getCourseClassTO().getCourseClass().isEnrollWithCPF() ? "" : "<br><br> Você receberá um email no momento da aprovação.<br>");
+			}
 			HTMLPanel panel = new HTMLPanel(text);
-			inactiveCourseClassPanel.add(panel);
-			
-			sidePanel.add(inactiveCourseClassPanel);
-		} else if(!isEnrolled){
-			FlowPanel notEnrolledPanel = new FlowPanel();
-			notEnrolledPanel.addStyleName("notEnrolledPanel");
-			String text = "Sua matrícula ainda não foi aprovada pela instituição."
-					+ (Dean.getInstance().getCourseClassTO().getCourseClass().isEnrollWithCPF() ? "" : "<br><br> Você receberá um email no momento da aprovação.<br>");
-			HTMLPanel panel = new HTMLPanel(text);
-			notEnrolledPanel.add(panel);
-			
-			sidePanel.add(notEnrolledPanel);
+			warningPanel.add(panel);
+			sidePanel.add(warningPanel);
 		}
 		
 		sidePanel.add(getHintsPanel());

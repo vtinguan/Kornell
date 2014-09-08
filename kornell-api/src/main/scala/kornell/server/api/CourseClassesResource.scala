@@ -18,6 +18,7 @@ import kornell.server.util.Conditional.toConditional
 import kornell.core.to.CourseClassesTO
 import kornell.server.util.Errors._
 import kornell.server.repository.Entities
+import javax.ws.rs.POST
 
 @Path("courseClasses")
 class CourseClassesResource(val courseVersionUUID:String) {
@@ -29,7 +30,7 @@ class CourseClassesResource(val courseVersionUUID:String) {
         institutionUUID=institutionUUID)))
   
   
-  @PUT
+  @POST
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
   def create(courseClass: CourseClass) = {

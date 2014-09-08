@@ -8,6 +8,7 @@ import kornell.core.entity.Role;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
@@ -55,7 +56,7 @@ public class KornellSession extends KornellClient {
 		}
 	}
 
-	private void setCurrentUser(UserInfoTO userInfo) {
+	public void setCurrentUser(UserInfoTO userInfo) {
 		this.currentUser = userInfo;
 	}
 
@@ -154,6 +155,8 @@ public class KornellSession extends KornellClient {
 	public boolean hasSignedTerms() {
 		if (currentUser == null)
 			return false;
+		if(StringUtils.isNone(Dean.getInstance().getInstitution().getTerms()))
+			return true;
 		final List<Registration> registrations = currentUser.getRegistrationsTO().getRegistrations();
 		for (Registration registration : registrations) {
 			if (registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID()) && 

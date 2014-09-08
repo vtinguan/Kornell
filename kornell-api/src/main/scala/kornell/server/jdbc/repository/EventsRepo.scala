@@ -30,6 +30,7 @@ object EventsRepo {
 		   ${event.getActomKey}); 
 	""".executeUpdate
 
+    EnrollmentSEP.onAssessment(event.getEnrollmentUUID)
     EnrollmentSEP.onProgress(event.getEnrollmentUUID)
   }
 

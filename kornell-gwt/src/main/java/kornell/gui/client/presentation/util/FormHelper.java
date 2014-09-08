@@ -10,11 +10,13 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.util.view.formfield.CheckBoxFormField;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PasswordTextBoxFormField;
+import kornell.gui.client.util.view.formfield.TextAreaFormField;
 import kornell.gui.client.util.view.formfield.TextBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
+import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -24,6 +26,8 @@ import com.google.gwt.user.client.ui.Image;
 //TODO i18n
 public class FormHelper {
 	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
+	public static String SEPARATOR_BAR_CLASS = "profileSeparatorBar";
+	
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private static final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
@@ -406,6 +410,13 @@ public class FormHelper {
 	public TextBoxFormField createTextBoxFormField(String text){
 		return createTextBoxFormField(text, null);
 	}
+	public TextAreaFormField createTextAreaFormField(String text){
+		TextArea fieldTextArea = new TextArea();
+		fieldTextArea.addStyleName("field");
+		fieldTextArea.addStyleName("textField");
+		fieldTextArea.setValue(text);
+		return new TextAreaFormField(fieldTextArea);
+	}
 	
 	public PasswordTextBoxFormField createPasswordTextBoxFormField(String text){
 		PasswordTextBox fieldPasswordTextBox = new PasswordTextBox();
@@ -425,6 +436,13 @@ public class FormHelper {
 		for (KornellFormFieldWrapper field : fields) {
 			field.clearError();
 		}
+	}
+
+	public boolean checkErrors(List<KornellFormFieldWrapper> fields) {
+		for (KornellFormFieldWrapper field : fields)
+			if (!"".equals(field.getError()))
+				return true;
+		return false;
 	}
 	
 	public static String stripCPF(String cpf){
@@ -501,7 +519,7 @@ public class FormHelper {
 
 	public Image getImageSeparator() {
 		Image image = new Image(SEPARATOR_BAR_IMG_PATH);
-		image.addStyleName("profileSeparatorBar");
+		image.addStyleName(SEPARATOR_BAR_CLASS);
 		return image;
 	}
 	

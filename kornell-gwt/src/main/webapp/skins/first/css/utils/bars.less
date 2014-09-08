@@ -6,6 +6,99 @@
 @barNorthHeight: 45px;
 @barSouthHeight: 35px;
 
+.activityBarWrapper{
+	.gradient (@barGradientStartColor, @barGradientEndColor);
+	.noTextSelect;
+
+	.activityBar{	
+		.south;
+		.gradient (@barGradientStartColor, @barGradientEndColor);
+		.size (@wrapperWidth,@barSouthHeight);
+		margin: 0 auto;
+		.btnPanel{
+			.btnBorder;
+			.cursorPointer;
+		}
+		.activityBarButton {
+			width: 20%;
+			height: @barSouthHeight;
+			float: left;
+			line-height: @barSouthHeight;
+			text-align: center;
+			padding: 0 !important;
+			border-radius: 0px !important;
+			border: 0;
+			text-decoration: none;
+			.label{
+				background: transparent;
+				color: @niceTextColor;
+				font-size: 11px;
+				margin-left: 4px;
+			}
+			.icon{}
+		}
+		.selected{
+			@borderTopHeight: 3px;
+			border-top: @borderTopHeight solid @buttonSelectedGradientStart;
+			line-height: @barSouthHeight - @borderTopHeight;
+		}
+		.firstMonoSCO{
+			margin-left: 288px;
+		}
+		.disabled {
+			.label{
+				color: darken(@niceTextColor, 30%);
+			}
+		}
+		.btnProgress{
+			cursor: default;
+			.progressBarPanel{
+				.btnBorder;
+				height: @barSouthHeight;
+				.progress{
+					width: 150px;
+					height: 10px;
+					margin: 0 auto;
+					margin-top: 2px;
+					.bar{
+						.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
+					}
+				}
+				.pagePanel{
+					height: 10px;
+					line-height: 11px;
+					margin-top: 3px;
+					display: block; 
+					div{
+						display: inline;
+					}
+				}
+			}
+		}
+	}
+}
+@media screen and (max-width: @wrapperWidth) {
+	.activityBarWrapper{
+		.activityBar{
+			.size (@wrapperWidthUnder990,@barSouthHeight);
+			.progress{
+				width: 100px !important;
+			}
+			/*.activityBarButton {
+				.label{
+					visibility: hidden;
+					width: 0px; 
+					border: 0;
+					margin: 0;
+					padding: 0;
+				}		
+			}*/
+		}
+	}
+}
+
+
+
 .menuBar{
 	.north;
 	.size (100%, @barNorthHeight);
@@ -53,7 +146,7 @@
 			}
 			.countMessages{
 				left: 8px;
-				top: -29px;
+				top: -36px;
 			}
 		}
 		.first{
