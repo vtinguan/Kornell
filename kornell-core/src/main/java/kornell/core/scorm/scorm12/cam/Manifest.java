@@ -6,4 +6,7 @@ public interface Manifest {
 	
 	Resources getResources();
 	void setResources(Resources resources);
+	
+	Metadata getMetadata();
+	void setMetadata(Metadata metadata);
 }

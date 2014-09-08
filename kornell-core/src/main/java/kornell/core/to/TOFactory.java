@@ -23,4 +23,8 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<LibraryFilesTO> newLibraryFilesTO();
 	AutoBean<ChatThreadMessageTO> newChatThreadMessageTO();
 	AutoBean<ChatThreadMessagesTO> newChatThreadMessagesTO();
+	AutoBean<ActionTO> newActionTO();
+	AutoBean<UnreadChatThreadsTO> newUnreadChatThreadsTO();
+	AutoBean<LaunchEnrollmentTO> newLaunchEnrollmentTO();
+	AutoBean<UnreadChatThreadTO> newUnreadChatThreadTO();
 }

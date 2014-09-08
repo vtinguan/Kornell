@@ -6,11 +6,15 @@ import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
+
+import java.util.logging.Logger;
+
 import kornell.core.entity.EntityFactory;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.sequence.ThinSequencer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
@@ -23,6 +27,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  
 public abstract class Callback<T> implements RequestCallback {
+	public static final Logger log = Logger.getLogger(Callback.class.getName());
 	
 	private String responseText;
 
@@ -76,7 +81,11 @@ public abstract class Callback<T> implements RequestCallback {
 			if (MediaTypes.get().containsType(contentType)) {
 				@SuppressWarnings("unchecked")
 				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
-
+				if(clazz==null){
+					String msg = "Could not find class for mime type ["+contentType+"]";
+					log.severe(msg);
+					onError(null,new IllegalStateException(msg));
+				}
 				AutoBean<T> bean = null;
 				AutoBeanFactory factory = factoryFor(contentType);
 				if("null".equals(responseText))

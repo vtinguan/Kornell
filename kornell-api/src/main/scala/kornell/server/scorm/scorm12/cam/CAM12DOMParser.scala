@@ -13,16 +13,18 @@ import java.util.List
 import kornell.core.scorm.scorm12.cam._
 import kornell.core.scorm.scorm12.cam.adlcp._
 import kornell.core.scorm.scorm12.cam.adlcp.TimeLimitAction._
-
-
+import kornell.core.scorm.scorm12.cam.imsmd.LOM
+import kornell.core.scorm.scorm12.cam.imsmd.General
+import kornell.core.scorm.scorm12.cam.imsmd.LangString
+import kornell.core.scorm.scorm12.cam.imsmd.Structure
 
 object CAM12DOMParser {
 
   implicit class PimpNodeList(nl: NodeList) extends Traversable[Node] {
     override def foreach[U](f: Node => U): Unit = for (i <- 0 until nl.getLength) f(nl.item(i))
   }
-  
-  implicit class PimpElement(el:Element) {
+
+  implicit class PimpElement(el: Element) {
     def getChildElements = el.getChildNodes filter isElement
   }
 
@@ -43,41 +45,43 @@ object CAM12DOMParser {
 
   def parseManifest(el: Element): Manifest = {
     val manifest = newManifest
-    for(child <- el.getChildElements)
+    for (child <- el.getChildElements)
       child.getTagName() match {
-      case "organizations" => manifest.setOrganizations(parseOrganizations(child))
-      case "resources" => manifest.setResources(parseResources(child))
-    }
+        case "organizations" => manifest.setOrganizations(parseOrganizations(child))
+        case "resources" => manifest.setResources(parseResources(child))
+        case "metadata" => manifest.setMetadata(parseMetadata(child))
+        case other: String => throw new IllegalStateException(s"Unknown tag <${other}>")
+      }
     manifest
   }
-  
-  def parseResources(el:Element):Resources = {
+
+  def parseResources(el: Element): Resources = {
     val res = newResources()
-    for(child <- el.getChildElements) 
+    for (child <- el.getChildElements)
       child.getTagName match {
-      	case "resource" => res.getResourceList.add(parseResource(child)) 
-    }
+        case "resource" => res.getResourceList.add(parseResource(child))
+      }
     res
   }
 
-  def parseResource(el:Element):Resource = {
+  def parseResource(el: Element): Resource = {
     val res = newResource()
     res.setIdentifier(el.getAttribute("identifier"))
     res.setType(el.getAttribute("type"))
     res.setScormType(el.getAttribute("adlcp:scormtype"))
     res.setHref(el.getAttribute("href"))
-    for(child <- el.getChildElements) 
+    for (child <- el.getChildElements)
       child.getTagName match {
-      	case "metadata" => res.setMetadata(parseMetadata(child))
-      	case "file" => res.getFiles.add(parseFile(child))
-      	case "dependency" => res.getDependencies().add(parseDependency(child))
-    }
+        case "metadata" => res.setMetadata(parseMetadata(child))
+        case "file" => res.getFiles.add(parseFile(child))
+        case "dependency" => res.getDependencies().add(parseDependency(child))
+      }
     res
   }
-  
-  def parseDependency(el:Element) = el.getAttribute("identifierref")
-  
-  def parseFile(el:Element) = {
+
+  def parseDependency(el: Element) = el.getAttribute("identifierref")
+
+  def parseFile(el: Element) = {
     val file = newFile()
     file.setHref(el.getAttribute("href"))
     file
@@ -85,11 +89,11 @@ object CAM12DOMParser {
 
   def parseOrganizations(el: Element): Organizations = {
     val orgs = newOrganizations()
-    orgs.setDefaultOrganization( el.getAttribute("default"))
+    orgs.setDefaultOrganization(el.getAttribute("default"))
     for (child <- el.getChildElements)
-    child.getTagName match {
-      case "organization" => orgs.getOrganizationList().add(parseOrganization(child))
-    }    
+      child.getTagName match {
+        case "organization" => orgs.getOrganizationList().add(parseOrganization(child))
+      }
     orgs
   }
 
@@ -134,7 +138,7 @@ object CAM12DOMParser {
     case _ => unknown_action
   }
 
-  def parsePreRequisits(el: Element):PreRequisites =
+  def parsePreRequisits(el: Element): PreRequisites =
     newPreRequisites(el.getTextContent, el.getAttribute("type"))
 
   def parseItem(el: Element): Item = {
@@ -163,8 +167,48 @@ object CAM12DOMParser {
         case "schema" => meta.setSchema(child.getTextContent)
         case "schemaversion" => meta.setSchemaVersion(child.getTextContent)
         case "adlcp:location" => meta.setLocation(child.getTextContent)
+        case "imsmd:lom" => meta.setLOM(parseLOM(child))
+        case other: String => throw new IllegalStateException(s"Unknown <metadata> child <${other}>")
       }
     meta
+  }
+
+  def parseLOM(el: Element): LOM = {
+    def lom = newLOM
+    for (child <- el.getChildElements)
+      child.getTagName match {
+        case "imsmd:general" => lom.setGeneral(parseGeneral(child))
+      }
+    lom
+  }
+
+  def parseGeneral(el: Element): General = {
+    val general = newGeneral
+    for (child <- el.getChildElements)
+      child.getTagName match {
+        case "imsmd:identifier" => general.setIdentifier(child.getTextContent)
+        case "imsmd:title" => general.setTitle(parseLangString(child))
+        case "imsmd:language" => general.setLanguage(child.getTextContent)
+        case "imsmd:structure" => general.setStructure(parseStructure(child))
+      }
+    general
+  }
+
+  def parseStructure(el: Element): Structure = {
+    val structure = newStructure
+    for (child <- el.getChildElements)
+      child.getTagName match {
+        case "imsmd:source" => structure.setSource(parseLangString(child))
+        case "imsmd:value" => structure.setValue(parseLangString(child))
+      }
+    structure
+  }
+
+  def parseLangString(el: Element): LangString = {
+    val langString = newLangString
+    langString.setLang(el.getAttribute("xml:lang"))
+    langString.setText(el.getTextContent)
+    langString
   }
 
 }

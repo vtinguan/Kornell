@@ -4,11 +4,8 @@ import java.math.BigDecimal
 import java.util.Date
 import java.util.Map
 import java.util.UUID
-
 import scala.collection.JavaConverters.seqAsJavaListConverter
-
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-
 import kornell.core.entity.Assessment
 import kornell.core.entity.ContentSpec
 import kornell.core.entity.Course
@@ -25,6 +22,7 @@ import kornell.core.entity.Role
 import kornell.core.entity.RoleType
 import kornell.core.util.TimeUtil
 import kornell.server.util.ValueFactory
+import java.util.HashMap
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -268,22 +266,24 @@ object Entities {
     entries
   }
 
-  def newS3ContentRepository(uuid: String = null,
+  def newContentStore(uuid: String = null,
     accessKeyId: String = null,
     secretAccessKey: String = null,
     bucketName: String = null,
     prefix: String = null,
     region: String = null,
     distributionURL: String = null) = {
-    val repo = factory.newS3ContentRepository.as
-    repo.setUUID(uuid)
-    repo.setAccessKeyId(accessKeyId)
-    repo.setBucketName(bucketName)
-    repo.setPrefix(prefix)
-    repo.setRegion(region)
-    repo.setSecretAccessKey(secretAccessKey)
-    repo.setDistributionURL(distributionURL)
-    repo
+    val store = factory.newContentStore.as    
+    store.setUUID(uuid)
+    val props = new HashMap[String,String]()
+    props.put("accessKeyId",accessKeyId)
+    props.put("bucketName",bucketName )
+    props.put("prefix", prefix)
+    props.put("region", region)
+    props.put("secretAccessKey", secretAccessKey)
+    props.put("distributionURL", distributionURL)
+    store.setProperties(props)
+    store
   }
 
   def newChatThread(uuid: String = null, createdAt: Date = null, institutionUUID: String = null) = {

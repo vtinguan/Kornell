@@ -20,7 +20,7 @@ public class LocalRepositoryServlet extends HttpServlet {
 	static final Pattern pattern = Pattern.compile("[/]?repository/([^/]*)/.*");
 	static final Map<String, Path> repoPaths = new HashMap<String,Path>();
 	static final Path home = Paths.get(System.getProperty("user.home"));
-	static final Path dropbox = home.resolve("Dropbox");
+	static final Path dropbox = home.resolve("Dropbox (Craftware)");
 	static {	
 		if (dropbox.toFile().exists()){
 			repoPaths.put("840e93aa-2373-4fb5-ba4a-999bb3f43888", dropbox.resolve("Content/midway"));

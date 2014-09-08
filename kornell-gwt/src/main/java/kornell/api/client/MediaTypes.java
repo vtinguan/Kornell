@@ -58,6 +58,7 @@ public class MediaTypes {
 		register(LibraryFilesTO.TYPE,LibraryFilesTO.class);
 		register(UnreadChatThreadsTO.TYPE,UnreadChatThreadsTO.class);
 		register(ChatThreadMessagesTO.TYPE,ChatThreadMessagesTO.class);
+		register(LaunchEnrollmentTO.TYPE,LaunchEnrollmentTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

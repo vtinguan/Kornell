@@ -1,24 +1,10 @@
 package kornell.core.entity;
+import java.util.Map;
 
-public interface S3ContentRepository {
+public interface ContentStore {
 	String getUUID();
 	void setUUID(String UUID);
-	
-	String getAccessKeyId();
-	void setAccessKeyId(String accessKeyId);
-	
-	String getSecretAccessKey();
-	void setSecretAccessKey(String secretAccessKey);
-	
-	String getBucketName();
-	void setBucketName(String bucketName);
-	
-	String getPrefix();
-	void setPrefix(String prefix);
-	
-	String getRegion();
-	void setRegion(String region);
-	
-	String getDistributionURL();
-	void setDistributionURL(String distirbutionURL);
+
+	Map<String,String> getProperties();
+	void setProperties(Map<String,String> properties);
 }

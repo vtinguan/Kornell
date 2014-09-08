@@ -140,7 +140,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		status = allowCertificateGeneration ? "Disponível" : "Não disponível";
 		lblStatus.setText(status);
 
-		if(currentCourseClass.getEnrollment() != null &&
+		if(currentCourseClass != null && currentCourseClass.getEnrollment() != null &&
 				EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(currentCourseClass.getEnrollment())) &&
 				currentCourseClass.getCourseClass().getRequiredScore() != null && 
 				currentCourseClass.getCourseClass().getRequiredScore().intValue() != 0 &&

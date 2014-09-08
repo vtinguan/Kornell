@@ -74,11 +74,14 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				boolean isInactiveCourseClass = CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 				LoadingPopup.hide();
 				setContents(contents);
-				view.display(isEnrolled && !isInactiveCourseClass);		
-				view.asWidget().setVisible(true);
+				//view.asWidget().setVisible(true);
+				//view.display(isEnrolled && !isInactiveCourseClass);
 			}
 
 		});
+		//TODO: 000 REVIEW ALL CODE IN THIS MEHTOD
+		view.asWidget().setVisible(true);
+		view.display(true);
 	}
 
 	private FlowPanel getPanel() {

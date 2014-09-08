@@ -12,6 +12,7 @@ import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.OpenURLView;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -60,11 +61,11 @@ public class ThinSequencer implements Sequencer{
 	}
 
 	@Override
+	//TODO: 000 Deprecate "contents"
 	public void go(Contents contents) {
 		final String enrollmentUUID = place.getEnrollmentUUID();
 		log.info("Launching Enrollment ["+enrollmentUUID+"]");
 		session.enrollment(enrollmentUUID).launch(new Callback<LaunchEnrollmentTO>() {
-
 			@Override
 			public void ok(LaunchEnrollmentTO to) {
 				log.info("LAUNCH");

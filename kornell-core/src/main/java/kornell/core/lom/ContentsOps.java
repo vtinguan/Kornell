@@ -6,8 +6,8 @@ import java.util.List;
 public class ContentsOps {
 	//TODO: bind directly to Contents.collectActoms
 	public static List<Actom> collectActoms(Contents contents) {
-		List<Actom> actoms = new ArrayList<Actom>();
-		for (Content content:contents.getChildren()) {
+		List<Actom> actoms = new ArrayList<Actom>();		
+		if(contents != null) for (Content content:contents.getChildren()) {
 			collectContent(content, actoms);
 		}		
 		return actoms;

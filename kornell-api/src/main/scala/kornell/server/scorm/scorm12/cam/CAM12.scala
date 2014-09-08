@@ -70,9 +70,10 @@ object CAM12 {
 	  res
 	}
 	
-	def newFile() = {
-	  val file = factory.newFile.as
-	  file
-	}
+	def newFile() = factory.newFile.as	
+	def newGeneral() = factory.newGeneral.as
+	def newLangString() = factory.newLangString.as
+	def newLOM() = factory.newLOM.as
+	def newStructure() = factory.newStructure.as
 
 }

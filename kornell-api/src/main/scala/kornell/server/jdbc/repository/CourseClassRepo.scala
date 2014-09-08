@@ -61,6 +61,6 @@ class CourseClassRepo(uuid:String) {
   
 }
 
-object CourseClassRepo extends App {
+object CourseClassRepo {
   def apply(uuid:String) = new CourseClassRepo(uuid)
 }

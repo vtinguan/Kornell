@@ -60,7 +60,8 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		detailsView.initData();
 		detailsPanel.clear();
 		detailsPanel.add(detailsView);
-		boolean showDetails = !isEnrolled || EnrollmentCategory.isFinished(Dean.getInstance().getCourseClassTO().getEnrollment());
+		// TODO: 000 REVIEW
+		boolean showDetails = false; //!isEnrolled || EnrollmentCategory.isFinished(Dean.getInstance().getCourseClassTO().getEnrollment());
 		bus.fireEvent(new ShowDetailsEvent(showDetails));
 	}
 

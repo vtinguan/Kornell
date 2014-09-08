@@ -16,8 +16,9 @@ public class OpenURLView extends Uidget {
 	
 
 	public OpenURLView(String URL) {
-		log.info("*** open-url ["+System.currentTimeMillis()+"]");
+		log.info("*** open-url ["+URL+"|"+System.currentTimeMillis()+"]");
 		Frame frame = new Frame();
+		frame.getElement().setId("asdfadf");
 		frame.setHeight("600px");
 		frame.setWidth("800px");
 		

@@ -18,8 +18,7 @@ public class ActomClient extends RESTClient {
 
 	public ActomClient(EnrollmentClient enrollmentClient, String actomKey) {
 		this.enrollmentUUID = enrollmentClient.getEnrollmentUUID();
-		this.encodedActomKey = URL.encodePathSegment(actomKey);
-
+		this.encodedActomKey =  URL.encodePathSegment(actomKey);
 	}
 
 	public void put(Map<String, String> entries, Callback<ActomEntries> callback) {

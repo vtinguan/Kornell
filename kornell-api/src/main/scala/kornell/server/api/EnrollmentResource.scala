@@ -29,6 +29,11 @@ import kornell.server.util.RequirementNotMet
 import kornell.core.to.LaunchEnrollmentTO
 import kornell.server.repository.TOs
 import kornell.core.to.ActionType
+import kornell.server.jdbc.repository.CourseVersionRepo
+import kornell.server.repository.ContentRepository
+import kornell.server.jdbc.repository.ContentStoreRepo
+import kornell.server.content.ContentManager
+import kornell.server.scorm.scorm12.SCORM12PackageManager
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -87,12 +92,24 @@ class EnrollmentResource(uuid: String) {
   @GET
   @Path("launch")
   @Produces(Array(LaunchEnrollmentTO.TYPE))
-  def launch:LaunchEnrollmentTO = {
-	  val launchTO = TOs.newLaunchEnrollmentTO
-	  val action = TOs.newActionTO
-	  action.setType(ActionType.OpenURL);
-	  action.setProperties(Map("href" -> "http://www.test.com") asJava)
-	  launchTO.setActionTO(action);
+  def launch:LaunchEnrollmentTO = AuthRepo().withPerson { p =>
+      val launchTO = TOs.newLaunchEnrollmentTO
+      //TODO: Cache e=>cr
+	  for {
+	    e <- first
+	    cc <- CourseClassRepo(e.getCourseClassUUID).first
+	    cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
+	    cs <- ContentStoreRepo(cv.getRepositoryUUID,cv.getDistributionPrefix()).first	    
+	  } {
+		 val cm = ContentManager(cs)
+	     val pm = SCORM12PackageManager(cm)
+	     val action = pm.launch()
+	     launchTO.setActionTO(action)
+	  }
+	  //val action = TOs.newActionTO
+	  //action.setType(ActionType.OpenURL);
+	  //action.setProperties(Map("href" -> "http://www.test.com") asJava)
+	  //launchTO.setActionTO(action);
 	  launchTO
   }
 }

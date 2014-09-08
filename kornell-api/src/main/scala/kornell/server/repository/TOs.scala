@@ -184,7 +184,7 @@ object TOs {
     to
   }
 
-  def newUnreadChatThreadTO: UnreadChatThreadTO = tos.newUnreadChatThreadTO.as 
+  def newUnreadChatThreadTO: UnreadChatThreadTO = tos.newUnreadChatThreadTO().as 
   def newUnreadChatThreadTO(unreadMessages: String, chatThreadUUID: String, chatThreadName: String, courseClassUUID: String): UnreadChatThreadTO = {
     val to = newUnreadChatThreadTO
     to.setUnreadMessages(unreadMessages)
@@ -206,6 +206,16 @@ object TOs {
     to.setSenderFullName(senderFullName)
     to.setSentAt(sentAt)
     to.setMessage(message)
+    to
+  }
+  
+  def newActionTO = {
+    val to = tos.newActionTO().as
+    to
+  }
+  
+  def newLaunchEnrollmentTO = {
+    val to = tos.newLaunchEnrollmentTO().as
     to
   }
 }

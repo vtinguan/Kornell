@@ -1,5 +1,7 @@
 package kornell.core.scorm.scorm12.cam;
 
+import kornell.core.scorm.scorm12.cam.imsmd.LOM;
+
 public interface Metadata {
 	/* IMS */
 	String getSchema();
@@ -10,4 +12,8 @@ public interface Metadata {
 	/* ADLCP */
 	String getLocation();
 	void setLocation(String location);
+	
+	/*IMSMD*/
+	LOM getLOM();
+	void setLOM(LOM lom);
 }

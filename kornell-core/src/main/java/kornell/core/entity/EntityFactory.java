@@ -2,7 +2,6 @@ package kornell.core.entity;
 
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
-import com.google.web.bindery.autobean.shared.AutoBeanFactory.Category;
 
 public interface EntityFactory extends AutoBeanFactory {
 	public static String PREFIX = "application/vnd.kornell.v1.entity.";
@@ -47,7 +46,7 @@ public interface EntityFactory extends AutoBeanFactory {
 
 	AutoBean<EnrollmentProgress> newEnrollmentProgress();
 	
-	AutoBean<S3ContentRepository> newS3ContentRepository();
+	AutoBean<ContentStore> newContentStore();
 	
 	AutoBean<ChatThread> newChatThread();
 	
