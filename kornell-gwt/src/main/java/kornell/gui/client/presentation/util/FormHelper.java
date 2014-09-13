@@ -573,25 +573,25 @@ public class FormHelper {
 	  return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
   }
 
-	public String doIt(Date date, Date now) {
+	public String getElapsedTimeSince(Date date, Date now) {
 		long dateM = date.getTime() - 1000; 
 		long serverNowM = now.getTime();
 		
 		long diffM = serverNowM - dateM;
 
-		long dayM = 24 * 60 * 60 * 1000;
-		long hourM = 60 * 60 * 1000;
-		long minuteM = 60 * 1000;
-		long secondM = 1000;
+		long days = diffM/(24 * 60 * 60 * 1000);
+		long hours = diffM/(60 * 60 * 1000);
+		long minutes = diffM/(60 * 1000);
+		long seconds = diffM/(1000);
 
-		if(diffM > dayM)
+		if(days > 0)
 			return dateToString(date);
-		else if(diffM > hourM)
-			return "há " + (diffM/hourM) + " hora" + ((diffM/hourM) > 1 ? "s" : "");
-		else if(diffM > minuteM)
-			return "há " + (diffM/minuteM) + " minuto" + ((diffM/minuteM) > 1 ? "s" : "");
+		else if(hours > 0)
+			return "Há " + hours + " hora" + (hours > 1 ? "s" : "");
+		else if(minutes > 0)
+			return "Há " + minutes + " minuto" + (minutes > 1 ? "s" : "");
 		else
-			return "há " + (diffM/secondM) + " segundo" + ((diffM/secondM) > 1 ? "s" : "");
+			return "Há " + seconds + " segundo" + (seconds > 1 ? "s" : "");
   }
 	
 	public String dateToString(Date date){

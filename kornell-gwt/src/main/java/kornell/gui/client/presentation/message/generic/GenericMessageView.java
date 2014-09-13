@@ -12,6 +12,7 @@ import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
 
@@ -32,6 +33,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
 
 public class GenericMessageView extends Composite implements MessageView {
@@ -43,6 +45,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	private static FormHelper formHelper = GWT.create(FormHelper.class);
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private MessageView.Presenter presenter;
+	private EventBus bus;
 
 
 	private List<Label> sideItems;
@@ -56,7 +59,8 @@ public class GenericMessageView extends Composite implements MessageView {
   @UiField TextArea messageTextArea;
   @UiField Button btnSend;
 
-	public GenericMessageView() {
+	public GenericMessageView(EventBus eventBus) {
+    this.bus = eventBus;
 		initWidget(uiBinder.createAndBindUi(this));
     ensureDebugId("genericMessageInboxView");
 	}
@@ -105,6 +109,11 @@ public class GenericMessageView extends Composite implements MessageView {
 	  String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) && !markAsRead ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
 	  appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
 	  label.getElement().setInnerHTML(unreadChatThreadTO.getChatThreadName() + appendCount);
+	  //if it's supposed to be marked as read and there were messages on the thread, update the envelope count
+	  if(markAsRead && !"0".equals(unreadChatThreadTO.getUnreadMessages())){
+	  		bus.fireEvent(new UnreadMessagesCountChangedEvent(Integer.parseInt(unreadChatThreadTO.getUnreadMessages())));
+		  	unreadChatThreadTO.setUnreadMessages("0");
+	  }
   }
 
 	@Override
@@ -174,7 +183,7 @@ public class GenericMessageView extends Composite implements MessageView {
   }
 
 	private String getDateLabelValue(Date serverTime, final ChatThreadMessageTO chatThreadMessageTO) {
-	  String dateStr = chatThreadMessageTO.getSenderFullName() + " - " + formHelper.doIt(formHelper.getJudFromString(chatThreadMessageTO.getSentAt()), serverTime);
+	  String dateStr = chatThreadMessageTO.getSenderFullName() + " - " + formHelper.getElapsedTimeSince(formHelper.getJudFromString(chatThreadMessageTO.getSentAt()), serverTime);
 	  return dateStr;
   }
 

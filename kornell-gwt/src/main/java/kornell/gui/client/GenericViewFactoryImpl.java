@@ -156,7 +156,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public MessageView getMessageView() {
-		return new GenericMessageView();
+		return new GenericMessageView(clientFactory.getEventBus());
 	}
 
 	@Override
