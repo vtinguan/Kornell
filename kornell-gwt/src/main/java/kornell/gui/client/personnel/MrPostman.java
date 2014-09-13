@@ -3,8 +3,10 @@ package kornell.gui.client.personnel;
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.core.to.UnreadChatThreadsTO;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.ComposeMessageEventHandler;
+import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.UnreadMessagesFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
@@ -21,7 +23,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class MrPostman implements ComposeMessageEventHandler {
+public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler {
 
 	private static PopupPanel popup;
 	private EventBus bus;
@@ -88,19 +90,21 @@ public class MrPostman implements ComposeMessageEventHandler {
 			}
 		};
 
-		// Schedule the timer to run every 30 secs
-		unreadMessagesCountPerThreadTimer.scheduleRepeating(30 * 1000);
+		// Schedule the timer to run every 1 minute
+		unreadMessagesCountPerThreadTimer.scheduleRepeating(60 * 1000);
 		
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
-						getUnreadMessagesPerThread();
+						if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminHomePlace){
+							getUnreadMessagesPerThread();
+						}
 					}
 				});
   }
 	private void getUnreadMessagesPerThread() {
-		if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminHomePlace){
+		if(!(placeCtrl.getWhere() instanceof VitrinePlace)){
 	    chatThreadsClient.getTotalUnreadCountsPerThread(Dean.getInstance().getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
 				@Override
 				public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
@@ -108,6 +112,12 @@ public class MrPostman implements ComposeMessageEventHandler {
 				}
 			});
 		}
+  }
+
+
+	@Override
+  public void onLogin(UserInfoTO user) {
+		getUnreadMessagesPerThread();
   }
 
 

@@ -131,6 +131,9 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
   }
 	
 	private void initializeChatThreadMessagesTimer() {
+		if(chatThreadMessagesTimer != null)
+			chatThreadMessagesTimer.cancel();
+		
 		chatThreadMessagesTimer = new Timer() {
 			public void run() {
 				getChatThreadMessagesSinceLast();

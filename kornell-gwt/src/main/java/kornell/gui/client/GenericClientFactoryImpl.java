@@ -95,12 +95,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void startApp() {
-		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
-			@Override
-			public void ok(final CourseClassesTO courseClasses) {
-				Dean.getInstance().setCourseClassesTO(courseClasses);
-			}
-		};
 
 		final Callback<Institution> institutionCallback = new Callback<Institution>() {
 			@Override
@@ -118,7 +112,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					};
 
 					//wait 2 secs for the theme css
-					mdaTimer.schedule((int) (5 * 1000));
+					mdaTimer.schedule((int) (2 * 1000));
 					
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
@@ -126,7 +120,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 								|| session.isInstitutionAdmin());
 						setDefaultPlace(isAdmin ? new AdminHomePlace() : new WelcomePlace());
 						startAuthenticated(session);
-						//session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 					} else {
 						startAnonymous();
 					}

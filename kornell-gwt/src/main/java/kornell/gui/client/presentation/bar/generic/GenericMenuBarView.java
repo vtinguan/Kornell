@@ -19,6 +19,8 @@ import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.UnreadMessagesFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesFetchedEventHandler;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
@@ -49,8 +51,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericMenuBarView extends Composite implements MenuBarView,
-		LoginEventHandler, UnreadMessagesFetchedEventHandler {
+public class GenericMenuBarView extends Composite implements MenuBarView, UnreadMessagesFetchedEventHandler, UnreadMessagesPerThreadFetchedEventHandler {
 
 	Logger logger = Logger.getLogger(GenericMenuBarView.class.getName());
 
@@ -98,8 +99,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
-		bus.addHandler(LoginEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesFetchedEvent.TYPE, this);
+		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		Dean localDean = Dean.getInstance();
@@ -138,8 +139,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 						}
 					}
 				});
-		//initHelp();
-
 
 		Timer screenfulJsTimer = new Timer() {
 			public void run() {
@@ -159,72 +158,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		screenfulJsTimer.schedule((int) (3 * 1000));
 	}
 
-	private void initHelp() {
-		btnHelp.setVisible(false);
-		
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(final UserInfoTO user) {
-				identifyUserVoice(user);
-			}
-		});
-
-	}
-
-	private void scheduleInitUserVoice() {
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				GenericMenuBarView.initUserVoice();
-			}
-		});
-	}
-
-	void identifyUserVoice(UserInfoTO user) {
-		Person person = user.getPerson();
-		hasEmail = false;
-		if (person != null) {
-			final String email = person.getEmail();
-			final String personUUID = person.getUUID();
-			final String name = person.getFullName();
-			if (isSome(email)) {
-				hasEmail = true;
-				
-				Element elHelp = btnHelp.getElement();
-				elHelp.setId("btnHelp");
-				elHelp.setAttribute("data-uv-trigger", "contact");
-				scheduleInitUserVoice();
-				
-				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-					@Override
-					public void execute() {
-						identifyUserVoiceNative(personUUID, name, email);						
-					}
-				});
-			}			
-
-		}
-		btnHelp.setVisible(true);
-	}
-
-	static native void identifyUserVoiceNative(String personUUID, String name,
-			String email) /*-{
-		$wnd.UserVoice.push([ 'identify', {
-			email : email,
-			name : name,
-			id : personUUID
-		} ]);
-	}-*/;
-
-	static native void initUserVoice() /*-{
-		$wnd.UserVoice.push([ 'set', {
-			locale : 'pt-BR',
-			screenshot_enabled : false,
-			accent_color : '#9b020a'
-		} ]);
-		$wnd.UserVoice.push([ 'addTrigger', '#btnHelp', {} ]);
-	}-*/;
-
 	private void showButtons(boolean show) {
 		showButton(btnFullScreen, show);
 		showButton(btnProfile, show);
@@ -233,8 +166,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				(RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 						|| clientFactory.getKornellSession().isInstitutionAdmin()));
 		showButton(btnNotifications, false);
-		showButton(btnMessages, true);
-		showButton(btnHelp, true);
+		showButton(btnMessages, show);
+		showButton(btnHelp, show);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
 	}
@@ -313,11 +246,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	}
 
 	@Override
-	public void onLogin(UserInfoTO user) {
-		identifyUserVoice(user);
-	}
-
-	@Override
 	public boolean isVisible() {
 		return visible;
 	}
@@ -336,6 +264,15 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");
 		btnMessages.add(messagesCount);
+		
+		if(!"0".equals(event.getUnreadMessagesCount()) && !btnMessages.isVisible())
+			btnMessages.setVisible(true);
+  }
+
+	@Override
+  public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
+		if(event.getUnreadChatThreadTOs().size() > 0 && !btnMessages.isVisible())
+			btnMessages.setVisible(true);
   }
 
 }

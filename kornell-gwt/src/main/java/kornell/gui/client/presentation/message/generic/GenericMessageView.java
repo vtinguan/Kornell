@@ -75,8 +75,6 @@ public class GenericMessageView extends Composite implements MessageView {
 		sidePanel.clear();
 		sideItems = new ArrayList<Label>();
 		for (final UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadsTO) {
-			String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
-			appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
 			final Label label = new Label();
 			label.addStyleName("threadListItem");
 			label.addClickHandler(new ClickHandler() {
@@ -87,15 +85,22 @@ public class GenericMessageView extends Composite implements MessageView {
           }
           label.addStyleName("selected");
 					presenter.threadClicked(unreadChatThreadTO);
+					setLabelContent(unreadChatThreadTO, label, true);
 				}
 			});
 			if(unreadChatThreadTO.getChatThreadUUID().equals(selectedChatThreadUUID)){
         label.addStyleName("selected");
 			}
-			label.getElement().setInnerHTML(unreadChatThreadTO.getChatThreadName() + appendCount);
+			setLabelContent(unreadChatThreadTO, label, false);
 			sidePanel.add(label);
 			sideItems.add(label);
     }
+  }
+
+	private void setLabelContent(final UnreadChatThreadTO unreadChatThreadTO, final Label label, boolean markAsRead) {
+	  String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) && !markAsRead ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
+	  appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
+	  label.getElement().setInnerHTML(unreadChatThreadTO.getChatThreadName() + appendCount);
   }
 
 	@Override

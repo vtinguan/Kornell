@@ -19,33 +19,41 @@ class ChatThreadsRepo {
 
 object ChatThreadsRepo {
   
-  def getSupportChatThreadName(courseClassName: String) = "Suporte: " + courseClassName
+  def getSupportChatThreadName(courseClassName: String) = "Ajuda para turma: " + courseClassName
+  def getSupportChatThreadNameAdminPerspective(userFullName: String, courseClassName: String) = userFullName + " (turma: " + courseClassName + ")"
 
   def postMessageToCourseClassSupportThread(personUUID: String, courseClassUUID: String, message: String) = {
       val courseClass = CourseClassRepo(courseClassUUID).get
       val chatThreadUUID = getCourseClassSupportChatThreadUUID(personUUID, courseClass.getUUID)
       if(!chatThreadUUID.isDefined){
         val chatThread = createChatThread(courseClass.getInstitutionUUID)
-        updateChatThreadParticipants(personUUID, chatThread, courseClass)
+        updateChatThreadParticipants(personUUID, chatThread.getUUID, courseClass)
         createCourseClassSupportChatThread(chatThread.getUUID, courseClass.getUUID, personUUID)
         createChatThreadMessage(chatThread.getUUID, personUUID, message)
       } else {
       	createChatThreadMessage(chatThreadUUID.get, personUUID, message)
+        updateChatThreadParticipants(personUUID, chatThreadUUID.get, courseClass)
       }
       ""
   }
 
-  def updateChatThreadParticipants(personUUID: String, chatThread: ChatThread, courseClass: CourseClass) = {
-    val participantsThatShouldExist = RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, chatThread.getInstitutionUUID, null)
-    		.getRoleTOs.asScala.map(_.getRole.getPersonUUID).union(List(personUUID))
-    val participants = getChatTreadParticipantsUUIDs(chatThread.getUUID)
+  def updateChatThreadParticipants(threadCreatorUUID: String, chatThreadUUID: String, courseClass: CourseClass) = {
+    val participantsThatShouldExist = RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
+    		.getRoleTOs.asScala.map(_.getRole.getPersonUUID).union(List(threadCreatorUUID))
+    val participants = getChatTreadParticipantsUUIDs(chatThreadUUID)
     val createThese = participantsThatShouldExist.filterNot(participants.contains)
     val removeThese = participants.filterNot(participantsThatShouldExist.contains)
-    createThese.foreach(createChatThreadParticipant(chatThread.getUUID, _, getSupportChatThreadName(courseClass.getName)))
-    removeThese.foreach(removeChatThreadParticipant(chatThread.getUUID, _))
+    createThese.foreach(createChatThreadParticipant(chatThreadUUID, _, courseClass.getName, threadCreatorUUID))
+    removeThese.foreach(removeChatThreadParticipant(chatThreadUUID, _))
   }
 
-  def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, chatThreadName: String) = {
+  def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, courseClassName: String, threadCreatorUUID: String) = {
+    val chatThreadName = {
+      if(personUUID.equals(threadCreatorUUID))
+      	getSupportChatThreadName(courseClassName)
+      else
+        getSupportChatThreadNameAdminPerspective(PeopleRepo.uuidLoader.load(threadCreatorUUID).get.getFullName(), courseClassName)
+    }
     sql"""
 		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, chatThreadName)
 		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, null, ${chatThreadName})""".executeUpdate
@@ -143,7 +151,6 @@ object ChatThreadsRepo {
 						| tm.personUUID,
 						| tm.sentAt
 					| from ChatThread t
-					| left join ChatThreadMessage tm on tm.chatThreadUUID = t.uuid and tm.personUUID <> ${personUUID}
 					| join (
 						| select distinct t.uuid as chatThreadUUID,
 						| tp.lastReadAt as threadLastReadAt,
@@ -155,8 +162,9 @@ object ChatThreadsRepo {
 						| where tp.PersonUUID = ${personUUID}
 						| and t.institutionUUID = ${institutionUUID}
 					| ) countByCC on t.uuid = countByCC.chatThreadUUID
+					| left join ChatThreadMessage tm on tm.chatThreadUUID = t.uuid and tm.personUUID <> ${personUUID}
+    				| and (threadLastReadAt < sentAt or threadLastReadAt is null)
 				| ) as threadMessages
-				| where (threadLastReadAt < sentAt or threadLastReadAt is null)
 				| group by chatThreadUUID
 				| order by max(sentAt) desc
 		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
@@ -182,4 +190,12 @@ object ChatThreadsRepo {
 				| 	order by tm.sentAt
 		    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
   } 
+
+  def markAsRead(chatThreadUUID: String, personUUID: String) = {
+    sql"""
+    	| update ChatThreadParticipant p set
+			| 	lastReadAt = ${new Date()}
+      | where p.chatThreadUUID = ${chatThreadUUID} 
+      | and p.personUUID = ${personUUID}""".executeUpdate
+  }
 }

@@ -1,16 +1,20 @@
 package kornell.gui.client.personnel;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
+import kornell.core.to.UserInfoTO;
+import kornell.gui.client.event.LoginEvent;
+import kornell.gui.client.event.LoginEventHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class Dean{
+public class Dean implements LoginEventHandler{
 	
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
@@ -35,15 +39,17 @@ public class Dean{
 		this.bus = bus;
 		this.institution = institution;
 		this.session = session;
+		bus.addHandler(LoginEvent.TYPE, this);
 		
 		//get the skin immediately
 		updateSkin(institution.getSkin());
 		
-		//defer the logo
+		//defer the logo and the course classes call
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 		    @Override
 		    public void execute() {
 		    	initInstitutionSkin(institution);
+		    	getUserCourseClasses();
 		    }
 		});
 	}
@@ -123,5 +129,22 @@ public class Dean{
 	public void setCourseClassesTO(CourseClassesTO courseClassesTO) {
 		this.courseClassesTO = courseClassesTO;
 	}
+	
+	private void getUserCourseClasses(){
+		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
+			@Override
+			public void ok(final CourseClassesTO courseClasses) {
+				Dean.getInstance().setCourseClassesTO(courseClasses);
+			}
+		};
+		if (session.isAuthenticated() && session.isRegistered()) {
+			session.courseClasses().getCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), courseClassesCallback);
+		}
+	}
+
+	@Override
+  public void onLogin(UserInfoTO user) {
+		getUserCourseClasses();
+  }
 
 }
