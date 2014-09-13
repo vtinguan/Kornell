@@ -1,6 +1,16 @@
 //UTILS
 @import "skin.nocache.less";
 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px fade(@blackOrWhite, 40%) !important; 
+    border-radius: 5px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px fade(@blackOrWhite, 40%) !important; 
+    border-radius: 5px;
+}
+
 //STRUCTURE
 @wrapperWidth: 962px; 
 @wrapperWidthUnder990: 600px;
@@ -19,7 +29,7 @@
 @textHighlightDiscreteColor: #283541;
 @textInfoColor: #5492FF;
 @errorMessageColor: #CA2828;
-@blackOrWhite: #fff;
+@blackOrWhite: #000;
 
 //BARS
 @barGradientStartColor: #fff;

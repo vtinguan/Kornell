@@ -50,18 +50,20 @@ body {
 .messageInboxPanel{
 	width: @wrapperWidth;
 	margin: 0 auto;
-	height: 100%;
 	margin-top: 10px;
-	@border: 1px solid fade(@niceTextColor, 50%);
+	@border: 1px solid fade(@niceTextColor, 25%);
 	@borderHighlight: 1px solid fade(@textInfoColor, 50%);
+	height: 442px;
+	border: @border;
+	border-radius: 8px;
+	.boxSizing;
 	.sidePanelScroll{
 		max-height: 429px;
 		margin-right: 10px;
-		border: @border;
 		padding: 5px;
 		border-radius: 8px;
 		.sidePanel{
-			width: @wrapperWidth * .25;
+			width: 240px;
 			margin-right: 14px;
 			.boxSizing;
 			.threadListItem{
@@ -73,7 +75,6 @@ body {
 				margin-bottom: 8px;
 				border-radius: 8px;
 				padding: 5px;
-				border: @border;
 				&:hover {
 					background-color: @tableBackgroundHoverColor;
 				}
@@ -88,12 +89,11 @@ body {
 		}
 	}
 	.threadPanel{
-		width: @wrapperWidth * .7;
+		width: 686px;
 		background-color: @tableBackgroundColor;
 		padding: 10px;
-		.boxSizing;
-		border: 1px solid rgba(128, 128, 128, 0.51);
 		border-radius: 8px;
+		.boxSizing;
 		.threadTitle{
 			font-size: 14px;
 			color: @textInfoColor;
@@ -103,10 +103,17 @@ body {
 			text-align: center;
 		}
 		.threadPanelItemsScroll{
-			max-height: 300px;
+			height: 300px;
 			margin-bottom: 5px;
 			padding-right: 5px;
 			.threadMessageWrapper{
+				.boxSizing;
+				background: fade(@blackOrWhite, 10%);
+				margin: 5px;
+				padding: 5px 8px;
+				margin-left: 15px;
+				border-radius: 10px;
+				position: relative;
 				.threadMessageHeader{
 					color: @textHighlightDiscreteColor;
 					font-size: 8px;
@@ -116,11 +123,30 @@ body {
 				.threadMessageItem{
 					color: @niceTextColor;
 					font-size: 12px;
-					min-height: 25px;
-					margin-bottom: 5px;
-					border-bottom: @border;
 					padding: 0px 10px;
 					white-space: pre-wrap;
+				}
+				&:after {
+					content: '';
+					position: absolute;
+					top: 40%;
+					left: 0%;
+					margin-left: -12px;
+					border-top: 7px solid transparent;
+					border-bottom: 7px solid transparent;
+					border-right: 12px solid fade(@blackOrWhite, 10%);
+				}
+			}
+			.overrideWrapper{
+				margin-left: 0px !important;
+				margin-right: 15px !important;
+				background: fade(@blackOrWhite, 22%) !important;
+				&:after {
+					left: 100% !important;
+					margin-left: 0px !important;
+					margin-right: -12px !important;
+					border-left: 12px solid fade(@blackOrWhite, 22%) !important;
+					border-right: 0px !important;
 				}
 			}
 		}
@@ -462,7 +488,7 @@ body {
 		height: @reportHeaderPanelHeight;
 		margin-bottom: 10px;
 		.btnReportHeader{
-			box-sizing: border-box;
+			.boxSizing;
 			border-radius: 0px !important;
 			height: @reportHeaderPanelHeight;
 			line-height: @reportHeaderPanelHeight;
@@ -489,7 +515,7 @@ body {
 		color: @niceTextColor;
 		font-size: 13px;
 		.itemPanel{
-			box-sizing: border-box;
+			.boxSizing;
 			float: left;
 			padding-left: @detailsPanelMargin / 2;
 			padding-right: @detailsPanelMargin / 2;
@@ -536,7 +562,7 @@ body {
 			}
 		}
 		.lblGenerate{
-			box-sizing: border-box;
+			.boxSizing;
 			float: left;
 			width: @generateWidth;
 			padding-left: @detailsPanelMargin / 2;
@@ -544,7 +570,7 @@ body {
 			text-align: center;
 		}
 		.lblDownload{
-			box-sizing: border-box;
+			.boxSizing;
 			float: left;
 			width: @downloadWidth;
 			text-align: center;

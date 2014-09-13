@@ -1,5 +1,6 @@
 package kornell.core.to;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ChatThreadMessagesTO {
@@ -7,5 +8,8 @@ public interface ChatThreadMessagesTO {
 	
 	List<ChatThreadMessageTO> getChatThreadMessageTOs();
 	void setChatThreadMessageTOs(List<ChatThreadMessageTO> chatThreadMessageTOs);
+
+	Date getServerTime();
+	void setServerTime(Date serverTime);
 	
 }

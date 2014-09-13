@@ -1,21 +1,15 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import static kornell.core.util.StringUtils.isSome;
-
 import java.util.logging.Logger;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
-import kornell.core.entity.Person;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
-import kornell.core.to.UserInfoTO;
+import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.ComposeMessageEvent;
-import kornell.gui.client.event.LoginEvent;
-import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.UnreadMessagesFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesFetchedEventHandler;
@@ -32,8 +26,6 @@ import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.Place;
@@ -41,7 +33,6 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -256,16 +247,19 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 
 	@Override
   public void onUnreadMessagesFetched(UnreadMessagesFetchedEvent event) {
-		if(btnMessages.getWidgetCount() == 3){
+		//showUnreadCount(event.getUnreadMessagesCount());
+  }
+
+	private void showUnreadCount(String labelText) {
+	  if(btnMessages.getWidgetCount() == 3){
 			btnMessages.remove(2);
 		}
-		String labelText = "0".equals(event.getUnreadMessagesCount()) ? "" : event.getUnreadMessagesCount();
 		this.messagesCount = new Label(labelText);
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");
 		btnMessages.add(messagesCount);
 		
-		if(!"0".equals(event.getUnreadMessagesCount()) && !btnMessages.isVisible())
+		if(!"0".equals(labelText) && !btnMessages.isVisible())
 			btnMessages.setVisible(true);
   }
 
@@ -273,6 +267,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
   public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
 		if(event.getUnreadChatThreadTOs().size() > 0 && !btnMessages.isVisible())
 			btnMessages.setVisible(true);
+		int totalCount = 0;
+		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
+	    totalCount = Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
+    }
+		String labelText = totalCount > 0 ? ""+totalCount : "";
+		showUnreadCount(labelText);
   }
 
 }

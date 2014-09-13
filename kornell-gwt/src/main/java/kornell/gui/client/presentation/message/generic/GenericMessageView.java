@@ -1,14 +1,17 @@
 package kornell.gui.client.presentation.message.generic;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import kornell.api.client.Callback;
 import kornell.core.to.ChatThreadMessageTO;
+import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.UnreadMessagesFetchedEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
 
@@ -20,11 +23,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -45,6 +46,7 @@ public class GenericMessageView extends Composite implements MessageView {
 
 
 	private List<Label> sideItems;
+	Map<Label, ChatThreadMessageTO> dateLabelsMap;
 
   @UiField FlowPanel sidePanel;
   @UiField FlowPanel threadPanel;
@@ -90,8 +92,10 @@ public class GenericMessageView extends Composite implements MessageView {
 			});
 			if(unreadChatThreadTO.getChatThreadUUID().equals(selectedChatThreadUUID)){
         label.addStyleName("selected");
+				setLabelContent(unreadChatThreadTO, label, true);
+			} else {
+				setLabelContent(unreadChatThreadTO, label, false);
 			}
-			setLabelContent(unreadChatThreadTO, label, false);
 			sidePanel.add(label);
 			sideItems.add(label);
     }
@@ -104,13 +108,13 @@ public class GenericMessageView extends Composite implements MessageView {
   }
 
 	@Override
-  public void updateThreadPanel(List<ChatThreadMessageTO> chatThreadMessageTOs, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
+  public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
 		threadTitle.setText(unreadChatThreadTO.getChatThreadName());
+		dateLabelsMap = new HashMap<Label, ChatThreadMessageTO>();
 		
 		threadPanelItems.clear();
-		addMessagesToThreadPanel(chatThreadMessageTOs, currentUserFullName);
+		addMessagesToThreadPanel(chatThreadMessagesTO, currentUserFullName);
     
-    messageTextArea.setFocus(true);
     messageTextArea.addKeyUpHandler(new KeyUpHandler() {
         @Override
         public void onKeyUp(KeyUpEvent event) {
@@ -118,8 +122,16 @@ public class GenericMessageView extends Composite implements MessageView {
             doSend(null);
         }
     });
-		
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+	  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		        messageTextArea.setFocus(true);
+		      }
+		});
+  }
+
+	private void scrollToBottom() {
+	  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 		      @Override
 		      public void execute() {
 		    		threadPanelItemsScroll.scrollToBottom();
@@ -128,15 +140,16 @@ public class GenericMessageView extends Composite implements MessageView {
   }
 
 	@Override
-	public void addMessagesToThreadPanel(List<ChatThreadMessageTO> chatThreadMessageTOs, String currentUserFullName) {
-	  for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessageTOs) {
+	public void addMessagesToThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, String currentUserFullName) {
+	  for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessagesTO.getChatThreadMessageTOs()) {
 			FlowPanel threadMessageWrapper = new FlowPanel();
 			threadMessageWrapper.addStyleName("threadMessageWrapper");
+			Label header = new Label("");
 			
-			Label header = new Label(chatThreadMessageTO.getSenderFullName() + " em " + formHelper.getStringFromDate(chatThreadMessageTO.getSentAt()));
 			header.addStyleName("threadMessageHeader");
 			if(!currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
 				header.addStyleName("rightText");
+				threadMessageWrapper.addStyleName("overrideWrapper");
 			}
 			threadMessageWrapper.add(header);
 			
@@ -145,7 +158,24 @@ public class GenericMessageView extends Composite implements MessageView {
 			threadMessageWrapper.add(item);
 			
 			threadPanelItems.add(threadMessageWrapper);
+			dateLabelsMap.put(header, chatThreadMessageTO);
     }
+	  updateDateLabelValues(chatThreadMessagesTO.getServerTime());
+	  if(chatThreadMessagesTO.getChatThreadMessageTOs().size() > 0)
+	  	scrollToBottom();
+  }
+
+	private void updateDateLabelValues(Date serverTime) {
+		Iterator<Entry<Label, ChatThreadMessageTO>> it = dateLabelsMap.entrySet().iterator();
+    while (it.hasNext()) {
+        Map.Entry<Label, ChatThreadMessageTO> pairs = (Map.Entry<Label, ChatThreadMessageTO>)it.next();
+    		pairs.getKey().setText(getDateLabelValue(serverTime, pairs.getValue()));
+    }
+  }
+
+	private String getDateLabelValue(Date serverTime, final ChatThreadMessageTO chatThreadMessageTO) {
+	  String dateStr = chatThreadMessageTO.getSenderFullName() + " - " + formHelper.doIt(formHelper.getJudFromString(chatThreadMessageTO.getSentAt()), serverTime);
+	  return dateStr;
   }
 
 	@UiHandler("btnSend")
@@ -153,5 +183,6 @@ public class GenericMessageView extends Composite implements MessageView {
 		if(messageTextArea.getText().length() > 0)
 			presenter.sendMessage(messageTextArea.getText());
 		messageTextArea.setText("");
+    messageTextArea.setFocus(true);
 	}
 }

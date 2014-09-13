@@ -40,7 +40,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 		this.placeCtrl = placeCtrl;
 		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
 		
-		initializeUnreadMessagesCountTimer();
+		//initializeUnreadMessagesCountTimer();
 		
 		initializeUnreadMessagesCountPerThreadTimer();
 	}

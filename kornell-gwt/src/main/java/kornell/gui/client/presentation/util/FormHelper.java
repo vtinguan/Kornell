@@ -398,6 +398,19 @@ public class FormHelper {
 		return dateArraySplitByT[0];
 	}
 	
+	public Date getJudFromString(String dateStr){
+		if(dateStr == null)
+			return null;
+		Date jdate = null;
+		try {
+			DateTimeFormat dtf = new DateTimeFormat("yyyy-MM-dd hh:mm:ss.SSS", new DefaultDateTimeFormatInfo()) {};
+			jdate = dtf.parse(dateStr); 
+    } catch (IllegalArgumentException iae) {
+    	DateTimeFormat dtf = new DateTimeFormat("yyyy-MM-dd hh:mm:ss", new DefaultDateTimeFormatInfo()) {};
+			jdate = dtf.parse(dateStr);
+    }
+		return jdate;
+	}
 	
 	public TextBoxFormField createTextBoxFormField(String text, String textBoxFormFieldType){
 		TextBox fieldTextBox = new TextBox();
@@ -559,4 +572,34 @@ public class FormHelper {
 	  	return "";
 	  return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
   }
+
+	public String doIt(Date date, Date now) {
+		long dateM = date.getTime() - 1000; 
+		long serverNowM = now.getTime();
+		
+		long diffM = serverNowM - dateM;
+
+		long dayM = 24 * 60 * 60 * 1000;
+		long hourM = 60 * 60 * 1000;
+		long minuteM = 60 * 1000;
+		long secondM = 1000;
+
+		if(diffM > dayM)
+			return dateToString(date);
+		else if(diffM > hourM)
+			return "há " + (diffM/hourM) + " hora" + ((diffM/hourM) > 1 ? "s" : "");
+		else if(diffM > minuteM)
+			return "há " + (diffM/minuteM) + " minuto" + ((diffM/minuteM) > 1 ? "s" : "");
+		else
+			return "há " + (diffM/secondM) + " segundo" + ((diffM/secondM) > 1 ? "s" : "");
+  }
+	
+	public String dateToString(Date date){
+		if(date == null)
+			return null;
+		String month = ((date.getMonth()+1) < 10 ? "0" : "") + (date.getMonth()+1);
+		String day = (date.getDate() < 10 ? "0" : "") + date.getDate();
+		return (1900+date.getYear()) + "-" + month + "-" + day;
+		
+	}
 }

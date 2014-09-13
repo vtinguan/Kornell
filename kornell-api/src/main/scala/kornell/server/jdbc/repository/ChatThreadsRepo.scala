@@ -149,24 +149,28 @@ object ChatThreadsRepo {
 						| countByCC.courseClassUUID,
 						| countByCC.threadLastReadAt,
 						| tm.personUUID,
-						| tm.sentAt
+						| tm.sentAt,
+						| countByCC.lastSentAt
 					| from ChatThread t
 					| join (
 						| select distinct t.uuid as chatThreadUUID,
-						| tp.lastReadAt as threadLastReadAt,
-						| ccs.courseClassUUID,
-						| tp.chatThreadName as chatThreadName
+							| tp.lastReadAt as threadLastReadAt,
+							| ccs.courseClassUUID,
+							| tp.chatThreadName as chatThreadName,
+							| max(ctm.sentAt) as lastSentAt
 						| from ChatThread t
 						| join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID
 						| left join CourseClassSupportChatThread ccs on ccs.chatThreadUUID = t.uuid
+						| join ChatThreadMessage ctm on ctm.chatThreadUUID = t.uuid
 						| where tp.PersonUUID = ${personUUID}
-						| and t.institutionUUID = ${institutionUUID}
+							| and t.institutionUUID = ${institutionUUID}
+						| group by (t.uuid)
 					| ) countByCC on t.uuid = countByCC.chatThreadUUID
 					| left join ChatThreadMessage tm on tm.chatThreadUUID = t.uuid and tm.personUUID <> ${personUUID}
     				| and (threadLastReadAt < sentAt or threadLastReadAt is null)
 				| ) as threadMessages
 				| group by chatThreadUUID
-				| order by max(sentAt) desc
+				| order by unreadMessages desc, lastSentAt desc
 		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
   }
 

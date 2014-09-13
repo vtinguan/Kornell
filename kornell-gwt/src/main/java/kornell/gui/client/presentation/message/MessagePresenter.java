@@ -110,7 +110,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			@Override
 			public void ok(ChatThreadMessagesTO to) {
 				chatThreadMessageTOs = to.getChatThreadMessageTOs();
-			  view.updateThreadPanel(chatThreadMessageTOs, unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
+			  view.updateThreadPanel(to, unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
 			}
 		});
   }
@@ -121,7 +121,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			@Override
 			public void ok(ChatThreadMessagesTO to) {
 				chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
-			  view.addMessagesToThreadPanel(to.getChatThreadMessageTOs(), session.getCurrentUser().getPerson().getFullName());
+			  view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName());
 			}
 		});
   }
@@ -149,7 +149,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				@Override
 				public void ok(ChatThreadMessagesTO to) {
 					chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
- 				  view.addMessagesToThreadPanel(to.getChatThreadMessageTOs(), session.getCurrentUser().getPerson().getFullName());
+ 				  view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName());
 				}
 			});
 		}
