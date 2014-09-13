@@ -1,17 +1,11 @@
 package kornell.gui.client.personnel;
 
-import java.util.List;
-
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.UserInfoTO;
-import kornell.gui.client.event.ProgressEvent;
-import kornell.gui.client.event.ProgressEventHandler;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -37,19 +31,30 @@ public class Dean{
 	   instance = new Dean(session, bus, institution);
 	}
 	
-	private Dean(KornellSession session, EventBus bus, Institution institution) { 
+	private Dean(KornellSession session, EventBus bus, final Institution institution) { 
 		this.bus = bus;
 		this.institution = institution;
 		this.session = session;
 		
-		String url = institution.getAssetsURL();
+		//get the skin immediately
+		updateSkin(institution.getSkin());
+		
+		//defer the logo
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		    @Override
+		    public void execute() {
+		    	initInstitutionSkin(institution);
+		    }
+		});
+	}
+
+	private void initInstitutionSkin(Institution institution) {
+	  String url = institution.getAssetsURL();
 		if(url != null){
 			updateFavicon(url + ICON_NAME);
 		} else {
 			setDefaultFavicon();
-		}
-		
-		updateSkin(institution.getSkin());
+		}		
 		
 		String name = institution.getFullName();
 		if(name != null){
@@ -57,7 +62,7 @@ public class Dean{
 		} else {
 			Document.get().setTitle(DEFAULT_SITE_TITLE);
 		}
-	}
+  }
 	
 	private void setDefaultFavicon(){
 		updateFavicon("skins/first/" + ICON_NAME);

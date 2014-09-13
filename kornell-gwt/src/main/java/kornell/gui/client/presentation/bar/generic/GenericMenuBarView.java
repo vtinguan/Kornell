@@ -32,6 +32,7 @@ import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -39,6 +40,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -106,7 +108,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 			Institution localInstitution = localDean.getInstitution();
 			String assetsURL = localInstitution.getAssetsURL();
 			String skin = Dean.getInstance().getInstitution().getSkin();
-			String barLogoFileName = "logo250x45" + (!"_light".equals(skin) ? "_light" : "") + ".png?1";
+			String barLogoFileName = "logo300x45" + (!"_light".equals(skin) ? "_light" : "") + ".png";
 			imgMenuBar.setUrl(StringUtils
 					.composeURL(assetsURL, barLogoFileName));
 		}
@@ -137,6 +139,24 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 					}
 				});
 		//initHelp();
+
+
+		Timer screenfulJsTimer = new Timer() {
+			public void run() {
+    		ScriptInjector.fromUrl("/js/screenfull.min.js").setCallback(
+   		     new com.google.gwt.core.client.Callback<Void, Exception>() {
+   		        public void onFailure(Exception reason) {
+   		          GWT.log("Script load failed.");
+   		        }
+   		        public void onSuccess(Void result) {
+   		        	GWT.log("Script load success.");
+   		        }
+   		     }).inject();
+			}
+		};
+
+		//wait 3 secs before loading the javascript file
+		screenfulJsTimer.schedule((int) (3 * 1000));
 	}
 
 	private void initHelp() {

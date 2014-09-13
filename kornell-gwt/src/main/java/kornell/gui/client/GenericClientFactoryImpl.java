@@ -31,6 +31,7 @@ import kornell.scorm.client.scorm12.SCORM12Binder;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -98,10 +99,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			@Override
 			public void ok(final CourseClassesTO courseClasses) {
 				Dean.getInstance().setCourseClassesTO(courseClasses);
-				boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-						|| session.isInstitutionAdmin());
-				setDefaultPlace(isAdmin ? new AdminHomePlace() : new WelcomePlace());
-				startAuthenticated(session);
 			}
 		};
 
@@ -121,11 +118,15 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					};
 
 					//wait 2 secs for the theme css
-					mdaTimer.schedule((int) (2 * 1000));
+					mdaTimer.schedule((int) (5 * 1000));
 					
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
-						session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
+						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+								|| session.isInstitutionAdmin());
+						setDefaultPlace(isAdmin ? new AdminHomePlace() : new WelcomePlace());
+						startAuthenticated(session);
+						//session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 					} else {
 						startAnonymous();
 					}

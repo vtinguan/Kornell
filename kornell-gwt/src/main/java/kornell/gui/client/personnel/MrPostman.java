@@ -13,6 +13,7 @@ import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.Positioning;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
@@ -44,7 +45,13 @@ public class MrPostman implements ComposeMessageEventHandler {
 	
 
 	private void initializeUnreadMessagesCountTimer() {
-		getUnreadMessages();
+
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		    		getUnreadMessages();
+		      }
+		});
 		
 		unreadMessagesCountTimer = new Timer() {
 			public void run() {
@@ -67,7 +74,13 @@ public class MrPostman implements ComposeMessageEventHandler {
   }
 
 	private void initializeUnreadMessagesCountPerThreadTimer() {
-		getUnreadMessagesPerThread();
+
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		    		getUnreadMessagesPerThread();
+		      }
+		});
 		
 		unreadMessagesCountPerThreadTimer = new Timer() {
 			public void run() {
