@@ -91,7 +91,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 		};
 
 		// Schedule the timer to run every 1 minute
-		unreadMessagesCountPerThreadTimer.scheduleRepeating(10 * 1000);
+		unreadMessagesCountPerThreadTimer.scheduleRepeating(60 * 1000);
 		
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {

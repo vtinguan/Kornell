@@ -189,9 +189,10 @@ public class GenericMessageView extends Composite implements MessageView {
 
 	@UiHandler("btnSend")
 	void doSend(ClickEvent e) {
-		if(messageTextArea.getText().length() > 0)
+		if(messageTextArea.getText().trim().length() > 0){
 			presenter.sendMessage(messageTextArea.getText());
-		messageTextArea.setText("");
-    messageTextArea.setFocus(true);
+			messageTextArea.setText("");
+	    messageTextArea.setFocus(true);
+		}
 	}
 }
