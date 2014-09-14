@@ -91,11 +91,11 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 		};
 
 		// Schedule the timer to run every 1 minute
-		unreadMessagesCountPerThreadTimer.scheduleRepeating(60 * 1000);
+		unreadMessagesCountPerThreadTimer.scheduleRepeating(30 * 1000);
 		
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
-					@Override
+					@Override 
 					public void onPlaceChange(PlaceChangeEvent event) {
 						if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminHomePlace){
 							getUnreadMessagesPerThread();

@@ -263,9 +263,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");
 		btnMessages.add(messagesCount);
-		
-		if(!"0".equals(labelText) && !btnMessages.isVisible())
-			btnMessages.setVisible(true);
   }
 
 	@Override
