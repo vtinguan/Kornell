@@ -206,11 +206,16 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public AdminHomeView getAdminHomeView() {
+		if(genericAdminHomeView == null)
+			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminHomeView;
+	}
+	
+	@Override
+	public MessagePresenter getMessagePresenterCourseClass() {
 		if(messagePresenterCourseClass == null)
 			messagePresenterCourseClass = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), true);
-		if(genericAdminHomeView == null)
-			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), messagePresenterCourseClass);
-		return genericAdminHomeView;
+		return messagePresenterCourseClass;
 	}
 
 	@Override

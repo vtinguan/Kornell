@@ -13,14 +13,20 @@ import kornell.server.repository.TOs
 import kornell.core.to.UnreadChatThreadTO
 import kornell.core.to.ChatThreadMessageTO
 import kornell.core.entity.CourseClass
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import java.util.concurrent.TimeUnit._
+import kornell.core.entity.Person
+import kornell.core.to.ChatThreadMessagesTO
 
 class ChatThreadsRepo {
 }
 
 object ChatThreadsRepo {
   
-  def getSupportChatThreadName(courseClassName: String) = "Ajuda para turma: " + courseClassName
-  def getSupportChatThreadNameAdminPerspective(userFullName: String, courseClassName: String) = userFullName + " (turma: " + courseClassName + ")"
+  def getSupportChatThreadName(courseClassName: String): String = "Ajuda para turma: " + courseClassName
+  def getSupportChatThreadNameAdminPerspective(courseClassName: String): String = "\n (Ajuda para turma: " + courseClassName + ")"
+  def getSupportChatThreadNameAdminPerspective(userFullName: String, courseClassName: String): String = userFullName + getSupportChatThreadNameAdminPerspective(courseClassName)
 
   def postMessageToCourseClassSupportThread(personUUID: String, courseClassUUID: String, message: String) = {
       val courseClass = CourseClassRepo(courseClassUUID).get
@@ -107,8 +113,33 @@ object ChatThreadsRepo {
     ???
   }
   
-  def updateCourseClassSupportThreadsNames(courseClassUUID: String) = {
-    ???
+  def updateCourseClassSupportThreadsNames(courseClassUUID: String, courseClassName: String) = {
+    sql"""
+    	update ChatThreadParticipant set ChatThreadParticipant.chatThreadName = ${getSupportChatThreadName(courseClassName)}
+				where uuid in (
+					select uuid from (
+						select tp.uuid as uuid from CourseClassSupportChatThread ccs
+						join ChatThread t on ccs.chatThreadUUID = t.uuid
+						join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID and tp.personUUID = ccs.personUUID
+						join CourseClass cc on cc.uuid = ccs.courseClassUUID
+						where ccs.courseClassUUID = ${courseClassUUID}
+					) as ids
+    	)""".executeUpdate
+    	
+    sql"""
+    	update ChatThreadParticipant ctp
+			inner join CourseClassSupportChatThread sc on sc.chatThreadUUID = ctp.chatThreadUUID
+			inner join Person p on p.uuid = sc.personUUID
+			set ctp.chatThreadName = concat(p.fullName, ${getSupportChatThreadNameAdminPerspective(courseClassName)})
+			where ctp.uuid in (
+				select uuid from (
+					select tp.uuid from CourseClassSupportChatThread ccs
+					join ChatThread t on ccs.chatThreadUUID = t.uuid
+					join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID and tp.personUUID <> ccs.personUUID
+					join CourseClass cc on cc.uuid = ccs.courseClassUUID
+					where ccs.courseClassUUID = ${courseClassUUID}
+				) as ids
+			)""".executeUpdate
   }
   
   implicit def toString(rs: ResultSet): String = rs.getString(1)
@@ -202,4 +233,5 @@ object ChatThreadsRepo {
       | where p.chatThreadUUID = ${chatThreadUUID} 
       | and p.personUUID = ${personUUID}""".executeUpdate
   }
+  
 }

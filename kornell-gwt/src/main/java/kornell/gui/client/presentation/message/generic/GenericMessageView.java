@@ -123,7 +123,8 @@ public class GenericMessageView extends Composite implements MessageView {
 		
 		threadPanelItems.clear();
 		addMessagesToThreadPanel(chatThreadMessagesTO, currentUserFullName);
-    
+		
+		prepareTextArea();
     messageTextArea.addKeyUpHandler(new KeyUpHandler() {
         @Override
         public void onKeyUp(KeyUpEvent event) {
@@ -131,12 +132,6 @@ public class GenericMessageView extends Composite implements MessageView {
             doSend(null);
         }
     });
-	  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		        messageTextArea.setFocus(true);
-		      }
-		});
   }
 
 	private void scrollToBottom() {
@@ -191,8 +186,17 @@ public class GenericMessageView extends Composite implements MessageView {
 	void doSend(ClickEvent e) {
 		if(messageTextArea.getText().trim().length() > 0){
 			presenter.sendMessage(messageTextArea.getText());
-			messageTextArea.setText("");
-	    messageTextArea.setFocus(true);
+			prepareTextArea();
 		}
 	}
+
+	private void prepareTextArea() {
+	  messageTextArea.setText("");
+	  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		        messageTextArea.setFocus(true);
+		      }
+		});
+  }
 }

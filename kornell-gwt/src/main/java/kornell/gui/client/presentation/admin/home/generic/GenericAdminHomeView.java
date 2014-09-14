@@ -101,6 +101,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	private FormHelper formHelper;
 	private Timer updateTimer;
 	private boolean canPerformEnrollmentAction = true;
+	private MessagePresenter messagePresenter;
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -180,15 +181,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
-	private MessagePresenter messagePresenter;
 
 	// TODO i18n xml
-	public GenericAdminHomeView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory, MessagePresenter messagePresenter) {
+	public GenericAdminHomeView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.session = session;
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
 		this.viewFactory = viewFactory;
-		this.messagePresenter = messagePresenter;
+		this.messagePresenter = viewFactory.getMessagePresenterCourseClass();
+		this.messagePresenter.enableMessagesUpdate(false);
 		initWidget(uiBinder.createAndBindUi(this));
 		tabsPanel.setVisible(false);
 		table = new CellTable<EnrollmentTO>();
@@ -229,6 +230,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			@Override
 			public void onClick(ClickEvent event) {
 				presenter.updateCourseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+				messagePresenter.enableMessagesUpdate(false);
 			}
 		});
 
@@ -236,6 +238,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			@Override
 			public void onClick(ClickEvent event) {
 				buildConfigView(false);
+				messagePresenter.enableMessagesUpdate(false);
 			}
 		});
 
@@ -243,12 +246,14 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			@Override
 			public void onClick(ClickEvent event) {
 				buildReportsView();
+				messagePresenter.enableMessagesUpdate(false);
 			}
 		});
 
 		messagesTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				messagePresenter.enableMessagesUpdate(true);
 				buildMessagesView();
 			}
 		});
@@ -271,6 +276,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 				@Override
 				public void onClick(ClickEvent event) {
 					buildAdminsView();
+					messagePresenter.enableMessagesUpdate(false);
 				}
 			});
 
@@ -322,8 +328,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	public void buildMessagesView() {
 		if (messagesView == null) {
 			messagesView = new GenericCourseClassMessagesView(session, bus, placeCtrl, viewFactory, messagePresenter, Dean.getInstance().getCourseClassTO());
-			messagePresenter.filterAndShowThreads();
 		}
+		messagePresenter.filterAndShowThreads();
 		messagesPanel.clear();
 		messagesPanel.add(messagesView);
 	}

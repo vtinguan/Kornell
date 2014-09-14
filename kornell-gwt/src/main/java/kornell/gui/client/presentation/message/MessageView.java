@@ -13,6 +13,7 @@ public interface MessageView  extends IsWidget {
 		void threadClicked(UnreadChatThreadTO unreadChatThreadTO);
 		void sendMessage(String text);
 		void filterAndShowThreads();
+		void enableMessagesUpdate(boolean enable);
 	}
 
 	void setPresenter(Presenter presenter);

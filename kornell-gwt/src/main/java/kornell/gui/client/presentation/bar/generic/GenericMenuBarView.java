@@ -269,10 +269,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
   public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
 		if(event.getUnreadChatThreadTOs().size() > 0 && !btnMessages.isVisible())
 			btnMessages.setVisible(true);
-		totalCount = 0;
+		int count = 0;
 		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
-	    totalCount = totalCount + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
+			count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
     }
+		totalCount = count;
 		updateUnreadCount();
   }
 
