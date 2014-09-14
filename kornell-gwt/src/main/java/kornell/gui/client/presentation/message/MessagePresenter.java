@@ -15,6 +15,7 @@ import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -72,7 +73,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	@Override
   public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
 		unreadChatThreadsTOFetchedFromEvent = event.getUnreadChatThreadTOs();
-	  filterAndShowThreads();
+		if(placeCtrl.getWhere() instanceof MessagePlace)
+			filterAndShowThreads();
   }
 
 	@Override
@@ -104,6 +106,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 
 	@Override
   public void threadClicked(final UnreadChatThreadTO unreadChatThreadTO) {
+		LoadingPopup.show();
 		initializeChatThreadMessagesTimer();
 		this.selectedChatThreadInfo = unreadChatThreadTO;
 	  session.chatThreads().getChatThreadMessages(unreadChatThreadTO.getChatThreadUUID(), new Callback<ChatThreadMessagesTO>() {
@@ -111,6 +114,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			public void ok(ChatThreadMessagesTO to) {
 				chatThreadMessageTOs = to.getChatThreadMessageTOs();
 			  view.updateThreadPanel(to, unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
+				LoadingPopup.hide();
 			}
 		});
   }
