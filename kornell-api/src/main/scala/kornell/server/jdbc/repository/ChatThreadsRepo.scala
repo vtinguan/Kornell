@@ -1,5 +1,6 @@
 package kornell.server.jdbc.repository
 
+import scala.collection.JavaConverters.setAsJavaSetConverter
 import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.collection.JavaConverters.bufferAsJavaListConverter
 import kornell.server.jdbc.SQL.SQLHelper
@@ -33,25 +34,32 @@ object ChatThreadsRepo {
       val chatThreadUUID = getCourseClassSupportChatThreadUUID(personUUID, courseClass.getUUID)
       if(!chatThreadUUID.isDefined){
         val chatThread = createChatThread(courseClass.getInstitutionUUID)
-        updateChatThreadParticipants(personUUID, chatThread.getUUID, courseClass)
+        updateChatThreadParticipants(chatThread.getUUID, personUUID, courseClass)
         createCourseClassSupportChatThread(chatThread.getUUID, courseClass.getUUID, personUUID)
         createChatThreadMessage(chatThread.getUUID, personUUID, message)
       } else {
       	createChatThreadMessage(chatThreadUUID.get, personUUID, message)
-        updateChatThreadParticipants(personUUID, chatThreadUUID.get, courseClass)
+        updateChatThreadParticipants(chatThreadUUID.get, personUUID, courseClass)
       }
       ""
   }
 
-  def updateChatThreadParticipants(threadCreatorUUID: String, chatThreadUUID: String, courseClass: CourseClass) = {
+  def updateChatThreadParticipants(chatThreadUUID: String, threadCreatorUUID: String, courseClass: CourseClass) = {
     val participantsThatShouldExist = RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
-    		.getRoleTOs.asScala.map(_.getRole.getPersonUUID).union(List(threadCreatorUUID))
-    val participants = getChatTreadParticipantsUUIDs(chatThreadUUID)
+    		.getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
+    val participants = getChatTreadParticipantsUUIDs(chatThreadUUID).distinct
     val createThese = participantsThatShouldExist.filterNot(participants.contains)
     val removeThese = participants.filterNot(participantsThatShouldExist.contains)
     createThese.foreach(createChatThreadParticipant(chatThreadUUID, _, courseClass.getName, threadCreatorUUID))
     removeThese.foreach(removeChatThreadParticipant(chatThreadUUID, _))
   }
+  
+  def getChatTreadParticipantsUUIDs(chatThreadUUID: String) = sql"""
+		    | select p.uuid
+	      	| from ChatThreadParticipant ctp 
+  			  | join Person p on p.uuid = ctp.personUUID
+    			| where ctp.chatThreadUUID = ${chatThreadUUID}
+		    """.map[String]
 
   def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, courseClassName: String, threadCreatorUUID: String) = {
     val chatThreadName = {
@@ -61,8 +69,8 @@ object ChatThreadsRepo {
         getSupportChatThreadNameAdminPerspective(PeopleRepo.uuidLoader.load(threadCreatorUUID).get.getFullName(), courseClassName)
     }
     sql"""
-		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, chatThreadName)
-		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, null, ${chatThreadName})""".executeUpdate
+			insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, chatThreadName)
+			values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, ${chatThreadName})""".executeUpdate
   }
 
   def removeChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
@@ -109,8 +117,17 @@ object ChatThreadsRepo {
 		    """.first[String]
   }
   
+  
   def updateParticipantsInCourseClassSupportThreads(courseClassUUID: String) = {
-    ???
+	  type CourseClassSupportThreadData = Tuple2[String,String] 
+	  implicit def courseClassSupportThreadConvertion(rs:ResultSet): CourseClassSupportThreadData = (rs.getString(1), rs.getString(2))
+	  
+    val courseClass = CourseClassRepo(courseClassUUID).get
+    sql"""
+    		select chatThreadUUID, personUUID from CourseClassSupportChatThread
+    		  where courseClassUUID = ${courseClassUUID}
+		    """.map[CourseClassSupportThreadData](courseClassSupportThreadConvertion)
+		    .foreach(ct => updateChatThreadParticipants(ct._1, ct._2, courseClass))
   }
   
   def updateCourseClassSupportThreadsNames(courseClassUUID: String, courseClassName: String) = {
@@ -140,16 +157,6 @@ object ChatThreadsRepo {
 					where ccs.courseClassUUID = ${courseClassUUID}
 				) as ids
 			)""".executeUpdate
-  }
-  
-  implicit def toString(rs: ResultSet): String = rs.getString(1)
-      
-  def getChatTreadParticipantsUUIDs(chatThreadUUID: String) = {
-    sql"""
-		    | select ctp.uuid
-	      	| from ChatThreadParticipant ctp
-    			| where ctp.chatThreadUUID = ${chatThreadUUID}
-		    """.map[String]
   }
   
   def getTotalUnreadCountByPerson(personUUID: String, institutionUUID: String) = {
@@ -233,5 +240,7 @@ object ChatThreadsRepo {
       | where p.chatThreadUUID = ${chatThreadUUID} 
       | and p.personUUID = ${personUUID}""".executeUpdate
   }
+  
+  implicit def toString(rs: ResultSet): String = rs.getString(1)
   
 }

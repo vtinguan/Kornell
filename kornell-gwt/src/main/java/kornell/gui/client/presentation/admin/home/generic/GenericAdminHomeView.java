@@ -212,6 +212,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 			public void onChange(ChangeEvent event) {
 				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
 				if (Dean.getInstance().getCourseClassTO() == null || !newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
+					messagePresenter.clearThreadSelection();
 					presenter.updateCourseClass(newCourseClassUUID);
 				}
 			}

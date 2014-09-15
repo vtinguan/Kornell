@@ -45,7 +45,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		this(session, bus, placeCtrl, viewFactory, false);
 	}
 	
-	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory, boolean isClassPresenter) {
+	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory, final boolean isClassPresenter) {
 		this.session = session;
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
@@ -60,7 +60,12 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						selectedChatThreadInfo = null;
-						updateMessages = false;
+						if(isClassPresenter)
+							updateMessages = false;
+						else if(!(event.getNewPlace() instanceof MessagePlace))
+							updateMessages = false;
+						else
+							updateMessages = true;
 					}
 				});
 	}
@@ -139,6 +144,11 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			}
 		});
   }
+	
+	@Override
+	public void clearThreadSelection(){
+		this.selectedChatThreadInfo = null;
+	}
 
 	private String lastFetchedMessageSentAt() {
 	  return chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt();
@@ -158,8 +168,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 	
 	private void getChatThreadMessagesSinceLast() {
-		final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
-		if((placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminHomePlace && isClassPresenter)){
+		if(selectedChatThreadInfo != null && (placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminHomePlace && isClassPresenter)){
+			final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
 		  session.chatThreads().getChatThreadMessages(chatThreadUUID, lastFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
 				@Override
 				public void ok(ChatThreadMessagesTO to) {

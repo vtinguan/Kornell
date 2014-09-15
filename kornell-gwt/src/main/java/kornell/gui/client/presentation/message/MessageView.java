@@ -14,6 +14,7 @@ public interface MessageView  extends IsWidget {
 		void sendMessage(String text);
 		void filterAndShowThreads();
 		void enableMessagesUpdate(boolean enable);
+		void clearThreadSelection();
 	}
 
 	void setPresenter(Presenter presenter);
