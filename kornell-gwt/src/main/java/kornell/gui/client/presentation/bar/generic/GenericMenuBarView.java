@@ -255,7 +255,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
   }
 
 	private void updateUnreadCount() {
-		String labelText = totalCount > 0 ? ""+totalCount : "4";
+		String labelText = totalCount > 0 ? ""+totalCount : "";
 	  if(btnMessages.getWidgetCount() == 3){
 			btnMessages.remove(2);
 		}
