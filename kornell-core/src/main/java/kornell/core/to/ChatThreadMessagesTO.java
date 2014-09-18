@@ -9,7 +9,7 @@ public interface ChatThreadMessagesTO {
 	List<ChatThreadMessageTO> getChatThreadMessageTOs();
 	void setChatThreadMessageTOs(List<ChatThreadMessageTO> chatThreadMessageTOs);
 
-	Date getServerTime();
-	void setServerTime(Date serverTime);
+	String getServerTime();
+	void setServerTime(String serverTime);
 	
 }

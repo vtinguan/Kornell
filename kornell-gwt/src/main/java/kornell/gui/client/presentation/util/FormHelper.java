@@ -583,6 +583,8 @@ public class FormHelper {
 		long hours = diffM/(60 * 60 * 1000);
 		long minutes = diffM/(60 * 1000);
 		long seconds = diffM/(1000);
+		seconds = seconds > 0 ? seconds : 1;
+	
 
 		if(days > 0)
 			return dateToString(date);

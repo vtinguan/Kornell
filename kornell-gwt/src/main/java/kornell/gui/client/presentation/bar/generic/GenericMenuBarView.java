@@ -145,12 +145,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
    		        public void onSuccess(Void result) {
    		        	GWT.log("Script load success.");
    		        }
-   		     }).inject();
+   		     }).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			}
 		};
 
 		//wait 3 secs before loading the javascript file
-		screenfulJsTimer.schedule((int) (3 * 1000));
+		screenfulJsTimer.schedule((int) (10 * 1000));
 	}
 
 	private void showButtons(boolean show) {
@@ -255,7 +255,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
   }
 
 	private void updateUnreadCount() {
-		String labelText = totalCount > 0 ? ""+totalCount : "";
+		String labelText = totalCount > 0 ? ""+totalCount : "4";
 	  if(btnMessages.getWidgetCount() == 3){
 			btnMessages.remove(2);
 		}

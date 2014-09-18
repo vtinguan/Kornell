@@ -194,10 +194,10 @@ object TOs {
     to
   }
 
-  def newChatThreadMessagesTO(l: List[ChatThreadMessageTO]) = {
+  def newChatThreadMessagesTO(l: List[ChatThreadMessageTO], serverTime: String) = {
     val to = tos.newChatThreadMessagesTO.as
     to.setChatThreadMessageTOs(l asJava)
-    to.setServerTime(new Date())
+    to.setServerTime(serverTime)
     to
   }
 

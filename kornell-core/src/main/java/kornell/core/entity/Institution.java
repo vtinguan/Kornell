@@ -20,6 +20,9 @@ public interface Institution extends Named {
 	
 	boolean isDemandsPersonContactDetails();
 	void setDemandsPersonContactDetails(boolean demandsPersonContactDetails);
+	
+	boolean isValidatePersonContactDetails();
+	void setValidatePersonContactDetails(boolean validatePersonContactDetails);
 
 	boolean isAllowRegistration();
 	void setAllowRegistration(boolean allowRegistration);

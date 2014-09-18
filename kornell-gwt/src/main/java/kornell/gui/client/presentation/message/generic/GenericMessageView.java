@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -84,8 +85,18 @@ public class GenericMessageView extends Composite implements MessageView {
 			final Label label = new Label();
 			label.addStyleName("threadListItem");
 			label.addClickHandler(new ClickHandler() {
+				boolean enableClick = true;
 				@Override
 				public void onClick(ClickEvent event) {
+					if(!enableClick) return;
+					enableClick = false;
+					Timer preventDoubleClickTimer = new Timer() {
+						public void run() {
+							enableClick = true;
+						}
+					};
+					preventDoubleClickTimer.schedule(300);
+					
 					for (Label lbl : sideItems) {
 	          lbl.removeStyleName("selected");
           }
@@ -169,7 +180,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	  	scrollToBottom();
   }
 
-	private void updateDateLabelValues(Date serverTime) {
+	private void updateDateLabelValues(String serverTime) {
 		Iterator<Entry<Label, ChatThreadMessageTO>> it = dateLabelsMap.entrySet().iterator();
     while (it.hasNext()) {
         Map.Entry<Label, ChatThreadMessageTO> pairs = (Map.Entry<Label, ChatThreadMessageTO>)it.next();
@@ -177,8 +188,10 @@ public class GenericMessageView extends Composite implements MessageView {
     }
   }
 
-	private String getDateLabelValue(Date serverTime, final ChatThreadMessageTO chatThreadMessageTO) {
-	  String dateStr = chatThreadMessageTO.getSenderFullName() + " - " + formHelper.getElapsedTimeSince(formHelper.getJudFromString(chatThreadMessageTO.getSentAt()), serverTime);
+	private String getDateLabelValue(String serverTimeStr, final ChatThreadMessageTO chatThreadMessageTO) {
+		Date sentAt = formHelper.getJudFromString(chatThreadMessageTO.getSentAt());
+		Date serverTime = formHelper.getJudFromString(serverTimeStr);
+	  String dateStr = chatThreadMessageTO.getSenderFullName() + " - " + formHelper.getElapsedTimeSince(sentAt, serverTime);
 	  return dateStr;
   }
 

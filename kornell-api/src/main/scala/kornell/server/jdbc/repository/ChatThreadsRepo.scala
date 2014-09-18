@@ -39,9 +39,7 @@ object ChatThreadsRepo {
         createChatThreadMessage(chatThread.getUUID, personUUID, message)
       } else {
       	createChatThreadMessage(chatThreadUUID.get, personUUID, message)
-        updateChatThreadParticipants(chatThreadUUID.get, personUUID, courseClass)
       }
-      ""
   }
 
   def updateChatThreadParticipants(chatThreadUUID: String, threadCreatorUUID: String, courseClass: CourseClass) = {
@@ -211,6 +209,8 @@ object ChatThreadsRepo {
 				| order by unreadMessages desc, lastSentAt desc
 		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
   }
+  
+  def getDatabaseTime = sql"""select now()""".first[String].get 
 
   def getChatThreadMessages(chatThreadUUID: String) = {
     TOs.newChatThreadMessagesTO(sql"""
@@ -219,7 +219,8 @@ object ChatThreadsRepo {
 				| 	join Person p on p.uuid = tm.personUUID
 				| 	where tm.chatThreadUUID = ${chatThreadUUID}
 				| 	order by tm.sentAt
-		    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
+		    """.map[ChatThreadMessageTO](toChatThreadMessageTO), 
+		    getDatabaseTime)
   } 
 
   def getChatThreadMessagesSince(chatThreadUUID: String, lastFetchedMessageSentAt: String) = {
@@ -230,7 +231,8 @@ object ChatThreadsRepo {
 				| 	where tm.chatThreadUUID = ${chatThreadUUID}
     	  |   and tm.sentAt > ${lastFetchedMessageSentAt}
 				| 	order by tm.sentAt
-		    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
+		    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
+		    getDatabaseTime)
   } 
 
   def markAsRead(chatThreadUUID: String, personUUID: String) = {
