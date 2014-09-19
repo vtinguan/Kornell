@@ -162,7 +162,7 @@ public class GenericMessageView extends Composite implements MessageView {
 			Label header = new Label("");
 			
 			header.addStyleName("threadMessageHeader");
-			if(!currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
+			if(currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
 				header.addStyleName("rightText");
 				threadMessageWrapper.addStyleName("overrideWrapper");
 			}

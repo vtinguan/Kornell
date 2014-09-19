@@ -110,7 +110,7 @@ body {
 			padding-right: 5px;
 			.threadMessageWrapper{
 				.boxSizing;
-				background: fade(@blackOrWhite, 10%);
+				background: @tableBackgroundHoverColor;
 				margin: 5px;
 				padding: 5px 8px;
 				margin-left: 15px;
@@ -136,18 +136,18 @@ body {
 					margin-left: -12px;
 					border-top: 7px solid transparent;
 					border-bottom: 7px solid transparent;
-					border-right: 12px solid fade(@blackOrWhite, 10%);
+					border-right: 12px solid @tableBackgroundHoverColor;
 				}
 			}
 			.overrideWrapper{
 				margin-left: 0px !important;
 				margin-right: 15px !important;
-				background: fade(@blackOrWhite, 18%) !important;
+				background: @tableBackgroundColor !important;
 				&:after {
 					left: 100% !important;
 					margin-left: 0px !important;
 					margin-right: -12px !important;
-					border-left: 12px solid fade(@blackOrWhite, 22%) !important;
+					border-left: 12px solid @tableBackgroundColor !important;
 					border-right: 0px !important;
 				}
 			}
