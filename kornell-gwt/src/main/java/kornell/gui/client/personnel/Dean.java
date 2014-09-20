@@ -142,9 +142,11 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 	
 	public List<CourseClassTO> getHelpCourseClasses(){
 		List<CourseClassTO> courseClasses = new ArrayList<CourseClassTO>();
-		for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-			if(courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()){
-				courseClasses.add(courseClassTO);
+		if(courseClassesTO != null){
+			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+				if(courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()){
+					courseClasses.add(courseClassTO);
+				}
 			}
 		}
 		return courseClasses;

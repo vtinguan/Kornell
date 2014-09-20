@@ -38,6 +38,7 @@ object TOs {
   val tos = AutoBeanFactorySource.create(classOf[TOFactory])
 
   def newUserInfoTO = tos.newUserInfoTO.as
+  def newUserHelloTO = tos.newUserHelloTO.as
   def newRegistrationsTO: RegistrationsTO = tos.newRegistrationsTO.as
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as

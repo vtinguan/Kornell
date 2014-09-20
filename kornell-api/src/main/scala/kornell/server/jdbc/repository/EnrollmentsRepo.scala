@@ -23,10 +23,10 @@ object EnrollmentsRepo {
   def byPerson(personUUID: String) =
     sql"""
     SELECT 
-    	e.*,p.*
+    	e.*
 	  FROM Enrollment e join Person p on e.person_uuid = p.uuid 
     WHERE e.person_uuid = ${personUUID}
-	    """.map[EnrollmentTO](toEnrollmentTO)
+	    """.map[Enrollment](toEnrollment)
 
   def byCourseClassAndPerson(courseClassUUID: String, personUUID: String): Option[Enrollment] =
     sql"""

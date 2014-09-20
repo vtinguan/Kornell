@@ -162,16 +162,17 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		EnrollmentsTO enrollmentsTO = toFactory.newEnrollmentsTO().as();
 		List<EnrollmentTO> enrollmentTOs = new ArrayList<EnrollmentTO>();
 		EnrollmentTO enrollmentTO;
+		session.getCurrentUser().getEnrollments().getEnrollments().clear();
 		for (CourseClassTO courseClassTO : tos.getCourseClasses()) {
 			if (courseClassTO.getEnrollment() != null) {
 				enrollmentTO = toFactory.newEnrollmentTO().as();
 				enrollmentTO.setEnrollment(courseClassTO.getEnrollment());
+				session.getCurrentUser().getEnrollments().getEnrollments().add(courseClassTO.getEnrollment());
 				enrollmentTO.setPerson(session.getCurrentUser().getPerson());
 				enrollmentTOs.add(enrollmentTO);
 			}
 		}
 		enrollmentsTO.setEnrollmentTOs(enrollmentTOs);
-		session.getCurrentUser().setEnrollmentsTO(enrollmentsTO);
 	}
 
 	private void prepareButtons(int classesCount) {

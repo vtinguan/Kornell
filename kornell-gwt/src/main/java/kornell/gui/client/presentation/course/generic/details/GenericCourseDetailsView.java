@@ -134,9 +134,7 @@ public class GenericCourseDetailsView extends Composite {
 		isEnrolled = false;
 		isCancelled = false;
 		UserInfoTO user = session.getCurrentUser();
-		Enrollment enrollment;
-		for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
-			enrollment = enrollmentTO.getEnrollment();
+		for (Enrollment enrollment : user.getEnrollments().getEnrollments()) {
 			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())){
 				if(EnrollmentState.enrolled.equals(enrollment.getState())){
 					isEnrolled = true;

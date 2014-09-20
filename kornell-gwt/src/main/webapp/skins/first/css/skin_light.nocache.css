@@ -400,7 +400,7 @@
 .wrapper{margin:0 auto;}
 @media screen and (max-width:962px){}
 ::-webkit-scrollbar{width:18px;height:18px;}
-::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(244, 244, 244, 0.5) !important;border-radius:5px;background-color:#ffffff;}
+::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(244, 244, 244, 0.5) !important;border-radius:5px;background-color:#f4f4f4;}
 ::-webkit-scrollbar-thumb{-webkit-box-shadow:inset 0 0 6px rgba(250, 250, 250, 0.5) !important;border-radius:5px;background-color:#ffffff;}
 .messageInboxPanel{width:962px;margin:0 auto;margin-top:10px;height:502px;border:1px solid rgba(131, 154, 156, 0.25);border-radius:8px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}.messageInboxPanel .sidePanelScroll{height:489px;padding:5px;border-radius:8px;background-color:#fafafa;}.messageInboxPanel .sidePanelScroll .sidePanel{width:240px;margin-right:14px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;color:#839a9c;background-color:#fafafa;font-size:12px;line-height:20px;margin-bottom:3px;border-radius:5px;padding:6px;font-weight:bold;}.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem:hover{background-color:#f0f0f0;}
 .messageInboxPanel .sidePanelScroll .sidePanel .threadListItem .unreadCount{color:#5492ff;padding-left:5px;}

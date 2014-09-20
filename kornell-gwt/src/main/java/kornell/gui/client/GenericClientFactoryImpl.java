@@ -11,6 +11,7 @@ import kornell.core.entity.RoleType;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.mvp.AsyncActivityManager;
 import kornell.gui.client.mvp.AsyncActivityMapper;
@@ -36,7 +37,6 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryHandler.DefaultHistorian;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -101,13 +101,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public void startApp() {
 
-		final Callback<Institution> institutionCallback = new Callback<Institution>() {
+		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
-			public void ok(final Institution institution) {
-				if(institution == null) {
+			public void ok(final UserHelloTO userHelloTO) {
+				session.setCurrentUser(userHelloTO.getUserInfoTO());
+				if(userHelloTO.getInstitution() == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {					
-					Dean.init(session, bus, institution);
+					Dean.init(session, bus, userHelloTO.getInstitution());
 					if (session.isAuthenticated() && session.isRegistered()) {
 						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 								|| session.isInstitutionAdmin());
@@ -120,30 +121,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 		};
 
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			public void ok(UserInfoTO to) {
-				getInstitutionFromLocation();
-			};
-
-			@Override
-			protected void unauthorized(String errorMessage) {
-				GWT.log(this.getClass().getName() + " - " + errorMessage);
-				getInstitutionFromLocation();
-			}
-
-			private void getInstitutionFromLocation() {
-			}	
-
-		});
+		session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userHelloCallback);
 		
-		String institutionName = Window.Location.getParameter("institution");
-		if (institutionName != null) {
-			session.institutions().findInstitutionByName(institutionName, institutionCallback);
-		} else {
-			String hostName = Window.Location.getHostName();
-			session.institutions().findInstitutionByHostName(hostName, institutionCallback);
-		}
-
 	}
 
 	private void startAnonymous() {

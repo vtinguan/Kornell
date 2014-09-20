@@ -134,6 +134,12 @@ object Entities {
     e
   }
 
+  def newEnrollments(enrollments: List[Enrollment]) = {
+    val ps = factory.newEnrollments.as
+    ps.setEnrollments(enrollments.asJava)
+    ps
+  }
+
   //FTW: Default parameter values
   def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, activatedAt: Date, skin: String) = {
     val i = factory.newInstitution.as
