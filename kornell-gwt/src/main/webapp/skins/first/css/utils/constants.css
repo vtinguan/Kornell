@@ -1,9 +1,10 @@
-.background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
-.background{background:url(/skins/first/bgInternal.jpg);background-size:100% 100%;}
+.boxSizing{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}
 .fillWidth{width:100%;}
 .south{bottom:0px;left:0px;}
 .north{top:0px;left:0px;}
 .centerText{text-align:center;}
+.rightText{text-align:right;}
+.leftText{text-align:left;}
 .cursorPointer{cursor:pointer;}
 .cursorDefault{cursor:default;}
 .noTextSelect{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
@@ -26,3 +27,4 @@
 .right{float:right;}
 .unclear{clear:none !important;}
 .error{color:#ca2828;}
+.gwt-PopupPanel{width:100%;}

@@ -24,6 +24,9 @@ public interface CourseClass extends Named{
 	Boolean isOverrideEnrollments();
 	void setOverrideEnrollments(Boolean overrideEnrollments);
 	
+	Boolean isInvisible();
+	void setInvisible(Boolean invisible);
+	
 	Integer getMaxEnrollments();
 	void setMaxEnrollments(Integer maxEnrollments);
 	

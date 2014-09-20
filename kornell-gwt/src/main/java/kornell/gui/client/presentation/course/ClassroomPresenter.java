@@ -60,9 +60,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				boolean isEnrolled = false;
 				UserInfoTO user = session.getCurrentUser();
 				//TODO: Consider moving this to the server
-				Enrollment enrollment;
-				for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
-					enrollment = enrollmentTO.getEnrollment();
+				for (Enrollment enrollment : user.getEnrollments().getEnrollments()) {
 					if(enrollment.getUUID().equals(enrollmentUUID)){
 						Dean.getInstance().setCourseClassTO(enrollment.getCourseClassUUID());
 						isEnrolled = EnrollmentState.enrolled.equals(enrollment.getState());

@@ -10,15 +10,17 @@ import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
-import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.mvp.AsyncActivityManager;
+import kornell.gui.client.mvp.AsyncActivityMapper;
+import kornell.gui.client.mvp.GlobalActivityMapper;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
-import kornell.gui.client.presentation.GlobalActivityMapper;
-import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -75,12 +77,17 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initGlobalActivityManager() {
-		globalActivityManager = new ActivityManager(new GlobalActivityMapper(
-				this), bus);
-		globalActivityManager.setDisplay(viewFactory.getShell());
+		AsyncActivityMapper activityMapper = new GlobalActivityMapper(this);
+		AsyncActivityManager activityManager = new AsyncActivityManager(activityMapper, bus);
+		activityManager.setDisplay(viewFactory.getShell());
 	}
 
 	private void initHistoryHandler(Place defaultPlace) {
+
+		//AppPlaceHistoryMapper historyMapper= GWT.create(AppPlaceHistoryMapper.class);
+		//PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+		//historyHandler.register(placeController, eventBus, defaultPlace);
+		
 		historyHandler.register(placeCtrl, bus, defaultPlace);
 		// sessions that arent authenticated, go to the default place
 		// except if it's a vitrineplace, then let the history take care of it
@@ -93,66 +100,30 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void startApp() {
-		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
-			@Override
-			public void ok(final CourseClassesTO courseClasses) {
-				Dean.getInstance().setCourseClassesTO(courseClasses);
-				boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-						|| session.isInstitutionAdmin());
-				setDefaultPlace(isAdmin ? new AdminHomePlace() : new WelcomePlace());
-				startAuthenticated(session);
-			}
-		};
 
-		final Callback<Institution> institutionCallback = new Callback<Institution>() {
+		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
-			public void ok(final Institution institution) {
-				if(institution == null) {
+			public void ok(final UserHelloTO userHelloTO) {
+				session.setCurrentUser(userHelloTO.getUserInfoTO());
+				if(userHelloTO.getInstitution() == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
-				} else {
-					Dean.init(session, bus, institution);
+				} else {					
+					Dean.init(session, bus, userHelloTO.getInstitution());
 					if (session.isAuthenticated() && session.isRegistered()) {
-						session.courseClasses().getCourseClassesTOByInstitution(
-								institution.getUUID(), courseClassesCallback);
+						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+								|| session.isInstitutionAdmin());
+						setDefaultPlace(isAdmin ? new AdminHomePlace() : new WelcomePlace());
+						startAuthenticated(session);
 					} else {
 						startAnonymous();
 					}
 				}
 			}
-
-			@Override
-			public void unauthorized(String errorMessage) {
-				GWT.log(this.getClass().getName() + " - " + errorMessage);
-			}
 		};
 
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			public void ok(UserInfoTO to) {
-				getInstitutionFromLocation();
-			};
-
-			@Override
-			protected void unauthorized(String errorMessage) {
-				GWT.log(this.getClass().getName() + " - " + errorMessage);
-				getInstitutionFromLocation();
-			}
-
-			private void getInstitutionFromLocation() {
-				String institutionName = Window.Location.getParameter("institution");
-				if (institutionName != null) {
-					session.institutions().findInstitutionByName(institutionName, institutionCallback);
-				} else {
-					String hostName = Window.Location.getHostName();
-					session.institutions().findInstitutionByHostName(hostName, institutionCallback);
-				}
-			}	
-
-		});
-
+		session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userHelloCallback);
+		
 	}
-	
-	
-
 
 	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");
@@ -163,10 +134,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void startAuthenticated(KornellSession session) {
 		if (session.isCourseClassAdmin()) {
 			defaultPlace = new AdminHomePlace();
-			startClient();
-		} else {
-			startClient();
 		}
+		startClient();
 	}
 
 	protected void startClient() {
@@ -186,7 +155,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void initPersonnel() {
 		new Captain(bus, session, placeCtrl);
 		new Stalker(bus, session);
-		new MrPostman(new MessageComposePresenter(session, viewFactory, entityFactory),  bus);
+		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads(), placeCtrl);
+		
 	}
 
 	private void initSCORM12() {

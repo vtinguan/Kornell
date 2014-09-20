@@ -26,6 +26,8 @@ import com.google.gwt.user.client.ui.Image;
 //TODO i18n
 public class FormHelper {
 	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
+	public static String SEPARATOR_BAR_CLASS = "profileSeparatorBar";
+	
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private static final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
@@ -396,6 +398,19 @@ public class FormHelper {
 		return dateArraySplitByT[0];
 	}
 	
+	public Date getJudFromString(String dateStr){
+		if(dateStr == null)
+			return null;
+		Date jdate = null;
+		try {
+			DateTimeFormat dtf = new DateTimeFormat("yyyy-MM-dd hh:mm:ss.SSS", new DefaultDateTimeFormatInfo()) {};
+			jdate = dtf.parse(dateStr); 
+    } catch (IllegalArgumentException iae) {
+    	DateTimeFormat dtf = new DateTimeFormat("yyyy-MM-dd hh:mm:ss", new DefaultDateTimeFormatInfo()) {};
+			jdate = dtf.parse(dateStr);
+    }
+		return jdate;
+	}
 	
 	public TextBoxFormField createTextBoxFormField(String text, String textBoxFormFieldType){
 		TextBox fieldTextBox = new TextBox();
@@ -434,6 +449,13 @@ public class FormHelper {
 		for (KornellFormFieldWrapper field : fields) {
 			field.clearError();
 		}
+	}
+
+	public boolean checkErrors(List<KornellFormFieldWrapper> fields) {
+		for (KornellFormFieldWrapper field : fields)
+			if (!"".equals(field.getError()))
+				return true;
+		return false;
 	}
 	
 	public static String stripCPF(String cpf){
@@ -510,7 +532,7 @@ public class FormHelper {
 
 	public Image getImageSeparator() {
 		Image image = new Image(SEPARATOR_BAR_IMG_PATH);
-		image.addStyleName("profileSeparatorBar");
+		image.addStyleName(SEPARATOR_BAR_CLASS);
 		return image;
 	}
 	
@@ -550,4 +572,36 @@ public class FormHelper {
 	  	return "";
 	  return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
   }
+
+	public String getElapsedTimeSince(Date date, Date now) {
+		long dateM = date.getTime() - 1000; 
+		long serverNowM = now.getTime();
+		
+		long diffM = serverNowM - dateM;
+
+		long days = diffM/(24 * 60 * 60 * 1000);
+		long hours = diffM/(60 * 60 * 1000);
+		long minutes = diffM/(60 * 1000);
+		long seconds = diffM/(1000);
+		seconds = seconds > 0 ? seconds : 1;
+	
+
+		if(days > 0)
+			return dateToString(date);
+		else if(hours > 0)
+			return "Há " + hours + " hora" + (hours > 1 ? "s" : "");
+		else if(minutes > 0)
+			return "Há " + minutes + " minuto" + (minutes > 1 ? "s" : "");
+		else
+			return "Há " + seconds + " segundo" + (seconds > 1 ? "s" : "");
+  }
+	
+	public String dateToString(Date date){
+		if(date == null)
+			return null;
+		String month = ((date.getMonth()+1) < 10 ? "0" : "") + (date.getMonth()+1);
+		String day = (date.getDate() < 10 ? "0" : "") + date.getDate();
+		return (1900+date.getYear()) + "-" + month + "-" + day;
+		
+	}
 }

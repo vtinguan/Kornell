@@ -4,16 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kornell.core.entity.ActomEntries;
+import kornell.core.entity.ChatThread;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Institution;
-import kornell.core.entity.Message;
 import kornell.core.entity.People;
 import kornell.core.entity.Person;
 import kornell.core.entity.Registration;
 import kornell.core.entity.Registrations;
 import kornell.core.entity.Roles;
 import kornell.core.lom.Contents;
+import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CourseVersionTO;
@@ -23,6 +24,8 @@ import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.RolesTO;
+import kornell.core.to.UnreadChatThreadsTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 
 public class MediaTypes {
@@ -42,6 +45,7 @@ public class MediaTypes {
 		register(CourseVersionsTO.TYPE, CourseVersionsTO.class);
 		register(CourseVersionTO.TYPE, CourseVersionTO.class);
 		register(UserInfoTO.TYPE,UserInfoTO.class);
+		register(UserHelloTO.TYPE,UserHelloTO.class);
 		register(Registration.TYPE,Registration.class);
 		register(Registrations.TYPE,Registrations.class);
 		register(RegistrationsTO.TYPE,RegistrationsTO.class);
@@ -53,7 +57,9 @@ public class MediaTypes {
 		register(EnrollmentsTO.TYPE,EnrollmentsTO.class);
 		register(ActomEntries.TYPE,ActomEntries.class);
 		register(LibraryFilesTO.TYPE,LibraryFilesTO.class);
-		register(Message.TYPE,Message.class);
+		register(ChatThread.TYPE,ChatThread.class);
+		register(UnreadChatThreadsTO.TYPE,UnreadChatThreadsTO.class);
+		register(ChatThreadMessagesTO.TYPE,ChatThreadMessagesTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

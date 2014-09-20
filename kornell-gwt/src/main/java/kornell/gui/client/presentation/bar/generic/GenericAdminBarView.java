@@ -3,7 +3,7 @@ package kornell.gui.client.presentation.bar.generic;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.HistoryMapper;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.course.generic.notes.NotesPopup;

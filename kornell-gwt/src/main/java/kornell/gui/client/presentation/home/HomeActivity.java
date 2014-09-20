@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class HomeActivity extends AbstractActivity {
 	
 	static HomePresenter presenter;
-	public HomeActivity(ClientFactory clientFactory) {
+	public HomeActivity(HomePlace place, ClientFactory clientFactory) {
 	    if(presenter == null){
 	    	presenter = new HomePresenter(clientFactory);
 	    }

@@ -82,7 +82,7 @@ class PersonRepo(val uuid: String) {
               !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) &&
               !RoleCategory.hasRole(targetRolesSet, RoleType.courseClassAdmin) && {
                 enrollmentTOs exists {
-                  to => RoleCategory.isCourseClassAdmin(actorRolesSet, to.getEnrollment.getCourseClassUUID)
+                  to => RoleCategory.isCourseClassAdmin(actorRolesSet, to.getCourseClassUUID)
                 }
               }
           }

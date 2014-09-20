@@ -56,7 +56,7 @@ public class KornellPagination extends Pagination{
     		add(createNavLink(">", navLinkCount));
     	} else if(page > navLinkCount - (maxPaginationTabs / 2)){
     		add(createNavLink("<", 1));
-    		for(int i = (navLinkCount - maxPaginationTabs); i <= navLinkCount; i++){
+    		for(int i = (navLinkCount - maxPaginationTabs) + 1; i <= navLinkCount; i++){
     			add(createNavLink(i, i==page));
     		}
     	} else {

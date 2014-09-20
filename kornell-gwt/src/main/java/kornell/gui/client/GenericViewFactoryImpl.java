@@ -1,6 +1,5 @@
 package kornell.gui.client;
 
-import kornell.core.entity.Message;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
 import kornell.gui.client.presentation.bar.MenuBarView;
@@ -11,9 +10,9 @@ import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.GenericClassroomView;
-import kornell.gui.client.presentation.course.library.CourseLibraryPresenter;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
+import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.message.compose.GenericMessageComposeView;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
@@ -37,6 +36,7 @@ import kornell.gui.client.util.orientation.OrientationResizeHandler;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -55,8 +55,10 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
+	private GenericAdminHomeView genericAdminHomeView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
+	private MessagePresenter messagePresenter, messagePresenterCourseClass;
 
 	SimplePanel shell = new SimplePanel();
 
@@ -67,6 +69,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public void initGUI() {
 		final RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
+		
 		dockLayoutPanel.addNorth(getMenuBarView(), 45);
 		dockLayoutPanel.addSouth(getSouthBarView(), 35);
 
@@ -77,12 +80,12 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		dockLayoutPanel.addStyleName("wrapper");
 		rootLayoutPanel.add(dockLayoutPanel);
 		
-		final String userAgent = Navigator.getUserAgent();
+		/*final String userAgent = Navigator.getUserAgent();
 		if (userAgent.contains("iPad") && userAgent.contains("OS 7")) {
 			IpadIos7HeightFix.fixHeight();
 			clientFactory.getEventBus().addHandler(OrientationChangeEvent.TYPE, new IpadIos7HeightFix());
 		}
-		Window.addResizeHandler(new OrientationResizeHandler(clientFactory.getEventBus()));
+		Window.addResizeHandler(new OrientationResizeHandler(clientFactory.getEventBus()));*/
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
@@ -153,7 +156,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public MessageView getMessageView() {
-		return new GenericMessageView(clientFactory.getKornellSession(), clientFactory.getEventBus());
+		return new GenericMessageView(clientFactory.getEventBus());
 	}
 
 	@Override
@@ -203,11 +206,27 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public AdminHomeView getAdminHomeView() {
-		return new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus());
+		if(genericAdminHomeView == null)
+			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminHomeView;
+	}
+	
+	@Override
+	public MessagePresenter getMessagePresenterCourseClass() {
+		if(messagePresenterCourseClass == null)
+			messagePresenterCourseClass = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), true);
+		return messagePresenterCourseClass;
 	}
 
 	@Override
 	public SimplePanel getShell() {
 		return shell;
 	}
+
+	@Override
+  public MessagePresenter getMessagePresenter() {
+		if(messagePresenter == null)
+			messagePresenter = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+	  return messagePresenter;
+  }
 }

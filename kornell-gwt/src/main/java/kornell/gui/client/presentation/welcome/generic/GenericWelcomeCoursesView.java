@@ -5,6 +5,7 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
@@ -43,7 +44,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	@UiField
-	FlowPanel coursesPanel;
+	FlowPanel coursesWrapper;
 	@UiField
 	FlowPanel pnlCourses;
 	@UiField
@@ -76,7 +77,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		this.placeCtrl = placeCtrl;
 		this.toFactory = toFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		coursesPanel.setVisible(false);
+		coursesWrapper.setVisible(false);
 		btnCoursesAll.setText(constants.allClasses());
 		btnCoursesInProgress.setText(constants.inProgress());
 		btnCoursesToStart.setText(constants.toStart());
@@ -105,10 +106,10 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		pnlCourses.clear();
 		final int classesCount = tos.getCourseClasses().size();
 		if(classesCount == 0){
-			coursesPanel.setVisible(false);
+			coursesWrapper.setVisible(false);
 			KornellNotification.show("Você não está matriculado em uma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.INFO, 8000);
 		} else {
-			coursesPanel.setVisible(true);
+			coursesWrapper.setVisible(true);
 		}
 		
 		prepareButtons(classesCount);
@@ -119,6 +120,8 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		final int classesCount = tos.getCourseClasses().size();
 		
 	  for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
+	  	if(courseClassTO.getCourseClass().isInvisible() || !CourseClassState.active.equals(courseClassTO.getCourseClass().getState())) continue;
+	  	
 			final Teacher teacher = Teachers.of(courseClassTO);
 
 			session.getCurrentUser(new Callback<UserInfoTO>() {
@@ -159,16 +162,17 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		EnrollmentsTO enrollmentsTO = toFactory.newEnrollmentsTO().as();
 		List<EnrollmentTO> enrollmentTOs = new ArrayList<EnrollmentTO>();
 		EnrollmentTO enrollmentTO;
+		session.getCurrentUser().getEnrollments().getEnrollments().clear();
 		for (CourseClassTO courseClassTO : tos.getCourseClasses()) {
 			if (courseClassTO.getEnrollment() != null) {
 				enrollmentTO = toFactory.newEnrollmentTO().as();
 				enrollmentTO.setEnrollment(courseClassTO.getEnrollment());
+				session.getCurrentUser().getEnrollments().getEnrollments().add(courseClassTO.getEnrollment());
 				enrollmentTO.setPerson(session.getCurrentUser().getPerson());
 				enrollmentTOs.add(enrollmentTO);
 			}
 		}
 		enrollmentsTO.setEnrollmentTOs(enrollmentTOs);
-		session.getCurrentUser().setEnrollmentsTO(enrollmentsTO);
 	}
 
 	private void prepareButtons(int classesCount) {

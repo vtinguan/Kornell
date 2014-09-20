@@ -25,8 +25,8 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomView.Presenter;
 import kornell.gui.client.presentation.util.LoadingPopup;
@@ -134,9 +134,7 @@ public class GenericCourseDetailsView extends Composite {
 		isEnrolled = false;
 		isCancelled = false;
 		UserInfoTO user = session.getCurrentUser();
-		Enrollment enrollment;
-		for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
-			enrollment = enrollmentTO.getEnrollment();
+		for (Enrollment enrollment : user.getEnrollments().getEnrollments()) {
 			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())){
 				if(EnrollmentState.enrolled.equals(enrollment.getState())){
 					isEnrolled = true;

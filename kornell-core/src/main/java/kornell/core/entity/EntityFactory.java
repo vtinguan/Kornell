@@ -49,5 +49,9 @@ public interface EntityFactory extends AutoBeanFactory {
 	
 	AutoBean<S3ContentRepository> newS3ContentRepository();
 	
-	AutoBean<Message> newMessage();
+	AutoBean<ChatThread> newChatThread();
+	
+	AutoBean<ChatThreadParticipant> newChatThreadParticipant();
+	
+	AutoBean<ChatThreadMessage> newChatThreadMessage();
 }

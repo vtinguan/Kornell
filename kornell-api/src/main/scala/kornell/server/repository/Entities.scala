@@ -2,28 +2,29 @@ package kornell.server.repository
 
 import java.math.BigDecimal
 import java.util.Date
+import java.util.Map
 import java.util.UUID
+
 import scala.collection.JavaConverters.seqAsJavaListConverter
+
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+
+import kornell.core.entity.Assessment
+import kornell.core.entity.ContentSpec
 import kornell.core.entity.Course
+import kornell.core.entity.CourseClassState
+import kornell.core.entity.CourseVersion
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.EntityFactory
 import kornell.core.entity.Institution
 import kornell.core.entity.Person
-import kornell.core.entity.Registration
-import kornell.core.entity.RoleType
-import kornell.server.jdbc.repository.PersonRepo
-import java.util.Map
-import kornell.core.entity.CourseVersion
-import kornell.core.entity.Role
-import java.text.SimpleDateFormat
-import kornell.server.util.ValueFactory
-import kornell.core.util.TimeUtil
-import kornell.core.entity.ContentSpec
-import kornell.core.entity.Assessment
-import kornell.core.entity.CourseClassState
 import kornell.core.entity.PlatformAdminRole
+import kornell.core.entity.Registration
+import kornell.core.entity.Role
+import kornell.core.entity.RoleType
+import kornell.core.util.TimeUtil
+import kornell.server.util.ValueFactory
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -133,8 +134,14 @@ object Entities {
     e
   }
 
+  def newEnrollments(enrollments: List[Enrollment]) = {
+    val ps = factory.newEnrollments.as
+    ps.setEnrollments(enrollments.asJava)
+    ps
+  }
+
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, allowRegistration: Boolean, activatedAt: Date) = {
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, activatedAt: Date, skin: String) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -144,8 +151,10 @@ object Entities {
     i.setAssetsURL(assetsURL)
     i.setBaseURL(baseURL)
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
+    i.setValidatePersonContactDetails(validatePersonContactDetails)
     i.setAllowRegistration(allowRegistration)
     i.setActivatedAt(activatedAt)
+    i.setSkin(skin)
     i
   }
 
@@ -229,9 +238,10 @@ object Entities {
   def newCourseClass(uuid: String = null, name: String = null,
     courseVersionUUID: String = null, institutionUUID: String = null,
     requiredScore: BigDecimal = null, publicClass: Boolean = false,
-    enrollWithCPF: Boolean = false, maxEnrollments: Integer = null,
+    enrollWithCPF: Boolean = false, overrideEnrollments: Boolean = false,
+    invisible: Boolean = false, maxEnrollments: Integer = null,
     createdAt: Date = null, createdBy: String = null,
-    state: CourseClassState = null, overrideEnrollments: Boolean = false) = {
+    state: CourseClassState = null) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -240,11 +250,12 @@ object Entities {
     clazz.setRequiredScore(requiredScore)
     clazz.setPublicClass(publicClass)
     clazz.setEnrollWithCPF(enrollWithCPF)
+    clazz.setOverrideEnrollments(overrideEnrollments)
+    clazz.setInvisible(invisible)
     clazz.setMaxEnrollments(maxEnrollments)
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
-    clazz.setOverrideEnrollments(overrideEnrollments)
     clazz
   }
 
@@ -280,6 +291,14 @@ object Entities {
     repo.setSecretAccessKey(secretAccessKey)
     repo.setDistributionURL(distributionURL)
     repo
+  }
+
+  def newChatThread(uuid: String = null, createdAt: Date = null, institutionUUID: String = null) = {
+    val chatThread = factory.newChatThread.as
+    chatThread.setUUID(uuid)
+    chatThread.setCreatedAt(createdAt)
+    chatThread.setInstitutionUUID(institutionUUID)
+    chatThread
   }
 
 }

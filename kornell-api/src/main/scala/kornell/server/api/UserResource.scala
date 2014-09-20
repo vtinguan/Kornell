@@ -1,58 +1,91 @@
 package kornell.server.api
 
-import scala.collection.JavaConverters._
+import scala.collection.JavaConverters.setAsJavaSetConverter
 import scala.collection.immutable.Set
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import javax.ws.rs._
+import javax.ws.rs.Consumes
+import javax.ws.rs.GET
+import javax.ws.rs.PUT
+import javax.ws.rs.Path
+import javax.ws.rs.PathParam
+import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Person
 import kornell.core.to.RegistrationRequestTO
 import kornell.core.to.UserInfoTO
 import kornell.core.util.UUID
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.jdbc.repository.AuthRepo
+import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.jdbc.repository.InstitutionsRepo
+import kornell.server.jdbc.repository.PeopleRepo
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.RegistrationsRepo
+import kornell.server.repository.Entities.newEnrollments
 import kornell.server.repository.TOs
-import kornell.server.repository.TOs._
+import kornell.server.repository.TOs.newUserHelloTO
+import kornell.server.repository.TOs.newUserInfoTO
 import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
-import kornell.server.jdbc.repository.AuthRepo
-import kornell.server.jdbc.repository.RegistrationsRepo
-import kornell.core.entity.Registrations
-import kornell.server.jdbc.repository.InstitutionsRepo
-import kornell.core.entity.Enrollments
-import kornell.server.jdbc.repository.EnrollmentsRepo
-import kornell.server.jdbc.SQL._
-import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.PeopleRepo
-import kornell.core.entity.RoleCategory
-import kornell.server.jdbc.repository.CourseClassesRepo
-import kornell.core.entity.Role
-import kornell.core.entity.RoleType
-//TOOD Person/People Resource
+import kornell.server.web.BasicAuthFilter
+import kornell.core.to.UserHelloTO
+//TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
   def this() = this(AuthRepo())
   
   def get = first.get
+     
+  
+  @Path("hello")
+  @Produces(Array(UserHelloTO.TYPE))
+  @GET
+  def getChatThreadMessages(@Context req: HttpServletRequest,
+      @QueryParam("name") name:String, 
+      @QueryParam("hostName") hostName:String) = {
+    val userHello = newUserHelloTO
+    val auth = req.getHeader("X-KNL-A")
+    if (auth != null && auth.length() > 0) {
+	    val (username, password) = BasicAuthFilter.extractCredentials(auth)
+	    AuthRepo().authenticate(username, password).map { personUUID =>
+	  		val person = PersonRepo(personUUID).first.getOrElse(null)
+	  		userHello.setUserInfoTO(getUser(person).getOrElse(null))
+	  	}
+    }
+    userHello.setInstitution(
+      {
+        if(name != null)
+			    InstitutionsRepo.byName(name)
+			  else
+			    InstitutionsRepo.byHostName(hostName)
+      }.getOrElse(null));
+    userHello
+  }
   
   @GET
   @Produces(Array(UserInfoTO.TYPE)) //TODO: Cache
   def first: Option[UserInfoTO] =
     authRepo.withPerson { p =>
-      val user = newUserInfoTO
-      val username = PersonRepo(p.getUUID).getUsername
-      user.setUsername(username)
-      user.setPerson(p)
-      user.setLastPlaceVisited(p.getLastPlaceVisited)
-      val roles = authRepo.rolesOf(username)
-      user.setRoles((Set.empty ++ roles).asJava)
-      user.setRegistrationsTO(RegistrationsRepo.getAll(p.getUUID))
-      user.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
-
-      Option(user)
+      getUser(p)
     }
 
+  def getUser(person: Person) = {
+    val user = newUserInfoTO
+    val username = PersonRepo(person.getUUID).getUsername
+    user.setUsername(username)
+    user.setPerson(person)
+    user.setLastPlaceVisited(person.getLastPlaceVisited)
+    val roles = authRepo.rolesOf(username)
+    user.setRoles((Set.empty ++ roles).asJava)
+    user.setRegistrationsTO(RegistrationsRepo.getAll(person.getUUID))
+    user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
+
+    Option(user)
+  } 
+  
   @GET
   @Path("{personUUID}")
   @Produces(Array(UserInfoTO.TYPE))
@@ -69,11 +102,6 @@ class UserResource(private val authRepo:AuthRepo) {
         else
           user.setUsername(user.getPerson().getCPF())
         user.setRegistrationsTO(RegistrationsRepo.getAll(person.getUUID))
-        //val signingNeeded = RegistrationsRepo.signingNeeded(p)
-        //user.setSigningNeeded(signingNeeded)
-        //user.setLastPlaceVisited(p.getLastPlaceVisited)
-        //val roles = Auth.rolesOf(user.getUsername)
-        //user.setRoles((Set.empty ++ roles).asJava)
         Option(user)
       } else {
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")
@@ -200,7 +228,7 @@ class UserResource(private val authRepo:AuthRepo) {
 	      val roles = authRepo.rolesOf(userInfo.getUsername)
 	      userInfo.setRoles((Set.empty ++ roles).asJava)
 	      userInfo.setRegistrationsTO(RegistrationsRepo.getAll(p.getUUID))
-	      userInfo.setEnrollmentsTO(newEnrollmentsTO(EnrollmentsRepo.byPerson(p.getUUID)))
+	      userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
 	      userInfo
       }
     }

@@ -8,6 +8,8 @@ import kornell.gui.client.event.ActomEnteredEventHandler;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.Timer;
@@ -29,7 +31,12 @@ public class Stalker implements ActomEnteredEventHandler, LoginEventHandler {
 		this.bus = bus;
 		this.session = session;
 
-		signAttendanceSheet();
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		    		signAttendanceSheet();
+		      }
+		});
 
 		seuInacioTimer = new Timer() {
 			public void run() {

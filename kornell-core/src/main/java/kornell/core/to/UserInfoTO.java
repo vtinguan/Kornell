@@ -2,6 +2,7 @@ package kornell.core.to;
 
 import java.util.Set;
 
+import kornell.core.entity.Enrollments;
 import kornell.core.entity.Person;
 import kornell.core.entity.Role;
 
@@ -23,6 +24,6 @@ public interface UserInfoTO {
 	RegistrationsTO getRegistrationsTO();
 	void setRegistrationsTO(RegistrationsTO r);
 	
-	EnrollmentsTO getEnrollmentsTO();
-	void setEnrollmentsTO(EnrollmentsTO e);
+	Enrollments getEnrollments();
+	void setEnrollments(Enrollments e);
 }

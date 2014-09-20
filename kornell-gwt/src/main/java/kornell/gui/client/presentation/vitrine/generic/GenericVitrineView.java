@@ -4,6 +4,7 @@ import static kornell.core.util.StringUtils.composeURL;
 
 import java.util.List;
 
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.VitrineViewType;
 
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Timer;
 
 public class GenericVitrineView extends Composite implements VitrineView {
 	interface MyUiBinder extends UiBinder<Widget, GenericVitrineView> {
@@ -37,6 +39,9 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private VitrineView.Presenter presenter;
 	private VitrineViewType currentViewType = VitrineViewType.login;
 
+	@UiField
+	FlowPanel vitrineWrapper;
+	
 	@UiField
 	Image imgLogo;
 	
@@ -227,10 +232,16 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	
 	@Override 
 	public void displayView(VitrineViewType type){
+		if(type == null){
+			vitrineWrapper.setVisible(false);
+			return;
+		}
+		vitrineWrapper.setVisible(true);
 		loginPanel.setVisible(false);
 		signUpPanel.setVisible(false);
 		forgotPasswordPanel.setVisible(false);
 		newPasswordPanel.setVisible(false);
+		
 		switch (type) {
 		case login: 
 			loginPanel.setVisible(true);
@@ -308,7 +319,9 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	@Override
 	public void setLogoURL(String assetsURL) {
-		imgLogo.setUrl(composeURL(assetsURL, "logo300x80_light.png?1"));
+		String skin = Dean.getInstance().getInstitution().getSkin();
+		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png";
+		imgLogo.setUrl(composeURL(assetsURL, barLogoFileName));
 	}
 
 	@Override

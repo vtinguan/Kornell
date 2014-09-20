@@ -13,8 +13,8 @@ import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.generic.notes.NotesPopup;
@@ -96,6 +96,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			user = clientFactory.getKornellSession().getCurrentUser();
 		}
 		display();
+
 		
 		setupArrowsNavigation();
 		
@@ -108,9 +109,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
 		if(user != null){
-			Enrollment enrollment;
-			for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO().getEnrollmentTOs()) {
-				enrollment = enrollmentTO.getEnrollment();
+			for (Enrollment enrollment : user.getEnrollments().getEnrollments()) {
 				if(enrollment.getUUID().equals(((ClassroomPlace)clientFactory.getPlaceController().getWhere()).getEnrollmentUUID())
 						&& EnrollmentState.enrolled.equals(enrollment.getState())){
 					isEnrolled = true;
@@ -129,7 +128,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		iconNext = new Image(IMAGES_PATH + getItemName(BUTTON_NEXT)+".png");
 		displayButton(btnNext, BUTTON_NEXT, iconNext, true);	
 		
-		displayButton(btnDetails, BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
+		displayButton(btnDetails, showDetails ? constants.course() : BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
 		
 		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
 		
@@ -196,6 +195,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	}
 	
 	private void displayButton(final FocusPanel btn, final String buttonType, Image icon, boolean invertIcon) {
+		btn.clear();
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
 		buttonPanel.addStyleName(getItemName(buttonType));
@@ -328,8 +328,10 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 		if(showDetails){	
 			btnDetails.addStyleName("btnSelected");	
+			displayButton(btnDetails, constants.course(), new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
 		} else {		
 			btnDetails.removeStyleName("btnSelected");
+			displayButton(btnDetails, BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
 		}
 		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev);
 		enableButton(BUTTON_NEXT, !showDetails && enableNext);	

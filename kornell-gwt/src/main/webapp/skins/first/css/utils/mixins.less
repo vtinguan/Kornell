@@ -38,8 +38,10 @@
 .changeBackgroundColorOnHover (@color, @percent) when (lightness(@color) < 50%) {
   	background-color: lighten(@color, @percent);
 }
-.backgroundImage (@imageName) { 
-   background: url('@{imagesPath}@{imageName}') no-repeat; 
+
+.lightenOrDarkenColor (@color, @percent) when (lightness(@color) >= 50%) {
+  	color: darken(@color, @percent);
 }
-
-
+.lightenOrDarkenColor (@color, @percent) when (lightness(@color) < 50%) {
+  	color: lighten(@color, @percent);
+}

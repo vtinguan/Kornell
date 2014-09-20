@@ -37,3 +37,4 @@ AwsCredentials.properties
 sourcetree
 sourcetree.pub
 kornell-gwt/gwt-unitCache/
+*.orig

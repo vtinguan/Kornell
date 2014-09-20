@@ -1,0 +1,1 @@
+alter table MessagePerson add messageType char(36) not null;

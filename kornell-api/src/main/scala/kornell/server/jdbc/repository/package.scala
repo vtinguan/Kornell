@@ -20,6 +20,8 @@ import kornell.core.entity.Institution
 import kornell.core.to.EnrollmentTO
 import kornell.core.entity.CourseClassState
 import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.core.to.UnreadChatThreadTO
+import kornell.core.to.ChatThreadMessageTO
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -41,16 +43,19 @@ package object repository {
         rs.getString("assetsURL"),
         rs.getString("baseURL"),
         rs.getBoolean("demandsPersonContactDetails"),
+        rs.getBoolean("validatePersonContactDetails"),
         rs.getBoolean("allowRegistration"),
-        rs.getDate("activatedAt"))   
+        rs.getDate("activatedAt"),
+        rs.getString("skin"))   
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
         r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
         r.getBigDecimal("requiredScore"), r.getBoolean("publicClass"), 
-        r.getBoolean("enrollWithCPF"), r.getInt("maxEnrollments"), 
+        r.getBoolean("enrollWithCPF"), r.getBoolean("overrideEnrollments"),
+        r.getBoolean("invisible"), r.getInt("maxEnrollments"), 
         r.getDate("createdAt"), r.getString("createdBy"), 
-        CourseClassState.valueOf(r.getString("state")), r.getBoolean("overrideEnrollments")) 
+        CourseClassState.valueOf(r.getString("state"))) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -94,12 +99,13 @@ package object repository {
 		    rs.getString("institutionUUID"),
 		    rs.getBigDecimal("requiredScore"),
 		    rs.getBoolean("publicClass"),
-		    rs.getBoolean("enrollWithCPF"),
+		    rs.getBoolean("enrollWithCPF"), 
+        rs.getBoolean("overrideEnrollments"),
+        rs.getBoolean("invisible"),
 		    rs.getInt("maxEnrollments"),
 		    rs.getDate("createdAt"),
 		    rs.getString("createdBy"), 
-        CourseClassState.valueOf(rs.getString("state")), 
-        rs.getBoolean("overrideEnrollments"));
+        CourseClassState.valueOf(rs.getString("state")));
     		
     TOs.newCourseClassTO(course, version, clazz)
   }
@@ -174,6 +180,17 @@ package object repository {
     }
     role
   }
+	
+	implicit def toUnreadChatThreadTO(rs:ResultSet):UnreadChatThreadTO = newUnreadChatThreadTO(
+	    rs.getString("unreadMessages"),
+	    rs.getString("chatThreadUUID"), 
+	    rs.getString("chatThreadName"),
+	    rs.getString("courseClassUUID"))
+	
+	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
+	    rs.getString("senderFullName"),
+	    rs.getString("sentAt"), 
+	    rs.getString("message"))
   
 
 }

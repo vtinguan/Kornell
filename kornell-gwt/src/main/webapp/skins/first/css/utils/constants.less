@@ -1,6 +1,11 @@
 @import "colors";
 @import "mixins";
 
+.boxSizing{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
 .fillWidth{
 	width: 100%;
 }
@@ -14,6 +19,12 @@
 }
 .centerText{
 	text-align: center;
+}
+.rightText{
+	text-align: right;
+}
+.leftText{
+	text-align: left;
 }
 .cursorPointer{
 	cursor: pointer;
@@ -88,3 +99,6 @@
 .error {
 	color: @errorMessageColor;
 }	
+.gwt-PopupPanel{
+	width: 100%;
+}

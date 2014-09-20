@@ -1,16 +1,14 @@
 package kornell.gui.client.event;
 
-import kornell.core.entity.Message;
+import kornell.core.entity.ChatThread;
 
 import com.google.gwt.event.shared.GwtEvent;
 
 public class ComposeMessageEvent extends GwtEvent<ComposeMessageEventHandler>{
 	public static final Type<ComposeMessageEventHandler> TYPE = new Type<ComposeMessageEventHandler>();
 	
-	private Message message;
 	
-	public ComposeMessageEvent(Message message) {
-		this.message = message;
+	public ComposeMessageEvent() {
 	}
 
 	@Override
@@ -21,10 +19,6 @@ public class ComposeMessageEvent extends GwtEvent<ComposeMessageEventHandler>{
 	@Override
 	public Type<ComposeMessageEventHandler> getAssociatedType() {
 		return TYPE;
-	}
-	
-	public Message getMessage() {
-		return message;
 	}
 	
 }

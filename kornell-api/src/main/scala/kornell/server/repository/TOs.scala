@@ -29,12 +29,16 @@ import kornell.core.entity.Registration
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.to.LibraryFileTO
+import kornell.core.to.UnreadChatThreadsTO
+import kornell.core.to.UnreadChatThreadTO
+import kornell.core.to.ChatThreadMessageTO
 
 //TODO: Consider turning to Object
 object TOs {
   val tos = AutoBeanFactorySource.create(classOf[TOFactory])
 
   def newUserInfoTO = tos.newUserInfoTO.as
+  def newUserHelloTO = tos.newUserHelloTO.as
   def newRegistrationsTO: RegistrationsTO = tos.newRegistrationsTO.as
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
@@ -173,5 +177,37 @@ object TOs {
     val lf = tos.newLibraryFilesTO.as
     lf.setLibraryFiles(libraryFileTOs.asJava)
     lf
+  }
+
+  def newUnreadChatThreadsTO(l: List[UnreadChatThreadTO]) = {
+    val to = tos.newUnreadChatThreadsTO.as
+    to.setUnreadChatThreadTOs(l asJava)
+    to
+  }
+
+  def newUnreadChatThreadTO: UnreadChatThreadTO = tos.newUnreadChatThreadTO.as 
+  def newUnreadChatThreadTO(unreadMessages: String, chatThreadUUID: String, chatThreadName: String, courseClassUUID: String): UnreadChatThreadTO = {
+    val to = newUnreadChatThreadTO
+    to.setUnreadMessages(unreadMessages)
+    to.setChatThreadUUID(chatThreadUUID)
+    to.setChatThreadName(chatThreadName)
+    to.setCourseClassUUID(courseClassUUID)
+    to
+  }
+
+  def newChatThreadMessagesTO(l: List[ChatThreadMessageTO], serverTime: String) = {
+    val to = tos.newChatThreadMessagesTO.as
+    to.setChatThreadMessageTOs(l asJava)
+    to.setServerTime(serverTime)
+    to
+  }
+
+  def newChatThreadMessageTO: ChatThreadMessageTO = tos.newChatThreadMessageTO.as 
+  def newChatThreadMessageTO(senderFullName: String, sentAt: String, message: String): ChatThreadMessageTO = {
+    val to = newChatThreadMessageTO
+    to.setSenderFullName(senderFullName)
+    to.setSentAt(sentAt)
+    to.setMessage(message)
+    to
   }
 }

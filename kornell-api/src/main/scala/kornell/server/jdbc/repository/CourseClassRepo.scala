@@ -37,9 +37,11 @@ class CourseClassRepo(uuid:String) {
 	  		cc.requiredScore = ${courseClass.getRequiredScore},
 	  		cc.publicClass = ${courseClass.isPublicClass},
 	  		cc.enrollWithCPF = ${courseClass.isEnrollWithCPF},
-	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
-	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments}
+	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments},
+	  		cc.invisible = ${courseClass.isInvisible},
+	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments}
       where cc.uuid = ${courseClass.getUUID}""".executeUpdate
+    ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)
     courseClass
   }
   
@@ -56,48 +58,6 @@ class CourseClassRepo(uuid:String) {
   	and person_uuid = ${personUUID}
   	order by eventFiredAt
   	""".map[String]({ rs => rs.getString("actomKey") })
-  	
-  def getAdmins(bindMode: String) =
-	  TOs.newRolesTO(sql"""
-		    | select *
-	      	| from Role r
-	        | where r.course_class_uuid = ${uuid}
-		    """.map[Role](toRole).map(bindRole(_, bindMode)))	
-
-  private def bindRole(role: Role, bindMode: String) =
-    TOs.newRoleTO(role, {
-      if(RoleCategory.BIND_WITH_PERSON.equals(bindMode))
-        PeopleRepo.getByUUID(role.getPersonUUID).get
-      else
-        null
-    })
-  
-  
-  def updateAdmins(roles: Roles) = removeAdmins.addAdmins(roles)
-  
-  def addAdmins(roles: Roles) = {
-    roles.getRoles.asScala.foreach(addRole _)
-    roles
-  }
-
-  private def addRole(role: Role) = {
-    if(RoleType.courseClassAdmin.equals(role.getRoleType()))
-	    sql"""
-	    	insert into Role (uuid, person_uuid, role, course_class_uuid)
-	    	values (${UUID.random}, 
-    		${role.getPersonUUID}, 
-	    	${role.getRoleType.toString}, 
-	    	${role.getCourseClassAdminRole.getCourseClassUUID})
-	    """.executeUpdate
-  }
-  
-  def removeAdmins = {
-    sql"""
-    	delete from Role
-    	where course_class_uuid = ${uuid}
-    """.executeUpdate
-    this
-  }
   
 }
 
