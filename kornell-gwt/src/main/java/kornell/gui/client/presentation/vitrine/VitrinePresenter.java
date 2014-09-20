@@ -111,6 +111,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		Callback<UserInfoTO> userInfoCallback = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(final UserInfoTO user) {
+				view.displayView(null);
 				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
 				session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 			}
@@ -122,8 +123,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			}
 		};
 		String email = view.getEmail().toLowerCase().trim(); 
-	    String password = view.getPassword();
-	    session.login(email, password, userInfoCallback);
+    String password = view.getPassword();
+    session.login(email, password, userInfoCallback);
 	}
 
 	@Override
