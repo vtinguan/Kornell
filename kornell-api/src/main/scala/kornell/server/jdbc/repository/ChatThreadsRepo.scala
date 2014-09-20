@@ -41,6 +41,7 @@ object ChatThreadsRepo {
       	createChatThreadMessage(chatThreadUUID.get, personUUID, message)
       }
   }
+  
 
   def updateChatThreadParticipants(chatThreadUUID: String, threadCreatorUUID: String, courseClass: CourseClass) = {
     val participantsThatShouldExist = RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
