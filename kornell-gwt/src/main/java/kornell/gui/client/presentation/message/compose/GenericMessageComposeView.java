@@ -67,17 +67,14 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 
 		
 		
-		List<CourseClassTO> courseClasses = Dean.getInstance().getCourseClassesTO().getCourseClasses();
-		if(courseClasses != null){
-			for (CourseClassTO courseClassTO : courseClasses) {
-				if(courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()){
-					recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
-				}
-			}
+		for (CourseClassTO courseClassTO : Dean.getInstance().getHelpCourseClasses()) {
+			recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
 		}
+		
+		if(courseClassUUID == null && recipients.getItemCount() <= 0) this.setVisible(false);
 
 		recipients.setSelectedValue(courseClassUUID);
-		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), courseClasses.size() > 1 && courseClassUUID == null);
+		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), recipients.getItemCount() > 1 && courseClassUUID == null);
 		fields.add(recipient);
 		fieldsPanel.add(recipient);
 

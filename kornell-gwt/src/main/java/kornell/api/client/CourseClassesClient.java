@@ -9,10 +9,6 @@ public class CourseClassesClient extends RESTClient {
 		POST("/courseClasses").withContentType(CourseClass.TYPE).withEntityBody(courseClass).go(callback);
 	}
 
-	public void getCourseClassesTO(Callback<CourseClassesTO> cb) {
-		GET("/courseClasses").sendRequest(null, cb);
-	}
-
 	public void getCourseClassesTOByInstitution(String institutionUUID, Callback<CourseClassesTO> cb) {
 		GET("/courseClasses?institutionUUID="+institutionUUID).sendRequest(null, cb);
 	}

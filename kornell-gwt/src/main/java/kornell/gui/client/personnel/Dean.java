@@ -1,11 +1,15 @@
 package kornell.gui.client.personnel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
@@ -136,12 +140,23 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 		}
 	}
 	
+	public List<CourseClassTO> getHelpCourseClasses(){
+		List<CourseClassTO> courseClasses = new ArrayList<CourseClassTO>();
+		for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+			if(courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()){
+				courseClasses.add(courseClassTO);
+			}
+		}
+		return courseClasses;
+	}
+	
 	public CourseClassesTO getCourseClassesTO() {
 		return courseClassesTO;
 	}
 
 	public void setCourseClassesTO(CourseClassesTO courseClassesTO) {
 		this.courseClassesTO = courseClassesTO;
+		bus.fireEvent(new CourseClassesFetchedEvent());
 	}
 	
 	private void getUserCourseClasses(){

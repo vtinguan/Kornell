@@ -10,11 +10,11 @@ import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.ComposeMessageEvent;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
+import kornell.gui.client.event.CourseClassesFetchedEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
-import kornell.gui.client.event.UnreadMessagesFetchedEvent;
-import kornell.gui.client.event.UnreadMessagesFetchedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericMenuBarView extends Composite implements MenuBarView, UnreadMessagesFetchedEventHandler, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler {
+public class GenericMenuBarView extends Composite implements MenuBarView, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler, CourseClassesFetchedEventHandler {
 
 	Logger logger = Logger.getLogger(GenericMenuBarView.class.getName());
 
@@ -95,9 +95,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
-		bus.addHandler(UnreadMessagesFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
+		bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		Dean localDean = Dean.getInstance();
@@ -120,15 +120,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 						} else {
 							loadAssets();
 							setVisible(true);
-							if (newPlace instanceof TermsPlace
-									|| (newPlace instanceof ProfilePlace
-											&& Dean.getInstance().getInstitution().isDemandsPersonContactDetails()
-											&& Dean.getInstance().getInstitution().isValidatePersonContactDetails() 
-											&& clientFactory.getKornellSession().getCurrentUser().getPerson().getCity() == null)) {
-								showButtons(false);
-							} else {
-								showButtons(true);
-							}
+							showButtons(newPlace);
 							GenericMenuBarView.this.setVisible(true);
 						}
 					}
@@ -176,16 +168,23 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
         }
 	}-*/;
 
-	private void showButtons(boolean show) {
-		showButton(btnFullScreen, show);
-		showButton(btnProfile, show);
-		showButton(btnHome, show);
-		showButton(btnAdmin, show &&  
+	private void showButtons(Place newPlace) {
+		boolean isRegistrationCompleted = !( newPlace instanceof TermsPlace
+		|| ( (newPlace instanceof ProfilePlace || newPlace instanceof MessagePlace)
+				&& isProfileIncomplete()));
+		
+		boolean showHelp = (Dean.getInstance().getHelpCourseClasses().size() > 0) && !(newPlace instanceof TermsPlace);
+		
+		showButton(btnHelp, showHelp);
+		showButton(btnMessages, showHelp);
+		showButton(btnProfile, showHelp);
+		
+		showButton(btnHome, isRegistrationCompleted);
+		showButton(btnFullScreen, isRegistrationCompleted);
+		showButton(btnAdmin, isRegistrationCompleted &&  
 				(RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 						|| clientFactory.getKornellSession().isInstitutionAdmin()));
 		showButton(btnNotifications, false);
-		showButton(btnMessages, show);
-		showButton(btnHelp, show);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
 	}
@@ -213,6 +212,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		btnMessages.removeStyleName("btn");
 		btnMenu.removeStyleName("btn");
 	}
+	
+	private boolean isProfileIncomplete(){
+		return Dean.getInstance().getInstitution().isDemandsPersonContactDetails()
+				&& Dean.getInstance().getInstitution().isValidatePersonContactDetails() 
+				&& StringUtils.isNone(clientFactory.getKornellSession().getCurrentUser().getPerson().getCity());
+	}
 
 	static native void requestFullscreen() /*-{
 		if ($wnd.screenfull.enabled)
@@ -231,7 +236,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	void handleProfile(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(
 				new ProfilePlace(clientFactory.getKornellSession()
-						.getCurrentUser().getPerson().getUUID(), false));
+						.getCurrentUser().getPerson().getUUID(), isProfileIncomplete()));
 	}
 
 	@UiHandler("btnHome")
@@ -272,11 +277,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		this.visible = visible;
 	}
 
-	@Override
-  public void onUnreadMessagesFetched(UnreadMessagesFetchedEvent event) {
-		//showUnreadCount(event.getUnreadMessagesCount());
-  }
-
 	private void updateUnreadCount() {
 		String labelText = totalCount > 0 ? ""+totalCount : "";
 	  if(btnMessages.getWidgetCount() == 3){
@@ -304,6 +304,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
   public void onUnreadMessagesCountChanged(UnreadMessagesCountChangedEvent event) {
 	  totalCount = event.isIncrement() ? totalCount + event.getCountChange() : totalCount - event.getCountChange();
 		updateUnreadCount();
+  }
+
+	@Override
+  public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+	  showButtons(clientFactory.getPlaceController().getWhere());
   }
 
 }
