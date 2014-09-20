@@ -177,6 +177,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		new Captain(bus, session, placeCtrl);
 		new Stalker(bus, session);
 		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads(), placeCtrl);
+		
 	}
 
 	private void initSCORM12() {

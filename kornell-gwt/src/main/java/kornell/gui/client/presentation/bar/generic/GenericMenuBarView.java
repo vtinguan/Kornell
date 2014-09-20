@@ -89,6 +89,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	private Label messagesCount;
 	private int totalCount;
 	private String imgMenuBarUrl;
+	private boolean isLoaded;
 
 	public GenericMenuBarView(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -117,9 +118,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 							GenericMenuBarView.this.setVisible(false);
 							setVisible(false);
 						} else {
-							if(StringUtils.isNone(imgMenuBar.getUrl())){
-								imgMenuBar.setUrl(imgMenuBarUrl);
-							}
+							loadAssets();
 							setVisible(true);
 							if (newPlace instanceof TermsPlace
 									|| (newPlace instanceof ProfilePlace
@@ -134,24 +133,48 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 						}
 					}
 				});
+	}
+
+	private void loadAssets() {
+		if(isLoaded) return;
+		
+    if(StringUtils.isNone(imgMenuBar.getUrl())){
+    	imgMenuBar.setUrl(imgMenuBarUrl);
+    }
 
 		Timer screenfulJsTimer = new Timer() {
 			public void run() {
-    		ScriptInjector.fromUrl("/js/screenfull.min.js").setCallback(
+    		ScriptInjector.fromUrl("//static.getclicky.com/js").setCallback(
    		     new com.google.gwt.core.client.Callback<Void, Exception>() {
    		        public void onFailure(Exception reason) {
    		          GWT.log("Script load failed.");
    		        }
    		        public void onSuccess(Void result) {
-   		        	GWT.log("Script load success.");
+   		        	isLoaded = true;
    		        }
    		     }).setWindow(ScriptInjector.TOP_WINDOW).inject();
+  	    ScriptInjector.fromUrl("/js/screenfull.min.js").setCallback(
+  	 		     new com.google.gwt.core.client.Callback<Void, Exception>() {
+  	 		        public void onFailure(Exception reason) {
+  	 		          GWT.log("Script load failed.");
+  	 		        }
+  	 		        public void onSuccess(Void result) {
+  	 		        	isLoaded = true;
+  	 		        }
+  	 		     }).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			}
 		};
 
-		//wait 3 secs before loading the javascript file
-		screenfulJsTimer.schedule((int) (3 * 1000));
-	}
+		//wait 2 secs before loading the javascript file
+		screenfulJsTimer.schedule((int) (2 * 1000));
+  }
+
+	static native void initClicker() /*-{
+      try {
+          clicky.init(100739828);
+        } catch (e) {
+        }
+	}-*/;
 
 	private void showButtons(boolean show) {
 		showButton(btnFullScreen, show);
