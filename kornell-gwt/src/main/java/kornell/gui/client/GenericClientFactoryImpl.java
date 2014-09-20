@@ -10,15 +10,16 @@ import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
-import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.mvp.AsyncActivityManager;
+import kornell.gui.client.mvp.AsyncActivityMapper;
+import kornell.gui.client.mvp.GlobalActivityMapper;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
-import kornell.gui.client.presentation.GlobalActivityMapper;
-import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -31,7 +32,6 @@ import kornell.scorm.client.scorm12.SCORM12Binder;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -77,12 +77,17 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initGlobalActivityManager() {
-		globalActivityManager = new ActivityManager(new GlobalActivityMapper(
-				this), bus);
-		globalActivityManager.setDisplay(viewFactory.getShell());
+		AsyncActivityMapper activityMapper = new GlobalActivityMapper(this);
+		AsyncActivityManager activityManager = new AsyncActivityManager(activityMapper, bus);
+		activityManager.setDisplay(viewFactory.getShell());
 	}
 
 	private void initHistoryHandler(Place defaultPlace) {
+
+		//AppPlaceHistoryMapper historyMapper= GWT.create(AppPlaceHistoryMapper.class);
+		//PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+		//historyHandler.register(placeController, eventBus, defaultPlace);
+		
 		historyHandler.register(placeCtrl, bus, defaultPlace);
 		// sessions that arent authenticated, go to the default place
 		// except if it's a vitrineplace, then let the history take care of it
@@ -101,19 +106,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			public void ok(final Institution institution) {
 				if(institution == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
-				} else {
-
-					showBody(false);
-					
-					Timer mdaTimer = new Timer() {
-						public void run() {
-							showBody(true);
-						}
-					};
-
-					//wait 3 secs for the theme css
-					mdaTimer.schedule((int) (3 * 1000));
-					
+				} else {					
 					Dean.init(session, bus, institution);
 					if (session.isAuthenticated() && session.isRegistered()) {
 						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
@@ -139,22 +132,19 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 
 			private void getInstitutionFromLocation() {
-				String institutionName = Window.Location.getParameter("institution");
-				if (institutionName != null) {
-					session.institutions().findInstitutionByName(institutionName, institutionCallback);
-				} else {
-					String hostName = Window.Location.getHostName();
-					session.institutions().findInstitutionByHostName(hostName, institutionCallback);
-				}
 			}	
 
 		});
+		
+		String institutionName = Window.Location.getParameter("institution");
+		if (institutionName != null) {
+			session.institutions().findInstitutionByName(institutionName, institutionCallback);
+		} else {
+			String hostName = Window.Location.getHostName();
+			session.institutions().findInstitutionByHostName(hostName, institutionCallback);
+		}
 
 	}
-	
-	private static native void showBody(boolean show) /*-{
-		$wnd.document.getElementsByTagName('body')[0].setAttribute('style', 'display: ' + (show ? 'block' : 'none'));
-	}-*/;
 
 	private void startAnonymous() {
 		ClientProperties.remove("X-KNL-A");
@@ -165,10 +155,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void startAuthenticated(KornellSession session) {
 		if (session.isCourseClassAdmin()) {
 			defaultPlace = new AdminHomePlace();
-			startClient();
-		} else {
-			startClient();
 		}
+		startClient();
 	}
 
 	protected void startClient() {

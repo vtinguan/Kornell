@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation;
+package kornell.gui.client.mvp;
 
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;

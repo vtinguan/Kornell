@@ -81,6 +81,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO courseClasses) {
+				Dean.getInstance().setCourseClassesTO(courseClasses);
 				final UserInfoTO userInfoTO = session.getCurrentUser();
 				clientFactory.setDefaultPlace(new WelcomePlace());
 				if (!session.isRegistered()) {

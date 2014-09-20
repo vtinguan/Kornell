@@ -8,13 +8,16 @@ import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
+import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.event.LogoutEventHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class Dean implements LoginEventHandler{
+public class Dean implements LoginEventHandler, LogoutEventHandler{
 	
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
@@ -40,18 +43,29 @@ public class Dean implements LoginEventHandler{
 		this.institution = institution;
 		this.session = session;
 		bus.addHandler(LoginEvent.TYPE, this);
+		bus.addHandler(LogoutEvent.TYPE, this);
 		
-		//get the skin immediately
+		//get the skin and logo immediately
 		updateSkin(institution.getSkin());
+  	initInstitutionSkin(institution);
 		
-		//defer the logo and the course classes call
+		//defer the course classes call
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 		    @Override
 		    public void execute() {
-		    	initInstitutionSkin(institution);
 		    	getUserCourseClasses();
 		    }
 		});
+
+		
+		showBody(false);
+		Timer mdaTimer = new Timer() {
+			public void run() {
+				showBody(true);
+			}
+		};
+		//wait 3 secs for the theme css
+		mdaTimer.schedule((int) (3 * 1000));
 	}
 
 	private void initInstitutionSkin(Institution institution) {
@@ -144,7 +158,16 @@ public class Dean implements LoginEventHandler{
 
 	@Override
   public void onLogin(UserInfoTO user) {
-		getUserCourseClasses();
+		//getUserCourseClasses();
+  }
+	
+	private static native void showBody(boolean show) /*-{
+		$wnd.document.getElementsByTagName('body')[0].setAttribute('style', 'display: ' + (show ? 'block' : 'none'));
+	}-*/;
+
+	@Override
+  public void onLogout() {
+	  showBody(false);
   }
 
 }

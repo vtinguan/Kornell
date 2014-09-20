@@ -99,7 +99,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 			public void run() {
 				getUnreadMessagesPerThread(true);
 			}
-		}.scheduleRepeating(2 * 1000);
+		}.schedule(2 * 1000);
 
   }
 

@@ -88,6 +88,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	private boolean hasEmail;
 	private Label messagesCount;
 	private int totalCount;
+	private String imgMenuBarUrl;
 
 	public GenericMenuBarView(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -105,8 +106,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 			String assetsURL = localInstitution.getAssetsURL();
 			String skin = Dean.getInstance().getInstitution().getSkin();
 			String barLogoFileName = "logo300x45" + (!"_light".equals(skin) ? "_light" : "") + ".png";
-			imgMenuBar.setUrl(StringUtils
-					.composeURL(assetsURL, barLogoFileName));
+			imgMenuBarUrl = StringUtils.composeURL(assetsURL, barLogoFileName);
 		}
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
@@ -117,15 +117,15 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 							GenericMenuBarView.this.setVisible(false);
 							setVisible(false);
 						} else {
+							if(StringUtils.isNone(imgMenuBar.getUrl())){
+								imgMenuBar.setUrl(imgMenuBarUrl);
+							}
 							setVisible(true);
 							if (newPlace instanceof TermsPlace
 									|| (newPlace instanceof ProfilePlace
-											&& Dean.getInstance()
-													.getInstitution()
-													.isDemandsPersonContactDetails() && clientFactory
-											.getKornellSession()
-											.getCurrentUser().getPerson()
-											.getCity() == null)) {
+											&& Dean.getInstance().getInstitution().isDemandsPersonContactDetails()
+											&& Dean.getInstance().getInstitution().isValidatePersonContactDetails() 
+											&& clientFactory.getKornellSession().getCurrentUser().getPerson().getCity() == null)) {
 								showButtons(false);
 							} else {
 								showButtons(true);
@@ -150,7 +150,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		};
 
 		//wait 3 secs before loading the javascript file
-		screenfulJsTimer.schedule((int) (10 * 1000));
+		screenfulJsTimer.schedule((int) (3 * 1000));
 	}
 
 	private void showButtons(boolean show) {
