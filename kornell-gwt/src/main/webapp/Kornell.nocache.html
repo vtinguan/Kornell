@@ -20,7 +20,15 @@
 		    }
 		  </style>
 		<![endif]-->
-		<!-- your module(*.nocache.js) loading -->
+    <!--[if lt IE 10]>
+      <style type="text/css">
+        .activityBarWrapper .activityBar .btnProgress .progressBarPanel .progress,
+        .coursesWrapper .pnlCourses .courseSummary .courseSummaryBar .progress {
+           border-radius: 0 !important;
+        }
+      </style>
+    <![endif]-->
+    <!-- your module(*.nocache.js) loading -->
 	  <script type="text/javascript" src="Kornell/Kornell.nocache.js"></script>
 	  
 		<link id="KornellStyle" type="text/css" rel="stylesheet" href="Kornell.nocache.css"/>
