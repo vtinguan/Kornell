@@ -392,7 +392,7 @@
 .unclear{clear:none !important;}
 .error{color:#ca2828;}
 .gwt-PopupPanel{width:100%;}
-.notesPopup{position:absolute;background-color:#f4f4f4;border-radius:10px 10px 0px 0px;}.notesPopup .popupContent{height:100%;}.notesPopup .popupContent .notesTextArea{border:0;margin:0;padding:0;width:100%;height:100%;resize:none;border-radius:10px 10px 0px 0px;font-style:italic;background:#f4f4f4;color:#839a9c;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:15px;border-top:1px solid #3b494b;border-left:1px solid #3b494b;border-right:1px solid #3b494b;}
+.notesPopup{position:absolute;border-radius:10px 10px 0px 0px;}.notesPopup .popupContent{height:100%;}.notesPopup .popupContent .notesTextArea{border:0;margin:0;padding:0;width:100%;height:100%;resize:none;border-radius:10px 10px 0px 0px;font-style:italic;color:#839a9c;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:15px;border-top:1px solid #3b494b;border-left:1px solid #3b494b;border-right:1px solid #3b494b;}
 .profileForm{width:944px;height:100%;margin:0 auto;border-radius:0px 0px 15px 15px;}.profileForm .editPanel{float:right;padding-right:30px;}.profileForm .editPanel .lblEdit{color:white;}
 .profileForm .btnChangePassword{float:right;margin-right:40px;width:150px;}
 .profileForm .fieldsWrapper{padding-left:100px;}.profileForm .fieldsWrapper .profileSeparatorBar{margin-bottom:25px;float:left;}
