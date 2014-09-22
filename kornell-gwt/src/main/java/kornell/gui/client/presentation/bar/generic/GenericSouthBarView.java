@@ -6,7 +6,6 @@ import kornell.gui.client.event.HideSouthBarEventHandler;
 import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
-import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
@@ -18,6 +17,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericSouthBarView extends Composite implements SouthBarView, HideSouthBarEventHandler {
@@ -29,17 +29,18 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	
 	private AdminBarView adminBarView;
 
-	private PlaceController placeCtrl;
-
 	@UiField
 	FlowPanel southBar;
 
 	private ClientFactory clientFactory;
 
-	public GenericSouthBarView(ClientFactory clientFactory) {
+	private ScrollPanel scrollPanel;
+
+	public GenericSouthBarView(ClientFactory clientFactory, ScrollPanel scrollPanel) {
 		this.clientFactory = clientFactory;
 		clientFactory.getEventBus().addHandler(HideSouthBarEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
+		this.scrollPanel = scrollPanel;
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
@@ -55,12 +56,15 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 			southBar.clear();
 			//southBar.add(getAdminBarView(newPlace));
 			this.setVisible(false);
+			scrollPanel.removeStyleName("offsetSouthBar");
 		} else if (newPlace instanceof ClassroomPlace) {
 			southBar.clear();
 			southBar.add(getActivityBarView());
 			this.setVisible(true);
+			scrollPanel.addStyleName("offsetSouthBar");
 		} else {
 			this.setVisible(false);
+			scrollPanel.removeStyleName("offsetSouthBar");
 		}
 	}
 

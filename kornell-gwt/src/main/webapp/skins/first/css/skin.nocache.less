@@ -28,6 +28,20 @@ a{
 a:hover{
 	color: darken(@textInfoColor, 25%);
 }
+.vScrollBar{
+	overflow-y: overlay !important;
+	overflow-x: hidden !important;
+	width: 100%;
+	position: fixed !important;
+	top: 0;
+	bottom: 0;
+}
+.offsetNorthBar{
+	top: @barNorthHeight !important;
+}
+.offsetSouthBar{
+	bottom: @barSouthHeight !important;
+}
 .wrapper {
     margin: 0 auto;  
 } 

@@ -28,7 +28,6 @@ import com.google.web.bindery.event.shared.EventBus;
 public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPerThreadFetchedEventHandler{
 	private MessageView view;
 	private KornellSession session;
-	private EventBus bus;
 	private PlaceController placeCtrl;
 	private boolean isClassPresenter;
 
@@ -47,7 +46,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	
 	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory, final boolean isClassPresenter) {
 		this.session = session;
-		this.bus = bus;
 		this.placeCtrl = placeCtrl;
 		this.isClassPresenter = isClassPresenter;
 		view = viewFactory.getMessageView();
@@ -168,7 +166,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 	
 	private void getChatThreadMessagesSinceLast() {
-		if((placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminHomePlace && isClassPresenter) && selectedChatThreadInfo != null){
+		if((placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminHomePlace && isClassPresenter) && selectedChatThreadInfo != null && updateMessages){
 			final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
 		  session.chatThreads().getChatThreadMessages(chatThreadUUID, lastFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
 				@Override

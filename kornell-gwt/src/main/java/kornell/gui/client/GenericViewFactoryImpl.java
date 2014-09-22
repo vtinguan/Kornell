@@ -31,9 +31,7 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -43,7 +41,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private ClientFactory clientFactory;
 
 	/* Views */
-	final DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
+	private ScrollPanel scrollPanel;
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
@@ -62,14 +60,13 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	public void initGUI() {
 
 		shell.addStyleName("wrapper");
-		ScrollPanel sp = new ScrollPanel();
-		sp.add(shell);
-		dockLayoutPanel.add(sp);
-		sp.addStyleName("vScrollBar");
+		scrollPanel = new ScrollPanel();
+		scrollPanel.add(shell);
+		scrollPanel.addStyleName("vScrollBar");
 		
 		final RootPanel rootPanel = RootPanel.get();
 		rootPanel.add(getMenuBarView());	
-		rootPanel.add(sp);
+		rootPanel.add(scrollPanel);
 		rootPanel.add(getSouthBarView());
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
@@ -92,21 +89,16 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	}
 
 	@Override
-	public DockLayoutPanel getDockLayoutPanel() {
-		return dockLayoutPanel;
-	}
-
-	@Override
 	public MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(clientFactory);
+			menuBarView = new GenericMenuBarView(clientFactory, scrollPanel);
 		return menuBarView;
 	}
 
 	@Override
 	public SouthBarView getSouthBarView() {
 		if (southBarView == null)
-			southBarView = new GenericSouthBarView(clientFactory);
+			southBarView = new GenericSouthBarView(clientFactory, scrollPanel);
 		return southBarView;
 	}
 

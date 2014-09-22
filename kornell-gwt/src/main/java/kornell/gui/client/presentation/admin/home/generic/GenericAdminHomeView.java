@@ -17,6 +17,8 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
+import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -76,7 +78,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericAdminHomeView extends Composite implements AdminHomeView, UnreadMessagesPerThreadFetchedEventHandler {
+public class GenericAdminHomeView extends Composite implements AdminHomeView, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler {
 
 	interface MyUiBinder extends UiBinder<Widget, GenericAdminHomeView> {
 	}
@@ -93,7 +95,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	private KornellPagination pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
-	private List<CourseClassTO> courseClasses;
 	private Boolean enrollWithCPF;
 	private boolean isEnabled;
 	private Integer maxEnrollments = 0;
@@ -104,6 +105,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	private Timer updateTimer;
 	private boolean canPerformEnrollmentAction = true;
 	private MessagePresenter messagePresenter;
+	private int totalCount = 0;
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -198,6 +200,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 		pagination = new KornellPagination(table, enrollmentsCurrent);
 		formHelper = new FormHelper();
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
+		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
+
 		trigger.setTarget("#toggle");
 		collapse.setId("toggle");
 
@@ -216,6 +220,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 				if (Dean.getInstance().getCourseClassTO() == null || !newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
 					messagePresenter.clearThreadSelection();
 					presenter.updateCourseClass(newCourseClassUUID);
+					messagePresenter.enableMessagesUpdate(false);
 				}
 			}
 		});
@@ -751,7 +756,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 
 	@Override
 	public void setCourseClasses(List<CourseClassTO> courseClasses) {
-		this.courseClasses = courseClasses;
 		listBoxCourseClasses.clear();
 		String name, value;
 		for (CourseClassTO courseClassTO : courseClasses) {
@@ -802,15 +806,24 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 		tabsPanel.setVisible(visible);
 	}
 
+	private void updateMessagesTabHeading() {
+	  messagesTab.setHeading("Mensagens" + (totalCount > 0 ? " ("+totalCount+")" : ""));
+  }
+	
 	@Override
   public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
 		int count = 0;
 		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
 			count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
     }
-		
-		messagesTab.setHeading("Mensagens" + (count > 0 ? " ("+count+")" : ""));
+		totalCount  = count;
+		updateMessagesTabHeading();
   }
 
+	@Override
+	public void onUnreadMessagesCountChanged(UnreadMessagesCountChangedEvent event) {
+	  totalCount = event.isIncrement() ? totalCount + event.getCountChange() : totalCount - event.getCountChange();
+	  updateMessagesTabHeading();
+	}
 
 }

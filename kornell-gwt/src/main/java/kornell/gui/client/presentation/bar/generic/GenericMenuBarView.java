@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -91,7 +92,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	private String imgMenuBarUrl;
 	private boolean isLoaded;
 
-	public GenericMenuBarView(final ClientFactory clientFactory) {
+	public GenericMenuBarView(final ClientFactory clientFactory, final ScrollPanel scrollPanel) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
@@ -115,13 +116,15 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
 						if (newPlace instanceof VitrinePlace) {
-							GenericMenuBarView.this.setVisible(false);
 							setVisible(false);
+							GenericMenuBarView.this.setVisible(false);
+							scrollPanel.removeStyleName("offsetNorthBar");
 						} else {
 							loadAssets();
 							setVisible(true);
-							showButtons(newPlace);
 							GenericMenuBarView.this.setVisible(true);
+							scrollPanel.addStyleName("offsetNorthBar");
+							showButtons(newPlace);
 						}
 					}
 				});
@@ -136,15 +139,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 
 		Timer screenfulJsTimer = new Timer() {
 			public void run() {
-    		ScriptInjector.fromUrl("//static.getclicky.com/js").setCallback(
-   		     new com.google.gwt.core.client.Callback<Void, Exception>() {
-   		        public void onFailure(Exception reason) {
-   		          GWT.log("Script load failed.");
-   		        }
-   		        public void onSuccess(Void result) {
-   		        	isLoaded = true;
-   		        }
-   		     }).setWindow(ScriptInjector.TOP_WINDOW).inject();
   	    ScriptInjector.fromUrl("/js/screenfull.min.js").setCallback(
   	 		     new com.google.gwt.core.client.Callback<Void, Exception>() {
   	 		        public void onFailure(Exception reason) {
@@ -160,13 +154,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		//wait 2 secs before loading the javascript file
 		screenfulJsTimer.schedule((int) (2 * 1000));
   }
-
-	static native void initClicker() /*-{
-      try {
-          clicky.init(100739828);
-        } catch (e) {
-        }
-	}-*/;
 
 	private void showButtons(Place newPlace) {
 		boolean isRegistrationCompleted = !( newPlace instanceof TermsPlace
@@ -198,7 +185,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	}
 
 	public void display() {
-		if(Window.Location.getHostName().indexOf("-test.eduvem") >= 0 || Window.Location.getHostName().indexOf("-develop.eduvem") >= 0){
+		if(Window.Location.getHostName().indexOf("-test.ed") >= 0 || Window.Location.getHostName().indexOf("-develop.ed") >= 0 || Window.Location.getHostName().indexOf("-homolog.ed") >= 0){
 			testEnvWarning.removeStyleName("shy");
 		}
 		btnFullScreen.removeStyleName("btn");
