@@ -15,11 +15,13 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
+import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.message.MessagePresenter;
-import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
@@ -74,7 +76,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericAdminHomeView extends Composite implements AdminHomeView {
+public class GenericAdminHomeView extends Composite implements AdminHomeView, UnreadMessagesPerThreadFetchedEventHandler {
 
 	interface MyUiBinder extends UiBinder<Widget, GenericAdminHomeView> {
 	}
@@ -195,7 +197,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 		table = new CellTable<EnrollmentTO>();
 		pagination = new KornellPagination(table, enrollmentsCurrent);
 		formHelper = new FormHelper();
-
+		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		trigger.setTarget("#toggle");
 		collapse.setId("toggle");
 
@@ -799,4 +801,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView {
 	public void showTabsPanel(boolean visible) {
 		tabsPanel.setVisible(visible);
 	}
+
+	@Override
+  public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
+		int count = 0;
+		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
+			count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
+    }
+		
+		messagesTab.setHeading("Mensagens" + (count > 0 ? " ("+count+")" : ""));
+  }
+
+
 }

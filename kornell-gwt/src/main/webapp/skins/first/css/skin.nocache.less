@@ -19,10 +19,15 @@
 
 body {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	background: @background;
+	background: @background !important;
 	background-size: 100% 100%;
 }
-
+a{
+	color: @textInfoColor;
+}
+a:hover{
+	color: darken(@textInfoColor, 25%);
+}
 .wrapper {
     margin: 0 auto;  
 } 
@@ -65,7 +70,6 @@ body {
 		border-radius: 8px;
 		background-color: @tableBackgroundColor;
 		.sidePanel{
-			margin-right: 14px;
 			.boxSizing;
 			.threadListItem{
 				.boxSizing;
@@ -91,7 +95,7 @@ body {
 		}
 	}
 	.threadPanel{
-		width: 696px;
+		width: 710px;
 		background-color: @tableBackgroundColor;
 		padding: 10px;
 		border-radius: 8px;

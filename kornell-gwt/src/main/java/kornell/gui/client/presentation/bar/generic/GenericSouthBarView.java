@@ -80,7 +80,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 
 	@Override
   public void onHideSouthBar(HideSouthBarEvent event) {
-		clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
+		//clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
 		this.setVisible(!event.isHideSouthBar());
   }
 

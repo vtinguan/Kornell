@@ -163,12 +163,12 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				getChatThreadMessagesSinceLast();
 			}
 		};
-		// Schedule the timer to run every 20 secs
-		chatThreadMessagesTimer.scheduleRepeating(20 * 1000);
+		// Schedule the timer to run every 10 secs
+		chatThreadMessagesTimer.scheduleRepeating(10 * 1000);
 	}
 	
 	private void getChatThreadMessagesSinceLast() {
-		if(selectedChatThreadInfo != null && (placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminHomePlace && isClassPresenter)){
+		if((placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminHomePlace && isClassPresenter) && selectedChatThreadInfo != null){
 			final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
 		  session.chatThreads().getChatThreadMessages(chatThreadUUID, lastFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
 				@Override

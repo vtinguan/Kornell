@@ -50,7 +50,7 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 		bus.addHandler(LogoutEvent.TYPE, this);
 		
 		//get the skin and logo immediately
-		updateSkin(institution.getSkin());
+		//updateSkin(institution.getSkin()); //TODO re-enable skins
   	initInstitutionSkin(institution);
 		
 		//defer the course classes call

@@ -30,22 +30,14 @@ import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
-import kornell.gui.client.util.orientation.IpadIos7HeightFix;
-import kornell.gui.client.util.orientation.OrientationChangeEvent;
-import kornell.gui.client.util.orientation.OrientationResizeHandler;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
-//TODO: Organize this big, messy class and interface
 public class GenericViewFactoryImpl implements ViewFactory {
 
 	private ClientFactory clientFactory;
@@ -68,41 +60,33 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public void initGUI() {
-		final RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
-		
-		dockLayoutPanel.addNorth(getMenuBarView(), 45);
-		dockLayoutPanel.addSouth(getSouthBarView(), 35);
 
+		shell.addStyleName("wrapper");
 		ScrollPanel sp = new ScrollPanel();
 		sp.add(shell);
 		dockLayoutPanel.add(sp);
 		sp.addStyleName("vScrollBar");
-		dockLayoutPanel.addStyleName("wrapper");
-		rootLayoutPanel.add(dockLayoutPanel);
 		
-		/*final String userAgent = Navigator.getUserAgent();
-		if (userAgent.contains("iPad") && userAgent.contains("OS 7")) {
-			IpadIos7HeightFix.fixHeight();
-			clientFactory.getEventBus().addHandler(OrientationChangeEvent.TYPE, new IpadIos7HeightFix());
-		}
-		Window.addResizeHandler(new OrientationResizeHandler(clientFactory.getEventBus()));*/
+		final RootPanel rootPanel = RootPanel.get();
+		rootPanel.add(getMenuBarView());	
+		rootPanel.add(sp);
+		rootPanel.add(getSouthBarView());
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						setPlaceNameAsBodyStyle(event);
-						dockLayoutPanel.setWidgetHidden((Widget) getSouthBarView(), !getSouthBarView().isVisible());
-						dockLayoutPanel.setWidgetHidden((Widget) getMenuBarView(), !getMenuBarView().isVisible());
 					}
 
 					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
-						String styleName = rootLayoutPanel.getStyleName();
+						String styleName = rootPanel.getStyleName();
 						if (!styleName.isEmpty())
-							rootLayoutPanel.removeStyleName(styleName);
-						String[] split = event.getNewPlace().getClass().getName().split("\\.");
+							rootPanel.removeStyleName(styleName);
+						String[] split = event.getNewPlace().getClass()
+								.getName().split("\\.");
 						String newStyle = split[split.length - 1];
-						rootLayoutPanel.addStyleName(newStyle);
+						rootPanel.addStyleName(newStyle);
 					}
 				});
 	}
