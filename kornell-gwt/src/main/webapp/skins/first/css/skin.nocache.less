@@ -23,10 +23,10 @@ body {
 	background-size: 100% 100%;
 }
 a{
-	color: @textInfoColor;
+	color: @textInfoColor !important;
 }
 a:hover{
-	color: darken(@textInfoColor, 25%);
+	color: darken(@textInfoColor, 25%) !important;
 }
 .vScrollBar{
 	overflow-y: overlay !important;
@@ -531,10 +531,10 @@ a:hover{
 		.btnDownload{width: @downloadWidth;}
 	}
 	.reportWrapper{
-		@reportWrapperHeight: 78px;
+		@reportWrapperHeight: 88px;
 		height: @reportWrapperHeight;
 		line-height: @reportWrapperHeight;
-		background-color: @contentBoxBackgroundColor;
+		background-color: @tableBackgroundHoverColor;
 		margin-top: @detailsPanelMargin / 2;
 		color: @niceTextColor;
 		font-size: 13px;
@@ -555,14 +555,17 @@ a:hover{
 				.lightenOrDarkenColor(@niceTextColor, 20%);
 				padding-left: @detailsPanelMargin;
 				line-height: 10px;
+				font-size: 14px;
+				font-weight: bold;
 				padding-top: @detailsPanelMargin * 2 / 3;
 				padding-bottom: @detailsPanelMargin / 4;
 			}
 			.lblDescription{
 				color: @textInfoColor;
-				padding-left: @detailsPanelMargin;
-				font-size: 9px;
-				line-height: 11px;
+				padding-left: 55px;
+				font-size: 11px;
+				font-weight: bold;
+				line-height: 14px;
 			}
 			.optionPanel{
 				padding-left: 48px;

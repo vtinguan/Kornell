@@ -14,12 +14,12 @@
 .fieldPanelWrapper .fieldPanelImage{height:100px;}
 .fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
-.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#78af73;font-size:10px;line-height:10px;text-align:right;}
+.fieldPanelWrapper .labelPanel .lblExtraInfo{color:#60a05a;font-size:10px;line-height:10px;text-align:right;}
 .fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
 .fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
-@media screen and (max-width:962px){.fieldPanelWrapper{width:600px;height:auto;}.fieldPanelWrapper .labelPanelImg{height:auto;} .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .fieldPanelWrapper .labelPanelImg{float:left;} .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.anchorToLabel{color:#bec1c3;}.anchorToLabel:hover{cursor:default;color:#bec1c3;text-decoration:none;}
+@media screen and (max-width:962px){.fieldPanelWrapper{width:600px;height:auto;}.fieldPanelWrapper .labelPanelImg{height:auto;} .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .fieldPanelWrapper .labelPanelImg{float:left;} .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.anchorToLabel{color:#bec1c3 !important;}.anchorToLabel:hover{cursor:default;color:#bec1c3 !important;text-decoration:none;}
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
@@ -34,6 +34,8 @@
 .pagination ul>li>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
 .pagination ul>li:first-child>a{border-left:1px solid #505864 !important;}
 .pagination ul>.active>a{background-color:transparent !important;border:1px solid #505864 !important;border-left:0px !important;}
-.nav-tabs{font-size:15px;font-weight:bold;margin-bottom:30px !important;}
+.nav-tabs{font-size:14px;font-weight:bold;margin-bottom:30px !important;border-bottom:2px solid rgba(0, 0, 0, 0.4) !important;}
+.nav-tabs>.active>a,.nav-tabs>.active>a:hover,.nav-tabs>li>a:hover{background-color:rgba(0, 0, 0, 0.4) !important;border:1px solid transparent !important;border-bottom:0px !important;color:#60a05a !important;}
+.nav-pills>.active>a,.nav-pills>.active>a:hover{background-color:rgba(0, 0, 0, 0.4) !important;color:#60a05a !important;}
 .dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
 .forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}

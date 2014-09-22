@@ -120,7 +120,7 @@ public class GenericReportItemView extends Composite {
 
 	private void displayCertificate() {
 	  this.name = "Certificados de conclusão de curso";
-		this.description = "Geração do certificado de todos os alunos desta turma que concluíram o curso. A geração pode levar um tempo, dependendo do tamanho da turma. Assim que ele for gerado ele estará disponível para ser baixado aqui.";
+		this.description = "Geração do certificado de todos os alunos desta turma que concluíram o curso. A geração pode chegar a levar a alguns minutos, dependendo do tamanho da turma. Assim que o relatório for gerado, ele estará disponível para ser baixado aqui.";
 		
 		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
 		lblName.setText(name);

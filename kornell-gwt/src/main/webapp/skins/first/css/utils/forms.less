@@ -181,10 +181,10 @@
 }
 
 .anchorToLabel {
-	color: @niceTextColor;
+	color: @niceTextColor !important;
 	&:hover {
 		cursor: default;
-		color: @niceTextColor;
+		color: @niceTextColor !important;
 		text-decoration: none;
 	}
 }
@@ -279,9 +279,20 @@
 	border-left: 0px !important;
 }
 .nav-tabs{
-	font-size: 15px;
+	font-size: 14px;
 	font-weight: bold;
 	margin-bottom: 30px !important;
+	border-bottom: 2px solid @tableBackgroundHoverColor !important;
+}
+.nav-tabs>.active>a, .nav-tabs>.active>a:hover, .nav-tabs>li>a:hover {
+	background-color: @tableBackgroundHoverColor !important;
+	border: 1px solid transparent !important;
+	border-bottom: 0px !important;
+	color: @textInfoColor !important;
+}
+.nav-pills>.active>a,.nav-pills>.active>a:hover{
+	background-color: @tableBackgroundHoverColor !important;
+	color: @textInfoColor !important;
 }
 
 .dropdown-menu .active>a, 
