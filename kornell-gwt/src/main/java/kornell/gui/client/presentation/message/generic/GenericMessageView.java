@@ -128,14 +128,14 @@ public class GenericMessageView extends Composite implements MessageView {
   }
 
 	@Override
-  public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
+  public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean setFocus) {
 		threadTitle.setText(unreadChatThreadTO.getChatThreadName());
 		dateLabelsMap = new HashMap<Label, ChatThreadMessageTO>();
 		
 		threadPanelItems.clear();
 		addMessagesToThreadPanel(chatThreadMessagesTO, currentUserFullName);
 		
-		prepareTextArea();
+		prepareTextArea(setFocus);
     messageTextArea.addKeyUpHandler(new KeyUpHandler() {
         @Override
         public void onKeyUp(KeyUpEvent event) {
@@ -199,17 +199,19 @@ public class GenericMessageView extends Composite implements MessageView {
 	void doSend(ClickEvent e) {
 		if(messageTextArea.getText().trim().length() > 0){
 			presenter.sendMessage(messageTextArea.getText());
-			prepareTextArea();
+			prepareTextArea(true);
 		}
 	}
 
-	private void prepareTextArea() {
+	private void prepareTextArea(boolean setFocus) {
 	  messageTextArea.setText("");
-	  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		        messageTextArea.setFocus(true);
-		      }
-		});
+	  if(setFocus){
+		  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			      @Override
+			      public void execute() {
+			        messageTextArea.setFocus(true);
+			      }
+			});
+	  }
   }
 }

@@ -126,7 +126,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			@Override
 			public void ok(ChatThreadMessagesTO to) {
 				chatThreadMessageTOs = to.getChatThreadMessageTOs();
-			  view.updateThreadPanel(to, unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
+			  view.updateThreadPanel(to, unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName(), !isClassPresenter);
 				LoadingPopup.hide();
 			}
 		});
@@ -161,8 +161,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				getChatThreadMessagesSinceLast();
 			}
 		};
-		// Schedule the timer to run every 10 secs
-		chatThreadMessagesTimer.scheduleRepeating(10 * 1000);
+		// Schedule the timer to run every 13 secs
+		chatThreadMessagesTimer.scheduleRepeating(13 * 1000);
 	}
 	
 	private void getChatThreadMessagesSinceLast() {

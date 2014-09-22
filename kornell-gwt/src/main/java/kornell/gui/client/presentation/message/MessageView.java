@@ -19,6 +19,7 @@ public interface MessageView  extends IsWidget {
 
 	void setPresenter(Presenter presenter);
 	void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID);
-	void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName);
 	void addMessagesToThreadPanel(ChatThreadMessagesTO to, String currentUserFullName);
+	void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName,
+      boolean setFocus);
 }
