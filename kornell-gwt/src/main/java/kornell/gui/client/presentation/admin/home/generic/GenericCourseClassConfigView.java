@@ -35,6 +35,8 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -169,12 +171,12 @@ public class GenericCourseClassConfigView extends Composite {
 		publicClass = new KornellFormFieldWrapper("Turma pública?", formHelper.createCheckBoxFormField(isPublicClass), isInstitutionAdmin);
 		fields.add(publicClass);
 		profileFields.add(publicClass);
-		((CheckBox)publicClass.getFieldWidget()).addMouseDownHandler(new MouseDownHandler() {
+		((CheckBox)publicClass.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
-			public void onMouseDown(MouseDownEvent event) {
-				if(!((CheckBox)publicClass.getFieldWidget()).getValue()){
-					((CheckBox)publicClass.getFieldWidget()).setValue(false);
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
 					showModal(MODAL_PUBLIC);
+					((CheckBox)publicClass.getFieldWidget()).setValue(false);
 				}
 			}
 		});
@@ -183,12 +185,12 @@ public class GenericCourseClassConfigView extends Composite {
 		invisible = new KornellFormFieldWrapper("Turma invisível?", formHelper.createCheckBoxFormField(isInvisible), isInstitutionAdmin);
 		fields.add(invisible);
 		profileFields.add(invisible);
-		((CheckBox)invisible.getFieldWidget()).addMouseDownHandler(new MouseDownHandler() {
+		((CheckBox)invisible.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
-			public void onMouseDown(MouseDownEvent event) {
-				if(!((CheckBox)invisible.getFieldWidget()).getValue()){
-					((CheckBox)invisible.getFieldWidget()).setValue(false);
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
 					showModal(MODAL_INVISIBLE);
+					((CheckBox)invisible.getFieldWidget()).setValue(false);
 				}
 			}
 		});
@@ -202,12 +204,12 @@ public class GenericCourseClassConfigView extends Composite {
 		overrideEnrollments = new KornellFormFieldWrapper("Sobrescrever matrículas em lote?", formHelper.createCheckBoxFormField(isOverrideEnrollments), isInstitutionAdmin);
 		fields.add(overrideEnrollments);
 		profileFields.add(overrideEnrollments);
-		((CheckBox)overrideEnrollments.getFieldWidget()).addMouseDownHandler(new MouseDownHandler() {
+		((CheckBox)overrideEnrollments.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
-			public void onMouseDown(MouseDownEvent event) {
-				if(!((CheckBox)overrideEnrollments.getFieldWidget()).getValue()){
-					((CheckBox)overrideEnrollments.getFieldWidget()).setValue(false);
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
 					showModal(MODAL_OVERRIDE_ENROLLMENTS);
+					((CheckBox)overrideEnrollments.getFieldWidget()).setValue(false);
 				}
 			}
 		});

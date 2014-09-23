@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.vitrine;
 
+import static kornell.core.util.StringUtils.composeURL;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,8 @@ import kornell.gui.client.util.ClientProperties;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class VitrinePresenter implements VitrineView.Presenter {
@@ -44,7 +48,6 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		if (localdean != null) {
 			String assetsURL = localdean.getInstitution().getAssetsURL();
 			view.setLogoURL(assetsURL);
-			view.setBackgroundImage(assetsURL);
 			view.showRegistrationOption(localdean.getInstitution().isAllowRegistration());
 		}
 	}

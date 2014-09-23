@@ -117,12 +117,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 						Place newPlace = event.getNewPlace();
 						if (newPlace instanceof VitrinePlace) {
 							setVisible(false);
-							GenericMenuBarView.this.setVisible(false);
+							addStyleName("shy");
 							scrollPanel.removeStyleName("offsetNorthBar");
 						} else {
 							loadAssets();
 							setVisible(true);
-							GenericMenuBarView.this.setVisible(true);
+							removeStyleName("shy");
 							scrollPanel.addStyleName("offsetNorthBar");
 							showButtons(newPlace);
 						}

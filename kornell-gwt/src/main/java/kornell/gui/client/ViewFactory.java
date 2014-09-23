@@ -17,6 +17,7 @@ import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 public interface ViewFactory {
@@ -47,6 +48,8 @@ public interface ViewFactory {
 	AdminHomeView getAdminHomeView();
 	MessagePresenter getMessagePresenter();
 	MessagePresenter getMessagePresenterCourseClass();
+
+	ScrollPanel getScrollPanel();
 
 
 

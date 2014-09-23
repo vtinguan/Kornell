@@ -1,5 +1,7 @@
 package kornell.gui.client;
 
+import static kornell.core.util.StringUtils.composeURL;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
 import kornell.gui.client.presentation.bar.MenuBarView;
@@ -24,6 +26,7 @@ import kornell.gui.client.presentation.sandbox.SandboxView;
 import kornell.gui.client.presentation.sandbox.generic.GenericSandboxView;
 import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.terms.generic.GenericTermsView;
+import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.generic.GenericVitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
@@ -32,6 +35,7 @@ import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
 
 import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -49,6 +53,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
 	private MessagePresenter messagePresenter, messagePresenterCourseClass;
+	private boolean isMantleShown = false;
 
 	SimplePanel shell = new SimplePanel();
 
@@ -74,6 +79,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						setPlaceNameAsBodyStyle(event);
+						setBackgroundImage(event.getNewPlace() instanceof VitrinePlace);
 					}
 
 					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
@@ -86,6 +92,21 @@ public class GenericViewFactoryImpl implements ViewFactory {
 						rootPanel.addStyleName(newStyle);
 					}
 				});
+	}
+	
+
+	private void setBackgroundImage(boolean showMantle) {
+		if(showMantle == isMantleShown) return;
+		String style = "position: relative; " +
+				"zoom: 1; " + 
+				"-webkit-background-size: cover; " + 
+				"-moz-background-size: cover; " + 
+				"-o-background-size: cover; " + 
+				"background-size: cover;";
+		if(showMantle)
+			style = "background: url('"+composeURL(Dean.getInstance().getInstitution().getAssetsURL(), "bgVitrine.jpg")+"') no-repeat center center fixed; " + style;
+		DOM.setElementAttribute(scrollPanel.getElement(), "style", style);
+		isMantleShown = showMantle;
 	}
 
 	@Override
@@ -197,6 +218,11 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
 	public SimplePanel getShell() {
 		return shell;
+	}
+
+	@Override
+	public ScrollPanel getScrollPanel() {
+		return scrollPanel;
 	}
 
 	@Override

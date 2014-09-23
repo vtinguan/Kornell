@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Timer;
 
@@ -328,16 +329,6 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	public void showRegistrationOption(boolean show) {
 		btnRegister.setVisible(show);
 		panelHR.setVisible(show);
-	}
-
-	@Override
-	public void setBackgroundImage(String assetsURL) {
-		String style = "background: url('"+composeURL(assetsURL, "bgVitrine.jpg")+"') no-repeat center center fixed; " + 
-				"-webkit-background-size: cover; " + 
-				"-moz-background-size: cover; " + 
-				"-o-background-size: cover; " + 
-				"background-size: cover;";
-		DOM.setElementAttribute(RootLayoutPanel.get().getElement(), "style", style);
 	}
 
 }

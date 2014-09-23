@@ -11,7 +11,7 @@
 .marginLogo{margin-left:0px;}
 .BMP0{border:0;margin:0;padding:0;}
 .highlightText{color:#d88709;}
-.textInfoColor{color:#78af73;}
+.textInfoColor{color:#5b9455;}
 .font16{font-size:16px !important;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}
@@ -28,3 +28,4 @@
 .unclear{clear:none !important;}
 .error{color:#ca2828;}
 .borderRadius0{border-radius:0 !important;}
+.modal-backdrop,.modal-backdrop.fade.in{display:none;}

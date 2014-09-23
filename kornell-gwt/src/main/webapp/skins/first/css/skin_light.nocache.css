@@ -28,6 +28,7 @@
 .unclear{clear:none !important;}
 .error{color:#ca2828;}
 .borderRadius0{border-radius:0 !important;}
+.modal-backdrop,.modal-backdrop.fade.in{display:none;}
 .btn-primary{font-size:11px !important;font-weight:bold !important;padding-left:10px !important;padding-right:10px !important;color:#ffffff !important;text-shadow:none !important;border-radius:5px !important;display:block;border:0px !important;background-color:#9b020a;background:-webkit-gradient(linear, left top, left bottom, from(#9b020a), to(#4b0105));background:-webkit-linear-gradient(top, #9b020a, #4b0105);background:-moz-linear-gradient(top, #9b020a, #4b0105);background:-ms-linear-gradient(top, #9b020a, #4b0105);background:-o-linear-gradient(top, #9b020a, #4b0105);background:#9b020a !important;background:-moz-linear-gradient(top, #9b020a 0%, #4b0105 100%) !important;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #9b020a), color-stop(100%, #4b0105)) !important;background:-webkit-linear-gradient(top, #9b020a 0%, #4b0105 100%) !important;background:-o-linear-gradient(top, #9b020a 0%, #4b0105 100%) !important;background:-ms-linear-gradient(top, #9b020a 0%, #4b0105 100%) !important;background:linear-gradient(to bottom, #9b020a 0%, #4b0105 100%) !important;filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#9b020a', endColorstr='#4b0105',GradientType=0 ) !important;}
 .btnDefault{font-size:11px !important;font-weight:bold !important;padding-left:10px !important;padding-right:10px !important;color:#ffffff !important;text-shadow:none !important;border-radius:5px !important;display:block;border:0px !important;}
 .btnIcon i{margin-right:5px !important;margin-left:0px !important;font-size:15px;}
@@ -364,8 +365,8 @@
 .detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnGrade{width:28.505000000000003px;}
 .detailsPanel .detailsContentPanel .certificationPanel .certificationHeaderPanel .btnActions{width:107.87px;}
 .detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper{height:78px;line-height:78px;background-color:#f4f4f4;margin-top:10px;color:#839a9c;font-size:13px;}.detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .itemPanel{float:left;padding-left:10px;padding-right:10px;width:412.9px;}.detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .itemPanel .certificationIcon{float:left;padding-top:30px;padding-bottom:30px;padding-left:10px;padding-right:20px;}
-.detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .itemPanel .lblName{color:#bcc8c9;padding-left:20px;line-height:15px;padding-top:13.333333333333334px;padding-bottom:5px;}
-.detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .itemPanel .lblDescription{color:#5492ff;padding-left:20px;font-size:9px;line-height:11px;}
+.detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .itemPanel .lblName{color:#bcc8c9;padding-left:20px;line-height:22px;font-size:15px;padding-top:13.333333333333334px;padding-bottom:5px;}
+.detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .itemPanel .lblDescription{color:#5492ff;padding-left:20px;font-size:11px;line-height:13px;}
 .detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .lblStatus{float:left;width:88.225px;padding-left:10px;padding-right:10px;text-align:center;}
 .detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .lblGrade{float:left;min-height:1px;width:30.505000000000003px;text-align:center;padding-left:10px;padding-right:10px;color:#5492ff;}
 .detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .lblActions{float:left;width:109.87px;text-align:center;padding-left:10px;padding-right:10px;}
@@ -402,13 +403,13 @@
 .unclear{clear:none !important;}
 .error{color:#ca2828;}
 .borderRadius0{border-radius:0 !important;}
+.modal-backdrop,.modal-backdrop.fade.in{display:none;}
 .notesPopup{position:absolute;border-radius:10px 10px 0px 0px;}.notesPopup .popupContent{height:100%;}.notesPopup .popupContent .notesTextArea{border:0;margin:0;padding:0;width:100%;height:100%;resize:none;border-radius:10px 10px 0px 0px;font-style:italic;background:#f4f4f4;color:#839a9c;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:15px;border-top:1px solid #3b494b;border-left:1px solid #3b494b;border-right:1px solid #3b494b;}
 .profileForm{width:944px;height:100%;margin:0 auto;border-radius:0px 0px 15px 15px;}.profileForm .editPanel{float:right;padding-right:30px;}.profileForm .editPanel .lblEdit{color:white;}
 .profileForm .btnChangePassword{float:right;margin-right:40px;width:150px;}
 .profileForm .fieldsWrapper{padding-left:100px;}.profileForm .fieldsWrapper .profileSeparatorBar{margin-bottom:25px;float:left;}
 @media screen and (max-width:962px){.profileFields{width:362px;}}body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;background:#ffffff !important;background-size:100% 100%;}
 a{color:#5492ff !important;}
-a:hover{color:#004dd3 !important;}
 .vScrollBar{overflow-y:overlay !important;overflow-x:hidden !important;width:100%;position:fixed !important;top:0;bottom:0;}
 .offsetNorthBar{top:45px !important;}
 .offsetSouthBar{bottom:35px !important;}
