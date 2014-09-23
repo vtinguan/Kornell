@@ -61,7 +61,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	private boolean visible = false;
 
 	@UiField
-	FlowPanel testEnvWarning;
+	Label testEnvWarning;
 	@UiField
 	FlowPanel menuBar;
 	@UiField
@@ -185,8 +185,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	}
 
 	public void display() {
-		if(Window.Location.getHostName().indexOf("-test.ed") >= 0 || Window.Location.getHostName().indexOf("-develop.ed") >= 0 || Window.Location.getHostName().indexOf("-homolog.ed") >= 0){
+		if(Window.Location.getHostName().indexOf("-test.ed") >= 0 || Window.Location.getHostName().indexOf("-homolog.ed") >= 0){
 			testEnvWarning.removeStyleName("shy");
+			testEnvWarning.setText("HOMOLOG");
+		} else if(Window.Location.getHostName().indexOf("localhost") >= 0){
+			testEnvWarning.removeStyleName("shy");
+			testEnvWarning.setText("DEVELOP");
 		}
 		btnFullScreen.removeStyleName("btn");
 		btnProfile.removeStyleName("btn");
