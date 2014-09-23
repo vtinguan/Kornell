@@ -15,6 +15,6 @@
 			<b:Button ui:field="btnMenu" addStyleNames="menuBarButton shy"></b:Button>		
 			<b:Button ui:field="btnExit" addStyleNames="menuBarButton last" icon="OFF" title="Sair"></b:Button>		
 		</g:FlowPanel>
-    <g:Label ui:field="testEnvWarning" addStyleNames="testEnvWarning shy">Você está no ambiente de testes</g:Label>
+    <g:Label ui:field="testEnvWarning" addStyleNames="testEnvWarning shy"></g:Label>
 	</g:FlowPanel>
 </ui:UiBinder>

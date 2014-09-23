@@ -188,7 +188,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		if(Window.Location.getHostName().indexOf("-test.ed") >= 0 || Window.Location.getHostName().indexOf("-homolog.ed") >= 0){
 			testEnvWarning.removeStyleName("shy");
 			testEnvWarning.setText("HOMOLOG");
-		} else if(Window.Location.getHostName().indexOf("localhost") >= 0){
+		} else if(Window.Location.getHostName().indexOf("-develop.ed") >= 0){
 			testEnvWarning.removeStyleName("shy");
 			testEnvWarning.setText("DEVELOP");
 		}
