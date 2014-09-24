@@ -470,8 +470,8 @@ a{color:#5b9455 !important;}
 .reportPanel .reportHeaderPanel .btnGenerate{width:188.4px;}
 .reportPanel .reportHeaderPanel .btnDownload{width:188.4px;}
 .reportPanel .reportWrapper{height:88px;line-height:88px;background-color:rgba(0, 0, 0, 0.4);margin-top:10px;color:#bec1c3;font-size:13px;}.reportPanel .reportWrapper .itemPanel{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;float:left;padding-left:10px;padding-right:10px;width:567.1999999999999px;}.reportPanel .reportWrapper .itemPanel .reportIcon{float:left;padding-top:35px;padding-bottom:35px;padding-left:10px;padding-right:20px;}
-.reportPanel .reportWrapper .itemPanel .lblName{color:#898e92;padding-left:20px;line-height:10px;font-size:14px;font-weight:bold;padding-top:13.333333333333334px;padding-bottom:5px;}
-.reportPanel .reportWrapper .itemPanel .lblDescription{color:#5b9455;padding-left:55px;font-size:11px;font-weight:bold;line-height:14px;}
+.reportPanel .reportWrapper .itemPanel .lblName{color:#898e92;padding-left:20px;line-height:10px;font-size:14px;font-weight:bold;padding-top:13.333333333333334px;padding-bottom:9px;}
+.reportPanel .reportWrapper .itemPanel .lblDescription{color:#5b9455;padding-left:55px;font-size:12px;line-height:14px;}
 .reportPanel .reportWrapper .itemPanel .optionPanel{padding-left:48px;padding-top:5px;}.reportPanel .reportWrapper .itemPanel .optionPanel img{height:18px;width:18px;float:left;cursor:pointer;}
 .reportPanel .reportWrapper .itemPanel .optionPanel input{height:12px;margin-left:6px;}
 .reportPanel .reportWrapper .itemPanel .optionPanel span{font-size:10px;margin-left:2px;float:left;cursor:pointer;}
