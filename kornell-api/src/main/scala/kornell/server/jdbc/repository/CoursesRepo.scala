@@ -39,9 +39,8 @@ object CoursesRepo {
   def byInstitution(institutionUUID: String) = newCoursesTO(
     sql"""
 	  	select c.* from Course c
-		join Curriculum cu on cu.courseUUID = c.uuid
-		join Institution i on cu.institutionUUID = i.uuid
-		where cu.institutionUUID = $institutionUUID
+		join Institution i on c.institutionUUID = i.uuid
+		where c.institutionUUID = $institutionUUID
 	  """.map[Course](toCourse))
   
 }

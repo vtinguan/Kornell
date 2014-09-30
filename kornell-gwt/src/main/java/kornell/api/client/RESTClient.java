@@ -2,6 +2,7 @@ package kornell.api.client;
 
 import static kornell.core.util.StringUtils.composeURL;
 import static kornell.core.util.StringUtils.isSome;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.http.client.RequestBuilder;
@@ -57,6 +58,21 @@ public class RESTClient {
 	protected void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
 		String auth = ClientProperties.get("X-KNL-A");
 		if (isSome(auth)) {
+			try {
+				String prefix = "Basic ";
+				int index = auth.indexOf(prefix);
+				if(index >= 0){
+					String decoded = ClientProperties.base64Decode(auth.split(" ")[1]);
+		      String[] parts = decoded.split(":");
+		      if(parts.length < 3 && Dean.getInstance().getInstitution() != null){
+		      	decoded += ":" + Dean.getInstance().getInstitution().getUUID();
+		      	auth = prefix + ClientProperties.base64Encode(decoded);
+		      	ClientProperties.set("X-KNL-A", auth);
+		      }	      
+				}
+      } catch (Exception e) {
+	      // TODO: handle exception
+      }
 			reqBuilder.setHeader("X-KNL-A", auth);
 		}
 	}

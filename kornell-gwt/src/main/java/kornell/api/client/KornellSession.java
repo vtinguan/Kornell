@@ -49,7 +49,7 @@ public class KornellSession extends KornellClient {
 				@Override
 				public void unauthorized(String errorMessage) {
 					setCurrentUser(null);
-					callback.unauthorized(errorMessage);
+					//callback.unauthorized(errorMessage);
 				}
 			};
 			GET("/user").sendRequest(null, wrapper);

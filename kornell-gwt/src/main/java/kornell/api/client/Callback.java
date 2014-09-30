@@ -11,6 +11,7 @@ import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.Kornell;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
@@ -149,6 +150,7 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void unauthorized(String errorMessage) {
+		
 	}
 
 	protected void forbidden() {
