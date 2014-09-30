@@ -336,6 +336,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	} 
 
 	private EnrollmentRequestTO createEnrollment(String fullName, String email, boolean cancelEnrollment) {
+		fullName.trim();
+		email.trim();
 		EnrollmentRequestTO enrollmentRequestTO = toFactory
 				.newEnrollmentRequestTO().as();
 		
