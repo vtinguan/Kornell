@@ -21,7 +21,7 @@ SET @sql = (SELECT IF(
     "SELECT 0",
     "UPDATE Course c, Curriculum r
       SET    c.institutionUUID = r.institutionUUID
-      WHERE  c.UUID = r.courseUUID;"
+      WHERE  c.uuid = r.courseUUID;"
 ));
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
