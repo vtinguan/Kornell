@@ -1,13 +1,16 @@
 package kornell.core.to.report;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 public class CourseClassReportTO {
 	private String fullName;
 	private String username;
+	private String email;
 	private String state;
 	private String progressState;
 	private Integer progress;
+	private BigDecimal assessmentScore;
+	private String certifiedAt;
 	private EnrollmentsBreakdownTO enrollmentsBreakdownTO;
 	
 	public String getFullName() {
@@ -46,5 +49,23 @@ public class CourseClassReportTO {
 	public void setEnrollmentsBreakdownTO(EnrollmentsBreakdownTO enrollmentsBreakdownTO) {
 		this.enrollmentsBreakdownTO = enrollmentsBreakdownTO;
 	}
+	public String getEmail() {
+	  return email;
+  }
+	public void setEmail(String email) {
+	  this.email = email;
+  }
+	public BigDecimal getAssessmentScore() {
+	  return assessmentScore;
+  }
+	public void setAssessmentScore(BigDecimal assessmentScore) {
+	  this.assessmentScore = assessmentScore;
+  }
+	public String getCertifiedAt() {
+	  return certifiedAt;
+  }
+	public void setCertifiedAt(String certifiedAt) {
+	  this.certifiedAt = certifiedAt;
+  }
 	
 }
