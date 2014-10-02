@@ -54,6 +54,7 @@ object ReportCourseClassGenerator {
     		  e.class_uuid = ${courseClassUUID}
 				order by 
 					progressState,
+    			e.certifiedAt,
     			progress,
     			p.fullName,
     			pw.username,
