@@ -26,7 +26,7 @@ class PeopleResource() {
   def isRegistered(@QueryParam("cpf") cpf:String,
       @QueryParam("email") email:String):Boolean = 
     AuthRepo().withPerson { person =>
-    	val result = PeopleRepo.isRegistered(person.getUUID,cpf,email)
+    	val result = PeopleRepo.isRegistered(person.getInstitutionUUID, person.getUUID,cpf,email)
     	result
   }
 }

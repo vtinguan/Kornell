@@ -19,7 +19,7 @@ class AuthRepoSpec extends UnitSpec with GenInstitution {
   }
   
 	"An AuthRepo" should "not authenticate random logins" in {
-	  val auth = authRepo.authenticate(randUsername, randPassword)
+	  val auth = authRepo.authenticate(randUUID, randUsername, randPassword)
 	  auth should be (None)
 	} 
 	
@@ -27,7 +27,7 @@ class AuthRepoSpec extends UnitSpec with GenInstitution {
 	  val username = randUsername
 	  val password = randPassword
 	  pwdCache.size should be (0)
-	  val miss = authRepo.authenticate(username, password)
+	  val miss = authRepo.authenticate(randUUID, username, password)
 	  miss should be (None)
 	  pwdCache.size should be (0)	  
 	}
@@ -37,7 +37,7 @@ class AuthRepoSpec extends UnitSpec with GenInstitution {
 	  val password = randPassword
 	  val personUUID = UserResource(authRepo).createUser(institutionUUID,randName,randEmail,randCPF,username,password)		
 	  pwdCache.size should be (0)	  
-	  val hit = authRepo.authenticate(username, password)
+	  val hit = authRepo.authenticate(institutionUUID,username, password)
 		hit should be (Some(personUUID))
 		pwdCache.size() should be (1)
 	}

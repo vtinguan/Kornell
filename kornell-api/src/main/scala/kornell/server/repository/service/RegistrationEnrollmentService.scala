@@ -50,16 +50,15 @@ object RegistrationEnrollmentService {
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
     val person = {
       if(enrollmentRequest.getEmail() != null) {
-        PeopleRepo.createPerson(enrollmentRequest.getEmail, enrollmentRequest.getFullName)
+        PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getEmail, enrollmentRequest.getFullName)
       } else {
-        PeopleRepo.createPersonCPF(enrollmentRequest.getCPF, enrollmentRequest.getFullName)
+        PeopleRepo.createPersonCPF(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getCPF, enrollmentRequest.getFullName)
       }
     }
     val personRepo = PersonRepo(person.getUUID)
     if(enrollmentRequest.getEmail() == null) {
-        personRepo.setPassword(enrollmentRequest.getCPF, enrollmentRequest.getCPF)
+        personRepo.setPassword(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getCPF, enrollmentRequest.getCPF)
     }
-    personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
     createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
   }
 
@@ -68,7 +67,6 @@ object RegistrationEnrollmentService {
     EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
       case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
       case None => {
-    	personRepo.registerOn(enrollmentRequest.getInstitutionUUID)
         createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
       }
     }
@@ -101,13 +99,13 @@ object RegistrationEnrollmentService {
   }
 
   private def userCreateNewPerson(regReq: RegistrationRequestTO) = {
-    val person = PeopleRepo.createPerson(regReq.getEmail(), regReq.getFullName(), regReq.getCPF())
+    val person = PeopleRepo.createPerson(regReq.getInstitutionUUID, regReq.getEmail(), regReq.getFullName(), regReq.getCPF())
 
     val user = newUserInfoTO
     val username = usernameOf(regReq)
     user.setPerson(person)
     user.setUsername(username)
-    PersonRepo(person.getUUID).setPassword(username, regReq.getPassword).registerOn(regReq.getInstitutionUUID)
+    PersonRepo(person.getUUID).setPassword(regReq.getInstitutionUUID, username, regReq.getPassword)
     user
   }
 
@@ -135,7 +133,7 @@ object RegistrationEnrollmentService {
     user.setPerson(person)
     user.setUsername(username)
 
-    personRepo.setPassword(username, regReq.getPassword)
+    personRepo.setPassword(regReq.getInstitutionUUID, username, regReq.getPassword)
     
     user
   }

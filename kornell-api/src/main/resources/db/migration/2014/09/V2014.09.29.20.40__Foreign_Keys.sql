@@ -50,13 +50,6 @@ ADD CONSTRAINT `fk_actomentries_enrollment_enrollmentUUID`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `ebdb`.ActomEntryChangedEvent 
-ADD CONSTRAINT `fk_actomentrychangedevent_enrollment_enrollmentUUID`
-  FOREIGN KEY (`enrollment_uuid`)
-  REFERENCES `ebdb`.Enrollment (`uuid`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
 ALTER TABLE `ebdb`.AttendanceSheetSigned 
 ADD CONSTRAINT `fk_attendancesheetsigned_institution_institutionUUID`
   FOREIGN KEY (`institutionUUID`)
@@ -106,7 +99,6 @@ ADD CONSTRAINT `fk_progressmilestone_courseVersion_courseVersionUUID`
   REFERENCES `ebdb`.CourseVersion (`uuid`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
-
 
 ALTER TABLE `ebdb`.Role 
 ADD CONSTRAINT `fk_role_person_personUUID`

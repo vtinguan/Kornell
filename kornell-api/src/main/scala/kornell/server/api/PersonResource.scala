@@ -10,8 +10,6 @@ import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.AuthRepo
 import javax.ws.rs.Path
 import javax.ws.rs.core.Context
-import kornell.core.entity.Registrations
-import kornell.server.jdbc.repository.RegistrationsRepo
 import kornell.server.jdbc.repository.PersonRepo
 
 

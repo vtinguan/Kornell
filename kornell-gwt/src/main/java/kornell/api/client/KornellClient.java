@@ -12,10 +12,6 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new UserClient();
 	}
 
-	public RegistrationsClient registrations() {
-		return new RegistrationsClient();
-	}
-
 	public InstitutionsClient institutions() {
 		return new InstitutionsClient();
 	}
@@ -81,7 +77,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	}
 
 	private void forgetCredentials() {
-		ClientProperties.remove("X-KNL-A");
+		ClientProperties.remove(ClientProperties.X_KNL_A);
 	}
 
 }

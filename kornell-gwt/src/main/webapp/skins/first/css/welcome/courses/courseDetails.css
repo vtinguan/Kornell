@@ -19,7 +19,7 @@
 .fieldPanelWrapper .fieldPanel .selectField{width:262px;}
 .fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:-4px;line-height:45px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
-@media screen and (max-width:962px){.fieldPanelWrapper{width:600px;height:auto;}.fieldPanelWrapper .labelPanelImg{height:auto;} .fieldPanelWrapper .labelPanel{width:auto;float:none;text-align:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{float:left;padding-right:40px;padding-left:15px;text-decoration:underline;} .fieldPanelWrapper .labelPanel .lblLabel{float:none;padding-left:15px;text-decoration:underline;} .fieldPanelWrapper .labelPanel .lblExtraInfo{float:none;text-align:left;padding-left:20px;} .fieldPanelWrapper .labelPanelImg{float:left;} .fieldPanelWrapper .lblValue{width:auto;float:none;padding-left:50px;} .fieldPanelWrapper .lblValueAdd{width:auto;float:none;padding-left:50px;} .fieldPanelWrapper .publicPanel{float:none;padding-left:50px;}}.anchorToLabel{color:#bec1c3 !important;}.anchorToLabel:hover{cursor:default;color:#bec1c3 !important;text-decoration:none;}
+.anchorToLabel{color:#bec1c3 !important;}.anchorToLabel:hover{cursor:default;color:#bec1c3 !important;text-decoration:none;}
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}

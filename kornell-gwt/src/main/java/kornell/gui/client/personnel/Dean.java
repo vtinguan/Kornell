@@ -168,7 +168,7 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 				Dean.getInstance().setCourseClassesTO(courseClasses);
 			}
 		};
-		if (session.isAuthenticated() && session.isRegistered()) {
+		if (session.isAuthenticated()) {
 			session.courseClasses().getCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), courseClassesCallback);
 		}
 	}

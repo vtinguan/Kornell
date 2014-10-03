@@ -164,7 +164,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		
 		showButton(btnHelp, showHelp);
 		showButton(btnMessages, showHelp);
-		showButton(btnProfile, showHelp);
+		showButton(btnProfile, !(newPlace instanceof TermsPlace));
 		
 		showButton(btnHome, isRegistrationCompleted);
 		showButton(btnFullScreen, isRegistrationCompleted);

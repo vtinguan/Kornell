@@ -91,11 +91,10 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 	}
 
 	private boolean validateFields() {
-		if(!formHelper.isPasswordValid(modalNewPassword.getFieldPersistText())){
-			modalNewPassword.setError("Senha inv.");
-		}
 		if (!formHelper.isPasswordValid(modalNewPassword.getFieldPersistText())) {
 			modalNewPassword.setError("Senha inválida (mínimo de 6 caracteres).");
+		} else if(modalNewPassword.getFieldPersistText().indexOf(':') >= 0){
+			modalNewPassword.setError("Senha inválida (não pode conter o caractere ':').");
 		}
 		if (!modalNewPassword.getFieldPersistText().equals(modalNewPasswordConfirm.getFieldPersistText())) {
 			modalNewPasswordConfirm.setError("As senhas não conferem.");

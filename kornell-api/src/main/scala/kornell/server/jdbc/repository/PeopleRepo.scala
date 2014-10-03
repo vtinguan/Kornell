@@ -91,38 +91,33 @@ object PeopleRepo {
     newPeople(
       sql"""
       	| select p.* from Person p 
-    		| join Registration r on r.person_uuid = p.uuid
       	| where (p.email like ${search + "%"}
       	| or p.cpf like ${search + "%"})
-      	| and r.institution_uuid = ${institutionUUID}
+      	| and p.institutionUUID = ${institutionUUID}
       	| order by p.email, p.cpf
       	| limit 8
 	    """.map[Person](toPerson))
   }
 
-  def createPerson(email: String = null, fullName: String = null, cpf: String = null): Person =
-    create(Entities.newPerson(fullName = fullName,
-      email = email,
-      cpf = cpf))
+  def createPerson(institutionUUID: String = null, email: String = null, fullName: String = null, cpf: String = null): Person =
+    create(Entities.newPerson(institutionUUID = institutionUUID,
+        fullName = fullName,
+	      email = email,
+	      cpf = cpf))
 
-  def createPersonCPF(cpf: String, fullName: String): Person =
-    create(Entities.newPerson(fullName = fullName, cpf = cpf))
+  def createPersonCPF(institutionUUID: String, cpf: String, fullName: String): Person =
+    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf))
 
   def create(person: Person): Person = {
     if (person.getUUID == null)
       person.setUUID(randUUID)
     sql""" 
-    	insert into Person(uuid, fullName, email,
-    		company, title, sex, birthDate, confirmation, cpf
-    	) values (${person.getUUID},
-             ${person.getFullName},
-             ${person.getEmail},
-             ${person.getCompany},
-             ${person.getTitle},
-             ${person.getSex},
-             ${person.getBirthDate},
-             ${person.getConfirmation},
-             ${person.getCPF})
+    	insert into Person(uuid, fullName, email, cpf, institutionUUID) 
+    		values (${person.getUUID},
+	             ${person.getFullName},
+	             ${person.getEmail},
+	             ${person.getCPF},
+	             ${person.getInstitutionUUID})
     """.executeUpdate
     updateCaches(person)
     person
@@ -138,8 +133,8 @@ object PeopleRepo {
   //TODO: Better security against SQLInjection?
   //TODO: Better dynamic queries
   //TODO: Teste BOTH args case!!
-  def isRegistered(personUUID: String, cpf: String,email:String): Boolean = {
-    var sql = s"select count(*) from Person where uuid != '${personUUID}' "
+  def isRegistered(institutionUUID: String, personUUID: String, cpf: String,email:String): Boolean = {
+    var sql = s"select count(*) from Person where uuid != '${personUUID}' and institutionUUID = '${institutionUUID}' "
     if (isSome(cpf)) {
       sql = sql + s"and cpf = '${digitsOf(cpf)}'";
     }
@@ -151,5 +146,6 @@ object PeopleRepo {
     val result = pstmt.get[Boolean]
     result
   }
+  
 
 }

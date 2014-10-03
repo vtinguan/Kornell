@@ -20,7 +20,6 @@ import kornell.core.entity.EntityFactory
 import kornell.core.entity.Institution
 import kornell.core.entity.Person
 import kornell.core.entity.PlatformAdminRole
-import kornell.core.entity.Registration
 import kornell.core.entity.Role
 import kornell.core.entity.RoleType
 import kornell.core.util.TimeUtil
@@ -50,7 +49,9 @@ object Entities {
     addressLine1: String = null,
     addressLine2: String = null,
     postalCode: String = null,
-    cpf: String = null) = {
+    cpf: String = null,
+    institutionUUID: String = null,
+    termsAcceptedOn: String = null) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -71,6 +72,8 @@ object Entities {
     person.setAddressLine2(addressLine2)
     person.setPostalCode(postalCode)
     person.setCPF(cpf)
+    person.setInstitutionUUID(institutionUUID)
+    person.setTermsAcceptedOn(termsAcceptedOn)
     person
   }
 
@@ -157,25 +160,6 @@ object Entities {
     i.setSkin(skin)
     i
   }
-
-  def newRegistration(p: Person, i: Institution): Registration = {
-    val r = newRegistration
-    r.setPersonUUID(p.getUUID)
-    r.setInstitutionUUID(i.getUUID)
-    r
-  }
-
-  def newRegistration = factory.newRegistration.as
-
-  def newRegistration(personUUID: String, institutionUUID: String, termsAcceptedOn: Date): Registration = {
-    val r = newRegistration
-    r.setPersonUUID(personUUID)
-    r.setInstitutionUUID(institutionUUID)
-    r.setTermsAcceptedOn(termsAcceptedOn)
-    r
-  }
-
-  def newRegistrations = factory.newRegistrations.as
 
   lazy val newUserRole = {
     val role = factory.newRole().as

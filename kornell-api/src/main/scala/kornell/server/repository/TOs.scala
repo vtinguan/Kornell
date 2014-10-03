@@ -8,7 +8,6 @@ import kornell.core.to.CourseVersionTO
 import kornell.core.to.report.CertificateInformationTO
 import kornell.core.to.RegistrationRequestTO
 import kornell.core.entity.CourseClass
-import kornell.core.to.RegistrationsTO
 import kornell.core.to.EnrollmentRequestsTO
 import kornell.core.to.EnrollmentRequestTO
 import kornell.core.to.report.CourseClassReportTO
@@ -25,7 +24,6 @@ import kornell.core.to.EnrollmentTO
 import kornell.core.to.TOFactory
 import kornell.core.to.CourseClassTO
 import kornell.core.entity.Role
-import kornell.core.entity.Registration
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.to.LibraryFileTO
@@ -39,17 +37,10 @@ object TOs {
 
   def newUserInfoTO = tos.newUserInfoTO.as
   def newUserHelloTO = tos.newUserHelloTO.as
-  def newRegistrationsTO: RegistrationsTO = tos.newRegistrationsTO.as
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
   def newCourseVersionsTO: CourseVersionsTO = tos.newCourseVersionsTO.as
   def newLibraryFileTO: LibraryFileTO = tos.newLibraryFileTO.as
-
-  def newRegistrationsTO(registrationList: List[Registration]): RegistrationsTO = {
-    val registrations = newRegistrationsTO
-    registrations.setRegistrations(registrationList asJava)
-    registrations
-  }
 
   def newEnrollmentsTO(enrollmentList: List[EnrollmentTO]): EnrollmentsTO = {
     val enrollments = newEnrollmentsTO

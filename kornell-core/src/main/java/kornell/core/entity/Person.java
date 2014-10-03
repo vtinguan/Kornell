@@ -39,4 +39,8 @@ public interface Person {
 	void setAddressLine2(String addressLine2);
 	String getPostalCode();
 	void setPostalCode(String postalCode);
+	String getInstitutionUUID();
+	void setInstitutionUUID(String institutionUUID);
+	String getTermsAcceptedOn();
+	void setTermsAcceptedOn(String termsAcceptedOn);
 }

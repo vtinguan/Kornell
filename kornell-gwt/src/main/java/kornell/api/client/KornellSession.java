@@ -3,7 +3,6 @@ package kornell.api.client;
 import java.util.List;
 import java.util.logging.Logger;
 
-import kornell.core.entity.Registration;
 import kornell.core.entity.Role;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
@@ -141,29 +140,10 @@ public class KornellSession extends KornellClient {
 		return ! isAuthenticated();
 	}
 
-	public boolean isRegistered() {
-		if (currentUser == null)
-			return false;
-		final List<Registration> registrations = currentUser.getRegistrationsTO().getRegistrations();
-		for (Registration registration : registrations) {
-			if (registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID()))
-				return true;
-		}
-		return false;
-	}
-
 	public boolean hasSignedTerms() {
-		if (currentUser == null)
-			return false;
-		if(StringUtils.isNone(Dean.getInstance().getInstitution().getTerms()))
-			return true;
-		final List<Registration> registrations = currentUser.getRegistrationsTO().getRegistrations();
-		for (Registration registration : registrations) {
-			if (registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID()) && 
-					registration.getTermsAcceptedOn() != null)
-				return true;
-		}
-		return false;
+		return StringUtils.isSome(Dean.getInstance().getInstitution().getTerms()) &&
+				currentUser != null &&
+				currentUser.getPerson().getTermsAcceptedOn() != null;
 	}
 
 }

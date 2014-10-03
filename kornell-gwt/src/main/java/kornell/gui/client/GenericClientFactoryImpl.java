@@ -109,7 +109,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {					
 					Dean.init(session, bus, userHelloTO.getInstitution());
-					if (session.isAuthenticated() && session.isRegistered()) {
+					if (session.isAuthenticated()) {
 						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 								|| session.isInstitutionAdmin());
 						setDefaultPlace(isAdmin ? new AdminHomePlace() : new WelcomePlace());
@@ -126,7 +126,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void startAnonymous() {
-		ClientProperties.remove("X-KNL-A");
+		ClientProperties.remove(ClientProperties.X_KNL_A);
 		defaultPlace = new VitrinePlace();
 		startClient();
 	}

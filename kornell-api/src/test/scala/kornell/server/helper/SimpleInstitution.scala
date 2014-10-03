@@ -66,8 +66,8 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
 	  courseClass3 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, false, 23451, new Date(), null, CourseClassState.active)
     
 	  platformAdmin = {
-	    val platformAdmin = PeopleRepo.createPersonCPF(platformAdminCPF, randName)
-	    PersonRepo(platformAdmin.getUUID).setPassword(platformAdmin.getCPF, platformAdmin.getCPF).registerOn(institution.getUUID)
+	    val platformAdmin = PeopleRepo.createPersonCPF(institution.getUUID, platformAdminCPF, randName)
+	    PersonRepo(platformAdmin.getUUID).setPassword(institution.getUUID, platformAdmin.getCPF, platformAdmin.getCPF)
 	    sql"""
 	    	insert into Role (uuid, username, role, institution_uuid, course_class_uuid)
 	    	values (${randUUID}, ${platformAdmin.getCPF}, 
@@ -81,8 +81,8 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
 	  platformAdminSecurityContext = new MockSecurityContext(platformAdmin.getCPF)
 	  
 	  institutionAdmin = {
-	    val institutionAdmin = PeopleRepo.createPersonCPF(institutionAdminCPF, randName)
-	    PersonRepo(institutionAdmin.getUUID).setPassword(institutionAdmin.getCPF, institutionAdmin.getCPF).registerOn(institution.getUUID)
+	    val institutionAdmin = PeopleRepo.createPersonCPF(institution.getUUID, institutionAdminCPF, randName)
+	    PersonRepo(institutionAdmin.getUUID).setPassword(institution.getUUID, institutionAdmin.getCPF, institutionAdmin.getCPF)
 	    
 	    sql"""
 	    	insert into Role (uuid, username, role, institution_uuid, course_class_uuid)
@@ -97,8 +97,8 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
 	  institutionAdminSecurityContext = new MockSecurityContext(institutionAdmin.getCPF)
 	  
 	  notAnAdmin = {
-	    val notAnAdmin = PeopleRepo.createPersonCPF(notAnAdminCPF, randName)
-	    PersonRepo(notAnAdmin.getUUID).setPassword(notAnAdmin.getCPF, notAnAdmin.getCPF).registerOn(institution.getUUID)
+	    val notAnAdmin = PeopleRepo.createPersonCPF(institution.getUUID, notAnAdminCPF, randName)
+	    PersonRepo(notAnAdmin.getUUID).setPassword(institution.getUUID, notAnAdmin.getCPF, notAnAdmin.getCPF)
 		  notAnAdmin
 	  }
 	  

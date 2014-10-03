@@ -32,7 +32,7 @@ object AuthRepo {
 
   val authLoader = new CacheLoader[UsrPwd, Option[String]]() {
     override def load(auth: UsrPwd): Option[String] =
-      lookup(auth._1, auth._2) match {
+      lookup(auth._1, auth._2, auth._3) match {
         case s: Some[String] => s
         case None => throw new CredentialsNotFound
       }
@@ -40,12 +40,12 @@ object AuthRepo {
 
   case class CredentialsNotFound extends Exception
 
-  def lookup(userkey: String, password: String): Option[String] =
-    authByUsername(userkey, password)
-      .orElse(authByCPF(userkey, password))
-      .orElse(authByEmail(userkey, password))
+  def lookup(institutionUUID: String, userkey: String, password: String): Option[String] =
+    authByUsername(institutionUUID, userkey, password)
+      .orElse(authByCPF(institutionUUID, userkey, password))
+      .orElse(authByEmail(institutionUUID, userkey, password))
 
-  type UsrPwd = (String, String)
+  type UsrPwd = (String, String, String)
   type PersonUUID = String
   type PasswordCache = LoadingCache[UsrPwd, Option[PersonUUID]]
   type RolesCache = LoadingCache[Option[PersonUUID], Set[Role]]
@@ -53,27 +53,30 @@ object AuthRepo {
   def newPasswordCache() = cacheBuilder.build(authLoader)
   def newRolesCache() = cacheBuilder.build(rolesLoader)
 
-  def authByEmail(email: String, password: String) = sql"""
+  def authByEmail(institutionUUID: String, email: String, password: String) = sql"""
    select person_uuid 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.email=${email}
      and pwd.password=${SHA256(password)}
+     and p.institutionUUID=${institutionUUID}
     """.first[String]
 
-  def authByCPF(cpf: String, password: String) = sql"""
+  def authByCPF(institutionUUID: String, cpf: String, password: String) = sql"""
    select person_uuid 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.cpf=${cpf}
      and pwd.password=${SHA256(password)}
+     and p.institutionUUID=${institutionUUID}
     """.first[String]
 
-  def authByUsername(username: String, password: String) = sql"""
+  def authByUsername(institutionUUID: String, username: String, password: String) = sql"""
     select person_uuid 
     from Password
     		where username=${username}
     		and password=${SHA256(password)}
+    		and institutionUUID=${institutionUUID}
     """.first[String]
 
   val rolesLoader = new CacheLoader[Option[String], Set[Role]]() {
@@ -128,8 +131,8 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
     rs.getString("postalCode"),
     rs.getString("cpf"))
 
-  def authenticate(userkey: String, password: String): Option[String] = Try {
-    pwdCache.get((userkey, password))
+  def authenticate(institutionUUID: String, userkey: String, password: String): Option[String] = Try {
+    pwdCache.get((institutionUUID, userkey, password))
   }.getOrElse(None)
 
   def getUserRoles = userRoles().asJava
@@ -171,10 +174,10 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
     	where pwd.username = $username
     """.first[String].isDefined
 
-  def setPlainPassword(personUUID: String, username: String, plainPassword: String) = {
+  def setPlainPassword(institutionUUID: String, personUUID: String, username: String, plainPassword: String) = {
     sql"""
-	  	insert into Password (person_uuid,username,password,requestPasswordChangeUUID)
-	  	values ($personUUID,$username,${SHA256(plainPassword)}, null)
+	  	insert into Password (uuid,person_uuid,username,password,requestPasswordChangeUUID,institutionUUID)
+	  	values (${randomUUID},$personUUID,$username,${SHA256(plainPassword)}, null, ${institutionUUID})
 	  	on duplicate key update
 	  	username=$username,password=${SHA256(plainPassword)},requestPasswordChangeUUID=null
 	  """.executeUpdate

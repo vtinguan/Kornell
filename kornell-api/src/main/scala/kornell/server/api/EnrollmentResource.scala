@@ -1,7 +1,7 @@
 package kornell.server.api
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import javax.servlet.http.HttpServletResponse
+import scala.collection.JavaConverters._
+
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
 import javax.ws.rs.GET
@@ -13,19 +13,15 @@ import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Assessment
 import kornell.core.entity.Enrollment
-import kornell.core.entity.RoleCategory
 import kornell.core.lom.Contents
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.RegistrationsRepo
-import scala.collection.JavaConverters._
-import kornell.server.util.Errors._
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.Err
-import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.server.util.Errors._
 import kornell.server.util.RequirementNotMet
 
 @Produces(Array(Enrollment.TYPE))
@@ -37,13 +33,6 @@ class EnrollmentResource(uuid: String) {
 
   @GET
   def first = enrollmentRepo.first
-
-  @PUT
-  @Produces(Array("text/plain"))
-  @Path("acceptTerms")
-  def acceptTerms() = AuthRepo().withPerson { p =>
-    RegistrationsRepo(p.getUUID, uuid).acceptTerms
-  }
 
   @PUT
   @Produces(Array("text/plain"))

@@ -168,7 +168,9 @@ package object repository {
 	    rs.getString("addressLine1"),
 	    rs.getString("addressLine2"),
 	    rs.getString("postalCode"),
-	    rs.getString("cpf"))
+	    rs.getString("cpf"),
+	    rs.getString("institutionUUID"),
+	    rs.getString("termsAcceptedOn"))
 
   implicit def toRole(rs: java.sql.ResultSet): kornell.core.entity.Role = {
     val roleType = RoleType.valueOf(rs.getString("role"))

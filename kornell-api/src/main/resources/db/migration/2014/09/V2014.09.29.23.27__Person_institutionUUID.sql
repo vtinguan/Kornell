@@ -1,18 +1,6 @@
 ALTER TABLE Password ADD uuid CHAR(36) NOT NULL;
 update Password set uuid = uuid();
-
-SET @sql = (SELECT IF(
-    (SELECT COUNT(*)
-        FROM INFORMATION_SCHEMA.COLUMNS WHERE
-          table_schema=DATABASE() 
-          AND table_name='Password' 
-          AND column_name='uuid'
-    ) < 1,
-    "SELECT 0",
-    "alter table Password drop primary key, add primary key(uuid);"
-));
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
+alter table Password drop primary key, add primary key(uuid);
 
 
 ALTER TABLE Person ADD institutionUUID CHAR(36) NOT NULL;
@@ -37,6 +25,12 @@ drop index Person_email on Person;
 create unique index person_cpf_institution on Person(cpf, institutionUUID);
 create unique index person_email_institution on Person(email, institutionUUID);
 
+ALTER TABLE Person ADD termsAcceptedOn datetime DEFAULT NULL;
+
+UPDATE Person p, Registration r
+SET p.termsAcceptedOn = r.termsAcceptedOn
+WHERE p.uuid = r.person_uuid;
+
 
 
 
@@ -60,12 +54,6 @@ drop index Password_username on Password;
 create unique index password_username_institution on Password(username, institutionUUID);
 
 
-
-ALTER TABLE Person ADD termsAcceptedOn datetime DEFAULT NULL;
-
-UPDATE Person p, Registration r
-SET p.termsAcceptedOn = r.termsAcceptedOn
-WHERE p.uuid = r.person_uuid;
 
 drop table Registration;
 

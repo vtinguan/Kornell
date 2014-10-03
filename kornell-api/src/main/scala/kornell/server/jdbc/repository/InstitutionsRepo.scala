@@ -5,7 +5,6 @@ import kornell.server.repository.Entities._
 import kornell.server.repository.Entities
 import kornell.core.entity.Person
 import kornell.core.entity.Institution
-import kornell.core.entity.Registration
 import kornell.server.jdbc.SQL._
 
 object InstitutionsRepo {
@@ -43,19 +42,6 @@ object InstitutionsRepo {
     | i.skin = ${institution.getSkin}
     | where i.uuid = ${institution.getUUID}""".executeUpdate
     institution
-  }
-  
-  def register(p: Person, i: Institution):Registration = {
-    val r = newRegistration(p, i)
-    register(p.getUUID,i.getUUID)
-    r
-  }
-  
-  def register(p: String, i:String):Unit = {    
-    sql"""
-    | insert into Registration(person_uuid,institution_uuid)
-    | values ($p, $i)
-    """.executeUpdate    
   }
   
   def byUUID(UUID:String) = 

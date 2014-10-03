@@ -8,7 +8,6 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
-import kornell.core.entity.Registration;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
@@ -155,14 +154,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		
 		isCurrentUser = session.getCurrentUser().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
-		boolean isInstitutionAdmin = false;
-		for (Registration registration : session.getCurrentUser().getRegistrationsTO().getRegistrations()) {
-			if(registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())){
-				isInstitutionAdmin = session.isInstitutionAdmin();
-				break;
-			}
-		}
-		isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(),RoleType.courseClassAdmin) || isInstitutionAdmin || session.isPlatformAdmin();
+		isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(),RoleType.courseClassAdmin) || session.isInstitutionAdmin() || session.isPlatformAdmin();
 		
 		form.addStyleName("shy");
 		
@@ -348,18 +340,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			KornellNotification.show("Usuário não encontrado.", AlertType.ERROR);
 			return;
 		} 
-		
-
-		boolean isRegistered = false;
-		for (Registration registration : user.getRegistrationsTO().getRegistrations()) {
-			if(registration.getInstitutionUUID().equals(institution.getUUID()))
-				isRegistered = true;
-		}
-		if(!isRegistered){
-			KornellNotification.show("Este usuário não está registrado nesta instituição.", AlertType.ERROR);
-			return;
-		}
-		
+				
 		if(isEditMode && showContactDetails && validateContactDetails && session.getCurrentUser().getPerson().getCity() == null){
 			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO, 5000);
 		}
@@ -389,7 +370,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		fields.add(cpf);
 		
 		profileFields.add(email);
-		profileFields.add(cpf);
+		
+		if(isCurrentUser || isAdmin){
+			profileFields.add(cpf);
+		}
 
 		company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
 		fields.add(company);

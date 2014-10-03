@@ -23,7 +23,6 @@ import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.RegistrationsRepo
 import kornell.server.repository.Entities.newEnrollments
 import kornell.server.repository.TOs
 import kornell.server.repository.TOs.newUserHelloTO
@@ -47,14 +46,7 @@ class UserResource(private val authRepo:AuthRepo) {
       @QueryParam("name") name:String, 
       @QueryParam("hostName") hostName:String) = {
     val userHello = newUserHelloTO
-    val auth = req.getHeader("X-KNL-A")
-    if (auth != null && auth.length() > 0) {
-	    val (username, password) = BasicAuthFilter.extractCredentials(auth)
-	    AuthRepo().authenticate(username, password).map { personUUID =>
-	  		val person = PersonRepo(personUUID).first.getOrElse(null)
-	  		userHello.setUserInfoTO(getUser(person).getOrElse(null))
-	  	}
-    }
+    
     userHello.setInstitution(
       {
         if(name != null)
@@ -62,6 +54,16 @@ class UserResource(private val authRepo:AuthRepo) {
 			  else
 			    InstitutionsRepo.byHostName(hostName)
       }.getOrElse(null));
+    
+    val auth = req.getHeader("X-KNL-A")
+    if (auth != null && auth.length() > 0) {
+	    val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
+	    AuthRepo().authenticate(institutionUUID, username, password).map { personUUID =>
+	  		val person = PersonRepo(personUUID).first.getOrElse(null)
+	  		userHello.setUserInfoTO(getUser(person).getOrElse(null))
+	  	}
+    }
+    
     userHello
   }
   
@@ -80,7 +82,6 @@ class UserResource(private val authRepo:AuthRepo) {
     user.setLastPlaceVisited(person.getLastPlaceVisited)
     val roles = authRepo.rolesOf(username)
     user.setRoles((Set.empty ++ roles).asJava)
-    user.setRegistrationsTO(RegistrationsRepo.getAll(person.getUUID))
     user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
 
     Option(user)
@@ -101,7 +102,6 @@ class UserResource(private val authRepo:AuthRepo) {
           user.setUsername(user.getPerson().getEmail())
         else
           user.setUsername(user.getPerson().getCPF())
-        user.setRegistrationsTO(RegistrationsRepo.getAll(person.getUUID))
         Option(user)
       } else {
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")
@@ -145,7 +145,7 @@ class UserResource(private val authRepo:AuthRepo) {
     @PathParam("passwordChangeUUID") passwordChangeUUID: String) = {
     val person = authRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
     if (person.isDefined) {
-      PersonRepo(person.get.getUUID).setPassword(person.get.getEmail, password)
+      PersonRepo(person.get.getUUID).setPassword(person.get.getInstitutionUUID, person.get.getEmail, password)
       val user = newUserInfoTO
       user.setUsername(person.get.getEmail())
       Option(user)
@@ -168,7 +168,7 @@ class UserResource(private val authRepo:AuthRepo) {
         val targetPersonRepo = PersonRepo(targetPersonUUID)
         val username = authRepo.getUsernameByPersonUUID(targetPersonUUID)
 
-        targetPersonRepo.setPassword(
+        targetPersonRepo.setPassword(targetPersonRepo.get.getInstitutionUUID,
           if (username.isDefined) {
             username.get
           } else {
@@ -227,7 +227,6 @@ class UserResource(private val authRepo:AuthRepo) {
 	
 	      val roles = authRepo.rolesOf(userInfo.getUsername)
 	      userInfo.setRoles((Set.empty ++ roles).asJava)
-	      userInfo.setRegistrationsTO(RegistrationsRepo.getAll(p.getUUID))
 	      userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
 	      userInfo
       }

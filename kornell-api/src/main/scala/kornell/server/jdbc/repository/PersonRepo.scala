@@ -17,15 +17,10 @@ import java.util.concurrent.TimeUnit
 
 class PersonRepo(val uuid: String) {
 
-  def setPassword(username: String, password: String): PersonRepo = {
-    AuthRepo().setPlainPassword(uuid, username, password)
+  def setPassword(institutionUUID: String, username: String, password: String): PersonRepo = {
+    AuthRepo().setPlainPassword(institutionUUID, uuid, username, password)
     PersonRepo.this
-  }
-
-  def registerOn(institution_uuid: String): RegistrationRepo = { 
-    (RegistrationRepo(PersonRepo.this, institution_uuid)).register
-  }
-  
+  }  
 
   lazy val finder = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
 
@@ -51,6 +46,7 @@ class PersonRepo(val uuid: String) {
   def hasPowerOver(targetPersonUUID: String) = {
     val actorRoles = AuthRepo().rolesOf(AuthRepo().getUsernameByPersonUUID(uuid).get)
     val actorRolesSet = (Set.empty ++ actorRoles).asJava
+    val targetPerson = PersonRepo(targetPersonUUID).get
 
     val targetUsername = AuthRepo().getUsernameByPersonUUID(targetPersonUUID)
 
@@ -67,14 +63,10 @@ class PersonRepo(val uuid: String) {
             !RoleCategory.isPlatformAdmin(targetRolesSet) &&
               RoleCategory.isPlatformAdmin(actorRolesSet)
           } || {
-            //institutionAdmin doesn't have power over platformAdmins, other institutionAdmins or non registered users 
-            val registrations = RegistrationsRepo.getAll(targetPersonUUID)
+            //institutionAdmin doesn't have power over platformAdmins, other institutionAdmins or people from other institutions 
             !RoleCategory.isPlatformAdmin(targetRolesSet) &&
-              !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) && {
-                registrations.getRegistrations.asScala exists {
-                  r => RoleCategory.isInstitutionAdmin(actorRolesSet, r.getInstitutionUUID)
-                }
-              }
+              !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) && 
+              RoleCategory.isInstitutionAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
           } || {
             //courseClassAdmin doesn't have power over platformAdmins, institutionAdmins, other courseClassAdmins or non enrolled users
             val enrollmentTOs = EnrollmentsRepo.byPerson(targetPersonUUID)
@@ -90,6 +82,12 @@ class PersonRepo(val uuid: String) {
   }
   
   def getUsername = sql"""select username from Password where person_uuid=${uuid}""".first[String].getOrElse(null)
+  
+  def acceptTerms() =
+    sql"""update Person
+      	 set termsAcceptedOn = now()
+      	 where uuid=${uuid}
+      	   """.executeUpdate
 
 }
 

@@ -8,7 +8,6 @@ import java.util.List;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
-import kornell.core.entity.Registration;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
@@ -87,27 +86,20 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				Dean.getInstance().setCourseClassesTO(courseClasses);
 				final UserInfoTO userInfoTO = session.getCurrentUser();
 				clientFactory.setDefaultPlace(new WelcomePlace());
-				if (!session.isRegistered()) {
-					view.setMessage("Usuário não registrado nesta instituição.");
-					view.showMessage();
-					// TODO: logout?
-					// ClientProperties.remove(ClientProperties.X_KNL_A);
+				clientFactory.getEventBus().fireEvent(new LoginEvent(userInfoTO));
+				Place newPlace;
+				Place welcomePlace = new WelcomePlace();
+				if (!session.hasSignedTerms()) {
+					 newPlace = new TermsPlace();
+				} else if (institution.isDemandsPersonContactDetails() && userInfoTO.getPerson().getCity() == null) {
+					newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
+				} else if (session.isInstitutionAdmin()) {
+					newPlace = new AdminHomePlace();
 				} else {
-					clientFactory.getEventBus().fireEvent(new LoginEvent(userInfoTO));
-					Place newPlace;
-					Place welcomePlace = new WelcomePlace();
-					if (!session.hasSignedTerms()) {
-						 newPlace = new TermsPlace();
-					} else if (institution.isDemandsPersonContactDetails() && userInfoTO.getPerson().getCity() == null) {
-						newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
-					} else if (session.isInstitutionAdmin()) {
-						newPlace = new AdminHomePlace();
-					} else {
-						newPlace = welcomePlace;
-					}
-					clientFactory.setDefaultPlace(newPlace instanceof AdminHomePlace ? newPlace : welcomePlace);
-					clientFactory.getPlaceController().goTo(newPlace);
+					newPlace = welcomePlace;
 				}
+				clientFactory.setDefaultPlace(newPlace instanceof AdminHomePlace ? newPlace : welcomePlace);
+				clientFactory.getPlaceController().goTo(newPlace);
 			}
 		};
 		
@@ -155,6 +147,9 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		}
 		if (!validator.isPasswordValid(view.getSuPassword())) {
 			errors.add("Senha inválida (mínimo de 6 caracteres).");
+		}
+		if (view.getSuPassword().indexOf(':') >= 0) {
+			errors.add("Senha inválida (não pode conter o caractere ':').");
 		}
 		if (!view.getSuPassword().equals(view.getSuPasswordConfirm())) {
 			errors.add("As senhas não conferem.");
@@ -259,6 +254,9 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 		if (!validator.isPasswordValid(view.getNewPassword())) {
 			errors.add("Senha inválida (mínimo de 6 caracteres).");
+		}
+		if (view.getNewPassword().indexOf(':') >= 0) {
+			errors.add("Senha inválida (não pode conter o caractere ':').");
 		}
 		if (!view.getNewPassword().equals(view.getNewPasswordConfirm())) {
 			errors.add("As senhas não conferem.");

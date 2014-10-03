@@ -15,7 +15,6 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
-import kornell.core.entity.Institution;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
@@ -280,7 +279,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			return;
 		}
 		if (enrollWithCPF) {
-			username = formHelper.stripCPF(username);
+			username = FormHelper.stripCPF(username);
 		}
 		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
 		batchEnrollments.add(createEnrollment(fullName, username, false));
@@ -297,8 +296,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	
 
 	private boolean isUsernameValid(String email) {
-		return (!enrollWithCPF && formHelper.isEmailValid(email))
-				|| (enrollWithCPF && formHelper.isCPFValid(email));
+		return (!enrollWithCPF && FormHelper.isEmailValid(email))
+				|| (enrollWithCPF && FormHelper.isCPFValid(email));
 	}
 
 	@Override
@@ -348,7 +347,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				.getCourseClassTO().getCourseClass().getUUID());
 		enrollmentRequestTO.setFullName(fullName);
 		if (enrollWithCPF || email.indexOf('@') == -1)
-			enrollmentRequestTO.setCPF(formHelper.stripCPF(email));
+			enrollmentRequestTO.setCPF(FormHelper.stripCPF(email));
 		else
 			enrollmentRequestTO.setEmail(email);
 		
@@ -480,17 +479,6 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	public void onGoToCourseButtonClicked() {
 		placeController.goTo(new ClassroomPlace(Dean.getInstance()
 				.getCourseClassTO().getEnrollment().getUUID()));
-	}
-
-	private void updateInstitution() {
-		session.institution(Dean.getInstance().getInstitution().getUUID())
-				.update(Dean.getInstance().getInstitution(),
-						new Callback<Institution>() {
-							@Override
-							public void ok(Institution institution) {
-								GWT.log(institution.getName());
-							}
-						});
 	}
 
 	@Override

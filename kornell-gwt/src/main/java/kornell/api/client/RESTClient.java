@@ -56,7 +56,7 @@ public class RESTClient {
 	}
 
 	protected void setAuthenticationHeaders(ExceptionalRequestBuilder reqBuilder) {
-		String auth = ClientProperties.get("X-KNL-A");
+		String auth = ClientProperties.get(ClientProperties.X_KNL_A);
 		if (isSome(auth)) {
 			try {
 				String prefix = "Basic ";
@@ -67,13 +67,13 @@ public class RESTClient {
 		      if(parts.length < 3 && Dean.getInstance().getInstitution() != null){
 		      	decoded += ":" + Dean.getInstance().getInstitution().getUUID();
 		      	auth = prefix + ClientProperties.base64Encode(decoded);
-		      	ClientProperties.set("X-KNL-A", auth);
+		      	ClientProperties.set(ClientProperties.X_KNL_A, auth);
 		      }	      
 				}
       } catch (Exception e) {
 	      // TODO: handle exception
       }
-			reqBuilder.setHeader("X-KNL-A", auth);
+			reqBuilder.setHeader(ClientProperties.X_KNL_A, auth);
 		}
 	}
 }
