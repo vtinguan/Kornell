@@ -87,14 +87,4 @@
 .menuBar .buttons .first{border-left:0px !important;padding:0;width:0;}
 .menuBar .buttons .last{border-right:0px;}
 .menuBar .testEnvWarning{color:#d88709;width:140px;font-size:24px;line-height:45px;font-weight:bold;float:right;text-align:center;}
-.courseBar{bottom:0px;left:0px;background-color:#45484d;background:-webkit-gradient(linear, left top, left bottom, from(#45484d), to(#000000));background:-webkit-linear-gradient(top, #45484d, #000000);background:-moz-linear-gradient(top, #45484d, #000000);background:-ms-linear-gradient(top, #45484d, #000000);background:-o-linear-gradient(top, #45484d, #000000);background:#45484d !important;background:-moz-linear-gradient(top, #45484d 0%, #000000 100%) !important;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #45484d), color-stop(100%, #000000)) !important;background:-webkit-linear-gradient(top, #45484d 0%, #000000 100%) !important;background:-o-linear-gradient(top, #45484d 0%, #000000 100%) !important;background:-ms-linear-gradient(top, #45484d 0%, #000000 100%) !important;background:linear-gradient(to bottom, #45484d 0%, #000000 100%) !important;filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ) !important;width:962px;height:35px;}.courseBar .btnPanel{border-left:1px solid #505864 !important;}
-.courseBar .courseBarButton{height:35px;line-height:32px;float:left;text-align:center;padding:0;border:0;border-top:3px solid #99242a;}.courseBar .courseBarButton .label{background:transparent;color:#bec1c3;font-size:11px;margin-left:4px;}
-.courseBar .course{width:118.25px;border-left:0px;}
-.courseBar .details{width:118.25px;}
-.courseBar .library{width:118.25px;}
-.courseBar .forum{width:118.25px;}
-.courseBar .chat{width:118.25px;}
-.courseBar .specialists{width:120.25px;}
-.courseBar .notes{width:118.25px;}
-.courseBar .back{width:118.25px;border-right:0px;}
-@media screen and (max-width:962px){.courseBar{}.courseBar .courseBarButton .label{visibility:hidden;width:0px;border:0;margin:0;padding:0;} .courseBar .course{width:73px;border-left:0px;} .courseBar .details{width:73px;} .courseBar .library{width:73px;} .courseBar .forum{width:73px;} .courseBar .chat{width:73px;} .courseBar .specialists{width:75px;} .courseBar .notes{width:73px;} .courseBar .back{width:73px;border-right:0px;}}
+@media screen and (max-width:700px){.imgMenuBar{display:none;}}
