@@ -56,6 +56,10 @@ public class KornellSession extends KornellClient {
 		}
 	}
 
+	@Deprecated
+	/**
+	 * @deprecated Prefer using {@link #getCurrentUser(Callback<UserInfoTO>)}
+	 */
 	public void setCurrentUser(UserInfoTO userInfo) {
 		this.currentUser = userInfo;
 	}

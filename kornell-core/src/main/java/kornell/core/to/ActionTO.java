@@ -1,6 +1,6 @@
 package kornell.core.to;
 
-import java.util.Map;
+import kornell.core.scorm.scorm12.rte.action.OpenSCO12Action;
 
 public interface ActionTO {
 	public static final String TYPE = TOFactory.PREFIX + "action+json";
@@ -8,6 +8,6 @@ public interface ActionTO {
 	ActionType getType();
 	void setType(ActionType type);
 	
-	Map<String, String> getProperties();
-	void setProperties(Map<String,String> properties);
+	OpenSCO12Action getOpenSCO12Action();
+	void setOpenSCO12Action(OpenSCO12Action action);
 }

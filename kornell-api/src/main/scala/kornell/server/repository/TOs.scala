@@ -32,6 +32,8 @@ import kornell.core.to.LibraryFileTO
 import kornell.core.to.UnreadChatThreadsTO
 import kornell.core.to.UnreadChatThreadTO
 import kornell.core.to.ChatThreadMessageTO
+import kornell.core.to.InfoTO
+import kornell.core.to.CourseDetailsTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -213,9 +215,35 @@ object TOs {
     val to = tos.newActionTO().as
     to
   }
+
+  def newInfosTO(infosTOMap: Map[String,java.util.List[kornell.core.to.
+ InfoTO]]) = {
+    val infosTO = tos.newInfosTO.as
+    infosTO.setInfoTOs(infosTOMap.asJava)
+    infosTO
+  }
   
-  def newLaunchEnrollmentTO = {
-    val to = tos.newLaunchEnrollmentTO().as
+  def newInfoTO(
+      uuid:String,
+      courseVersionUUID:String,
+      category:String,
+      subcategory:String,
+      sequence:Integer,
+      title:String,
+      text:String):InfoTO = {
+    val to = tos.newInfoTO.as
+    to.setUUID(uuid)
+    to.setCourseVersionUUID(courseVersionUUID)
+    to.setSequence(sequence)
+    to.setCategory(category)
+    to.setSubCategory(subcategory)
+    to.setText(text)
+    to.setTitle(title)
+    to
+  }
+  
+  def newCourseDetailsTO():CourseDetailsTO = {
+    val to = tos.newCourseDetailsTO.as
     to
   }
 }

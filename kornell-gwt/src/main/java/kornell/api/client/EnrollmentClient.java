@@ -2,7 +2,8 @@ package kornell.api.client;
 
 import kornell.core.entity.Enrollment;
 import kornell.core.lom.Contents;
-import kornell.core.to.LaunchEnrollmentTO;
+import kornell.core.to.ActionTO;
+import kornell.core.to.CourseDetailsTO;
 
 public class EnrollmentClient extends RESTClient{
 
@@ -33,8 +34,16 @@ public class EnrollmentClient extends RESTClient{
 	}
 
 	//TODO: DRY GET("enrollments",enrollmentUUID)
-	public void launch(Callback<LaunchEnrollmentTO> callback) {
+	public void launch(Callback<ActionTO> callback) {
 		GET("enrollments",enrollmentUUID,"launch").go(callback);
+	}
+
+	public InfosClient infos() {
+		return new InfosClient(this);
+	}
+
+	public void findDetails(Callback<CourseDetailsTO> cb) {
+		GET("enrollments",enrollmentUUID,"details").go(cb);
 	}
 
 }

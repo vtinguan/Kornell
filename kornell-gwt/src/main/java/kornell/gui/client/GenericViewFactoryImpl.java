@@ -183,9 +183,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 					clientFactory.getPlaceController(),
 					clientFactory.getKornellSession());
 			ClassroomView activityView = getClassroomView();
-			coursePresenter = new ClassroomPresenter(activityView,
-					clientFactory.getPlaceController(), rendererFactory,
-					clientFactory.getKornellSession());
+			coursePresenter = new ClassroomPresenter(activityView, rendererFactory,clientFactory.getEventBus());
 		}
 		return coursePresenter;
 	}

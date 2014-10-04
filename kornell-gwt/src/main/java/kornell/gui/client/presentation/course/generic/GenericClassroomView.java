@@ -5,6 +5,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.details.GenericCourseDetailsView;
 
@@ -17,7 +18,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericClassroomView extends Composite implements ClassroomView, ShowDetailsEventHandler {
+public class GenericClassroomView extends Composite implements ClassroomView, 
+	ShowDetailsEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericClassroomView> {
 	}
 	private PlaceController placeCtrl;
@@ -31,14 +33,12 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	@UiField
 	FlowPanel detailsPanel;
 	
-	private boolean showCourseClassContent;
 	
 	private GenericCourseDetailsView detailsView;
 
 	private Presenter presenter;
 
 	public GenericClassroomView(PlaceController placeCtrl, KornellSession session, EventBus bus) {
-		GWT.log("new GenericClassroomView");
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		this.bus = bus;
@@ -49,20 +49,15 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	}
 
 	@Override
-	public void display(boolean isEnrolled) {
-		presenter.stopSequencer();
-		this.showCourseClassContent = isEnrolled;
-		if(this.showCourseClassContent){
-			presenter.startSequencer();
-		}
-		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl);
+	public void display(ClassroomPlace place) {
+		presenter.startSequencer();
+		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl,place);
 		detailsView.setPresenter(presenter);
 		detailsView.initData();
 		detailsPanel.clear();
 		detailsPanel.add(detailsView);
-		// TODO: 000 REVIEW
-		boolean showDetails = false; //!isEnrolled || EnrollmentCategory.isFinished(Dean.getInstance().getCourseClassTO().getEnrollment());
-		bus.fireEvent(new ShowDetailsEvent(showDetails));
+		detailsPanel.setVisible(false);
+		contentPanel.setVisible(true);
 	}
 
 	@Override

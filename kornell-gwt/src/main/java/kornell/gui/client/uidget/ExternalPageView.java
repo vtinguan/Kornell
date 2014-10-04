@@ -1,10 +1,6 @@
 package kornell.gui.client.uidget;
 
-import static kornell.core.util.StringUtils.url;
-
 import java.util.Date;
-
-import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.lom.ExternalPage;
 

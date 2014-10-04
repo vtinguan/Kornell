@@ -10,7 +10,7 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 public interface CAM12Factory extends AutoBeanFactory { 
-	public static String PREFIX = "application/vnd.kornell.v1.scorm12.";
+	public static String PREFIX = "application/vnd.kornell.v1.scorm12.cam";
 	/* IMS */
 	AutoBean<Manifest> newManifest();
 	AutoBean<Organizations> newOrganizations();

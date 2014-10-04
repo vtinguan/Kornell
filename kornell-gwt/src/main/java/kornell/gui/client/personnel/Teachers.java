@@ -6,6 +6,9 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 
 public class Teachers {
+	
+	
+	
 	public static Teacher of(CourseClassTO courseClassTO) {
 		ContentSpec spec = courseClassTO.getCourseVersionTO()
 				.getCourseVersion().getContentSpec();

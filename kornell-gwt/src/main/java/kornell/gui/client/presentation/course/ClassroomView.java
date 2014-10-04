@@ -10,12 +10,11 @@ public interface ClassroomView  extends IsWidget{
 	public interface Presenter extends IsWidget {
 		Contents getContents();
 		void startSequencer();
-		void stopSequencer();
 		void fireProgressEvent();
 	}
 
 	FlowPanel getContentPanel();
 	void setPresenter(Presenter presenter);
-	void display(boolean isEnrolled);
+	void display(ClassroomPlace place);
 
 }

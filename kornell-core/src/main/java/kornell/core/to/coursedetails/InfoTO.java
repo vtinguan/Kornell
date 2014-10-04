@@ -1,5 +1,6 @@
 package kornell.core.to.coursedetails;
 
+@Deprecated
 public class InfoTO {
 	String type;
 	String text;

@@ -34,7 +34,7 @@ class S3ContentManager(cs: ContentStore) extends ContentManager {
     s3
   }
   
-  override def getPath(obj:String) = composeURL(fullPrefix,obj) 
+  override def getURL(obj:String) = composeURL(fullPrefix,obj) 
 
   override def getObjectStream(obj: String): InputStream = 
     s3.getObject(bucket, composeURL(fullPrefix, obj)).getObjectContent

@@ -187,7 +187,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		initActivityManagers();
 		initHistoryHandler(defaultPlace);
 		initException();
-		initSCORM12();
 		initPersonnel();
 		initDebugger();
 	}
@@ -207,9 +206,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads(), placeCtrl);
 	}
 
-	private void initSCORM12() {
-		SCORM12Binder.bind(new SCORM12Adapter(bus, session));
-	}
 
 	private void initException() {
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {

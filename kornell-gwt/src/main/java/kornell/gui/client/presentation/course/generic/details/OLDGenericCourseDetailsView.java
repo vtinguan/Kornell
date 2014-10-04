@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.course.generic.details;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -16,7 +15,6 @@ import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
-import kornell.core.to.InfosTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
@@ -45,12 +43,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericCourseDetailsView extends Composite {
-	interface MyUiBinder extends UiBinder<Widget, GenericCourseDetailsView> {
+public class OLDGenericCourseDetailsView extends Composite {
+	/*
+	interface MyUiBinder extends UiBinder<Widget, OLDGenericCourseDetailsView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
+*/
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private EventBus bus;
@@ -87,20 +86,12 @@ public class GenericCourseDetailsView extends Composite {
 
 	private boolean isEnrolled, isCancelled, isInactiveCourseClass;
 
-	private ClassroomPlace place;
-
-	final FlowPanel infoPanel = new FlowPanel();
-	final FlowPanel hintsPanel = new FlowPanel();
-	final Label courseNameLabel = new Label();
-	final Label courseClassNameLabel = new Label();
-	
-	public GenericCourseDetailsView(EventBus bus, KornellSession session,
-			PlaceController placeCtrl, ClassroomPlace place) {
+	public OLDGenericCourseDetailsView(EventBus bus, KornellSession session,
+			PlaceController placeCtrl) {
 		this.bus = bus;
 		this.session = session;
 		this.placeCtrl = placeCtrl;
-		this.place = place;
-		initWidget(uiBinder.createAndBindUi(this));
+		//initWidget(uiBinder.createAndBindUi(this));
 	}
 
 	public void initData() {
@@ -135,31 +126,12 @@ public class GenericCourseDetailsView extends Composite {
 		bus.fireEvent(progressChangeEvent);
 	}
 
-	private void displayInfo() {
-		infoPanel.addStyleName("infoPanel");
-		hintsPanel.addStyleName("hintsPanel");
-		
-		session.enrollment(place.getEnrollmentUUID())
-				.findDetails(new Callback<kornell.core.to.CourseDetailsTO>() {
-					@Override
-					public void ok(kornell.core.to.CourseDetailsTO to) {
-						Map<String, List<kornell.core.to.InfoTO>> infoTOs = 
-								to.getInfosTO().getInfoTOs();
-						courseNameLabel.setText(to.getCourseName());
-						courseClassNameLabel.setText(to.getCourseClassName());
-						displayInfos(infoPanel, infoTOs.get("infos"));
-						displayHints(hintsPanel, infoTOs.get("hints"));
-					}
-				});
-	}
-
 	private void display() {
-		displayInfo();
-
 		isEnrolled = false;
 		isCancelled = false;
 		UserInfoTO user = session.getCurrentUser();
 		Enrollment enrollment;
+		
 		for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO()
 				.getEnrollmentTOs()) {
 			enrollment = enrollmentTO.getEnrollment();
@@ -343,28 +315,33 @@ public class GenericCourseDetailsView extends Composite {
 		titleLabel.addStyleName("titleLabel");
 		titlePanel.add(titleLabel);
 
-		
-		courseNameLabel.addStyleName("courseNameLabel");
-		titlePanel.add(courseNameLabel);
-		
+		if (courseClassTO != null) {
+			Label courseNameLabel = new Label(courseClassTO
+					.getCourseVersionTO().getCourse().getTitle());
+			courseNameLabel.addStyleName("courseNameLabel");
+			titlePanel.add(courseNameLabel);
+		}
 
 		Label subTitleLabel = new Label(constants.detailsSubHeader() + " ");
 		subTitleLabel.addStyleName("titleLabel subTitleLabel");
 		titlePanel.add(subTitleLabel);
 
-		courseClassNameLabel.addStyleName("courseClassNameLabel");
-		titlePanel.add(courseClassNameLabel);
+		if (courseClassTO != null) {
+			Label courseClassNameLabel = new Label(courseClassTO
+					.getCourseClass().getName());
+			courseClassNameLabel.addStyleName("courseClassNameLabel");
+			titlePanel.add(courseClassNameLabel);
+		}
 	}
 
 	private FlowPanel getInfosPanel() {
+		FlowPanel infoPanel = new FlowPanel();
+		infoPanel.addStyleName("infoPanel");
+		if (courseDetails != null)
+			for (InfoTO infoTO : courseDetails.getInfos()) {
+				infoPanel.add(getInfoPanel(infoTO.getType(), infoTO.getText()));
+			}
 		return infoPanel;
-	}
-
-	private void displayInfos(FlowPanel infoPanel,
-			List<kornell.core.to.InfoTO> infos) {
-		for (kornell.core.to.InfoTO infoTO : infos) {
-			infoPanel.add(getInfoPanel(infoTO.getTitle(), infoTO.getText()));
-		}
 	}
 
 	private FlowPanel getInfoPanel(String title, String text) {
@@ -472,21 +449,23 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private FlowPanel getHintsPanel() {
+		FlowPanel hintsPanel = new FlowPanel();
+		hintsPanel.addStyleName("hintsPanel");
+
+		if (courseDetails != null)
+			for (HintTO hintTO : courseDetails.getHints()) {
+				hintsPanel
+						.add(getHintPanel(hintTO.getType(), hintTO.getName()));
+			}
+
 		return hintsPanel;
 	}
 
-	private void displayHints(FlowPanel hintsPanel,
-			List<kornell.core.to.InfoTO> hints) {
-		for (kornell.core.to.InfoTO hintTO : hints)
-			hintsPanel.add(
-					getHintPanel(hintTO.getSubCategory(), hintTO.getText()));
-	}
-
-	private FlowPanel getHintPanel(String subCategory, String hintText) {
+	private FlowPanel getHintPanel(String img, String hintText) {
 		FlowPanel hint = new FlowPanel();
 		hint.addStyleName("hintDetails");
 
-		Image hintImg = new Image(IMAGES_PATH + subCategory + ".png");
+		Image hintImg = new Image(IMAGES_PATH + img + ".png");
 		hintImg.addStyleName("hintImg");
 		hint.add(hintImg);
 

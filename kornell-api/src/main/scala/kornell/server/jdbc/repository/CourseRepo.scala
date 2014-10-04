@@ -8,11 +8,8 @@ import kornell.server.jdbc.SQL._
 
 
 class CourseRepo(uuid: String) {
-
   def get() = sql"""select * from Course where uuid=$uuid""".first[Course]
-
-  def withEnrollment(p: Person) = ???
-
+  def first = get 
 }
 
 object CourseRepo {

@@ -1,6 +1,10 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import java.util.logging.Logger;
+
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.event.ClassroomEvent;
+import kornell.gui.client.event.ClassroomEventHandler;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.HideSouthBarEventHandler;
 import kornell.gui.client.presentation.admin.AdminPlace;
@@ -19,14 +23,18 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericSouthBarView extends Composite implements SouthBarView, HideSouthBarEventHandler {
-
+public class GenericSouthBarView extends Composite implements
+		SouthBarView,
+		HideSouthBarEventHandler,
+		ClassroomEventHandler {
+	private static final Logger log = Logger.getLogger(GenericSouthBarView.class.getName());
 	interface MyUiBinder extends UiBinder<Widget, GenericSouthBarView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	
+
 	private AdminBarView adminBarView;
 
 	private PlaceController placeCtrl;
@@ -36,36 +44,35 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 
 	private ClientFactory clientFactory;
 
+
+	// TODO: Prefer Dependency Injection
 	public GenericSouthBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
-		clientFactory.getEventBus().addHandler(HideSouthBarEvent.TYPE,this);
+		EventBus bus = clientFactory.getEventBus();
+		bus.addHandler(HideSouthBarEvent.TYPE, this);
+		bus.addHandler(ClassroomEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 
-		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
-			@Override
-			public void onPlaceChange(PlaceChangeEvent event) {
-				Place newPlace = event.getNewPlace();
-				pickSouthBar(newPlace);
-			}
-		});
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						Place newPlace = event.getNewPlace();
+						pickSouthBar(newPlace);
+					}
+				});
 	}
 
 	private void pickSouthBar(Place newPlace) {
-		if(newPlace instanceof AdminPlace){
+		if (newPlace instanceof AdminPlace) {
 			southBar.clear();
-			//southBar.add(getAdminBarView(newPlace));
+			// southBar.add(getAdminBarView(newPlace));
 			this.setVisible(false);
-		} else if (newPlace instanceof ClassroomPlace) {
-			southBar.clear();
-			southBar.add(getActivityBarView());
+		}else if (newPlace instanceof ClassroomPlace) {			
 			this.setVisible(true);
 		} else {
 			this.setVisible(false);
 		}
-	}
-
-	private ActivityBarView getActivityBarView() {
-		return new GenericActivityBarView(clientFactory);
 	}
 
 	private AdminBarView getAdminBarView(Place newPlace) {
@@ -79,9 +86,20 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	}
 
 	@Override
-  public void onHideSouthBar(HideSouthBarEvent event) {
-		clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
+	public void onHideSouthBar(HideSouthBarEvent event) {
+		clientFactory.getViewFactory().getDockLayoutPanel()
+				.setWidgetHidden((Widget) this, event.isHideSouthBar());
 		this.setVisible(!event.isHideSouthBar());
-  }
+	}
+
+	@Override
+	public void onClassroomStarted(ClassroomEvent event) {
+		GenericActivityBarView activityBarView = new GenericActivityBarView(clientFactory.getEventBus(),
+				clientFactory.getKornellSession(),
+				clientFactory.getPlaceController());
+		southBar.clear();
+		southBar.add(activityBarView);
+		southBar.setVisible(true);
+	}
 
 }

@@ -19,15 +19,17 @@ import kornell.server.ep.EnrollmentSEP
 import java.math.BigDecimal
 import java.math.BigDecimal._
 import kornell.server.util.ServerTime
+import kornell.server.repository.TOs
+import kornell.core.to.CourseDetailsTO
 
 //TODO: Specific column names and proper sql
-class EnrollmentRepo(enrollmentUUID: String) {
+class EnrollmentRepo(enrollmentUUID: String,e:Enrollment) {
   lazy val finder = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
 
   def get: Enrollment = finder.get[Enrollment]
 
-  def first: Option[Enrollment] =
-    finder.first[Enrollment]
+  lazy val first: Option[Enrollment] = Option(e).orElse(finder.first[Enrollment])
+    
 
   def update(e: Enrollment): Enrollment = {
     sql"""
@@ -175,9 +177,26 @@ where
       update(e)
     }
   }
+  
+  def findDetails():Option[CourseDetailsTO] = for {
+  	e <- first
+  	cc <- CourseClassRepo(e.getCourseClassUUID).first
+  	cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
+  	c <- CourseRepo(cv.getCourseUUID).first
+  }  yield {
+    val to = TOs.newCourseDetailsTO
+    to.setCourseName(c.getTitle)
+    to.setCourseClassName(cc.getName)
+    to.setInfosTO(InfosRepo.byCourseVersion(cv.getUUID))
+    to
+  }
+    
+  
 
 }
 
 object EnrollmentRepo {
-  def apply(uuid: String) = new EnrollmentRepo(uuid)
+  def apply(uuid: String) = new EnrollmentRepo(uuid,null) 
+  def apply(e:Enrollment) = new EnrollmentRepo(e.getUUID,e)
+  
 }

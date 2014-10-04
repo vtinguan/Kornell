@@ -14,14 +14,16 @@ import kornell.core.entity.Registration;
 import kornell.core.entity.Registrations;
 import kornell.core.entity.Roles;
 import kornell.core.lom.Contents;
+import kornell.core.to.ActionTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
+import kornell.core.to.CourseDetailsTO;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.EnrollmentsTO;
-import kornell.core.to.LaunchEnrollmentTO;
+import kornell.core.to.InfosTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.RolesTO;
@@ -58,7 +60,9 @@ public class MediaTypes {
 		register(LibraryFilesTO.TYPE,LibraryFilesTO.class);
 		register(UnreadChatThreadsTO.TYPE,UnreadChatThreadsTO.class);
 		register(ChatThreadMessagesTO.TYPE,ChatThreadMessagesTO.class);
-		register(LaunchEnrollmentTO.TYPE,LaunchEnrollmentTO.class);
+		register(ActionTO.TYPE,ActionTO.class);
+		register(InfosTO.TYPE,InfosTO.class);
+		register(CourseDetailsTO.TYPE,CourseDetailsTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

@@ -5,21 +5,24 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Contents;
+import kornell.core.scorm.scorm12.rte.action.OpenSCO12Action;
 import kornell.core.to.ActionTO;
-import kornell.core.to.LaunchEnrollmentTO;
+import kornell.core.to.ActionType;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.OpenURLView;
+import kornell.scorm.client.scorm12.SCORM12Adapter;
+import kornell.scorm.client.scorm12.SCORM12Binder;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Follow server-side evaluation and actions.
  */
-public class ThinSequencer implements Sequencer{
-	public static final Logger log = Logger.getLogger(ThinSequencer.class.getName());
+public class ThinSequencer implements Sequencer {
+	public static final Logger log = Logger.getLogger(ThinSequencer.class
+			.getName());
 	private FlowPanel contentPanel;
 	private ClassroomPlace place;
 	private EventBus bus;
@@ -33,19 +36,19 @@ public class ThinSequencer implements Sequencer{
 	@Override
 	public void onContinue(NavigationRequest event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onPrevious(NavigationRequest event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onDirect(NavigationRequest event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -61,37 +64,50 @@ public class ThinSequencer implements Sequencer{
 	}
 
 	@Override
-	//TODO: 000 Deprecate "contents"
+	// TODO: 000 Deprecate "contents"
 	public void go(Contents contents) {
 		final String enrollmentUUID = place.getEnrollmentUUID();
-		log.info("Launching Enrollment ["+enrollmentUUID+"]");
-		session.enrollment(enrollmentUUID).launch(new Callback<LaunchEnrollmentTO>() {
+		log.info("Launching Enrollment [" + enrollmentUUID + "]");
+		session.enrollment(enrollmentUUID).launch(new Callback<ActionTO>() {
 			@Override
-			public void ok(LaunchEnrollmentTO to) {
-				log.info("LAUNCH");
-				log.info(to.toString());
-				ActionTO actionTO = to.getActionTO();
-			
-				String url = actionTO.getProperties().get("href");
-				OpenURLView view = new OpenURLView(url);
-				
+			public void ok(ActionTO actionTO) {
+				Widget view = createWidgetForAction(actionTO);
 				contentPanel.clear();
 				contentPanel.add(view);
 			}
-			
 		});
+	}
+
+	private Widget createWidgetForAction(ActionTO actionTO) {
+		ActionType type = actionTO.getType();
+		Widget widget = null;
+		switch (type) {
+		case OpenSCO12:
+			widget = openSCO(actionTO.getOpenSCO12Action());
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown action type " + type);
+		}
+		return widget;
+	}
+
+	private Widget openSCO(OpenSCO12Action openSCO) {
+		SCORM12Adapter api = new SCORM12Adapter(bus, session,
+				place.getEnrollmentUUID(), openSCO);
+		SCORM12Binder.bind(api);
+		return new OpenURLView(openSCO.getHref());
 	}
 
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void fireProgressEvent() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

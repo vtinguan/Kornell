@@ -8,58 +8,57 @@ import kornell.core.to.ActionType
 import kornell.server.scorm.scorm12.cam._
 import kornell.core.scorm.scorm12.cam._
 import kornell.core.util.StringUtils._
+import kornell.core.entity.Enrollment
+import kornell.server.jdbc.repository.ActomEntriesRepo
+import kornell.server.scorm.scorm12.rte.RTE12
 
-class SCORM12PackageManager(cm:ContentManager) {
-  //TODO: Public Interface
-  def launch():ActionTO = {
-	  val manifest = getManifest
-	  val orgs = manifest.getOrganizations
-	  val defaultOrg = orgs.getDefaultOrganization
-	  val orgList = orgs.getOrganizationList asScala
-	  val org = orgList.find { o => o.getIdentifier == defaultOrg}
-	  val resources = manifest.getResources
-	  val action = org match {
-	    case Some(org) => launch(org,resources)
-	    case None => ???
-	  }
-	  action
+class SCORM12PackageManager(cm: ContentManager) {
+  //TODO: Public Interface    
+  def launch(e: Enrollment): ActionTO = {
+    //TODO: Recover from last
+    val itemOpt = actoms.headOption //first item
+    val itemResource = itemOpt.flatMap { item =>
+      resourceList.find {
+        _.getIdentifier == item.getIdentifierRef
+      }.map { res =>
+        (item, res)
+      }
+    }
+
+    val action = itemResource match {
+      case Some((item, res)) => launch(e, item, res)
+      case None => ???
+    }
+
+    action
   }
-  
+
   //TODO: Private Impl
-  
-  def launch(org:Organization,resources:Resources): ActionTO = {
-	  val res = firstResource(org.getItems asScala,resources)
-	  res match {
-	    case Some(res) => launch(res)
-	    case None => ???
-	  }	  
-  }
-  
-  def launch(res:Resource) = {
-      val path = cm.getPath(res.getHref)
-	  val action = TOs.newActionTO
-	  action.setType(ActionType.OpenURL)
-	  action.setProperties(Map("href" -> path) asJava)
-	  action
-  }
-  
-  def firstResource(items:Seq[Item],resources:Resources):Option[Resource] =  
-    items.filter{ it => isSome(it.getIdentifierRef) }
-    	.headOption
-    	.flatMap { it => findResource(it.getIdentifierRef,resources) }
-    	
+  val manifest = getManifest
+  val orgs = manifest.getOrganizations
+  val defaultOrgId = orgs.getDefaultOrganization
+  val orgList = orgs.getOrganizationList asScala
+  //TODO: Support multiple organizations
+  val defaultOrg = orgList.find { o => o.getIdentifier == defaultOrgId }
+  val items = defaultOrg.map { _.getItems asScala }.get
+  val actoms = items.filter { it => isSome(it.getIdentifierRef) }
+  val resources = manifest.getResources
+  val resourceList = resources.getResourceList asScala
 
-  
-  def findResource(id:String,resources:Resources) = 
-    resources.getResourceList.asScala.find{ res => id == res.getIdentifier}
-  
-  
+  def launch(e: Enrollment, item: Item, res: Resource) = {
+    val path = cm.getURL(res.getHref)
+    val resId = res.getIdentifier
+    val data = ActomEntriesRepo.getValues(e.getUUID, item.getIdentifier, item.getIdentifierRef)
+    RTE12.newOpenSCO12Action(resId, path, data)
+  }
+
+  def findResource(id: String, resources: Resources) =
+    resources.getResourceList.asScala.find { res => id == res.getIdentifier }
+
   //TODO: Cache
-  def getManifest:Manifest = CAM12DOMParser.parse(cm.getObjectStream("imsmanifest.xml"))
-  
-
+  def getManifest: Manifest = CAM12DOMParser.parse(cm.getObjectStream("imsmanifest.xml"))
 }
 
-object SCORM12PackageManager{
-  def apply(cm:ContentManager) = new SCORM12PackageManager(cm)
+object SCORM12PackageManager {
+  def apply(cm: ContentManager) = new SCORM12PackageManager(cm)
 }
