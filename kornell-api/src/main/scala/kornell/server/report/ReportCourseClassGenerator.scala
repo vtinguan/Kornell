@@ -33,7 +33,7 @@ object ReportCourseClassGenerator {
     val courseClassReportTO = sql"""
     	select 
 					p.fullName,
-					pw.username,
+					if(pw.username is not null, pw.username, p.email) as username,
 					p.email,
 					e.state,
 					case    
@@ -48,7 +48,7 @@ object ReportCourseClassGenerator {
 				from 
 					Enrollment e 
 					join Person p on p.uuid = e.person_uuid
-					join Password pw on pw.person_uuid = p.uuid
+					left join Password pw on pw.person_uuid = p.uuid
 				where
 					e.state = 'enrolled' and
     		  e.class_uuid = ${courseClassUUID}
