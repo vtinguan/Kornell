@@ -59,17 +59,13 @@ public class RESTClient {
 		String auth = ClientProperties.get(ClientProperties.X_KNL_A);
 		if (isSome(auth)) {
 			try {
-				String prefix = "Basic ";
-				int index = auth.indexOf(prefix);
-				if(index >= 0){
-					String decoded = ClientProperties.base64Decode(auth.split(" ")[1]);
-		      String[] parts = decoded.split(":");
-		      if(parts.length < 3 && Dean.getInstance().getInstitution() != null){
-		      	decoded += ":" + Dean.getInstance().getInstitution().getUUID();
-		      	auth = prefix + ClientProperties.base64Encode(decoded);
-		      	ClientProperties.set(ClientProperties.X_KNL_A, auth);
-		      }	      
-				}
+				String decoded = ClientProperties.base64Decode(auth.replaceAll("\\u00a0"," ").split(" ")[1]);
+	      String[] parts = decoded.split(":");
+	      if(parts.length < 3){
+	      	decoded += ":" + (Dean.getInstance() != null && Dean.getInstance().getInstitution() != null ? Dean.getInstance().getInstitution().getUUID() : "null");
+	      	auth = "Basic " + ClientProperties.base64Encode(decoded);
+	      	ClientProperties.set(ClientProperties.X_KNL_A, auth);
+	      }
       } catch (Exception e) {
 	      // TODO: handle exception
       }

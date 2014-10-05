@@ -42,7 +42,7 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("hello")
   @Produces(Array(UserHelloTO.TYPE))
   @GET
-  def getChatThreadMessages(@Context req: HttpServletRequest,
+  def hello(@Context req: HttpServletRequest,
       @QueryParam("name") name:String, 
       @QueryParam("hostName") hostName:String) = {
     val userHello = newUserHelloTO
@@ -58,7 +58,7 @@ class UserResource(private val authRepo:AuthRepo) {
     val auth = req.getHeader("X-KNL-A")
     if (auth != null && auth.length() > 0) {
 	    val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
-	    AuthRepo().authenticate(institutionUUID, username, password).map { personUUID =>
+	    AuthRepo().authenticate(userHello.getInstitution.getUUID, username, password).map { personUUID =>
 	  		val person = PersonRepo(personUUID).first.getOrElse(null)
 	  		userHello.setUserInfoTO(getUser(person).getOrElse(null))
 	  	}

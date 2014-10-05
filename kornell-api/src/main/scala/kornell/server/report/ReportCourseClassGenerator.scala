@@ -53,7 +53,12 @@ object ReportCourseClassGenerator {
 					e.state = 'enrolled' and
     		  e.class_uuid = ${courseClassUUID}
 				order by 
-					progressState,
+					case 
+    				when progressState = 'completed' then 1
+						when progressState = 'waitingEvaluation'  then 2
+						when progressState = 'inProgress'  then 3
+						else 4 
+    			end,
     			e.certifiedAt,
     			progress,
     			p.fullName,
