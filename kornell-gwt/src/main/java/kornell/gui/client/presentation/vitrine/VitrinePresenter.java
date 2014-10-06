@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.vitrine;
 
-import static kornell.core.util.StringUtils.composeURL;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +9,7 @@ import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
@@ -20,13 +19,10 @@ import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
-import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class VitrinePresenter implements VitrineView.Presenter {
@@ -89,7 +85,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				clientFactory.getEventBus().fireEvent(new LoginEvent(userInfoTO));
 				Place newPlace;
 				Place welcomePlace = new WelcomePlace();
-				if (!session.hasSignedTerms()) {
+				if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
 					 newPlace = new TermsPlace();
 				} else if (institution.isDemandsPersonContactDetails() && userInfoTO.getPerson().getCity() == null) {
 					newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
