@@ -110,25 +110,30 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 			String barLogoFileName = "logo300x45" + (!"_light".equals(skin) ? "_light" : "") + ".png";
 			imgMenuBarUrl = StringUtils.composeURL(assetsURL, barLogoFileName);
 		}
+		addOffsets(scrollPanel, clientFactory.getPlaceController().getWhere());
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
-						if (newPlace instanceof VitrinePlace) {
-							setVisible(false);
-							addStyleName("shy");
-							scrollPanel.removeStyleName("offsetNorthBar");
-						} else {
-							loadAssets();
-							setVisible(true);
-							removeStyleName("shy");
-							scrollPanel.addStyleName("offsetNorthBar");
-							showButtons(newPlace);
-						}
+						addOffsets(scrollPanel, newPlace);
 					}
 				});
 	}
+
+	private void addOffsets(final ScrollPanel scrollPanel, Place place) {
+    if (place instanceof VitrinePlace) {
+			setVisible(false);
+			addStyleName("shy");
+			scrollPanel.removeStyleName("offsetNorthBar");
+		} else {
+			loadAssets();
+			setVisible(true);
+			removeStyleName("shy");
+			scrollPanel.addStyleName("offsetNorthBar");
+			showButtons(place);
+		}
+  }
 
 	private void loadAssets() {
 		if(isLoaded) return;

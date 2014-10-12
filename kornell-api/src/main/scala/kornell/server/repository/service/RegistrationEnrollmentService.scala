@@ -42,7 +42,7 @@ object RegistrationEnrollmentService {
   }
 
   private def deanRequestEnrollment(req: EnrollmentRequestTO, dean: Person) =
-    PeopleRepo.get(req.getCPF,req.getEmail) match {
+    PeopleRepo.get(req.getInstitutionUUID, req.getCPF,req.getEmail) match {
       case Some(one) => deanEnrollExistingPerson(one, req, dean)
       case None => deanEnrollNewPerson(req, dean)
     }
@@ -92,7 +92,7 @@ object RegistrationEnrollmentService {
     val username = regReq.getUsername
     val cpf = regReq.getCPF
 
-    PeopleRepo.get(username,cpf,email) match {
+    PeopleRepo.get(regReq.getInstitutionUUID, username,cpf,email) match {
       case Some(one) => userUpdateExistingPerson(regReq, one)
       case None => userCreateNewPerson(regReq)
     }

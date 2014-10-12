@@ -70,9 +70,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		scrollPanel.addStyleName("vScrollBar");
 		
 		final RootPanel rootPanel = RootPanel.get();
-		rootPanel.add(getMenuBarView());	
 		rootPanel.add(scrollPanel);
-		rootPanel.add(getSouthBarView());
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
@@ -80,7 +78,15 @@ public class GenericViewFactoryImpl implements ViewFactory {
 					public void onPlaceChange(PlaceChangeEvent event) {
 						setPlaceNameAsBodyStyle(event);
 						setBackgroundImage(event.getNewPlace() instanceof VitrinePlace);
+						checkMenuBars(!(event.getNewPlace() instanceof VitrinePlace));
 					}
+
+					private void checkMenuBars(boolean addPanels) {
+	          if(addPanels && rootPanel.getWidgetCount() < 3){
+	        		rootPanel.add(getMenuBarView());	
+	        		rootPanel.add(getSouthBarView());
+	          }
+          }
 
 					private void setPlaceNameAsBodyStyle(PlaceChangeEvent event) {
 						String styleName = rootPanel.getStyleName();

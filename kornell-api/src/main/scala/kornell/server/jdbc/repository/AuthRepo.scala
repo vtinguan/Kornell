@@ -86,7 +86,6 @@ object AuthRepo {
 
   def lookupUserRoles(personUUID: Option[String]) = {
     val roles = personUUID
-      .flatMap { usernameOf }
       .map { lookupRolesOf }
       .getOrElse(Set.empty)
     roles
@@ -99,11 +98,10 @@ object AuthRepo {
     username
   }
 
-  def lookupRolesOf(username: String): Set[Role] = sql"""
+  def lookupRolesOf(personUUID: String): Set[Role] = sql"""
   	select r.person_uuid, r.role, r.institution_uuid, r.course_class_uuid 
   	from Role r
-    join Password pw on r.person_uuid = pw.person_uuid
-  	where pw.username = $username
+  	where person_uuid = $personUUID
   """.map[Role] { rs => toRole(rs) }
   	 .toSet
 
@@ -168,10 +166,11 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
     	where pwd.person_uuid = $personUUID
     """.first[String]
 
-  def hasPassword(username: String) =
+  def hasPassword(institutionUUID: String, username: String) =
     sql"""
     	select pwd.username from Password pwd
     	where pwd.username = $username
+    	and pwd.institutionUUID = $institutionUUID
     """.first[String].isDefined
 
   def setPlainPassword(institutionUUID: String, personUUID: String, username: String, plainPassword: String) = {
@@ -191,7 +190,7 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 	  """.executeUpdate
 
   //TODO: Cache / remove external reference
-  def rolesOf(username: String) = AuthRepo.lookupRolesOf(username)
+  def rolesOf(personUUID: String) = AuthRepo.lookupRolesOf(personUUID)
 
   def grantPlatformAdmin(personUUID: String) = {
     sql"""

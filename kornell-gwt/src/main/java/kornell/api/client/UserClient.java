@@ -19,8 +19,8 @@ public class UserClient extends RESTClient {
 		GET(path).sendRequest(null, cb);
 	}
 
-	public void checkUser(String email, Callback<UserInfoTO> cb) {
-		GET("/user/check/" + email).sendRequest(null, cb);
+	public void checkUser(String institutionUUID, String email, Callback<UserInfoTO> cb) {
+		GET("/user/check",institutionUUID,email).sendRequest(null, cb);
 	}
 
 	public void requestRegistration(RegistrationRequestTO registrationRequestTO, Callback<UserInfoTO> cb) {

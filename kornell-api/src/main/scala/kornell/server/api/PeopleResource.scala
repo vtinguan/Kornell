@@ -17,8 +17,8 @@ class PeopleResource() {
   def get(@PathParam("uuid") uuid:String):PersonResource = new PersonResource(uuid) 
   
   @GET
-  def findBySearchTerm(@QueryParam("search") search:String,
-       @QueryParam("institutionUUID") institutionUUID:String) = PeopleRepo.findBySearchTerm(search, institutionUUID)
+  def findBySearchTerm(@QueryParam("institutionUUID") institutionUUID:String,
+      @QueryParam("search") search:String) = PeopleRepo.findBySearchTerm(institutionUUID, search)
 
   @Path("isRegistered")
   @Produces(Array("application/boolean"))

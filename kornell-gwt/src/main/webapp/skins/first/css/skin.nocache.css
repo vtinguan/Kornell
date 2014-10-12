@@ -135,7 +135,7 @@
 .VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;margin-top:0;}
 .VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:30px;}
 .VitrinePlace .boxLogin .inputLabel{padding-bottom:5px;}
-.VitrinePlace .boxLogin .inputWrapper{width:213px;height:18px;background:white;padding-left:10px;padding-top:6px;padding-bottom:6px;border:1px solid #474747;margin-bottom:14px;}.VitrinePlace .boxLogin .inputWrapper .inputBar{height:20px;float:left;width:3px;background:#aa0000;margin-right:5px;margin-top:-2px;}
+.VitrinePlace .boxLogin .inputWrapper{width:213px;height:18px;background:white;padding-left:10px;padding-top:6px;padding-bottom:6px;border:1px solid #474747;margin-bottom:14px;}.VitrinePlace .boxLogin .inputWrapper .inputBar{height:20px;float:left;width:3px;background:#d14242;margin-right:5px;margin-top:-2px;}
 .VitrinePlace .boxLogin .inputWrapper input{width:200px;padding:0;border:0;box-shadow:none;font-size:14px;font-weight:bold;}
 .VitrinePlace .boxLogin .linkButton{background:transparent !important;margin-top:5px;text-decoration:underline;color:#bec1c3 !important;}
 .VitrinePlace .boxLogin .panelHR hr{border-bottom:0 !important;border-top:1px solid #bec1c3;margin-top:30px;margin-bottom:40px;}
@@ -194,7 +194,7 @@
 .coursesWrapper .btnPanel .headerText{font-size:16px;color:#d88709;font-weight:bold;margin-left:10px;line-height:50px;display:block;float:left;}
 .coursesWrapper .pnlCoursesWrapperTitle{height:20px;}.coursesWrapper .pnlCoursesWrapperTitle .imgPnlCourses{margin-left:24px;float:left;}
 .coursesWrapper .pnlCoursesWrapperTitle .labelPnlCourses{color:#bec1c3;font-size:15px;line-height:23px;padding-left:14px;padding-bottom:12px;float:left;}
-.coursesWrapper .pnlCoursesWrapperTitle .labelPnlCoursesHighlight{color:#aa0000;padding-left:5px;}
+.coursesWrapper .pnlCoursesWrapperTitle .labelPnlCoursesHighlight{color:#d14242;padding-left:5px;}
 .coursesWrapper .pnlCourses{display:block;overflow:auto;width:962px;}.coursesWrapper .pnlCourses .courseSummary{width:912px;height:140px;background-color:rgba(0, 0, 0, 0.1);border-radius:5px;padding:10px;margin-bottom:10px;margin-left:10px;float:left;}.coursesWrapper .pnlCourses .courseSummary:hover{cursor:pointer;background-color:rgba(0, 0, 0, 0.4);}
 .coursesWrapper .pnlCourses .courseSummary h1{margin:0px;margin-top:-3px;padding:5px 0px 5px 0px;font-size:1.1em;font-weight:bold;text-align:left;line-height:1.231;color:#e3e3e3;}
 .coursesWrapper .pnlCourses .courseSummary .lblSubTitle{color:#888888;font-style:italic;font-size:12px;margin-top:-7px;margin-bottom:-5px;}
@@ -318,8 +318,8 @@
 .detailsPanel{width:962px;margin:0 auto;}.detailsPanel .titlePanel{padding-top:20px;font-size:18px;line-height:20px;}.detailsPanel .titlePanel .titleImage{padding-left:20px;padding-right:5px;margin-top:-3px;float:left;height:28px;width:28px;}
 .detailsPanel .titlePanel .titleLabel{color:#bec1c3;padding-left:8px;padding-right:8px;float:left;}
 .detailsPanel .titlePanel .subTitleLabel{clear:both;margin-left:53px;font-size:14px;}
-.detailsPanel .titlePanel .courseNameLabel{color:#aa0000;float:left;}
-.detailsPanel .titlePanel .courseClassNameLabel{font-size:14px;color:#aa0000;float:left;}
+.detailsPanel .titlePanel .courseNameLabel{color:#d14242;float:left;}
+.detailsPanel .titlePanel .courseClassNameLabel{font-size:14px;color:#d14242;float:left;}
 .detailsPanel .titlePanel .closePanel .closeImage{float:right;}
 .detailsPanel .titlePanel .closePanel .closeLabel{float:right;line-height:40px;color:#d88709;padding-right:3px;}
 .detailsPanel .buttonsPanel{width:173.16px;margin-left:20px;margin-right:20px;margin-top:20px;clear:both;float:left;}.detailsPanel .buttonsPanel .btnDetails{width:133.16px;text-align:right;margin-top:20px;padding:4px 12px !important;display:inline-block;}.detailsPanel .buttonsPanel .btnDetails:hover{text-decoration:none;}
@@ -329,7 +329,7 @@
 .detailsPanel .detailsContentPanel .infoPanel .infoDetails .infoText{color:#bec1c3;padding-right:20px;}
 .detailsPanel .detailsContentPanel .sidePanel{float:left;margin-top:60px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel{width:240.5px;background-color:#0d0b0c;border-radius:8px;color:#bec1c3;font-size:12px;line-height:14px;padding:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails{padding-top:20px;padding-bottom:20px;}.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintImg{float:left;}
 .detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintText{padding-left:30px;}
-.detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel{width:240.5px;color:#aa0000;padding:10px;padding-left:22px;}
+.detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel{width:240.5px;color:#d14242;padding:10px;padding-left:22px;}
 .detailsPanel .detailsContentPanel .topicsPanel{width:721.5px;margin-top:30px;float:left;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel{height:24px;margin-bottom:10px;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopicsHeader{border-radius:0px;height:24px;line-height:24px;border:0;color:#bec1c3;padding-left:10px;padding-right:10px;font-size:12px;font-weight:bold;border-left:1px solid #505864;border-right:1px solid #181c22;display:block;float:left;}.detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopicsHeader:hover{text-decoration:none;cursor:default;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnTopics{width:699.5px;}
 .detailsPanel .detailsContentPanel .topicsPanel .topicsHeaderPanel .btnStatus{width:100.65500000000002px;}

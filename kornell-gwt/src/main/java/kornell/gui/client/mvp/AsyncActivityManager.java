@@ -109,7 +109,7 @@ public class AsyncActivityManager implements PlaceChangeEvent.Handler,
 		getNextActivity(event,new ActivityCallbackHandler() {
 			
 			@Override
-			public void onRecieveActivity(Activity nextActivity) {
+			public void onReceiveActivity(Activity nextActivity) {
 
 				Throwable caughtOnStop = null;
 				Throwable caughtOnCancel = null;

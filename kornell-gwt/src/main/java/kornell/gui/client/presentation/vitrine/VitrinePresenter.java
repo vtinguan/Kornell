@@ -195,7 +195,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				session.user().requestRegistration(registrationRequestTO, registrationCallback);
 			}
 		};
-		session.user().checkUser(suEmail, checkUserCallback);
+		session.user().checkUser(Dean.getInstance().getInstitution().getUUID(), suEmail, checkUserCallback);
 	}
 
 	private RegistrationRequestTO buildRegistrationRequestTO(String name, String email, String password) {

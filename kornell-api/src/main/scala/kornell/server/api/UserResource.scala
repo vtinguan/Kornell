@@ -110,12 +110,13 @@ class UserResource(private val authRepo:AuthRepo) {
     }
 
   @GET
-  @Path("check/{username}")
+  @Path("check/{institutionUUID}/{username}")
   @Produces(Array(UserInfoTO.TYPE))
-  def checkUsernameAndEmail(@PathParam("username") username: String): Option[UserInfoTO] = {
+  def checkUsernameAndEmail(@PathParam("username") username: String,
+      @PathParam("institutionUUID") institutionUUID: String): Option[UserInfoTO] = {
     val user = newUserInfoTO
     //verify if there's a password set for this email
-    if (authRepo.hasPassword(username))
+    if (authRepo.hasPassword(institutionUUID, username))
       user.setUsername(username)
     Option(user)
   }
@@ -126,8 +127,8 @@ class UserResource(private val authRepo:AuthRepo) {
   def requestPasswordChange(@Context resp: HttpServletResponse,
     @PathParam("email") email: String,
     @PathParam("institutionName") institutionName: String) = {
-    val person = PeopleRepo.getByUsername(email)
     val institution = InstitutionsRepo.byName(institutionName)
+    val person = PeopleRepo.getByEmail(institution.get.getUUID, email)
     if (person.isDefined && institution.isDefined) {
       val requestPasswordChangeUUID = UUID.random
       authRepo.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)

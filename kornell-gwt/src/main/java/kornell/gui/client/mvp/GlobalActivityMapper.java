@@ -47,14 +47,14 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		GWT.log("GlobalActivityMapper " + place.toString());
 		
 		if(!clientFactory.getKornellSession().isAuthenticated() || place instanceof VitrinePlace){
-			activityCallbackHandler.onRecieveActivity(new VitrineActivity((VitrinePlace) place, clientFactory));
+			activityCallbackHandler.onReceiveActivity(new VitrineActivity((VitrinePlace) place, clientFactory));
 		} else if (place instanceof HomePlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onRecieveActivity(new HomeActivity((HomePlace) place, clientFactory));
+					activityCallbackHandler.onReceiveActivity(new HomeActivity((HomePlace) place, clientFactory));
 				}
 			});
 		} else if (place instanceof TermsPlace) {
@@ -63,7 +63,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onRecieveActivity(new TermsActivity(clientFactory));
+					activityCallbackHandler.onReceiveActivity(new TermsActivity(clientFactory));
 				}
 			});
 		} else if (place instanceof WelcomePlace) {
@@ -72,7 +72,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onRecieveActivity(new WelcomeActivity(clientFactory));
+					activityCallbackHandler.onReceiveActivity(new WelcomeActivity(clientFactory));
 				}
 			});
 		} else if (place instanceof ProfilePlace) {
@@ -81,7 +81,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onRecieveActivity(new ProfileActivity(clientFactory));
+					activityCallbackHandler.onReceiveActivity(new ProfileActivity(clientFactory));
 				}
 			});
 		} else if (place instanceof MessagePlace) {
@@ -90,7 +90,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onRecieveActivity(new MessageActivity(clientFactory));
+					activityCallbackHandler.onReceiveActivity(new MessageActivity(clientFactory));
 				}
 			});
 		} else if (place instanceof ClassroomPlace) {
@@ -101,7 +101,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 				public void onSuccess() {
 					ClassroomPresenter coursePresenter = clientFactory.getViewFactory().getClassroomPresenter();
 					coursePresenter.setPlace((ClassroomPlace) place);
-					activityCallbackHandler.onRecieveActivity(new ClassroomActivity(coursePresenter));
+					activityCallbackHandler.onReceiveActivity(new ClassroomActivity(coursePresenter));
 				}
 			});
 		} else if (place instanceof SandboxPlace) {
@@ -112,7 +112,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 				public void onSuccess() {
 					SandboxPresenter sandboxPresenter = clientFactory.getViewFactory().getSandboxPresenter();
 					sandboxPresenter.setPlace((SandboxPlace) place);
-					activityCallbackHandler.onRecieveActivity(new SandboxActivity(sandboxPresenter));
+					activityCallbackHandler.onReceiveActivity(new SandboxActivity(sandboxPresenter));
 				}
 			});
 		} else if (place instanceof AdminHomePlace) {
@@ -121,11 +121,11 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onRecieveActivity(new AdminHomeActivity(clientFactory));
+					activityCallbackHandler.onReceiveActivity(new AdminHomeActivity(clientFactory));
 				}
 			});
 		} else {
-			activityCallbackHandler.onRecieveActivity(null);
+			activityCallbackHandler.onReceiveActivity(null);
 		}
 	}
 
