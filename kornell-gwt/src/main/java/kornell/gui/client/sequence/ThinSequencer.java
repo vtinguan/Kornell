@@ -8,6 +8,9 @@ import kornell.core.lom.Contents;
 import kornell.core.scorm.scorm12.rte.action.OpenSCO12Action;
 import kornell.core.to.ActionTO;
 import kornell.core.to.ActionType;
+import kornell.core.to.EnrollmentLaunchTO;
+import kornell.gui.client.event.EnrollmentEvent;
+import kornell.gui.client.event.EnrollmentEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.uidget.OpenURLView;
 import kornell.scorm.client.scorm12.SCORM12Adapter;
@@ -20,7 +23,8 @@ import com.google.web.bindery.event.shared.EventBus;
 /**
  * Follow server-side evaluation and actions.
  */
-public class ThinSequencer implements Sequencer {
+public class ThinSequencer 
+	implements Sequencer, EnrollmentEventHandler {
 	public static final Logger log = Logger.getLogger(ThinSequencer.class
 			.getName());
 	private FlowPanel contentPanel;
@@ -31,6 +35,7 @@ public class ThinSequencer implements Sequencer {
 	public ThinSequencer(EventBus bus, KornellSession session) {
 		this.bus = bus;
 		this.session = session;
+		bus.addHandler(EnrollmentEvent.TYPE, this);
 	}
 
 	@Override
@@ -66,16 +71,7 @@ public class ThinSequencer implements Sequencer {
 	@Override
 	// TODO: 000 Deprecate "contents"
 	public void go(Contents contents) {
-		final String enrollmentUUID = place.getEnrollmentUUID();
-		log.info("Launching Enrollment [" + enrollmentUUID + "]");
-		session.enrollment(enrollmentUUID).launch(new Callback<ActionTO>() {
-			@Override
-			public void ok(ActionTO actionTO) {
-				Widget view = createWidgetForAction(actionTO);
-				contentPanel.clear();
-				contentPanel.add(view);
-			}
-		});
+		log.severe("deprecated go(Contents)");
 	}
 
 	private Widget createWidgetForAction(ActionTO actionTO) {
@@ -108,6 +104,13 @@ public class ThinSequencer implements Sequencer {
 	public void fireProgressEvent() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onEnrollmentLaunched(EnrollmentLaunchTO launchTO) {
+		Widget view = createWidgetForAction(launchTO.getActionTO());
+		contentPanel.clear();
+		contentPanel.add(view);
 	}
 
 }

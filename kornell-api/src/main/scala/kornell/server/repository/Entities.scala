@@ -210,7 +210,8 @@ object Entities {
     uuid: String = randUUID, name: String = null, 
     courseUUID: String = null, repositoryUUID: String = null, 
     versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
-    contentSpec: String = null, disabled: Boolean = false) = {
+    contentSpec: String = null, disabled: Boolean = false,
+    showProgress:Boolean = true, showNavigation:Boolean = true) = {
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
@@ -219,6 +220,8 @@ object Entities {
     version.setVersionCreatedAt(versionCreatedAt)
     version.setDistributionPrefix(distributionPrefix)
     version.setDisabled(disabled)
+    version.setShowNavigation(showNavigation)
+    version.setShowProgress(showProgress)
     Option(contentSpec) foreach { spec =>
       val cSpec = ContentSpec.valueOf(spec)
       version.setContentSpec(cSpec);

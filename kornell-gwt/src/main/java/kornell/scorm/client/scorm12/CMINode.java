@@ -7,8 +7,15 @@ import java.util.TreeMap;
 import kornell.core.util.StringUtils;
 
 public class CMINode extends CMITree {
+	String key;
 	SortedMap<String, CMITree> children = new TreeMap<String, CMITree>();
+	private CMINode parent;
 
+	public CMINode(CMINode parent, String key) {
+		this.parent = parent;
+		this.key = key;
+	}
+	
 	@Override
 	public String getValue(String path) {
 		String[] parts = path.split("\\.", 2);
@@ -36,12 +43,12 @@ public class CMINode extends CMITree {
 		CMITree cmiTree = children.get(key);
 		if (cmiTree == null) {
 			if (StringUtils.isSome(subPath)) {
-				cmiTree = new CMINode();
+				cmiTree = new CMINode(this,key);
 			} else {
-				cmiTree = new CMILeaf();
+				cmiTree = new CMILeaf(this,key);
 			}
 			children.put(key, cmiTree);
-		}		
+		}
 		return cmiTree.setValue(subPath, value);
 	}
 
@@ -75,6 +82,11 @@ public class CMINode extends CMITree {
 		for (CMITree child : children.values()) {
 			child.scrub();
 		}
+	}
+
+	public String getKey() {		
+		if(parent == null) return key;
+		else return parent.getKey() + "." + key;
 	}
 	
 

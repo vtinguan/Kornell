@@ -45,12 +45,18 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   }
 
   def updateEventModel(entryKey: String, entryValue: String, modifiedAt: String) = {
-    val currentValue = getValue(entryKey)
-    if (entryValue != currentValue)
-      sql"""
+    val currValue = getValue(entryKey)	
+    if( currValue.isEmpty || currValue.get != entryValue){
+    	val msg = s"*** [$entryKey] = [$currValue.get] => [$entryValue]"
+    	logger.warning (msg)
+    	sql"""
   		insert into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) 
   		values (${randomUUID}, ${enrollmentUUID} , ${actomKey}, ${entryKey}, ${entryValue}, ${modifiedAt})
   	  """.executeUpdate
+    }
+    
+    
+    
   }
 
   def updateQueryModel(entryKey: String, entryValue: String) = sql"""

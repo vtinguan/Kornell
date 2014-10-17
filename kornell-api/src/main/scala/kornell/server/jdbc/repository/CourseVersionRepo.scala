@@ -9,7 +9,9 @@ class CourseVersionRepo(uuid: String) {
   implicit def toCourseVersion(rs: ResultSet): CourseVersion =
     Entities.newCourseVersion(rs.getString("uuid"), rs.getString("name"),
       rs.getString("course_uuid"), rs.getString("repository_uuid"),
-      rs.getDate("versionCreatedAt"), rs.getString("distributionPrefix"), rs.getString("contentSpec"), rs.getBoolean("disabled"))
+      rs.getDate("versionCreatedAt"), rs.getString("distributionPrefix"), 
+      rs.getString("contentSpec"), rs.getBoolean("disabled"),
+      rs.getBoolean("showProgress"),rs.getBoolean("showNavigation"))
 
   val finder = sql"select * from CourseVersion where uuid=$uuid"
 

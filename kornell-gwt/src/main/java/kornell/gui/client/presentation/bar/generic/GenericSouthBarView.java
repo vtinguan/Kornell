@@ -2,15 +2,14 @@ package kornell.gui.client.presentation.bar.generic;
 
 import java.util.logging.Logger;
 
+import kornell.core.to.EnrollmentLaunchTO;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.event.ClassroomEvent;
-import kornell.gui.client.event.ClassroomEventHandler;
+import kornell.gui.client.event.EnrollmentEvent;
+import kornell.gui.client.event.EnrollmentEventHandler;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.HideSouthBarEventHandler;
 import kornell.gui.client.presentation.admin.AdminPlace;
-import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
-import kornell.gui.client.presentation.bar.CourseBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
@@ -28,7 +27,7 @@ import com.google.web.bindery.event.shared.EventBus;
 public class GenericSouthBarView extends Composite implements
 		SouthBarView,
 		HideSouthBarEventHandler,
-		ClassroomEventHandler {
+		EnrollmentEventHandler {
 	private static final Logger log = Logger.getLogger(GenericSouthBarView.class.getName());
 	interface MyUiBinder extends UiBinder<Widget, GenericSouthBarView> {
 	}
@@ -50,7 +49,7 @@ public class GenericSouthBarView extends Composite implements
 		this.clientFactory = clientFactory;
 		EventBus bus = clientFactory.getEventBus();
 		bus.addHandler(HideSouthBarEvent.TYPE, this);
-		bus.addHandler(ClassroomEvent.TYPE, this);
+		bus.addHandler(EnrollmentEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		bus.addHandler(PlaceChangeEvent.TYPE,
@@ -93,13 +92,14 @@ public class GenericSouthBarView extends Composite implements
 	}
 
 	@Override
-	public void onClassroomStarted(ClassroomEvent event) {
+	public void onEnrollmentLaunched(EnrollmentLaunchTO enrollmentLaunchTO) {
 		GenericActivityBarView activityBarView = new GenericActivityBarView(clientFactory.getEventBus(),
 				clientFactory.getKornellSession(),
 				clientFactory.getPlaceController());
 		southBar.clear();
 		southBar.add(activityBarView);
-		southBar.setVisible(true);
+		southBar.setVisible(true);		
 	}
+
 
 }

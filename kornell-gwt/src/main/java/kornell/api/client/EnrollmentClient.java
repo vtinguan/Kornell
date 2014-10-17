@@ -4,6 +4,7 @@ import kornell.core.entity.Enrollment;
 import kornell.core.lom.Contents;
 import kornell.core.to.ActionTO;
 import kornell.core.to.CourseDetailsTO;
+import kornell.core.to.EnrollmentLaunchTO;
 
 public class EnrollmentClient extends RESTClient{
 
@@ -29,21 +30,15 @@ public class EnrollmentClient extends RESTClient{
 		return enrollmentUUID;
 	}
 	
+	//TODO: DRY GET("enrollments",enrollmentUUID)
 	public void isApproved(Callback<Boolean> callback){
 		GET("enrollments",enrollmentUUID,"approved").go(callback);		
 	}
 
-	//TODO: DRY GET("enrollments",enrollmentUUID)
-	public void launch(Callback<ActionTO> callback) {
+	public void launch(Callback<EnrollmentLaunchTO> callback) {
 		GET("enrollments",enrollmentUUID,"launch").go(callback);
 	}
-
-	public InfosClient infos() {
-		return new InfosClient(this);
-	}
-
-	public void findDetails(Callback<CourseDetailsTO> cb) {
-		GET("enrollments",enrollmentUUID,"details").go(cb);
-	}
+	
+	
 
 }

@@ -15,6 +15,7 @@ import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.EnrollmentLaunchTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.InfosTO;
 import kornell.core.to.LibraryFilesTO;
@@ -23,6 +24,8 @@ import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.EnrollmentEvent;
+import kornell.gui.client.event.EnrollmentEventHandler;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.personnel.Dean;
@@ -45,7 +48,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericCourseDetailsView extends Composite {
+public class GenericCourseDetailsView 
+	extends Composite 
+	implements EnrollmentEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseDetailsView> {
 	}
 
@@ -100,6 +105,7 @@ public class GenericCourseDetailsView extends Composite {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.place = place;
+		bus.addHandler(EnrollmentEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -138,19 +144,6 @@ public class GenericCourseDetailsView extends Composite {
 	private void displayInfo() {
 		infoPanel.addStyleName("infoPanel");
 		hintsPanel.addStyleName("hintsPanel");
-		
-		session.enrollment(place.getEnrollmentUUID())
-				.findDetails(new Callback<kornell.core.to.CourseDetailsTO>() {
-					@Override
-					public void ok(kornell.core.to.CourseDetailsTO to) {
-						Map<String, List<kornell.core.to.InfoTO>> infoTOs = 
-								to.getInfosTO().getInfoTOs();
-						courseNameLabel.setText(to.getCourseName());
-						courseClassNameLabel.setText(to.getCourseClassName());
-						displayInfos(infoPanel, infoTOs.get("infos"));
-						displayHints(hintsPanel, infoTOs.get("hints"));
-					}
-				});
 	}
 
 	private void display() {
@@ -509,5 +502,16 @@ public class GenericCourseDetailsView extends Composite {
 
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
+	}
+
+	@Override
+	public void onEnrollmentLaunched(EnrollmentLaunchTO launchTO) {
+		kornell.core.to.CourseDetailsTO detailsTO = launchTO.getCourseDetailsTO();
+		Map<String, List<kornell.core.to.InfoTO>> infoTOs = 
+				detailsTO.getInfosTO().getInfoTOs();
+		courseNameLabel.setText(detailsTO.getCourseName());
+		courseClassNameLabel.setText(detailsTO.getCourseClassName());
+		displayInfos(infoPanel, infoTOs.get("infos"));
+		displayHints(hintsPanel, infoTOs.get("hints"));				
 	}
 }

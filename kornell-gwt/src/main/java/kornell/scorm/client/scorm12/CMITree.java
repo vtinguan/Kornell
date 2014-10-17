@@ -12,16 +12,18 @@ public abstract class CMITree {
 	abstract String setValue(String key, String value);
 
 	abstract boolean isLeaf();
+
 	abstract boolean isDirty();
+
 	abstract void scrub();
 
 	public static final CMITree empty() {
-		return new CMINode();
+		return new CMINode(null, "");
 	}
-	
+
 	public static final CMITree create(Map<String, String> entries) {
 		CMITree tree = CMITree.empty();
-		for(Map.Entry<String, String> e:entries.entrySet()){
+		for (Map.Entry<String, String> e : entries.entrySet()) {
 			tree.setValue(e.getKey(), e.getValue());
 		}
 		tree.scrub();
@@ -34,15 +36,16 @@ public abstract class CMITree {
 		return acc;
 	}
 
-	private static void collectValues(String key, CMITree tree,
-			Map<String, String> acc, boolean dirtyOnly) {
+	private static void collectValues(
+			String key,
+			CMITree tree,
+			Map<String, String> acc,
+			boolean dirtyOnly) {
+
 		if (tree.isLeaf()) {
 			CMILeaf leaf = (CMILeaf) tree;
-			if (!dirtyOnly || leaf.isDirty()) {
-				
-			}
-
-			acc.put(key, tree.getValue(null));
+			if (!dirtyOnly || leaf.isDirty())
+				acc.put(key, tree.getValue(null));
 		} else {
 			CMINode node = (CMINode) tree;
 			for (Map.Entry<String, CMITree> child : node.children.entrySet()) {

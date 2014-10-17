@@ -11,10 +11,11 @@ import kornell.core.entity.ActomEntries;
 import kornell.core.scorm.scorm12.rte.action.OpenSCO12Action;
 import kornell.gui.client.sequence.NavigationRequest;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class SCORM12Adapter implements CMIConstants,NavigationRequest.Handler {
+public class SCORM12Adapter implements CMIConstants, NavigationRequest.Handler {
 	private static final Logger log = Logger.getLogger(SCORM12Adapter.class
 			.getName());
 	/**
@@ -34,14 +35,16 @@ public class SCORM12Adapter implements CMIConstants,NavigationRequest.Handler {
 	private String actomKey;
 	private String enrollmentUUID;
 
-	public SCORM12Adapter(EventBus bus, KornellClient client, String enrollmentUUID, OpenSCO12Action openSCO) {
+	public SCORM12Adapter(EventBus bus, KornellClient client,
+			String enrollmentUUID, OpenSCO12Action openSCO) {
 		this.client = client;
 		this.bus = bus;
 		this.actomKey = openSCO.getResourceId();
-		this.enrollmentUUID=enrollmentUUID;
+		this.enrollmentUUID = enrollmentUUID;
 		Map<String, String> data = openSCO.getData();
 		dataModel = CMITree.create(data);
-		log.info("Initializing SCORM 1.2 API with [" + data.size()
+		log.info("Initializing SCORM 1.2 API with [" 
+				+ data.size()
 				+ "] entries");
 		bus.addHandler(NavigationRequest.TYPE, this);
 	}
@@ -57,7 +60,7 @@ public class SCORM12Adapter implements CMIConstants,NavigationRequest.Handler {
 
 	public String LMSFinish(String param) {
 		String result = TRUE;
-		flush();
+		flushNow("on-finish");
 		logger.finer("LMSFinish[" + param + "]");
 		return result;
 	}
@@ -77,11 +80,10 @@ public class SCORM12Adapter implements CMIConstants,NavigationRequest.Handler {
 
 	public String LMSCommit(String param) {
 		String result = TRUE;
-		flush();
+		scheduleFlush("commit");
 		logger.finer("LMSCommit[" + param + "] = " + result);
 		return result;
 	}
-
 
 	private boolean isCMIElement(String param) {
 		return param != null && param.startsWith("cmi");
@@ -96,29 +98,38 @@ public class SCORM12Adapter implements CMIConstants,NavigationRequest.Handler {
 		String result = FALSE;
 		if (isCMIElement(key)) {
 			result = dataModel.setValue(key, value);
-			scheduleSync();
+			scheduleFlush("after-set");
 		}
 		logger.finer("LMSSetValue [" + key + " = " + value + "] = " + result);
 		return result;
 	}
 
-	private void scheduleSync() {
-		dirtyTimer = new Timer() {
-			public void run() {
-				syncAfterSet();
-			}
+	private void scheduleFlush(final String reason) {
+		if (dirtyTimer == null) {
+			dirtyTimer = new Timer() {
+				public void run() {
+					syncAfterSet();
+				}
 
-			private void syncAfterSet() {
-				flush();
-			}
-		};
-		dirtyTimer.schedule(DIRTY_TOLERANCE);
+				private void syncAfterSet() {
+					flushNow(reason);
+				}
+			};
+			dirtyTimer.schedule(DIRTY_TOLERANCE);
+		}
+	}
+	
+	private void stopTimer(){
+		dirtyTimer.cancel();
+		dirtyTimer = null;
 	}
 
-	private void flush() {
+	private void flushNow(final String reason) {
+		stopTimer();
 		class Scrub extends Callback<ActomEntries> {
 			@Override
 			public void ok(ActomEntries to) {
+				logger.info("Synced because ["+reason+"]! " + to.getEntries().size());
 				// TODO: Scrub only verified puts
 				dataModel.scrub();
 			}
@@ -126,15 +137,14 @@ public class SCORM12Adapter implements CMIConstants,NavigationRequest.Handler {
 
 		if (dataModel != null && dataModel.isDirty()) {
 			Map<String, String> dirty = CMITree.collectDirty(dataModel);
-			logger.info("Syncing [" + dirty.size() + "] entries");
+			logger.info("Syncing [" + dirty.size() + "] entries for reason ["+reason+"]");
 			for (Map.Entry<String, String> entry : dirty.entrySet()) {
 				logger.fine(entry.getKey() + "=" + entry.getValue());
 			}
-			
-			client.enrollment(enrollmentUUID).actom(actomKey).put(dirty, new Scrub());
-		}
-	}
 
+			client.enrollment(enrollmentUUID).actom(actomKey).put(dirty, new Scrub());
+		}else logger.info("NOT Synced because ["+reason+"]");
+	}
 
 	// TODO: Fire an event
 	// TODO: Find better place for this code
@@ -167,14 +177,12 @@ public class SCORM12Adapter implements CMIConstants,NavigationRequest.Handler {
 	}
 
 	private void suicide() {
-		flush();
-		if (dirtyTimer != null) dirtyTimer.cancel();
-		else log.warning("Re-stopping API adapter requested.");
+		flushNow("suicide");
+		if (dirtyTimer != null)
+			dirtyTimer.cancel();
+		else
+			log.warning("Re-stopping API adapter requested.");
 		dirtyTimer = null;
 	}
-
-	
-
-
 
 }

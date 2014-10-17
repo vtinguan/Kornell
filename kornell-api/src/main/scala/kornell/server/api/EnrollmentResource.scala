@@ -39,6 +39,8 @@ import kornell.server.jdbc.repository.InfosRepo
 import scala.collection.immutable.TreeMap
 import scala.collection.JavaConverters._
 import kornell.core.to.CourseDetailsTO
+import kornell.core.to.EnrollmentLaunchTO
+import kornell.core.entity.ContentStore
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -96,25 +98,26 @@ class EnrollmentResource(uuid: String) {
 
   @GET
   @Path("launch")
-  @Produces(Array(ActionTO.TYPE))
-  def launch: Option[ActionTO] = AuthRepo().withPerson { p =>
-    val action = for {
-      e <- first
-      cc <- CourseClassRepo(e.getCourseClassUUID).first
-      cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
-      cs <- ContentStoreRepo(cv.getRepositoryUUID, cv.getDistributionPrefix()).first
-    } yield {
-      val cm = ContentManager(cs)
-      val pm = SCORM12PackageManager(cm)
-      val a = pm.launch(e)
-      a
-    }
-    action
+  @Produces(Array(EnrollmentLaunchTO.TYPE))
+  def launch: Option[EnrollmentLaunchTO] = for {
+    e <- first
+    cc <- CourseClassRepo(e.getCourseClassUUID).first
+    cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
+    cs <- ContentStoreRepo(cv.getRepositoryUUID, cv.getDistributionPrefix()).first
+    details <- launchDetails(e)
+  } yield TOs.newEnrollmentLaunchTO(
+      launchAction(e,cs), 
+      details,
+      cv)
+      
+  
+  def launchAction(e: Enrollment, cs: ContentStore): ActionTO = {
+    val cm = ContentManager(cs)
+    val pm = SCORM12PackageManager(cm)
+    pm.launch(e)
   }
-  
-  @GET
-  @Path("details")
-  @Produces(Array(CourseDetailsTO.TYPE))
-  def details:Option[kornell.core.to.CourseDetailsTO] = EnrollmentRepo(uuid).findDetails
-  
+
+  def launchDetails(e:Enrollment): 
+  	Option[kornell.core.to.CourseDetailsTO] =  EnrollmentRepo(e).findDetails
+
 }

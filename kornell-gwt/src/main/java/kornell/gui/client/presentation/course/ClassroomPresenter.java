@@ -2,10 +2,12 @@ package kornell.gui.client.presentation.course;
 
 import java.util.logging.Logger;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Contents;
+import kornell.core.to.EnrollmentLaunchTO;
 import kornell.gui.client.Kornell;
-import kornell.gui.client.event.ClassroomEvent;
+import kornell.gui.client.event.EnrollmentEvent;
 import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SequencerFactory;
@@ -23,12 +25,15 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private Contents contents;
 	private Sequencer sequencer;
 	private EventBus bus;
+	private KornellSession session;
 
 	public ClassroomPresenter(ClassroomView view,
-			SequencerFactory seqFactory, 
-			EventBus bus) {
+			SequencerFactory seqFactory,
+			EventBus bus,
+			KornellSession session) {
 		this.bus = bus;
 		this.view = view;
+		this.session = session;
 		view.setPresenter(this);
 		this.sequencerFactory = seqFactory;
 	}
@@ -46,11 +51,18 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	public void startSequencer() {
 		sequencer = sequencerFactory.withPlace(place).withPanel(getPanel());
 		sequencer.go(contents);
-		bus.fireEvent(new ClassroomEvent());
+		session.enrollment(place.getEnrollmentUUID())
+				.launch(new Callback<EnrollmentLaunchTO>() {
+					@Override
+					public void ok(EnrollmentLaunchTO to) {
+						bus.fireEvent(new EnrollmentEvent(to));
+					}
+		});
+
 	}
-	
+
 	@Override
-	public Contents getContents(){
+	public Contents getContents() {
 		return contents;
 	}
 
@@ -66,7 +78,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 
 	@Override
 	public void fireProgressEvent() {
-		if(sequencer != null)
+		if (sequencer != null)
 			sequencer.fireProgressEvent();
 	}
 }

@@ -34,6 +34,8 @@ import kornell.core.to.UnreadChatThreadTO
 import kornell.core.to.ChatThreadMessageTO
 import kornell.core.to.InfoTO
 import kornell.core.to.CourseDetailsTO
+import kornell.core.to.ActionTO
+import kornell.core.to.EnrollmentLaunchTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -244,6 +246,16 @@ object TOs {
   
   def newCourseDetailsTO():CourseDetailsTO = {
     val to = tos.newCourseDetailsTO.as
+    to
+  }
+  
+  def newEnrollmentLaunchTO(actionTO:ActionTO, 
+      courseDetailsTO:CourseDetailsTO,
+      courseVersion:CourseVersion):EnrollmentLaunchTO = {
+    val to = tos.newEnrollmentLaunchTO.as
+    to.setActionTO(actionTO)
+    to.setCourseDetailsTO(courseDetailsTO)
+    to.setCourseVersion(courseVersion)
     to
   }
 }

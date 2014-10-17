@@ -1,13 +1,19 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import org.eclipse.jetty.util.log.Log;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
+import kornell.core.entity.CourseVersion;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.to.EnrollmentLaunchTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.EnrollmentEvent;
+import kornell.gui.client.event.EnrollmentEventHandler;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
@@ -38,7 +44,10 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericActivityBarView
 		extends Composite
-		implements ActivityBarView, ProgressEventHandler, ShowDetailsEventHandler {
+		implements ActivityBarView, 
+		ProgressEventHandler, 
+		ShowDetailsEventHandler,
+		EnrollmentEventHandler {
 
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityBarView> {
 	}
@@ -98,9 +107,10 @@ public class GenericActivityBarView
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.bus = bus;
-		initWidget(uiBinder.createAndBindUi(this));
 		bus.addHandler(ProgressEvent.TYPE, this);
 		bus.addHandler(ShowDetailsEvent.TYPE, this);
+		bus.addHandler(EnrollmentEvent.TYPE , this);
+		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		setupArrowsNavigation();
 	}
@@ -367,6 +377,15 @@ public class GenericActivityBarView
 		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev);
 		enableButton(BUTTON_NEXT, !showDetails && enableNext);
 		updateProgressBarPanel();
+	}
+
+	@Override
+	public void onEnrollmentLaunched(EnrollmentLaunchTO launchTO) {
+		CourseVersion cv = launchTO.getCourseVersion();
+		boolean showNavigation = cv.isShowNavigation();
+		boolean showProgress = cv.isShowProgress();
+		//TODO: TIAGO MIM AJUDA: SHOW / HIDE NAVIGATION AND PROGRESS
+		GWT.log("//TODO: TIAGO MIM AJUDA: SHOW / HIDE NAVIGATION AND PROGRESS");
 	}
 
 }

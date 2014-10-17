@@ -20,5 +20,10 @@ public interface CourseVersion extends Named {
 	
 	boolean isDisabled();
 	void setDisabled(boolean disabled);
+
+	boolean isShowNavigation();
+	void setShowNavigation(boolean showNavigation);
 	
+	boolean isShowProgress();
+	void setShowProgress(boolean showProgress);
 }
