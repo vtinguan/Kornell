@@ -80,7 +80,7 @@ class UserResource(private val authRepo:AuthRepo) {
     user.setUsername(username)
     user.setPerson(person)
     user.setLastPlaceVisited(person.getLastPlaceVisited)
-    val roles = authRepo.rolesOf(username)
+    val roles = authRepo.rolesOf(person.getUUID)
     user.setRoles((Set.empty ++ roles).asJava)
     user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
 
@@ -224,9 +224,9 @@ class UserResource(private val authRepo:AuthRepo) {
       if (!PersonRepo(p.getUUID).hasPowerOver(personUUID))
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password.");
       else {
-	      PersonRepo(personUUID).update(userInfo.getPerson())
+	      PersonRepo(personUUID).update(userInfo.getPerson)
 	
-	      val roles = authRepo.rolesOf(userInfo.getUsername)
+	      val roles = authRepo.rolesOf(userInfo.getPerson.getUUID)
 	      userInfo.setRoles((Set.empty ++ roles).asJava)
 	      userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
 	      userInfo
