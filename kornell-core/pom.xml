@@ -5,12 +5,14 @@
 	<parent>
 		<groupId>kornell</groupId>
 		<artifactId>kornell</artifactId>
-		<version>${kornell-version}</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 
+	<groupId>kornell</groupId>
 	<artifactId>kornell-core</artifactId>
 	<packaging>jar</packaging>
 	<name>Shared Core</name>
+	<version>1.2-SNAPSHOT</version>
 
 	<properties>
 		<gwtVersion>2.6.1</gwtVersion>

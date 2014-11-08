@@ -23,7 +23,6 @@ import kornell.core.entity.Role
 import kornell.core.entity.Roles
 import javax.ws.rs.DELETE
 import kornell.core.entity.RoleCategory
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import javax.servlet.http.HttpServletResponse
 import kornell.server.repository.ContentRepository
 import kornell.core.to.RolesTO
@@ -32,9 +31,10 @@ import kornell.server.repository.LibraryFilesRepository
 import java.io.IOException
 import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.jdbc.repository.ChatThreadsRepo
+import java.sql.SQLException
 
 @Path("courseClass")
-class CourseClassResource(uuid: String) {
+class CourseClassResource(private val uuid: String) {
   def this() = this(null)
   
   @GET
@@ -61,7 +61,7 @@ class CourseClassResource(uuid: String) {
       try {
         CourseClassRepo(uuid).update(courseClass)
       } catch {
-        case ioe: MySQLIntegrityConstraintViolationException =>
+        case ioe: SQLException =>
           resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
       }
   }
@@ -81,7 +81,7 @@ class CourseClassResource(uuid: String) {
         CourseClassRepo(uuid).delete(uuid)
         courseClass
       } catch {
-        case ioe: MySQLIntegrityConstraintViolationException =>
+        case ioe: SQLException =>
           resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
       }
   }

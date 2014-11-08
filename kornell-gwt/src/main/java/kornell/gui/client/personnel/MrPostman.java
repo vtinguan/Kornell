@@ -3,8 +3,11 @@ package kornell.gui.client.personnel;
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.core.to.UnreadChatThreadsTO;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.ComposeMessageEventHandler;
+import kornell.gui.client.event.LoginEvent;
+import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.UnreadMessagesFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
@@ -13,6 +16,7 @@ import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.Positioning;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
@@ -20,7 +24,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class MrPostman implements ComposeMessageEventHandler {
+public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler {
 
 	private static PopupPanel popup;
 	private EventBus bus;
@@ -36,15 +40,88 @@ public class MrPostman implements ComposeMessageEventHandler {
 		this.chatThreadsClient = chatThreadsClient;
 		this.placeCtrl = placeCtrl;
 		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
+		this.bus.addHandler(LoginEvent.TYPE, this);
 		
-		initializeUnreadMessagesCountTimer();
-		
+		//initializeUnreadMessagesCountTimer();
 		initializeUnreadMessagesCountPerThreadTimer();
+	}
+
+	private void initializeUnreadMessagesCountPerThreadTimer() {
+
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		    		getUnreadMessagesPerThread();
+		      }
+		});
+		
+		unreadMessagesCountPerThreadTimer = new Timer() {
+			public void run() {
+				getUnreadMessagesPerThread();
+			}
+		};
+
+		// Schedule the timer to run every 30 seconds
+		unreadMessagesCountPerThreadTimer.scheduleRepeating(30 * 1000);
+		
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override 
+					public void onPlaceChange(PlaceChangeEvent event) {
+						if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminHomePlace){
+							getUnreadMessagesPerThread();
+						}
+					}
+				});
+  }
+	
+	private void getUnreadMessagesPerThread() {
+		getUnreadMessagesPerThread(false);
+	}
+	
+	private void getUnreadMessagesPerThread(boolean forceFetch) {
+		if(forceFetch || !(placeCtrl.getWhere() instanceof VitrinePlace)){
+	    chatThreadsClient.getTotalUnreadCountsPerThread(Dean.getInstance().getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
+				@Override
+				public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
+					bus.fireEvent(new UnreadMessagesPerThreadFetchedEvent(unreadChatThreadsTO.getUnreadChatThreadTOs()));
+				}
+			});
+		}
+  }
+
+
+	@Override
+  public void onLogin(UserInfoTO user) {
+
+		// Fetch all messages after 2 seconds
+		new Timer() {
+			public void run() {
+				getUnreadMessagesPerThread(true);
+			}
+		}.schedule(2 * 1000);
+
+  }
+
+
+	@Override
+	public void onComposeMessage(ComposeMessageEvent event) {
+		if(popup == null || !popup.isShowing()){
+			presenter.init();
+			show();
+		} else {
+			hide();
+		}
 	}
 	
 
 	private void initializeUnreadMessagesCountTimer() {
-		getUnreadMessages();
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		    		getUnreadMessages();
+		      }
+		});
 		
 		unreadMessagesCountTimer = new Timer() {
 			public void run() {
@@ -65,48 +142,6 @@ public class MrPostman implements ComposeMessageEventHandler {
 			});
 		}
   }
-
-	private void initializeUnreadMessagesCountPerThreadTimer() {
-		getUnreadMessagesPerThread();
-		
-		unreadMessagesCountPerThreadTimer = new Timer() {
-			public void run() {
-				getUnreadMessagesPerThread();
-			}
-		};
-
-		// Schedule the timer to run every 30 secs
-		unreadMessagesCountPerThreadTimer.scheduleRepeating(30 * 1000);
-		
-		bus.addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
-					@Override
-					public void onPlaceChange(PlaceChangeEvent event) {
-						getUnreadMessagesPerThread();
-					}
-				});
-  }
-	private void getUnreadMessagesPerThread() {
-		if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminHomePlace){
-	    chatThreadsClient.getTotalUnreadCountsPerThread(Dean.getInstance().getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
-				@Override
-				public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
-					bus.fireEvent(new UnreadMessagesPerThreadFetchedEvent(unreadChatThreadsTO.getUnreadChatThreadTOs()));
-				}
-			});
-		}
-  }
-
-
-	@Override
-	public void onComposeMessage(ComposeMessageEvent event) {
-		if(popup == null || !popup.isShowing()){
-			presenter.init();
-			show();
-		} else {
-			hide();
-		}
-	}
 	
 	public synchronized void show() {	
 		if(popup == null){

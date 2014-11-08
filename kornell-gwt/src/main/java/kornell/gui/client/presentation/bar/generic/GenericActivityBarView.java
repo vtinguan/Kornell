@@ -1,15 +1,11 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import org.eclipse.jetty.util.log.Log;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.CourseVersion;
-import kornell.core.entity.Enrollment;
-import kornell.core.entity.EnrollmentState;
 import kornell.core.to.EnrollmentLaunchTO;
-import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.EnrollmentEvent;
@@ -19,10 +15,9 @@ import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.bar.ActivityBarView;
-import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.generic.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
 
@@ -116,6 +111,7 @@ public class GenericActivityBarView
 	}
 
 	private void displayUser(UserInfoTO user) {
+		/*
 		Enrollment enrollment;
 		for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO()
 				.getEnrollmentTOs()) {
@@ -128,6 +124,7 @@ public class GenericActivityBarView
 				break;
 			}
 		}
+		*/
 	}
 
 	private void display() {

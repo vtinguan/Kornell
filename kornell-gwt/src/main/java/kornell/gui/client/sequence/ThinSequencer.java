@@ -21,10 +21,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * Follow server-side evaluation and actions.
+ * Follows server-side evaluation and actions.
  */
-public class ThinSequencer 
-	implements Sequencer, EnrollmentEventHandler {
+public class ThinSequencer implements Sequencer, EnrollmentEventHandler {
 	public static final Logger log = Logger.getLogger(ThinSequencer.class
 			.getName());
 	private FlowPanel contentPanel;
@@ -33,6 +32,7 @@ public class ThinSequencer
 	private KornellSession session;
 
 	public ThinSequencer(EventBus bus, KornellSession session) {
+		log.info("ThinSequencer created");
 		this.bus = bus;
 		this.session = session;
 		bus.addHandler(EnrollmentEvent.TYPE, this);
@@ -40,8 +40,7 @@ public class ThinSequencer
 
 	@Override
 	public void onContinue(NavigationRequest event) {
-		// TODO Auto-generated method stub
-
+		log.fine("ThinSequencer.onContinue requested currentPlace");
 	}
 
 	@Override
@@ -64,14 +63,9 @@ public class ThinSequencer
 
 	@Override
 	public Sequencer withPlace(ClassroomPlace place) {
+		log.fine("set to place [" + place.toString() + "]");
 		this.place = place;
 		return this;
-	}
-
-	@Override
-	// TODO: 000 Deprecate "contents"
-	public void go(Contents contents) {
-		log.severe("deprecated go(Contents)");
 	}
 
 	private Widget createWidgetForAction(ActionTO actionTO) {

@@ -1,5 +1,7 @@
 package kornell.server.repository
 
+import scala.language.postfixOps
+import scala.language.implicitConversions
 import java.math.BigDecimal
 import java.util.Date
 import java.util.Map
@@ -132,8 +134,14 @@ object Entities {
     e
   }
 
+  def newEnrollments(enrollments: List[Enrollment]) = {
+    val ps = factory.newEnrollments.as
+    ps.setEnrollments(enrollments.asJava)
+    ps
+  }
+
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, allowRegistration: Boolean, activatedAt: Date, skin: String) = {
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, activatedAt: Date, skin: String) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -143,6 +151,7 @@ object Entities {
     i.setAssetsURL(assetsURL)
     i.setBaseURL(baseURL)
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
+    i.setValidatePersonContactDetails(validatePersonContactDetails)
     i.setAllowRegistration(allowRegistration)
     i.setActivatedAt(activatedAt)
     i.setSkin(skin)

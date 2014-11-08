@@ -1,3 +1,4 @@
+
 package kornell.server.web
 
 import javax.servlet._
@@ -22,6 +23,7 @@ class BasicAuthFilter extends Filter {
     "/sandbox",
     "/sync",
     "/report",
+    "/user/hello",
     "/user/check",
     "/user/create",
     "/user/registrationRequest",
@@ -62,8 +64,8 @@ class BasicAuthFilter extends Filter {
     val auth = req.getHeader("X-KNL-A");
     if (auth != null && auth.length() > 0) {
       try {
-        val (username, password) = extractCredentials(auth)
-        login(req, username, password)
+        val (username, password) = BasicAuthFilter.extractCredentials(auth)
+        login(username, password)
         
       } catch {
         case e: Exception =>
@@ -75,21 +77,24 @@ class BasicAuthFilter extends Filter {
     } else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You must authenticate to access [" + req.getRequestURI + "]")
   }
 
+  override def init(cfg: FilterConfig) {}
+
+  override def destroy() {}
+
+  def login(username: String, password: String) =
+    AuthRepo().authenticate(username, password).map { personUUID =>
+      ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
+    }
+
+  def logout = ThreadLocalAuthenticator.clearAuthenticatedPersonUUID
+}
+
+object BasicAuthFilter{
+ 
   def extractCredentials(auth: String) = {
     val encoded = auth.split(" ")(1)
     val decoded = new String(Base64.decodeBase64(encoded))
     val extracted = decoded.split(":")
     (extracted(0), extracted(1))
   }
-
-  override def init(cfg: FilterConfig) {}
-
-  override def destroy() {}
-
-  def login(req: HttpServletRequest, username: String, password: String) =
-    AuthRepo().authenticate(username, password).map { personUUID =>
-      ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
-    }
-
-  def logout = ThreadLocalAuthenticator.clearAuthenticatedPersonUUID
 }

@@ -1,5 +1,6 @@
 package kornell.server.jdbc.repository
 
+import scala.language.implicitConversions
 import java.sql.ResultSet
 import kornell.server.repository.Entities
 import kornell.core.entity.CourseVersion

@@ -87,6 +87,9 @@
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
             </console-handler>
+            <console-handler name="DEBUGGER" autoflush="true">
+                <level name="ALL"/>
+            </console-handler>
             <periodic-rotating-file-handler name="FILE" autoflush="true">
                 <formatter>
                     <named-formatter name="PATTERN"/>
@@ -112,6 +115,15 @@
             </logger>
             <logger category="jacorb.config">
                 <level name="ERROR"/>
+            </logger>
+            <logger category="kornell" use-parent-handlers="false">
+                <level name="ALL"/>
+                <handlers>
+                    <handler name="DEBUGGER"/>
+                </handlers>
+            </logger>
+            <logger category="kornell.server.jdbc" use-parent-handlers="true">
+                <level name="INFO"/>
             </logger>
             <root-logger>
                 <level name="INFO"/>

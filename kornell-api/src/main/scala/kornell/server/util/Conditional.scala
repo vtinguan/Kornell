@@ -1,4 +1,6 @@
 package kornell.server.util
+import scala.language.postfixOps
+import scala.language.implicitConversions
 
 trait Err //TODO: Consider "extends Throwable"
 case class StringErr(val e: String) extends Err

@@ -29,6 +29,7 @@ import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.RegistrationsTO;
 import kornell.core.to.RolesTO;
 import kornell.core.to.UnreadChatThreadsTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 
 public class MediaTypes {
@@ -48,6 +49,7 @@ public class MediaTypes {
 		register(CourseVersionsTO.TYPE, CourseVersionsTO.class);
 		register(CourseVersionTO.TYPE, CourseVersionTO.class);
 		register(UserInfoTO.TYPE,UserInfoTO.class);
+		register(UserHelloTO.TYPE,UserHelloTO.class);
 		register(Registration.TYPE,Registration.class);
 		register(Registrations.TYPE,Registrations.class);
 		register(RegistrationsTO.TYPE,RegistrationsTO.class);

@@ -41,7 +41,7 @@ class CourseClassRepo(uuid:String) {
 	  		cc.invisible = ${courseClass.isInvisible},
 	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments}
       where cc.uuid = ${courseClass.getUUID}""".executeUpdate
-    //ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID)
+    ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)
     courseClass
   }
   

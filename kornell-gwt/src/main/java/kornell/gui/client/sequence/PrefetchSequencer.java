@@ -205,13 +205,13 @@ public class PrefetchSequencer implements Sequencer {
 		this.enrollmentUUID = place.getEnrollmentUUID();
 		return this;
 	}
-
+/*
 	@Override
 	public void go(Contents contents) {
 		setContents(contents);
 		orientateAndSail();
 	}
-
+*/
 	private void orientateAndSail() {
 		session.getCurrentUser(new Callback<UserInfoTO>() {
 			@Override

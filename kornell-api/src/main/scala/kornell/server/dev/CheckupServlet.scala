@@ -9,7 +9,7 @@ import javax.sql.DataSource
 import javax.naming.Context
 
 @WebServlet(Array("/checkup"))
-class CheckupServlet extends HttpServlet{
+class CheckupServlet extends HttpServlet{ 
 	override def doGet(req:HttpServletRequest, resp:HttpServletResponse) = {
 	  val initctx = new InitialContext();
 	  val ctx = initctx.lookup("java:comp/env").asInstanceOf[Context]

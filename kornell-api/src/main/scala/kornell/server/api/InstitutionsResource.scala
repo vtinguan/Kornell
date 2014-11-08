@@ -15,10 +15,12 @@ class InstitutionsResource {
   @GET
   def getBy(@Context resp: HttpServletResponse,
       @QueryParam("name") name:String, @QueryParam("hostName") hostName:String) = 
-    {if(name != null)
-      InstitutionsRepo.byName(name)
-    else
-      InstitutionsRepo.byHostName(hostName)} match {
+    {
+	    if(name != null)
+	      InstitutionsRepo.byName(name)
+	    else
+	      InstitutionsRepo.byHostName(hostName)
+    } match {
       case Some(institution) => institution
       case None => resp.sendError(HttpServletResponse.SC_NO_CONTENT, "Institution not found.")
     }

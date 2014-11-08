@@ -1,5 +1,6 @@
 package kornell.server.api
 
+import scala.language.implicitConversions
 import javax.ws.rs._
 import kornell.core.entity.WebRepository
 import java.sql.ResultSet

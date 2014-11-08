@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class OLDGenericCourseDetailsView extends Composite {
+public class OLDGenericCourseDetailsView /*extends Composite*/ {
 	/*
 	interface MyUiBinder extends UiBinder<Widget, OLDGenericCourseDetailsView> {
 	}
@@ -131,7 +131,7 @@ public class OLDGenericCourseDetailsView extends Composite {
 		isCancelled = false;
 		UserInfoTO user = session.getCurrentUser();
 		Enrollment enrollment;
-		
+		/*
 		for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO()
 				.getEnrollmentTOs()) {
 			enrollment = enrollmentTO.getEnrollment();
@@ -146,6 +146,7 @@ public class OLDGenericCourseDetailsView extends Composite {
 				}
 			}
 		}
+		*/
 		isInactiveCourseClass = false; // TODO: 000 Review
 		// CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState());
 		displayButtons();

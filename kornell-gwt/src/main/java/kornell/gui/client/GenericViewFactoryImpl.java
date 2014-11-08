@@ -84,12 +84,12 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		dockLayoutPanel.addStyleName("wrapper");
 		rootLayoutPanel.add(dockLayoutPanel);
 		
-		final String userAgent = Navigator.getUserAgent();
+		/*final String userAgent = Navigator.getUserAgent();
 		if (userAgent.contains("iPad") && userAgent.contains("OS 7")) {
 			IpadIos7HeightFix.fixHeight();
 			clientFactory.getEventBus().addHandler(OrientationChangeEvent.TYPE, new IpadIos7HeightFix());
 		}
-		Window.addResizeHandler(new OrientationResizeHandler(clientFactory.getEventBus()));
+		Window.addResizeHandler(new OrientationResizeHandler(clientFactory.getEventBus()));*/
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
@@ -160,7 +160,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public MessageView getMessageView() {
-		return new GenericMessageView();
+		return new GenericMessageView(clientFactory.getEventBus());
 	}
 
 	@Override
@@ -208,11 +208,16 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public AdminHomeView getAdminHomeView() {
+		if(genericAdminHomeView == null)
+			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminHomeView;
+	}
+	
+	@Override
+	public MessagePresenter getMessagePresenterCourseClass() {
 		if(messagePresenterCourseClass == null)
 			messagePresenterCourseClass = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), true);
-		if(genericAdminHomeView == null)
-			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(), messagePresenterCourseClass);
-		return genericAdminHomeView;
+		return messagePresenterCourseClass;
 	}
 
 	@Override

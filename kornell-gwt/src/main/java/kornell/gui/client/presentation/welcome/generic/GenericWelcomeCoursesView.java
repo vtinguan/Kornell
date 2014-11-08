@@ -5,6 +5,7 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
@@ -119,7 +120,7 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		final int classesCount = tos.getCourseClasses().size();
 		
 	  for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
-	  	if(courseClassTO.getCourseClass().isInvisible()) continue;
+	  	if(courseClassTO.getCourseClass().isInvisible() || !CourseClassState.active.equals(courseClassTO.getCourseClass().getState())) continue;
 	  	
 			final Teacher teacher = Teachers.of(courseClassTO);
 
@@ -161,16 +162,17 @@ public class GenericWelcomeCoursesView extends Composite implements WelcomeView 
 		EnrollmentsTO enrollmentsTO = toFactory.newEnrollmentsTO().as();
 		List<EnrollmentTO> enrollmentTOs = new ArrayList<EnrollmentTO>();
 		EnrollmentTO enrollmentTO;
+		session.getCurrentUser().getEnrollments().getEnrollments().clear();
 		for (CourseClassTO courseClassTO : tos.getCourseClasses()) {
 			if (courseClassTO.getEnrollment() != null) {
 				enrollmentTO = toFactory.newEnrollmentTO().as();
 				enrollmentTO.setEnrollment(courseClassTO.getEnrollment());
+				session.getCurrentUser().getEnrollments().getEnrollments().add(courseClassTO.getEnrollment());
 				enrollmentTO.setPerson(session.getCurrentUser().getPerson());
 				enrollmentTOs.add(enrollmentTO);
 			}
 		}
 		enrollmentsTO.setEnrollmentTOs(enrollmentTOs);
-		session.getCurrentUser().setEnrollmentsTO(enrollmentsTO);
 	}
 
 	private void prepareButtons(int classesCount) {

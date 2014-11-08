@@ -1,5 +1,6 @@
 package kornell.server.jdbc.repository
 
+import scala.language.implicitConversions
 import kornell.core.entity.Enrollment
 import java.sql.ResultSet
 import kornell.server.repository.Entities
@@ -80,7 +81,7 @@ class EnrollmentRepo(enrollmentUUID: String,e:Enrollment) {
   }
 
   def findProgressMilestone(e: Enrollment, actomKey: String): Option[Int] =
-    try {
+     {
       val actomLike = "%" + actomKey
       val enrollmentUUID = e.getUUID
       val progress = sql"""

@@ -28,6 +28,7 @@ import kornell.gui.client.event.EnrollmentEvent;
 import kornell.gui.client.event.EnrollmentEventHandler;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomView.Presenter;
@@ -151,7 +152,9 @@ public class GenericCourseDetailsView
 
 		isEnrolled = false;
 		isCancelled = false;
-		UserInfoTO user = session.getCurrentUser();
+		/*
+		UserInfoTO user = session.getCurrentUser();		
+<<<<<<< HEAD
 		Enrollment enrollment;
 		for (EnrollmentTO enrollmentTO : user.getEnrollmentsTO()
 				.getEnrollmentTOs()) {
@@ -160,6 +163,11 @@ public class GenericCourseDetailsView
 					.equals(((ClassroomPlace) placeCtrl.getWhere())
 							.getEnrollmentUUID())) {
 				if (EnrollmentState.enrolled.equals(enrollment.getState())) {
+=======
+		for (Enrollment enrollment : user.getEnrollments().getEnrollments()) {
+			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())){
+				if(EnrollmentState.enrolled.equals(enrollment.getState())){
+>>>>>>> master
 					isEnrolled = true;
 				} else if (EnrollmentState.cancelled.equals(enrollment
 						.getState())) {
@@ -167,6 +175,7 @@ public class GenericCourseDetailsView
 				}
 			}
 		}
+		*/
 		isInactiveCourseClass = false; // TODO: 000 Review
 		// CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState());
 		displayButtons();
@@ -355,7 +364,7 @@ public class GenericCourseDetailsView
 
 	private void displayInfos(FlowPanel infoPanel,
 			List<kornell.core.to.InfoTO> infos) {
-		for (kornell.core.to.InfoTO infoTO : infos) {
+		if(infos != null) for (kornell.core.to.InfoTO infoTO : infos) {
 			infoPanel.add(getInfoPanel(infoTO.getTitle(), infoTO.getText()));
 		}
 	}
@@ -449,9 +458,10 @@ public class GenericCourseDetailsView
 			} else if (isCancelled) {
 				text = "Sua matrícula foi cancelada pela instituição.";
 			} else if (!isEnrolled) {
+				//TODO: REGRESSION Boolean enrollWithCPF = Dean.getInstance().getCourseClassTO().getCourseClass().isEnrollWithCPF();
+				Boolean enrollWithCPF = false;
 				text = "Sua matrícula ainda não foi aprovada pela instituição."
-						+ (Dean.getInstance().getCourseClassTO()
-								.getCourseClass().isEnrollWithCPF() ? ""
+						+ (enrollWithCPF ? ""
 								: "<br><br> Você receberá um email no momento da aprovação.<br>");
 			}
 			HTMLPanel panel = new HTMLPanel(text);
@@ -470,7 +480,7 @@ public class GenericCourseDetailsView
 
 	private void displayHints(FlowPanel hintsPanel,
 			List<kornell.core.to.InfoTO> hints) {
-		for (kornell.core.to.InfoTO hintTO : hints)
+		if (hints != null) for (kornell.core.to.InfoTO hintTO : hints)
 			hintsPanel.add(
 					getHintPanel(hintTO.getSubCategory(), hintTO.getText()));
 	}

@@ -1,7 +1,8 @@
 package kornell.server.repository.s3
 
+import scala.language.postfixOps
+import scala.language.implicitConversions
 import java.io.ByteArrayInputStream
-
 import java.sql.ResultSet
 import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.collection.immutable.Stream.consWrapper

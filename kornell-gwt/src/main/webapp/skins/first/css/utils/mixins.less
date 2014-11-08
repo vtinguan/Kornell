@@ -9,7 +9,7 @@
 	background: -o-linear-gradient(top,  @colorStart 0%,@colorEnd 100%) !important; /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  @colorStart 0%,@colorEnd 100%) !important; /* IE10+ */
 	background: linear-gradient(to bottom,  @colorStart 0%,@colorEnd 100%) !important; /* W3C */
-	//filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@colorStart', endColorstr='@colorEnd',GradientType=0 )" !important; /* IE6-9 */
+	filter:~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@{colorStart}', endColorstr='@{colorEnd}',GradientType=0 ) !important"; /* IE6-9 */
  }
 
 .size (@square) {

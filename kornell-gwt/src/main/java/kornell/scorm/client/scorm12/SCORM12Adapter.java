@@ -120,7 +120,7 @@ public class SCORM12Adapter implements CMIConstants, NavigationRequest.Handler {
 	}
 	
 	private void stopTimer(){
-		dirtyTimer.cancel();
+		if (dirtyTimer != null) dirtyTimer.cancel();
 		dirtyTimer = null;
 	}
 

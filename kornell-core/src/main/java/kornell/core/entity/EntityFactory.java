@@ -17,7 +17,7 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<Enrollment> enrollment();
 
 	AutoBean<Enrollments> newEnrollments();
-
+ 
 	AutoBean<Institution> newInstitution();
 
 	AutoBean<Registration> newRegistration();

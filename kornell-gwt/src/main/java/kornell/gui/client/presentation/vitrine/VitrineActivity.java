@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class VitrineActivity extends AbstractActivity {
 	private ClientFactory clientFactory;
 
-	public VitrineActivity(ClientFactory clientFactory) {
+	public VitrineActivity(VitrinePlace place, ClientFactory clientFactory) {
 	    this.clientFactory = clientFactory;
 	  }
 

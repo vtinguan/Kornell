@@ -44,7 +44,8 @@ class MockHttpServletResponse(var status: Int, var message: String) extends Http
   def resetBuffer(): Unit = ???   
   def setBufferSize(x$1: Int): Unit = ???   
   def setCharacterEncoding(x$1: String): Unit = ???   
-  def setContentLength(x$1: Int): Unit = ???   
+  def setContentLength(x$1: Int): Unit = ???
+  def setContentLengthLong(x$1: Long): Unit = ???
   def setContentType(x$1: String): Unit = ???   
   def setLocale(x$1: java.util.Locale): Unit = ??? 
 

@@ -1,5 +1,6 @@
 package kornell.server.util
 
+import scala.language._
 import java.io.File
 import java.util.Date
 import java.util.Properties
@@ -16,6 +17,7 @@ import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 import javax.mail.Authenticator
 import kornell.core.util.StringUtils
+import kornell.core.util.StringUtils._
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.logging.Logger

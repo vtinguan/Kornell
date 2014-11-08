@@ -232,10 +232,16 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	
 	@Override 
 	public void displayView(VitrineViewType type){
+		if(type == null){
+			vitrineWrapper.setVisible(false);
+			return;
+		}
+		vitrineWrapper.setVisible(true);
 		loginPanel.setVisible(false);
 		signUpPanel.setVisible(false);
 		forgotPasswordPanel.setVisible(false);
 		newPasswordPanel.setVisible(false);
+		
 		switch (type) {
 		case login: 
 			loginPanel.setVisible(true);
@@ -314,7 +320,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@Override
 	public void setLogoURL(String assetsURL) {
 		String skin = Dean.getInstance().getInstitution().getSkin();
-		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png?2";
+		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png";
 		imgLogo.setUrl(composeURL(assetsURL, barLogoFileName));
 	}
 

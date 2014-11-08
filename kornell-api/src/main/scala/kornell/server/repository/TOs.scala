@@ -1,5 +1,6 @@
 package kornell.server.repository
 
+import scala.language._
 import java.math.BigDecimal
 import java.util.Date
 import scala.collection.JavaConverters._
@@ -42,6 +43,7 @@ object TOs {
   val tos = AutoBeanFactorySource.create(classOf[TOFactory])
 
   def newUserInfoTO = tos.newUserInfoTO.as
+  def newUserHelloTO = tos.newUserHelloTO.as
   def newRegistrationsTO: RegistrationsTO = tos.newRegistrationsTO.as
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
@@ -145,13 +147,16 @@ object TOs {
   }
 
   def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
-  def newCourseClassReportTO(fullName: String, username: String, state: String, progressState: String, progress: Int): CourseClassReportTO = {
+  def newCourseClassReportTO(fullName: String, username: String, email: String, state: String, progressState: String, progress: Int, assessmentScore: BigDecimal, certifiedAt: String): CourseClassReportTO = {
     val to = newCourseClassReportTO
     to.setFullName(fullName)
     to.setUsername(username)
+    to.setEmail(email)
     to.setState(state)
     to.setProgressState(progressState)
     to.setProgress(progress)
+    to.setAssessmentScore(assessmentScore)
+    to.setCertifiedAt(certifiedAt)
     to
   }
 
@@ -198,9 +203,10 @@ object TOs {
     to
   }
 
-  def newChatThreadMessagesTO(l: List[ChatThreadMessageTO]) = {
+  def newChatThreadMessagesTO(l: List[ChatThreadMessageTO], serverTime: String) = {
     val to = tos.newChatThreadMessagesTO.as
     to.setChatThreadMessageTOs(l asJava)
+    to.setServerTime(serverTime)
     to
   }
 

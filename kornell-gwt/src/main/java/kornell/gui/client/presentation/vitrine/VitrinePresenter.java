@@ -81,6 +81,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO courseClasses) {
+				Dean.getInstance().setCourseClassesTO(courseClasses);
 				final UserInfoTO userInfoTO = session.getCurrentUser();
 				clientFactory.setDefaultPlace(new WelcomePlace());
 				if (!session.isRegistered()) {
@@ -110,6 +111,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		Callback<UserInfoTO> userInfoCallback = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(final UserInfoTO user) {
+				view.displayView(null);
 				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
 				session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 			}
@@ -121,8 +123,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			}
 		};
 		String email = view.getEmail().toLowerCase().trim(); 
-	    String password = view.getPassword();
-	    session.login(email, password, userInfoCallback);
+    String password = view.getPassword();
+    session.login(email, password, userInfoCallback);
 	}
 
 	@Override

@@ -5,6 +5,8 @@ import kornell.server.jdbc.SQL._
 import kornell.server.repository.TOs
 import kornell.core.to.InfoTO
 import scala.collection.JavaConverters._
+import scala.language.postfixOps
+import scala.language.implicitConversions
 
 object InfosRepo {
   implicit def toInfoTO(rs: ResultSet): InfoTO = TOs.newInfoTO(

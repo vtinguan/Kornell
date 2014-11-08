@@ -1,5 +1,7 @@
 package kornell.server.repository
 
+import scala.language.postfixOps
+import scala.language.implicitConversions
 import kornell.core.lom.LOMFactory
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
 import kornell.core.lom.ExternalPage

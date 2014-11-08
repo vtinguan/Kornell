@@ -10,7 +10,7 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
-import kornell.gui.client.presentation.HistoryMapper;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.sequence.NavigationRequest;
 
 import com.google.gwt.core.client.GWT;

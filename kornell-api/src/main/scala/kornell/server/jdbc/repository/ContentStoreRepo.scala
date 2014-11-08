@@ -1,8 +1,11 @@
 package kornell.server.jdbc.repository
+
+import scala.language.implicitConversions
 import kornell.server.jdbc.SQL._
 import java.sql.ResultSet
 import kornell.server.repository.Entities
 import kornell.core.entity.ContentStore
+import scala.language.implicitConversions
 
 class ContentStoreRepo(uuid: String,distributionPrefix:String) {
 

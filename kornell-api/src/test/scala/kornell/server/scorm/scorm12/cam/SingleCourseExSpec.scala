@@ -5,6 +5,7 @@ import org.scalatest.junit.JUnitRunner
 import kornell.server.test.UnitSpec
 import java.lang.Boolean._
 import kornell.core.scorm.scorm12.cam.adlcp.TimeLimitAction
+import scala.language._
 
 @RunWith(classOf[JUnitRunner])
 class SingleCourseExSpec extends UnitSpec {

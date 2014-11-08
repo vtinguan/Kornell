@@ -21,7 +21,7 @@ import kornell.server.repository.Entities
 import javax.ws.rs.POST
 
 @Path("courseClasses")
-class CourseClassesResource(val courseVersionUUID:String) {
+class CourseClassesResource(courseVersionUUID:String) {
   def this() = this(null) 
   
   def createCourseClass(institutionUUID:String):CourseClass = 

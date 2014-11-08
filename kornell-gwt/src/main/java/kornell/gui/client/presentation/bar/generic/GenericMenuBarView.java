@@ -1,24 +1,22 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import static kornell.core.util.StringUtils.isSome;
-
 import java.util.logging.Logger;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
-import kornell.core.entity.Person;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
-import kornell.core.to.UserInfoTO;
+import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.ComposeMessageEvent;
-import kornell.gui.client.event.LoginEvent;
-import kornell.gui.client.event.LoginEventHandler;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
+import kornell.gui.client.event.CourseClassesFetchedEventHandler;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.event.UnreadMessagesFetchedEvent;
-import kornell.gui.client.event.UnreadMessagesFetchedEventHandler;
+import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
+import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
@@ -30,15 +28,14 @@ import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -47,8 +44,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericMenuBarView extends Composite implements MenuBarView,
-		LoginEventHandler, UnreadMessagesFetchedEventHandler {
+public class GenericMenuBarView extends Composite implements MenuBarView, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler, CourseClassesFetchedEventHandler {
 
 	Logger logger = Logger.getLogger(GenericMenuBarView.class.getName());
 
@@ -91,13 +87,17 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private EventBus bus;
 	private boolean hasEmail;
 	private Label messagesCount;
+	private int totalCount;
+	private String imgMenuBarUrl;
+	private boolean isLoaded;
 
 	public GenericMenuBarView(final ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
-		bus.addHandler(LoginEvent.TYPE, this);
-		bus.addHandler(UnreadMessagesFetchedEvent.TYPE, this);
+		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
+		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
+		bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		Dean localDean = Dean.getInstance();
@@ -106,9 +106,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 			Institution localInstitution = localDean.getInstitution();
 			String assetsURL = localInstitution.getAssetsURL();
 			String skin = Dean.getInstance().getInstitution().getSkin();
-			String barLogoFileName = "logo250x45" + (!"_light".equals(skin) ? "_light" : "") + ".png?1";
-			imgMenuBar.setUrl(StringUtils
-					.composeURL(assetsURL, barLogoFileName));
+			String barLogoFileName = "logo300x45" + (!"_light".equals(skin) ? "_light" : "") + ".png";
+			imgMenuBarUrl = StringUtils.composeURL(assetsURL, barLogoFileName);
 		}
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
@@ -119,102 +118,73 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 							GenericMenuBarView.this.setVisible(false);
 							setVisible(false);
 						} else {
+							loadAssets();
 							setVisible(true);
-							if (newPlace instanceof TermsPlace
-									|| (newPlace instanceof ProfilePlace
-											&& Dean.getInstance()
-													.getInstitution()
-													.isDemandsPersonContactDetails() && clientFactory
-											.getKornellSession()
-											.getCurrentUser().getPerson()
-											.getCity() == null)) {
-								showButtons(false);
-							} else {
-								showButtons(true);
-							}
+							showButtons(newPlace);
 							GenericMenuBarView.this.setVisible(true);
 						}
 					}
 				});
-		//initHelp();
 	}
 
-	private void initHelp() {
-		btnHelp.setVisible(false);
+	private void loadAssets() {
+		if(isLoaded) return;
 		
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(final UserInfoTO user) {
-				identifyUserVoice(user);
+    if(StringUtils.isNone(imgMenuBar.getUrl())){
+    	imgMenuBar.setUrl(imgMenuBarUrl);
+    }
+
+		Timer screenfulJsTimer = new Timer() {
+			public void run() {
+    		ScriptInjector.fromUrl("//static.getclicky.com/js").setCallback(
+   		     new com.google.gwt.core.client.Callback<Void, Exception>() {
+   		        public void onFailure(Exception reason) {
+   		          GWT.log("Script load failed.");
+   		        }
+   		        public void onSuccess(Void result) {
+   		        	isLoaded = true;
+   		        }
+   		     }).setWindow(ScriptInjector.TOP_WINDOW).inject();
+  	    ScriptInjector.fromUrl("/js/screenfull.min.js").setCallback(
+  	 		     new com.google.gwt.core.client.Callback<Void, Exception>() {
+  	 		        public void onFailure(Exception reason) {
+  	 		          GWT.log("Script load failed.");
+  	 		        }
+  	 		        public void onSuccess(Void result) {
+  	 		        	isLoaded = true;
+  	 		        }
+  	 		     }).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			}
-		});
+		};
 
-	}
+		//wait 2 secs before loading the javascript file
+		screenfulJsTimer.schedule((int) (2 * 1000));
+  }
 
-	private void scheduleInitUserVoice() {
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				GenericMenuBarView.initUserVoice();
-			}
-		});
-	}
-
-	void identifyUserVoice(UserInfoTO user) {
-		Person person = user.getPerson();
-		hasEmail = false;
-		if (person != null) {
-			final String email = person.getEmail();
-			final String personUUID = person.getUUID();
-			final String name = person.getFullName();
-			if (isSome(email)) {
-				hasEmail = true;
-				
-				Element elHelp = btnHelp.getElement();
-				elHelp.setId("btnHelp");
-				elHelp.setAttribute("data-uv-trigger", "contact");
-				scheduleInitUserVoice();
-				
-				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-					@Override
-					public void execute() {
-						identifyUserVoiceNative(personUUID, name, email);						
-					}
-				});
-			}			
-
-		}
-		btnHelp.setVisible(true);
-	}
-
-	static native void identifyUserVoiceNative(String personUUID, String name,
-			String email) /*-{
-		$wnd.UserVoice.push([ 'identify', {
-			email : email,
-			name : name,
-			id : personUUID
-		} ]);
+	static native void initClicker() /*-{
+      try {
+          clicky.init(100739828);
+        } catch (e) {
+        }
 	}-*/;
 
-	static native void initUserVoice() /*-{
-		$wnd.UserVoice.push([ 'set', {
-			locale : 'pt-BR',
-			screenshot_enabled : false,
-			accent_color : '#9b020a'
-		} ]);
-		$wnd.UserVoice.push([ 'addTrigger', '#btnHelp', {} ]);
-	}-*/;
-
-	private void showButtons(boolean show) {
-		showButton(btnFullScreen, show);
-		showButton(btnProfile, show);
-		showButton(btnHome, show);
-		showButton(btnAdmin, show &&  
+	private void showButtons(Place newPlace) {
+		boolean isRegistrationCompleted = !( newPlace instanceof TermsPlace
+		|| ( (newPlace instanceof ProfilePlace || newPlace instanceof MessagePlace)
+				&& isProfileIncomplete()));
+		
+		boolean showHelp = (Dean.getInstance().getHelpCourseClasses().size() > 0) && !(newPlace instanceof TermsPlace);
+		
+		showButton(btnHelp, showHelp);
+		showButton(btnMessages, showHelp);
+		showButton(btnProfile, showHelp);
+		
+		showButton(btnHome, isRegistrationCompleted);
+		showButton(btnFullScreen, isRegistrationCompleted);
+		showButton(btnAdmin, isRegistrationCompleted &&  
 				(RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 						|| clientFactory.getKornellSession().isInstitutionAdmin()));
 		showButton(btnNotifications, false);
-		showButton(btnMessages, true);
-		showButton(btnHelp, true);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
 	}
@@ -242,6 +212,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		btnMessages.removeStyleName("btn");
 		btnMenu.removeStyleName("btn");
 	}
+	
+	private boolean isProfileIncomplete(){
+		return Dean.getInstance().getInstitution().isDemandsPersonContactDetails()
+				&& Dean.getInstance().getInstitution().isValidatePersonContactDetails() 
+				&& StringUtils.isNone(clientFactory.getKornellSession().getCurrentUser().getPerson().getCity());
+	}
 
 	static native void requestFullscreen() /*-{
 		if ($wnd.screenfull.enabled)
@@ -260,7 +236,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	void handleProfile(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(
 				new ProfilePlace(clientFactory.getKornellSession()
-						.getCurrentUser().getPerson().getUUID(), false));
+						.getCurrentUser().getPerson().getUUID(), isProfileIncomplete()));
 	}
 
 	@UiHandler("btnHome")
@@ -293,11 +269,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	}
 
 	@Override
-	public void onLogin(UserInfoTO user) {
-		identifyUserVoice(user);
-	}
-
-	@Override
 	public boolean isVisible() {
 		return visible;
 	}
@@ -306,16 +277,38 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		this.visible = visible;
 	}
 
-	@Override
-  public void onUnreadMessagesFetched(UnreadMessagesFetchedEvent event) {
-		if(btnMessages.getWidgetCount() == 3){
+	private void updateUnreadCount() {
+		String labelText = totalCount > 0 ? ""+totalCount : "";
+	  if(btnMessages.getWidgetCount() == 3){
 			btnMessages.remove(2);
 		}
-		String labelText = "0".equals(event.getUnreadMessagesCount()) ? "" : event.getUnreadMessagesCount();
 		this.messagesCount = new Label(labelText);
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");
 		btnMessages.add(messagesCount);
+  }
+
+	@Override
+  public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
+		if(event.getUnreadChatThreadTOs().size() > 0 && !btnMessages.isVisible())
+			btnMessages.setVisible(true);
+		int count = 0;
+		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
+			count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
+    }
+		totalCount = count;
+		updateUnreadCount();
+  }
+
+	@Override
+  public void onUnreadMessagesCountChanged(UnreadMessagesCountChangedEvent event) {
+	  totalCount = event.isIncrement() ? totalCount + event.getCountChange() : totalCount - event.getCountChange();
+		updateUnreadCount();
+  }
+
+	@Override
+  public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+	  showButtons(clientFactory.getPlaceController().getWhere());
   }
 
 }

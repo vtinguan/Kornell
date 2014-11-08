@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.course.generic.details;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.Assessment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
@@ -20,6 +21,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
@@ -88,6 +90,9 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			this.name = "Certificado";
 			this.description = "Impressão do certificado. Uma vez que o curso for terminado, você poderá gerar o certificado aqui.";
 			this.grade = "-";
+
+			//TODO: REGRESSION courseClassComplete = currentCourseClass.getEnrollment().getProgress() >= 100;
+			//TODO: REGRESSION approvedOnTest = currentCourseClass.getEnrollment().getAssessment() == Assessment.PASSED;
 			updateCertificationLinkAndLabel();
 		}
 	}
@@ -161,15 +166,22 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 	
 	private void checkCertificateAvailability() {
-		if(Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
-		    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
-		    .isApproved(new Callback<Boolean>() {
-		    	@Override
-		    	public void ok(Boolean approved) {
-		    		approvedOnTest = approved;
-		    		updateCertificationLinkAndLabel();
-		    	}
-			});
+		if(!approvedOnTest && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
+			Timer checkTimer = new Timer() {
+				@Override
+				public void run() {
+			    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
+			    .isApproved(new Callback<Boolean>() {
+			    	@Override
+			    	public void ok(Boolean approved) {
+			    		approvedOnTest = approved;
+			    		updateCertificationLinkAndLabel();
+			    	}
+				});
+				}
+			};
+			checkTimer.schedule(3000);
+			//TODO: MDA (to be resolved on the refactoring of the details)
 		}
 	}
 }

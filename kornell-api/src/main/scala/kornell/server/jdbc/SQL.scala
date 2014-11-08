@@ -1,5 +1,6 @@
 package kornell.server.jdbc
 
+import scala.language.implicitConversions
 import java.sql.Connection
 import kornell.core.util.UUID
 import java.sql.ResultSet

@@ -1,5 +1,6 @@
 package kornell.server.api
 
+import scala.language.postfixOps
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
@@ -103,8 +104,8 @@ class EnrollmentResource(uuid: String) {
     e <- first
     cc <- CourseClassRepo(e.getCourseClassUUID).first
     cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
-    cs <- ContentStoreRepo(cv.getRepositoryUUID, cv.getDistributionPrefix()).first
-    details <- launchDetails(e)
+    cs <- ContentStoreRepo(cv.getRepositoryUUID, cv.getDistributionPrefix()).first 
+    details <- launchDetails(e) 
   } yield TOs.newEnrollmentLaunchTO(
       launchAction(e,cs), 
       details,

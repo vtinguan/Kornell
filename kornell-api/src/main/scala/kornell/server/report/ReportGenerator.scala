@@ -1,5 +1,6 @@
 package kornell.server.report
 
+import scala.language.implicitConversions
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -17,6 +18,7 @@ import net.sf.jasperreports.engine.util.JRLoader
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter
 import kornell.core.util.UUID
 import java.io.FileInputStream
+import scala.language.postfixOps
 
 
 object ReportGenerator {

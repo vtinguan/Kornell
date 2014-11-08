@@ -1,5 +1,6 @@
 package kornell.server.test
 
+import scala.language._
 import org.scalatest.Matchers
 import org.scalatest.Inside
 import org.scalatest.OptionValues

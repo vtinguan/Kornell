@@ -15,8 +15,8 @@ import kornell.core.to.UserInfoTO;
 import kornell.core.util.TimeUtil;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.HistoryMapper;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -71,7 +71,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private final EventBus bus;
 	private Institution institution;
 	private FormHelper formHelper;
-	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showContactDetails;
+	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showContactDetails, validateContactDetails;
 
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
@@ -130,6 +130,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		lblTitle.setText("Perfil");
 
 		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
+		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
 
 		/*session.getS3PolicyTO(new Callback<S3PolicyTO>() {
 			@Override
@@ -196,7 +197,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			fullName.setError("Insira seu nome.");
 		} else fullName.setError("");
 		
-		if(showContactDetails){
+		if(showContactDetails && validateContactDetails){
 			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
 				telephone.setError("Insira seu telefone.");
 			} else telephone.setError("");
@@ -298,7 +299,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
-		if(showContactDetails && session.getCurrentUser().getPerson().getCity() == null){
+		if(showContactDetails && validateContactDetails && session.getCurrentUser().getPerson().getCity() == null){
 			bus.fireEvent(new LogoutEvent());
 		} else {
 			isEditMode = false;
@@ -359,7 +360,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			return;
 		}
 		
-		if(isEditMode && showContactDetails && session.getCurrentUser().getPerson().getCity() == null){
+		if(isEditMode && showContactDetails && validateContactDetails && session.getCurrentUser().getPerson().getCity() == null){
 			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO, 5000);
 		}
 
@@ -555,11 +556,11 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		fields.add(city);
 		profileFields.add(city);
 
-		addressLine1 = new KornellFormFieldWrapper("Endereço Linha 1", formHelper.createTextBoxFormField(user.getPerson().getAddressLine1()), isEditMode);
+		addressLine1 = new KornellFormFieldWrapper("Endereço", formHelper.createTextBoxFormField(user.getPerson().getAddressLine1()), isEditMode);
 		fields.add(addressLine1);
 		profileFields.add(addressLine1);
 
-		addressLine2 = new KornellFormFieldWrapper("Endereço Linha 2", formHelper.createTextBoxFormField(user.getPerson().getAddressLine2()), isEditMode);
+		addressLine2 = new KornellFormFieldWrapper("Complemento", formHelper.createTextBoxFormField(user.getPerson().getAddressLine2()), isEditMode);
 		fields.add(addressLine2);
 		profileFields.add(addressLine2);
 

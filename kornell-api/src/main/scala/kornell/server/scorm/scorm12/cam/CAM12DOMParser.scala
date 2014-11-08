@@ -1,5 +1,6 @@
 package kornell.server.scorm.scorm12.cam
 
+import scala.language.implicitConversions
 import kornell.core.scorm.scorm12.cam.Manifest
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
@@ -25,7 +26,7 @@ object CAM12DOMParser {
   }
 
   implicit class PimpElement(el: Element) {
-    def getChildElements = el.getChildNodes filter isElement
+    def getChildElements = el.getChildNodes filter isElement  
   }
 
   val dbf = DocumentBuilderFactory.newInstance
@@ -79,7 +80,7 @@ object CAM12DOMParser {
     res
   }
 
-  def parseDependency(el: Element) = el.getAttribute("identifierref")
+  def parseDependency(el: Element) = el.getAttribute("dependency")
 
   def parseFile(el: Element) = {
     val file = newFile()

@@ -1,7 +1,6 @@
 package kornell.server.jdbc
 
-import kornell.server.jdbc.PreparedStmt
-
+//TODO: DEL
 object SQLInterpolation {
  
 }

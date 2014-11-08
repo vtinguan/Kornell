@@ -1,5 +1,6 @@
 package kornell.server.jdbc.repository
 
+import scala.language.implicitConversions
 import java.sql.ResultSet
 import java.util.concurrent.TimeUnit.MINUTES
 import scala.collection.JavaConverters.setAsJavaSetConverter

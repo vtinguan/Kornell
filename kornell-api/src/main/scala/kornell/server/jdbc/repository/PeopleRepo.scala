@@ -12,6 +12,8 @@ import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit._
 import kornell.core.util.StringUtils._
 import kornell.server.jdbc.PreparedStmt
+import scala.language.implicitConversions
+
 
 object PeopleRepo {
 

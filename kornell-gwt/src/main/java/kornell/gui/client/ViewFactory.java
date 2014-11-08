@@ -47,10 +47,9 @@ public interface ViewFactory {
 	
 	//admin
 	AdminHomeView getAdminHomeView();
-
 	DockLayoutPanel getDockLayoutPanel();
-
 	MessagePresenter getMessagePresenter();
+	MessagePresenter getMessagePresenterCourseClass();
 
 
 

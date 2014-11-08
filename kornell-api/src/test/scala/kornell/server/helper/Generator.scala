@@ -1,6 +1,7 @@
 package kornell.server.helper
 
 import scala.util.Random
+import scala.language.postfixOps
 
 import kornell.core.util.UUID
 

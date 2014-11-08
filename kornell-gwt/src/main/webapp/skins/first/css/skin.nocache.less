@@ -39,29 +39,32 @@ body {
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px fade(@contentBoxBackgroundColor, 50%) !important; 
     border-radius: 5px;
+	background-color: @modalBackgroundColor;
 }
- 
 ::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px fade(@tableBackgroundColor, 50%) !important; 
     border-radius: 5px;
+	background-color: @background;
 }
 
 
 .messageInboxPanel{
 	width: @wrapperWidth;
 	margin: 0 auto;
-	height: 100%;
 	margin-top: 10px;
-	@border: 1px solid fade(@niceTextColor, 50%);
+	@border: 1px solid fade(@niceTextColor, 25%);
 	@borderHighlight: 1px solid fade(@textInfoColor, 50%);
+	height: 502px;
+	border: @border;
+	border-radius: 8px;
+	.boxSizing;
 	.sidePanelScroll{
-		max-height: 429px;
-		margin-right: 10px;
-		border: @border;
+		width: 240px;
+		height: 489px;
 		padding: 5px;
 		border-radius: 8px;
+		background-color: @tableBackgroundColor;
 		.sidePanel{
-			width: @wrapperWidth * .25;
 			margin-right: 14px;
 			.boxSizing;
 			.threadListItem{
@@ -70,10 +73,10 @@ body {
 				background-color: @tableBackgroundColor;
 				font-size: 12px;
 				line-height: 20px;
-				margin-bottom: 8px;
-				border-radius: 8px;
-				padding: 5px;
-				border: @border;
+				margin-bottom: 3px;
+				border-radius: 5px;
+				padding: 6px;
+				font-weight: bold;
 				&:hover {
 					background-color: @tableBackgroundHoverColor;
 				}
@@ -88,12 +91,11 @@ body {
 		}
 	}
 	.threadPanel{
-		width: @wrapperWidth * .7;
+		width: 696px;
 		background-color: @tableBackgroundColor;
 		padding: 10px;
-		.boxSizing;
-		border: 1px solid rgba(128, 128, 128, 0.51);
 		border-radius: 8px;
+		.boxSizing;
 		.threadTitle{
 			font-size: 14px;
 			color: @textInfoColor;
@@ -101,12 +103,20 @@ body {
 			margin-bottom: 5px;
 			border-bottom: @borderHighlight;
 			text-align: center;
+			font-weight: bold;
 		}
 		.threadPanelItemsScroll{
-			max-height: 300px;
+			height: 360px;
 			margin-bottom: 5px;
 			padding-right: 5px;
 			.threadMessageWrapper{
+				.boxSizing;
+				background: @tableBackgroundHoverColor;
+				margin: 5px;
+				padding: 5px 8px;
+				margin-left: 15px;
+				border-radius: 10px;
+				position: relative;
 				.threadMessageHeader{
 					color: @textHighlightDiscreteColor;
 					font-size: 8px;
@@ -116,11 +126,30 @@ body {
 				.threadMessageItem{
 					color: @niceTextColor;
 					font-size: 12px;
-					min-height: 25px;
-					margin-bottom: 5px;
-					border-bottom: @border;
 					padding: 0px 10px;
 					white-space: pre-wrap;
+				}
+				&:after {
+					content: '';
+					position: absolute;
+					top: 40%;
+					left: 0%;
+					margin-left: -12px;
+					border-top: 7px solid transparent;
+					border-bottom: 7px solid transparent;
+					border-right: 12px solid @tableBackgroundHoverColor;
+				}
+			}
+			.overrideWrapper{
+				margin-left: 0px !important;
+				margin-right: 15px !important;
+				background: @tableBackgroundColor !important;
+				&:after {
+					left: 100% !important;
+					margin-left: 0px !important;
+					margin-right: -12px !important;
+					border-left: 12px solid @tableBackgroundColor !important;
+					border-right: 0px !important;
 				}
 			}
 		}
@@ -135,12 +164,13 @@ body {
 				height: 60px;
 				font-size: 12px;
 				line-height: 14px;
+				resize: none;
 			}
 			.btnSend{
 				.boxSizing;
 				width: 15%;
 				float: left;
-				margin-top: 40px;
+				margin-top: 19px;
 				margin-left: 10px;
 			}
 		}
@@ -177,14 +207,14 @@ body {
 			margin-bottom: 3px;
 			.lblTitle{
 				color: @textHighlightColor;
-				font-size: 15px;
+				font-size: 18px;
 				font-weight: bold;
 				width: 100%;
 				text-align: center;
 			}
 			.lblSubTitle{
 				color: @textInfoColor;
-				font-size: 10px;
+				font-size: 13px;
 				float: left;
 				width: 100%;
 			}
@@ -462,7 +492,7 @@ body {
 		height: @reportHeaderPanelHeight;
 		margin-bottom: 10px;
 		.btnReportHeader{
-			box-sizing: border-box;
+			.boxSizing;
 			border-radius: 0px !important;
 			height: @reportHeaderPanelHeight;
 			line-height: @reportHeaderPanelHeight;
@@ -489,7 +519,7 @@ body {
 		color: @niceTextColor;
 		font-size: 13px;
 		.itemPanel{
-			box-sizing: border-box;
+			.boxSizing;
 			float: left;
 			padding-left: @detailsPanelMargin / 2;
 			padding-right: @detailsPanelMargin / 2;
@@ -536,7 +566,7 @@ body {
 			}
 		}
 		.lblGenerate{
-			box-sizing: border-box;
+			.boxSizing;
 			float: left;
 			width: @generateWidth;
 			padding-left: @detailsPanelMargin / 2;
@@ -544,7 +574,7 @@ body {
 			text-align: center;
 		}
 		.lblDownload{
-			box-sizing: border-box;
+			.boxSizing;
 			float: left;
 			width: @downloadWidth;
 			text-align: center;

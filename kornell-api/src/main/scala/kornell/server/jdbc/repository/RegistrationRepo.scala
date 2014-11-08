@@ -7,6 +7,7 @@ import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
+import scala.language.implicitConversions
 
 class RegistrationRepo(person: PersonRepo, institution_uuid: String) {
 

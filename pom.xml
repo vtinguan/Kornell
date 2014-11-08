@@ -5,7 +5,7 @@
     <groupId>kornell</groupId>
     <artifactId>kornell</artifactId>
     <packaging>pom</packaging>
-    <version>${kornell-version}</version>
+    <version>1.2-SNAPSHOT</version>
     <name>Kornell E-Learning Platform</name>
 
     <modules>        
@@ -14,9 +14,6 @@
         <module>kornell-gwt</module>
   </modules>
   
-  <properties>
-  	<kornell-version>1.1</kornell-version>
-  </properties>
     <build>
         <pluginManagement>
             <plugins>

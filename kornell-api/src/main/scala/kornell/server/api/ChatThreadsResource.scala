@@ -67,10 +67,12 @@ class ChatThreadsResource {
   @GET
   def getChatThreadMessages(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String, 
-    @QueryParam("since") since: String) = AuthRepo().withPerson { person => 
+    @QueryParam("since") since: String) = AuthRepo().withPerson { person => {
+      ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
   		if(StringUtils.isSome(since))
   			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+    }
   }
 }

@@ -12,6 +12,8 @@ import kornell.core.to.report.CertificateInformationTO
 import kornell.core.util.StringUtils.composeURL
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
+import scala.language.implicitConversions
+
 
 object ReportCertificateGenerator {
 

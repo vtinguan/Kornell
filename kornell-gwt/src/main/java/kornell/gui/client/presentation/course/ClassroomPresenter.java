@@ -41,6 +41,40 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private void displayPlace() {
 		view.asWidget().setVisible(true);
 		view.display(place);
+    /*
+		final String enrollmentUUID = place.getEnrollmentUUID();
+
+		if(session.isAnonymous()){
+			placeCtrl.goTo(new VitrinePlace());
+			return;
+		}
+		
+		view.asWidget().setVisible(false);
+		LoadingPopup.show();				
+		
+		session.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
+			@Override
+			public void ok(Contents contents) {
+				// check if user has a valid enrollment to this course
+				boolean isEnrolled = false;
+				UserInfoTO user = session.getCurrentUser();
+				//TODO: Consider moving this to the server
+				for (Enrollment enrollment : user.getEnrollments().getEnrollments()) {
+					if(enrollment.getUUID().equals(enrollmentUUID)){
+						Dean.getInstance().setCourseClassTO(enrollment.getCourseClassUUID());
+						isEnrolled = EnrollmentState.enrolled.equals(enrollment.getState());
+						break;
+					}
+				}
+				boolean isInactiveCourseClass = CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
+				LoadingPopup.hide();
+				setContents(contents);
+				view.display(isEnrolled && !isInactiveCourseClass);		
+				view.asWidget().setVisible(true);
+			}
+
+		});
+		*/
 	}
 
 	private FlowPanel getPanel() {
@@ -50,7 +84,6 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	@Override
 	public void startSequencer() {
 		sequencer = sequencerFactory.withPlace(place).withPanel(getPanel());
-		sequencer.go(contents);
 		session.enrollment(place.getEnrollmentUUID())
 				.launch(new Callback<EnrollmentLaunchTO>() {
 					@Override

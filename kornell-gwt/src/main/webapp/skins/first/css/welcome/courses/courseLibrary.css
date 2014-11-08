@@ -24,7 +24,8 @@
 .fileUploadWrapper input[type="file"]{float:left;clear:both;width:284px !important;color:#bec1c3;font-size:12px;line-height:20px !important;background:transparent;}
 .fileUploadWrapper button{float:left;}
 .modal-backdrop,.modal-backdrop.fade.in{opacity:0.5 !important;filter:alpha(opacity=50) !important;}
-.modal{width:480px !important;background:#383235 !important;}.modal .standardButtonBar{width:220px;margin-top:25px;}.modal .standardButtonBar .btnAction{margin:0;}
+.modal{width:480px !important;background:#222222 !important;}.modal .modal-body{color:#bec1c3;}
+.modal .standardButtonBar{width:220px;margin-top:25px;}.modal .standardButtonBar .btnAction{margin:0;}
 .modal .standardButtonBar .btnNotSelected{margin:0;margin-left:20px;}
 .modal h3{color:#bec1c3;font-size:20px;}
 .modal textarea{width:434px;height:144px;margin-top:10px;margin-bottom:10px;}

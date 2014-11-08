@@ -1,4 +1,6 @@
 package kornell.server.jdbc
+
+import scala.language.implicitConversions
 import java.sql.Connection
 import java.sql.ResultSet
 import kornell.core.entity.Enrollment
@@ -44,6 +46,7 @@ package object repository {
         rs.getString("assetsURL"),
         rs.getString("baseURL"),
         rs.getBoolean("demandsPersonContactDetails"),
+        rs.getBoolean("validatePersonContactDetails"),
         rs.getBoolean("allowRegistration"),
         rs.getDate("activatedAt"),
         rs.getString("skin"))   

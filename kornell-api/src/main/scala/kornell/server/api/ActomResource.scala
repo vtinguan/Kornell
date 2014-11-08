@@ -3,6 +3,7 @@ package kornell.server.api
 import java.sql.ResultSet
 import java.util.HashMap
 import scala.collection.JavaConversions._
+import scala.language.implicitConversions
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET

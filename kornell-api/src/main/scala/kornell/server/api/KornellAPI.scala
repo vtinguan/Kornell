@@ -1,5 +1,6 @@
 package kornell.server.api
 
+import scala.language.postfixOps
 import java.util.Collections
 import scala.collection.JavaConverters.setAsJavaSetConverter
 import javax.ws.rs.core.Application

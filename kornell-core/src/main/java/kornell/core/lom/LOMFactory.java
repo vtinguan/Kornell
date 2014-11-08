@@ -1,6 +1,6 @@
 package kornell.core.lom;
 
-import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBean; 
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 

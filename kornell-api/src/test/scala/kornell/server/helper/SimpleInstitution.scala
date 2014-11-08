@@ -58,7 +58,7 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
   
   abstract override def withFixture(test: NoArgTest) = {
     
-    institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, null, ""))
+    institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, null, ""))
 	  course = CoursesRepo.create(Entities.newCourse(randUUID, randStr, randStr, randStr, randStr))
 	  courseVersion = CourseVersionsRepo.create(Entities.newCourseVersion(randUUID, randStr, course.getUUID, randUUID, new Date, randStr, "KNL", false))
 	  courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, false, 23451, new Date(), null, CourseClassState.active)
@@ -106,7 +106,7 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
 	  
 	  mockHttpServletResponse = new MockHttpServletResponse(0, null)
     
-    try super.withFixture(test) // To be stackable, must call super.withFixture
+	  super.withFixture(test) // To be stackable, must call super.withFixture
     
 	  
   }

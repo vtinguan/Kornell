@@ -1,7 +1,9 @@
 package kornell.api.client;
 
 import kornell.core.to.RegistrationRequestTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 
 import com.google.gwt.http.client.URL;
 
@@ -10,6 +12,11 @@ public class UserClient extends RESTClient {
 	// TODO: Is this safe?
 	public void getUser(String username, Callback<UserInfoTO> cb) {
 		GET("/user/" + username).sendRequest(null, cb);
+	}
+
+	public void getUserHello(String name, String hostName, Callback<UserHelloTO> cb) {
+		String path = "/user/hello?" + (StringUtils.isSome(name) ? "name="+name : "hostName="+hostName);
+		GET(path).sendRequest(null, cb);
 	}
 
 	public void checkUser(String email, Callback<UserInfoTO> cb) {
