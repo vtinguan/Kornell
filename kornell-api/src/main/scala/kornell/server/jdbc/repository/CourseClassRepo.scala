@@ -36,10 +36,11 @@ class CourseClassRepo(uuid:String) {
 		    cc.institution_uuid = ${courseClass.getInstitutionUUID},
 	  		cc.requiredScore = ${courseClass.getRequiredScore},
 	  		cc.publicClass = ${courseClass.isPublicClass},
-	  		cc.enrollWithCPF = ${courseClass.isEnrollWithCPF},
 	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments},
 	  		cc.invisible = ${courseClass.isInvisible},
 	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments}
+	  		cc.registrationEnrollmentType = ${courseClass.getRegistrationEnrollmentType}
+	  		cc.institutionRegistrationPrefix = ${courseClass.getInstitutionRegistrationPrefix}
       where cc.uuid = ${courseClass.getUUID}""".executeUpdate
     ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)
     courseClass

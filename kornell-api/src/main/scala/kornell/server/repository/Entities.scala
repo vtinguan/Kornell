@@ -4,11 +4,8 @@ import java.math.BigDecimal
 import java.util.Date
 import java.util.Map
 import java.util.UUID
-
 import scala.collection.JavaConverters.seqAsJavaListConverter
-
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-
 import kornell.core.entity.Assessment
 import kornell.core.entity.ContentSpec
 import kornell.core.entity.Course
@@ -24,6 +21,7 @@ import kornell.core.entity.Role
 import kornell.core.entity.RoleType
 import kornell.core.util.TimeUtil
 import kornell.server.util.ValueFactory
+import kornell.core.entity.RegistrationEnrollmentType
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -144,7 +142,7 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, activatedAt: Date, skin: String) = {
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, activatedAt: Date, skin: String) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -156,6 +154,7 @@ object Entities {
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
     i.setValidatePersonContactDetails(validatePersonContactDetails)
     i.setAllowRegistration(allowRegistration)
+    i.setAllowRegistrationByUsername(allowRegistrationByUsername)
     i.setActivatedAt(activatedAt)
     i.setSkin(skin)
     i
@@ -222,10 +221,12 @@ object Entities {
   def newCourseClass(uuid: String = null, name: String = null,
     courseVersionUUID: String = null, institutionUUID: String = null,
     requiredScore: BigDecimal = null, publicClass: Boolean = false,
-    enrollWithCPF: Boolean = false, overrideEnrollments: Boolean = false,
+    overrideEnrollments: Boolean = false,
     invisible: Boolean = false, maxEnrollments: Integer = null,
     createdAt: Date = null, createdBy: String = null,
-    state: CourseClassState = null) = {
+    state: CourseClassState = null,
+    registrationEnrollmentType: RegistrationEnrollmentType = null,
+    institutionRegistrationPrefix: String = null) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -233,13 +234,14 @@ object Entities {
     clazz.setInstitutionUUID(institutionUUID)
     clazz.setRequiredScore(requiredScore)
     clazz.setPublicClass(publicClass)
-    clazz.setEnrollWithCPF(enrollWithCPF)
     clazz.setOverrideEnrollments(overrideEnrollments)
     clazz.setInvisible(invisible)
     clazz.setMaxEnrollments(maxEnrollments)
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
+    clazz.setRegistrationEnrollmentType(registrationEnrollmentType)
+    clazz.setInstitutionRegistrationPrefix(institutionRegistrationPrefix)
     clazz
   }
 

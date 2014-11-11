@@ -1,27 +1,26 @@
 package kornell.server.jdbc
-import java.sql.Connection
+
 import java.sql.ResultSet
-import kornell.core.entity.Enrollment
-import kornell.server.repository.Entities._
-import kornell.server.repository.TOs._
-import kornell.core.entity.EnrollmentState
-import kornell.core.entity.CourseClass
-import kornell.core.to.CourseClassTO
-import kornell.core.entity.Course
-import kornell.server.repository.TOs
-import kornell.core.entity.Person
-import kornell.core.entity.CourseVersion
-import kornell.core.entity.RoleType
-import kornell.server.repository.Entities
 import java.util.logging.Logger
-import kornell.core.util.UUID
 import kornell.core.entity.Assessment
-import kornell.core.entity.Institution
-import kornell.core.to.EnrollmentTO
+import kornell.core.entity.Course
+import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseClassState
-import kornell.server.authentication.ThreadLocalAuthenticator
-import kornell.core.to.UnreadChatThreadTO
+import kornell.core.entity.CourseVersion
+import kornell.core.entity.Enrollment
+import kornell.core.entity.EnrollmentState
+import kornell.core.entity.Institution
+import kornell.core.entity.Person
+import kornell.core.entity.RoleType
 import kornell.core.to.ChatThreadMessageTO
+import kornell.core.to.CourseClassTO
+import kornell.core.to.EnrollmentTO
+import kornell.core.to.UnreadChatThreadTO
+import kornell.server.repository.Entities._
+import kornell.server.repository.Entities
+import kornell.server.repository.TOs._
+import kornell.server.repository.TOs
+import kornell.core.entity.RegistrationEnrollmentType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -45,6 +44,7 @@ package object repository {
         rs.getBoolean("demandsPersonContactDetails"),
         rs.getBoolean("validatePersonContactDetails"),
         rs.getBoolean("allowRegistration"),
+        rs.getBoolean("allowRegistrationByUsername"),
         rs.getDate("activatedAt"),
         rs.getString("skin"))   
   
@@ -52,10 +52,12 @@ package object repository {
     newCourseClass(r.getString("uuid"), r.getString("name"), 
         r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
         r.getBigDecimal("requiredScore"), r.getBoolean("publicClass"), 
-        r.getBoolean("enrollWithCPF"), r.getBoolean("overrideEnrollments"),
+        r.getBoolean("overrideEnrollments"),
         r.getBoolean("invisible"), r.getInt("maxEnrollments"), 
         r.getDate("createdAt"), r.getString("createdBy"), 
-        CourseClassState.valueOf(r.getString("state"))) 
+        CourseClassState.valueOf(r.getString("state")), 
+        RegistrationEnrollmentType.valueOf(r.getString("registrationEnrollmentType")),
+        r.getString("institutionRegistrationPrefix")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -99,13 +101,14 @@ package object repository {
 		    rs.getString("institutionUUID"),
 		    rs.getBigDecimal("requiredScore"),
 		    rs.getBoolean("publicClass"),
-		    rs.getBoolean("enrollWithCPF"), 
         rs.getBoolean("overrideEnrollments"),
         rs.getBoolean("invisible"),
 		    rs.getInt("maxEnrollments"),
 		    rs.getDate("createdAt"),
 		    rs.getString("createdBy"), 
-        CourseClassState.valueOf(rs.getString("state")));
+        CourseClassState.valueOf(rs.getString("state")), 
+        RegistrationEnrollmentType.valueOf(rs.getString("registrationEnrollmentType")),
+		    rs.getString("institutionRegistrationPrefix"));
     		
     TOs.newCourseClassTO(course, version, clazz)
   }

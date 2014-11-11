@@ -11,6 +11,7 @@ import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
+import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
@@ -19,7 +20,6 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.ListBoxFormField;
@@ -28,13 +28,10 @@ import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -195,7 +192,7 @@ public class GenericCourseClassConfigView extends Composite {
 			}
 		});
 
-		Boolean isEnrollWithCPF = courseClass.isEnrollWithCPF() == null ? false : courseClass.isEnrollWithCPF();
+		Boolean isEnrollWithCPF = RegistrationEnrollmentType.cpf.equals(courseClass.getRegistrationEnrollmentType());
 		enrollWithCPF = new KornellFormFieldWrapper("Matricular com CPF?", formHelper.createCheckBoxFormField(isEnrollWithCPF), isInstitutionAdmin);
 		fields.add(enrollWithCPF);
 		profileFields.add(enrollWithCPF);
@@ -326,7 +323,7 @@ public class GenericCourseClassConfigView extends Composite {
 		courseClass.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
 		courseClass.setName(name.getFieldPersistText());
 		courseClass.setCourseVersionUUID(courseVersion.getFieldPersistText());
-		courseClass.setEnrollWithCPF(enrollWithCPF.getFieldPersistText().equals("true"));
+		courseClass.setRegistrationEnrollmentType(enrollWithCPF.getFieldPersistText().equals("true") ? RegistrationEnrollmentType.cpf : RegistrationEnrollmentType.email);
 		courseClass.setPublicClass(publicClass.getFieldPersistText().equals("true"));
 		courseClass.setMaxEnrollments(new Integer(maxEnrollments.getFieldPersistText()));
 		courseClass.setRequiredScore(requiredScore.getFieldPersistText().length() > 0 ?

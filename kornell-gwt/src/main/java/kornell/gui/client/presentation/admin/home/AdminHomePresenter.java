@@ -15,6 +15,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
+import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
@@ -185,7 +186,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		view.setHomeTabActive();
 		if(courseClassTO == null)
 			return;
-		enrollWithCPF = courseClassTO.getCourseClass().isEnrollWithCPF();
+		enrollWithCPF = RegistrationEnrollmentType.cpf.equals(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
 		Dean.getInstance().setCourseClassTO(courseClassTO);
 		view.setCourseClassName(courseClassTO.getCourseClass().getName());
 		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse()

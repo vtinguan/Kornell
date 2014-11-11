@@ -26,19 +26,20 @@ object CourseClassesRepo {
     if (courseClass.getUUID == null)
       courseClass.setUUID(UUID.random)
     sql""" 
-    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,enrollWithCPF,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy)
+    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,enrollWithCPF,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationEnrollmentType,institutionRegistrationPrefix)
     	values(${courseClass.getUUID},
              ${courseClass.getName},
              ${courseClass.getCourseVersionUUID},
              ${courseClass.getInstitutionUUID},
              ${courseClass.isPublicClass},
              ${courseClass.getRequiredScore},
-             ${courseClass.isEnrollWithCPF},
              ${courseClass.isOverrideEnrollments},
              ${courseClass.isInvisible},
              ${courseClass.getMaxEnrollments},
              ${new Date()},
-             ${courseClass.getCreatedBy})
+             ${courseClass.getCreatedBy},
+             ${courseClass.getRegistrationEnrollmentType.toString},
+             ${courseClass.getInstitutionRegistrationPrefix})
     """.executeUpdate
     courseClass
   }
@@ -70,13 +71,14 @@ object CourseClassesRepo {
 			    cc.institution_uuid as institutionUUID,
 		  		cc.requiredScore as requiredScore,
 		  		cc.publicClass as publicClass,
-		  		cc.enrollWithCPF as enrollWithCPF,
       		cc.overrideEnrollments as overrideEnrollments,
       		cc.invisible as invisible,
 		  		cc.maxEnrollments as maxEnrollments,
       		cc.createdAt as createdAt,
       		cc.createdBy as createdBy,
-      		cc.state
+      		cc.state,
+		  		cc.registrationEnrollmentType as registrationEnrollmentType,
+		  		cc.institutionRegistrationPrefix as institutionRegistrationPrefix
 			from Course c
 			join CourseVersion cv on cv.course_uuid = c.uuid
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid

@@ -18,9 +18,6 @@ public interface CourseClass extends Named{
 	Boolean isPublicClass();
 	void setPublicClass(Boolean publicClass);
 	
-	Boolean isEnrollWithCPF();
-	void setEnrollWithCPF(Boolean enrollWithCPF);
-	
 	Boolean isOverrideEnrollments();
 	void setOverrideEnrollments(Boolean overrideEnrollments);
 	
@@ -38,4 +35,10 @@ public interface CourseClass extends Named{
 	
 	CourseClassState getState();
 	void setState(CourseClassState state);
+	
+	RegistrationEnrollmentType getRegistrationEnrollmentType();
+	void setRegistrationEnrollmentType(RegistrationEnrollmentType registrationEnrollmentType);
+	
+	String getInstitutionRegistrationPrefix();
+	void setInstitutionRegistrationPrefix(String institutionRegistrationPrefix);
 }

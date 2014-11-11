@@ -11,7 +11,7 @@ object InstitutionsRepo {
   
   def create(institution: Institution): Institution = {    
     sql"""
-    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,activatedAt,skin) 
+    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin) 
     | values(
     | ${institution.getUUID},
     | ${institution.getName},
@@ -22,6 +22,7 @@ object InstitutionsRepo {
     | ${institution.isValidatePersonContactDetails},
     | ${institution.getFullName},
     | ${institution.isAllowRegistration},
+    | ${institution.isAllowRegistrationByUsername},
     | ${institution.getActivatedAt},
     | ${institution.getSkin})""".executeUpdate
     institution
@@ -38,6 +39,7 @@ object InstitutionsRepo {
     | i.demandsPersonContactDetails = ${institution.isDemandsPersonContactDetails},
     | i.validatePersonContactDetails = ${institution.isValidatePersonContactDetails},
     | i.allowRegistration = ${institution.isAllowRegistration},
+    | i.allowRegistration = ${institution.isAllowRegistrationByUsername},
     | i.activatedAt = ${institution.getActivatedAt},
     | i.skin = ${institution.getSkin}
     | where i.uuid = ${institution.getUUID}""".executeUpdate

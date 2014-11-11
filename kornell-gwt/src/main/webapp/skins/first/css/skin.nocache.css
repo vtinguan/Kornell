@@ -428,7 +428,8 @@ a{color:#5b9455 !important;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .error{font-size:10px;line-height:12px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .gwt-TextArea{height:180px;}
 .messagesPopup .messagesPanel .standardButtonBar{width:220px;}.messagesPopup .messagesPanel .standardButtonBar .btnStandard{margin:5px;margin-bottom:10px;}
-.deanHome{width:962px;margin:0 auto;}.deanHome .inlineLabel{margin-right:5px;display:inline;color:#bec1c3;font-size:12px;}
+.deanHome{width:962px;margin:0 auto;}.deanHome .nav-tabs>li>a{border:1px solid rgba(0, 0, 0, 0.1) !important;border-bottom:0px;}
+.deanHome .inlineLabel{margin-right:5px;display:inline;color:#bec1c3;font-size:12px;}
 .deanHome .lblHighlight{color:#e3e3e3;font-weight:bold;font-size:13px;}
 .deanHome .titlePanel{margin-bottom:20px;height:auto;padding-top:0;}
 .deanHome .title{color:#d88709;font-size:18px;line-height:28px;clear:both;}
