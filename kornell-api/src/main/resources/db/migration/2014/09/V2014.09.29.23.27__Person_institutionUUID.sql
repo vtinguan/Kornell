@@ -9,13 +9,13 @@ UPDATE Person p, Registration r
 SET p.institutionUUID = r.institution_uuid
 WHERE p.uuid = r.person_uuid;
 
-ALTER TABLE `ebdb`.Person 
+ALTER TABLE Person 
 ADD INDEX `fk_person_institution_institutionUUID_idx` (`institutionUUID` ASC);
 
-ALTER TABLE `ebdb`.Person 
+ALTER TABLE Person 
 ADD CONSTRAINT `fk_person_institution_institutionUUID`
   FOREIGN KEY (`institutionUUID`)
-  REFERENCES `ebdb`.Institution (`uuid`)
+  REFERENCES Institution (`uuid`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
@@ -40,13 +40,13 @@ UPDATE Password p, Person r
 SET p.institutionUUID = r.institutionUUID
 WHERE p.person_uuid = r.uuid;
 
-ALTER TABLE `ebdb`.Password 
+ALTER TABLE Password 
 ADD INDEX `fk_password_institution_institutionUUID_idx` (`institutionUUID` ASC);
 
-ALTER TABLE `ebdb`.Password 
+ALTER TABLE Password 
 ADD CONSTRAINT `fk_password_institution_institutionUUID`
   FOREIGN KEY (`institutionUUID`)
-  REFERENCES `ebdb`.Institution (`uuid`)
+  REFERENCES Institution (`uuid`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 

@@ -23,9 +23,10 @@ class EnrollmentSpec extends UnitSpec
 
   "The platformAdmin" should "be able to update an enrollment" in asPlatformAdmin {
     val courseClass = newCourseClass
+    val personUUID = newPerson
     val x = "NEW NOTES"
 	  val enrollment = EnrollmentsRepo.create(
-	      Entities.newEnrollment(randUUID, null, courseClass.getUUID, null, null, "", EnrollmentState.requested,null,null,null,null,null))
+	      Entities.newEnrollment(randUUID, null, courseClass.getUUID, personUUID, null, "", EnrollmentState.requested,null,null,null,null,null))
 	  val enrollmentResource = new EnrollmentResource(enrollment.getUUID)
     enrollment.setNotes(x)
     val newEnrollment = enrollmentResource.update(enrollment).asInstanceOf[Enrollment]

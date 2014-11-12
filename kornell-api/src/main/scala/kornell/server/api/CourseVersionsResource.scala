@@ -16,7 +16,7 @@ class CourseVersionsResource(val courseUUID: String) {
 	def this() = this(null)
   
   def create(repositoryUUID:String) = {
-    Entities.newCourseVersion(repositoryUUID=repositoryUUID)
+    CourseVersionsRepo.create(Entities.newCourseVersion(repositoryUUID=repositoryUUID, courseUUID = courseUUID))
   }
 
   @GET

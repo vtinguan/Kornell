@@ -47,9 +47,10 @@ class EnrollmentsResource {
   @Consumes(Array(kornell.core.to.EnrollmentRequestsTO.TYPE))
   def putEnrollments(enrollmentRequests: EnrollmentRequestsTO) =
     AuthRepo().withPerson { p =>
-      //TODO: Understand and refactor
-      //if (enrollmentRequests.getEnrollmentRequests.asScala exists (e => RegistrationEnrollmentService.isInvalidRequestEnrollment(e, p.getFullName))) {
-      RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p)
+      //TODO: <strike>Understand and refactor</strike> Return an error
+      if (enrollmentRequests.getEnrollmentRequests.asScala exists (e => !RegistrationEnrollmentService.isInvalidRequestEnrollment(e, p.getUUID))) {
+    	  RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p)
+      }
     }
 
   @PUT
