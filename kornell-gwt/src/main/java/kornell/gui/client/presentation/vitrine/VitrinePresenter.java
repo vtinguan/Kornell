@@ -37,22 +37,22 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		view = getView();
 		view.setPresenter(this);
 		
-		checkIfIsPasswordChange(clientFactory);
+
+		if(clientFactory.getPlaceController().getWhere() instanceof VitrinePlace){
+			VitrinePlace place = ((VitrinePlace) clientFactory.getPlaceController().getWhere());
+			if (StringUtils.isSome(place.getEmail())) {
+				view.setRegistrationEmail(place.getEmail());
+				view.displayView(VitrineViewType.register);
+			} else if(StringUtils.isSome(place.getPasswordChangeUUID())){
+				view.displayView(VitrineViewType.newPassword);
+			}
+		}
 
 		Dean localdean = Dean.getInstance();
 		if (localdean != null) {
 			String assetsURL = localdean.getInstitution().getAssetsURL();
 			view.setLogoURL(assetsURL);
 			view.showRegistrationOption(localdean.getInstitution().isAllowRegistration());
-		}
-	}
-
-	private void checkIfIsPasswordChange(ClientFactory clientFactory) {
-		if(clientFactory.getPlaceController().getWhere() instanceof VitrinePlace){
-			this.passwordChangeUUID = ((VitrinePlace) clientFactory.getPlaceController().getWhere()).getPasswordChangeUUID();
-			if (passwordChangeUUID != null && !"".equals(passwordChangeUUID)) {
-				view.displayView(VitrineViewType.newPassword);
-			}
 		}
 	}
 

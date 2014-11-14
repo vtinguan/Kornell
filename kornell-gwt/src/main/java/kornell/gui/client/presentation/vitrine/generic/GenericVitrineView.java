@@ -39,6 +39,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private VitrineView.Presenter presenter;
 	private VitrineViewType currentViewType = VitrineViewType.login;
+	private String registrationEmail;
 
 	@UiField
 	FlowPanel vitrineWrapper;
@@ -253,6 +254,11 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			});
 			break;
 		case register: 
+			if(registrationEmail != null){
+				suEmail.setText(registrationEmail);
+				suEmail.setEnabled(false);
+				suEmail.setTitle("Use o mesmo email no qual recebeu a matrícula.");
+			}
 			signUpPanel.setVisible(true);
 			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 				public void execute() {
@@ -330,5 +336,10 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		btnRegister.setVisible(show);
 		panelHR.setVisible(show);
 	}
+
+	@Override
+  public void setRegistrationEmail(String email) {
+		this.registrationEmail = email;  
+  }
 
 }

@@ -36,4 +36,5 @@ public interface VitrineView extends IsWidget {
 	void setLogoURL(String assetsURL);
 	void displayView(VitrineViewType type);
 	void showRegistrationOption(boolean show);
+	void setRegistrationEmail(String email);
 }

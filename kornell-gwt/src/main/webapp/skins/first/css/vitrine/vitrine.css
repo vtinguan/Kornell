@@ -5,8 +5,8 @@
 .VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;margin-top:0;}
 .VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:30px;}
 .VitrinePlace .boxLogin .inputLabel{padding-bottom:5px;}
-.VitrinePlace .boxLogin .inputWrapper{width:213px;height:18px;background:white;padding-left:10px;padding-top:6px;padding-bottom:6px;border:1px solid #474747;margin-bottom:14px;}.VitrinePlace .boxLogin .inputWrapper .inputBar{height:20px;float:left;width:3px;background:#aa0000;margin-right:5px;margin-top:-2px;}
-.VitrinePlace .boxLogin .inputWrapper input{width:200px;padding:0;border:0;box-shadow:none;font-size:14px;font-weight:bold;}
+.VitrinePlace .boxLogin .inputWrapper{width:213px;height:18px;background:white;padding-left:10px;padding-top:6px;padding-bottom:6px;border:1px solid #474747;margin-bottom:14px;}.VitrinePlace .boxLogin .inputWrapper .inputBar{height:20px;float:left;width:3px;background:#d14242;margin-right:5px;margin-top:-2px;}
+.VitrinePlace .boxLogin .inputWrapper input{width:200px;padding:0;border:0;box-shadow:none;font-size:12px;font-weight:bold;}
 .VitrinePlace .boxLogin .linkButton{background:transparent !important;margin-top:5px;text-decoration:underline;color:#bec1c3 !important;}
 .VitrinePlace .boxLogin .panelHR hr{border-bottom:0 !important;border-top:1px solid #bec1c3;margin-top:30px;margin-bottom:40px;}
 .VitrinePlace .boxLogin .alert{width:202px;font-size:12px;line-height:14px;padding:10px;}
