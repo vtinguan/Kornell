@@ -93,7 +93,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private UserInfoTO user;
 	
 	
-	private KornellFormFieldWrapper cpf, email, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
+	private KornellFormFieldWrapper cpf, email, username, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
 	private List<KornellFormFieldWrapper> fields;
 	private Button btnChangePassword;
 	private ClientFactory clientFactory;
@@ -346,6 +346,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		}
 
 		//profileFields.add(getPictureUploadFormPanel());
+
+		username = new KornellFormFieldWrapper("Usuário", formHelper.createTextBoxFormField(user.getUsername()), false);
+		fields.add(username);
+		profileFields.add(username);
 
 		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode);
 		fields.add(fullName);

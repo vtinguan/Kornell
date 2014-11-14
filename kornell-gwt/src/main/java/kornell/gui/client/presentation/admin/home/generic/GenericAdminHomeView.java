@@ -13,6 +13,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
+import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UnreadChatThreadTO;
@@ -95,7 +96,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	private KornellPagination pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
-	private Boolean enrollWithCPF;
 	private boolean isEnabled;
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
@@ -153,9 +153,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	@UiField
 	Label identifierLabel;
 	@UiField
-	FlowPanel infoPanelEmail;
-	@UiField
-	FlowPanel infoPanelCPF;
+	FlowPanel infoPanel;
 
 	@UiField
 	Modal errorModal;
@@ -386,7 +384,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 			});
 		}
 		txtSearch.setValue("");
-		txtSearch.setTitle("nome, " + (enrollWithCPF ? "CPF" : "email") + ", matrícula ou progresso");
+		txtSearch.setTitle("nome, " + formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType()) + ", matrícula ou progresso");
 	}
 
 	private void initTable() {
@@ -769,20 +768,60 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	}
 
 	@Override
-	public void setUserEnrollmentIdentificationType(Boolean enrollWithCPF) {
-		this.enrollWithCPF = enrollWithCPF;
-		if (enrollWithCPF) {
-			identifierLabel.setText("CPF");
-			infoPanelEmail.addStyleName("shy");
-			infoPanelCPF.removeStyleName("shy");
-			infoPanelEmail.removeStyleName("shy");
-		} else {
-			identifierLabel.setText("Email");
-			infoPanelEmail.removeStyleName("shy");
-			infoPanelCPF.addStyleName("shy");
+	public void setUserEnrollmentIdentificationType(RegistrationEnrollmentType registrationEnrollmentType) {
+		switch (registrationEnrollmentType) {
+		case email:
+			buildEmailInfoPanel();
+			break;
+		case cpf:
+			buildCPFInfoPanel();
+			break;
+		case username:
+			buildUsernameInfoPanel();
+			break;
+		default:
+			break;
 		}
+		identifierLabel.setText(formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType())+":");
 		initTable();
 		initSearch();
+	}
+	private void buildEmailInfoPanel(){
+		infoPanel.clear();
+		infoPanel.add(getLabel("Formato:", false));
+		infoPanel.add(getLabel("\"nome;email\" ou somente \"email\".", true));
+		infoPanel.add(getLabel("* Um participante por linha", true));
+		infoPanel.add(getLabel("Exemplo:", false));
+		infoPanel.add(getLabel("Nome Sobrenome;email@example.com", true));
+		infoPanel.add(getLabel("email1@example.com", true));
+		infoPanel.add(getLabel("email2@example.com", true));
+	}
+	
+	private void buildCPFInfoPanel(){
+		infoPanel.clear();
+		infoPanel.add(getLabel("Formato:", false));
+		infoPanel.add(getLabel("\"nome;cpf\"", true));
+		infoPanel.add(getLabel("* Um participante por linha", true));
+		infoPanel.add(getLabel("Exemplo:", false));
+		infoPanel.add(getLabel("Nome Sobrenome;123.456.789-13", true));
+		infoPanel.add(getLabel("Nome2 Sobrenome2;12345687913", true));
+	}
+	
+	private void buildUsernameInfoPanel(){
+		infoPanel.clear();
+		infoPanel.add(getLabel("Formato:", false));
+		infoPanel.add(getLabel("\"nome;usuário\"", true));
+		infoPanel.add(getLabel("* Um participante por linha", true));
+		infoPanel.add(getLabel("Exemplo:", false));
+		infoPanel.add(getLabel("Nome Sobrenome;12345", true));
+		infoPanel.add(getLabel("Nome2 Sobrenome2;12346", true));
+	}
+	
+	private Label getLabel(String labelTxt, boolean isHighlight){
+		Label lbl = new Label(labelTxt);
+		lbl.addStyleName(isHighlight ? "highlightText" : "textInfoColor");
+		return lbl;
 	}
 
 	@Override

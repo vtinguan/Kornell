@@ -98,10 +98,7 @@ class UserResource(private val authRepo:AuthRepo) {
       val person = PersonRepo(personUUID).get
       if (person != null) {
         user.setPerson(person)
-        if (user.getPerson().getEmail() != null)
-          user.setUsername(user.getPerson().getEmail())
-        else
-          user.setUsername(user.getPerson().getCPF())
+        user.setUsername(PersonRepo(person.getUUID).getUsername)
         Option(user)
       } else {
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")

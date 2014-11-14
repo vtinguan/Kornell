@@ -5,8 +5,10 @@ import java.util.List;
 
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.view.formfield.CheckBoxFormField;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PasswordTextBoxFormField;
@@ -31,14 +33,14 @@ public class FormHelper {
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private static final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
-	private static final String USERNAME_PATTERN = "^[^0-9.][A-z0-9.]{2,}$";
+	private static final String USERNAME_PATTERN = "^[A-z0-9._]{3,}$";
 	private static final String PASSWORD_PATTERN = "^[0-9a-zA-Z!@#$%¨&*()]{6,}$";
 	
 	public static boolean isEmailValid(String field){
 		return field == null ? false : field.trim().matches(EMAIL_PATTERN);
 	}
 	
-	public boolean isUsernameValid(String field){
+	public static boolean isUsernameValid(String field){
 		return field == null ? false : field.trim().matches(USERNAME_PATTERN);
 	}
 	
@@ -566,6 +568,19 @@ public class FormHelper {
 		}
 	}
 
+	public String getRegistrationEnrollmentTypeAsText(RegistrationEnrollmentType registrationEnrollmentType) {
+		switch (registrationEnrollmentType) {
+		case email:
+			return "Email";
+		case cpf:
+			return "CPF";
+		case username:
+			return "Usuário";
+		default:
+			return "???";
+		}
+	}
+	
 	public String formatCPF(String cpf) {
 	  cpf = stripCPF(cpf);
 	  if(cpf == null || cpf.length() != 11)

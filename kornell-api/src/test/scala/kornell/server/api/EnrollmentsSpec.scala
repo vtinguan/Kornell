@@ -12,6 +12,7 @@ import org.scalatest.junit.JUnitRunner
 import kornell.server.helper.GenInstitution
 import kornell.server.helper.GenPlatformAdmin
 import kornell.server.helper.GenCourseClass
+import kornell.core.entity.RegistrationEnrollmentType
 
 
 @RunWith(classOf[JUnitRunner])
@@ -29,7 +30,7 @@ class EnrollmentsSpec
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO]) 
     val totalEnrollments = 10
     for(i <- 1 to totalEnrollments){
-    	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+email, null))
+    	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+email, null, RegistrationEnrollmentType.email))
     }
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
      

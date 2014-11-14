@@ -6,6 +6,7 @@ import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
 
@@ -35,7 +36,6 @@ public interface AdminHomeView extends IsWidget {
 	void setCourseClassName(String courseClassName);
 	void setCourseName(String courseName);
 	void setCourseClasses(List<CourseClassTO> courseClasses);
-	void setUserEnrollmentIdentificationType(Boolean enrollWithCPF);
 	void setSelectedCourseClass(String uuid);
 	void setHomeTabActive();
 	void showEnrollmentsPanel(boolean visible);
@@ -46,4 +46,5 @@ public interface AdminHomeView extends IsWidget {
 	void buildMessagesView();
 	void prepareAddNewCourseClass(boolean addingNewCourseClass);
 	void setCanPerformEnrollmentAction(boolean allow);
+	void setUserEnrollmentIdentificationType(RegistrationEnrollmentType registrationEnrollmentType);
 }

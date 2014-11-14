@@ -27,6 +27,7 @@ import kornell.server.repository.Entities
 import kornell.core.util.TimeUtil
 import kornell.server.util.ServerTime
 import kornell.core.util.StringUtils
+import kornell.core.entity.RegistrationEnrollmentType
 
 object RegistrationEnrollmentService {
 
@@ -42,22 +43,20 @@ object RegistrationEnrollmentService {
   }
 
   private def deanRequestEnrollment(req: EnrollmentRequestTO, dean: Person) =
-    PeopleRepo.get(req.getInstitutionUUID, req.getCPF,req.getEmail) match {
+    PeopleRepo.get(req.getInstitutionUUID, req.getUsername) match {
       case Some(one) => deanEnrollExistingPerson(one, req, dean)
       case None => deanEnrollNewPerson(req, dean)
     }
 
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
-    val person = {
-      if(enrollmentRequest.getEmail() != null) {
-        PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getEmail, enrollmentRequest.getFullName)
-      } else {
-        PeopleRepo.createPersonCPF(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getCPF, enrollmentRequest.getFullName)
-      }
+    val person = enrollmentRequest.getRegistrationEnrollmentType match {
+      case RegistrationEnrollmentType.email => PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
+      case RegistrationEnrollmentType.cpf => PeopleRepo.createPersonCPF(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
+      case RegistrationEnrollmentType.username => PeopleRepo.createPersonUsername(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
     }
     val personRepo = PersonRepo(person.getUUID)
-    if(enrollmentRequest.getEmail() == null) {
-        personRepo.setPassword(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getCPF, enrollmentRequest.getCPF)
+    if(!enrollmentRequest.getRegistrationEnrollmentType.equals(RegistrationEnrollmentType.email)) {
+        personRepo.setPassword(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getPassword)
     }
     createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
   }

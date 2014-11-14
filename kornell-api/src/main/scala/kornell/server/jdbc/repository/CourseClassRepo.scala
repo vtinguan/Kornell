@@ -38,8 +38,8 @@ class CourseClassRepo(uuid:String) {
 	  		cc.publicClass = ${courseClass.isPublicClass},
 	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments},
 	  		cc.invisible = ${courseClass.isInvisible},
-	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments}
-	  		cc.registrationEnrollmentType = ${courseClass.getRegistrationEnrollmentType}
+	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
+	  		cc.registrationEnrollmentType = ${courseClass.getRegistrationEnrollmentType.toString},
 	  		cc.institutionRegistrationPrefix = ${courseClass.getInstitutionRegistrationPrefix}
       where cc.uuid = ${courseClass.getUUID}""".executeUpdate
     ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)

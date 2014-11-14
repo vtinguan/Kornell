@@ -26,7 +26,7 @@ object CourseClassesRepo {
     if (courseClass.getUUID == null)
       courseClass.setUUID(UUID.random)
     sql""" 
-    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,enrollWithCPF,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationEnrollmentType,institutionRegistrationPrefix)
+    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationEnrollmentType,institutionRegistrationPrefix)
     	values(${courseClass.getUUID},
              ${courseClass.getName},
              ${courseClass.getCourseVersionUUID},

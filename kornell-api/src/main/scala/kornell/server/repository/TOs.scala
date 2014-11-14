@@ -30,6 +30,7 @@ import kornell.core.to.LibraryFileTO
 import kornell.core.to.UnreadChatThreadsTO
 import kornell.core.to.UnreadChatThreadTO
 import kornell.core.to.ChatThreadMessageTO
+import kornell.core.entity.RegistrationEnrollmentType
 
 //TODO: Consider turning to Object
 object TOs {
@@ -102,13 +103,14 @@ object TOs {
   }
 
   def newEnrollmentRequestTO: EnrollmentRequestTO = tos.newEnrollmentRequestTO.as
-  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, email: String, cpf: String): EnrollmentRequestTO = {
+  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, username: String, password: String, registrationEnrollmentType: RegistrationEnrollmentType): EnrollmentRequestTO = {
     val to = newEnrollmentRequestTO
     to.setInstitutionUUID(institutionUUID)
     to.setCourseClassUUID(courseClassUUID)
     to.setFullName(fullName)
-    to.setEmail(email)
-    to.setCPF(cpf)
+    to.setUsername(username)
+    to.setPassword(password)
+    to.setRegistrationEnrollmentType(registrationEnrollmentType)
     to
   }
 
@@ -204,4 +206,11 @@ object TOs {
     to.setMessage(message)
     to
   }
+
+  def newInstitutionRegistrationPrefixesTO(l: List[String]) = {
+    val to = tos.newInstitutionRegistrationPrefixesTO.as
+    to.setInstitutionRegistrationPrefixes(l asJava)
+    to
+  }
+  
 }

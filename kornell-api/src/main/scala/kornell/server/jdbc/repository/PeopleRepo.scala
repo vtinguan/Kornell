@@ -113,6 +113,12 @@ object PeopleRepo {
   def createPersonCPF(institutionUUID: String, cpf: String, fullName: String): Person =
     create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf))
 
+  def createPersonUsername(institutionUUID: String, username: String, fullName: String): Person = {
+    val p = create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName))
+    if (isSome(username)) usernameCache.put((p.getInstitutionUUID, username), Some(p))
+    p
+  }
+
   def create(person: Person): Person = {
     if (person.getUUID == null)
       person.setUUID(randUUID)

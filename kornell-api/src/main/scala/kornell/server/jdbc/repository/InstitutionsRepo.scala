@@ -6,6 +6,7 @@ import kornell.server.repository.Entities
 import kornell.core.entity.Person
 import kornell.core.entity.Institution
 import kornell.server.jdbc.SQL._
+import kornell.server.repository.TOs
 
 object InstitutionsRepo {
   
@@ -58,5 +59,12 @@ object InstitutionsRepo {
       	| join InstitutionHostName ihn on i.uuid = ihn.institutionUUID
       	| where ihn.hostName = ${hostName}
 	    """.first[Institution]
+
+  def getRegistrationPrefixes(uuid: String) = {
+      TOs.newInstitutionRegistrationPrefixesTO(sql"""
+      	| select prefix from InstitutionRegistrationPrefix 
+      	| where institutionUUID = ${uuid}
+		    """.map[String])
+  }
 
 }

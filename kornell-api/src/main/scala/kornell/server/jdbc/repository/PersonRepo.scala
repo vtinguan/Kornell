@@ -44,7 +44,7 @@ class PersonRepo(val uuid: String) {
   }
 
   def hasPowerOver(targetPersonUUID: String) = {
-    val actorRoles = AuthRepo().rolesOf(AuthRepo().getUsernameByPersonUUID(uuid).get)
+    val actorRoles = AuthRepo().rolesOf(uuid)
     val actorRolesSet = (Set.empty ++ actorRoles).asJava
     val targetPerson = PersonRepo(targetPersonUUID).get
 

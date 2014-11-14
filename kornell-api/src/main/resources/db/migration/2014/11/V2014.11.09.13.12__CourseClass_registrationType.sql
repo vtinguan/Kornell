@@ -24,3 +24,8 @@ SET @sql = (SELECT IF(
 ));
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
+
+
+update CourseClass set registrationEnrollmentType = 'email' where enrollWithCPF = 0;
+update CourseClass set registrationEnrollmentType = 'cpf' where enrollWithCPF = 1;
+alter table CourseClass drop column enrollWithCPF;

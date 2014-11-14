@@ -11,6 +11,7 @@ import kornell.server.jdbc.repository.AuthRepo
 import javax.ws.rs.Path
 import javax.ws.rs.core.Context
 import kornell.server.jdbc.repository.PersonRepo
+import kornell.core.to.InstitutionRegistrationPrefixesTO
 
 
 @Produces(Array(Institution.TYPE))
@@ -30,6 +31,13 @@ class InstitutionResource(uuid: String) {
   @Consumes(Array(Institution.TYPE))
   def update(implicit @Context sc: SecurityContext, institution: Institution) = AuthRepo().withPerson{ p =>
     InstitutionsRepo.update(institution)
+  }
+  
+  @GET
+  @Produces(Array(InstitutionRegistrationPrefixesTO.TYPE))
+  @Path("registrationPrefixes")
+  def getRegistrationPrefixes(implicit @Context sc: SecurityContext) = AuthRepo().withPerson{ p =>
+    InstitutionsRepo.getRegistrationPrefixes(uuid)
   }
   
 }
