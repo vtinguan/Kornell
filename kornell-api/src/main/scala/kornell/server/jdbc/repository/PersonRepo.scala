@@ -53,7 +53,7 @@ class PersonRepo(val uuid: String) {
     //if there's no username yet, any admin can have power
     (!targetUsername.isDefined) ||
       {
-        val targetRoles = AuthRepo().rolesOf(targetUsername.get)
+        val targetRoles = AuthRepo().rolesOf(targetPersonUUID)
         val targetRolesSet = (Set.empty ++ targetRoles).asJava
 
         //people have power over themselves
