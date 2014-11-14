@@ -19,7 +19,7 @@ object EmailService {
     		<p>&nbsp;</p>
     		<p>Bem-vind""" + PersonCategory.getSexSuffix(person) + """ &agrave; """ + institution.getFullName() + """.</p>
     		<p>Por favor, confirme seu cadastro para ativarmos a sua conta.</p> """ +
-    		getActionButton(institution.getBaseURL+"#vitrine:"+person.getEmail, "Confirmar agora") + """
+    		getActionButton(institution.getBaseURL+"#vitrine:", "Confirmar agora") + """
     		<p>Depois da ativa&ccedil;&atilde;o voc&ecirc;  poder&aacute; acessar os cursos dispon&iacute;veis para voc&ecirc;, assim como todos os recursos deste ambiente.</p>
     		<p>Aproveite para trocar experi&ecirc;ncias e ampliar o seu conhecimento.</p>
     		<p>&nbsp;</p>""" +
@@ -33,9 +33,9 @@ object EmailService {
     val subject = "Você requisitou uma nova senha da " + institution.getFullName()
     val from = getFromEmail(institution)
     val to = person.getEmail
-    val actionLink = institution.getBaseURL + "#vitrine:" + requestPasswordChangeUUID
+    val actionLink = institution.getBaseURL+"#vitrine:" + requestPasswordChangeUUID
     val body = wrapBody("""
-    		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
+    		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
     		<p>Voc&ecirc; recentemente fez uma requisi&ccedil;&atilde;o de altera&ccedil;&atilde;o de senha da """+ institution.getFullName() +""".</p>
     		<p>Clique no bot&atilde;o abaixo para fazer a altera&ccedil;&atilde;o da senha.</p> """ +
@@ -53,7 +53,7 @@ object EmailService {
     val subject = "Você foi matriculado no curso " + course.getTitle()
     val from = getFromEmail(institution)
     val to = person.getEmail
-    val actionLink = institution.getBaseURL() + "#vitrine:"
+    val actionLink = institution.getBaseURL() + "#vitrine:" + person.getEmail
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
     		<p>&nbsp;</p>

@@ -183,6 +183,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
+	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
 	// TODO i18n xml
 	public GenericAdminHomeView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
@@ -218,6 +219,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 				if (Dean.getInstance().getCourseClassTO() == null || !newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
 					messagePresenter.clearThreadSelection();
 					presenter.updateCourseClass(newCourseClassUUID);
+					refreshMessagesCount();
 					messagePresenter.enableMessagesUpdate(false);
 				}
 			}
@@ -769,15 +771,32 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 
 	@Override
 	public void setUserEnrollmentIdentificationType(RegistrationEnrollmentType registrationEnrollmentType) {
+		infoPanel.clear();
 		switch (registrationEnrollmentType) {
 		case email:
-			buildEmailInfoPanel();
+			infoPanel.add(getLabel("Formato:", false));
+			infoPanel.add(getLabel("\"nome;email\" ou somente \"email\".", true));
+			infoPanel.add(getLabel("* Um participante por linha", true));
+			infoPanel.add(getLabel("Exemplo:", false));
+			infoPanel.add(getLabel("Nome Sobrenome;email@example.com", true));
+			infoPanel.add(getLabel("email1@example.com", true));
+			infoPanel.add(getLabel("email2@example.com", true));
 			break;
 		case cpf:
-			buildCPFInfoPanel();
+			infoPanel.add(getLabel("Formato:", false));
+			infoPanel.add(getLabel("\"nome;cpf\"", true));
+			infoPanel.add(getLabel("* Um participante por linha", true));
+			infoPanel.add(getLabel("Exemplo:", false));
+			infoPanel.add(getLabel("Nome Sobrenome;123.456.789-13", true));
+			infoPanel.add(getLabel("Nome2 Sobrenome2;12345687913", true));
 			break;
 		case username:
-			buildUsernameInfoPanel();
+			infoPanel.add(getLabel("Formato:", false));
+			infoPanel.add(getLabel("\"nome;usuário\"", true));
+			infoPanel.add(getLabel("* Um participante por linha", true));
+			infoPanel.add(getLabel("Exemplo:", false));
+			infoPanel.add(getLabel("Nome Sobrenome;12345", true));
+			infoPanel.add(getLabel("Nome2 Sobrenome2;12346", true));
 			break;
 		default:
 			break;
@@ -786,36 +805,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType())+":");
 		initTable();
 		initSearch();
-	}
-	private void buildEmailInfoPanel(){
-		infoPanel.clear();
-		infoPanel.add(getLabel("Formato:", false));
-		infoPanel.add(getLabel("\"nome;email\" ou somente \"email\".", true));
-		infoPanel.add(getLabel("* Um participante por linha", true));
-		infoPanel.add(getLabel("Exemplo:", false));
-		infoPanel.add(getLabel("Nome Sobrenome;email@example.com", true));
-		infoPanel.add(getLabel("email1@example.com", true));
-		infoPanel.add(getLabel("email2@example.com", true));
-	}
-	
-	private void buildCPFInfoPanel(){
-		infoPanel.clear();
-		infoPanel.add(getLabel("Formato:", false));
-		infoPanel.add(getLabel("\"nome;cpf\"", true));
-		infoPanel.add(getLabel("* Um participante por linha", true));
-		infoPanel.add(getLabel("Exemplo:", false));
-		infoPanel.add(getLabel("Nome Sobrenome;123.456.789-13", true));
-		infoPanel.add(getLabel("Nome2 Sobrenome2;12345687913", true));
-	}
-	
-	private void buildUsernameInfoPanel(){
-		infoPanel.clear();
-		infoPanel.add(getLabel("Formato:", false));
-		infoPanel.add(getLabel("\"nome;usuário\"", true));
-		infoPanel.add(getLabel("* Um participante por linha", true));
-		infoPanel.add(getLabel("Exemplo:", false));
-		infoPanel.add(getLabel("Nome Sobrenome;12345", true));
-		infoPanel.add(getLabel("Nome2 Sobrenome2;12346", true));
 	}
 	
 	private Label getLabel(String labelTxt, boolean isHighlight){
@@ -851,11 +840,21 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	
 	@Override
   public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
-		int count = 0;
-		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
-			count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
-    }
-		totalCount  = count;
+		unreadChatThreadTOs = event.getUnreadChatThreadTOs();
+		refreshMessagesCount();
+  }
+
+	private void refreshMessagesCount() {
+		if(unreadChatThreadTOs != null){
+		  int count = 0;
+			for (UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadTOs) {
+				if(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(unreadChatThreadTO.getCourseClassUUID()))
+						count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
+	    }
+			totalCount  = count;
+		} else {
+			totalCount = 0;
+		}
 		updateMessagesTabHeading();
   }
 
