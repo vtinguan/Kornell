@@ -30,6 +30,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	private VitrineView view;
 	private String passwordChangeUUID;
 	private KornellSession session;
+	private String registrationEmail;
 
 	public VitrinePresenter(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -40,8 +41,9 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 		if(clientFactory.getPlaceController().getWhere() instanceof VitrinePlace){
 			VitrinePlace place = ((VitrinePlace) clientFactory.getPlaceController().getWhere());
-			if (StringUtils.isSome(place.getEmail())) {
-				view.setRegistrationEmail(place.getEmail());
+			this.registrationEmail = place.getEmail();
+			if (StringUtils.isSome(registrationEmail)) {
+				view.setRegistrationEmail(registrationEmail);
 				view.displayView(VitrineViewType.register);
 			} else if(StringUtils.isSome(place.getPasswordChangeUUID())){
 				view.displayView(VitrineViewType.newPassword);
@@ -155,7 +157,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onSignUpButtonClicked() {
-		if(Dean.getInstance().getInstitution().isAllowRegistration()){
+		if(StringUtils.isSome(registrationEmail) || Dean.getInstance().getInstitution().isAllowRegistration()){
 			view.hideMessage();
 			List<String> errors = validateFields();
 			if (errors.size() == 0) {
