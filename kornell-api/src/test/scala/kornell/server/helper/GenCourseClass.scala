@@ -26,7 +26,10 @@ trait GenCourseClass
   }
   val courseVersionUUID = courseVersion.getUUID
   
-	def newCourseClass:CourseClass =     
-    CourseClassesResource(courseVersionUUID).createCourseClass(institutionUUID)
+	def newCourseClassEmail:CourseClass =     
+    CourseClassesResource(courseVersionUUID).createCourseClassEmail(institutionUUID)
+    
+    def newCourseClassCpf:CourseClass =     
+    CourseClassesResource(courseVersionUUID).createCourseClassCpf(institutionUUID)
    
 }

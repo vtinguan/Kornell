@@ -11,13 +11,12 @@ trait GenPerson
   
   def newPerson() = {
     val regreq = TOs.newRegistrationRequestTO(institutionUUID, randName, randEmail, randPassword,randCPF)
-    val createdUUID = UserResource().createUser(regreq)
-      .getPerson
-      .getUUID
-    createdUUID
+    UserResource().createUser(regreq).getPerson
   }
   
-  val personUUID = newPerson()
+  val person = newPerson()
+  
+  val personUUID = person.getUUID
   
   def asPerson[T](fun : => T):T = asIdentity(personUUID)(fun)
 

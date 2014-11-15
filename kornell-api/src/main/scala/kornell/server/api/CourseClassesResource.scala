@@ -19,15 +19,23 @@ import kornell.core.to.CourseClassesTO
 import kornell.server.util.Errors._
 import kornell.server.repository.Entities
 import javax.ws.rs.POST
+import kornell.core.entity.RegistrationEnrollmentType
 
 @Path("courseClasses")
 class CourseClassesResource(val courseVersionUUID:String) {
   def this() = this(null) 
   
-  def createCourseClass(institutionUUID:String):CourseClass = 
+  def createCourseClassEmail(institutionUUID:String):CourseClass = 
     create((Entities.newCourseClass(
         courseVersionUUID=courseVersionUUID,
-        institutionUUID=institutionUUID)))
+        institutionUUID=institutionUUID,
+        registrationEnrollmentType=RegistrationEnrollmentType.email)))
+        
+  def createCourseClassCpf(institutionUUID:String):CourseClass = 
+    create((Entities.newCourseClass(
+        courseVersionUUID=courseVersionUUID,
+        institutionUUID=institutionUUID,
+        registrationEnrollmentType=RegistrationEnrollmentType.cpf)))
   
   
   @POST

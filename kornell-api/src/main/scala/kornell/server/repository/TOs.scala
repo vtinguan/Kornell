@@ -44,7 +44,7 @@ object TOs {
   def newLibraryFileTO: LibraryFileTO = tos.newLibraryFileTO.as
 
   def newEnrollmentsTO(enrollmentList: List[EnrollmentTO]): EnrollmentsTO = {
-    val enrollments = newEnrollmentsTO
+    val enrollments:EnrollmentsTO = newEnrollmentsTO
     enrollments.setEnrollmentTOs(enrollmentList asJava)
     enrollments
   }
@@ -75,7 +75,7 @@ object TOs {
   }
 
   def newEnrollmentTO(enrollment: Enrollment, person: Person): EnrollmentTO = {
-    val enrollmentTO = tos.newEnrollmentTO.as
+    val enrollmentTO:EnrollmentTO = tos.newEnrollmentTO.as
     enrollmentTO.setEnrollment(enrollment)
     enrollmentTO.setPerson(person)
     enrollmentTO
@@ -103,7 +103,7 @@ object TOs {
   }
 
   def newEnrollmentRequestTO: EnrollmentRequestTO = tos.newEnrollmentRequestTO.as
-  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, username: String, password: String, registrationEnrollmentType: RegistrationEnrollmentType): EnrollmentRequestTO = {
+  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, username: String, password: String, registrationEnrollmentType: RegistrationEnrollmentType, cancelEnrollment: Boolean): EnrollmentRequestTO = {
     val to = newEnrollmentRequestTO
     to.setInstitutionUUID(institutionUUID)
     to.setCourseClassUUID(courseClassUUID)
@@ -111,6 +111,7 @@ object TOs {
     to.setUsername(username)
     to.setPassword(password)
     to.setRegistrationEnrollmentType(registrationEnrollmentType)
+    to.setCancelEnrollment(cancelEnrollment)
     to
   }
 

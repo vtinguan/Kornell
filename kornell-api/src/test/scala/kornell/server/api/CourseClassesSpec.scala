@@ -19,7 +19,7 @@ class CourseClassesSpec extends UnitSpec
 	with GenCourseClass { 
   
   "The platformAdmin" should "be able to create a class" in asPlatformAdmin {
-  	newCourseClass.getUUID.size should be > 0
+  	newCourseClassEmail.getUUID.size should be > 0
   } 
   
   //TODO: "The platformAdmin" should "not be able to create a class with the same uuid" in asPlatformAdmin

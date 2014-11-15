@@ -6,7 +6,7 @@ trait GenInstitutionAdmin
 extends  GenPerson
 with AuthSpec {
   val institutionAdminUUID = {
-    val person = newPerson()
+    val person = newPerson().getUUID
     AuthRepo().grantInstitutionAdmin(person,institution.getUUID())
     person
   }
