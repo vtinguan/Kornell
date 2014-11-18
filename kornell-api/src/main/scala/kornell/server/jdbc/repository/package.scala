@@ -151,7 +151,7 @@ package object repository {
       rs.getString("certifiedAt")
     )
     
-    TOs.newEnrollmentTO(enrollment, PersonRepo(enrollment.getPersonUUID()).get)
+    TOs.newEnrollmentTO(enrollment, rs.getString("personUUID"), rs.getString("fullName"), rs.getString("username"))
   }
 	
 	implicit def toPerson(rs:ResultSet):Person = newPerson(

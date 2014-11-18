@@ -220,7 +220,9 @@ public class GenericCourseSummaryView extends Composite {
 								TOFactory toFactory = GWT.create(TOFactory.class);
 								EnrollmentTO enrollmentTO = toFactory.newEnrollmentTO().as();
 								enrollmentTO.setEnrollment(enrollment);
-								enrollmentTO.setPerson(session.getCurrentUser().getPerson());
+								enrollmentTO.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
+								enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
+								enrollmentTO.setUsername(session.getCurrentUser().getUsername());
 								session.getCurrentUser().getEnrollments().getEnrollments().add(enrollment);
 								for (CourseClassTO courseClassTO : Dean.getInstance().getCourseClassesTO().getCourseClasses()) {
 									if (courseClassTO.getCourseClass().getUUID().equals(enrollment.getCourseClassUUID())) {

@@ -17,6 +17,7 @@ import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UnreadChatThreadTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
@@ -401,19 +402,16 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
 			public String getValue(EnrollmentTO enrollmentTO) {
-				return enrollmentTO.getPerson().getFullName();
+				return enrollmentTO.getFullName();
 			}
 		}, "Nome");
 
 		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
 			public String getValue(EnrollmentTO enrollmentTO) {
-				if (enrollmentTO.getPerson().getEmail() != null && !"".equals(enrollmentTO.getPerson().getEmail()))
-					return enrollmentTO.getPerson().getEmail();
-				else
-					return formHelper.formatCPF(enrollmentTO.getPerson().getCPF());
+				return enrollmentTO.getUsername();
 			}
-		}, "Email/CPF");
+		}, "Usuário");
 
 		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
@@ -550,9 +548,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);
 		}
-    enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsIn);
-		pagination.setRowData(enrollmentsCurrent);
-		pagination.displayTableData(1);
 		
 		filterEnrollments();
 	}
@@ -563,24 +558,26 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	}
 	
 	private void filterEnrollments(){
-		enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsOriginal);
-		for (int i = 0; i < enrollmentsCurrent.size(); i++) {
-			if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
-				enrollmentsCurrent.remove(i);
-				i--;
+		if(StringUtils.isSome(txtSearch.getText().trim())){
+			enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsOriginal);
+			for (int i = 0; i < enrollmentsCurrent.size(); i++) {
+				if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
+					enrollmentsCurrent.remove(i);
+					i--;
+				}
 			}
+			pagination.setRowData(enrollmentsCurrent);
+		} else {
+			pagination.setRowData(enrollmentsOriginal);
 		}
-		pagination.setRowData(enrollmentsCurrent);
 		pagination.displayTableData(1);
 	}
 
 	private boolean matchesWithSearch(EnrollmentTO one){
-		Person p = one.getPerson();
-		if(p == null) return false;
 		Enrollment e = one.getEnrollment();
 		
-		boolean fullNameMatch = matchesWithSearch(p.getFullName());
-		boolean usernameMatch = matchesWithSearch(p.getCPF()) || matchesWithSearch(p.getEmail());
+		boolean fullNameMatch = matchesWithSearch(one.getFullName());
+		boolean usernameMatch = matchesWithSearch(one.getUsername());
 		boolean enrollmentStateMatch = matchesWithSearch(formHelper.getEnrollmentStateAsText(e.getState()));
 		boolean enrollmentProgressMatch = e.getProgress() != null && 
 				matchesWithSearch(formHelper.getEnrollmentProgressAsText(EnrollmentCategory.getEnrollmentProgressDescription(e)).toLowerCase());
@@ -590,7 +587,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 
 	private boolean matchesWithSearch(String one){
 		if(one == null) return false;
-		return prepareForSearch(one).indexOf(prepareForSearch(txtSearch.getText())) >= 0;
+		return prepareForSearch(one).indexOf(prepareForSearch(txtSearch.getText().trim())) >= 0;
 	}
 	
 	private String prepareForSearch(String str){

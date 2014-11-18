@@ -14,10 +14,16 @@ object EnrollmentsRepo {
   def byCourseClass(courseClassUUID: String) =
     TOs.newEnrollmentsTO(
       sql"""
-			  SELECT e.*, p.* 
-		    FROM Enrollment e join Person p on e.person_uuid = p.uuid
-		    WHERE e.class_uuid = ${courseClassUUID}
-		    ORDER BY e.state desc, p.fullName, p.email
+			  select 
+      		e.*, 
+      		p.uuid as personUUID,
+      		p.fullName,
+      		pw.username
+				from Enrollment e 
+				join Person p on e.person_uuid = p.uuid
+				join Password pw on p.uuid = pw.person_uuid
+				where e.class_uuid = ${courseClassUUID}
+				order by e.state desc, p.fullName, pw.username
 			    """.map[EnrollmentTO](toEnrollmentTO))
 
   def byPerson(personUUID: String) =

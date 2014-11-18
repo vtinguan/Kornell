@@ -118,8 +118,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				new Callback<EnrollmentsTO>() {
 					@Override
 					public void ok(EnrollmentsTO enrollments) {
-						showEnrollments(enrollments, true);
-						updateCachedEnrollments(courseClassUUID, enrollments);
+						if(courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
+							showEnrollments(enrollments, true);
+							updateCachedEnrollments(courseClassUUID, enrollments);
+						}
 						LoadingPopup.hide();
 					}
 				});
@@ -430,9 +432,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		enrollmentsToOverride = new ArrayList<EnrollmentTO>();
 		for (Iterator<EnrollmentTO> iterator = enrollmentTOs.iterator(); iterator.hasNext();) {
 	    EnrollmentTO enrollmentTO = (EnrollmentTO) iterator.next();
-			String username = enrollmentTO.getPerson().getCPF() != null ? 
-					enrollmentTO.getPerson().getCPF() :
-						enrollmentTO.getPerson().getEmail();
+			String username = enrollmentTO.getUsername();
 			//if the user was already enrolled and is not on the new list, cancel enrollment
 	    if(!enrollmentRequestsMap.containsKey(username) && EnrollmentState.enrolled.equals(enrollmentTO.getEnrollment().getState())){
 	    	enrollmentsToOverride.add(enrollmentTO);
@@ -447,10 +447,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		
 		if(confirmedEnrollmentsModal && enrollmentsToOverride != null && enrollmentsToOverride.size() > 0){
 			for (EnrollmentTO enrollmentToOverrideTO : enrollmentsToOverride) {
-				String username = enrollmentToOverrideTO.getPerson().getCPF() != null ? 
-						enrollmentToOverrideTO.getPerson().getCPF() :
-							enrollmentToOverrideTO.getPerson().getEmail();
-				EnrollmentRequestTO enrollmentRequestTO = createEnrollment(enrollmentToOverrideTO.getPerson().getFullName(), username, true);
+				EnrollmentRequestTO enrollmentRequestTO = createEnrollment(enrollmentToOverrideTO.getFullName(), enrollmentToOverrideTO.getUsername(), true);
 				enrollmentRequestsTO.getEnrollmentRequests().add(enrollmentRequestTO);  
       }
 			
@@ -514,7 +511,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 
 	@Override
 	public void onUserClicked(EnrollmentTO enrollmentTO) {
-		ProfilePlace place = new ProfilePlace(enrollmentTO.getPerson().getUUID(), false);
+		ProfilePlace place = new ProfilePlace(enrollmentTO.getPersonUUID(), false);
 		placeController.goTo(place);
 	}
 
@@ -522,7 +519,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	public void onGenerateCertificate(EnrollmentTO enrollmentTO) {
 		KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
 		Window.Location.assign(session.getApiUrl() + "/report/certificate/"
-				+ enrollmentTO.getPerson().getUUID() + "/"
+				+ enrollmentTO.getPersonUUID() + "/"
 				+ enrollmentTO.getEnrollment().getCourseClassUUID());
 	}
 	

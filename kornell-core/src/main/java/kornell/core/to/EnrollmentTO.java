@@ -9,7 +9,13 @@ public interface EnrollmentTO {
 	Enrollment getEnrollment();
 	void setEnrollment(Enrollment enrollment);
 	
-	Person getPerson();
-	void setPerson(Person person);
+	String getPersonUUID();
+	void setPersonUUID(String personUUID);
+
+	String getFullName();
+	void setFullName(String fullName);
+	
+	String getUsername();
+	void setUsername(String username);
 
 }

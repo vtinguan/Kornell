@@ -70,6 +70,11 @@ iframe {
 	height: 100% !important;
 }
 
+.loadingPopup {
+	z-index: 5;
+	width: 100%;
+}
+
 .ajaxLoaderPanel {
 	width: 80px;
 	margin: 0 auto;

@@ -90,7 +90,7 @@ class EnrollmentsSpec
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
     assert(enrollmentsCreated.getEnrollmentTOs.size == 1)
     assert({ 
-      enrollmentsCreated.getEnrollmentTOs.asScala exists(e => e.getPerson.getFullName.equals("institutionAdmin"+fullName))
+      enrollmentsCreated.getEnrollmentTOs.asScala exists(e => e.getFullName.equals("institutionAdmin"+fullName))
     })
 //    assert(mockHttpServletResponse.getStatus == 0)
   }  

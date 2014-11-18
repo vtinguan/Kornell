@@ -74,10 +74,12 @@ object TOs {
     classTO
   }
 
-  def newEnrollmentTO(enrollment: Enrollment, person: Person): EnrollmentTO = {
+  def newEnrollmentTO(enrollment: Enrollment, personUUID: String, fullName: String, username: String): EnrollmentTO = {
     val enrollmentTO:EnrollmentTO = tos.newEnrollmentTO.as
     enrollmentTO.setEnrollment(enrollment)
-    enrollmentTO.setPerson(person)
+    enrollmentTO.setPersonUUID(personUUID)
+    enrollmentTO.setFullName(fullName)
+    enrollmentTO.setUsername(username)
     enrollmentTO
   }
 
