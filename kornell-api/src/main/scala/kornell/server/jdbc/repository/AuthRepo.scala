@@ -110,25 +110,6 @@ object AuthRepo {
 class AuthRepo(pwdCache: AuthRepo.PasswordCache,
   rolesCache: AuthRepo.RolesCache) {
 
-  implicit def toPerson(rs: ResultSet): Person = newPerson(
-    rs.getString("uuid"),
-    rs.getString("fullName"),
-    rs.getString("lastPlaceVisited"),
-    rs.getString("email"),
-    rs.getString("company"),
-    rs.getString("title"),
-    rs.getString("sex"),
-    rs.getDate("birthDate"),
-    rs.getString("confirmation"),
-    rs.getString("telephone"),
-    rs.getString("country"),
-    rs.getString("state"),
-    rs.getString("city"),
-    rs.getString("addressLine1"),
-    rs.getString("addressLine2"),
-    rs.getString("postalCode"),
-    rs.getString("cpf"))
-
   def authenticate(institutionUUID: String, userkey: String, password: String): Option[String] = Try {
     pwdCache.get((institutionUUID, userkey, password))
   }.getOrElse(None)

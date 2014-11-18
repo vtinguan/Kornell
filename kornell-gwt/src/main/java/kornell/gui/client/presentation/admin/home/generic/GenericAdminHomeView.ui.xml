@@ -31,13 +31,6 @@
 								<b:TextArea ui:field="txtAddEnrollmentBatch"></b:TextArea>
 								<g:FlowPanel addStyleNames="infoPanel">
 									<g:FlowPanel ui:field="infoPanel">
-										<g:Label addStyleNames="textInfoColor">Formato: </g:Label>
-										<g:Label addStyleNames="highlightText">"nome;email" ou somente "email".</g:Label>
-										<g:Label addStyleNames="highlightText">* Um participante por linha</g:Label>
-										<g:Label addStyleNames="textInfoColor">Exemplo:</g:Label>
-										<g:Label addStyleNames="highlightText">Nome Sobrenome;email@example.com </g:Label>
-										<g:Label addStyleNames="highlightText">email1@example.com</g:Label>
-										<g:Label addStyleNames="highlightText">email2@example.com</g:Label>
 									</g:FlowPanel>
 									<b:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnNotSelected btnAddEnrollmentBatch btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
 								</g:FlowPanel>

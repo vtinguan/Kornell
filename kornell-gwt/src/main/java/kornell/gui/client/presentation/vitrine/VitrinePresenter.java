@@ -42,10 +42,11 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		if(clientFactory.getPlaceController().getWhere() instanceof VitrinePlace){
 			VitrinePlace place = ((VitrinePlace) clientFactory.getPlaceController().getWhere());
 			this.registrationEmail = place.getEmail();
+			this.passwordChangeUUID = place.getPasswordChangeUUID();
 			if (StringUtils.isSome(registrationEmail)) {
 				view.setRegistrationEmail(registrationEmail);
 				view.displayView(VitrineViewType.register);
-			} else if(StringUtils.isSome(place.getPasswordChangeUUID())){
+			} else if(StringUtils.isSome(passwordChangeUUID)){
 				view.displayView(VitrineViewType.newPassword);
 			}
 		}
