@@ -370,8 +370,10 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			enrollmentRequestTO.setPassword(username);
 			break;
 		case username:
-			enrollmentRequestTO.setUsername(Dean.getInstance()
-					.getCourseClassTO().getCourseClass().getInstitutionRegistrationPrefix() + "/" + username);
+			String usr = username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? 
+					Dean.getInstance().getCourseClassTO().getCourseClass().getInstitutionRegistrationPrefix() + FormHelper.USERNAME_SEPARATOR + username :
+					username;
+			enrollmentRequestTO.setUsername(usr);
 			enrollmentRequestTO.setPassword(username);
 			break;
 		default:

@@ -554,16 +554,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 
 	private void scheduleEnrollmentFilter() {
 		updateTimer.cancel();
-		updateTimer.schedule(333);
+		updateTimer.schedule(500);
 	}
 	
 	private void filterEnrollments(){
 		if(StringUtils.isSome(txtSearch.getText().trim())){
-			enrollmentsCurrent = new ArrayList<EnrollmentTO>(enrollmentsOriginal);
-			for (int i = 0; i < enrollmentsCurrent.size(); i++) {
-				if (!matchesWithSearch(enrollmentsCurrent.get(i))) {
-					enrollmentsCurrent.remove(i);
-					i--;
+			enrollmentsCurrent = new ArrayList<EnrollmentTO>();
+			for (EnrollmentTO enrollmentTO : enrollmentsOriginal) {
+				if (matchesWithSearch(enrollmentTO)) {
+					enrollmentsCurrent.add(enrollmentTO);
 				}
 			}
 			pagination.setRowData(enrollmentsCurrent);

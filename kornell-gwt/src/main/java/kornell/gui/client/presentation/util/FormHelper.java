@@ -8,7 +8,6 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.view.formfield.CheckBoxFormField;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PasswordTextBoxFormField;
@@ -29,6 +28,9 @@ import com.google.gwt.user.client.ui.Image;
 public class FormHelper {
 	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
 	public static String SEPARATOR_BAR_CLASS = "profileSeparatorBar";
+
+	public static Character USERNAME_SEPARATOR = '/';
+	public static Character USERNAME_ALTERNATE_SEPARATOR = '\\';
 	
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 

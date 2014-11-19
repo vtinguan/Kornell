@@ -18,10 +18,10 @@ object EnrollmentsRepo {
       		e.*, 
       		p.uuid as personUUID,
       		p.fullName,
-      		pw.username
+      		if(pw.username is not null, pw.username, p.email) as username
 				from Enrollment e 
 				join Person p on e.person_uuid = p.uuid
-				join Password pw on p.uuid = pw.person_uuid
+				left join Password pw on p.uuid = pw.person_uuid
 				where e.class_uuid = ${courseClassUUID}
 				order by e.state desc, p.fullName, pw.username
 			    """.map[EnrollmentTO](toEnrollmentTO))

@@ -116,7 +116,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				view.showMessage();
 			}
 		};
-		String email = view.getEmail().toLowerCase().trim(); 
+		String email = view.getEmail().toLowerCase().trim().replace(FormHelper.USERNAME_ALTERNATE_SEPARATOR, FormHelper.USERNAME_SEPARATOR); 
     String password = view.getPassword();
     session.login(email, password, userInfoCallback);
 	}
