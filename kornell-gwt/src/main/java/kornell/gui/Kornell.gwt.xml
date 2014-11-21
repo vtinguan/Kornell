@@ -61,5 +61,5 @@
   
   <set-property name="bootstrap.responsiveDesign" value="true"/>
   
-  
+  <add-linker name="xsiframe"/>
 </module>
