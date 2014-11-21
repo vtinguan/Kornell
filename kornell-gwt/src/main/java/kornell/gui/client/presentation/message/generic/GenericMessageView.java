@@ -206,12 +206,12 @@ public class GenericMessageView extends Composite implements MessageView {
 	private void prepareTextArea(boolean setFocus) {
 	  messageTextArea.setText("");
 	  if(setFocus){
-		  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			      @Override
-			      public void execute() {
-			        messageTextArea.setFocus(true);
-			      }
-			});
+//		  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+//			      @Override
+//			      public void execute() {
+//			        messageTextArea.setFocus(true);
+//			      }
+//			});
 	  }
   }
 }
