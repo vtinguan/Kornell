@@ -17,7 +17,7 @@ class RepositoryResource {
   @Path("{uuid}")
   @GET
   def get(@PathParam("uuid") uuid:String) = sql"""
-  	select * from S3ContentRepository where uuid = $uuid
+  	select * from S3ContentStore where uuid = $uuid
   """.get[WebRepository]
 		  
 }

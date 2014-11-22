@@ -11,12 +11,13 @@ import kornell.server.helper.GenInstitution
 
 @RunWith(classOf[JUnitRunner])
 class RegistrationSpec extends UnitSpec with GenInstitution {
-
+  val userResource:UserResource = ???
+  
   "A new unconfirmed user" should "login sucessfully" in {
     val email = randEmail
     val password = randStr
     val regreq = TOs.newRegistrationRequestTO(institutionUUID, randName, email, password)
-    val createdUUID = UserResource().createUser(regreq)
+    val createdUUID = userResource.createUser(regreq)
       .getPerson
       .getUUID
     val authUUID = AuthRepo().authenticate(email, password)
@@ -29,7 +30,7 @@ class RegistrationSpec extends UnitSpec with GenInstitution {
     val username = randUsername
   	val passwd = randStr
   	val cpf = randCPF
-  	val createdUUID = UserResource().createUser(institutionUUID,name,email,cpf,username,passwd)
+  	val createdUUID = userResource.createUser(institutionUUID,name,email,cpf,username,passwd)
   	val authUUIDUsername = AuthRepo().authenticate(username, passwd)
   	val authUUIDCPF = AuthRepo().authenticate(cpf, passwd)  	
   	val authUUIDEmail = AuthRepo().authenticate(email, passwd)

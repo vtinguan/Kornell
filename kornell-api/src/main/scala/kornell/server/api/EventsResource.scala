@@ -9,36 +9,42 @@ import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.EventsRepo
 import kornell.core.event.AttendanceSheetSigned
 import kornell.core.event.CourseClassStateChanged
-//TODO: Why are these returning Unit?
+import kornell.server.jdbc.repository.EventsRepo
+import javax.inject.Inject
+
 @Path("events")
-class EventsResource {
+class EventsResource @Inject() (
+	eventsRepo:EventsRepo
+  ){
+  
+  def this() = this(null)
   
   @PUT
   @Path("actomEntered")
   @Consumes(Array(ActomEntered.TYPE))
   def putActomEntered(event:ActomEntered){
-	 EventsRepo.logActomEntered(event)	
+	 eventsRepo.logActomEntered(event)	
   }
   
   @PUT
   @Path("enrollmentStateChanged")
   @Consumes(Array(EnrollmentStateChanged.TYPE))
   def putEnrollmentStateChanged(event:EnrollmentStateChanged){
-     EventsRepo.logEnrollmentStateChanged(event)
+     eventsRepo.logEnrollmentStateChanged(event)
   }
   
   @PUT
   @Path("courseClassStateChanged")
   @Consumes(Array(CourseClassStateChanged.TYPE))
   def putCourseClassStateChanged(event:CourseClassStateChanged){
-     EventsRepo.logCourseClassStateChanged(event)
+     eventsRepo.logCourseClassStateChanged(event)
   }
   
   @PUT
   @Path("attendanceSheetSigned")
   @Consumes(Array(AttendanceSheetSigned.TYPE))
   def putAttendanceSheetSigned(event:AttendanceSheetSigned){
-     EventsRepo.logAttendanceSheetSigned(event)
+     eventsRepo.logAttendanceSheetSigned(event)
   }
 	
 }

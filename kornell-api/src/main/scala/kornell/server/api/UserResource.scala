@@ -32,10 +32,15 @@ import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
 import kornell.server.web.BasicAuthFilter
 import kornell.core.to.UserHelloTO
-//TODO Person/People Resource
+import kornell.server.repository.service.RegistrationEnrollmentService
+import javax.inject.Inject
+import kornell.server.cdi.Preferred
+
 @Path("user")
-class UserResource(private val authRepo:AuthRepo) {
-  def this() = this(AuthRepo())
+class UserResource @Inject() (
+    @Preferred val authRepo:AuthRepo,
+    val registrationEnrollmentService:RegistrationEnrollmentService) {
+  def this() = this(null,null)
   
   def get = first.get
      
@@ -198,7 +203,7 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("registrationRequest")
   @Consumes(Array(RegistrationRequestTO.TYPE))
   @Produces(Array(UserInfoTO.TYPE))
-  def createUser(regReq: RegistrationRequestTO) = RegistrationEnrollmentService.userRequestRegistration(regReq)
+  def createUser(regReq: RegistrationRequestTO) = registrationEnrollmentService.userRequestRegistration(regReq)
 
   @PUT
   @Path("placeChange")
@@ -241,7 +246,3 @@ class UserResource(private val authRepo:AuthRepo) {
 
 }
 
-object UserResource {
-  def apply(authRepo:AuthRepo):UserResource = new UserResource(AuthRepo()) 
-  def apply():UserResource = apply(AuthRepo())
-}

@@ -19,16 +19,14 @@ import kornell.core.to.CourseClassesTO
 import kornell.server.util.Errors._
 import kornell.server.repository.Entities
 import javax.ws.rs.POST
+import kornell.server.repository.LibraryFilesRepository
+import javax.inject.Inject
 
 @Path("courseClasses")
-class CourseClassesResource(courseVersionUUID:String) {
+class CourseClassesResource @Inject() (
+  val libRepo:LibraryFilesRepository) {
+  
   def this() = this(null) 
-  
-  def createCourseClass(institutionUUID:String):CourseClass = 
-    create((Entities.newCourseClass(
-        courseVersionUUID=courseVersionUUID,
-        institutionUUID=institutionUUID)))
-  
   
   @POST
   @Consumes(Array(CourseClass.TYPE))
@@ -40,7 +38,7 @@ class CourseClassesResource(courseVersionUUID:String) {
    .get
    
   @Path("{uuid}")
-  def get(@PathParam("uuid") uuid: String):CourseClassResource = CourseClassResource(uuid)
+  def get(@PathParam("uuid") uuid: String):CourseClassResource = new CourseClassResource(libRepo,uuid)
 
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
@@ -67,7 +65,3 @@ class CourseClassesResource(courseVersionUUID:String) {
     }
 }
 
-object CourseClassesResource{
-  def apply() = new CourseClassesResource(null)
-  def apply(courseVersionUUID:String) = new CourseClassesResource(courseVersionUUID)
-}

@@ -19,7 +19,7 @@ import kornell.server.jdbc.repository.ActomEntriesRepo
 import kornell.server.repository.Entities
 import kornell.server.util.ServerTime
 
-class ActomResource(enrollmentUUID: String, actomURL: String) {
+class ActomResource(enrollmentSEP:EnrollmentSEP,enrollmentUUID: String, actomURL: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
 
   @GET
@@ -77,10 +77,10 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
     
     val hasProgress = containsProgress(actomEntries)
     if (hasProgress)
-      EnrollmentSEP.onProgress(enrollmentUUID)
+      enrollmentSEP.onProgress(enrollmentUUID)
     val hasAssessment = containsAssessment(actomEntries)
     if (hasAssessment) {
-      EnrollmentSEP.onAssessment(enrollmentUUID);
+      enrollmentSEP.onAssessment(enrollmentUUID);
     }
     entries
   }
@@ -105,8 +105,4 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
     }
     entries
   }
-}
-
-object ActomResource {
-  def apply(enrollmentUUID: String, actomKey: String) = new ActomResource(enrollmentUUID, actomKey);
 }

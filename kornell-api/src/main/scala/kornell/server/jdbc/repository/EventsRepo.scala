@@ -15,8 +15,17 @@ import kornell.server.ep.EnrollmentSEP
 import kornell.server.util.ServerTime
 import kornell.core.event.CourseClassStateChanged
 import kornell.core.entity.CourseClassState
+import javax.enterprise.context.ApplicationScoped
+import javax.inject.Inject
+import kornell.server.ep.EnrollmentSEP
 
-object EventsRepo {
+@ApplicationScoped
+class EventsRepo @Inject()(
+    enrollmentRepo:EnrollmentRepo,
+    enrollmentSEP:EnrollmentSEP) {
+  
+  def this() = this(null,null)
+  
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
 
   def newEnrollmentStateChanged = events.newEnrollmentStateChanged.as
@@ -30,8 +39,8 @@ object EventsRepo {
 		   ${event.getActomKey}); 
 	""".executeUpdate
 
-    EnrollmentSEP.onProgress(event.getEnrollmentUUID)
-    EnrollmentSEP.onAssessment(event.getEnrollmentUUID)
+    enrollmentSEP.onProgress(event.getEnrollmentUUID)
+    enrollmentSEP.onAssessment(event.getEnrollmentUUID)
   }
 
   def logAttendanceSheetSigned(event: AttendanceSheetSigned) = {
@@ -68,7 +77,7 @@ object EventsRepo {
 		""".executeUpdate
 
     if (EnrollmentState.enrolled.equals(toState)) {
-      val enrollment = EnrollmentRepo(enrollmentUUID).get
+      val enrollment = enrollmentRepo.get(enrollmentUUID)
       val person = PersonRepo(enrollment.getPersonUUID).get
       if (person.getEmail != null && !"true".equals(Settings.get("TEST_MODE").orNull)) {
         val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get

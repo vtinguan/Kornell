@@ -32,10 +32,15 @@ import java.io.IOException
 import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.jdbc.repository.ChatThreadsRepo
 import java.sql.SQLException
+import kornell.server.repository.LibraryFilesRepository
+import javax.inject.Inject
 
 @Path("courseClass")
-class CourseClassResource(private val uuid: String) {
-  def this() = this(null)
+class CourseClassResource(
+    val libRepo:LibraryFilesRepository,
+    val uuid: String) {
+  
+  def this() = this(null,null)
   
   @GET
   @Produces(Array(CourseClass.TYPE))
@@ -86,6 +91,7 @@ class CourseClassResource(private val uuid: String) {
       }
   }
 
+  /*
   @Produces(Array(Contents.TYPE))
   @Path("contents")
   @GET
@@ -94,14 +100,13 @@ class CourseClassResource(private val uuid: String) {
       val cr = ContentRepository
       cr.findKNLVisitedContent(uuid,person.getUUID)
     }
+  */
 
   @Produces(Array(LibraryFilesTO.TYPE))
   @Path("libraryFiles")
   @GET
-  def getLibraryFiles =  {
-    val libRepo = LibraryFilesRepository
-    libRepo.findLibraryFiles(uuid)
-  }
+  def getLibraryFiles = libRepo.findLibraryFiles(uuid)
+  
      
 
   @PUT
@@ -128,8 +133,4 @@ class CourseClassResource(private val uuid: String) {
       }
     }
 
-}
-
-object CourseClassResource {
-  def apply(uuid: String) = new CourseClassResource(uuid)
 }

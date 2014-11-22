@@ -20,6 +20,7 @@ import java.util.logging.Logger
 class SCORM12PackageManager(cm: ContentManager) {
    val log = Logger.getLogger(classOf[SCORM12PackageManager].getName)
    log.info("Instantiating SCORM12PackageManager")
+   
   
   //TODO: Public Interface    
   def launch(e: Enrollment): ActionTO = {
@@ -69,10 +70,4 @@ class SCORM12PackageManager(cm: ContentManager) {
     resources.getResourceList.asScala.find { res => id == res.getIdentifier }
 
   def getManifest: Manifest = CAM12DOMParser.parse(cm.getObjectStream("imsmanifest.xml"))
-}
-
-object SCORM12PackageManager {
-  val log = Logger.getLogger(classOf[SCORM12PackageManager].getName+".companion")
- 
-  def apply(cm: ContentManager) = new SCORM12PackageManager(cm)
 }

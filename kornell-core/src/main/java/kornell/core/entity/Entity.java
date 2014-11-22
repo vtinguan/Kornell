@@ -1,6 +1,8 @@
 package kornell.core.entity;
 
-public interface Entity {
+import java.io.Serializable;
+
+public interface Entity extends Serializable {
 	String getUUID();
 	void setUUID(String UUID);
 }

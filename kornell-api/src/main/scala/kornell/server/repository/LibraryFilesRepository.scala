@@ -13,19 +13,22 @@ import java.io.ByteArrayInputStream
 import kornell.server.dev.util.LibraryFilesParser
 import kornell.core.util.StringUtils
 import scala.util.Try
+import javax.inject.Inject
+import kornell.server.content.ContentManagers
 
-object LibraryFilesRepository {
-//TODO: Review
+class LibraryFilesRepository @Inject()(
+  cms:ContentManagers
+	) {
+  //TODO: Review
   def findLibraryFiles(courseClassUUID: String) =  {
     val classRepo = CourseClassesRepo(courseClassUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
-    val repositoryUUID = version.getRepositoryUUID
-    val repo = S3(repositoryUUID)
-    val filesURL = StringUtils.composeURL(version.getDistributionPrefix(), "library")
-    val structureSrc = repo.source(filesURL, "libraryFiles.knl")
+    val cm = cms.forCourseVersion(version)
+    val filesURL = StringUtils.composeURL("library","libraryFiles.knl")
+    val structureSrc = cm.source(filesURL)
     val libraryFilesText = structureSrc.mkString("")
-    val fullURL = StringUtils.composeURL(repo.baseURL, repo.prefix, version.getDistributionPrefix(), "library")
+    val fullURL = StringUtils.composeURL(cm.baseURL, "/TODO-REFACT-JULIO", version.getDistributionPrefix(), "library")
     val contents = LibraryFilesParser.parse(fullURL, libraryFilesText)
     contents
   }

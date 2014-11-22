@@ -8,10 +8,10 @@ trait GenPerson
 	extends GenInstitution
 	with AuthSpec{
 
-  
+  val userResource:UserResource = ???
   def newPerson() = {
     val regreq = TOs.newRegistrationRequestTO(institutionUUID, randName, randEmail, randPassword,randCPF)
-    val createdUUID = UserResource().createUser(regreq)
+    val createdUUID = userResource.createUser(regreq)
       .getPerson
       .getUUID
     createdUUID

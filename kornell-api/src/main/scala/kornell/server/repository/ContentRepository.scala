@@ -10,20 +10,28 @@ import javax.xml.xpath.XPathFactory
 import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
 import java.io.ByteArrayInputStream
+import javax.enterprise.context.ApplicationScoped
+import javax.inject.Inject
+import kornell.server.jdbc.repository.ContentStoreRepo
+import kornell.server.content.ContentManagers
 
-object ContentRepository {
+@ApplicationScoped
+class ContentRepository @Inject() (
+  cms:ContentManagers
+  ) {
+  
+  def this() = this(null)
 
   def findKNLVisitedContent(courseClassUUID: String, personUUID: String) = {
     val classRepo = CourseClassesRepo(courseClassUUID)
     val visited = classRepo.actomsVisitedBy(personUUID)
     val versionRepo = classRepo.version
-    val version = versionRepo.get
-    val repositoryUUID = version.getRepositoryUUID
-    val repo = S3(repositoryUUID)
-    val structureSrc = repo.source(version.getDistributionPrefix(), "structure.knl")
+    val cv = versionRepo.get
+    val cm = cms.forCourseVersion(cv)
+    val structureSrc = cm.source("structure.knl")
     val structureText = structureSrc.mkString("")
-    val baseURL = repo.baseURL
-    val contents = ContentsParser.parse(baseURL, repo.prefix + "/" + version.getDistributionPrefix(), structureText, visited)
+    val baseURL = "????DEPRECATED????"
+    val contents = ContentsParser.parse(baseURL, "????DEPRECATED????", structureText, visited)
     contents
   }
 
@@ -39,9 +47,8 @@ object ContentRepository {
     val classRepo = CourseClassesRepo(courseClassUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
-    val repositoryUUID = version.getRepositoryUUID();
-    val repo = S3(repositoryUUID)
-    val structureIn = repo.inputStream(version.getDistributionPrefix(), "imsmanifest.xml")
+    val cm = cms.forCourseVersion(version)
+    val structureIn = cm.getObjectStream ("imsmanifest.xml")
     val document = builder.parse(structureIn)
     val result = ListBuffer[String]()
     val nodes: NodeList = expr.evaluate(document, XPathConstants.NODESET).asInstanceOf[NodeList]

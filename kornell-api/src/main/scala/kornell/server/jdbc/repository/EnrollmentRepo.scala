@@ -22,14 +22,20 @@ import java.math.BigDecimal._
 import kornell.server.util.ServerTime
 import kornell.server.repository.TOs
 import kornell.core.to.CourseDetailsTO
+import kornell.server.repository.ContentRepository
+import kornell.server.repository.ContentRepository
+import javax.inject.Inject
 
-//TODO: Specific column names and proper sql
-class EnrollmentRepo(enrollmentUUID: String,e:Enrollment) {
-  lazy val finder = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
+class EnrollmentRepo @Inject()(
+    contentRepo:ContentRepository
+    ) {
 
-  def get: Enrollment = finder.get[Enrollment]
+ 
+  def finder(enrollmentUUID:String) = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
 
-  lazy val first: Option[Enrollment] = Option(e).orElse(finder.first[Enrollment])
+  def get(enrollmentUUID:String): Enrollment = finder(enrollmentUUID).get[Enrollment]
+
+  def first(enrollmentUUID:String): Option[Enrollment] = finder(enrollmentUUID).first[Enrollment]
     
 
   def update(e: Enrollment): Enrollment = {
@@ -41,7 +47,7 @@ class EnrollmentRepo(enrollmentUUID: String,e:Enrollment) {
 				notes = ${e.getNotes},
 				state = ${e.getState.toString},
 				lastProgressUpdate = ${e.getLastProgressUpdate},
-				assessment = ${Option(e.getAssessment).map(_.toString).getOrElse(null)},
+				assessment = ${e.getAssessment},
 				lastAssessmentUpdate = ${e.getLastAssessmentUpdate},
 				assessmentScore = ${e.getAssessmentScore},
 				certifiedAt = ${e.getCertifiedAt}
@@ -55,15 +61,14 @@ class EnrollmentRepo(enrollmentUUID: String,e:Enrollment) {
       where uuid = ${enrollmentUUID}""".executeUpdate
   }
 
-  def findGrades: List[String] = sql"""
+  def findGrades(enrollmentUUID:String): List[String] = sql"""
     	select * from ActomEntries
     	where enrollment_uuid = ${enrollmentUUID}
     	and entryKey = 'cmi.core.score.raw'
     """.map { rs => rs.getString("entryValue") }
 
-  //TODO: Convert to map/flatmat and dedup updateAssessment
-  def updateProgress = for {
-    e <- first
+  def updateProgress(enrollmentUUID:String) = for {
+    e <- first(enrollmentUUID:String)
     cc <- CourseClassesRepo(e.getCourseClassUUID).first
     cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
   } cv.getContentSpec match {
@@ -72,7 +77,7 @@ class EnrollmentRepo(enrollmentUUID: String,e:Enrollment) {
   }
 
   def updateKNLProgress(e: Enrollment) = {
-    val contents = ContentRepository.findKNLVisitedContent(e.getCourseClassUUID, e.getPersonUUID())
+    val contents = contentRepo.findKNLVisitedContent(e.getCourseClassUUID, e.getPersonUUID())
     val actoms = ContentsOps.collectActoms(contents).asScala
     val visited = actoms.filter(_.isVisited).size
     val newProgress = visited / actoms.size.toDouble
@@ -97,7 +102,7 @@ class EnrollmentRepo(enrollmentUUID: String,e:Enrollment) {
 
   def updateSCORM12Progress(e: Enrollment) = {
     //TODO: Consider lesson_status
-    val actomKeys = ContentRepository.findSCORM12Actoms(e.getCourseClassUUID)
+    val actomKeys = contentRepo.findSCORM12Actoms(e.getCourseClassUUID)
     val progresses = actomKeys
       .flatMap { actomKey => findProgressMilestone(e, actomKey) }
     val progress = progresses.foldLeft(1)(_ max _)
@@ -129,7 +134,7 @@ class EnrollmentRepo(enrollmentUUID: String,e:Enrollment) {
   		AND entryKey = 'cmi.core.score.raw'
   """.first[BigDecimal] { rs => rs.getBigDecimal("maxScore") }
 
-  def updateAssessment = first map { e =>
+  def updateAssessment(enrollmentUUID:String) = first(enrollmentUUID) map { e =>
     val notPassed = !Assessment.PASSED.equals(e.getAssessment)
     if (notPassed){
     	val (maxScore,assessment) = assess(e)
@@ -179,8 +184,8 @@ where
     }
   }
   
-  def findDetails():Option[CourseDetailsTO] = for {
-  	e <- first
+  def findDetails(enrollmentUUID:String):Option[CourseDetailsTO] = for {
+  	e <- first(enrollmentUUID)
   	cc <- CourseClassRepo(e.getCourseClassUUID).first
   	cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
   	c <- CourseRepo(cv.getCourseUUID).first
@@ -191,13 +196,5 @@ where
     to.setInfosTO(InfosRepo.byCourseVersion(cv.getUUID))
     to
   }
-    
-  
-
-}
-
-object EnrollmentRepo {
-  def apply(uuid: String) = new EnrollmentRepo(uuid,null) 
-  def apply(e:Enrollment) = new EnrollmentRepo(e.getUUID,e)
   
 }

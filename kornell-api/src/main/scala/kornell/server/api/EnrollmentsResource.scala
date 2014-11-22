@@ -22,13 +22,32 @@ import javax.servlet.http.HttpServletResponse
 import kornell.core.to.EnrollmentRequestsTO
 import kornell.server.repository.Entities
 import kornell.core.to.EnrollmentsTO
+import kornell.server.content.ContentManagers
+import javax.inject.Inject
+import javax.enterprise.context.Dependent
+import javax.enterprise.inject.New
+import kornell.server.jdbc.repository.ContentStoreRepo
+import kornell.server.ep.EnrollmentSEP
+import kornell.server.repository.service.RegistrationEnrollmentService
+import kornell.server.scorm.scorm12.rte.SCORM12PackageManagers
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
-class EnrollmentsResource {
+@Dependent
+class EnrollmentsResource @Inject() (
+	 val cms:ContentManagers,
+	 val s12pms:SCORM12PackageManagers,
+	 val enrollmentSEP:EnrollmentSEP,
+	 val enrollmentRepo:EnrollmentRepo,
+	 val contentStoreRepo:ContentStoreRepo,
+	 val registrationEnrollmentService:RegistrationEnrollmentService
+  ) {
+  
+  def this() = this(null,null,null,null,null,null)
 
   @Path("{uuid}")
-  def get(@PathParam("uuid") uuid: String): EnrollmentResource = new EnrollmentResource(uuid)
+  def get(@PathParam("uuid") uuid: String): EnrollmentResource = 
+    new EnrollmentResource(cms,s12pms,enrollmentSEP,enrollmentRepo,contentStoreRepo,uuid)
 
   @POST
   @Consumes(Array(Enrollment.TYPE))
@@ -49,7 +68,7 @@ class EnrollmentsResource {
     AuthRepo().withPerson { p =>
       //TODO: Understand and refactor
       //if (enrollmentRequests.getEnrollmentRequests.asScala exists (e => RegistrationEnrollmentService.isInvalidRequestEnrollment(e, p.getFullName))) {
-      RegistrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p)
+      registrationEnrollmentService.deanRequestEnrollments(enrollmentRequests, p)
     }
 
   @PUT
@@ -66,8 +85,4 @@ class EnrollmentsResource {
     	""".executeUpdate
     }
 
-}
-
-object EnrollmentsResource {
-	def apply() = new EnrollmentsResource()
 }

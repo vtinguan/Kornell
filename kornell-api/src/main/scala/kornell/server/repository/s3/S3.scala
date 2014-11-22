@@ -24,6 +24,8 @@ import com.amazonaws.auth.AWSCredentials
 import java.io.BufferedInputStream
 import com.google.gwt.http.client.URL
 import java.net.URL
+
+@Deprecated
 class S3(regionName: String,
   val accessKey: String,
   val secretKey: String,
@@ -114,10 +116,10 @@ object S3 {
     rs.getString("bucketName"), rs.getString("prefix"),
     rs.getString("distributionURL"))
 
-  def apply(repository_uuid: String) =
+  def DELETEapply(repository_uuid: String) =
     sql"""
     	select region,accessKeyId,secretAccessKey,bucketName,prefix,distributionURL
-    	from S3ContentRepository
+    	from S3ContentStore
     	where uuid=$repository_uuid
     """.first[S3].getOrElse({ throw new IllegalArgumentException(s"Could not find repository [$repository_uuid]") })
 

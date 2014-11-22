@@ -6,7 +6,7 @@ import java.io.InputStream
 import kornell.core.entity.ContentStore
 import kornell.core.util.StringUtils._
 
-class FSContentManager(cs:ContentStore) extends ContentManager{
+class FSContentManager(cs:ContentStore,distributionPrefix:String) extends ContentManager{
   //TODO: Read from ContentStore
   /* UCC
   val root = "/Users/faermanj/Dropbox (Craftware)/Content/unicc";
@@ -18,6 +18,8 @@ class FSContentManager(cs:ContentStore) extends ContentManager{
   val prefix = "/repository/840e93aa-2373-4fb5-ba4a-999bb3f43888/";
   val distPrefix = "suplementacao-alimentar/v0.3" 
   
+  override def getID() = cs.getUUID()+"/"+distributionPrefix
+    
   override def getObjectStream(obj:String):InputStream = { 
   	val file = Paths.get(root, prefix, distPrefix, obj).toFile();
   	new FileInputStream(file)

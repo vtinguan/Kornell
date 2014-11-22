@@ -27,8 +27,15 @@ import kornell.server.repository.Entities
 import kornell.core.util.TimeUtil
 import kornell.server.util.ServerTime
 import kornell.core.util.StringUtils
+import javax.inject.Inject
+import javax.enterprise.context.ApplicationScoped
+import kornell.server.jdbc.repository.EventsRepo
 
-object RegistrationEnrollmentService {
+@ApplicationScoped
+class RegistrationEnrollmentService @Inject()
+  (eventsRepo:EventsRepo){
+  
+  def this() = this(null)
 
   def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) = 
     	enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean)) 
@@ -81,11 +88,11 @@ object RegistrationEnrollmentService {
 
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person, cancelEnrollment: Boolean) = {
     if(cancelEnrollment && !EnrollmentState.cancelled.equals(enrollment.getState))
-      EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled)
+      eventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled)
     else if (EnrollmentState.cancelled.equals(enrollment.getState) 
         || EnrollmentState.requested.equals(enrollment.getState()) 
         || EnrollmentState.denied.equals(enrollment.getState())) {
-      EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
+      eventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
     }
   }
 
@@ -142,7 +149,7 @@ object RegistrationEnrollmentService {
 
   private def createEnrollment(personUUID: String, courseClassUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
     val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled,null,null,null,null,null))
-    EventsRepo.logEnrollmentStateChanged(
+    eventsRepo.logEnrollmentStateChanged(
       UUID.random, ServerTime.now, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState)
   }

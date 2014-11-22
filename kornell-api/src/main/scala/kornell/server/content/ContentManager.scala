@@ -1,54 +1,60 @@
 package kornell.server.content
 
-import kornell.core.entity.ContentStore
 import java.io.InputStream
-import kornell.core.util.StringUtils
-import kornell.core.entity.ContentStore
-import java.util.logging.Logger
-import javax.cache.Caching
 import java.io.Serializable
-import javax.cache.integration.CacheLoader
-import kornell.server.jdbc.repository.ContentStoreRepo
-import kornell.core.entity.ContentStoreType._
-import java.util.Map
-import java.lang.Iterable
-import scala.collection.JavaConverters._
-import javax.cache._
-import javax.cache.configuration._
+import java.util.logging.Logger
 
-trait ContentManager extends Serializable {
-  def getObjectStream(obj: String): InputStream
-  def getURL(obj: String): String
+import scala.io.Source
+
+import org.infinispan.Cache
+
+import javax.inject.Inject
+import kornell.core.entity.ContentStore
+import kornell.core.entity.ContentStoreType.FS
+import kornell.core.entity.ContentStoreType.S3
+import kornell.core.entity.CourseVersion
+import kornell.server.cdi.ContentManagerCache
+import kornell.server.jdbc.repository.ContentStoreRepo
+
+trait ContentManager extends Serializable {  
+  def getObjectStream(key: String): InputStream
+  def getURL(key: String): String  
+  def getID():String
+  def source(key:String):Source = Source.fromInputStream(getObjectStream(key),"UTF-8")
+  def baseURL:String = "/TODO-REFACT-JULIO"
 }
 
-object ContentManager {
-  private val log = Logger.getLogger(ContentManager.getClass.getName)
-  private val cacheMgr = Caching.getCachingProvider.getCacheManager
+class ContentManagers @Inject()(
+    @ContentManagerCache cache:Cache[String,ContentManager],
+    contentStoreRepo:ContentStoreRepo
+    ) {
+  private val log = Logger.getLogger("ContentManagers")  
 
-  def load(contentStoreUUID: String): ContentManager =
-    ContentStoreRepo(contentStoreUUID,"NO-ECSISTE")
-      .first
+  def load(contentStoreUUID: String,distributionPrefix:String): ContentManager =
+    contentStoreRepo
+      .first(contentStoreUUID) 
       .map { cs =>
         cs.getContentStoreType match {
-          case S3 => new S3ContentManager(cs)
-          case FS => new FSContentManager(cs)
+          case S3 => new S3ContentManager(cs,distributionPrefix)
+          case FS => new FSContentManager(cs,distributionPrefix)
         }
       }.getOrElse(null)
 
-  val cache: Cache[String, ContentManager] = 
-    cacheMgr.createCache("ContentManager",new MutableConfiguration[String, ContentManager]()) 
-
-  def getOrLoad(key: String) = if (cache.containsKey(key)) {
+  def getOrLoad(key: String,distributionPrefix:String) = if (cache.containsKey(key)) {
     log.finest(s"Cache Hit for [ContentManager] with key [$key]")
     cache.get(key)
   } else {
     log.finest(s"Cache Miss for [ContentManager] with key [$key]")
-    val value = Option(load(key))
+    val value = Option(load(key,distributionPrefix))
     value.foreach {cache.put(key, _)} 
     value.getOrElse(null)
   }
 
-  def apply(cs: ContentStore) = getOrLoad(cs.getUUID())
+  def get(cs: ContentStore,distributionPrefix:String) = getOrLoad(cs.getUUID,distributionPrefix)
 
+  def forCourseVersion(cv:CourseVersion) = {
+	  val store = contentStoreRepo.get(cv.getRepositoryUUID)
+	  get(store,cv.getDistributionPrefix())
+  }
 }
   

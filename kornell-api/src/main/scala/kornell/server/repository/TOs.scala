@@ -95,9 +95,8 @@ object TOs {
   }
 
   def newCourseVersionTO(course: Course, version: CourseVersion): CourseVersionTO = {
-    val versionTO = tos.newCourseVersionTO.as
-    val s3 = S3(version.getRepositoryUUID)
-    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL, s3.prefix))
+    val versionTO = tos.newCourseVersionTO.as    
+    versionTO.setDistributionURL("/TODO-REFACT-JULIO")
     versionTO.setCourse(course)
     versionTO.setCourseVersion(version)
     versionTO

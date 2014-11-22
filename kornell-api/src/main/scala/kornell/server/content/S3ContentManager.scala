@@ -9,15 +9,19 @@ import scala.io.Source
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import java.io.InputStream
+import java.util.logging.Logger
+import scala.util.Try
 
-class S3ContentManager(cs: ContentStore) extends ContentManager {
+class S3ContentManager(cs: ContentStore,distributionPrefix:String) extends ContentManager {
+  val log = Logger.getLogger(classOf[S3ContentManager].getClass.getName)
   val props = cs.getProperties()
   val distributionURL = props.get("distributionURL")
   val bucket = props.get("bucketName")
   val prefix = props.get("prefix")
-  val distributionPrefix = props.get("distributionPrefix")
   val fullPrefix = composeURL(prefix,distributionPrefix)
 
+  override def getID() = cs.getUUID()+"/"+distributionPrefix
+  
   val s3 = {
     val accessKeyId = props.get("accessKeyId")
     val creds = Option(accessKeyId).map { ak => 
@@ -26,7 +30,7 @@ class S3ContentManager(cs: ContentStore) extends ContentManager {
     }
     val s3 = creds match {
       case Some(creds) => new AmazonS3Client(creds)
-      case None => new AmazonS3Client
+      case None => ??? // new AmazonS3Client
     }
     Option(props.get("region")) foreach { region =>
       s3.setRegion(Region.getRegion(Regions.fromName(region)))
@@ -36,7 +40,10 @@ class S3ContentManager(cs: ContentStore) extends ContentManager {
   
   override def getURL(obj:String) = composeURL(fullPrefix,obj) 
 
-  override def getObjectStream(obj: String): InputStream = 
-    s3.getObject(bucket, composeURL(fullPrefix, obj)).getObjectContent
+  override def getObjectStream(obj: String): InputStream = Try {
+    val key = composeURL(fullPrefix, obj)
+    log.finest(s"Fetching object [s3://$bucket/$key]")
+    s3.getObject(bucket, key).getObjectContent
+  }.getOrElse(null)
   
 }

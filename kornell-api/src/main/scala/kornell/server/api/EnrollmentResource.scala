@@ -42,16 +42,27 @@ import scala.collection.JavaConverters._
 import kornell.core.to.CourseDetailsTO
 import kornell.core.to.EnrollmentLaunchTO
 import kornell.core.entity.ContentStore
+import kornell.server.content.ContentManagers
+import javax.inject.Inject
+import kornell.core.entity.CourseVersion
+import kornell.server.ep.EnrollmentSEP
+import kornell.server.scorm.scorm12.rte.SCORM12PackageManagers
 
 @Produces(Array(Enrollment.TYPE))
-class EnrollmentResource(uuid: String) {
-  lazy val enrollment = get
-  lazy val enrollmentRepo = EnrollmentRepo(uuid)
+class EnrollmentResource(    
+    cms:ContentManagers,
+    scorm12pm:SCORM12PackageManagers,
+    enrollmentSEP:EnrollmentSEP,
+    enrollmentRepo:EnrollmentRepo,
+    contentStoreRepo:ContentStoreRepo,
+    uuid: String) {
+  
+  lazy val enrollment = enrollmentRepo.get(uuid)
 
-  def get = enrollmentRepo.get
-
+  def get = enrollment
+  
   @GET
-  def first = enrollmentRepo.first
+  def first = enrollmentRepo.first(uuid)
 
   @PUT
   @Produces(Array("text/plain"))
@@ -64,22 +75,14 @@ class EnrollmentResource(uuid: String) {
   @Produces(Array("text/plain"))
   @Consumes(Array(Enrollment.TYPE))
   def update(enrollment: Enrollment) = {
-    EnrollmentRepo(enrollment.getUUID).update(enrollment)
+    enrollmentRepo.update(enrollment)
   }
     .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID), RequirementNotMet)
     .get
 
   @Path("actoms/{actomKey}")
-  def actom(@PathParam("actomKey") actomKey: String) = ActomResource(uuid, actomKey)
+  def actom(@PathParam("actomKey") actomKey: String) = new ActomResource(enrollmentSEP, uuid, actomKey)
 
-  @GET
-  @Path("contents")
-  @Produces(Array(Contents.TYPE))
-  def contents: Option[Contents] = first map { e =>
-    val courseClassResource = CourseClassResource(e.getCourseClassUUID)
-    val contents = courseClassResource.getLatestContents()
-    contents
-  }
 
   @GET
   @Path("approved")
@@ -88,14 +91,13 @@ class EnrollmentResource(uuid: String) {
 
   @DELETE
   @Produces(Array(Enrollment.TYPE))
-  def delete() = {
-    val enrollmentRepo = EnrollmentRepo(uuid)
-    val enrollment = enrollmentRepo.get
+  def delete() = {    
+    val enrollment = enrollmentRepo.get(uuid)
     enrollmentRepo.delete(uuid)
     enrollment
   }.requiring(isPlatformAdmin, UserNotInRole)
-    .or(isInstitutionAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), UserNotInRole)
-    .or(isCourseClassAdmin(EnrollmentRepo(uuid).get.getCourseClassUUID), UserNotInRole)
+    .or(isInstitutionAdmin(CourseClassRepo(enrollmentRepo.get(uuid).getCourseClassUUID).get.getInstitutionUUID), UserNotInRole)
+    .or(isCourseClassAdmin(enrollmentRepo.get(uuid).getCourseClassUUID), UserNotInRole)
 
   @GET
   @Path("launch")
@@ -104,21 +106,21 @@ class EnrollmentResource(uuid: String) {
     e <- first
     cc <- CourseClassRepo(e.getCourseClassUUID).first
     cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
-    cs <- ContentStoreRepo(cv.getRepositoryUUID, cv.getDistributionPrefix()).first 
+    cs <- contentStoreRepo.first(cv.getRepositoryUUID) 
     details <- launchDetails(e) 
   } yield TOs.newEnrollmentLaunchTO(
-      launchAction(e,cs), 
+      launchAction(e,cv,cs), 
       details,
       cv)
       
   
-  def launchAction(e: Enrollment, cs: ContentStore): ActionTO = {
-    val cm = ContentManager(cs)
-    val pm = SCORM12PackageManager(cm)
+  def launchAction(e: Enrollment,cv:CourseVersion, cs: ContentStore): ActionTO = {    
+    val cm = cms.get(cs,cv.getDistributionPrefix)
+    val pm = scorm12pm.get(cm)
     pm.launch(e)
   }
 
   def launchDetails(e:Enrollment): 
-  	Option[kornell.core.to.CourseDetailsTO] =  EnrollmentRepo(e).findDetails
+  	Option[kornell.core.to.CourseDetailsTO] =  enrollmentRepo.findDetails(e.getUUID())
 
 }

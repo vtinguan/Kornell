@@ -110,6 +110,8 @@ object AuthRepo {
 class AuthRepo(pwdCache: AuthRepo.PasswordCache,
   rolesCache: AuthRepo.RolesCache) {
 
+  def this() = this(null,null)
+  
   implicit def toPerson(rs: ResultSet): Person = newPerson(
     rs.getString("uuid"),
     rs.getString("fullName"),

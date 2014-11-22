@@ -5,9 +5,11 @@ import kornell.server.helper.GenInstitution
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import kornell.server.api.UserResource
+import kornell.server.api.UserResource
 
 @RunWith(classOf[JUnitRunner])
 class AuthRepoSpec extends UnitSpec with GenInstitution {
+  var userResource:UserResource = ???
   var authRepo:AuthRepo = _
   var pwdCache:AuthRepo.PasswordCache = _
   var rolesCache:AuthRepo.RolesCache = _
@@ -35,7 +37,7 @@ class AuthRepoSpec extends UnitSpec with GenInstitution {
 	it should "cache on auth success" in {
 	  val username = randUsername
 	  val password = randPassword
-	  val personUUID = UserResource(authRepo).createUser(institutionUUID,randName,randEmail,randCPF,username,password)		
+	  val personUUID = userResource.createUser(institutionUUID,randName,randEmail,randCPF,username,password)		
 	  pwdCache.size should be (0)	  
 	  val hit = authRepo.authenticate(username, password)
 		hit should be (Some(personUUID))
@@ -45,7 +47,7 @@ class AuthRepoSpec extends UnitSpec with GenInstitution {
 	it should "retrieve granted privileges" in {
 	  val username = randUsername
 	  val password = randPassword
-		val personUUID = UserResource(authRepo).createUser(institutionUUID,randName,randEmail,randCPF,username,password)
+	  val personUUID = userResource.createUser(institutionUUID,randName,randEmail,randCPF,username,password)
 	  AuthRepo().grantInstitutionAdmin(personUUID, institutionUUID)
 	  val roles = AuthRepo().userRoles(Option(personUUID))
 	}

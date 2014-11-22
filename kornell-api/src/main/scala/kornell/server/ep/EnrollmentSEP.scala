@@ -4,18 +4,23 @@ import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.core.entity.ContentSpec._
+import javax.enterprise.context.ApplicationScoped
+import kornell.server.jdbc.repository.EnrollmentRepo
+import javax.inject.Inject
 
 /**
  * Simple Event Processing
  */
-object EnrollmentSEP {
+@ApplicationScoped
+class EnrollmentSEP @Inject() (enrollmentRepo:EnrollmentRepo) {
 
-  def onProgress(enrollmentUUID: String) = {
-    EnrollmentRepo(enrollmentUUID).updateProgress
-  }
+  def this() = this(null)
+  
+  def onProgress(enrollmentUUID: String) = 
+    enrollmentRepo.updateProgress(enrollmentUUID)
     
   def onAssessment(enrollmentUUID: String) = 
-    EnrollmentRepo(enrollmentUUID).updateAssessment
+    enrollmentRepo.updateAssessment(enrollmentUUID)
     
 
 }
