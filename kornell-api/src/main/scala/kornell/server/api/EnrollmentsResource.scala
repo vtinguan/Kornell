@@ -6,6 +6,7 @@ import javax.ws.rs.Consumes
 import javax.ws.rs.core.SecurityContext
 import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.util.Conditional.toConditional
 import javax.ws.rs.PathParam
 import javax.ws.rs.QueryParam
 import javax.ws.rs.PUT
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletResponse
 import kornell.core.to.EnrollmentRequestsTO
 import kornell.server.repository.Entities
 import kornell.core.to.EnrollmentsTO
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.util.RequirementNotMet
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
@@ -33,10 +36,10 @@ class EnrollmentsResource {
   @POST
   @Consumes(Array(Enrollment.TYPE))
   @Produces(Array(Enrollment.TYPE))
-  def create(implicit @Context sc: SecurityContext, enrollment: Enrollment) =
-    AuthRepo().withPerson { p =>
+  def create(enrollment: Enrollment) = {
       EnrollmentsRepo.create(enrollment)
-    }
+  }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  RequirementNotMet )
+  .get
 
   @GET
   @Produces(Array(EnrollmentsTO.TYPE))
@@ -56,9 +59,7 @@ class EnrollmentsResource {
   @PUT
   @Path("{courseClassUUID}/notesUpdated")
   @Produces(Array("text/plain"))
-  def putNotesChange(implicit @Context sc: SecurityContext,
-    @PathParam("courseClassUUID") courseClassUUID: String,
-    notes: String) =
+  def putNotesChange(@PathParam("courseClassUUID") courseClassUUID: String, notes: String) =
     AuthRepo().withPerson { p =>
       sql"""
     	update Enrollment set notes=$notes
