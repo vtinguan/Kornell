@@ -15,6 +15,9 @@ import kornell.server.helper.GenCourseClass
 import scala.collection.JavaConverters._
 import kornell.server.helper.GenInstitutionAdmin
 import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.EnrollmentState
+import kornell.server.jdbc.repository.EnrollmentRepo
+import kornell.server.repository.Entities
 
 @RunWith(classOf[JUnitRunner])
 class EnrollmentsSpec 
@@ -38,8 +41,7 @@ class EnrollmentsSpec
      
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
     assert(enrollmentsCreated.getEnrollmentTOs.size == totalEnrollments)
-    //assert(mockHttpServletResponse.getStatus == 0)
-  }  
+  }
   
   "The platformAdmin" should "be able to register and enroll participants with the cpf" in asPlatformAdmin {
     val fullName = randStr
@@ -54,7 +56,6 @@ class EnrollmentsSpec
     
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
     assert(enrollmentsCreated.getEnrollmentTOs.size == totalEnrollments)
-    //assert(mockHttpServletResponse.getStatus == 0)
   }
   
   "The platformAdmin" should "not be able to register participants with duplicate emails or cpfs" in asPlatformAdmin {
@@ -74,10 +75,7 @@ class EnrollmentsSpec
     assert(enrollmentsCreatedEmail.getEnrollmentTOs.size == 1)
     val enrollmentsCreatedCpf = EnrollmentsRepo.byCourseClass(courseClassCpf.getUUID)
     assert(enrollmentsCreatedCpf.getEnrollmentTOs.size == 1)
-    //assert(mockHttpServletResponse.getStatus == 0)
   }
-  
-  
   
   "The institutionAdmin" should "be able to register and enroll one participant with the email" in asInstitutionAdmin {
     val courseClass = newCourseClassEmail
@@ -92,35 +90,138 @@ class EnrollmentsSpec
     assert({ 
       enrollmentsCreated.getEnrollmentTOs.asScala exists(e => e.getFullName.equals("institutionAdmin"+fullName))
     })
-//    assert(mockHttpServletResponse.getStatus == 0)
   }  
-  /*
-  "A user that's not a platform or institutionAdmin" should "not be able to register and enroll one participant" in {
-    val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])    
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, "notAnAdmin"+fullName, "notAnAdmin"+email, null))
-    enrollmentsResource.putEnrollments(notAnAdminSecurityContext, mockHttpServletResponse, enrollmentRequestsTO)
-    
-    val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
-    assert(enrollmentsCreated.getEnrollments.size == 0)
-    assert(!{ 
-      enrollmentsCreated.getEnrollments.asScala exists(e => e.getPerson.getFullName.equals("notAnAdmin"+fullName))
-    	})
-    assert(mockHttpServletResponse.getStatus != 0)
-  }  
- */
-/*  
-  "A user" should "be able to request enrollment to a class" in asPerson {
-    val courseClass = newCourseClass
+  
+  "The platformAdmin" should 
+  "be able to cancel an enrollment" in asPlatformAdmin {
+    val fullName = randName
+    val email = randEmail
+    val courseClass = newCourseClassEmail
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, "person"+person.getFullName, "institutionAdmin"+person.getEmail, null, false))
+    
+    //enroll user
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationEnrollmentType.email, false))
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
     
+    //check that his enrollment is good
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
-    assert(enrollmentsCreated.getEnrollmentTOs.size == 1)
-    assert({ 
-      enrollmentsCreated.getEnrollmentTOs.asScala exists(e => e.getPerson.getFullName.equals(person.getFullName))
-    	})
-//    assert(mockHttpServletResponse.getStatus == 0)
+    assert(EnrollmentState.enrolled.equals(enrollmentsCreated.getEnrollmentTOs.get(0).getEnrollment.getState))
+    
+    //remove him from class
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationEnrollmentType.email, true))
+    EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
+     
+    val enrollmentsRemoved = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
+    assert(EnrollmentState.cancelled.equals(enrollmentsRemoved.getEnrollmentTOs.get(0).getEnrollment.getState))
+  }  
+  
+    "The institutionAdmin" should 
+  "be able to cancel an enrollment" in asInstitutionAdmin {
+    val fullName = randName
+    val email = randEmail
+    val courseClass = newCourseClassEmail
+    val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])
+    
+    //enroll user
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationEnrollmentType.email, false))
+    EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
+    
+    //check that his enrollment is good
+    val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
+    assert(EnrollmentState.enrolled.equals(enrollmentsCreated.getEnrollmentTOs.get(0).getEnrollment.getState))
+    
+    //remove him from class
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationEnrollmentType.email, true))
+    EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
+     
+    val enrollmentsRemoved = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
+    assert(EnrollmentState.cancelled.equals(enrollmentsRemoved.getEnrollmentTOs.get(0).getEnrollment.getState))
+  }  
+    
+  "The person" should "be able to update his own notes" in asInstitutionAdmin {
+    val courseClass = newCourseClassEmail
+    val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])
+    
+    //create person manually
+    val testPerson = newPerson
+    
+    //enroll user with values from testPerson
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, testPerson.getFullName, testPerson.getEmail, null, RegistrationEnrollmentType.email, false))
+    EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
+    
+    //become testPerson
+    asIdentity(testPerson.getUUID) {
+    	//update his notes
+    	EnrollmentsResource().putNotesChange(courseClass.getUUID, "test notes");
+    
+    	val enrollmentsFound = EnrollmentsRepo.byCourseClass(courseClass.getUUID);
+    	assert("test notes".equals(enrollmentsFound.getEnrollmentTOs.get(0).getEnrollment.getNotes))
+    }
   }
-  */
+
+  "A user" should "be able to request enrollment in a public class" in asInstitutionAdmin {
+    val courseClass = newPublicCourseClass
+    val testPerson = newPerson
+    
+    asIdentity(testPerson.getUUID) {
+    	//enroll user
+    	val enrollment = Entities.newEnrollment(courseClassUUID = courseClass.getUUID, personUUID = testPerson.getUUID, state = EnrollmentState.requested)
+    	EnrollmentsResource().create(enrollment)
+    
+    	//check that his enrollment is good
+    	val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
+    	assert(EnrollmentState.requested.equals(enrollmentsCreated.getEnrollmentTOs.get(0).getEnrollment.getState))
+    	assert(testPerson.getUUID.equals(enrollmentsCreated.getEnrollmentTOs.get(0).getPersonUUID))
+    }
+  }
+  
+  "A user" should "not be able to request enrollment in a private class" in asInstitutionAdmin {
+    val courseClass = newCourseClassEmail
+    val testPerson = newPerson
+    
+    asIdentity(testPerson.getUUID) {
+    	//enroll user
+    	val enrollment = Entities.newEnrollment(courseClassUUID = courseClass.getUUID, personUUID = testPerson.getUUID, state = EnrollmentState.requested)
+    	try {
+    		EnrollmentsResource().create(enrollment)
+    	} catch {
+    	  case ise:IllegalStateException => assert(true)
+    	  case default:Throwable => fail()
+    	}
+    }
+  }
+
+  "A user" should "not be able to request enrollment for another user" in asInstitutionAdmin {
+    val courseClass = newCourseClassEmail
+    
+    asPerson {
+    	//enroll user
+    	val enrollment = Entities.newEnrollment(courseClassUUID = courseClass.getUUID, personUUID = person.getUUID(), state = EnrollmentState.requested)
+    	try {
+    		EnrollmentsResource().create(enrollment)
+    	} catch {
+    	  //we should throw and catch a more specific exception here so we have something to check
+    	  case ise:IllegalStateException => assert(true)
+    	  case default:Throwable => fail()
+    	}
+    }
+  }
+  
+  "A user that's not a platform or institutionAdmin" should "not be able to register and enroll one participant" in asInstitutionAdmin {
+    val fullName = randName
+    val email = randEmail
+    val courseClass = newCourseClassEmail
+    val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])    
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, "notAnAdmin"+fullName, "notAnAdmin"+email, null, RegistrationEnrollmentType.email, false))
+    
+    asPerson {
+    	try {
+    		EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
+    	} catch {
+    	  //we should throw and catch a more specific exception here so we have something to check
+      		case ise:IllegalStateException => assert(true)
+      		case default:Throwable => fail()
+    	}
+    }
+  }
 }

@@ -25,6 +25,8 @@ import kornell.server.repository.Entities
 import kornell.core.to.EnrollmentsTO
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.util.RequirementNotMet
+import kornell.server.jdbc.repository.CourseClassRepo
+import kornell.core.entity.EnrollmentState
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
@@ -39,6 +41,8 @@ class EnrollmentsResource {
   def create(enrollment: Enrollment) = {
       EnrollmentsRepo.create(enrollment)
   }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  RequirementNotMet )
+  .requiring(CourseClassRepo(enrollment.getCourseClassUUID()).get.isPublicClass() == true, RequirementNotMet)
+  .requiring(enrollment.getState.equals(EnrollmentState.requested), RequirementNotMet)
   .get
 
   @GET
