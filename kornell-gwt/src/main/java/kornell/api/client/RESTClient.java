@@ -61,8 +61,8 @@ public class RESTClient {
 			try {
 				String decoded = ClientProperties.base64Decode(auth.replaceAll("\\u00a0"," ").split(" ")[1]);
 	      String[] parts = decoded.split(":");
-	      if(parts.length < 3){
-	      	decoded += ":" + (Dean.getInstance() != null && Dean.getInstance().getInstitution() != null ? Dean.getInstance().getInstitution().getUUID() : "null");
+	      if(parts.length == 2 || parts[2].equals("null")){
+	      	decoded = parts[0] + ":" + parts[1] + ":" + (Dean.getInstance() != null && Dean.getInstance().getInstitution() != null ? Dean.getInstance().getInstitution().getUUID() : "null");
 	      	auth = "Basic " + ClientProperties.base64Encode(decoded);
 	      	ClientProperties.set(ClientProperties.X_KNL_A, auth);
 	      }
