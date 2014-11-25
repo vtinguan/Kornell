@@ -145,12 +145,12 @@ object PeopleRepo {
   //TODO: Better dynamic queries
   //TODO: Teste BOTH args case!!
   def isRegistered(institutionUUID: String, personUUID: String, cpf: String,email:String): Boolean = {
-    var sql = s"select count(*) from Person where uuid != '${personUUID}' and institutionUUID = '${institutionUUID}' "
+    var sql = s"select count(*) from Person p join Password pw on pw.person_uuid = p.uuid where p.uuid != '${personUUID}' and p.institutionUUID = '${institutionUUID}' "
     if (isSome(cpf)) {
-      sql = sql + s"and cpf = '${digitsOf(cpf)}'";
+      sql = sql + s"and (p.cpf = '${digitsOf(cpf)}' or pw.username = '${digitsOf(cpf)}')";
     }
     if (isSome(email)) {
-    	sql = sql + s"and email = '${email}'";
+    	sql = sql + s"and (p.email = '${email}' or pw.username = '${email}')";
     }
     if (sql.contains("--")) throw new IllegalArgumentException
     val pstmt = new PreparedStmt(sql,List())    
