@@ -14,6 +14,7 @@ import kornell.core.entity.Roles
 import kornell.core.util.UUID
 import java.util.Date
 import kornell.core.entity.CourseClassState
+import java.sql.ResultSet
 
 class CourseClassesRepo {
 }
@@ -23,6 +24,11 @@ object CourseClassesRepo {
   def apply(uuid: String) = CourseClassRepo(uuid)
 
   def create(courseClass: CourseClass):CourseClass = {
+    val courseClassExists = sql"""
+    select count(*) from CourseClass where courseVersion_uuid = ${courseClass.getCourseVersionUUID} and name = ${courseClass.getName}
+    """.first[String].get
+    if (courseClassExists == "0") {
+    
     if (courseClass.getUUID == null)
       courseClass.setUUID(UUID.random)
     sql""" 
@@ -42,6 +48,9 @@ object CourseClassesRepo {
              ${courseClass.getInstitutionRegistrationPrefix})
     """.executeUpdate
     courseClass
+    } else {
+      throw new IllegalArgumentException("Uma turma com nome \"" + courseClass.getName + "\" já existe para essa versão do curso.")
+    }
   }
 
   def byInstitution(institutionUUID: String) =
@@ -135,4 +144,5 @@ object CourseClassesRepo {
     enrollment foreach courseClassTO.setEnrollment    
   }
 
+  implicit def toString(rs: ResultSet): String = rs.getString(1)
 }

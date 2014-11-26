@@ -25,14 +25,16 @@ import kornell.core.entity.RegistrationEnrollmentType
 class CourseClassesResource(val courseVersionUUID:String) {
   def this() = this(null) 
   
-  def createCourseClassEmail(institutionUUID:String):CourseClass = 
+  def createCourseClassEmail(name:String, institutionUUID:String):CourseClass = 
     create((Entities.newCourseClass(
+        name=name,
         courseVersionUUID=courseVersionUUID,
         institutionUUID=institutionUUID,
         registrationEnrollmentType=RegistrationEnrollmentType.email)))
         
-  def createCourseClassCpf(institutionUUID:String):CourseClass = 
+  def createCourseClassCpf(name:String, institutionUUID:String):CourseClass = 
     create((Entities.newCourseClass(
+        name=name,
         courseVersionUUID=courseVersionUUID,
         institutionUUID=institutionUUID,
         registrationEnrollmentType=RegistrationEnrollmentType.cpf)))

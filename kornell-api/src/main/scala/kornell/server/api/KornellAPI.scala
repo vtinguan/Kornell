@@ -12,6 +12,7 @@ import kornell.server.ws.rs.reader.EventsReader
 import kornell.server.ws.rs.reader.LOMReader
 import kornell.server.ws.rs.writer.BooleanWriter
 import kornell.server.ws.rs.exception.FileNotFoundMapper
+import kornell.server.ws.rs.exception.IllegalArgumentMapper
 
 class KornellAPI extends Application {
   type ClassSet = Set[Class[_]]
@@ -24,7 +25,7 @@ class KornellAPI extends Application {
     classOf[BooleanWriter])
     
   val mappers:ClassSet = Set(classOf[NoSuchElementMapper],
-    classOf[FileNotFoundMapper])
+    classOf[FileNotFoundMapper], classOf[IllegalArgumentMapper])
     
   val resources:ClassSet = Set(classOf[RootResource],
     classOf[UserResource],
