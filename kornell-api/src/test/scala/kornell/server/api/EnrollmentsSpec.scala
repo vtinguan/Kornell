@@ -18,6 +18,7 @@ import kornell.core.entity.RegistrationEnrollmentType
 import kornell.core.entity.EnrollmentState
 import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.repository.Entities
+import kornell.server.util.RequirementNotMet
 
 @RunWith(classOf[JUnitRunner])
 class EnrollmentsSpec 
@@ -185,7 +186,7 @@ class EnrollmentsSpec
     	try {
     		EnrollmentsResource().create(enrollment)
     	} catch {
-    	  case ise:IllegalStateException => assert(true)
+    	  case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
     	  case default:Throwable => fail()
     	}
     }
@@ -201,7 +202,7 @@ class EnrollmentsSpec
     		EnrollmentsResource().create(enrollment)
     	} catch {
     	  //we should throw and catch a more specific exception here so we have something to check
-    	  case ise:IllegalStateException => assert(true)
+    	  case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
     	  case default:Throwable => fail()
     	}
     }
@@ -219,7 +220,7 @@ class EnrollmentsSpec
     		EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
     	} catch {
     	  //we should throw and catch a more specific exception here so we have something to check
-      		case ise:IllegalStateException => assert(true)
+      		case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
       		case default:Throwable => fail()
     	}
     }

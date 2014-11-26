@@ -1,6 +1,6 @@
 package kornell.server.util
 
-trait Err //TODO: Consider "extends Throwable"
+trait Err extends Throwable
 case class StringErr(val e: String) extends Err
 case object RequirementNotMet extends Err
 
@@ -30,7 +30,7 @@ object Passed {
 
 class Failed[T](expr: => T, _err: => Err) extends Conditional[T] {
   def isPassed: Boolean = false
-  def get: T = throw new IllegalStateException("cannot get failed")
+  def get: T = throw new IllegalStateException("cannot get failed", err)
   def err = _err
   def requiring(newcond: => Boolean, e: => Err) = this
   def or(newcond: => Boolean, e: => Err): Conditional[T] =
