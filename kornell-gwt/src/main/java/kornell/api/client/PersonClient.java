@@ -1,5 +1,7 @@
 package kornell.api.client;
 
+import com.google.gwt.http.client.URL;
+
 
 public class PersonClient extends RESTClient{
 
@@ -20,7 +22,7 @@ public class PersonClient extends RESTClient{
 	public void isEmailRegistered(String email, Callback<Boolean> cb) {
 		GET("/people/"
 				+ personUUID 
-				+"/isRegistered?email=" + email)
+				+"/isRegistered?email=" + URL.encodePathSegment(email))
 				.sendRequest("", cb);
 	}
 
