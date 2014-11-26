@@ -49,7 +49,7 @@ class PersonRepo(val uuid: String) {
   //TODO: Better dynamic queries
   //TODO: Teste BOTH args case!!
   def isRegistered(institutionUUID: String, cpf: String,email:String): Boolean = {
-    var sql = s"select count(*) from Person p join Password pw on pw.person_uuid = p.uuid where p.uuid != '${uuid}' and p.institutionUUID = '${institutionUUID}' "
+    var sql = s"select count(*) from Person p left join Password pw on pw.person_uuid = p.uuid where p.uuid != '${uuid}' and p.institutionUUID = '${institutionUUID}' "
     if (isSome(cpf)) {
       sql = sql + s"and (p.cpf = '${digitsOf(cpf)}' or pw.username = '${digitsOf(cpf)}')";
     }
