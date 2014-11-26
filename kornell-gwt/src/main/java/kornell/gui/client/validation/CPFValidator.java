@@ -15,14 +15,16 @@ import com.google.gwt.user.client.ui.Widget;
 public class CPFValidator implements Validator {
 	ValidationMessages msgs = GWT.create(ValidationMessages.class);
 	KornellSession session;
+	String personUUID;
 
-	public CPFValidator(KornellSession session) {
+	public CPFValidator(String personUUID, KornellSession session) {
 		this.session = session;
+		this.personUUID = personUUID;
 	}
 
-	public static final CPFValidator unregisteredCPFValidator(
+	public static final CPFValidator unregisteredCPFValidator(String personUUID, 
 			KornellSession session) {
-		CPFValidator unregisteredCPFVal = new CPFValidator(session);
+		CPFValidator unregisteredCPFVal = new CPFValidator(personUUID, session);
 		return unregisteredCPFVal;
 	}
 
@@ -37,7 +39,7 @@ public class CPFValidator implements Validator {
 					errors.add(msgs.invalidCPF());
 					cb.ok(errors);
 				} else {
-					session.people().isCPFRegistered(cpf, new Callback<Boolean>() {
+					session.person(personUUID).isCPFRegistered(cpf, new Callback<Boolean>() {
 						@Override
 						public void ok(Boolean to) {
 							if (to) {

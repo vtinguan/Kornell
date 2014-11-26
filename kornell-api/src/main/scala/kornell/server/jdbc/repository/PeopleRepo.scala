@@ -140,23 +140,6 @@ object PeopleRepo {
     if (isSome(p.getCPF)) cpfCache.put((p.getInstitutionUUID, p.getCPF), op)
     if (isSome(p.getEmail)) emailCache.put((p.getInstitutionUUID, p.getEmail), op)
   }
-
-  //TODO: Better security against SQLInjection?
-  //TODO: Better dynamic queries
-  //TODO: Teste BOTH args case!!
-  def isRegistered(institutionUUID: String, personUUID: String, cpf: String,email:String): Boolean = {
-    var sql = s"select count(*) from Person where uuid != '${personUUID}' and institutionUUID = '${institutionUUID}' "
-    if (isSome(cpf)) {
-      sql = sql + s"and cpf = '${digitsOf(cpf)}'";
-    }
-    if (isSome(email)) {
-    	sql = sql + s"and email = '${email}'";
-    }
-    if (sql.contains("--")) throw new IllegalArgumentException
-    val pstmt = new PreparedStmt(sql,List())    
-    val result = pstmt.get[Boolean]
-    result
-  }
   
 
 }

@@ -63,7 +63,7 @@ public class KornellFormFieldWrapper extends Composite {
 	
 	public KornellFormFieldWrapper(String label, KornellFormField<?> formField,
 			boolean isEditMode, Validator validator) {
-			this(label, formField, isEditMode, null, null);
+			this(label, formField, isEditMode, validator, null);
 	}
 	
 	public KornellFormFieldWrapper(String label, KornellFormField<?> formField,
