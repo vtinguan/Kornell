@@ -15,14 +15,16 @@ import com.google.gwt.user.client.ui.Widget;
 public class EmailValidator implements Validator {
 	ValidationMessages msgs = GWT.create(ValidationMessages.class);
 	KornellSession session;
+	String personUUID;
 
-	public EmailValidator(KornellSession session) {
+	public EmailValidator(String personUUID, KornellSession session) {
 		this.session = session;
+		this.personUUID = personUUID;
 	}
 
-	public static final EmailValidator unregisteredEmailValidator(
+	public static final EmailValidator unregisteredEmailValidator(String personUUID, 
 			KornellSession session) {
-		EmailValidator validator = new EmailValidator(session);
+		EmailValidator validator = new EmailValidator(personUUID, session);
 		return validator;
 	}
 
@@ -37,7 +39,7 @@ public class EmailValidator implements Validator {
 					errors.add(msgs.invalidEmail());
 					cb.ok(errors);
 				} else {
-					session.people().isEmailRegistered(email, new Callback<Boolean>() {
+					session.person(personUUID).isEmailRegistered(email, new Callback<Boolean>() {
 						@Override
 						public void ok(Boolean exists) {
 							if (exists) {

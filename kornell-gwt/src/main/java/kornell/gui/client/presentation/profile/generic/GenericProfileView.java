@@ -98,6 +98,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private Button btnChangePassword;
 	private ClientFactory clientFactory;
 
+	private String profileUserUUID;
+
 	public GenericProfileView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		this.bus = clientFactory.getEventBus();
@@ -158,7 +160,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		
 		form.addStyleName("shy");
 		
-		final String profileUserUUID = ((ProfilePlace) placeCtrl.getWhere()).getPersonUUID();
+		profileUserUUID = ((ProfilePlace) placeCtrl.getWhere()).getPersonUUID();
 
 		session.user().hasPowerOver(profileUserUUID, new Callback<Boolean>() {
 			@Override
@@ -360,12 +362,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 				new KornellFormFieldWrapper("Email", 
 						formHelper.createTextBoxFormField(user.getPerson().getEmail()), 
 						isEditMode,
-						EmailValidator.unregisteredEmailValidator(session));
+						EmailValidator.unregisteredEmailValidator(profileUserUUID, session));
 		cpf = new KornellFormFieldWrapper
 				("CPF", 
 				formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
 				isEditMode,
-				CPFValidator.unregisteredCPFValidator(session));
+				CPFValidator.unregisteredCPFValidator(profileUserUUID, session));
 		
 		requireValid(cpf);
 		requireValid(email);

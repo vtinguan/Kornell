@@ -14,15 +14,5 @@ public class PeopleClient extends KornellClient {
 				+ institutionUUID)
 				.sendRequest("", callback);
 	}
-
-	public void isCPFRegistered(String cpf, Callback<Boolean> cb) {
-		GET("/people/isRegistered?cpf=" + cpf)
-				.sendRequest("", cb);
-	}
-
-	public void isEmailRegistered(String email, Callback<Boolean> cb) {
-		GET("/people/isRegistered?email=" + email)
-				.sendRequest("", cb);
-	}
-
+	
 }

@@ -14,6 +14,8 @@ import kornell.core.util.TimeUtil
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import java.util.concurrent.TimeUnit
+import kornell.server.jdbc.PreparedStmt
+import kornell.core.util.StringUtils._
 
 class PersonRepo(val uuid: String) {
 
@@ -41,6 +43,23 @@ class PersonRepo(val uuid: String) {
 	    """.executeUpdate
 	  PeopleRepo.updateCaches(person)
     PersonRepo.this
+  }
+
+  //TODO: Better security against SQLInjection?
+  //TODO: Better dynamic queries
+  //TODO: Teste BOTH args case!!
+  def isRegistered(institutionUUID: String, cpf: String,email:String): Boolean = {
+    var sql = s"select count(*) from Person p join Password pw on pw.person_uuid = p.uuid where p.uuid != '${uuid}' and p.institutionUUID = '${institutionUUID}' "
+    if (isSome(cpf)) {
+      sql = sql + s"and (p.cpf = '${digitsOf(cpf)}' or pw.username = '${digitsOf(cpf)}')";
+    }
+    if (isSome(email)) {
+    	sql = sql + s"and (p.email = '${email}' or pw.username = '${email}')";
+    }
+    if (sql.contains("--")) throw new IllegalArgumentException
+    val pstmt = new PreparedStmt(sql,List())    
+    val result = pstmt.get[Boolean]
+    result
   }
 
   def hasPowerOver(targetPersonUUID: String) = {

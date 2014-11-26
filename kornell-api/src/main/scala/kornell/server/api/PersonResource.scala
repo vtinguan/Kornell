@@ -11,11 +11,23 @@ import kornell.server.jdbc.repository.AuthRepo
 import javax.ws.rs.Path
 import javax.ws.rs.core.Context
 import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.PeopleRepo
+import javax.ws.rs.QueryParam
 
 
 @Produces(Array(Person.TYPE))
 class PersonResource(uuid: String) {
   @GET
   def get = PersonRepo(uuid)
+
+  @Path("isRegistered")
+  @Produces(Array("application/boolean"))
+  @GET
+  def isRegistered(@QueryParam("cpf") cpf:String,
+      @QueryParam("email") email:String):Boolean = 
+    AuthRepo().withPerson { person =>
+    	val result = get.isRegistered(person.getInstitutionUUID,cpf,email)
+    	result
+  }
   
 }
