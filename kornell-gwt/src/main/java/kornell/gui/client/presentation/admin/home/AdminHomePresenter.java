@@ -559,9 +559,9 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				}
 				
 				@Override
-				public void unauthorized(String errorMessage){
+				public void conflict(String errorMessage){
 					LoadingPopup.hide();
-					KornellNotification.show("Já existe uma turma com esse nome.", AlertType.ERROR, 2500);
+					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
 				}
 			});
 		} else {
@@ -574,6 +574,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 						Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
 						updateCourseClass(courseClass.getUUID());
 				}		
+				
+				@Override
+				public void conflict(String errorMessage){
+					LoadingPopup.hide();
+					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
+				}
 			});
 		}
   }

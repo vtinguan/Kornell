@@ -6,6 +6,7 @@ import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
+import static com.google.gwt.http.client.Response.SC_CONFLICT;
 import kornell.core.entity.EntityFactory;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
@@ -41,6 +42,9 @@ public abstract class Callback<T> implements RequestCallback {
 			break;
 		case SC_UNAUTHORIZED:
 			unauthorized(response.getText());
+			break;
+		case SC_CONFLICT:
+			conflict(response.getText());
 			break;
 		case SC_NOT_FOUND:
 			notFound();
@@ -150,6 +154,10 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void unauthorized(String errorMessage) {
+		
+	}
+
+	protected void conflict(String errorMessage) {
 		
 	}
 

@@ -1,22 +1,8 @@
 package kornell.server.jdbc.repository
 
-import kornell.server.jdbc.SQL._
-import java.sql.ResultSet
 import kornell.core.entity.CourseClass
-import kornell.server.repository.Entities
-import kornell.core.entity.Person
-import kornell.core.to.CourseClassTO
-import kornell.core.to.CourseClassesTO
-import kornell.core.entity.Roles
-import kornell.core.entity.Role
-import kornell.core.entity.RoleType
-import scala.collection.JavaConverters._
-import kornell.core.util.UUID
-import kornell.server.repository.Entities.newRoles
-import kornell.core.to.RoleTO
-import kornell.core.to.TOFactory
-import kornell.server.repository.TOs
-import kornell.core.entity.RoleCategory
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.jdbc.SQL.rsToString
 
 class CourseClassRepo(uuid:String) {
   lazy val finder = sql"""
@@ -29,21 +15,28 @@ class CourseClassRepo(uuid:String) {
   
   def version = CourseVersionRepo(get.getCourseVersionUUID())
   
-  def update(courseClass: CourseClass): CourseClass = {    
-    sql"""
-      update CourseClass cc set
-		    cc.name = ${courseClass.getName},
-		    cc.institution_uuid = ${courseClass.getInstitutionUUID},
-	  		cc.requiredScore = ${courseClass.getRequiredScore},
-	  		cc.publicClass = ${courseClass.isPublicClass},
-	  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments},
-	  		cc.invisible = ${courseClass.isInvisible},
-	  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
-	  		cc.registrationEnrollmentType = ${courseClass.getRegistrationEnrollmentType.toString},
-	  		cc.institutionRegistrationPrefix = ${courseClass.getInstitutionRegistrationPrefix}
-      where cc.uuid = ${courseClass.getUUID}""".executeUpdate
-    ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)
-    courseClass
+  def update(courseClass: CourseClass): CourseClass = { 
+    val courseClassExists = sql"""
+    select count(*) from CourseClass where courseVersion_uuid = ${courseClass.getCourseVersionUUID} and name = ${courseClass.getName} and uuid <> ${courseClass.getUUID}
+    """.first[String].get
+    if (courseClassExists == "0") {
+	    sql"""
+	      update CourseClass cc set
+			    cc.name = ${courseClass.getName},
+			    cc.institution_uuid = ${courseClass.getInstitutionUUID},
+		  		cc.requiredScore = ${courseClass.getRequiredScore},
+		  		cc.publicClass = ${courseClass.isPublicClass},
+		  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments},
+		  		cc.invisible = ${courseClass.isInvisible},
+		  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
+		  		cc.registrationEnrollmentType = ${courseClass.getRegistrationEnrollmentType.toString},
+		  		cc.institutionRegistrationPrefix = ${courseClass.getInstitutionRegistrationPrefix}
+	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate
+	    ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)
+	    courseClass
+    } else {
+      throw new IllegalArgumentException("Uma turma com nome \"" + courseClass.getName + "\" já existe para essa versão do curso.")
+    }   
   }
   
   def delete(courseClassUUID: String) = {    

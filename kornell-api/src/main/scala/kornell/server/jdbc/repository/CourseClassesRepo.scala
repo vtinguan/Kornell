@@ -28,26 +28,26 @@ object CourseClassesRepo {
     select count(*) from CourseClass where courseVersion_uuid = ${courseClass.getCourseVersionUUID} and name = ${courseClass.getName}
     """.first[String].get
     if (courseClassExists == "0") {
-    
-    if (courseClass.getUUID == null)
-      courseClass.setUUID(UUID.random)
-    sql""" 
-    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationEnrollmentType,institutionRegistrationPrefix)
-    	values(${courseClass.getUUID},
-             ${courseClass.getName},
-             ${courseClass.getCourseVersionUUID},
-             ${courseClass.getInstitutionUUID},
-             ${courseClass.isPublicClass},
-             ${courseClass.getRequiredScore},
-             ${courseClass.isOverrideEnrollments},
-             ${courseClass.isInvisible},
-             ${courseClass.getMaxEnrollments},
-             ${new Date()},
-             ${courseClass.getCreatedBy},
-             ${courseClass.getRegistrationEnrollmentType.toString},
-             ${courseClass.getInstitutionRegistrationPrefix})
-    """.executeUpdate
-    courseClass
+	    if (courseClass.getUUID == null){
+	      courseClass.setUUID(UUID.random)
+	    }
+	    sql""" 
+	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationEnrollmentType,institutionRegistrationPrefix)
+	    	values(${courseClass.getUUID},
+	             ${courseClass.getName},
+	             ${courseClass.getCourseVersionUUID},
+	             ${courseClass.getInstitutionUUID},
+	             ${courseClass.isPublicClass},
+	             ${courseClass.getRequiredScore},
+	             ${courseClass.isOverrideEnrollments},
+	             ${courseClass.isInvisible},
+	             ${courseClass.getMaxEnrollments},
+	             ${new Date()},
+	             ${courseClass.getCreatedBy},
+	             ${courseClass.getRegistrationEnrollmentType.toString},
+	             ${courseClass.getInstitutionRegistrationPrefix})
+	    """.executeUpdate
+	    courseClass
     } else {
       throw new IllegalArgumentException("Uma turma com nome \"" + courseClass.getName + "\" já existe para essa versão do curso.")
     }
