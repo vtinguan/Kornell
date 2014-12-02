@@ -29,7 +29,16 @@ class ChatThreadsResource {
   def postMessageToCourseClassSupportThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message)
+  		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadsRepo.supportThreadType)
+  }
+  
+  @POST
+  @Path("courseClass/{courseClassUUID}/tutoring")
+  @Produces(Array("text/plain"))
+  def postMessageToCourseClassTutoringThread(implicit @Context sc: SecurityContext, 
+    @PathParam("courseClassUUID") courseClassUUID: String,
+    message: String) = AuthRepo().withPerson { person => 
+        ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadsRepo.tutoringThreadType)
   }
   
   @POST

@@ -58,6 +58,14 @@ object RolesRepo {
 	      	| from Role r
 	        | where r.institution_uuid = ${institutionUUID}
 		    """.first[Role](toRole).get, RoleCategory.BIND_WITH_PERSON).getPerson
+		    
+  def getTutorsForCourseClass(courseClassUUID: String)=
+      TOs.newRolesTO(sql"""
+            | select *
+            | from Role r
+            | where courseClassUUID = ${courseClassUUID}
+                | and r.role = ${RoleType.tutor.toString}
+            """.map[Role](toRole).map(bindRole(_, RoleCategory.BIND_WITH_PERSON)))   
 
   private def bindRole(role: Role, bindMode: String) =
     TOs.newRoleTO(role, {
