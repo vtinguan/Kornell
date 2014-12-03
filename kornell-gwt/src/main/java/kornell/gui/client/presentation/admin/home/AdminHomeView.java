@@ -35,8 +35,6 @@ public interface AdminHomeView extends IsWidget {
 	void setModalErrors(String title, String lbl1, String errors, String lbl2);
 	void setCourseClassName(String courseClassName);
 	void setCourseName(String courseName);
-	void setCourseClasses(List<CourseClassTO> courseClasses);
-	void setSelectedCourseClass(String uuid);
 	void setHomeTabActive();
 	void showEnrollmentsPanel(boolean visible);
 	void showTabsPanel(boolean visible);

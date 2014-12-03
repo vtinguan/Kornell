@@ -4,7 +4,8 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.mvp.HistoryMapper;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.course.generic.notes.NotesPopup;
 
@@ -109,13 +110,13 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	@UiHandler("btnCourseClass")
 	void handleClickBtnCourseClass(ClickEvent e) {
 		updateSelection(BUTTON_COURSE_CLASS);
-		clientFactory.getPlaceController().goTo(new AdminHomePlace());
+		clientFactory.getPlaceController().goTo(new AdminCourseClassesPlace());
 	}
 	
 	@UiHandler("btnInstitution")
 	void handleClickBtnInstitution(ClickEvent e) {
-		//clientFactory.getPlaceController().goTo(new AdminInstitutionPlace());
 		updateSelection(BUTTON_INSTITUTION);
+		clientFactory.getPlaceController().goTo(new AdminInstitutionPlace());
 	}
 	
 	@Override

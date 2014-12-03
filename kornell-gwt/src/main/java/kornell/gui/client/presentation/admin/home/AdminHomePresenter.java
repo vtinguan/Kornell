@@ -95,8 +95,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
-			
-			String selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
+			String selectedCourseClass;
+			if(placeController.getWhere() instanceof AdminHomePlace && ((AdminHomePlace)placeController.getWhere()).getCourseClassUUID() != null){
+				selectedCourseClass = ((AdminHomePlace)placeController.getWhere()).getCourseClassUUID();
+			} else {
+				selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
+			}
       updateCourseClass(selectedCourseClass);
       
       clearEnrollmentsCache();
@@ -113,18 +117,18 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		if(enrollments != null){
 			showEnrollments(enrollments, true);
 		} else {
-		LoadingPopup.show();
-		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID,
-				new Callback<EnrollmentsTO>() {
-					@Override
-					public void ok(EnrollmentsTO enrollments) {
-						if(courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
-							showEnrollments(enrollments, true);
-							updateCachedEnrollments(courseClassUUID, enrollments);
+			LoadingPopup.show();
+			session.enrollments().getEnrollmentsByCourseClass(courseClassUUID,
+					new Callback<EnrollmentsTO>() {
+						@Override
+						public void ok(EnrollmentsTO enrollments) {
+							if(courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
+								showEnrollments(enrollments, true);
+								updateCachedEnrollments(courseClassUUID, enrollments);
+							}
+							LoadingPopup.hide();
 						}
-						LoadingPopup.hide();
-					}
-				});
+					});
 		}
 	}
 
@@ -161,7 +165,6 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			@Override
 			public void ok(CourseClassesTO to) {
 				courseClassesTO = to;
-				view.setCourseClasses(courseClassesTO.getCourseClasses());
 				if(courseClassesTO.getCourseClasses().size() == 0){
 					updateCourseClassUI(null);
 				} else {
@@ -193,7 +196,6 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse()
 				.getTitle());
 		view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
-		view.setSelectedCourseClass(courseClassTO.getCourseClass().getUUID());
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 	

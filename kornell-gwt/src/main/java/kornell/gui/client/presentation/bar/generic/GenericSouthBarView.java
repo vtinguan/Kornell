@@ -54,9 +54,9 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	private void pickSouthBar(Place newPlace) {
 		if(newPlace instanceof AdminPlace){
 			southBar.clear();
-			//southBar.add(getAdminBarView(newPlace));
-			this.setVisible(false);
-			scrollPanel.removeStyleName("offsetSouthBar");
+			southBar.add(getAdminBarView(newPlace));
+			this.setVisible(true);
+			scrollPanel.addStyleName("offsetSouthBar");
 		} else if (newPlace instanceof ClassroomPlace) {
 			southBar.clear();
 			southBar.add(getActivityBarView());

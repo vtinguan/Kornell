@@ -24,6 +24,11 @@ public class KornellPagination extends Pagination{
 		this.table = table;
 		this.rowData = rowData;
 	}
+
+	public KornellPagination(CellTable table, List rowData, int pageSize) {
+		this(table, rowData);
+		this.pageSize = pageSize;
+	}
 	
 	public void displayTableData(int pageNumber) {
 		this.pageNumber = pageNumber;

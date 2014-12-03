@@ -1,8 +1,12 @@
 package kornell.gui.client.mvp;
 
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesActivity;
+import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.admin.home.AdminHomeActivity;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionActivity;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.course.ClassroomActivity;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
@@ -22,8 +26,6 @@ import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomeActivity;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 
-import com.google.gwt.activity.shared.Activity;
-import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.place.shared.Place;
@@ -122,6 +124,24 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminHomeActivity(clientFactory));
+				}
+			});
+		} else if (place instanceof AdminCourseClassesPlace) {
+			GWT.runAsync(new RunAsyncCallback() {
+				public void onFailure(Throwable err) {
+					Window.alert("Failed to load activity");
+				}
+				public void onSuccess() {
+					activityCallbackHandler.onReceiveActivity(new AdminCourseClassesActivity(clientFactory));
+				}
+			});
+		}  else if (place instanceof AdminInstitutionPlace) {
+			GWT.runAsync(new RunAsyncCallback() {
+				public void onFailure(Throwable err) {
+					Window.alert("Failed to load activity");
+				}
+				public void onSuccess() {
+					activityCallbackHandler.onReceiveActivity(new AdminInstitutionActivity(clientFactory));
 				}
 			});
 		} else {

@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.util;
 import java.util.Date;
 import java.util.List;
 
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.RegistrationEnrollmentType;
@@ -538,6 +539,19 @@ public class FormHelper {
 		Image image = new Image(SEPARATOR_BAR_IMG_PATH);
 		image.addStyleName(SEPARATOR_BAR_CLASS);
 		return image;
+	}
+	
+	public String getCourseClassStateAsText(CourseClassState state){
+		switch (state) {
+		case active:
+			return "Ativada";
+		case inactive:
+			return "Desativada";
+		case deleted:
+			return "Excluída";			
+		default:
+			return "";
+		}
 	}
 	
 	public String getEnrollmentStateAsText(EnrollmentState state){

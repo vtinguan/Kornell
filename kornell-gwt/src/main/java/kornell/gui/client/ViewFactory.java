@@ -1,7 +1,9 @@
 
 package kornell.gui.client;
 
+import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
@@ -50,6 +52,10 @@ public interface ViewFactory {
 	MessagePresenter getMessagePresenterCourseClass();
 
 	ScrollPanel getScrollPanel();
+
+	AdminCourseClassesView getAdminCourseClassesView();
+
+	AdminInstitutionView getAdminInstitutionView();
 
 
 

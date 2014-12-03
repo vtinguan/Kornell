@@ -6,19 +6,20 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
 public class AdminHomePlace extends AdminPlace{
-	public static final AdminHomePlace instance = new AdminHomePlace();
+	private String courseClassUUID;
 
-	public AdminHomePlace() {
+	public AdminHomePlace(String courseClassUUID) {
+		this.setCourseClassUUID(courseClassUUID);
 	}
 
 	@Prefix("adminHome")
 	public static class Tokenizer implements PlaceTokenizer<AdminHomePlace> {
 		public AdminHomePlace getPlace(String token) {
-			return new AdminHomePlace();
+			return new AdminHomePlace(token);
 		}
 
 		public String getToken(AdminHomePlace place) {
-			return "";
+			return place.getCourseClassUUID();
 		}
 	}
 
@@ -26,4 +27,12 @@ public class AdminHomePlace extends AdminPlace{
 	public String toString() {		
 		return new Tokenizer().getToken(this);
 	}
+
+	public String getCourseClassUUID() {
+	  return courseClassUUID;
+  }
+
+	public void setCourseClassUUID(String courseClassUUID) {
+	  this.courseClassUUID = courseClassUUID;
+  }
 }
