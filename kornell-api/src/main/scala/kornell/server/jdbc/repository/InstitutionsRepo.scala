@@ -29,24 +29,6 @@ object InstitutionsRepo {
     institution
   }  
   
-  def update(institution: Institution): Institution = {    
-    sql"""
-    | update Institution i
-    | set i.name = ${institution.getName},
-    | i.fullName = ${institution.getFullName},
-    | i.terms = ${institution.getTerms},
-    | i.assetsURL = ${institution.getAssetsURL},
-    | i.baseURL = ${institution.getBaseURL},
-    | i.demandsPersonContactDetails = ${institution.isDemandsPersonContactDetails},
-    | i.validatePersonContactDetails = ${institution.isValidatePersonContactDetails},
-    | i.allowRegistration = ${institution.isAllowRegistration},
-    | i.allowRegistration = ${institution.isAllowRegistrationByUsername},
-    | i.activatedAt = ${institution.getActivatedAt},
-    | i.skin = ${institution.getSkin}
-    | where i.uuid = ${institution.getUUID}""".executeUpdate
-    institution
-  }
-  
   def byUUID(UUID:String) = 
 	sql"select * from Institution where uuid = ${UUID}".first[Institution]
   
@@ -59,12 +41,5 @@ object InstitutionsRepo {
       	| join InstitutionHostName ihn on i.uuid = ihn.institutionUUID
       	| where ihn.hostName = ${hostName}
 	    """.first[Institution]
-
-  def getRegistrationPrefixes(uuid: String) = {
-      TOs.newInstitutionRegistrationPrefixesTO(sql"""
-      	| select prefix from InstitutionRegistrationPrefix 
-      	| where institutionUUID = ${uuid}
-		    """.map[String])
-  }
 
 }
