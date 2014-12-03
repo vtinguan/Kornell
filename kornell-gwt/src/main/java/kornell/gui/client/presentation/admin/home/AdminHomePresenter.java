@@ -357,6 +357,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 	private EnrollmentRequestTO createEnrollment(String fullName, String username, boolean cancelEnrollment) {
 		fullName.trim();
 		username.trim();
+		String usr;
 		EnrollmentRequestTO enrollmentRequestTO = toFactory
 				.newEnrollmentRequestTO().as();
 		
@@ -372,11 +373,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			enrollmentRequestTO.setUsername(username);
 			break;
 		case cpf:
-			enrollmentRequestTO.setUsername(username);
-			enrollmentRequestTO.setPassword(username);
+			usr = FormHelper.stripCPF(username);
+			enrollmentRequestTO.setUsername(usr);
+			enrollmentRequestTO.setPassword(usr);
 			break;
 		case username:
-			String usr = username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? 
+			usr = username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? 
 					Dean.getInstance().getCourseClassTO().getCourseClass().getInstitutionRegistrationPrefix() + FormHelper.USERNAME_SEPARATOR + username :
 					username;
 			enrollmentRequestTO.setUsername(usr);

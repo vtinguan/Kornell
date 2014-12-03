@@ -33,7 +33,7 @@ import java.io.IOException
 import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.jdbc.repository.ChatThreadsRepo
 
-@Path("courseClass")
+
 class CourseClassResource(uuid: String) {
 
   @GET
