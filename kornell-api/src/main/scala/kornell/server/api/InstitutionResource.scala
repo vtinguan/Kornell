@@ -11,39 +11,33 @@ import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.RequirementNotMet
 import kornell.core.to.InstitutionRegistrationPrefixesTO
+import kornell.server.jdbc.repository.InstitutionRepo
 
 
-@Produces(Array(Institution.TYPE))
 class InstitutionResource(uuid: String) {
-  def this() = this(null)
   
   @GET
+  @Produces(Array(Institution.TYPE))
   def get =  {
-    InstitutionsRepo.byUUID(uuid)
+    InstitutionRepo(uuid).get
    }.requiring(isPlatformAdmin, RequirementNotMet).get
   
   @PUT
   @Consumes(Array(Institution.TYPE))
+  @Produces(Array(Institution.TYPE))
   def update(institution: Institution) = {
-    InstitutionsRepo.update(institution)
-  }.requiring(isPlatformAdmin, RequirementNotMet).get
-  
-  @POST
-  @Consumes(Array(Institution.TYPE))
-  def create(institution: Institution) = {
-    InstitutionsRepo.create(institution)
+    InstitutionRepo(uuid).update(institution)
   }.requiring(isPlatformAdmin, RequirementNotMet).get
   
   @GET
   @Produces(Array(InstitutionRegistrationPrefixesTO.TYPE))
   @Path("registrationPrefixes")
   def getRegistrationPrefixes() = {
-    InstitutionsRepo.getRegistrationPrefixes(uuid)
+    InstitutionRepo(uuid).getRegistrationPrefixes
   }.requiring(isPlatformAdmin, RequirementNotMet).get
   
 }
 
 object InstitutionResource {
-    def apply() = new InstitutionResource()
     def apply(uuid: String) = new InstitutionResource(uuid)
 }

@@ -15,14 +15,14 @@ class InstitutionSpec extends UnitSpec
 
   "The platformAdmin" should 
   "be able to create a new institution" in asPlatformAdmin {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
   }
   
   "The institutionAdmin" should 
   "not be able to create a new institution" in asInstitutionAdmin {
     try {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
     } catch {
       case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
@@ -33,7 +33,7 @@ class InstitutionSpec extends UnitSpec
   "A person" should 
   "not be able to create a new institution" in asPerson {
     try {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
     } catch {
       case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
@@ -43,21 +43,21 @@ class InstitutionSpec extends UnitSpec
   
   "The platformAdmin" should 
   "be able to modify an institution" in asPlatformAdmin {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
     newInstitution.setFullName("test");
-    val modifiedInstitution = InstitutionResource().update(newInstitution)
+    val modifiedInstitution = InstitutionResource(newInstitution.getUUID).update(newInstitution)
     assert("test" == modifiedInstitution.getFullName)
   }
   
   "The institutionAdmin" should 
   "not be able to modify an institution" in asPlatformAdmin {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
     newInstitution.setFullName("test");
     asInstitutionAdmin {
       try {
-        val modifiedInstitution = InstitutionResource().update(newInstitution)
+        val modifiedInstitution = InstitutionResource(newInstitution.getUUID).update(newInstitution)
       } catch {
         case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
         case default:Throwable => fail() 
@@ -67,12 +67,12 @@ class InstitutionSpec extends UnitSpec
   
   "A person" should 
   "not be able to modify an institution" in asPlatformAdmin {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
     newInstitution.setFullName("test");
     asPerson {
       try {
-        val modifiedInstitution = InstitutionResource().update(newInstitution)
+        val modifiedInstitution = InstitutionResource(newInstitution.getUUID).update(newInstitution)
       } catch {
         case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
         case default:Throwable => fail() 
@@ -82,17 +82,17 @@ class InstitutionSpec extends UnitSpec
   
   "The platformAdmin" should 
   "be able to get an institution" in asPlatformAdmin {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
 
     val fetchedInstitution = InstitutionResource(newInstitution.getUUID).get
-    assert(newInstitution.getFullName == fetchedInstitution.get.getFullName)
+    assert(newInstitution.getFullName == fetchedInstitution.getFullName)
     
   }
   
   "The institutionAdmin" should 
   "not be able to get an institution" in asPlatformAdmin {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
 
     asInstitutionAdmin{
@@ -107,7 +107,7 @@ class InstitutionSpec extends UnitSpec
   
   "The person" should 
   "not be able to get an institution" in asPlatformAdmin {
-    val newInstitution = InstitutionResource().create( 
+    val newInstitution = InstitutionsResource().create( 
         Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
 
     asPerson{

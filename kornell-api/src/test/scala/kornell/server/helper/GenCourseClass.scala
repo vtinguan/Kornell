@@ -26,16 +26,22 @@ trait GenCourseClass
     CourseVersionsResource(courseUUID).create(repositoryUUID = repositoryUUID)  
   }
   val courseVersionUUID = courseVersion.getUUID
-  
-	def newCourseClassEmail:CourseClass =     
-    CourseClassesResource(courseVersionUUID).createCourseClassEmail(randStr(5), institutionUUID)
-    
-    def newCourseClassCpf:CourseClass =     
-    CourseClassesResource(courseVersionUUID).createCourseClassCpf(randStr(5), institutionUUID)
    
-    def newPublicCourseClass = CourseClassesResource(courseVersionUUID).create((Entities.newCourseClass(
-        courseVersionUUID=courseVersionUUID,
-        institutionUUID=institutionUUID,
-        registrationEnrollmentType=RegistrationEnrollmentType.email,
-        publicClass=true)))
+  def newPublicCourseClass = CourseClassesResource().create((Entities.newCourseClass(
+    courseVersionUUID=courseVersionUUID,
+    institutionUUID=institutionUUID,
+    registrationEnrollmentType=RegistrationEnrollmentType.email,
+    publicClass=true)))
+        
+  def newCourseClassCpf:CourseClass = CourseClassesResource().create((Entities.newCourseClass(
+    name=randStr(5),
+    courseVersionUUID=courseVersionUUID,
+    institutionUUID=institutionUUID,
+    registrationEnrollmentType=RegistrationEnrollmentType.cpf)))
+        
+  def newCourseClassEmail:CourseClass = CourseClassesResource().create((Entities.newCourseClass(
+    name=randStr(5),
+    courseVersionUUID=courseVersionUUID,
+    institutionUUID=institutionUUID,
+    registrationEnrollmentType=RegistrationEnrollmentType.email)))
 }
