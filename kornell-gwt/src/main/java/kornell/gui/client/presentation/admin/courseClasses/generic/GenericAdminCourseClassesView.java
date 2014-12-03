@@ -2,44 +2,26 @@ package kornell.gui.client.presentation.admin.courseClasses.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
-import kornell.core.entity.EnrollmentCategory;
-import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.entity.RegistrationEnrollmentType;
-import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadTO;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
-import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
-import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
-import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesPresenter;
 import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.admin.home.AdminHomePlace;
-import kornell.gui.client.presentation.admin.home.generic.GenericCourseClassAdminsView;
 import kornell.gui.client.presentation.admin.home.generic.GenericCourseClassConfigView;
-import kornell.gui.client.presentation.admin.home.generic.GenericCourseClassMessagesView;
-import kornell.gui.client.presentation.admin.home.generic.GenericCourseClassReportsView;
-import kornell.gui.client.presentation.message.MessagePresenter;
-import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Tab;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.ActionCell;
@@ -53,29 +35,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -101,6 +74,8 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	@UiField
 	FlowPanel courseClassesPanel;
 	@UiField
+	FlowPanel createClassPanel;
+	@UiField
 	Button btnAddCourseClass;
 
 	Tab adminsTab;
@@ -108,7 +83,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
 	// TODO i18n xml
-	public GenericAdminCourseClassesView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
+	public GenericAdminCourseClassesView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
 		this.session = session;
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
@@ -118,11 +93,25 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		pagination = new KornellPagination(table, courseClassTOs, 15);
 		btnAddCourseClass.setText("Criar Nova Turma");
 
+
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						if(createClassPanel.getWidgetCount() > 0){
+							createClassPanel.clear();
+							courseClassesPanel.setVisible(true);
+						}
+					}
+				});
+
 		btnAddCourseClass.setVisible(session.isInstitutionAdmin());
 		btnAddCourseClass.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (session.isInstitutionAdmin()) {
+					courseClassesPanel.setVisible(false);
+					createClassPanel.add(new GenericCourseClassConfigView(session, bus, placeCtrl, viewFactory.getAdminHomePresenter(), null));
 				}
 			}
 		});

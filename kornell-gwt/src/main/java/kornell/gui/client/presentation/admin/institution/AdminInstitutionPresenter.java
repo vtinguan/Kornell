@@ -1,21 +1,13 @@
 package kornell.gui.client.presentation.admin.institution;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
-import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
-import kornell.core.entity.EnrollmentCategory;
-import kornell.core.entity.EnrollmentProgressDescription;
-import kornell.core.entity.EnrollmentState;
-import kornell.core.entity.Enrollments;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.Institution;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
@@ -28,8 +20,6 @@ import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
@@ -39,8 +29,6 @@ import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter {
@@ -83,39 +71,14 @@ public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter
 	}
 
 	private void init() {
-		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(),
-				RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
+		if (session.isInstitutionAdmin()) {
 			view = getView();
-			view.setPresenter(this);
-			
-			String selectedCourseClass = "-----------------------------";
-      updateCourseClass(selectedCourseClass);
-      
+			view.setPresenter(this);      
 		} else {
 			GWT.log("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}
-	}
-
-	@Override
-	public void updateCourseClass(final String courseClassUUID) {
-		session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
-				new Callback<CourseClassesTO>() {
-			@Override
-			public void ok(CourseClassesTO to) {
-				courseClassesTO = to;
-				view.setCourseClasses(courseClassesTO.getCourseClasses());
-				if(courseClassesTO.getCourseClasses().size() == 0){
-				} else {
-					for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-						if (courseClassUUID == null || courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)) {
-							return;
-						}
-					}
-				}
-			}
-		});
 	}
 	
 	@Override
@@ -128,35 +91,13 @@ public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter
 	}
 
 	@Override
-  public void upsertCourseClass(CourseClass courseClass) {
-		if(courseClass.getUUID() == null){
-			courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
-			session.courseClasses().create(courseClass, new Callback<CourseClass>() {
+  public void updateInstitution(Institution institution) {
+			session.institution(institution.getUUID()).update(institution, new Callback<Institution>() {
 				@Override
-				public void ok(CourseClass courseClass) {
-						LoadingPopup.hide();
-						KornellNotification.show("Turma criada com sucesso!");
-						CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
-						if(courseClassTO2 != null)
-							courseClassTO2.setCourseClass(courseClass);
-						updateCourseClass(courseClass.getUUID());
-				}
-				
-				@Override
-				public void conflict(String errorMessage){
-					LoadingPopup.hide();
-					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
-				}
-			});
-		} else {
-	  	enrollmentsCacheMap.remove(courseClass.getUUID());
-			session.courseClass(courseClass.getUUID()).update(courseClass, new Callback<CourseClass>() {
-				@Override
-				public void ok(CourseClass courseClass) {
+				public void ok(Institution institution) {
 						LoadingPopup.hide();
 						KornellNotification.show("Alterações salvas com sucesso!");
-						Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
-						updateCourseClass(courseClass.getUUID());
+						Dean.getInstance().setInstitution(institution);
 				}		
 				
 				@Override
@@ -165,6 +106,5 @@ public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter
 					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
 				}
 			});
-		}
   }
 }

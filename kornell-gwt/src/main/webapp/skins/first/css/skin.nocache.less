@@ -70,7 +70,9 @@ a:hover{
 	background-color: @background;
 }
 
-
+.gwt-Label{
+	color: @niceTextColor;
+}
 .messageInboxPanel{
 	width: @wrapperWidth;
 	margin: 0 auto;
@@ -302,6 +304,7 @@ a:hover{
 
 
 .deanHome{
+	min-width: @wrapperWidth;
 	margin: 0 auto;
 	padding: 10px;
 	@insertPanelHeight: 45px;
@@ -464,9 +467,6 @@ a:hover{
 	.btnSearch{
 		float: left;
 		margin-top: 3px;
-	}
-	.tab-content {
-		overflow: hidden;
 	}
 	.courseClassConfig, .courseClassReports, .courseClassMessages, .courseClassAdmins{
 		width: @wrapperWidth;

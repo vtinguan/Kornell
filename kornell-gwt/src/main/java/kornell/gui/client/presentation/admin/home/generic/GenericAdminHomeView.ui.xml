@@ -3,7 +3,7 @@
 
 	<g:FlowPanel ui:field="adminHomePanel" addStyleNames="deanHome">
 		<b:TabPanel tabPosition="middle" ui:field="tabsPanel">
-      <b:Tab ui:field="enrollmentsTab" icon="BOOK" heading="Matrículas" active="true">
+      <b:Tab ui:field="enrollmentsTab" icon="BOOK" heading="Participantes" active="true">
 				<g:FlowPanel ui:field="enrollmentsPanel">
 				  <g:FlowPanel>
 						<g:HTMLPanel addStyleNames="title">Participantes</g:HTMLPanel>

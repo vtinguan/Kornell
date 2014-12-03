@@ -60,7 +60,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	private KornellSession session;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private boolean isCreationMode, canDelete, isInstitutionAdmin;
+	private boolean isCreationMode, canDelete, isPlatformAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
@@ -88,8 +88,9 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	private UserInfoTO user;
 	private Institution institution;
 	private CourseClass courseClass;
-	private KornellFormFieldWrapper course, courseVersion, name, publicClass,
-			requiredScore, registrationEnrollmentType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible;
+
+	private KornellFormFieldWrapper name, fullName, terms, assetsURL, baseURL, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
+	
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
@@ -99,7 +100,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		this.session = session;
 		this.presenter = presenter;
 		this.user = session.getCurrentUser();
-		this.isInstitutionAdmin = session.isInstitutionAdmin();
+		this.isPlatformAdmin = session.isPlatformAdmin();
 		this.canDelete = false;
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -121,14 +122,85 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 		institutionFields.clear();
 		
-		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
-		btnCancel.setVisible(isInstitutionAdmin);
+		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
+		btnCancel.setVisible(isPlatformAdmin);
 		
 
-		name = new KornellFormFieldWrapper("Nome da Instituição", formHelper.createTextBoxFormField(institution.getName()), isInstitutionAdmin);
+		name = new KornellFormFieldWrapper("Sub-domínio da Instituição", formHelper.createTextBoxFormField(institution.getName()), isPlatformAdmin);
 		fields.add(name);
 		institutionFields.add(name);
+		
+		fullName = new KornellFormFieldWrapper("Nome da Instituição", formHelper.createTextBoxFormField(institution.getFullName()), isPlatformAdmin);
+		fields.add(fullName);
+		institutionFields.add(fullName);
+		
+		assetsURL = new KornellFormFieldWrapper("URL dos Recursos", formHelper.createTextBoxFormField(institution.getAssetsURL()), isPlatformAdmin);
+		fields.add(assetsURL);
+		institutionFields.add(assetsURL);
+		
+		baseURL = new KornellFormFieldWrapper("URL Base", formHelper.createTextBoxFormField(institution.getBaseURL()), isPlatformAdmin);
+		fields.add(baseURL);
+		institutionFields.add(baseURL);
 
+		demandsPersonContactDetails = new KornellFormFieldWrapper("Exige Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isDemandsPersonContactDetails()), isPlatformAdmin);
+		fields.add(demandsPersonContactDetails);
+		institutionFields.add(demandsPersonContactDetails);
+		((CheckBox)demandsPersonContactDetails.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
+					showModal(MODAL_PUBLIC);
+					((CheckBox)demandsPersonContactDetails.getFieldWidget()).setValue(false);
+				}
+			}
+		});
+
+		validatePersonContactDetails = new KornellFormFieldWrapper("Validação dos Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isValidatePersonContactDetails()), isPlatformAdmin);
+		fields.add(validatePersonContactDetails);
+		institutionFields.add(validatePersonContactDetails);
+		((CheckBox)validatePersonContactDetails.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
+					showModal(MODAL_PUBLIC);
+					((CheckBox)validatePersonContactDetails.getFieldWidget()).setValue(false);
+				}
+			}
+		});
+
+		allowRegistration = new KornellFormFieldWrapper("Permitir Registro", formHelper.createCheckBoxFormField(institution.isAllowRegistration()), isPlatformAdmin);
+		fields.add(allowRegistration);
+		institutionFields.add(allowRegistration);
+		((CheckBox)allowRegistration.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
+					showModal(MODAL_PUBLIC);
+					((CheckBox)allowRegistration.getFieldWidget()).setValue(false);
+				}
+			}
+		});
+
+		allowRegistrationByUsername = new KornellFormFieldWrapper("Permitir Registro por Usuário", formHelper.createCheckBoxFormField(institution.isAllowRegistrationByUsername()), isPlatformAdmin);
+		fields.add(allowRegistrationByUsername);
+		institutionFields.add(allowRegistrationByUsername);
+		((CheckBox)allowRegistrationByUsername.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
+					showModal(MODAL_PUBLIC);
+					((CheckBox)allowRegistrationByUsername.getFieldWidget()).setValue(false);
+				}
+			}
+		});
+		
+		terms = new KornellFormFieldWrapper("Termos de Uso", formHelper.createTextAreaFormField(institution.getTerms(), 20), isPlatformAdmin);
+		terms.addStyleName("heightAuto");
+		fields.add(terms);
+		institutionFields.add(terms);
+
+		
+		//name, fullName, terms, assetsURL, baseURL, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername
 		
 		institutionFields.add(formHelper.getImageSeparator());
 
@@ -147,63 +219,51 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		});
   }
 
-	private boolean validateFields() {
-		if (!formHelper.isListBoxSelected(((ListBox) course.getFieldWidget()))) {
-			course.setError("Selecione o curso.");
+	private boolean validateFields() {		
+		if (!formHelper.isLengthValid(name.getFieldPersistText(), 2, 20)) {
+			name.setError("Insira o sub-domínio da instituição.");
+		}
+		if (!formHelper.isLengthValid(fullName.getFieldPersistText(), 2, 50)) {
+			fullName.setError("Insira o nome da instituição.");
+		}
+		if (!formHelper.isLengthValid(assetsURL.getFieldPersistText(), 10, 200)) {
+			assetsURL.setError("Insira a URL dos recursos.");
+		}
+		if (!formHelper.isLengthValid(baseURL.getFieldPersistText(), 10, 200)) {
+			baseURL.setError("Insira a URL base.");
 		}
 		
-		if (!formHelper.isListBoxSelected(((ListBox) courseVersion.getFieldWidget()))) {
-			courseVersion.setError("Selecione a versão do curso.");
-		}
-		
-		if (!formHelper.isLengthValid(name.getFieldPersistText(), 2, 100)) {
-			name.setError("Insira o nome da turma.");
-		}
-		
-		if (requiredScore.getFieldPersistText().length() > 0 && !formHelper.isValidNumber(requiredScore.getFieldPersistText())) {
-			requiredScore.setError("Número inválido.");
-		}
-		
-		if (!formHelper.isLengthValid(maxEnrollments.getFieldPersistText(), 1, 20)) {
-			maxEnrollments.setError("Insira a quantidade máxima de matrículas.");
-		} else if (!formHelper.isValidNumber(maxEnrollments.getFieldPersistText())) {
-			maxEnrollments.setError("Número inteiro inválido.");
-    }
-
 		return !formHelper.checkErrors(fields);
 	}
 
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) {
 		formHelper.clearErrors(fields);
-		if (isInstitutionAdmin && validateFields()) {
+		if (isPlatformAdmin && validateFields()) {
 			LoadingPopup.show();
-			CourseClass courseClass = getCourseClassInfoFromForm();
-			presenter.upsertCourseClass(courseClass);
+			Institution institution = getInstitutionInfoFromForm();
+			presenter.updateInstitution(institution);
 
 		}
 	}
 
-	private CourseClass getCourseClassInfoFromForm() {
-		courseClass.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
-		courseClass.setName(name.getFieldPersistText());
-		courseClass.setCourseVersionUUID(courseVersion.getFieldPersistText());
-		courseClass.setPublicClass(publicClass.getFieldPersistText().equals("true"));
-		courseClass.setMaxEnrollments(new Integer(maxEnrollments.getFieldPersistText()));
-		courseClass.setRequiredScore(requiredScore.getFieldPersistText().length() > 0 ?
-				new BigDecimal(requiredScore.getFieldPersistText()) :
-					null);
-		courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
-		courseClass.setInvisible(invisible.getFieldPersistText().equals("true"));
-		courseClass.setRegistrationEnrollmentType(RegistrationEnrollmentType.valueOf(registrationEnrollmentType.getFieldPersistText()));
-		courseClass.setInstitutionRegistrationPrefix(institutionRegistrationPrefix.getFieldPersistText());
-		return courseClass;
+	private Institution getInstitutionInfoFromForm() {
+		institution.setName(name.getFieldPersistText());
+		institution.setFullName(fullName.getFieldPersistText());
+		institution.setTerms(terms.getFieldPersistText());
+		institution.setAssetsURL(assetsURL.getFieldPersistText());
+		institution.setBaseURL(baseURL.getFieldPersistText());
+		institution.setDemandsPersonContactDetails(demandsPersonContactDetails.getFieldPersistText().equals("true"));
+		institution.setValidatePersonContactDetails(validatePersonContactDetails.getFieldPersistText().equals("true"));
+		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));
+		institution.setAllowRegistrationByUsername(allowRegistrationByUsername.getFieldPersistText().equals("true"));
+		return institution;
 	}
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
 		if(isCreationMode){
-			presenter.updateCourseClass(null);
+			//presenter.updateCourseClass(null);
 		} else {
 			initData();
 		}
@@ -229,7 +289,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	@UiHandler("btnModalOK")
 	void onModalOkButtonClicked(ClickEvent e) {
-		if(MODAL_DELETE.equals(modalMode)){
+		/*if(MODAL_DELETE.equals(modalMode)){
 			//presenter.changeCourseClassState(courseClassTO, CourseClassState.deleted);
 		} else if (MODAL_DEACTIVATE.equals(modalMode)){
 			//presenter.changeCourseClassState(courseClassTO, CourseClassState.inactive);
@@ -241,7 +301,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		} else if (MODAL_INVISIBLE.equals(modalMode)){
 			((CheckBox)invisible.getFieldWidget()).setValue(true);
 			((CheckBox)publicClass.getFieldWidget()).setValue(false);
-		}
+		}*/
 		confirmModal.hide();
 	}
 

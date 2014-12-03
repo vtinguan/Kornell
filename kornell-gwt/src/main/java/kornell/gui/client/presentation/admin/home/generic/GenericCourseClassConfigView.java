@@ -19,6 +19,7 @@ import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -36,6 +37,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -46,6 +48,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericCourseClassConfigView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseClassConfigView> {
@@ -100,10 +103,14 @@ public class GenericCourseClassConfigView extends Composite {
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
 	private ListBox institutionRegistrationPrefixes;
+	private EventBus bus;
+	private PlaceController placeCtrl;
 	
-	public GenericCourseClassConfigView(final KornellSession session,
+	public GenericCourseClassConfigView(final KornellSession session, EventBus bus, PlaceController placeCtrl,
 			Presenter presenter, CourseClassTO courseClassTO) {
 		this.session = session;
+		this.bus = bus;
+		this.placeCtrl = placeCtrl;
 		this.presenter = presenter;
 		this.user = session.getCurrentUser();
 		this.isInstitutionAdmin = session.isInstitutionAdmin();
@@ -363,7 +370,6 @@ public class GenericCourseClassConfigView extends Composite {
 			LoadingPopup.show();
 			CourseClass courseClass = getCourseClassInfoFromForm();
 			presenter.upsertCourseClass(courseClass);
-
 		}
 	}
 
@@ -386,7 +392,7 @@ public class GenericCourseClassConfigView extends Composite {
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
 		if(isCreationMode){
-			presenter.updateCourseClass(null);
+			PlaceUtils.reloadCurrentPlace(bus, placeCtrl);
 		} else {
 			initData();
 		}

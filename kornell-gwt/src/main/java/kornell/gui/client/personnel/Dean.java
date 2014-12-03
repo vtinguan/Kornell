@@ -123,6 +123,10 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 		return institution;
 	}
 
+	public Institution setInstitution(Institution institution){
+		return this.institution = institution;
+	}
+	
 	public CourseClassTO getCourseClassTO() {
 		return courseClassTO;
 	}

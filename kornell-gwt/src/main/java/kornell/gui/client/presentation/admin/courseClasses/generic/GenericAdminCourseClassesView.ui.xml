@@ -9,5 +9,7 @@
 	    </g:FlowPanel>
 			<b:Button ui:field="btnAddCourseClass" addStyleNames="btnAction btnIcon right" size="MINI" icon="PLUS_SIGN"/>
 		</g:FlowPanel>
+		<g:FlowPanel ui:field="createClassPanel">
+		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

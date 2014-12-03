@@ -290,10 +290,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	@Override
 	public void buildConfigView(boolean isCreationMode) {
 		prepareAddNewCourseClass(isCreationMode);
-		if (isCreationMode) {
-			adminHomePanel.add(new GenericCourseClassConfigView(session, presenter, null));
-		} else {
-			configPanel.add(new GenericCourseClassConfigView(session, presenter, Dean.getInstance().getCourseClassTO()));
+		if (!isCreationMode) {
+			configPanel.add(new GenericCourseClassConfigView(session, bus, placeCtrl, presenter, Dean.getInstance().getCourseClassTO()));
 		}
 	}
 
@@ -411,6 +409,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 				return progressTxt;
 			}
 		}, "Progresso");
+
+		table.addColumn(new TextColumn<EnrollmentTO>() {
+			@Override
+			public String getValue(EnrollmentTO enrollmentTO) {
+				return formHelper.dateToString(enrollmentTO.getEnrollment().getEnrolledOn());
+			}
+		}, "Data da Matrícula");
 
 		List<HasCell<EnrollmentTO, ?>> cells = new LinkedList<HasCell<EnrollmentTO, ?>>();
 		cells.add(new EnrollmentActionsHasCell("Perfil", getGoToProfileDelegate()));
@@ -757,7 +762,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	
 	private Label getLabel(String labelTxt, boolean isHighlight){
 		Label lbl = new Label(labelTxt);
-		lbl.addStyleName(isHighlight ? "highlightText" : "textInfoColor");
+		if(!isHighlight)
+			lbl.addStyleName("textInfoColor");
 		return lbl;
 	}
 
@@ -791,7 +797,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 		if(unreadChatThreadTOs != null){
 		  int count = 0;
 			for (UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadTOs) {
-				if(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(unreadChatThreadTO.getCourseClassUUID()))
+				if(Dean.getInstance().getCourseClassTO() != null && 
+						Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(unreadChatThreadTO.getCourseClassUUID()))
 						count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
 	    }
 			totalCount  = count;

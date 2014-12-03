@@ -6,6 +6,7 @@ import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.Institution;
 import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
@@ -15,9 +16,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AdminInstitutionView extends IsWidget {
 	public interface Presenter extends IsWidget {
-		void upsertCourseClass(CourseClass courseClass);
-
-		void updateCourseClass(String courseClassUUID);
+		void updateInstitution(Institution institution);
 	}
 
 

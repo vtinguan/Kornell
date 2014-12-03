@@ -428,12 +428,19 @@ public class FormHelper {
 	public TextBoxFormField createTextBoxFormField(String text){
 		return createTextBoxFormField(text, null);
 	}
-	public TextAreaFormField createTextAreaFormField(String text){
+
+	public TextAreaFormField createTextAreaFormField(String text, int visibleLines){
 		TextArea fieldTextArea = new TextArea();
+		if(visibleLines > 0)
+			fieldTextArea.setVisibleLines(visibleLines);
 		fieldTextArea.addStyleName("field");
 		fieldTextArea.addStyleName("textField");
 		fieldTextArea.setValue(text);
 		return new TextAreaFormField(fieldTextArea);
+	}
+	
+	public TextAreaFormField createTextAreaFormField(String text){
+		return createTextAreaFormField(text, 0);
 	}
 	
 	public PasswordTextBoxFormField createPasswordTextBoxFormField(String text){

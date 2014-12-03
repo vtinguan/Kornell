@@ -4,6 +4,7 @@ import static kornell.core.util.StringUtils.composeURL;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.admin.courseClasses.generic.GenericAdminCourseClassesView;
+import kornell.gui.client.presentation.admin.home.AdminHomePresenter;
 import kornell.gui.client.presentation.admin.home.AdminHomeView;
 import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
@@ -54,6 +55,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
 	private GenericAdminHomeView genericAdminHomeView;
+	private AdminHomePresenter genericAdminHomePresenter;
 	private GenericAdminCourseClassesView genericAdminCourseClassesView;
 	private GenericAdminInstitutionView genericAdminInstitutionView;
 	private ClassroomPresenter coursePresenter;
@@ -62,6 +64,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private boolean isMantleShown = false;
 
 	SimplePanel shell = new SimplePanel();
+
 
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory) {
@@ -257,5 +260,12 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		if(genericAdminInstitutionView == null)
 			genericAdminInstitutionView = new GenericAdminInstitutionView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 		return genericAdminInstitutionView;
+  }
+
+	@Override
+  public AdminHomePresenter getAdminHomePresenter() {
+		if(genericAdminHomePresenter == null)
+			genericAdminHomePresenter = new AdminHomePresenter(clientFactory.getKornellSession(),clientFactory.getEventBus(),clientFactory.getPlaceController(),clientFactory.getDefaultPlace(),clientFactory.getTOFactory(),this);
+		return genericAdminHomePresenter;
   }
 }

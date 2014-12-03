@@ -26,7 +26,7 @@ public class AdminHomeActivity extends AbstractActivity {
 		PlaceController placeController = clientFactory.getPlaceController();
 		Place defaultPlace = clientFactory.getDefaultPlace();
 		ViewFactory viewFactory = clientFactory.getViewFactory();
-		AdminHomePresenter presenter = new AdminHomePresenter(session,placeController,defaultPlace,toFactory,viewFactory);
+		AdminHomePresenter presenter = viewFactory.getAdminHomePresenter();
 		panel.setWidget(presenter);
 		
 	}
