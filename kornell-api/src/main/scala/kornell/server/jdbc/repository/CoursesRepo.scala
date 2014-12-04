@@ -12,12 +12,6 @@ import kornell.server.repository.Entities
 
 object CoursesRepo {
 
-  def apply(uuid:String) = CourseRepo(uuid)
-  
-  def create(code:String):Course = 
-     create(Entities.newCourse(code = code))    
-  
-  
   def create(course: Course): Course = {    
     sql"""
     | insert into Course (uuid,code,title,description,infoJson) 
