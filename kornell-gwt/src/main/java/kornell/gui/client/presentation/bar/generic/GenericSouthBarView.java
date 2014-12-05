@@ -41,6 +41,8 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 		clientFactory.getEventBus().addHandler(HideSouthBarEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		this.scrollPanel = scrollPanel;
+		
+		pickSouthBar(clientFactory.getPlaceController().getWhere());
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
