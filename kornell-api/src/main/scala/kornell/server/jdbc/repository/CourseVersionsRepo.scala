@@ -8,10 +8,10 @@ import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
 import kornell.core.entity.CourseVersion
+import kornell.core.to.CourseVersionTO
+import kornell.core.to.CourseVersionsTO
 
 object CourseVersionsRepo {
-
-  def apply(uuid:String) = CourseVersionRepo(uuid)
   
   def create(courseVersion: CourseVersion): CourseVersion = {    
     sql"""

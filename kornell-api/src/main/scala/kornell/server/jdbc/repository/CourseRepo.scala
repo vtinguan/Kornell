@@ -21,8 +21,6 @@ class CourseRepo(uuid: String) {
     | where c.uuid = ${course.getUUID}""".executeUpdate
     course
   }
-  
-  def delete = sql"""delete from Course where uuid = $uuid""".executeUpdate
 
 }
 

@@ -87,15 +87,4 @@ class CourseSpec extends UnitSpec
       }
     }
   }
-  /* this test does not work somehow
-  "The platformAdmin" should "be able to delete a course" in asPlatformAdmin {
-    val courseCode = randStr(5)
-    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null))
-    
-    
-    val deletedCourse = CourseResource(course.getUUID).delete
-    
-    assert("test update" == CoursesResource().getCourse(course.getUUID).get)
-  }
-  * */
 }
