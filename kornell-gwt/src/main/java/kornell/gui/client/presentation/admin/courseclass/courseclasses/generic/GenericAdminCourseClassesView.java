@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.courseClasses.generic;
+package kornell.gui.client.presentation.admin.courseclass.courseclasses.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
@@ -11,10 +11,10 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesPresenter;
-import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesView;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
-import kornell.gui.client.presentation.admin.home.generic.GenericCourseClassConfigView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassConfigView;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPresenter;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.uidget.KornellPagination;
@@ -156,6 +156,13 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		table.addColumn(new TextColumn<CourseClassTO>() {
 			@Override
 			public String getValue(CourseClassTO courseClassTO) {
+				return formHelper.getRegistrationEnrollmentTypeAsText(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
+			}
+		}, "Tipo de Matrícula");
+		
+		table.addColumn(new TextColumn<CourseClassTO>() {
+			@Override
+			public String getValue(CourseClassTO courseClassTO) {
 				return formHelper.dateToString(courseClassTO.getCourseClass().getCreatedAt());
 			}
 		}, "Data de Criação");
@@ -181,7 +188,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		return new Delegate<CourseClassTO>() {
 			@Override
 			public void execute(CourseClassTO courseClassTO) {
-				placeCtrl.goTo(new AdminHomePlace(courseClassTO.getCourseClass().getUUID()));
+				placeCtrl.goTo(new AdminCourseClassPlace(courseClassTO.getCourseClass().getUUID()));
 			}
 		};
 	}

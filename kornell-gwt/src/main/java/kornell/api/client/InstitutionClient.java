@@ -11,10 +11,6 @@ public class InstitutionClient extends RESTClient {
 		this.institutionUUID = uuid;
 	}
 
-	public void acceptTerms(Callback<Void> cb) {
-		PUT("/institutions/" + institutionUUID + "/acceptTerms").go(cb);
-	}
-
 	public void get(Callback<Institution> cb) {
 		GET("/institutions/" + institutionUUID).sendRequest(null, cb);
 	}

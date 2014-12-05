@@ -18,7 +18,7 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;

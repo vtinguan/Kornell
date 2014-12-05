@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home.generic;
+package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericReportItemView extends Composite {
-	interface MyUiBinder extends UiBinder<Widget, GenericReportItemView> {
+public class GenericCourseClassReportItemView extends Composite {
+	interface MyUiBinder extends UiBinder<Widget, GenericCourseClassReportItemView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -62,7 +62,7 @@ public class GenericReportItemView extends Composite {
 	Anchor lblDownload;
 
 
-	public GenericReportItemView(EventBus eventBus, KornellSession session, CourseClassTO currentCourseClass,
+	public GenericCourseClassReportItemView(EventBus eventBus, KornellSession session, CourseClassTO currentCourseClass,
 			String type) {
 		this.bus = eventBus;
 		this.session = session;

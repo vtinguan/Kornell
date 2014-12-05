@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home.generic;
+package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
@@ -24,7 +24,7 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -80,9 +80,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericAdminHomeView extends Composite implements AdminHomeView, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler {
+public class GenericAdminCourseClassView extends Composite implements AdminCourseClassView, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler {
 
-	interface MyUiBinder extends UiBinder<Widget, GenericAdminHomeView> {
+	interface MyUiBinder extends UiBinder<Widget, GenericAdminCourseClassView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -90,7 +90,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	private EventBus bus;
 	private PlaceController placeCtrl;
 	private ViewFactory viewFactory;
-	private AdminHomeView.Presenter presenter;
+	private AdminCourseClassView.Presenter presenter;
 	final CellTable<EnrollmentTO> table;
 	private List<EnrollmentTO> enrollmentsCurrent;
 	private List<EnrollmentTO> enrollmentsOriginal;
@@ -178,7 +178,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	FlowPanel adminsPanel;
 	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
-	public GenericAdminHomeView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
+	public GenericAdminCourseClassView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.session = session;
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
@@ -762,8 +762,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	
 	private Label getLabel(String labelTxt, boolean isHighlight){
 		Label lbl = new Label(labelTxt);
-		if(!isHighlight)
-			lbl.addStyleName("textInfoColor");
+		lbl.addStyleName(isHighlight ? "niceTextColor" : "textInfoColor");
 		return lbl;
 	}
 

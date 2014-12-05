@@ -1,10 +1,10 @@
 package kornell.gui.client.mvp;
 
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesActivity;
-import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesPlace;
-import kornell.gui.client.presentation.admin.home.AdminHomeActivity;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassActivity;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesActivity;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionActivity;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.course.ClassroomActivity;
@@ -117,13 +117,13 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 					activityCallbackHandler.onReceiveActivity(new SandboxActivity(sandboxPresenter));
 				}
 			});
-		} else if (place instanceof AdminHomePlace) {
+		} else if (place instanceof AdminCourseClassPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onReceiveActivity(new AdminHomeActivity(clientFactory));
+					activityCallbackHandler.onReceiveActivity(new AdminCourseClassActivity(clientFactory));
 				}
 			});
 		} else if (place instanceof AdminCourseClassesPlace) {

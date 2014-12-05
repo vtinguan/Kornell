@@ -18,9 +18,5 @@ public interface AdminInstitutionView extends IsWidget {
 	public interface Presenter extends IsWidget {
 		void updateInstitution(Institution institution);
 	}
-
-
-	void setCourseClasses(List<CourseClassTO> courseClasses);
-
 	void setPresenter(Presenter presenter);
 }

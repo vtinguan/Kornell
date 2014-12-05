@@ -2,11 +2,11 @@ package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseClasses.AdminCourseClassesView;
-import kornell.gui.client.presentation.admin.courseClasses.generic.GenericAdminCourseClassesView;
-import kornell.gui.client.presentation.admin.home.AdminHomePresenter;
-import kornell.gui.client.presentation.admin.home.AdminHomeView;
-import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericAdminCourseClassView;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.generic.GenericAdminCourseClassesView;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.presentation.admin.institution.generic.GenericAdminInstitutionView;
 import kornell.gui.client.presentation.bar.MenuBarView;
@@ -54,8 +54,8 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
-	private GenericAdminHomeView genericAdminHomeView;
-	private AdminHomePresenter genericAdminHomePresenter;
+	private GenericAdminCourseClassView genericAdminHomeView;
+	private AdminCourseClassPresenter genericAdminHomePresenter;
 	private GenericAdminCourseClassesView genericAdminCourseClassesView;
 	private GenericAdminInstitutionView genericAdminInstitutionView;
 	private ClassroomPresenter coursePresenter;
@@ -218,9 +218,9 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	}
 
 	@Override
-	public AdminHomeView getAdminHomeView() {
+	public AdminCourseClassView getAdminHomeView() {
 		if(genericAdminHomeView == null)
-			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+			genericAdminHomeView = new GenericAdminCourseClassView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 		return genericAdminHomeView;
 	}
 	
@@ -263,9 +263,9 @@ public class GenericViewFactoryImpl implements ViewFactory {
   }
 
 	@Override
-  public AdminHomePresenter getAdminHomePresenter() {
+  public AdminCourseClassPresenter getAdminHomePresenter() {
 		if(genericAdminHomePresenter == null)
-			genericAdminHomePresenter = new AdminHomePresenter(clientFactory.getKornellSession(),clientFactory.getEventBus(),clientFactory.getPlaceController(),clientFactory.getDefaultPlace(),clientFactory.getTOFactory(),this);
+			genericAdminHomePresenter = new AdminCourseClassPresenter(clientFactory.getKornellSession(),clientFactory.getEventBus(),clientFactory.getPlaceController(),clientFactory.getDefaultPlace(),clientFactory.getTOFactory(),this);
 		return genericAdminHomePresenter;
   }
 }

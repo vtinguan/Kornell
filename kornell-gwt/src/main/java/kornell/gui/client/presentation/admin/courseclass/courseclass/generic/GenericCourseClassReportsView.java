@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home.generic;
+package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
@@ -103,8 +103,8 @@ public class GenericCourseClassReportsView extends Composite {
 	private FlowPanel getReportTableContent() {
 		FlowPanel reportContentPanel = new FlowPanel();
 		reportContentPanel.addStyleName("reportContentPanel");
-		reportContentPanel.add(new GenericReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericReportItemView.CERTIFICATE));
-		reportContentPanel.add(new GenericReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericReportItemView.COURSE_CLASS_INFO)); 
+		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.CERTIFICATE));
+		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.COURSE_CLASS_INFO)); 
 
 		return reportContentPanel;
 	}

@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home;
+package kornell.gui.client.presentation.admin.courseclass.courseclasses;
 
 import kornell.api.client.KornellSession;
 import kornell.core.to.TOFactory;
@@ -11,10 +11,10 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-public class AdminHomeActivity extends AbstractActivity {
+public class AdminCourseClassesActivity extends AbstractActivity {
 	private ClientFactory clientFactory;
 
-	public AdminHomeActivity(ClientFactory clientFactory) {
+	public AdminCourseClassesActivity(ClientFactory clientFactory) {
 	    this.clientFactory = clientFactory;
 	  }
 
@@ -26,7 +26,7 @@ public class AdminHomeActivity extends AbstractActivity {
 		PlaceController placeController = clientFactory.getPlaceController();
 		Place defaultPlace = clientFactory.getDefaultPlace();
 		ViewFactory viewFactory = clientFactory.getViewFactory();
-		AdminHomePresenter presenter = viewFactory.getAdminHomePresenter();
+		AdminCourseClassesPresenter presenter = new AdminCourseClassesPresenter(session,placeController,defaultPlace,toFactory,viewFactory);
 		panel.setWidget(presenter);
 		
 	}

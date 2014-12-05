@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home;
+package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,8 +45,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class AdminHomePresenter implements AdminHomeView.Presenter {
-	private AdminHomeView view;
+public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter {
+	private AdminCourseClassView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private List<EnrollmentTO> enrollmentTOs;
 	private String batchEnrollmentErrors;
@@ -69,7 +69,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
   
 	private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
 
-	public AdminHomePresenter(KornellSession session, EventBus bus,
+	public AdminCourseClassPresenter(KornellSession session, EventBus bus,
 			PlaceController placeController, Place defaultPlace,
 			TOFactory toFactory, ViewFactory viewFactory) {
 		this.session = session;
@@ -100,8 +100,8 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			view = getView();
 			view.setPresenter(this);
 			String selectedCourseClass;
-			if(placeController.getWhere() instanceof AdminHomePlace && ((AdminHomePlace)placeController.getWhere()).getCourseClassUUID() != null){
-				selectedCourseClass = ((AdminHomePlace)placeController.getWhere()).getCourseClassUUID();
+			if(placeController.getWhere() instanceof AdminCourseClassPlace && ((AdminCourseClassPlace)placeController.getWhere()).getCourseClassUUID() != null){
+				selectedCourseClass = ((AdminCourseClassPlace)placeController.getWhere()).getCourseClassUUID();
 			} else {
 				selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
 			}
@@ -515,7 +515,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		return view.asWidget();
 	}
 
-	private AdminHomeView getView() {
+	private AdminCourseClassView getView() {
 		return viewFactory.getAdminHomeView();
 	}
 

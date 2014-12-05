@@ -21,7 +21,7 @@ class InstitutionRepo(uuid: String) {
     | i.demandsPersonContactDetails = ${institution.isDemandsPersonContactDetails},
     | i.validatePersonContactDetails = ${institution.isValidatePersonContactDetails},
     | i.allowRegistration = ${institution.isAllowRegistration},
-    | i.allowRegistration = ${institution.isAllowRegistrationByUsername},
+    | i.allowRegistrationByUsername = ${institution.isAllowRegistrationByUsername},
     | i.activatedAt = ${institution.getActivatedAt},
     | i.skin = ${institution.getSkin}
     | where i.uuid = ${institution.getUUID}""".executeUpdate

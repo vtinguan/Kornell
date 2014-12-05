@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home;
+package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import kornell.core.to.EnrollmentTO;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface AdminHomeView extends IsWidget {
+public interface AdminCourseClassView extends IsWidget {
 	public interface Presenter extends IsWidget {
 		void changeEnrollmentState(EnrollmentTO object, EnrollmentState state);
 		void changeCourseClassState(CourseClassTO courseClassTO, CourseClassState toState);

@@ -1,24 +1,24 @@
-package kornell.gui.client.presentation.admin.home;
+package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
 import kornell.gui.client.presentation.admin.AdminPlace;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class AdminHomePlace extends AdminPlace{
+public class AdminCourseClassPlace extends AdminPlace{
 	private String courseClassUUID;
 
-	public AdminHomePlace(String courseClassUUID) {
+	public AdminCourseClassPlace(String courseClassUUID) {
 		this.setCourseClassUUID(courseClassUUID);
 	}
 
-	@Prefix("adminHome")
-	public static class Tokenizer implements PlaceTokenizer<AdminHomePlace> {
-		public AdminHomePlace getPlace(String token) {
-			return new AdminHomePlace(token);
+	@Prefix("a.courseClass")
+	public static class Tokenizer implements PlaceTokenizer<AdminCourseClassPlace> {
+		public AdminCourseClassPlace getPlace(String token) {
+			return new AdminCourseClassPlace(token);
 		}
 
-		public String getToken(AdminHomePlace place) {
+		public String getToken(AdminCourseClassPlace place) {
 			return place.getCourseClassUUID();
 		}
 	}

@@ -168,6 +168,9 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("institution")
 	String institution();
 	
+	@DefaultStringValue("versions")
+	String versions();
+	
 	@DefaultStringValue("classes")
 	String classes();
 

@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home.generic;
+package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import kornell.core.to.RolesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomeView.Presenter;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;

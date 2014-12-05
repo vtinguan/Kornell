@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.courseClasses;
+package kornell.gui.client.presentation.admin.courseclass.courseclasses;
 
 import kornell.gui.client.presentation.admin.AdminPlace;
 

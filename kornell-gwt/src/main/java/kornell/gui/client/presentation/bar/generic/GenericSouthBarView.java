@@ -54,7 +54,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	}
 
 	private void pickSouthBar(Place newPlace) {
-		if(newPlace instanceof AdminPlace){
+		if(newPlace instanceof AdminPlace && clientFactory.getKornellSession().isInstitutionAdmin()){
 			southBar.clear();
 			southBar.add(getAdminBarView(newPlace));
 			this.setVisible(true);
