@@ -1,11 +1,11 @@
 package kornell.gui.client.presentation.admin.courseclass.courseclasses;
 
-import kornell.gui.client.presentation.admin.AdminPlace;
+import kornell.gui.client.presentation.admin.courseclass.CourseClassPlace;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class AdminCourseClassesPlace extends AdminPlace{
+public class AdminCourseClassesPlace extends CourseClassPlace{
 	public static final AdminCourseClassesPlace instance = new AdminCourseClassesPlace();
 
 	public AdminCourseClassesPlace() {
