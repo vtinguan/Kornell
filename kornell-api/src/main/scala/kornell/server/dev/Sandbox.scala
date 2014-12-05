@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList
 import java.io.FileOutputStream
 import java.io.File
 import kornell.server.report.ReportCourseClassGenerator
+import kornell.server.util.SHA256
  
  object Sandbox extends App {
      println(UUID.random)
@@ -27,8 +28,4 @@ import kornell.server.report.ReportCourseClassGenerator
      //fos.write(ReportCourseClassGenerator.generateCourseClassReport("dd342fea-3210-4cb6-84f1-0b91fc4173dd", "pdf"))
      fos.close()
      System.out.println("fine")
-   
-     
-   
-   
  }

@@ -10,8 +10,10 @@
 .noTextSelect{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 .marginLogo{margin-left:0px;}
 .BMP0{border:0;margin:0;padding:0;}
+.heightAuto{height:auto !important;}
+.niceTextColor{color:#bec1c3;}
 .highlightText{color:#d88709;}
-.textInfoColor{color:#5b9455;}
+.textInfoColor{color:#5b9455 !important;}
 .font16{font-size:16px !important;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}
@@ -22,6 +24,7 @@
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
 .marginTop25{margin-top:25px;}
+.marginBottom25{margin-bottom:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -41,14 +44,14 @@
 .btnStandard{font-weight:bold;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
 .btnBorder{border-left:1px solid #505864 !important;}
 .last .btnPanel{border-right:1px solid #181c22 !important;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
+.fieldPanelWrapper{width:725px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
 .fieldPanelWrapper .fieldPanelImage{height:100px;}
 .fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#5b9455;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:-4px;line-height:45px;font-size:14px;}
+.fieldPanelWrapper .fieldPanel{float:left;width:475px;}.fieldPanelWrapper .fieldPanel .textField{width:448px;margin-bottom:0px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:462px;}
+.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:11px;line-height:15px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 .anchorToLabel{color:#bec1c3 !important;}.anchorToLabel:hover{cursor:default;color:#bec1c3 !important;text-decoration:none;}
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
@@ -99,14 +102,14 @@
 .btnStandard{font-weight:bold;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
 .btnBorder{border-left:1px solid #505864 !important;}
 .last .btnPanel{border-right:1px solid #181c22 !important;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
+.fieldPanelWrapper{width:725px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
 .fieldPanelWrapper .fieldPanelImage{height:100px;}
 .fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#5b9455;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:-4px;line-height:45px;font-size:14px;}
+.fieldPanelWrapper .fieldPanel{float:left;width:475px;}.fieldPanelWrapper .fieldPanel .textField{width:448px;margin-bottom:0px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:462px;}
+.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:11px;line-height:15px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 .anchorToLabel{color:#bec1c3 !important;}.anchorToLabel:hover{cursor:default;color:#bec1c3 !important;text-decoration:none;}
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
@@ -153,14 +156,14 @@
 .btnStandard{font-weight:bold;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
 .btnBorder{border-left:1px solid #505864 !important;}
 .last .btnPanel{border-right:1px solid #181c22 !important;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
+.fieldPanelWrapper{width:725px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
 .fieldPanelWrapper .fieldPanelImage{height:100px;}
 .fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#5b9455;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:-4px;line-height:45px;font-size:14px;}
+.fieldPanelWrapper .fieldPanel{float:left;width:475px;}.fieldPanelWrapper .fieldPanel .textField{width:448px;margin-bottom:0px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:462px;}
+.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:11px;line-height:15px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 .anchorToLabel{color:#bec1c3 !important;}.anchorToLabel:hover{cursor:default;color:#bec1c3 !important;text-decoration:none;}
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
@@ -225,14 +228,14 @@
 .btnStandard{font-weight:bold;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
 .btnBorder{border-left:1px solid #505864 !important;}
 .last .btnPanel{border-right:1px solid #181c22 !important;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
+.fieldPanelWrapper{width:725px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
 .fieldPanelWrapper .fieldPanelImage{height:100px;}
 .fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#5b9455;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:-4px;line-height:45px;font-size:14px;}
+.fieldPanelWrapper .fieldPanel{float:left;width:475px;}.fieldPanelWrapper .fieldPanel .textField{width:448px;margin-bottom:0px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:462px;}
+.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:11px;line-height:15px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 .anchorToLabel{color:#bec1c3 !important;}.anchorToLabel:hover{cursor:default;color:#bec1c3 !important;text-decoration:none;}
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
@@ -286,14 +289,14 @@
 .btnStandard{font-weight:bold;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
 .btnBorder{border-left:1px solid #505864 !important;}
 .last .btnPanel{border-right:1px solid #181c22 !important;}
-.fieldPanelWrapper{width:525px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
+.fieldPanelWrapper{width:725px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
 .fieldPanelWrapper .fieldPanelImage{height:100px;}
 .fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}
 .fieldPanelWrapper .labelPanel .lblLabel{color:#bec1c3;font-size:14px;line-height:46px;text-align:right;line-height:25px;padding-top:6px;}
 .fieldPanelWrapper .labelPanel .lblExtraInfo{color:#5b9455;font-size:10px;line-height:10px;text-align:right;}
-.fieldPanelWrapper .fieldPanel{float:left;width:275px;}.fieldPanelWrapper .fieldPanel .textField{width:248px;margin-bottom:0px;}
-.fieldPanelWrapper .fieldPanel .selectField{width:262px;}
-.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:-4px;line-height:45px;font-size:14px;}
+.fieldPanelWrapper .fieldPanel{float:left;width:475px;}.fieldPanelWrapper .fieldPanel .textField{width:448px;margin-bottom:0px;}
+.fieldPanelWrapper .fieldPanel .selectField{width:462px;}
+.fieldPanelWrapper .fieldPanel .lblValue{color:#e3e3e3;margin-top:11px;line-height:15px;font-size:14px;}
 .fieldPanelWrapper .fieldPanel .checkbox{margin-top:8px;}
 .anchorToLabel{color:#bec1c3 !important;}.anchorToLabel:hover{cursor:default;color:#bec1c3 !important;text-decoration:none;}
 .fileUploadWrapper{float:left;margin-bottom:20px;margin-left:242px;}.fileUploadWrapper img{float:left;margin-bottom:10px;}
@@ -375,8 +378,10 @@
 .noTextSelect{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 .marginLogo{margin-left:0px;}
 .BMP0{border:0;margin:0;padding:0;}
+.heightAuto{height:auto !important;}
+.niceTextColor{color:#bec1c3;}
 .highlightText{color:#d88709;}
-.textInfoColor{color:#5b9455;}
+.textInfoColor{color:#5b9455 !important;}
 .font16{font-size:16px !important;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}
@@ -387,6 +392,7 @@
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
 .marginTop25{margin-top:25px;}
+.marginBottom25{margin-bottom:25px;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}
@@ -400,10 +406,11 @@
 .profileForm .fieldsWrapper{padding-left:100px;}.profileForm .fieldsWrapper .profileSeparatorBar{margin-bottom:25px;float:left;}
 body,html{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;background:#333333 !important;background-size:100% 100%;}
 a{color:#5b9455 !important;}
-.vScrollBar{overflow-y:overlay !important;overflow-x:auto !important;width:100%;position:fixed !important;top:0;bottom:0;}
+.vScrollBar{overflow-y:auto !important;overflow-x:auto !important;width:100%;position:fixed !important;top:0;bottom:0;}
 .offsetNorthBar{top:45px !important;}
 .offsetSouthBar{bottom:35px !important;}
 .wrapper{margin:0 auto;}
+.wrapperWidth{width:962px;margin:0 auto;}
 @media screen and (max-width:962px){}
 ::-webkit-scrollbar{width:18px;height:18px;}
 ::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(13, 11, 12, 0.5) !important;border-radius:5px;background-color:#222222;}
@@ -422,13 +429,13 @@ a{color:#5b9455 !important;}
 .messagesPopup .messagesPanel .titlePanel .lblSubTitle{color:#5b9455;font-size:13px;float:left;width:100%;}
 .messagesPopup .messagesPanel .titlePanel .profileSeparatorBar{width:100%;}
 .messagesPopup .messagesPanel .fieldPanelWrapper{height:auto;margin-bottom:5px;width:100%;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel{width:80px;margin-right:7px;text-align:initial;float:left;}.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel .lblLabel{line-height:12px;font-size:12px;text-decoration:none;}
-.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .lblValue{line-height:14px;margin-left:2px;margin-top:5px;margin-bottom:5px;font-size:14px;font-weight:bold;width:400px;}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel{width:275px;}.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .lblValue{line-height:14px;margin-left:2px;margin-top:5px;margin-bottom:5px;font-size:14px;font-weight:bold;width:400px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .textField{width:380px;height:12px;font-size:12px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .selectField{width:393px;height:24px;font-size:11px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .error{font-size:10px;line-height:12px;}
 .messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .gwt-TextArea{height:180px;}
 .messagesPopup .messagesPanel .standardButtonBar{width:220px;}.messagesPopup .messagesPanel .standardButtonBar .btnStandard{margin:5px;margin-bottom:10px;}
-.deanHome{width:962px;margin:0 auto;}.deanHome .nav-tabs>li>a{border:1px solid rgba(0, 0, 0, 0.1) !important;border-bottom:0px;}
+.deanHome{min-width:962px;margin:0 auto;padding:10px;}.deanHome .nav-tabs>li>a{border:1px solid rgba(0, 0, 0, 0.1) !important;border-bottom:0px;}
 .deanHome .inlineLabel{margin-right:5px;display:inline;color:#bec1c3;font-size:12px;}
 .deanHome .lblHighlight{color:#e3e3e3;font-weight:bold;font-size:13px;}
 .deanHome .titlePanel{margin-bottom:20px;height:auto;padding-top:0;}
@@ -439,18 +446,18 @@ a{color:#5b9455 !important;}
 .deanHome .controlsPanel{float:left;width:100%;}.deanHome .controlsPanel .insertPanel{float:left;line-height:45px;}.deanHome .controlsPanel .insertPanel .btnAction{margin-left:10px;display:inline-block;}
 .deanHome .controlsPanel .insertPanel input{margin-top:10px;width:180px;height:14px;font-size:12px;margin-left:5px;margin-right:10px;}
 .deanHome .controlsPanel .insertBatchPanel{float:right;height:45px;}.deanHome .controlsPanel .insertBatchPanel .btnNotSelected{margin-top:12px;margin-right:12px;}
-.deanHome .addEnrollmentBatchPanel{display:block;width:800px;margin:0px auto;}.deanHome .addEnrollmentBatchPanel .infoPanel{font-size:12px;line-height:16px;float:left;margin-left:20px;margin-top:225px;}
-.deanHome .addEnrollmentBatchPanel textarea{width:500px;float:left;height:350px;margin-bottom:20px;margin-top:20px;}
+.deanHome .addEnrollmentBatchPanel{display:block;margin:0px auto;}.deanHome .addEnrollmentBatchPanel .infoPanel{font-size:12px;line-height:16px;float:left;margin-left:20px;margin-top:225px;}
+.deanHome .addEnrollmentBatchPanel textarea{width:528px;float:left;height:350px;margin-bottom:20px;margin-top:20px;}
 .deanHome .addEnrollmentBatchPanel .btn{margin-top:15px !important;display:inline-block;}
-.deanHome .enrollmentsCellTable{width:962px;color:#bec1c3;margin-bottom:0;border:0;border-collapse:separate;border-spacing:0 5px;}.deanHome .enrollmentsCellTable .btnEnrollmentsCellTable{float:left;margin-right:10px;height:18px;line-height:14px;font-size:10px;}
+.deanHome .enrollmentsCellTable{color:#bec1c3;margin-bottom:0;margin-top:20px;border:0;border-collapse:separate;border-spacing:0 5px;}.deanHome .enrollmentsCellTable .btnEnrollmentsCellTable{float:left;margin-right:10px;height:18px;line-height:14px;font-size:10px;}
 .deanHome .enrollmentsCellTable thead tr{background-color:transparent !important;background-color:#4c4f54;background:-webkit-gradient(linear, left top, left bottom, from(#4c4f54), to(#252629));background:-webkit-linear-gradient(top, #4c4f54, #252629);background:-moz-linear-gradient(top, #4c4f54, #252629);background:-ms-linear-gradient(top, #4c4f54, #252629);background:-o-linear-gradient(top, #4c4f54, #252629);background:#4c4f54 !important;background:-moz-linear-gradient(top, #4c4f54 0%, #252629 100%) !important;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c4f54), color-stop(100%, #252629)) !important;background:-webkit-linear-gradient(top, #4c4f54 0%, #252629 100%) !important;background:-o-linear-gradient(top, #4c4f54 0%, #252629 100%) !important;background:-ms-linear-gradient(top, #4c4f54 0%, #252629 100%) !important;background:linear-gradient(to bottom, #4c4f54 0%, #252629 100%) !important;filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4f54', endColorstr='#252629',GradientType=0 ) !important;}.deanHome .enrollmentsCellTable thead tr th{border-right:1px solid #505864;padding:3px;}
 .deanHome .enrollmentsCellTable tbody tr{background-color:rgba(0, 0, 0, 0.1);font-size:12px;}.deanHome .enrollmentsCellTable tbody tr:hover{background-color:rgba(0, 0, 0, 0.4);}
 .deanHome .enrollmentsCellTable tbody tr td{border:0;padding:3px;line-height:22px;}
-.deanHome table{border-color:transparent !important;}
+.deanHome table{border-color:transparent !important;width:100%;}
 .deanHome .pageSizeListBox{font-size:12px;width:65px;height:26px;margin-left:5px;margin-right:5px;float:right;background-color:transparent;border:1px solid #505864;color:#bec1c3;}
 .deanHome .txtSearch{font-size:12px;height:17px;margin-right:5px;float:left;background-color:transparent;border:1px solid #505864;color:#bec1c3;}
 .deanHome .btnSearch{float:left;margin-top:3px;}
-.deanHome .tab-content{overflow:hidden;}
+.deanHome .courseClassConfig,.deanHome .courseClassReports,.deanHome .courseClassMessages,.deanHome .courseClassAdmins{width:962px;margin:0 auto;}
 .courseClassAdminField{height:auto !important;width:750px !important;}.courseClassAdminField .labelPanel{width:180px;}
 .courseClassAdminField .fieldPanel{width:540px;}.courseClassAdminField .fieldPanel .textField{float:left;width:400px;}
 .courseClassAdminField .fieldPanel .btnAction{float:left;margin-left:15px;margin-top:4px;}

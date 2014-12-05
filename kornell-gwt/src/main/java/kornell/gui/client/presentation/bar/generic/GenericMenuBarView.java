@@ -18,7 +18,7 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -242,7 +242,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 
 	@UiHandler("btnAdmin")
 	void handleAdmin(ClickEvent e) {
-		clientFactory.getPlaceController().goTo(new AdminHomePlace());
+		clientFactory.getPlaceController().goTo(new AdminCourseClassesPlace());
 	}
 
 	@UiHandler("btnExit")

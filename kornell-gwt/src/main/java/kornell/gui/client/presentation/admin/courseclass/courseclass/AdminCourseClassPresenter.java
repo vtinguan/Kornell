@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home;
+package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +27,7 @@ import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -42,9 +43,10 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
-public class AdminHomePresenter implements AdminHomeView.Presenter {
-	private AdminHomeView view;
+public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter {
+	private AdminCourseClassView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private List<EnrollmentTO> enrollmentTOs;
 	private String batchEnrollmentErrors;
@@ -63,13 +65,15 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
   private EnrollmentRequestsTO enrollmentRequestsTO;
   private List<EnrollmentTO> enrollmentsToOverride;
   private Map<String, EnrollmentsTO> enrollmentsCacheMap;
+	private EventBus bus;
   
 	private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
 
-	public AdminHomePresenter(KornellSession session,
+	public AdminCourseClassPresenter(KornellSession session, EventBus bus,
 			PlaceController placeController, Place defaultPlace,
 			TOFactory toFactory, ViewFactory viewFactory) {
 		this.session = session;
+		this.bus = bus;
 		this.placeController = placeController;
 		this.defaultPlace = defaultPlace;
 		this.toFactory = toFactory;
@@ -95,8 +99,12 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 				RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
-			
-			String selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
+			String selectedCourseClass;
+			if(placeController.getWhere() instanceof AdminCourseClassPlace && ((AdminCourseClassPlace)placeController.getWhere()).getCourseClassUUID() != null){
+				selectedCourseClass = ((AdminCourseClassPlace)placeController.getWhere()).getCourseClassUUID();
+			} else {
+				selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
+			}
       updateCourseClass(selectedCourseClass);
       
       clearEnrollmentsCache();
@@ -113,18 +121,18 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		if(enrollments != null){
 			showEnrollments(enrollments, true);
 		} else {
-		LoadingPopup.show();
-		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID,
-				new Callback<EnrollmentsTO>() {
-					@Override
-					public void ok(EnrollmentsTO enrollments) {
-						if(courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
-							showEnrollments(enrollments, true);
-							updateCachedEnrollments(courseClassUUID, enrollments);
+			LoadingPopup.show();
+			session.enrollments().getEnrollmentsByCourseClass(courseClassUUID,
+					new Callback<EnrollmentsTO>() {
+						@Override
+						public void ok(EnrollmentsTO enrollments) {
+							if(courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
+								showEnrollments(enrollments, true);
+								updateCachedEnrollments(courseClassUUID, enrollments);
+							}
+							LoadingPopup.hide();
 						}
-						LoadingPopup.hide();
-					}
-				});
+					});
 		}
 	}
 
@@ -161,7 +169,6 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 			@Override
 			public void ok(CourseClassesTO to) {
 				courseClassesTO = to;
-				view.setCourseClasses(courseClassesTO.getCourseClasses());
 				if(courseClassesTO.getCourseClasses().size() == 0){
 					updateCourseClassUI(null);
 				} else {
@@ -193,7 +200,6 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse()
 				.getTitle());
 		view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
-		view.setSelectedCourseClass(courseClassTO.getCourseClass().getUUID());
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 	
@@ -509,7 +515,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 		return view.asWidget();
 	}
 
-	private AdminHomeView getView() {
+	private AdminCourseClassView getView() {
 		return viewFactory.getAdminHomeView();
 	}
 
@@ -557,7 +563,7 @@ public class AdminHomePresenter implements AdminHomeView.Presenter {
 						CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
 						if(courseClassTO2 != null)
 							courseClassTO2.setCourseClass(courseClass);
-						updateCourseClass(courseClass.getUUID());
+						PlaceUtils.reloadCurrentPlace(bus, placeController);
 				}
 				
 				@Override

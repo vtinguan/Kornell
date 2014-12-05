@@ -10,7 +10,7 @@ import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.UnreadMessagesFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -68,7 +68,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 				new PlaceChangeEvent.Handler() {
 					@Override 
 					public void onPlaceChange(PlaceChangeEvent event) {
-						if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminHomePlace){
+						if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminCourseClassPlace){
 							getUnreadMessagesPerThread();
 						}
 					}

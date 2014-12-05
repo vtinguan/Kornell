@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.home.generic;
+package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
@@ -24,7 +24,7 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -80,9 +80,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericAdminHomeView extends Composite implements AdminHomeView, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler {
+public class GenericAdminCourseClassView extends Composite implements AdminCourseClassView, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler {
 
-	interface MyUiBinder extends UiBinder<Widget, GenericAdminHomeView> {
+	interface MyUiBinder extends UiBinder<Widget, GenericAdminCourseClassView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -90,7 +90,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	private EventBus bus;
 	private PlaceController placeCtrl;
 	private ViewFactory viewFactory;
-	private AdminHomeView.Presenter presenter;
+	private AdminCourseClassView.Presenter presenter;
 	final CellTable<EnrollmentTO> table;
 	private List<EnrollmentTO> enrollmentsCurrent;
 	private List<EnrollmentTO> enrollmentsOriginal;
@@ -111,17 +111,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	@UiField
 	FlowPanel adminHomePanel;
 	@UiField
-	FlowPanel courseClassesPanel;
-	@UiField
-	Button btnAddCourseClass;
+	FlowPanel enrollPanel;
 	@UiField
 	FlowPanel enrollmentsPanel;
 	@UiField
 	FlowPanel addEnrollmentsPanel;
 	@UiField
-	ListBox listBoxCourseClasses;
-	@UiField
 	Tab enrollmentsTab;
+	@UiField
+	Tab enrollTab;
 	@UiField
 	Tab configTab;
 	@UiField
@@ -140,17 +138,11 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	@UiField
 	Button btnAddEnrollmentBatch;
 	@UiField
-	Button btnAddEnrollmentBatchEnable;
-	@UiField
 	TextBox txtFullName;
 	@UiField
 	TextBox txtEmail;
 	@UiField
 	TextArea txtAddEnrollmentBatch;
-	@UiField
-	CollapseTrigger trigger;
-	@UiField
-	Collapse collapse;
 	@UiField
 	Label identifierLabel;
 	@UiField
@@ -186,8 +178,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	FlowPanel adminsPanel;
 	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
-	// TODO i18n xml
-	public GenericAdminHomeView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
+	public GenericAdminCourseClassView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.session = session;
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
@@ -202,43 +193,25 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 
-		trigger.setTarget("#toggle");
-		collapse.setId("toggle");
-
 		txtModalError.setReadOnly(true);
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
-		btnAddCourseClass.setText("Criar Nova Turma");
 
 		//btnAddEnrollmentBatchEnable.setHTML(btnAddEnrollmentBatchEnable.getText() + "&nbsp;&nbsp;&#x25BC;");
 
-		listBoxCourseClasses.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				String newCourseClassUUID = ((ListBox) event.getSource()).getValue();
-				if (Dean.getInstance().getCourseClassTO() == null || !newCourseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
-					messagePresenter.clearThreadSelection();
-					presenter.updateCourseClass(newCourseClassUUID);
-					refreshMessagesCount();
-					messagePresenter.enableMessagesUpdate(false);
-				}
-			}
-		});
-		btnAddCourseClass.setVisible(session.isInstitutionAdmin());
-		btnAddCourseClass.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (session.isInstitutionAdmin()) {
-					buildConfigView(true);
-				}
-			}
-		});
 
 		enrollmentsTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				presenter.updateCourseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+				messagePresenter.enableMessagesUpdate(false);
+			}
+		});
+
+		enrollTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
 				messagePresenter.enableMessagesUpdate(false);
 			}
 		});
@@ -299,7 +272,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	public void prepareAddNewCourseClass(boolean addingNewCourseClass) {
 		adminHomePanel.clear();
 		if (!addingNewCourseClass) {
-			adminHomePanel.add(courseClassesPanel);
 			adminHomePanel.add(tabsPanel);
 			configPanel.clear();
 			configTab.setActive(false);
@@ -311,16 +283,15 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 			if (adminsTab != null)
 				adminsTab.setActive(false);
 			enrollmentsTab.setActive(true);
+			enrollTab.setActive(false);
 		}
 	}
 
 	@Override
 	public void buildConfigView(boolean isCreationMode) {
 		prepareAddNewCourseClass(isCreationMode);
-		if (isCreationMode) {
-			adminHomePanel.add(new GenericCourseClassConfigView(session, presenter, null));
-		} else {
-			configPanel.add(new GenericCourseClassConfigView(session, presenter, Dean.getInstance().getCourseClassTO()));
+		if (!isCreationMode) {
+			configPanel.add(new GenericCourseClassConfigView(session, bus, placeCtrl, presenter, Dean.getInstance().getCourseClassTO()));
 		}
 	}
 
@@ -439,6 +410,13 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 			}
 		}, "Progresso");
 
+		table.addColumn(new TextColumn<EnrollmentTO>() {
+			@Override
+			public String getValue(EnrollmentTO enrollmentTO) {
+				return formHelper.dateToString(enrollmentTO.getEnrollment().getEnrolledOn());
+			}
+		}, "Data da Matrícula");
+
 		List<HasCell<EnrollmentTO, ?>> cells = new LinkedList<HasCell<EnrollmentTO, ?>>();
 		cells.add(new EnrollmentActionsHasCell("Perfil", getGoToProfileDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Certificado", getGenerateCertificateDelegate()));
@@ -486,12 +464,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 		presenter.onAddEnrollmentButtonClicked(txtFullName.getText(), txtEmail.getText());
 	}
 
-	@UiHandler("btnAddEnrollmentBatch")
-	void doLogin(ClickEvent e) {
-		collapse.hide();
-		presenter.onAddEnrollmentBatchButtonClicked(txtAddEnrollmentBatch.getText());
-	}
-
 	@Override
 	public void setModalErrors(String title, String lbl1, String errors, String lbl2) {
 		errorModal.setTitle(title);
@@ -521,9 +493,7 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 			VerticalPanel panel = new VerticalPanel();
 			panel.setWidth("400");
 			panel.add(table);
-	
-			Image separatorBar = new Image("skins/first/icons/profile/separatorBar.png");
-			separatorBar.addStyleName("fillWidth");
+			
 	
 			final ListBox pageSizeListBox = new ListBox();
 			// pageSizeListBox.addItem("1");
@@ -540,11 +510,12 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 				}
 			});
 			pageSizeListBox.addStyleName("pageSizeListBox");
-	
-			enrollmentsWrapper.add(separatorBar);
-			enrollmentsWrapper.add(txtSearch);
-			enrollmentsWrapper.add(btnSearch);
-			enrollmentsWrapper.add(pageSizeListBox);
+			FlowPanel tableTools = new FlowPanel();
+			tableTools.addStyleName("marginTop25");
+			tableTools.add(txtSearch);
+			tableTools.add(btnSearch);
+			tableTools.add(pageSizeListBox);
+			enrollmentsWrapper.add(tableTools);
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);
 		}
@@ -752,20 +723,6 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	}
 
 	@Override
-	public void setCourseClasses(List<CourseClassTO> courseClasses) {
-		listBoxCourseClasses.clear();
-		String name, value;
-		for (CourseClassTO courseClassTO : courseClasses) {
-			value = courseClassTO.getCourseClass().getUUID();
-			name = courseClassTO.getCourseVersionTO().getCourse().getTitle() + " - " + courseClassTO.getCourseClass().getName();
-			if(CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState())){
-				name += " (Desabilitada)";
-			}
-			listBoxCourseClasses.addItem(name, value);
-		}
-	}
-
-	@Override
 	public void setUserEnrollmentIdentificationType(RegistrationEnrollmentType registrationEnrollmentType) {
 		infoPanel.clear();
 		switch (registrationEnrollmentType) {
@@ -805,13 +762,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 	
 	private Label getLabel(String labelTxt, boolean isHighlight){
 		Label lbl = new Label(labelTxt);
-		lbl.addStyleName(isHighlight ? "highlightText" : "textInfoColor");
+		lbl.addStyleName(isHighlight ? "niceTextColor" : "textInfoColor");
 		return lbl;
-	}
-
-	@Override
-	public void setSelectedCourseClass(String uuid) {
-		listBoxCourseClasses.setSelectedValue(uuid);
 	}
 
 	@Override
@@ -844,7 +796,8 @@ public class GenericAdminHomeView extends Composite implements AdminHomeView, Un
 		if(unreadChatThreadTOs != null){
 		  int count = 0;
 			for (UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadTOs) {
-				if(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(unreadChatThreadTO.getCourseClassUUID()))
+				if(Dean.getInstance().getCourseClassTO() != null && 
+						Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(unreadChatThreadTO.getCourseClassUUID()))
 						count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
 	    }
 			totalCount  = count;

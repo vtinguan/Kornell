@@ -2,8 +2,13 @@ package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomeView;
-import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericAdminCourseClassView;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.generic.GenericAdminCourseClassesView;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
+import kornell.gui.client.presentation.admin.institution.generic.GenericAdminInstitutionView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
@@ -49,13 +54,18 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
-	private GenericAdminHomeView genericAdminHomeView;
+	private GenericAdminCourseClassView genericAdminHomeView;
+	private AdminCourseClassPresenter genericAdminHomePresenter;
+	private GenericAdminCourseClassesView genericAdminCourseClassesView;
+	private GenericAdminInstitutionView genericAdminInstitutionView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
 	private MessagePresenter messagePresenter, messagePresenterCourseClass;
 	private boolean isMantleShown = false;
 
 	SimplePanel shell = new SimplePanel();
+
+
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -208,9 +218,9 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	}
 
 	@Override
-	public AdminHomeView getAdminHomeView() {
+	public AdminCourseClassView getAdminHomeView() {
 		if(genericAdminHomeView == null)
-			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+			genericAdminHomeView = new GenericAdminCourseClassView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 		return genericAdminHomeView;
 	}
 	
@@ -236,5 +246,26 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		if(messagePresenter == null)
 			messagePresenter = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 	  return messagePresenter;
+  }
+
+	@Override
+  public AdminCourseClassesView getAdminCourseClassesView() {
+		if(genericAdminCourseClassesView == null)
+			genericAdminCourseClassesView = new GenericAdminCourseClassesView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminCourseClassesView;
+  }
+
+	@Override
+  public AdminInstitutionView getAdminInstitutionView() {
+		if(genericAdminInstitutionView == null)
+			genericAdminInstitutionView = new GenericAdminInstitutionView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminInstitutionView;
+  }
+
+	@Override
+  public AdminCourseClassPresenter getAdminHomePresenter() {
+		if(genericAdminHomePresenter == null)
+			genericAdminHomePresenter = new AdminCourseClassPresenter(clientFactory.getKornellSession(),clientFactory.getEventBus(),clientFactory.getPlaceController(),clientFactory.getDefaultPlace(),clientFactory.getTOFactory(),this);
+		return genericAdminHomePresenter;
   }
 }

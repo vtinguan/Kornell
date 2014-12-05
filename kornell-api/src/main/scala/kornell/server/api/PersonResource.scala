@@ -30,12 +30,4 @@ class PersonResource(uuid: String) {
     	result
   }
   
-    
-  @PUT
-  @Produces(Array("text/plain"))
-  @Path("acceptTerms")
-  def acceptTerms() = AuthRepo().withPerson{ p =>
-    PersonRepo(p.getUUID).acceptTerms
-  }
-  
 }

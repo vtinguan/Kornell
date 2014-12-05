@@ -29,7 +29,7 @@ a:hover{
 	//color: darken(@textInfoColor, 25%) !important;
 }
 .vScrollBar{
-	overflow-y: overlay !important;
+	overflow-y: auto !important;
 	overflow-x: auto !important;
 	width: 100%;
 	position: fixed !important;
@@ -45,6 +45,10 @@ a:hover{
 .wrapper {
     margin: 0 auto;  
 } 
+.wrapperWidth {
+	width: @wrapperWidth;
+	margin: 0 auto;
+}
 @media screen and (max-width: @wrapperWidth) {
     .wrapper {
 	}
@@ -65,7 +69,6 @@ a:hover{
     border-radius: 5px;
 	background-color: @background;
 }
-
 
 .messageInboxPanel{
 	width: @wrapperWidth;
@@ -258,6 +261,7 @@ a:hover{
 				}
 			}
 			.fieldPanel{
+				width: 275px;
 				.lblValue{
 					line-height: 14px;
 					margin-left: 2px;
@@ -298,11 +302,12 @@ a:hover{
 
 
 .deanHome{
-	width: @wrapperWidth;
+	min-width: @wrapperWidth;
 	margin: 0 auto;
+	padding: 10px;
 	@insertPanelHeight: 45px;
 	.nav-tabs>li>a{
-		border: 1px solid @tableBackgroundColor !important;
+		border: 1px solid darken(@tableBackgroundColor, 100%) !important;
 		border-bottom: 0px;
 	}
 	.inlineLabel{
@@ -374,7 +379,6 @@ a:hover{
 	}
 	.addEnrollmentBatchPanel{
 		display: block;
-		width: 800px;
 		margin: 0px auto;
 		.infoPanel{
 			font-size: 12px;
@@ -384,7 +388,7 @@ a:hover{
 			margin-top: 225px;
 		}
 		textarea{
-			width: 500px;
+			width: 528px;
 			float: left;
 			height: 350px;
 			margin-bottom: 20px;
@@ -396,9 +400,9 @@ a:hover{
 		}
 	}
 	.enrollmentsCellTable{
-		width: @wrapperWidth;
 		color: @niceTextColor;
 		margin-bottom: 0;
+		margin-top: 20px;
 		border: 0;
 		border-collapse: separate;
 		border-spacing: 0 5px;
@@ -436,6 +440,7 @@ a:hover{
 	}
 	table{
 		border-color: transparent !important;
+		width: 100%;
 	}
 	.pageSizeListBox{
 		font-size: 12px;
@@ -461,8 +466,9 @@ a:hover{
 		float: left;
 		margin-top: 3px;
 	}
-	.tab-content {
-		overflow: hidden;
+	.courseClassConfig, .courseClassReports, .courseClassMessages, .courseClassAdmins{
+		width: @wrapperWidth;
+		margin: 0 auto;
 	}
 }
 
