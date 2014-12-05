@@ -18,12 +18,12 @@ trait GenCourseClass
   
   val classCode = randStr(5)
   
-  val course = CoursesResource().create(code = classCode)
+  val course = CoursesResource().create(Entities.newCourse(randUUID, classCode, null, null, null))
   val courseUUID = course.getUUID
   
   val courseVersion = {
-    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "").getUUID()
-    CourseVersionsResource(courseUUID).create(repositoryUUID = repositoryUUID)  
+    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID).getUUID()
+    CourseVersionsResource(courseUUID).create(repositoryUUID = repositoryUUID) 
   }
   val courseVersionUUID = courseVersion.getUUID
    

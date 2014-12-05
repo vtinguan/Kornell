@@ -21,4 +21,7 @@ public interface S3ContentRepository {
 	
 	String getDistributionURL();
 	void setDistributionURL(String distirbutionURL);
+	
+	String getInstitutionUUID();
+	void setInstitutionUUID(String institutionUUID);
 }
