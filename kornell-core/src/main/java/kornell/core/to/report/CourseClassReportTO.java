@@ -11,6 +11,7 @@ public class CourseClassReportTO {
 	private Integer progress;
 	private BigDecimal assessmentScore;
 	private String certifiedAt;
+	private String enrolledAt;
 	private EnrollmentsBreakdownTO enrollmentsBreakdownTO;
 	
 	public String getFullName() {
@@ -66,6 +67,12 @@ public class CourseClassReportTO {
   }
 	public void setCertifiedAt(String certifiedAt) {
 	  this.certifiedAt = certifiedAt;
+  }
+	public String getEnrolledAt() {
+	  return enrolledAt;
+  }
+	public void setEnrolledAt(String enrolledAt) {
+	  this.enrolledAt = enrolledAt;
   }
 	
 }

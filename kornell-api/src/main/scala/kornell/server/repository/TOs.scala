@@ -138,7 +138,7 @@ object TOs {
   }
 
   def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
-  def newCourseClassReportTO(fullName: String, username: String, email: String, state: String, progressState: String, progress: Int, assessmentScore: BigDecimal, certifiedAt: String): CourseClassReportTO = {
+  def newCourseClassReportTO(fullName: String, username: String, email: String, state: String, progressState: String, progress: Int, assessmentScore: BigDecimal, certifiedAt: String, enrolledAt: String): CourseClassReportTO = {
     val to = newCourseClassReportTO
     to.setFullName(fullName)
     to.setUsername(username)
@@ -148,6 +148,7 @@ object TOs {
     to.setProgress(progress)
     to.setAssessmentScore(assessmentScore)
     to.setCertifiedAt(certifiedAt)
+    to.setEnrolledAt(enrolledAt)
     to
   }
 
