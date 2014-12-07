@@ -273,7 +273,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[DATA MATRIC.]]></text>
+				<text><![CDATA[DATA MATR.]]></text>
 			</staticText>
 		</band>
 	</title>
