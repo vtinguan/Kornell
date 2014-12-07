@@ -1,36 +1,26 @@
-package kornell.gui.client.presentation.admin.institution.generic;
+package kornell.gui.client.presentation.admin.course.course.generic;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClass;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
-import kornell.core.entity.RegistrationEnrollmentType;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.InstitutionRegistrationPrefixesTO;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
+import kornell.gui.client.presentation.admin.course.course.AdminCourseView.Presenter;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -48,9 +38,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericAdminInstitutionView extends Composite implements AdminInstitutionView {
+public class GenericAdminCourseView extends Composite implements AdminCourseView {
 
-	interface MyUiBinder extends UiBinder<Widget, GenericAdminInstitutionView> {
+	interface MyUiBinder extends UiBinder<Widget, GenericAdminCourseView> {
 	}
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
@@ -97,7 +87,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	private String modalMode;
 	private ListBox institutionRegistrationPrefixes;
 	
-	public GenericAdminInstitutionView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
+	public GenericAdminCourseView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.session = session;
 		this.isPlatformAdmin = session.isPlatformAdmin();
 		initWidget(uiBinder.createAndBindUi(this));

@@ -3,11 +3,13 @@ package kornell.gui.client.presentation.bar.generic;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.mvp.HistoryMapper;
+import kornell.gui.client.presentation.admin.course.CoursePlace;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.admin.courseversion.CourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.bar.AdminBarView;
-import kornell.gui.client.presentation.course.generic.notes.NotesPopup;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Icon;
@@ -74,6 +76,10 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	private void updateButtonByPlace(Place place){
 		if(place instanceof AdminInstitutionPlace)
 			updateSelection(BUTTON_INSTITUTION);
+		else if(place instanceof CoursePlace)
+			updateSelection(BUTTON_COURSE);
+		else if(place instanceof CourseVersionPlace)
+			updateSelection(BUTTON_COURSE_VERSION);
 		else
 			updateSelection(BUTTON_COURSE_CLASS);
 	}
@@ -137,13 +143,13 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	@UiHandler("btnCourse")
 	void handleClickBtnCourse(ClickEvent e) {
 		updateSelection(BUTTON_COURSE);
-		clientFactory.getPlaceController().goTo(new AdminCourseClassesPlace());
+		clientFactory.getPlaceController().goTo(new AdminCoursesPlace());
 	}
 	
 	@UiHandler("btnCourseVersion")
 	void handleClickBtnCourseVersion(ClickEvent e) {
 		updateSelection(BUTTON_COURSE_VERSION);
-		clientFactory.getPlaceController().goTo(new AdminCourseClassesPlace());
+		clientFactory.getPlaceController().goTo(new AdminCourseVersionsPlace());
 	}
 	
 	@UiHandler("btnCourseClass")

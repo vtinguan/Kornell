@@ -13,7 +13,7 @@ public class CourseClassClient extends RESTClient {
 	public CourseClassClient(String courseClassUUID) {
 		this.courseClassUUID = courseClassUUID;
 	}
-
+	
 	public void update(CourseClass courseClass, Callback<CourseClass> cb) {
 		PUT("courseClasses",courseClass.getUUID()).withContentType(CourseClass.TYPE).withEntityBody(courseClass).go(cb);
 	}

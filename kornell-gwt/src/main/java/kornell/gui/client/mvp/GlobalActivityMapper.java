@@ -1,10 +1,18 @@
 package kornell.gui.client.mvp;
 
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.presentation.admin.course.course.AdminCourseActivity;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesActivity;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassActivity;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesActivity;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionActivity;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsActivity;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionActivity;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.course.ClassroomActivity;
@@ -117,13 +125,49 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 					activityCallbackHandler.onReceiveActivity(new SandboxActivity(sandboxPresenter));
 				}
 			});
-		} else if (place instanceof AdminCourseClassPlace) {
+		} else if (place instanceof AdminInstitutionPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onReceiveActivity(new AdminCourseClassActivity(clientFactory));
+					activityCallbackHandler.onReceiveActivity(new AdminInstitutionActivity(clientFactory));
+				}
+			});
+		} else if (place instanceof AdminCoursesPlace) {
+			GWT.runAsync(new RunAsyncCallback() {
+				public void onFailure(Throwable err) {
+					Window.alert("Failed to load activity");
+				}
+				public void onSuccess() {
+					activityCallbackHandler.onReceiveActivity(new AdminCoursesActivity(clientFactory));
+				}
+			});
+		} else if (place instanceof AdminCoursePlace) {
+			GWT.runAsync(new RunAsyncCallback() {
+				public void onFailure(Throwable err) {
+					Window.alert("Failed to load activity");
+				}
+				public void onSuccess() {
+					activityCallbackHandler.onReceiveActivity(new AdminCourseActivity(clientFactory));
+				}
+			});
+		} else if (place instanceof AdminCourseVersionsPlace) {
+			GWT.runAsync(new RunAsyncCallback() {
+				public void onFailure(Throwable err) {
+					Window.alert("Failed to load activity");
+				}
+				public void onSuccess() {
+					activityCallbackHandler.onReceiveActivity(new AdminCourseVersionsActivity(clientFactory));
+				}
+			});
+		} else if (place instanceof AdminCourseVersionPlace) {
+			GWT.runAsync(new RunAsyncCallback() {
+				public void onFailure(Throwable err) {
+					Window.alert("Failed to load activity");
+				}
+				public void onSuccess() {
+					activityCallbackHandler.onReceiveActivity(new AdminCourseVersionActivity(clientFactory));
 				}
 			});
 		} else if (place instanceof AdminCourseClassesPlace) {
@@ -135,13 +179,13 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 					activityCallbackHandler.onReceiveActivity(new AdminCourseClassesActivity(clientFactory));
 				}
 			});
-		}  else if (place instanceof AdminInstitutionPlace) {
+		} else if (place instanceof AdminCourseClassPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
 					Window.alert("Failed to load activity");
 				}
 				public void onSuccess() {
-					activityCallbackHandler.onReceiveActivity(new AdminInstitutionActivity(clientFactory));
+					activityCallbackHandler.onReceiveActivity(new AdminCourseClassActivity(clientFactory));
 				}
 			});
 		} else {

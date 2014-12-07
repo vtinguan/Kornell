@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.courseclass.courseclasses.generic;
+package kornell.gui.client.presentation.admin.course.courses.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
@@ -11,12 +11,11 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassConfigView;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPresenter;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -53,9 +52,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericAdminCourseClassesView extends Composite implements AdminCourseClassesView {
+public class GenericAdminCoursesView extends Composite implements AdminCoursesView {
 
-	interface MyUiBinder extends UiBinder<Widget, GenericAdminCourseClassesView> {
+	interface MyUiBinder extends UiBinder<Widget, GenericAdminCoursesView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -63,7 +62,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	private EventBus bus;
 	private PlaceController placeCtrl;
 	private ViewFactory viewFactory;
-	private AdminCourseClassesView.Presenter presenter;
+	private Presenter presenter;
 	final CellTable<CourseClassTO> table;
 	private List<CourseClassTO> courseClassTOs;
 	private KornellPagination pagination;
@@ -83,7 +82,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
 	// TODO i18n xml
-	public GenericAdminCourseClassesView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
+	public GenericAdminCoursesView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
 		this.session = session;
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
@@ -177,11 +176,6 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 				return courseClassTO;
 			}
 		}, "Ações");
-	}
-
-	@Override
-	public void setPresenter(Presenter presenter) {
-		this.presenter = presenter;
 	}
 
 	private Delegate<CourseClassTO> getStateChangeDelegate(final EnrollmentState state) {
@@ -283,9 +277,8 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	}
 	
 	@Override
-  public void setPresenter(AdminCourseClassesPresenter adminCourseClassesPresenter) {
-	  this.presenter = adminCourseClassesPresenter;
-	  
+  public void setPresenter(Presenter presenter) {
+	  this.presenter = presenter;
   }
 
 

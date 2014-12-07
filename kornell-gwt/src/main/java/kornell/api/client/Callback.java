@@ -25,8 +25,6 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  
 public abstract class Callback<T> implements RequestCallback {
-	
-	private String responseText;
 
 	@Override
 	public void onResponseReceived(Request request, Response response) {		

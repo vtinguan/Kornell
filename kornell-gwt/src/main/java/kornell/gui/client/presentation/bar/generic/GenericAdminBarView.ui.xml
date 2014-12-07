@@ -3,8 +3,8 @@
 	<g:FlowPanel addStyleNames="activityBarWrapper">
 		<g:FlowPanel ui:field="activityBar" addStyleNames="activityBar">
 			<b:Button type="LINK" ui:field="btnInstitution" addStyleNames="activityBarButton first"></b:Button>	
-      <b:Button type="LINK" ui:field="btnCourse" addStyleNames="activityBarButton shy"></b:Button> 
-      <b:Button type="LINK" ui:field="btnCourseVersion" addStyleNames="activityBarButton shy"></b:Button> 
+      <b:Button type="LINK" ui:field="btnCourse" addStyleNames="activityBarButton"></b:Button> 
+      <b:Button type="LINK" ui:field="btnCourseVersion" addStyleNames="activityBarButton"></b:Button> 
       <b:Button type="LINK" ui:field="btnCourseClass" addStyleNames="activityBarButton last"></b:Button> 
 		</g:FlowPanel>
 	</g:FlowPanel>

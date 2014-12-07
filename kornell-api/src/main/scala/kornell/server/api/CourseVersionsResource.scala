@@ -27,9 +27,10 @@ class CourseVersionsResource {
   @GET
   @Produces(Array(CourseVersionsTO.TYPE))
   def getCourseVersions(@QueryParam("courseUUID") courseUUID: String) = {
-        if (courseUUID != null) {
+        if (courseUUID != null)
           CourseVersionsRepo.byCourse(courseUUID)
-        }
+        else
+          CourseVersionsRepo.byInstitution(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)
     }.requiring(isPlatformAdmin, RequirementNotMet)
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
    .get

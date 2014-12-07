@@ -516,7 +516,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	}
 
 	private AdminCourseClassView getView() {
-		return viewFactory.getAdminHomeView();
+		return viewFactory.getAdminCourseClassView();
 	}
 
 	@Override
