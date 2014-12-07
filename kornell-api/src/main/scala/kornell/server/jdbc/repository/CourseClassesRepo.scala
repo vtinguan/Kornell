@@ -93,7 +93,7 @@ object CourseClassesRepo {
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid
 		    and cc.institution_uuid = ${institutionUUID}
       where cc.state <> ${CourseClassState.deleted.toString}
-		  order by cc.state, c.title, cv.name, cc.name;
+		  order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
 		""".map[CourseClassTO](toCourseClassTO))
   }
 

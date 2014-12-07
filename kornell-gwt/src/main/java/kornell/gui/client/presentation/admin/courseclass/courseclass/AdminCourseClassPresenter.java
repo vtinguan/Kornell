@@ -126,11 +126,11 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 					new Callback<EnrollmentsTO>() {
 						@Override
 						public void ok(EnrollmentsTO enrollments) {
+							LoadingPopup.hide();
 							if(courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())){
 								showEnrollments(enrollments, true);
 								updateCachedEnrollments(courseClassUUID, enrollments);
 							}
-							LoadingPopup.hide();
 						}
 					});
 		}
@@ -164,11 +164,13 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		if(!enrollmentsCacheMap.containsKey(courseClassUUID)){
 			view.showEnrollmentsPanel(false);
 		}
+		LoadingPopup.show();
 		session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
 				new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO to) {
 				courseClassesTO = to;
+				LoadingPopup.hide();
 				if(courseClassesTO.getCourseClasses().size() == 0){
 					updateCourseClassUI(null);
 				} else {
@@ -216,15 +218,18 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
   	enrollmentsCacheMap.remove(enrollmentTO.getEnrollment().getCourseClassUUID());
   	
 		String personUUID = session.getCurrentUser().getPerson().getUUID();
+		LoadingPopup.show();
 		session.events()
 				.enrollmentStateChanged(enrollmentTO.getEnrollment().getUUID(), personUUID,
 						enrollmentTO.getEnrollment().getState(), toState)
 				.fire(new Callback<Void>() {
 					@Override
 					public void ok(Void to) {
+						LoadingPopup.hide();
 						getEnrollments(Dean.getInstance().getCourseClassTO()
 								.getCourseClass().getUUID());
 						view.setCanPerformEnrollmentAction(true);
+						KornellNotification.show("Alteração feita com sucesso.", 2000);
 					}
 				});
 
