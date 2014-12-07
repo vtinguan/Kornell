@@ -6,15 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClassState;
+import kornell.core.entity.Course;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
+import kornell.gui.client.presentation.admin.course.course.generic.GenericAdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassConfigView;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
@@ -63,139 +61,125 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 	private PlaceController placeCtrl;
 	private ViewFactory viewFactory;
 	private Presenter presenter;
-	final CellTable<CourseClassTO> table;
-	private List<CourseClassTO> courseClassTOs;
+	final CellTable<Course> table;
+	private List<Course> courses;
 	private KornellPagination pagination;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	@UiField
 	FlowPanel adminHomePanel;
 	@UiField
-	FlowPanel courseClassesPanel;
+	FlowPanel coursesPanel;
 	@UiField
-	FlowPanel createClassPanel;
+	FlowPanel createCoursePanel;
 	@UiField
-	Button btnAddCourseClass;
+	Button btnAddCourse;
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
 	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
-	// TODO i18n xml
 	public GenericAdminCoursesView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
 		this.session = session;
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
 		this.viewFactory = viewFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		table = new CellTable<CourseClassTO>();
-		pagination = new KornellPagination(table, courseClassTOs, 15);
-		btnAddCourseClass.setText("Criar Nova Turma");
+		table = new CellTable<Course>();
+		pagination = new KornellPagination(table, courses, 15);
+		btnAddCourse.setText("Criar Novo Curso");
 
 
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
-						if(createClassPanel.getWidgetCount() > 0){
-							createClassPanel.clear();
-							courseClassesPanel.setVisible(true);
+						if(createCoursePanel.getWidgetCount() > 0){
+							createCoursePanel.clear();
 						}
+						coursesPanel.setVisible(true);
 					}
 				});
 
-		btnAddCourseClass.setVisible(session.isInstitutionAdmin());
-		btnAddCourseClass.addClickHandler(new ClickHandler() {
+		btnAddCourse.setVisible(session.isInstitutionAdmin());
+		btnAddCourse.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (session.isInstitutionAdmin()) {
-					courseClassesPanel.setVisible(false);
-					createClassPanel.add(new GenericCourseClassConfigView(session, bus, placeCtrl, viewFactory.getAdminCourseClassPresenter(), null));
+				if (session.isPlatformAdmin()) {
+					coursesPanel.setVisible(false);
+					GenericAdminCourseView view = new GenericAdminCourseView(session, bus, placeCtrl);
+					view.setPresenter(viewFactory.getAdminCoursePresenter());
+					view.init();
+					createCoursePanel.add(view);
 				}
 			}
 		});
 	}
 	
 	private void initTable() {
-
+		
 		table.addStyleName("enrollmentsCellTable");
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		for (int i = 0; table.getColumnCount() > 0;) {
 			table.removeColumn(i);
 		}
 
-		table.addColumn(new TextColumn<CourseClassTO>() {
+		table.addColumn(new TextColumn<Course>() {
 			@Override
-			public String getValue(CourseClassTO courseClassTO) {
-				return courseClassTO.getCourseVersionTO().getCourse().getTitle();
+			public String getValue(Course course) {
+				return course.getCode();
 			}
-		}, "Curso");
+		}, "Código");
 
-		table.addColumn(new TextColumn<CourseClassTO>() {
+		table.addColumn(new TextColumn<Course>() {
 			@Override
-			public String getValue(CourseClassTO courseClassTO) {
-				return courseClassTO.getCourseVersionTO().getCourseVersion().getName();
+			public String getValue(Course course) {
+				return course.getTitle();
 			}
-		}, "Versão");
-		
-		table.addColumn(new TextColumn<CourseClassTO>() {
-			@Override
-			public String getValue(CourseClassTO courseClassTO) {
-				return courseClassTO.getCourseClass().getName();
-			}
-		}, "Turma");
-		
-		table.addColumn(new TextColumn<CourseClassTO>() {
-			@Override
-			public String getValue(CourseClassTO courseClassTO) {
-				return formHelper.getCourseClassStateAsText(courseClassTO.getCourseClass().getState());
-			}
-		}, "Status");
-		
-		table.addColumn(new TextColumn<CourseClassTO>() {
-			@Override
-			public String getValue(CourseClassTO courseClassTO) {
-				return formHelper.getRegistrationEnrollmentTypeAsText(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
-			}
-		}, "Tipo de Matrícula");
-		
-		table.addColumn(new TextColumn<CourseClassTO>() {
-			@Override
-			public String getValue(CourseClassTO courseClassTO) {
-				return formHelper.dateToString(courseClassTO.getCourseClass().getCreatedAt());
-			}
-		}, "Data de Criação");
+		}, "Nome");
 
-		List<HasCell<CourseClassTO, ?>> cells = new LinkedList<HasCell<CourseClassTO, ?>>();
+		table.addColumn(new TextColumn<Course>() {
+			@Override
+			public String getValue(Course course) {
+				return course.getDescription();
+			}
+		}, "Descrição");
+
+		List<HasCell<Course, ?>> cells = new LinkedList<HasCell<Course, ?>>();
 		cells.add(new EnrollmentActionsHasCell("Editar", getStateChangeDelegate(EnrollmentState.enrolled)));
 
-		CompositeCell<CourseClassTO> cell = new CompositeCell<CourseClassTO>(cells);
-		table.addColumn(new Column<CourseClassTO, CourseClassTO>(cell) {
+		CompositeCell<Course> cell = new CompositeCell<Course>(cells);
+		table.addColumn(new Column<Course, Course>(cell) {
 			@Override
-			public CourseClassTO getValue(CourseClassTO courseClassTO) {
-				return courseClassTO;
+			public Course getValue(Course course) {
+				return course;
 			}
 		}, "Ações");
 	}
 
-	private Delegate<CourseClassTO> getStateChangeDelegate(final EnrollmentState state) {
-		return new Delegate<CourseClassTO>() {
+	@Override
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
+	}
+
+	private Delegate<Course> getStateChangeDelegate(final EnrollmentState state) {
+		return new Delegate<Course>() {
 			@Override
-			public void execute(CourseClassTO courseClassTO) {
-				placeCtrl.goTo(new AdminCourseClassPlace(courseClassTO.getCourseClass().getUUID()));
+			public void execute(Course course) {
+				placeCtrl.goTo(new AdminCoursePlace(course.getUUID()));
 			}
 		};
 	}
 
 	@SuppressWarnings("hiding")
-  private class EnrollmentActionsActionCell<CourseClassTO> extends ActionCell<CourseClassTO> {
+  private class EnrollmentActionsActionCell<Course> extends ActionCell<Course> {
 		
-		public EnrollmentActionsActionCell(String message, Delegate<CourseClassTO> delegate) {
+		public EnrollmentActionsActionCell(String message, Delegate<Course> delegate) {
 			super(message, delegate);
 		}
 
 		@Override
-		public void onBrowserEvent(Context context, Element parent, CourseClassTO value, NativeEvent event, ValueUpdater<CourseClassTO> valueUpdater) {
+		public void onBrowserEvent(Context context, Element parent, Course value, NativeEvent event, ValueUpdater<Course> valueUpdater) {
 			event.stopPropagation();
 			event.preventDefault();
 			super.onBrowserEvent(context, parent, value, event, valueUpdater);
@@ -212,14 +196,14 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 		}
 	}
 
-	private class EnrollmentActionsHasCell implements HasCell<CourseClassTO, CourseClassTO> {
-		private EnrollmentActionsActionCell<CourseClassTO> cell;
+	private class EnrollmentActionsHasCell implements HasCell<Course, Course> {
+		private EnrollmentActionsActionCell<Course> cell;
 
-		public EnrollmentActionsHasCell(String text, Delegate<CourseClassTO> delegate) {
+		public EnrollmentActionsHasCell(String text, Delegate<Course> delegate) {
 			final String actionName = text;
-			cell = new EnrollmentActionsActionCell<CourseClassTO>(text, delegate) {
+			cell = new EnrollmentActionsActionCell<Course>(text, delegate) {
 				@Override
-				public void render(com.google.gwt.cell.client.Cell.Context context, CourseClassTO object, SafeHtmlBuilder sb) {
+				public void render(com.google.gwt.cell.client.Cell.Context context, Course object, SafeHtmlBuilder sb) {
 						SafeHtml html = SafeHtmlUtils.fromTrustedString(buildButtonHTML(actionName));
 						sb.append(html);
 				}
@@ -239,47 +223,34 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 		}
 
 		@Override
-		public Cell<CourseClassTO> getCell() {
+		public Cell<Course> getCell() {
 			return cell;
 		}
 
 		@Override
-		public FieldUpdater<CourseClassTO, CourseClassTO> getFieldUpdater() {
+		public FieldUpdater<Course, Course> getFieldUpdater() {
 			return null;
 		}
 
 		@Override
-		public CourseClassTO getValue(CourseClassTO object) {
+		public Course getValue(Course object) {
 			return object;
 		}
 	}
 
 
 	@Override
-	public void setCourseClasses(List<CourseClassTO> courseClasses) {
-		String name, value;
-		for (CourseClassTO courseClassTO : courseClasses) {
-			value = courseClassTO.getCourseClass().getUUID();
-			name = courseClassTO.getCourseVersionTO().getCourse().getTitle() + " - " + courseClassTO.getCourseClass().getName();
-			if(CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState())){
-				name += " (Desabilitada)";
-			}
-		}
-		this.courseClassTOs = courseClasses;
+	public void setCourses(List<Course> courses) {
+		this.courses = courses;
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
 		panel.add(table);
-		courseClassesPanel.add(panel);
-		courseClassesPanel.add(pagination);
-		pagination.setRowData(courseClasses);
+		coursesPanel.add(panel);
+		coursesPanel.add(pagination);
+		pagination.setRowData(courses);
 		pagination.displayTableData(1);
 		initTable();
 	}
-	
-	@Override
-  public void setPresenter(Presenter presenter) {
-	  this.presenter = presenter;
-  }
 
 
 }

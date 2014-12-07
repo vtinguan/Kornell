@@ -2,6 +2,7 @@ package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.course.generic.GenericAdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
@@ -70,6 +71,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericAdminInstitutionView genericAdminInstitutionView;
 	private GenericAdminCoursesView genericAdminCoursesView;
 	private GenericAdminCourseView genericAdminCourseView;
+	private AdminCoursePresenter genericAdminCoursePresenter;
 	private GenericAdminCourseVersionsView genericAdminCourseVersionsView;
 	private GenericAdminCourseVersionView genericAdminCourseVersionView;
 	private ClassroomPresenter coursePresenter;
@@ -272,8 +274,15 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	@Override
   public AdminCourseView getAdminCourseView() {
 		if(genericAdminCourseView == null)
-			genericAdminCourseView = new GenericAdminCourseView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+			genericAdminCourseView = new GenericAdminCourseView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController());
 		return genericAdminCourseView;
+  }
+
+	@Override
+  public AdminCoursePresenter getAdminCoursePresenter() {
+		if(genericAdminCoursePresenter == null)
+			genericAdminCoursePresenter = new AdminCoursePresenter(clientFactory.getKornellSession(),clientFactory.getPlaceController(),clientFactory.getEventBus(), clientFactory.getDefaultPlace(),clientFactory.getEntityFactory(),this);
+		return genericAdminCoursePresenter;
   }
 
 	@Override

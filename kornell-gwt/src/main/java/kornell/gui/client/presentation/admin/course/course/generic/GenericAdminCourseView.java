@@ -3,24 +3,30 @@ package kornell.gui.client.presentation.admin.course.course.generic;
 import java.util.ArrayList;
 import java.util.List;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.ContentSpec;
+import kornell.core.entity.Course;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Institution;
+import kornell.core.to.CoursesTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
-import kornell.gui.client.presentation.admin.course.course.AdminCourseView.Presenter;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -51,6 +57,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	private static final String MODAL_INVISIBLE = "invisible";
 
 	private KornellSession session;
+	private PlaceController placeCtrl;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private boolean isCreationMode, isPlatformAdmin;
@@ -63,7 +70,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	@UiField
 	Form form;
 	@UiField
-	FlowPanel institutionFields;
+	FlowPanel courseFields;
 	@UiField
 	Button btnOK;
 	@UiField
@@ -78,137 +85,98 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	@UiField
 	Button btnModalCancel;
 
-	private Institution institution;
+	private Course course;
 
-	private KornellFormFieldWrapper name, fullName, terms, assetsURL, baseURL, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
+	private KornellFormFieldWrapper code, title, description;
 	
 	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
 	private ListBox institutionRegistrationPrefixes;
+	private String courseUUID;
 	
-	public GenericAdminCourseView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
+	public GenericAdminCourseView(final KornellSession session, EventBus bus, PlaceController placeCtrl) {
 		this.session = session;
+		this.placeCtrl = placeCtrl;
 		this.isPlatformAdmin = session.isPlatformAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
 		btnOK.setText("Salvar".toUpperCase());
-		btnCancel.setText(isCreationMode ? "Cancelar".toUpperCase() : "Limpar".toUpperCase());		
+		btnCancel.setText("Cancelar".toUpperCase());	
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		
-		this.institution = Dean.getInstance().getInstitution();
-		
-		initData();
-
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
-						if(event.getNewPlace() instanceof AdminInstitutionPlace)
-							initData();
+						if(event.getNewPlace() instanceof AdminCoursePlace)
+							init();
 					}
 				});
 	}
+	
+	@Override
+	public void init(){
+
+		if(placeCtrl.getWhere() instanceof AdminCoursePlace && ((AdminCoursePlace)placeCtrl.getWhere()).getCourseUUID() != null){
+			this.courseUUID = ((AdminCoursePlace)placeCtrl.getWhere()).getCourseUUID();
+			isCreationMode = false;
+		} else {
+			isCreationMode = true;
+		}
+		
+		if(isCreationMode){
+			course = presenter.getNewCourse();
+			initData();	
+		} else {	
+			session.course(courseUUID).get(new Callback<Course>() {
+				@Override
+				public void ok(Course to) {
+					course = to;
+					initData();
+				}
+			});
+		}
+	}
 
 	public void initData() {
-		institutionFields.setVisible(false);
+		courseFields.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 
-		institutionFields.clear();
+		courseFields.clear();
 		
 		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
-		btnCancel.setVisible(isPlatformAdmin);
-		
+		btnCancel.setVisible(isPlatformAdmin);		
 
-		name = new KornellFormFieldWrapper("Sub-domínio da Instituição", formHelper.createTextBoxFormField(institution.getName()), isPlatformAdmin);
-		fields.add(name);
-		institutionFields.add(name);
+		code = new KornellFormFieldWrapper("Código", formHelper.createTextBoxFormField(course.getCode()), isPlatformAdmin);
+		fields.add(code);
+		courseFields.add(code);
 		
-		fullName = new KornellFormFieldWrapper("Nome da Instituição", formHelper.createTextBoxFormField(institution.getFullName()), isPlatformAdmin);
-		fields.add(fullName);
-		institutionFields.add(fullName);
+		title = new KornellFormFieldWrapper("Nome", formHelper.createTextBoxFormField(course.getTitle()), isPlatformAdmin);
+		fields.add(title);
+		courseFields.add(title);
+
+		description = new KornellFormFieldWrapper("Descrição", formHelper.createTextBoxFormField(course.getDescription()), isPlatformAdmin);
+		fields.add(description);
+		courseFields.add(description);
 		
-		assetsURL = new KornellFormFieldWrapper("URL dos Recursos", formHelper.createTextBoxFormField(institution.getAssetsURL()), isPlatformAdmin);
-		fields.add(assetsURL);
-		institutionFields.add(assetsURL);
-		
-		baseURL = new KornellFormFieldWrapper("URL Base", formHelper.createTextBoxFormField(institution.getBaseURL()), isPlatformAdmin);
-		fields.add(baseURL);
-		institutionFields.add(baseURL);
+		courseFields.add(formHelper.getImageSeparator());
 
-		demandsPersonContactDetails = new KornellFormFieldWrapper("Exige Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isDemandsPersonContactDetails()), isPlatformAdmin);
-		fields.add(demandsPersonContactDetails);
-		institutionFields.add(demandsPersonContactDetails);
-		((CheckBox)demandsPersonContactDetails.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
-				}
-			}
-		});
-
-		validatePersonContactDetails = new KornellFormFieldWrapper("Validação dos Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isValidatePersonContactDetails()), isPlatformAdmin);
-		fields.add(validatePersonContactDetails);
-		institutionFields.add(validatePersonContactDetails);
-		((CheckBox)validatePersonContactDetails.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
-				}
-			}
-		});
-
-		allowRegistration = new KornellFormFieldWrapper("Permitir Registro", formHelper.createCheckBoxFormField(institution.isAllowRegistration()), isPlatformAdmin);
-		fields.add(allowRegistration);
-		institutionFields.add(allowRegistration);
-		((CheckBox)allowRegistration.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
-				}
-			}
-		});
-
-		allowRegistrationByUsername = new KornellFormFieldWrapper("Permitir Registro por Usuário", formHelper.createCheckBoxFormField(institution.isAllowRegistrationByUsername()), isPlatformAdmin);
-		fields.add(allowRegistrationByUsername);
-		institutionFields.add(allowRegistrationByUsername);
-		((CheckBox)allowRegistrationByUsername.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
-				}
-			}
-		});
-		
-		terms = new KornellFormFieldWrapper("Termos de Uso", formHelper.createTextAreaFormField(institution.getTerms(), 20), isPlatformAdmin);
-		terms.addStyleName("heightAuto");
-		terms.addStyleName("marginBottom25");
-		fields.add(terms);
-		institutionFields.add(terms);
-
-		
-		//name, fullName, terms, assetsURL, baseURL, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername
-		
-		institutionFields.add(formHelper.getImageSeparator());
-
-		institutionFields.setVisible(true);
+		courseFields.setVisible(true);
 	}
 	
 	private boolean validateFields() {		
-		if (!formHelper.isLengthValid(name.getFieldPersistText(), 2, 20)) {
-			name.setError("Insira o sub-domínio da instituição.");
+		if (!formHelper.isLengthValid(code.getFieldPersistText(), 2, 5)) {
+			code.setError("O código deve ter entre 2 e 5 caracteres");
+		}		
+		if (!formHelper.isLengthValid(title.getFieldPersistText(), 2, 100)) {
+			title.setError("Insira o título do curso");
 		}
-		if (!formHelper.isLengthValid(fullName.getFieldPersistText(), 2, 50)) {
-			fullName.setError("Insira o nome da instituição.");
-		}
-		if (!formHelper.isLengthValid(assetsURL.getFieldPersistText(), 10, 200)) {
-			assetsURL.setError("Insira a URL dos recursos.");
-		}
-		if (!formHelper.isLengthValid(baseURL.getFieldPersistText(), 10, 200)) {
-			baseURL.setError("Insira a URL base.");
+		if (!formHelper.isLengthValid(description.getFieldPersistText(), 2, 200)) {
+			description.setError("Insira a descrição");
 		}
 		
 		return !formHelper.checkErrors(fields);
@@ -219,28 +187,22 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		formHelper.clearErrors(fields);
 		if (isPlatformAdmin && validateFields()) {
 			LoadingPopup.show();
-			Institution institution = getInstitutionInfoFromForm();
-			presenter.updateInstitution(institution);
-
+			Course course = getCourseInfoFromForm();
+			presenter.upsertCourse(course);
 		}
 	}
 
-	private Institution getInstitutionInfoFromForm() {
-		institution.setName(name.getFieldPersistText());
-		institution.setFullName(fullName.getFieldPersistText());
-		institution.setTerms(terms.getFieldPersistText());
-		institution.setAssetsURL(assetsURL.getFieldPersistText());
-		institution.setBaseURL(baseURL.getFieldPersistText());
-		institution.setDemandsPersonContactDetails(demandsPersonContactDetails.getFieldPersistText().equals("true"));
-		institution.setValidatePersonContactDetails(validatePersonContactDetails.getFieldPersistText().equals("true"));
-		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));
-		institution.setAllowRegistrationByUsername(allowRegistrationByUsername.getFieldPersistText().equals("true"));
-		return institution;
+	private Course getCourseInfoFromForm() {
+		course.setCode(code.getFieldPersistText());
+		course.setTitle(title.getFieldPersistText());
+		course.setDescription(description.getFieldPersistText());
+		course.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+		return course;
 	}
 
 	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
-		initData();
+		this.placeCtrl.goTo(new AdminCoursesPlace());
 	}
 	
 	@Override

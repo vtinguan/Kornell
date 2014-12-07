@@ -65,7 +65,8 @@ package object repository {
     rs.getString("code"),
     rs.getString("title"),
     rs.getString("description"),
-    rs.getString("infoJson"))    
+    rs.getString("infoJson"),
+    rs.getString("institutionUUID"))    
 
   implicit def toCourseVersion(rs: ResultSet): CourseVersion = newCourseVersion(
     rs.getString("uuid"), 
@@ -130,7 +131,8 @@ package object repository {
         rs.getString("courseCode"), 
         rs.getString("courseTitle"), 
         rs.getString("courseDescription"), 
-        rs.getString("infoJson"))
+        rs.getString("infoJson"),
+        rs.getString("institutionUUID"))
         
     TOs.newCourseVersionTO(course, courseVersion)
   }

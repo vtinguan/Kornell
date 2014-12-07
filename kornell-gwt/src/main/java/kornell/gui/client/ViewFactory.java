@@ -1,6 +1,7 @@
 
 package kornell.gui.client;
 
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
@@ -57,11 +58,13 @@ public interface ViewFactory {
 	AdminInstitutionView getAdminInstitutionView();
 	AdminCoursesView getAdminCoursesView();
 	AdminCourseView getAdminCourseView();
+	AdminCoursePresenter getAdminCoursePresenter();
 	AdminCourseVersionsView getAdminCourseVersionsView();
 	AdminCourseVersionView getAdminCourseVersionView();
 	AdminCourseVersionPresenter getAdminCourseVersionPresenter();
 	AdminCourseClassesView getAdminCourseClassesView();
 	AdminCourseClassView getAdminCourseClassView();
 	AdminCourseClassPresenter getAdminCourseClassPresenter();
+
 
 }

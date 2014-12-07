@@ -3,9 +3,9 @@
 
   <g:FlowPanel addStyleNames="deanHome">
 	  <g:FlowPanel addStyleNames="courseClassConfig">
-	    <g:HTMLPanel ui:field="titleEdit" addStyleNames="title unclear left fillWidth marginBottom25">Editar Instituição</g:HTMLPanel>
+	    <g:HTMLPanel ui:field="titleEdit" addStyleNames="title unclear left fillWidth marginBottom25">Editar Curso</g:HTMLPanel>
 	    <b:Form ui:field="form" addStyleNames="profileForm left">
-	      <g:FlowPanel ui:field="institutionFields" addStyleNames="fieldsWrapper">    
+	      <g:FlowPanel ui:field="courseFields" addStyleNames="fieldsWrapper">    
 	      </g:FlowPanel>    
 	      <g:FlowPanel addStyleNames="standardButtonBar">
 	        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>

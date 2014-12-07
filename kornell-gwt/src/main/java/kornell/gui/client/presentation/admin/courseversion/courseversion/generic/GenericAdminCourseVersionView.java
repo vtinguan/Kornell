@@ -12,12 +12,9 @@ import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CoursesTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
@@ -122,7 +119,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
-						if(event.getNewPlace() instanceof AdminInstitutionPlace)
+						if(event.getNewPlace() instanceof AdminCourseVersionPlace)
 							init();
 					}
 				});
@@ -153,8 +150,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
 		btnCancel.setVisible(isPlatformAdmin);		
 
-		session.courses().findByInstitution(Dean.getInstance().getInstitution().getUUID(),
-			new Callback<CoursesTO>() {
+		session.courses().get(new Callback<CoursesTO>() {
 				@Override
 				public void ok(CoursesTO to) {
 					createCoursesField(to);

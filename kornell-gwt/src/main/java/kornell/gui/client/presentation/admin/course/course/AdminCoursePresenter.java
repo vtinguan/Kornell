@@ -1,85 +1,63 @@
 package kornell.gui.client.presentation.admin.course.course;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClass;
-import kornell.core.entity.Institution;
-import kornell.core.entity.RoleCategory;
-import kornell.core.entity.RoleType;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
-import kornell.core.to.EnrollmentRequestTO;
-import kornell.core.to.EnrollmentRequestsTO;
-import kornell.core.to.EnrollmentTO;
-import kornell.core.to.EnrollmentsTO;
-import kornell.core.to.TOFactory;
+import kornell.core.entity.Course;
+import kornell.core.entity.EntityFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.mvp.PlaceUtils;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class AdminCoursePresenter implements AdminCourseView.Presenter {
 	private AdminCourseView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private List<EnrollmentTO> enrollmentTOs;
-	private String batchEnrollmentErrors;
-	private List<EnrollmentRequestTO> batchEnrollments;
-	FormHelper formHelper;
 	private KornellSession session;
 	private PlaceController placeController;
-	private Place defaultPlace;
-	TOFactory toFactory;
+	private EventBus bus;
+	Place defaultPlace;
+	EntityFactory entityFactory;
 	private ViewFactory viewFactory;
-	private Boolean enrollWithCPFx = false;
-	private Integer maxEnrollments = 0;
-	private Integer numEnrollments = 0;
-	private CourseClassesTO courseClassesTO;
-	private boolean hasOverriddenEnrollments = false, overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
-  private EnrollmentRequestsTO enrollmentRequestsTO;
-  private List<EnrollmentTO> enrollmentsToOverride;
-  private Map<String, EnrollmentsTO> enrollmentsCacheMap;
-  
-	private static final String PREFIX = ClientProperties.PREFIX + "AdminInstitution";
 
 	public AdminCoursePresenter(KornellSession session,
-			PlaceController placeController, Place defaultPlace,
-			TOFactory toFactory, ViewFactory viewFactory) {
+			PlaceController placeController, EventBus bus, Place defaultPlace,
+			EntityFactory entityFactory, ViewFactory viewFactory) {
 		this.session = session;
 		this.placeController = placeController;
+		this.bus = bus;
 		this.defaultPlace = defaultPlace;
-		this.toFactory = toFactory;
+		this.entityFactory = entityFactory;
 		this.viewFactory = viewFactory;
-		formHelper = new FormHelper();
-		enrollmentRequestsTO = toFactory.newEnrollmentRequestsTO().as();
-		enrollmentsCacheMap = new HashMap<String, EnrollmentsTO>();
-		// TODO refactor permissions per session/activity
 
 		init();
 	}
 
 	private void init() {
-		if (session.isInstitutionAdmin()) {
+		if (session.isPlatformAdmin()) {
 			view = getView();
 			view.setPresenter(this);      
+			view.init();
 		} else {
 			GWT.log("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}
 	}
+	
+	@Override
+	public Course getNewCourse() {
+		return entityFactory.newCourse().as();
+	}
+
 	
 	@Override
 	public Widget asWidget() {
@@ -91,13 +69,15 @@ public class AdminCoursePresenter implements AdminCourseView.Presenter {
 	}
 
 	@Override
-  public void updateInstitution(Institution institution) {
-			session.institution(institution.getUUID()).update(institution, new Callback<Institution>() {
+  public void upsertCourse(Course course) {
+		LoadingPopup.show();
+		if(course.getUUID() == null){
+			session.courses().create(course, new Callback<Course>() {
 				@Override
-				public void ok(Institution institution) {
+				public void ok(Course course) {
 						LoadingPopup.hide();
-						KornellNotification.show("Alterações salvas com sucesso!");
-						Dean.getInstance().setInstitution(institution);
+						KornellNotification.show("Curso criado com sucesso!");
+						PlaceUtils.reloadCurrentPlace(bus, placeController);
 				}		
 				
 				@Override
@@ -106,5 +86,21 @@ public class AdminCoursePresenter implements AdminCourseView.Presenter {
 					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
 				}
 			});
+		} else {
+			session.course(course.getUUID()).update(course, new Callback<Course>() {
+				@Override
+				public void ok(Course course) {
+						LoadingPopup.hide();
+						KornellNotification.show("Alterações salvas com sucesso!");
+						placeController.goTo(new AdminCoursesPlace());
+				}		
+				
+				@Override
+				public void conflict(String errorMessage){
+					LoadingPopup.hide();
+					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
+				}
+			});
+		}
   }
 }

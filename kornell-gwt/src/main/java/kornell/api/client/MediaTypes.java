@@ -5,6 +5,7 @@ import java.util.Map;
 
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.ChatThread;
+import kornell.core.entity.Course;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.Enrollment;
@@ -37,6 +38,7 @@ public class MediaTypes {
 	public MediaTypes() {
 		register(People.TYPE, People.class);
 		register(Person.TYPE, Person.class);
+		register(Course.TYPE, Course.class);
 		register(CoursesTO.TYPE, CoursesTO.class);
 		register(CourseClassesTO.TYPE, CourseClassesTO.class);
 		register(CourseClassTO.TYPE, CourseClassTO.class);

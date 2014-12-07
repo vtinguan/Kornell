@@ -149,8 +149,7 @@ public class GenericCourseClassConfigView extends Composite {
 		
 
 		if (isCreationMode) {
-			session.courses().findByInstitution(Dean.getInstance().getInstitution().getUUID(),
-				new Callback<CoursesTO>() {
+			session.courses().get(new Callback<CoursesTO>() {
 					@Override
 					public void ok(CoursesTO to) {
 						createCoursesField(to);

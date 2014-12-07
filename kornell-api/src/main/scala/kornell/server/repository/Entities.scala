@@ -91,13 +91,15 @@ object Entities {
 
   def newCourse(uuid: String = randUUID, code: String = null,
     title: String = null, description: String = null,
-    infoJson: String = null): Course = {
+    infoJson: String = null,
+    institutionUUID: String = null): Course = {
     val c = factory.newCourse.as
     c.setUUID(uuid)
     c.setCode(code)
     c.setDescription(description)
     c.setTitle(title)
     c.setInfoJson(infoJson)
+    c.setInstitutionUUID(institutionUUID)
     c
   }
 

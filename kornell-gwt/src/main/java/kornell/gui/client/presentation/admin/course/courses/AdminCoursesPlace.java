@@ -5,7 +5,7 @@ import kornell.gui.client.presentation.admin.course.CoursePlace;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class AdminCoursesPlace extends CoursePlace{
+public class AdminCoursesPlace extends CoursePlace {
 	public static final AdminCoursesPlace instance = new AdminCoursesPlace();
 
 	public AdminCoursesPlace() {

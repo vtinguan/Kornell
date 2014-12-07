@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AdminCourseVersionsView extends IsWidget {
 	public interface Presenter extends IsWidget {
-		void upsertCourseVersion(CourseVersion courseVersion);
 	}
 	void setCourseVersions(List<CourseVersion> list);
 	void setPresenter(Presenter presenter);

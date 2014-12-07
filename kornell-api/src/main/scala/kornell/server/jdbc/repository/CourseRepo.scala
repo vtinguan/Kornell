@@ -17,7 +17,8 @@ class CourseRepo(uuid: String) {
     | set c.code = ${course.getCode},
     | c.title = ${course.getTitle}, 
     | c.description = ${course.getDescription},
-    | c.infoJson = ${course.getInfoJson}
+    | c.infoJson = ${course.getInfoJson},
+    | c.institutionUUID = ${course.getInstitutionUUID}
     | where c.uuid = ${course.getUUID}""".executeUpdate
     course
   }
