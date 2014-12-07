@@ -17,7 +17,7 @@ class CourseVersionResource(uuid: String) {
   //Should be TO cause the UI needs Course
   @GET
   @Produces(Array(CourseVersionTO.TYPE))
-  def get: CourseVersionTO = {
+  def get : CourseVersionTO  = {
     CourseVersionRepo(uuid).getWithCourse
   }.requiring(isPlatformAdmin, RequirementNotMet)
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)

@@ -33,7 +33,8 @@ class BasicAuthFilter extends Filter {
     "/email/welcome",
     "/institutions",
     "/repository",
-    "/healthCheck")
+    "/healthCheck",
+    "/errors")
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
     (sreq, sres) match {
