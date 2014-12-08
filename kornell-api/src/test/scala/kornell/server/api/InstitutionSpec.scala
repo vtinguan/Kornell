@@ -16,6 +16,7 @@ import kornell.server.util.RequirementNotMet
 import org.scalatest.junit.JUnitRunner
 import kornell.server.util.KornellErr
 import scala.collection.JavaConverters._
+import kornell.server.repository.TOs
 
 //TODO need tests for GET/PUT hostnames
 @RunWith(classOf[JUnitRunner])
@@ -187,6 +188,73 @@ class InstitutionSpec extends UnitSpec
     asPerson {
       try {
           val updatedAdmins = InstitutionResource(institutionUUID).updateAdmins(admins)
+          throw new Throwable
+      } catch {
+          case ade: KornellErr => assert(ade.getCode == "403_ACCESSDENIED")
+          case default:Throwable => fail()
+      }
+    }
+  }
+  
+  "The platformAdmin" should "be able to update the list of hostanmes" in asPlatformAdmin { 
+    val hostname = randStr(10)
+    val createdHostnames = InstitutionResource(institutionUUID).updateHostnames(TOs.newInstitutionHostNamesTO(List(hostname)))
+    
+    assert(createdHostnames.getInstitutionHostNames.get(0) == hostname)
+  }
+  
+  "The platformAdmin" should "be able to get the list of hostanmes" in asPlatformAdmin { 
+    val hostname = randStr(10)
+    InstitutionResource(institutionUUID).updateHostnames(TOs.newInstitutionHostNamesTO(List(hostname)))
+    val fetchedHostnames = InstitutionResource(institutionUUID).getHostnames
+    
+    assert(fetchedHostnames.getInstitutionHostNames.get(0) == hostname)
+  }
+  
+  "The institutionAdmin" should "not be able to update the list of hostanmes" in asInstitutionAdmin { 
+    val hostname = randStr(10)
+    try {
+      val createdHostnames = InstitutionResource(institutionUUID).updateHostnames(TOs.newInstitutionHostNamesTO(List(hostname)))
+      throw new Throwable
+    } catch {
+      case ade: KornellErr => assert(ade.getCode == "403_ACCESSDENIED")
+      case default:Throwable => fail()
+    }
+  }
+  
+  "The institutionAdmin" should "not be able to get the list of hostanmes" in asPlatformAdmin { 
+    val hostname = randStr(10)
+    InstitutionResource(institutionUUID).updateHostnames(TOs.newInstitutionHostNamesTO(List(hostname)))
+    
+    asInstitutionAdmin {
+      try {
+          val fetchedHostnames = InstitutionResource(institutionUUID).getHostnames
+          throw new Throwable
+      } catch {
+          case ade: KornellErr => assert(ade.getCode == "403_ACCESSDENIED")
+          case default:Throwable => fail()
+      }
+    }
+  }
+  
+  "A person" should "not be able to update the list of hostanmes" in asPerson { 
+    val hostname = randStr(10)
+    try {
+      val createdHostnames = InstitutionResource(institutionUUID).updateHostnames(TOs.newInstitutionHostNamesTO(List(hostname)))
+      throw new Throwable
+    } catch {
+      case ade: KornellErr => assert(ade.getCode == "403_ACCESSDENIED")
+      case default:Throwable => fail()
+    }
+  }
+  
+  "A person" should "not be able to get the list of hostanmes" in asPlatformAdmin { 
+    val hostname = randStr(10)
+    InstitutionResource(institutionUUID).updateHostnames(TOs.newInstitutionHostNamesTO(List(hostname)))
+    
+    asPerson {
+      try {
+          val fetchedHostnames = InstitutionResource(institutionUUID).getHostnames
           throw new Throwable
       } catch {
           case ade: KornellErr => assert(ade.getCode == "403_ACCESSDENIED")
