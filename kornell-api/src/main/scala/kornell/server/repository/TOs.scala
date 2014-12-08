@@ -217,4 +217,10 @@ object TOs {
     to
   }
   
+  def newInstitutionHostNamesTO(l: List[String]) = {
+    val to = tos.newInstitutionHostNamesTO().as
+    to.setInstitutionHostNames(l asJava)
+    to
+  }
+  
 }

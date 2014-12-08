@@ -15,7 +15,9 @@ import kornell.server.util.AccessDeniedErr
 import kornell.server.util.RequirementNotMet
 import org.scalatest.junit.JUnitRunner
 import kornell.server.util.KornellErr
+import scala.collection.JavaConverters._
 
+//TODO need tests for GET/PUT hostnames
 @RunWith(classOf[JUnitRunner])
 class InstitutionSpec extends UnitSpec 
     with GenPlatformAdmin

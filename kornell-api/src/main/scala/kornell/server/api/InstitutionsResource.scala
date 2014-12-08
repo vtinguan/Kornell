@@ -11,7 +11,7 @@ import kornell.server.util.RequirementNotMet
 class InstitutionsResource {
   
   @Path("{uuid}")
-  def get(@PathParam("uuid") uuid:String):InstitutionResource = new InstitutionResource(uuid) 
+  def get(@PathParam("uuid") uuid:String):InstitutionResource = new InstitutionResource(uuid)
   
   @GET
   @Produces(Array(Institution.TYPE))

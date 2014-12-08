@@ -18,6 +18,9 @@ import kornell.core.to.RolesTO
 import javax.ws.rs.QueryParam
 import kornell.server.jdbc.repository.ChatThreadsRepo
 import kornell.server.util.AccessDeniedErr
+import kornell.server.jdbc.repository.InstitutionHostNameRepo
+import kornell.server.jdbc.repository.InstitutionHostNameRepo
+import kornell.core.to.InstitutionHostNamesTO
 
 
 class InstitutionResource(uuid: String) {
@@ -26,7 +29,7 @@ class InstitutionResource(uuid: String) {
   @Produces(Array(Institution.TYPE))
   def get =  {
     InstitutionRepo(uuid).get
-   }.requiring(isPlatformAdmin, RequirementNotMet).get
+   }.requiring(isPlatformAdmin, AccessDeniedErr()).get
   
   @PUT
   @Consumes(Array(Institution.TYPE))
@@ -58,6 +61,23 @@ class InstitutionResource(uuid: String) {
   @Path("admins")
   def getAdmins(@QueryParam("bind") bindMode:String) = {
         RolesRepo.getInstitutionAdmins(uuid, bindMode)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .get
+   
+  @PUT
+  @Consumes(Array(InstitutionHostNamesTO.TYPE))
+  @Produces(Array(InstitutionHostNamesTO.TYPE))
+  @Path("hostnames")
+  def updateHostnames(hostnames: InstitutionHostNamesTO) = {
+      InstitutionHostNameRepo(uuid).updateHostnames(hostnames)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .get
+
+  @GET
+  @Produces(Array(InstitutionHostNamesTO.TYPE))
+  @Path("hostnames")
+  def getHostnames() = {
+        InstitutionHostNameRepo(uuid).get
   }.requiring(isPlatformAdmin, AccessDeniedErr())
    .get
 }
