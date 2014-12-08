@@ -12,6 +12,12 @@ import kornell.server.util.Conditional.toConditional
 import kornell.server.util.RequirementNotMet
 import kornell.core.to.InstitutionRegistrationPrefixesTO
 import kornell.server.jdbc.repository.InstitutionRepo
+import kornell.core.entity.Roles
+import kornell.server.jdbc.repository.RolesRepo
+import kornell.core.to.RolesTO
+import javax.ws.rs.QueryParam
+import kornell.server.jdbc.repository.ChatThreadsRepo
+import kornell.server.util.AccessDeniedErr
 
 
 class InstitutionResource(uuid: String) {
@@ -36,6 +42,24 @@ class InstitutionResource(uuid: String) {
     InstitutionRepo(uuid).getRegistrationPrefixes
   }.requiring(isPlatformAdmin, RequirementNotMet).get
   
+  @PUT
+  @Consumes(Array(Roles.TYPE))
+  @Produces(Array(Roles.TYPE))
+  @Path("admins")
+  def updateAdmins(roles: Roles) = {
+        val r = RolesRepo.updateInstitutionAdmins(uuid, roles)
+        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid)
+        r
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .get
+
+  @GET
+  @Produces(Array(RolesTO.TYPE))
+  @Path("admins")
+  def getAdmins(@QueryParam("bind") bindMode:String) = {
+        RolesRepo.getInstitutionAdmins(uuid, bindMode)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .get
 }
 
 object InstitutionResource {
