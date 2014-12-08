@@ -107,7 +107,7 @@ public class GenericInstitutionReportItemView extends Composite {
     if(nextMonth > 12)
     	return (Integer.parseInt(year) + 1) + "-01";
     else
-    	return year + "-" + (nextMonth < 10 ? "0"+nextMonth : nextMonth);
+    	return year + "-" + (nextMonth < 10 ? "0"+nextMonth : nextMonth); 
   }
 
 	private void addItemsToPeriodList() {
@@ -118,7 +118,7 @@ public class GenericInstitutionReportItemView extends Composite {
 	  date = date.split("-")[0] + "-" + date.split("-")[1];
 	  while(!date.equals(next)){
 		  periodListBox.addItem(date, date);
-	  	date = getNextPeriod(date);
+	  	date = getNextPeriod(date); 
 	  }
   }
 

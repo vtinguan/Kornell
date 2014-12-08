@@ -90,7 +90,7 @@ public class GenericInstitutionAdminsView extends Composite {
 		fieldPanelWrapper.add(labelPanel);
 		
 		
-		session.courseClass(institution.getUUID()).getAdmins(RoleCategory.BIND_WITH_PERSON,
+		session.institution(institution.getUUID()).getAdmins(RoleCategory.BIND_WITH_PERSON,
 				new Callback<RolesTO>() {
 			@Override
 			public void ok(RolesTO to) {

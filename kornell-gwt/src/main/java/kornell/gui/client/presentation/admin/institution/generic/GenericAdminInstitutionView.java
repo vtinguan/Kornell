@@ -139,7 +139,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 					buildAdminsView();
 				}
 			});
-
+			tabsPanel.remove(reportsTab);
 			reportsTab.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
