@@ -24,6 +24,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PeopleMultipleSelect;
 
@@ -104,7 +105,7 @@ public class GenericCourseClassAdminsView extends Composite {
 		labelPanel.add(lblLabel);
 		fieldPanelWrapper.add(labelPanel);
 		
-		
+		LoadingPopup.show();
 		session.courseClass(courseClassTO.getCourseClass().getUUID()).getAdmins(RoleCategory.BIND_WITH_PERSON,
 				new Callback<RolesTO>() {
 			@Override
@@ -118,6 +119,7 @@ public class GenericCourseClassAdminsView extends Composite {
 					}
 					peopleMultipleSelect.addItem(item, roleTO.getPerson().getUUID());
 				}
+				LoadingPopup.hide();
 			}
 		});
 		peopleMultipleSelect = new PeopleMultipleSelect(session);

@@ -18,6 +18,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PeopleMultipleSelect;
 
@@ -89,7 +90,8 @@ public class GenericInstitutionAdminsView extends Composite {
 		labelPanel.add(lblLabel);
 		fieldPanelWrapper.add(labelPanel);
 		
-		
+
+		LoadingPopup.show();
 		session.institution(institution.getUUID()).getAdmins(RoleCategory.BIND_WITH_PERSON,
 				new Callback<RolesTO>() {
 			@Override
@@ -103,6 +105,7 @@ public class GenericInstitutionAdminsView extends Composite {
 					}
 					peopleMultipleSelect.addItem(item, roleTO.getPerson().getUUID());
 				}
+				LoadingPopup.hide();
 			}
 		});
 		peopleMultipleSelect = new PeopleMultipleSelect(session);
