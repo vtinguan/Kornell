@@ -1,37 +1,32 @@
 package kornell.gui.client.presentation.admin.institution.generic;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClass;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
-import kornell.core.entity.RegistrationEnrollmentType;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.InstitutionRegistrationPrefixesTO;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassAdminsView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassReportsView;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.Tab;
+import com.github.gwtbootstrap.client.ui.TabPanel;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -69,6 +64,17 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	private Presenter presenter;
 
 	@UiField
+	TabPanel tabsPanel;
+	@UiField
+	Tab editTab;
+	@UiField
+	Tab reportsTab;
+	@UiField
+	FlowPanel reportsPanel;
+	@UiField
+	Tab adminsTab;
+	
+	@UiField
 	HTMLPanel titleEdit;
 	@UiField
 	Form form;
@@ -92,13 +98,15 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private KornellFormFieldWrapper name, fullName, terms, assetsURL, baseURL, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
 	
-	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
-	private ListBox institutionRegistrationPrefixes;
+	private FlowPanel adminsPanel;
+	private GenericInstitutionReportsView reportsView;
+	private EventBus bus;
 	
 	public GenericAdminInstitutionView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.session = session;
+		this.bus = bus;
 		this.isPlatformAdmin = session.isPlatformAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -121,6 +129,37 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 							initData();
 					}
 				});
+
+		if (session.isPlatformAdmin()) {
+			adminsPanel = new FlowPanel();
+			adminsTab.add(adminsPanel);
+			adminsTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildAdminsView();
+				}
+			});
+			tabsPanel.remove(reportsTab);
+			reportsTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildReportsView();
+				}
+			});
+		}
+	}
+
+	public void buildReportsView() {
+		if (reportsView == null) {
+			reportsView = new GenericInstitutionReportsView(session, bus, institution);
+		}
+		reportsPanel.clear();
+		reportsPanel.add(reportsView);
+	}
+
+	public void buildAdminsView() {
+		adminsPanel.clear();
+		adminsPanel.add(new GenericInstitutionAdminsView(session, presenter, institution));
 	}
 
 	public void initData() {
