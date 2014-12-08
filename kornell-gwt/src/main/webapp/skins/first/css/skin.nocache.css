@@ -473,5 +473,6 @@ a{color:#5b9455 !important;}
 .reportPanel .reportWrapper .itemPanel .optionPanel{padding-left:48px;padding-top:5px;}.reportPanel .reportWrapper .itemPanel .optionPanel img{height:18px;width:18px;float:left;cursor:pointer;}
 .reportPanel .reportWrapper .itemPanel .optionPanel input{height:12px;margin-left:6px;}
 .reportPanel .reportWrapper .itemPanel .optionPanel span{font-size:10px;margin-left:2px;float:left;cursor:pointer;}
+.reportPanel .reportWrapper .itemPanel .optionPanel select{height:25px;float:left;margin-left:8px;font-size:14px;padding:0px 7px;width:100px;}
 .reportPanel .reportWrapper .lblGenerate{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;float:left;width:188.4px;padding-left:10px;padding-right:10px;text-align:center;}
 .reportPanel .reportWrapper .lblDownload{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;float:left;width:188.4px;text-align:center;padding-left:10px;padding-right:10px;}

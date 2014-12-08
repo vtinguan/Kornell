@@ -24,7 +24,13 @@ object CourseVersionsRepo {
 	      courseVersion.setUUID(UUID.random)
 	    }
 	    if (courseVersion.getRepositoryUUID == null){
-	      courseVersion.setRepositoryUUID("FIX-ME-PLEASE")
+	      //pick default repository for the institution
+	      courseVersion.setRepositoryUUID(sql"""
+						| select distinct cr.uuid 
+						| from S3ContentRepository cr
+						| join Course c on c.institutionUUID = cr.institutionUUID
+	    			| where c.uuid = ${courseVersion.getCourseUUID}
+				    """.first[String].get)
 	    }
 			courseVersion.setVersionCreatedAt(new Date());
 		
