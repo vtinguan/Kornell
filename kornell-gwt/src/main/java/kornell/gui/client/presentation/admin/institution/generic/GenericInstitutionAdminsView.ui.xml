@@ -3,7 +3,7 @@
 
   <g:FlowPanel addStyleNames="courseClassAdmins">
 		<g:HTMLPanel addStyleNames="title">Editar Administradores da Instituição</g:HTMLPanel>
-		<g:Label addStyleNames="subTitle">Escolha na lista abaixo os administradores da instituição. Os administradores da turma podem alterar as configurações da turma, adicionar novos administradores de turma, criar turmas, matricular alunos e responder as mensagens da turma.</g:Label>
+		<g:Label addStyleNames="subTitle">Escolha na lista abaixo os administradores da instituição. Os administradores da instituição podem alterar as configurações da turma, adicionar novos administradores de turma, criar turmas, matricular alunos e responder as mensagens da turma.</g:Label>
 		<b:Form ui:field="form" addStyleNames="profileForm">
 			<g:FlowPanel ui:field="adminsFields" addStyleNames="fieldsWrapper marginTop25">		
 			</g:FlowPanel>		

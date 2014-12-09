@@ -458,7 +458,7 @@ a{color:#5b9455 !important;}
 .deanHome .txtSearch{font-size:12px;height:17px;margin-right:5px;float:left;background-color:transparent;border:1px solid #505864;color:#bec1c3;}
 .deanHome .btnSearch{float:left;margin-top:3px;}
 .deanHome .courseClassConfig,.deanHome .courseClassReports,.deanHome .courseClassMessages,.deanHome .courseClassAdmins{width:962px;margin:0 auto;}
-.courseClassAdminField{height:auto !important;width:750px !important;}.courseClassAdminField .labelPanel{width:180px;}
+.courseClassAdminField{height:auto !important;width:760px !important;}.courseClassAdminField .labelPanel{width:200px;}
 .courseClassAdminField .fieldPanel{width:540px;}.courseClassAdminField .fieldPanel .textField{float:left;width:400px;}
 .courseClassAdminField .fieldPanel .btnAction{float:left;margin-left:15px;margin-top:4px;}
 .courseClassAdminField .fieldPanel .selectField{margin-top:15px;margin-bottom:25px;float:left;height:100px;width:414px;}

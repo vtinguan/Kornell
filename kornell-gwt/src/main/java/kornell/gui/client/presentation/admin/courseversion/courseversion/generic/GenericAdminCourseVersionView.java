@@ -9,9 +9,11 @@ import kornell.core.entity.ContentSpec;
 import kornell.core.entity.Course;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
+import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CoursesTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
@@ -169,6 +171,16 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 
 		String contentSpecAttr = courseVersion.getContentSpec() != null ? courseVersion.getContentSpec().toString() : "";
 		contentSpec = new KornellFormFieldWrapper("Tipo", formHelper.createTextBoxFormField(contentSpecAttr), isPlatformAdmin);
+		fields.add(contentSpec);
+		courseVersionFields.add(contentSpec);
+		
+		final ListBox contentSpecTypes = new ListBox();
+		contentSpecTypes.addItem("KNL", ContentSpec.KNL.toString());
+		contentSpecTypes.addItem("SCORM12", ContentSpec.SCORM12.toString());
+		if (!isCreationMode) {
+			contentSpecTypes.setSelectedValue(courseVersion.getContentSpec().toString());
+		}
+		contentSpec = new KornellFormFieldWrapper("Tipo", new ListBoxFormField(contentSpecTypes), isPlatformAdmin);
 		fields.add(contentSpec);
 		courseVersionFields.add(contentSpec);
 
