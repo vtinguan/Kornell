@@ -9,8 +9,6 @@ import kornell.core.entity.Institution;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassAdminsView;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassReportsView;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -19,11 +17,9 @@ import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,7 +32,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -68,11 +63,17 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	@UiField
 	Tab editTab;
 	@UiField
+	Tab hostnamesTab;
+	@UiField
+	FlowPanel hostnamesPanel;
+	@UiField
 	Tab reportsTab;
 	@UiField
 	FlowPanel reportsPanel;
 	@UiField
 	Tab adminsTab;
+	@UiField
+	FlowPanel adminsPanel;
 	
 	@UiField
 	HTMLPanel titleEdit;
@@ -100,8 +101,9 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
-	private FlowPanel adminsPanel;
 	private GenericInstitutionReportsView reportsView;
+	private GenericInstitutionAdminsView adminsView;
+	private GenericInstitutionHostnamesView hostnamesView;
 	private EventBus bus;
 	
 	public GenericAdminInstitutionView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
@@ -131,14 +133,20 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 				});
 
 		if (session.isPlatformAdmin()) {
-			adminsPanel = new FlowPanel();
-			adminsTab.add(adminsPanel);
+			hostnamesTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildHostnamesView();
+				}
+			});
+			
 			adminsTab.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					buildAdminsView();
 				}
 			});
+			
 			tabsPanel.remove(reportsTab);
 			reportsTab.addClickHandler(new ClickHandler() {
 				@Override
@@ -147,6 +155,12 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 				}
 			});
 		}
+	}
+
+	public void buildHostnamesView() {
+		hostnamesView = new GenericInstitutionHostnamesView(session, presenter, institution);
+		hostnamesPanel.clear();
+		hostnamesPanel.add(hostnamesView);
 	}
 
 	public void buildReportsView() {
@@ -158,8 +172,9 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	}
 
 	public void buildAdminsView() {
+		adminsView = new GenericInstitutionAdminsView(session, presenter, institution);
 		adminsPanel.clear();
-		adminsPanel.add(new GenericInstitutionAdminsView(session, presenter, institution));
+		adminsPanel.add(adminsView);
 	}
 
 	public void initData() {

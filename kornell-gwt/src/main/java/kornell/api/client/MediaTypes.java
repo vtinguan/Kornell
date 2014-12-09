@@ -21,6 +21,7 @@ import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.EnrollmentsTO;
+import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.RolesTO;
@@ -60,6 +61,7 @@ public class MediaTypes {
 		register(UnreadChatThreadsTO.TYPE,UnreadChatThreadsTO.class);
 		register(ChatThreadMessagesTO.TYPE,ChatThreadMessagesTO.class);
 		register(InstitutionRegistrationPrefixesTO.TYPE,InstitutionRegistrationPrefixesTO.class);
+		register(InstitutionHostNamesTO.TYPE, InstitutionHostNamesTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {
