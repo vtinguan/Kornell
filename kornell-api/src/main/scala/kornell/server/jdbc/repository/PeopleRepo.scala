@@ -96,8 +96,11 @@ object PeopleRepo {
     newPeople(
       sql"""
       	| select p.* from Person p 
-      	| where (p.email like ${search + "%"}
-      	| or p.cpf like ${search + "%"})
+      	| join Password pw on p.uuid = pw.person_uuid
+      	| where (pw.username like ${"%" + search + "%"}
+      	| or p.fullName like ${"%" + search + "%"}
+      	| or p.email like ${"%" + search + "%"}
+      	| or p.cpf like ${"%" + search + "%"})
       	| and p.institutionUUID = ${institutionUUID}
       	| order by p.email, p.cpf
       	| limit 8

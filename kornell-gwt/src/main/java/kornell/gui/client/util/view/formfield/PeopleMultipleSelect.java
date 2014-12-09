@@ -84,13 +84,13 @@ public class PeopleMultipleSelect extends Composite {
 	private FlowPanel getTypeAheadPanel() {
 		FlowPanel typeaheadPanel = new FlowPanel();
 		Typeahead typeahead = new Typeahead();
-	    search = new TextBox();
-	    search.addStyleName("textField");
-	    search.setPlaceholder("Digite o nome de usuário a adicionar");
-	    
-	    search.addKeyUpHandler(new KeyUpHandler() {
-	    	String currentSearch = "";
-	    	String previousSearch = "";
+    search = new TextBox();
+    search.addStyleName("textField");
+    search.setPlaceholder("Digite o nome de usuário a adicionar");
+    
+    search.addKeyUpHandler(new KeyUpHandler() {
+    	String currentSearch = "";
+    	String previousSearch = "";
 	    	
 			Timer searchChangesTimer = new Timer() {
 				@Override
