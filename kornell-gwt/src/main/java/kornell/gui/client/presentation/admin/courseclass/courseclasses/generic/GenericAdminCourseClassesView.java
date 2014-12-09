@@ -168,7 +168,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		}, "Data de Criação");
 
 		List<HasCell<CourseClassTO, ?>> cells = new LinkedList<HasCell<CourseClassTO, ?>>();
-		cells.add(new EnrollmentActionsHasCell("Editar", getStateChangeDelegate(EnrollmentState.enrolled)));
+		cells.add(new EnrollmentActionsHasCell("Editar", getEditCourseClassDelegate()));
 
 		CompositeCell<CourseClassTO> cell = new CompositeCell<CourseClassTO>(cells);
 		table.addColumn(new Column<CourseClassTO, CourseClassTO>(cell) {
@@ -184,7 +184,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		this.presenter = presenter;
 	}
 
-	private Delegate<CourseClassTO> getStateChangeDelegate(final EnrollmentState state) {
+	private Delegate<CourseClassTO> getEditCourseClassDelegate() {
 		return new Delegate<CourseClassTO>() {
 			@Override
 			public void execute(CourseClassTO courseClassTO) {

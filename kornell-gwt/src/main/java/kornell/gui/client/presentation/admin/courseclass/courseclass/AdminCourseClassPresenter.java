@@ -29,6 +29,7 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -39,6 +40,7 @@ import kornell.gui.client.util.ClientProperties;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -92,6 +94,16 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		// Schedule the timer to run every 15 minutes
 		cacheCleanerTimer.scheduleRepeating(15 * 60 * 1000);
 		init();
+
+		
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						if(event.getNewPlace() instanceof AdminCourseClassPlace)
+							init();
+					}
+				});
 	}
 
 	private void init() {
