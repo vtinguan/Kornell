@@ -8,7 +8,6 @@ import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Contents;
-import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.Kornell;
 import kornell.gui.client.personnel.Dean;
@@ -20,7 +19,6 @@ import kornell.gui.client.sequence.SequencerFactory;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class ClassroomPresenter implements ClassroomView.Presenter {
 	Logger logger = Logger.getLogger(Kornell.class.getName());

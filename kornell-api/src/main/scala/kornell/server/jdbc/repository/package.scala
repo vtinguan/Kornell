@@ -21,6 +21,7 @@ import kornell.server.repository.Entities
 import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
 import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.to.CourseVersionTO
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -64,7 +65,8 @@ package object repository {
     rs.getString("code"),
     rs.getString("title"),
     rs.getString("description"),
-    rs.getString("infoJson"))    
+    rs.getString("infoJson"),
+    rs.getString("institutionUUID"))    
 
   implicit def toCourseVersion(rs: ResultSet): CourseVersion = newCourseVersion(
     rs.getString("uuid"), 
@@ -111,6 +113,28 @@ package object repository {
 		    rs.getString("institutionRegistrationPrefix"));
     		
     TOs.newCourseClassTO(course, version, clazz)
+  }
+  
+  implicit def toCourseVersionTO(rs: ResultSet): CourseVersionTO = {
+    val courseVersion = newCourseVersion(
+        rs.getString("courseVersionUUID"), 
+        rs.getString("courseVersionName"), 
+        rs.getString("courseUUID"), 
+        rs.getString("repositoryUUID"), 
+        rs.getDate("versionCreatedAt"), 
+        rs.getString("distributionPrefix"), 
+        rs.getString("contentSpec"), 
+        rs.getBoolean("courseVersionDisabled"))
+        
+    val course = newCourse(
+        rs.getString("courseUUID"), 
+        rs.getString("courseCode"), 
+        rs.getString("courseTitle"), 
+        rs.getString("courseDescription"), 
+        rs.getString("infoJson"),
+        rs.getString("institutionUUID"))
+        
+    TOs.newCourseVersionTO(course, courseVersion)
   }
   
   implicit def toEnrollment(rs: ResultSet): Enrollment = {

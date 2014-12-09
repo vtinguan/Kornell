@@ -13,7 +13,8 @@ import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -93,11 +94,11 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				} else if (institution.isDemandsPersonContactDetails() && userInfoTO.getPerson().getCity() == null) {
 					newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
 				} else if (session.isInstitutionAdmin()) {
-					newPlace = new AdminHomePlace();
+					newPlace = new AdminCourseClassesPlace();
 				} else {
 					newPlace = welcomePlace;
 				}
-				clientFactory.setDefaultPlace(newPlace instanceof AdminHomePlace ? newPlace : welcomePlace);
+				clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
 				clientFactory.getPlaceController().goTo(newPlace);
 			}
 		};

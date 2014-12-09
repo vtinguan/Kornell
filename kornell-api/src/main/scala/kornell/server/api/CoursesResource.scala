@@ -11,6 +11,11 @@ import kornell.server.repository.s3.S3
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CoursesRepo
 import kornell.server.jdbc.repository.CourseRepo
+import kornell.core.entity.Course
+import kornell.server.util.Conditional.toConditional
+import kornell.server.util.RequirementNotMet
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.util.AccessDeniedErr
 
 @Path("courses")
 class CoursesResource {
@@ -20,17 +25,20 @@ class CoursesResource {
   
   @GET
   @Produces(Array(CoursesTO.TYPE))
-  def getCourses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID:String) =
+  def getCourses =
 	  AuthRepo().withPerson { person => {
-	     if(institutionUUID != null){
-	    	 CoursesRepo.byInstitution(institutionUUID)
-	     } 
+	    	 CoursesRepo.byInstitution(person.getInstitutionUUID)
 	  }
   }
   
-  def create(code:String) = CoursesRepo.create(code)
-  
-  
+  @POST
+  @Produces(Array(Course.TYPE))
+  @Consumes(Array(Course.TYPE))
+  def create(course: Course) = {
+    CoursesRepo.create(course)
+  }.requiring(isPlatformAdmin, RequirementNotMet)
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
 }
 
 object CoursesResource {

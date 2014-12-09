@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="915" pageHeight="842" columnWidth="915" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1000" pageHeight="842" columnWidth="1000" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="489"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="notStarted" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
@@ -31,6 +31,7 @@
 	<field name="assessmentScore" class="java.math.BigDecimal"/>
 	<field name="email" class="java.lang.String"/>
 	<field name="certifiedAt" class="java.lang.String"/>
+	<field name="enrolledAt" class="java.lang.String"/>
 	<title>
 		<band height="239">
 			<textField>
@@ -266,6 +267,14 @@ $P{maxEnrollments}]]></textFieldExpression>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{courseClassAdminNames}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="b83923d3-4f7b-47ec-9630-1d8de4245032" mode="Opaque" x="915" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[DATA MATR.]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
@@ -315,6 +324,15 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{certifiedAt} == null ?
     " - "
     : $F{certifiedAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="90520c48-2b19-4007-85b6-b730368d83a7" x="915" y="0" width="85" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{enrolledAt} == null ?
+    " - "
+    : $F{enrolledAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

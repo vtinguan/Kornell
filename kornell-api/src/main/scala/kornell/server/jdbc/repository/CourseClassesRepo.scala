@@ -25,8 +25,8 @@ object CourseClassesRepo {
 
   def create(courseClass: CourseClass):CourseClass = {
     val courseClassExists = sql"""
-    select count(*) from CourseClass where courseVersion_uuid = ${courseClass.getCourseVersionUUID} and name = ${courseClass.getName}
-    """.first[String].get
+	    select count(*) from CourseClass where courseVersion_uuid = ${courseClass.getCourseVersionUUID} and name = ${courseClass.getName}
+	    """.first[String].get
     if (courseClassExists == "0") {
 	    if (courseClass.getUUID == null){
 	      courseClass.setUUID(UUID.random)
@@ -93,7 +93,7 @@ object CourseClassesRepo {
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid
 		    and cc.institution_uuid = ${institutionUUID}
       where cc.state <> ${CourseClassState.deleted.toString}
-		  order by c.title, cc.name;
+		  order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
 		""".map[CourseClassTO](toCourseClassTO))
   }
 

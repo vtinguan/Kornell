@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.terms.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
@@ -81,10 +82,11 @@ public class GenericTermsView extends Composite implements TermsView {
 
 	@UiHandler("btnAgree")
 	void handleClickAll(ClickEvent e) {
-		session.institution(Dean.getInstance().getInstitution().getUUID()).acceptTerms(
-				new Callback<Void>() {
+		session.user().acceptTerms(
+				new Callback<UserInfoTO>() {
 					@Override
-					public void ok(Void v) {
+					public void ok(UserInfoTO userInfo) {
+						session.setCurrentUser(userInfo);
 						goStudy();
 					}
 				});

@@ -10,6 +10,8 @@ import kornell.core.entity.CourseClass
 import kornell.server.api.RepositoryResource
 import kornell.server.jdbc.repository.RepositoriesRepo
 import kornell.core.entity.RegistrationEnrollmentType
+import kornell.server.jdbc.repository.CourseVersionsRepo
+import kornell.server.jdbc.repository.CoursesRepo
 
 
 trait GenCourseClass
@@ -18,24 +20,30 @@ trait GenCourseClass
   
   val classCode = randStr(5)
   
-  val course = CoursesResource().create(code = classCode)
+  val course = CoursesRepo.create(Entities.newCourse(randUUID, classCode, null, null, null))
   val courseUUID = course.getUUID
   
   val courseVersion = {
-    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "").getUUID()
-    CourseVersionsResource(courseUUID).create(repositoryUUID = repositoryUUID)  
+    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "sa-east-1").getUUID
+    CourseVersionsRepo.create(Entities.newCourseVersion(repositoryUUID=repositoryUUID, courseUUID = courseUUID))
   }
   val courseVersionUUID = courseVersion.getUUID
-  
-	def newCourseClassEmail:CourseClass =     
-    CourseClassesResource(courseVersionUUID).createCourseClassEmail(randStr(5), institutionUUID)
-    
-    def newCourseClassCpf:CourseClass =     
-    CourseClassesResource(courseVersionUUID).createCourseClassCpf(randStr(5), institutionUUID)
    
-    def newPublicCourseClass = CourseClassesResource(courseVersionUUID).create((Entities.newCourseClass(
-        courseVersionUUID=courseVersionUUID,
-        institutionUUID=institutionUUID,
-        registrationEnrollmentType=RegistrationEnrollmentType.email,
-        publicClass=true)))
+  def newPublicCourseClass = CourseClassesResource().create((Entities.newCourseClass(
+    courseVersionUUID=courseVersionUUID,
+    institutionUUID=institutionUUID,
+    registrationEnrollmentType=RegistrationEnrollmentType.email,
+    publicClass=true)))
+        
+  def newCourseClassCpf:CourseClass = CourseClassesResource().create((Entities.newCourseClass(
+    name=randStr(5),
+    courseVersionUUID=courseVersionUUID,
+    institutionUUID=institutionUUID,
+    registrationEnrollmentType=RegistrationEnrollmentType.cpf)))
+        
+  def newCourseClassEmail:CourseClass = CourseClassesResource().create((Entities.newCourseClass(
+    name=randStr(5),
+    courseVersionUUID=courseVersionUUID,
+    institutionUUID=institutionUUID,
+    registrationEnrollmentType=RegistrationEnrollmentType.email)))
 }

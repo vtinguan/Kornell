@@ -47,5 +47,8 @@ public class UserClient extends RESTClient {
 		PUT("/user/" + userInfo.getPerson().getUUID()).withContentType(UserInfoTO.TYPE).withEntityBody(userInfo).go(cb);
 	}
 	
+	public void acceptTerms(Callback<UserInfoTO> cb) {
+		PUT("/user/acceptTerms").sendRequest(null, cb);
+	}
 	
 }

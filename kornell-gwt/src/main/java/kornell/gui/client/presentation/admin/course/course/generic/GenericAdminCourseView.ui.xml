@@ -1,0 +1,26 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+
+  <g:FlowPanel addStyleNames="deanHome">
+	  <g:FlowPanel addStyleNames="courseClassConfig">
+	    <g:HTMLPanel ui:field="titleEdit" addStyleNames="title unclear left fillWidth marginBottom25">Editar Curso</g:HTMLPanel>
+	    <b:Form ui:field="form" addStyleNames="profileForm left">
+	      <g:FlowPanel ui:field="courseFields" addStyleNames="fieldsWrapper">    
+	      </g:FlowPanel>    
+	      <g:FlowPanel addStyleNames="standardButtonBar">
+	        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
+	        <g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
+	      </g:FlowPanel>
+	    </b:Form>   
+	    <b:Modal ui:field="confirmModal" title="Confirmação" backdrop="NORMAL" addStyleNames="forgotPasswordModal">
+	      <g:FlowPanel>
+	        <g:Label ui:field="confirmText"></g:Label>
+	        <g:FlowPanel addStyleNames="standardButtonBar">
+	          <g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
+	          <g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
+	        </g:FlowPanel>
+	      </g:FlowPanel>
+	    </b:Modal>
+    </g:FlowPanel>
+  </g:FlowPanel>
+</ui:UiBinder>

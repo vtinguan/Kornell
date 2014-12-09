@@ -128,6 +128,10 @@ object ChatThreadsRepo {
 		    """.first[String]
   }
   
+  def updateParticipantsInCourseClassSupportThreadsForInstitution(institutionUUID: String) = {
+    sql"""select uuid from CourseClass where institution_uuid = ${institutionUUID}""".map[String](toString)
+    .foreach(cc => updateParticipantsInCourseClassSupportThreads(cc))
+  }
   
   def updateParticipantsInCourseClassSupportThreads(courseClassUUID: String) = {
 	  type CourseClassSupportThreadData = Tuple2[String,String] 

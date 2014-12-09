@@ -78,13 +78,15 @@ object RolesRepo {
   
   def updateCourseClassAdmins(courseClassUUID: String, roles: Roles) = removeCourseClassAdmins(courseClassUUID).addRoles(roles)
   
+  def updateInstitutionAdmins(institutionUUID: String, roles: Roles) = removeInstitutionAdmins(institutionUUID).addRoles(roles)
+  
   def addRoles(roles: Roles) = {
     roles.getRoles.asScala.foreach(addRole _)
     roles
   }
 
   private def addRole(role: Role) = {
-    if(RoleType.courseClassAdmin.equals(role.getRoleType()))
+    if(RoleType.courseClassAdmin.equals(role.getRoleType)) {
 	    sql"""
 	    	insert into Role (uuid, person_uuid, role, course_class_uuid)
 	    	values (${UUID.random}, 
@@ -92,12 +94,30 @@ object RolesRepo {
 	    	${role.getRoleType.toString}, 
 	    	${role.getCourseClassAdminRole.getCourseClassUUID})
 	    """.executeUpdate
+    }
+    if (RoleType.institutionAdmin.equals(role.getRoleType)) {
+      sql"""
+            insert into Role (uuid, person_uuid, role, institution_uuid)
+            values (${UUID.random}, 
+            ${role.getPersonUUID}, 
+            ${role.getRoleType.toString}, 
+            ${role.getInstitutionAdminRole.getInstitutionUUID})
+        """.executeUpdate
+    }
   }
   
   def removeCourseClassAdmins(courseClassUUID: String) = {
     sql"""
     	delete from Role
     	where course_class_uuid = ${courseClassUUID}
+    """.executeUpdate
+    this
+  }
+  
+  def removeInstitutionAdmins(institutionUUID: String) = {
+    sql"""
+        delete from Role
+        where institution_uuid = ${institutionUUID}
     """.executeUpdate
     this
   }

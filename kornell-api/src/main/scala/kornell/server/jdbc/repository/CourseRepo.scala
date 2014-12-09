@@ -9,9 +9,19 @@ import kornell.server.jdbc.SQL._
 
 class CourseRepo(uuid: String) {
 
-  def get() = sql"""select * from Course where uuid=$uuid""".first[Course]
-
-  def withEnrollment(p: Person) = ???
+  def get = sql"""select * from Course where uuid=$uuid""".get[Course]
+  
+  def update(course: Course): Course = {    
+    sql"""
+    | update Course c
+    | set c.code = ${course.getCode},
+    | c.title = ${course.getTitle}, 
+    | c.description = ${course.getDescription},
+    | c.infoJson = ${course.getInfoJson},
+    | c.institutionUUID = ${course.getInstitutionUUID}
+    | where c.uuid = ${course.getUUID}""".executeUpdate
+    course
+  }
 
 }
 

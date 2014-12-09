@@ -1,7 +1,16 @@
 
 package kornell.gui.client;
 
-import kornell.gui.client.presentation.admin.home.AdminHomeView;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
+import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsView;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPresenter;
@@ -25,6 +34,7 @@ public interface ViewFactory {
 	void initGUI();
 	
 	SimplePanel getShell();
+	ScrollPanel getScrollPanel();
 	
 	MenuBarView getMenuBarView();
 	SouthBarView getSouthBarView(); 
@@ -36,21 +46,25 @@ public interface ViewFactory {
 	ProfileView getProfileView();
 	MessageView getMessageView();
 	MessageComposeView getMessageComposeView();
+	MessagePresenter getMessagePresenter();
+	MessagePresenter getMessagePresenterCourseClass();
 
-
-	
 	ClassroomView getClassroomView();
 	ClassroomPresenter getClassroomPresenter();
 	SandboxView getSandboxView();
 	SandboxPresenter getSandboxPresenter();
 	
 	//admin
-	AdminHomeView getAdminHomeView();
-	MessagePresenter getMessagePresenter();
-	MessagePresenter getMessagePresenterCourseClass();
-
-	ScrollPanel getScrollPanel();
-
+	AdminInstitutionView getAdminInstitutionView();
+	AdminCoursesView getAdminCoursesView();
+	AdminCourseView getAdminCourseView();
+	AdminCoursePresenter getAdminCoursePresenter();
+	AdminCourseVersionsView getAdminCourseVersionsView();
+	AdminCourseVersionView getAdminCourseVersionView();
+	AdminCourseVersionPresenter getAdminCourseVersionPresenter();
+	AdminCourseClassesView getAdminCourseClassesView();
+	AdminCourseClassView getAdminCourseClassView();
+	AdminCourseClassPresenter getAdminCourseClassPresenter();
 
 
 }

@@ -230,6 +230,15 @@ class UserResource(private val authRepo:AuthRepo) {
       }
     }
   }
+    
+  @PUT
+  @Path("acceptTerms")
+  @Consumes(Array("text/plain"))
+  @Produces(Array(UserInfoTO.TYPE))
+  def acceptTerms() = AuthRepo().withPerson{ p =>
+    PersonRepo(p.getUUID).acceptTerms
+    getUser(p)
+  }
 
   def createUser(institutionUUID: String, fullName: String, email: String, cpf: String, username: String, password: String): String = {
     val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username)

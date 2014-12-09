@@ -30,7 +30,7 @@ object Passed {
 
 class Failed[T](expr: => T, _err: => Err) extends Conditional[T] {
   def isPassed: Boolean = false
-  def get: T = throw new IllegalStateException("cannot get failed", err)
+  def get: T = throw _err
   def err = _err
   def requiring(newcond: => Boolean, e: => Err) = this
   def or(newcond: => Boolean, e: => Err): Conditional[T] =

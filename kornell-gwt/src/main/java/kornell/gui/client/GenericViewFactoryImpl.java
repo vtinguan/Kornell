@@ -2,8 +2,23 @@ package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomeView;
-import kornell.gui.client.presentation.admin.home.generic.GenericAdminHomeView;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
+import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
+import kornell.gui.client.presentation.admin.course.course.generic.GenericAdminCourseView;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
+import kornell.gui.client.presentation.admin.course.courses.generic.GenericAdminCoursesView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericAdminCourseClassView;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.generic.GenericAdminCourseClassesView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.generic.GenericAdminCourseVersionView;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsView;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.generic.GenericAdminCourseVersionsView;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
+import kornell.gui.client.presentation.admin.institution.generic.GenericAdminInstitutionView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
@@ -49,13 +64,24 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	private GenericMenuBarView menuBarView;
 	private SouthBarView southBarView;
 	private GenericHomeView genericHomeView;
-	private GenericAdminHomeView genericAdminHomeView;
+	private GenericAdminCourseClassView genericAdminHomeView;
+	private AdminCourseClassPresenter genericAdminCourseClassPresenter;
+	private AdminCourseVersionPresenter genericAdminCourseVersionPresenter;
+	private GenericAdminCourseClassesView genericAdminCourseClassesView;
+	private GenericAdminInstitutionView genericAdminInstitutionView;
+	private GenericAdminCoursesView genericAdminCoursesView;
+	private GenericAdminCourseView genericAdminCourseView;
+	private AdminCoursePresenter genericAdminCoursePresenter;
+	private GenericAdminCourseVersionsView genericAdminCourseVersionsView;
+	private GenericAdminCourseVersionView genericAdminCourseVersionView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
 	private MessagePresenter messagePresenter, messagePresenterCourseClass;
 	private boolean isMantleShown = false;
 
 	SimplePanel shell = new SimplePanel();
+
+
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -208,9 +234,9 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	}
 
 	@Override
-	public AdminHomeView getAdminHomeView() {
+	public AdminCourseClassView getAdminCourseClassView() {
 		if(genericAdminHomeView == null)
-			genericAdminHomeView = new GenericAdminHomeView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+			genericAdminHomeView = new GenericAdminCourseClassView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 		return genericAdminHomeView;
 	}
 	
@@ -236,5 +262,68 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		if(messagePresenter == null)
 			messagePresenter = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 	  return messagePresenter;
+  }
+
+	@Override
+  public AdminInstitutionView getAdminInstitutionView() {
+		if(genericAdminInstitutionView == null)
+			genericAdminInstitutionView = new GenericAdminInstitutionView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminInstitutionView;
+  }
+
+	@Override
+  public AdminCourseView getAdminCourseView() {
+		if(genericAdminCourseView == null)
+			genericAdminCourseView = new GenericAdminCourseView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController());
+		return genericAdminCourseView;
+  }
+
+	@Override
+  public AdminCoursePresenter getAdminCoursePresenter() {
+		if(genericAdminCoursePresenter == null)
+			genericAdminCoursePresenter = new AdminCoursePresenter(clientFactory.getKornellSession(),clientFactory.getPlaceController(),clientFactory.getEventBus(), clientFactory.getDefaultPlace(),clientFactory.getEntityFactory(),this);
+		return genericAdminCoursePresenter;
+  }
+
+	@Override
+  public AdminCourseVersionView getAdminCourseVersionView() {
+		if(genericAdminCourseVersionView == null)
+			genericAdminCourseVersionView = new GenericAdminCourseVersionView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController());
+		return genericAdminCourseVersionView;
+  }
+
+	@Override
+  public AdminCoursesView getAdminCoursesView() {
+		if(genericAdminCoursesView == null)
+			genericAdminCoursesView = new GenericAdminCoursesView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminCoursesView;
+  }
+
+	@Override
+  public AdminCourseVersionsView getAdminCourseVersionsView() {
+		if(genericAdminCourseVersionsView == null)
+			genericAdminCourseVersionsView = new GenericAdminCourseVersionsView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminCourseVersionsView;
+  }
+
+	@Override
+  public AdminCourseVersionPresenter getAdminCourseVersionPresenter() {
+		if(genericAdminCourseVersionPresenter == null)
+			genericAdminCourseVersionPresenter = new AdminCourseVersionPresenter(clientFactory.getKornellSession(),clientFactory.getPlaceController(),clientFactory.getEventBus(), clientFactory.getDefaultPlace(),clientFactory.getEntityFactory(),this);
+		return genericAdminCourseVersionPresenter;
+  }
+
+	@Override
+  public AdminCourseClassesView getAdminCourseClassesView() {
+		if(genericAdminCourseClassesView == null)
+			genericAdminCourseClassesView = new GenericAdminCourseClassesView(clientFactory.getKornellSession(), clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminCourseClassesView;
+  }
+
+	@Override
+  public AdminCourseClassPresenter getAdminCourseClassPresenter() {
+		if(genericAdminCourseClassPresenter == null)
+			genericAdminCourseClassPresenter = new AdminCourseClassPresenter(clientFactory.getKornellSession(),clientFactory.getEventBus(),clientFactory.getPlaceController(),clientFactory.getDefaultPlace(),clientFactory.getTOFactory(),this);
+		return genericAdminCourseClassPresenter;
   }
 }

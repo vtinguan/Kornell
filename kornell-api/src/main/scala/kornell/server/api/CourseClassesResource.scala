@@ -22,23 +22,7 @@ import javax.ws.rs.POST
 import kornell.core.entity.RegistrationEnrollmentType
 
 @Path("courseClasses")
-class CourseClassesResource(val courseVersionUUID:String) {
-  def this() = this(null) 
-  
-  def createCourseClassEmail(name:String, institutionUUID:String):CourseClass = 
-    create((Entities.newCourseClass(
-        name=name,
-        courseVersionUUID=courseVersionUUID,
-        institutionUUID=institutionUUID,
-        registrationEnrollmentType=RegistrationEnrollmentType.email)))
-        
-  def createCourseClassCpf(name:String, institutionUUID:String):CourseClass = 
-    create((Entities.newCourseClass(
-        name=name,
-        courseVersionUUID=courseVersionUUID,
-        institutionUUID=institutionUUID,
-        registrationEnrollmentType=RegistrationEnrollmentType.cpf)))
-  
+class CourseClassesResource {
   
   @POST
   @Consumes(Array(CourseClass.TYPE))
@@ -78,6 +62,5 @@ class CourseClassesResource(val courseVersionUUID:String) {
 }
 
 object CourseClassesResource{
-  def apply() = new CourseClassesResource(null)
-  def apply(courseVersionUUID:String) = new CourseClassesResource(courseVersionUUID)
+  def apply() = new CourseClassesResource()
 }

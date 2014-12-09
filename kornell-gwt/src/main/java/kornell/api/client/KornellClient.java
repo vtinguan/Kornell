@@ -28,8 +28,16 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new CoursesClient();
 	}
 
+	public CourseClient course(String uuid) {
+		return new CourseClient(uuid);
+	}
+
 	public CourseVersionsClient courseVersions() {
 		return new CourseVersionsClient();
+	}
+
+	public CourseVersionClient courseVersion(String uuid) {
+		return new CourseVersionClient(uuid);
 	}
 
 	public CourseClassesClient courseClasses() {
