@@ -3,6 +3,7 @@ package kornell.api.client;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Roles;
+import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.RolesTO;
 
@@ -32,6 +33,14 @@ public class InstitutionClient extends RESTClient {
 
 	public void updateAdmins(Roles roles, Callback<Roles> cb) {
 		PUT("institutions",institutionUUID,"admins").withContentType(Roles.TYPE).withEntityBody(roles).go(cb);
+	}
+
+	public void getHostnames(Callback<InstitutionHostNamesTO> cb) {
+		GET("institutions",institutionUUID,"hostnames").go(cb);
+	}
+
+	public void updateHostnames(InstitutionHostNamesTO institutionHostNamesTO, Callback<InstitutionHostNamesTO> cb) {
+		PUT("institutions",institutionUUID,"hostnames").withContentType(InstitutionHostNamesTO.TYPE).withEntityBody(institutionHostNamesTO).go(cb);
 	}
 
 	

@@ -9,11 +9,10 @@ import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.entity.InstitutionAdminRole;
 import kornell.core.entity.Role;
-import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.entity.Roles;
-import kornell.core.to.RoleTO;
-import kornell.core.to.RolesTO;
+import kornell.core.to.InstitutionHostNamesTO;
+import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -21,6 +20,7 @@ import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PeopleMultipleSelect;
+import kornell.gui.client.util.view.formfield.SimpleMultipleSelect;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -36,19 +36,19 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class GenericInstitutionAdminsView extends Composite {
-	interface MyUiBinder extends UiBinder<Widget, GenericInstitutionAdminsView> {
+public class GenericInstitutionHostnamesView extends Composite {
+	interface MyUiBinder extends UiBinder<Widget, GenericInstitutionHostnamesView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
+	public static final TOFactory toFactory = GWT.create(TOFactory.class);
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	private KornellSession session;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 	
-	PeopleMultipleSelect peopleMultipleSelect;
+	SimpleMultipleSelect simpleMultipleSelect;
 
 	@UiField
 	Form form;
@@ -63,7 +63,7 @@ public class GenericInstitutionAdminsView extends Composite {
 	private Institution institution;
 	private List<KornellFormFieldWrapper> fields;
 	
-	public GenericInstitutionAdminsView(final KornellSession session,
+	public GenericInstitutionHostnamesView(final KornellSession session,
 			kornell.gui.client.presentation.admin.institution.AdminInstitutionView.Presenter presenter, Institution institution) {
 		this.session = session;
 		this.user = session.getCurrentUser();
@@ -85,31 +85,25 @@ public class GenericInstitutionAdminsView extends Composite {
 		
 		FlowPanel labelPanel = new FlowPanel();
 		labelPanel.addStyleName("labelPanel");
-		Label lblLabel = new Label("Administradores da Instituição");
+		Label lblLabel = new Label("Domínios da Instituição");
 		lblLabel.addStyleName("lblLabel");
 		labelPanel.add(lblLabel);
 		fieldPanelWrapper.add(labelPanel);
 		
 
 		LoadingPopup.show();
-		session.institution(institution.getUUID()).getAdmins(RoleCategory.BIND_WITH_PERSON,
-				new Callback<RolesTO>() {
+		session.institution(institution.getUUID()).getHostnames(new Callback<InstitutionHostNamesTO>() {
 			@Override
-			public void ok(RolesTO to) {
-				for (RoleTO roleTO : to.getRoleTOs()) {
-					String item = roleTO.getPerson().getEmail() != null ?
-							roleTO.getPerson().getEmail() :
-								roleTO.getPerson().getCPF();
-					if(roleTO.getPerson().getFullName() != null && !"".equals(roleTO.getPerson().getFullName())){
-						item += " (" +roleTO.getPerson().getFullName()+")";
-					}
-					peopleMultipleSelect.addItem(item, roleTO.getPerson().getUUID());
+			public void ok(InstitutionHostNamesTO to) {
+				for (String institutionHostName : to.getInstitutionHostNames()) {
+					simpleMultipleSelect.addItem(institutionHostName, institutionHostName);
 				}
 				LoadingPopup.hide();
 			}
 		});
-		peopleMultipleSelect = new PeopleMultipleSelect(session);
-		fieldPanelWrapper.add(peopleMultipleSelect.asWidget());
+		simpleMultipleSelect = new SimpleMultipleSelect();
+		fieldPanelWrapper.add(simpleMultipleSelect.asWidget());
+		
 		
 		fieldPanelWrapper.add(formHelper.getImageSeparator());
 		adminsFields.add(fieldPanelWrapper);
@@ -117,25 +111,18 @@ public class GenericInstitutionAdminsView extends Composite {
 
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) {
-		if(session.isInstitutionAdmin()){
-			Roles roles = entityFactory.newRoles().as();
-			List<Role> rolesList = new ArrayList<Role>();
-			ListBox multipleSelect = peopleMultipleSelect.getMultipleSelect();
+		if(session.isPlatformAdmin()){
+			InstitutionHostNamesTO institutionHostNamesTO = toFactory.newInstitutionHostNamesTO().as();
+			List<String> institutionHostNames = new ArrayList<String>();
+			ListBox multipleSelect = simpleMultipleSelect.getMultipleSelect();
 			for (int i = 0; i < multipleSelect.getItemCount(); i++) {
-				String personUUID = multipleSelect.getValue(i);
-				Role role = entityFactory.newRole().as();
-				InstitutionAdminRole institutionAdminRole = entityFactory.newInstitutionAdminRole().as();
-				role.setPersonUUID(personUUID);
-				role.setRoleType(RoleType.institutionAdmin);
-				institutionAdminRole.setInstitutionUUID(institution.getUUID());
-				role.setInstitutionAdminRole(institutionAdminRole);
-				rolesList.add(role);  
+				institutionHostNames.add(multipleSelect.getValue(i));  
 			}
-			roles.setRoles(rolesList);
-			session.institution(institution.getUUID()).updateAdmins(roles, new Callback<Roles>() {
+			institutionHostNamesTO.setInstitutionHostNames(institutionHostNames);
+			session.institution(institution.getUUID()).updateHostnames(institutionHostNamesTO, new Callback<InstitutionHostNamesTO>() {
 				@Override
-				public void ok(Roles to) {
-					KornellNotification.show("Os administradores da instituição foram atualizados com sucesso.", AlertType.SUCCESS);
+				public void ok(InstitutionHostNamesTO to) {
+					KornellNotification.show("Os domínios da instituição foram atualizados com sucesso.", AlertType.SUCCESS);
 				}
 			});
 		}

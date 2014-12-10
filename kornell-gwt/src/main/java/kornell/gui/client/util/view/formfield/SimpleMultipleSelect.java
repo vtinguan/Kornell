@@ -28,17 +28,15 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PeopleMultipleSelect extends Composite {
+public class SimpleMultipleSelect extends Composite {
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	
 	private KornellSession session;
 	private TextBox search;
 	private MultiWordSuggestOracle oracle;
 	private ListBox multipleSelect;
-	private Map<String, Person> oraclePeople;
 
-	public PeopleMultipleSelect(KornellSession session) {
-		this.session = session;
+	public SimpleMultipleSelect() {
 	}
 	
 	@Override
@@ -62,6 +60,7 @@ public class PeopleMultipleSelect extends Composite {
 		FlowPanel multipleSelectPanel = new FlowPanel();
 		multipleSelect = new ListBox(true);
 		multipleSelect.addStyleName("selectField");
+		multipleSelect.addStyleName("height200");
 
 		multipleSelectPanel.add(multipleSelect);
 		
@@ -83,39 +82,10 @@ public class PeopleMultipleSelect extends Composite {
 
 	private FlowPanel getTypeAheadPanel() {
 		FlowPanel typeaheadPanel = new FlowPanel();
-		Typeahead typeahead = new Typeahead();
     search = new TextBox();
     search.addStyleName("textField");
-    search.setPlaceholder("Digite o nome de usuário a adicionar");
-    
-    search.addKeyUpHandler(new KeyUpHandler() {
-    	String currentSearch = "";
-    	String previousSearch = "";
-	    	
-			Timer searchChangesTimer = new Timer() {
-				@Override
-				public void run() {
-					searchChanged(currentSearch);
-				}
-			};
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				currentSearch = search.getText();
-				if(currentSearch.length() >= 1 && !currentSearch.equals(previousSearch)){
-					searchChangesTimer.cancel();
-					searchChangesTimer.schedule(100);
-				}
-				previousSearch = currentSearch;
-			}
-		});
-	    
-	  typeahead.add(search);
-		
-		oracle = (MultiWordSuggestOracle) typeahead.getSuggestOracle();
-			
-		
-		typeaheadPanel.add(typeahead);
+    search.setPlaceholder("Digite o nome do domínio a adicionar");
+		typeaheadPanel.add(search);
 
 		Button btnAdd = new Button("ADICIONAR");
 		btnAdd.addStyleName("btnAction btnStandard");
@@ -132,36 +102,18 @@ public class PeopleMultipleSelect extends Composite {
 		return typeaheadPanel;
 	}
 
-	private void searchChanged(String search) {
-		session.people().findBySearchTerm(search, Dean.getInstance().getInstitution().getUUID(), new Callback<People>() {
-			@Override
-			public void ok(People to) {
-				oraclePeople = new HashMap<String, Person>();
-				oracle.clear();
-				String username, oracleStr;
-				int i = 0;
-				for (Person person : to.getPeople()) {
-					username = person.getEmail() != null ? person.getEmail() : person.getCPF();
-					oracleStr = username +
-								(person.getFullName() != null && !"".equals(person.getFullName()) ?
-								" (" + person.getFullName() + ")" : "");
-					oracle.add(oracleStr);
-					oraclePeople.put(username, person);
-					if(++i == 10) break;
-				}
-			}
-		});		
-	}
-
 	private void addAdmin() {
-		String item = search.getText().split(" \\(")[0];
-		if(oraclePeople != null && oraclePeople.containsKey(item)){
-			if(!formHelper.isItemInListBox(search.getText(), multipleSelect)){
-				Person person = (Person) oraclePeople.get(item);
-				multipleSelect.addItem(search.getText(), person.getUUID());
-			}
-			search.setText("");
-		}
+		boolean found = false;
+		for (int i = 0; i < multipleSelect.getItemCount(); i++) {
+	    if(multipleSelect.getValue(i).equals(search.getText())){
+	    	found = true;
+	    	break;
+	    }
+    }
+		if(!found)
+			multipleSelect.addItem(search.getText(), search.getText());
+		
+		search.setText("");
 	}
 
 	public ListBox getMultipleSelect() {
