@@ -12,8 +12,9 @@ import com.google.gwt.http.client.RequestBuilder;
 
 public class RESTClient {
 	
-	private String apiURL = "/api";
 	Logger logger = Logger.getLogger(RESTClient.class.getName());
+	
+	private String apiURL = "/api";
 	
 	public String getApiUrl() {		
 		return apiURL;
