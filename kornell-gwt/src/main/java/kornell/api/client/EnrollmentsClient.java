@@ -1,5 +1,7 @@
 package kornell.api.client;
 
+import java.util.logging.Logger;
+
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
 import kornell.core.to.EnrollmentRequestsTO;
@@ -30,7 +32,7 @@ public class EnrollmentsClient extends RESTClient {
 				new Callback<Void>() {
 					@Override
 					public void ok(Void v) {
-						GWT.log("notes updated");
+						logger.info("notes updated");
 					}
 				});
 	}

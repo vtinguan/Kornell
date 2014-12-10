@@ -147,7 +147,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
   	    ScriptInjector.fromUrl("/js/screenfull.min.js").setCallback(
   	 		     new com.google.gwt.core.client.Callback<Void, Exception>() {
   	 		        public void onFailure(Exception reason) {
-  	 		          GWT.log("Script load failed.");
+  	 		        	logger.severe("Screeenful script load failed.");
   	 		        }
   	 		        public void onSuccess(Void result) {
   	 		        	isLoaded = true;

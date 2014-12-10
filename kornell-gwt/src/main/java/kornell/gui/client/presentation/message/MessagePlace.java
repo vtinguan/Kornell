@@ -23,6 +23,6 @@ public class MessagePlace extends Place{
 
 	@Override
 	public String toString() {		
-		return new Tokenizer().getToken(this);
+		return getClass().getSimpleName() + ":" + new Tokenizer().getToken(this);
 	}
 }

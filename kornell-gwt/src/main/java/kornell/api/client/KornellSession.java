@@ -101,7 +101,7 @@ public class KornellSession extends KornellClient {
 	
 	public UserInfoTO getCurrentUser() {
 		if (currentUser == null) {
-			GWT.log("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
+			logger.warning("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
 		}
 		return currentUser;
 	}

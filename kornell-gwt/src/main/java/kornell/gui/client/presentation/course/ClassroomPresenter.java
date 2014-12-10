@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ClassroomPresenter implements ClassroomView.Presenter {
-	Logger logger = Logger.getLogger(Kornell.class.getName());
+	Logger logger = Logger.getLogger(ClassroomPresenter.class.getName());
 	private ClassroomView view;
 	private ClassroomPlace place;
 	private PlaceController placeCtrl;

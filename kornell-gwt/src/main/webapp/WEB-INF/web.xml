@@ -16,7 +16,12 @@
 		<servlet-name>repositoryProxy</servlet-name>
 		<servlet-class>kornell.server.LocalRepositoryServlet</servlet-class>
 	</servlet>
-
+  
+  <servlet>
+    <servlet-name>remoteLogging</servlet-name>
+    <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+  </servlet>
+	
 	<servlet>
 		<servlet-name>apiProxy</servlet-name>
 		<servlet-class>kornell.server.ProxyServlet</servlet-class>
@@ -30,6 +35,11 @@
 		</init-param>
 	</servlet>	
 	
+  <servlet-mapping>
+    <servlet-name>remoteLogging</servlet-name>
+    <url-pattern>/Kornell/remote_logging</url-pattern>
+  </servlet-mapping>
+  
 	<servlet-mapping>
 		<servlet-name>repositoryProxy</servlet-name>
 		<url-pattern>/repository/*</url-pattern>

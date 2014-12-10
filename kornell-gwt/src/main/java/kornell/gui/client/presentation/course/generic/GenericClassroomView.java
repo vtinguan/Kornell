@@ -1,10 +1,13 @@
 package kornell.gui.client.presentation.course.generic;
 
+import java.util.logging.Logger;
+
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.details.GenericCourseDetailsView;
 
@@ -23,7 +26,8 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	private PlaceController placeCtrl;
 	private KornellSession session;
 	private EventBus bus;
-	
+
+	Logger logger = Logger.getLogger(AdminInstitutionPresenter.class.getName());
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	@UiField
@@ -38,7 +42,6 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	private Presenter presenter;
 
 	public GenericClassroomView(PlaceController placeCtrl, KornellSession session, EventBus bus) {
-		GWT.log("new GenericClassroomView");
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		this.bus = bus;

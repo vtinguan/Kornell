@@ -7,6 +7,9 @@ import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
 import static com.google.gwt.http.client.Response.SC_CONFLICT;
+
+import java.util.logging.Logger;
+
 import kornell.core.entity.EntityFactory;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
@@ -25,6 +28,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  
 public abstract class Callback<T> implements RequestCallback {
+	Logger logger = Logger.getLogger(Callback.class.getName());
 
 	@Override
 	public void onResponseReceived(Request request, Response response) {		
@@ -57,7 +61,7 @@ public abstract class Callback<T> implements RequestCallback {
 			failed();
 			break;
 		default:
-			GWT.log("Got a response, but don't know what to do about it");
+			logger.fine("Got a response, but don't know what to do about it");
 			break;
 		}
 	}
@@ -148,7 +152,7 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void failed() {
-		GWT.log("Your request failed. Please check that the API is running and responding cross-origin requests.");
+		logger.severe("Your request failed. Please check that the API is running and responding cross-origin requests.");
 	}
 
 	protected void unauthorized(String errorMessage) {
@@ -169,7 +173,7 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	private void error(Request request, Throwable exception) {
-		GWT.log("Error!", exception);
+		logger.severe("Error: " + exception.getMessage());
 	}
 
 }

@@ -24,6 +24,6 @@ public class AdminCourseClassesPlace extends CourseClassPlace{
 
 	@Override
 	public String toString() {		
-		return new Tokenizer().getToken(this);
+		return getClass().getSimpleName() + ":" + new Tokenizer().getToken(this);
 	}
 }
