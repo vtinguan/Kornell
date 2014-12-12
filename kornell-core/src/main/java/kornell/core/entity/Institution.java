@@ -35,4 +35,7 @@ public interface Institution extends Named {
 
 	String getSkin();
 	void setSkin(String skin);
+	
+	BillingType getBillingType();
+	void setBillingType(BillingType billingType);
 }

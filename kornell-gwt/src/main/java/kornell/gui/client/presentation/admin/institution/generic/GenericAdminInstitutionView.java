@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.KornellSession;
+import kornell.core.entity.ContentSpec;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.gui.client.KornellConstants;
@@ -14,9 +15,11 @@ import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
@@ -97,7 +100,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private Institution institution;
 
-	private KornellFormFieldWrapper name, fullName, terms, assetsURL, baseURL, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
+	private KornellFormFieldWrapper name, fullName, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
@@ -146,8 +149,9 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 					buildAdminsView();
 				}
 			});
-			
-			tabsPanel.remove(reportsTab);
+
+
+			buildReportsView();
 			reportsTab.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -202,6 +206,16 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		baseURL = new KornellFormFieldWrapper("URL Base", formHelper.createTextBoxFormField(institution.getBaseURL()), isPlatformAdmin);
 		fields.add(baseURL);
 		institutionFields.add(baseURL);
+		
+		final ListBox billingTypes = new ListBox();
+		billingTypes.addItem("KNL", ContentSpec.KNL.toString());
+		billingTypes.addItem("SCORM12", ContentSpec.SCORM12.toString());
+		if (!isCreationMode) {
+			billingTypes.setSelectedValue(institution.getBillingType().toString());
+		}
+		billingType = new KornellFormFieldWrapper("Tipo de Cobrança", new ListBoxFormField(billingTypes), isPlatformAdmin);
+		fields.add(billingType);
+		institutionFields.add(billingType);
 
 		demandsPersonContactDetails = new KornellFormFieldWrapper("Exige Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isDemandsPersonContactDetails()), isPlatformAdmin);
 		fields.add(demandsPersonContactDetails);

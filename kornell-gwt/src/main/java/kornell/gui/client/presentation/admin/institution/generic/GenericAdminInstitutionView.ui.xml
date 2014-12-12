@@ -3,7 +3,7 @@
 
   <g:FlowPanel addStyleNames="deanHome">
     <b:TabPanel tabPosition="middle" ui:field="tabsPanel">
-      <b:Tab ui:field="editTab" icon="COGS" heading="Configuração" active="true">
+      <b:Tab ui:field="editTab" icon="COGS" heading="Configuração" active="false">
 			  <g:FlowPanel addStyleNames="courseClassConfig">
 			    <g:HTMLPanel ui:field="titleEdit" addStyleNames="title unclear left fillWidth marginBottom25">Editar Instituição</g:HTMLPanel>
 			    <b:Form ui:field="form" addStyleNames="profileForm left">
@@ -28,7 +28,7 @@
       <b:Tab ui:field="hostnamesTab" icon="LINK" heading="Domínios" active="false">
         <g:FlowPanel ui:field="hostnamesPanel"></g:FlowPanel>
       </b:Tab>
-      <b:Tab ui:field="reportsTab" icon="BAR_CHART" heading="Relatórios" active="false">
+      <b:Tab ui:field="reportsTab" icon="BAR_CHART" heading="Relatórios" active="true">
         <g:FlowPanel ui:field="reportsPanel"></g:FlowPanel>
       </b:Tab>
       <b:Tab ui:field="adminsTab" icon="GROUP" heading="Administradores" active="false">

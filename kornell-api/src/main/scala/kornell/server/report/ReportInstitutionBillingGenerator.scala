@@ -1,0 +1,118 @@
+package kornell.server.report
+
+import java.io.InputStream
+import java.sql.ResultSet
+import java.util.HashMap
+import scala.collection.JavaConverters.seqAsJavaListConverter
+import kornell.core.to.report.InstitutionBillingEnrollmentReportTO
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.repository.TOs
+import kornell.server.jdbc.repository.InstitutionRepo
+import kornell.core.to.report.InstitutionBillingMonthlyReportTO
+
+object ReportInstitutionBillingGenerator {
+  
+  def generateInstitutionBillingReport(institutionUUID: String, periodStart: String, periodEnd: String): Array[Byte] = {
+    val parameters: HashMap[String, Object] = new HashMap()
+    addInfoParameters(institutionUUID, parameters)
+    parameters.put("periodStart", periodStart)
+    parameters.put("periodEnd", periodEnd)
+	    
+    InstitutionRepo(institutionUUID).get.getBillingType() match {
+      case monthly => generateInstitutionBillingMonthlyReport(institutionUUID, periodStart, periodEnd, parameters)
+      case enrollment => generateInstitutionBillingEnrollmentReport(institutionUUID, periodStart, periodEnd, parameters)
+    }
+  }
+
+  private def generateInstitutionBillingMonthlyReport(institutionUUID: String, periodStart: String, periodEnd: String, parameters: HashMap[String,Object]): Array[Byte] = {
+
+	  implicit def toInstitutionBillingMonthlyReportTO(rs: ResultSet): InstitutionBillingMonthlyReportTO =
+	    TOs.newInstitutionBillingMonthlyReportTO(
+	      rs.getString("personUUID"),
+	      rs.getString("fullName"),
+	      rs.getString("username"))
+	      
+    val institutionBillingReportTO = sql"""
+    	SELECT
+					p.uuid AS 'personUUID', 
+					p.fullName AS 'fullName',
+					pw.username AS 'username'
+				FROM AttendanceSheetSigned att
+				JOIN Person p ON p.uuid = att.personUUID
+				JOIN Password pw ON pw.person_uuid = p.uuid
+				WHERE att.eventFiredAt > ${periodStart} AND att.eventFiredAt < ${periodEnd}
+				AND (email IS null OR email NOT LIKE '%craftware.com.br%')
+				AND att.institutionUUID = ${institutionUUID} 
+				AND (SELECT count(uuid) FROM Enrollment where person_uuid = p.uuid and DATE_FORMAT(enrolledOn, '%Y-%m-%d')< ${periodEnd}) > 0
+				GROUP BY att.personUUID
+				ORDER BY LOWER(p.fullName)
+	    """.map[InstitutionBillingMonthlyReportTO](toInstitutionBillingMonthlyReportTO)
+		  
+    val cl = Thread.currentThread.getContextClassLoader
+    val jasperStream = cl.getResourceAsStream("reports/institutionBillingXLS_monthly.jasper")
+    ReportGenerator.getReportBytesFromStream(institutionBillingReportTO, parameters, jasperStream, "xls")
+  }
+
+  private def generateInstitutionBillingEnrollmentReport(institutionUUID: String, periodStart: String, periodEnd: String, parameters: HashMap[String,Object]): Array[Byte] = {
+
+	  implicit def toInstitutionBillingEnrollmentReportTO(rs: ResultSet): InstitutionBillingEnrollmentReportTO =
+	    TOs.newInstitutionBillingEnrollmentReportTO(
+	      rs.getString("enrollmentUUID"),
+	      rs.getString("courseTitle"),
+	      rs.getString("courseVersionName"),
+	      rs.getString("courseClassName"),
+	      rs.getString("fullName"),
+	      rs.getString("username"))
+	      
+    val institutionBillingReportTO = sql"""
+    	SELECT 
+				e.uuid AS 'enrollmentUUID', 
+				c.title AS 'courseTitle',
+				cv.name AS 'courseVersionName',
+				cc.name AS 'courseClassName',
+				p.fullName,
+				pw.username
+			FROM Enrollment e
+			JOIN CourseClass cc ON cc.uuid = e.class_uuid
+			JOIN CourseVersion cv ON cv.uuid = cc.courseVersion_uuid
+			JOIN Course c ON c.uuid = cv.course_uuid
+			JOIN Person p ON p.uuid = e.person_uuid
+			JOIN Password pw on pw.person_uuid = p.uuid
+			WHERE cc.institution_uuid = ${institutionUUID}
+			AND (
+					(e.lastBilledAt IS NULL
+					AND progress IS NOT NULL
+					AND e.lastProgressUpdate >= ${periodStart}
+					AND e.lastProgressUpdate < ${periodEnd})
+				OR (e.lastBilledAt >= ${periodStart}
+					AND e.lastBilledAt < ${periodEnd})
+				) 
+			AND (p.email IS NULL OR p.email NOT LIKE '%@craftware.com.br')
+			ORDER BY LOWER(c.title),LOWER(cv.name),LOWER(cc.name), LOWER(p.fullName)
+	    """.map[InstitutionBillingEnrollmentReportTO](toInstitutionBillingEnrollmentReportTO)
+		  
+    val cl = Thread.currentThread.getContextClassLoader
+    val jasperStream = cl.getResourceAsStream("reports/institutionBillingXLS_enrollment.jasper")
+    ReportGenerator.getReportBytesFromStream(institutionBillingReportTO, parameters, jasperStream, "xls")
+  }
+      
+  
+  private def addInfoParameters(institutionUUID: String, parameters: HashMap[String, Object]) = {
+	  type ReportHeaderData = Tuple2[String, String]
+	  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2))
+	  
+    val headerInfo = sql"""
+					select 
+						i.fullName as 'institutionName',
+						i.fullName as 'institutionName2'
+					from
+						Institution i
+					where i.uuid = ${institutionUUID}
+		    """.first[ReportHeaderData](headerDataConvertion)
+    parameters.put("institutionName", headerInfo.get._1)
+    
+    parameters
+  }
+
+ 
+}

@@ -18,6 +18,7 @@ import kornell.server.report.ReportCertificateGenerator
 import kornell.server.repository.s3.S3
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
+import kornell.server.report.ReportInstitutionBillingGenerator
 
 @Path("/report")
 class ReportResource {
@@ -108,6 +109,17 @@ class ReportResource {
     else
     	resp.setContentType("application/pdf")
     ReportCourseClassGenerator.generateCourseClassReport(courseClassUUID, fType)
+  }
+
+  @GET
+  @Path("/institutionBilling")
+  def getInstitutionBilling(@Context resp: HttpServletResponse,
+    @QueryParam("institutionUUID") institutionUUID: String,
+    @QueryParam("periodStart") periodStart: String,
+    @QueryParam("periodEnd") periodEnd: String) = {
+    resp.addHeader("Content-disposition", "attachment; filename=info.xls")
+    resp.setContentType("application/vnd.ms-excel")
+    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institutionUUID, periodStart, periodEnd)
   }
 
   @GET
