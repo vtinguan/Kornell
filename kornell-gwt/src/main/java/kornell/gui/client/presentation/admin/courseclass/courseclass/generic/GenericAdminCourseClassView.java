@@ -811,4 +811,11 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	  updateMessagesTabHeading();
 	}
 
+	@Override
+  public void clearEnrollmentFields() {
+	  txtFullName.setValue("");
+		txtEmail.setValue("");
+		txtAddEnrollmentBatch.setValue("");	  
+  }
+
 }
