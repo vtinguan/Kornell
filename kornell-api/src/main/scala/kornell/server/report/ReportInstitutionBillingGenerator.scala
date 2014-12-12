@@ -9,6 +9,7 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.core.to.report.InstitutionBillingMonthlyReportTO
+import kornell.core.entity.BillingType
 
 object ReportInstitutionBillingGenerator {
   
@@ -19,8 +20,8 @@ object ReportInstitutionBillingGenerator {
     parameters.put("periodEnd", periodEnd)
 	    
     InstitutionRepo(institutionUUID).get.getBillingType() match {
-      case monthly => generateInstitutionBillingMonthlyReport(institutionUUID, periodStart, periodEnd, parameters)
-      case enrollment => generateInstitutionBillingEnrollmentReport(institutionUUID, periodStart, periodEnd, parameters)
+      case BillingType.monthly => generateInstitutionBillingMonthlyReport(institutionUUID, periodStart, periodEnd, parameters)
+      case BillingType.enrollment => generateInstitutionBillingEnrollmentReport(institutionUUID, periodStart, periodEnd, parameters)
     }
   }
 

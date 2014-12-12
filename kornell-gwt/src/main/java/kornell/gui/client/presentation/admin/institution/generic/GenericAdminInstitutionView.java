@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kornell.api.client.KornellSession;
+import kornell.core.entity.BillingType;
 import kornell.core.entity.ContentSpec;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
@@ -208,8 +209,8 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institutionFields.add(baseURL);
 		
 		final ListBox billingTypes = new ListBox();
-		billingTypes.addItem("KNL", ContentSpec.KNL.toString());
-		billingTypes.addItem("SCORM12", ContentSpec.SCORM12.toString());
+		billingTypes.addItem("Mensal", BillingType.monthly.toString());
+		billingTypes.addItem("Matrícula", BillingType.enrollment.toString());
 		if (!isCreationMode) {
 			billingTypes.setSelectedValue(institution.getBillingType().toString());
 		}
