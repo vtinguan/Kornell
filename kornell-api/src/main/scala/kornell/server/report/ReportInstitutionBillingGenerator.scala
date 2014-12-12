@@ -10,18 +10,19 @@ import kornell.server.repository.TOs
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 import kornell.core.entity.BillingType
+import kornell.core.entity.Institution
 
 object ReportInstitutionBillingGenerator {
   
-  def generateInstitutionBillingReport(institutionUUID: String, periodStart: String, periodEnd: String): Array[Byte] = {
+  def generateInstitutionBillingReport(institution: Institution, periodStart: String, periodEnd: String): Array[Byte] = {
     val parameters: HashMap[String, Object] = new HashMap()
-    addInfoParameters(institutionUUID, parameters)
+    parameters.put("institutionName", institution.getName)
     parameters.put("periodStart", periodStart)
     parameters.put("periodEnd", periodEnd)
 	    
-    InstitutionRepo(institutionUUID).get.getBillingType() match {
-      case BillingType.monthly => generateInstitutionBillingMonthlyReport(institutionUUID, periodStart, periodEnd, parameters)
-      case BillingType.enrollment => generateInstitutionBillingEnrollmentReport(institutionUUID, periodStart, periodEnd, parameters)
+    institution.getBillingType match {
+      case BillingType.monthly => generateInstitutionBillingMonthlyReport(institution.getUUID, periodStart, periodEnd, parameters)
+      case BillingType.enrollment => generateInstitutionBillingEnrollmentReport(institution.getUUID, periodStart, periodEnd, parameters)
     }
   }
 
@@ -96,24 +97,5 @@ object ReportInstitutionBillingGenerator {
     val jasperStream = cl.getResourceAsStream("reports/institutionBillingXLS_enrollment.jasper")
     ReportGenerator.getReportBytesFromStream(institutionBillingReportTO, parameters, jasperStream, "xls")
   }
-      
-  
-  private def addInfoParameters(institutionUUID: String, parameters: HashMap[String, Object]) = {
-	  type ReportHeaderData = Tuple2[String, String]
-	  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2))
-	  
-    val headerInfo = sql"""
-					select 
-						i.fullName as 'institutionName',
-						i.fullName as 'institutionName2'
-					from
-						Institution i
-					where i.uuid = ${institutionUUID}
-		    """.first[ReportHeaderData](headerDataConvertion)
-    parameters.put("institutionName", headerInfo.get._1)
-    
-    parameters
-  }
-
  
 }

@@ -19,6 +19,9 @@ import kornell.server.repository.s3.S3
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
+import kornell.server.jdbc.repository.InstitutionRepo
+import kornell.server.jdbc.repository.CourseClassRepo
+import java.text.SimpleDateFormat
 
 @Path("/report")
 class ReportResource {
@@ -103,7 +106,9 @@ class ReportResource {
       else
         "pdf"
     }
-    resp.addHeader("Content-disposition", "attachment; filename=info."+fType)
+    val courseClass = CourseClassRepo(courseClassUUID).get
+    val fileName = courseClass.getName + " - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ "."+fType
+    resp.addHeader("Content-disposition", "attachment; filename=" + fileName)
     if(fType != null && fType == "xls")
     	resp.setContentType("application/vnd.ms-excel")
     else
@@ -117,9 +122,10 @@ class ReportResource {
     @QueryParam("institutionUUID") institutionUUID: String,
     @QueryParam("periodStart") periodStart: String,
     @QueryParam("periodEnd") periodEnd: String) = {
-    resp.addHeader("Content-disposition", "attachment; filename=info.xls")
+    val institution = InstitutionRepo(institutionUUID).get
+    resp.addHeader("Content-disposition", "attachment; filename=" + institution.getName + " - " + periodStart + ".xls")
     resp.setContentType("application/vnd.ms-excel")
-    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institutionUUID, periodStart, periodEnd)
+    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institution, periodStart, periodEnd)
   }
 
   @GET
