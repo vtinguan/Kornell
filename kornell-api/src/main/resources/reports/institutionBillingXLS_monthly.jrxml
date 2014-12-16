@@ -35,7 +35,7 @@
 				<text><![CDATA[ VISÃO DETALHADA ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6819443a-52ef-4e41-8188-1e833724fde1" mode="Opaque" x="335" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="6819443a-52ef-4e41-8188-1e833724fde1" mode="Opaque" x="300" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
