@@ -17,34 +17,39 @@ import kornell.core.entity.CourseVersion
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.RequirementNotMet
 import kornell.server.jdbc.repository.PersonRepo
+import javax.inject.Inject
+import javax.enterprise.inject.Instance
+import kornell.server.jdbc.repository.PeopleRepo
+import kornell.server.jdbc.repository.PeopleRepo
 
 @Path("courseVersions")
-class CourseVersionsResource {
-  
+class CourseVersionsResource @Inject() (
+  val peopleRepo: PeopleRepo,
+  val courseVersionResource: Instance[CourseVersionResource],
+  val courseVersionsRepo:CourseVersionsRepo) {
+
+  def this() = this(null,null,null)
+
   @Path("{uuid}")
-  def getCourseVersion(@PathParam("uuid") uuid:String) = CourseVersionResource(uuid)
+  def getCourseVersion(@PathParam("uuid") uuid: String) = courseVersionResource.get.withUUID(uuid)
 
   @GET
   @Produces(Array(CourseVersionsTO.TYPE))
   def getCourseVersions(@QueryParam("courseUUID") courseUUID: String) = {
-        if (courseUUID != null)
-          CourseVersionsRepo.byCourse(courseUUID)
-        else
-          CourseVersionsRepo.byInstitution(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)
-    }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
-   .get
-  
+    if (courseUUID != null)
+      courseVersionsRepo.byCourse(courseUUID)
+    else
+      courseVersionsRepo.byInstitution(peopleRepo.byUUID(getAuthenticatedPersonUUID).get.getInstitutionUUID)
+  }.requiring(isPlatformAdmin, RequirementNotMet)
+    .or(isInstitutionAdmin(peopleRepo.byUUID(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+    .get
+
   @POST
   @Produces(Array(CourseVersion.TYPE))
   @Consumes(Array(CourseVersion.TYPE))
   def create(courseVersion: CourseVersion) = {
-    CourseVersionsRepo.create(courseVersion)
+    courseVersionsRepo.create(courseVersion)
   }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
-   .get
-}
-
-object CourseVersionsResource {
-  def apply() = new CourseVersionsResource()
+    .or(isInstitutionAdmin(peopleRepo.byUUID(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+    .get
 }

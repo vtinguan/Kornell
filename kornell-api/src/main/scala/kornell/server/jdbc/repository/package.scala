@@ -1,29 +1,28 @@
 package kornell.server.jdbc
-
 import scala.language.implicitConversions
-import java.sql.Connection
 import java.sql.ResultSet
-import kornell.core.entity.Enrollment
-import kornell.server.repository.Entities._
-import kornell.server.repository.TOs._
-import kornell.core.entity.EnrollmentState
-import kornell.core.entity.CourseClass
-import kornell.core.to.CourseClassTO
-import kornell.core.entity.Course
-import kornell.server.repository.TOs
-import kornell.core.entity.Person
-import kornell.core.entity.CourseVersion
-import kornell.core.entity.RoleType
-import kornell.server.repository.Entities
 import java.util.logging.Logger
-import kornell.core.util.UUID
 import kornell.core.entity.Assessment
-import kornell.core.entity.Institution
-import kornell.core.to.EnrollmentTO
+import kornell.core.entity.Course
+import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseClassState
-import kornell.server.authentication.ThreadLocalAuthenticator
-import kornell.core.to.UnreadChatThreadTO
+import kornell.core.entity.CourseVersion
+import kornell.core.entity.Enrollment
+import kornell.core.entity.EnrollmentState
+import kornell.core.entity.Institution
+import kornell.core.entity.Person
+import kornell.core.entity.RoleType
 import kornell.core.to.ChatThreadMessageTO
+import kornell.core.to.CourseClassTO
+import kornell.core.to.EnrollmentTO
+import kornell.core.to.UnreadChatThreadTO
+import kornell.server.repository.Entities._
+import kornell.server.repository.Entities
+import kornell.server.repository.TOs._
+import kornell.server.repository.TOs
+import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.to.CourseVersionTO
+import kornell.core.entity.BillingType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -35,9 +34,9 @@ import kornell.core.to.ChatThreadMessageTO
  * find() => Return Collection[T], as the result of a query
  */
 package object repository {
-  val logger = Logger.getLogger("kornell.server.jdbc")
+  val logger = Logger.getLogger("kornell.server.jdbc.repository")
   
-  //TODO: Move to Repositories
+  //TODO:  Move to Repositories
   implicit def toInstitution(rs:ResultSet):Institution = 
     newInstitution(rs.getString("uuid"), 
         rs.getString("name"),  
@@ -48,24 +47,29 @@ package object repository {
         rs.getBoolean("demandsPersonContactDetails"),
         rs.getBoolean("validatePersonContactDetails"),
         rs.getBoolean("allowRegistration"),
+        rs.getBoolean("allowRegistrationByUsername"),
         rs.getDate("activatedAt"),
-        rs.getString("skin"))   
+        rs.getString("skin"),
+        BillingType.valueOf(rs.getString("billingType")))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
         r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
         r.getBigDecimal("requiredScore"), r.getBoolean("publicClass"), 
-        r.getBoolean("enrollWithCPF"), r.getBoolean("overrideEnrollments"),
+        r.getBoolean("overrideEnrollments"),
         r.getBoolean("invisible"), r.getInt("maxEnrollments"), 
         r.getDate("createdAt"), r.getString("createdBy"), 
-        CourseClassState.valueOf(r.getString("state"))) 
+        CourseClassState.valueOf(r.getString("state")), 
+        RegistrationEnrollmentType.valueOf(r.getString("registrationEnrollmentType")),
+        r.getString("institutionRegistrationPrefix")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
     rs.getString("code"),
     rs.getString("title"),
     rs.getString("description"),
-    rs.getString("infoJson"))    
+    rs.getString("infoJson"),
+    rs.getString("institutionUUID"))    
 
   implicit def toCourseVersion(rs: ResultSet): CourseVersion = newCourseVersion(
     rs.getString("uuid"), 
@@ -102,15 +106,38 @@ package object repository {
 		    rs.getString("institutionUUID"),
 		    rs.getBigDecimal("requiredScore"),
 		    rs.getBoolean("publicClass"),
-		    rs.getBoolean("enrollWithCPF"), 
         rs.getBoolean("overrideEnrollments"),
         rs.getBoolean("invisible"),
 		    rs.getInt("maxEnrollments"),
 		    rs.getDate("createdAt"),
 		    rs.getString("createdBy"), 
-        CourseClassState.valueOf(rs.getString("state")));
+        CourseClassState.valueOf(rs.getString("state")), 
+        RegistrationEnrollmentType.valueOf(rs.getString("registrationEnrollmentType")),
+		    rs.getString("institutionRegistrationPrefix"));
     		
     TOs.newCourseClassTO(course, version, clazz)
+  }
+  
+  implicit def toCourseVersionTO(rs: ResultSet): CourseVersionTO = {
+    val courseVersion = newCourseVersion(
+        rs.getString("courseVersionUUID"), 
+        rs.getString("courseVersionName"), 
+        rs.getString("courseUUID"), 
+        rs.getString("repositoryUUID"), 
+        rs.getDate("versionCreatedAt"), 
+        rs.getString("distributionPrefix"), 
+        rs.getString("contentSpec"), 
+        rs.getBoolean("courseVersionDisabled"))
+        
+    val course = newCourse(
+        rs.getString("courseUUID"), 
+        rs.getString("courseCode"), 
+        rs.getString("courseTitle"), 
+        rs.getString("courseDescription"), 
+        rs.getString("infoJson"),
+        rs.getString("institutionUUID"))
+        
+    TOs.newCourseVersionTO(course, courseVersion)
   }
   
   implicit def toEnrollment(rs: ResultSet): Enrollment = {
@@ -151,7 +178,7 @@ package object repository {
       rs.getString("certifiedAt")
     )
     
-    TOs.newEnrollmentTO(enrollment, PersonRepo(enrollment.getPersonUUID()).get)
+    TOs.newEnrollmentTO(enrollment, rs.getString("personUUID"), rs.getString("fullName"), rs.getString("username"))
   }
 	
 	implicit def toPerson(rs:ResultSet):Person = newPerson(
@@ -171,7 +198,9 @@ package object repository {
 	    rs.getString("addressLine1"),
 	    rs.getString("addressLine2"),
 	    rs.getString("postalCode"),
-	    rs.getString("cpf"))
+	    rs.getString("cpf"),
+	    rs.getString("institutionUUID"),
+	    rs.getString("termsAcceptedOn"))
 
   implicit def toRole(rs: java.sql.ResultSet): kornell.core.entity.Role = {
     val roleType = RoleType.valueOf(rs.getString("role"))

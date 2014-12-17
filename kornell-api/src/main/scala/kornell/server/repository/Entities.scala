@@ -1,5 +1,5 @@
 package kornell.server.repository
-
+import java.lang.Boolean
 import scala.language.postfixOps
 import scala.language.implicitConversions
 import java.math.BigDecimal
@@ -19,12 +19,13 @@ import kornell.core.entity.EntityFactory
 import kornell.core.entity.Institution
 import kornell.core.entity.Person
 import kornell.core.entity.PlatformAdminRole
-import kornell.core.entity.Registration
 import kornell.core.entity.Role
 import kornell.core.entity.RoleType
 import kornell.core.util.TimeUtil
 import kornell.server.util.ValueFactory
 import java.util.HashMap
+import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.BillingType
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -50,7 +51,9 @@ object Entities {
     addressLine1: String = null,
     addressLine2: String = null,
     postalCode: String = null,
-    cpf: String = null) = {
+    cpf: String = null,
+    institutionUUID: String = null,
+    termsAcceptedOn: String = null) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -71,6 +74,8 @@ object Entities {
     person.setAddressLine2(addressLine2)
     person.setPostalCode(postalCode)
     person.setCPF(cpf)
+    person.setInstitutionUUID(institutionUUID)
+    person.setTermsAcceptedOn(termsAcceptedOn)
     person
   }
 
@@ -90,13 +95,15 @@ object Entities {
 
   def newCourse(uuid: String = randUUID, code: String = null,
     title: String = null, description: String = null,
-    infoJson: String = null): Course = {
+    infoJson: String = null,
+    institutionUUID: String = null): Course = {
     val c = factory.newCourse.as
     c.setUUID(uuid)
     c.setCode(code)
     c.setDescription(description)
     c.setTitle(title)
     c.setInfoJson(infoJson)
+    c.setInstitutionUUID(institutionUUID)
     c
   }
 
@@ -112,12 +119,12 @@ object Entities {
     rs
   }
 
-  def newEnrollment(uuid: String, enrolledOn: Date,
+  def newEnrollment(uuid: String = randUUID, enrolledOn: Date = null,
     courseClassUUID: String, personUUID: String,
-    progress: Integer, notes: String,
+    progress: Integer = 0, notes: String = null,
     state: EnrollmentState, lastProgressUpdate: String = null,
     assessment: Assessment = null, lastAssessmentUpdate: String = null,
-    assessmentScore: BigDecimal = null, certifiedAt: String): Enrollment = {
+    assessmentScore: BigDecimal = null, certifiedAt: String = null): Enrollment = {
     val e = factory.enrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -141,7 +148,19 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, activatedAt: Date, skin: String) = {
+  def newInstitution(uuid: String = randUUID, 
+      name: String, 
+      fullName: String, 
+      terms: String, 
+      assetsURL: String, 
+      baseURL: String, 
+      demandsPersonContactDetails: Boolean, 
+      validatePersonContactDetails: Boolean, 
+      allowRegistration: Boolean, 
+      allowRegistrationByUsername: 
+      Boolean, activatedAt: Date, 
+      skin: String,
+      billingType: BillingType) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -153,29 +172,12 @@ object Entities {
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
     i.setValidatePersonContactDetails(validatePersonContactDetails)
     i.setAllowRegistration(allowRegistration)
+    i.setAllowRegistrationByUsername(allowRegistrationByUsername)
     i.setActivatedAt(activatedAt)
     i.setSkin(skin)
+    i.setBillingType(billingType)
     i
   }
-
-  def newRegistration(p: Person, i: Institution): Registration = {
-    val r = newRegistration
-    r.setPersonUUID(p.getUUID)
-    r.setInstitutionUUID(i.getUUID)
-    r
-  }
-
-  def newRegistration = factory.newRegistration.as
-
-  def newRegistration(personUUID: String, institutionUUID: String, termsAcceptedOn: Date): Registration = {
-    val r = newRegistration
-    r.setPersonUUID(personUUID)
-    r.setInstitutionUUID(institutionUUID)
-    r.setTermsAcceptedOn(termsAcceptedOn)
-    r
-  }
-
-  def newRegistrations = factory.newRegistrations.as
 
   lazy val newUserRole = {
     val role = factory.newRole().as
@@ -241,10 +243,12 @@ object Entities {
   def newCourseClass(uuid: String = null, name: String = null,
     courseVersionUUID: String = null, institutionUUID: String = null,
     requiredScore: BigDecimal = null, publicClass: Boolean = false,
-    enrollWithCPF: Boolean = false, overrideEnrollments: Boolean = false,
+    overrideEnrollments: Boolean = false,
     invisible: Boolean = false, maxEnrollments: Integer = null,
     createdAt: Date = null, createdBy: String = null,
-    state: CourseClassState = null) = {
+    state: CourseClassState = null,
+    registrationEnrollmentType: RegistrationEnrollmentType = null,
+    institutionRegistrationPrefix: String = null) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -252,13 +256,14 @@ object Entities {
     clazz.setInstitutionUUID(institutionUUID)
     clazz.setRequiredScore(requiredScore)
     clazz.setPublicClass(publicClass)
-    clazz.setEnrollWithCPF(enrollWithCPF)
     clazz.setOverrideEnrollments(overrideEnrollments)
     clazz.setInvisible(invisible)
     clazz.setMaxEnrollments(maxEnrollments)
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
+    clazz.setRegistrationEnrollmentType(registrationEnrollmentType)
+    clazz.setInstitutionRegistrationPrefix(institutionRegistrationPrefix)
     clazz
   }
 
@@ -284,7 +289,8 @@ object Entities {
     bucketName: String = null,
     prefix: String = null,
     region: String = null,
-    distributionURL: String = null) = {
+    distributionURL: String = null,
+    institutionUUID: String = null) = {
     val store = factory.newContentStore.as    
     store.setUUID(uuid)
     val props = new HashMap[String,String]()
@@ -294,6 +300,7 @@ object Entities {
     props.put("region", region)
     props.put("secretAccessKey", secretAccessKey)
     props.put("distributionURL", distributionURL)
+    props.put("institutionUUID", institutionUUID)
     store.setProperties(props)
     store
   }

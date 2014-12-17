@@ -6,12 +6,22 @@ import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.core.Context
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.RequirementNotMet
+import javax.enterprise.context.ApplicationScoped
+import javax.enterprise.inject.Instance
+import javax.inject.Inject
 
+@ApplicationScoped
 @Path("institutions")
-class InstitutionsResource {
+class InstitutionsResource @Inject() (
+  val ittsRepo:InstitutionsRepo,
+  val institutionResourceBean:Instance[InstitutionResource]
+  ) {
+  
+  def this() = this(null,null)
   
   @Path("{uuid}")
-  def get(@PathParam("uuid") uuid:String):InstitutionResource = new InstitutionResource(uuid)
+  def get(@PathParam("uuid") uuid:String):InstitutionResource =
+    institutionResourceBean.get.withUUID(uuid)
   
   @GET
   @Produces(Array(Institution.TYPE))
@@ -19,9 +29,9 @@ class InstitutionsResource {
       @QueryParam("name") name:String, @QueryParam("hostName") hostName:String) = 
     {
 	    if(name != null)
-	      InstitutionsRepo.byName(name)
+	      ittsRepo.byName(name)
 	    else
-	      InstitutionsRepo.byHostName(hostName)
+	      ittsRepo.byHostName(hostName)
     } match {
       case Some(institution) => institution
       case None => resp.sendError(HttpServletResponse.SC_NO_CONTENT, "Institution not found.")
@@ -31,11 +41,7 @@ class InstitutionsResource {
   @Produces(Array(Institution.TYPE))
   @Consumes(Array(Institution.TYPE))
   def create(institution: Institution) = {
-    InstitutionsRepo.create(institution)
+    ittsRepo.create(institution)
   }.requiring(isPlatformAdmin, RequirementNotMet).get
 
-}
-
-object InstitutionsResource {
-  def apply() = new InstitutionsResource()
 }

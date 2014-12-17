@@ -8,8 +8,23 @@ import kornell.server.jdbc.SQL._
 
 
 class CourseRepo(uuid: String) {
-  def get() = sql"""select * from Course where uuid=$uuid""".first[Course]
-  def first = get 
+
+  def finder = sql"""select * from Course where uuid=$uuid"""
+  def get() = finder.get[Course]
+  def first = finder.first[Course]
+  
+  def update(course: Course): Course = {    
+    sql"""
+    | update Course c
+    | set c.code = ${course.getCode},
+    | c.title = ${course.getTitle}, 
+    | c.description = ${course.getDescription},
+    | c.infoJson = ${course.getInfoJson},
+    | c.institutionUUID = ${course.getInstitutionUUID}
+    | where c.uuid = ${course.getUUID}""".executeUpdate
+    course
+  }
+
 }
 
 object CourseRepo {

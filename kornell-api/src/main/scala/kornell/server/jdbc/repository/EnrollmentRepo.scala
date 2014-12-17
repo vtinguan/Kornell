@@ -25,18 +25,19 @@ import kornell.core.to.CourseDetailsTO
 import kornell.server.repository.ContentRepository
 import kornell.server.repository.ContentRepository
 import javax.inject.Inject
+import javax.enterprise.context.ApplicationScoped
 
-class EnrollmentRepo @Inject()(
-    contentRepo:ContentRepository
-    ) {
+@ApplicationScoped
+class EnrollmentRepo @Inject() (
+  val contentRepo: ContentRepository,
+  val courseClassesRepo: CourseClassesRepo) {
 
- 
-  def finder(enrollmentUUID:String) = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
+  def this() = this(null, null)
+  def finder(enrollmentUUID: String) = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
 
-  def get(enrollmentUUID:String): Enrollment = finder(enrollmentUUID).get[Enrollment]
+  def get(enrollmentUUID: String): Enrollment = finder(enrollmentUUID).get[Enrollment]
 
-  def first(enrollmentUUID:String): Option[Enrollment] = finder(enrollmentUUID).first[Enrollment]
-    
+  def first(enrollmentUUID: String): Option[Enrollment] = finder(enrollmentUUID).first[Enrollment]
 
   def update(e: Enrollment): Enrollment = {
     sql"""
@@ -61,15 +62,15 @@ class EnrollmentRepo @Inject()(
       where uuid = ${enrollmentUUID}""".executeUpdate
   }
 
-  def findGrades(enrollmentUUID:String): List[String] = sql"""
+  def findGrades(enrollmentUUID: String): List[String] = sql"""
     	select * from ActomEntries
     	where enrollment_uuid = ${enrollmentUUID}
     	and entryKey = 'cmi.core.score.raw'
     """.map { rs => rs.getString("entryValue") }
 
-  def updateProgress(enrollmentUUID:String) = for {
-    e <- first(enrollmentUUID:String)
-    cc <- CourseClassesRepo(e.getCourseClassUUID).first
+  def updateProgress(enrollmentUUID: String) = for {
+    e <- first(enrollmentUUID: String)
+    cc <- courseClassesRepo.byUUID(e.getCourseClassUUID).first
     cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
   } cv.getContentSpec match {
     case KNL => updateKNLProgress(e)
@@ -86,7 +87,7 @@ class EnrollmentRepo @Inject()(
   }
 
   def findProgressMilestone(e: Enrollment, actomKey: String): Option[Int] =
-     {
+    {
       val actomLike = "%" + actomKey
       val enrollmentUUID = e.getUUID
       val progress = sql"""
@@ -134,30 +135,29 @@ class EnrollmentRepo @Inject()(
   		AND entryKey = 'cmi.core.score.raw'
   """.first[BigDecimal] { rs => rs.getBigDecimal("maxScore") }
 
-  def updateAssessment(enrollmentUUID:String) = first(enrollmentUUID) map { e =>
+  def updateAssessment(enrollmentUUID: String) = first(enrollmentUUID) map { e =>
     val notPassed = !Assessment.PASSED.equals(e.getAssessment)
-    if (notPassed){
-    	val (maxScore,assessment) = assess(e)
-        e.setAssessmentScore(maxScore)
-        e.setAssessment(assessment)
-        //TODO: Add client timestap
-        e.setLastAssessmentUpdate(ServerTime.now)
-        update(e)
-        checkCompletion(e)
+    if (notPassed) {
+      val (maxScore, assessment) = assess(e)
+      e.setAssessmentScore(maxScore)
+      e.setAssessment(assessment)
+      //TODO: Add client timestap
+      e.setLastAssessmentUpdate(ServerTime.now)
+      update(e)
+      checkCompletion(e)
     }
   }
 
-  
-  def assess(e:Enrollment) = {
-    val cc = CourseClassRepo(e.getCourseClassUUID).get
-    	val reqScore: BigDecimal = Option(cc.getRequiredScore).getOrElse(ZERO)
-    	val maxScore = findMaxScore(e.getUUID).getOrElse(ZERO)
-    	val assessment = if (maxScore.compareTo(reqScore) >= 0)
-          Assessment.PASSED
-        else
-          Assessment.FAILED
-        (maxScore,assessment)
-  }  
+  def assess(e: Enrollment) = {
+    val cc = courseClassesRepo.byUUID(e.getCourseClassUUID).get
+    val reqScore: BigDecimal = Option(cc.getRequiredScore).getOrElse(ZERO)
+    val maxScore = findMaxScore(e.getUUID).getOrElse(ZERO)
+    val assessment = if (maxScore.compareTo(reqScore) >= 0)
+      Assessment.PASSED
+    else
+      Assessment.FAILED
+    (maxScore, assessment)
+  }
 
   def findLastEventTime(e: Enrollment) = {
     val lastActomEntered = sql"""
@@ -183,18 +183,18 @@ where
       update(e)
     }
   }
-  
-  def findDetails(enrollmentUUID:String):Option[CourseDetailsTO] = for {
-  	e <- first(enrollmentUUID)
-  	cc <- CourseClassRepo(e.getCourseClassUUID).first
-  	cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
-  	c <- CourseRepo(cv.getCourseUUID).first
-  }  yield {
+
+  def findDetails(enrollmentUUID: String): Option[CourseDetailsTO] = for {
+    e <- first(enrollmentUUID)
+    cc <- courseClassesRepo.byUUID(e.getCourseClassUUID).first
+    cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
+    c <- CourseRepo(cv.getCourseUUID).first
+  } yield {
     val to = TOs.newCourseDetailsTO
     to.setCourseName(c.getTitle)
     to.setCourseClassName(cc.getName)
     to.setInfosTO(InfosRepo.byCourseVersion(cv.getUUID))
     to
   }
-  
+
 }

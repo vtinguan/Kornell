@@ -15,13 +15,19 @@ import kornell.core.util.UUID
 import java.util.Date
 import kornell.core.entity.CourseClassState
 import java.sql.ResultSet
+import javax.inject.Inject
+import javax.enterprise.context.ApplicationScoped
+import javax.enterprise.inject.Instance
 
-class CourseClassesRepo {
-}
+@ApplicationScoped
+class CourseClassesRepo @Inject() (
+  val enrollmentsRepo:EnrollmentsRepo,
+  val courseClassRepoBean:Instance[CourseClassRepo]) {
+  
+  def this() = this(null,null)
 
-object CourseClassesRepo {
+  def byUUID(uuid:String) = courseClassRepoBean.get.withUUID(uuid)
 
-  def apply(uuid: String) = CourseClassRepo(uuid)
 
   def create(courseClass: CourseClass):CourseClass = {
     val courseClassExists = sql"""
@@ -140,7 +146,7 @@ object CourseClassesRepo {
   }
 
   private def bindEnrollment(personUUID: String, courseClassTO: CourseClassTO) = {
-    val enrollment = EnrollmentsRepo.byCourseClassAndPerson(courseClassTO.getCourseClass().getUUID(), personUUID)
+    val enrollment = enrollmentsRepo.byCourseClassAndPerson(courseClassTO.getCourseClass().getUUID(), personUUID)
     enrollment foreach courseClassTO.setEnrollment    
   }
 

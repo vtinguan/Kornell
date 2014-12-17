@@ -11,7 +11,7 @@ import kornell.server.repository.TOs._
 import kornell.server.repository.Entities
 import kornell.core.util.UUID
 
-object CoursesRepo {
+class CoursesRepo {
 
   def create(course: Course): Course = {
     if (course.getUUID == null){
@@ -26,6 +26,7 @@ object CoursesRepo {
     | ${course.getDescription},
     | ${course.getInfoJson},
     | ${course.getInstitutionUUID})""".executeUpdate
+    logger.fine(s"Created Course[${course.getUUID}]")
     course
   }  
   

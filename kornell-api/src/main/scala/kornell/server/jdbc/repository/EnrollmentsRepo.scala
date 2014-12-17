@@ -8,9 +8,10 @@ import kornell.core.entity.Enrollments
 import kornell.core.to.EnrollmentTO
 import kornell.core.to.EnrollmentsTO
 import kornell.server.repository.TOs
+import javax.enterprise.context.ApplicationScoped
 
-object EnrollmentsRepo {
-
+@ApplicationScoped
+class EnrollmentsRepo {
   def byCourseClass(courseClassUUID: String) =
     TOs.newEnrollmentsTO(
       sql"""

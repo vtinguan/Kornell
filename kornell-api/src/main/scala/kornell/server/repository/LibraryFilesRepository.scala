@@ -15,13 +15,15 @@ import kornell.core.util.StringUtils
 import scala.util.Try
 import javax.inject.Inject
 import kornell.server.content.ContentManagers
+import kornell.server.jdbc.repository.CourseClassRepo
 
 class LibraryFilesRepository @Inject()(
-  cms:ContentManagers
+  cms:ContentManagers,
+  courseClassesRepo:CourseClassesRepo
 	) {
   //TODO: Review
   def findLibraryFiles(courseClassUUID: String) =  {
-    val classRepo = CourseClassesRepo(courseClassUUID)
+    val classRepo = courseClassesRepo.byUUID(courseClassUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
     val cm = cms.forCourseVersion(version)

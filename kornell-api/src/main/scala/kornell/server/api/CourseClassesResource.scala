@@ -21,32 +21,37 @@ import kornell.server.repository.Entities
 import javax.ws.rs.POST
 import kornell.server.repository.LibraryFilesRepository
 import javax.inject.Inject
+import kornell.server.jdbc.repository.CourseClassRepo
+import javax.enterprise.inject.Instance
+import kornell.server.jdbc.repository.AuthRepo
 
 @Path("courseClasses")
-class CourseClassesResource @Inject() (
-  val libRepo:LibraryFilesRepository) {
+class CourseClassesResource @Inject() ( 
+  val authRepo:AuthRepo,
+  val courseClassesRepo:CourseClassesRepo,
+  val courseClassResourceBean:Instance[CourseClassResource]) {
   
-  def this() = this(null) 
+  def this() = this(null,null,null)
   
   @POST
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
   def create(courseClass: CourseClass) = {
-    CourseClassesRepo.create(courseClass)
+    courseClassesRepo.create(courseClass)
   }.requiring(isPlatformAdmin, UserNotInRole) 
    .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
    .get
    
   @Path("{uuid}")
-  def get(@PathParam("uuid") uuid: String):CourseClassResource = new CourseClassResource(libRepo,uuid)
+  def get(@PathParam("uuid") uuid: String):CourseClassResource = courseClassResourceBean.get.withUUID(uuid)
 
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
   def getClasses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID: String) =
-    AuthRepo().withPerson { person =>
+    authRepo.withPerson { person =>
       {
         if (institutionUUID != null) {
-          CourseClassesRepo.byPersonAndInstitution(person.getUUID, institutionUUID)
+          courseClassesRepo.byPersonAndInstitution(person.getUUID, institutionUUID)
         }
       }
     }
@@ -55,11 +60,11 @@ class CourseClassesResource @Inject() (
   @Produces(Array(CourseClassesTO.TYPE))
   @Path("administrated")
   def getAdministratedClasses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID: String) =
-    AuthRepo().withPerson { person =>
+    authRepo.withPerson { person =>
       {
         if (institutionUUID != null) {
-          val roles = AuthRepo().userRoles
-          CourseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList )
+          val roles = authRepo.userRoles
+          courseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList )
         }
       }
     }

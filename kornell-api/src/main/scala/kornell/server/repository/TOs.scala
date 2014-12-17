@@ -9,7 +9,6 @@ import kornell.core.to.CourseVersionTO
 import kornell.core.to.report.CertificateInformationTO
 import kornell.core.to.RegistrationRequestTO
 import kornell.core.entity.CourseClass
-import kornell.core.to.RegistrationsTO
 import kornell.core.to.EnrollmentRequestsTO
 import kornell.core.to.EnrollmentRequestTO
 import kornell.core.to.report.CourseClassReportTO
@@ -26,7 +25,6 @@ import kornell.core.to.EnrollmentTO
 import kornell.core.to.TOFactory
 import kornell.core.to.CourseClassTO
 import kornell.core.entity.Role
-import kornell.core.entity.Registration
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.to.LibraryFileTO
@@ -37,6 +35,9 @@ import kornell.core.to.InfoTO
 import kornell.core.to.CourseDetailsTO
 import kornell.core.to.ActionTO
 import kornell.core.to.EnrollmentLaunchTO
+import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.to.report.InstitutionBillingMonthlyReportTO
+import kornell.core.to.report.InstitutionBillingEnrollmentReportTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -44,20 +45,13 @@ object TOs {
 
   def newUserInfoTO = tos.newUserInfoTO.as
   def newUserHelloTO = tos.newUserHelloTO.as
-  def newRegistrationsTO: RegistrationsTO = tos.newRegistrationsTO.as
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
   def newCourseVersionsTO: CourseVersionsTO = tos.newCourseVersionsTO.as
   def newLibraryFileTO: LibraryFileTO = tos.newLibraryFileTO.as
 
-  def newRegistrationsTO(registrationList: List[Registration]): RegistrationsTO = {
-    val registrations = newRegistrationsTO
-    registrations.setRegistrations(registrationList asJava)
-    registrations
-  }
-
   def newEnrollmentsTO(enrollmentList: List[EnrollmentTO]): EnrollmentsTO = {
-    val enrollments = newEnrollmentsTO
+    val enrollments:EnrollmentsTO = newEnrollmentsTO
     enrollments.setEnrollmentTOs(enrollmentList asJava)
     enrollments
   }
@@ -87,10 +81,12 @@ object TOs {
     classTO
   }
 
-  def newEnrollmentTO(enrollment: Enrollment, person: Person): EnrollmentTO = {
-    val enrollmentTO = tos.newEnrollmentTO.as
+  def newEnrollmentTO(enrollment: Enrollment, personUUID: String, fullName: String, username: String): EnrollmentTO = {
+    val enrollmentTO:EnrollmentTO = tos.newEnrollmentTO.as
     enrollmentTO.setEnrollment(enrollment)
-    enrollmentTO.setPerson(person)
+    enrollmentTO.setPersonUUID(personUUID)
+    enrollmentTO.setFullName(fullName)
+    enrollmentTO.setUsername(username)
     enrollmentTO
   }
 
@@ -115,13 +111,15 @@ object TOs {
   }
 
   def newEnrollmentRequestTO: EnrollmentRequestTO = tos.newEnrollmentRequestTO.as
-  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, email: String, cpf: String): EnrollmentRequestTO = {
+  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, username: String, password: String, registrationEnrollmentType: RegistrationEnrollmentType, cancelEnrollment: Boolean): EnrollmentRequestTO = {
     val to = newEnrollmentRequestTO
     to.setInstitutionUUID(institutionUUID)
     to.setCourseClassUUID(courseClassUUID)
     to.setFullName(fullName)
-    to.setEmail(email)
-    to.setCPF(cpf)
+    to.setUsername(username)
+    to.setPassword(password)
+    to.setRegistrationEnrollmentType(registrationEnrollmentType)
+    to.setCancelEnrollment(cancelEnrollment)
     to
   }
 
@@ -146,7 +144,7 @@ object TOs {
   }
 
   def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
-  def newCourseClassReportTO(fullName: String, username: String, email: String, state: String, progressState: String, progress: Int, assessmentScore: BigDecimal, certifiedAt: String): CourseClassReportTO = {
+  def newCourseClassReportTO(fullName: String, username: String, email: String, state: String, progressState: String, progress: Int, assessmentScore: BigDecimal, certifiedAt: String, enrolledAt: String): CourseClassReportTO = {
     val to = newCourseClassReportTO
     to.setFullName(fullName)
     to.setUsername(username)
@@ -156,6 +154,7 @@ object TOs {
     to.setProgress(progress)
     to.setAssessmentScore(assessmentScore)
     to.setCertifiedAt(certifiedAt)
+    to.setEnrolledAt(enrolledAt)
     to
   }
 
@@ -263,4 +262,37 @@ object TOs {
     to.setCourseVersion(courseVersion)
     to
   }
+    def newInstitutionRegistrationPrefixesTO(l: List[String]) = {
+    val to = tos.newInstitutionRegistrationPrefixesTO.as
+    to.setInstitutionRegistrationPrefixes(l asJava)
+    to
+  }
+  
+  def newInstitutionHostNamesTO(l: List[String]) = {
+    val to = tos.newInstitutionHostNamesTO().as
+    to.setInstitutionHostNames(l asJava)
+    to
+  }
+
+    def newInstitutionBillingEnrollmentReportTO: InstitutionBillingEnrollmentReportTO = new InstitutionBillingEnrollmentReportTO
+  def newInstitutionBillingEnrollmentReportTO(enrollmentUUID: String, courseTitle: String, courseVersionName: String, courseClassName: String, fullName: String, username: String): InstitutionBillingEnrollmentReportTO = {
+    val to = newInstitutionBillingEnrollmentReportTO
+    to.setEnrollmentUUID(enrollmentUUID)
+    to.setCourseTitle(courseTitle)
+    to.setCourseVersionName(courseVersionName)
+    to.setCourseClassName(courseClassName)
+    to.setFullName(fullName)
+    to.setUsername(username)
+    to
+  }
+
+  def newInstitutionBillingMonthlyReportTO: InstitutionBillingMonthlyReportTO = new InstitutionBillingMonthlyReportTO
+  def newInstitutionBillingMonthlyReportTO(personUUID: String, fullName: String, username: String): InstitutionBillingMonthlyReportTO = {
+    val to = newInstitutionBillingMonthlyReportTO
+    to.setPersonUUID(personUUID)
+    to.setFullName(fullName)
+    to.setUsername(username)
+    to
+  }
+  
 }

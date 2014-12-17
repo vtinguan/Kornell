@@ -13,19 +13,29 @@ import javax.ws.rs.core.Context
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.PeopleRepo
 import javax.ws.rs.QueryParam
-
+import kornell.server.util.Identifiable
+import javax.inject.Inject
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.PeopleRepo
+import kornell.server.jdbc.repository.PersonRepo
 
 @Produces(Array(Person.TYPE))
-class PersonResource(uuid: String) {
+class PersonResource @Inject()(
+    val authRepo:AuthRepo,
+    val peopleRepo:PeopleRepo)
+    extends Identifiable {
+  
+  def this() = this(null,null)
+  
   @GET
-  def get = PersonRepo(uuid)
+  def get = peopleRepo.byUUID(uuid)
 
   @Path("isRegistered")
   @Produces(Array("application/boolean"))
   @GET
   def isRegistered(@QueryParam("cpf") cpf:String,
       @QueryParam("email") email:String):Boolean = 
-    AuthRepo().withPerson { person =>
+    authRepo.withPerson { person =>
     	val result = get.isRegistered(person.getInstitutionUUID,cpf,email)
     	result
   }

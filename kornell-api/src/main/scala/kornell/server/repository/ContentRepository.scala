@@ -14,16 +14,18 @@ import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 import kornell.server.jdbc.repository.ContentStoreRepo
 import kornell.server.content.ContentManagers
+import kornell.server.jdbc.repository.CourseClassRepo
 
 @ApplicationScoped
 class ContentRepository @Inject() (
-  cms:ContentManagers
+  cms:ContentManagers,
+  courseClassesRepo:CourseClassesRepo
   ) {
   
-  def this() = this(null)
+  def this() = this(null,null)
 
   def findKNLVisitedContent(courseClassUUID: String, personUUID: String) = {
-    val classRepo = CourseClassesRepo(courseClassUUID)
+    val classRepo = courseClassesRepo.byUUID(courseClassUUID)
     val visited = classRepo.actomsVisitedBy(personUUID)
     val versionRepo = classRepo.version
     val cv = versionRepo.get
@@ -44,7 +46,7 @@ class ContentRepository @Inject() (
     val builderFactory = DocumentBuilderFactory.newInstance
     val builder = builderFactory.newDocumentBuilder
     /* </rant> */
-    val classRepo = CourseClassesRepo(courseClassUUID)
+    val classRepo = courseClassesRepo.byUUID(courseClassUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
     val cm = cms.forCourseVersion(version)

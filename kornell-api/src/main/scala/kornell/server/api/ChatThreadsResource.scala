@@ -18,18 +18,24 @@ import javax.ws.rs.GET
 import kornell.core.to.UnreadChatThreadsTO
 import kornell.core.to.ChatThreadMessagesTO
 import kornell.core.util.StringUtils
+import javax.inject.Inject
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
-class ChatThreadsResource {
+class ChatThreadsResource @Inject ()(
+    val chatThreadsRepo:ChatThreadsRepo,
+    val authRepo:AuthRepo
+    ) {
   
+  def this() = this(null,null)
+
   @POST
   @Path("courseClass/{courseClassUUID}")
   @Produces(Array("text/plain"))
   def postMessageToCourseClassSupportThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
-    message: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message)
+    message: String) = authRepo.withPerson { person => 
+  		chatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message)
   }
   
   @POST
@@ -38,28 +44,28 @@ class ChatThreadsResource {
   def postMessageToChatThread(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String,
     message: String, 
-    @QueryParam("since") since: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.createChatThreadMessage(chatThreadUUID, person.getUUID, message)
+    @QueryParam("since") since: String) = authRepo.withPerson { person => 
+  		chatThreadsRepo.createChatThreadMessage(chatThreadUUID, person.getUUID, message)
   		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
+  			chatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
   		else
-  			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  			chatThreadsRepo.getChatThreadMessages(chatThreadUUID)
   }
   
   @Path("unreadCount")
   @Produces(Array("application/octet-stream"))
   @GET
   def getTotalUnreadCountByPerson(implicit @Context sc: SecurityContext, 
-    @QueryParam("institutionUUID") institutionUUID: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.getTotalUnreadCountByPerson(person.getUUID, institutionUUID)
+    @QueryParam("institutionUUID") institutionUUID: String) = authRepo.withPerson { person => 
+  		chatThreadsRepo.getTotalUnreadCountByPerson(person.getUUID, institutionUUID)
   }
   
   @Path("unreadCountPerThread")
   @Produces(Array(UnreadChatThreadsTO.TYPE))
   @GET
   def getTotalUnreadCountsByPersonPerThread(implicit @Context sc: SecurityContext, 
-    @QueryParam("institutionUUID") institutionUUID: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.getTotalUnreadCountsByPersonPerThread(person.getUUID, institutionUUID)
+    @QueryParam("institutionUUID") institutionUUID: String) = authRepo.withPerson { person => 
+  		chatThreadsRepo.getTotalUnreadCountsByPersonPerThread(person.getUUID, institutionUUID)
   }
   
   @Path("{chatThreadUUID}/messages")
@@ -67,12 +73,12 @@ class ChatThreadsResource {
   @GET
   def getChatThreadMessages(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String, 
-    @QueryParam("since") since: String) = AuthRepo().withPerson { person => {
-      ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
+    @QueryParam("since") since: String) = authRepo.withPerson { person => {
+      chatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
   		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
+  			chatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
   		else
-  			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  			chatThreadsRepo.getChatThreadMessages(chatThreadUUID)
     }
   }
 }

@@ -1,5 +1,6 @@
 package kornell.server.api
 
+import scala.language.postfixOps
 import java.util.Collections
 import scala.collection.JavaConverters.setAsJavaSetConverter
 import javax.ws.rs.core.Application
@@ -37,6 +38,7 @@ class KornellAPI extends Application {
     classOf[CoursesResource],
     classOf[CourseVersionsResource],
     classOf[CourseClassesResource],
+    classOf[CourseClassResource],
     classOf[InstitutionsResource],
     classOf[ReportResource],
     classOf[EnrollmentsResource],

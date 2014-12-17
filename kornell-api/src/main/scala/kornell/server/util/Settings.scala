@@ -1,12 +1,12 @@
 package kornell.server.util
 
-import io.Source._
+import scala.io.Source._ 
 import java.util.Properties
 
 object Settings {
 
-  lazy val JNDI_ROOT = get("JNDI_ROOT").getOrElse("java:comp/env")
-  lazy val JNDI_DATASOURCE = get("JNDI_DATASOURCE").getOrElse("jdbc/KornellDS")
+  lazy val JNDI_ROOT = get("JNDI_ROOT").getOrElse("java:")
+  lazy val JNDI_DATASOURCE = get("JNDI_DATASOURCE").getOrElse("/datasources/KornellDS")
   
   def get(implicit key: String): Option[String] =
     fromProperties orElse fromSystem orElse fromEnv

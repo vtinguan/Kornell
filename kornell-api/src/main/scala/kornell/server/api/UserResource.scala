@@ -34,12 +34,17 @@ import kornell.core.to.UserHelloTO
 import kornell.server.repository.service.RegistrationEnrollmentService
 import javax.inject.Inject
 import kornell.server.cdi.Preferred
+import kornell.server.jdbc.repository.PeopleRepo
 
 @Path("user")
 class UserResource @Inject() (
-    @Preferred val authRepo:AuthRepo,
-    val registrationEnrollmentService:RegistrationEnrollmentService) {
-  def this() = this(null,null)
+    val authRepo:AuthRepo,
+    val registrationEnrollmentService:RegistrationEnrollmentService,
+    val peopleRepo:PeopleRepo,
+    val enrollmentsRepo:EnrollmentsRepo,
+    val ittsRepo:InstitutionsRepo) {
+  
+  def this() = this(null,null,null,null,null)
   
   def get = first.get
      
@@ -55,16 +60,16 @@ class UserResource @Inject() (
     userHello.setInstitution(
       {
         if(name != null)
-			    InstitutionsRepo.byName(name)
+			    ittsRepo.byName(name)
 			  else
-			    InstitutionsRepo.byHostName(hostName)
+			    ittsRepo.byHostName(hostName)
       }.getOrElse(null));
     
     val auth = req.getHeader("X-KNL-A")
     if (auth != null && auth.length() > 0) {
 	    val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
-	    AuthRepo().authenticate(userHello.getInstitution.getUUID, username, password).map { personUUID =>
-	  		val person = PersonRepo(personUUID).first.getOrElse(null)
+	    authRepo.authenticate(userHello.getInstitution.getUUID, username, password).map { personUUID =>
+	  		val person = peopleRepo.byUUID(personUUID).first.getOrElse(null)
 	  		userHello.setUserInfoTO(getUser(person).getOrElse(null))
 	  	}
     }
@@ -81,13 +86,13 @@ class UserResource @Inject() (
 
   def getUser(person: Person) = {
     val user = newUserInfoTO
-    val username = PersonRepo(person.getUUID).getUsername
+    val username = peopleRepo.byUUID(person.getUUID).getUsername
     user.setUsername(username)
     user.setPerson(person)
     user.setLastPlaceVisited(person.getLastPlaceVisited)
     val roles = authRepo.rolesOf(person.getUUID)
     user.setRoles((Set.empty ++ roles).asJava)
-    user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
+    user.setEnrollments(newEnrollments(enrollmentsRepo.byPerson(person.getUUID)))
 
     Option(user)
   } 
@@ -100,10 +105,10 @@ class UserResource @Inject() (
     @PathParam("personUUID") personUUID: String): Option[UserInfoTO] =
     authRepo.withPerson { p =>
       val user = newUserInfoTO
-      val person = PersonRepo(personUUID).get
+      val person = peopleRepo.byUUID(personUUID).get
       if (person != null) {
         user.setPerson(person)
-        user.setUsername(PersonRepo(person.getUUID).getUsername)
+        user.setUsername(peopleRepo.byUUID(personUUID).getUsername)
         Option(user)
       } else {
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")
@@ -129,8 +134,8 @@ class UserResource @Inject() (
   def requestPasswordChange(@Context resp: HttpServletResponse,
     @PathParam("email") email: String,
     @PathParam("institutionName") institutionName: String) = {
-    val institution = InstitutionsRepo.byName(institutionName)
-    val person = PeopleRepo.getByEmail(institution.get.getUUID, email)
+    val institution = ittsRepo.byName(institutionName)
+    val person = peopleRepo.getByEmail(institution.get.getUUID, email)
     if (person.isDefined && institution.isDefined) {
       val requestPasswordChangeUUID = UUID.random
       authRepo.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)
@@ -148,7 +153,7 @@ class UserResource @Inject() (
     @PathParam("passwordChangeUUID") passwordChangeUUID: String) = {
     val person = authRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
     if (person.isDefined) {
-      PersonRepo(person.get.getUUID).setPassword(person.get.getInstitutionUUID, person.get.getEmail, password)
+      peopleRepo.byUUID(person.get.getUUID).setPassword(person.get.getInstitutionUUID, person.get.getEmail, password)
       val user = newUserInfoTO
       user.setUsername(person.get.getEmail())
       Option(user)
@@ -165,10 +170,10 @@ class UserResource @Inject() (
     @PathParam("targetPersonUUID") targetPersonUUID: String,
     @QueryParam("password") password: String) = {
     authRepo.withPerson { p =>
-      if (!PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID))
+      if (!peopleRepo.byUUID(p.getUUID).hasPowerOver(targetPersonUUID))
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password.");
       else {
-        val targetPersonRepo = PersonRepo(targetPersonUUID)
+        val targetPersonRepo = peopleRepo.byUUID(targetPersonUUID)
         val username = authRepo.getUsernameByPersonUUID(targetPersonUUID)
 
         targetPersonRepo.setPassword(targetPersonRepo.get.getInstitutionUUID,
@@ -193,7 +198,7 @@ class UserResource @Inject() (
     @Context resp: HttpServletResponse,
     @PathParam("targetPersonUUID") targetPersonUUID: String) = {
     authRepo.withPerson { p =>
-      PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID)
+      peopleRepo.byUUID(p.getUUID).hasPowerOver(targetPersonUUID)
     }
   }
 
@@ -223,14 +228,14 @@ class UserResource @Inject() (
     userInfo: UserInfoTO,
     @PathParam("personUUID") personUUID: String) = authRepo.withPerson { p =>
     if (userInfo != null) {
-      if (!PersonRepo(p.getUUID).hasPowerOver(personUUID))
+      if (!peopleRepo.byUUID(p.getUUID).hasPowerOver(personUUID))
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password.");
       else {
-	      PersonRepo(personUUID).update(userInfo.getPerson)
+	      peopleRepo.byUUID(personUUID).update(userInfo.getPerson)
 	
 	      val roles = authRepo.rolesOf(userInfo.getPerson.getUUID)
 	      userInfo.setRoles((Set.empty ++ roles).asJava)
-	      userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
+	      userInfo.setEnrollments(newEnrollments(enrollmentsRepo.byPerson(p.getUUID)))
 	      userInfo
       }
     }
@@ -240,8 +245,8 @@ class UserResource @Inject() (
   @Path("acceptTerms")
   @Consumes(Array("text/plain"))
   @Produces(Array(UserInfoTO.TYPE))
-  def acceptTerms() = AuthRepo().withPerson{ p =>
-    PersonRepo(p.getUUID).acceptTerms
+  def acceptTerms() = authRepo.withPerson{ p =>
+    peopleRepo.byUUID(p.getUUID).acceptTerms
     getUser(p)
   }
 

@@ -12,8 +12,11 @@ import kornell.server.util.SHA256
 import java.sql.ResultSet
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.AuthRepo
+import javax.inject.Inject
 
 class BasicAuthFilter extends Filter {
+  @Inject var authRepo:AuthRepo = _
+  
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
   val pubPaths = Set(
     "/newrelic",
@@ -56,8 +59,13 @@ class BasicAuthFilter extends Filter {
 
   def isPublic(req: HttpServletRequest, resp: HttpServletResponse) = {
     val path = req.getRequestURI
-    val isPublic = path == "/api" || path == "/api/" || pubPaths.exists { p => path.startsWith(s"/api${p}") }
+    val isPublic = path == "/ArquillianServletRunner" || 
+    	path == "/api" || 
+    	path == "/api/" || 
+    	pubPaths.exists { p => path.startsWith(s"/api${p}") }
     val isOption = "OPTIONS".equals(req.getMethod)
+    
+    println(s"**** IS [$path] Pub? [${isOption || isPublic}]")
     isOption || isPublic
   }
 
@@ -83,7 +91,7 @@ class BasicAuthFilter extends Filter {
   override def destroy() {}
 
   def login(institutionUUID: String, username: String, password: String) =
-    AuthRepo().authenticate(institutionUUID, username, password).map { personUUID =>
+    authRepo.authenticate(institutionUUID, username, password).map { personUUID =>
       ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
     }
 

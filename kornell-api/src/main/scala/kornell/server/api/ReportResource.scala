@@ -18,14 +18,15 @@ import kornell.server.report.ReportCertificateGenerator
 import kornell.server.repository.s3.S3
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
-import kornell.server.report.ReportInstitutionBillingGenerator
-import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.jdbc.repository.CourseClassRepo
-import java.text.SimpleDateFormat
 
 @Path("/report")
-class ReportResource {
+class ReportResource(
+    val authRepo:AuthRepo,
+    val courseClassesRepo:CourseClassesRepo) {
 
+  def this() = this(null,null)
+  
   @GET
   @Path("/certificate/{userUUID}/{courseClassUUID}")
   @Produces(Array("application/pdf"))
@@ -42,9 +43,9 @@ class ReportResource {
   @Path("/certificate")
   def get(implicit @Context sc: SecurityContext,
     @Context resp: HttpServletResponse,
-    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
-    val courseClass = CourseClassesRepo(courseClassUUID).get
-    val roles = AuthRepo().getUserRoles
+    @QueryParam("courseClassUUID") courseClassUUID: String) = authRepo.withPerson { p =>
+    val courseClass = courseClassesRepo.byUUID(courseClassUUID).get
+    val roles = authRepo.getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID)))
@@ -75,9 +76,8 @@ class ReportResource {
 
   @GET
   @Path("courseClassCertificateExists")
-  def fileExists(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse,
-    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
+  def fileExists(@Context resp: HttpServletResponse,
+    @QueryParam("courseClassUUID") courseClassUUID: String) = authRepo.withPerson { p =>
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
       val url = S3.certificates.url(filename)
@@ -106,26 +106,12 @@ class ReportResource {
       else
         "pdf"
     }
-    val courseClass = CourseClassRepo(courseClassUUID).get
-    val fileName = courseClass.getName + " - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ "."+fType
-    resp.addHeader("Content-disposition", "attachment; filename=" + fileName)
+    resp.addHeader("Content-disposition", "attachment; filename=info."+fType)
     if(fType != null && fType == "xls")
     	resp.setContentType("application/vnd.ms-excel")
     else
     	resp.setContentType("application/pdf")
     ReportCourseClassGenerator.generateCourseClassReport(courseClassUUID, fType)
-  }
-
-  @GET
-  @Path("/institutionBilling")
-  def getInstitutionBilling(@Context resp: HttpServletResponse,
-    @QueryParam("institutionUUID") institutionUUID: String,
-    @QueryParam("periodStart") periodStart: String,
-    @QueryParam("periodEnd") periodEnd: String) = {
-    val institution = InstitutionRepo(institutionUUID).get
-    resp.addHeader("Content-disposition", "attachment; filename=" + institution.getName + " - " + periodStart + ".xls")
-    resp.setContentType("application/vnd.ms-excel")
-    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institution, periodStart, periodEnd)
   }
 
   @GET

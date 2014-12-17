@@ -69,9 +69,13 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 			scrollPanel.removeStyleName("offsetSouthBar");
 		}
 	}
-
+	
 	private ActivityBarView getActivityBarView() {
-		return new GenericActivityBarView(clientFactory);
+		//TODO: DI
+		return new GenericActivityBarView(
+				clientFactory.getEventBus(),
+				clientFactory.getKornellSession(),
+				clientFactory.getPlaceController());
 	}
 
 	private AdminBarView getAdminBarView(Place newPlace) {

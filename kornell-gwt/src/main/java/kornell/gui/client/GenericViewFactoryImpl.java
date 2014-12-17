@@ -1,5 +1,6 @@
 package kornell.gui.client;
 
+import kornell.api.client.KornellSession;
 import static kornell.core.util.StringUtils.composeURL;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
@@ -81,9 +82,10 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	SimplePanel shell = new SimplePanel();
 
-
+	private KornellSession session;
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory) {
+		this.session = clientFactory.getKornellSession();
 		this.clientFactory = clientFactory;
 	}
 
@@ -212,9 +214,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 					clientFactory.getPlaceController(),
 					clientFactory.getKornellSession());
 			ClassroomView activityView = getClassroomView();
-			coursePresenter = new ClassroomPresenter(activityView,
-					clientFactory.getPlaceController(), rendererFactory,
-					clientFactory.getKornellSession());
+			coursePresenter = new ClassroomPresenter(activityView, rendererFactory,clientFactory.getEventBus(),session);
 		}
 		return coursePresenter;
 	}

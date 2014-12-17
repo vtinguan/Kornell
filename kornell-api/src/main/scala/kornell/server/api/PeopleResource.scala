@@ -8,19 +8,22 @@ import javax.ws.rs.QueryParam
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.core.entity.People
 import kornell.server.jdbc.repository.AuthRepo
+import javax.inject.Inject
+import javax.enterprise.inject.Instance
 
 @Path("people")
 @Produces(Array(People.TYPE))
-class PeopleResource() {
+class PeopleResource @Inject()(
+	val peopleRepo:PeopleRepo,
+	val personResourceBean:Instance[PersonResource]
+) {
+  
+  def this() = this(null,null)
   
   @Path("{uuid}")
-  def get(@PathParam("uuid") uuid:String):PersonResource = new PersonResource(uuid) 
+  def get(@PathParam("uuid") uuid:String):PersonResource = personResourceBean.get.withUUID(uuid) 
   
   @GET
   def findBySearchTerm(@QueryParam("institutionUUID") institutionUUID:String,
-      @QueryParam("search") search:String) = PeopleRepo.findBySearchTerm(institutionUUID, search)
-}
-
-object PeopleResource{
-  def apply() = new PeopleResource()
+      @QueryParam("search") search:String) = peopleRepo.findBySearchTerm(institutionUUID, search)
 }

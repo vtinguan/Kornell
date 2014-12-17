@@ -13,7 +13,7 @@ import kornell.core.to.CourseVersionsTO
 import kornell.core.util.UUID
 import java.util.Date
 
-object CourseVersionsRepo {
+class CourseVersionsRepo {
   
   def create(courseVersion: CourseVersion): CourseVersion = {  
     val courseVersionExists = sql"""
@@ -43,7 +43,7 @@ object CourseVersionsRepo {
 	    | ${courseVersion.getCourseUUID}, 
 	    | ${courseVersion.getVersionCreatedAt},
 	    | ${courseVersion.getDistributionPrefix},
-	    | ${courseVersion.getContentSpec.toString},
+	    | ${if(courseVersion.getContentSpec != null) courseVersion.getContentSpec.toString else ""},
 	    | ${courseVersion.isDisabled})""".executeUpdate
 	    courseVersion
     } else {

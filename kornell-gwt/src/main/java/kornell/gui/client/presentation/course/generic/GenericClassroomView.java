@@ -7,7 +7,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.details.GenericCourseDetailsView;
 
@@ -20,14 +20,15 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericClassroomView extends Composite implements ClassroomView, ShowDetailsEventHandler {
+public class GenericClassroomView extends Composite implements ClassroomView, 
+	ShowDetailsEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericClassroomView> {
 	}
 	private PlaceController placeCtrl;
 	private KornellSession session;
 	private EventBus bus;
 
-	Logger logger = Logger.getLogger(AdminInstitutionPresenter.class.getName());
+	Logger logger = Logger.getLogger(GenericClassroomView.class.getName());
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	@UiField
@@ -35,7 +36,6 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	@UiField
 	FlowPanel detailsPanel;
 	
-	private boolean showCourseClassContent;
 	
 	private GenericCourseDetailsView detailsView;
 
@@ -52,19 +52,15 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	}
 
 	@Override
-	public void display(boolean isEnrolled) {
-		presenter.stopSequencer();
-		this.showCourseClassContent = isEnrolled;
-		if(this.showCourseClassContent){
-			presenter.startSequencer();
-		}
-		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl);
+	public void display(ClassroomPlace place) {
+		presenter.startSequencer();
+		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl,place);
 		detailsView.setPresenter(presenter);
 		detailsView.initData();
 		detailsPanel.clear();
 		detailsPanel.add(detailsView);
-		boolean showDetails = !isEnrolled || EnrollmentCategory.isFinished(Dean.getInstance().getCourseClassTO().getEnrollment());
-		bus.fireEvent(new ShowDetailsEvent(showDetails));
+		detailsPanel.setVisible(false);
+		contentPanel.setVisible(true);
 	}
 
 	@Override

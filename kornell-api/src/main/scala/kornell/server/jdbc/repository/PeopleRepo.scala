@@ -13,10 +13,19 @@ import java.util.concurrent.TimeUnit._
 import kornell.core.util.StringUtils._
 import kornell.server.jdbc.PreparedStmt
 import scala.language.implicitConversions
+import javax.enterprise.context.ApplicationScoped
+import javax.enterprise.inject.Instance
 
-
-object PeopleRepo {
-
+//TODO: Urgent: Cache
+@ApplicationScoped
+class PeopleRepo (
+    val personRepoBean:Instance[PersonRepo] ) 
+    {
+  
+  def this() = this(null)
+ 
+  def byUUID(uuid:String) =  personRepoBean.get.withUUID(uuid)
+  
   implicit def toString(rs: ResultSet): String = rs.getString(1)
 
   type InstitutionKey = (String, String)
@@ -34,7 +43,7 @@ object PeopleRepo {
   }
 
   val uuidLoader = new CacheLoader[String, Option[Person]]() {
-    override def load(uuid: String): Option[Person] = PersonRepo(uuid).first
+    override def load(uuid: String): Option[Person] = byUUID(uuid).first
   }
 
   val DEFAULT_CACHE_SIZE = 1000

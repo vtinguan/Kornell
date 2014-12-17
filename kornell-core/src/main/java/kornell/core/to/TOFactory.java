@@ -27,4 +27,10 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<ChatThreadMessagesTO> newChatThreadMessagesTO();
 	AutoBean<InstitutionRegistrationPrefixesTO> newInstitutionRegistrationPrefixesTO();
 	AutoBean<InstitutionHostNamesTO> newInstitutionHostNamesTO();
+	AutoBean<ActionTO> newActionTO();
+	AutoBean<InfoTO> newInfoTO();
+	AutoBean<InfosTO> newInfosTO();
+	AutoBean<CourseDetailsTO> newCourseDetailsTO();
+	AutoBean<EnrollmentLaunchTO> newEnrollmentLaunchTO();
+	
 }

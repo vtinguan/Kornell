@@ -34,37 +34,46 @@ import kornell.server.jdbc.repository.ChatThreadsRepo
 import java.sql.SQLException
 import kornell.server.repository.LibraryFilesRepository
 import javax.inject.Inject
+import javax.enterprise.context.Dependent
+import kornell.server.util.Identifiable
+import kornell.server.jdbc.repository.CourseClassRepo
+import kornell.server.jdbc.repository.RolesRepo
+import kornell.server.jdbc.repository.ChatThreadsRepo
 
-@Path("courseClass")
-class CourseClassResource(
+@Dependent
+class CourseClassResource(    
     val libRepo:LibraryFilesRepository,
-    val uuid: String) {
+    val courseClassesRepo:CourseClassesRepo,
+    val chatThreadsRepo:ChatThreadsRepo,
+    val authRepo:AuthRepo,
+    val rolesRepo:RolesRepo) 
+	extends Identifiable{  
   
-  def this() = this(null,null)
+  def this() = this(null,null,null,null,null)
   
   @GET
   @Produces(Array(CourseClass.TYPE))
-  def get = CourseClassRepo(uuid).first
+  def get = courseClassesRepo.byUUID(uuid).first
   
   @GET
   @Path("to")
   @Produces(Array(CourseClassTO.TYPE))
   def get(implicit @Context sc: SecurityContext) =
-    AuthRepo().withPerson { person =>
+    authRepo.withPerson { person =>
       //CourseClasses(uuid).byPerson(person.getUUID)
     }
 
   @PUT
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
-  def update(@Context resp: HttpServletResponse, courseClass: CourseClass) = AuthRepo().withPerson { p =>
-    val roles = AuthRepo().getUserRoles
+  def update(@Context resp: HttpServletResponse, courseClass: CourseClass) = authRepo.withPerson { p =>
+    val roles = authRepo.getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID)))
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
     else
       try {
-        CourseClassRepo(uuid).update(courseClass)
+        courseClassesRepo.byUUID(uuid).update(courseClass)
       } catch {
         case ioe: SQLException =>
           resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
@@ -73,17 +82,17 @@ class CourseClassResource(
 
   @DELETE
   @Produces(Array(CourseClass.TYPE))
-  def delete(@Context resp: HttpServletResponse) = AuthRepo().withPerson { p =>
-    val courseClass = CourseClassRepo(uuid).get
-    val roles = AuthRepo().getUserRoles
+  def delete(@Context resp: HttpServletResponse) = authRepo.withPerson { p =>
+    val courseClass = courseClassesRepo.byUUID(uuid).get
+    val roles = authRepo.getUserRoles
     if (courseClass == null)
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Can't delete a class that doesn't exist.");
     else if (!(RoleCategory.isPlatformAdmin(roles) ||
-      RoleCategory.isInstitutionAdmin(roles, CourseClassRepo(uuid).get.getInstitutionUUID)))
+      RoleCategory.isInstitutionAdmin(roles, courseClassesRepo.byUUID(uuid).get.getInstitutionUUID)))
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
     else
       try {
-        CourseClassRepo(uuid).delete(uuid)
+       courseClassesRepo.byUUID(uuid).delete(uuid)
         courseClass
       } catch {
         case ioe: SQLException =>
@@ -114,10 +123,10 @@ class CourseClassResource(
   @Produces(Array(Roles.TYPE))
   @Path("admins")
   def updateAdmins(implicit @Context sc: SecurityContext, roles: Roles) =
-    AuthRepo().withPerson { person =>
+    authRepo.withPerson { person =>
       {
-        val r = RolesRepo.updateCourseClassAdmins(uuid, roles)
-        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreads(uuid)
+        val r = rolesRepo.updateCourseClassAdmins(uuid, roles)
+        chatThreadsRepo.updateParticipantsInCourseClassSupportThreads(uuid)
         r
       }
     }
@@ -127,9 +136,9 @@ class CourseClassResource(
   @Path("admins")
   def getAdmins(implicit @Context sc: SecurityContext,
       @QueryParam("bind") bindMode:String) =
-    AuthRepo().withPerson { person =>
+    authRepo.withPerson { person =>
       {
-        RolesRepo.getCourseClassAdmins(uuid, bindMode)
+        rolesRepo.getCourseClassAdmins(uuid, bindMode)
       }
     }
 

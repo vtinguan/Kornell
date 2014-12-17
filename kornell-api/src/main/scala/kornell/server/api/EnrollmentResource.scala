@@ -13,16 +13,12 @@ import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Assessment
 import kornell.core.entity.Enrollment
-import kornell.core.entity.RoleCategory
 import kornell.core.lom.Contents
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.RegistrationsRepo
-import scala.collection.JavaConverters._
-import kornell.server.util.Errors._
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.Err
 import kornell.server.authentication.ThreadLocalAuthenticator
@@ -47,15 +43,24 @@ import javax.inject.Inject
 import kornell.core.entity.CourseVersion
 import kornell.server.ep.EnrollmentSEP
 import kornell.server.scorm.scorm12.rte.SCORM12PackageManagers
+import  kornell.server.util.Errors._
+import kornell.server.util.Identifiable
+import kornell.server.jdbc.repository.PeopleRepo
+import kornell.server.jdbc.repository.CourseClassesRepo
 
+//TODO: Some may be unused
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(    
-    cms:ContentManagers,
-    scorm12pm:SCORM12PackageManagers,
-    enrollmentSEP:EnrollmentSEP,
-    enrollmentRepo:EnrollmentRepo,
-    contentStoreRepo:ContentStoreRepo,
-    uuid: String) {
+    val cms:ContentManagers,
+    val scorm12pm:SCORM12PackageManagers,
+    val enrollmentSEP:EnrollmentSEP,
+    val enrollmentRepo:EnrollmentRepo,
+    val contentStoreRepo:ContentStoreRepo,
+    val courseClassesRepo:CourseClassesRepo,
+    val peopleRepo:PeopleRepo)
+    extends Identifiable {
+
+    def this() = this(null,null,null,null,null,null,null)
   
   lazy val enrollment = enrollmentRepo.get(uuid)
 
@@ -64,12 +69,6 @@ class EnrollmentResource(
   @GET
   def first = enrollmentRepo.first(uuid)
 
-  @PUT
-  @Produces(Array("text/plain"))
-  @Path("acceptTerms")
-  def acceptTerms() = AuthRepo().withPerson { p =>
-    RegistrationsRepo(p.getUUID, uuid).acceptTerms
-  }
 
   @PUT
   @Produces(Array("text/plain"))
@@ -77,7 +76,7 @@ class EnrollmentResource(
   def update(enrollment: Enrollment) = {
     enrollmentRepo.update(enrollment)
   }
-    .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID), RequirementNotMet)
+    .requiring(peopleRepo.byUUID(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID), RequirementNotMet)
     .get
 
   @Path("actoms/{actomKey}")
@@ -96,7 +95,7 @@ class EnrollmentResource(
     enrollmentRepo.delete(uuid)
     enrollment
   }.requiring(isPlatformAdmin, UserNotInRole)
-    .or(isInstitutionAdmin(CourseClassRepo(enrollmentRepo.get(uuid).getCourseClassUUID).get.getInstitutionUUID), UserNotInRole)
+    .or(isInstitutionAdmin(courseClassesRepo.byUUID(enrollmentRepo.get(uuid).getCourseClassUUID).get.getInstitutionUUID), UserNotInRole)
     .or(isCourseClassAdmin(enrollmentRepo.get(uuid).getCourseClassUUID), UserNotInRole)
 
   @GET
@@ -104,7 +103,7 @@ class EnrollmentResource(
   @Produces(Array(EnrollmentLaunchTO.TYPE))
   def launch: Option[EnrollmentLaunchTO] = for {
     e <- first
-    cc <- CourseClassRepo(e.getCourseClassUUID).first
+    cc <- courseClassesRepo.byUUID(e.getCourseClassUUID).first
     cv <- CourseVersionRepo(cc.getCourseVersionUUID).first
     cs <- contentStoreRepo.first(cv.getRepositoryUUID) 
     details <- launchDetails(e) 

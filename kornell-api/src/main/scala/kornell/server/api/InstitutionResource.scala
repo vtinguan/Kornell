@@ -21,9 +21,19 @@ import kornell.server.util.AccessDeniedErr
 import kornell.server.jdbc.repository.InstitutionHostNameRepo
 import kornell.server.jdbc.repository.InstitutionHostNameRepo
 import kornell.core.to.InstitutionHostNamesTO
+import kornell.server.util.Identifiable
+import javax.inject.Inject
+import javax.enterprise.context.Dependent
+import kornell.server.jdbc.repository.RolesRepo
 
+@Dependent
+class InstitutionResource @Inject()(    
+    val chatThreadsRepo:ChatThreadsRepo,
+    val rolesRepo:RolesRepo)
+  extends Identifiable {
+  
+  def this() = this(null,null)
 
-class InstitutionResource(uuid: String) {
   
   @GET
   @Produces(Array(Institution.TYPE))
@@ -50,8 +60,8 @@ class InstitutionResource(uuid: String) {
   @Produces(Array(Roles.TYPE))
   @Path("admins")
   def updateAdmins(roles: Roles) = {
-        val r = RolesRepo.updateInstitutionAdmins(uuid, roles)
-        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid)
+        val r = rolesRepo.updateInstitutionAdmins(uuid, roles)
+        chatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid)
         r
   }.requiring(isPlatformAdmin, AccessDeniedErr())
    .get
@@ -60,7 +70,7 @@ class InstitutionResource(uuid: String) {
   @Produces(Array(RolesTO.TYPE))
   @Path("admins")
   def getAdmins(@QueryParam("bind") bindMode:String) = {
-        RolesRepo.getInstitutionAdmins(uuid, bindMode)
+        rolesRepo.getInstitutionAdmins(uuid, bindMode)
   }.requiring(isPlatformAdmin, AccessDeniedErr())
    .get
    
@@ -80,8 +90,4 @@ class InstitutionResource(uuid: String) {
         InstitutionHostNameRepo(uuid).get
   }.requiring(isPlatformAdmin, AccessDeniedErr())
    .get
-}
-
-object InstitutionResource {
-    def apply(uuid: String) = new InstitutionResource(uuid)
 }

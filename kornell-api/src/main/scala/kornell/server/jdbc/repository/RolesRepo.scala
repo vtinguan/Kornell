@@ -15,9 +15,13 @@ import kornell.core.util.UUID
 import kornell.core.entity.Roles
 import kornell.core.entity.RoleType
 import kornell.core.entity.RoleCategory
+import javax.inject.Inject
 
-object RolesRepo {
-  	
+class RolesRepo @Inject()(
+    val peopleRepo:PeopleRepo
+    ) {
+  def this() = this(null)
+  
   def getCourseClassAdmins(courseClassUUID: String, bindMode: String) =
 	  TOs.newRolesTO(sql"""
 		    | select *
@@ -62,7 +66,7 @@ object RolesRepo {
   private def bindRole(role: Role, bindMode: String) =
     TOs.newRoleTO(role, {
       if(role != null && RoleCategory.BIND_WITH_PERSON.equals(bindMode))
-        PeopleRepo.getByUUID(role.getPersonUUID).get
+        peopleRepo.getByUUID(role.getPersonUUID).get
       else
         null
     })

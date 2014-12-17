@@ -8,13 +8,13 @@
 		<version>1.2-SNAPSHOT</version>
 	</parent>
 
-	<groupId>kornell</groupId>
 	<artifactId>kornell-api</artifactId>
 	<packaging>war</packaging>
 	<name>API Server</name>
-	<version>1.2-SNAPSHOT</version>
+
 
 	<properties>
+
 		<resteasy.version>3.0.8.Final</resteasy.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -24,6 +24,7 @@
 		<beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
 		<buildNumber>Development Build</buildNumber>
 		<scala.version>2.10.4</scala.version>
+		<version.shrinkwrap.resolvers>2.2.0-beta-1</version.shrinkwrap.resolvers>
 	</properties>
 
 	<repositories>
@@ -70,6 +71,16 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>1.1.5.Final</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<!-- <dependency> <groupId>org.jboss.shrinkwrap</groupId> <artifactId>shrinkwrap-depchain</artifactId> 
+				<version>1.2.2</version> <type>pom</type> </dependency> -->
 		</dependencies>
 	</dependencyManagement>
 
@@ -139,7 +150,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
 
 		<dependency>
@@ -154,8 +165,7 @@
 			<version>2.4</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-log4j12</artifactId> 
-			<version>1.6.4</version> </dependency> -->
+
 
 		<dependency>
 			<groupId>mysql</groupId>
@@ -234,7 +244,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>17.0</version>
+			<version>14.0.1</version>
 		</dependency>
 
 		<dependency>
@@ -245,6 +255,78 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wildfly.arquillian</groupId>
+			<artifactId>wildfly-arquillian-container-remote</artifactId>
+			<version>1.0.0.Alpha4</version>
+			<scope>test</scope>
+		</dependency>	
+		
+		<dependency>
+			<groupId>org.jboss.weld</groupId>
+			<artifactId>weld-core</artifactId>
+			<version>1.1.5.Final</version>
+			<scope>test</scope>
+		</dependency>
+<!-- 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
+			<scope>test</scope>
+		</dependency>
+ -->
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+			<!-- <scope>test</scope> -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-spi</artifactId>
+			<version>${version.shrinkwrap.resolvers}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-api-maven</artifactId>
+
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-spi-maven</artifactId>
+			<version>${version.shrinkwrap.resolvers}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
+			<version>${version.shrinkwrap.resolvers}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eu.ingwar.tools</groupId>
+			<artifactId>arquillian-suite-extension</artifactId>
+			<version>1.1.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -253,6 +335,10 @@
 		<testSourceDirectory>src/test/scala</testSourceDirectory>
 
 		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+			</plugin>
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>
@@ -294,28 +380,13 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<!--
-			<plugin>
-				<groupId>org.scalastyle</groupId>
-				<artifactId>scalastyle-maven-plugin</artifactId>
-				<version>0.2.0</version>
-				<configuration>
-					<verbose>false</verbose>
-					<failOnViolation>false</failOnViolation>
-					<failOnWarning>false</failOnWarning>
-					<configLocation>${basedir}/lib/scalastyle_config.xml</configLocation>
-					<sourceDirectory>${basedir}/src/main/scala</sourceDirectory>
-					<includeTestSourceDirectory>true</includeTestSourceDirectory> testSourceDirectory>${basedir}/src/test/scala</testSourceDirectory> 
-				</configuration>
-				<executions>
-					<execution>						
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
+			<!-- <plugin> <groupId>org.scalastyle</groupId> <artifactId>scalastyle-maven-plugin</artifactId> 
+				<version>0.2.0</version> <configuration> <verbose>false</verbose> <failOnViolation>false</failOnViolation> 
+				<failOnWarning>false</failOnWarning> <configLocation>${basedir}/lib/scalastyle_config.xml</configLocation> 
+				<sourceDirectory>${basedir}/src/main/scala</sourceDirectory> <includeTestSourceDirectory>true</includeTestSourceDirectory> 
+				testSourceDirectory>${basedir}/src/test/scala</testSourceDirectory> </configuration> 
+				<executions> <execution> <goals> <goal>check</goal> </goals> </execution> 
+				</executions> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>

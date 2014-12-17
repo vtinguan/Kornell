@@ -12,15 +12,24 @@ import kornell.server.jdbc.repository.PersonRepo
 import javax.ws.rs.Consumes
 import javax.ws.rs.PUT
 import javax.ws.rs.DELETE
+import kornell.server.util.Identifiable
+import javax.enterprise.context.Dependent
+import javax.inject.Inject
+import kornell.server.jdbc.repository.PeopleRepo
 
-class CourseResource(uuid: String) {
+@Dependent
+class CourseResource @Inject()(
+  val peopleRepo:PeopleRepo		
+  ) extends Identifiable {
+  
+  def this() = this(null)
   
   @GET
   @Produces(Array(Course.TYPE))
   def get = {
     CourseRepo(uuid).get
   }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+   .or(isInstitutionAdmin(peopleRepo.byUUID(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
    .get
    
   @PUT
@@ -29,10 +38,6 @@ class CourseResource(uuid: String) {
   def update(course: Course) = {
     CourseRepo(uuid).update(course)
   }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+   .or(isInstitutionAdmin(peopleRepo.byUUID(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
    .get
-}
-
-object CourseResource {
-  def apply(uuid: String) = new CourseResource(uuid)
 }

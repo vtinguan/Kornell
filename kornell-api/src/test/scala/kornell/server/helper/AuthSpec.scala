@@ -4,6 +4,7 @@ import kornell.server.authentication.ThreadLocalAuthenticator
 import org.scalatest.BeforeAndAfter
 
 trait AuthSpec {
+ 
   def assumeIdentity(personUUID: String) =
     ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
 

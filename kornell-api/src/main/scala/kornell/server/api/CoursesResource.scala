@@ -16,31 +16,37 @@ import kornell.server.util.Conditional.toConditional
 import kornell.server.util.RequirementNotMet
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.util.AccessDeniedErr
+import javax.inject.Inject
+import javax.enterprise.inject.Instance
+import kornell.server.jdbc.repository.PeopleRepo
 
 @Path("courses")
-class CoursesResource {
-  
+class CoursesResource @Inject() (
+  val authRepo: AuthRepo,
+  val courseResourceBean: Instance[CourseResource],
+  val peopleRepo: PeopleRepo,
+  val coursesRepo:CoursesRepo) {
+
+  def this() = this(null,null,null,null)
+
   @Path("{uuid}")
-  def getCourse(@PathParam("uuid") uuid:String) = CourseResource(uuid)
-  
+  def getCourse(@PathParam("uuid") uuid: String) = courseResourceBean.get().withUUID(uuid)
+
   @GET
   @Produces(Array(CoursesTO.TYPE))
   def getCourses =
-	  AuthRepo().withPerson { person => {
-	    	 CoursesRepo.byInstitution(person.getInstitutionUUID)
-	  }
-  }
-  
+    authRepo.withPerson { person =>
+      {
+        coursesRepo.byInstitution(person.getInstitutionUUID)
+      }
+    }
+
   @POST
   @Produces(Array(Course.TYPE))
   @Consumes(Array(Course.TYPE))
   def create(course: Course) = {
-    CoursesRepo.create(course)
+    coursesRepo.create(course)
   }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
-   .get
-}
-
-object CoursesResource {
-  def apply() = new CoursesResource();
+    .or(isInstitutionAdmin(peopleRepo.byUUID(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+    .get
 }

@@ -16,15 +16,30 @@ import com.google.common.cache.CacheLoader
 import java.util.concurrent.TimeUnit
 import kornell.server.jdbc.PreparedStmt
 import kornell.core.util.StringUtils._
+import javax.enterprise.context.ApplicationScoped
+import kornell.server.util.Identifiable
+import javax.enterprise.context.Dependent
+import javax.inject.Inject
 
-class PersonRepo(val uuid: String) {
+//TODO: URGENT: Cache
+@Dependent
+class PersonRepo @Inject()(
+    val authRepo:AuthRepo,
+    val peopleRepo:PeopleRepo,
+    val enrollmentsRepo:EnrollmentsRepo)
+	extends Identifiable {
 
+  def this() = this(null,null,null)
+  
   def setPassword(institutionUUID: String, username: String, password: String): PersonRepo = {
-    AuthRepo().setPlainPassword(institutionUUID, uuid, username, password)
+    authRepo.setPlainPassword(institutionUUID, uuid, username, password)
     PersonRepo.this
   }  
 
-  lazy val finder = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
+  
+  def find(uuid:String) = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
+  
+  lazy val finder = find(uuid) 
 
   def get: Person = finder.get[Person]
 
@@ -41,7 +56,7 @@ class PersonRepo(val uuid: String) {
 	    	cpf = ${person.getCPF}
 	    	where uuid = $uuid
 	    """.executeUpdate
-	  PeopleRepo.updateCaches(person)
+	peopleRepo.updateCaches(person)
     PersonRepo.this
   }
 
@@ -63,16 +78,16 @@ class PersonRepo(val uuid: String) {
   }
 
   def hasPowerOver(targetPersonUUID: String) = {
-    val actorRoles = AuthRepo().rolesOf(uuid)
+    val actorRoles = authRepo.rolesOf(uuid)
     val actorRolesSet = (Set.empty ++ actorRoles).asJava
-    val targetPerson = PersonRepo(targetPersonUUID).get
+    val targetPerson = find(targetPersonUUID).get[Person]
 
-    val targetUsername = AuthRepo().getUsernameByPersonUUID(targetPersonUUID)
+    val targetUsername = authRepo.getUsernameByPersonUUID(targetPersonUUID)
 
     //if there's no username yet, any admin can have power
     (!targetUsername.isDefined) ||
       {
-        val targetRoles = AuthRepo().rolesOf(targetPersonUUID)
+        val targetRoles = authRepo.rolesOf(targetPersonUUID)
         val targetRolesSet = (Set.empty ++ targetRoles).asJava
 
         //people have power over themselves
@@ -88,7 +103,7 @@ class PersonRepo(val uuid: String) {
               RoleCategory.isInstitutionAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
           } || {
             //courseClassAdmin doesn't have power over platformAdmins, institutionAdmins, other courseClassAdmins or non enrolled users
-            val enrollmentTOs = EnrollmentsRepo.byPerson(targetPersonUUID)
+            val enrollmentTOs = enrollmentsRepo.byPerson(targetPersonUUID)
             !RoleCategory.isPlatformAdmin(targetRolesSet) &&
               !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) &&
               !RoleCategory.hasRole(targetRolesSet, RoleType.courseClassAdmin) && {
@@ -110,19 +125,3 @@ class PersonRepo(val uuid: String) {
 
 }
 
-object PersonRepo {
-    
-  val uuidLoader = new CacheLoader[String, Option[Person]]() {
-    override def load(uuid: String): Option[Person] = PersonRepo(uuid).first
-  } 
-
-  val personCache = CacheBuilder
-    .newBuilder()
-    .expireAfterAccess(5, TimeUnit.MINUTES)
-    .maximumSize(1000)
-    .build(uuidLoader)
-    
-  
-    
-  def apply(uuid: String) = new PersonRepo(uuid)
-}

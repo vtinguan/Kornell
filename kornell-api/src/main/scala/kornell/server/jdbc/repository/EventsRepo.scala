@@ -21,10 +21,14 @@ import kornell.server.ep.EnrollmentSEP
 
 @ApplicationScoped
 class EventsRepo @Inject()(
-    enrollmentRepo:EnrollmentRepo,
-    enrollmentSEP:EnrollmentSEP) {
+    val enrollmentRepo:EnrollmentRepo,
+    val enrollmentSEP:EnrollmentSEP,
+    val courseClassesRepo:CourseClassesRepo,
+    val peopleRepo:PeopleRepo,
+    val coursesRepo:CoursesRepo,
+    val ittsRepo:InstitutionsRepo) {
   
-  def this() = this(null,null)
+  def this() = this(null,null,null,null,null,null)
   
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
 
@@ -78,11 +82,11 @@ class EventsRepo @Inject()(
 
     if (EnrollmentState.enrolled.equals(toState)) {
       val enrollment = enrollmentRepo.get(enrollmentUUID)
-      val person = PersonRepo(enrollment.getPersonUUID).get
+      val person = peopleRepo.byUUID(enrollment.getPersonUUID).get
       if (person.getEmail != null && !"true".equals(Settings.get("TEST_MODE").orNull)) {
-        val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
-        val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
-        val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get
+        val courseClass = courseClassesRepo.byUUID(enrollment.getCourseClassUUID).get
+        val course = coursesRepo.byCourseClassUUID(courseClass.getUUID).get
+        val institution = ittsRepo.byUUID(courseClass.getInstitutionUUID).get
         EmailService.sendEmailEnrolled(person, institution, course)
       }
     }
