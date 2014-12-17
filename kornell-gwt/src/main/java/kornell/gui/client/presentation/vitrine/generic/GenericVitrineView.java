@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Timer;
 
@@ -38,6 +39,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private VitrineView.Presenter presenter;
 	private VitrineViewType currentViewType = VitrineViewType.login;
+	private String registrationEmail;
 
 	@UiField
 	FlowPanel vitrineWrapper;
@@ -252,6 +254,11 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			});
 			break;
 		case register: 
+			if(registrationEmail != null){
+				suEmail.setText(registrationEmail);
+				suEmail.setEnabled(false);
+				suEmail.setTitle("Use o mesmo email no qual recebeu a matrícula.");
+			}
 			signUpPanel.setVisible(true);
 			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 				public void execute() {
@@ -331,13 +338,8 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	@Override
-	public void setBackgroundImage(String assetsURL) {
-		String style = "background: url('"+composeURL(assetsURL, "bgVitrine.jpg")+"') no-repeat center center fixed; " + 
-				"-webkit-background-size: cover; " + 
-				"-moz-background-size: cover; " + 
-				"-o-background-size: cover; " + 
-				"background-size: cover;";
-		DOM.setElementAttribute(RootLayoutPanel.get().getElement(), "style", style);
-	}
+  public void setRegistrationEmail(String email) {
+		this.registrationEmail = email;  
+  }
 
 }

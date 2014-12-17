@@ -77,7 +77,7 @@
 }
 
 .fieldPanelWrapper{
-	width: 525px;
+	width: 725px;
 	height: 55px;
 	float: left;
 	.labelPanelImg{
@@ -113,18 +113,18 @@
 	}
 	.fieldPanel{
 		float: left;
-		width: 275px;
+		width: 475px;
 		.textField{
-			width: 248px;
+			width: 448px;
 			margin-bottom: 0px;
 		}
 		.selectField{
-			width: 262px;;
+			width: 462px;;
 		}
 		.lblValue{
 			color:	@profileLabelValueColor;
-			margin-top: -4px;
-			line-height: 45px;
+			margin-top: 11px;
+			line-height: 15px;
 			font-size: 14px;
 		}
 		.checkbox{
@@ -132,7 +132,7 @@
 		}
 	}
 }
-@media screen and (max-width: @wrapperWidth) {
+/*@media screen and (max-width: @wrapperWidth) {
 	.fieldPanelWrapper{
 			width: @wrapperWidthUnder990;
 			height: auto;
@@ -178,13 +178,13 @@
 			padding-left: 50px;
 		}
 	}
-}
+}*/
 
 .anchorToLabel {
-	color: @niceTextColor;
+	color: @niceTextColor !important;
 	&:hover {
 		cursor: default;
-		color: @niceTextColor;
+		color: @niceTextColor !important;
 		text-decoration: none;
 	}
 }
@@ -279,9 +279,20 @@
 	border-left: 0px !important;
 }
 .nav-tabs{
-	font-size: 15px;
+	font-size: 14px;
 	font-weight: bold;
 	margin-bottom: 30px !important;
+	border-bottom: 2px solid @tableBackgroundHoverColor !important;
+}
+.nav-tabs>.active>a, .nav-tabs>.active>a:hover, .nav-tabs>li>a:hover {
+	background-color: @tableBackgroundHoverColor !important;
+	border: 1px solid transparent !important;
+	border-bottom: 0px !important;
+	color: @textInfoColor !important;
+}
+.nav-pills>.active>a,.nav-pills>.active>a:hover{
+	background-color: @tableBackgroundHoverColor !important;
+	color: @textInfoColor !important;
 }
 
 .dropdown-menu .active>a, 

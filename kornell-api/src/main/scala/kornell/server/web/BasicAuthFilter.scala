@@ -33,7 +33,8 @@ class BasicAuthFilter extends Filter {
     "/email/welcome",
     "/institutions",
     "/repository",
-    "/healthCheck")
+    "/healthCheck",
+    "/errors")
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
     (sreq, sres) match {
@@ -64,8 +65,8 @@ class BasicAuthFilter extends Filter {
     val auth = req.getHeader("X-KNL-A");
     if (auth != null && auth.length() > 0) {
       try {
-        val (username, password) = BasicAuthFilter.extractCredentials(auth)
-        login(username, password)
+        val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
+        login(institutionUUID, username, password)
         
       } catch {
         case e: Exception =>
@@ -81,8 +82,8 @@ class BasicAuthFilter extends Filter {
 
   override def destroy() {}
 
-  def login(username: String, password: String) =
-    AuthRepo().authenticate(username, password).map { personUUID =>
+  def login(institutionUUID: String, username: String, password: String) =
+    AuthRepo().authenticate(institutionUUID, username, password).map { personUUID =>
       ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
     }
 
@@ -95,6 +96,6 @@ object BasicAuthFilter{
     val encoded = auth.split(" ")(1)
     val decoded = new String(Base64.decodeBase64(encoded))
     val extracted = decoded.split(":")
-    (extracted(0), extracted(1))
+    (extracted(0), extracted(1), extracted(2))
   }
 }

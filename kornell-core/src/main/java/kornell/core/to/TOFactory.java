@@ -12,7 +12,6 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<CourseVersionTO> newCourseVersionTO();
 	AutoBean<UserInfoTO> newUserInfoTO();
 	AutoBean<UserHelloTO> newUserHelloTO();
-	AutoBean<RegistrationsTO> newRegistrationsTO();
 	AutoBean<EnrollmentTO> newEnrollmentTO();
 	AutoBean<EnrollmentsTO> newEnrollmentsTO();
 	AutoBean<RegistrationRequestTO> newRegistrationRequestTO();
@@ -22,13 +21,10 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<RolesTO> newRolesTO();
 	AutoBean<LibraryFileTO> newLibraryFileTO();
 	AutoBean<LibraryFilesTO> newLibraryFilesTO();
+	AutoBean<UnreadChatThreadTO> newUnreadChatThreadTO();
+	AutoBean<UnreadChatThreadsTO> newUnreadChatThreadsTO();
 	AutoBean<ChatThreadMessageTO> newChatThreadMessageTO();
 	AutoBean<ChatThreadMessagesTO> newChatThreadMessagesTO();
-	AutoBean<ActionTO> newActionTO();
-	AutoBean<UnreadChatThreadsTO> newUnreadChatThreadsTO();
-	AutoBean<UnreadChatThreadTO> newUnreadChatThreadTO();
-	AutoBean<InfoTO> newInfoTO();
-	AutoBean<InfosTO> newInfosTO();
-	AutoBean<CourseDetailsTO> newCourseDetailsTO();
-	AutoBean<EnrollmentLaunchTO> newEnrollmentLaunchTO();
+	AutoBean<InstitutionRegistrationPrefixesTO> newInstitutionRegistrationPrefixesTO();
+	AutoBean<InstitutionHostNamesTO> newInstitutionHostNamesTO();
 }

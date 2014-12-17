@@ -9,24 +9,23 @@ import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
 import kornell.server.repository.Entities
+import kornell.core.util.UUID
 
 object CoursesRepo {
 
-  def apply(uuid:String) = CourseRepo(uuid)
-  
-  def create(code:String):Course = 
-     create(Entities.newCourse(code = code))    
-  
-  
-  def create(course: Course): Course = {    
+  def create(course: Course): Course = {
+    if (course.getUUID == null){
+      course.setUUID(UUID.random)
+    }    
     sql"""
-    | insert into Course (uuid,code,title,description,infoJson) 
+    | insert into Course (uuid,code,title,description,infoJson,institutionUUID) 
     | values(
     | ${course.getUUID},
     | ${course.getCode},
     | ${course.getTitle}, 
     | ${course.getDescription},
-    | ${course.getInfoJson})""".executeUpdate
+    | ${course.getInfoJson},
+    | ${course.getInstitutionUUID})""".executeUpdate
     course
   }  
   
@@ -39,9 +38,8 @@ object CoursesRepo {
   def byInstitution(institutionUUID: String) = newCoursesTO(
     sql"""
 	  	select c.* from Course c
-		join Curriculum cu on cu.courseUUID = c.uuid
-		join Institution i on cu.institutionUUID = i.uuid
-		where cu.institutionUUID = $institutionUUID
+		join Institution i on c.institutionUUID = i.uuid
+		where c.institutionUUID = $institutionUUID
 	  """.map[Course](toCourse))
   
 }

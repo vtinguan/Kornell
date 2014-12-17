@@ -501,7 +501,9 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 						confirmedEnrollmentsModal = false;
 						KornellNotification.show(
 								"Matrículas feitas com sucesso.", 1500);
+						view.clearEnrollmentFields();
 						LoadingPopup.hide();
+						PlaceUtils.reloadCurrentPlace(bus, placeController);
 					}
 					
 					@Override

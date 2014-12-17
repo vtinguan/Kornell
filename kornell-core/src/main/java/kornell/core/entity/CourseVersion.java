@@ -3,6 +3,8 @@ package kornell.core.entity;
 import java.util.Date;
 
 public interface CourseVersion extends Named {
+    public static String TYPE = EntityFactory.PREFIX + "courseVersion+json";
+    
 	String getCourseUUID();
 	void setCourseUUID(String courseUUID);
 	

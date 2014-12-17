@@ -12,10 +12,6 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new UserClient();
 	}
 
-	public RegistrationsClient registrations() {
-		return new RegistrationsClient();
-	}
-
 	public InstitutionsClient institutions() {
 		return new InstitutionsClient();
 	}
@@ -32,8 +28,16 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 		return new CoursesClient();
 	}
 
+	public CourseClient course(String uuid) {
+		return new CourseClient(uuid);
+	}
+
 	public CourseVersionsClient courseVersions() {
 		return new CourseVersionsClient();
+	}
+
+	public CourseVersionClient courseVersion(String uuid) {
+		return new CourseVersionClient(uuid);
 	}
 
 	public CourseClassesClient courseClasses() {
@@ -46,6 +50,10 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 
 	public PeopleClient people() {
 		return new PeopleClient();
+	}
+
+	public PersonClient person(String personUUID){
+		return new PersonClient(personUUID);
 	}
 
 	public CourseClassClient courseClass(String courseClassUUID) {
@@ -81,7 +89,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	}
 
 	private void forgetCredentials() {
-		ClientProperties.remove("X-KNL-A");
+		ClientProperties.remove(ClientProperties.X_KNL_A);
 	}
 
 }

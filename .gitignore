@@ -38,3 +38,6 @@ sourcetree
 sourcetree.pub
 kornell-gwt/gwt-unitCache/
 *.orig
+kornell-gwt/extras/Kornell/soycReport/
+kornell-gwt/extras/Kornell/cssResource/
+kornell-gwt/extras/Kornell/rpcPolicyManifest/

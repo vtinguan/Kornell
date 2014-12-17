@@ -1,6 +1,9 @@
 package kornell.gui.client.personnel;
 
+import java.util.logging.Logger;
+
 import kornell.api.client.KornellSession;
+import kornell.api.client.RESTClient;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
@@ -20,6 +23,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * @author faermanj
  */
 public class Captain implements LogoutEventHandler, LoginEventHandler{
+	Logger logger = Logger.getLogger(Captain.class.getName());
 	private PlaceController placeCtrl;
 	private KornellSession session;
 
@@ -39,7 +43,7 @@ public class Captain implements LogoutEventHandler, LoginEventHandler{
 
 	@Override
 	public void onLogin(UserInfoTO user) {
-		GWT.log("User logged in as "+user.getUsername());
+		logger.info("User logged in as "+user.getUsername());
 	}
 
 

@@ -5,7 +5,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
 public class TermsPlace extends Place{
-	@Prefix("Terms")
+	@Prefix("terms")
 	public static class Tokenizer implements PlaceTokenizer<TermsPlace> {
 	
 		public TermsPlace getPlace(String token) {

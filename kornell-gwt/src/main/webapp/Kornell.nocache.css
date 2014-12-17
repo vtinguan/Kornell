@@ -52,12 +52,6 @@ iframe {
 	transition: height 0.6s ease;
 }
 
-.vScrollBar{
-	height: auto !important;
-	overflow-y: overlay !important;
-	overflow-x: hidden !important;
-}
-
 .contentPanel{
 	height: auto;
 }
@@ -66,7 +60,6 @@ iframe {
 	border: 2px solid red;
 }
 
-
 .gwt-PopupPanelGlass{
 	background-color: #000;
 	opacity: 0.40;
@@ -74,6 +67,11 @@ iframe {
 	filter:alpha(opacity=40);
 	width: 100% !important;
 	height: 100% !important;
+}
+
+.loadingPopup {
+	z-index: 5;
+	width: 100%;
 }
 
 .ajaxLoaderPanel {

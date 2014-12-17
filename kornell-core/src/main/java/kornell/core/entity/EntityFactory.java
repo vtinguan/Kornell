@@ -20,10 +20,6 @@ public interface EntityFactory extends AutoBeanFactory {
  
 	AutoBean<Institution> newInstitution();
 
-	AutoBean<Registration> newRegistration();
-
-	AutoBean<Registrations> newRegistrations();
-
 	AutoBean<Role> newRole();
 
 	AutoBean<Roles> newRoles();

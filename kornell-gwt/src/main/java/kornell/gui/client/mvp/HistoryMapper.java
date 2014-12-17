@@ -1,6 +1,12 @@
 package kornell.gui.client.mvp;
 
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.message.MessagePlace;
@@ -20,11 +26,14 @@ import com.google.gwt.place.shared.WithTokenizers;
 	WelcomePlace.Tokenizer.class,
 	ProfilePlace.Tokenizer.class,
 	MessagePlace.Tokenizer.class,
-	
 	ClassroomPlace.Tokenizer.class,
-	
 	SandboxPlace.Tokenizer.class,
-	
-	AdminHomePlace.Tokenizer.class})
+	AdminInstitutionPlace.Tokenizer.class,
+	AdminCoursesPlace.Tokenizer.class,
+	AdminCoursePlace.Tokenizer.class,
+	AdminCourseVersionsPlace.Tokenizer.class,
+	AdminCourseVersionPlace.Tokenizer.class,
+	AdminCourseClassPlace.Tokenizer.class,
+	AdminCourseClassesPlace.Tokenizer.class})
 public interface HistoryMapper extends PlaceHistoryMapper {
 }

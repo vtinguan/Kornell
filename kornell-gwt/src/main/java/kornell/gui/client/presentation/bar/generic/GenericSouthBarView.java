@@ -1,14 +1,10 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import java.util.logging.Logger;
-
-import kornell.core.to.EnrollmentLaunchTO;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.event.EnrollmentEvent;
-import kornell.gui.client.event.EnrollmentEventHandler;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.HideSouthBarEventHandler;
 import kornell.gui.client.presentation.admin.AdminPlace;
+import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
@@ -21,57 +17,61 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericSouthBarView extends Composite implements
-		SouthBarView,
-		HideSouthBarEventHandler,
-		EnrollmentEventHandler {
-	private static final Logger log = Logger.getLogger(GenericSouthBarView.class.getName());
+public class GenericSouthBarView extends Composite implements SouthBarView, HideSouthBarEventHandler {
+
 	interface MyUiBinder extends UiBinder<Widget, GenericSouthBarView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
+	
 	private AdminBarView adminBarView;
-
-	private PlaceController placeCtrl;
 
 	@UiField
 	FlowPanel southBar;
 
 	private ClientFactory clientFactory;
 
+	private ScrollPanel scrollPanel;
 
-	// TODO: Prefer Dependency Injection
-	public GenericSouthBarView(ClientFactory clientFactory) {
+	public GenericSouthBarView(ClientFactory clientFactory, ScrollPanel scrollPanel) {
 		this.clientFactory = clientFactory;
-		EventBus bus = clientFactory.getEventBus();
-		bus.addHandler(HideSouthBarEvent.TYPE, this);
-		bus.addHandler(EnrollmentEvent.TYPE, this);
+		clientFactory.getEventBus().addHandler(HideSouthBarEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
+		this.scrollPanel = scrollPanel;
+		
+		pickSouthBar(clientFactory.getPlaceController().getWhere());
 
-		bus.addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
-					@Override
-					public void onPlaceChange(PlaceChangeEvent event) {
-						Place newPlace = event.getNewPlace();
-						pickSouthBar(newPlace);
-					}
-				});
+		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				Place newPlace = event.getNewPlace();
+				pickSouthBar(newPlace);
+			}
+		});
 	}
 
 	private void pickSouthBar(Place newPlace) {
-		if (newPlace instanceof AdminPlace) {
+		if(newPlace instanceof AdminPlace && clientFactory.getKornellSession().isInstitutionAdmin()){
 			southBar.clear();
-			// southBar.add(getAdminBarView(newPlace));
-			this.setVisible(false);
-		}else if (newPlace instanceof ClassroomPlace) {			
+			southBar.add(getAdminBarView(newPlace));
 			this.setVisible(true);
+			scrollPanel.addStyleName("offsetSouthBar");
+		} else if (newPlace instanceof ClassroomPlace) {
+			southBar.clear();
+			southBar.add(getActivityBarView());
+			this.setVisible(true);
+			scrollPanel.addStyleName("offsetSouthBar");
 		} else {
 			this.setVisible(false);
+			scrollPanel.removeStyleName("offsetSouthBar");
 		}
+	}
+
+	private ActivityBarView getActivityBarView() {
+		return new GenericActivityBarView(clientFactory);
 	}
 
 	private AdminBarView getAdminBarView(Place newPlace) {
@@ -85,21 +85,9 @@ public class GenericSouthBarView extends Composite implements
 	}
 
 	@Override
-	public void onHideSouthBar(HideSouthBarEvent event) {
-		clientFactory.getViewFactory().getDockLayoutPanel()
-				.setWidgetHidden((Widget) this, event.isHideSouthBar());
+  public void onHideSouthBar(HideSouthBarEvent event) {
+		//clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
 		this.setVisible(!event.isHideSouthBar());
-	}
-
-	@Override
-	public void onEnrollmentLaunched(EnrollmentLaunchTO enrollmentLaunchTO) {
-		GenericActivityBarView activityBarView = new GenericActivityBarView(clientFactory.getEventBus(),
-				clientFactory.getKornellSession(),
-				clientFactory.getPlaceController());
-		southBar.clear();
-		southBar.add(activityBarView);
-		southBar.setVisible(true);		
-	}
-
+  }
 
 }

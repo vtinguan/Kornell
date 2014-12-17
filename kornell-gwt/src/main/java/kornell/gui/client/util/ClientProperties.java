@@ -1,5 +1,7 @@
 package kornell.gui.client.util;
 
+import kornell.gui.client.personnel.Dean;
+
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
 
@@ -55,6 +57,6 @@ public class ClientProperties {
 	}
 
 	public static String getAuthString(String username, String password) {
-		return  "Basic " + base64Encode(username + ":" + password);
+		return  "Basic " + base64Encode(username + ":" + password + ":" + Dean.getInstance().getInstitution().getUUID());
 	};
 }

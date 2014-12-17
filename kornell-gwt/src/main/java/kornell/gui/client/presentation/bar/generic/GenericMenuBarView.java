@@ -18,7 +18,7 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -60,7 +61,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	private boolean visible = false;
 
 	@UiField
-	FlowPanel testEnvWarning;
+	Label testEnvWarning;
 	@UiField
 	FlowPanel menuBar;
 	@UiField
@@ -91,7 +92,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	private String imgMenuBarUrl;
 	private boolean isLoaded;
 
-	public GenericMenuBarView(final ClientFactory clientFactory) {
+	public GenericMenuBarView(final ClientFactory clientFactory, final ScrollPanel scrollPanel) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
@@ -109,23 +110,30 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 			String barLogoFileName = "logo300x45" + (!"_light".equals(skin) ? "_light" : "") + ".png";
 			imgMenuBarUrl = StringUtils.composeURL(assetsURL, barLogoFileName);
 		}
+		addOffsets(scrollPanel, clientFactory.getPlaceController().getWhere());
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
 						Place newPlace = event.getNewPlace();
-						if (newPlace instanceof VitrinePlace) {
-							GenericMenuBarView.this.setVisible(false);
-							setVisible(false);
-						} else {
-							loadAssets();
-							setVisible(true);
-							showButtons(newPlace);
-							GenericMenuBarView.this.setVisible(true);
-						}
+						addOffsets(scrollPanel, newPlace);
 					}
 				});
 	}
+
+	private void addOffsets(final ScrollPanel scrollPanel, Place place) {
+    if (place instanceof VitrinePlace) {
+			setVisible(false);
+			addStyleName("shy");
+			scrollPanel.removeStyleName("offsetNorthBar");
+		} else {
+			loadAssets();
+			setVisible(true);
+			removeStyleName("shy");
+			scrollPanel.addStyleName("offsetNorthBar");
+			showButtons(place);
+		}
+  }
 
 	private void loadAssets() {
 		if(isLoaded) return;
@@ -136,19 +144,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 
 		Timer screenfulJsTimer = new Timer() {
 			public void run() {
-    		ScriptInjector.fromUrl("//static.getclicky.com/js").setCallback(
-   		     new com.google.gwt.core.client.Callback<Void, Exception>() {
-   		        public void onFailure(Exception reason) {
-   		          GWT.log("Script load failed.");
-   		        }
-   		        public void onSuccess(Void result) {
-   		        	isLoaded = true;
-   		        }
-   		     }).setWindow(ScriptInjector.TOP_WINDOW).inject();
   	    ScriptInjector.fromUrl("/js/screenfull.min.js").setCallback(
   	 		     new com.google.gwt.core.client.Callback<Void, Exception>() {
   	 		        public void onFailure(Exception reason) {
-  	 		          GWT.log("Script load failed.");
+  	 		        	logger.severe("Screeenful script load failed.");
   	 		        }
   	 		        public void onSuccess(Void result) {
   	 		        	isLoaded = true;
@@ -161,13 +160,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		screenfulJsTimer.schedule((int) (2 * 1000));
   }
 
-	static native void initClicker() /*-{
-      try {
-          clicky.init(100739828);
-        } catch (e) {
-        }
-	}-*/;
-
 	private void showButtons(Place newPlace) {
 		boolean isRegistrationCompleted = !( newPlace instanceof TermsPlace
 		|| ( (newPlace instanceof ProfilePlace || newPlace instanceof MessagePlace)
@@ -177,7 +169,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		
 		showButton(btnHelp, showHelp);
 		showButton(btnMessages, showHelp);
-		showButton(btnProfile, showHelp);
+		showButton(btnProfile, !(newPlace instanceof TermsPlace));
 		
 		showButton(btnHome, isRegistrationCompleted);
 		showButton(btnFullScreen, isRegistrationCompleted);
@@ -198,8 +190,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	}
 
 	public void display() {
-		if(Window.Location.getHostName().indexOf("-test.eduvem") >= 0 || Window.Location.getHostName().indexOf("-develop.eduvem") >= 0){
+		if(Window.Location.getHostName().indexOf("-test.ed") >= 0 || Window.Location.getHostName().indexOf("-homolog.ed") >= 0){
 			testEnvWarning.removeStyleName("shy");
+			testEnvWarning.setText("HOMOLOG");
+		} else if(Window.Location.getHostName().indexOf("-develop.ed") >= 0){
+			testEnvWarning.removeStyleName("shy");
+			testEnvWarning.setText("DEVELOP");
 		}
 		btnFullScreen.removeStyleName("btn");
 		btnProfile.removeStyleName("btn");
@@ -246,7 +242,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 
 	@UiHandler("btnAdmin")
 	void handleAdmin(ClickEvent e) {
-		clientFactory.getPlaceController().goTo(new AdminHomePlace());
+		clientFactory.getPlaceController().goTo(new AdminCourseClassesPlace());
 	}
 
 	@UiHandler("btnExit")

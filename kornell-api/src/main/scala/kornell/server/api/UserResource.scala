@@ -23,7 +23,6 @@ import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.RegistrationsRepo
 import kornell.server.repository.Entities.newEnrollments
 import kornell.server.repository.TOs
 import kornell.server.repository.TOs.newUserHelloTO
@@ -48,18 +47,11 @@ class UserResource @Inject() (
   @Path("hello")
   @Produces(Array(UserHelloTO.TYPE))
   @GET
-  def getChatThreadMessages(@Context req: HttpServletRequest,
+  def hello(@Context req: HttpServletRequest,
       @QueryParam("name") name:String, 
       @QueryParam("hostName") hostName:String) = {
     val userHello = newUserHelloTO
-    val auth = req.getHeader("X-KNL-A")
-    if (auth != null && auth.length() > 0) {
-	    val (username, password) = BasicAuthFilter.extractCredentials(auth)
-	    AuthRepo().authenticate(username, password).map { personUUID =>
-	  		val person = PersonRepo(personUUID).first.getOrElse(null)
-	  		userHello.setUserInfoTO(getUser(person).getOrElse(null))
-	  	}
-    }
+    
     userHello.setInstitution(
       {
         if(name != null)
@@ -67,6 +59,16 @@ class UserResource @Inject() (
 			  else
 			    InstitutionsRepo.byHostName(hostName)
       }.getOrElse(null));
+    
+    val auth = req.getHeader("X-KNL-A")
+    if (auth != null && auth.length() > 0) {
+	    val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
+	    AuthRepo().authenticate(userHello.getInstitution.getUUID, username, password).map { personUUID =>
+	  		val person = PersonRepo(personUUID).first.getOrElse(null)
+	  		userHello.setUserInfoTO(getUser(person).getOrElse(null))
+	  	}
+    }
+    
     userHello
   }
   
@@ -83,9 +85,8 @@ class UserResource @Inject() (
     user.setUsername(username)
     user.setPerson(person)
     user.setLastPlaceVisited(person.getLastPlaceVisited)
-    val roles = authRepo.rolesOf(username)
+    val roles = authRepo.rolesOf(person.getUUID)
     user.setRoles((Set.empty ++ roles).asJava)
-    user.setRegistrationsTO(RegistrationsRepo.getAll(person.getUUID))
     user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
 
     Option(user)
@@ -102,11 +103,7 @@ class UserResource @Inject() (
       val person = PersonRepo(personUUID).get
       if (person != null) {
         user.setPerson(person)
-        if (user.getPerson().getEmail() != null)
-          user.setUsername(user.getPerson().getEmail())
-        else
-          user.setUsername(user.getPerson().getCPF())
-        user.setRegistrationsTO(RegistrationsRepo.getAll(person.getUUID))
+        user.setUsername(PersonRepo(person.getUUID).getUsername)
         Option(user)
       } else {
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")
@@ -115,12 +112,13 @@ class UserResource @Inject() (
     }
 
   @GET
-  @Path("check/{username}")
+  @Path("check/{institutionUUID}/{username}")
   @Produces(Array(UserInfoTO.TYPE))
-  def checkUsernameAndEmail(@PathParam("username") username: String): Option[UserInfoTO] = {
+  def checkUsernameAndEmail(@PathParam("username") username: String,
+      @PathParam("institutionUUID") institutionUUID: String): Option[UserInfoTO] = {
     val user = newUserInfoTO
     //verify if there's a password set for this email
-    if (authRepo.hasPassword(username))
+    if (authRepo.hasPassword(institutionUUID, username))
       user.setUsername(username)
     Option(user)
   }
@@ -131,8 +129,8 @@ class UserResource @Inject() (
   def requestPasswordChange(@Context resp: HttpServletResponse,
     @PathParam("email") email: String,
     @PathParam("institutionName") institutionName: String) = {
-    val person = PeopleRepo.getByUsername(email)
     val institution = InstitutionsRepo.byName(institutionName)
+    val person = PeopleRepo.getByEmail(institution.get.getUUID, email)
     if (person.isDefined && institution.isDefined) {
       val requestPasswordChangeUUID = UUID.random
       authRepo.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)
@@ -150,7 +148,7 @@ class UserResource @Inject() (
     @PathParam("passwordChangeUUID") passwordChangeUUID: String) = {
     val person = authRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
     if (person.isDefined) {
-      PersonRepo(person.get.getUUID).setPassword(person.get.getEmail, password)
+      PersonRepo(person.get.getUUID).setPassword(person.get.getInstitutionUUID, person.get.getEmail, password)
       val user = newUserInfoTO
       user.setUsername(person.get.getEmail())
       Option(user)
@@ -173,7 +171,7 @@ class UserResource @Inject() (
         val targetPersonRepo = PersonRepo(targetPersonUUID)
         val username = authRepo.getUsernameByPersonUUID(targetPersonUUID)
 
-        targetPersonRepo.setPassword(
+        targetPersonRepo.setPassword(targetPersonRepo.get.getInstitutionUUID,
           if (username.isDefined) {
             username.get
           } else {
@@ -228,15 +226,23 @@ class UserResource @Inject() (
       if (!PersonRepo(p.getUUID).hasPowerOver(personUUID))
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password.");
       else {
-	      PersonRepo(personUUID).update(userInfo.getPerson())
+	      PersonRepo(personUUID).update(userInfo.getPerson)
 	
-	      val roles = authRepo.rolesOf(userInfo.getUsername)
+	      val roles = authRepo.rolesOf(userInfo.getPerson.getUUID)
 	      userInfo.setRoles((Set.empty ++ roles).asJava)
-	      userInfo.setRegistrationsTO(RegistrationsRepo.getAll(p.getUUID))
 	      userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
 	      userInfo
       }
     }
+  }
+    
+  @PUT
+  @Path("acceptTerms")
+  @Consumes(Array("text/plain"))
+  @Produces(Array(UserInfoTO.TYPE))
+  def acceptTerms() = AuthRepo().withPerson{ p =>
+    PersonRepo(p.getUUID).acceptTerms
+    getUser(p)
   }
 
   def createUser(institutionUUID: String, fullName: String, email: String, cpf: String, username: String, password: String): String = {

@@ -2,24 +2,19 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
 	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
 	xmlns:uv='urn:import:kornell.gui.client.presentation.uservoice.generic'>
-	<g:FlowPanel>
-		<g:FlowPanel ui:field="menuBar" addStyleNames="menuBar">
-			<g:Image ui:field="imgMenuBar" addStyleNames="imgMenuBar"/>
-		  <g:FlowPanel addStyleNames="buttons">
-        <b:Button ui:field="btnFullScreen" addStyleNames="menuBarButton" icon="FULLSCREEN" title="Tela Cheia"></b:Button>	
-				<b:Button ui:field="btnHome" addStyleNames="menuBarButton" icon="HOME" title="Página Inicial"></b:Button>		
-				<b:Button ui:field="btnAdmin" addStyleNames="menuBarButton" icon="COGS" title="Administração"></b:Button>		
-				<b:Button ui:field="btnProfile" addStyleNames="menuBarButton" icon="USER" title="Perfil"></b:Button>	
-				<b:Button ui:field="btnNotifications" addStyleNames="menuBarButton shy"></b:Button>		
-				<b:Button ui:field="btnMessages" addStyleNames="menuBarButton" icon="ENVELOPE" title="Mensagens" visible="false"></b:Button>
-				<b:Button ui:field="btnHelp" addStyleNames="menuBarButton" icon="QUESTION_SIGN" title="Ajuda"></b:Button>		
-				<b:Button ui:field="btnMenu" addStyleNames="menuBarButton shy"></b:Button>		
-				<b:Button ui:field="btnExit" addStyleNames="menuBarButton last" icon="OFF" title="Sair"></b:Button>		
-			</g:FlowPanel>
-      <g:FlowPanel ui:field="testEnvWarning" addStyleNames="testEnvWarning shy">
-			   <g:Label>Você está no ambiente de testes</g:Label>
-         <g:Label addStyleNames="testEnvWarningText">Esse ambiente pode ficar fora do ar a qualquer momento e as informações aqui contidas são frequentemente apagadas.</g:Label>
-      </g:FlowPanel>
+	<g:FlowPanel ui:field="menuBar" addStyleNames="menuBar">
+		<g:Image ui:field="imgMenuBar" addStyleNames="imgMenuBar"/>
+	  <g:FlowPanel addStyleNames="buttons">
+      <b:Button ui:field="btnFullScreen" addStyleNames="menuBarButton" icon="FULLSCREEN" title="Tela Cheia"></b:Button>	
+			<b:Button ui:field="btnHome" addStyleNames="menuBarButton" icon="HOME" title="Página Inicial"></b:Button>		
+			<b:Button ui:field="btnAdmin" addStyleNames="menuBarButton" icon="COGS" title="Administração"></b:Button>		
+			<b:Button ui:field="btnProfile" addStyleNames="menuBarButton" icon="USER" title="Perfil"></b:Button>	
+			<b:Button ui:field="btnNotifications" addStyleNames="menuBarButton shy"></b:Button>		
+			<b:Button ui:field="btnMessages" addStyleNames="menuBarButton" icon="ENVELOPE" title="Mensagens" visible="false"></b:Button>
+			<b:Button ui:field="btnHelp" addStyleNames="menuBarButton" icon="QUESTION_SIGN" title="Ajuda"></b:Button>		
+			<b:Button ui:field="btnMenu" addStyleNames="menuBarButton shy"></b:Button>		
+			<b:Button ui:field="btnExit" addStyleNames="menuBarButton last" icon="OFF" title="Sair"></b:Button>		
 		</g:FlowPanel>
+    <g:Label ui:field="testEnvWarning" addStyleNames="testEnvWarning shy"></g:Label>
 	</g:FlowPanel>
 </ui:UiBinder>

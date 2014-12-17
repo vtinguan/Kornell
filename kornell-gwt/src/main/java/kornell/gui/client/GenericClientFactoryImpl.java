@@ -6,14 +6,12 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Institution;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserHelloTO;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.mvp.AsyncActivityManager;
 import kornell.gui.client.mvp.AsyncActivityMapper;
 import kornell.gui.client.mvp.GlobalActivityMapper;
@@ -22,7 +20,8 @@ import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -105,7 +104,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void startApp() {
-
 		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
 			public void ok(final UserHelloTO userHelloTO) {
@@ -114,10 +112,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {					
 					Dean.init(session, bus, userHelloTO.getInstitution());
-					if (session.isAuthenticated() && session.isRegistered()) {
+					if (session.isAuthenticated()) {
 						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 								|| session.isInstitutionAdmin());
-						setDefaultPlace(isAdmin ? new AdminHomePlace() : new WelcomePlace());
+						setDefaultPlace(isAdmin ? new AdminCourseClassesPlace() : new WelcomePlace());
 						startAuthenticated(session);
 					} else {
 						startAnonymous();
@@ -131,14 +129,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void startAnonymous() {
-		ClientProperties.remove("X-KNL-A");
+		ClientProperties.remove(ClientProperties.X_KNL_A);
 		defaultPlace = new VitrinePlace();
 		startClient();
 	}
 
 	private void startAuthenticated(KornellSession session) {
 		if (session.isCourseClassAdmin()) {
-			defaultPlace = new AdminHomePlace();
+			defaultPlace = new AdminCourseClassesPlace();
 		}
 		startClient();
 	}

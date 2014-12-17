@@ -14,5 +14,8 @@ public interface Course extends Entity{
 	
 	String getInfoJson();
 	void setInfoJson(String infoJson);
+
+	String getInstitutionUUID();
+	void setInstitutionUUID(String institutionUUID);
 	
 }

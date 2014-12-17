@@ -296,14 +296,22 @@ $P{maxEnrollments}]]></textFieldExpression>
 	<pageFooter>
 		<band height="29">
 			<textField pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="false">
-				<reportElement uuid="ac4aca35-ddf2-4535-9f96-bc53cc653de1" mode="Transparent" x="375" y="16" width="178" height="13" forecolor="#808080" backcolor="#FFFFFF"/>
+				<reportElement uuid="ac4aca35-ddf2-4535-9f96-bc53cc653de1" mode="Transparent" x="351" y="16" width="178" height="13" forecolor="#808080" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd", new Locale("pt","BR")).format(new java.util.Date()) +
 " - " +
-"Página: "+$V{PAGE_NUMBER}+"/"+$V{PAGE_NUMBER}]]></textFieldExpression>
+"Página: "+$V{PAGE_NUMBER}+"/"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="false">
+				<reportElement uuid="603de685-d7be-4463-bd56-cd4c1cb2dfd1" mode="Transparent" x="529" y="16" width="17" height="13" forecolor="#808080" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

@@ -35,6 +35,8 @@ public class KornellFormFieldWrapper extends Composite {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	@UiField
+	FlowPanel fieldPanelWrapper;
+	@UiField
 	Label fieldLabel;
 	@UiField
 	FlowPanel fieldPanel;
@@ -63,7 +65,7 @@ public class KornellFormFieldWrapper extends Composite {
 	
 	public KornellFormFieldWrapper(String label, KornellFormField<?> formField,
 			boolean isEditMode, Validator validator) {
-			this(label, formField, isEditMode, null, null);
+			this(label, formField, isEditMode, validator, null);
 	}
 	
 	public KornellFormFieldWrapper(String label, KornellFormField<?> formField,
@@ -165,6 +167,10 @@ public class KornellFormFieldWrapper extends Composite {
 		if (fieldError != null) {
 			fieldError.setText("");
 		}
+	}
+	
+	public void addStyleName(String styleName){
+		fieldPanelWrapper.addStyleName(styleName);
 	}
 	
 	public boolean isValid(){		

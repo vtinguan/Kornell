@@ -17,18 +17,8 @@ class PeopleResource() {
   def get(@PathParam("uuid") uuid:String):PersonResource = new PersonResource(uuid) 
   
   @GET
-  def findBySearchTerm(@QueryParam("search") search:String,
-       @QueryParam("institutionUUID") institutionUUID:String) = PeopleRepo.findBySearchTerm(search, institutionUUID)
-
-  @Path("isRegistered")
-  @Produces(Array("application/boolean"))
-  @GET
-  def isRegistered(@QueryParam("cpf") cpf:String,
-      @QueryParam("email") email:String):Boolean = 
-    AuthRepo().withPerson { person =>
-    	val result = PeopleRepo.isRegistered(person.getUUID,cpf,email)
-    	result
-  }
+  def findBySearchTerm(@QueryParam("institutionUUID") institutionUUID:String,
+      @QueryParam("search") search:String) = PeopleRepo.findBySearchTerm(institutionUUID, search)
 }
 
 object PeopleResource{

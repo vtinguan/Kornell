@@ -14,18 +14,15 @@ import kornell.core.util.TimeUtil
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import java.util.concurrent.TimeUnit
+import kornell.server.jdbc.PreparedStmt
+import kornell.core.util.StringUtils._
 
 class PersonRepo(val uuid: String) {
 
-  def setPassword(username: String, password: String): PersonRepo = {
-    AuthRepo().setPlainPassword(uuid, username, password)
+  def setPassword(institutionUUID: String, username: String, password: String): PersonRepo = {
+    AuthRepo().setPlainPassword(institutionUUID, uuid, username, password)
     PersonRepo.this
-  }
-
-  def registerOn(institution_uuid: String): RegistrationRepo = { 
-    (RegistrationRepo(PersonRepo.this, institution_uuid)).register
-  }
-  
+  }  
 
   lazy val finder = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
 
@@ -48,16 +45,34 @@ class PersonRepo(val uuid: String) {
     PersonRepo.this
   }
 
+  //TODO: Better security against SQLInjection?
+  //TODO: Better dynamic queries
+  //TODO: Teste BOTH args case!!
+  def isRegistered(institutionUUID: String, cpf: String,email:String): Boolean = {
+    var sql = s"select count(*) from Person p left join Password pw on pw.person_uuid = p.uuid where p.uuid != '${uuid}' and p.institutionUUID = '${institutionUUID}' "
+    if (isSome(cpf)) {
+      sql = sql + s"and (p.cpf = '${digitsOf(cpf)}' or pw.username = '${digitsOf(cpf)}')";
+    }
+    if (isSome(email)) {
+    	sql = sql + s"and (p.email = '${email}' or pw.username = '${email}')";
+    }
+    if (sql.contains("--")) throw new IllegalArgumentException
+    val pstmt = new PreparedStmt(sql,List())    
+    val result = pstmt.get[Boolean]
+    result
+  }
+
   def hasPowerOver(targetPersonUUID: String) = {
-    val actorRoles = AuthRepo().rolesOf(AuthRepo().getUsernameByPersonUUID(uuid).get)
+    val actorRoles = AuthRepo().rolesOf(uuid)
     val actorRolesSet = (Set.empty ++ actorRoles).asJava
+    val targetPerson = PersonRepo(targetPersonUUID).get
 
     val targetUsername = AuthRepo().getUsernameByPersonUUID(targetPersonUUID)
 
     //if there's no username yet, any admin can have power
     (!targetUsername.isDefined) ||
       {
-        val targetRoles = AuthRepo().rolesOf(targetUsername.get)
+        val targetRoles = AuthRepo().rolesOf(targetPersonUUID)
         val targetRolesSet = (Set.empty ++ targetRoles).asJava
 
         //people have power over themselves
@@ -67,14 +82,10 @@ class PersonRepo(val uuid: String) {
             !RoleCategory.isPlatformAdmin(targetRolesSet) &&
               RoleCategory.isPlatformAdmin(actorRolesSet)
           } || {
-            //institutionAdmin doesn't have power over platformAdmins, other institutionAdmins or non registered users 
-            val registrations = RegistrationsRepo.getAll(targetPersonUUID)
+            //institutionAdmin doesn't have power over platformAdmins, other institutionAdmins or people from other institutions 
             !RoleCategory.isPlatformAdmin(targetRolesSet) &&
-              !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) && {
-                registrations.getRegistrations.asScala exists {
-                  r => RoleCategory.isInstitutionAdmin(actorRolesSet, r.getInstitutionUUID)
-                }
-              }
+              !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) && 
+              RoleCategory.isInstitutionAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
           } || {
             //courseClassAdmin doesn't have power over platformAdmins, institutionAdmins, other courseClassAdmins or non enrolled users
             val enrollmentTOs = EnrollmentsRepo.byPerson(targetPersonUUID)
@@ -90,6 +101,12 @@ class PersonRepo(val uuid: String) {
   }
   
   def getUsername = sql"""select username from Password where person_uuid=${uuid}""".first[String].getOrElse(null)
+  
+  def acceptTerms() =
+    sql"""update Person
+      	 set termsAcceptedOn = now()
+      	 where uuid=${uuid}
+      	   """.executeUpdate
 
 }
 

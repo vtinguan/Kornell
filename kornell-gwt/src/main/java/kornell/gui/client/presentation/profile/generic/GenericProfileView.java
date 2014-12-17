@@ -3,12 +3,12 @@ package kornell.gui.client.presentation.profile.generic;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Person;
-import kornell.core.entity.Registration;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
@@ -17,6 +17,7 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -65,6 +66,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	Logger logger = Logger.getLogger(GenericProfileView.class.getName());
 
 	private KornellSession session;
 	private PlaceController placeCtrl;
@@ -94,10 +96,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private UserInfoTO user;
 	
 	
-	private KornellFormFieldWrapper cpf, email, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
+	private KornellFormFieldWrapper cpf, email, username, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
 	private List<KornellFormFieldWrapper> fields;
 	private Button btnChangePassword;
 	private ClientFactory clientFactory;
+
+	private String profileUserUUID;
 
 	public GenericProfileView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -155,18 +159,11 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		
 		isCurrentUser = session.getCurrentUser().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
-		boolean isInstitutionAdmin = false;
-		for (Registration registration : session.getCurrentUser().getRegistrationsTO().getRegistrations()) {
-			if(registration.getInstitutionUUID().equals(Dean.getInstance().getInstitution().getUUID())){
-				isInstitutionAdmin = session.isInstitutionAdmin();
-				break;
-			}
-		}
-		isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(),RoleType.courseClassAdmin) || isInstitutionAdmin || session.isPlatformAdmin();
+		isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(),RoleType.courseClassAdmin) || session.isInstitutionAdmin() || session.isPlatformAdmin();
 		
 		form.addStyleName("shy");
 		
-		final String profileUserUUID = ((ProfilePlace) placeCtrl.getWhere()).getPersonUUID();
+		profileUserUUID = ((ProfilePlace) placeCtrl.getWhere()).getPersonUUID();
 
 		session.user().hasPowerOver(profileUserUUID, new Callback<Boolean>() {
 			@Override
@@ -183,7 +180,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					}
 					@Override
 					public void unauthorized(String errorMessage) {
-						GWT.log(this.getClass().getName() + " - " + errorMessage);
+						logger.severe(this.getClass().getName() + " - " + errorMessage);
 						user = null;
 						display();
 					}
@@ -348,23 +345,16 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			KornellNotification.show("Usuário não encontrado.", AlertType.ERROR);
 			return;
 		} 
-		
-
-		boolean isRegistered = false;
-		for (Registration registration : user.getRegistrationsTO().getRegistrations()) {
-			if(registration.getInstitutionUUID().equals(institution.getUUID()))
-				isRegistered = true;
-		}
-		if(!isRegistered){
-			KornellNotification.show("Este usuário não está registrado nesta instituição.", AlertType.ERROR);
-			return;
-		}
-		
+				
 		if(isEditMode && showContactDetails && validateContactDetails && session.getCurrentUser().getPerson().getCity() == null){
 			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO, 5000);
 		}
 
 		//profileFields.add(getPictureUploadFormPanel());
+
+		username = new KornellFormFieldWrapper("Usuário", formHelper.createTextBoxFormField(user.getUsername()), false);
+		fields.add(username);
+		profileFields.add(username);
 
 		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode);
 		fields.add(fullName);
@@ -375,12 +365,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 				new KornellFormFieldWrapper("Email", 
 						formHelper.createTextBoxFormField(user.getPerson().getEmail()), 
 						isEditMode,
-						EmailValidator.unregisteredEmailValidator(session));
+						EmailValidator.unregisteredEmailValidator(profileUserUUID, session));
 		cpf = new KornellFormFieldWrapper
 				("CPF", 
 				formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
 				isEditMode,
-				CPFValidator.unregisteredCPFValidator(session));
+				CPFValidator.unregisteredCPFValidator(profileUserUUID, session));
 		
 		requireValid(cpf);
 		requireValid(email);
@@ -389,7 +379,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		fields.add(cpf);
 		
 		profileFields.add(email);
-		profileFields.add(cpf);
+		
+		if(isCurrentUser || isAdmin){
+			profileFields.add(cpf);
+		}
 
 		company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
 		fields.add(company);

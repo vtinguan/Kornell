@@ -2,13 +2,21 @@ package kornell.gui.client.mvp;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import kornell.gui.client.Kornell;
+import kornell.gui.client.presentation.util.KornellNotification;
+
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.Activity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceChangeRequestEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -22,6 +30,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 public class AsyncActivityManager implements PlaceChangeEvent.Handler,
 		PlaceChangeRequestEvent.Handler {
 
+	Logger logger = Logger.getLogger(AsyncActivityManager.class.getName());
 	/**
 	 * Wraps our real display to prevent an Activity from taking it over if it
 	 * is not the currentActivity.
@@ -109,8 +118,29 @@ public class AsyncActivityManager implements PlaceChangeEvent.Handler,
 		getNextActivity(event,new ActivityCallbackHandler() {
 			
 			@Override
-			public void onRecieveActivity(Activity nextActivity) {
+			public void onReceiveActivity(Activity nextActivity) {
+		    GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+					@Override
+					public void onUncaughtException(Throwable e) {
+						e = unwrap(e);
+		        logger.log(Level.SEVERE, "Ex caught!", e);
+						if(Window.Location.getHostName().indexOf("localhost") >= 0 ||
+								Window.Location.getHostName().indexOf("127.0.0.1") >= 0){
+							KornellNotification.show(e.getMessage(), AlertType.ERROR, 0);
+						}
+					}
 
+				  public Throwable unwrap(Throwable e) {
+				    if(e instanceof UmbrellaException) {
+				      UmbrellaException ue = (UmbrellaException) e;
+				      if(ue.getCauses().size() == 1) {
+				        return unwrap(ue.getCauses().iterator().next());
+				      }
+				    }
+				    return e;
+				  }
+				});
+				
 				Throwable caughtOnStop = null;
 				Throwable caughtOnCancel = null;
 				Throwable caughtOnStart = null;

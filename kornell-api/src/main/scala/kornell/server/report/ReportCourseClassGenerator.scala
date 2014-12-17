@@ -26,7 +26,8 @@ object ReportCourseClassGenerator {
       rs.getString("progressState"),
       rs.getInt("progress"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt"))
+      rs.getString("certifiedAt"),
+      rs.getString("enrolledAt"))
       
   type BreakdownData = Tuple2[String,Integer] 
   implicit def breakdownConvertion(rs:ResultSet): BreakdownData = (rs.getString(1), rs.getInt(2))
@@ -46,7 +47,8 @@ object ReportCourseClassGenerator {
 					end as progressState,
 					e.progress,
 					e.assessmentScore,
-    			e.certifiedAt
+    			e.certifiedAt,
+    			e.enrolledOn as enrolledAt
 				from 
 					Enrollment e 
 					join Person p on p.uuid = e.person_uuid
@@ -55,7 +57,12 @@ object ReportCourseClassGenerator {
 					e.state = 'enrolled' and
     		  e.class_uuid = ${courseClassUUID}
 				order by 
-					progressState,
+					case 
+    				when progressState = 'completed' then 1
+						when progressState = 'waitingEvaluation'  then 2
+						when progressState = 'inProgress'  then 3
+						else 4 
+    			end,
     			e.certifiedAt,
     			progress,
     			p.fullName,

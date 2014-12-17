@@ -21,6 +21,7 @@ public class LoadingPopup {
 	public synchronized static void show(String message) {	
 		if(popup == null){
 			popup = new PopupPanel(false, false); // Create a non-modal dialog box that will not auto-hide
+			popup.addStyleName("loadingPopup");
 			FlowPanel panel = new FlowPanel();
 			panel.addStyleName("ajaxLoaderPanel");
 			if(message != null){

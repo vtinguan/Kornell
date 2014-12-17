@@ -5,14 +5,14 @@ import kornell.server.repository.Entities._
 import kornell.server.repository.Entities
 import kornell.core.entity.Person
 import kornell.core.entity.Institution
-import kornell.core.entity.Registration
 import kornell.server.jdbc.SQL._
+import kornell.server.repository.TOs
 
 object InstitutionsRepo {
   
   def create(institution: Institution): Institution = {    
     sql"""
-    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,activatedAt,skin) 
+    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType) 
     | values(
     | ${institution.getUUID},
     | ${institution.getName},
@@ -23,40 +23,12 @@ object InstitutionsRepo {
     | ${institution.isValidatePersonContactDetails},
     | ${institution.getFullName},
     | ${institution.isAllowRegistration},
+    | ${institution.isAllowRegistrationByUsername},
     | ${institution.getActivatedAt},
-    | ${institution.getSkin})""".executeUpdate
+    | ${institution.getSkin},
+    | ${institution.getBillingType.toString})""".executeUpdate
     institution
   }  
-  
-  def update(institution: Institution): Institution = {    
-    sql"""
-    | update Institution i
-    | set i.name = ${institution.getName},
-    | i.fullName = ${institution.getFullName},
-    | i.terms = ${institution.getTerms},
-    | i.assetsURL = ${institution.getAssetsURL},
-    | i.baseURL = ${institution.getBaseURL},
-    | i.demandsPersonContactDetails = ${institution.isDemandsPersonContactDetails},
-    | i.validatePersonContactDetails = ${institution.isValidatePersonContactDetails},
-    | i.allowRegistration = ${institution.isAllowRegistration},
-    | i.activatedAt = ${institution.getActivatedAt},
-    | i.skin = ${institution.getSkin}
-    | where i.uuid = ${institution.getUUID}""".executeUpdate
-    institution
-  }
-  
-  def register(p: Person, i: Institution):Registration = {
-    val r = newRegistration(p, i)
-    register(p.getUUID,i.getUUID)
-    r
-  }
-  
-  def register(p: String, i:String):Unit = {    
-    sql"""
-    | insert into Registration(person_uuid,institution_uuid)
-    | values ($p, $i)
-    """.executeUpdate    
-  }
   
   def byUUID(UUID:String) = 
 	sql"select * from Institution where uuid = ${UUID}".first[Institution]

@@ -168,11 +168,14 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		distributionPrefix = new KornellFormFieldWrapper("Prefixo de Distribuição", formHelper.createTextBoxFormField(courseVersion.getDistributionPrefix()), isPlatformAdmin);
 		fields.add(distributionPrefix);
 		courseVersionFields.add(distributionPrefix);
+<<<<<<< HEAD
 
 		String contentSpecAttr = courseVersion.getContentSpec() != null ? courseVersion.getContentSpec().toString() : "";
 		contentSpec = new KornellFormFieldWrapper("Tipo", formHelper.createTextBoxFormField(contentSpecAttr), isPlatformAdmin);
 		fields.add(contentSpec);
 		courseVersionFields.add(contentSpec);
+=======
+>>>>>>> develop
 		
 		final ListBox contentSpecTypes = new ListBox();
 		contentSpecTypes.addItem("KNL", ContentSpec.KNL.toString());

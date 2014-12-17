@@ -9,7 +9,11 @@
 .activityBarWrapper{
 	.gradient (@barGradientStartColor, @barGradientEndColor);
 	.noTextSelect;
-
+	position: fixed;
+	width: 100%;
+	margin: 0 auto;
+	bottom: 0px;
+	left: 0px;
 	.activityBar{	
 		.south;
 		.gradient (@barGradientStartColor, @barGradientEndColor);
@@ -103,6 +107,8 @@
 	.north;
 	.size (100%, @barNorthHeight);
 	.gradient (@barGradientStartColor, @barGradientEndColor);
+	position: fixed;
+	z-index: 1;
 	.imgMenuBar{
 		float: left;
 		.marginLogo;
@@ -118,9 +124,9 @@
 			line-height: @barNorthHeight - (@paddingTop*2);
 			float: left;
 			text-align: center;
-			padding: 10px 18px 0px 18px;
+			padding: 10px 14px 0px 14px;
 			font-size: 18px;
-			color: @niceTextColor;
+			color: @niceTextColor !important;
 			text-decoration: none;
 			.label{
 				background: transparent;
@@ -165,79 +171,17 @@
 	}
 	.testEnvWarning{
 		color: @textHighlightColor;
-		width: 325px;
-		font-size: 20px;
-		line-height: 20px;
-		margin-top: 2px;
+		width: 85px;
+		font-size: 15px;
+		line-height: 45px;
 		font-weight: bold;
 		float: right;
 		text-align: center;
-		.testEnvWarningText {
-			font-size: 10px;
-			line-height: 10px;
-			display: block;
-			text-align: center;
-		}
 	}
 }
-
-
-
-.courseBar{
-	.south;
-	.gradient (@barGradientStartColor, @barGradientEndColor);
-	.size (@wrapperWidth,@barSouthHeight);
-	.btnPanel{
-		.btnBorder;
-	}
-	.courseBarButton {
-		@borderTopHeight: 3px;
-		height: @barSouthHeight;
-		line-height: @barSouthHeight - @borderTopHeight;
-		float: left;
-		text-align: center;
-		padding: 0;
-		border: 0;
-		border-top: @borderTopHeight solid @buttonSelectedGradientStart;
-		.label{
-			background: transparent;
-			color: @niceTextColor;
-			font-size: 11px;
-			margin-left: 4px;
-		}
-		.icon{}
-	}
-	@buttonCount: 8;
-	@buttonWidth: ( @wrapperWidth / @buttonCount ) - 2px;
-	.course 		{width: @buttonWidth; border-left: 0px;}
-	.details 		{width: @buttonWidth;}
-	.library 		{width: @buttonWidth;}
-	.forum 			{width: @buttonWidth;}
-	.chat 			{width: @buttonWidth;}
-	.specialists 	{width: @buttonWidth + 2px;} /*because of the borders*/
-	.notes 			{width: @buttonWidth;}
-	.back 			{width: @buttonWidth; border-right: 0px;}
-}
-@media screen and (max-width: @wrapperWidth) {
-	.courseBar{
-		.courseBarButton {
-			.label{
-				visibility: hidden;
-				width: 0px;
-				border: 0;
-				margin: 0;
-				padding: 0;
-			}		
-		}
-		@buttonCount: 8;
-		@buttonWidth: ( @wrapperWidthUnder990 / @buttonCount ) - 2px;
-		.course 		{width: @buttonWidth; border-left: 0px;}
-		.details 		{width: @buttonWidth;}
-		.library 		{width: @buttonWidth;}
-		.forum 			{width: @buttonWidth;}
-		.chat 			{width: @buttonWidth;}
-		.specialists 	{width: @buttonWidth + 2px;} /*because of the borders*/
-		.notes 			{width: @buttonWidth;}
-		.back 			{width: @buttonWidth; border-right: 0px;}
+@media screen and (max-width: 700px) {
+	.imgMenuBar{
+		display: none;
 	}
 }
+ 

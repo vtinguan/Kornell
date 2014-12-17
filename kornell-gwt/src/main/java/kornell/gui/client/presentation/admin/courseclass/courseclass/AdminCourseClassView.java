@@ -45,4 +45,5 @@ public interface AdminCourseClassView extends IsWidget {
 	void prepareAddNewCourseClass(boolean addingNewCourseClass);
 	void setCanPerformEnrollmentAction(boolean allow);
 	void setUserEnrollmentIdentificationType(RegistrationEnrollmentType registrationEnrollmentType);
+	void clearEnrollmentFields();
 }

@@ -3,8 +3,10 @@ package kornell.gui.client.presentation.util;
 import java.util.Date;
 import java.util.List;
 
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.util.view.formfield.CheckBoxFormField;
@@ -27,18 +29,21 @@ import com.google.gwt.user.client.ui.Image;
 public class FormHelper {
 	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
 	public static String SEPARATOR_BAR_CLASS = "profileSeparatorBar";
+
+	public static Character USERNAME_SEPARATOR = '/';
+	public static Character USERNAME_ALTERNATE_SEPARATOR = '\\';
 	
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private static final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
-	private static final String USERNAME_PATTERN = "^[^0-9.][A-z0-9.]{2,}$";
+	private static final String USERNAME_PATTERN = "^[A-z0-9._]{3,}$";
 	private static final String PASSWORD_PATTERN = "^[0-9a-zA-Z!@#$%¨&*()]{6,}$";
 	
 	public static boolean isEmailValid(String field){
 		return field == null ? false : field.trim().matches(EMAIL_PATTERN);
 	}
 	
-	public boolean isUsernameValid(String field){
+	public static boolean isUsernameValid(String field){
 		return field == null ? false : field.trim().matches(USERNAME_PATTERN);
 	}
 	
@@ -423,12 +428,19 @@ public class FormHelper {
 	public TextBoxFormField createTextBoxFormField(String text){
 		return createTextBoxFormField(text, null);
 	}
-	public TextAreaFormField createTextAreaFormField(String text){
+
+	public TextAreaFormField createTextAreaFormField(String text, int visibleLines){
 		TextArea fieldTextArea = new TextArea();
+		if(visibleLines > 0)
+			fieldTextArea.setVisibleLines(visibleLines);
 		fieldTextArea.addStyleName("field");
 		fieldTextArea.addStyleName("textField");
 		fieldTextArea.setValue(text);
 		return new TextAreaFormField(fieldTextArea);
+	}
+	
+	public TextAreaFormField createTextAreaFormField(String text){
+		return createTextAreaFormField(text, 0);
 	}
 	
 	public PasswordTextBoxFormField createPasswordTextBoxFormField(String text){
@@ -536,6 +548,19 @@ public class FormHelper {
 		return image;
 	}
 	
+	public String getCourseClassStateAsText(CourseClassState state){
+		switch (state) {
+		case active:
+			return "Ativada";
+		case inactive:
+			return "Desativada";
+		case deleted:
+			return "Excluída";			
+		default:
+			return "";
+		}
+	}
+	
 	public String getEnrollmentStateAsText(EnrollmentState state){
 		switch (state) {
 		case notEnrolled:
@@ -566,6 +591,19 @@ public class FormHelper {
 		}
 	}
 
+	public String getRegistrationEnrollmentTypeAsText(RegistrationEnrollmentType registrationEnrollmentType) {
+		switch (registrationEnrollmentType) {
+		case email:
+			return "Email";
+		case cpf:
+			return "CPF";
+		case username:
+			return "Usuário";
+		default:
+			return "???";
+		}
+	}
+	
 	public String formatCPF(String cpf) {
 	  cpf = stripCPF(cpf);
 	  if(cpf == null || cpf.length() != 11)

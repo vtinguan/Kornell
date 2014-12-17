@@ -8,12 +8,17 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
+import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
+import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
+import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
@@ -21,7 +26,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class Dean implements LoginEventHandler, LogoutEventHandler{
+public class Dean implements LoginEventHandler, LogoutEventHandler, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler{
 	
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
@@ -32,7 +37,8 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 
 	private Institution institution;
 	private CourseClassTO courseClassTO;
-	private CourseClassesTO courseClassesTO; 
+	private CourseClassesTO courseClassesTO;
+	private int totalCount; 
 
 	public static Dean getInstance() {
 	   return instance;
@@ -48,10 +54,12 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 		this.session = session;
 		bus.addHandler(LoginEvent.TYPE, this);
 		bus.addHandler(LogoutEvent.TYPE, this);
+		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
+		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 		
 		//get the skin and logo immediately
-		updateSkin(institution.getSkin());
-  	initInstitutionSkin(institution);
+		//updateSkin(institution.getSkin()); //TODO re-enable skins
+  	initInstitutionSkin();
 		
 		//defer the course classes call
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
@@ -72,7 +80,7 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 		mdaTimer.schedule((int) (3 * 1000));
 	}
 
-	private void initInstitutionSkin(Institution institution) {
+	private void initInstitutionSkin() {
 	  String url = institution.getAssetsURL();
 		if(url != null){
 			updateFavicon(url + ICON_NAME);
@@ -81,11 +89,13 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 		}		
 		
 		String name = institution.getFullName();
+		String title = DEFAULT_SITE_TITLE;
 		if(name != null){
-			Document.get().setTitle(name);
-		} else {
-			Document.get().setTitle(DEFAULT_SITE_TITLE);
+			title = name;
+			if(totalCount > 0)
+				title = "(" + totalCount + ") " + name;
 		}
+		Document.get().setTitle(title);
   }
 	
 	private void setDefaultFavicon(){
@@ -123,6 +133,10 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 		return institution;
 	}
 
+	public Institution setInstitution(Institution institution){
+		return this.institution = institution;
+	}
+	
 	public CourseClassTO getCourseClassTO() {
 		return courseClassTO;
 	}
@@ -168,7 +182,7 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 				Dean.getInstance().setCourseClassesTO(courseClasses);
 			}
 		};
-		if (session.isAuthenticated() && session.isRegistered()) {
+		if (session.isAuthenticated()) {
 			session.courseClasses().getCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), courseClassesCallback);
 		}
 	}
@@ -176,6 +190,22 @@ public class Dean implements LoginEventHandler, LogoutEventHandler{
 	@Override
   public void onLogin(UserInfoTO user) {
 		//getUserCourseClasses();
+  }
+
+	@Override
+  public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
+		int count = 0;
+		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
+			count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
+    }
+		totalCount = count;
+		initInstitutionSkin();
+  }
+
+	@Override
+  public void onUnreadMessagesCountChanged(UnreadMessagesCountChangedEvent event) {
+	  totalCount = event.isIncrement() ? totalCount + event.getCountChange() : totalCount - event.getCountChange();
+		initInstitutionSkin();
   }
 	
 	private static native void showBody(boolean show) /*-{

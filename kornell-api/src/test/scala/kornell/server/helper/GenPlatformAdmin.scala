@@ -7,7 +7,7 @@ import kornell.server.authentication.ThreadLocalAuthenticator
 
 trait GenPlatformAdmin extends GenPerson with AuthSpec {
   val platformAdminUUID = {
-    val personUUID = newPerson
+    val personUUID = newPerson.getUUID
     AuthRepo().grantPlatformAdmin(personUUID)
     personUUID
   }

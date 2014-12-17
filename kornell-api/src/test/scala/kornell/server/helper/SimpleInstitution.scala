@@ -1,11 +1,9 @@
 package kornell.server.helper
 
 import java.util.Date
-
 import org.scalatest.BeforeAndAfter
 import org.scalatest.Suite
 import org.scalatest.SuiteMixin
-
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseClassState
@@ -23,6 +21,7 @@ import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.repository.Entities
+import kornell.core.entity.BillingType
 
 trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ this: Suite =>
 	
@@ -58,16 +57,16 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
   
   abstract override def withFixture(test: NoArgTest) = {
     
-    institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, null, ""))
+    institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment))
 	  course = CoursesRepo.create(Entities.newCourse(randUUID, randStr, randStr, randStr, randStr))
 	  courseVersion = CourseVersionsRepo.create(Entities.newCourseVersion(randUUID, randStr, course.getUUID, randUUID, new Date, randStr, "KNL", false))
-	  courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, false, 23451, new Date(), null, CourseClassState.active)
-	  courseClass2 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, false, 23451, new Date(), null, CourseClassState.active)
-	  courseClass3 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, false, 23451, new Date(), null, CourseClassState.active)
+	  courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, 23451, new Date(), null, CourseClassState.active)
+	  courseClass2 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, 23451, new Date(), null, CourseClassState.active)
+	  courseClass3 = Entities.newCourseClass(randUUID, randStr, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, 23451, new Date(), null, CourseClassState.active)
     
 	  platformAdmin = {
-	    val platformAdmin = PeopleRepo.createPersonCPF(platformAdminCPF, randName)
-	    PersonRepo(platformAdmin.getUUID).setPassword(platformAdmin.getCPF, platformAdmin.getCPF).registerOn(institution.getUUID)
+	    val platformAdmin = PeopleRepo.createPersonCPF(institution.getUUID, platformAdminCPF, randName)
+	    PersonRepo(platformAdmin.getUUID).setPassword(institution.getUUID, platformAdmin.getCPF, platformAdmin.getCPF)
 	    sql"""
 	    	insert into Role (uuid, username, role, institution_uuid, course_class_uuid)
 	    	values (${randUUID}, ${platformAdmin.getCPF}, 
@@ -81,8 +80,8 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
 	  platformAdminSecurityContext = new MockSecurityContext(platformAdmin.getCPF)
 	  
 	  institutionAdmin = {
-	    val institutionAdmin = PeopleRepo.createPersonCPF(institutionAdminCPF, randName)
-	    PersonRepo(institutionAdmin.getUUID).setPassword(institutionAdmin.getCPF, institutionAdmin.getCPF).registerOn(institution.getUUID)
+	    val institutionAdmin = PeopleRepo.createPersonCPF(institution.getUUID, institutionAdminCPF, randName)
+	    PersonRepo(institutionAdmin.getUUID).setPassword(institution.getUUID, institutionAdmin.getCPF, institutionAdmin.getCPF)
 	    
 	    sql"""
 	    	insert into Role (uuid, username, role, institution_uuid, course_class_uuid)
@@ -97,8 +96,8 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
 	  institutionAdminSecurityContext = new MockSecurityContext(institutionAdmin.getCPF)
 	  
 	  notAnAdmin = {
-	    val notAnAdmin = PeopleRepo.createPersonCPF(notAnAdminCPF, randName)
-	    PersonRepo(notAnAdmin.getUUID).setPassword(notAnAdmin.getCPF, notAnAdmin.getCPF).registerOn(institution.getUUID)
+	    val notAnAdmin = PeopleRepo.createPersonCPF(institution.getUUID, notAnAdminCPF, randName)
+	    PersonRepo(notAnAdmin.getUUID).setPassword(institution.getUUID, notAnAdmin.getCPF, notAnAdmin.getCPF)
 		  notAnAdmin
 	  }
 	  

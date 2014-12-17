@@ -1,6 +1,11 @@
 package kornell.api.client;
 
+import kornell.core.entity.CourseClass;
 import kornell.core.entity.Institution;
+import kornell.core.entity.Roles;
+import kornell.core.to.InstitutionHostNamesTO;
+import kornell.core.to.InstitutionRegistrationPrefixesTO;
+import kornell.core.to.RolesTO;
 
 public class InstitutionClient extends RESTClient {
 
@@ -10,10 +15,6 @@ public class InstitutionClient extends RESTClient {
 		this.institutionUUID = uuid;
 	}
 
-	public void acceptTerms(Callback<Void> cb) {
-		PUT("/institutions/" + institutionUUID + "/acceptTerms").go(cb);
-	}
-
 	public void get(Callback<Institution> cb) {
 		GET("/institutions/" + institutionUUID).sendRequest(null, cb);
 	}
@@ -21,5 +22,26 @@ public class InstitutionClient extends RESTClient {
 	public void update(Institution institution, Callback<Institution> cb) {
 		PUT("/institutions/" + institutionUUID).withContentType(Institution.TYPE).withEntityBody(institution).go(cb);
 	}
+
+	public void getRegistrationPrefixes(Callback<InstitutionRegistrationPrefixesTO> cb) {
+		GET("/institutions/" + institutionUUID + "/registrationPrefixes").sendRequest(null, cb);
+	}
+
+	public void getAdmins(String bindMode, Callback<RolesTO> cb) {
+		GET("institutions",institutionUUID,"admins"+"?bind="+bindMode).withContentType(CourseClass.TYPE).go(cb);
+	}
+
+	public void updateAdmins(Roles roles, Callback<Roles> cb) {
+		PUT("institutions",institutionUUID,"admins").withContentType(Roles.TYPE).withEntityBody(roles).go(cb);
+	}
+
+	public void getHostnames(Callback<InstitutionHostNamesTO> cb) {
+		GET("institutions",institutionUUID,"hostnames").go(cb);
+	}
+
+	public void updateHostnames(InstitutionHostNamesTO institutionHostNamesTO, Callback<InstitutionHostNamesTO> cb) {
+		PUT("institutions",institutionUUID,"hostnames").withContentType(InstitutionHostNamesTO.TYPE).withEntityBody(institutionHostNamesTO).go(cb);
+	}
+
 	
 }

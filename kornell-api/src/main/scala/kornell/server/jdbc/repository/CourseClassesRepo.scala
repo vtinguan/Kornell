@@ -14,6 +14,7 @@ import kornell.core.entity.Roles
 import kornell.core.util.UUID
 import java.util.Date
 import kornell.core.entity.CourseClassState
+import java.sql.ResultSet
 
 class CourseClassesRepo {
 }
@@ -23,24 +24,33 @@ object CourseClassesRepo {
   def apply(uuid: String) = CourseClassRepo(uuid)
 
   def create(courseClass: CourseClass):CourseClass = {
-    if (courseClass.getUUID == null)
-      courseClass.setUUID(UUID.random)
-    sql""" 
-    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,enrollWithCPF,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy)
-    	values(${courseClass.getUUID},
-             ${courseClass.getName},
-             ${courseClass.getCourseVersionUUID},
-             ${courseClass.getInstitutionUUID},
-             ${courseClass.isPublicClass},
-             ${courseClass.getRequiredScore},
-             ${courseClass.isEnrollWithCPF},
-             ${courseClass.isOverrideEnrollments},
-             ${courseClass.isInvisible},
-             ${courseClass.getMaxEnrollments},
-             ${new Date()},
-             ${courseClass.getCreatedBy})
-    """.executeUpdate
-    courseClass
+    val courseClassExists = sql"""
+	    select count(*) from CourseClass where courseVersion_uuid = ${courseClass.getCourseVersionUUID} and name = ${courseClass.getName}
+	    """.first[String].get
+    if (courseClassExists == "0") {
+	    if (courseClass.getUUID == null){
+	      courseClass.setUUID(UUID.random)
+	    }
+	    sql""" 
+	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationEnrollmentType,institutionRegistrationPrefix)
+	    	values(${courseClass.getUUID},
+	             ${courseClass.getName},
+	             ${courseClass.getCourseVersionUUID},
+	             ${courseClass.getInstitutionUUID},
+	             ${courseClass.isPublicClass},
+	             ${courseClass.getRequiredScore},
+	             ${courseClass.isOverrideEnrollments},
+	             ${courseClass.isInvisible},
+	             ${courseClass.getMaxEnrollments},
+	             ${new Date()},
+	             ${courseClass.getCreatedBy},
+	             ${courseClass.getRegistrationEnrollmentType.toString},
+	             ${courseClass.getInstitutionRegistrationPrefix})
+	    """.executeUpdate
+	    courseClass
+    } else {
+      throw new IllegalArgumentException("Uma turma com nome \"" + courseClass.getName + "\" já existe para essa versão do curso.")
+    }
   }
 
   def byInstitution(institutionUUID: String) =
@@ -70,19 +80,20 @@ object CourseClassesRepo {
 			    cc.institution_uuid as institutionUUID,
 		  		cc.requiredScore as requiredScore,
 		  		cc.publicClass as publicClass,
-		  		cc.enrollWithCPF as enrollWithCPF,
       		cc.overrideEnrollments as overrideEnrollments,
       		cc.invisible as invisible,
 		  		cc.maxEnrollments as maxEnrollments,
       		cc.createdAt as createdAt,
       		cc.createdBy as createdBy,
-      		cc.state
+      		cc.state,
+		  		cc.registrationEnrollmentType as registrationEnrollmentType,
+		  		cc.institutionRegistrationPrefix as institutionRegistrationPrefix
 			from Course c
 			join CourseVersion cv on cv.course_uuid = c.uuid
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid
 		    and cc.institution_uuid = ${institutionUUID}
       where cc.state <> ${CourseClassState.deleted.toString}
-		  order by c.title, cc.name;
+		  order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
 		""".map[CourseClassTO](toCourseClassTO))
   }
 
@@ -133,4 +144,5 @@ object CourseClassesRepo {
     enrollment foreach courseClassTO.setEnrollment    
   }
 
+  implicit def toString(rs: ResultSet): String = rs.getString(1)
 }

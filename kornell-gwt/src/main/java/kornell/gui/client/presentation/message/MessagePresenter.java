@@ -14,7 +14,7 @@ import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.AdminPlace;
-import kornell.gui.client.presentation.admin.home.AdminHomePlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
@@ -28,7 +28,6 @@ import com.google.web.bindery.event.shared.EventBus;
 public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPerThreadFetchedEventHandler{
 	private MessageView view;
 	private KornellSession session;
-	private EventBus bus;
 	private PlaceController placeCtrl;
 	private boolean isClassPresenter;
 
@@ -47,7 +46,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	
 	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory, final boolean isClassPresenter) {
 		this.session = session;
-		this.bus = bus;
 		this.placeCtrl = placeCtrl;
 		this.isClassPresenter = isClassPresenter;
 		view = viewFactory.getMessageView();
@@ -128,7 +126,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			@Override
 			public void ok(ChatThreadMessagesTO to) {
 				chatThreadMessageTOs = to.getChatThreadMessageTOs();
-			  view.updateThreadPanel(to, unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
+			  view.updateThreadPanel(to, unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName(), !isClassPresenter);
 				LoadingPopup.hide();
 			}
 		});
@@ -163,12 +161,12 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				getChatThreadMessagesSinceLast();
 			}
 		};
-		// Schedule the timer to run every 20 secs
-		chatThreadMessagesTimer.scheduleRepeating(20 * 1000);
+		// Schedule the timer to run every 13 secs
+		chatThreadMessagesTimer.scheduleRepeating(13 * 1000);
 	}
 	
 	private void getChatThreadMessagesSinceLast() {
-		if(selectedChatThreadInfo != null && (placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminHomePlace && isClassPresenter)){
+		if((placeCtrl.getWhere() instanceof MessagePlace && !isClassPresenter) || (placeCtrl.getWhere() instanceof AdminCourseClassPlace && isClassPresenter) && selectedChatThreadInfo != null && updateMessages){
 			final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
 		  session.chatThreads().getChatThreadMessages(chatThreadUUID, lastFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
 				@Override

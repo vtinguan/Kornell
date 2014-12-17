@@ -26,10 +26,16 @@ public interface Institution extends Named {
 
 	boolean isAllowRegistration();
 	void setAllowRegistration(boolean allowRegistration);
+
+	boolean isAllowRegistrationByUsername();
+	void setAllowRegistrationByUsername(boolean allowRegistrationByUsername);
 	
 	Date getActivatedAt();
 	void setActivatedAt(Date activatedAt);
 
 	String getSkin();
 	void setSkin(String skin);
+	
+	BillingType getBillingType();
+	void setBillingType(BillingType billingType);
 }

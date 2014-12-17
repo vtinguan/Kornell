@@ -6,6 +6,7 @@ import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
+import static com.google.gwt.http.client.Response.SC_CONFLICT;
 
 import java.util.logging.Logger;
 
@@ -14,7 +15,7 @@ import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.sequence.ThinSequencer;
+import kornell.gui.client.Kornell;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
@@ -27,9 +28,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  
 public abstract class Callback<T> implements RequestCallback {
-	public static final Logger log = Logger.getLogger(Callback.class.getName());
-	
-	private String responseText;
+	Logger logger = Logger.getLogger(Callback.class.getName());
 
 	@Override
 	public void onResponseReceived(Request request, Response response) {		
@@ -46,6 +45,9 @@ public abstract class Callback<T> implements RequestCallback {
 		case SC_UNAUTHORIZED:
 			unauthorized(response.getText());
 			break;
+		case SC_CONFLICT:
+			conflict(response.getText());
+			break;
 		case SC_NOT_FOUND:
 			notFound();
 			break;
@@ -59,7 +61,7 @@ public abstract class Callback<T> implements RequestCallback {
 			failed();
 			break;
 		default:
-			GWT.log("Got a response, but don't know what to do about it");
+			logger.fine("Got a response, but don't know what to do about it");
 			break;
 		}
 	}
@@ -81,11 +83,7 @@ public abstract class Callback<T> implements RequestCallback {
 			if (MediaTypes.get().containsType(contentType)) {
 				@SuppressWarnings("unchecked")
 				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
-				if(clazz==null){
-					String msg = "Could not find class for mime type ["+contentType+"]";
-					log.severe(msg);
-					onError(null,new IllegalStateException(msg));
-				}
+
 				AutoBean<T> bean = null;
 				AutoBeanFactory factory = factoryFor(contentType);
 				if("null".equals(responseText))
@@ -154,10 +152,15 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void failed() {
-		GWT.log("Your request failed. Please check that the API is running and responding cross-origin requests.");
+		logger.severe("Your request failed. Please check that the API is running and responding cross-origin requests.");
 	}
 
 	protected void unauthorized(String errorMessage) {
+		
+	}
+
+	protected void conflict(String errorMessage) {
+		
 	}
 
 	protected void forbidden() {
@@ -170,7 +173,7 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	private void error(Request request, Throwable exception) {
-		GWT.log("Error!", exception);
+		logger.severe("Error: " + exception.getMessage());
 	}
 
 }

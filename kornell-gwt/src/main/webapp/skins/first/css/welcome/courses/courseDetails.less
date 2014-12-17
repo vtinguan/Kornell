@@ -319,15 +319,16 @@
 					.lblName{
 						color: lighten(@niceTextColor, 20%);
 						padding-left: @detailsPanelMargin;
-						line-height: 15px;
+						line-height: 22px;
+						font-size: 15px;
 						padding-top: @detailsPanelMargin * 2 / 3;
 						padding-bottom: @detailsPanelMargin / 4;
 					}
 					.lblDescription{
 						color: @textInfoColor;
 						padding-left: @detailsPanelMargin;
-						font-size: 9px;
-						line-height: 11px;
+						font-size: 11px;
+						line-height: 13px;
 					}
 				}
 				.lblStatus{
@@ -344,7 +345,7 @@
 					text-align: center;
 					padding-left: @detailsPanelMargin / 2;
 					padding-right: @detailsPanelMargin / 2;
-					color: @linkTextColor;
+					color: @textInfoColor;
 				}
 				.lblActions{
 					float: left;
@@ -378,7 +379,7 @@
 }
 
 
-@media screen and (max-width: @wrapperWidth) {
+/*@media screen and (max-width: @wrapperWidth) {
 	.detailsPanel{
 		@detailsPanelWidth: @wrapperWidthUnder990 - 18px;
 		@buttonsPanelWidth: @detailsPanelWidth;
@@ -467,5 +468,5 @@
 			}
 		}	
 	}
-}
+}*/
 

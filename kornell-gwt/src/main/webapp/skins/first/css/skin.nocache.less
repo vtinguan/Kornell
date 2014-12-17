@@ -17,15 +17,38 @@
 	@import "welcome/courses/courseNotes";
 @import "welcome/profile";
 
-body {
+body, html {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	background: @background;
+	background: @background !important;
 	background-size: 100% 100%;
 }
-
+a{
+	color: @textInfoColor !important;
+}
+a:hover{
+	//color: darken(@textInfoColor, 25%) !important;
+}
+.vScrollBar{
+	overflow-y: auto !important;
+	overflow-x: auto !important;
+	width: 100%;
+	position: fixed !important;
+	top: 0;
+	bottom: 0;
+}
+.offsetNorthBar{
+	top: @barNorthHeight !important;
+}
+.offsetSouthBar{
+	bottom: @barSouthHeight !important;
+}
 .wrapper {
     margin: 0 auto;  
 } 
+.wrapperWidth {
+	width: @wrapperWidth;
+	margin: 0 auto;
+}
 @media screen and (max-width: @wrapperWidth) {
     .wrapper {
 	}
@@ -47,25 +70,25 @@ body {
 	background-color: @background;
 }
 
-
 .messageInboxPanel{
 	width: @wrapperWidth;
 	margin: 0 auto;
 	margin-top: 10px;
 	@border: 1px solid fade(@niceTextColor, 25%);
 	@borderHighlight: 1px solid fade(@textInfoColor, 50%);
-	height: 502px;
+	height: 500px;
 	border: @border;
 	border-radius: 8px;
 	.boxSizing;
 	.sidePanelScroll{
 		width: 240px;
-		height: 489px;
+		height: 487px;
 		padding: 5px;
-		border-radius: 8px;
+		border-radius: 8px 0px 0px 8px;
 		background-color: @tableBackgroundColor;
+		border-right: 2px solid @tableBackgroundColor;
 		.sidePanel{
-			margin-right: 14px;
+			width: 100%;
 			.boxSizing;
 			.threadListItem{
 				.boxSizing;
@@ -91,10 +114,10 @@ body {
 		}
 	}
 	.threadPanel{
-		width: 696px;
+		width: 708px;
 		background-color: @tableBackgroundColor;
 		padding: 10px;
-		border-radius: 8px;
+		border-radius: 0px 8px 8px 0px;
 		.boxSizing;
 		.threadTitle{
 			font-size: 14px;
@@ -238,6 +261,7 @@ body {
 				}
 			}
 			.fieldPanel{
+				width: 275px;
 				.lblValue{
 					line-height: 14px;
 					margin-left: 2px;
@@ -278,9 +302,14 @@ body {
 
 
 .deanHome{
-	width: @wrapperWidth;
+	min-width: @wrapperWidth;
 	margin: 0 auto;
+	padding: 10px;
 	@insertPanelHeight: 45px;
+	.nav-tabs>li>a{
+		border: 1px solid darken(@tableBackgroundColor, 100%) !important;
+		border-bottom: 0px;
+	}
 	.inlineLabel{
 		margin-right: 5px;
 		display: inline;
@@ -350,17 +379,16 @@ body {
 	}
 	.addEnrollmentBatchPanel{
 		display: block;
-		width: 800px;
 		margin: 0px auto;
 		.infoPanel{
 			font-size: 12px;
 			line-height: 16px;
 			float: left;
 			margin-left: 20px;
-			margin-top: 130px;
+			margin-top: 225px;
 		}
 		textarea{
-			width: 500px;
+			width: 528px;
 			float: left;
 			height: 350px;
 			margin-bottom: 20px;
@@ -372,9 +400,9 @@ body {
 		}
 	}
 	.enrollmentsCellTable{
-		width: @wrapperWidth;
 		color: @niceTextColor;
 		margin-bottom: 0;
+		margin-top: 20px;
 		border: 0;
 		border-collapse: separate;
 		border-spacing: 0 5px;
@@ -412,6 +440,7 @@ body {
 	}
 	table{
 		border-color: transparent !important;
+		width: 100%;
 	}
 	.pageSizeListBox{
 		font-size: 12px;
@@ -437,8 +466,9 @@ body {
 		float: left;
 		margin-top: 3px;
 	}
-	.tab-content {
-		overflow: hidden;
+	.courseClassConfig, .courseClassReports, .courseClassMessages, .courseClassAdmins{
+		width: @wrapperWidth;
+		margin: 0 auto;
 	}
 }
 
@@ -447,9 +477,9 @@ body {
 
 .courseClassAdminField{
 	height: auto !important;
-	width: 750px !important;
+	width: 760px !important;
 	.labelPanel{
-		width: 180px;
+		width: 200px;
 	}
 	.fieldPanel{
 		width: 540px;
@@ -511,10 +541,10 @@ body {
 		.btnDownload{width: @downloadWidth;}
 	}
 	.reportWrapper{
-		@reportWrapperHeight: 78px;
+		@reportWrapperHeight: 88px;
 		height: @reportWrapperHeight;
 		line-height: @reportWrapperHeight;
-		background-color: @contentBoxBackgroundColor;
+		background-color: @tableBackgroundHoverColor;
 		margin-top: @detailsPanelMargin / 2;
 		color: @niceTextColor;
 		font-size: 13px;
@@ -535,14 +565,16 @@ body {
 				.lightenOrDarkenColor(@niceTextColor, 20%);
 				padding-left: @detailsPanelMargin;
 				line-height: 10px;
+				font-size: 14px;
+				font-weight: bold;
 				padding-top: @detailsPanelMargin * 2 / 3;
-				padding-bottom: @detailsPanelMargin / 4;
+				padding-bottom: 9px;
 			}
 			.lblDescription{
 				color: @textInfoColor;
-				padding-left: @detailsPanelMargin;
-				font-size: 9px;
-				line-height: 11px;
+				padding-left: 55px;
+				font-size: 12px;
+				line-height: 14px;
 			}
 			.optionPanel{
 				padding-left: 48px;
@@ -562,6 +594,14 @@ body {
 					margin-left: 2px;
 					float: left;
 					.cursorPointer;
+				}
+				select{
+					height: 25px;
+					float: left;
+					margin-left: 8px;
+					font-size: 14px;
+					padding: 0px 7px;
+					width: 100px;
 				}
 			}
 		}
