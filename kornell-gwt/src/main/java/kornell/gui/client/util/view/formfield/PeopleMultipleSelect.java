@@ -1,0 +1,174 @@
+package kornell.gui.client.util.view.formfield;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.People;
+import kornell.core.entity.Person;
+import kornell.core.entity.RoleCategory;
+import kornell.core.to.RoleTO;
+import kornell.core.to.RolesTO;
+import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.util.FormHelper;
+
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.Typeahead;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.Widget;
+
+public class PeopleMultipleSelect extends Composite {
+	private FormHelper formHelper = GWT.create(FormHelper.class);
+	
+	private KornellSession session;
+	private TextBox search;
+	private MultiWordSuggestOracle oracle;
+	private ListBox multipleSelect;
+	private Map<String, Person> oraclePeople;
+
+	public PeopleMultipleSelect(KornellSession session) {
+		this.session = session;
+	}
+	
+	@Override
+	public Widget asWidget(){
+		return getCourseClassAdminsFieldPanel();
+	}
+
+	private FlowPanel getCourseClassAdminsFieldPanel() {
+		FlowPanel courseClassAdminsPanel = new FlowPanel();
+		courseClassAdminsPanel.addStyleName("fieldPanel");
+		
+		courseClassAdminsPanel.add(getTypeAheadPanel());
+		FlowPanel multipleSelectPanel = getMultipleSelectPanel();
+		courseClassAdminsPanel.add(multipleSelectPanel);
+		
+		return courseClassAdminsPanel;
+	}
+
+
+	private FlowPanel getMultipleSelectPanel() {
+		FlowPanel multipleSelectPanel = new FlowPanel();
+		multipleSelect = new ListBox(true);
+		multipleSelect.addStyleName("selectField");
+
+		multipleSelectPanel.add(multipleSelect);
+		
+		Button btnRemove = new Button("REMOVER");
+		btnRemove.addStyleName("btnSelected btnStandard");
+		
+		btnRemove.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				while(multipleSelect.getSelectedIndex() != -1){
+					multipleSelect.removeItem(multipleSelect.getSelectedIndex());
+				}
+			}
+		});
+		multipleSelectPanel.add(btnRemove);
+				
+		return multipleSelectPanel;
+	}
+
+	private FlowPanel getTypeAheadPanel() {
+		FlowPanel typeaheadPanel = new FlowPanel();
+		Typeahead typeahead = new Typeahead();
+    search = new TextBox();
+    search.addStyleName("textField");
+    search.setPlaceholder("Digite o nome de usuário a adicionar");
+    
+    search.addKeyUpHandler(new KeyUpHandler() {
+    	String currentSearch = "";
+    	String previousSearch = "";
+	    	
+			Timer searchChangesTimer = new Timer() {
+				@Override
+				public void run() {
+					searchChanged(currentSearch);
+				}
+			};
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				currentSearch = search.getText();
+				if(currentSearch.length() >= 1 && !currentSearch.equals(previousSearch)){
+					searchChangesTimer.cancel();
+					searchChangesTimer.schedule(100);
+				}
+				previousSearch = currentSearch;
+			}
+		});
+	    
+	  typeahead.add(search);
+		
+		oracle = (MultiWordSuggestOracle) typeahead.getSuggestOracle();
+			
+		
+		typeaheadPanel.add(typeahead);
+
+		Button btnAdd = new Button("ADICIONAR");
+		btnAdd.addStyleName("btnAction btnStandard");
+		
+		btnAdd.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				addAdmin();
+			}
+		});
+		
+		typeaheadPanel.add(btnAdd);
+		
+		return typeaheadPanel;
+	}
+
+	private void searchChanged(String search) {
+		session.people().findBySearchTerm(search, Dean.getInstance().getInstitution().getUUID(), new Callback<People>() {
+			@Override
+			public void ok(People to) {
+				oraclePeople = new HashMap<String, Person>();
+				oracle.clear();
+				String username, oracleStr;
+				int i = 0;
+				for (Person person : to.getPeople()) {
+					username = person.getEmail() != null ? person.getEmail() : person.getCPF();
+					oracleStr = username +
+								(person.getFullName() != null && !"".equals(person.getFullName()) ?
+								" (" + person.getFullName() + ")" : "");
+					oracle.add(oracleStr);
+					oraclePeople.put(username, person);
+					if(++i == 10) break;
+				}
+			}
+		});		
+	}
+
+	private void addAdmin() {
+		String item = search.getText().split(" \\(")[0];
+		if(oraclePeople != null && oraclePeople.containsKey(item)){
+			if(!formHelper.isItemInListBox(search.getText(), multipleSelect)){
+				Person person = (Person) oraclePeople.get(item);
+				multipleSelect.addItem(search.getText(), person.getUUID());
+			}
+			search.setText("");
+		}
+	}
+
+	public ListBox getMultipleSelect() {
+	  return multipleSelect;
+  }
+
+	public void addItem(String item, String uuid) {
+		multipleSelect.addItem(item, uuid);
+  }
+}
