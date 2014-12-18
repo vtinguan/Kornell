@@ -11,12 +11,11 @@ import javax.enterprise.inject.Produces
 @Dependent
 class TestCourseVersionProducer @Inject()(
   val ccrsRepo: CourseVersionsRepo,
-  val course:Course) {
+  val course:Course) 
+  extends Producer {
   
   @Produces
-  def courseVersion = {
-    val repositoryUUID: String = "does-not-exit-actyallu"
-    // RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "sa-east-1").getUUID
-    ccrsRepo.create(Entities.newCourseVersion(repositoryUUID = repositoryUUID, courseUUID = course.getUUID()))
-  }
+  def courseVersion = ccrsRepo.create(repositoryUUID = randUUID, 
+      courseUUID = course.getUUID)
+  
 }

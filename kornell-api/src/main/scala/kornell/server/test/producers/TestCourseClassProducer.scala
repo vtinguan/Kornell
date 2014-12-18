@@ -17,18 +17,13 @@ import javax.enterprise.context.Dependent
 class CourseClassProducer @Inject() (
   val ccr: CourseClassesResource,
   val courseVersion: CourseVersion,
-  val institution: Institution) {
+  val institution: Institution)
+  extends Producer {
 
   @Produces @EmailCourseClass
-  def newCourseClassEmail: CourseClass = {
-    println("BREAK BFORE")
-    val cc = ccr.create((Entities.newCourseClass(
-      name = "randomname",
+  def newCourseClassEmail: CourseClass = ccr.create(
+      name = randName ,
       courseVersionUUID = courseVersion.getUUID,
       institutionUUID = institution.getUUID,
-      registrationEnrollmentType = RegistrationEnrollmentType.email)))
-    println("BREAK AFTR")
-    cc
-  }
-
+      registrationEnrollmentType = RegistrationEnrollmentType.email)
 }

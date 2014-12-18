@@ -12,14 +12,13 @@ import kornell.core.entity.BillingType
 
 @Dependent
 class TestInstitutionProducer @Inject() (
-  val ittsRepo: InstitutionsRepo) extends Producer {
-  
+  val ittsRepo: InstitutionsRepo)
+  extends Producer {
+
   @Produces
   @ApplicationScoped
-  def institution:Institution = ittsRepo.create(uuid = randUUID,
-      name = randName,
-      baseURL = randURL,
-      billingType=BillingType.enrollment
-      )
-
+  def institution: Institution = ittsRepo.create(uuid = randUUID,
+    name = randName,
+    baseURL = randURL,
+    billingType = BillingType.enrollment)
 }

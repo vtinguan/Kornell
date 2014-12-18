@@ -12,7 +12,14 @@ import kornell.server.repository.Entities
 import kornell.core.util.UUID
 
 class CoursesRepo {
-
+  def create(uuid:String = randomUUID, 
+      code:String = null, 
+      title:String = null, 
+      description:String = null, 
+      infoJson:String = null, 
+      institutionUUID:String): Course = 
+    create(Entities.newCourse(uuid, code, title, description, infoJson, institutionUUID))
+  
   def create(course: Course): Course = {
     if (course.getUUID == null){
       course.setUUID(UUID.random)

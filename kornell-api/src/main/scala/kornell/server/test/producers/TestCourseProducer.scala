@@ -11,20 +11,14 @@ import java.util.logging.Logger
 import javax.enterprise.context.ApplicationScoped
 
 @Dependent
-class TestCourseProducer @Inject()(
-    csRepo:CoursesRepo,
-    itt:Institution)
-    extends Generator{
-  lazy val logger = TestCourseProducer.logger
-  
-  
+class TestCourseProducer @Inject() (
+  csRepo: CoursesRepo,
+  itt: Institution)
+  extends Producer {
+
   @Produces
   @ApplicationScoped
-  def course = 
-    csRepo.create(Entities.newCourse(uuid=randUUID, code=randStr(5),institutionUUID=itt.getUUID()))
-  
-}
-
-object TestCourseProducer{
-  val logger:Logger = Logger.getLogger(classOf[TestCourseProducer].getName)
+  def course = csRepo.create(uuid = randUUID,
+    code = randStr(5),
+    institutionUUID = itt.getUUID)
 }

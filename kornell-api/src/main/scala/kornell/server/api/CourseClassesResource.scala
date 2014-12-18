@@ -24,26 +24,54 @@ import javax.inject.Inject
 import kornell.server.jdbc.repository.CourseClassRepo
 import javax.enterprise.inject.Instance
 import kornell.server.jdbc.repository.AuthRepo
+import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.CourseClassState
+import java.util.Date
+import java.math.BigDecimal
 
 @Path("courseClasses")
-class CourseClassesResource @Inject() ( 
-  val authRepo:AuthRepo,
-  val courseClassesRepo:CourseClassesRepo,
-  val courseClassResourceBean:Instance[CourseClassResource]) {
-  
-  def this() = this(null,null,null)
-  
+class CourseClassesResource @Inject() (
+  val authRepo: AuthRepo,
+  val courseClassesRepo: CourseClassesRepo,
+  val courseClassResourceBean: Instance[CourseClassResource]) {
+
+  def this() = this(null, null, null)
+
+  def create(uuid: String = null,
+    name: String = null,
+    courseVersionUUID: String = null,
+    institutionUUID: String = null,
+    requiredScore: BigDecimal = null,
+    publicClass: Boolean = false,
+    overrideEnrollments: Boolean = false,
+    invisible: Boolean = false,
+    maxEnrollments: Integer = null,
+    createdAt: Date = null,
+    createdBy: String = null,
+    state: CourseClassState = null,
+    registrationEnrollmentType: RegistrationEnrollmentType = null,
+    institutionRegistrationPrefix: String = null):CourseClass =
+    create(Entities.newCourseClass(uuid, name,
+      courseVersionUUID, institutionUUID,
+      requiredScore, publicClass,
+      overrideEnrollments,
+      invisible, maxEnrollments,
+      createdAt, createdBy,
+      state,
+      registrationEnrollmentType,
+      institutionRegistrationPrefix))
+
   @POST
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
   def create(courseClass: CourseClass) = {
     courseClassesRepo.create(courseClass)
-  }.requiring(isPlatformAdmin, UserNotInRole) 
-   .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
-   .get
-   
+  }.requiring(isPlatformAdmin, UserNotInRole)
+    .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
+    .get
+
   @Path("{uuid}")
-  def get(@PathParam("uuid") uuid: String):CourseClassResource = courseClassResourceBean.get.withUUID(uuid)
+  def get(@PathParam("uuid") uuid: String): CourseClassResource = courseClassResourceBean.get.withUUID(uuid)
 
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
@@ -64,7 +92,7 @@ class CourseClassesResource @Inject() (
       {
         if (institutionUUID != null) {
           val roles = authRepo.userRoles
-          courseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList )
+          courseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList)
         }
       }
     }

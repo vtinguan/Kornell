@@ -98,6 +98,14 @@
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="true"/>
             </periodic-rotating-file-handler>
+            <periodic-rotating-file-handler name="KNL_HANDLER" autoflush="true">
+                <formatter>
+                    <named-formatter name="PATTERN"/>
+                </formatter>
+                <file relative-to="jboss.server.log.dir" path="kornell.log"/>
+                <suffix value=".yyyy-MM-dd"/>
+                <append value="true"/>
+            </periodic-rotating-file-handler>
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
@@ -116,10 +124,10 @@
             <logger category="jacorb.config">
                 <level name="ERROR"/>
             </logger>
-            <logger category="kornell" use-parent-handlers="false">
+            <logger category="kornell.server.test" use-parent-handlers="false">
                 <level name="ALL"/>
                 <handlers>
-                    <handler name="DEBUGGER"/>
+                    <handler name="KNL_HANDLER"/>
                 </handlers>
             </logger>
             <logger category="kornell.server.jdbc" use-parent-handlers="true">
