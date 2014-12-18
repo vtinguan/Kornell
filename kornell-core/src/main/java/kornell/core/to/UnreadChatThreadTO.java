@@ -16,4 +16,6 @@ public interface UnreadChatThreadTO {
 	String getCourseClassUUID();
 	void setCourseClassUUID(String courseClassUUID);
 	
+	String getSupportType();
+	void setSupportType(String supportType);
 }

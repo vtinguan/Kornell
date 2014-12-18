@@ -32,6 +32,10 @@ import kornell.server.repository.LibraryFilesRepository
 import java.io.IOException
 import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.jdbc.repository.ChatThreadsRepo
+import kornell.server.util.Conditional.toConditional
+import kornell.server.util.AccessDeniedErr
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.core.entity.ChatThreadType
 
 
 class CourseClassResource(uuid: String) {
@@ -104,7 +108,7 @@ class CourseClassResource(uuid: String) {
     AuthRepo().withPerson { person =>
       {
         val r = RolesRepo.updateCourseClassAdmins(uuid, roles)
-        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreads(uuid)
+        ChatThreadsRepo.updateParticipantsInSupportThreads(uuid, ChatThreadType.SUPPORT)
         r
       }
     }
@@ -119,6 +123,27 @@ class CourseClassResource(uuid: String) {
         RolesRepo.getCourseClassAdmins(uuid, bindMode)
       }
     }
+  
+  @PUT
+  @Consumes(Array(Roles.TYPE))
+  @Produces(Array(Roles.TYPE))
+  @Path("tutors")
+  def updateTutors(roles: Roles) = {
+        val r = RolesRepo.updateTutors(uuid, roles)
+        ChatThreadsRepo.updateParticipantsInSupportThreads(uuid, ChatThreadType.TUTORING)
+        r
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
+
+  @GET
+  @Produces(Array(RolesTO.TYPE))
+  @Path("tutors")
+  def updateTutors(@QueryParam("bind") bindMode:String) = {
+        RolesRepo.getTutorsForCourseClass(uuid, bindMode)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
 
 }
 

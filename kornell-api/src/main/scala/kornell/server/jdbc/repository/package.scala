@@ -22,6 +22,8 @@ import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
 import kornell.core.entity.RegistrationEnrollmentType
 import kornell.core.to.CourseVersionTO
+import kornell.core.entity.ChatThreadParticipant
+import kornell.core.entity.ChatThread
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -58,7 +60,7 @@ package object repository {
         r.getDate("createdAt"), r.getString("createdBy"), 
         CourseClassState.valueOf(r.getString("state")), 
         RegistrationEnrollmentType.valueOf(r.getString("registrationEnrollmentType")),
-        r.getString("institutionRegistrationPrefix")) 
+        r.getString("institutionRegistrationPrefix"), r.getBoolean("courseClassChatEnabled")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -206,6 +208,7 @@ package object repository {
       case RoleType.platformAdmin => Entities.newRoleAsPlatformAdmin(rs.getString("person_uuid"))
       case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("person_uuid"), rs.getString("institution_uuid"))
       case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
+      case RoleType.tutor => Entities.newTutorRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
     }
     role
   }
@@ -214,12 +217,29 @@ package object repository {
 	    rs.getString("unreadMessages"),
 	    rs.getString("chatThreadUUID"), 
 	    rs.getString("chatThreadName"),
-	    rs.getString("courseClassUUID"))
+	    rs.getString("courseClassUUID"),
+	    rs.getString("supportType"))
 	
 	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
 	    rs.getString("senderFullName"),
 	    rs.getString("sentAt"), 
 	    rs.getString("message"))
   
-
+	implicit def toChatThreadParticipant(rs: ResultSet): ChatThreadParticipant = newChatThreadParticipant(
+	    rs.getString("uuid"),
+	    rs.getString("chatThreadUUID"),
+	    rs.getString("personUUID"),
+	    rs.getString("chatThreadName"),
+	    rs.getDate("lastReadAt"),
+	    rs.getBoolean("active"),
+	    rs.getDate("lastJoinDate"))
+	    
+	implicit def toChatThread(rs: ResultSet): ChatThread = newChatThread(
+	    rs.getString("uuid"), 
+	    rs.getDate("createdAt"), 
+	    rs.getString("institutionUUID"), 
+	    rs.getString("courseClassUUID"), 
+	    rs.getString("personUUID"), 
+	    rs.getString("threadType"), 
+	    rs.getBoolean("active"))
 }

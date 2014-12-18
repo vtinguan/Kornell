@@ -18,6 +18,7 @@ import javax.ws.rs.GET
 import kornell.core.to.UnreadChatThreadsTO
 import kornell.core.to.ChatThreadMessagesTO
 import kornell.core.util.StringUtils
+import kornell.core.entity.ChatThreadType
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
@@ -29,7 +30,7 @@ class ChatThreadsResource {
   def postMessageToCourseClassSupportThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadsRepo.supportThreadType)
+  		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.SUPPORT)
   }
   
   @POST
@@ -38,7 +39,7 @@ class ChatThreadsResource {
   def postMessageToCourseClassTutoringThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
-        ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadsRepo.tutoringThreadType)
+        ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.TUTORING)
   }
   
   @POST

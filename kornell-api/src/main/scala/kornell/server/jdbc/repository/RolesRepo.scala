@@ -59,13 +59,13 @@ object RolesRepo {
 	        | where r.institution_uuid = ${institutionUUID}
 		    """.first[Role](toRole).get, RoleCategory.BIND_WITH_PERSON).getPerson
 		    
-  def getTutorsForCourseClass(courseClassUUID: String)=
+  def getTutorsForCourseClass(courseClassUUID: String, bindMode: String)=
       TOs.newRolesTO(sql"""
             | select *
             | from Role r
             | where courseClassUUID = ${courseClassUUID}
                 | and r.role = ${RoleType.tutor.toString}
-            """.map[Role](toRole).map(bindRole(_, RoleCategory.BIND_WITH_PERSON)))   
+            """.map[Role](toRole).map(bindRole(_, bindMode)))   
 
   private def bindRole(role: Role, bindMode: String) =
     TOs.newRoleTO(role, {
@@ -79,6 +79,8 @@ object RolesRepo {
   def updateCourseClassAdmins(courseClassUUID: String, roles: Roles) = removeCourseClassAdmins(courseClassUUID).addRoles(roles)
   
   def updateInstitutionAdmins(institutionUUID: String, roles: Roles) = removeInstitutionAdmins(institutionUUID).addRoles(roles)
+  
+  def updateTutors(courseClassUUID: String, roles: Roles) = removeTutors(courseClassUUID).addRoles(roles)
   
   def addRoles(roles: Roles) = {
     roles.getRoles.asScala.foreach(addRole _)
@@ -110,6 +112,7 @@ object RolesRepo {
     sql"""
     	delete from Role
     	where course_class_uuid = ${courseClassUUID}
+        and role = ${RoleType.courseClassAdmin}
     """.executeUpdate
     this
   }
@@ -118,6 +121,15 @@ object RolesRepo {
     sql"""
         delete from Role
         where institution_uuid = ${institutionUUID}
+    """.executeUpdate
+    this
+  }
+  
+  def removeTutors(courseClassUUID: String) = {
+    sql"""
+        delete from Role
+        where course_class_uuid = ${courseClassUUID}
+        and role = ${RoleType.tutor}
     """.executeUpdate
     this
   }
