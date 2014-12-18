@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.profile.generic;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -16,6 +17,7 @@ import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -64,6 +66,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	Logger logger = Logger.getLogger(GenericProfileView.class.getName());
 
 	private KornellSession session;
 	private PlaceController placeCtrl;
@@ -177,7 +180,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					}
 					@Override
 					public void unauthorized(String errorMessage) {
-						GWT.log(this.getClass().getName() + " - " + errorMessage);
+						logger.severe(this.getClass().getName() + " - " + errorMessage);
 						user = null;
 						display();
 					}

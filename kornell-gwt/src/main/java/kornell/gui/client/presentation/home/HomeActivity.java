@@ -17,8 +17,7 @@ public class HomeActivity extends AbstractActivity {
 	  }
 
 	@Override
-	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		GWT.log("Startint a home"); 
+	public void start(AcceptsOneWidget panel, EventBus eventBus) { 
 		panel.setWidget(presenter);
 		
 	}

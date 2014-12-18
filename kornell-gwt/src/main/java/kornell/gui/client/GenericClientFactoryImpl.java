@@ -99,7 +99,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void startApp() {
-
 		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
 			public void ok(final UserHelloTO userHelloTO) {

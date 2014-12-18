@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
+import kornell.api.client.ExceptionalRequestBuilder;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
@@ -48,6 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter {
+	Logger logger = Logger.getLogger(AdminCourseClassPresenter.class.getName());
 	private AdminCourseClassView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private List<EnrollmentTO> enrollmentTOs;
@@ -121,7 +124,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
       
       clearEnrollmentsCache();
 		} else {
-			GWT.log("Hey, only admins are allowed to see this! "
+			logger.warning("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}
@@ -270,7 +273,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 					public void unauthorized(String errorMessage){
 						LoadingPopup.hide();
 						KornellNotification.show("Erro ao tentar excluir a turma.", AlertType.ERROR);
-						GWT.log(this.getClass().getName() + " - " + errorMessage);
+						logger.severe(this.getClass().getName() + " - " + errorMessage);
 					}
 				});
 
@@ -498,12 +501,14 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 						confirmedEnrollmentsModal = false;
 						KornellNotification.show(
 								"Matrículas feitas com sucesso.", 1500);
+						view.clearEnrollmentFields();
 						LoadingPopup.hide();
+						PlaceUtils.reloadCurrentPlace(bus, placeController);
 					}
 					
 					@Override
 					public void unauthorized(String error){
-						GWT.log("Error AdminHomePresenter: " + error);
+						logger.severe("Error AdminHomePresenter: " + error);
 						KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
 						LoadingPopup.hide();
 					}

@@ -1,11 +1,9 @@
 package kornell.server.helper
 
 import java.util.Date
-
 import org.scalatest.BeforeAndAfter
 import org.scalatest.Suite
 import org.scalatest.SuiteMixin
-
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseClassState
@@ -23,6 +21,7 @@ import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.repository.Entities
+import kornell.core.entity.BillingType
 
 trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ this: Suite =>
 	
@@ -58,7 +57,7 @@ trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ t
   
   abstract override def withFixture(test: NoArgTest) = {
     
-    institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
+    institution = InstitutionsRepo.create(Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment))
 	  course = CoursesRepo.create(Entities.newCourse(randUUID, randStr, randStr, randStr, randStr))
 	  courseVersion = CourseVersionsRepo.create(Entities.newCourseVersion(randUUID, randStr, course.getUUID, randUUID, new Date, randStr, "KNL", false))
 	  courseClass = Entities.newCourseClass(classUUID, className, courseVersion.getUUID, institution.getUUID, new java.math.BigDecimal(60), true, false, false, 23451, new Date(), null, CourseClassState.active)

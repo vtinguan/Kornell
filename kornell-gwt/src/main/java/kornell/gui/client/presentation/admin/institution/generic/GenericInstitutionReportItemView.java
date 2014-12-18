@@ -1,6 +1,9 @@
 package kornell.gui.client.presentation.admin.institution.generic;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.util.StringUtils;
@@ -113,13 +116,17 @@ public class GenericInstitutionReportItemView extends Composite {
 	private void addItemsToPeriodList() {
 	  String now = formHelper.dateToString(new Date());
 	  String next = getNextPeriod(now.split("-")[0] + "-" + now.split("-")[1]);
-	  
+	  List<String> dates = new ArrayList<String>();
 	  String date = formHelper.dateToString(Dean.getInstance().getInstitution().getActivatedAt());
 	  date = date.split("-")[0] + "-" + date.split("-")[1];
 	  while(!date.equals(next)){
-		  periodListBox.addItem(date, date);
+		  dates.add(date);
 	  	date = getNextPeriod(date); 
 	  }
+	  Collections.reverse(dates);
+	  for (String dateToAdd : dates) {
+	  	periodListBox.addItem(dateToAdd, dateToAdd);
+    }
   }
 
 }

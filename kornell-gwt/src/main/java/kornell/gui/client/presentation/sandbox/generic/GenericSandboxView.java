@@ -19,7 +19,6 @@ public class GenericSandboxView  extends Composite implements SandboxView {
 	@UiField FlowPanel panel;
 	
 	public GenericSandboxView(KornellSession session) {
-		GWT.log("GenericSandboxView()");		
 	    initWidget(uiBinder.createAndBindUi(this));
 	    panel.add(new Label("Loading some stuff..."));
 	    session.enrollment("8002f404-8488-4fb3-b69e-9828f6fe396b")

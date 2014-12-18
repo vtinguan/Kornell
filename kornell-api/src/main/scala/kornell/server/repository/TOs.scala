@@ -4,33 +4,35 @@ import java.math.BigDecimal
 import java.util.Date
 import scala.collection.JavaConverters._
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-import kornell.core.to.CourseVersionTO
-import kornell.core.to.report.CertificateInformationTO
-import kornell.core.to.RegistrationRequestTO
-import kornell.core.entity.CourseClass
-import kornell.core.to.EnrollmentRequestsTO
-import kornell.core.to.EnrollmentRequestTO
-import kornell.core.to.report.CourseClassReportTO
-import kornell.core.to.EnrollmentsTO
-import kornell.core.to.RoleTO
-import kornell.core.to.CourseVersionsTO
-import kornell.core.to.CoursesTO
-import kornell.core.to.report.EnrollmentsBreakdownTO
-import kornell.core.entity.Person
 import kornell.core.entity.Course
+import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseVersion
 import kornell.core.entity.Enrollment
-import kornell.core.to.EnrollmentTO
-import kornell.core.to.TOFactory
-import kornell.core.to.CourseClassTO
+import kornell.core.entity.Person
+import kornell.core.entity.RegistrationEnrollmentType
 import kornell.core.entity.Role
+import kornell.core.to.ChatThreadMessageTO
+import kornell.core.to.CourseClassTO
+import kornell.core.to.CourseVersionTO
+import kornell.core.to.CourseVersionsTO
+import kornell.core.to.CoursesTO
+import kornell.core.to.EnrollmentRequestTO
+import kornell.core.to.EnrollmentRequestsTO
+import kornell.core.to.EnrollmentTO
+import kornell.core.to.EnrollmentsTO
+import kornell.core.to.LibraryFileTO
+import kornell.core.to.RegistrationRequestTO
+import kornell.core.to.RoleTO
+import kornell.core.to.TOFactory
+import kornell.core.to.UnreadChatThreadTO
+import kornell.core.to.UnreadChatThreadsTO
+import kornell.core.to.report.CertificateInformationTO
+import kornell.core.to.report.CourseClassReportTO
+import kornell.core.to.report.EnrollmentsBreakdownTO
+import kornell.core.to.report.InstitutionBillingEnrollmentReportTO
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
-import kornell.core.to.LibraryFileTO
-import kornell.core.to.UnreadChatThreadsTO
-import kornell.core.to.UnreadChatThreadTO
-import kornell.core.to.ChatThreadMessageTO
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -221,6 +223,27 @@ object TOs {
   def newInstitutionHostNamesTO(l: List[String]) = {
     val to = tos.newInstitutionHostNamesTO().as
     to.setInstitutionHostNames(l asJava)
+    to
+  }
+
+  def newInstitutionBillingEnrollmentReportTO: InstitutionBillingEnrollmentReportTO = new InstitutionBillingEnrollmentReportTO
+  def newInstitutionBillingEnrollmentReportTO(enrollmentUUID: String, courseTitle: String, courseVersionName: String, courseClassName: String, fullName: String, username: String): InstitutionBillingEnrollmentReportTO = {
+    val to = newInstitutionBillingEnrollmentReportTO
+    to.setEnrollmentUUID(enrollmentUUID)
+    to.setCourseTitle(courseTitle)
+    to.setCourseVersionName(courseVersionName)
+    to.setCourseClassName(courseClassName)
+    to.setFullName(fullName)
+    to.setUsername(username)
+    to
+  }
+
+  def newInstitutionBillingMonthlyReportTO: InstitutionBillingMonthlyReportTO = new InstitutionBillingMonthlyReportTO
+  def newInstitutionBillingMonthlyReportTO(personUUID: String, fullName: String, username: String): InstitutionBillingMonthlyReportTO = {
+    val to = newInstitutionBillingMonthlyReportTO
+    to.setPersonUUID(personUUID)
+    to.setFullName(fullName)
+    to.setUsername(username)
     to
   }
   

@@ -2,10 +2,12 @@ package kornell.gui.client.presentation.course.generic.details;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -15,6 +17,7 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
 public class CourseDetailsTOBuilder {
+	Logger logger = Logger.getLogger(AdminInstitutionPresenter.class.getName());
 	
 	private String jsonString;
 	private CourseDetailsTO courseDetailsTO;
@@ -44,7 +47,7 @@ public class CourseDetailsTOBuilder {
 	    jsonValue = JSONParser.parseStrict(jsonString);
 	
 		if ((jsonObject = jsonValue.isObject()) == null) {
-			GWT.log("Error parsing the JSON");
+			logger.warning("Error parsing the JSON");
 		}
 		boolean ret = true;
 		for (ParseType parseType : ParseType.values()) {
@@ -64,11 +67,11 @@ public class CourseDetailsTOBuilder {
 		JSONString certificationHeaderText;
 		
 		if (jsonValue == null) {
-			GWT.log("Error parsing the JSON");
+			logger.warning("Error parsing the JSON");
 			return false;
 		}
 		if ((jsonArray = jsonValue.isArray()) == null) {
-			GWT.log("Error parsing the JSON");
+			logger.warning("Error parsing the JSON");
 			return false;
 		}
 
@@ -80,18 +83,18 @@ public class CourseDetailsTOBuilder {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				jsonValue = jsonArray.get(i);
 				if ((jsonObject = jsonValue.isObject()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				jsonValue = jsonObject.get("type");
 				if ((type = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				
 				jsonValue = jsonObject.get("text");
 				if ((text = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}		
 				hints.add(new HintTO(type.stringValue(),text.stringValue()));
@@ -105,18 +108,18 @@ public class CourseDetailsTOBuilder {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				jsonValue = jsonArray.get(i);
 				if ((jsonObject = jsonValue.isObject()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				jsonValue = jsonObject.get("type");
 				if ((type = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				
 				jsonValue = jsonObject.get("text");
 				if ((text = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}		
 				infos.add(new InfoTO(type.stringValue(),text.stringValue()));
@@ -130,18 +133,18 @@ public class CourseDetailsTOBuilder {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				jsonValue = jsonArray.get(i);
 				if ((jsonObject = jsonValue.isObject()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				jsonValue = jsonObject.get("index");
 				if ((index = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				
 				jsonValue = jsonObject.get("title");
 				if ((title = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}		
 				topics.add(new TopicTO(index.stringValue(),title.stringValue(),"toStart"));
@@ -154,18 +157,18 @@ public class CourseDetailsTOBuilder {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				jsonValue = jsonArray.get(i);
 				if ((jsonObject = jsonValue.isObject()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				jsonValue = jsonObject.get("certificationHeaderTitle");
 				if ((certificationHeaderTitle = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				
 				jsonValue = jsonObject.get("certificationHeaderText");
 				if ((certificationHeaderText = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}		
 				courseDetailsTO.setCertificationHeaderInfoTO(new InfoTO(certificationHeaderTitle.stringValue(), certificationHeaderText.stringValue()));
@@ -178,24 +181,24 @@ public class CourseDetailsTOBuilder {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				jsonValue = jsonArray.get(i);
 				if ((jsonObject = jsonValue.isObject()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				jsonValue = jsonObject.get("type");
 				if ((type = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}
 				
 				jsonValue = jsonObject.get("name");
 				if ((title = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}	
 				
 				jsonValue = jsonObject.get("text");
 				if ((text = jsonValue.isString()) == null) {
-					GWT.log("Error parsing the JSON");
+					logger.warning("Error parsing the JSON");
 					return false;
 				}		
 				certifications.add(new CertificationTO(type.stringValue(),title.stringValue(),text.stringValue()));

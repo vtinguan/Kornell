@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.vitrine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -16,6 +17,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.profile.generic.GenericProfileView;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -27,6 +29,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Widget;
 
 public class VitrinePresenter implements VitrineView.Presenter {
+	Logger logger = Logger.getLogger(VitrinePresenter.class.getName());
 	private final ClientFactory clientFactory;
 	private VitrineView view;
 	private String passwordChangeUUID;
@@ -112,7 +115,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			}
 			@Override
 			protected void unauthorized(String errorMessage) {
-				GWT.log(this.getClass().getName() + " - " + errorMessage);
+				logger.severe(this.getClass().getName() + " - " + errorMessage);
 				view.setMessage("Usuário ou senha incorretos, por favor tente novamente.");
 				view.showMessage();
 			}
@@ -178,7 +181,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		final Callback<UserInfoTO> registrationCallback = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO user) {
-				GWT.log("User created");
+				logger.info("User created");
 				KornellNotification.show("Usuário criado com sucesso.", 2000);
 				view.displayView(VitrineViewType.login);
 				view.setEmail(view.getSuEmail());
@@ -232,7 +235,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 					@Override
 					public void unauthorized(String errorMessage) {
-						GWT.log(this.getClass().getName() + " - " + errorMessage);
+						logger.severe(this.getClass().getName() + " - " + errorMessage);
 						KornellNotification
 								.show("Não foi possivel fazer a requisição. Confira se o seu email foi digitado corretamente.",
 										AlertType.ERROR);
@@ -275,7 +278,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 						@Override
 						public void unauthorized(String errorMessage) {
-							GWT.log(this.getClass().getName() + " - " + errorMessage);
+							logger.severe(this.getClass().getName() + " - " + errorMessage);
 							KornellNotification
 									.show("Não foi possível alterar a senha. Verifique seu email ou faça uma nova requisição de alteração de senha.",
 											AlertType.ERROR, 8000);

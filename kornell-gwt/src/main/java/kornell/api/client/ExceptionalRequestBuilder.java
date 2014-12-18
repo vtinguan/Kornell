@@ -1,5 +1,7 @@
 package kornell.api.client;
 
+import java.util.logging.Logger;
+
 import kornell.core.event.EventFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -13,17 +15,18 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 public class ExceptionalRequestBuilder extends RequestBuilder {
+	static Logger logger = Logger.getLogger(ExceptionalRequestBuilder.class.getName());
 
 	protected static final RequestCallback NOOP = new RequestCallback() {
 
 		@Override
 		public void onResponseReceived(Request request, Response response) {
-			GWT.log("NOOP ResponseReceived");
+			logger.fine("NOOP ResponseReceived");
 		}
 
 		@Override
 		public void onError(Request request, Throwable exception) {
-			GWT.log("NOOP onError");
+			logger.fine("NOOP onError");
 		}
 	};
 
@@ -41,7 +44,7 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 	}
 
 	private Request handle(RequestException e) {
-		GWT.log(e.getMessage(), e);
+		logger.fine(e.getMessage());
 		// TODO: what Request should be returned?
 		return null;
 	}

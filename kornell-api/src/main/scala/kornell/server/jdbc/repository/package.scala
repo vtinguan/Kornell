@@ -24,6 +24,7 @@ import kornell.core.entity.RegistrationEnrollmentType
 import kornell.core.to.CourseVersionTO
 import kornell.core.entity.ChatThreadParticipant
 import kornell.core.entity.ChatThread
+import kornell.core.entity.BillingType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -49,7 +50,8 @@ package object repository {
         rs.getBoolean("allowRegistration"),
         rs.getBoolean("allowRegistrationByUsername"),
         rs.getDate("activatedAt"),
-        rs.getString("skin"))   
+        rs.getString("skin"),
+        BillingType.valueOf(rs.getString("billingType")))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 

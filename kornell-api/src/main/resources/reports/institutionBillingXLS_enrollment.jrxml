@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1550" pageHeight="842" columnWidth="1550" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+	<property name="ireport.zoom" value="1.2396694214876034"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="institutionName" class="java.lang.String"/>
+	<parameter name="periodStart" class="java.lang.String"/>
+	<parameter name="periodEnd" class="java.lang.String"/>
+	<field name="enrollmentUUID" class="java.lang.String"/>
+	<field name="courseTitle" class="java.lang.String"/>
+	<field name="courseVersionName" class="java.lang.String"/>
+	<field name="courseClassName" class="java.lang.String"/>
+	<field name="fullName" class="java.lang.String"/>
+	<field name="username" class="java.lang.String"/>
+	<title>
+		<band height="67">
+			<textField>
+				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" mode="Transparent" x="0" y="0" width="550" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Relatório dos Acessos da Instituição: " + $P{institutionName}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="69d298e4-fc42-403d-a5d3-c37b4694cedb" x="0" y="20" width="550" height="13" forecolor="#808080"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Perído: de " + $P{periodStart}.split(" ")[0].split("T")[0] + " a " + $P{periodEnd}.split(" ")[0].split("T")[0] + "                        Gerado em: " + new SimpleDateFormat("yyyy-MM-dd", new Locale("pt","BR")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="0" y="36" width="210" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ VISÃO DETALHADA ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6819443a-52ef-4e41-8188-1e833724fde1" mode="Opaque" x="1050" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[NOME DO ALUNO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="46cc137d-88a7-4f81-846d-eb964d193747" mode="Opaque" x="1300" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[USUÁRIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bbf5a753-398a-417d-9a4c-367edbe69617" mode="Opaque" x="0" y="52" width="50" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="50379234-234e-40a2-baff-7a2d409c955b" mode="Opaque" x="50" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ID DA MATRÍCULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="37ef78a5-15a1-4967-ad2b-eabe72e63f8a" mode="Opaque" x="300" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[NOME DO CURSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b789ac0-5462-4e69-8dc9-8610d85f5c49" mode="Opaque" x="550" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[NOME DA VERSÃO DO CURSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0c62d5e8-cccb-4104-983a-c1ba7d799594" mode="Opaque" x="800" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[NOME DA TURMA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="12">
+			<textField>
+				<reportElement uuid="7b168eb2-8cdb-4e75-9286-9ab667be349c" x="1050" y="0" width="250" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ae1db390-f27c-45ac-8675-852637fedff1" x="1300" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="386d3ffd-7b92-4b42-8238-98e520577ad5" x="0" y="0" width="50" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="02735b08-9abd-445a-8f52-b577d6c46c28" x="50" y="0" width="250" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{enrollmentUUID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5dc3f5ca-0641-4a20-98b2-e21d4873e404" x="300" y="0" width="250" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="272b4699-1849-4e1e-82b4-14c99c7902c6" x="550" y="0" width="250" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseVersionName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c742540d-574a-48b9-9cae-65bbb4d1df2e" x="800" y="0" width="250" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseClassName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

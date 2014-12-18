@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.admin.courseversion.courseversion;
 
+import java.util.logging.Logger;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseVersion;
@@ -7,6 +9,7 @@ import kornell.core.entity.EntityFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPresenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
@@ -19,6 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class AdminCourseVersionPresenter implements AdminCourseVersionView.Presenter {
+	Logger logger = Logger.getLogger(AdminCourseVersionPresenter.class.getName());
 	private AdminCourseVersionView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private KornellSession session;
@@ -47,7 +51,7 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 			view.setPresenter(this);      
 			view.init();
 		} else {
-			GWT.log("Hey, only admins are allowed to see this! "
+			logger.warning("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}

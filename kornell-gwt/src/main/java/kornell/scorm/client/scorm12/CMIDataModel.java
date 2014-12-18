@@ -27,7 +27,7 @@ public class CMIDataModel extends CMICoreModel {
 
 	public String getValue(String elementKey) {
 		if (elementKey == null) {
-			GWT.log("!!! Null Element !!!");
+			logger.severe("!!! Null Element !!!");
 			throw new NullPointerException(
 					"Data model element can not be null.");
 		}
@@ -61,7 +61,7 @@ public class CMIDataModel extends CMICoreModel {
 				RegExp regExp = RegExp.compile(key);
 				MatchResult matcher = regExp.exec(elementKey);
 				boolean matchFound = (matcher != null);
-				//GWT.log("Matching (" + elementKey + ") against (" + key+ ") = " + matchFound);
+				//logger.info("Matching (" + elementKey + ") against (" + key+ ") = " + matchFound);
 				if (matchFound) {
 					element = entry.getValue();
 				}
@@ -84,7 +84,7 @@ public class CMIDataModel extends CMICoreModel {
 			@Override
 			public void ok(ActomEntries to) {
 				if (onSet != null) {
-					GWT.log("Executing onSet action for [" + element.getKey()
+					logger.info("Executing onSet action for [" + element.getKey()
 							+ "]");
 					onSet.execute(bus);
 				}

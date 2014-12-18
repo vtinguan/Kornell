@@ -1,9 +1,11 @@
 package kornell.gui.client.sequence;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.api.client.RESTClient;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class PrefetchSequencer implements Sequencer {
+	Logger logger = Logger.getLogger(PrefetchSequencer.class.getName());
 	private FlowPanel contentPanel;
 	private String enrollmentUUID;
 	private KornellSession session;
@@ -91,10 +94,8 @@ public class PrefetchSequencer implements Sequencer {
 		String currString = currentKey() + currVis();
 		String nextString = nextKey() + nextVis();
 
-		// TODO: Use GWT Logging properly
-		// GWT.log(event + " " + currentIndex + " [" + prevString + " | " +
-		// currString + " | " + nextString + "]");
-
+		logger.finer(event + " " + currentIndex + " [" + prevString + " | " +
+				currString + " | " + nextString + "]");
 	}
 
 	private String nextVis() {
@@ -143,7 +144,7 @@ public class PrefetchSequencer implements Sequencer {
 		if (currentUidget != null)
 			currentUidget.setVisible(true);
 		else
-			GWT.log("CURRENT UIDGET IS NULL. HOW COME?");
+			logger.warning("CURRENT UIDGET IS NULL. HOW COME?");
 		if (nextUidget != null)
 			nextUidget.setVisible(false);
 		if (prevUidget != null)

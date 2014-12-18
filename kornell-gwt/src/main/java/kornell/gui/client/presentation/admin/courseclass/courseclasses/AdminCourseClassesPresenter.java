@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -28,6 +29,7 @@ import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -44,6 +46,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AdminCourseClassesPresenter implements AdminCourseClassesView.Presenter {
+	Logger logger = Logger.getLogger(AdminCourseClassesPresenter.class.getName());
 	private AdminCourseClassesView view;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private List<EnrollmentTO> enrollmentTOs;
@@ -92,7 +95,7 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
       updateCourseClass(selectedCourseClass);
       
 		} else {
-			GWT.log("Hey, only admins are allowed to see this! "
+			logger.warning("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}

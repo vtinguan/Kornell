@@ -462,6 +462,11 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		presenter.onAddEnrollmentButtonClicked(txtFullName.getText(), txtEmail.getText());
 	}
 
+	@UiHandler("btnAddEnrollmentBatch")
+	void doLogin(ClickEvent e) {
+		presenter.onAddEnrollmentBatchButtonClicked(txtAddEnrollmentBatch.getText());
+	}
+
 	@Override
 	public void setModalErrors(String title, String lbl1, String errors, String lbl2) {
 		errorModal.setTitle(title);
@@ -810,5 +815,12 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	  totalCount = event.isIncrement() ? totalCount + event.getCountChange() : totalCount - event.getCountChange();
 	  updateMessagesTabHeading();
 	}
+
+	@Override
+  public void clearEnrollmentFields() {
+	  txtFullName.setValue("");
+		txtEmail.setValue("");
+		txtAddEnrollmentBatch.setValue("");	  
+  }
 
 }

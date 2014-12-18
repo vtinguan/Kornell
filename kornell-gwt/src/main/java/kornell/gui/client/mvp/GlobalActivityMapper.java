@@ -52,10 +52,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 	}
 
 	/** TODO: This may suck fast */
-	public void getActivity(final Place place,
-			final ActivityCallbackHandler activityCallbackHandler) {
-		GWT.log("GlobalActivityMapper " + place.toString());
-		
+	public void getActivity(final Place place, final ActivityCallbackHandler activityCallbackHandler) {
 		if(!clientFactory.getKornellSession().isAuthenticated() || place instanceof VitrinePlace){
 			activityCallbackHandler.onReceiveActivity(new VitrineActivity((VitrinePlace) place, clientFactory));
 		} else if (place instanceof HomePlace) {

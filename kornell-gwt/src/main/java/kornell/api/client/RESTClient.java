@@ -2,12 +2,17 @@ package kornell.api.client;
 
 import static kornell.core.util.StringUtils.composeURL;
 import static kornell.core.util.StringUtils.isSome;
+
+import java.util.logging.Logger;
+
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.http.client.RequestBuilder;
 
 public class RESTClient {
+	
+	Logger logger = Logger.getLogger(RESTClient.class.getName());
 	
 	private String apiURL = "/api";
 	

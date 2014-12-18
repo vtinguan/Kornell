@@ -22,6 +22,7 @@ import kornell.core.entity.RoleType
 import kornell.core.util.TimeUtil
 import kornell.server.util.ValueFactory
 import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.BillingType
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -144,7 +145,7 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, activatedAt: Date, skin: String) = {
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, activatedAt: Date, skin: String, billingType: BillingType) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -159,6 +160,7 @@ object Entities {
     i.setAllowRegistrationByUsername(allowRegistrationByUsername)
     i.setActivatedAt(activatedAt)
     i.setSkin(skin)
+    i.setBillingType(billingType)
     i
   }
 
