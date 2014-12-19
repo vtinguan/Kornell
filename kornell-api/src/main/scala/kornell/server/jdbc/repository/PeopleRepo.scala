@@ -15,16 +15,19 @@ import kornell.server.jdbc.PreparedStmt
 import scala.language.implicitConversions
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.inject.Instance
+import javax.inject.Inject
 
 //TODO: Urgent: Cache
 @ApplicationScoped
-class PeopleRepo (
-    val personRepoBean:Instance[PersonRepo] ) 
-    {
-  
+class PeopleRepo @Inject() (
+    val personRepoBean:Instance[PersonRepo] ) {
   def this() = this(null)
  
-  def byUUID(uuid:String) =  personRepoBean.get.withUUID(uuid)
+  def byUUID(uuid:String) =  {    
+    val personRepo = personRepoBean.get
+    logger.fine(s"***Setting ${personRepo.uuid} to ${uuid}") 
+    personRepo.withUUID(uuid)
+  }
   
   implicit def toString(rs: ResultSet): String = rs.getString(1)
 

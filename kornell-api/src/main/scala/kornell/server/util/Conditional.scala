@@ -1,6 +1,7 @@
 package kornell.server.util
 import scala.language.postfixOps
 import scala.language.implicitConversions
+import java.lang.Boolean
 
 trait Err extends Throwable
 case class StringErr(val e: String) extends Err
@@ -20,7 +21,7 @@ class Passed[T](expr: => T) extends Conditional[T] {
   def get: T = expr
   def err: Err = throw new IllegalStateException("cannot err passed")
   def requiring(newcond: => Boolean, err: => Err): Conditional[T] =
-    if (newcond) this else new Failed(expr, err)
+    if (Boolean.TRUE.equals(newcond)) this else new Failed(expr, err)
 
   def or(newcond: => Boolean, e: => Err): Conditional[T] =
     this

@@ -61,6 +61,7 @@ class InstitutionsRepo() {
     | ${institution.getActivatedAt},
     | ${institution.getSkin},
     | ${institution.getBillingType.toString})""".executeUpdate
+    logger.fine(s"Created Institution[${institution.getUUID}]")
     institution
   }
 

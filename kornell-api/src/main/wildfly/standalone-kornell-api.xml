@@ -130,8 +130,11 @@
                     <handler name="KNL_HANDLER"/>
                 </handlers>
             </logger>
-            <logger category="kornell.server.jdbc" use-parent-handlers="true">
-                <level name="INFO"/>
+            <logger category="kornell.server.jdbc.repository" use-parent-handlers="true">
+                <level name="FINER"/>
+                <handlers>
+                    <handler name="KNL_HANDLER"/>
+                </handlers>
             </logger>
             <root-logger>
                 <level name="INFO"/>

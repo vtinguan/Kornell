@@ -17,7 +17,6 @@ class TestCourseProducer @Inject() (
   extends Producer {
 
   @Produces
-  @ApplicationScoped
   def course = csRepo.create(uuid = randUUID,
     code = randStr(5),
     institutionUUID = itt.getUUID)

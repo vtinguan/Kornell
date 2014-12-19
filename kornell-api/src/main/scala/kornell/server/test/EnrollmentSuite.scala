@@ -17,42 +17,33 @@ import kornell.server.api.EnrollmentResource
 import javax.enterprise.inject.Instance
 import kornell.server.cdi.EmailCourseClass
 import kornell.core.entity.CourseClass
+import kornell.core.entity.Person
+import kornell.server.test.producers.CourseVersionMocks
+import org.junit.BeforeClass
+import org.junit.AfterClass
+import kornell.server.helper.Generator
 
 @RunWith(classOf[Arquillian])
-class EnrollmentSuite
-  extends JUnitSuite
- // with GenPlatformAdmin
- // with GenInstitutionAdmin
- // with GenCourseClass 
-  {
+class EnrollmentSuite extends KornellSuite {
 
   @Inject
-  var enrollmentsRepo:EnrollmentsRepo = _
-  
+  var enrollmentsRepo: EnrollmentsRepo = _
+
   @Inject
-  var enrollmentRepo:EnrollmentsRepo = _
-  
+  var enrollmentRepo: EnrollmentsRepo = _
+
   @Inject
   var enrollmentRes: EnrollmentResource = _
-  
-  @Inject @EmailCourseClass
-  var emailCourseClassBean:Instance[CourseClass] = _
-  
 
-  @Test def NotesShouldBersistWithEnrollment {
-   val courseClass = emailCourseClassBean.get
-   val courseClass2 = emailCourseClassBean.get
-   println("CHECK")
-   // val person = newPerson
-   // val x = "NEW NOTES"
-   // val enrollment = enrollmentsRepo.create(
-   //   Entities.newEnrollment(randUUID, null, courseClass.getUUID, person.getUUID, null, "", EnrollmentState.requested, null, null, null, null, null))
-   // enrollment.setNotes(x)
-   // val newEnrollment = enrollmentRes.update(enrollment)
-   //  assertEquals(x,newEnrollment.getNotes)
+  @Inject
+  var mocks: CourseVersionMocks = _
+
+  @Test def NotesShouldPersistWithEnrollment = runAs(mocks.student) {
+    val notes = randStr
+    mocks.enrollment.setNotes(notes)
+    val updatedEnroll = enrollmentRes.update(mocks.enrollment)
+    assertEquals(notes, updatedEnroll.getNotes)
   }
-  
-  //	with UnitSpec 
 
   /*
   
@@ -86,8 +77,4 @@ class EnrollmentSuite
     
   } 
 */
-}
-
-object EnrollmentSuite {
-
 }

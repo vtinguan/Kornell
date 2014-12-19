@@ -57,6 +57,7 @@ class CourseVersionsRepo {
 	    | ${courseVersion.getDistributionPrefix},
 	    | ${if (courseVersion.getContentSpec != null) courseVersion.getContentSpec.toString else ""},
 	    | ${courseVersion.isDisabled})""".executeUpdate
+	    logger.fine(s"Created CourseVersion[${courseVersion.getUUID}]")
       courseVersion
     } else {
       throw new IllegalArgumentException("Uma versão com nome \"" + courseVersion.getName + "\" já existe para esse curso.")

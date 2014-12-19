@@ -16,7 +16,6 @@ class TestInstitutionProducer @Inject() (
   extends Producer {
 
   @Produces
-  @ApplicationScoped
   def institution: Institution = ittsRepo.create(uuid = randUUID,
     name = randName,
     baseURL = randURL,

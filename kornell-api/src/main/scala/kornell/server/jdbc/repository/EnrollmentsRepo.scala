@@ -9,6 +9,10 @@ import kornell.core.to.EnrollmentTO
 import kornell.core.to.EnrollmentsTO
 import kornell.server.repository.TOs
 import javax.enterprise.context.ApplicationScoped
+import kornell.server.repository.Entities
+import kornell.core.entity.Assessment
+import java.util.Date
+import java.math.BigDecimal
 
 @ApplicationScoped
 class EnrollmentsRepo {
@@ -52,6 +56,15 @@ class EnrollmentsRepo {
     ORDER BY e.state desc, p.fullName, p.email
 	    """.map[EnrollmentTO](toEnrollmentTO)
 
+  def createEnrollment(uuid: String = randUUID, 
+      enrolledOn: Date = null,
+    courseClassUUID: String, personUUID: String,
+    progress: Integer = 0, notes: String = null,
+    state: EnrollmentState, lastProgressUpdate: String = null,
+    assessment: Assessment = null, lastAssessmentUpdate: String = null,
+    assessmentScore: BigDecimal = null, certifiedAt: String = null):Enrollment = 
+      create(Entities.newEnrollment(uuid, enrolledOn, courseClassUUID, personUUID, progress, notes, state, lastProgressUpdate, assessment, lastAssessmentUpdate, assessmentScore, certifiedAt))	    
+	    
   def create(enrollment: Enrollment) = {
     if (enrollment.getUUID == null)
       enrollment.setUUID(randomUUID)

@@ -33,7 +33,7 @@ class PersonRepo @Inject()(
   
   def setPassword(institutionUUID: String, username: String, password: String): PersonRepo = {
     authRepo.setPlainPassword(institutionUUID, uuid, username, password)
-    PersonRepo.this
+    this
   }  
 
   
