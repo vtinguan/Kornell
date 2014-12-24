@@ -14,19 +14,21 @@ import kornell.core.to.CourseVersionTO
 import javax.enterprise.context.Dependent
 import kornell.server.util.Identifiable
 import kornell.server.jdbc.repository.PeopleRepo
+import kornell.server.auth.Authorizator
 
 @Dependent
 class CourseVersionResource(
+  val auth:Authorizator,
   val peopleRepo: PeopleRepo) extends Identifiable {
-  def this() = this(null)
+  def this() = this(null,null)
 
   //Should be TO cause the UI needs Course
   @GET
   @Produces(Array(CourseVersionTO.TYPE))
   def get: CourseVersionTO = {
     CourseVersionRepo(uuid).getWithCourse
-  }.requiring(isPlatformAdmin, RequirementNotMet)
-    .or(isInstitutionAdmin(peopleRepo.byUUID(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+  }.requiring(auth.isPlatformAdmin, RequirementNotMet)
+    .or(auth.isInstitutionAdmin(peopleRepo.byUUID(auth.getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
     .get
 
   @PUT
@@ -34,7 +36,7 @@ class CourseVersionResource(
   @Produces(Array(CourseVersion.TYPE))
   def update(courseVersion: CourseVersion) = {
     CourseVersionRepo(uuid).update(courseVersion)
-  }.requiring(isPlatformAdmin, RequirementNotMet)
-    .or(isInstitutionAdmin(peopleRepo.byUUID(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+  }.requiring(auth.isPlatformAdmin, RequirementNotMet)
+    .or(auth.isInstitutionAdmin(peopleRepo.byUUID(auth.getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
     .get
 }

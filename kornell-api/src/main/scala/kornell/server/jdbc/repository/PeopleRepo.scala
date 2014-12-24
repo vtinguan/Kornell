@@ -20,19 +20,16 @@ import javax.inject.Inject
 //TODO: Urgent: Cache
 @ApplicationScoped
 class PeopleRepo @Inject() (
-    val personRepoBean:Instance[PersonRepo] ) {
+  val personRepoBean: Instance[PersonRepo]) {
   def this() = this(null)
- 
-  def byUUID(uuid:String) =  {    
-    val personRepo = personRepoBean.get
-    logger.fine(s"***Setting ${personRepo.uuid} to ${uuid}") 
-    personRepo.withUUID(uuid)
-  }
-  
+
+  def byUUID(uuid: String) =
+    personRepoBean.get.withUUID(uuid)
+
   implicit def toString(rs: ResultSet): String = rs.getString(1)
 
   type InstitutionKey = (String, String)
-  
+
   val usernameLoader = new CacheLoader[InstitutionKey, Option[Person]]() {
     override def load(instKey: InstitutionKey): Option[Person] = lookupByUsername(instKey._1, instKey._2)
   }
@@ -91,15 +88,15 @@ class PeopleRepo @Inject() (
 
   def get(institutionUUID: String, any: String): Option[Person] = get(institutionUUID, any, any, any)
 
-  def get(institutionUUID: String, cpf: String, email: String): Option[Person] = 
+  def get(institutionUUID: String, cpf: String, email: String): Option[Person] =
     getByUsername(institutionUUID, {
-      if(cpf == null)
-      	cpf
+      if (cpf == null)
+        cpf
       else
         email
     })
-    .orElse(getByCPF(institutionUUID, cpf))
-    .orElse(getByEmail(institutionUUID, email))
+      .orElse(getByCPF(institutionUUID, cpf))
+      .orElse(getByEmail(institutionUUID, email))
 
   def get(institutionUUID: String, username: String, cpf: String, email: String): Option[Person] =
     getByUsername(institutionUUID, username)
@@ -123,9 +120,9 @@ class PeopleRepo @Inject() (
 
   def createPerson(institutionUUID: String = null, email: String = null, fullName: String = null, cpf: String = null): Person =
     create(Entities.newPerson(institutionUUID = institutionUUID,
-        fullName = fullName,
-	      email = email,
-	      cpf = cpf))
+      fullName = fullName,
+      email = email,
+      cpf = cpf))
 
   def createPersonCPF(institutionUUID: String, cpf: String, fullName: String): Person =
     create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf))
@@ -148,6 +145,7 @@ class PeopleRepo @Inject() (
 	             ${person.getInstitutionUUID})
     """.executeUpdate
     updateCaches(person)
+    logger.fine(s"Created Person[${person.getUUID()}]")
     person
   }
 
@@ -157,6 +155,5 @@ class PeopleRepo @Inject() (
     if (isSome(p.getCPF)) cpfCache.put((p.getInstitutionUUID, p.getCPF), op)
     if (isSome(p.getEmail)) emailCache.put((p.getInstitutionUUID, p.getEmail), op)
   }
-  
 
 }

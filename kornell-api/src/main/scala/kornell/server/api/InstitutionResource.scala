@@ -25,35 +25,37 @@ import kornell.server.util.Identifiable
 import javax.inject.Inject
 import javax.enterprise.context.Dependent
 import kornell.server.jdbc.repository.RolesRepo
+import kornell.server.auth.Authorizator
 
 @Dependent
-class InstitutionResource @Inject()(    
+class InstitutionResource @Inject()(   
+    val auth:Authorizator,
     val chatThreadsRepo:ChatThreadsRepo,
     val rolesRepo:RolesRepo)
   extends Identifiable {
   
-  def this() = this(null,null)
+  def this() = this(null,null,null)
 
   
   @GET
   @Produces(Array(Institution.TYPE))
   def get =  {
     InstitutionRepo(uuid).get
-   }.requiring(isPlatformAdmin, AccessDeniedErr()).get
+   }.requiring(auth.isPlatformAdmin, AccessDeniedErr()).get
   
   @PUT
   @Consumes(Array(Institution.TYPE))
   @Produces(Array(Institution.TYPE))
   def update(institution: Institution) = {
     InstitutionRepo(uuid).update(institution)
-  }.requiring(isPlatformAdmin, RequirementNotMet).get
+  }.requiring(auth.isPlatformAdmin, RequirementNotMet).get
   
   @GET
   @Produces(Array(InstitutionRegistrationPrefixesTO.TYPE))
   @Path("registrationPrefixes")
   def getRegistrationPrefixes() = {
     InstitutionRepo(uuid).getRegistrationPrefixes
-  }.requiring(isPlatformAdmin, RequirementNotMet).get
+  }.requiring(auth.isPlatformAdmin, RequirementNotMet).get
   
   @PUT
   @Consumes(Array(Roles.TYPE))
@@ -63,7 +65,7 @@ class InstitutionResource @Inject()(
         val r = rolesRepo.updateInstitutionAdmins(uuid, roles)
         chatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid)
         r
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
    .get
 
   @GET
@@ -71,7 +73,7 @@ class InstitutionResource @Inject()(
   @Path("admins")
   def getAdmins(@QueryParam("bind") bindMode:String) = {
         rolesRepo.getInstitutionAdmins(uuid, bindMode)
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
    .get
    
   @PUT
@@ -80,7 +82,7 @@ class InstitutionResource @Inject()(
   @Path("hostnames")
   def updateHostnames(hostnames: InstitutionHostNamesTO) = {
       InstitutionHostNameRepo(uuid).updateHostnames(hostnames)
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
    .get
 
   @GET
@@ -88,6 +90,6 @@ class InstitutionResource @Inject()(
   @Path("hostnames")
   def getHostnames() = {
         InstitutionHostNameRepo(uuid).get
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
    .get
 }

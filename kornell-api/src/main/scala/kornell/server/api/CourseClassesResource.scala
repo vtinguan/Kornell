@@ -28,14 +28,16 @@ import kornell.core.entity.RegistrationEnrollmentType
 import kornell.core.entity.CourseClassState
 import java.util.Date
 import java.math.BigDecimal
+import kornell.server.auth.Authorizator
 
 @Path("courseClasses")
 class CourseClassesResource @Inject() (
+  val auth:Authorizator,
   val authRepo: AuthRepo,
   val courseClassesRepo: CourseClassesRepo,
   val courseClassResourceBean: Instance[CourseClassResource]) {
 
-  def this() = this(null, null, null)
+  def this() = this(null, null, null,null)
 
   def create(uuid: String = null,
     name: String = null,
@@ -66,8 +68,8 @@ class CourseClassesResource @Inject() (
   @Produces(Array(CourseClass.TYPE))
   def create(courseClass: CourseClass) = {
     courseClassesRepo.create(courseClass)
-  }.requiring(isPlatformAdmin, UserNotInRole)
-    .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
+  }.requiring(auth.isPlatformAdmin, UserNotInRole)
+    .or(auth.isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
     .get
 
   @Path("{uuid}")

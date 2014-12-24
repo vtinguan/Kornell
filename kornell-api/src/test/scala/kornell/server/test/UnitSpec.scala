@@ -9,10 +9,10 @@ import scala.util.Random
 import java.util.UUID
 import kornell.server.jdbc.Migration
 import org.scalatest.BeforeAndAfter
-import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.server.auth.ThreadLocalAuthenticator
 import kornell.server.jdbc.SQL._
 import kornell.server.helper.Generator
-import kornell.core.util.StringUtils
+
 
 class UnitSpec extends FlatSpec
   with Matchers

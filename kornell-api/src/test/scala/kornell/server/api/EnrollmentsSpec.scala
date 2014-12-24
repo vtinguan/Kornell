@@ -1,25 +1,10 @@
 package kornell.server.api
 
-import java.util.ArrayList
-import org.junit.runner.RunWith
-import kornell.core.to.EnrollmentRequestTO
-import kornell.server.helper.SimpleInstitution
-import kornell.server.jdbc.repository.EnrollmentsRepo
-import kornell.server.repository.TOs
-import kornell.server.test.UnitSpec
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.junit.JUnitRunner
-import kornell.server.helper.GenInstitution
-import kornell.server.helper.GenPlatformAdmin
-import kornell.server.helper.GenCourseClass
 import scala.collection.JavaConverters._
-import kornell.server.helper.GenInstitutionAdmin
-import kornell.core.entity.RegistrationEnrollmentType
-import kornell.core.entity.EnrollmentState
-import kornell.server.jdbc.repository.EnrollmentRepo
-import kornell.server.repository.Entities
-import kornell.server.util.RequirementNotMet
-import kornell.server.jdbc.repository.EnrollmentsRepo
+
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class EnrollmentsSpec{/* 

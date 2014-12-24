@@ -1,22 +1,9 @@
 package kornell.server.api
 
-import org.junit.runner.RunWith
-import javax.ws.rs.Consumes
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import kornell.server.helper.GenInstitutionAdmin
-import kornell.server.helper.GenPlatformAdmin
-import kornell.server.repository.Entities
-import kornell.server.test.UnitSpec
-import kornell.server.util.AccessDeniedErr
-import kornell.server.util.RequirementNotMet
-import org.scalatest.junit.JUnitRunner
-import kornell.server.util.KornellErr
 import scala.collection.JavaConverters._
-import kornell.server.repository.TOs
+
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
 //TODO need tests for GET/PUT hostnames
 @RunWith(classOf[JUnitRunner])

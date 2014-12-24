@@ -1,12 +1,7 @@
 package kornell.server.api
 
 import org.junit.runner.RunWith
-import kornell.server.helper.GenInstitutionAdmin
-import kornell.server.test.UnitSpec
 import org.scalatest.junit.JUnitRunner
-import kornell.server.helper.GenPlatformAdmin
-import kornell.server.repository.Entities
-import kornell.server.util.RequirementNotMet
 
 @RunWith(classOf[JUnitRunner])
 class CourseSpec  {/*extends UnitSpec 

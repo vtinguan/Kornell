@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='UTF-8'?>
 
 <server xmlns="urn:jboss:domain:2.1">
 
@@ -125,7 +125,13 @@
                 <level name="ERROR"/>
             </logger>
             <logger category="kornell.server.test" use-parent-handlers="false">
-                <level name="ALL"/>
+                <level name="FINEST"/>
+                <handlers>
+                    <handler name="KNL_HANDLER"/>
+                </handlers>
+            </logger>
+            <logger category="kornell.server.auth" use-parent-handlers="false">
+                <level name="FINEST"/>
                 <handlers>
                     <handler name="KNL_HANDLER"/>
                 </handlers>

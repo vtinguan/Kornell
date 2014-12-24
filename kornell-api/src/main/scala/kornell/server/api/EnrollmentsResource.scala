@@ -32,11 +32,13 @@ import kornell.core.to.EnrollmentsTO
 import javax.enterprise.inject.Instance
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.server.auth.Authorizator
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
 @ApplicationScoped
 class EnrollmentsResource @Inject() (
+    val auth:Authorizator,
 	 //val cms:ContentManagers,
 	 //val s12pms:SCORM12PackageManagers,
 	 //val enrollmentSEP:EnrollmentSEP,
@@ -50,7 +52,7 @@ class EnrollmentsResource @Inject() (
 	 val authRepo:AuthRepo
   ) {
   
-  def this() = this(null,null,null,null,null,null)
+  def this() = this(null,null,null,null,null,null,null)
 
   @Path("{uuid}")
   def get(@PathParam("uuid") uuid: String): EnrollmentResource = 
@@ -61,7 +63,7 @@ class EnrollmentsResource @Inject() (
   @Produces(Array(Enrollment.TYPE))
   def create(enrollment: Enrollment) = {
       enrollmentsRepo.create(enrollment)
-  }.requiring(peopleRepo.byUUID(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  RequirementNotMet )
+  }.requiring(peopleRepo.byUUID(auth.getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  RequirementNotMet )
   .requiring(courseClassesRepo.byUUID(enrollment.getCourseClassUUID()).get.isPublicClass() == true, RequirementNotMet)
   .requiring(enrollment.getState.equals(EnrollmentState.requested), RequirementNotMet)
   .get

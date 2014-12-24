@@ -77,6 +77,7 @@ class PersonRepo @Inject()(
     result
   }
 
+  //TODO: Review This Method
   def hasPowerOver(targetPersonUUID: String) = {
     val actorRoles = authRepo.rolesOf(uuid)
     val actorRolesSet = (Set.empty ++ actorRoles).asJava

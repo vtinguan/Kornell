@@ -1,30 +1,28 @@
 package kornell.server.jdbc.repository
 
-import scala.language.implicitConversions
 import java.sql.ResultSet
 import java.util.concurrent.TimeUnit.MINUTES
 import scala.collection.JavaConverters.setAsJavaSetConverter
+import scala.language.implicitConversions
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response
 import kornell.core.entity.Person
 import kornell.core.entity.Role
-import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.core.entity.RoleType
+import kornell.server.auth.ThreadLocalAuthenticator
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities.newPerson
 import kornell.server.util.SHA256
-import scala.util.Try
-import kornell.core.entity.RoleType
+import kornell.server.repository.Entities
 
 //TODO: URGENT: FIX CACHING
 class AuthRepo(
-   val peopleRepo:PeopleRepo) {
+  val peopleRepo: PeopleRepo) {
 
   def this() = this(null)
-  
-  val AUTH_CACHE_SIZE = 300;
- 
 
- 
+  val AUTH_CACHE_SIZE = 300;
+
   case class CredentialsNotFound() extends Exception
 
   def lookup(institutionUUID: String, userkey: String, password: String): Option[String] =
@@ -34,7 +32,6 @@ class AuthRepo(
 
   type UsrPwd = (String, String, String)
   type PersonUUID = String
-
 
   def authByEmail(institutionUUID: String, email: String, password: String) = sql"""
    select person_uuid 
@@ -62,7 +59,6 @@ class AuthRepo(
     		and institutionUUID=${institutionUUID}
     """.first[String]
 
-
   def lookupUserRoles(personUUID: Option[String]) = {
     val roles = personUUID
       .map { lookupRolesOf }
@@ -77,21 +73,23 @@ class AuthRepo(
     username
   }
 
+  
   def lookupRolesOf(personUUID: String): Set[Role] = sql"""
   	select r.person_uuid, r.role, r.institution_uuid, r.course_class_uuid 
   	from Role r
   	where person_uuid = $personUUID
-  """.map[Role] { rs => toRole(rs) }
-  	 .toSet
+  """.map[Role]
+    .toSet
 
-  	 
-  
-  
   def authenticate(institutionUUID: String, userkey: String, password: String): Option[String] = ???
 
-  def getUserRoles:java.util.Set[Role] = userRoles().asJava
+  def getUserRoles: java.util.Set[Role] = userRoles().asJava
 
-  def userRoles(personUUID: Option[String]): Set[Role] = ???
+  def userRoles(personUUID: Option[String]): Set[Role] ={ 
+    val roles = personUUID.map(lookupRolesOf(_)).getOrElse(Set.empty)
+    logger.info(s"*** ROLES OF $personUUID = $roles")
+    roles
+  }
 
   def userRoles(): Set[Role] = userRoles(ThreadLocalAuthenticator.getAuthenticatedPersonUUID)
 
@@ -99,7 +97,7 @@ class AuthRepo(
     val personUUID = ThreadLocalAuthenticator.getAuthenticatedPersonUUID
     personUUID match {
       case Some(personUUID) => {
-        val person:Option[Person] = peopleRepo.byUUID(personUUID).first
+        val person: Option[Person] = peopleRepo.byUUID(personUUID).first
         person match {
           case Some(one) => fun(one)
           case None => throw new IllegalArgumentException(s"Person [$personUUID] not found.")
@@ -157,8 +155,8 @@ class AuthRepo(
 	    	${null})
 		    """.executeUpdate
   }
-  
-  def grantInstitutionAdmin(personUUID:String,institutionUUID:String) = 
+
+  def grantInstitutionAdmin(personUUID: String, institutionUUID: String) = {
     sql"""
 	    	insert into Role (uuid, person_uuid, role, institution_uuid, course_class_uuid)
 	    	values (${randomUUID}, 
@@ -166,5 +164,7 @@ class AuthRepo(
 	    	${RoleType.institutionAdmin.toString}, 
 	    	${institutionUUID}, 
 	    	${null} )
-		    """.executeUpdate  
+		    """.executeUpdate
+   println(s"Granted InstitutionAdmin[$institutionUUID] to Person[$personUUID]")
+  }
 }

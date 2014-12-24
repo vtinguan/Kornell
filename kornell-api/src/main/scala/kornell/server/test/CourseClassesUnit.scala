@@ -1,26 +1,12 @@
-package kornell.server.api
+package kornell.server.test
 
 import org.junit.runner.RunWith
-import kornell.core.entity.CourseClass
-import kornell.server.helper.SimpleInstitution
-import kornell.server.test.UnitSpec
-import org.scalatest.junit.JUnitRunner
-import kornell.server.jdbc.repository.CourseClassesRepo
-import kornell.server.helper.GenPlatformAdmin
-import kornell.server.helper.GenCourseClass
-import kornell.server.helper.GenInstitutionAdmin
-import kornell.core.util.StringUtils
-import kornell.server.repository.Entities
-import kornell.core.entity.RegistrationEnrollmentType
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
+import org.jboss.arquillian.junit.Arquillian
  
 
-@RunWith(classOf[JUnitRunner])
-class TODO  {/* CourseClassesSpec extends UnitSpec 
-	with GenPlatformAdmin
-	with GenInstitutionAdmin
-	with GenCourseClass { 
- 
+@RunWith(classOf[Arquillian])
+class  CourseClassesSuite  { 
+ /*
   "The platformAdmin" should "be able to create a class" in asPlatformAdmin {
   	newCourseClassEmail.getUUID.size should be > 0
   }

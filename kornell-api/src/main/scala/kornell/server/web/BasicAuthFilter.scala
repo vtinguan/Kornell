@@ -10,9 +10,9 @@ import kornell.core.util.StringUtils
 import kornell.server.jdbc.SQL._
 import kornell.server.util.SHA256
 import java.sql.ResultSet
-import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.AuthRepo
 import javax.inject.Inject
+import kornell.server.auth.ThreadLocalAuthenticator
 
 class BasicAuthFilter extends Filter {
   @Inject var authRepo:AuthRepo = _

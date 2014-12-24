@@ -13,7 +13,6 @@ import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Assessment
 import kornell.core.entity.Enrollment
-import kornell.core.lom.Contents
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassRepo
@@ -21,7 +20,6 @@ import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.Err
-import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.util.RequirementNotMet
 import kornell.server.repository.TOs
 import kornell.core.to.ActionType
@@ -47,10 +45,12 @@ import kornell.server.util.Errors._
 import kornell.server.util.Identifiable
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.server.auth.Authorizator
 
 //TODO: Some may be unused
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource @Inject() (
+  val auth:Authorizator,
   val cms: ContentManagers,
   val scorm12pm: SCORM12PackageManagers,
   val enrollmentSEP: EnrollmentSEP,
@@ -60,7 +60,7 @@ class EnrollmentResource @Inject() (
   val peopleRepo: PeopleRepo)
   extends Identifiable {
 
-  def this() = this(null, null, null, null, null, null, null)
+  def this() = this(null,null, null, null, null, null, null, null)
 
   lazy val enrollment = enrollmentRepo.get(uuid)
 
@@ -75,9 +75,10 @@ class EnrollmentResource @Inject() (
   def update(enrollment: Enrollment) = {
     enrollmentRepo.update(enrollment)
   }.requiring({
-      val authUUID = getAuthenticatedPersonUUID
+      val authUUID = auth.getAuthenticatedPersonUUID
       val personRepo = peopleRepo.byUUID(authUUID)
       val hasPower = personRepo.hasPowerOver(enrollment.getPersonUUID)
+      println(s"HASPOWER $authUUID over ${enrollment.getPersonUUID} ? "+hasPower)
       hasPower
     }, RequirementNotMet)
     .get
@@ -96,9 +97,9 @@ class EnrollmentResource @Inject() (
     val enrollment = enrollmentRepo.get(uuid)
     enrollmentRepo.delete(uuid)
     enrollment
-  }.requiring(isPlatformAdmin, UserNotInRole)
-    .or(isInstitutionAdmin(courseClassesRepo.byUUID(enrollmentRepo.get(uuid).getCourseClassUUID).get.getInstitutionUUID), UserNotInRole)
-    .or(isCourseClassAdmin(enrollmentRepo.get(uuid).getCourseClassUUID), UserNotInRole)
+  }.requiring(auth.isPlatformAdmin, UserNotInRole)
+    .or(auth.isInstitutionAdmin(courseClassesRepo.byUUID(enrollmentRepo.get(uuid).getCourseClassUUID).get.getInstitutionUUID), UserNotInRole)
+    .or(auth.isCourseClassAdmin(enrollmentRepo.get(uuid).getCourseClassUUID), UserNotInRole)
 
   @GET
   @Path("launch")

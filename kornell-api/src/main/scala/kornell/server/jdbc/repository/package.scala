@@ -160,6 +160,17 @@ package object repository {
   }
     
 
+  implicit def toRole(rs: java.sql.ResultSet): kornell.core.entity.Role = {
+    val roleType = RoleType.valueOf(rs.getString("role"))
+    val role = roleType match {
+      case RoleType.user => Entities.newUserRole
+      case RoleType.platformAdmin => Entities.newRoleAsPlatformAdmin(rs.getString("person_uuid"))
+      case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("person_uuid"), rs.getString("institution_uuid"))
+      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
+    }
+    role
+  }
+  
   implicit def toEnrollmentTO(rs: ResultSet): EnrollmentTO = {
     val enrollment = newEnrollment(
       rs.getString("uuid"),
@@ -202,16 +213,7 @@ package object repository {
 	    rs.getString("institutionUUID"),
 	    rs.getString("termsAcceptedOn"))
 
-  implicit def toRole(rs: java.sql.ResultSet): kornell.core.entity.Role = {
-    val roleType = RoleType.valueOf(rs.getString("role"))
-    val role = roleType match {
-      case RoleType.user => Entities.newUserRole
-      case RoleType.platformAdmin => Entities.newRoleAsPlatformAdmin(rs.getString("person_uuid"))
-      case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("person_uuid"), rs.getString("institution_uuid"))
-      case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
-    }
-    role
-  }
+  
 	
 	implicit def toUnreadChatThreadTO(rs:ResultSet):UnreadChatThreadTO = newUnreadChatThreadTO(
 	    rs.getString("unreadMessages"),

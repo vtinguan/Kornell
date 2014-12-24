@@ -9,15 +9,17 @@ import kornell.server.util.RequirementNotMet
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.inject.Instance
 import javax.inject.Inject
+import kornell.server.auth.Authorizator
 
 @ApplicationScoped
 @Path("institutions")
 class InstitutionsResource @Inject() (
+  val auth:Authorizator,
   val ittsRepo:InstitutionsRepo,
   val institutionResourceBean:Instance[InstitutionResource]
   ) {
   
-  def this() = this(null,null)
+  def this() = this(null,null,null)
   
   @Path("{uuid}")
   def get(@PathParam("uuid") uuid:String):InstitutionResource =
@@ -42,6 +44,6 @@ class InstitutionsResource @Inject() (
   @Consumes(Array(Institution.TYPE))
   def create(institution: Institution) = {
     ittsRepo.create(institution)
-  }.requiring(isPlatformAdmin, RequirementNotMet).get
+  }.requiring(auth.isPlatformAdmin, RequirementNotMet).get
 
 }

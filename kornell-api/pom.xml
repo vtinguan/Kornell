@@ -260,28 +260,26 @@
 			<artifactId>arquillian-junit-container</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		
+		<!-- 
 		<dependency>
 			<groupId>org.wildfly.arquillian</groupId>
 			<artifactId>wildfly-arquillian-container-remote</artifactId>
 			<version>1.0.0.Alpha4</version>
 			<scope>test</scope>
-		</dependency>	
+		</dependency>
+		-->
 		
+		 <dependency> <groupId>org.wildfly.arquillian</groupId> <artifactId>wildfly-arquillian-container-managed</artifactId> 
+			<version>1.0.0.Alpha4</version> <scope>test</scope> </dependency> 
 		<dependency>
 			<groupId>org.jboss.weld</groupId>
 			<artifactId>weld-core</artifactId>
 			<version>1.1.5.Final</version>
 			<scope>test</scope>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.4</version>
-			<scope>test</scope>
-		</dependency>
- -->
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-simple</artifactId> 
+			<version>1.6.4</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>

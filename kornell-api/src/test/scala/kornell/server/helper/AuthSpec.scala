@@ -1,7 +1,7 @@
 package kornell.server.helper
 
-import kornell.server.authentication.ThreadLocalAuthenticator
 import org.scalatest.BeforeAndAfter
+import kornell.server.auth.ThreadLocalAuthenticator
 
 trait AuthSpec {
  

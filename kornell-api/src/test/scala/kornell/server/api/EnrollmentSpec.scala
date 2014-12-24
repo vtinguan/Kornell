@@ -1,26 +1,18 @@
 package kornell.server.api
 
 import org.junit.runner.RunWith
-import kornell.core.entity.Enrollment
-import kornell.core.entity.EnrollmentState
-import kornell.server.helper.SimpleInstitution
-import kornell.server.repository.Entities
-import kornell.server.test.UnitSpec
 import org.scalatest.junit.JUnitRunner
-import kornell.server.helper.GenPlatformAdmin
-import kornell.server.helper.GenInstitution
-import kornell.server.helper.GenCourseClass
-import kornell.server.jdbc.repository.EnrollmentsRepo
-import kornell.server.helper.GenInstitutionAdmin
+
+import kornell.core.entity.Enrollment
 
 
 @RunWith(classOf[JUnitRunner])
-class EnrollmentSpec extends UnitSpec  
+class EnrollmentSpec {   
+/*extends UnitSpec  
 	with GenPlatformAdmin 
 	with GenInstitutionAdmin
 	with GenCourseClass {
-  
-/*
+
   "The platformAdmin" should "be able to update an enrollment" in asPlatformAdmin {
     val courseClass = newCourseClass
     val x = "NEW NOTES"

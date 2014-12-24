@@ -1,7 +1,6 @@
 package kornell.server.jdbc.repository
 
 import kornell.server.test.UnitSpec
-import kornell.server.helper.GenInstitution
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import kornell.server.api.UserResource
