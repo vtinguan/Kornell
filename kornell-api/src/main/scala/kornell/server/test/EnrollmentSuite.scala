@@ -1,19 +1,16 @@
 package kornell.server.test
 
 import java.util.logging.Logger
-import org.jboss.arquillian.junit.Arquillian
-import org.junit.Assert._
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitSuite
 import javax.inject.Inject
-import kornell.core.entity.Person
+import kornell.core.entity.Enrollment
+import kornell.core.entity.EnrollmentState
 import kornell.server.api.EnrollmentResource
 import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.repository.Entities
-import kornell.core.entity.EnrollmentState
-import kornell.core.entity.Enrollment
-import kornell.server.test.Mocks
+import org.jboss.arquillian.junit.Arquillian
 
 @RunWith(classOf[Arquillian])
 class EnrollmentSuite extends KornellSuite {

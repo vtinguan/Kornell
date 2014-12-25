@@ -4,67 +4,62 @@ import org.junit.runner.RunWith
 import org.jboss.arquillian.junit.Arquillian
 import org.junit.Test
 import javax.inject.Inject
-
+import kornell.server.util.Errors
+import kornell.server.util.Err
+import kornell.server.util.AccessDeniedErr
+import kornell.server.api.CourseClassesResource
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
+import kornell.core.entity.RegistrationEnrollmentType
+import kornell.server.repository.Entities
 
 @RunWith(classOf[Arquillian])
-class  CourseClassesSuite  extends KornellSuite {
-  
-  @Inject var mocks: Mocks = _
-  
-  @Test def ShouldBeAbleToCreateClass = runAs(mocks.platfAdm) {
-    assert(mocks.newCourseClassEmail.getUUID.size > 0)
-  } 
-  
- /*
-  "The platformAdmin" should "be able to create a class" in asPlatformAdmin {
-  	
-  }
-  
-  "The institutionAdmin" should "be able to create a class" in asInstitutionAdmin {
-  	newCourseClassEmail.getUUID.size should be > 0
-  }
-  
-  "A person" should "not be able to create a class" in asPerson {
-  	try {
-  		newCourseClassEmail
-  	} catch {
-  	  case ise:IllegalStateException => assert(true)
-  	  case default:Throwable =>fail()
-  	}
-  }
-  
-  "The platformAdmin" should "not be able to create a class with the same uuid" in asPlatformAdmin {
-    val courseClass = newCourseClassEmail
-    try {
-      val ccr:CourseClassesResource = ???
-    ccr.create(Entities.newCourseClass(uuid = courseClass.getUUID,
-        courseVersionUUID = courseVersionUUID,
-        institutionUUID = institutionUUID,
-        registrationEnrollmentType = RegistrationEnrollmentType.email))
-    } catch {
-      case jdbc:MySQLIntegrityConstraintViolationException => assert(jdbc.getMessage.contains("PRIMARY"))
-      case default:Throwable => fail()
-    }
-  }
-  
-  "The platformAdmin" should "not be able to create a class with the same name and courseVersion" in asPlatformAdmin {
-    //Create valid course
-          val ccr:CourseClassesResource = ???
+class CourseClassesSuite extends KornellSuite {
 
-    val courseClass = ccr.create(Entities.newCourseClass(name = randName,
-        courseVersionUUID = courseVersionUUID,
-        institutionUUID = institutionUUID,
-        registrationEnrollmentType = RegistrationEnrollmentType.email))
-        
+  @Inject var ccsr: CourseClassesResource = _
+
+  @Inject var mocks: Mocks = _
+
+  @Test def PlatAdmCanCreateClass = runAs(mocks.platfAdm) {
+    assert(mocks.newCourseClassEmail.getUUID.size > 0)
+  }
+
+  @Test def IttAdminCanCreatClass = runAs(mocks.ittAdm) {
+    assert(mocks.newCourseClassEmail.getUUID.size > 0)
+  }
+
+  @Test(expected = classOf[Err])
+  def studentCanNotCreatClass = runAs(mocks.student) {
+    assert(mocks.newCourseClassEmail.getUUID.size > 0)
+  }
+
+  def platAdminCantCreatClassWithSameUUID = runAs(mocks.platfAdm) {
     try {
-    	ccr.create(Entities.newCourseClass(name = courseClass.getName,
-			courseVersionUUID = courseClass.getCourseVersionUUID(),
-			institutionUUID = institutionUUID,
-			registrationEnrollmentType = RegistrationEnrollmentType.email))
+      val courseClass = mocks.newCourseClassEmail
+      ccsr.create(uuid = courseClass.getUUID,
+        courseVersionUUID = mocks.courseVersion.getUUID,
+        institutionUUID = mocks.itt.getUUID,
+        registrationEnrollmentType = RegistrationEnrollmentType.email)
     } catch {
-      case iae:IllegalArgumentException => assert(iae.getMessage.contains(courseClass.getName))
-      case default:Throwable => fail()
+      case jdbc: MySQLIntegrityConstraintViolationException => assert(jdbc.getMessage.contains("PRIMARY"))
+      case default: Throwable => fail()
     }
   }
-*/  
+
+  def platAdmCaNotCreateClassWithSameNameCourseVersio = runAs(mocks.platfAdm) {
+    val courseClass = ccsr.create(Entities.newCourseClass(name = randName,
+      courseVersionUUID = mocks.courseVersion.getUUID,
+      institutionUUID = mocks.itt.getUUID,
+      registrationEnrollmentType = RegistrationEnrollmentType.email))
+
+    try {
+      ccsr.create(Entities.newCourseClass(name = courseClass.getName,
+        courseVersionUUID = courseClass.getCourseVersionUUID(),
+        institutionUUID = mocks.itt.getUUID,
+        registrationEnrollmentType = RegistrationEnrollmentType.email))
+    } catch {
+      case iae: IllegalArgumentException => assert(iae.getMessage.contains(courseClass.getName))
+      case default: Throwable => fail()
+    }
+  }
+
 }

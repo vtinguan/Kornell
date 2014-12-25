@@ -16,9 +16,13 @@ class KornellErr (code:String,properties:Map[String,String]) extends Err {
     
 }
 
+
+
+
 object FileNotFoundErr {
   def apply(path:String) = new KornellErr("404_FILENOTFOUND",Map(("path"->path)))
 }
+
 
 object AccessDeniedErr {
   def apply() = new KornellErr("403_ACCESSDENIED", Map())

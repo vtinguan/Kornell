@@ -29,6 +29,7 @@ import kornell.core.entity.CourseClassState
 import java.util.Date
 import java.math.BigDecimal
 import kornell.server.auth.Authorizator
+import kornell.server.util.AccessDeniedErr
 
 @Path("courseClasses")
 class CourseClassesResource @Inject() (
@@ -68,8 +69,8 @@ class CourseClassesResource @Inject() (
   @Produces(Array(CourseClass.TYPE))
   def create(courseClass: CourseClass) = {
     courseClassesRepo.create(courseClass)
-  }.requiring(auth.isPlatformAdmin, UserNotInRole)
-    .or(auth.isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
+  }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
+    .or(auth.isInstitutionAdmin(courseClass.getInstitutionUUID), AccessDeniedErr())
     .get
 
   @Path("{uuid}")
