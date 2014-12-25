@@ -1,4 +1,4 @@
-package kornell.server.test.util
+package kornell.server.test
 
 import scala.util.Random
 import kornell.core.util.UUID

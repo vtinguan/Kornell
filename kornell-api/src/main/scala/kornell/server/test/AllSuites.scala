@@ -2,13 +2,22 @@ package kornell.server.test
 
 import org.junit.runner.RunWith
 import org.jboss.arquillian.junit.Arquillian
- 
+import org.junit.Test
+import javax.inject.Inject
+
 
 @RunWith(classOf[Arquillian])
-class  CourseClassesSuite  { 
+class  CourseClassesSuite  extends KornellSuite {
+  
+  @Inject var mocks: Mocks = _
+  
+  @Test def ShouldBeAbleToCreateClass = runAs(mocks.platfAdm) {
+    assert(mocks.newCourseClassEmail.getUUID.size > 0)
+  } 
+  
  /*
   "The platformAdmin" should "be able to create a class" in asPlatformAdmin {
-  	newCourseClassEmail.getUUID.size should be > 0
+  	
   }
   
   "The institutionAdmin" should "be able to create a class" in asInstitutionAdmin {

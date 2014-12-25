@@ -13,6 +13,7 @@ import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.repository.Entities
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.Enrollment
+import kornell.server.test.Mocks
 
 @RunWith(classOf[Arquillian])
 class EnrollmentSuite extends KornellSuite {
@@ -25,7 +26,7 @@ class EnrollmentSuite extends KornellSuite {
   var enrollmentRes: EnrollmentResource = _
 
   @Inject
-  var mocks: EnrollmentMocks = _
+  var mocks: Mocks = _
 
   @Test def NotesPersistsWithEnrollment = runAs(mocks.student) {
     val notes = randStr

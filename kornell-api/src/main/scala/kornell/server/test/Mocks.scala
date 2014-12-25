@@ -1,9 +1,10 @@
 package kornell.server.test
 
-import java.util.logging.Logger
 import javax.annotation.PostConstruct
-import javax.enterprise.context.Dependent
+import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
+import javax.ws.rs.Path
+import kornell.core.entity.BillingType
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseVersion
@@ -19,23 +20,19 @@ import kornell.server.jdbc.repository.CoursesRepo
 import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
-import kornell.core.entity.BillingType
 
-@Dependent
-class EnrollmentMocks @Inject()
-  extends Mock {
+class Mocks @Inject() (
+  val authRepo: AuthRepo,
+  val ittsRepo: InstitutionsRepo,
+  val pplRepo: PeopleRepo,
+  val csRepo: CoursesRepo,
+  val cvsRepo: CourseVersionsRepo,
+  val enrollsRepo: EnrollmentsRepo,
+  val ccRes: CourseClassesResource)
+  extends Generator
+  with PrivilegeEscalation {
 
-  @Inject var csRepo: CoursesRepo = _
-  @Inject() var cvsRepo: CourseVersionsRepo = _
-  @Inject() var enrollsRepo: EnrollmentsRepo = _
-  @Inject() var pplRepo: PeopleRepo = _
-  @Inject() var authRepo: AuthRepo = _
-  @Inject() var ccRes: CourseClassesResource = _
-  @Inject() var ittsRepo: InstitutionsRepo = _
-
-  val logger: Logger = Logger.getLogger(classOf[EnrollmentMocks].getName)
-  logger.finest("Instantiated EnrollmentMocks")
-
+  var platfAdm: Person = _
   var ittAdm: Person = _
   var course: Course = _
   var student: Person = _
@@ -49,6 +46,9 @@ class EnrollmentMocks @Inject()
       name = randName,
       baseURL = randURL,
       billingType = BillingType.enrollment)
+
+    platfAdm = newPerson
+    authRepo.grantPlatformAdmin(platfAdm.getUUID)
 
     ittAdm = {
       val p = pplRepo.createPerson(itt.getUUID, randEmail, randName, randCPF)
@@ -65,23 +65,25 @@ class EnrollmentMocks @Inject()
       courseVersion = cvsRepo.create(repositoryUUID = randUUID,
         courseUUID = course.getUUID)
 
-      courseClass = ccRes.create(
+      courseClass = newCourseClassEmail
+
+      student = newPerson
+      enrollment = requestEnrollment(student, courseClass)
+    }
+  }
+  
+  def newCourseClassEmail = ccRes.create(
         name = randName,
         courseVersionUUID = courseVersion.getUUID,
         institutionUUID = itt.getUUID,
         registrationEnrollmentType =
           RegistrationEnrollmentType.email)
-
-      student = newPerson
-      enrollment = newEnrollment(student, courseClass)
-    }
-  }
+  
 
   def newPerson: Person =
     pplRepo.createPerson(itt.getUUID, randEmail, randName, randCPF)
 
-  def newEnrollment(person: Person, cc: CourseClass): Enrollment =
-    enrollsRepo.createEnrollment(personUUID = person.getUUID,
-      courseClassUUID = cc.getUUID,
-      state = EnrollmentState.requested)
+  def requestEnrollment(person: Person, cc: CourseClass): Enrollment =
+    enrollsRepo.createEnrollment(personUUID = person.getUUID, courseClassUUID = cc.getUUID, state = EnrollmentState.requested)
+
 }

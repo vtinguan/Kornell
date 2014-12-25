@@ -132,6 +132,7 @@ class PeopleRepo @Inject() (
     if (isSome(username)) usernameCache.put((p.getInstitutionUUID, username), Some(p))
     p
   }
+  
 
   def create(person: Person): Person = {
     if (person.getUUID == null)

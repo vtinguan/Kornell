@@ -22,7 +22,7 @@ import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.repository.Entities
 import kornell.server.jdbc.repository.PeopleRepo
-import kornell.server.test.util.Generator
+import kornell.server.test.Generator
 
 trait SimpleInstitution extends SuiteMixin with Generator with BeforeAndAfter{ this: Suite =>
   /*
