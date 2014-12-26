@@ -8,7 +8,7 @@ import java.util.logging.Logger
 trait PrivilegeEscalation {
   private final val logger = Logger.getLogger(classOf[PrivilegeEscalation].getName)
 
-  def runAs[T](p: Person)(f: => T): T = try {
+  def runAs[T](p: Person)(f: => T): Unit = try {
     assumeIdentity(p)
     f
   } finally assumeAnonymous

@@ -73,7 +73,7 @@ class Mocks @Inject() (
   }
   
   def newCourseClassEmail = ccRes.create(
-        name = randName,
+        name = randStr(50),
         courseVersionUUID = courseVersion.getUUID,
         institutionUUID = itt.getUUID,
         registrationEnrollmentType =
