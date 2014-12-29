@@ -234,7 +234,7 @@ object Entities {
     version.setShowNavigation(showNavigation)
     version.setShowProgress(showProgress)
     Option(contentSpec) foreach { spec =>
-      val cSpec = ContentSpec.valueOf(spec)
+      val cSpec = ContentSpec.valueOf(spec)      
       version.setContentSpec(cSpec);
     }
     version

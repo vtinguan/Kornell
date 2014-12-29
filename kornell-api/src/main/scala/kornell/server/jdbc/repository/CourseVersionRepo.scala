@@ -52,7 +52,7 @@ class CourseVersionRepo(uuid: String) {
     | c.course_uuid = ${courseVersion.getCourseUUID}, 
     | c.versionCreatedAt = ${courseVersion.getVersionCreatedAt},
     | c.distributionPrefix = ${courseVersion.getDistributionPrefix},
-    | c.contentSpec = ${courseVersion.getContentSpec.toString},
+    | c.contentSpec = ${Option(courseVersion.getContentSpec).map(_.toString).getOrElse(null)},
     | c.disabled = ${courseVersion.isDisabled}
     | where c.uuid = ${courseVersion.getUUID}""".executeUpdate
     courseVersion

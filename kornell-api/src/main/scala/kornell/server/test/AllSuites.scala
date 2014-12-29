@@ -4,10 +4,12 @@ import org.junit.runner.RunWith
 import org.junit.runners.Suite.SuiteClasses
 import org.junit.runners.Suite
 import kornell.server.test.api.CourseSuite
+import kornell.server.test.api.CourseVersionSuite
 
 @RunWith(classOf[Suite])
 @SuiteClasses(Array(classOf[EnrollmentSuite], 
 					classOf[CourseClassesSuite],
-					classOf[CourseSuite]))
+					classOf[CourseSuite],
+					classOf[CourseVersionSuite]))
 class AllSuites extends KornellSuite {
 }

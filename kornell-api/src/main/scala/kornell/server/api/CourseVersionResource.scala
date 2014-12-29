@@ -15,9 +15,10 @@ import javax.enterprise.context.Dependent
 import kornell.server.util.Identifiable
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.auth.Authorizator
+import javax.inject.Inject
 
 @Dependent
-class CourseVersionResource(
+class CourseVersionResource @Inject() (
   val auth:Authorizator,
   val peopleRepo: PeopleRepo) extends Identifiable {
   def this() = this(null,null)

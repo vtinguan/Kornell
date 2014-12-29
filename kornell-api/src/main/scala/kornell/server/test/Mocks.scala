@@ -20,6 +20,10 @@ import kornell.server.jdbc.repository.CoursesRepo
 import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
+import kornell.core.entity.ContentSpec
+import kornell.core.entity.ContentStore
+import kornell.server.jdbc.repository.ContentStoreRepo
+import kornell.server.repository.Entities
 
 class Mocks @Inject() (
   val authRepo: AuthRepo,
@@ -28,7 +32,8 @@ class Mocks @Inject() (
   val csRepo: CoursesRepo,
   val cvsRepo: CourseVersionsRepo,
   val enrollsRepo: EnrollmentsRepo,
-  val ccRes: CourseClassesResource)
+  val ccRes: CourseClassesResource,
+  val cStoreRepo:ContentStoreRepo)
   extends Generator
   with PrivilegeEscalation {
 
@@ -40,6 +45,8 @@ class Mocks @Inject() (
   var courseClass: CourseClass = _
   var enrollment: Enrollment = _
   var itt: Institution = _
+  var cStore:ContentStore = _
+  
 
   @PostConstruct def init = {
     itt = ittsRepo.create(uuid = randUUID,
@@ -61,9 +68,13 @@ class Mocks @Inject() (
       course = csRepo.create(uuid = randUUID,
         code = randStr(5),
         institutionUUID = itt.getUUID)
+        
+     cStore = Entities.newContentStore(randUUID)
 
-      courseVersion = cvsRepo.create(repositoryUUID = randUUID,
-        courseUUID = course.getUUID)
+      courseVersion = cvsRepo.create(
+          repositoryUUID = randUUID,
+          courseUUID = course.getUUID,
+          contentSpec = ContentSpec.SCORM12.toString)
 
       courseClass = newCourseClassEmail
 
