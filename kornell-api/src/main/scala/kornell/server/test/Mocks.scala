@@ -89,6 +89,13 @@ class Mocks @Inject() (
         institutionUUID = itt.getUUID,
         registrationEnrollmentType =
           RegistrationEnrollmentType.email)
+          
+  def newCourseClassCPF = ccRes.create(
+        name = randStr(50),
+        courseVersionUUID = courseVersion.getUUID,
+        institutionUUID = itt.getUUID,
+        registrationEnrollmentType =
+          RegistrationEnrollmentType.cpf)          
   
 
   def newPerson: Person =

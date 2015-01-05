@@ -6,9 +6,9 @@ import kornell.core.util.UUID
 trait Generator {
   Generator.init
 
-  val names = List("Simon Iverson", "Scott Davis", "Paula Margot", "Susan Richards")
-  val usernames = List("geek", "nerd", "gacto", "pri","sam")
-  val domains = List("somedomain.co.uk", "fartmachine.com")
+  val names = List("Simon Iverson", "Scott Davis", "Paula Margot", "Susan Richards", "Chris Rock","Bruce Lee")
+  val usernames = List("geek", "nerd", "gacto", "pri","sam","chris","bruce")
+  val domains = List("somedomain.co.uk", "fartmachine.com","fortunecookie.com","randomdomain.br")
 
   def digits = Stream continually { Random.nextInt(9) }
   def chars = Stream continually { Random.nextPrintableChar }

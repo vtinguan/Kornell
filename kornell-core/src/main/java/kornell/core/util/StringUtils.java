@@ -1,5 +1,6 @@
 package kornell.core.util;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,6 +51,10 @@ public class StringUtils {
 		return new URLBuilder(base);
 	}
 
+	public static String url(String base, String... path) {
+		return composeURL(base, path);
+	}
+
 	public static String composeURL(String base, String... path) {
 		StringBuffer buf = new StringBuffer();
 		List<String> tokens = new ArrayList<String>();
@@ -81,12 +86,13 @@ public class StringUtils {
 	public static final boolean isSome(String str) {
 		return !isNone(str);
 	}
-	
+
 	public static String digitsOf(String orig) {
 		StringBuilder buf = new StringBuilder();
-		for (int i = 0; i < orig.length(); i++){
-	    char ch = orig.charAt(i);        
-	    if(Character.isDigit(ch) ) buf.append(ch);
+		for (int i = 0; i < orig.length(); i++) {
+			char ch = orig.charAt(i);
+			if (Character.isDigit(ch))
+				buf.append(ch);
 		}
 		return buf.toString();
 	}
@@ -135,5 +141,5 @@ public class StringUtils {
 		}
 
 	}
-	
+
 }

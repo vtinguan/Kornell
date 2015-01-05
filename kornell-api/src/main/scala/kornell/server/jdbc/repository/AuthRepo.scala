@@ -14,9 +14,11 @@ import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities.newPerson
 import kornell.server.util.SHA256
 import kornell.server.repository.Entities
+import javax.inject.Inject
 
 //TODO: URGENT: FIX CACHING
-class AuthRepo(
+
+class AuthRepo @Inject()(
   val peopleRepo: PeopleRepo) {
 
   def this() = this(null)

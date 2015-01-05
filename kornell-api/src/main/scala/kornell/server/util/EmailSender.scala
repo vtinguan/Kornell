@@ -63,7 +63,7 @@ object EmailSender {
       val multipart: Multipart = new MimeMultipart()
       multipart.addBodyPart(messageBodyPart)
 
-      if (imgFile != null) {
+      if (imgFile != null && imgFile.exists) {
         val imagePartLogo: MimeBodyPart = new MimeBodyPart()
         imagePartLogo.setHeader("Content-ID", "<logo>")
         imagePartLogo.setDisposition(Part.INLINE)
