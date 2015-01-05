@@ -30,7 +30,7 @@
 				<textFieldExpression><![CDATA["Perído: de " + $P{periodStart}.split(" ")[0].split("T")[0] + " a " + $P{periodEnd}.split(" ")[0].split("T")[0] + "                        Gerado em: " + new SimpleDateFormat("yyyy-MM-dd", new Locale("pt","BR")).format(new java.util.Date())]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="0" y="36" width="210" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
+				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="0" y="36" width="300" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
