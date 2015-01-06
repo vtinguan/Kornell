@@ -11,6 +11,7 @@ import kornell.server.test.KornellSuite
 import kornell.server.repository.Entities
 import kornell.server.util.Err
 import kornell.core.entity.Institution
+import kornell.core.entity.Person
 
 @RunWith(classOf[Arquillian])
 class InstitutionSuite extends KornellSuite {
@@ -31,7 +32,7 @@ class InstitutionSuite extends KornellSuite {
   @Test(expected = classOf[Err]) def studentCanNotCreateInstitution =
     runAs(mocks.student) { createInstitution }
 
-  @Test def platfAdmCanUpdateInstitution = runAs(mocks.platfAdm){
+  @Test def platfAdmCanUpdateInstitution = runAs(mocks.platfAdm) {
     val newInstitution = createInstitution
     val newName = randStr
     newInstitution.setFullName(newName);
@@ -39,74 +40,53 @@ class InstitutionSuite extends KornellSuite {
     assert(newName == modifiedInstitution.getFullName)
   }
 
-  @Test(expected=classOf[Err]) def ittAdmCanNotUpdateInstitution = {
-    var newInstitution:Institution = null
-    runAs(mocks.platfAdm){
-	  newInstitution = createInstitution
-    }    
-    runAs(mocks.ittAdm){
+  @Test(expected = classOf[Err]) def ittAdmCanNotUpdateInstitution = {
+    var newInstitution: Institution = null
+    runAs(mocks.platfAdm) {
+      newInstitution = createInstitution
+    }
+    runAs(mocks.ittAdm) {
       newInstitution.setFullName("test");
       ittsRes.get(newInstitution.getUUID).update(newInstitution)
     }
   }
-  
-  /*
-  
-  "A person" should 
-  "not be able to modify an institution" in asPlatformAdmin {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
-    newInstitution.setFullName("test");
-    asPerson {
-      try {
-        val modifiedInstitution = ittsRes.get(newInstitution.getUUID).update(newInstitution)
-      } catch {
-        case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
-        case default:Throwable => fail() 
-      }
+
+  @Test(expected = classOf[Err]) def studentCanNotModifyAnInstitution = {
+    var newInstitution: Institution = null
+    runAs(mocks.platfAdm) {
+      newInstitution = createInstitution
+      newInstitution.setFullName("test");
+    }
+    runAs(mocks.student) {
+      ittsRes.get(newInstitution.getUUID).update(newInstitution)
     }
   }
-  
-  "The platformAdmin" should 
-  "be able to get an institution" in asPlatformAdmin {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
 
+  @Test def platfAdmnCanGetAnInstitution = runAs(mocks.platfAdm) {
+    val newInstitution = createInstitution
     val fetchedInstitution = ittsRes.get(newInstitution.getUUID).get
     assert(newInstitution.getFullName == fetchedInstitution.getFullName)
-    
   }
-  
-  "The institutionAdmin" should 
-  "not be able to get an institution" in asPlatformAdmin {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
 
-    asInstitutionAdmin{
-        try {
-            val fetchedInstitution = ittsRes.get(newInstitution.getUUID).get
-        } catch {
-          case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
-          case default:Throwable => fail() 
-        }
+  def createAndGetInstitution(getAs: Person) = {
+    var newInstitution: Institution = null
+    runAs(mocks.platfAdm) {
+      newInstitution = createInstitution
+    }
+    runAs(getAs) {
+      ittsRes.get(newInstitution.getUUID).get
     }
   }
-  
-  "The person" should 
-  "not be able to get an institution" in asPlatformAdmin {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
 
-    asPerson{
-        try {
-            val fetchedInstitution = ittsRes.get(newInstitution.getUUID).get
-        } catch {
-          case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
-          case default:Throwable => fail() 
-        }
-    }
-  }
+  @Test(expected = classOf[Err]) def institutionAdminCanNotGetInstitution =
+    createAndGetInstitution(mocks.ittAdm)
+
+  @Test(expected = classOf[Err]) def studentShouldNotGetInstitution = 
+    createAndGetInstitution(mocks.student)
   
+}
+  
+  /*
   "The platformAdmin" should "be able to get the list of institution admins" in asPlatformAdmin { 
     val institutionAdmin = institutionAdminUUID
     val admins = ittsRes.get(institutionUUID).getAdmins(institutionAdmin)
@@ -240,4 +220,3 @@ class InstitutionSuite extends KornellSuite {
   }
   
   */
-}

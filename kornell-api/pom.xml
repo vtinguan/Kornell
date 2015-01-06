@@ -11,10 +11,8 @@
 	<artifactId>kornell-api</artifactId>
 	<packaging>war</packaging>
 	<name>API Server</name>
-
-
+	
 	<properties>
-
 		<resteasy.version>3.0.8.Final</resteasy.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -138,6 +136,7 @@
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 			<version>${scala.version}</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -171,7 +170,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.31</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -241,10 +240,11 @@
 			<version>1.6</version>
 		</dependency>
 
+		<!--  -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>14.0.1</version>
+			<version>18.0</version>
 		</dependency>
 
 		<dependency>
@@ -259,58 +259,49 @@
 			<groupId>org.jboss.arquillian.junit</groupId>
 			<artifactId>arquillian-junit-container</artifactId>
 		</dependency>
-		
-		<!-- 
+
+		<!-- <dependency> <groupId>org.wildfly.arquillian</groupId> <artifactId>wildfly-arquillian-container-remote</artifactId> 
+			<version>1.0.0.Alpha4</version> <scope>test</scope> </dependency> -->
+
 		<dependency>
 			<groupId>org.wildfly.arquillian</groupId>
-			<artifactId>wildfly-arquillian-container-remote</artifactId>
+			<artifactId>wildfly-arquillian-container-managed</artifactId>
 			<version>1.0.0.Alpha4</version>
 			<scope>test</scope>
 		</dependency>
-		-->
-		
-		 <dependency> <groupId>org.wildfly.arquillian</groupId> <artifactId>wildfly-arquillian-container-managed</artifactId> 
-			<version>1.0.0.Alpha4</version> <scope>test</scope> </dependency> 
 		<dependency>
 			<groupId>org.jboss.weld</groupId>
 			<artifactId>weld-core</artifactId>
 			<version>1.1.5.Final</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-simple</artifactId> 
-			<version>1.6.4</version> <scope>test</scope> </dependency> -->
-		<dependency>
-			<groupId>org.jboss.shrinkwrap.resolver</groupId>
-			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-			<!-- <scope>test</scope> -->
-		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-api</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-spi</artifactId>
-			<version>${version.shrinkwrap.resolvers}</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-api-maven</artifactId>
-
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-spi-maven</artifactId>
-			<version>${version.shrinkwrap.resolvers}</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-
 		</dependency>
+
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
