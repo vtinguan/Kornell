@@ -13,8 +13,8 @@ import javax.inject.Inject
 import kornell.server.api.CourseClassesResource
 import kornell.server.util.Err
 import kornell.core.entity.RegistrationEnrollmentType
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
 import kornell.server.repository.Entities
+import java.sql.SQLException
 
 
 @RunWith(classOf[Arquillian])
@@ -45,7 +45,7 @@ class CourseClassesSuite extends KornellSuite {
         institutionUUID = mocks.itt.getUUID,
         registrationEnrollmentType = RegistrationEnrollmentType.email)
     } catch {
-      case jdbc: MySQLIntegrityConstraintViolationException => assert(jdbc.getMessage.contains("PRIMARY"))
+      case jdbc: SQLException => assert(jdbc.getMessage.contains("PRIMARY"))
       case default: Throwable => fail()
     }
   }
