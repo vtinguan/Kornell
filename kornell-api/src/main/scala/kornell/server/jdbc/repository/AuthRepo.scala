@@ -35,7 +35,7 @@ class AuthRepo @Inject()(
   type UsrPwd = (String, String, String)
   type PersonUUID = String
 
-  def authByEmail(institutionUUID: String, email: String, password: String) = sql"""
+  def authByEmail(institutionUUID: String, email: String, password: String):Option[String] = sql"""
    select person_uuid 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
@@ -44,7 +44,7 @@ class AuthRepo @Inject()(
      and p.institutionUUID=${institutionUUID}
     """.first[String]
 
-  def authByCPF(institutionUUID: String, cpf: String, password: String) = sql"""
+  def authByCPF(institutionUUID: String, cpf: String, password: String):Option[String] = sql"""
    select person_uuid 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
@@ -53,7 +53,7 @@ class AuthRepo @Inject()(
      and p.institutionUUID=${institutionUUID}
     """.first[String]
 
-  def authByUsername(institutionUUID: String, username: String, password: String) = sql"""
+  def authByUsername(institutionUUID: String, username: String, password: String):Option[String] = sql"""
     select person_uuid 
     from Password
     		where username=${username}
@@ -83,7 +83,11 @@ class AuthRepo @Inject()(
   """.map[Role]
     .toSet
 
-  def authenticate(institutionUUID: String, userkey: String, password: String): Option[String] = ???
+  def authenticate(institutionUUID: String, userkey: String, password: String): Option[String] = 
+    authByUsername(institutionUUID, userkey, password)
+    .orElse( authByEmail(institutionUUID, userkey, password) )
+    .orElse( authByCPF(institutionUUID, userkey, password) )
+    
 
   def getUserRoles: java.util.Set[Role] = userRoles().asJava
 

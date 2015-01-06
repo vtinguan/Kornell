@@ -48,7 +48,7 @@ class UserResource @Inject() (
   
   def get = first.get
      
-  
+  //TODO: Review/Refactor
   @Path("hello")
   @Produces(Array(UserHelloTO.TYPE))
   @GET

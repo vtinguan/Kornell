@@ -11,10 +11,13 @@ import java.util.HashMap
 import java.util.Map
 import com.google.web.bindery.autobean.shared.AutoBeanUtils
 import com.google.web.bindery.autobean.shared.AutoBeanCodex
+import java.util.logging.Logger
+import java.util.logging.Level
 
 @Provider
 class FileNotFoundMapper extends ExceptionMapper[FileNotFoundException] {
-  
+  val logger:Logger = Logger.getLogger(classOf[FileNotFoundMapper].getName)
+
   val errorFactory = AutoBeanFactorySource.create(classOf[ErrorFactory])
   val notFoundErr = {
     val nfErr = errorFactory.newError().as
@@ -30,6 +33,7 @@ class FileNotFoundMapper extends ExceptionMapper[FileNotFoundException] {
   }
 
   override def toResponse(fnfe: FileNotFoundException): Response = {
+    logger.log(Level.WARNING, fnfe.getMessage, fnfe)
     val bean = AutoBeanUtils.getAutoBean(notFoundErr)
     val payload = AutoBeanCodex.encode(bean).getPayload
     Response

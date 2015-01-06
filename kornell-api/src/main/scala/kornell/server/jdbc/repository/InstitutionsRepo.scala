@@ -60,7 +60,7 @@ class InstitutionsRepo() {
     | ${institution.isAllowRegistrationByUsername},
     | ${institution.getActivatedAt},
     | ${institution.getSkin},
-    | ${institution.getBillingType.toString})""".executeUpdate
+    | ${institution.getBillingType.toString})""".executeUpdate //TODO: NPE???
     logger.fine(s"Created Institution[${institution.getUUID}]")
     institution
   }
