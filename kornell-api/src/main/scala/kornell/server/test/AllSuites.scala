@@ -7,6 +7,7 @@ import kornell.server.test.api.CourseSuite
 import kornell.server.test.api.CourseVersionSuite
 import kornell.server.test.api.EnrollmentResourceSuite
 import kornell.server.test.api.EnrollmentsSuite
+import kornell.server.test.api.InstitutionSuite
 
 @RunWith(classOf[Suite])
 @SuiteClasses(Array(classOf[EnrollmentSuite], 
@@ -14,6 +15,7 @@ import kornell.server.test.api.EnrollmentsSuite
 					classOf[CourseSuite],
 					classOf[CourseVersionSuite],
 					classOf[EnrollmentResourceSuite],
-					classOf[EnrollmentsSuite]))
+					classOf[EnrollmentsSuite],
+					classOf[InstitutionSuite]))
 class AllSuites extends KornellSuite {
 }

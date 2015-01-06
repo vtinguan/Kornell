@@ -1,69 +1,56 @@
-package kornell.server.api
+package kornell.server.test.api
 
 import scala.collection.JavaConverters._
-
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
+import org.jboss.arquillian.junit.Arquillian
+import kornell.server.api.InstitutionsResource
+import javax.inject.Inject
+import org.junit.Test
+import kornell.server.test.Mocks
+import kornell.server.test.KornellSuite
+import kornell.server.repository.Entities
+import kornell.server.util.Err
+import kornell.core.entity.Institution
 
-//TODO need tests for GET/PUT hostnames
-@RunWith(classOf[JUnitRunner])
-class InstitutionSpec { /* extends UnitSpec 
-    with GenPlatformAdmin
-    with GenInstitutionAdmin {
+@RunWith(classOf[Arquillian])
+class InstitutionSuite extends KornellSuite {
+  @Inject var ittsRes: InstitutionsResource = _
+  @Inject var mocks: Mocks = _
 
-  var ittsRes:InstitutionsResource = ???
-  
-  "The platformAdmin" should 
-  "be able to create a new institution" in asPlatformAdmin {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
-  }
-  
-  "The institutionAdmin" should 
-  "not be able to create a new institution" in asInstitutionAdmin {
-    try {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
-    } catch {
-      case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
-      case default:Throwable => fail() 
-    }
-  }
-  
-  "A person" should 
-  "not be able to create a new institution" in asPerson {
-    try {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
-    } catch {
-      case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
-      case default:Throwable => fail() 
-    }
-  }
-  
-  "The platformAdmin" should 
-  "be able to modify an institution" in asPlatformAdmin {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
-    newInstitution.setFullName("test");
+  def createInstitution = ittsRes.create(Entities.newInstitution(
+    name = randStr,
+    baseURL = randURL))
+
+  @Test def platfAdmCanCreateInstitution =
+    runAs(mocks.platfAdm) { createInstitution }
+
+  //TODO: Expect specific err type
+  @Test(expected = classOf[Err]) def institutionAdminCanNotCreateInstitution =
+    runAs(mocks.ittAdm) { createInstitution }
+
+  @Test(expected = classOf[Err]) def studentCanNotCreateInstitution =
+    runAs(mocks.student) { createInstitution }
+
+  @Test def platfAdmCanUpdateInstitution = runAs(mocks.platfAdm){
+    val newInstitution = createInstitution
+    val newName = randStr
+    newInstitution.setFullName(newName);
     val modifiedInstitution = ittsRes.get(newInstitution.getUUID).update(newInstitution)
-    assert("test" == modifiedInstitution.getFullName)
+    assert(newName == modifiedInstitution.getFullName)
   }
-  
-  "The institutionAdmin" should 
-  "not be able to modify an institution" in asPlatformAdmin {
-    val newInstitution = ittsRes.create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, ""))
-    newInstitution.setFullName("test");
-    asInstitutionAdmin {
-      try {
-        val modifiedInstitution = ittsRes.get(newInstitution.getUUID).update(newInstitution)
-      } catch {
-        case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
-        case default:Throwable => fail() 
-      }
+
+  @Test(expected=classOf[Err]) def ittAdmCanNotUpdateInstitution = {
+    var newInstitution:Institution = null
+    runAs(mocks.platfAdm){
+	  newInstitution = createInstitution
+    }    
+    runAs(mocks.ittAdm){
+      newInstitution.setFullName("test");
+      ittsRes.get(newInstitution.getUUID).update(newInstitution)
     }
   }
+  
+  /*
   
   "A person" should 
   "not be able to modify an institution" in asPlatformAdmin {
