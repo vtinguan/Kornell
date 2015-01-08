@@ -36,7 +36,12 @@ object ReportCourseClassGenerator {
 					p.fullName,
 					if(pw.username is not null, pw.username, p.email) as username,
 					p.email,
-					e.state,
+					case    
+						when e.state = 'cancelled' then 'Cancelada'  
+						when e.state = 'requested' then 'Requisitada'  
+						when e.state = 'denied' then 'Negada'  
+						else 'Matriculado'   
+					end as state
 					case    
 						when progress is null OR progress = 0 then 'notStarted'  
 						when progress > 0 and progress < 100 then 'inProgress'  
