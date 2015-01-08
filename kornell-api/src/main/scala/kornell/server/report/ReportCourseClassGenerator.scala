@@ -38,7 +38,12 @@ object ReportCourseClassGenerator {
 					p.fullName,
 					if(pw.username is not null, pw.username, p.email) as username,
 					p.email,
-					e.state,
+					case    
+						when e.state = 'cancelled' then 'Cancelada'  
+						when e.state = 'requested' then 'Requisitada'  
+						when e.state = 'denied' then 'Negada'  
+						else 'Matriculado'   
+					end as state,
 					case    
 						when progress is null OR progress = 0 then 'notStarted'  
 						when progress > 0 and progress < 100 then 'inProgress'  
@@ -54,15 +59,22 @@ object ReportCourseClassGenerator {
 					join Person p on p.uuid = e.person_uuid
 					left join Password pw on pw.person_uuid = p.uuid
 				where
-					e.state = 'enrolled' and
-    		  e.class_uuid = ${courseClassUUID}
+					(e.state = 'enrolled' or e.state = 'cancelled') and
+    		  		e.class_uuid = ${courseClassUUID}
 				order by 
-					case 
+				case 
+					when e.state = 'enrolled' then 1
+					when e.state = 'requested'  then 2
+					when e.state = 'denied'  then 3
+					when e.state = 'cancelled'  then 4
+					else 5
+					end,
+				case 
     				when progressState = 'completed' then 1
-						when progressState = 'waitingEvaluation'  then 2
-						when progressState = 'inProgress'  then 3
-						else 4 
-    			end,
+					when progressState = 'waitingEvaluation'  then 2
+					when progressState = 'inProgress'  then 3
+					else 4 
+    				end,
     			e.certifiedAt,
     			progress,
     			p.fullName,
