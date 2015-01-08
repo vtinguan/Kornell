@@ -9,19 +9,19 @@ object ThreadLocalAuthenticator {
 	  val authPerson = getAuthenticatedPersonUUID
 	  if (authPerson.isDefined)
 		  logger.warning(s"!!! Thread changing identity [ ${authPerson.get} -> ${personUUID} ]")
-	  logger.finer(s"*** Thread assumed identity [$personUUID]")
+	  //logger.finer(s"*** Thread assumed identity [$personUUID]")
 	  threadLocal.set(personUUID)
 	  personUUID
 	}
 	
 	def getAuthenticatedPersonUUID : Option[String] = {
 	  val authPersonUUID = Option(threadLocal.get)
-	  logger.finest("*** Thread user is "+authPersonUUID)
+	  //logger.finest("*** Thread user is "+authPersonUUID)
 	  authPersonUUID
 	}
 	
 	def clearAuthenticatedPersonUUID = {
-	  logger.finer(s"*** Thread is now anonymous")
+	  //logger.finer(s"*** Thread is now anonymous")
 	  threadLocal.set(null)
 	}
 }

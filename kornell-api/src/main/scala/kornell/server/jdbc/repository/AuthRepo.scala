@@ -93,7 +93,7 @@ class AuthRepo @Inject()(
 
   def userRoles(personUUID: Option[String]): Set[Role] ={ 
     val roles = personUUID.map(lookupRolesOf(_)).getOrElse(Set.empty)
-    logger.info(s"*** ROLES OF $personUUID = $roles")
+    //logger.info(s"*** ROLES OF $personUUID = $roles")
     roles
   }
 

@@ -13,6 +13,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 
 @ArquillianSuiteDeployment
 public class KornellDeployment {
+	
 	static final PomEquippedResolveStage resolver = Maven.resolver()
 			.loadPomFromFile("pom.xml");
 	static final MavenFormatStage deps = resolver.importRuntimeDependencies()
@@ -21,7 +22,7 @@ public class KornellDeployment {
 	@Deployment
 	@OverProtocol("Servlet 3.0")
 	static WebArchive depl() {
-		System.out.println("**** PREPARING PACKAGE FOR DEPLOYMENT *****");
+		
 		return ShrinkWrap.create(MavenImporter.class)
 				.loadPomFromFile("pom.xml").importBuildOutput()
 				.as(WebArchive.class);

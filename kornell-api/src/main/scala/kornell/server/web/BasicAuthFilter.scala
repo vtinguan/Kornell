@@ -65,7 +65,7 @@ class BasicAuthFilter extends Filter {
     	pubPaths.exists { p => path.startsWith(s"/api${p}") }
     val isOption = "OPTIONS".equals(req.getMethod)
     
-    println(s"**** IS [$path] Pub? [${isOption || isPublic}]")
+    //println(s"**** IS [$path] Pub? [${isOption || isPublic}]")
     isOption || isPublic
   }
 
