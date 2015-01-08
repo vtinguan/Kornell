@@ -21,7 +21,7 @@ import kornell.server.util.RequirementNotMet
 import kornell.core.to.EnrollmentRequestsTO
 
 @RunWith(classOf[Arquillian])
-class EnrollmentsSuite extends KornellSuite {
+class EnrollmentsResourceSuite extends KornellSuite {
   @Inject var er: EnrollmentsResource = _
   @Inject var enrollmentsRepo: EnrollmentsRepo = _
   @Inject var mocks: Mocks = _

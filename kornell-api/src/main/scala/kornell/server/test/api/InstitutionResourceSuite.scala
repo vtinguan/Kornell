@@ -14,7 +14,7 @@ import kornell.core.entity.Institution
 import kornell.core.entity.Person
 
 @RunWith(classOf[Arquillian])
-class InstitutionSuite extends KornellSuite {
+class InstitutionResourceSuite extends KornellSuite {
   @Inject var ittsRes: InstitutionsResource = _
   @Inject var mocks: Mocks = _
 

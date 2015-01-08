@@ -12,7 +12,7 @@ import kornell.server.util.Err
 import kornell.core.entity.Course
 
 @RunWith(classOf[Arquillian])
-class CourseSuite extends KornellSuite {
+class CourseResourceSuite extends KornellSuite {
 
   @Inject
   var mocks: Mocks = _

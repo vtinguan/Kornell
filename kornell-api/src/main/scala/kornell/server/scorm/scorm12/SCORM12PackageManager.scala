@@ -1,21 +1,14 @@
 package kornell.server.scorm.scorm12
-
-import scala.language.postfixOps
-import scala.language.implicitConversions
 import kornell.server.content.ContentManager
-import kornell.core.to.ActionTO
-import kornell.server.repository.TOs
 import scala.collection.JavaConverters._
-import kornell.core.to.ActionType
 import kornell.server.scorm.scorm12.cam._
 import kornell.core.scorm.scorm12.cam._
 import kornell.core.util.StringUtils._
-import kornell.core.entity.Enrollment
 import kornell.server.jdbc.repository.ActomEntriesRepo
 import kornell.server.scorm.scorm12.rte.RTE12
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
 import java.util.logging.Logger
+import kornell.core.to.ActionTO
+import kornell.core.entity.Enrollment
 
 class SCORM12PackageManager(cm: ContentManager) {
    val log = Logger.getLogger(classOf[SCORM12PackageManager].getName)

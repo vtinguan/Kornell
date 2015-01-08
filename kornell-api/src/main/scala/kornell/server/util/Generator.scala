@@ -1,8 +1,6 @@
-package kornell.server.helper
+package kornell.server.util
 
 import scala.util.Random
-import scala.language.postfixOps
-
 import kornell.core.util.UUID
 
 trait Generator {

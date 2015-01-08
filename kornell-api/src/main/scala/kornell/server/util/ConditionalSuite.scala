@@ -1,21 +1,24 @@
 package kornell.server.util
 
 import scala.language._
-import org.junit.runner.RunWith
-import kornell.server.util.Conditional._
-import org.scalatest.junit.JUnitRunner
-import kornell.server.test.UnitSpec
 
-@RunWith(classOf[JUnitRunner])
-class ConditionalSpec extends UnitSpec {
-  /*
-  "QCon" should "happen every week!" in {
+import org.junit.Test
+
+import kornell.server.test.KornellSuite
+import kornell.server.util.Conditional._
+
+class ConditionalSuite extends KornellSuite {
+  val somethingNotTrue = false
+  val somethingNotFalse = true
+
+  @Test def TrueOrFalseMustEvaluate = {
     val result = {
       42 * 10
     } requiring { somethingNotTrue } or { somethingNotFalse }
-    
     assert(result.get == 420)
   }
+
+  /*
 
   def somethingNotTrue = false
   def somethingNotFalse = true
