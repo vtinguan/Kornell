@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1000" pageHeight="842" columnWidth="1000" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1150" pageHeight="842" columnWidth="1150" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="489"/>
+	<property name="ireport.x" value="750"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="notStarted" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
@@ -35,7 +35,7 @@
 	<title>
 		<band height="239">
 			<textField>
-				<reportElement uuid="59896c45-7bce-4ab7-9585-85ff926ccb4e" x="210" y="145" width="385" height="16"/>
+				<reportElement uuid="59896c45-7bce-4ab7-9585-85ff926ccb4e" x="210" y="145" width="470" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -49,14 +49,14 @@
 $P{maxEnrollments}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c8a1e273-10a0-49f7-b0ed-6c2ec620e514" x="210" y="161" width="385" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>
+				<reportElement uuid="c8a1e273-10a0-49f7-b0ed-6c2ec620e514" x="210" y="161" width="470" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[""+$P{completed}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" x="210" y="177" width="385" height="16" forecolor="#006AB7"/>
+				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" x="210" y="177" width="470" height="16" forecolor="#006AB7"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -67,28 +67,28 @@ $P{maxEnrollments}]]></textFieldExpression>
     )]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" x="210" y="49" width="385" height="16"/>
+				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" x="210" y="49" width="470" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{courseClassName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="1049025d-fb9b-4467-9ce5-40acac387c1d" x="210" y="65" width="385" height="16"/>
+				<reportElement uuid="1049025d-fb9b-4467-9ce5-40acac387c1d" x="210" y="65" width="470" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{courseTitle}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="210" y="81" width="385" height="16"/>
+				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="210" y="81" width="470" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd", new Locale("pt","BR")).format($P{createdAt})]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement uuid="69d298e4-fc42-403d-a5d3-c37b4694cedb" x="0" y="20" width="595" height="13" forecolor="#808080"/>
+				<reportElement uuid="69d298e4-fc42-403d-a5d3-c37b4694cedb" x="0" y="20" width="680" height="13" forecolor="#808080"/>
 				<textElement textAlignment="Right">
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -143,7 +143,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[Criada em: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="695a5f72-e44b-4a20-8fd7-c02f86d2c57e" mode="Opaque" x="0" y="0" width="595" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="695a5f72-e44b-4a20-8fd7-c02f86d2c57e" mode="Opaque" x="0" y="0" width="680" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -185,7 +185,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[Desabilitada em: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="210" y="113" width="385" height="16">
+				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="210" y="113" width="470" height="16">
 					<printWhenExpression><![CDATA[$P{disabledAt} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -196,7 +196,7 @@ $P{maxEnrollments}]]></textFieldExpression>
     : $P{disabledAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" x="210" y="193" width="385" height="16" forecolor="#CB9902"/>
+				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" x="210" y="193" width="470" height="16" forecolor="#CB9902"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -232,7 +232,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[STATUS]]></text>
+				<text><![CDATA[MATRÍCULA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="aca9cdb5-1504-4bcf-bd8e-259149bd66c8" mode="Opaque" x="445" y="225" width="235" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
@@ -243,7 +243,7 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[EMAIL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="08f64b1f-787c-460f-b701-e59ed0a03500" mode="Opaque" x="830" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="08f64b1f-787c-460f-b701-e59ed0a03500" mode="Opaque" x="980" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -261,19 +261,27 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[Administrador(es): ]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="c2e9978a-fbcb-422e-8833-ae598d337123" x="210" y="97" width="385" height="16"/>
+				<reportElement uuid="c2e9978a-fbcb-422e-8833-ae598d337123" x="210" y="97" width="470" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{courseClassAdminNames}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="b83923d3-4f7b-47ec-9630-1d8de4245032" mode="Opaque" x="915" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="b83923d3-4f7b-47ec-9630-1d8de4245032" mode="Opaque" x="1065" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[DATA MATR.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="22b2e8ad-ac8e-46bc-8128-5bfe78d4fa20" mode="Opaque" x="830" y="225" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PROGRESSO]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -298,6 +306,38 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
+				<textFieldExpression><![CDATA[$F{state}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d9daaac0-c45c-4cce-ab8e-48c770d19384" x="445" y="0" width="235" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b232573c-07ad-4647-a029-3299b5ee9367" x="980" y="0" width="85" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{certifiedAt} == null ?
+    " - "
+    : $F{certifiedAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="90520c48-2b19-4007-85b6-b730368d83a7" x="1065" y="0" width="85" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{enrolledAt} == null ?
+    " - "
+    : $F{enrolledAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="01cf94a2-2b51-4331-993b-adec96eaf0a8" x="830" y="0" width="150" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{progressState}.equals("completed")
     ?  "Concluído" +
          (false && $F{assessmentScore} != null && $F{assessmentScore}.intValue() > 0 ? ": " + $F{assessmentScore}.intValue() : "")
@@ -308,31 +348,6 @@ $P{maxEnrollments}]]></textFieldExpression>
             : "A Iniciar"
         )
     )]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="d9daaac0-c45c-4cce-ab8e-48c770d19384" x="445" y="0" width="235" height="12" forecolor="#525252"/>
-				<textElement>
-					<font fontName="Serif" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="b232573c-07ad-4647-a029-3299b5ee9367" x="830" y="0" width="85" height="12"/>
-				<textElement>
-					<font fontName="Serif" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{certifiedAt} == null ?
-    " - "
-    : $F{certifiedAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="90520c48-2b19-4007-85b6-b730368d83a7" x="915" y="0" width="85" height="12"/>
-				<textElement>
-					<font fontName="Serif" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{enrolledAt} == null ?
-    " - "
-    : $F{enrolledAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
