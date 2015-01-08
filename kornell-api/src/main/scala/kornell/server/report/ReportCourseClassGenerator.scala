@@ -41,7 +41,7 @@ object ReportCourseClassGenerator {
 						when e.state = 'requested' then 'Requisitada'  
 						when e.state = 'denied' then 'Negada'  
 						else 'Matriculado'   
-					end as state
+					end as state,
 					case    
 						when progress is null OR progress = 0 then 'notStarted'  
 						when progress > 0 and progress < 100 then 'inProgress'  
