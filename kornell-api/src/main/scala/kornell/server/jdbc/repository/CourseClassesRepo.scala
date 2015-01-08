@@ -74,6 +74,7 @@ class CourseClassesRepo @Inject() (
 			    c.title, 
 			    c.description,
 			    c.infoJson,
+      			c.institutionUUID as courseInstitutionUUID,
 			    cv.uuid as courseVersionUUID,
 			    cv.name as courseVersionName,
 			    cv.repository_uuid as repositoryUUID, 

@@ -46,4 +46,5 @@ class S3ContentManager(cs: ContentStore,distributionPrefix:String) extends Conte
     s3.getObject(bucket, key).getObjectContent
   }.getOrElse(null)
   
+  override def baseURL = composeURL(prefix)
 }

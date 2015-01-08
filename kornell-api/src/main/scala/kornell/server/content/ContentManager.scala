@@ -21,7 +21,7 @@ trait ContentManager extends Serializable {
   def getURL(key: String): String  
   def getID():String
   def source(key:String):Source = Source.fromInputStream(getObjectStream(key),"UTF-8")
-  def baseURL:String = "/TODO-REFACT-JULIO"
+  def baseURL:String
 }
 
 class ContentManagers @Inject()(
@@ -56,5 +56,7 @@ class ContentManagers @Inject()(
 	  val store = contentStoreRepo.get(cv.getRepositoryUUID)
 	  get(store,cv.getDistributionPrefix())
   }
+  
+  
 }
   

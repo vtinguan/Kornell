@@ -90,9 +90,13 @@ object TOs {
     enrollmentTO
   }
 
-  def newCourseVersionTO(course: Course, version: CourseVersion): CourseVersionTO = {
+  def newCourseVersionTO(
+      course: Course, 
+      version: CourseVersion): CourseVersionTO =
+  {
     val versionTO = tos.newCourseVersionTO.as    
-    versionTO.setDistributionURL("/TODO-REFACT-JULIO")
+    val courseIttUUID = course.getInstitutionUUID
+    versionTO.setDistributionURL(StringUtils.composeURL("repository", courseIttUUID));
     versionTO.setCourse(course)
     versionTO.setCourseVersion(version)
     versionTO

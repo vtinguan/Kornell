@@ -30,7 +30,7 @@ class LibraryFilesRepository @Inject()(
     val filesURL = StringUtils.composeURL("library","libraryFiles.knl")
     val structureSrc = cm.source(filesURL)
     val libraryFilesText = structureSrc.mkString("")
-    val fullURL = StringUtils.composeURL(cm.baseURL, "/TODO-REFACT-JULIO", version.getDistributionPrefix(), "library")
+    val fullURL = StringUtils.composeURL(cm.baseURL, "/TODO-REFACT-JULIO-findLibraryFiles", version.getDistributionPrefix(), "library")
     val contents = LibraryFilesParser.parse(fullURL, libraryFilesText)
     contents
   }

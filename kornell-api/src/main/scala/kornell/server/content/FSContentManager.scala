@@ -25,5 +25,7 @@ class FSContentManager(cs:ContentStore,distributionPrefix:String) extends Conten
   	new FileInputStream(file)
   }
   
-	override def getURL(obj:String) = composeURL(prefix,distPrefix,obj) 
+  override def getURL(obj:String) = composeURL(prefix,distPrefix,obj)
+  
+  override def baseURL = composeURL(prefix)
 }

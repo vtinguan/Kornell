@@ -54,7 +54,7 @@ package object repository {
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
-        r.getString("courseVersion_uuid"), r.getString("institution_uuid"),
+        r.getString("courseVersion_uuid"), r.getString("institutionUUID"),
         r.getBigDecimal("requiredScore"), r.getBoolean("publicClass"), 
         r.getBoolean("overrideEnrollments"),
         r.getBoolean("invisible"), r.getInt("maxEnrollments"), 
@@ -87,7 +87,8 @@ package object repository {
 		    rs.getString("code"), 
 		    rs.getString("title"),
 		    rs.getString("description"), 
-		    rs.getString("infoJson"));
+		    rs.getString("infoJson"),
+		    rs.getString("courseInstitutionUUID"));
 
     val version = newCourseVersion(
         rs.getString("courseVersionUUID"), 
