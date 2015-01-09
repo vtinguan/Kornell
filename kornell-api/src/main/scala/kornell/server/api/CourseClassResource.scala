@@ -41,7 +41,7 @@ import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.jdbc.repository.ChatThreadsRepo
 
 @Dependent
-class CourseClassResource(    
+class CourseClassResource @Inject() (    
     val libRepo:LibraryFilesRepository,
     val courseClassesRepo:CourseClassesRepo,
     val chatThreadsRepo:ChatThreadsRepo,
@@ -63,6 +63,7 @@ class CourseClassResource(
       //CourseClasses(uuid).byPerson(person.getUUID)
     }
 
+  //TODO: exception handling
   @PUT
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
