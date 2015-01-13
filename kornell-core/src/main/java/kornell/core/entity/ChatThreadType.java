@@ -3,6 +3,7 @@ package kornell.core.entity;
 public enum ChatThreadType {
     SUPPORT,
     TUTORING,
-    COURSE_CLASS
+    COURSE_CLASS,
+    DIRECT
 }
 

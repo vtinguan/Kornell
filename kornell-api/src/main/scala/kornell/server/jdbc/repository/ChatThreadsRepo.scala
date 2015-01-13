@@ -25,6 +25,8 @@ import kornell.core.to.EnrollmentTO
 import kornell.core.entity.ChatThreadParticipant
 import java.text.SimpleDateFormat
 import kornell.core.entity.Enrollment
+import kornell.server.util.RequirementNotMet
+
 
 class ChatThreadsRepo {
 }
@@ -50,6 +52,36 @@ object ChatThreadsRepo {
       	createChatThreadMessage(chatThreadUUID.get, personUUID, message)
       }
   }
+  
+  def postMessageToDirectThread(fromPersonUUID: String, toPersonUUID: String, message: String) = {
+    val fromPerson = new PersonRepo(fromPersonUUID).get
+    val toPerson = new PersonRepo(toPersonUUID).get
+    if (!fromPerson.getInstitutionUUID.equals(toPerson.getInstitutionUUID)) {
+      throw new IllegalStateException("Cannot send message to person in another institution")
+    }
+    //the message may be coming from any of the participants, gotta check both sides
+    val chatThreadUUID = {
+      val tempThreadUUID = getChatThreadUUID(fromPersonUUID, null, ChatThreadType.DIRECT)
+      if (tempThreadUUID.isDefined) {
+        tempThreadUUID
+      } else {
+        val tempThreadToUUID = getChatThreadUUID(toPersonUUID, null, ChatThreadType.DIRECT)
+        if (tempThreadToUUID.isDefined) {
+          tempThreadToUUID
+        } else {
+          null
+        }
+      }
+      }
+    if (!chatThreadUUID.isDefined) {
+      val chatThread = createChatThread(fromPerson.getInstitutionUUID, null, fromPersonUUID, ChatThreadType.DIRECT)
+      createChatThreadParticipant(chatThread.getUUID, fromPersonUUID, null, null, toPerson.getFullName)
+      createChatThreadParticipant(chatThread.getUUID, toPersonUUID, null, null, fromPerson.getFullName)
+      createChatThreadMessage(chatThread.getUUID, fromPersonUUID, message)
+    } else {
+      createChatThreadMessage(chatThreadUUID.get, fromPersonUUID, message)
+    }
+  }
 
   def updateChatThreadParticipants(chatThreadUUID: String, threadCreatorUUID: String, courseClass: CourseClass, threadType: ChatThreadType) = {
     val participantsThatShouldExist = threadType match {
@@ -57,7 +89,7 @@ object ChatThreadsRepo {
             .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
       case ChatThreadType.TUTORING =>RolesRepo.getTutorsForCourseClass(courseClass.getCourseVersionUUID(), RoleCategory.BIND_WITH_PERSON)
           .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
-      case ChatThreadType.COURSE_CLASS => throw new IllegalStateException("not-supported-for-this-type")
+      case ChatThreadType.COURSE_CLASS | ChatThreadType.DIRECT => throw new IllegalStateException("not-supported-for-this-type")
     }
 
     val participants = getChatTreadParticipantsUUIDs(chatThreadUUID).distinct
@@ -90,8 +122,11 @@ object ChatThreadsRepo {
     
   }
 
-  def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, courseClassName: String, threadCreatorUUID: String) = {
+  def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, courseClassName: String, threadCreatorUUID: String, targetPersonName: String = null) = {
     val chatThreadName = {
+      if (courseClassName == null) {
+        "Chat with " + targetPersonName
+      }
       if (threadCreatorUUID == null) {
         "Chat for " + courseClassName
       } else if(personUUID.equals(threadCreatorUUID)) {

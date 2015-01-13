@@ -6,7 +6,7 @@ alter table ChatThread add column active tinyint(1);
 update ChatThread ct inner join CourseClassSupportChatThread cc on ct.uuid = cc.chatThreadUUID
     set ct.courseClassUUID = cc.courseClassUUID,
         ct.personUUID = cc.personUUID,
-        ct.threadType = cc.supportType,
+        ct.threadType = 'SUPPORT',
         ct.active = 1;
 
 alter table ChatThread add constraint fk_chatthread_courseclass_courseclassUUID foreign key (courseClassUUID) references CourseClass (uuid);

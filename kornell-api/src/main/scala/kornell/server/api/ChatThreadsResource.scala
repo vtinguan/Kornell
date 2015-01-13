@@ -19,6 +19,9 @@ import kornell.core.to.UnreadChatThreadsTO
 import kornell.core.to.ChatThreadMessagesTO
 import kornell.core.util.StringUtils
 import kornell.core.entity.ChatThreadType
+import kornell.server.util.Conditional.toConditional
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.util.RequirementNotMet
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
@@ -54,6 +57,13 @@ class ChatThreadsResource {
   			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  }
+  
+  @POST
+  @Path("direct/{personUUID}")
+  @Produces(Array("text/plain"))
+  def postMessageToDirectThread(@PathParam("personUUID") targetPersonUUID: String, message: String) = {
+        ChatThreadsRepo.postMessageToDirectThread(getAuthenticatedPersonUUID, targetPersonUUID, message)
   }
   
   @Path("unreadCount")
