@@ -220,7 +220,7 @@ package object repository {
 	    rs.getString("chatThreadUUID"), 
 	    rs.getString("chatThreadName"),
 	    rs.getString("courseClassUUID"),
-	    rs.getString("supportType"))
+	    rs.getString("threadType"))
 	
 	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
 	    rs.getString("senderFullName"),

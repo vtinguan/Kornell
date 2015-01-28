@@ -253,7 +253,8 @@ object ChatThreadsRepo {
 						| countByCC.threadLastReadAt,
 						| tm.personUUID,
 						| tm.sentAt,
-						| countByCC.lastSentAt
+						| countByCC.lastSentAt,
+    					| t.threadType
 					| from ChatThread t
 					| join (
 						| select distinct t.uuid as chatThreadUUID,

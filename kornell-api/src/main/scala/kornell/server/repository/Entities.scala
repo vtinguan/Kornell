@@ -311,7 +311,7 @@ object Entities {
 
   def newChatThreadParticipant(uuid: String = null, chatThreadUUID: String = null, personUUID: String = null, 
       chatThreadName: String = null, lastReadAt: Date = null, active: Boolean = false, lastJoinDate: Date = null) ={
-    val chatThreadParticipant = factory.newChatThreadParticipant().as
+    val chatThreadParticipant = factory.newChatThreadParticipant.as
     chatThreadParticipant.setUUID(uuid)
     chatThreadParticipant.setThreadUUID(chatThreadUUID)
     chatThreadParticipant.setPersonUUID(personUUID)

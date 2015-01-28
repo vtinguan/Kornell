@@ -33,6 +33,7 @@ import kornell.core.to.report.InstitutionBillingEnrollmentReportTO
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.to.report.InstitutionBillingMonthlyReportTO
+import kornell.core.entity.ChatThreadType
 
 //TODO: Consider turning to Object
 object TOs {
@@ -194,7 +195,7 @@ object TOs {
     to.setChatThreadUUID(chatThreadUUID)
     to.setChatThreadName(chatThreadName)
     to.setCourseClassUUID(courseClassUUID)
-    to.setSupportType(supportType)
+    to.setThreadType(ChatThreadType.valueOf(supportType))
     to
   }
 

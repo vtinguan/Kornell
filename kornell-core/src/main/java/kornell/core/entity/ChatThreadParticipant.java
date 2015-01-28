@@ -20,6 +20,6 @@ public interface ChatThreadParticipant extends Entity {
 	Boolean isActive();
 	void setActive(Boolean active);
 	
-	Date lastJoinDate();
+	Date getLastJoinDate();
 	void setLastJoinDate(Date lastJoinDate);
 }
