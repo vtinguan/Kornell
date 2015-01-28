@@ -33,6 +33,7 @@ import kornell.core.to.report.InstitutionBillingEnrollmentReportTO
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.to.report.InstitutionBillingMonthlyReportTO
+import kornell.core.entity.ChatThreadType
 
 //TODO: Consider turning to Object
 object TOs {
@@ -188,12 +189,13 @@ object TOs {
   }
 
   def newUnreadChatThreadTO: UnreadChatThreadTO = tos.newUnreadChatThreadTO.as 
-  def newUnreadChatThreadTO(unreadMessages: String, chatThreadUUID: String, chatThreadName: String, courseClassUUID: String): UnreadChatThreadTO = {
+  def newUnreadChatThreadTO(unreadMessages: String, chatThreadUUID: String, chatThreadName: String, courseClassUUID: String, supportType: String): UnreadChatThreadTO = {
     val to = newUnreadChatThreadTO
     to.setUnreadMessages(unreadMessages)
     to.setChatThreadUUID(chatThreadUUID)
     to.setChatThreadName(chatThreadName)
     to.setCourseClassUUID(courseClassUUID)
+    to.setThreadType(ChatThreadType.valueOf(supportType))
     to
   }
 
