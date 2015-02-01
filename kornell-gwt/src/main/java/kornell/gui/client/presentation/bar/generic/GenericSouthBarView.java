@@ -9,14 +9,20 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.util.Positioning;
+import kornell.gui.client.util.easing.Ease;
+import kornell.gui.client.util.easing.Transitions;
+import kornell.gui.client.util.easing.Updater;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -25,7 +31,12 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	interface MyUiBinder extends UiBinder<Widget, GenericSouthBarView> {
 	}
 
+	private static final int NO_SOUTH_BAR = 0;
+	private static final int ACTIVITY_BAR = 1;
+	private static final int ADMIN_BAR = 2;
+	private int currentSouthBar = 0;
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	IsWidget barView = null;
 	
 	private AdminBarView adminBarView;
 
@@ -53,21 +64,59 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 		});
 	}
 
-	private void pickSouthBar(Place newPlace) {
+	private void pickSouthBar(final Place newPlace) {
 		if(newPlace instanceof AdminPlace && clientFactory.getKornellSession().isPlatformAdmin()){
-			southBar.clear();
-			southBar.add(getAdminBarView(newPlace));
-			this.setVisible(true);
-			scrollPanel.addStyleName("offsetSouthBar");
+			if(currentSouthBar != ADMIN_BAR){
+				currentSouthBar = ADMIN_BAR;
+				barView = getAdminBarView(newPlace);
+				showSouthBar(barView);
+			}
 		} else if (newPlace instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null) {
-			southBar.clear();
-			southBar.add(getActivityBarView());
-			this.setVisible(true);
-			scrollPanel.addStyleName("offsetSouthBar");
+			if(currentSouthBar != ACTIVITY_BAR){
+				currentSouthBar = ACTIVITY_BAR;
+				barView = getActivityBarView();
+				showSouthBar(barView);
+			}
 		} else {
-			this.setVisible(false);
-			scrollPanel.removeStyleName("offsetSouthBar");
+			if(currentSouthBar != NO_SOUTH_BAR){
+				currentSouthBar = NO_SOUTH_BAR;
+				hideSouthBar(barView);
+			}
 		}
+	}
+	
+	private void hideSouthBar(final IsWidget barView){
+		scrollPanel.removeStyleName("offsetSouthBar");
+		if(barView == null){
+			setVisible(false);
+			return;
+		}
+        DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", "0px");
+		Ease.out(Transitions.QUAD, new Updater() {
+			@Override
+			public void update(double progress) {
+				int position = -((int) (Positioning.SOUTH_BAR * progress));
+				DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", position + "px");
+				if(position == -Positioning.SOUTH_BAR){
+					setVisible(false);
+				}
+			}
+		}).run(Positioning.BAR_ANIMATION_LENGTH);
+	}
+	
+	private void showSouthBar(final IsWidget barView){
+		southBar.clear();
+        DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", (Positioning.SOUTH_BAR * -1) + "px");
+		southBar.add(barView);
+		this.setVisible(true);
+		Ease.out(Transitions.QUAD, new Updater() {
+			@Override
+			public void update(double progress) {
+				int position = ((int) (Positioning.SOUTH_BAR * progress)) - Positioning.SOUTH_BAR;
+				DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", position + "px");
+			}
+		}).run(Positioning.BAR_ANIMATION_LENGTH);
+		scrollPanel.addStyleName("offsetSouthBar");
 	}
 
 	private ActivityBarView getActivityBarView() {

@@ -27,6 +27,10 @@ import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.util.Positioning;
+import kornell.gui.client.util.easing.Ease;
+import kornell.gui.client.util.easing.Transitions;
+import kornell.gui.client.util.easing.Updater;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -38,6 +42,7 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -145,8 +150,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 			placeBar.clear();
 		} else {
 			loadAssets();
-			setVisible(true);
-			removeStyleName("shy");
 			if (showingPlacePanel) {
 				scrollPanel.addStyleName("offsetNorthBarPlus");
 				scrollPanel.removeStyleName("offsetNorthBar");
@@ -157,6 +160,22 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				placeBar.setVisible(false);
 				placeBar.clear();
 			}
+            if(isVisible())
+                return;
+			final Widget widget = this.asWidget();
+			final int point = (showingPlacePanel ? Positioning.NORTH_BAR_PLUS : Positioning.NORTH_BAR);
+		    DOM.setStyleAttribute(widget.getElement(), "top", (point * -1) + "px");
+			setVisible(true);
+			removeStyleName("shy");
+		
+			Ease.out(Transitions.QUAD, new Updater() {
+				@Override
+				public void update(double progress) {
+					int position = ((int) (point * progress)) - point;
+					DOM.setStyleAttribute(widget.getElement(), "top", position + "px");
+				}
+			}).run(Positioning.BAR_ANIMATION_LENGTH);
+			
 			showButtons(place);
 		}
 	}
