@@ -4,5 +4,6 @@ public enum RoleType {
 	user,
 	courseClassAdmin,
 	institutionAdmin,
-	platformAdmin
+	platformAdmin,
+	tutor
 }

@@ -31,6 +31,10 @@ import kornell.server.repository.LibraryFilesRepository
 import java.io.IOException
 import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.jdbc.repository.ChatThreadsRepo
+import kornell.server.util.Conditional.toConditional
+import kornell.server.util.AccessDeniedErr
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.core.entity.ChatThreadType
 import java.sql.SQLException
 import kornell.server.repository.LibraryFilesRepository
 import javax.inject.Inject
@@ -39,17 +43,20 @@ import kornell.server.util.Identifiable
 import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.jdbc.repository.ChatThreadsRepo
+import kornell.server.auth.Authorizator
 
 @Dependent
-class CourseClassResource @Inject() (    
+class CourseClassResource @Inject() (
+    val auth:Authorizator,
     val libRepo:LibraryFilesRepository,
     val courseClassesRepo:CourseClassesRepo,
     val chatThreadsRepo:ChatThreadsRepo,
     val authRepo:AuthRepo,
-    val rolesRepo:RolesRepo) 
+    val rolesRepo:RolesRepo,
+    val personRepo: PersonRepo) 
 	extends Identifiable{  
   
-  def this() = this(null,null,null,null,null)
+  def this() = this(null, null, null,null,null,null,null)
   
   @GET
   @Produces(Array(CourseClass.TYPE))
@@ -127,7 +134,7 @@ class CourseClassResource @Inject() (
     authRepo.withPerson { person =>
       {
         val r = rolesRepo.updateCourseClassAdmins(uuid, roles)
-        chatThreadsRepo.updateParticipantsInCourseClassSupportThreads(uuid)
+        chatThreadsRepo.updateParticipantsInSupportThreads(uuid, ChatThreadType.SUPPORT)
         r
       }
     }
@@ -142,5 +149,27 @@ class CourseClassResource @Inject() (
         rolesRepo.getCourseClassAdmins(uuid, bindMode)
       }
     }
+  
+  @PUT
+  @Consumes(Array(Roles.TYPE))
+  @Produces(Array(Roles.TYPE))
+  @Path("tutors")
+  def updateTutors(roles: Roles) = authRepo.withPerson { person => {
+        val r = rolesRepo.updateTutors(uuid, roles)
+        chatThreadsRepo.updateParticipantsInSupportThreads(uuid, ChatThreadType.TUTORING)
+        r
+  }
+  }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
+   .or(auth.isInstitutionAdmin(personRepo.withUUID(auth.getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
+
+  @GET
+  @Produces(Array(RolesTO.TYPE))
+  @Path("tutors")
+  def updateTutors(@QueryParam("bind") bindMode:String) = {
+        rolesRepo.getTutorsForCourseClass(uuid, bindMode)
+  }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
+   .or(auth.isInstitutionAdmin(personRepo.withUUID(auth.getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
 
 }
