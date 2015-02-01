@@ -18,16 +18,22 @@ import javax.ws.rs.GET
 import kornell.core.to.UnreadChatThreadsTO
 import kornell.core.to.ChatThreadMessagesTO
 import kornell.core.util.StringUtils
+import kornell.core.entity.ChatThreadType
+import kornell.server.util.Conditional.toConditional
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.util.RequirementNotMet
 import javax.inject.Inject
+import kornell.server.auth.Authorizator
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
 class ChatThreadsResource @Inject ()(
+    val auth:Authorizator,
     val chatThreadsRepo:ChatThreadsRepo,
     val authRepo:AuthRepo
     ) {
   
-  def this() = this(null,null)
+  def this() = this(null, null,null)
 
   @POST
   @Path("courseClass/{courseClassUUID}")
@@ -35,7 +41,16 @@ class ChatThreadsResource @Inject ()(
   def postMessageToCourseClassSupportThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = authRepo.withPerson { person => 
-  		chatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message)
+  		chatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.SUPPORT)
+  }
+  
+  @POST
+  @Path("courseClass/{courseClassUUID}/tutoring")
+  @Produces(Array("text/plain"))
+  def postMessageToCourseClassTutoringThread(implicit @Context sc: SecurityContext, 
+    @PathParam("courseClassUUID") courseClassUUID: String,
+    message: String) = authRepo.withPerson { person => 
+        chatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.TUTORING)
   }
   
   @POST
@@ -50,6 +65,13 @@ class ChatThreadsResource @Inject ()(
   			chatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
   		else
   			chatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  }
+  
+  @POST
+  @Path("direct/{personUUID}")
+  @Produces(Array("text/plain"))
+  def postMessageToDirectThread(@PathParam("personUUID") targetPersonUUID: String, message: String) = {
+        chatThreadsRepo.postMessageToDirectThread(auth.getAuthenticatedPersonUUID, targetPersonUUID, message)
   }
   
   @Path("unreadCount")

@@ -215,6 +215,16 @@ object Entities {
     role.setCourseClassAdminRole(courseClassAdminRole)
     role
   }
+  
+  def newTutorRole(person_uuid: String, courseClassUUID: String) = {
+    val role = factory.newRole().as
+    role.setPersonUUID(person_uuid)
+    val tutorRole = factory.newTutorRole().as
+    tutorRole.setCourseClassUUID(courseClassUUID)
+    role.setRoleType(RoleType.tutor)
+    role.setCourseClassAdminRole(tutorRole)
+    role
+  }
 
   def newCourseVersion(
     uuid: String = randUUID, name: String = null, 
@@ -247,7 +257,8 @@ object Entities {
     createdAt: Date = null, createdBy: String = null,
     state: CourseClassState = null,
     registrationEnrollmentType: RegistrationEnrollmentType = null,
-    institutionRegistrationPrefix: String = null) = {
+    institutionRegistrationPrefix: String = null,
+    courseClassChatEnabled: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -263,6 +274,7 @@ object Entities {
     clazz.setState(state)
     clazz.setRegistrationEnrollmentType(registrationEnrollmentType)
     clazz.setInstitutionRegistrationPrefix(institutionRegistrationPrefix)
+    clazz.setCourseClassChatEnabled(courseClassChatEnabled)
     clazz
   }
 
@@ -304,12 +316,28 @@ object Entities {
     store
   }
 
-  def newChatThread(uuid: String = null, createdAt: Date = null, institutionUUID: String = null) = {
+  def newChatThread(uuid: String = null, createdAt: Date = null, institutionUUID: String = null, courseClassUUID: String = null, personUUID: String = null, threadType: String = null, active: Boolean = true) = {
     val chatThread = factory.newChatThread.as
     chatThread.setUUID(uuid)
     chatThread.setCreatedAt(createdAt)
     chatThread.setInstitutionUUID(institutionUUID)
+    chatThread.setCourseClassUUID(courseClassUUID)
+    chatThread.setPersonUUID(personUUID)
+    chatThread.setThreadType(threadType)
+    chatThread.setActive(active)
     chatThread
   }
 
+  def newChatThreadParticipant(uuid: String = null, chatThreadUUID: String = null, personUUID: String = null, 
+      chatThreadName: String = null, lastReadAt: Date = null, active: Boolean = false, lastJoinDate: Date = null) ={
+    val chatThreadParticipant = factory.newChatThreadParticipant.as
+    chatThreadParticipant.setUUID(uuid)
+    chatThreadParticipant.setThreadUUID(chatThreadUUID)
+    chatThreadParticipant.setPersonUUID(personUUID)
+    chatThreadParticipant.setChatThreadName(chatThreadName)
+    chatThreadParticipant.setLastReadAt(lastReadAt)
+    chatThreadParticipant.setActive(active)
+    chatThreadParticipant.setLastJoinDate(lastJoinDate)
+    chatThreadParticipant
+  }
 }

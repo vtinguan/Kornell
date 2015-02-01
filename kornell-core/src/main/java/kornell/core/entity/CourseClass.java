@@ -41,4 +41,7 @@ public interface CourseClass extends Named{
 	
 	String getInstitutionRegistrationPrefix();
 	void setInstitutionRegistrationPrefix(String institutionRegistrationPrefix);
+	
+	Boolean isCourseClassChatEnabled();
+	void setCourseClassChatEnabled(Boolean courseClassChatEnabled);
 }
