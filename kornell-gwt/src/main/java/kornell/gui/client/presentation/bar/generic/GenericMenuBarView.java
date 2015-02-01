@@ -25,6 +25,10 @@ import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
+import kornell.gui.client.util.Positioning;
+import kornell.gui.client.util.easing.Ease;
+import kornell.gui.client.util.easing.Transitions;
+import kornell.gui.client.util.easing.Updater;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -35,6 +39,7 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -122,14 +127,27 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	}
 
 	private void addOffsets(final ScrollPanel scrollPanel, Place place) {
-    if (place instanceof VitrinePlace) {
+		if (place instanceof VitrinePlace) {
+			if(!isVisible())
+				return;
 			setVisible(false);
 			addStyleName("shy");
 			scrollPanel.removeStyleName("offsetNorthBar");
 		} else {
+			if(isVisible())
+				return;
 			loadAssets();
+			final Widget widget = this.asWidget();
+	        DOM.setStyleAttribute(widget.getElement(), "top", (Positioning.NORTH_BAR * -1) + "px");
 			setVisible(true);
 			removeStyleName("shy");
+			Ease.out(Transitions.QUAD, new Updater() {
+				@Override
+				public void update(double progress) {
+					int position = ((int) (Positioning.NORTH_BAR * progress)) - Positioning.NORTH_BAR;
+					DOM.setStyleAttribute(widget.getElement(), "top", position + "px");
+				}
+			}).run(Positioning.BAR_ANIMATION_LENGTH);
 			scrollPanel.addStyleName("offsetNorthBar");
 			showButtons(place);
 		}

@@ -8,15 +8,20 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.util.Positioning;
+import kornell.gui.client.util.easing.Ease;
+import kornell.gui.client.util.easing.Transitions;
+import kornell.gui.client.util.easing.Updater;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -24,7 +29,11 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 
 	interface MyUiBinder extends UiBinder<Widget, GenericSouthBarView> {
 	}
-
+	
+	private static final int NO_SOUTH_BAR = 0;
+	private static final int ACTIVITY_BAR = 1;
+	private static final int ADMIN_BAR = 2;
+	private int currentSouthBar = 0;
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	
 	private AdminBarView adminBarView;
@@ -53,21 +62,40 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 		});
 	}
 
-	private void pickSouthBar(Place newPlace) {
+	private void pickSouthBar(final Place newPlace) {
 		if(newPlace instanceof AdminPlace && clientFactory.getKornellSession().isInstitutionAdmin()){
-			southBar.clear();
-			southBar.add(getAdminBarView(newPlace));
-			this.setVisible(true);
-			scrollPanel.addStyleName("offsetSouthBar");
+			if(currentSouthBar != ADMIN_BAR){
+				currentSouthBar = ADMIN_BAR;
+				showSouthBar(getAdminBarView(newPlace));
+				scrollPanel.addStyleName("offsetSouthBar");
+			}
 		} else if (newPlace instanceof ClassroomPlace) {
-			southBar.clear();
-			southBar.add(getActivityBarView());
-			this.setVisible(true);
-			scrollPanel.addStyleName("offsetSouthBar");
+			if(currentSouthBar != ACTIVITY_BAR){
+				currentSouthBar = ACTIVITY_BAR;
+				showSouthBar(getActivityBarView());
+			}
 		} else {
-			this.setVisible(false);
-			scrollPanel.removeStyleName("offsetSouthBar");
+			if(currentSouthBar != NO_SOUTH_BAR){
+				currentSouthBar = NO_SOUTH_BAR;
+				this.setVisible(false);
+				scrollPanel.removeStyleName("offsetSouthBar");
+			}
 		}
+	}
+	
+	private void showSouthBar(final IsWidget barView){
+		southBar.clear();
+        DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", (Positioning.SOUTH_BAR * -1) + "px");
+		southBar.add(barView);
+		this.setVisible(true);
+		Ease.out(Transitions.QUAD, new Updater() {
+			@Override
+			public void update(double progress) {
+				int position = ((int) (Positioning.SOUTH_BAR * progress)) - Positioning.SOUTH_BAR;
+				DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", position + "px");
+			}
+		}).run(Positioning.BAR_ANIMATION_LENGTH);
+		scrollPanel.addStyleName("offsetSouthBar");
 	}
 	
 	private ActivityBarView getActivityBarView() {
@@ -90,7 +118,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 
 	@Override
   public void onHideSouthBar(HideSouthBarEvent event) {
-		//clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
 		this.setVisible(!event.isHideSouthBar());
   }
 
