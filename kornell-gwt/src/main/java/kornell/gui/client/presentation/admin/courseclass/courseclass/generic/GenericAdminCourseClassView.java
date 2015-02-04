@@ -118,7 +118,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	private MessagePresenter messagePresenter;
 	private int totalCount = 0;
 	private EnrollmentTO selectedEnrollment;
-	private String courseVersionUUID;
+	private CourseClassTO courseClassTO;
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -656,18 +656,19 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 					transferModal.setTitle("Transferir Matrícula");
 					txtModalTransfer1.setText("Selecione a turma para qual deseja transferir esse participante:");
 					LoadingPopup.show();
-					session.courseClasses().getAdministratedCourseClassesByCourseVersion(courseVersionUUID, 
+					session.courseClasses().getAdministratedCourseClassesByCourseVersion(courseClassTO.getCourseClass().getCourseVersionUUID(), 
 							new Callback<CourseClassesTO>() {
 						@Override
 						public void ok(CourseClassesTO to) {
 							LoadingPopup.hide();
-							if(to.getCourseClasses() == null || to.getCourseClasses().size() == 0){
+							if(to.getCourseClasses() == null || to.getCourseClasses().size() == 0 || (to.getCourseClasses().size() == 1 && to.getCourseClasses().get(0).getCourseClass().getUUID().equals(courseClassTO.getCourseClass().getUUID()))){
 								KornellNotification.show("Nenhuma turma encontrada para qual esse usuário possa ser transferido.", AlertType.ERROR);
 							} else {
 								courseClassListBox.clear();
 								courseClassListBox.addItem("[Selecione uma turma]", "");
 								for (CourseClassTO courseClass : to.getCourseClasses()) {
-									courseClassListBox.addItem(courseClass.getCourseClass().getName(), courseClass.getCourseClass().getUUID());
+									if(!courseClass.getCourseClass().getUUID().equals(courseClassTO.getCourseClass().getUUID()))
+										courseClassListBox.addItem(courseClass.getCourseClass().getName(), courseClass.getCourseClass().getUUID());
 								}
 								transferModal.show();
 							}
@@ -792,18 +793,10 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	}
 
 	@Override
-	public void setCourseVersionUUID(String courseVersionUUID) {
-		this.courseVersionUUID = courseVersionUUID;
-	}
-
-	@Override
-	public void setCourseClassName(String courseClassName) {
-		this.lblCourseClassName.setText(courseClassName);
-	}
-
-	@Override
-	public void setCourseName(String courseName) {
-		this.lblCourseName.setText(courseName);
+	public void setCourseClassTO(CourseClassTO courseClassTO) {
+		this.courseClassTO = courseClassTO;
+		this.lblCourseClassName.setText(courseClassTO.getCourseClass().getName());
+		this.lblCourseName.setText(courseClassTO.getCourseVersionTO().getCourse().getTitle());
 	}
 
 	@Override

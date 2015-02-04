@@ -90,11 +90,11 @@ class RegistrationEnrollmentService @Inject()(
 
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person, cancelEnrollment: Boolean) = {
     if(cancelEnrollment && !EnrollmentState.cancelled.equals(enrollment.getState))
-      eventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled)
+      eventsRepo.logEnrollmentStateChanged(dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled)
     else if (EnrollmentState.cancelled.equals(enrollment.getState) 
         || EnrollmentState.requested.equals(enrollment.getState()) 
         || EnrollmentState.denied.equals(enrollment.getState())) {
-      eventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
+      eventsRepo.logEnrollmentStateChanged(dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled)
     }
   }
 
@@ -152,7 +152,7 @@ class RegistrationEnrollmentService @Inject()(
   private def createEnrollment(personUUID: String, courseClassUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
     val enrollment = enrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled,null,null,null,null,null))
     eventsRepo.logEnrollmentStateChanged(
-      UUID.random, ServerTime.now, enrollerUUID,
+      enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState)
   }
 }

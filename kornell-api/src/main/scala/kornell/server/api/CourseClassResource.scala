@@ -67,7 +67,7 @@ class CourseClassResource @Inject() (
   @Produces(Array(CourseClassTO.TYPE))
   def getTO = 
     authRepo.withPerson { person =>
-		val courseClassesTO = courseClassesRepo.getAllClassesByInstitution(null, uuid)
+		val courseClassesTO = courseClassesRepo.getAllClassesByInstitutionAndVersion(personRepo.withUUID(auth.getAuthenticatedPersonUUID).get.getInstitutionUUID, null, uuid)
 		if(courseClassesTO.getCourseClasses.size > 0){
 		  courseClassesTO.getCourseClasses.get(0)
 		}

@@ -65,7 +65,7 @@ class CourseClassesRepo @Inject() (
     | where state <> ${CourseClassState.deleted}
     """.map[CourseClass](toCourseClass)
 
-  def getAllClassesByInstitution(institutionUUID: String, courseClassUUID: String): kornell.core.to.CourseClassesTO = {
+  def getAllClassesByInstitutionAndVersion(institutionUUID: String, courseVersionUUID: String, courseClassUUID: String): kornell.core.to.CourseClassesTO = {
     TOs.newCourseClassesTO(
       sql"""
 			select     
@@ -99,14 +99,15 @@ class CourseClassesRepo @Inject() (
 			join CourseVersion cv on cv.course_uuid = c.uuid
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid
 		    and cc.institution_uuid = ${institutionUUID}
-      and (cc.uuid = ${courseClassUUID} or ${courseClassUUID} is null)
       where cc.state <> ${CourseClassState.deleted.toString}
+      and (cc.uuid = ${courseClassUUID} or ${courseClassUUID} is null)
+      and (cc.courseVersion_uuid = ${courseVersionUUID} or ${courseVersionUUID} is null)
 		  order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
 		""".map[CourseClassTO](toCourseClassTO))
   }
 
   def byPersonAndInstitution(personUUID: String, institutionUUID: String) = {
-    val courseClassesTO = getAllClassesByInstitution(institutionUUID, null)
+    val courseClassesTO = getAllClassesByInstitutionAndVersion(institutionUUID, null, null)
     val classes = courseClassesTO.getCourseClasses().asScala
     //bind enrollment if it exists
     classes.foreach(cc => bindEnrollment(personUUID, cc))
@@ -115,8 +116,8 @@ class CourseClassesRepo @Inject() (
     courseClassesTO
   }
 
-  def administratedByPersonOnInstitution(person: Person, institutionUUID: String, roles: List[Role]) = {
-    val courseClassesTO = getAllClassesByInstitution(institutionUUID, null)
+  def administratedByPersonOnInstitution(person: Person, institutionUUID: String, courseVersionUUID: String, roles: List[Role]) = {
+    val courseClassesTO = getAllClassesByInstitutionAndVersion(institutionUUID, courseVersionUUID, null)
     val classes = courseClassesTO.getCourseClasses().asScala
     courseClassesTO.setCourseClasses(classes.filter(cc => isCourseClassAdmin(cc.getCourseClass().getUUID(), institutionUUID, roles)).asJava)
     courseClassesTO

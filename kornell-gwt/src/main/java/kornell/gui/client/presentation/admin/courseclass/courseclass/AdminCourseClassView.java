@@ -34,9 +34,7 @@ public interface AdminCourseClassView extends IsWidget {
 	void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, boolean refresh);
 	void showModal(boolean b);
 	void setModalErrors(String title, String lbl1, String errors, String lbl2);
-	void setCourseClassName(String courseClassName);
-	void setCourseName(String courseName);
-	void setCourseVersionUUID(String courseVersionUUID);
+	void setCourseClassTO(CourseClassTO courseClassTO);
 	void setHomeTabActive();
 	void showEnrollmentsPanel(boolean visible);
 	void showTabsPanel(boolean visible);

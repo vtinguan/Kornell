@@ -2,6 +2,7 @@ package kornell.api.client;
 
 import kornell.core.entity.CourseClass;
 import kornell.core.to.CourseClassesTO;
+import kornell.core.util.StringUtils;
 
 public class CourseClassesClient extends RESTClient {
 	
@@ -18,7 +19,8 @@ public class CourseClassesClient extends RESTClient {
 	}
 
 	public void getAdministratedCourseClassesByCourseVersion(String courseVersionUUID, Callback<CourseClassesTO> cb) {
-		GET("/courseClasses/administrated?courseVersionUUID="+courseVersionUUID).sendRequest(null, cb);
+		GET("/courseClasses/administrated" + 
+				(StringUtils.isSome(courseVersionUUID) ? "?courseVersionUUID="+courseVersionUUID : "")).sendRequest(null, cb);
 	}
 
 }

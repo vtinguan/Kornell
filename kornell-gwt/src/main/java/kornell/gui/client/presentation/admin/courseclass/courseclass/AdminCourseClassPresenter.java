@@ -197,11 +197,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		if(courseClassTO == null)
 			return;
 		Dean.getInstance().setCourseClassTO(courseClassTO);
-		view.setCourseClassName(courseClassTO.getCourseClass().getName());
-		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse()
-				.getTitle());
+		view.setCourseClassTO(courseClassTO);
 		view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
-		view.setCourseVersionUUID(courseClassTO.getCourseClass().getCourseVersionUUID());
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 	
