@@ -65,9 +65,12 @@ class CourseClassResource @Inject() (
   @GET
   @Path("to")
   @Produces(Array(CourseClassTO.TYPE))
-  def get(implicit @Context sc: SecurityContext) =
+  def getTO = 
     authRepo.withPerson { person =>
-      //CourseClasses(uuid).byPerson(person.getUUID)
+		val courseClassesTO = courseClassesRepo.getAllClassesByInstitution(null, uuid)
+		if(courseClassesTO.getCourseClasses.size > 0){
+		  courseClassesTO.getCourseClasses.get(0)
+		}
     }
 
   //TODO: exception handling

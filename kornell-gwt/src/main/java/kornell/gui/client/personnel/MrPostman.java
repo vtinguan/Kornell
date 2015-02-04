@@ -81,7 +81,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 	
 	private void getUnreadMessagesPerThread(boolean forceFetch) {
 		if(forceFetch || !(placeCtrl.getWhere() instanceof VitrinePlace)){
-	    chatThreadsClient.getTotalUnreadCountsPerThread(Dean.getInstance().getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
+			chatThreadsClient.getTotalUnreadCountsPerThread(Dean.getInstance().getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
 				@Override
 				public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
 					bus.fireEvent(new UnreadMessagesPerThreadFetchedEvent(unreadChatThreadsTO.getUnreadChatThreadTOs()));

@@ -180,27 +180,11 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			view.showEnrollmentsPanel(false);
 		}
 		LoadingPopup.show();
-		session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
-				new Callback<CourseClassesTO>() {
+		session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {
 			@Override
-			public void ok(CourseClassesTO to) {
-				courseClassesTO = to;
+			public void ok(CourseClassTO courseClassTO) {
 				LoadingPopup.hide();
-				if(courseClassesTO.getCourseClasses().size() == 0){
-					updateCourseClassUI(null);
-				} else {
-					for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-						if (courseClassUUID == null || courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)) {
-							updateCourseClassUI(courseClassTO);
-							return;
-						}
-					}
-					if(courseClassesTO != null && courseClassesTO.getCourseClasses().size() > 0){
-						updateCourseClassUI(courseClassesTO.getCourseClasses().get(0));
-					} else {
-						updateCourseClassUI(null);
-					}
-				}
+				updateCourseClassUI(courseClassTO);
 			}
 		});
 	}
@@ -217,6 +201,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse()
 				.getTitle());
 		view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
+		view.setCourseVersionUUID(courseClassTO.getCourseClass().getCourseVersionUUID());
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 	
@@ -298,6 +283,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			return true;
 		} else if("Certificado".equals(actionName)){
 			return EnrollmentCategory.isFinished(enrollmentTO.getEnrollment());
+		} else if("Transferir".equals(actionName)){
+			return true;
 		}
 		return false;
 	}
@@ -515,7 +502,13 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				});
 	}
 	
-		
+
+
+	@Override
+	public void onModalTransferOkButtonClicked(String enrollmentUUID, String courseClassUUID) {
+		view.showModal(false);
+		KornellNotification.show("Yup", 1000);
+	}
 
 	@Override
 	public void onModalOkButtonClicked() {

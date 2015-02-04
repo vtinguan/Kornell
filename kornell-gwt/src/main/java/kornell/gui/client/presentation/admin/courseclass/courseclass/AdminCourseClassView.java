@@ -21,6 +21,7 @@ public interface AdminCourseClassView extends IsWidget {
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);
 		void onGoToCourseButtonClicked();
 		void onModalOkButtonClicked();
+		void onModalTransferOkButtonClicked(String enrollmentUUID, String targetCourseClassUUID);
 		void onUserClicked(EnrollmentTO enrollmentTO);
 		void updateCourseClass(String courseClassUUID);
 		List<EnrollmentTO> getEnrollments();
@@ -35,6 +36,7 @@ public interface AdminCourseClassView extends IsWidget {
 	void setModalErrors(String title, String lbl1, String errors, String lbl2);
 	void setCourseClassName(String courseClassName);
 	void setCourseName(String courseName);
+	void setCourseVersionUUID(String courseVersionUUID);
 	void setHomeTabActive();
 	void showEnrollmentsPanel(boolean visible);
 	void showTabsPanel(boolean visible);

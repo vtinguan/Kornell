@@ -3,7 +3,7 @@
 
 	<g:FlowPanel ui:field="adminHomePanel" addStyleNames="deanHome">
 		<b:TabPanel tabPosition="middle" ui:field="tabsPanel">
-      <b:Tab ui:field="enrollmentsTab" icon="BOOK" heading="Participantes" active="true">
+			<b:Tab ui:field="enrollmentsTab" icon="BOOK" heading="Participantes" active="true">
 				<g:FlowPanel ui:field="enrollmentsPanel">
 				  <g:FlowPanel>
 						<g:HTMLPanel addStyleNames="title">Participantes</g:HTMLPanel>
@@ -30,48 +30,57 @@
 							</g:FlowPanel>
 						</g:FlowPanel>
 					</b:Modal>
+					<b:Modal ui:field="transferModal" backdrop="STATIC" addStyleNames="forgotPasswordModal">
+						<g:FlowPanel>
+							<g:Label ui:field="txtModalTransfer1"></g:Label>
+							<b:ListBox ui:field="courseClassListBox" addStyleNames="marginTop15 fillWidth"></b:ListBox>
+							<g:FlowPanel addStyleNames="standardButtonBar">
+								<g:Button ui:field="btnModalTransferOK" addStyleNames="btnAction btnStandard"/>
+								<g:Button ui:field="btnModalTransferCancel" addStyleNames="btnNotSelected btnStandard"/>
+							</g:FlowPanel>
+						</g:FlowPanel>
+					</b:Modal>
 				</g:FlowPanel>
-		  </b:Tab>
-      <b:Tab ui:field="enrollTab" icon="PLUS_SIGN" heading="Matricular" active="true">
-        <g:FlowPanel ui:field="enrollPanel">
-          <g:FlowPanel addStyleNames="wrapperWidth">
-            <g:FlowPanel ui:field="addEnrollmentsPanel">
-              <g:HTMLPanel addStyleNames="title">Matricular Participante</g:HTMLPanel>
-              <g:FlowPanel addStyleNames="controlsPanel">
-                <g:FlowPanel addStyleNames="insertPanel">
-                  <g:Label addStyleNames="inlineLabel">Nome Completo: </g:Label>
-                  <b:TextBox ui:field="txtFullName"></b:TextBox>
-                  <g:Label ui:field="identifierLabel" addStyleNames="inlineLabel"></g:Label>
-                  <b:TextBox ui:field="txtEmail"></b:TextBox>
-                  <b:Button ui:field="btnAddEnrollment" addStyleNames="btnAction btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
-                </g:FlowPanel>
-              </g:FlowPanel>
-              <g:FlowPanel addStyleNames="marginTop25 left">
-                <g:HTMLPanel addStyleNames="title">Matricular Participantes em Lote</g:HTMLPanel>
-                <g:FlowPanel addStyleNames="addEnrollmentBatchPanel">
-                  <b:TextArea ui:field="txtAddEnrollmentBatch"></b:TextArea>
-                  <g:FlowPanel addStyleNames="infoPanel">
-                    <g:FlowPanel ui:field="infoPanel">
-                    </g:FlowPanel>
-                    <b:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnAction btnAddEnrollmentBatch btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
-                  </g:FlowPanel>
-                </g:FlowPanel>
-              </g:FlowPanel>
-            </g:FlowPanel>
-          </g:FlowPanel>
-        </g:FlowPanel>
-      </b:Tab>
+			</b:Tab>
+			<b:Tab ui:field="enrollTab" icon="PLUS_SIGN" heading="Matricular" active="true">
+			  <g:FlowPanel ui:field="enrollPanel">
+			    <g:FlowPanel addStyleNames="wrapperWidth">
+			      <g:FlowPanel ui:field="addEnrollmentsPanel">
+			        <g:HTMLPanel addStyleNames="title">Matricular Participante</g:HTMLPanel>
+			        <g:FlowPanel addStyleNames="controlsPanel">
+			          <g:FlowPanel addStyleNames="insertPanel">
+			            <g:Label addStyleNames="inlineLabel">Nome Completo: </g:Label>
+			            <b:TextBox ui:field="txtFullName"></b:TextBox>
+			            <g:Label ui:field="identifierLabel" addStyleNames="inlineLabel"></g:Label>
+			            <b:TextBox ui:field="txtEmail"></b:TextBox>
+			            <b:Button ui:field="btnAddEnrollment" addStyleNames="btnAction btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
+			          </g:FlowPanel>
+			        </g:FlowPanel>
+			        <g:FlowPanel addStyleNames="marginTop25 left">
+			          <g:HTMLPanel addStyleNames="title">Matricular Participantes em Lote</g:HTMLPanel>
+			          <g:FlowPanel addStyleNames="addEnrollmentBatchPanel">
+			            <b:TextArea ui:field="txtAddEnrollmentBatch"></b:TextArea>
+			            <g:FlowPanel addStyleNames="infoPanel">
+			              <g:FlowPanel ui:field="infoPanel">
+			              </g:FlowPanel>
+			              <b:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnAction btnAddEnrollmentBatch btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
+			            </g:FlowPanel>
+			          </g:FlowPanel>
+			        </g:FlowPanel>
+			      </g:FlowPanel>
+			    </g:FlowPanel>
+			  </g:FlowPanel>
+			</b:Tab>
 			<b:Tab ui:field="configTab" icon="COGS" heading="Configuração" active="false">
-		    <g:FlowPanel ui:field="configPanel"></g:FlowPanel >
-		  </b:Tab>
-      <b:Tab ui:field="reportsTab" icon="BAR_CHART" heading="Relatórios" active="false">
-        <g:FlowPanel ui:field="reportsPanel"></g:FlowPanel >
-      </b:Tab>
-      <b:Tab ui:field="messagesTab" icon="ENVELOPE" heading="Mensagens" active="false">
-        <g:FlowPanel ui:field="messagesPanel"></g:FlowPanel >
-      </b:Tab>
+			  <g:FlowPanel ui:field="configPanel"></g:FlowPanel >
+			</b:Tab>
+			<b:Tab ui:field="reportsTab" icon="BAR_CHART" heading="Relatórios" active="false">
+			  <g:FlowPanel ui:field="reportsPanel"></g:FlowPanel >
+			</b:Tab>
+			<b:Tab ui:field="messagesTab" icon="ENVELOPE" heading="Mensagens" active="false">
+			  <g:FlowPanel ui:field="messagesPanel"></g:FlowPanel >
+			</b:Tab>
 		</b:TabPanel>
-		
 	</g:FlowPanel>
 
 </ui:UiBinder>

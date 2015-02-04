@@ -65,7 +65,7 @@ class CourseClassesRepo @Inject() (
     | where state <> ${CourseClassState.deleted}
     """.map[CourseClass](toCourseClass)
 
-  private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = {
+  def getAllClassesByInstitution(institutionUUID: String, courseClassUUID: String): kornell.core.to.CourseClassesTO = {
     TOs.newCourseClassesTO(
       sql"""
 			select     
@@ -99,13 +99,14 @@ class CourseClassesRepo @Inject() (
 			join CourseVersion cv on cv.course_uuid = c.uuid
 			join CourseClass cc on cc.courseVersion_uuid = cv.uuid
 		    and cc.institution_uuid = ${institutionUUID}
+      and (cc.uuid = ${courseClassUUID} or ${courseClassUUID} is null)
       where cc.state <> ${CourseClassState.deleted.toString}
 		  order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
 		""".map[CourseClassTO](toCourseClassTO))
   }
 
   def byPersonAndInstitution(personUUID: String, institutionUUID: String) = {
-    val courseClassesTO = getAllClassesByInstitution(institutionUUID)
+    val courseClassesTO = getAllClassesByInstitution(institutionUUID, null)
     val classes = courseClassesTO.getCourseClasses().asScala
     //bind enrollment if it exists
     classes.foreach(cc => bindEnrollment(personUUID, cc))
@@ -115,7 +116,7 @@ class CourseClassesRepo @Inject() (
   }
 
   def administratedByPersonOnInstitution(person: Person, institutionUUID: String, roles: List[Role]) = {
-    val courseClassesTO = getAllClassesByInstitution(institutionUUID)
+    val courseClassesTO = getAllClassesByInstitution(institutionUUID, null)
     val classes = courseClassesTO.getCourseClasses().asScala
     courseClassesTO.setCourseClasses(classes.filter(cc => isCourseClassAdmin(cc.getCourseClass().getUUID(), institutionUUID, roles)).asJava)
     courseClassesTO
