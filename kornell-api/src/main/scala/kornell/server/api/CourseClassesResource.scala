@@ -90,13 +90,10 @@ class CourseClassesResource @Inject() (
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
   @Path("administrated")
-  def getAdministratedClasses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID: String) =
-    authRepo.withPerson { person =>
-      {
-        if (institutionUUID != null) {
-          val roles = authRepo.userRoles
-          courseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList)
-        }
+  def getAdministratedClasses(@QueryParam("courseVersionUUID") courseVersionUUID: String) = authRepo.withPerson { 
+    person => {
+    	  val roles = authRepo.userRoles
+          courseClassesRepo.administratedByPersonOnInstitution(person, person.getInstitutionUUID, courseVersionUUID, roles.toList)
       }
     }
 }

@@ -18,6 +18,8 @@ import kornell.core.entity.CourseClassState
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 import kornell.server.ep.EnrollmentSEP
+import kornell.core.event.EnrollmentTransfered
+import kornell.core.util.UUID
 
 @ApplicationScoped
 class EventsRepo @Inject()(
@@ -65,12 +67,12 @@ class EventsRepo @Inject()(
 
   }
 
-  def logEnrollmentStateChanged(uuid: String, eventFiredAt: String, fromPersonUUID: String,
+  def logEnrollmentStateChanged(fromPersonUUID: String,
     enrollmentUUID: String, fromState: EnrollmentState, toState: EnrollmentState) = {
 
     sql"""insert into EnrollmentStateChanged(uuid,eventFiredAt,person_uuid,enrollment_uuid,fromState,toState)
-	    values(${uuid},
-			   ${eventFiredAt},
+	    values(${UUID.random},
+			   now(),
          ${fromPersonUUID},
          ${enrollmentUUID},
          ${fromState.toString},
@@ -93,15 +95,15 @@ class EventsRepo @Inject()(
   }
 
   def logEnrollmentStateChanged(event: EnrollmentStateChanged): Unit =
-    logEnrollmentStateChanged(event.getUUID, event.getEventFiredAt, event.getFromPersonUUID,
+    logEnrollmentStateChanged(event.getFromPersonUUID,
       event.getEnrollmentUUID, event.getFromState, event.getToState)
 
-  def logCourseClassStateChanged(uuid: String, eventFiredAt: String, fromPersonUUID: String,
+  def logCourseClassStateChanged(fromPersonUUID: String,
     courseClassUUID: String, fromState: CourseClassState, toState: CourseClassState) = {
 
     sql"""insert into CourseClassStateChanged(uuid,eventFiredAt,personUUID,courseClassUUID,fromState,toState)
-	    values(${uuid},
-			   ${eventFiredAt},
+	    values(${UUID.random},
+			   now(),
          ${fromPersonUUID},
          ${courseClassUUID},
          ${fromState.toString},
@@ -114,7 +116,18 @@ class EventsRepo @Inject()(
   }
 
   def logCourseClassStateChanged(event: CourseClassStateChanged): Unit =
-    logCourseClassStateChanged(event.getUUID, event.getEventFiredAt, event.getFromPersonUUID,
+    logCourseClassStateChanged(event.getFromPersonUUID,
       event.getCourseClassUUID, event.getFromState, event.getToState)
 
+  def logEnrollmentTransfered(event: EnrollmentTransfered): Unit = {
+    sql"""insert into EnrollmentTransfered (uuid, personUUID, enrollmentUUID, fromCourseClassUUID, toCourseClassUUID, eventFiredAt) 
+    	values (${UUID.random},
+    	${event.getFromPersonUUID},
+    	${event.getEnrollmentUUID},
+    	${event.getFromCourseClassUUID},
+    	${event.getToCourseClassUUID},
+    	now());""".executeUpdate
+    	
+    	enrollmentRepo.transfer(event.getEnrollmentUUID, event.getFromCourseClassUUID, event.getToCourseClassUUID)
+  }
 }
