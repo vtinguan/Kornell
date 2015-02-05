@@ -504,6 +504,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	@Override
 	public void onModalTransferOkButtonClicked(String enrollmentUUID, String courseClassUUID) {
 		view.showModal(false);
+	  	enrollmentsCacheMap.remove(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 		session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
 		.fire(new Callback<Void>() {
 			@Override
