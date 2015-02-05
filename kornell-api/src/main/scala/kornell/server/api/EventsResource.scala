@@ -43,6 +43,7 @@ class EventsResource @Inject() (
   }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
    .or(auth.isInstitutionAdmin(personRepo.withUUID(auth.getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(auth.isCourseClassAdmin(enrollmentRepo.get(event.getEnrollmentUUID).getCourseClassUUID), AccessDeniedErr())
+   .get
   
   @PUT
   @Path("courseClassStateChanged")
@@ -52,6 +53,7 @@ class EventsResource @Inject() (
   }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
    .or(auth.isInstitutionAdmin(personRepo.withUUID(auth.getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(auth.isCourseClassAdmin(event.getCourseClassUUID), AccessDeniedErr())
+   .get
   
   @PUT
   @Path("attendanceSheetSigned")
@@ -67,5 +69,6 @@ class EventsResource @Inject() (
      eventsRepo.logEnrollmentTransfered(event)
   }.requiring(auth.isPlatformAdmin, AccessDeniedErr())
    .or(auth.isInstitutionAdmin(personRepo.withUUID(auth.getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
-   .or((auth.isCourseClassAdmin(event.getFromCourseClassUUID) && auth.isCourseClassAdmin(event.getToCourseClassUUID)))
+   .or((auth.isCourseClassAdmin(event.getFromCourseClassUUID) && auth.isCourseClassAdmin(event.getToCourseClassUUID)), AccessDeniedErr())
+   .get
 }

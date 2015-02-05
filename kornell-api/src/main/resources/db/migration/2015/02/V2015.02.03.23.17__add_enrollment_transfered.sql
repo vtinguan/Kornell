@@ -1,4 +1,4 @@
-create table if not exists EnrollmentTransfer (
+create table if not exists EnrollmentTransfered (
 	uuid char(36),
 	eventFiredAt char(29),
 	personUUID char(36),

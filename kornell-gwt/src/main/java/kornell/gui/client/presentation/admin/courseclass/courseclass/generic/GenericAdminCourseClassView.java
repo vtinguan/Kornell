@@ -661,7 +661,10 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 						@Override
 						public void ok(CourseClassesTO to) {
 							LoadingPopup.hide();
-							if(to.getCourseClasses() == null || to.getCourseClasses().size() == 0 || (to.getCourseClasses().size() == 1 && to.getCourseClasses().get(0).getCourseClass().getUUID().equals(courseClassTO.getCourseClass().getUUID()))){
+							if(to.getCourseClasses() == null || 
+									to.getCourseClasses().size() == 0 || 
+									(to.getCourseClasses().size() == 1 && 
+										to.getCourseClasses().get(0).getCourseClass().getUUID().equals(courseClassTO.getCourseClass().getUUID()))){
 								KornellNotification.show("Nenhuma turma encontrada para qual esse usuário possa ser transferido.", AlertType.ERROR);
 							} else {
 								courseClassListBox.clear();

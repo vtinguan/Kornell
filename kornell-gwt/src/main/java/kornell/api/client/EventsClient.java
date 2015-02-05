@@ -6,6 +6,7 @@ import kornell.core.event.ActomEntered;
 import kornell.core.event.AttendanceSheetSigned;
 import kornell.core.event.CourseClassStateChanged;
 import kornell.core.event.EnrollmentStateChanged;
+import kornell.core.event.EnrollmentTransfered;
 import kornell.core.event.Event;
 import kornell.core.event.EventFactory;
 import kornell.core.util.UUID;
@@ -54,6 +55,17 @@ public class EventsClient extends RESTClient {
 		courseClassStateChanged.setToState(toState);
 		courseClassStateChanged.setUUID(UUID.random());
 		return withEvent("/events/courseClassStateChanged",CourseClassStateChanged.TYPE,courseClassStateChanged);
+	}
+
+	public EventClient enrollmentTransfered(String enrollmentUUID, String toCourseClassUUID, String fromCourseClassUUID, String personUUID) {
+		EnrollmentTransfered enrollmentTransfered = factory.newEnrollmentTransfered().as();
+		enrollmentTransfered.setFromPersonUUID(personUUID);
+		enrollmentTransfered.setEnrollmentUUID(enrollmentUUID);
+		enrollmentTransfered.setFromCourseClassUUID(fromCourseClassUUID);
+		enrollmentTransfered.setToCourseClassUUID(toCourseClassUUID);
+		enrollmentTransfered.setEventFiredAt(ClientTime.now());
+		enrollmentTransfered.setUUID(UUID.random());
+		return withEvent("/events/enrollmentTransfered",EnrollmentTransfered.TYPE,enrollmentTransfered);
 	}
 
 	private EventClient withEvent(String path, String contentType, Event event) {

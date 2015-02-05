@@ -342,12 +342,14 @@ class ChatThreadsRepo @Inject() (
    */
   def addParticipantToCourseClassThread(enrollment: Enrollment) {
     val chatThread = getCourseClassGlobalChatThread(enrollment.getCourseClassUUID)
-    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
-    if (!participant.isDefined) {
-      val courseClass = courseClassesRepo.byUUID(enrollment.getCourseClassUUID).get
-      createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
-    } else {
-      updateChatThreadParticipantStatus(participant.get.getUUID, true)
+    if(chatThread.isDefined){
+	    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
+	    if (!participant.isDefined) {
+	      val courseClass = courseClassesRepo.byUUID(enrollment.getCourseClassUUID).get
+	      createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
+	    } else {
+	      updateChatThreadParticipantStatus(participant.get.getUUID, true)
+	    }
     }
   }
   
@@ -356,9 +358,11 @@ class ChatThreadsRepo @Inject() (
    */
   def disableParticipantFromCourseClassThread(enrollment: Enrollment) = {
     val chatThread = getCourseClassGlobalChatThread(enrollment.getCourseClassUUID)
-    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
-    if (participant.isDefined) {
-      updateChatThreadParticipantStatus(participant.get.getUUID, false)
+    if(chatThread.isDefined){
+	    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
+	    if (participant.isDefined) {
+	      updateChatThreadParticipantStatus(participant.get.getUUID, false)
+	    }
     }
   }
   

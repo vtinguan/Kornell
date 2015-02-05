@@ -504,7 +504,17 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	@Override
 	public void onModalTransferOkButtonClicked(String enrollmentUUID, String courseClassUUID) {
 		view.showModal(false);
-		KornellNotification.show("Yup", 1000);
+		session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
+		.fire(new Callback<Void>() {
+			@Override
+			public void ok(Void to) {
+				LoadingPopup.hide();
+				getEnrollments(Dean.getInstance().getCourseClassTO()
+						.getCourseClass().getUUID());
+				view.setCanPerformEnrollmentAction(true);
+				KornellNotification.show("Usuário transferido com sucesso.", 2000);
+			}
+		});
 	}
 
 	@Override
