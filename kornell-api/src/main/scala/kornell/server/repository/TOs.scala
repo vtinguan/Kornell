@@ -99,7 +99,7 @@ object TOs {
   }
 
   def newRegistrationRequestTO: RegistrationRequestTO = tos.newRegistrationRequestTO.as
-  def newRegistrationRequestTO(institutionUUID: String, fullName: String, email: String, password: String,cpf:String=null,username:String=null, registrationType: RegistrationType): RegistrationRequestTO = {
+  def newRegistrationRequestTO(institutionUUID: String, fullName: String, email: String, password: String,cpf:String=null,username:String=null, registrationType: RegistrationType=null): RegistrationRequestTO = {
     val to = newRegistrationRequestTO
     to.setInstitutionUUID(institutionUUID)
     to.setFullName(fullName)

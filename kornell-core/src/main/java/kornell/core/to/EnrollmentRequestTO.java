@@ -2,7 +2,7 @@ package kornell.core.to;
 
 import kornell.core.entity.RegistrationType;
 
-public interface EnrollmentRexquestTO {
+public interface EnrollmentRequestTO {
 	public static final String TYPE = TOFactory.PREFIX + "enrollmentRequest+json";
 	
 	String getInstitutionUUID();

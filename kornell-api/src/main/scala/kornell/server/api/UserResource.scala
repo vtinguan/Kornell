@@ -31,6 +31,7 @@ import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
 import kornell.server.web.BasicAuthFilter
 import kornell.core.to.UserHelloTO
+import kornell.core.entity.RegistrationType
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -241,7 +242,7 @@ class UserResource(private val authRepo:AuthRepo) {
   }
 
   def createUser(institutionUUID: String, fullName: String, email: String, cpf: String, username: String, password: String): String = {
-    val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username)
+    val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username, RegistrationType.email)
     createUser(regreq).getPerson.getUUID
   }
 

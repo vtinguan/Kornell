@@ -51,7 +51,7 @@ class EnrollmentsSpec
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])   
     val totalEnrollments = 10
     for(i <- 1 to totalEnrollments){
-    	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+cpf, "hunter2", RegistrationType.cpf, false))
+    	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+cpf, "hunter2", RegistrationType.cpf, null, false))
     } 
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
     

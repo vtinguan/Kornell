@@ -9,7 +9,7 @@ import kornell.server.api.CourseClassesResource
 import kornell.core.entity.CourseClass
 import kornell.server.api.RepositoryResource
 import kornell.server.jdbc.repository.RepositoriesRepo
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import kornell.server.jdbc.repository.CourseVersionsRepo
 import kornell.server.jdbc.repository.CoursesRepo
 
@@ -32,18 +32,18 @@ trait GenCourseClass
   def newPublicCourseClass = CourseClassesResource().create((Entities.newCourseClass(
     courseVersionUUID=courseVersionUUID,
     institutionUUID=institutionUUID,
-    registrationEnrollmentType=RegistrationEnrollmentType.email,
+    registrationType=RegistrationType.email,
     publicClass=true)))
         
   def newCourseClassCpf:CourseClass = CourseClassesResource().create((Entities.newCourseClass(
     name=randStr(5),
     courseVersionUUID=courseVersionUUID,
     institutionUUID=institutionUUID,
-    registrationEnrollmentType=RegistrationEnrollmentType.cpf)))
+    registrationType=RegistrationType.cpf)))
         
   def newCourseClassEmail:CourseClass = CourseClassesResource().create((Entities.newCourseClass(
     name=randStr(5),
     courseVersionUUID=courseVersionUUID,
     institutionUUID=institutionUUID,
-    registrationEnrollmentType=RegistrationEnrollmentType.email)))
+    registrationType=RegistrationType.email)))
 }

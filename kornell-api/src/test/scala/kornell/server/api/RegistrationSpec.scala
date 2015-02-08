@@ -8,6 +8,7 @@ import kornell.server.test.UnitSpec
 import org.scalatest.junit.JUnitRunner
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.helper.GenInstitution
+import kornell.core.entity.RegistrationType
 
 @RunWith(classOf[JUnitRunner])
 class RegistrationSpec extends UnitSpec with GenInstitution {
@@ -15,7 +16,7 @@ class RegistrationSpec extends UnitSpec with GenInstitution {
   "A new unconfirmed user" should "login sucessfully" in {
     val email = randEmail
     val password = randStr
-    val regreq = TOs.newRegistrationRequestTO(institutionUUID, randName, email, password)
+    val regreq = TOs.newRegistrationRequestTO(institutionUUID, randName, email, password, registrationType = RegistrationType.email)
     val createdUUID = UserResource().createUser(regreq)
       .getPerson
       .getUUID

@@ -52,7 +52,7 @@ object Entities {
     institutionUUID: String = null,
     termsAcceptedOn: String = null,
     registrationType: RegistrationType = null,
-    institutionRegistrationPrefix: String = null) = {
+    institutionRegistrationPrefixUUID: String = null) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -241,7 +241,7 @@ object Entities {
     invisible: Boolean = false, maxEnrollments: Integer = null,
     createdAt: Date = null, createdBy: String = null,
     state: CourseClassState = null,
-    registrationEnrollmentType: RegistrationType = null,
+    registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
     courseClassChatEnabled: Boolean = false) = {
     val clazz = factory.newCourseClass.as
@@ -257,7 +257,7 @@ object Entities {
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
-    clazz.setRegistrationType(registrationEnrollmentType)
+    clazz.setRegistrationType(registrationType)
     clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
     clazz
