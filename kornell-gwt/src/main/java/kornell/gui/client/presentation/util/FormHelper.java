@@ -6,7 +6,7 @@ import java.util.List;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.RegistrationType;
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.util.view.formfield.CheckBoxFormField;
@@ -591,7 +591,7 @@ public class FormHelper {
 		}
 	}
 
-	public String getRegistrationEnrollmentTypeAsText(RegistrationEnrollmentType registrationEnrollmentType) {
+	public String getRegistrationEnrollmentTypeAsText(RegistrationType registrationEnrollmentType) {
 		switch (registrationEnrollmentType) {
 		case email:
 			return "Email";

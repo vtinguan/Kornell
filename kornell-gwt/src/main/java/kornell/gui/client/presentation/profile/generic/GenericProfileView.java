@@ -8,7 +8,9 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionRegistrationPrefix;
 import kornell.core.entity.Person;
+import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UserInfoTO;
@@ -73,7 +75,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private final EventBus bus;
 	private Institution institution;
 	private FormHelper formHelper;
-	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showContactDetails, validateContactDetails;
+	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showEmail = true, showCPF = true, showContactDetails, validateContactDetails;
 
 	// TODO fix this
 	private String IMAGE_PATH = "skins/first/icons/profile/";
@@ -132,10 +134,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 		imgTitle.setUrl(IMAGE_PATH + "course.png");
 		lblTitle.setText("Perfil");
-
-		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
-		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
-
+		
 		/*session.getS3PolicyTO(new Callback<S3PolicyTO>() {
 			@Override
 			public void ok(S3PolicyTO to) {
@@ -192,7 +191,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private boolean validateFields() {
 		if(!formHelper.isLengthValid(fullName.getFieldPersistText(), 5, 50)){
 			fullName.setError("Insira seu nome.");
-		} else fullName.setError("");
+		} 
 		
 		if(showContactDetails && validateContactDetails){
 			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
@@ -268,7 +267,9 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		Person person = userTmp.getPerson();
 		
 		person.setCPF(FormHelper.stripCPF(cpf.getFieldPersistText()));
-		person.setEmail(email.getFieldPersistText());
+		if(showEmail){
+			person.setEmail(email.getFieldPersistText());
+		}
 		person.setFullName(fullName.getFieldPersistText());
 		person.setCompany(company.getFieldPersistText());
 		person.setTitle(position.getFieldPersistText());
@@ -332,6 +333,16 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private void display() {
+
+		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
+		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
+		if(RegistrationType.username.equals(user.getPerson().getRegistrationType())){
+			InstitutionRegistrationPrefix institutionRegistrationPrefix = user.getPerson().getInstitutionRegistrationPrefix(); 
+			showEmail = institutionRegistrationPrefix.isShowEmailOnProfile();
+			showCPF = institutionRegistrationPrefix.isShowCPFOnProfile();
+			showContactDetails = showContactDetails && institutionRegistrationPrefix.isShowContactInformationOnProfile();
+		}
+
 		form.addStyleName("shy");
 		
 		btnOK.setVisible(isEditMode);
@@ -361,26 +372,24 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		profileFields.add(fullName);
 		
 		KornellSession session = clientFactory.getKornellSession();
-		email = 
-				new KornellFormFieldWrapper("Email", 
-						formHelper.createTextBoxFormField(user.getPerson().getEmail()), 
-						isEditMode,
-						EmailValidator.unregisteredEmailValidator(profileUserUUID, session));
-		cpf = new KornellFormFieldWrapper
-				("CPF", 
-				formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
-				isEditMode,
-				CPFValidator.unregisteredCPFValidator(profileUserUUID, session));
-		
-		requireValid(cpf);
-		requireValid(email);
-		
-		fields.add(email);
-		fields.add(cpf);
-		
-		profileFields.add(email);
-		
-		if(isCurrentUser || isAdmin){
+		if(showEmail){
+			email = 
+					new KornellFormFieldWrapper("Email", 
+							formHelper.createTextBoxFormField(user.getPerson().getEmail()), 
+							isEditMode,
+							EmailValidator.unregisteredEmailValidator(profileUserUUID, session));
+			requireValid(email);
+			fields.add(email);
+			profileFields.add(email);
+		}
+		if(showCPF && (isCurrentUser || isAdmin)){
+			cpf = new KornellFormFieldWrapper
+					("CPF", 
+					formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
+					isEditMode,
+					CPFValidator.unregisteredCPFValidator(profileUserUUID, session));
+			requireValid(cpf);
+			fields.add(cpf);
 			profileFields.add(cpf);
 		}
 

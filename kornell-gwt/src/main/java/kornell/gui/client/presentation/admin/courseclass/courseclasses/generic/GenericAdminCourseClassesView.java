@@ -156,7 +156,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		table.addColumn(new TextColumn<CourseClassTO>() {
 			@Override
 			public String getValue(CourseClassTO courseClassTO) {
-				return formHelper.getRegistrationEnrollmentTypeAsText(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
+				return formHelper.getRegistrationEnrollmentTypeAsText(courseClassTO.getCourseClass().getRegistrationType());
 			}
 		}, "Tipo de Matrícula");
 		

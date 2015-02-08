@@ -12,6 +12,7 @@ import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit._
 import kornell.core.util.StringUtils._
 import kornell.server.jdbc.PreparedStmt
+import kornell.core.entity.RegistrationType
 
 object PeopleRepo {
 
@@ -108,16 +109,13 @@ object PeopleRepo {
   }
 
   def createPerson(institutionUUID: String = null, email: String = null, fullName: String = null, cpf: String = null): Person =
-    create(Entities.newPerson(institutionUUID = institutionUUID,
-        fullName = fullName,
-	      email = email,
-	      cpf = cpf))
+    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, email = email, cpf = cpf, registrationType = RegistrationType.username))
 
   def createPersonCPF(institutionUUID: String, cpf: String, fullName: String): Person =
-    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf))
+    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf, registrationType = RegistrationType.cpf))
 
-  def createPersonUsername(institutionUUID: String, username: String, fullName: String): Person = {
-    val p = create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName))
+  def createPersonUsername(institutionUUID: String, username: String, fullName: String, institutionRegistrationPrefixUUID: String): Person = {
+    val p = create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, registrationType = RegistrationType.username, institutionRegistrationPrefixUUID = institutionRegistrationPrefixUUID))
     if (isSome(username)) usernameCache.put((p.getInstitutionUUID, username), Some(p))
     p
   }

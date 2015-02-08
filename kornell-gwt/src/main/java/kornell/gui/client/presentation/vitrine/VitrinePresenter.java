@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
+import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
@@ -210,6 +211,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		registrationRequestTO.setFullName(name);
 		registrationRequestTO.setEmail(email);
 		registrationRequestTO.setPassword(password);
+		registrationRequestTO.setRegistrationType(RegistrationType.email);
 		registrationRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
 		return registrationRequestTO;
 	}

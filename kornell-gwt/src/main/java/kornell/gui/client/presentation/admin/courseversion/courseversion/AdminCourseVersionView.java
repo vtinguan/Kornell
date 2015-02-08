@@ -8,7 +8,7 @@ import kornell.core.entity.CourseVersion;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Institution;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.EnrollmentTO;

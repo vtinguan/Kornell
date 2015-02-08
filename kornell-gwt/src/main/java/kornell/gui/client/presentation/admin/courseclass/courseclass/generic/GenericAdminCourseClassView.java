@@ -13,7 +13,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UnreadChatThreadTO;
@@ -357,7 +357,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		}
 		txtSearch.setValue("");
 		txtSearch.setTitle("nome, " + formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
-				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType()) + ", matrícula ou progresso");
+				.getCourseClassTO().getCourseClass().getRegistrationType()) + ", matrícula ou progresso");
 	}
 
 	private void initTable() {
@@ -726,7 +726,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	}
 
 	@Override
-	public void setUserEnrollmentIdentificationType(RegistrationEnrollmentType registrationEnrollmentType) {
+	public void setUserEnrollmentIdentificationType(RegistrationType registrationEnrollmentType) {
 		infoPanel.clear();
 		switch (registrationEnrollmentType) {
 		case email:
@@ -758,7 +758,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 			break;
 		}
 		identifierLabel.setText(formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
-				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType())+":");
+				.getCourseClassTO().getCourseClass().getRegistrationType())+":");
 		initTable();
 		initSearch();
 	}

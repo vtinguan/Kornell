@@ -1,5 +1,7 @@
 package kornell.core.to;
 
+import kornell.core.entity.RegistrationType;
+
 public interface RegistrationRequestTO {
 	public static final String TYPE = TOFactory.PREFIX + "registrationRequest+json";
 	
@@ -15,4 +17,6 @@ public interface RegistrationRequestTO {
 	void setCPF(String CPF);
 	String getUsername();
 	void setUsername(String username);
+	RegistrationType getRegistrationType();
+	void setRegistrationType(RegistrationType registrationType);
 }

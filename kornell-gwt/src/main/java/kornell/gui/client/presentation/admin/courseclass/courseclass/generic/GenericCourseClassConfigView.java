@@ -11,7 +11,7 @@ import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
@@ -219,12 +219,12 @@ public class GenericCourseClassConfigView extends Composite {
 		
 		
 		final ListBox registrationEnrollmentTypes = new ListBox();
-		registrationEnrollmentTypes.addItem("Email", RegistrationEnrollmentType.email.toString());
-		registrationEnrollmentTypes.addItem("CPF", RegistrationEnrollmentType.cpf.toString());
+		registrationEnrollmentTypes.addItem("Email", RegistrationType.email.toString());
+		registrationEnrollmentTypes.addItem("CPF", RegistrationType.cpf.toString());
 		if(Dean.getInstance().getInstitution().isAllowRegistrationByUsername())
-			registrationEnrollmentTypes.addItem("Usuário", RegistrationEnrollmentType.username.toString());
+			registrationEnrollmentTypes.addItem("Usuário", RegistrationType.username.toString());
 		if (!isCreationMode) {
-			registrationEnrollmentTypes.setSelectedValue(courseClassTO.getCourseClass().getRegistrationEnrollmentType().toString());
+			registrationEnrollmentTypes.setSelectedValue(courseClassTO.getCourseClass().getRegistrationType().toString());
 		}
 		registrationEnrollmentType = new KornellFormFieldWrapper("Tipo de Matrícula", new ListBoxFormField(registrationEnrollmentTypes), isInstitutionAdmin);
 		fields.add(registrationEnrollmentType);
@@ -233,23 +233,23 @@ public class GenericCourseClassConfigView extends Composite {
 		 
 		institutionRegistrationPrefixes = new ListBox();		
 		if(!isCreationMode)
-			institutionRegistrationPrefixes.setSelectedValue(courseClassTO.getCourseClass().getInstitutionRegistrationPrefix());
-		boolean allowPrefixEdit = isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefix());
+			institutionRegistrationPrefixes.setSelectedValue(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
+		boolean allowPrefixEdit = isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
 		if(allowPrefixEdit){
 			loadInstitutionPrefixes();
 		} else {
-			institutionRegistrationPrefixes.addItem(courseClassTO.getCourseClass().getInstitutionRegistrationPrefix());
+			institutionRegistrationPrefixes.addItem(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
 		}
 		institutionRegistrationPrefix = new KornellFormFieldWrapper("Prefixo", new ListBoxFormField(institutionRegistrationPrefixes), allowPrefixEdit);
 		fields.add(institutionRegistrationPrefix);
 		profileFields.add(institutionRegistrationPrefix);
-		institutionRegistrationPrefix.setVisible(registrationEnrollmentType.getFieldPersistText().equals(RegistrationEnrollmentType.username.toString()));
+		institutionRegistrationPrefix.setVisible(registrationEnrollmentType.getFieldPersistText().equals(RegistrationType.username.toString()));
 				
 
 		registrationEnrollmentTypes.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				institutionRegistrationPrefix.setVisible(registrationEnrollmentType.getFieldPersistText().equals(RegistrationEnrollmentType.username.toString()));
+				institutionRegistrationPrefix.setVisible(registrationEnrollmentType.getFieldPersistText().equals(RegistrationType.username.toString()));
 			}
 		});
 		
@@ -383,8 +383,8 @@ public class GenericCourseClassConfigView extends Composite {
 					null);
 		courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
 		courseClass.setInvisible(invisible.getFieldPersistText().equals("true"));
-		courseClass.setRegistrationEnrollmentType(RegistrationEnrollmentType.valueOf(registrationEnrollmentType.getFieldPersistText()));
-		courseClass.setInstitutionRegistrationPrefix(institutionRegistrationPrefix.getFieldPersistText());
+		courseClass.setRegistrationType(RegistrationType.valueOf(registrationEnrollmentType.getFieldPersistText()));
+		courseClass.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefix.getFieldPersistText());
 		return courseClass;
 	}
 

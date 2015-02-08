@@ -27,7 +27,7 @@ import kornell.server.repository.Entities
 import kornell.core.util.TimeUtil
 import kornell.server.util.ServerTime
 import kornell.core.util.StringUtils
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 
 object RegistrationEnrollmentService {
 
@@ -49,18 +49,18 @@ object RegistrationEnrollmentService {
     }
 
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
-    val person = enrollmentRequest.getRegistrationEnrollmentType match {
-      case RegistrationEnrollmentType.email => PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
-      case RegistrationEnrollmentType.cpf => PeopleRepo.createPersonCPF(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
-      case RegistrationEnrollmentType.username => PeopleRepo.createPersonUsername(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
+    val person = enrollmentRequest.getRegistrationType match {
+      case RegistrationType.email => PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
+      case RegistrationType.cpf => PeopleRepo.createPersonCPF(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
+      case RegistrationType.username => PeopleRepo.createPersonUsername(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName, enrollmentRequest.getInstitutionRegistrationPrefixUUID)
     }
     val personRepo = PersonRepo(person.getUUID)
-    if(!enrollmentRequest.getRegistrationEnrollmentType.equals(RegistrationEnrollmentType.email)) {
+    if(!enrollmentRequest.getRegistrationType.equals(RegistrationType.email)) {
         personRepo.setPassword(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getPassword)
     }
     createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
   }
-
+ 
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
     val personRepo = PersonRepo(person.getUUID)
     EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
@@ -124,6 +124,7 @@ object RegistrationEnrollmentService {
     	person.setEmail(regReq.getEmail)
     if(regReq.getCPF != null)
     	person.setCPF(regReq.getCPF)
+    person.setRegistrationType(regReq.getRegistrationType)
     personRepo.update(person)
 
     val username = usernameOf(regReq)
@@ -132,7 +133,7 @@ object RegistrationEnrollmentService {
     user.setPerson(person)
     user.setUsername(username)
 
-    //personRepo.setPassword(regReq.getInstitutionUUID, username, regReq.getPassword)
+    personRepo.setPassword(regReq.getInstitutionUUID, username, regReq.getPassword)
     
     user
   }

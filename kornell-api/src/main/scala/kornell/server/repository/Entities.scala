@@ -21,7 +21,7 @@ import kornell.core.entity.Role
 import kornell.core.entity.RoleType
 import kornell.core.util.TimeUtil
 import kornell.server.util.ValueFactory
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import kornell.core.entity.BillingType
 
 object Entities {
@@ -50,7 +50,9 @@ object Entities {
     postalCode: String = null,
     cpf: String = null,
     institutionUUID: String = null,
-    termsAcceptedOn: String = null) = {
+    termsAcceptedOn: String = null,
+    registrationType: RegistrationType = null,
+    institutionRegistrationPrefix: String = null) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -239,8 +241,8 @@ object Entities {
     invisible: Boolean = false, maxEnrollments: Integer = null,
     createdAt: Date = null, createdBy: String = null,
     state: CourseClassState = null,
-    registrationEnrollmentType: RegistrationEnrollmentType = null,
-    institutionRegistrationPrefix: String = null,
+    registrationEnrollmentType: RegistrationType = null,
+    institutionRegistrationPrefixUUID: String = null,
     courseClassChatEnabled: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
@@ -255,8 +257,8 @@ object Entities {
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
-    clazz.setRegistrationEnrollmentType(registrationEnrollmentType)
-    clazz.setInstitutionRegistrationPrefix(institutionRegistrationPrefix)
+    clazz.setRegistrationType(registrationEnrollmentType)
+    clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
     clazz
   }

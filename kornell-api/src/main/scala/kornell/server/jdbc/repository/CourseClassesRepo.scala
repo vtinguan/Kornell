@@ -44,8 +44,8 @@ object CourseClassesRepo {
 	             ${courseClass.getMaxEnrollments},
 	             ${new Date()},
 	             ${courseClass.getCreatedBy},
-	             ${courseClass.getRegistrationEnrollmentType.toString},
-	             ${courseClass.getInstitutionRegistrationPrefix})
+	             ${courseClass.getRegistrationType.toString},
+	             ${courseClass.getInstitutionRegistrationPrefixUUID})
 	    """.executeUpdate
 	    courseClass
     } else {

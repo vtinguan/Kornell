@@ -14,7 +14,7 @@ import kornell.server.helper.GenPlatformAdmin
 import kornell.server.helper.GenCourseClass
 import scala.collection.JavaConverters._
 import kornell.server.helper.GenInstitutionAdmin
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import kornell.core.entity.EnrollmentState
 import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.repository.Entities
@@ -36,7 +36,7 @@ class EnrollmentsSpec
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO]) 
     val totalEnrollments = 10
     for(i <- 1 to totalEnrollments){
-    	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+email, null, RegistrationEnrollmentType.email, false))
+    	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+email, null, RegistrationType.email, null, false))
     }
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
      
@@ -51,7 +51,7 @@ class EnrollmentsSpec
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])   
     val totalEnrollments = 10
     for(i <- 1 to totalEnrollments){
-    	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+cpf, "hunter2", RegistrationEnrollmentType.cpf, false))
+    	enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, i+fullName, i+cpf, "hunter2", RegistrationType.cpf, false))
     } 
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
     
@@ -66,10 +66,10 @@ class EnrollmentsSpec
     val fullName= randStr
     val email = randEmail
     val cpf = randCPF
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClassEmail.getUUID, fullName, email, null, RegistrationEnrollmentType.email, false))
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClassCpf.getUUID, fullName, cpf, "hunter2", RegistrationEnrollmentType.cpf, false))
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClassEmail.getUUID, fullName, email, null, RegistrationEnrollmentType.email, false))
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClassCpf.getUUID, fullName, cpf, "hunter2", RegistrationEnrollmentType.cpf, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClassEmail.getUUID, fullName, email, null, RegistrationType.email, null, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClassCpf.getUUID, fullName, cpf, "hunter2", RegistrationType.cpf, null, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClassEmail.getUUID, fullName, email, null, RegistrationType.email, null, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClassCpf.getUUID, fullName, cpf, "hunter2", RegistrationType.cpf, null, false))
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
      
     val enrollmentsCreatedEmail = EnrollmentsRepo.byCourseClass(courseClassEmail.getUUID)
@@ -83,7 +83,7 @@ class EnrollmentsSpec
     val fullName = randStr
     val email = randEmail
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])  
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, "institutionAdmin"+fullName, "institutionAdmin"+email, null, RegistrationEnrollmentType.email, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, "institutionAdmin"+fullName, "institutionAdmin"+email, null, RegistrationType.email, null, false))
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
     
     val enrollmentsCreated = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
@@ -101,7 +101,7 @@ class EnrollmentsSpec
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])
     
     //enroll user
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationEnrollmentType.email, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationType.email, null, false))
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
     
     //check that his enrollment is good
@@ -109,7 +109,7 @@ class EnrollmentsSpec
     assert(EnrollmentState.enrolled.equals(enrollmentsCreated.getEnrollmentTOs.get(0).getEnrollment.getState))
     
     //remove him from class
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationEnrollmentType.email, true))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationType.email, null, true))
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
      
     val enrollmentsRemoved = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
@@ -124,7 +124,7 @@ class EnrollmentsSpec
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])
     
     //enroll user
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationEnrollmentType.email, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationType.email, null, false))
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
     
     //check that his enrollment is good
@@ -132,7 +132,7 @@ class EnrollmentsSpec
     assert(EnrollmentState.enrolled.equals(enrollmentsCreated.getEnrollmentTOs.get(0).getEnrollment.getState))
     
     //remove him from class
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationEnrollmentType.email, true))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, fullName, email, null, RegistrationType.email, null, true))
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
      
     val enrollmentsRemoved = EnrollmentsRepo.byCourseClass(courseClass.getUUID)
@@ -147,7 +147,7 @@ class EnrollmentsSpec
     val testPerson = newPerson
     
     //enroll user with values from testPerson
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, testPerson.getFullName, testPerson.getEmail, null, RegistrationEnrollmentType.email, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, testPerson.getFullName, testPerson.getEmail, null, RegistrationType.email, null, false))
     EnrollmentsResource().putEnrollments(enrollmentRequestsTO)
     
     //become testPerson
@@ -213,7 +213,7 @@ class EnrollmentsSpec
     val email = randEmail
     val courseClass = newCourseClassEmail
     val enrollmentRequestsTO = TOs.newEnrollmentRequestsTO(new ArrayList[EnrollmentRequestTO])    
-    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, "notAnAdmin"+fullName, "notAnAdmin"+email, null, RegistrationEnrollmentType.email, false))
+    enrollmentRequestsTO.getEnrollmentRequests.add(TOs.newEnrollmentRequestTO(institution.getUUID, courseClass.getUUID, "notAnAdmin"+fullName, "notAnAdmin"+email, null, RegistrationType.email, null, false))
     
     asPerson {
     	try {

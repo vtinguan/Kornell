@@ -20,11 +20,12 @@ import kornell.server.repository.Entities._
 import kornell.server.repository.Entities
 import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import kornell.core.to.CourseVersionTO
 import kornell.core.entity.ChatThreadParticipant
 import kornell.core.entity.ChatThread
 import kornell.core.entity.BillingType
+import kornell.core.entity.RegistrationType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -61,8 +62,8 @@ package object repository {
         r.getBoolean("invisible"), r.getInt("maxEnrollments"), 
         r.getDate("createdAt"), r.getString("createdBy"), 
         CourseClassState.valueOf(r.getString("state")), 
-        RegistrationEnrollmentType.valueOf(r.getString("registrationEnrollmentType")),
-        r.getString("institutionRegistrationPrefix"), r.getBoolean("courseClassChatEnabled")) 
+        RegistrationType.valueOf(r.getString("registrationType")),
+        r.getString("institutionRegistrationPrefixUUID"), r.getBoolean("courseClassChatEnabled")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -113,7 +114,7 @@ package object repository {
 		    rs.getDate("createdAt"),
 		    rs.getString("createdBy"), 
         CourseClassState.valueOf(rs.getString("state")), 
-        RegistrationEnrollmentType.valueOf(rs.getString("registrationEnrollmentType")),
+        RegistrationType.valueOf(rs.getString("registrationType")),
 		    rs.getString("institutionRegistrationPrefix"));
     		
     TOs.newCourseClassTO(course, version, clazz)
