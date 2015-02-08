@@ -132,7 +132,7 @@ object RegistrationEnrollmentService {
     user.setPerson(person)
     user.setUsername(username)
 
-    personRepo.setPassword(regReq.getInstitutionUUID, username, regReq.getPassword)
+    //personRepo.setPassword(regReq.getInstitutionUUID, username, regReq.getPassword)
     
     user
   }
