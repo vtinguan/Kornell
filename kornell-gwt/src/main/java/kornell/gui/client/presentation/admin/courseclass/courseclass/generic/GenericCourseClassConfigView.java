@@ -239,7 +239,7 @@ public class GenericCourseClassConfigView extends Composite {
 		if(allowPrefixEdit){
 			loadInstitutionPrefixes();
 		} else {
-			institutionRegistrationPrefixes.addItem(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
+			institutionRegistrationPrefixes.addItem(courseClassTO.getRegistrationPrefix());
 		}
 		institutionRegistrationPrefix = new KornellFormFieldWrapper("Prefixo", new ListBoxFormField(institutionRegistrationPrefixes), allowPrefixEdit);
 		fields.add(institutionRegistrationPrefix);
