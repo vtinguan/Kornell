@@ -210,7 +210,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	}
 	
 	private boolean isProfileIncomplete(){
-		return Dean.getInstance().getInstitution().isDemandsPersonContactDetails()
+		return session.getCurrentUser().getInstitutionRegistrationPrefix().isShowContactInformationOnProfile()  
+				&& Dean.getInstance().getInstitution().isDemandsPersonContactDetails()
 				&& Dean.getInstance().getInstitution().isValidatePersonContactDetails() 
 				&& StringUtils.isNone(clientFactory.getKornellSession().getCurrentUser().getPerson().getCity());
 	}
