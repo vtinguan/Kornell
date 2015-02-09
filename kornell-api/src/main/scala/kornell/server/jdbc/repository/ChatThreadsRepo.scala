@@ -220,7 +220,7 @@ object ChatThreadsRepo {
 					select tp.uuid from ChatThread t
 					join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID and tp.personUUID <> t.personUUID
 					join CourseClass cc on cc.uuid = t.courseClassUUID
-					where t.courseClassUUID = ${courseClassUUID} and ct.threadType in (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})
+					where t.courseClassUUID = ${courseClassUUID} and t.threadType in (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})
 				) as ids
 			)""".executeUpdate
   }

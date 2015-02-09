@@ -337,7 +337,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
 		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
 		if(RegistrationType.username.equals(user.getPerson().getRegistrationType())){
-			InstitutionRegistrationPrefix institutionRegistrationPrefix = user.getPerson().getInstitutionRegistrationPrefix(); 
+			InstitutionRegistrationPrefix institutionRegistrationPrefix = user.getInstitutionRegistrationPrefix(); 
 			showEmail = institutionRegistrationPrefix.isShowEmailOnProfile();
 			showCPF = institutionRegistrationPrefix.isShowCPFOnProfile();
 			showContactDetails = showContactDetails && institutionRegistrationPrefix.isShowContactInformationOnProfile();

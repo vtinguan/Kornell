@@ -25,7 +25,7 @@ object EnrollmentsRepo {
 				where e.class_uuid = ${courseClassUUID}
 				order by e.state desc, p.fullName, pw.username
 			    """.map[EnrollmentTO](toEnrollmentTO))
-
+ 
   def byPerson(personUUID: String) =
     sql"""
     SELECT 

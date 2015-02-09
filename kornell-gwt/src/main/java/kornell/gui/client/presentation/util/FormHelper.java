@@ -591,8 +591,8 @@ public class FormHelper {
 		}
 	}
 
-	public String getRegistrationEnrollmentTypeAsText(RegistrationType registrationEnrollmentType) {
-		switch (registrationEnrollmentType) {
+	public String getRegistrationTypeAsText(RegistrationType registrationType) {
+		switch (registrationType) {
 		case email:
 			return "Email";
 		case cpf:

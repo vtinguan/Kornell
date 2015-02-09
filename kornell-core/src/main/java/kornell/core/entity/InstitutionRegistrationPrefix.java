@@ -9,11 +9,11 @@ public interface InstitutionRegistrationPrefix extends Named {
 	void setInstitutionUUID(String institutionUUID);
 
 	boolean isShowEmailOnProfile();
-	void setShowEmail(boolean showEmailOnProfile);
+	void setShowEmailOnProfile(boolean showEmailOnProfile);
 
 	boolean isShowCPFOnProfile();
-	void setShowCPF(boolean showCPFOnProfile);
+	void setShowCPFOnProfile(boolean showCPFOnProfile);
 
 	boolean isShowContactInformationOnProfile();
-	void setShowContactInformation(boolean showContactInformationOnProfile);
+	void setShowContactInformationOnProfile(boolean showContactInformationOnProfile);
 }

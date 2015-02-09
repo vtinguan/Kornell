@@ -2,11 +2,8 @@ package kornell.server.repository
 
 import java.math.BigDecimal
 import java.util.Date
-
 import scala.collection.JavaConverters._
-
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-
 import kornell.core.entity.ChatThreadType
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClass
@@ -37,6 +34,7 @@ import kornell.core.to.report.InstitutionBillingEnrollmentReportTO
 import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
+import kornell.core.entity.InstitutionRegistrationPrefix
 
 //TODO: Consider turning to Object
 object TOs {
@@ -73,10 +71,11 @@ object TOs {
     to
   }
 
-  def newCourseClassTO(course: Course, version: CourseVersion, clazz: CourseClass): CourseClassTO = {
+  def newCourseClassTO(course: Course, version: CourseVersion, clazz: CourseClass, registrationPrefix: String): CourseClassTO = {
     val classTO = tos.newCourseClassTO.as
     classTO.setCourseVersionTO(newCourseVersionTO(course, version))
     classTO.setCourseClass(clazz)
+    classTO.setRegistrationPrefix(registrationPrefix)
     classTO
   }
 
@@ -219,7 +218,7 @@ object TOs {
     to
   }
 
-  def newInstitutionRegistrationPrefixesTO(l: List[String]) = {
+  def newInstitutionRegistrationPrefixesTO(l: List[InstitutionRegistrationPrefix]) = {
     val to = tos.newInstitutionRegistrationPrefixesTO.as
     to.setInstitutionRegistrationPrefixes(l asJava)
     to

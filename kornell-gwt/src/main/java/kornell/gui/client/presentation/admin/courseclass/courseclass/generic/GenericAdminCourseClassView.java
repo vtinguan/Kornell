@@ -356,7 +356,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 			});
 		}
 		txtSearch.setValue("");
-		txtSearch.setTitle("nome, " + formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
+		txtSearch.setTitle("nome, " + formHelper.getRegistrationTypeAsText(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getRegistrationType()) + ", matrícula ou progresso");
 	}
 
@@ -726,9 +726,9 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	}
 
 	@Override
-	public void setUserEnrollmentIdentificationType(RegistrationType registrationEnrollmentType) {
+	public void setUserEnrollmentIdentificationType(RegistrationType registrationType) {
 		infoPanel.clear();
-		switch (registrationEnrollmentType) {
+		switch (registrationType) {
 		case email:
 			infoPanel.add(getLabel("Formato:", false));
 			infoPanel.add(getLabel("\"nome;email\" ou somente \"email\".", true));
@@ -757,7 +757,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		default:
 			break;
 		}
-		identifierLabel.setText(formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
+		identifierLabel.setText(formHelper.getRegistrationTypeAsText(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getRegistrationType())+":");
 		initTable();
 		initSearch();

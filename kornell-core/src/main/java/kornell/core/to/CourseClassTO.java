@@ -12,6 +12,9 @@ public interface CourseClassTO {
 	CourseVersionTO getCourseVersionTO();
 	void setCourseVersionTO(CourseVersionTO t);
 	
+	String getRegistrationPrefix();
+	void setRegistrationPrefix(String registrationPrefix);
+	
 	Enrollment getEnrollment();
 	void setEnrollment(Enrollment e);
 	

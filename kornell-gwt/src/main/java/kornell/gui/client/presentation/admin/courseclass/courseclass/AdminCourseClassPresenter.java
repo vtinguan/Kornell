@@ -317,7 +317,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			KornellNotification.show("O nome deve ter no mínimo 2 caracteres.",
 					AlertType.ERROR);
 		} else if (!isUsernameValid(username)) {
-			KornellNotification.show(formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
+			KornellNotification.show(formHelper.getRegistrationTypeAsText(Dean.getInstance()
 					.getCourseClassTO().getCourseClass().getRegistrationType())
 					+ " inválido.", AlertType.ERROR);
 		} else {
@@ -399,7 +399,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			break;
 		case username:
 			usr = username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? 
-					Dean.getInstance().getCourseClassTO().getCourseClass().getInstitutionRegistrationPrefixUUID() + FormHelper.USERNAME_SEPARATOR + username :
+					Dean.getInstance().getCourseClassTO().getRegistrationPrefix() + FormHelper.USERNAME_SEPARATOR + username :
 					username;
 			enrollmentRequestTO.setUsername(usr);
 			enrollmentRequestTO.setPassword(username);
@@ -425,7 +425,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		} else if (enrollmentRequestsTO.getEnrollmentRequests().size() == 0) {
 				KornellNotification
 						.show("Verifique se os nomes/"
-								+ formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
+								+ formHelper.getRegistrationTypeAsText(Dean.getInstance()
 										.getCourseClassTO().getCourseClass().getRegistrationType()).toLowerCase()
 								+ " dos participantes estão corretos. Nenhuma matrícula encontrada.",
 								AlertType.WARNING);

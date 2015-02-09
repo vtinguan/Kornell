@@ -23,6 +23,7 @@ import kornell.core.util.TimeUtil
 import kornell.server.util.ValueFactory
 import kornell.core.entity.RegistrationType
 import kornell.core.entity.BillingType
+import kornell.core.entity.InstitutionRegistrationPrefix
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -322,5 +323,16 @@ object Entities {
     chatThreadParticipant.setActive(active)
     chatThreadParticipant.setLastJoinDate(lastJoinDate)
     chatThreadParticipant
+  }
+
+  def newInstitutionRegistrationPrefix(uuid: String, name: String, institutionUUID: String = null, showEmailOnProfile: Boolean, showCPFOnProfile: Boolean, showContactInformationOnProfile: Boolean): InstitutionRegistrationPrefix = {
+    val institutionRegistrationPrefix = factory.newInstitutionRegistrationPrefix.as
+    institutionRegistrationPrefix.setUUID(uuid)
+    institutionRegistrationPrefix.setName(name)
+    institutionRegistrationPrefix.setInstitutionUUID(institutionUUID)
+    institutionRegistrationPrefix.setShowEmailOnProfile(showEmailOnProfile)
+    institutionRegistrationPrefix.setShowCPFOnProfile(showCPFOnProfile)
+    institutionRegistrationPrefix.setShowContactInformationOnProfile(showContactInformationOnProfile)
+    institutionRegistrationPrefix
   }
 }

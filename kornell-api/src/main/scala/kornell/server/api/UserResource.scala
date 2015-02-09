@@ -32,6 +32,8 @@ import kornell.server.util.EmailService
 import kornell.server.web.BasicAuthFilter
 import kornell.core.to.UserHelloTO
 import kornell.core.entity.RegistrationType
+import kornell.server.jdbc.repository.InstitutionRepo
+import scala.collection.JavaConverters._
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -84,7 +86,11 @@ class UserResource(private val authRepo:AuthRepo) {
     val roles = authRepo.rolesOf(person.getUUID)
     user.setRoles((Set.empty ++ roles).asJava)
     user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
-
+    if(RegistrationType.username.equals(person.getRegistrationType)){
+    	user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
+    		.asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
+    }
+    
     Option(user)
   } 
   

@@ -26,6 +26,7 @@ import kornell.core.entity.ChatThreadParticipant
 import kornell.core.entity.ChatThread
 import kornell.core.entity.BillingType
 import kornell.core.entity.RegistrationType
+import kornell.core.entity.InstitutionRegistrationPrefix
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -115,9 +116,9 @@ package object repository {
 		    rs.getString("createdBy"), 
         CourseClassState.valueOf(rs.getString("state")), 
         RegistrationType.valueOf(rs.getString("registrationType")),
-		    rs.getString("institutionRegistrationPrefix"));
+		    rs.getString("institutionRegistrationPrefixUUID"));
     		
-    TOs.newCourseClassTO(course, version, clazz)
+    TOs.newCourseClassTO(course, version, clazz, rs.getString("institutionRegistrationPrefixName"))
   }
   
   implicit def toCourseVersionTO(rs: ResultSet): CourseVersionTO = {
@@ -202,7 +203,9 @@ package object repository {
 	    rs.getString("postalCode"),
 	    rs.getString("cpf"),
 	    rs.getString("institutionUUID"),
-	    rs.getString("termsAcceptedOn"))
+	    rs.getString("termsAcceptedOn"),
+	    RegistrationType.valueOf(rs.getString("registrationType")),
+	    rs.getString("institutionRegistrationPrefixUUID"))
 
   implicit def toRole(rs: java.sql.ResultSet): kornell.core.entity.Role = {
     val roleType = RoleType.valueOf(rs.getString("role"))
@@ -215,6 +218,14 @@ package object repository {
     }
     role
   }
+	
+  implicit def toInstitutionRegistrationPrefix(rs:ResultSet):InstitutionRegistrationPrefix = 
+    newInstitutionRegistrationPrefix(rs.getString("uuid"), 
+        rs.getString("name"),  
+        rs.getString("institutionUUID"), 
+        rs.getBoolean("showEmailOnProfile"),
+        rs.getBoolean("showCPFOnProfile"),
+        rs.getBoolean("showContactInformationOnProfile"))
 	
 	implicit def toUnreadChatThreadTO(rs:ResultSet):UnreadChatThreadTO = newUnreadChatThreadTO(
 	    rs.getString("unreadMessages"),
