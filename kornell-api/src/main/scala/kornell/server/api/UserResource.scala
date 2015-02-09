@@ -59,7 +59,7 @@ class UserResource(private val authRepo:AuthRepo) {
       }.getOrElse(null));
     
     val auth = req.getHeader("X-KNL-A")
-    if (auth != null && auth.length() > 0) {
+    if (auth != null && auth.length() > 0 && userHello.getInstitution != null) {
 	    val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
 	    AuthRepo().authenticate(userHello.getInstitution.getUUID, username, password).map { personUUID =>
 	  		val person = PersonRepo(personUUID).first.getOrElse(null)
@@ -106,6 +106,10 @@ class UserResource(private val authRepo:AuthRepo) {
       if (person != null) {
         user.setPerson(person)
         user.setUsername(PersonRepo(person.getUUID).getUsername)
+	    if(RegistrationType.username.equals(person.getRegistrationType)){
+	    	user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
+	    		.asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
+	    }
         Option(user)
       } else {
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")

@@ -76,6 +76,8 @@ object Entities {
     person.setCPF(cpf)
     person.setInstitutionUUID(institutionUUID)
     person.setTermsAcceptedOn(termsAcceptedOn)
+    person.setRegistrationType(registrationType)
+    person.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     person
   }
 

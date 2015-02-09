@@ -110,7 +110,7 @@ object PeopleRepo {
 
   def createPerson(institutionUUID: String = null, email: String = null, fullName: String = null, cpf: String = null): Person =
     create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, email = email, cpf = cpf, registrationType = RegistrationType.username))
-
+  
   def createPersonCPF(institutionUUID: String, cpf: String, fullName: String): Person =
     create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf, registrationType = RegistrationType.cpf))
 
@@ -124,12 +124,14 @@ object PeopleRepo {
     if (person.getUUID == null)
       person.setUUID(randUUID)
     sql""" 
-    	insert into Person(uuid, fullName, email, cpf, institutionUUID) 
+    	insert into Person(uuid, fullName, email, cpf, institutionUUID, registrationType, institutionRegistrationPrefixUUID) 
     		values (${person.getUUID},
 	             ${person.getFullName},
 	             ${person.getEmail},
 	             ${person.getCPF},
-	             ${person.getInstitutionUUID})
+	             ${person.getInstitutionUUID},
+	             ${person.getRegistrationType.toString},
+	             ${person.getInstitutionRegistrationPrefixUUID})
     """.executeUpdate
     updateCaches(person)
     person

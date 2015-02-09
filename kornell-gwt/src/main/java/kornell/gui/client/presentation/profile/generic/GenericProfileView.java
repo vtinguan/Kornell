@@ -266,7 +266,9 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		UserInfoTO userTmp = AutoBeanCodex.decode(clientFactory.getTOFactory(), kornell.core.to.UserInfoTO.class, userPayload).as();
 		Person person = userTmp.getPerson();
 		
-		person.setCPF(FormHelper.stripCPF(cpf.getFieldPersistText()));
+		if(showCPF){
+			person.setCPF(FormHelper.stripCPF(cpf.getFieldPersistText()));
+		}
 		if(showEmail){
 			person.setEmail(email.getFieldPersistText());
 		}
