@@ -112,7 +112,7 @@ object RolesRepo {
     sql"""
     	delete from Role
     	where course_class_uuid = ${courseClassUUID}
-        and role = ${RoleType.courseClassAdmin}
+        and role = ${RoleType.courseClassAdmin.toString}
     """.executeUpdate
     this
   }
@@ -129,7 +129,7 @@ object RolesRepo {
     sql"""
         delete from Role
         where course_class_uuid = ${courseClassUUID}
-        and role = ${RoleType.tutor}
+        and role = ${RoleType.tutor.toString}
     """.executeUpdate
     this
   }
