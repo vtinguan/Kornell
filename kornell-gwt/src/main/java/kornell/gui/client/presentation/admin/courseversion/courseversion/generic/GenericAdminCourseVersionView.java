@@ -9,7 +9,7 @@ import kornell.core.entity.ContentSpec;
 import kornell.core.entity.Course;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CoursesTO;
 import kornell.gui.client.KornellConstants;

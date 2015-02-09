@@ -32,7 +32,7 @@ object CourseClassesRepo {
 	      courseClass.setUUID(UUID.random)
 	    }
 	    sql""" 
-	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationEnrollmentType,institutionRegistrationPrefix)
+	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID)
 	    	values(${courseClass.getUUID},
 	             ${courseClass.getName},
 	             ${courseClass.getCourseVersionUUID},
@@ -44,8 +44,8 @@ object CourseClassesRepo {
 	             ${courseClass.getMaxEnrollments},
 	             ${new Date()},
 	             ${courseClass.getCreatedBy},
-	             ${courseClass.getRegistrationEnrollmentType.toString},
-	             ${courseClass.getInstitutionRegistrationPrefix})
+	             ${courseClass.getRegistrationType.toString},
+	             ${courseClass.getInstitutionRegistrationPrefixUUID})
 	    """.executeUpdate
 	    courseClass
     } else {
@@ -73,27 +73,28 @@ object CourseClassesRepo {
 			    cv.repository_uuid as repositoryUUID, 
 			    cv.versionCreatedAt as versionCreatedAt,
 		  		cv.distributionPrefix as distributionPrefix,
-      		cv.contentSpec as contentSpec,
-      		cv.disabled as disabled,
+      			cv.contentSpec as contentSpec,
+      			cv.disabled as disabled,
 			    cc.uuid as courseClassUUID,
 			    cc.name as courseClassName,
 			    cc.institution_uuid as institutionUUID,
 		  		cc.requiredScore as requiredScore,
 		  		cc.publicClass as publicClass,
-      		cc.overrideEnrollments as overrideEnrollments,
-      		cc.invisible as invisible,
+      			cc.overrideEnrollments as overrideEnrollments,
+      			cc.invisible as invisible,
 		  		cc.maxEnrollments as maxEnrollments,
-      		cc.createdAt as createdAt,
-      		cc.createdBy as createdBy,
-      		cc.state,
-		  		cc.registrationEnrollmentType as registrationEnrollmentType,
-		  		cc.institutionRegistrationPrefix as institutionRegistrationPrefix
+      			cc.createdAt as createdAt,
+      			cc.createdBy as createdBy,
+      			cc.state,
+		  		cc.registrationType as registrationType,
+		  		cc.institutionRegistrationPrefixUUID as institutionRegistrationPrefixUUID,
+      			irp.name as institutionRegistrationPrefixName
 			from Course c
-			join CourseVersion cv on cv.course_uuid = c.uuid
-			join CourseClass cc on cc.courseVersion_uuid = cv.uuid
-		    and cc.institution_uuid = ${institutionUUID}
-      where cc.state <> ${CourseClassState.deleted.toString}
-		  order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
+				join CourseVersion cv on cv.course_uuid = c.uuid
+				join CourseClass cc on cc.courseVersion_uuid = cv.uuid and cc.institution_uuid = ${institutionUUID}
+			    left join InstitutionRegistrationPrefix irp on irp.uuid = cc.institutionRegistrationPrefixUUID
+      	  	where cc.state <> ${CourseClassState.deleted.toString}
+      	  	order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
 		""".map[CourseClassTO](toCourseClassTO))
   }
 

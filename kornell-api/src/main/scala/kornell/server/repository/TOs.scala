@@ -4,12 +4,13 @@ import java.math.BigDecimal
 import java.util.Date
 import scala.collection.JavaConverters._
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+import kornell.core.entity.ChatThreadType
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseVersion
 import kornell.core.entity.Enrollment
 import kornell.core.entity.Person
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import kornell.core.entity.Role
 import kornell.core.to.ChatThreadMessageTO
 import kornell.core.to.CourseClassTO
@@ -30,10 +31,10 @@ import kornell.core.to.report.CertificateInformationTO
 import kornell.core.to.report.CourseClassReportTO
 import kornell.core.to.report.EnrollmentsBreakdownTO
 import kornell.core.to.report.InstitutionBillingEnrollmentReportTO
+import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
-import kornell.core.to.report.InstitutionBillingMonthlyReportTO
-import kornell.core.entity.ChatThreadType
+import kornell.core.entity.InstitutionRegistrationPrefix
 
 //TODO: Consider turning to Object
 object TOs {
@@ -70,10 +71,11 @@ object TOs {
     to
   }
 
-  def newCourseClassTO(course: Course, version: CourseVersion, clazz: CourseClass): CourseClassTO = {
+  def newCourseClassTO(course: Course, version: CourseVersion, clazz: CourseClass, registrationPrefix: String): CourseClassTO = {
     val classTO = tos.newCourseClassTO.as
     classTO.setCourseVersionTO(newCourseVersionTO(course, version))
     classTO.setCourseClass(clazz)
+    classTO.setRegistrationPrefix(registrationPrefix)
     classTO
   }
 
@@ -96,7 +98,7 @@ object TOs {
   }
 
   def newRegistrationRequestTO: RegistrationRequestTO = tos.newRegistrationRequestTO.as
-  def newRegistrationRequestTO(institutionUUID: String, fullName: String, email: String, password: String,cpf:String=null,username:String=null): RegistrationRequestTO = {
+  def newRegistrationRequestTO(institutionUUID: String, fullName: String, email: String, password: String,cpf:String=null,username:String=null, registrationType: RegistrationType=null): RegistrationRequestTO = {
     val to = newRegistrationRequestTO
     to.setInstitutionUUID(institutionUUID)
     to.setFullName(fullName)
@@ -108,14 +110,15 @@ object TOs {
   }
 
   def newEnrollmentRequestTO: EnrollmentRequestTO = tos.newEnrollmentRequestTO.as
-  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, username: String, password: String, registrationEnrollmentType: RegistrationEnrollmentType, cancelEnrollment: Boolean): EnrollmentRequestTO = {
+  def newEnrollmentRequestTO(institutionUUID: String, courseClassUUID: String, fullName: String, username: String, password: String, registrationType: RegistrationType, institutionRegistrationPrefixUUID: String, cancelEnrollment: Boolean): EnrollmentRequestTO = {
     val to = newEnrollmentRequestTO
     to.setInstitutionUUID(institutionUUID)
     to.setCourseClassUUID(courseClassUUID)
     to.setFullName(fullName)
     to.setUsername(username)
     to.setPassword(password)
-    to.setRegistrationEnrollmentType(registrationEnrollmentType)
+    to.setRegistrationType(registrationType)
+    to.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     to.setCancelEnrollment(cancelEnrollment)
     to
   }
@@ -215,7 +218,7 @@ object TOs {
     to
   }
 
-  def newInstitutionRegistrationPrefixesTO(l: List[String]) = {
+  def newInstitutionRegistrationPrefixesTO(l: List[InstitutionRegistrationPrefix]) = {
     val to = tos.newInstitutionRegistrationPrefixesTO.as
     to.setInstitutionRegistrationPrefixes(l asJava)
     to

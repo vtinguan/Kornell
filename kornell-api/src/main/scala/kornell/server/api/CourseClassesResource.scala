@@ -19,7 +19,7 @@ import kornell.core.to.CourseClassesTO
 import kornell.server.util.Errors._
 import kornell.server.repository.Entities
 import javax.ws.rs.POST
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 
 @Path("courseClasses")
 class CourseClassesResource {

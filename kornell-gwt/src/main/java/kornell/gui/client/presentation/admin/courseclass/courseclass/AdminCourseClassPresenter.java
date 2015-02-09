@@ -17,7 +17,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
@@ -216,7 +216,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		view.setCourseClassName(courseClassTO.getCourseClass().getName());
 		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse()
 				.getTitle());
-		view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationEnrollmentType());
+		view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationType());
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 	
@@ -307,8 +307,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		if ("".equals(fullName) && "".equals(username)) {
 			return;
 		}
-		if (RegistrationEnrollmentType.cpf.equals(Dean.getInstance()
-				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType())) {
+		if (RegistrationType.cpf.equals(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getRegistrationType())) {
 			username = FormHelper.stripCPF(username);
 		}
 		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
@@ -317,8 +317,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			KornellNotification.show("O nome deve ter no mínimo 2 caracteres.",
 					AlertType.ERROR);
 		} else if (!isUsernameValid(username)) {
-			KornellNotification.show(formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
-					.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType())
+			KornellNotification.show(formHelper.getRegistrationTypeAsText(Dean.getInstance()
+					.getCourseClassTO().getCourseClass().getRegistrationType())
 					+ " inválido.", AlertType.ERROR);
 		} else {
 			prepareCreateEnrollments(false);
@@ -328,7 +328,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	private boolean isUsernameValid(String username) {
 		switch (Dean.getInstance()
-				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType()) {
+				.getCourseClassTO().getCourseClass().getRegistrationType()) {
 		case email:
 			return FormHelper.isEmailValid(username);
 		case cpf:
@@ -387,8 +387,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		enrollmentRequestTO.setCourseClassUUID(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getUUID());
 		enrollmentRequestTO.setFullName(fullName);
-		switch (Dean.getInstance()
-				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType()) {
+		enrollmentRequestTO.setRegistrationType(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType());
+		switch (Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) {
 		case email:
 			enrollmentRequestTO.setUsername(username);
 			break;
@@ -399,16 +399,18 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			break;
 		case username:
 			usr = username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? 
-					Dean.getInstance().getCourseClassTO().getCourseClass().getInstitutionRegistrationPrefix() + FormHelper.USERNAME_SEPARATOR + username :
+					Dean.getInstance().getCourseClassTO().getRegistrationPrefix() + FormHelper.USERNAME_SEPARATOR + username :
 					username;
 			enrollmentRequestTO.setUsername(usr);
 			enrollmentRequestTO.setPassword(username);
+			enrollmentRequestTO.setInstitutionRegistrationPrefixUUID(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getInstitutionRegistrationPrefixUUID());
 			break;
 		default:
 			break;
 		}
-		enrollmentRequestTO.setRegistrationEnrollmentType(Dean.getInstance()
-				.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType());
+		enrollmentRequestTO.setRegistrationType(Dean.getInstance()
+				.getCourseClassTO().getCourseClass().getRegistrationType());
 		return enrollmentRequestTO;
 	}
 
@@ -423,8 +425,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		} else if (enrollmentRequestsTO.getEnrollmentRequests().size() == 0) {
 				KornellNotification
 						.show("Verifique se os nomes/"
-								+ formHelper.getRegistrationEnrollmentTypeAsText(Dean.getInstance()
-										.getCourseClassTO().getCourseClass().getRegistrationEnrollmentType()).toLowerCase()
+								+ formHelper.getRegistrationTypeAsText(Dean.getInstance()
+										.getCourseClassTO().getCourseClass().getRegistrationType()).toLowerCase()
 								+ " dos participantes estão corretos. Nenhuma matrícula encontrada.",
 								AlertType.WARNING);
 		} else if ((enrollmentRequestsTO.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
@@ -483,7 +485,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			
 		}
 		
-		if (RegistrationEnrollmentType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationEnrollmentType())
+		if (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
 				&& enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
 			KornellNotification
 					.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "

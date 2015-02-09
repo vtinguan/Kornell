@@ -29,8 +29,8 @@ class CourseClassRepo(uuid:String) {
 		  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments},
 		  		cc.invisible = ${courseClass.isInvisible},
 		  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
-		  		cc.registrationEnrollmentType = ${courseClass.getRegistrationEnrollmentType.toString},
-		  		cc.institutionRegistrationPrefix = ${courseClass.getInstitutionRegistrationPrefix}
+		  		cc.registrationType = ${courseClass.getRegistrationType.toString},
+		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate
 	    ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)
 	    courseClass

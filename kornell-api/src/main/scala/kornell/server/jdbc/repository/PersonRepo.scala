@@ -38,7 +38,7 @@ class PersonRepo(val uuid: String) {
 	    	sex = ${person.getSex}, birthDate = ${person.getBirthDate}, confirmation = ${person.getConfirmation},
 	    	telephone = ${person.getTelephone}, country = ${person.getCountry}, state = ${person.getState}, city = ${person.getCity}, 
 	    	addressLine1 = ${person.getAddressLine1}, addressLine2 = ${person.getAddressLine2}, postalCode = ${person.getPostalCode},
-	    	cpf = ${person.getCPF}
+	    	cpf = ${person.getCPF}, registrationType = ${person.getRegistrationType.toString}, institutionRegistrationPrefixUUID = ${person.getInstitutionRegistrationPrefixUUID}
 	    	where uuid = $uuid
 	    """.executeUpdate
 	  PeopleRepo.updateCaches(person)

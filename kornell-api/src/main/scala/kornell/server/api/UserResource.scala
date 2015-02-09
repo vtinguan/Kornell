@@ -31,6 +31,9 @@ import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
 import kornell.server.web.BasicAuthFilter
 import kornell.core.to.UserHelloTO
+import kornell.core.entity.RegistrationType
+import kornell.server.jdbc.repository.InstitutionRepo
+import scala.collection.JavaConverters._
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -56,7 +59,7 @@ class UserResource(private val authRepo:AuthRepo) {
       }.getOrElse(null));
     
     val auth = req.getHeader("X-KNL-A")
-    if (auth != null && auth.length() > 0) {
+    if (auth != null && auth.length() > 0 && userHello.getInstitution != null) {
 	    val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
 	    AuthRepo().authenticate(userHello.getInstitution.getUUID, username, password).map { personUUID =>
 	  		val person = PersonRepo(personUUID).first.getOrElse(null)
@@ -83,7 +86,11 @@ class UserResource(private val authRepo:AuthRepo) {
     val roles = authRepo.rolesOf(person.getUUID)
     user.setRoles((Set.empty ++ roles).asJava)
     user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
-
+    if(RegistrationType.username.equals(person.getRegistrationType)){
+    	user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
+    		.asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
+    }
+    
     Option(user)
   } 
   
@@ -99,6 +106,10 @@ class UserResource(private val authRepo:AuthRepo) {
       if (person != null) {
         user.setPerson(person)
         user.setUsername(PersonRepo(person.getUUID).getUsername)
+	    if(RegistrationType.username.equals(person.getRegistrationType)){
+	    	user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
+	    		.asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
+	    }
         Option(user)
       } else {
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")
@@ -241,7 +252,7 @@ class UserResource(private val authRepo:AuthRepo) {
   }
 
   def createUser(institutionUUID: String, fullName: String, email: String, cpf: String, username: String, password: String): String = {
-    val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username)
+    val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username, RegistrationType.email)
     createUser(regreq).getPerson.getUUID
   }
 

@@ -43,4 +43,8 @@ public interface Person {
 	void setInstitutionUUID(String institutionUUID);
 	String getTermsAcceptedOn();
 	void setTermsAcceptedOn(String termsAcceptedOn);
+	RegistrationType getRegistrationType();
+	void setRegistrationType(RegistrationType registrationType);
+	String getInstitutionRegistrationPrefixUUID();
+	void setInstitutionRegistrationPrefixUUID(String institutionRegistrationPrefixUUID);
 }

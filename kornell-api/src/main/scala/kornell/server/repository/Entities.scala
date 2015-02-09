@@ -21,8 +21,9 @@ import kornell.core.entity.Role
 import kornell.core.entity.RoleType
 import kornell.core.util.TimeUtil
 import kornell.server.util.ValueFactory
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import kornell.core.entity.BillingType
+import kornell.core.entity.InstitutionRegistrationPrefix
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -50,7 +51,9 @@ object Entities {
     postalCode: String = null,
     cpf: String = null,
     institutionUUID: String = null,
-    termsAcceptedOn: String = null) = {
+    termsAcceptedOn: String = null,
+    registrationType: RegistrationType = null,
+    institutionRegistrationPrefixUUID: String = null) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -73,6 +76,8 @@ object Entities {
     person.setCPF(cpf)
     person.setInstitutionUUID(institutionUUID)
     person.setTermsAcceptedOn(termsAcceptedOn)
+    person.setRegistrationType(registrationType)
+    person.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     person
   }
 
@@ -239,8 +244,8 @@ object Entities {
     invisible: Boolean = false, maxEnrollments: Integer = null,
     createdAt: Date = null, createdBy: String = null,
     state: CourseClassState = null,
-    registrationEnrollmentType: RegistrationEnrollmentType = null,
-    institutionRegistrationPrefix: String = null,
+    registrationType: RegistrationType = null,
+    institutionRegistrationPrefixUUID: String = null,
     courseClassChatEnabled: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
@@ -255,8 +260,8 @@ object Entities {
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
-    clazz.setRegistrationEnrollmentType(registrationEnrollmentType)
-    clazz.setInstitutionRegistrationPrefix(institutionRegistrationPrefix)
+    clazz.setRegistrationType(registrationType)
+    clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
     clazz
   }
@@ -320,5 +325,16 @@ object Entities {
     chatThreadParticipant.setActive(active)
     chatThreadParticipant.setLastJoinDate(lastJoinDate)
     chatThreadParticipant
+  }
+
+  def newInstitutionRegistrationPrefix(uuid: String, name: String, institutionUUID: String = null, showEmailOnProfile: Boolean, showCPFOnProfile: Boolean, showContactInformationOnProfile: Boolean): InstitutionRegistrationPrefix = {
+    val institutionRegistrationPrefix = factory.newInstitutionRegistrationPrefix.as
+    institutionRegistrationPrefix.setUUID(uuid)
+    institutionRegistrationPrefix.setName(name)
+    institutionRegistrationPrefix.setInstitutionUUID(institutionUUID)
+    institutionRegistrationPrefix.setShowEmailOnProfile(showEmailOnProfile)
+    institutionRegistrationPrefix.setShowCPFOnProfile(showCPFOnProfile)
+    institutionRegistrationPrefix.setShowContactInformationOnProfile(showContactInformationOnProfile)
+    institutionRegistrationPrefix
   }
 }

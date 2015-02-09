@@ -36,11 +36,11 @@ public interface CourseClass extends Named{
 	CourseClassState getState();
 	void setState(CourseClassState state);
 	
-	RegistrationEnrollmentType getRegistrationEnrollmentType();
-	void setRegistrationEnrollmentType(RegistrationEnrollmentType registrationEnrollmentType);
+	RegistrationType getRegistrationType();
+	void setRegistrationType(RegistrationType registrationType);
 	
-	String getInstitutionRegistrationPrefix();
-	void setInstitutionRegistrationPrefix(String institutionRegistrationPrefix);
+	String getInstitutionRegistrationPrefixUUID();
+	void setInstitutionRegistrationPrefixUUID(String institutionRegistrationPrefixUUID);
 	
 	Boolean isCourseClassChatEnabled();
 	void setCourseClassChatEnabled(Boolean courseClassChatEnabled);

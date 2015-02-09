@@ -42,7 +42,7 @@ class InstitutionResource(uuid: String) {
   @Produces(Array(InstitutionRegistrationPrefixesTO.TYPE))
   @Path("registrationPrefixes")
   def getRegistrationPrefixes() = {
-    InstitutionRepo(uuid).getRegistrationPrefixes
+    InstitutionRepo(uuid).getInstitutionRegistrationPrefixes
   }.requiring(isPlatformAdmin, RequirementNotMet).get
   
   @PUT
