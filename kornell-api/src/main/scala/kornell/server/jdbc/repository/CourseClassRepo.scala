@@ -32,7 +32,7 @@ class CourseClassRepo(uuid:String) {
 		  		cc.registrationType = ${courseClass.getRegistrationType.toString},
 		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate
-	    ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)
+	    ChatThreadsRepo.updateCourseClassThreadsNames(courseClass.getUUID, courseClass.getName)
 	    courseClass
     } else {
       throw new IllegalArgumentException("Uma turma com nome \"" + courseClass.getName + "\" já existe para essa versão do curso.")

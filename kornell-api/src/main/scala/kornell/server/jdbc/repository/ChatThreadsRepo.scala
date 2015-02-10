@@ -198,31 +198,34 @@ object ChatThreadsRepo {
   /**
    * Used for when we change a courseClass name so we want to update all courseClass related threads (tutoring and support)
    */
-  def updateCourseClassSupportThreadsNames(courseClassUUID: String, courseClassName: String) = {
+  def updateCourseClassThreadsNames(courseClassUUID: String, courseClassName: String) = {
+    updateCourseClassThreadsName(courseClassUUID, getSupportChatThreadName(courseClassName), getSupportChatThreadNameAdminPerspective(courseClassName), ChatThreadType.SUPPORT)
+    updateCourseClassThreadsName(courseClassUUID, getTutoringChatThreadName(courseClassName), getTutoringChatThreadNameAdminPerspective(courseClassName), ChatThreadType.TUTORING)
+  }
+  
+  def updateCourseClassThreadsName(courseClassUUID: String, threadName: String, adminThreadName: String, chatThreadType: ChatThreadType) = {
     sql"""
-    	update ChatThreadParticipant set ChatThreadParticipant.chatThreadName = ${getSupportChatThreadName(courseClassName)}
-				where uuid in (
-					select uuid from (
-						select tp.uuid as uuid from ChatThread ct
+    	update ChatThreadParticipant ctp set ctp.chatThreadName = ${threadName}
+				where ctp.uuid in (
+    				select uuid from (
+						select tp.uuid from ChatThread ct
 						join ChatThreadParticipant tp on ct.uuid = tp.chatThreadUUID and tp.personUUID = ct.personUUID
 						join CourseClass cc on cc.uuid = ct.courseClassUUID
-						where ct.courseClassUUID = ${courseClassUUID} and ct.threadType in (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})
-					) as ids
-    	)""".executeUpdate
+						where ct.courseClassUUID = ${courseClassUUID} and ct.threadType = ${chatThreadType.toString}
+					) as ids )""".executeUpdate
     	
-    sql"""
+    	sql"""
     	update ChatThreadParticipant ctp
 			inner join ChatThread ct on ct.uuid = ctp.chatThreadUUID
 			inner join Person p on p.uuid = ct.personUUID
-			set ctp.chatThreadName = concat(p.fullName, ${getSupportChatThreadNameAdminPerspective(courseClassName)})
+			set ctp.chatThreadName = concat(p.fullName, ${adminThreadName})
 			where ctp.uuid in (
 				select uuid from (
 					select tp.uuid from ChatThread t
 					join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID and tp.personUUID <> t.personUUID
 					join CourseClass cc on cc.uuid = t.courseClassUUID
-					where t.courseClassUUID = ${courseClassUUID} and t.threadType in (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})
-				) as ids
-			)""".executeUpdate
+					where t.courseClassUUID = ${courseClassUUID} and t.threadType = ${chatThreadType.toString}
+				) as ids)""".executeUpdate
   }
   
   def getTotalUnreadCountByPerson(personUUID: String, institutionUUID: String) = {
