@@ -137,7 +137,7 @@ object ChatThreadsRepo {
     }
     sql"""
 			insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, chatThreadName, active, lastJoinDate)
-			values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, ${chatThreadName}), 1, ${new Date()}""".executeUpdate
+			values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, ${chatThreadName}, 1, ${new Date()})""".executeUpdate
   }
 
   def removeChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
