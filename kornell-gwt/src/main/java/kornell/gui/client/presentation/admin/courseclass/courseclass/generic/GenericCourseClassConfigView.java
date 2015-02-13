@@ -66,7 +66,7 @@ public class GenericCourseClassConfigView extends Composite {
 	private KornellSession session;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private boolean isCreationMode, canDelete, isInstitutionAdmin;
+	private boolean isCreationMode, canDelete, isInstitutionAdmin, allowPrefixEdit;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
@@ -116,6 +116,7 @@ public class GenericCourseClassConfigView extends Composite {
 		this.user = session.getCurrentUser();
 		this.isInstitutionAdmin = session.isInstitutionAdmin();
 		this.isCreationMode = (courseClassTO == null) && isInstitutionAdmin;
+		this.allowPrefixEdit = isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
 		this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -235,7 +236,6 @@ public class GenericCourseClassConfigView extends Composite {
 		institutionRegistrationPrefixes = new ListBox();		
 		if(!isCreationMode)
 			institutionRegistrationPrefixes.setSelectedValue(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
-		boolean allowPrefixEdit = isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
 		if(allowPrefixEdit){
 			loadInstitutionPrefixes();
 		} else {
@@ -385,7 +385,9 @@ public class GenericCourseClassConfigView extends Composite {
 		courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
 		courseClass.setInvisible(invisible.getFieldPersistText().equals("true"));
 		courseClass.setRegistrationType(RegistrationType.valueOf(registrationType.getFieldPersistText()));
-		courseClass.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefix.getFieldPersistText());
+		if(allowPrefixEdit) {
+			courseClass.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefix.getFieldPersistText());
+		}
 		return courseClass;
 	}
 
