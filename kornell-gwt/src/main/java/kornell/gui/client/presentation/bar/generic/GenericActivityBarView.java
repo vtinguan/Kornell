@@ -231,7 +231,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private static native void setupArrowsNavigation() /*-{
 		$doc.onkeydown = function() {
-			if($wnd.event.target && $wnd.event.target.nodeName != "TEXTAREA"){
+			if($wnd.event && $wnd.event.target && $wnd.event.target.nodeName != "TEXTAREA"){
 			    switch ($wnd.event.keyCode) {
 			        case 37: //LEFT ARROW
 			        	$doc.getElementsByClassName("btnPanel previous")[0].click();

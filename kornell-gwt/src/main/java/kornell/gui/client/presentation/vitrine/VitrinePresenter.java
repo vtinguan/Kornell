@@ -95,7 +95,12 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				Place welcomePlace = new WelcomePlace();
 				if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
 					 newPlace = new TermsPlace();
-				} else if (institution.isDemandsPersonContactDetails() && userInfoTO.getPerson().getCity() == null) {
+				} else if ( 
+						( institution.isDemandsPersonContactDetails() && 
+								( !RegistrationType.username.equals(userInfoTO.getPerson().getRegistrationType()) ||
+									userInfoTO.getInstitutionRegistrationPrefix().isShowContactInformationOnProfile()
+								)
+						) && userInfoTO.getPerson().getCity() == null) {
 					newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
 				} else if (session.isInstitutionAdmin()) {
 					newPlace = new AdminCourseClassesPlace();
