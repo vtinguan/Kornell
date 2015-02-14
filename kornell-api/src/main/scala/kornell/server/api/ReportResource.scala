@@ -22,6 +22,7 @@ import kornell.server.report.ReportInstitutionBillingGenerator
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.jdbc.repository.CourseClassRepo
 import java.text.SimpleDateFormat
+import kornell.server.jdbc.repository.CourseRepo
 
 @Path("/report")
 class ReportResource {
@@ -98,22 +99,30 @@ class ReportResource {
   @GET
   @Path("/courseClassInfo")
   def getCourseClassInfo(@Context resp: HttpServletResponse,
+    @QueryParam("courseUUID") courseUUID: String,
     @QueryParam("courseClassUUID") courseClassUUID: String,
     @QueryParam("fileType") fileType: String) = {
-    val fType = {
-      if(fileType != null && fileType == "xls")
-        "xls"
-      else
-        "pdf"
-    }
-    val courseClass = CourseClassRepo(courseClassUUID).get
-    val fileName = courseClass.getName + " - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ "."+fType
-    resp.addHeader("Content-disposition", "attachment; filename=" + fileName)
-    if(fType != null && fType == "xls")
-    	resp.setContentType("application/vnd.ms-excel")
-    else
-    	resp.setContentType("application/pdf")
-    ReportCourseClassGenerator.generateCourseClassReport(courseClassUUID, fType)
+	  if(courseUUID != null || courseClassUUID != null){
+	    val fType = {
+	      if(fileType != null && fileType == "xls")
+	        "xls"
+	      else
+	        "pdf"
+	    }
+	    val fileName = { 
+	    	if(courseUUID != null)
+	    	  CourseRepo(courseUUID).get.getTitle
+	    	else
+	    	  CourseClassRepo(courseClassUUID).get.getName
+	    } + " - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ "."+fType
+	    
+	    resp.addHeader("Content-disposition", "attachment; filename=" + fileName)
+	    if(fType != null && fType == "xls")
+	    	resp.setContentType("application/vnd.ms-excel")
+	    else
+	    	resp.setContentType("application/pdf")
+	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
+	  }
   }
 
   @GET

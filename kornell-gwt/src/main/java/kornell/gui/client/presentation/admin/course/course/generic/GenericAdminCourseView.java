@@ -15,6 +15,7 @@ import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
+import kornell.gui.client.presentation.admin.institution.generic.GenericInstitutionReportsView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
@@ -24,10 +25,13 @@ import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.Tab;
+import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -65,6 +69,16 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 
 	private Presenter presenter;
 
+
+	@UiField
+	TabPanel tabsPanel;
+	@UiField
+	Tab editTab;
+	@UiField
+	Tab reportsTab;
+	@UiField
+	FlowPanel reportsPanel;
+	
 	@UiField
 	HTMLPanel titleEdit;
 	@UiField
@@ -94,10 +108,13 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	private String modalMode;
 	private ListBox institutionRegistrationPrefixes;
 	private String courseUUID;
+	private GenericCourseReportsView reportsView;
+	private EventBus bus;
 	
 	public GenericAdminCourseView(final KornellSession session, EventBus bus, PlaceController placeCtrl) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
+		this.bus = bus;
 		this.isPlatformAdmin = session.isPlatformAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -143,6 +160,17 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	}
 
 	public void initData() {
+
+		if (session.isPlatformAdmin()) {
+			buildReportsView();
+			reportsTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildReportsView();
+				}
+			});
+		}
+		
 		courseFields.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 
@@ -166,6 +194,14 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		courseFields.add(formHelper.getImageSeparator());
 
 		courseFields.setVisible(true);
+	}
+
+	public void buildReportsView() {
+		if (reportsView == null) {
+			reportsView = new GenericCourseReportsView(session, bus, null, course);
+		}
+		reportsPanel.clear();
+		reportsPanel.add(reportsView);
 	}
 	
 	private boolean validateFields() {		
