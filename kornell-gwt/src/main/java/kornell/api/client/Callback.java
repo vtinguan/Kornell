@@ -1,21 +1,22 @@
 package kornell.api.client;
 
+import static com.google.gwt.http.client.Response.SC_CONFLICT;
 import static com.google.gwt.http.client.Response.SC_FORBIDDEN;
+import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
 import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
 import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
-import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
-import static com.google.gwt.http.client.Response.SC_CONFLICT;
 
 import java.util.logging.Logger;
 
 import kornell.core.entity.EntityFactory;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.Kornell;
+import kornell.gui.client.KornellConstantsHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
@@ -28,6 +29,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  
 public abstract class Callback<T> implements RequestCallback {
+	
 	Logger logger = Logger.getLogger(Callback.class.getName());
 
 	@Override
@@ -35,27 +37,28 @@ public abstract class Callback<T> implements RequestCallback {
 		if (!isTrusted(response))
 			throw new RuntimeException("Won't touch untrusted response");
 		int statusCode = response.getStatusCode();
+		GWT.debugger();
 		switch (statusCode) {
 		case SC_OK:
 			ok(response);
 			break;
 		case SC_FORBIDDEN:
-			forbidden();
+			forbidden(unwrapError(response));
 			break;
 		case SC_UNAUTHORIZED:
-			unauthorized(response.getText());
+			unauthorized(unwrapError(response));
 			break;
 		case SC_CONFLICT:
-			conflict(response.getText());
+			conflict(unwrapError(response));
 			break;
 		case SC_NOT_FOUND:
-			notFound();
+			notFound(unwrapError(response));
 			break;
 		case SC_NO_CONTENT:
 			ok((T)null);
 			break;
 		case SC_INTERNAL_SERVER_ERROR:
-			internalServerError();
+			internalServerError(unwrapError(response));
 			break;
 		case 0:
 			failed();
@@ -109,11 +112,31 @@ public abstract class Callback<T> implements RequestCallback {
 		}
 		else ok((T) null); //TODO: Consider throwing exception "unknow response type" instead, but map "text/*" and "application/*" first
 	}
-
-	protected void notFound() {
+	
+	private KornellErrorTO unwrapError(Response response) {
+		String responseText = response.getText();
+		if (responseText == null || responseText.trim().equals("")) {
+			throw new RuntimeException("Response text was blank");
+		}
+		String contentType = response.getHeader("Content-Type").toLowerCase();
+		AutoBean<T> bean = null;
+		AutoBeanFactory factory = factoryFor(contentType);
+		Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
+		bean = AutoBeanCodex.decode(factory, clazz, responseText);
+		T unwrapped = bean.as();
+		if (unwrapped instanceof KornellErrorTO) {
+			return (KornellErrorTO) unwrapped;
+		}
+		throw new RuntimeException("Supposed to get a KornellErrorTO, got " + unwrapped.getClass());
 	}
 
-	protected void internalServerError() {
+	protected void notFound(KornellErrorTO kornellErrorTO) {
+		logger.fine(KornellConstantsHelper.getNotFoundMessage(kornellErrorTO));
+	}
+
+	protected void internalServerError(KornellErrorTO kornellErrorTO) {
+		logger.severe(KornellConstantsHelper.getInternalServerErrorMessage(kornellErrorTO));
+		logger.severe("Cause: " + kornellErrorTO.getException());
 	}
 
 	
@@ -155,15 +178,17 @@ public abstract class Callback<T> implements RequestCallback {
 		logger.severe("Your request failed. Please check that the API is running and responding cross-origin requests.");
 	}
 
-	protected void unauthorized(String errorMessage) {
-		
+	protected void unauthorized(KornellErrorTO kornellErrorTO) {
+		logger.fine(KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
 	}
 
-	protected void conflict(String errorMessage) {
-		
+	protected void conflict(KornellErrorTO kornellErrorTO) {
+		logger.info(KornellConstantsHelper.getConflictMessage(kornellErrorTO));
 	}
 
-	protected void forbidden() {
+	protected void forbidden(KornellErrorTO kornellErrorTO) {
+		//Not used for now
+		logger.fine(KornellConstantsHelper.getForbiddenMessage(kornellErrorTO));
 	}
 
 	@Override

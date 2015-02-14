@@ -15,6 +15,7 @@ import kornell.core.util.UUID
 import java.util.Date
 import kornell.core.entity.CourseClassState
 import java.sql.ResultSet
+import kornell.core.error.exception.EntityConflictException
 
 class CourseClassesRepo {
 }
@@ -49,7 +50,7 @@ object CourseClassesRepo {
 	    """.executeUpdate
 	    courseClass
     } else {
-      throw new IllegalArgumentException("Uma turma com nome \"" + courseClass.getName + "\" já existe para essa versão do curso.")
+      throw new EntityConflictException("courseClassAlreadyExists")
     }
   }
 

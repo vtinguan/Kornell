@@ -16,10 +16,10 @@ import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.server.util.Conditional.toConditional
 import kornell.core.to.CourseClassesTO
-import kornell.server.util.Errors._
 import kornell.server.repository.Entities
 import javax.ws.rs.POST
 import kornell.core.entity.RegistrationType
+import kornell.server.util.AccessDeniedErr
 
 @Path("courseClasses")
 class CourseClassesResource {
@@ -29,8 +29,8 @@ class CourseClassesResource {
   @Produces(Array(CourseClass.TYPE))
   def create(courseClass: CourseClass) = {
     CourseClassesRepo.create(courseClass)
-  }.requiring(isPlatformAdmin, UserNotInRole) 
-   .or(isInstitutionAdmin(courseClass.getInstitutionUUID), UserNotInRole)
+  }.requiring(isPlatformAdmin, AccessDeniedErr()) 
+   .or(isInstitutionAdmin(courseClass.getInstitutionUUID), AccessDeniedErr())
    .get
    
   @Path("{uuid}")

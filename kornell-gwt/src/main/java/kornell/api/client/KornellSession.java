@@ -1,18 +1,16 @@
 package kornell.api.client;
 
-import java.util.List;
 import java.util.logging.Logger;
 
-import kornell.core.entity.Role;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.web.bindery.event.shared.EventBus;
 
 
@@ -46,7 +44,7 @@ public class KornellSession extends KornellClient {
 				}
 
 				@Override
-				public void unauthorized(String errorMessage) {
+				public void unauthorized(KornellErrorTO kornellErrorTO) {
 					setCurrentUser(null);
 					//callback.unauthorized(errorMessage);
 				}
@@ -123,9 +121,9 @@ public class KornellSession extends KornellClient {
 			}
 
 			@Override
-			protected void unauthorized(String errorMessage) {
+			protected void unauthorized(KornellErrorTO kornellErrorTO) {
 				setCurrentUser(null);
-				callback.unauthorized(errorMessage);
+				callback.unauthorized(kornellErrorTO);
 			}
 		};
 		GET("/user").addHeader(ClientProperties.X_KNL_A, auth).sendRequest(null, wrapper);

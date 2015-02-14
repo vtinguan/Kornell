@@ -10,8 +10,8 @@ import com.google.gwt.http.client.URL;
 public class UserClient extends RESTClient {
 
 	// TODO: Is this safe?
-	public void getUser(String username, Callback<UserInfoTO> cb) {
-		GET("/user/" + username).sendRequest(null, cb);
+	public void getUser(String userUUID, Callback<UserInfoTO> cb) {
+		GET("/user/" + userUUID).sendRequest(null, cb);
 	}
 
 	public void getUserHello(String name, String hostName, Callback<UserHelloTO> cb) {

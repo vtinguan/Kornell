@@ -12,6 +12,7 @@ import kornell.server.util.SHA256
 import java.sql.ResultSet
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.AuthRepo
+import kornell.core.error.exception.UnauthorizedAccessException
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
@@ -70,12 +71,12 @@ class BasicAuthFilter extends Filter {
         
       } catch {
         case e: Exception =>
-          e.printStackTrace(); resp.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-            s"Authentication failed at uri ${req.getRequestURI}")
+          e.printStackTrace(); throw new UnauthorizedAccessException("authenticationFailed")
+          
       }
       chain.doFilter(req, resp);
       logout
-    } else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You must authenticate to access [" + req.getRequestURI + "]")
+    } else throw new UnauthorizedAccessException("mustAuthenticate")
   }
 
   override def init(cfg: FilterConfig) {}

@@ -1,9 +1,9 @@
 package kornell.server.api
 
+import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.collection.JavaConverters.setAsJavaSetConverter
 import scala.collection.immutable.Set
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
 import javax.ws.rs.PUT
@@ -14,12 +14,16 @@ import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.Person
+import kornell.core.entity.RegistrationType
+import kornell.core.error.exception.EntityNotFoundException
+import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.core.to.RegistrationRequestTO
 import kornell.core.to.UserInfoTO
 import kornell.core.util.UUID
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.server.jdbc.repository.PersonRepo
@@ -31,9 +35,6 @@ import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
 import kornell.server.web.BasicAuthFilter
 import kornell.core.to.UserHelloTO
-import kornell.core.entity.RegistrationType
-import kornell.server.jdbc.repository.InstitutionRepo
-import scala.collection.JavaConverters._
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -98,7 +99,6 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("{personUUID}")
   @Produces(Array(UserInfoTO.TYPE))
   def getByPersonUUID(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse,
     @PathParam("personUUID") personUUID: String): Option[UserInfoTO] =
     authRepo.withPerson { p =>
       val user = newUserInfoTO
@@ -112,8 +112,7 @@ class UserResource(private val authRepo:AuthRepo) {
 	    }
         Option(user)
       } else {
-        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person not found.")
-        null
+        throw new EntityNotFoundException("personNotFound")
       }
     }
 
@@ -132,8 +131,7 @@ class UserResource(private val authRepo:AuthRepo) {
   @GET
   @Path("requestPasswordChange/{email}/{institutionName}")
   @Produces(Array("text/plain"))
-  def requestPasswordChange(@Context resp: HttpServletResponse,
-    @PathParam("email") email: String,
+  def requestPasswordChange(@PathParam("email") email: String,
     @PathParam("institutionName") institutionName: String) = {
     val institution = InstitutionsRepo.byName(institutionName)
     val person = PeopleRepo.getByEmail(institution.get.getUUID, email)
@@ -142,15 +140,14 @@ class UserResource(private val authRepo:AuthRepo) {
       authRepo.updateRequestPasswordChangeUUID(person.get.getUUID, requestPasswordChangeUUID)
       EmailService.sendEmailRequestPasswordChange(person.get, institution.get, requestPasswordChangeUUID)
     } else {
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Person or Institution not found.");
+      throw new EntityNotFoundException("personOrInstitutionNotFound")
     }
   }
 
   @GET
   @Path("changePassword/{password}/{passwordChangeUUID}")
   @Produces(Array(UserInfoTO.TYPE))
-  def changePassword(@Context resp: HttpServletResponse,
-    @PathParam("password") password: String,
+  def changePassword(@PathParam("password") password: String,
     @PathParam("passwordChangeUUID") passwordChangeUUID: String) = {
     val person = authRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
     if (person.isDefined) {
@@ -159,7 +156,7 @@ class UserResource(private val authRepo:AuthRepo) {
       user.setUsername(person.get.getEmail())
       Option(user)
     } else {
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "It wasn't possible to change your password.")
+      throw new UnauthorizedAccessException("passwordChangeFailed")
     }
   }
 
@@ -167,12 +164,11 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("changePassword/{targetPersonUUID}/")
   @Produces(Array("text/plain"))
   def changePassword(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse,
     @PathParam("targetPersonUUID") targetPersonUUID: String,
     @QueryParam("password") password: String) = {
     authRepo.withPerson { p =>
       if (!PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID))
-        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password.");
+        throw new UnauthorizedAccessException("passwordChangeDenied")
       else {
         val targetPersonRepo = PersonRepo(targetPersonUUID)
         val username = authRepo.getUsernameByPersonUUID(targetPersonUUID)
@@ -196,7 +192,6 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("hasPowerOver/{targetPersonUUID}")
   @Produces(Array("application/boolean"))
   def changePassword(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse,
     @PathParam("targetPersonUUID") targetPersonUUID: String) = {
     authRepo.withPerson { p =>
       PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID)
@@ -225,12 +220,11 @@ class UserResource(private val authRepo:AuthRepo) {
   @Consumes(Array(UserInfoTO.TYPE))
   @Produces(Array(UserInfoTO.TYPE))
   def update(implicit @Context sc: SecurityContext, 
-    @Context resp: HttpServletResponse,
     userInfo: UserInfoTO,
     @PathParam("personUUID") personUUID: String) = authRepo.withPerson { p =>
     if (userInfo != null) {
       if (!PersonRepo(p.getUUID).hasPowerOver(personUUID))
-        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to change the password.");
+        throw new UnauthorizedAccessException("passwordChangeDenied")
       else {
 	      PersonRepo(personUUID).update(userInfo.getPerson)
 	
