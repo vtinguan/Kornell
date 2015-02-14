@@ -111,9 +111,7 @@ public class GenericCourseClassAdminsView extends Composite {
 			@Override
 			public void ok(RolesTO to) {
 				for (RoleTO roleTO : to.getRoleTOs()) {
-					String item = roleTO.getPerson().getEmail() != null ?
-							roleTO.getPerson().getEmail() :
-								roleTO.getPerson().getCPF();
+					String item = roleTO.getUsername();
 					if(roleTO.getPerson().getFullName() != null && !"".equals(roleTO.getPerson().getFullName())){
 						item += " (" +roleTO.getPerson().getFullName()+")";
 					}

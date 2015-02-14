@@ -27,6 +27,9 @@ import kornell.core.entity.ChatThread
 import kornell.core.entity.BillingType
 import kornell.core.entity.RegistrationType
 import kornell.core.entity.InstitutionRegistrationPrefix
+import kornell.core.to.PersonTO
+import kornell.core.to.RoleTO
+import kornell.core.entity.RoleCategory
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -206,6 +209,9 @@ package object repository {
 	    rs.getString("termsAcceptedOn"),
 	    RegistrationType.valueOf(rs.getString("registrationType")),
 	    rs.getString("institutionRegistrationPrefixUUID"))
+	
+	implicit def toPersonTO(rs:ResultSet):PersonTO = newPersonTO(toPerson(rs),
+	    rs.getString("username"))
 
   implicit def toRole(rs: java.sql.ResultSet): kornell.core.entity.Role = {
     val roleType = RoleType.valueOf(rs.getString("role"))
@@ -217,6 +223,16 @@ package object repository {
       case RoleType.tutor => Entities.newTutorRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
     }
     role
+  }
+
+  implicit def toRoleTO(rs: java.sql.ResultSet, bindMode: String): RoleTO = {
+    val role = toRole(rs)
+    TOs.newRoleTO(role, {
+      if(role != null && RoleCategory.BIND_WITH_PERSON.equals(bindMode))
+        PeopleRepo.getByUUID(role.getPersonUUID).get
+      else
+        null
+    }, rs.getString("username"))
   }
 	
   implicit def toInstitutionRegistrationPrefix(rs:ResultSet):InstitutionRegistrationPrefix = 
