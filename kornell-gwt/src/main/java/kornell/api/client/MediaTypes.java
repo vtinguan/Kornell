@@ -25,6 +25,8 @@ import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.LibraryFilesTO;
+import kornell.core.to.PeopleTO;
+import kornell.core.to.PersonTO;
 import kornell.core.to.RolesTO;
 import kornell.core.to.UnreadChatThreadsTO;
 import kornell.core.to.UserHelloTO;
@@ -40,6 +42,8 @@ public class MediaTypes {
 	public MediaTypes() {
 		register(People.TYPE, People.class);
 		register(Person.TYPE, Person.class);
+		register(PeopleTO.TYPE, PeopleTO.class);
+		register(PersonTO.TYPE, PersonTO.class);
 		register(Course.TYPE, Course.class);
 		register(CoursesTO.TYPE, CoursesTO.class);
 		register(CourseClassesTO.TYPE, CourseClassesTO.class);

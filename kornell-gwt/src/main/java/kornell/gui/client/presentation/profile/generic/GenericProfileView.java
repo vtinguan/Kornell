@@ -89,13 +89,14 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	@UiField Button btnOK;
 	@UiField Button btnCancel;
 	@UiField GenericPasswordChangeView passwordChangeWidget;
+	@UiField GenericSendMessageView sendMessageWidget;
 	
 	private UserInfoTO user;
 	
 	
 	private KornellFormFieldWrapper cpf, email, username, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
 	private List<KornellFormFieldWrapper> fields;
-	private Button btnChangePassword;
+	private Button btnChangePassword, btnSendMessage;
 	private ClientFactory clientFactory;
 
 	private String profileUserUUID;
@@ -123,6 +124,16 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			@Override
 			public void onClick(ClickEvent event) {
 				passwordChangeWidget.show();
+			}
+		});
+		
+		btnSendMessage = new Button();
+		btnSendMessage.setText("Enviar Mensagem".toUpperCase());
+		btnSendMessage.addStyleName("btnAction btnStandard btnChangePassword");
+		btnSendMessage.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				sendMessageWidget.show();
 			}
 		});
 
@@ -163,6 +174,9 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			public void ok(Boolean hasPowerOverTargetUser) {
 				if(hasPowerOverTargetUser){
 					titlePanel.add(btnChangePassword);
+				}
+				if(!isCurrentUser){
+					titlePanel.add(btnSendMessage);
 				}
 				hasPowerOver = hasPowerOverTargetUser;
 				session.user().getUser(profileUserUUID, new Callback<UserInfoTO>() {
@@ -421,8 +435,9 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		
 		form.removeStyleName("shy");
 		setValidity(true);
-		
+
 		passwordChangeWidget.initData(session, user, isCurrentUser);
+		sendMessageWidget.initData(session, user, isCurrentUser);
 		
 	}
 

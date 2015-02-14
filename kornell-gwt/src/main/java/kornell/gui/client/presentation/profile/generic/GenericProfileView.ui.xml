@@ -21,5 +21,6 @@
 			</g:FlowPanel>
 		</b:Form>
 		<knl:GenericPasswordChangeView ui:field="passwordChangeWidget"></knl:GenericPasswordChangeView>
+		<knl:GenericSendMessageView ui:field="sendMessageWidget"></knl:GenericSendMessageView>
 	</g:FlowPanel>
 </ui:UiBinder>

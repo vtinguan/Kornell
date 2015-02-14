@@ -25,7 +25,7 @@ class InstitutionRepo(uuid: String) {
     | i.allowRegistration = ${institution.isAllowRegistration},
     | i.allowRegistrationByUsername = ${institution.isAllowRegistrationByUsername},
     | i.activatedAt = ${institution.getActivatedAt},
-    | i.skin = ${institution.getSkin}
+    | i.skin = ${institution.getSkin},
     | i.billingType = ${institution.getBillingType.toString}
     | where i.uuid = ${institution.getUUID}""".executeUpdate
     institution

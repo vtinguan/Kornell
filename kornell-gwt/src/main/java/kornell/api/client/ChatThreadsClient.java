@@ -9,9 +9,14 @@ public class ChatThreadsClient extends RESTClient {
 		POST("/chatThreads/courseClass/" + courseClassUUID).sendRequest(message, callback);
 	}
 	
+	public void postMessageToDirectThread(String message, String personUUID, Callback<Void> callback) {
+		POST("/chatThreads/direct/" + personUUID).sendRequest(message, callback);
+	}
+	
 	public void postMessageToChatThread(String message, String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
 		postMessageToChatThread(message, chatThreadUUID, "", callback);
 	}
+	
 	public void postMessageToChatThread(String message, String chatThreadUUID, String since, Callback<ChatThreadMessagesTO> callback) {
 		POST("/chatThreads/"+chatThreadUUID+"/message/?since="+since).sendRequest(message, callback);
 	}

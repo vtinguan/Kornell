@@ -30,4 +30,6 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<InstitutionRegistrationPrefixesTO> newInstitutionRegistrationPrefixesTO();
 	AutoBean<InstitutionHostNamesTO> newInstitutionHostNamesTO();
 	AutoBean<KornellErrorTO> newErrorTO();
+	AutoBean<PersonTO> newPersonTO();
+	AutoBean<PeopleTO> newPeopleTO();
 }

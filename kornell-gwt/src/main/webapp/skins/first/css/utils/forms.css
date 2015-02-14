@@ -39,3 +39,4 @@
 .nav-pills>.active>a,.nav-pills>.active>a:hover{background-color:rgba(0, 0, 0, 0.4) !important;color:#5b9455 !important;}
 .dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
 .forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
+.forgotPasswordModal .fieldPanelWrapper .fieldPanel{width:275px;}.forgotPasswordModal .fieldPanelWrapper .fieldPanel .textField{width:248px;}

@@ -459,18 +459,18 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		Map<String, EnrollmentRequestTO> enrollmentRequestsMap = new HashMap<String, EnrollmentRequestTO>();
 		for (EnrollmentRequestTO enrollmentRequestTO : enrollmentRequestsTO.getEnrollmentRequests()) {
 			enrollmentRequestsMap.put(enrollmentRequestTO.getUsername(), enrollmentRequestTO);
-    }
+		}
 
 		String validation = "";
 		
 		enrollmentsToOverride = new ArrayList<EnrollmentTO>();
 		for (Iterator<EnrollmentTO> iterator = enrollmentTOs.iterator(); iterator.hasNext();) {
 	    EnrollmentTO enrollmentTO = (EnrollmentTO) iterator.next();
-			String username = enrollmentTO.getUsername();
-			//if the user was already enrolled and is not on the new list, cancel enrollment
+		String username = enrollmentTO.getUsername();
+		//if the user was already enrolled and is not on the new list, cancel enrollment
 	    if(!enrollmentRequestsMap.containsKey(username) && EnrollmentState.enrolled.equals(enrollmentTO.getEnrollment().getState())){
 	    	enrollmentsToOverride.add(enrollmentTO);
-	    	validation += username + "\n";
+	    	validation += username + " (" + enrollmentTO.getFullName() + ")\n";
 	    }
     }
 		

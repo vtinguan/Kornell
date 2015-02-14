@@ -35,6 +35,7 @@ import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.entity.InstitutionRegistrationPrefix
+import kornell.core.to.PersonTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -166,10 +167,11 @@ object TOs {
     to
   }
 
-  def newRoleTO(role: Role, person: Person) = {
+  def newRoleTO(role: Role, person: Person, username: String) = {
     val r = tos.newRoleTO.as
     r.setRole(role)
     r.setPerson(person)
+    r.setUsername(username)
     r
   }
 
@@ -249,6 +251,19 @@ object TOs {
     to.setFullName(fullName)
     to.setUsername(username)
     to
+  }
+
+  def newPeopleTO(people: List[PersonTO]) = {
+    val ps = tos.newPeopleTO.as
+    ps.setPeopleTO(people.asJava)
+    ps
+  }
+  
+  def newPersonTO(person: Person, username: String) = {
+    val p = tos.newPersonTO.as
+    p.setPerson(person)
+    p.setUsername(username)
+    p
   }
   
 }
