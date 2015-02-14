@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1150" pageHeight="842" columnWidth="1150" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1900" pageHeight="842" columnWidth="1900" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="27"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="notStarted" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
@@ -32,6 +32,9 @@
 	<field name="email" class="java.lang.String"/>
 	<field name="certifiedAt" class="java.lang.String"/>
 	<field name="enrolledAt" class="java.lang.String"/>
+	<field name="courseName" class="java.lang.String"/>
+	<field name="courseVersionName" class="java.lang.String"/>
+	<field name="courseClassName" class="java.lang.String"/>
 	<title>
 		<band height="239">
 			<textField>
@@ -293,6 +296,30 @@
 				</textElement>
 				<text><![CDATA[PROGRESSO]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="9b933eca-4ebd-4ce5-9027-1a0f39d714c4" mode="Opaque" x="1150" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CURSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d56b90bd-e20d-4107-b481-c42799b312bd" mode="Opaque" x="1400" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[VERSÃO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09dbbb6f-e2fe-4913-aaf6-9fcd2774872d" mode="Opaque" x="1650" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[TURMA]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
@@ -358,6 +385,27 @@
             : "A Iniciar"
         )
     )]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f520e1a0-f36b-42aa-8a67-a624a40275f1" x="1150" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a7eecd8d-d696-4a3c-b87e-3dfa19dbcadb" x="1400" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseVersionName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="5715a812-7812-4371-9fbf-5927215e6ff8" x="1650" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseClassName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
