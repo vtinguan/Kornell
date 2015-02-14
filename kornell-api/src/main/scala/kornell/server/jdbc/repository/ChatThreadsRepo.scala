@@ -72,8 +72,8 @@ object ChatThreadsRepo {
           null
         }
       }
-      }
-    if (!chatThreadUUID.isDefined) {
+    }
+    if (chatThreadUUID == null) {
       val chatThread = createChatThread(fromPerson.getInstitutionUUID, null, fromPersonUUID, ChatThreadType.DIRECT)
       createChatThreadParticipant(chatThread.getUUID, fromPersonUUID, null, null, toPerson.getFullName)
       createChatThreadParticipant(chatThread.getUUID, toPersonUUID, null, null, fromPerson.getFullName)
@@ -126,8 +126,7 @@ object ChatThreadsRepo {
     val chatThreadName = {
       if (courseClassName == null) {
         "Chat with " + targetPersonName
-      }
-      if (threadCreatorUUID == null) {
+      } else if (threadCreatorUUID == null) {
         "Chat for " + courseClassName
       } else if(personUUID.equals(threadCreatorUUID)) {
       	getSupportChatThreadName(courseClassName)
@@ -136,8 +135,8 @@ object ChatThreadsRepo {
       }
     }
     sql"""
-			insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, chatThreadName, active, lastJoinDate)
-			values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, ${chatThreadName}, 1, ${new Date()})""".executeUpdate
+		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, chatThreadName, active, lastJoinDate)
+		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, ${chatThreadName}, 1, ${new Date()})""".executeUpdate
   }
 
   def removeChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
@@ -172,8 +171,8 @@ object ChatThreadsRepo {
     sql"""
 		    | select uuid
 	      	| from ChatThread 
-    			| where personUUID = ${personUUID}
-    			| and courseClassUUID = ${courseClassUUID}
+    			| where ( personUUID = ${personUUID} or ${personUUID} is null )
+    			| and ( courseClassUUID = ${courseClassUUID} or ${courseClassUUID} is null )
     			| and threadType = ${threadType.toString}
 		    """.first[String]
   }
