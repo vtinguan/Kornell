@@ -13,6 +13,7 @@ import kornell.core.entity.Institution;
 import kornell.core.entity.People;
 import kornell.core.entity.Person;
 import kornell.core.entity.Roles;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.lom.Contents;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.CourseClassTO;
@@ -62,6 +63,7 @@ public class MediaTypes {
 		register(ChatThreadMessagesTO.TYPE,ChatThreadMessagesTO.class);
 		register(InstitutionRegistrationPrefixesTO.TYPE,InstitutionRegistrationPrefixesTO.class);
 		register(InstitutionHostNamesTO.TYPE, InstitutionHostNamesTO.class);
+		register(KornellErrorTO.TYPE, KornellErrorTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

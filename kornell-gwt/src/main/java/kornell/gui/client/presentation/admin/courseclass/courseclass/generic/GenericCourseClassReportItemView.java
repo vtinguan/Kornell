@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
@@ -143,7 +144,7 @@ public class GenericCourseClassReportItemView extends Composite {
 					}
 					
 					@Override
-					public void internalServerError() {
+					public void internalServerError(KornellErrorTO kornellErrorTO) {
 						KornellNotification.show("Erro na geração dos certificados. Certifique-se que existem alunos que concluíram o curso nessa turma.", AlertType.ERROR, 3000);
 						displayCertificateActionCell(null);
 						LoadingPopup.hide();
@@ -159,7 +160,7 @@ public class GenericCourseClassReportItemView extends Composite {
 			}
 			
 			@Override
-			public void internalServerError() {
+			public void internalServerError(KornellErrorTO kornellErrorTO) {
 				displayCertificateActionCell(null);
 			}
 		});

@@ -16,6 +16,7 @@ import com.google.common.cache.CacheLoader
 import java.util.concurrent.TimeUnit
 import kornell.server.jdbc.PreparedStmt
 import kornell.core.util.StringUtils._
+import kornell.core.error.exception.EntityConflictException
 
 class PersonRepo(val uuid: String) {
 
@@ -56,7 +57,7 @@ class PersonRepo(val uuid: String) {
     if (isSome(email)) {
     	sql = sql + s"and (p.email = '${email}' or pw.username = '${email}')";
     }
-    if (sql.contains("--")) throw new IllegalArgumentException
+    if (sql.contains("--")) throw new EntityConflictException("invalidValue")
     val pstmt = new PreparedStmt(sql,List())    
     val result = pstmt.get[Boolean]
     result

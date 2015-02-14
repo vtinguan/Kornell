@@ -1,14 +1,5 @@
 package kornell.gui.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import kornell.core.to.CourseClassTO;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.view.formfield.ListBoxFormField;
-
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.i18n.client.Constants;
 
 public interface KornellConstants extends Constants {
@@ -244,4 +235,63 @@ public interface KornellConstants extends Constants {
 	String recipient();
 	@DefaultStringValue("Message:")
 	String message();
+	
+	
+	/**
+	 * Errors 404
+	 */
+	
+	@DefaultStringValue("Person not found.")
+	String personNotFound();
+	@DefaultStringValue("Repository not found.")
+	String repositoryNotFound();
+	@DefaultStringValue("Class not found.")
+	String classNotFound();
+	@DefaultStringValue("Person or institution not found.")
+	String personOrInstitutionNotFound();
+
+	
+	/**
+	 * Errors 401
+	 */
+	@DefaultStringValue("Authentication failed.")
+	String authenticationFailed();
+	@DefaultStringValue("You must authenticate to access this path.")
+	String mustAuthenticate();
+	@DefaultStringValue("It wasn't possible to change your password.")
+	String passwordChangeFailed();
+	@DefaultStringValue("Unauthorized attempt to change the password.")
+	String passwordChangeDenied();
+	@DefaultStringValue("Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.")
+	String classNoRights();
+	@DefaultStringValue("Unauthorized attempt to generate the class' certificates without admin rights.")
+	String unauthorizedAccessReport();
+	@DefaultStringValue("Access denied.")
+	String accessDenied();
+	
+	
+	/**
+	 * Errors 409
+	 */
+	
+	@DefaultStringValue("A class with this name already exists.")
+	String courseClassAlreadyExists();
+	@DefaultStringValue("A course version with this name already exists.")
+	String courseVersionAlreadyExists();
+	@DefaultStringValue("Invalid input value")
+	String invalidValue();
+	@DefaultStringValue("Constraint Violated (uuid or name).")
+	String constraintViolatedUUIDName();
+	
+	
+	/**
+	 * Errors 500
+	 */
+	
+	@DefaultStringValue("Error generating the report.")
+	String errorGeneratingReport();
+	
+	@DefaultStringValue("Error checking for certificates.")
+	String errorCheckingCerts();
+	
 }

@@ -22,6 +22,8 @@ import kornell.server.report.ReportInstitutionBillingGenerator
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.jdbc.repository.CourseClassRepo
 import java.text.SimpleDateFormat
+import kornell.core.error.exception.ServerErrorException
+import kornell.core.error.exception.UnauthorizedAccessException
 
 @Path("/report")
 class ReportResource {
@@ -41,19 +43,18 @@ class ReportResource {
   @GET
   @Path("/certificate")
   def get(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse,
     @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
     val roles = AuthRepo().getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID)))
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to generate the class' certificates without admin rights.");
+    	throw new UnauthorizedAccessException("unauthorizedAccessReport")
     else {
       try {
         val certificateInformationTOsByCourseClass = ReportCertificateGenerator.getCertificateInformationTOsByCourseClass(courseClassUUID)
         if (certificateInformationTOsByCourseClass.length == 0) {
-          resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating the report.");
+          throw new ServerErrorException("errorGeneratingReport")
         } else {
           var filename = p.getUUID + courseClassUUID + ".pdf"
           S3.certificates.delete(filename)
@@ -68,7 +69,7 @@ class ReportResource {
         }
       } catch {
         case e: Exception =>
-          resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating the report.");
+          throw new ServerErrorException("errorGeneratingReport", e)
       }
     }
   }
@@ -76,7 +77,6 @@ class ReportResource {
   @GET
   @Path("courseClassCertificateExists")
   def fileExists(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse,
     @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
@@ -91,7 +91,7 @@ class ReportResource {
       else
         ""
     } catch {
-      case e: Exception => ""
+      case e: Exception => throw new ServerErrorException("errorCheckingCerts", e)
     }
   }
 

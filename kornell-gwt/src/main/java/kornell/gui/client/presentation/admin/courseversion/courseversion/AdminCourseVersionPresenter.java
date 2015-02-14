@@ -6,16 +6,15 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
-import kornell.gui.client.KornellConstants;
+import kornell.core.error.KornellErrorTO;
+import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPresenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,7 +23,6 @@ import com.google.web.bindery.event.shared.EventBus;
 public class AdminCourseVersionPresenter implements AdminCourseVersionView.Presenter {
 	Logger logger = Logger.getLogger(AdminCourseVersionPresenter.class.getName());
 	private AdminCourseVersionView view;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private KornellSession session;
 	private PlaceController placeController;
 	private EventBus bus;
@@ -84,9 +82,9 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 				}		
 				
 				@Override
-				public void conflict(String errorMessage){
+				public void conflict(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
+					KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO), AlertType.ERROR, 2500);
 				}
 			});
 		} else {
@@ -99,9 +97,9 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 				}		
 				
 				@Override
-				public void conflict(String errorMessage){
+				public void conflict(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
+					KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO), AlertType.ERROR, 2500);
 				}
 			});
 		}

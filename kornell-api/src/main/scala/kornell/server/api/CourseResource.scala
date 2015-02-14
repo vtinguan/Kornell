@@ -7,11 +7,11 @@ import javax.ws.rs.core.SecurityContext
 import kornell.server.jdbc.repository.CourseRepo
 import kornell.core.entity.Course
 import kornell.server.util.Conditional.toConditional
-import kornell.server.util.RequirementNotMet
 import kornell.server.jdbc.repository.PersonRepo
 import javax.ws.rs.Consumes
 import javax.ws.rs.PUT
 import javax.ws.rs.DELETE
+import kornell.server.util.AccessDeniedErr
 
 class CourseResource(uuid: String) {
   
@@ -19,8 +19,8 @@ class CourseResource(uuid: String) {
   @Produces(Array(Course.TYPE))
   def get = {
     CourseRepo(uuid).get
-  }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
    
   @PUT
@@ -28,8 +28,8 @@ class CourseResource(uuid: String) {
   @Produces(Array(Course.TYPE))
   def update(course: Course) = {
     CourseRepo(uuid).update(course)
-  }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 }
 

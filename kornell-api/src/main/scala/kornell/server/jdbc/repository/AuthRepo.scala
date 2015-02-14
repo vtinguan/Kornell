@@ -16,6 +16,8 @@ import kornell.server.util.SHA256
 import com.google.common.cache.LoadingCache
 import scala.util.Try
 import kornell.core.entity.RoleType
+import kornell.core.error.exception.EntityNotFoundException
+import kornell.core.error.exception.UnauthorizedAccessException
 
 object AuthRepo {
   val AUTH_CACHE_SIZE = 300;
@@ -127,10 +129,10 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
         val person = PersonRepo(personUUID).first
         person match {
           case Some(one) => fun(one)
-          case None => throw new IllegalArgumentException(s"Person [$personUUID] not found.")
+          case None => throw new EntityNotFoundException("personNotFound")
         }
       }
-      case None => throw new WebApplicationException(Response.Status.UNAUTHORIZED)
+      case None => throw new UnauthorizedAccessException("authenticationFailed")
     }
   }
 
