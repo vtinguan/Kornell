@@ -197,9 +197,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	}
 
 	public void buildReportsView() {
-		if (reportsView == null) {
-			reportsView = new GenericCourseReportsView(session, bus, null, course);
-		}
+		reportsView = new GenericCourseReportsView(session, bus, null, course);
 		reportsPanel.clear();
 		reportsPanel.add(reportsView);
 	}
