@@ -13,7 +13,6 @@ import kornell.server.jdbc.repository.CoursesRepo
 import kornell.server.jdbc.repository.CourseRepo
 import kornell.core.entity.Course
 import kornell.server.util.Conditional.toConditional
-import kornell.server.util.RequirementNotMet
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.util.AccessDeniedErr
 
@@ -36,7 +35,7 @@ class CoursesResource {
   @Consumes(Array(Course.TYPE))
   def create(course: Course) = {
     CoursesRepo.create(course)
-  }.requiring(isPlatformAdmin, RequirementNotMet)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 }

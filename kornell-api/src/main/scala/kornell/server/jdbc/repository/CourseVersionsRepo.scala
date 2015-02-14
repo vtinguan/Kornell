@@ -12,6 +12,7 @@ import kornell.core.to.CourseVersionTO
 import kornell.core.to.CourseVersionsTO
 import kornell.core.util.UUID
 import java.util.Date
+import kornell.core.error.exception.EntityConflictException
 
 object CourseVersionsRepo {
   
@@ -47,7 +48,7 @@ object CourseVersionsRepo {
 	    | ${courseVersion.isDisabled})""".executeUpdate
 	    courseVersion
     } else {
-      throw new IllegalArgumentException("Uma versão com nome \"" + courseVersion.getName + "\" já existe para esse curso.")
+      throw new EntityConflictException("courseVersionAlreadyExists")
     }
   }  
   

@@ -14,6 +14,7 @@ import kornell.server.util.Settings
 import java.sql.Date
 import kornell.core.util.TimeUtil
 import java.sql.SQLException
+import kornell.core.error.exception.EntityConflictException
 
 class PreparedStmt(query: String, params: List[Any]) {
 
@@ -38,7 +39,7 @@ class PreparedStmt(query: String, params: List[Any]) {
           case p: BigDecimal => pstmt.setBigDecimal(i, p)
           case p: Boolean => pstmt.setBoolean(i, p)
           //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 
-          case _ => throw new IllegalArgumentException(s"Can not set param [${param.getClass.getName}::$param]")
+          case _ => throw new EntityConflictException("invalidValue")
         }
       } catch {
         case e: SQLException => logger.severe(s"Failed to set param [${i}] value to [${param}] on query ${query}")

@@ -24,7 +24,6 @@ import kornell.core.entity.Roles
 import javax.ws.rs.DELETE
 import kornell.core.entity.RoleCategory
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import javax.servlet.http.HttpServletResponse
 import kornell.server.repository.ContentRepository
 import kornell.core.to.RolesTO
 import kornell.core.to.LibraryFilesTO
@@ -36,6 +35,9 @@ import kornell.server.util.Conditional.toConditional
 import kornell.server.util.AccessDeniedErr
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.ChatThreadType
+import kornell.core.error.exception.UnauthorizedAccessException
+import kornell.core.error.exception.EntityNotFoundException
+import kornell.core.error.exception.EntityConflictException
 
 
 class CourseClassResource(uuid: String) {
@@ -51,37 +53,38 @@ class CourseClassResource(uuid: String) {
   @PUT
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
-  def update(@Context resp: HttpServletResponse, courseClass: CourseClass) = AuthRepo().withPerson { p =>
+  def update(courseClass: CourseClass) = AuthRepo().withPerson { p =>
     val roles = AuthRepo().getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID)))
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
+      throw new UnauthorizedAccessException("classNoRights")
     else
       try {
         CourseClassRepo(uuid).update(courseClass)
       } catch {
         case ioe: MySQLIntegrityConstraintViolationException =>
-          resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
+          throw new EntityConflictException("constraintViolatedUUIDName")
       }
   }
 
   @DELETE
   @Produces(Array(CourseClass.TYPE))
-  def delete(@Context resp: HttpServletResponse) = AuthRepo().withPerson { p =>
+  def delete() = AuthRepo().withPerson { p =>
     val courseClass = CourseClassRepo(uuid).get
-    val roles = AuthRepo().getUserRoles
     if (courseClass == null)
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Can't delete a class that doesn't exist.");
-    else if (!(RoleCategory.isPlatformAdmin(roles) ||
+      throw new EntityNotFoundException("classNotFound")
+    
+    val roles = AuthRepo().getUserRoles
+    if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, CourseClassRepo(uuid).get.getInstitutionUUID)))
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to update a class without platformAdmin or institutionAdmin rights.");
+      throw new UnauthorizedAccessException("classNoRights")
     else
       try {
         CourseClassRepo(uuid).delete(uuid)
         courseClass
       } catch {
         case ioe: MySQLIntegrityConstraintViolationException =>
-          resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Constraint Violated (uuid or name).");
+          throw new EntityConflictException("constraintViolatedUUIDName")
       }
   }
 

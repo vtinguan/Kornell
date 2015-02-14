@@ -21,7 +21,6 @@ import kornell.core.util.StringUtils
 import kornell.core.entity.ChatThreadType
 import kornell.server.util.Conditional.toConditional
 import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.util.RequirementNotMet
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))

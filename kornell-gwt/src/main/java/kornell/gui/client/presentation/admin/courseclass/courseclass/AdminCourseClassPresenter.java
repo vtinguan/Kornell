@@ -20,6 +20,7 @@ import kornell.core.entity.Enrollments;
 import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentRequestTO;
@@ -28,6 +29,7 @@ import kornell.core.to.EnrollmentTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
@@ -270,10 +272,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 					}
 					
 					@Override
-					public void unauthorized(String errorMessage){
+					public void unauthorized(KornellErrorTO kornellErrorTO){
 						LoadingPopup.hide();
 						KornellNotification.show("Erro ao tentar excluir a turma.", AlertType.ERROR);
-						logger.severe(this.getClass().getName() + " - " + errorMessage);
+						logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
 					}
 				});
 
@@ -509,8 +511,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 					}
 					
 					@Override
-					public void unauthorized(String error){
-						logger.severe("Error AdminHomePresenter: " + error);
+					public void unauthorized(KornellErrorTO kornellErrorTO){
+						logger.severe("Error AdminHomePresenter: " + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
 						KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
 						LoadingPopup.hide();
 					}
@@ -591,9 +593,9 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				}
 				
 				@Override
-				public void conflict(String errorMessage){
+				public void conflict(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
+					KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO), AlertType.ERROR, 2500);
 				}
 			});
 		} else {
@@ -608,9 +610,9 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				}		
 				
 				@Override
-				public void conflict(String errorMessage){
+				public void conflict(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(errorMessage, AlertType.ERROR, 2500);
+					KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO), AlertType.ERROR, 2500);
 				}
 			});
 		}

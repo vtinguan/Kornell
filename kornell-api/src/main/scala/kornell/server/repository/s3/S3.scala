@@ -22,6 +22,7 @@ import com.amazonaws.auth.AWSCredentials
 import java.io.BufferedInputStream
 import com.google.gwt.http.client.URL
 import java.net.URL
+import kornell.core.error.exception.EntityNotFoundException
 class S3(regionName: String,
   val accessKey: String,
   val secretKey: String,
@@ -115,6 +116,6 @@ object S3 {
     	select region,accessKeyId,secretAccessKey,bucketName,prefix,distributionURL
     	from S3ContentRepository
     	where uuid=$repository_uuid
-    """.first[S3].getOrElse({ throw new IllegalArgumentException(s"Could not find repository [$repository_uuid]") })
+    """.first[S3].getOrElse({ throw new EntityNotFoundException("repositoryNotFound") })
 
 }

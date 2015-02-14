@@ -7,19 +7,17 @@ import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Institution;
 import kornell.core.entity.InstitutionRegistrationPrefix;
 import kornell.core.entity.Person;
 import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.TimeUtil;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -56,9 +54,7 @@ import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -73,7 +69,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private final EventBus bus;
-	private Institution institution;
 	private FormHelper formHelper;
 	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showEmail = true, showCPF = true, showContactDetails, validateContactDetails;
 
@@ -112,7 +107,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		this.session = clientFactory.getKornellSession();
 		this.user = session.getCurrentUser();
 		this.placeCtrl = clientFactory.getPlaceController();
-		this.institution = Dean.getInstance().getInstitution();
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
@@ -192,8 +186,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 						display();
 					}
 					@Override
-					public void unauthorized(String errorMessage) {
-						logger.severe(this.getClass().getName() + " - " + errorMessage);
+					public void notFound(KornellErrorTO kornellErrorTO) {
+						logger.severe(this.getClass().getName() + " - not found");
 						user = null;
 						display();
 					}
@@ -266,7 +260,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					});
 				}
 				@Override
-				public void internalServerError(){
+				public void unauthorized(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
 					KornellNotification.show("Erros ao salvar usuário.", AlertType.ERROR);
 				}

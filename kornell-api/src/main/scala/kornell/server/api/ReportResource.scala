@@ -3,6 +3,8 @@ package kornell.server.api
 import java.io.ByteArrayInputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -12,17 +14,18 @@ import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.RoleCategory
+import kornell.core.error.exception.ServerErrorException
+import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.server.jdbc.repository.AuthRepo
+import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.server.jdbc.repository.CourseRepo
+import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.report.ReportCertificateGenerator
-import kornell.server.repository.s3.S3
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
-import kornell.server.jdbc.repository.InstitutionRepo
-import kornell.server.jdbc.repository.CourseClassRepo
-import java.text.SimpleDateFormat
-import kornell.server.jdbc.repository.CourseRepo
+import kornell.server.repository.s3.S3
 
 @Path("/report")
 class ReportResource {
@@ -42,19 +45,18 @@ class ReportResource {
   @GET
   @Path("/certificate")
   def get(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse,
     @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
     val roles = AuthRepo().getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID)))
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized attempt to generate the class' certificates without admin rights.");
+    	throw new UnauthorizedAccessException("unauthorizedAccessReport")
     else {
       try {
         val certificateInformationTOsByCourseClass = ReportCertificateGenerator.getCertificateInformationTOsByCourseClass(courseClassUUID)
         if (certificateInformationTOsByCourseClass.length == 0) {
-          resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating the report.");
+          throw new ServerErrorException("errorGeneratingReport")
         } else {
           var filename = p.getUUID + courseClassUUID + ".pdf"
           S3.certificates.delete(filename)
@@ -69,7 +71,7 @@ class ReportResource {
         }
       } catch {
         case e: Exception =>
-          resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating the report.");
+          throw new ServerErrorException("errorGeneratingReport", e)
       }
     }
   }
@@ -77,7 +79,6 @@ class ReportResource {
   @GET
   @Path("courseClassCertificateExists")
   def fileExists(implicit @Context sc: SecurityContext,
-    @Context resp: HttpServletResponse,
     @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
@@ -92,7 +93,7 @@ class ReportResource {
       else
         ""
     } catch {
-      case e: Exception => ""
+      case e: Exception => throw new ServerErrorException("errorCheckingCerts", e)
     }
   }
 

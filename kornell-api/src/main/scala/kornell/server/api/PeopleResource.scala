@@ -8,6 +8,7 @@ import javax.ws.rs.QueryParam
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.core.entity.People
 import kornell.server.jdbc.repository.AuthRepo
+import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.core.to.PeopleTO
 
 @Path("people")
