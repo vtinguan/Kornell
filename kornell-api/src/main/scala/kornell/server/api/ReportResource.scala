@@ -3,6 +3,8 @@ package kornell.server.api
 import java.io.ByteArrayInputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -12,17 +14,18 @@ import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.RoleCategory
+import kornell.core.error.exception.ServerErrorException
+import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.server.jdbc.repository.AuthRepo
+import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.server.jdbc.repository.CourseRepo
+import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.report.ReportCertificateGenerator
-import kornell.server.repository.s3.S3
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
-import kornell.server.jdbc.repository.InstitutionRepo
-import kornell.server.jdbc.repository.CourseClassRepo
-import java.text.SimpleDateFormat
-import kornell.core.error.exception.ServerErrorException
+import kornell.server.repository.s3.S3
 
 @Path("/report")
 class ReportResource {
