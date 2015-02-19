@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
@@ -18,8 +19,10 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
@@ -27,6 +30,7 @@ import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -40,12 +44,16 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericMenuBarView extends Composite implements MenuBarView, UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler, CourseClassesFetchedEventHandler {
+public class GenericMenuBarView extends Composite implements MenuBarView,
+		UnreadMessagesPerThreadFetchedEventHandler,
+		UnreadMessagesCountChangedEventHandler,
+		CourseClassesFetchedEventHandler {
 
 	Logger logger = Logger.getLogger(GenericMenuBarView.class.getName());
 
@@ -84,6 +92,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	Button btnExit;
 	@UiField
 	Image imgMenuBar;
+	@UiField
+	GenericPlaceBarView placeBar;
+
 	private KornellSession session;
 	private EventBus bus;
 	private boolean hasEmail;
@@ -92,7 +103,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	private String imgMenuBarUrl;
 	private boolean isLoaded;
 
-	public GenericMenuBarView(final ClientFactory clientFactory, final ScrollPanel scrollPanel) {
+	public GenericMenuBarView(final ClientFactory clientFactory,
+			final ScrollPanel scrollPanel) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
@@ -107,7 +119,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 			Institution localInstitution = localDean.getInstitution();
 			String assetsURL = localInstitution.getAssetsURL();
 			String skin = Dean.getInstance().getInstitution().getSkin();
-			String barLogoFileName = "logo300x45" + (!"_light".equals(skin) ? "_light" : "") + ".png";
+			String barLogoFileName = "logo300x45"
+					+ (!"_light".equals(skin) ? "_light" : "") + ".png";
 			imgMenuBarUrl = StringUtils.composeURL(assetsURL, barLogoFileName);
 		}
 		addOffsets(scrollPanel, clientFactory.getPlaceController().getWhere());
@@ -122,63 +135,86 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	}
 
 	private void addOffsets(final ScrollPanel scrollPanel, Place place) {
-    if (place instanceof VitrinePlace) {
+		if (place instanceof VitrinePlace) {
 			setVisible(false);
 			addStyleName("shy");
 			scrollPanel.removeStyleName("offsetNorthBar");
+			scrollPanel.removeStyleName("offsetNorthBarPlus");
 		} else {
 			loadAssets();
 			setVisible(true);
 			removeStyleName("shy");
-			scrollPanel.addStyleName("offsetNorthBar");
+			if (place instanceof ClassroomPlace || place instanceof AdminPlace) {
+				scrollPanel.addStyleName("offsetNorthBar");
+				scrollPanel.removeStyleName("offsetNorthBarPlus");
+				placeBar.setVisible(false);
+			} else {
+				scrollPanel.addStyleName("offsetNorthBarPlus");
+				scrollPanel.removeStyleName("offsetNorthBar");
+				placeBar.setVisible(true);
+			}
 			showButtons(place);
 		}
-  }
+	}
 
 	private void loadAssets() {
-		if(isLoaded) return;
-		
-    if(StringUtils.isNone(imgMenuBar.getUrl())){
-    	imgMenuBar.setUrl(imgMenuBarUrl);
-    }
+		if (isLoaded)
+			return;
+
+		if (StringUtils.isNone(imgMenuBar.getUrl())) {
+			imgMenuBar.setUrl(imgMenuBarUrl);
+		}
 
 		Timer screenfulJsTimer = new Timer() {
 			public void run() {
-  	    ScriptInjector.fromUrl("/js/screenfull.min.js").setCallback(
-  	 		     new com.google.gwt.core.client.Callback<Void, Exception>() {
-  	 		        public void onFailure(Exception reason) {
-  	 		        	logger.severe("Screeenful script load failed.");
-  	 		        }
-  	 		        public void onSuccess(Void result) {
-  	 		        	isLoaded = true;
-  	 		        }
-  	 		     }).setWindow(ScriptInjector.TOP_WINDOW).inject();
+				ScriptInjector
+						.fromUrl("/js/screenfull.min.js")
+						.setCallback(
+								new com.google.gwt.core.client.Callback<Void, Exception>() {
+									public void onFailure(Exception reason) {
+										logger.severe("Screeenful script load failed.");
+									}
+
+									public void onSuccess(Void result) {
+										isLoaded = true;
+									}
+								}).setWindow(ScriptInjector.TOP_WINDOW)
+						.inject();
 			}
 		};
 
-		//wait 2 secs before loading the javascript file
+		// wait 2 secs before loading the javascript file
 		screenfulJsTimer.schedule((int) (2 * 1000));
-  }
+	}
 
 	private void showButtons(Place newPlace) {
-		boolean isRegistrationCompleted = !( newPlace instanceof TermsPlace
-		|| ( (newPlace instanceof ProfilePlace || newPlace instanceof MessagePlace)
-				&& isProfileIncomplete()));
-		
-		boolean showHelp = (Dean.getInstance().getHelpCourseClasses().size() > 0) && !(newPlace instanceof TermsPlace);
-		
+		boolean isRegistrationCompleted = !(newPlace instanceof TermsPlace || ((newPlace instanceof ProfilePlace || newPlace instanceof MessagePlace) && isProfileIncomplete()));
+
+		boolean showHelp = (Dean.getInstance().getHelpCourseClasses().size() > 0)
+				&& !(newPlace instanceof TermsPlace);
+
 		showButton(btnHelp, showHelp);
 		showButton(btnMessages, showHelp);
 		showButton(btnProfile, !(newPlace instanceof TermsPlace));
-		
+
 		showButton(btnHome, isRegistrationCompleted);
 		showButton(btnFullScreen, isRegistrationCompleted);
-		showButton(btnAdmin, isRegistrationCompleted &&  
-				(RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-						|| clientFactory.getKornellSession().isInstitutionAdmin()));
+		showButton(
+				btnAdmin,
+				isRegistrationCompleted
+						&& (RoleCategory.hasRole(clientFactory
+								.getKornellSession().getCurrentUser()
+								.getRoles(), RoleType.courseClassAdmin) || clientFactory
+								.getKornellSession().isInstitutionAdmin()));
 		showButton(btnNotifications, false);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
+
+		if (newPlace instanceof ClassroomPlace || newPlace instanceof AdminPlace) {
+			menuBar.removeStyleName("menuBarPlus");
+		} else {
+			menuBar.addStyleName("menuBarPlus");
+		}
 	}
 
 	private void showButton(Button btn, boolean show) {
@@ -190,10 +226,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	}
 
 	public void display() {
-		if(Window.Location.getHostName().indexOf("-test.ed") >= 0 || Window.Location.getHostName().indexOf("-homolog.ed") >= 0){
+		if (Window.Location.getHostName().indexOf("-test.ed") >= 0
+				|| Window.Location.getHostName().indexOf("-homolog.ed") >= 0) {
 			testEnvWarning.removeStyleName("shy");
 			testEnvWarning.setText("HOMOLOG");
-		} else if(Window.Location.getHostName().indexOf("-develop.ed") >= 0){
+		} else if (Window.Location.getHostName().indexOf("-develop.ed") >= 0) {
 			testEnvWarning.removeStyleName("shy");
 			testEnvWarning.setText("DEVELOP");
 		}
@@ -208,32 +245,38 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 		btnMessages.removeStyleName("btn");
 		btnMenu.removeStyleName("btn");
 	}
-	
-	private boolean isProfileIncomplete(){
-		return  (session.getCurrentUser().getInstitutionRegistrationPrefix() == null || session.getCurrentUser().getInstitutionRegistrationPrefix().isShowContactInformationOnProfile())
-				&& Dean.getInstance().getInstitution().isDemandsPersonContactDetails()
-				&& Dean.getInstance().getInstitution().isValidatePersonContactDetails() 
-				&& StringUtils.isNone(clientFactory.getKornellSession().getCurrentUser().getPerson().getCity());
+
+	private boolean isProfileIncomplete() {
+		return (session.getCurrentUser().getInstitutionRegistrationPrefix() == null || session
+				.getCurrentUser().getInstitutionRegistrationPrefix()
+				.isShowContactInformationOnProfile())
+				&& Dean.getInstance().getInstitution()
+						.isDemandsPersonContactDetails()
+				&& Dean.getInstance().getInstitution()
+						.isValidatePersonContactDetails()
+				&& StringUtils.isNone(clientFactory.getKornellSession()
+						.getCurrentUser().getPerson().getCity());
 	}
 
 	static native void requestFullscreen() /*-{
 		if ($wnd.screenfull.enabled)
-			if(!$wnd.screenfull.isFullscreen)
-        $wnd.screenfull.request();
+			if (!$wnd.screenfull.isFullscreen)
+				$wnd.screenfull.request();
 			else
-        $wnd.screenfull.exit();
+				$wnd.screenfull.exit();
 	}-*/;
-	
+
 	@UiHandler("btnFullScreen")
 	void handleFullScreen(ClickEvent e) {
 		requestFullscreen();
 	}
-	
+
 	@UiHandler("btnProfile")
 	void handleProfile(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(
 				new ProfilePlace(clientFactory.getKornellSession()
-						.getCurrentUser().getPerson().getUUID(), isProfileIncomplete()));
+						.getCurrentUser().getPerson().getUUID(),
+						isProfileIncomplete()));
 	}
 
 	@UiHandler("btnHome")
@@ -253,14 +296,14 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 
 	@UiHandler("btnHelp")
 	void handleHelp(ClickEvent e) {
-			bus.fireEvent(new ComposeMessageEvent());
+		bus.fireEvent(new ComposeMessageEvent());
 	}
-	
+
 	@UiHandler("btnMessages")
 	void handleMessages(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(new MessagePlace());
 	}
-	
+
 	@Override
 	public void setPresenter(Presenter presenter) {
 	}
@@ -275,37 +318,53 @@ public class GenericMenuBarView extends Composite implements MenuBarView, Unread
 	}
 
 	private void updateUnreadCount() {
-		String labelText = totalCount > 0 ? ""+totalCount : "";
-	  if(btnMessages.getWidgetCount() == 3){
+		String labelText = totalCount > 0 ? "" + totalCount : "";
+		if (btnMessages.getWidgetCount() == 3) {
 			btnMessages.remove(2);
 		}
 		this.messagesCount = new Label(labelText);
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");
 		btnMessages.add(messagesCount);
-  }
+	}
 
 	@Override
-  public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
-		if(event.getUnreadChatThreadTOs().size() > 0 && !btnMessages.isVisible())
+	public void onUnreadMessagesPerThreadFetched(
+			UnreadMessagesPerThreadFetchedEvent event) {
+		if (event.getUnreadChatThreadTOs().size() > 0
+				&& !btnMessages.isVisible())
 			btnMessages.setVisible(true);
 		int count = 0;
-		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
-			count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
-    }
+		for (UnreadChatThreadTO unreadChatThreadTO : event
+				.getUnreadChatThreadTOs()) {
+			count = count
+					+ Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
+		}
 		totalCount = count;
 		updateUnreadCount();
-  }
+	}
 
 	@Override
-  public void onUnreadMessagesCountChanged(UnreadMessagesCountChangedEvent event) {
-	  totalCount = event.isIncrement() ? totalCount + event.getCountChange() : totalCount - event.getCountChange();
+	public void onUnreadMessagesCountChanged(
+			UnreadMessagesCountChangedEvent event) {
+		totalCount = event.isIncrement() ? totalCount + event.getCountChange()
+				: totalCount - event.getCountChange();
 		updateUnreadCount();
-  }
+	}
 
 	@Override
-  public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
-	  showButtons(clientFactory.getPlaceController().getWhere());
-  }
+	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+		showButtons(clientFactory.getPlaceController().getWhere());
+	}
+
+	@Override
+	public void initPlaceBar(IconType iconType, String titleStr, String subtitleStr) {
+		placeBar.init(iconType, titleStr, subtitleStr);
+	}
+
+	@Override
+	public void setPlaceBarWidgets(List<IsWidget> widgets) {
+		placeBar.setWidgets(widgets);
+	}
 
 }

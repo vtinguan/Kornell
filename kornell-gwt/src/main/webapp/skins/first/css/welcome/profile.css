@@ -1,3 +1,3 @@
-.profileForm{width:944px;height:100%;margin:0 auto;border-radius:0px 0px 15px 15px;}.profileForm .editPanel{float:right;padding-right:30px;}.profileForm .editPanel .lblEdit{color:white;}
+.profileForm{width:944px;height:100%;margin:0 auto;margin-top:15px;border-radius:0px 0px 15px 15px;}.profileForm .editPanel{float:right;padding-right:30px;}.profileForm .editPanel .lblEdit{color:white;}
 .profileForm .btnChangePassword{float:right;margin-right:40px;width:150px;}
 .profileForm .fieldsWrapper{padding-left:100px;}.profileForm .fieldsWrapper .profileSeparatorBar{margin-bottom:25px;float:left;}

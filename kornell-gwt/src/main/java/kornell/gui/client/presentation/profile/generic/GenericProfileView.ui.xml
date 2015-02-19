@@ -3,21 +3,11 @@
 	xmlns:knl="urn:import:kornell.gui.client.presentation.profile.generic">
 	<g:FlowPanel>
 		<b:Form ui:field="form" addStyleNames="profileForm shy">
-			<g:FlowPanel ui:field="titlePanel" addStyleNames="titlePanel">
-				<g:Image ui:field="imgTitle" addStyleNames="imgTitle"></g:Image>
-				<g:Label ui:field="lblTitle" addStyleNames="lblTitle"></g:Label>
-			</g:FlowPanel>
 			<g:FlowPanel ui:field="profileFields" addStyleNames="fieldsWrapper">
 				<!--g:FlowPanel addStyleNames="shy fieldPanel fieldPanelImage "> <g:FlowPanel 
 					addStyleNames="labelPanel labelPanelImg"> <g:Label addStyleNames="lblLabelImg">Imagem 
 					do perfil</g:Label> </g:FlowPanel> <g:FlowPanel addStyleNames="imagePanel"> 
 					<g:Image ui:field="imgProfile"></g:Image> </g:FlowPanel> </g:FlowPanel -->
-			</g:FlowPanel>
-			<g:FlowPanel addStyleNames="standardButtonBar">
-				<g:Button ui:field="btnEdit" addStyleNames="btnAction btnStandard" />
-				<g:Button ui:field="btnClose" addStyleNames="btnNotSelected btnStandard" />
-				<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard" />
-				<g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard" />
 			</g:FlowPanel>
 		</b:Form>
 		<knl:GenericPasswordChangeView ui:field="passwordChangeWidget"></knl:GenericPasswordChangeView>

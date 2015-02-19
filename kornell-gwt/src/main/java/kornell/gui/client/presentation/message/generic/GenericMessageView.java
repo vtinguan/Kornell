@@ -63,7 +63,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	public GenericMessageView(EventBus eventBus) {
     this.bus = eventBus;
 		initWidget(uiBinder.createAndBindUi(this));
-    ensureDebugId("genericMessageInboxView");
+		ensureDebugId("genericMessageInboxView");
 	}
 	
 	@Override

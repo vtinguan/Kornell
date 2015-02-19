@@ -1,7 +1,14 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
-	<g:FlowPanel styleName="welcomePanel">
-		<g:FlowPanel ui:field="pnlMenuLeft"/>
-		<g:FlowPanel ui:field="pnlWelcome"/>
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+	xmlns:knl="urn:import:kornell.gui.client.presentation.bar.generic">
+	<g:FlowPanel >
+		<g:FlowPanel styleName="welcomePanel">
+			<g:ScrollPanel>
+				<g:FlowPanel ui:field="coursesWrapper" addStyleNames="coursesWrapper">
+					<g:FlowPanel ui:field="pnlCourses" addStyleNames="pnlCourses"/>
+				</g:FlowPanel>
+		  	</g:ScrollPanel>
+		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

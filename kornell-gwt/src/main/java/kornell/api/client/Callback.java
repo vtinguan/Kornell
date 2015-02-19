@@ -37,7 +37,6 @@ public abstract class Callback<T> implements RequestCallback {
 		if (!isTrusted(response))
 			throw new RuntimeException("Won't touch untrusted response");
 		int statusCode = response.getStatusCode();
-		GWT.debugger();
 		switch (statusCode) {
 		case SC_OK:
 			ok(response);

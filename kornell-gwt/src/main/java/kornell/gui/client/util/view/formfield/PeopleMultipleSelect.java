@@ -1,5 +1,6 @@
 package kornell.gui.client.util.view.formfield;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import kornell.core.to.PeopleTO;
 import kornell.core.to.PersonTO;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.util.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -100,7 +102,7 @@ public class PeopleMultipleSelect extends Composite {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				currentSearch = search.getText();
-				if(currentSearch.length() >= 1 && !currentSearch.equals(previousSearch)){
+				if(currentSearch.length() >= 1 && (!currentSearch.equals(previousSearch) || event.getNativeKeyCode() == 86 || event.getNativeKeyCode() == 17)){
 					searchChangesTimer.cancel();
 					searchChangesTimer.schedule(100);
 				}
@@ -111,7 +113,6 @@ public class PeopleMultipleSelect extends Composite {
 	  typeahead.add(search);
 		
 		oracle = (MultiWordSuggestOracle) typeahead.getSuggestOracle();
-			
 		
 		typeaheadPanel.add(typeahead);
 

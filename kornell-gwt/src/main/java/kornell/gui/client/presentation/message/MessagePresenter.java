@@ -19,6 +19,7 @@ import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
@@ -29,6 +30,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	private MessageView view;
 	private KornellSession session;
 	private PlaceController placeCtrl;
+	private ViewFactory viewFactory;
 	private boolean isClassPresenter;
 
 	
@@ -40,23 +42,29 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	private List<UnreadChatThreadTO> unreadChatThreadsTO;
 	List<ChatThreadMessageTO> chatThreadMessageTOs;
 	private boolean updateMessages = true;
+	
 	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this(session, bus, placeCtrl, viewFactory, false);
 	}
 	
-	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory, final boolean isClassPresenter) {
+	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, final ViewFactory viewFactory, final boolean isClassPresenter) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
+		this.viewFactory = viewFactory;
 		this.isClassPresenter = isClassPresenter;
 		view = viewFactory.getMessageView();
 		view.setPresenter(this);
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		init();
-		
+
+		initPlaceBar();
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
+						if(event.getNewPlace() instanceof MessagePlace){
+							initPlaceBar();
+						}
 						selectedChatThreadInfo = null;
 						if(isClassPresenter)
 							updateMessages = false;
@@ -66,6 +74,10 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 							updateMessages = true;
 					}
 				});
+	}
+
+	private void initPlaceBar() {
+		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, "Chat", "Acompanhe suas conversas com outros participantes da plataforma");
 	}
 	
 	private void init() {

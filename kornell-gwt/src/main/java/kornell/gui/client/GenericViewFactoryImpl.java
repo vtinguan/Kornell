@@ -1,6 +1,9 @@
 package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
+
+import java.util.List;
+
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
@@ -49,8 +52,10 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
 
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -172,10 +177,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(clientFactory.getEventBus(),
-				clientFactory.getKornellSession(),
-				clientFactory.getPlaceController(),
-				clientFactory.getTOFactory());
+		return new GenericWelcomeView(clientFactory);
 	}
 
 	@Override
