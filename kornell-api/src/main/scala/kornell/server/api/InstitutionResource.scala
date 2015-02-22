@@ -9,7 +9,6 @@ import javax.ws.rs.Produces
 import kornell.core.entity.Institution
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.server.util.Conditional.toConditional
-import kornell.server.util.RequirementNotMet
 import kornell.core.to.InstitutionRegistrationPrefixesTO
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.core.entity.Roles
@@ -36,14 +35,14 @@ class InstitutionResource(uuid: String) {
   @Produces(Array(Institution.TYPE))
   def update(institution: Institution) = {
     InstitutionRepo(uuid).update(institution)
-  }.requiring(isPlatformAdmin, RequirementNotMet).get
+  }.requiring(isPlatformAdmin, AccessDeniedErr()).get
   
   @GET
   @Produces(Array(InstitutionRegistrationPrefixesTO.TYPE))
   @Path("registrationPrefixes")
   def getRegistrationPrefixes() = {
-    InstitutionRepo(uuid).getRegistrationPrefixes
-  }.requiring(isPlatformAdmin, RequirementNotMet).get
+    InstitutionRepo(uuid).getInstitutionRegistrationPrefixes
+  }.requiring(isPlatformAdmin, AccessDeniedErr()).get
   
   @PUT
   @Consumes(Array(Roles.TYPE))

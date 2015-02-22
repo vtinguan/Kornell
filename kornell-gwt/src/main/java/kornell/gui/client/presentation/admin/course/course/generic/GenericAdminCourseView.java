@@ -5,31 +5,23 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.ContentSpec;
 import kornell.core.entity.Course;
 import kornell.core.entity.EntityFactory;
-import kornell.core.to.CoursesTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.Tab;
+import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -37,7 +29,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -50,21 +41,25 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	}
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
-	private static final String MODAL_DELETE = "delete";
-	private static final String MODAL_DEACTIVATE = "deactivate";
-	private static final String MODAL_PUBLIC = "public";
-	private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
-	private static final String MODAL_INVISIBLE = "invisible";
 
 	private KornellSession session;
 	private PlaceController placeCtrl;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private boolean isCreationMode, isPlatformAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
 
+
+	@UiField
+	TabPanel tabsPanel;
+	@UiField
+	Tab editTab;
+	@UiField
+	Tab reportsTab;
+	@UiField
+	FlowPanel reportsPanel;
+	
 	@UiField
 	HTMLPanel titleEdit;
 	@UiField
@@ -89,15 +84,15 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 
 	private KornellFormFieldWrapper code, title, description;
 	
-	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
-	private String modalMode;
-	private ListBox institutionRegistrationPrefixes;
 	private String courseUUID;
+	private GenericCourseReportsView reportsView;
+	private EventBus bus;
 	
 	public GenericAdminCourseView(final KornellSession session, EventBus bus, PlaceController placeCtrl) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
+		this.bus = bus;
 		this.isPlatformAdmin = session.isPlatformAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -143,6 +138,17 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	}
 
 	public void initData() {
+
+		if (session.isPlatformAdmin()) {
+			buildReportsView();
+			reportsTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildReportsView();
+				}
+			});
+		}
+		
 		courseFields.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 
@@ -166,6 +172,12 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		courseFields.add(formHelper.getImageSeparator());
 
 		courseFields.setVisible(true);
+	}
+
+	public void buildReportsView() {
+		reportsView = new GenericCourseReportsView(session, bus, null, course);
+		reportsPanel.clear();
+		reportsPanel.add(reportsView);
 	}
 	
 	private boolean validateFields() {		

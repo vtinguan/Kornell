@@ -1,19 +1,22 @@
 package kornell.server.api
 
 import java.util.Collections
+
 import scala.collection.JavaConverters.setAsJavaSetConverter
+
 import javax.ws.rs.core.Application
 import kornell.server.dev.ProbesResource
 import kornell.server.ws.rs.AutoBeanWriter
 import kornell.server.ws.rs.TOReader
-import kornell.server.ws.rs.exception.NoSuchElementMapper
+import kornell.server.ws.rs.exception.EntityConflictMapper
+import kornell.server.ws.rs.exception.EntityNotFoundMapper
+import kornell.server.ws.rs.exception.KornellExceptionMapper
+import kornell.server.ws.rs.exception.ServerErrorMapper
+import kornell.server.ws.rs.exception.UnauthorizedAccessMapper
 import kornell.server.ws.rs.reader.EntityReader
 import kornell.server.ws.rs.reader.EventsReader
 import kornell.server.ws.rs.reader.LOMReader
 import kornell.server.ws.rs.writer.BooleanWriter
-import kornell.server.ws.rs.exception.FileNotFoundMapper
-import kornell.server.ws.rs.exception.IllegalArgumentMapper
-import kornell.server.ws.rs.exception.KornellExceptionMapper
 
 class KornellAPI extends Application {
   type ClassSet = Set[Class[_]]
@@ -25,9 +28,10 @@ class KornellAPI extends Application {
   val writers:ClassSet = Set(classOf[AutoBeanWriter],
     classOf[BooleanWriter])
     
-  val mappers:ClassSet = Set(classOf[NoSuchElementMapper],
-    classOf[FileNotFoundMapper], 
-    classOf[IllegalArgumentMapper],
+  val mappers:ClassSet = Set(classOf[EntityNotFoundMapper],
+    classOf[EntityConflictMapper], 
+    classOf[UnauthorizedAccessMapper],
+    classOf[ServerErrorMapper],
     classOf[KornellExceptionMapper])
     
   val resources:ClassSet = Set(classOf[RootResource],
@@ -47,8 +51,7 @@ class KornellAPI extends Application {
     classOf[ProbesResource],
     classOf[SandboxResource],
     classOf[HealthCheckResource],
-    classOf[NewRelicResource],
-    classOf[ErrorResource]
+    classOf[NewRelicResource]
   )
     
   override def getClasses() = 

@@ -4,16 +4,18 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.terms.TermsView;
 
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.Paragraph;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -32,8 +34,6 @@ public class GenericTermsView extends Composite implements TermsView {
 	@UiField
 	Paragraph titleUser;
 	@UiField
-	Paragraph txtTitle;
-	@UiField
 	Paragraph txtTerms;
 	@UiField
 	Button btnAgree;
@@ -46,7 +46,6 @@ public class GenericTermsView extends Composite implements TermsView {
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 
 
@@ -57,8 +56,15 @@ public class GenericTermsView extends Composite implements TermsView {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
+		
+		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				if(event.getNewPlace() instanceof TermsPlace){							
+					initData();
+				}
+			}});
 		// TODO i18n
-		txtTitle.setText("Termos de Uso".toUpperCase());
 		btnAgree.setText("Concordo".toUpperCase());
 		btnDontAgree.setText("Não Concordo".toUpperCase());
 	}
@@ -71,6 +77,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void paint() {
+		clientFactory.getViewFactory().getMenuBarView().initPlaceBar(IconType.LEGAL, "Termos de Uso", "Leia e assine os termos de uso antes de continuar");
 		titleUser.setText(session.getCurrentUser().getPerson().getFullName());
 		if (Dean.getInstance().getInstitution() != null) {
 			txtTerms.getElement().setInnerHTML(Dean.getInstance().getInstitution().getTerms());

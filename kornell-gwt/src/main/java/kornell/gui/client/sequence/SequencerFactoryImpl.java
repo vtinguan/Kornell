@@ -3,10 +3,8 @@ package kornell.gui.client.sequence;
 import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
-import kornell.api.client.RESTClient;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 

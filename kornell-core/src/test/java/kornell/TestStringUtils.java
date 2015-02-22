@@ -1,7 +1,8 @@
 package kornell;
 
-import static kornell.core.util.StringUtils.*;
-import static org.junit.Assert.*;
+import static kornell.core.util.StringUtils.composeURL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import kornell.core.util.StringUtils;
 
 import org.junit.Test;

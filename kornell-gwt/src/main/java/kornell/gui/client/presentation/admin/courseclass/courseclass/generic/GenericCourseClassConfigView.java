@@ -11,14 +11,13 @@ import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.InstitutionRegistrationPrefix;
+import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
-import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
@@ -43,7 +42,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -63,9 +61,8 @@ public class GenericCourseClassConfigView extends Composite {
 	private static final String MODAL_INVISIBLE = "invisible";
 
 	private KornellSession session;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private boolean isCreationMode, canDelete, isInstitutionAdmin;
+	private boolean isCreationMode, canDelete, isInstitutionAdmin, allowPrefixEdit;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
@@ -94,12 +91,10 @@ public class GenericCourseClassConfigView extends Composite {
 	@UiField
 	Button btnModalCancel;
 
-	private UserInfoTO user;
 	private CourseClassTO courseClassTO;
 	private CourseClass courseClass;
 	private KornellFormFieldWrapper course, courseVersion, name, publicClass,
-			requiredScore, registrationEnrollmentType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible;
-	private FileUpload fileUpload;
+			requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible;
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
 	private ListBox institutionRegistrationPrefixes;
@@ -112,9 +107,9 @@ public class GenericCourseClassConfigView extends Composite {
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
 		this.presenter = presenter;
-		this.user = session.getCurrentUser();
 		this.isInstitutionAdmin = session.isInstitutionAdmin();
 		this.isCreationMode = (courseClassTO == null) && isInstitutionAdmin;
+		this.allowPrefixEdit = isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
 		this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -218,38 +213,37 @@ public class GenericCourseClassConfigView extends Composite {
 		});
 		
 		
-		final ListBox registrationEnrollmentTypes = new ListBox();
-		registrationEnrollmentTypes.addItem("Email", RegistrationEnrollmentType.email.toString());
-		registrationEnrollmentTypes.addItem("CPF", RegistrationEnrollmentType.cpf.toString());
+		final ListBox registrationTypes = new ListBox();
+		registrationTypes.addItem("Email", RegistrationType.email.toString());
+		registrationTypes.addItem("CPF", RegistrationType.cpf.toString());
 		if(Dean.getInstance().getInstitution().isAllowRegistrationByUsername())
-			registrationEnrollmentTypes.addItem("Usuário", RegistrationEnrollmentType.username.toString());
+			registrationTypes.addItem("Usuário", RegistrationType.username.toString());
 		if (!isCreationMode) {
-			registrationEnrollmentTypes.setSelectedValue(courseClassTO.getCourseClass().getRegistrationEnrollmentType().toString());
+			registrationTypes.setSelectedValue(courseClassTO.getCourseClass().getRegistrationType().toString());
 		}
-		registrationEnrollmentType = new KornellFormFieldWrapper("Tipo de Matrícula", new ListBoxFormField(registrationEnrollmentTypes), isInstitutionAdmin);
-		fields.add(registrationEnrollmentType);
-		profileFields.add(registrationEnrollmentType);
+		registrationType = new KornellFormFieldWrapper("Tipo de Matrícula", new ListBoxFormField(registrationTypes), isInstitutionAdmin);
+		fields.add(registrationType);
+		profileFields.add(registrationType);
 		
 		 
 		institutionRegistrationPrefixes = new ListBox();		
 		if(!isCreationMode)
-			institutionRegistrationPrefixes.setSelectedValue(courseClassTO.getCourseClass().getInstitutionRegistrationPrefix());
-		boolean allowPrefixEdit = isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefix());
+			institutionRegistrationPrefixes.setSelectedValue(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
 		if(allowPrefixEdit){
 			loadInstitutionPrefixes();
 		} else {
-			institutionRegistrationPrefixes.addItem(courseClassTO.getCourseClass().getInstitutionRegistrationPrefix());
+			institutionRegistrationPrefixes.addItem(courseClassTO.getRegistrationPrefix());
 		}
 		institutionRegistrationPrefix = new KornellFormFieldWrapper("Prefixo", new ListBoxFormField(institutionRegistrationPrefixes), allowPrefixEdit);
 		fields.add(institutionRegistrationPrefix);
 		profileFields.add(institutionRegistrationPrefix);
-		institutionRegistrationPrefix.setVisible(registrationEnrollmentType.getFieldPersistText().equals(RegistrationEnrollmentType.username.toString()));
+		institutionRegistrationPrefix.setVisible(registrationType.getFieldPersistText().equals(RegistrationType.username.toString()));
 				
 
-		registrationEnrollmentTypes.addChangeHandler(new ChangeHandler() {
+		registrationTypes.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				institutionRegistrationPrefix.setVisible(registrationEnrollmentType.getFieldPersistText().equals(RegistrationEnrollmentType.username.toString()));
+				institutionRegistrationPrefix.setVisible(registrationType.getFieldPersistText().equals(RegistrationType.username.toString()));
 			}
 		});
 		
@@ -261,10 +255,9 @@ public class GenericCourseClassConfigView extends Composite {
 		session.institution(Dean.getInstance().getInstitution().getUUID()).getRegistrationPrefixes(new Callback<InstitutionRegistrationPrefixesTO>() {
 			@Override
 			public void ok(InstitutionRegistrationPrefixesTO to) {
-				// TODO Auto-generated method stub
-				for (String registrationPrefix : to.getInstitutionRegistrationPrefixes()) {
-					institutionRegistrationPrefixes.addItem(registrationPrefix);
-        }
+				for (InstitutionRegistrationPrefix institutionRegistrationPrefix : to.getInstitutionRegistrationPrefixes()) {
+					institutionRegistrationPrefixes.addItem(institutionRegistrationPrefix.getName(), institutionRegistrationPrefix.getUUID());
+				}
 			}
 		});
   }
@@ -383,8 +376,10 @@ public class GenericCourseClassConfigView extends Composite {
 					null);
 		courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
 		courseClass.setInvisible(invisible.getFieldPersistText().equals("true"));
-		courseClass.setRegistrationEnrollmentType(RegistrationEnrollmentType.valueOf(registrationEnrollmentType.getFieldPersistText()));
-		courseClass.setInstitutionRegistrationPrefix(institutionRegistrationPrefix.getFieldPersistText());
+		courseClass.setRegistrationType(RegistrationType.valueOf(registrationType.getFieldPersistText()));
+		if(allowPrefixEdit) {
+			courseClass.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefix.getFieldPersistText());
+		}
 		return courseClass;
 	}
 

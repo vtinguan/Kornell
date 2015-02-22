@@ -7,24 +7,25 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
+import kornell.core.entity.RegistrationType;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
-import kornell.gui.client.presentation.profile.generic.GenericProfileView;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -94,7 +95,12 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				Place welcomePlace = new WelcomePlace();
 				if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
 					 newPlace = new TermsPlace();
-				} else if (institution.isDemandsPersonContactDetails() && userInfoTO.getPerson().getCity() == null) {
+				} else if ( 
+						( institution.isDemandsPersonContactDetails() && 
+								( !RegistrationType.username.equals(userInfoTO.getPerson().getRegistrationType()) ||
+									userInfoTO.getInstitutionRegistrationPrefix().isShowContactInformationOnProfile()
+								)
+						) && userInfoTO.getPerson().getCity() == null) {
 					newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
 				} else if (session.isInstitutionAdmin()) {
 					newPlace = new AdminCourseClassesPlace();
@@ -114,8 +120,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
 			}
 			@Override
-			protected void unauthorized(String errorMessage) {
-				logger.severe(this.getClass().getName() + " - " + errorMessage);
+			protected void unauthorized(KornellErrorTO kornellErrorTO) {
+				logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
 				view.setMessage("Usuário ou senha incorretos, por favor tente novamente.");
 				view.showMessage();
 			}
@@ -145,7 +151,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		if (!validator.isLengthValid(view.getSuName(), 2, 50)) {
 			errors.add("O nome deve ter no mínimo 2 caracteres.");
 		}
-		if (!validator.isEmailValid(view.getSuEmail())) {
+		if (!FormHelper.isEmailValid(view.getSuEmail())) {
 			errors.add("Email inválido.");
 		}
 		if (!validator.isPasswordValid(view.getSuPassword())) {
@@ -210,6 +216,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		registrationRequestTO.setFullName(name);
 		registrationRequestTO.setEmail(email);
 		registrationRequestTO.setPassword(password);
+		registrationRequestTO.setRegistrationType(RegistrationType.email);
 		registrationRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
 		return registrationRequestTO;
 	}
@@ -234,8 +241,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 					}
 
 					@Override
-					public void unauthorized(String errorMessage) {
-						logger.severe(this.getClass().getName() + " - " + errorMessage);
+					public void notFound(KornellErrorTO kornellErrorTO) {
+						logger.severe(this.getClass().getName() + " - not found");
 						KornellNotification
 								.show("Não foi possivel fazer a requisição. Confira se o seu email foi digitado corretamente.",
 										AlertType.ERROR);
@@ -277,8 +284,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						}
 
 						@Override
-						public void unauthorized(String errorMessage) {
-							logger.severe(this.getClass().getName() + " - " + errorMessage);
+						public void unauthorized(KornellErrorTO kornellErrorTO) {
+							logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
 							KornellNotification
 									.show("Não foi possível alterar a senha. Verifique seu email ou faça uma nova requisição de alteração de senha.",
 											AlertType.ERROR, 8000);

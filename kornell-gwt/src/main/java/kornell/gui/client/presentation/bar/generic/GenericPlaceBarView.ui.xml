@@ -1,0 +1,13 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	<g:FlowPanel addStyleNames="placeBar">
+		<g:FlowPanel addStyleNames="centerBar">
+			<b:Icon type="HOME" ui:field="icon"></b:Icon>
+			<g:Label ui:field="title" addStyleNames="title"></g:Label>
+			<g:Label addStyleNames="separator">|</g:Label>
+			<g:Label ui:field="subtitle" addStyleNames="subtitle"></g:Label>
+			<g:FlowPanel ui:field="btnPanel" addStyleNames="btnPanel">
+			</g:FlowPanel>
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder>

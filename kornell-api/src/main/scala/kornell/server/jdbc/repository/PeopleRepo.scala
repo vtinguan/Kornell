@@ -1,17 +1,19 @@
 package kornell.server.jdbc.repository
 
-import kornell.core.entity.Person
-import kornell.server.repository.Entities
-import kornell.server.jdbc.SQL._
-import kornell.server.repository.Entities._
 import java.sql.ResultSet
-import kornell.core.util.UUID
-import kornell.server.repository.TOs
-import com.google.common.cache.CacheLoader
+import java.util.concurrent.TimeUnit.MINUTES
+
 import com.google.common.cache.CacheBuilder
-import java.util.concurrent.TimeUnit._
-import kornell.core.util.StringUtils._
-import kornell.server.jdbc.PreparedStmt
+import com.google.common.cache.CacheLoader
+
+import kornell.core.entity.Person
+import kornell.core.entity.RegistrationType
+import kornell.core.to.PersonTO
+import kornell.core.util.StringUtils.isSome
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.repository.Entities
+import kornell.server.repository.Entities.randUUID
+import kornell.server.repository.TOs.newPeopleTO
 
 object PeopleRepo {
 
@@ -93,9 +95,9 @@ object PeopleRepo {
       .orElse(getByEmail(institutionUUID, email))
 
   def findBySearchTerm(institutionUUID: String, search: String) = {
-    newPeople(
+    newPeopleTO(
       sql"""
-      	| select p.* from Person p 
+      	| select p.*, pw.username from Person p 
       	| join Password pw on p.uuid = pw.person_uuid
       	| where (pw.username like ${"%" + search + "%"}
       	| or p.fullName like ${"%" + search + "%"}
@@ -104,20 +106,17 @@ object PeopleRepo {
       	| and p.institutionUUID = ${institutionUUID}
       	| order by p.email, p.cpf
       	| limit 8
-	    """.map[Person](toPerson))
+	    """.map[PersonTO](toPersonTO))
   }
 
   def createPerson(institutionUUID: String = null, email: String = null, fullName: String = null, cpf: String = null): Person =
-    create(Entities.newPerson(institutionUUID = institutionUUID,
-        fullName = fullName,
-	      email = email,
-	      cpf = cpf))
-
+    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, email = email, cpf = cpf, registrationType = RegistrationType.username))
+  
   def createPersonCPF(institutionUUID: String, cpf: String, fullName: String): Person =
-    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf))
+    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf, registrationType = RegistrationType.cpf))
 
-  def createPersonUsername(institutionUUID: String, username: String, fullName: String): Person = {
-    val p = create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName))
+  def createPersonUsername(institutionUUID: String, username: String, fullName: String, institutionRegistrationPrefixUUID: String): Person = {
+    val p = create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, registrationType = RegistrationType.username, institutionRegistrationPrefixUUID = institutionRegistrationPrefixUUID))
     if (isSome(username)) usernameCache.put((p.getInstitutionUUID, username), Some(p))
     p
   }
@@ -126,12 +125,14 @@ object PeopleRepo {
     if (person.getUUID == null)
       person.setUUID(randUUID)
     sql""" 
-    	insert into Person(uuid, fullName, email, cpf, institutionUUID) 
+    	insert into Person(uuid, fullName, email, cpf, institutionUUID, registrationType, institutionRegistrationPrefixUUID) 
     		values (${person.getUUID},
 	             ${person.getFullName},
 	             ${person.getEmail},
 	             ${person.getCPF},
-	             ${person.getInstitutionUUID})
+	             ${person.getInstitutionUUID},
+	             ${person.getRegistrationType.toString},
+	             ${person.getInstitutionRegistrationPrefixUUID})
     """.executeUpdate
     updateCaches(person)
     person

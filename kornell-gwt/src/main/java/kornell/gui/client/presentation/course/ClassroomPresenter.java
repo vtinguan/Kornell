@@ -9,7 +9,6 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.lom.Contents;
 import kornell.core.to.UserInfoTO;
-import kornell.gui.client.Kornell;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;

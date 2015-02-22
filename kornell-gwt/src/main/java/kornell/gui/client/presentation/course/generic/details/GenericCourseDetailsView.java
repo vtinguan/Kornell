@@ -8,7 +8,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.RegistrationType;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
 import kornell.core.lom.ContentFormat;
@@ -16,13 +16,11 @@ import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.EnrollmentTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
-import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
@@ -79,12 +77,10 @@ public class GenericCourseDetailsView extends Composite {
 	private Button btnCurrent;
 	private CourseClassTO courseClassTO;
 	private CourseDetailsTO courseDetails;
-	private UserInfoTO user;
 	private FlowPanel aboutPanel;
 	private FlowPanel topicsPanel;
 	private FlowPanel certificationPanel;
 	private FlowPanel libraryPanel;
-	private ClientFactory clientFactory;
 
 	private Presenter presenter;
 
@@ -393,7 +389,7 @@ public class GenericCourseDetailsView extends Composite {
 				text = "Sua matrícula foi cancelada pela instituição.";
 			} else if(!isEnrolled) {
 				text = "Sua matrícula ainda não foi aprovada pela instituição."
-						+ (RegistrationEnrollmentType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationEnrollmentType()) ?
+						+ (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) ?
 								"" : "<br><br> Você receberá um email no momento da aprovação.<br>");
 			}
 			HTMLPanel panel = new HTMLPanel(text);

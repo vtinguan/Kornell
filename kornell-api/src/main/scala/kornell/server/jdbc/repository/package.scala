@@ -20,9 +20,16 @@ import kornell.server.repository.Entities._
 import kornell.server.repository.Entities
 import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import kornell.core.to.CourseVersionTO
+import kornell.core.entity.ChatThreadParticipant
+import kornell.core.entity.ChatThread
 import kornell.core.entity.BillingType
+import kornell.core.entity.RegistrationType
+import kornell.core.entity.InstitutionRegistrationPrefix
+import kornell.core.to.PersonTO
+import kornell.core.to.RoleTO
+import kornell.core.entity.RoleCategory
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -59,8 +66,8 @@ package object repository {
         r.getBoolean("invisible"), r.getInt("maxEnrollments"), 
         r.getDate("createdAt"), r.getString("createdBy"), 
         CourseClassState.valueOf(r.getString("state")), 
-        RegistrationEnrollmentType.valueOf(r.getString("registrationEnrollmentType")),
-        r.getString("institutionRegistrationPrefix")) 
+        RegistrationType.valueOf(r.getString("registrationType")),
+        r.getString("institutionRegistrationPrefixUUID"), r.getBoolean("courseClassChatEnabled")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -111,10 +118,10 @@ package object repository {
 		    rs.getDate("createdAt"),
 		    rs.getString("createdBy"), 
         CourseClassState.valueOf(rs.getString("state")), 
-        RegistrationEnrollmentType.valueOf(rs.getString("registrationEnrollmentType")),
-		    rs.getString("institutionRegistrationPrefix"));
+        RegistrationType.valueOf(rs.getString("registrationType")),
+		    rs.getString("institutionRegistrationPrefixUUID"));
     		
-    TOs.newCourseClassTO(course, version, clazz)
+    TOs.newCourseClassTO(course, version, clazz, rs.getString("institutionRegistrationPrefixName"))
   }
   
   implicit def toCourseVersionTO(rs: ResultSet): CourseVersionTO = {
@@ -199,7 +206,12 @@ package object repository {
 	    rs.getString("postalCode"),
 	    rs.getString("cpf"),
 	    rs.getString("institutionUUID"),
-	    rs.getString("termsAcceptedOn"))
+	    rs.getString("termsAcceptedOn"),
+	    RegistrationType.valueOf(rs.getString("registrationType")),
+	    rs.getString("institutionRegistrationPrefixUUID"))
+	
+	implicit def toPersonTO(rs:ResultSet):PersonTO = newPersonTO(toPerson(rs),
+	    rs.getString("username"))
 
   implicit def toRole(rs: java.sql.ResultSet): kornell.core.entity.Role = {
     val roleType = RoleType.valueOf(rs.getString("role"))
@@ -208,20 +220,56 @@ package object repository {
       case RoleType.platformAdmin => Entities.newRoleAsPlatformAdmin(rs.getString("person_uuid"))
       case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("person_uuid"), rs.getString("institution_uuid"))
       case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
+      case RoleType.tutor => Entities.newTutorRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
     }
     role
   }
+
+  implicit def toRoleTO(rs: java.sql.ResultSet, bindMode: String): RoleTO = {
+    val role = toRole(rs)
+    TOs.newRoleTO(role, {
+      if(role != null && RoleCategory.BIND_WITH_PERSON.equals(bindMode))
+        PeopleRepo.getByUUID(role.getPersonUUID).get
+      else
+        null
+    }, rs.getString("username"))
+  }
+	
+  implicit def toInstitutionRegistrationPrefix(rs:ResultSet):InstitutionRegistrationPrefix = 
+    newInstitutionRegistrationPrefix(rs.getString("uuid"), 
+        rs.getString("name"),  
+        rs.getString("institutionUUID"), 
+        rs.getBoolean("showEmailOnProfile"),
+        rs.getBoolean("showCPFOnProfile"),
+        rs.getBoolean("showContactInformationOnProfile"))
 	
 	implicit def toUnreadChatThreadTO(rs:ResultSet):UnreadChatThreadTO = newUnreadChatThreadTO(
 	    rs.getString("unreadMessages"),
 	    rs.getString("chatThreadUUID"), 
 	    rs.getString("chatThreadName"),
-	    rs.getString("courseClassUUID"))
+	    rs.getString("courseClassUUID"),
+	    rs.getString("threadType"))
 	
 	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
 	    rs.getString("senderFullName"),
 	    rs.getString("sentAt"), 
 	    rs.getString("message"))
   
-
+	implicit def toChatThreadParticipant(rs: ResultSet): ChatThreadParticipant = newChatThreadParticipant(
+	    rs.getString("uuid"),
+	    rs.getString("chatThreadUUID"),
+	    rs.getString("personUUID"),
+	    rs.getString("chatThreadName"),
+	    rs.getDate("lastReadAt"),
+	    rs.getBoolean("active"),
+	    rs.getDate("lastJoinDate"))
+	    
+	implicit def toChatThread(rs: ResultSet): ChatThread = newChatThread(
+	    rs.getString("uuid"), 
+	    rs.getDate("createdAt"), 
+	    rs.getString("institutionUUID"), 
+	    rs.getString("courseClassUUID"), 
+	    rs.getString("personUUID"), 
+	    rs.getString("threadType"), 
+	    rs.getBoolean("active"))
 }

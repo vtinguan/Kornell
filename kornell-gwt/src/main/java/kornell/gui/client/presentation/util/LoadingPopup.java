@@ -1,20 +1,14 @@
 package kornell.gui.client.presentation.util;
 
-import kornell.gui.client.KornellConstants;
-
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.Label;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 public class LoadingPopup {
-	private static PopupPanel popup;
-	private static KornellConstants constants = GWT.create(KornellConstants.class);
-	
+	private static PopupPanel popup;	
 	
 	public static void show() {
-		//TODO: i18n
 		show(null);
 	}
 	

@@ -15,8 +15,8 @@ import javax.ws.rs.POST
 import javax.ws.rs.Consumes
 import kornell.core.entity.CourseVersion
 import kornell.server.util.Conditional.toConditional
-import kornell.server.util.RequirementNotMet
 import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.util.AccessDeniedErr
 
 @Path("courseVersions")
 class CourseVersionsResource {
@@ -31,8 +31,8 @@ class CourseVersionsResource {
           CourseVersionsRepo.byCourse(courseUUID)
         else
           CourseVersionsRepo.byInstitution(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)
-    }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+    }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
   
   @POST
@@ -40,8 +40,8 @@ class CourseVersionsResource {
   @Consumes(Array(CourseVersion.TYPE))
   def create(courseVersion: CourseVersion) = {
     CourseVersionsRepo.create(courseVersion)
-  }.requiring(isPlatformAdmin, RequirementNotMet)
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), RequirementNotMet)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 }
 

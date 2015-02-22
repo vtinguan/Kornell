@@ -4,9 +4,8 @@ import java.util.List;
 
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.entity.RegistrationEnrollmentType;
+import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
 
@@ -44,6 +43,6 @@ public interface AdminCourseClassView extends IsWidget {
 	void buildMessagesView();
 	void prepareAddNewCourseClass(boolean addingNewCourseClass);
 	void setCanPerformEnrollmentAction(boolean allow);
-	void setUserEnrollmentIdentificationType(RegistrationEnrollmentType registrationEnrollmentType);
+	void setUserEnrollmentIdentificationType(RegistrationType registrationType);
 	void clearEnrollmentFields();
 }

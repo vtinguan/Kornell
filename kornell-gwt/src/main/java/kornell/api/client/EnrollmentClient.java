@@ -1,6 +1,5 @@
 package kornell.api.client;
 
-import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.lom.Contents;
 

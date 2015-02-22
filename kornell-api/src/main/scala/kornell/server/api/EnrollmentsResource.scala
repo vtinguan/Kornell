@@ -1,32 +1,26 @@
 package kornell.server.api
 
-import javax.ws.rs.Produces
-import scala.collection.JavaConverters._
+import scala.collection.JavaConverters.asScalaBufferConverter
 import javax.ws.rs.Consumes
-import javax.ws.rs.core.SecurityContext
-import kornell.server.jdbc.repository.EnrollmentRepo
-import kornell.server.jdbc.repository.EnrollmentsRepo
-import kornell.server.util.Conditional.toConditional
-import javax.ws.rs.PathParam
-import javax.ws.rs.QueryParam
-import javax.ws.rs.PUT
 import javax.ws.rs.GET
-import kornell.server.jdbc.repository.AuthRepo
-import javax.ws.rs.Path
-import javax.ws.rs.core.Context
-import kornell.server.repository.service.RegistrationEnrollmentService
-import kornell.server.jdbc.SQL._
-import kornell.core.entity.Enrollment
-import kornell.core.entity.Enrollments
 import javax.ws.rs.POST
-import javax.servlet.http.HttpServletResponse
-import kornell.core.to.EnrollmentRequestsTO
-import kornell.server.repository.Entities
-import kornell.core.to.EnrollmentsTO
-import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.util.RequirementNotMet
-import kornell.server.jdbc.repository.CourseClassRepo
+import javax.ws.rs.PUT
+import javax.ws.rs.Path
+import javax.ws.rs.PathParam
+import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
+import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
+import kornell.core.to.EnrollmentRequestsTO
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.jdbc.repository.AuthRepo
+import kornell.server.jdbc.repository.CourseClassRepo
+import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.repository.service.RegistrationEnrollmentService
+import kornell.server.util.AccessDeniedErr
+import kornell.server.util.Conditional.toConditional
+import kornell.core.to.EnrollmentsTO
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
@@ -40,9 +34,9 @@ class EnrollmentsResource {
   @Produces(Array(Enrollment.TYPE))
   def create(enrollment: Enrollment) = {
       EnrollmentsRepo.create(enrollment)
-  }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  RequirementNotMet )
-  .requiring(CourseClassRepo(enrollment.getCourseClassUUID()).get.isPublicClass() == true, RequirementNotMet)
-  .requiring(enrollment.getState.equals(EnrollmentState.requested), RequirementNotMet)
+  }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  AccessDeniedErr() )
+  .requiring(CourseClassRepo(enrollment.getCourseClassUUID()).get.isPublicClass() == true, AccessDeniedErr())
+  .requiring(enrollment.getState.equals(EnrollmentState.requested), AccessDeniedErr())
   .get
 
   @GET

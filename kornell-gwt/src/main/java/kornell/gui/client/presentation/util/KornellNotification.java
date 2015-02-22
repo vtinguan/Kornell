@@ -33,7 +33,7 @@ public class KornellNotification {
 		popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
 			public void setPosition(int offsetWidth, int offsetHeight) {
 				int left = (Window.getClientWidth() - offsetWidth) / 2;
-				popup.setPopupPosition(left, Positioning.NORTH_BAR);
+				popup.setPopupPosition(left, hasPlaceBar() ? Positioning.NORTH_BAR_PLUS : Positioning.NORTH_BAR);
 			}
 		});
 		
@@ -47,6 +47,12 @@ public class KornellNotification {
 			}.scheduleRepeating(timer);
 		}
 	}
+	
+	
+	private static native boolean hasPlaceBar() /*-{
+		return $wnd.document.getElementsByClassName("placeBar")[0] != null 
+			&& $wnd.document.getElementsByClassName("placeBar")[0].getAttribute("aria-hidden") == null;
+	}-*/;
 }
 
 

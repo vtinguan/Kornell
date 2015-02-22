@@ -1,198 +1,143 @@
 @import "../utils/mixins";
 @import "../utils/colors";
-.welcomePanel {
+
+.pnlCourses { 
+	display: block;
+	overflow: auto;
 	width: @wrapperWidth;
-	margin: 0 auto;
-}
-.coursesWrapper{
-	width: @wrapperWidth;
-	.btnPanel{
-		height: 30px;
-		margin-top: 9px;
-		margin-right: 22px;
-		margin-bottom: 10px;
-		.btnCourses{
-			float: right;
-			height: 24px;
-			padding-left: 24px !important;
-			padding-right: 24px !important;
-			border-left: 1px solid #505864 !important;
-			border-right: 1px solid #181c22 !important;
+	margin: 0 auto; 
+	margin-top: 10px;
+	margin-bottom: 10px;
+	.courseSummary {
+		.sizepx(@wrapperWidth - 50px,140);
+		background-color: @tableBackgroundColor;
+		border-radius:5px;  
+		padding: 10px;
+		margin: 10px;
+		float: left;
+		&:hover {
+			cursor: pointer;
+			background-color: @tableBackgroundHoverColor;
 		}
-		.headerText{
-			font-size: 16px;
-			color: @textHighlightColor;
+		h1 {
+			margin: 0px;
+			margin-top: -8px;
+			padding: 5px 0px 5px 0px;
+			font-size: 1.1em;
 			font-weight: bold;
-			margin-left: 10px;
-			line-height: 50px;
-			display: block;
-			float: left;
+			text-align: left;
+			line-height: 1.231;	
+			color: @textHighlightDiscreteColor;
 		}
-	}
-	.pnlCoursesWrapperTitle{
-		height: 20px;
-		.imgPnlCourses{
-			margin-left: 24px;
-			float: left;
+		.lblSubTitle {
+			color: @plainDiscreteTextColor;
+			font-style: italic;
+			font-size: 12px;
+			margin-top: -7px;
+			margin-bottom: -8px;
 		}
-		.labelPnlCourses { 
+		.details {
+			height: 100%;
 			color: @niceTextColor;
-			font-size: 15px;
-			line-height: 23px;
-			padding-left: 14px;
-			padding-bottom: 12px;
-			float: left;
 		}
-		.labelPnlCoursesHighlight { 
-			color: @highlightCoursesCountColor;
-			padding-left: 5px;
+		img.thumb {
+			.size(130px);
+			float: left;	
+			border: 1px solid @bordersColor;
+			margin: 5px;
+			margin-right: 10px;
 		}
-	}
-	.pnlCourses { 
-		display: block;
-		overflow: auto;
-		width: @wrapperWidth;
-		.courseSummary {
-			.sizepx(@wrapperWidth - 50px,140);
-			background-color: @tableBackgroundColor;
-			border-radius:5px;  
-			padding: 10px;
-			margin-bottom: 10px;
-			margin-left: 10px;
-			float: left;
-			&:hover {
-				cursor: pointer;
-				background-color: @tableBackgroundHoverColor;
-			}
-			h1 {
-				margin: 0px;
-				margin-top: -3px;
-				padding: 5px 0px 5px 0px;
-				font-size: 1.1em;
-				font-weight: bold;
-				text-align: left;
-				line-height: 1.231;	
-				color: @textHighlightDiscreteColor;
-			}
-			.lblSubTitle {
-				color: @plainDiscreteTextColor;
-				font-style: italic;
-				font-size: 12px;
-				margin-top: -7px;
-				margin-bottom: -5px;
-			}
-			.details {
-				height: 100%;
-				margin-left: 150px;
-				color: @niceTextColor;
-			}
-			img.thumb {
-				.size(130px);
-				float: left;	
-				border: 1px solid @bordersColor;
-				margin: 5px;
-			}
-			.courseSummaryBar {
-				margin-top: -9px;
-				.icon {
-					float: left;
-					width: 20px;
-					height: 20px;
-				}
-				.courseStatus {
-					display: inline;
-					text-align: right;
-					font-size: 11px;
-					font-weight: bold;
-					line-height: 23px;
-					padding-left: 7px;
-					color: @niceTextColor;
-					float: left;
-				}
-				.progress{
-					width: 250px;
-					height: 10px;
-					float: left;
-					margin: 6px 3px 0px 10px;
-					background-color: @contentBoxBackgroundColor;
-					background-image: linear-gradient(to bottom, @contentBoxBackgroundColor, @contentBoxBackgroundColor);
-					.bar{
-						.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
-					}
-				}
-				.courseStatusInfo {
-					display: inline;
-					color: @textInfoColor;
-					text-align: right;
-					font-size: 11px;
-					font-weight: bold;
-					line-height: 23px;
-					padding-left: 7px;
-					float: left;
-				}
-				.courseProgressCertificate {
-					float: right; 
-				}
-				.iconCertificate {
-					float: right;
-				}
-			}
-			.ellipsis {
-				font-size: 14px;
-				overflow: hidden;
-				height: 48px;
-				line-height: 16px;
-				margin-right: 10px;
-				margin-bottom: 5px;
-				margin-top: 3px;
-			}
-			.ellipsis:before {
-				content:"";
+		.courseSummaryBar {
+			margin-top: -9px;
+			.icon {
 				float: left;
-				width: 5px; 
-				height: 58px; 
+				width: 20px;
+				height: 20px;
 			}
-			.ellipsis > *:first-child {
-				float: right;
-				width: 100%;
-				margin-left: -5px; 
-			}		
-			.ellipsis:after {
-				content: "\02026";  
-
-				box-sizing: content-box;
-				-webkit-box-sizing: content-box;
-				-moz-box-sizing: content-box;
-
-				float: right; 
-				position: relative;
-				top: -25px; 
-				left: 100%; 
-				width: 3em; 
-				margin-left: -3em;
-				padding-right: 5px;
-
+			.courseStatus {
+				display: inline;
 				text-align: right;
+				font-size: 11px;
+				font-weight: bold;
+				line-height: 23px;
+				padding-left: 7px;
+				color: @niceTextColor;
+				float: left;
+			}
+			.progress{
+				width: 250px;
+				height: 10px;
+				float: left;
+				margin: 6px 3px 0px 10px;
+				background-color: @contentBoxBackgroundColor;
+				background-image: linear-gradient(to bottom, @contentBoxBackgroundColor, @contentBoxBackgroundColor);
+				.bar{
+					.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
+				}
+			}
+			.courseStatusInfo {
+				display: inline;
+				color: @textInfoColor;
+				text-align: right;
+				font-size: 11px;
+				font-weight: bold;
+				line-height: 23px;
+				padding-left: 7px;
+				float: left;
+			}
+			.courseProgressCertificate {
+				float: right; 
+			}
+			.iconCertificate {
+				float: right;
 			}
 		}
+		.ellipsis {
+			font-size: 14px;
+			overflow: hidden;
+			height: 48px;
+			line-height: 16px;
+			margin-right: 10px;
+			margin-bottom: 4px;
+			margin-top: 2px;
+		}
+		.ellipsis:before {
+			content:"";
+			float: left;
+			width: 5px; 
+			height: 58px; 
+		}
+		.ellipsis > *:first-child {
+			float: right;
+			width: 100%;
+			margin-left: -5px; 
+		}		
+		.ellipsis:after {
+			content: "\02026";  
+
+			box-sizing: content-box;
+			-webkit-box-sizing: content-box;
+			-moz-box-sizing: content-box;
+
+			float: right; 
+			position: relative;
+			top: -25px; 
+			left: 100%; 
+			width: 3em; 
+			margin-left: -3em;
+			padding-right: 5px;
+
+			text-align: right;
+		}
 	}
-	
-} 
+}
 @media screen and (max-width: @wrapperWidth) {
-	.pnlRight{
+	.pnlCourses { 
 		@wrapperWidth: @wrapperWidthUnder990;
 		width: @wrapperWidth;
-		.btnPanel{
-			width: @wrapperWidth;
-			height:	60px;
-			width: @wrapperWidth;
-		}
-		.pnlCourses { 
-			width: @wrapperWidth;
-			.courseSummary {
-				.ellipsis { 
-					margin-bottom: 0px;
-				}
+		.courseSummary {
+			.ellipsis { 
+				margin-bottom: 0px;
 			}
 		}
 		.courseSummary {

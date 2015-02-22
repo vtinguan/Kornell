@@ -4,7 +4,6 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
@@ -231,7 +230,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private static native void setupArrowsNavigation() /*-{
 		$doc.onkeydown = function() {
-			if($wnd.event.target.nodeName != "TEXTAREA"){
+			if($wnd.event && $wnd.event.target && $wnd.event.target.nodeName != "TEXTAREA"){
 			    switch ($wnd.event.keyCode) {
 			        case 37: //LEFT ARROW
 			        	$doc.getElementsByClassName("btnPanel previous")[0].click();

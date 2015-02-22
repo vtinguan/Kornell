@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.message;
 
 import java.util.List;
 
-import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
 

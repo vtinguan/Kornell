@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.welcome.generic;
 
-import java.util.Date;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;

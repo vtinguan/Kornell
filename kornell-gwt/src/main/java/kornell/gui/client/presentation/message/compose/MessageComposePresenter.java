@@ -4,8 +4,6 @@ import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
-import kornell.core.to.CourseClassTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
@@ -19,21 +17,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MessageComposePresenter implements MessageComposeView.Presenter {
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	
 	private MessageComposeView view;
 	private PlaceController placeCtrl;
-	private KornellSession session;
 	private ChatThreadsClient threadsClient;
-	private EntityFactory entityFactory;
 	private ViewFactory viewFactory;
-	
-	private String message;
 
 	public MessageComposePresenter(PlaceController placeCtrl, KornellSession session, ViewFactory viewFactory, EntityFactory entityFactory) {
 		this.placeCtrl = placeCtrl;
-		this.entityFactory = entityFactory;
-		this.session = session;
 		this.threadsClient = session.chatThreads();
 		this.viewFactory = viewFactory;
 	}

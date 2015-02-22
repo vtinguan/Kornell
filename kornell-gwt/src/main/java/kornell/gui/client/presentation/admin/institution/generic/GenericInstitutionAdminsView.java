@@ -14,12 +14,9 @@ import kornell.core.entity.RoleType;
 import kornell.core.entity.Roles;
 import kornell.core.to.RoleTO;
 import kornell.core.to.RolesTO;
-import kornell.core.to.UserInfoTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PeopleMultipleSelect;
 
 import com.github.gwtbootstrap.client.ui.Form;
@@ -42,7 +39,6 @@ public class GenericInstitutionAdminsView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	private KornellSession session;
@@ -59,14 +55,11 @@ public class GenericInstitutionAdminsView extends Composite {
 	@UiField
 	Button btnCancel;
 
-	private UserInfoTO user;
 	private Institution institution;
-	private List<KornellFormFieldWrapper> fields;
 	
 	public GenericInstitutionAdminsView(final KornellSession session,
 			kornell.gui.client.presentation.admin.institution.AdminInstitutionView.Presenter presenter, Institution institution) {
 		this.session = session;
-		this.user = session.getCurrentUser();
 		this.institution = institution;
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
@@ -97,9 +90,7 @@ public class GenericInstitutionAdminsView extends Composite {
 			@Override
 			public void ok(RolesTO to) {
 				for (RoleTO roleTO : to.getRoleTOs()) {
-					String item = roleTO.getPerson().getEmail() != null ?
-							roleTO.getPerson().getEmail() :
-								roleTO.getPerson().getCPF();
+					String item = roleTO.getUsername();
 					if(roleTO.getPerson().getFullName() != null && !"".equals(roleTO.getPerson().getFullName())){
 						item += " (" +roleTO.getPerson().getFullName()+")";
 					}

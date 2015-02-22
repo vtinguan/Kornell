@@ -8,6 +8,8 @@ import javax.ws.rs.QueryParam
 import kornell.server.jdbc.repository.PeopleRepo
 import kornell.core.entity.People
 import kornell.server.jdbc.repository.AuthRepo
+import kornell.core.error.exception.UnauthorizedAccessException
+import kornell.core.to.PeopleTO
 
 @Path("people")
 @Produces(Array(People.TYPE))
@@ -17,6 +19,7 @@ class PeopleResource() {
   def get(@PathParam("uuid") uuid:String):PersonResource = new PersonResource(uuid) 
   
   @GET
+  @Produces(Array(PeopleTO.TYPE))
   def findBySearchTerm(@QueryParam("institutionUUID") institutionUUID:String,
       @QueryParam("search") search:String) = PeopleRepo.findBySearchTerm(institutionUUID, search)
 }

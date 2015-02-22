@@ -21,8 +21,9 @@ import kornell.core.entity.Role
 import kornell.core.entity.RoleType
 import kornell.core.util.TimeUtil
 import kornell.server.util.ValueFactory
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import kornell.core.entity.BillingType
+import kornell.core.entity.InstitutionRegistrationPrefix
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -50,7 +51,9 @@ object Entities {
     postalCode: String = null,
     cpf: String = null,
     institutionUUID: String = null,
-    termsAcceptedOn: String = null) = {
+    termsAcceptedOn: String = null,
+    registrationType: RegistrationType = null,
+    institutionRegistrationPrefixUUID: String = null) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -73,6 +76,8 @@ object Entities {
     person.setCPF(cpf)
     person.setInstitutionUUID(institutionUUID)
     person.setTermsAcceptedOn(termsAcceptedOn)
+    person.setRegistrationType(registrationType)
+    person.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     person
   }
 
@@ -201,6 +206,16 @@ object Entities {
     role.setCourseClassAdminRole(courseClassAdminRole)
     role
   }
+  
+  def newTutorRole(person_uuid: String, courseClassUUID: String) = {
+    val role = factory.newRole().as
+    role.setPersonUUID(person_uuid)
+    val tutorRole = factory.newTutorRole().as
+    tutorRole.setCourseClassUUID(courseClassUUID)
+    role.setRoleType(RoleType.tutor)
+    role.setCourseClassAdminRole(tutorRole)
+    role
+  }
 
   def newCourseVersion(
     uuid: String = randUUID, name: String = null, 
@@ -229,8 +244,9 @@ object Entities {
     invisible: Boolean = false, maxEnrollments: Integer = null,
     createdAt: Date = null, createdBy: String = null,
     state: CourseClassState = null,
-    registrationEnrollmentType: RegistrationEnrollmentType = null,
-    institutionRegistrationPrefix: String = null) = {
+    registrationType: RegistrationType = null,
+    institutionRegistrationPrefixUUID: String = null,
+    courseClassChatEnabled: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -244,8 +260,9 @@ object Entities {
     clazz.setCreatedAt(createdAt)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
-    clazz.setRegistrationEnrollmentType(registrationEnrollmentType)
-    clazz.setInstitutionRegistrationPrefix(institutionRegistrationPrefix)
+    clazz.setRegistrationType(registrationType)
+    clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
+    clazz.setCourseClassChatEnabled(courseClassChatEnabled)
     clazz
   }
 
@@ -285,12 +302,39 @@ object Entities {
     repo
   }
 
-  def newChatThread(uuid: String = null, createdAt: Date = null, institutionUUID: String = null) = {
+  def newChatThread(uuid: String = null, createdAt: Date = null, institutionUUID: String = null, courseClassUUID: String = null, personUUID: String = null, threadType: String = null, active: Boolean = true) = {
     val chatThread = factory.newChatThread.as
     chatThread.setUUID(uuid)
     chatThread.setCreatedAt(createdAt)
     chatThread.setInstitutionUUID(institutionUUID)
+    chatThread.setCourseClassUUID(courseClassUUID)
+    chatThread.setPersonUUID(personUUID)
+    chatThread.setThreadType(threadType)
+    chatThread.setActive(active)
     chatThread
   }
 
+  def newChatThreadParticipant(uuid: String = null, chatThreadUUID: String = null, personUUID: String = null, 
+      chatThreadName: String = null, lastReadAt: Date = null, active: Boolean = false, lastJoinDate: Date = null) ={
+    val chatThreadParticipant = factory.newChatThreadParticipant.as
+    chatThreadParticipant.setUUID(uuid)
+    chatThreadParticipant.setThreadUUID(chatThreadUUID)
+    chatThreadParticipant.setPersonUUID(personUUID)
+    chatThreadParticipant.setChatThreadName(chatThreadName)
+    chatThreadParticipant.setLastReadAt(lastReadAt)
+    chatThreadParticipant.setActive(active)
+    chatThreadParticipant.setLastJoinDate(lastJoinDate)
+    chatThreadParticipant
+  }
+
+  def newInstitutionRegistrationPrefix(uuid: String, name: String, institutionUUID: String = null, showEmailOnProfile: Boolean, showCPFOnProfile: Boolean, showContactInformationOnProfile: Boolean): InstitutionRegistrationPrefix = {
+    val institutionRegistrationPrefix = factory.newInstitutionRegistrationPrefix.as
+    institutionRegistrationPrefix.setUUID(uuid)
+    institutionRegistrationPrefix.setName(name)
+    institutionRegistrationPrefix.setInstitutionUUID(institutionUUID)
+    institutionRegistrationPrefix.setShowEmailOnProfile(showEmailOnProfile)
+    institutionRegistrationPrefix.setShowCPFOnProfile(showCPFOnProfile)
+    institutionRegistrationPrefix.setShowContactInformationOnProfile(showContactInformationOnProfile)
+    institutionRegistrationPrefix
+  }
 }

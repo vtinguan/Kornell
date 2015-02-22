@@ -18,6 +18,9 @@ import javax.ws.rs.GET
 import kornell.core.to.UnreadChatThreadsTO
 import kornell.core.to.ChatThreadMessagesTO
 import kornell.core.util.StringUtils
+import kornell.core.entity.ChatThreadType
+import kornell.server.util.Conditional.toConditional
+import kornell.server.jdbc.repository.PersonRepo
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
@@ -29,7 +32,16 @@ class ChatThreadsResource {
   def postMessageToCourseClassSupportThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message)
+  		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.SUPPORT)
+  }
+  
+  @POST
+  @Path("courseClass/{courseClassUUID}/tutoring")
+  @Produces(Array("text/plain"))
+  def postMessageToCourseClassTutoringThread(implicit @Context sc: SecurityContext, 
+    @PathParam("courseClassUUID") courseClassUUID: String,
+    message: String) = AuthRepo().withPerson { person => 
+        ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.TUTORING)
   }
   
   @POST
@@ -44,6 +56,13 @@ class ChatThreadsResource {
   			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  }
+  
+  @POST
+  @Path("direct/{personUUID}")
+  @Produces(Array("text/plain"))
+  def postMessageToDirectThread(@PathParam("personUUID") targetPersonUUID: String, message: String) = {
+        ChatThreadsRepo.postMessageToDirectThread(getAuthenticatedPersonUUID, targetPersonUUID, message)
   }
   
   @Path("unreadCount")

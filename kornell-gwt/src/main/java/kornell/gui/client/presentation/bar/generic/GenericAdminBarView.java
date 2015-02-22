@@ -1,6 +1,5 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.admin.course.CoursePlace;
@@ -53,14 +52,12 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	@UiField
 	FlowPanel activityBar;
 	
-	private UserInfoTO user;
 	private ClientFactory clientFactory;
 	
 	public GenericAdminBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-
-		user = clientFactory.getKornellSession().getCurrentUser();
+		
 		display();
 		updateButtonByPlace(clientFactory.getPlaceController().getWhere());
 

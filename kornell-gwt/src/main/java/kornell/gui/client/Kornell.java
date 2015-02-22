@@ -1,16 +1,11 @@
 package kornell.gui.client;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kornell.gui.client.presentation.util.KornellNotification;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Window;
 
 public class Kornell implements EntryPoint {
 	

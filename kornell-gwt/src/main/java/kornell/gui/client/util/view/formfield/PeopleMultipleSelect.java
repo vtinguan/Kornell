@@ -5,11 +5,9 @@ import java.util.Map;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.People;
 import kornell.core.entity.Person;
-import kornell.core.entity.RoleCategory;
-import kornell.core.to.RoleTO;
-import kornell.core.to.RolesTO;
+import kornell.core.to.PeopleTO;
+import kornell.core.to.PersonTO;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
 
@@ -102,7 +100,7 @@ public class PeopleMultipleSelect extends Composite {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				currentSearch = search.getText();
-				if(currentSearch.length() >= 1 && !currentSearch.equals(previousSearch)){
+				if(currentSearch.length() >= 1 && (!currentSearch.equals(previousSearch) || event.getNativeKeyCode() == 86 || event.getNativeKeyCode() == 17)){
 					searchChangesTimer.cancel();
 					searchChangesTimer.schedule(100);
 				}
@@ -113,7 +111,6 @@ public class PeopleMultipleSelect extends Composite {
 	  typeahead.add(search);
 		
 		oracle = (MultiWordSuggestOracle) typeahead.getSuggestOracle();
-			
 		
 		typeaheadPanel.add(typeahead);
 
@@ -133,15 +130,17 @@ public class PeopleMultipleSelect extends Composite {
 	}
 
 	private void searchChanged(String search) {
-		session.people().findBySearchTerm(search, Dean.getInstance().getInstitution().getUUID(), new Callback<People>() {
+		session.people().findBySearchTerm(search, Dean.getInstance().getInstitution().getUUID(), new Callback<PeopleTO>() {
 			@Override
-			public void ok(People to) {
+			public void ok(PeopleTO to) {
 				oraclePeople = new HashMap<String, Person>();
 				oracle.clear();
 				String username, oracleStr;
+				Person person;
 				int i = 0;
-				for (Person person : to.getPeople()) {
-					username = person.getEmail() != null ? person.getEmail() : person.getCPF();
+				for (PersonTO personTO : to.getPeopleTO()) {
+					person = personTO.getPerson();
+					username = personTO.getUsername();
 					oracleStr = username +
 								(person.getFullName() != null && !"".equals(person.getFullName()) ?
 								" (" + person.getFullName() + ")" : "");

@@ -19,17 +19,6 @@
 					</g:FlowPanel>
 					<g:FlowPanel ui:field="enrollmentsWrapper">
 					</g:FlowPanel>
-					<b:Modal ui:field="errorModal" backdrop="STATIC" addStyleNames="forgotPasswordModal">
-						<g:FlowPanel>
-							<g:Label ui:field="txtModal1"></g:Label>
-							<b:TextArea ui:field="txtModalError"></b:TextArea>
-							<g:Label ui:field="txtModal2"></g:Label>
-							<g:FlowPanel addStyleNames="standardButtonBar">
-								<g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
-								<g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
-							</g:FlowPanel>
-						</g:FlowPanel>
-					</b:Modal>
 				</g:FlowPanel>
 		  </b:Tab>
       <b:Tab ui:field="enrollTab" icon="PLUS_SIGN" heading="Matricular" active="true">
@@ -61,16 +50,27 @@
           </g:FlowPanel>
         </g:FlowPanel>
       </b:Tab>
-			<b:Tab ui:field="configTab" icon="COGS" heading="Configuração" active="false">
-		    <g:FlowPanel ui:field="configPanel"></g:FlowPanel >
-		  </b:Tab>
+	  <b:Tab ui:field="configTab" icon="COGS" heading="Configuração" active="false">
+	    <g:FlowPanel ui:field="configPanel"></g:FlowPanel >
+	  </b:Tab>
       <b:Tab ui:field="reportsTab" icon="BAR_CHART" heading="Relatórios" active="false">
         <g:FlowPanel ui:field="reportsPanel"></g:FlowPanel >
       </b:Tab>
       <b:Tab ui:field="messagesTab" icon="ENVELOPE" heading="Mensagens" active="false">
         <g:FlowPanel ui:field="messagesPanel"></g:FlowPanel >
       </b:Tab>
-		</b:TabPanel>
+	</b:TabPanel>
+	<b:Modal ui:field="errorModal" backdrop="STATIC" addStyleNames="forgotPasswordModal">
+		<g:FlowPanel>
+			<g:Label ui:field="txtModal1"></g:Label>
+			<b:TextArea ui:field="txtModalError"></b:TextArea>
+			<g:Label ui:field="txtModal2"></g:Label>
+			<g:FlowPanel addStyleNames="standardButtonBar">
+				<g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
+				<g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
+			</g:FlowPanel>
+		</g:FlowPanel>
+	</b:Modal>
 		
 	</g:FlowPanel>
 

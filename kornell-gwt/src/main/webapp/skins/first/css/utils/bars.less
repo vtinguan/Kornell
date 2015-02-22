@@ -4,6 +4,7 @@
 @import "forms";
 
 @barNorthHeight: 45px;
+@barNorthHeightPlus: @barNorthHeight + 35px;
 @barSouthHeight: 35px;
 
 .activityBarWrapper{
@@ -102,7 +103,9 @@
 }
 
 
-
+.menuBarPlus{
+	height: @barNorthHeightPlus !important;
+}
 .menuBar{
 	.north;
 	.size (100%, @barNorthHeight);

@@ -8,7 +8,6 @@ import java.util.List;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.generic.GenericAdminCourseVersionView;
@@ -56,11 +55,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private KornellSession session;
-	private EventBus bus;
 	private PlaceController placeCtrl;
-	private ViewFactory viewFactory;
-	private Presenter presenter;
 	final CellTable<CourseVersion> table;
 	private List<CourseVersion> courseVersions;
 	private KornellPagination pagination;
@@ -77,13 +72,9 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
-	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
 	public GenericAdminCourseVersionsView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
-		this.session = session;
-		this.bus = bus;
 		this.placeCtrl = placeCtrl;
-		this.viewFactory = viewFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		table = new CellTable<CourseVersion>();
 		pagination = new KornellPagination(table, courseVersions, 15);
@@ -173,7 +164,6 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 
 	@Override
 	public void setPresenter(Presenter presenter) {
-		this.presenter = presenter;
 	}
 
 	private Delegate<CourseVersion> getStateChangeDelegate(final EnrollmentState state) {

@@ -2,9 +2,9 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
@@ -30,8 +30,6 @@ public class GenericCourseClassReportItemView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String BASE_IMAGES_PATH = "skins/first/icons/";
 	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
 	private String LIBRARY_IMAGES_PATH = BASE_IMAGES_PATH + "courseLibrary/";
@@ -64,7 +62,6 @@ public class GenericCourseClassReportItemView extends Composite {
 
 	public GenericCourseClassReportItemView(EventBus eventBus, KornellSession session, CourseClassTO currentCourseClass,
 			String type) {
-		this.bus = eventBus;
 		this.session = session;
 		this.currentCourseClass = currentCourseClass;
 		this.type = type;
@@ -143,7 +140,7 @@ public class GenericCourseClassReportItemView extends Composite {
 					}
 					
 					@Override
-					public void internalServerError() {
+					public void internalServerError(KornellErrorTO kornellErrorTO) {
 						KornellNotification.show("Erro na geração dos certificados. Certifique-se que existem alunos que concluíram o curso nessa turma.", AlertType.ERROR, 3000);
 						displayCertificateActionCell(null);
 						LoadingPopup.hide();
@@ -159,7 +156,7 @@ public class GenericCourseClassReportItemView extends Composite {
 			}
 			
 			@Override
-			public void internalServerError() {
+			public void internalServerError(KornellErrorTO kornellErrorTO) {
 				displayCertificateActionCell(null);
 			}
 		});

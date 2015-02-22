@@ -1,9 +1,5 @@
 package kornell.gui.client.event;
 
-import java.util.List;
-
-import kornell.core.to.UnreadChatThreadTO;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public class CourseClassesFetchedEvent extends GwtEvent<CourseClassesFetchedEventHandler>{

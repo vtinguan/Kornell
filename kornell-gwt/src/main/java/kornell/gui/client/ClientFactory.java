@@ -1,7 +1,6 @@
 
 package kornell.gui.client;
 
-import kornell.api.client.KornellClient;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.event.EventFactory;

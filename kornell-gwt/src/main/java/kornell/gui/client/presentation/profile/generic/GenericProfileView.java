@@ -7,17 +7,18 @@ import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionRegistrationPrefix;
 import kornell.core.entity.Person;
+import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.TimeUtil;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -36,6 +37,7 @@ import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -45,18 +47,15 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -69,14 +68,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	Logger logger = Logger.getLogger(GenericProfileView.class.getName());
 
 	private KornellSession session;
+	private ViewFactory viewFactory;
 	private PlaceController placeCtrl;
 	private final EventBus bus;
-	private Institution institution;
 	private FormHelper formHelper;
-	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showContactDetails, validateContactDetails;
+	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showEmail = true, showCPF = true, showContactDetails, validateContactDetails;
 
-	// TODO fix this
-	private String IMAGE_PATH = "skins/first/icons/profile/";
 	private String DISABLED_CLASS = "btnNotSelected";
 	private String ENABLED_CLASS = "btnAction";
 	private String CURSOR_DEFAULT_CLASS = "cursorDefault";
@@ -84,65 +81,91 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	
 	@UiField Form form;
 	@UiField FlowPanel profileFields;
-	@UiField FlowPanel titlePanel;
-	@UiField Image imgTitle;
-	@UiField Label lblTitle;
-	@UiField Button btnEdit;
-	@UiField Button btnClose;
-	@UiField Button btnOK;
-	@UiField Button btnCancel;
 	@UiField GenericPasswordChangeView passwordChangeWidget;
+	@UiField GenericSendMessageView sendMessageWidget;
 	
 	private UserInfoTO user;
 	
 	
 	private KornellFormFieldWrapper cpf, email, username, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
 	private List<KornellFormFieldWrapper> fields;
-	private Button btnChangePassword;
+	private Button btnChangePassword, btnSendMessage, btnEdit, btnClose, btnOK, btnCancel;
 	private ClientFactory clientFactory;
 
 	private String profileUserUUID;
 
 	public GenericProfileView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
+		this.viewFactory = clientFactory.getViewFactory();
 		this.bus = clientFactory.getEventBus();
 		this.session = clientFactory.getKornellSession();
 		this.user = session.getCurrentUser();
 		this.placeCtrl = clientFactory.getPlaceController();
-		this.institution = Dean.getInstance().getInstitution();
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
-		btnEdit.setText("Editar".toUpperCase());
-		btnClose.setText("Fechar".toUpperCase());
-		btnOK.setText("OK".toUpperCase());
-		btnCancel.setText("Cancelar".toUpperCase());
+		btnEdit = new Button();
+		btnEdit.setText("Editar");
+		btnEdit.addStyleName("btnPlaceBar btnAction btnStandard");
+		btnEdit.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent e) {
+				doEdit(e);
+			}
+		});
+		
+		btnClose = new Button();
+		btnClose.setText("Fechar");
+		btnClose.addStyleName("btnPlaceBar btnNotSelected btnStandard");
+		btnClose.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent e) {
+				doClose(e);
+			}
+		});
+
+		btnOK = new Button();
+		btnOK.setText("Salvar Alterações");
+		btnOK.addStyleName("btnPlaceBar btnAction btnStandard");
+		btnOK.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent e) {
+				doOK(e);
+			}
+		});
+		
+		btnCancel = new Button();
+		btnCancel.setText("Cancelar");
+		btnCancel.addStyleName("btnPlaceBar btnNotSelected btnStandard");
+		btnCancel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent e) {
+				doCancel(e);
+			}
+		});
 		
 		btnChangePassword = new Button();
-		btnChangePassword.setText("Alterar Senha".toUpperCase());
-		btnChangePassword.addStyleName("btnSelected btnStandard btnChangePassword");
+		btnChangePassword.setText("Alterar Senha");
+		btnChangePassword.addStyleName("btnPlaceBar btnSelected btnChangePassword");
 		btnChangePassword.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				passwordChangeWidget.show();
 			}
 		});
-
-		imgTitle.setUrl(IMAGE_PATH + "course.png");
-		lblTitle.setText("Perfil");
-
-		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
-		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
-
-		/*session.getS3PolicyTO(new Callback<S3PolicyTO>() {
+		
+		btnSendMessage = new Button();
+		btnSendMessage.setText("Enviar Mensagem");
+		btnSendMessage.addStyleName("btnPlaceBar btnNotSelected btnChangePassword");
+		btnSendMessage.addClickHandler(new ClickHandler() {
 			@Override
-			public void ok(S3PolicyTO to) {
-				s3Policy = to;
+			public void onClick(ClickEvent event) {
+				sendMessageWidget.show();
 			}
-		});*/
-
+		});
+		
 		initData();
 		
 		bus.addHandler(PlaceChangeEvent.TYPE,
@@ -156,6 +179,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private void initData() {
+
+		viewFactory.getMenuBarView().initPlaceBar(IconType.USER, "Perfil", "Mantenha seus dados atualizados");
 		
 		isCurrentUser = session.getCurrentUser().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
@@ -168,9 +193,19 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		session.user().hasPowerOver(profileUserUUID, new Callback<Boolean>() {
 			@Override
 			public void ok(Boolean hasPowerOverTargetUser) {
-				if(hasPowerOverTargetUser){
-					titlePanel.add(btnChangePassword);
+				List<IsWidget> widgets = new ArrayList<IsWidget>();
+				if(!isCurrentUser){
+					widgets.add(btnSendMessage);
 				}
+				if(hasPowerOverTargetUser){
+					widgets.add(btnChangePassword);
+				}
+				widgets.add(btnCancel);
+				//widgets.add(btnClose);
+				widgets.add(btnEdit);
+				widgets.add(btnOK);
+				viewFactory.getMenuBarView().setPlaceBarWidgets(widgets);
+				
 				hasPowerOver = hasPowerOverTargetUser;
 				session.user().getUser(profileUserUUID, new Callback<UserInfoTO>() {
 					@Override
@@ -179,8 +214,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 						display();
 					}
 					@Override
-					public void unauthorized(String errorMessage) {
-						logger.severe(this.getClass().getName() + " - " + errorMessage);
+					public void notFound(KornellErrorTO kornellErrorTO) {
+						logger.severe(this.getClass().getName() + " - not found");
 						user = null;
 						display();
 					}
@@ -192,7 +227,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private boolean validateFields() {
 		if(!formHelper.isLengthValid(fullName.getFieldPersistText(), 5, 50)){
 			fullName.setError("Insira seu nome.");
-		} else fullName.setError("");
+		} 
 		
 		if(showContactDetails && validateContactDetails){
 			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
@@ -229,7 +264,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		return !checkErrors();
 	}
 
-	@UiHandler("btnOK")
 	void doOK(ClickEvent e) { 
 		formHelper.clearErrors(fields);
 
@@ -243,8 +277,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					btnOK.setEnabled(true);
 					isEditMode = false;
 					display();
-					form.addStyleName("shy");
-					placeCtrl.goTo(clientFactory.getDefaultPlace());
+					History.back();
+					//placeCtrl.goTo(clientFactory.getDefaultPlace());
 					session.getCurrentUser(true, new Callback<UserInfoTO>() {
 						@Override
 						public void ok(UserInfoTO to) {
@@ -253,7 +287,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					});
 				}
 				@Override
-				public void internalServerError(){
+				public void unauthorized(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
 					KornellNotification.show("Erros ao salvar usuário.", AlertType.ERROR);
 				}
@@ -267,8 +301,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		UserInfoTO userTmp = AutoBeanCodex.decode(clientFactory.getTOFactory(), kornell.core.to.UserInfoTO.class, userPayload).as();
 		Person person = userTmp.getPerson();
 		
-		person.setCPF(FormHelper.stripCPF(cpf.getFieldPersistText()));
-		person.setEmail(email.getFieldPersistText());
+		if(showCPF){
+			person.setCPF(FormHelper.stripCPF(cpf.getFieldPersistText()));
+		}
+		if(showEmail){
+			person.setEmail(email.getFieldPersistText());
+		}
 		person.setFullName(fullName.getFieldPersistText());
 		person.setCompany(company.getFieldPersistText());
 		person.setTitle(position.getFieldPersistText());
@@ -294,7 +332,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		return userTmp;
 	}
 
-	@UiHandler("btnCancel")
 	void doCancel(ClickEvent e) {
 		if(showContactDetails && validateContactDetails && session.getCurrentUser().getPerson().getCity() == null){
 			bus.fireEvent(new LogoutEvent());
@@ -305,14 +342,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		}
 	}
 
-	@UiHandler("btnEdit")
 	void doEdit(ClickEvent e) {
 		isEditMode = true;
 		formHelper.clearErrors(fields);
 		display();
 	}
 
-	@UiHandler("btnClose")
 	void doClose(ClickEvent e) {
 		form.addStyleName("shy");
 		History.back();
@@ -332,6 +367,16 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private void display() {
+
+		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
+		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
+		if(RegistrationType.username.equals(user.getPerson().getRegistrationType())){
+			InstitutionRegistrationPrefix institutionRegistrationPrefix = user.getInstitutionRegistrationPrefix(); 
+			showEmail = institutionRegistrationPrefix.isShowEmailOnProfile();
+			showCPF = institutionRegistrationPrefix.isShowCPFOnProfile();
+			showContactDetails = showContactDetails && institutionRegistrationPrefix.isShowContactInformationOnProfile();
+		}
+
 		form.addStyleName("shy");
 		
 		btnOK.setVisible(isEditMode);
@@ -361,26 +406,24 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		profileFields.add(fullName);
 		
 		KornellSession session = clientFactory.getKornellSession();
-		email = 
-				new KornellFormFieldWrapper("Email", 
-						formHelper.createTextBoxFormField(user.getPerson().getEmail()), 
-						isEditMode,
-						EmailValidator.unregisteredEmailValidator(profileUserUUID, session));
-		cpf = new KornellFormFieldWrapper
-				("CPF", 
-				formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
-				isEditMode,
-				CPFValidator.unregisteredCPFValidator(profileUserUUID, session));
-		
-		requireValid(cpf);
-		requireValid(email);
-		
-		fields.add(email);
-		fields.add(cpf);
-		
-		profileFields.add(email);
-		
-		if(isCurrentUser || isAdmin){
+		if(showEmail){
+			email = 
+					new KornellFormFieldWrapper("Email", 
+							formHelper.createTextBoxFormField(user.getPerson().getEmail()), 
+							isEditMode,
+							EmailValidator.unregisteredEmailValidator(profileUserUUID, session));
+			requireValid(email);
+			fields.add(email);
+			profileFields.add(email);
+		}
+		if(showCPF && (isCurrentUser || isAdmin)){
+			cpf = new KornellFormFieldWrapper
+					("CPF", 
+					formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
+					isEditMode,
+					CPFValidator.unregisteredCPFValidator(profileUserUUID, session));
+			requireValid(cpf);
+			fields.add(cpf);
 			profileFields.add(cpf);
 		}
 
@@ -411,13 +454,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		if((isCurrentUser || isAdmin)&& showContactDetails){
 			displayContactDetails();
 		}
-
-		profileFields.add(formHelper.getImageSeparator());
 		
 		form.removeStyleName("shy");
 		setValidity(true);
-		
+
 		passwordChangeWidget.initData(session, user, isCurrentUser);
+		sendMessageWidget.initData(session, user, isCurrentUser);
 		
 	}
 
@@ -564,7 +606,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	@Override
 	public void setPresenter(Presenter presenter) {
-		// TODO Auto-generated method stub
 	}
 
 	private Image getImageSeparator(){

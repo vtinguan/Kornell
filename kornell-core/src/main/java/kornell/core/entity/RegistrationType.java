@@ -1,7 +1,7 @@
 package kornell.core.entity;
 
 public enum RegistrationType {	
-	email,  
-	cpf,    
+	email,
+	cpf,
 	username
 }	

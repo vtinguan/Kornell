@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1150" pageHeight="842" columnWidth="1150" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1900" pageHeight="842" columnWidth="1900" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="4"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="notStarted" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
@@ -32,6 +32,9 @@
 	<field name="email" class="java.lang.String"/>
 	<field name="certifiedAt" class="java.lang.String"/>
 	<field name="enrolledAt" class="java.lang.String"/>
+	<field name="courseName" class="java.lang.String"/>
+	<field name="courseVersionName" class="java.lang.String"/>
+	<field name="courseClassName" class="java.lang.String"/>
 	<title>
 		<band height="239">
 			<textField>
@@ -45,8 +48,10 @@
     $P{inProgress}.intValue() +
     $P{waitingEvaluation}.intValue()
 )) +
-" / " +
-$P{maxEnrollments}]]></textFieldExpression>
+( $P{courseClassName} == null ? "" :
+    " / " +
+    $P{maxEnrollments}
+)]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="c8a1e273-10a0-49f7-b0ed-6c2ec620e514" x="210" y="161" width="470" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>
@@ -67,7 +72,9 @@ $P{maxEnrollments}]]></textFieldExpression>
     )]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" x="210" y="49" width="470" height="16"/>
+				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" x="210" y="49" width="470" height="16">
+					<printWhenExpression><![CDATA[$P{courseClassName} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -81,7 +88,9 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$P{courseTitle}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="210" y="81" width="470" height="16"/>
+				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="210" y="81" width="470" height="16">
+					<printWhenExpression><![CDATA[$P{courseClassName} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -94,14 +103,14 @@ $P{maxEnrollments}]]></textFieldExpression>
 				</textElement>
 				<textFieldExpression><![CDATA["Gerado em: " + new SimpleDateFormat("yyyy-MM-dd", new Locale("pt","BR")).format(new java.util.Date())]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="f6ac09cf-d162-4be1-9755-69de52522728" mode="Opaque" x="0" y="33" width="210" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
+			<textField>
+				<reportElement uuid="5055c098-dfc7-4a26-ace1-e06006aa8534" mode="Opaque" x="0" y="33" width="210" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[ INFORMAÇÕES DA TURMA]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[" INFORMAÇÕES " + ($P{courseClassName} != null ? "DA TURMA" : "DO CURSO")]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement uuid="0341aa1a-fa86-4d5a-9bd2-7cc8eb6296f4" mode="Opaque" x="0" y="129" width="210" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Top" rotation="None" markup="none">
@@ -119,7 +128,9 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[ VISÃO DETALHADA ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="74ed758a-e867-44ed-b909-d75889fe235c" mode="Opaque" x="0" y="49" width="210" height="16" forecolor="#525252" backcolor="#FFFFFF"/>
+				<reportElement uuid="74ed758a-e867-44ed-b909-d75889fe235c" mode="Opaque" x="0" y="49" width="210" height="16" forecolor="#525252" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$P{courseClassName} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -135,21 +146,23 @@ $P{maxEnrollments}]]></textFieldExpression>
 				<text><![CDATA[Curso: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3c41db9b-5a78-47c3-bee4-5756ca0349b7" mode="Opaque" x="0" y="81" width="210" height="16" forecolor="#525252" backcolor="#FFFFFF"/>
+				<reportElement uuid="3c41db9b-5a78-47c3-bee4-5756ca0349b7" mode="Opaque" x="0" y="81" width="210" height="16" forecolor="#525252" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$P{courseClassName} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Criada em: ]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="695a5f72-e44b-4a20-8fd7-c02f86d2c57e" mode="Opaque" x="0" y="0" width="680" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+			<textField>
+				<reportElement uuid="5b7d1755-e284-4c23-8b2c-2d48ea28e5bb" mode="Opaque" x="0" y="0" width="680" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[RELATÓRIO DETALHADO DE TURMA]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["RELATÓRIO DETALHADO DE " + ($P{courseClassName} != null ? "TURMA" : "CURSO")]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement uuid="b85be7c1-237f-4971-bf9e-0f5f00c78265" mode="Opaque" x="0" y="145" width="210" height="16" forecolor="#525252" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
@@ -283,6 +296,30 @@ $P{maxEnrollments}]]></textFieldExpression>
 				</textElement>
 				<text><![CDATA[PROGRESSO]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="9b933eca-4ebd-4ce5-9027-1a0f39d714c4" mode="Opaque" x="1150" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CURSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d56b90bd-e20d-4107-b481-c42799b312bd" mode="Opaque" x="1400" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[VERSÃO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09dbbb6f-e2fe-4913-aaf6-9fcd2774872d" mode="Opaque" x="1650" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[TURMA]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
@@ -348,6 +385,27 @@ $P{maxEnrollments}]]></textFieldExpression>
             : "A Iniciar"
         )
     )]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f520e1a0-f36b-42aa-8a67-a624a40275f1" x="1150" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a7eecd8d-d696-4a3c-b87e-3dfa19dbcadb" x="1400" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseVersionName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="5715a812-7812-4371-9fbf-5927215e6ff8" x="1650" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{courseClassName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

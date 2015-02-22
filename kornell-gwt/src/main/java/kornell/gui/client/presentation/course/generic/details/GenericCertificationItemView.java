@@ -6,7 +6,6 @@ import kornell.core.entity.Assessment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
@@ -36,7 +35,6 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
 	private KornellSession session;
 	private CourseClassTO currentCourseClass;
@@ -131,7 +129,6 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 
 	@Override
 	public void onProgress(ProgressEvent event) {
-		// TODO Auto-generated method stub
 		if(CERTIFICATION.equals(type)){
 			if(event.getProgressPercent() >= 100){
 				courseClassComplete = true;

@@ -1,16 +1,5 @@
 package kornell.scorm.client.scorm12;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import kornell.api.client.Callback;
-import kornell.core.entity.ActomEntries;
-
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class CMIDataModel extends CMICoreModel {
 	/*

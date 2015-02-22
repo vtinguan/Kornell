@@ -8,12 +8,10 @@ import java.util.List;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.generic.GenericAdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
-import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -56,15 +54,10 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private KornellSession session;
-	private EventBus bus;
 	private PlaceController placeCtrl;
-	private ViewFactory viewFactory;
-	private Presenter presenter;
 	final CellTable<Course> table;
 	private List<Course> courses;
 	private KornellPagination pagination;
-	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -77,13 +70,9 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
-	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
 	public GenericAdminCoursesView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
-		this.session = session;
-		this.bus = bus;
 		this.placeCtrl = placeCtrl;
-		this.viewFactory = viewFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		table = new CellTable<Course>();
 		pagination = new KornellPagination(table, courses, 15);
@@ -159,7 +148,6 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 
 	@Override
 	public void setPresenter(Presenter presenter) {
-		this.presenter = presenter;
 	}
 
 	private Delegate<Course> getStateChangeDelegate(final EnrollmentState state) {

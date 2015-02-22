@@ -16,7 +16,6 @@ public class KornellPagination extends Pagination{
 	private int pageSize = 20;
 	private int maxPaginationTabs = 10;
 	private int totalRowCount = 0;
-	private int pageNumber = 1;
 	private CellTable table;
 	private List rowData;
 
@@ -30,9 +29,7 @@ public class KornellPagination extends Pagination{
 		this.pageSize = pageSize;
 	}
 	
-	public void displayTableData(int pageNumber) {
-		this.pageNumber = pageNumber;
-		
+	public void displayTableData(int pageNumber) {		
 		int end = pageNumber * pageSize;
 		int start = end - pageSize; 
 		

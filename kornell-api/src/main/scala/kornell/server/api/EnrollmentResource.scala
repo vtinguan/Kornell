@@ -1,7 +1,6 @@
 package kornell.server.api
 
 import scala.collection.JavaConverters._
-
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
 import javax.ws.rs.GET
@@ -21,8 +20,7 @@ import kornell.server.jdbc.repository.EnrollmentRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.Err
-import kornell.server.util.Errors._
-import kornell.server.util.RequirementNotMet
+import kornell.server.util.AccessDeniedErr
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -40,7 +38,7 @@ class EnrollmentResource(uuid: String) {
   def update(enrollment: Enrollment) = {
     EnrollmentRepo(enrollment.getUUID).update(enrollment)
   }
-  .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  RequirementNotMet )
+  .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  AccessDeniedErr() )
   .get
   
   
@@ -67,9 +65,9 @@ class EnrollmentResource(uuid: String) {
     val enrollment = enrollmentRepo.get   
     enrollmentRepo.delete(uuid)
     enrollment
-  }.requiring(isPlatformAdmin, UserNotInRole)
-    .or(isInstitutionAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), UserNotInRole)
-    .or(isCourseClassAdmin(EnrollmentRepo(uuid).get.getCourseClassUUID), UserNotInRole)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+    .or(isInstitutionAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
+    .or(isCourseClassAdmin(EnrollmentRepo(uuid).get.getCourseClassUUID), AccessDeniedErr())
     
   
 }

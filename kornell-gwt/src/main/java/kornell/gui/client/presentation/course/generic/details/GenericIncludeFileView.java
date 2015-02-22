@@ -1,7 +1,6 @@
 package kornell.gui.client.presentation.course.generic.details;
 
 import kornell.api.client.KornellClient;
-import kornell.gui.client.KornellConstants;
 
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
@@ -23,11 +22,6 @@ public class GenericIncludeFileView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	
-	
-	private KornellClient client;
-	private PlaceController placeCtrl;
-	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class); 
 	private String IMAGES_PATH = "skins/first/icons/courseLibrary/";
 
 	@UiField
@@ -57,9 +51,6 @@ public class GenericIncludeFileView extends Composite {
 	Image star5;
 	
 	public GenericIncludeFileView(EventBus eventBus, KornellClient client, PlaceController placeCtrl) {
-		this.bus = eventBus;
-		this.client = client;
-		this.placeCtrl = placeCtrl;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();		
 	}
@@ -76,7 +67,6 @@ public class GenericIncludeFileView extends Composite {
 
 
 	private void display() {
-		//TODO i18n
 		includeFileFormInfoTitle.setText("Incluir arquivo");
 		includeFileFormInfoText.setText("Ao incluir um arquivo dê a ele uma descrição para facilitar o entendimento do mesmo. Informe a sua relevância com o tema deste curso relacionando com as estrelas da seguinte forma: 1 estrela é de pouca relevância, 5 estrelas é altamente relevante, praticamente fundamental.");
 		

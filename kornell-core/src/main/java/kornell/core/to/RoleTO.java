@@ -11,4 +11,7 @@ public interface RoleTO {
 	
 	Person getPerson();
 	void setPerson(Person person);
+	
+	String getUsername();
+	void setUsername(String username);
 }

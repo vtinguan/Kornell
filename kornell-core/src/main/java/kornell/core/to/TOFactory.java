@@ -1,5 +1,7 @@
 package kornell.core.to;
 
+import kornell.core.error.KornellErrorTO;
+
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
@@ -27,4 +29,7 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<ChatThreadMessagesTO> newChatThreadMessagesTO();
 	AutoBean<InstitutionRegistrationPrefixesTO> newInstitutionRegistrationPrefixesTO();
 	AutoBean<InstitutionHostNamesTO> newInstitutionHostNamesTO();
+	AutoBean<KornellErrorTO> newErrorTO();
+	AutoBean<PersonTO> newPersonTO();
+	AutoBean<PeopleTO> newPeopleTO();
 }

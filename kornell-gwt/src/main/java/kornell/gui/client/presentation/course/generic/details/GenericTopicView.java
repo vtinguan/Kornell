@@ -12,7 +12,6 @@ import kornell.core.lom.ContentFormat;
 import kornell.core.lom.ExternalPage;
 import kornell.core.lom.Topic;
 import kornell.core.to.CourseClassTO;
-import kornell.gui.client.KornellConstants;
 
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
@@ -38,16 +37,13 @@ public class GenericTopicView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private KornellClient client;
 	private PlaceController placeCtrl;
 	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
 	private Content content;
 	private KornellSession session;
 	private CourseClassTO currentCourse;
 	private int index;
-	private boolean startOpened;
 	private boolean enableAnchorOnFirstChild;
 
 	@UiField
@@ -69,7 +65,6 @@ public class GenericTopicView extends Composite {
 			PlaceController placeCtrl, KornellSession session,
 			CourseClassTO currentCourse, Content content, int index, boolean enableAnchorOnFirstChild) {
 		this.bus = eventBus;
-		this.client = client;
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		this.content = content;

@@ -127,6 +127,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	}
 	
 
+	@SuppressWarnings("deprecation")
 	private void setBackgroundImage(boolean showMantle) {
 		if(showMantle == isMantleShown) return;
 		String style = "position: relative; " +
@@ -172,10 +173,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(clientFactory.getEventBus(),
-				clientFactory.getKornellSession(),
-				clientFactory.getPlaceController(),
-				clientFactory.getTOFactory());
+		return new GenericWelcomeView(clientFactory);
 	}
 
 	@Override

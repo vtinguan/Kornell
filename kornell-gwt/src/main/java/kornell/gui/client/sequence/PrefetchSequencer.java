@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.api.client.RESTClient;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
@@ -20,7 +19,6 @@ import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 

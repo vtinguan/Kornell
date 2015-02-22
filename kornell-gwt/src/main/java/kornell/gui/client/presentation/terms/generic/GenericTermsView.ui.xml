@@ -3,7 +3,6 @@
 	<g:FlowPanel addStyleNames="termsPanel">
 	    <g:FlowPanel>
 			<b:Image ui:field="institutionLogo" addStyleNames="institutionLogo"></b:Image>
-			<b:Paragraph ui:field="txtTitle" addStyleNames="txtTitle"></b:Paragraph>
 		</g:FlowPanel>
 		<b:Paragraph ui:field="titleUser" addStyleNames="titleUser"></b:Paragraph>
 		<b:Paragraph ui:field="txtTerms" addStyleNames="txtTerms"></b:Paragraph>

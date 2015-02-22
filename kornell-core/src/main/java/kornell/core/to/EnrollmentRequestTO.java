@@ -1,7 +1,6 @@
 package kornell.core.to;
 
-import kornell.core.entity.RegistrationEnrollmentType;
-
+import kornell.core.entity.RegistrationType;
 
 public interface EnrollmentRequestTO {
 	public static final String TYPE = TOFactory.PREFIX + "enrollmentRequest+json";
@@ -16,8 +15,10 @@ public interface EnrollmentRequestTO {
 	void setUsername(String username);
 	String getPassword();
 	void setPassword(String password);
-	RegistrationEnrollmentType getRegistrationEnrollmentType();
-	void setRegistrationEnrollmentType(RegistrationEnrollmentType registrationEnrollmentType);
+	RegistrationType getRegistrationType();
+	void setRegistrationType(RegistrationType registrationType);
+	String getInstitutionRegistrationPrefixUUID();
+	void setInstitutionRegistrationPrefixUUID(String institutionRegistrationPrefixUUID);
 	Boolean isCancelEnrollment();
 	void setCancelEnrollment(Boolean cancelEnrollment);
 }

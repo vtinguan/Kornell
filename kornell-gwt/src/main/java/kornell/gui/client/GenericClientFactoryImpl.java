@@ -19,7 +19,6 @@ import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -30,7 +29,6 @@ import kornell.scorm.client.scorm12.SCORM12Adapter;
 import kornell.scorm.client.scorm12.SCORM12Binder;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
@@ -59,9 +57,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			.create(DefaultHistorian.class);
 	private final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
 			historyMapper);
-
-	/* Activity Managers */
-	private ActivityManager globalActivityManager;
 
 	/* GUI */
 	private ViewFactory viewFactory;

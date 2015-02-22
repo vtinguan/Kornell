@@ -11,7 +11,7 @@ import kornell.server.helper.GenCourseClass
 import kornell.server.helper.GenInstitutionAdmin
 import kornell.core.util.StringUtils
 import kornell.server.repository.Entities
-import kornell.core.entity.RegistrationEnrollmentType
+import kornell.core.entity.RegistrationType
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
  
 
@@ -44,7 +44,7 @@ class CourseClassesSpec extends UnitSpec
     CourseClassesResource().create(Entities.newCourseClass(uuid = courseClass.getUUID,
         courseVersionUUID = courseVersionUUID,
         institutionUUID = institutionUUID,
-        registrationEnrollmentType = RegistrationEnrollmentType.email))
+        registrationType = RegistrationType.email))
     } catch {
       case jdbc:MySQLIntegrityConstraintViolationException => assert(jdbc.getMessage.contains("PRIMARY"))
       case default:Throwable => fail()
@@ -56,13 +56,13 @@ class CourseClassesSpec extends UnitSpec
     val courseClass = CourseClassesResource().create(Entities.newCourseClass(name = randName,
         courseVersionUUID = courseVersionUUID,
         institutionUUID = institutionUUID,
-        registrationEnrollmentType = RegistrationEnrollmentType.email))
+        registrationType = RegistrationType.email))
         
     try {
     	CourseClassesResource().create(Entities.newCourseClass(name = courseClass.getName,
 			courseVersionUUID = courseClass.getCourseVersionUUID(),
 			institutionUUID = institutionUUID,
-			registrationEnrollmentType = RegistrationEnrollmentType.email))
+			registrationType = RegistrationType.email))
     } catch {
       case iae:IllegalArgumentException => assert(iae.getMessage.contains(courseClass.getName))
       case default:Throwable => fail()

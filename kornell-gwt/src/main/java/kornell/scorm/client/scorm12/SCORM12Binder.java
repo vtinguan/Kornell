@@ -1,5 +1,5 @@
 package kornell.scorm.client.scorm12;
-import static kornell.scorm.client.scorm12.Scorm12.*;
+import static kornell.scorm.client.scorm12.Scorm12.logger;
 public class SCORM12Binder {
 	public static void bind(SCORM12Adapter api){
 		nativeBind(api);

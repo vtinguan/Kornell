@@ -3,6 +3,7 @@ package kornell.server.jdbc.repository
 import kornell.core.entity.CourseClass
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.jdbc.SQL.rsToString
+import kornell.core.error.exception.EntityConflictException
 
 class CourseClassRepo(uuid:String) {
   lazy val finder = sql"""
@@ -29,13 +30,13 @@ class CourseClassRepo(uuid:String) {
 		  		cc.overrideEnrollments = ${courseClass.isOverrideEnrollments},
 		  		cc.invisible = ${courseClass.isInvisible},
 		  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
-		  		cc.registrationEnrollmentType = ${courseClass.getRegistrationEnrollmentType.toString},
-		  		cc.institutionRegistrationPrefix = ${courseClass.getInstitutionRegistrationPrefix}
+		  		cc.registrationType = ${courseClass.getRegistrationType.toString},
+		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate
-	    ChatThreadsRepo.updateCourseClassSupportThreadsNames(courseClass.getUUID, courseClass.getName)
+	    ChatThreadsRepo.updateCourseClassThreadsNames(courseClass.getUUID, courseClass.getName)
 	    courseClass
     } else {
-      throw new IllegalArgumentException("Uma turma com nome \"" + courseClass.getName + "\" já existe para essa versão do curso.")
+      throw new EntityConflictException("courseClassAlreadyExists")
     }   
   }
   

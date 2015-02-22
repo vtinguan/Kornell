@@ -3,9 +3,11 @@ package kornell.server.jdbc.repository
 import kornell.core.entity.Institution
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.TOs
+import kornell.core.entity.InstitutionRegistrationPrefix
 
 class InstitutionRepo(uuid: String) {
   
+        
   def get = sql"""
           select * from Institution where uuid=$uuid
           """.get[Institution]
@@ -23,17 +25,17 @@ class InstitutionRepo(uuid: String) {
     | i.allowRegistration = ${institution.isAllowRegistration},
     | i.allowRegistrationByUsername = ${institution.isAllowRegistrationByUsername},
     | i.activatedAt = ${institution.getActivatedAt},
-    | i.skin = ${institution.getSkin}
+    | i.skin = ${institution.getSkin},
     | i.billingType = ${institution.getBillingType.toString}
     | where i.uuid = ${institution.getUUID}""".executeUpdate
     institution
   }
   
-    def getRegistrationPrefixes = {
-      TOs.newInstitutionRegistrationPrefixesTO(sql"""
-        | select prefix from InstitutionRegistrationPrefix 
-        | where institutionUUID = ${uuid}
-            """.map[String])
+  def getInstitutionRegistrationPrefixes = {
+	  TOs.newInstitutionRegistrationPrefixesTO(sql"""
+	    | select * from InstitutionRegistrationPrefix 
+	    | where institutionUUID = ${uuid}
+	        """.map[InstitutionRegistrationPrefix](toInstitutionRegistrationPrefix))
   }
 
 }

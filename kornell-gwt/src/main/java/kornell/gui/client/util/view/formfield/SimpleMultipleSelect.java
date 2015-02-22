@@ -1,39 +1,16 @@
 package kornell.gui.client.util.view.formfield;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.People;
-import kornell.core.entity.Person;
-import kornell.core.entity.RoleCategory;
-import kornell.core.to.RoleTO;
-import kornell.core.to.RolesTO;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.util.FormHelper;
-
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.Typeahead;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SimpleMultipleSelect extends Composite {
-	private FormHelper formHelper = GWT.create(FormHelper.class);
-	
-	private KornellSession session;
 	private TextBox search;
-	private MultiWordSuggestOracle oracle;
 	private ListBox multipleSelect;
 
 	public SimpleMultipleSelect() {

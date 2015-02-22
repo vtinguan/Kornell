@@ -1,12 +1,12 @@
 package kornell.gui.client.util.view.formfield;
 
+import static kornell.core.util.StringUtils.isNone;
+
 import java.util.List;
 
-import static kornell.core.util.StringUtils.*;
 import kornell.api.client.Callback;
 import kornell.gui.client.validation.ValidationChangedEvent;
 import kornell.gui.client.validation.ValidationChangedHandler;
-import kornell.gui.client.validation.ValidationMessages;
 import kornell.gui.client.validation.Validator;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -20,7 +20,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;

@@ -1,12 +1,10 @@
 package kornell.gui.client.uidget;
 
-import static kornell.core.util.StringUtils.url;
-
 import java.util.Date;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.lom.ExternalPage;
+import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
@@ -38,11 +36,6 @@ public class ExternalPageView extends Uidget {
 		setSrc(page.getURL(),page.getKey());
 		initWidget(panel);
 	}
-
-	// TODO: fetch these dynamically
-	// TODO: Extract view
-	static int NORTH_BAR = 45;
-	static int SOUTH_BAR = 35;
 
 	private void createIFrame() {
 		if (iframe == null) {
@@ -83,7 +76,7 @@ public class ExternalPageView extends Uidget {
 	private void placeIframe() {
 		String width = Window.getClientWidth() + "px";
 		iframe.setPropertyString("width", width);
-		String height = (Window.getClientHeight() - SOUTH_BAR - NORTH_BAR)
+		String height = (Window.getClientHeight() - Positioning.SOUTH_BAR - Positioning.NORTH_BAR)
 				+ "px";
 		iframe.setPropertyString("height", height);
 	}

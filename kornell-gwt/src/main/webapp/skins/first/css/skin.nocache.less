@@ -39,6 +39,9 @@ a:hover{
 .offsetNorthBar{
 	top: @barNorthHeight !important;
 }
+.offsetNorthBarPlus{
+	top: @barNorthHeightPlus !important;
+}
 .offsetSouthBar{
 	bottom: @barSouthHeight !important;
 }
@@ -219,9 +222,6 @@ a:hover{
 		margin: 0 auto;
 		border-radius: 0px 0px 0px 15px;
 		background-color: @modalBackgroundColor;
-		border: 1px inset @niceTextColor;
-		border-top: 0;
-		border-right: 0;
 		.titlePanel{
 			height: auto;
 			padding-top: 12px;
@@ -620,6 +620,59 @@ a:hover{
 			text-align: center;
 			padding-left: @detailsPanelMargin / 2;
 			padding-right: @detailsPanelMargin / 2;
+		}
+	}
+}
+
+
+.placeBar{
+	width: 100%;
+	height: 35px;
+	float: left;
+	background: @modalBackgroundColor;
+	.centerBar{
+		width: 962px;
+		margin: 0 auto;
+		i{
+			font-size: 19px;
+			float: left;
+			width: 25px;
+			margin-top: 8px;
+			margin-left: 10px;
+			color: @niceTextColor;
+		}
+		.title{
+			font-size: 17px;
+			padding-top: 8px;
+			padding-left: 7px;
+			color: @textHighlightColor;
+			float: left;
+			font-weight: bold;
+		}
+		.separator{
+			font-size: 15px;
+			padding-top: 6px;
+			padding-left: 10px;
+			color: @plainDiscreteTextColor;
+			float: left;
+			font-weight: bold;
+		}
+		.subtitle{
+			font-size: 12px;
+			padding-top: 8px;
+			padding-left: 10px;
+			color: @plainDiscreteTextColor;
+			float: left;
+			font-weight: bold;
+			font-style: italic;
+		}
+		.btnPanel{
+			padding-top: 2px;
+			.btnPlaceBar{
+				float: right;
+				margin-top: 6px;
+				margin-right: 6px;
+			}
 		}
 	}
 }

@@ -7,7 +7,6 @@ import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -33,8 +32,6 @@ public class GenericInstitutionReportItemView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private String BASE_IMAGES_PATH = "skins/first/icons/";
 	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
@@ -60,7 +57,6 @@ public class GenericInstitutionReportItemView extends Composite {
 
 
 	public GenericInstitutionReportItemView(EventBus eventBus, KornellSession session, String type) {
-		this.bus = eventBus;
 		this.session = session;
 		this.type = type;
 		periodListBox = new ListBox();

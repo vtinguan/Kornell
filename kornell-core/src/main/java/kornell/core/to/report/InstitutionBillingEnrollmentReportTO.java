@@ -1,6 +1,5 @@
 package kornell.core.to.report;
 
-import java.math.BigDecimal;
 
 public class InstitutionBillingEnrollmentReportTO {
 	private String enrollmentUUID;

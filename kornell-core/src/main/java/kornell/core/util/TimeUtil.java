@@ -18,6 +18,7 @@ public class TimeUtil {
 		return jud;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static Date fromJUD(Date date, java.util.Date jud) {
 		if (date == null || jud == null) return null;
 		date.setDay(jud.getDate());
