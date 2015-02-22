@@ -277,8 +277,11 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					btnOK.setEnabled(true);
 					isEditMode = false;
 					display();
-					History.back();
-					//placeCtrl.goTo(clientFactory.getDefaultPlace());
+					if(isCurrentUser){
+						placeCtrl.goTo(clientFactory.getDefaultPlace());
+					} else {
+						History.back();
+					}
 					session.getCurrentUser(true, new Callback<UserInfoTO>() {
 						@Override
 						public void ok(UserInfoTO to) {
