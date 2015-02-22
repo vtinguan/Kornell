@@ -125,9 +125,9 @@ object ChatThreadsRepo {
   def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, courseClassName: String, threadCreatorUUID: String, targetPersonName: String = null) = {
     val chatThreadName = {
       if (courseClassName == null) {
-        "Chat with " + targetPersonName
+        "Conversa com " + targetPersonName
       } else if (threadCreatorUUID == null) {
-        "Chat for " + courseClassName
+        "Conversa da turma: " + courseClassName
       } else if(personUUID.equals(threadCreatorUUID)) {
       	getSupportChatThreadName(courseClassName)
       } else {
