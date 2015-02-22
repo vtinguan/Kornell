@@ -102,6 +102,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private int totalCount;
 	private String imgMenuBarUrl;
 	private boolean isLoaded;
+	private boolean showingPlacePanel;
 
 	public GenericMenuBarView(final ClientFactory clientFactory,
 			final ScrollPanel scrollPanel) {
@@ -135,6 +136,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	}
 
 	private void addOffsets(final ScrollPanel scrollPanel, Place place) {
+		showingPlacePanel = !(place instanceof VitrinePlace || place instanceof ClassroomPlace || place instanceof AdminPlace);
 		if (place instanceof VitrinePlace) {
 			setVisible(false);
 			addStyleName("shy");
@@ -144,14 +146,14 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 			loadAssets();
 			setVisible(true);
 			removeStyleName("shy");
-			if (place instanceof ClassroomPlace || place instanceof AdminPlace) {
-				scrollPanel.addStyleName("offsetNorthBar");
-				scrollPanel.removeStyleName("offsetNorthBarPlus");
-				placeBar.setVisible(false);
-			} else {
+			if (showingPlacePanel) {
 				scrollPanel.addStyleName("offsetNorthBarPlus");
 				scrollPanel.removeStyleName("offsetNorthBar");
 				placeBar.setVisible(true);
+			} else {
+				scrollPanel.addStyleName("offsetNorthBar");
+				scrollPanel.removeStyleName("offsetNorthBarPlus");
+				placeBar.setVisible(false);
 			}
 			showButtons(place);
 		}
@@ -210,10 +212,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
 
-		if (newPlace instanceof ClassroomPlace || newPlace instanceof AdminPlace) {
-			menuBar.removeStyleName("menuBarPlus");
-		} else {
+		if (showingPlacePanel) {
 			menuBar.addStyleName("menuBarPlus");
+		} else {
+			menuBar.removeStyleName("menuBarPlus");
 		}
 	}
 
@@ -296,7 +298,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@UiHandler("btnHelp")
 	void handleHelp(ClickEvent e) {
-		bus.fireEvent(new ComposeMessageEvent());
+		bus.fireEvent(new ComposeMessageEvent(showingPlacePanel));
 	}
 
 	@UiHandler("btnMessages")

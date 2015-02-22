@@ -10,13 +10,16 @@ import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.UnreadMessagesFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
+import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
@@ -66,10 +69,16 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 		
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
+
 					@Override 
 					public void onPlaceChange(PlaceChangeEvent event) {
-						if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminCourseClassPlace){
+						Place place = placeCtrl.getWhere();
+						if(place instanceof MessagePlace || place instanceof AdminCourseClassPlace){
 							getUnreadMessagesPerThread();
+						}
+						if(popup != null && popup.isShowing()){
+							boolean showingPlacePanel = !(place instanceof VitrinePlace || place instanceof ClassroomPlace || place instanceof AdminPlace);;
+							popup.setPopupPosition(popup.getAbsoluteLeft(), showingPlacePanel ? Positioning.NORTH_BAR_PLUS : Positioning.NORTH_BAR);
 						}
 					}
 				});
@@ -108,7 +117,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 	public void onComposeMessage(ComposeMessageEvent event) {
 		if(popup == null || !popup.isShowing()){
 			presenter.init();
-			show();
+			show(event.isShowingPlacePanel());
 		} else {
 			hide();
 		}
@@ -143,7 +152,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 		}
   }
 	
-	public synchronized void show() {	
+	public synchronized void show(boolean showingPlacePanel) {	
 		if(popup == null){
 			popup = new PopupPanel(false, false);
 			popup.addStyleName("messagesPopup");
@@ -154,9 +163,9 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 			popup.setGlassEnabled(false);
 			popup.add(panel);
 			popup.center();
-			popup.setPopupPosition(popup.getAbsoluteLeft(), Positioning.NORTH_BAR);
 		}
 		popup.show();
+		popup.setPopupPosition(popup.getAbsoluteLeft(), showingPlacePanel ? Positioning.NORTH_BAR_PLUS : Positioning.NORTH_BAR);
 	}
 
 	public static void hide() {

@@ -113,7 +113,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	}
 
 	private void initData() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, "Matrículas", "Selecione uma turma abaixo");
+		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, "Cursos", "Selecione uma turma abaixo");
 		session.courseClasses().getCourseClassesTOByInstitution(Dean.getInstance()
 				.getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 			@Override

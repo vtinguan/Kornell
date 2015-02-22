@@ -279,8 +279,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					btnOK.setEnabled(true);
 					isEditMode = false;
 					display();
-					form.addStyleName("shy");
-					placeCtrl.goTo(clientFactory.getDefaultPlace());
+					History.back();
+					//placeCtrl.goTo(clientFactory.getDefaultPlace());
 					session.getCurrentUser(true, new Callback<UserInfoTO>() {
 						@Override
 						public void ok(UserInfoTO to) {
