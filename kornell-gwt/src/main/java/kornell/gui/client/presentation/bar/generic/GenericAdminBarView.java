@@ -57,8 +57,7 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	public GenericAdminBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-
-		user = clientFactory.getKornellSession().getCurrentUser();
+		
 		display();
 		updateButtonByPlace(clientFactory.getPlaceController().getWhere());
 
