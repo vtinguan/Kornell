@@ -1,8 +1,5 @@
 package kornell.gui.client.personnel;
 
-import static kornell.core.entity.EnrollmentProgressDescription.completed;
-import static kornell.core.entity.EnrollmentProgressDescription.inProgress;
-import static kornell.core.entity.EnrollmentProgressDescription.notStarted;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgress;

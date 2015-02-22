@@ -5,10 +5,8 @@ import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.BillingType;
-import kornell.core.entity.ContentSpec;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
@@ -48,14 +46,8 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	}
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
-	private static final String MODAL_DELETE = "delete";
-	private static final String MODAL_DEACTIVATE = "deactivate";
-	private static final String MODAL_PUBLIC = "public";
-	private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
-	private static final String MODAL_INVISIBLE = "invisible";
 
 	private KornellSession session;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private boolean isCreationMode, isPlatformAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -104,7 +96,6 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	private KornellFormFieldWrapper name, fullName, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
 	
 	private List<KornellFormFieldWrapper> fields;
-	private String modalMode;
 	private GenericInstitutionReportsView reportsView;
 	private GenericInstitutionAdminsView adminsView;
 	private GenericInstitutionHostnamesView hostnamesView;

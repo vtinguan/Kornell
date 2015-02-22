@@ -18,7 +18,6 @@ import kornell.core.to.TOFactory;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstantsHelper;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;

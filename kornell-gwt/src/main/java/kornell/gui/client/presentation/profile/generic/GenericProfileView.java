@@ -74,8 +74,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private FormHelper formHelper;
 	private boolean isEditMode, isCurrentUser, isAdmin, hasPowerOver, showEmail = true, showCPF = true, showContactDetails, validateContactDetails;
 
-	// TODO fix this
-	private String IMAGE_PATH = "skins/first/icons/profile/";
 	private String DISABLED_CLASS = "btnNotSelected";
 	private String ENABLED_CLASS = "btnAction";
 	private String CURSOR_DEFAULT_CLASS = "cursorDefault";
@@ -608,7 +606,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	@Override
 	public void setPresenter(Presenter presenter) {
-		// TODO Auto-generated method stub
 	}
 
 	private Image getImageSeparator(){

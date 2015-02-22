@@ -1,7 +1,5 @@
 package kornell.gui.client.event;
 
-import kornell.core.entity.ChatThread;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public class UnreadMessagesFetchedEvent extends GwtEvent<UnreadMessagesFetchedEventHandler>{

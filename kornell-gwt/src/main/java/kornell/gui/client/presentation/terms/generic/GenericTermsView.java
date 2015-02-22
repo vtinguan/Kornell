@@ -4,7 +4,6 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -47,7 +46,6 @@ public class GenericTermsView extends Composite implements TermsView {
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 
 

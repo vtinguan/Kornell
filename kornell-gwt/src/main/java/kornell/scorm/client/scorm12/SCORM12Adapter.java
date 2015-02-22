@@ -1,16 +1,12 @@
 package kornell.scorm.client.scorm12;
 
 import static kornell.scorm.client.scorm12.Scorm12.logger;
-
-import java.util.Map;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
 import kornell.core.entity.ActomEntries;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 

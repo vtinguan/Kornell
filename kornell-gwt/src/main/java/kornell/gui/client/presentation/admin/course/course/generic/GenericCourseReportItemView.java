@@ -3,7 +3,6 @@ package kornell.gui.client.presentation.admin.course.course.generic;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
@@ -11,7 +10,6 @@ import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -28,8 +26,6 @@ public class GenericCourseReportItemView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String BASE_IMAGES_PATH = "skins/first/icons/";
 	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
 	private String LIBRARY_IMAGES_PATH = BASE_IMAGES_PATH + "courseLibrary/";
@@ -40,8 +36,6 @@ public class GenericCourseReportItemView extends Composite {
 	private String description;
 	
 	private CheckBox xlsCheckBox;
-	
-	private HandlerRegistration downloadHandler;
 	
 	public static final String COURSE_INFO = "courseClassInfo";
 	
@@ -61,7 +55,6 @@ public class GenericCourseReportItemView extends Composite {
 
 	public GenericCourseReportItemView(EventBus eventBus, KornellSession session, Course course,
 			String type) {
-		this.bus = eventBus;
 		this.session = session;
 		this.course = course;
 		this.type = type;

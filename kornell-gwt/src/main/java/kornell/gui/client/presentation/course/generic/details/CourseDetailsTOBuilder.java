@@ -9,7 +9,6 @@ import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;

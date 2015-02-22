@@ -9,11 +9,8 @@ import kornell.core.entity.ContentSpec;
 import kornell.core.entity.Course;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CoursesTO;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
@@ -39,7 +36,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -52,15 +48,9 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	}
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
-	private static final String MODAL_DELETE = "delete";
-	private static final String MODAL_DEACTIVATE = "deactivate";
-	private static final String MODAL_PUBLIC = "public";
-	private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
-	private static final String MODAL_INVISIBLE = "invisible";
 
 	private KornellSession session;
 	private PlaceController placeCtrl;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private boolean isCreationMode, isPlatformAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -91,10 +81,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 
 	private KornellFormFieldWrapper name, course, distributionPrefix, contentSpec, disabled;
 	
-	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
-	private String modalMode;
-	private ListBox institutionRegistrationPrefixes;
 	private String courseVersionUUID;
 	
 	public GenericAdminCourseVersionView(final KornellSession session, EventBus bus, PlaceController placeCtrl) {

@@ -1,6 +1,5 @@
 package kornell.core.to;
 
-import java.util.Date;
 import java.util.List;
 
 public interface ChatThreadMessagesTO {

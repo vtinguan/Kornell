@@ -1,16 +1,11 @@
 package kornell.gui.client.presentation.course.generic.details;
 
-import java.util.List;
-
 import kornell.api.client.KornellSession;
-import kornell.core.lom.Actom;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
-import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.sequence.NavigationRequest;
 
 import com.google.gwt.core.client.GWT;
@@ -33,12 +28,7 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
-
-	private KornellSession session;
-	private PlaceController placeCtrl;
 	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
 
 	@UiField
@@ -51,17 +41,11 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 	FlowPanel lblPage;
 
 	private ExternalPage page;
-	private List<Actom> actoms;
-	private CourseClassTO currentCourse;
 	
 	public GenericPageView(EventBus eventBus, KornellSession session,
 			final PlaceController placeCtrl, final ExternalPage page, CourseClassTO currentCourse, boolean enableAnchor) {
 		this.bus = eventBus;
-		this.session = session;
-		this.placeCtrl = placeCtrl;
 		this.page = page;
-		this.currentCourse = currentCourse;
-		this.session = session;
 		bus.addHandler(ProgressEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display(enableAnchor);

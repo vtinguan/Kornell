@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
-import kornell.api.client.ExceptionalRequestBuilder;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
@@ -28,12 +27,10 @@ import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -42,7 +39,6 @@ import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -54,7 +50,6 @@ import com.google.web.bindery.event.shared.EventBus;
 public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter {
 	Logger logger = Logger.getLogger(AdminCourseClassPresenter.class.getName());
 	private AdminCourseClassView view;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private List<EnrollmentTO> enrollmentTOs;
 	private String batchEnrollmentErrors;
 	private List<EnrollmentRequestTO> batchEnrollments;
@@ -64,11 +59,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private Place defaultPlace;
 	TOFactory toFactory;
 	private ViewFactory viewFactory;
-	private Boolean enrollWithCPFx = false;
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
 	private CourseClassesTO courseClassesTO;
-	private boolean hasOverriddenEnrollments = false, overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
+	private boolean overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
   private EnrollmentRequestsTO enrollmentRequestsTO;
   private List<EnrollmentTO> enrollmentsToOverride;
   private Map<String, EnrollmentsTO> enrollmentsCacheMap;
@@ -436,13 +430,11 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 					.show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
 							AlertType.ERROR, 5000);
 		} else {
-			hasOverriddenEnrollments = false;
 			if(isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()){
 				String validation = validateEnrollmentsOverride();
 				if(confirmedEnrollmentsModal || "".equals(validation)){
 					createEnrollments();
 				} else {
-					hasOverriddenEnrollments = true;
 					overriddenEnrollmentsModalShown = true;
 					confirmedEnrollmentsModal = false;
 					view.setModalErrors("ATENÇÃO! Sobrescrita de matrículas!", "Os seguintes participantes terão suas matrículas canceladas:", validation, "Deseja continuar?");

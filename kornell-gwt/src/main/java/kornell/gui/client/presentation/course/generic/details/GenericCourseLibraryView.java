@@ -6,13 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.LibraryFileTO;
 import kornell.core.to.LibraryFilesTO;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.course.library.CourseLibraryView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,7 +16,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -31,17 +26,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class GenericCourseLibraryView extends Composite implements CourseLibraryView {
+public class GenericCourseLibraryView extends Composite {
 
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseLibraryView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	
-	private KornellSession session;
-	private PlaceController placeCtrl;
-	private EventBus bus;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseLibrary/";
 
 	@UiField
@@ -70,9 +61,6 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 	Map<String, FlowPanel> fileWidgetMap;
 	
 	public GenericCourseLibraryView(EventBus eventBus, KornellSession session, PlaceController placeCtrl, LibraryFilesTO libraryFilesTO) {
-		this.bus = eventBus;
-		this.session = session;
-		this.placeCtrl = placeCtrl;
 		this.libraryFilesTO = libraryFilesTO;
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();		
@@ -89,7 +77,6 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 	}
 
 	private void display() {
-		//TODO i18n
 		displayTitle();
 		fileWidgetMap = new HashMap<String, FlowPanel>();
 		contentPanel.add(getFilesTable(btnLastClicked));	
@@ -338,9 +325,4 @@ public class GenericCourseLibraryView extends Composite implements CourseLibrary
 		}
 	}
 
-	@Override
-	public void setPresenter(Presenter presenter) {
-		// TODO Auto-generated method stub
-		
-	}
 }

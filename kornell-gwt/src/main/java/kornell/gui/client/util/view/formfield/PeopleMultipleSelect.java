@@ -1,6 +1,5 @@
 package kornell.gui.client.util.view.formfield;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import kornell.core.to.PeopleTO;
 import kornell.core.to.PersonTO;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.util.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;

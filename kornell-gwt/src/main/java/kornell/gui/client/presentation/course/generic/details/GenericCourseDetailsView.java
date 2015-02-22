@@ -16,13 +16,11 @@ import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.EnrollmentTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
-import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
@@ -79,12 +77,10 @@ public class GenericCourseDetailsView extends Composite {
 	private Button btnCurrent;
 	private CourseClassTO courseClassTO;
 	private CourseDetailsTO courseDetails;
-	private UserInfoTO user;
 	private FlowPanel aboutPanel;
 	private FlowPanel topicsPanel;
 	private FlowPanel certificationPanel;
 	private FlowPanel libraryPanel;
-	private ClientFactory clientFactory;
 
 	private Presenter presenter;
 

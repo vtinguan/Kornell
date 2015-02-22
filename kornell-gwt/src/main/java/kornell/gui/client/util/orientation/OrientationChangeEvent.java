@@ -1,7 +1,5 @@
 package kornell.gui.client.util.orientation;
 
-import java.lang.reflect.Type;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public final class OrientationChangeEvent extends GwtEvent<IOrientationChangeHandler> {

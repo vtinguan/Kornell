@@ -1,9 +1,7 @@
 package kornell.gui.client.personnel;
 
 import kornell.core.entity.ContentSpec;
-import static kornell.core.entity.ContentSpec.*;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.UserInfoTO;
 
 public class Teachers {
 	public static Teacher of(CourseClassTO courseClassTO) {

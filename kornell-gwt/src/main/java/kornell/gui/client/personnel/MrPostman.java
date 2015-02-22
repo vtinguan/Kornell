@@ -124,6 +124,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 	}
 	
 
+	@SuppressWarnings("unused")
 	private void initializeUnreadMessagesCountTimer() {
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 		      @Override

@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -44,7 +43,6 @@ public class GenericMessageView extends Composite implements MessageView {
 
 	private static GenericMessageUiBinder uiBinder = GWT.create(GenericMessageUiBinder.class);
 	private static FormHelper formHelper = GWT.create(FormHelper.class);
-	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private MessageView.Presenter presenter;
 	private EventBus bus;
 

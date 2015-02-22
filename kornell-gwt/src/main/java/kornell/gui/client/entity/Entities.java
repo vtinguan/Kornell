@@ -1,8 +1,8 @@
 package kornell.gui.client.entity;
 
-import com.google.gwt.core.shared.GWT;
-
 import kornell.core.entity.EntityFactory;
+
+import com.google.gwt.core.shared.GWT;
 
 
 public class Entities extends kornell.core.entity.Entities{

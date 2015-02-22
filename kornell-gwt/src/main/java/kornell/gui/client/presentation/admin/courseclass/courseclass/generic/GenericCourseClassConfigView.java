@@ -17,9 +17,7 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
-import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
@@ -44,7 +42,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -64,7 +61,6 @@ public class GenericCourseClassConfigView extends Composite {
 	private static final String MODAL_INVISIBLE = "invisible";
 
 	private KornellSession session;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private boolean isCreationMode, canDelete, isInstitutionAdmin, allowPrefixEdit;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -95,12 +91,10 @@ public class GenericCourseClassConfigView extends Composite {
 	@UiField
 	Button btnModalCancel;
 
-	private UserInfoTO user;
 	private CourseClassTO courseClassTO;
 	private CourseClass courseClass;
 	private KornellFormFieldWrapper course, courseVersion, name, publicClass,
 			requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible;
-	private FileUpload fileUpload;
 	private List<KornellFormFieldWrapper> fields;
 	private String modalMode;
 	private ListBox institutionRegistrationPrefixes;
@@ -113,7 +107,6 @@ public class GenericCourseClassConfigView extends Composite {
 		this.bus = bus;
 		this.placeCtrl = placeCtrl;
 		this.presenter = presenter;
-		this.user = session.getCurrentUser();
 		this.isInstitutionAdmin = session.isInstitutionAdmin();
 		this.isCreationMode = (courseClassTO == null) && isInstitutionAdmin;
 		this.allowPrefixEdit = isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
@@ -262,7 +255,6 @@ public class GenericCourseClassConfigView extends Composite {
 		session.institution(Dean.getInstance().getInstitution().getUUID()).getRegistrationPrefixes(new Callback<InstitutionRegistrationPrefixesTO>() {
 			@Override
 			public void ok(InstitutionRegistrationPrefixesTO to) {
-				// TODO Auto-generated method stub
 				for (InstitutionRegistrationPrefix institutionRegistrationPrefix : to.getInstitutionRegistrationPrefixes()) {
 					institutionRegistrationPrefixes.addItem(institutionRegistrationPrefix.getName(), institutionRegistrationPrefix.getUUID());
 				}

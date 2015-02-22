@@ -26,6 +26,7 @@ import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
 import com.google.gwt.user.client.ui.Image;
 
 //TODO i18n
+@SuppressWarnings("deprecation")
 public class FormHelper {
 	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
 	public static String SEPARATOR_BAR_CLASS = "profileSeparatorBar";
@@ -375,7 +376,6 @@ public class FormHelper {
 
 	static final ValueFactory valueFactory = GWT.create(ValueFactory.class);
 	
-	@SuppressWarnings("deprecation")
 	public kornell.core.value.Date getDateFromString(String dateStr) {
 		if(dateStr == null)
 			return null;

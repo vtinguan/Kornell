@@ -5,21 +5,12 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
-import kornell.core.entity.InstitutionAdminRole;
-import kornell.core.entity.Role;
-import kornell.core.entity.RoleType;
-import kornell.core.entity.Roles;
 import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.TOFactory;
-import kornell.core.to.UserInfoTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.view.formfield.PeopleMultipleSelect;
 import kornell.gui.client.util.view.formfield.SimpleMultipleSelect;
 
 import com.github.gwtbootstrap.client.ui.Form;
@@ -42,7 +33,6 @@ public class GenericInstitutionHostnamesView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final TOFactory toFactory = GWT.create(TOFactory.class);
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	private KornellSession session;
@@ -59,14 +49,11 @@ public class GenericInstitutionHostnamesView extends Composite {
 	@UiField
 	Button btnCancel;
 
-	private UserInfoTO user;
 	private Institution institution;
-	private List<KornellFormFieldWrapper> fields;
 	
 	public GenericInstitutionHostnamesView(final KornellSession session,
 			kornell.gui.client.presentation.admin.institution.AdminInstitutionView.Presenter presenter, Institution institution) {
 		this.session = session;
-		this.user = session.getCurrentUser();
 		this.institution = institution;
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));

@@ -1,6 +1,5 @@
 package kornell.core.entity;
 
-import java.util.Date;
 
 public interface EnrollmentProgress {
 	Integer getProgress();

@@ -1,13 +1,9 @@
 package kornell.api.client;
 
-import java.util.logging.Logger;
-
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.EnrollmentsTO;
-
-import com.google.gwt.core.client.GWT;
 
 public class EnrollmentsClient extends RESTClient {
 	

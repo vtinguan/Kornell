@@ -6,7 +6,6 @@ import java.util.List;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -32,12 +31,8 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	private KornellSession session;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
-	private boolean isCurrentUser, isAdmin;
-
-	// TODO fix this
-	private String IMAGE_PATH = "skins/first/icons/profile/";
+	private boolean isCurrentUser;
 
 	@UiField
 	Modal passwordChangeModal;
@@ -49,7 +44,7 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 	Button btnCancel;
 	
 	private UserInfoTO user;
-	private KornellFormFieldWrapper modalPassword, modalNewPassword, modalNewPasswordConfirm;
+	private KornellFormFieldWrapper modalNewPassword, modalNewPasswordConfirm;
 	private List<KornellFormFieldWrapper> fields;
 	private boolean initialized;
 
@@ -74,10 +69,6 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
-
-		/*modalPassword = new KornellFormFieldWrapper("Senha Atual", formHelper.createPasswordTextBoxFormField(""), true);
-		fields.add(modalPassword);
-		passwordChangeFields.add(modalPassword);*/
 		
 		modalNewPassword = new KornellFormFieldWrapper("Nova Senha", formHelper.createPasswordTextBoxFormField(""), true);
 		fields.add(modalNewPassword);

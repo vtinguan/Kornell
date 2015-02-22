@@ -1,18 +1,12 @@
 package kornell.gui.client.presentation.profile.generic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.ClientProperties;
-import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextArea;
@@ -33,12 +27,7 @@ public class GenericSendMessageView extends Composite implements ProfileView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	private KornellSession session;
-	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private FormHelper formHelper;
-	private boolean isCurrentUser, isAdmin;
-
-	// TODO fix this
-	private String IMAGE_PATH = "skins/first/icons/profile/";
 
 	@UiField
 	Modal sendMessageModal;
@@ -66,7 +55,6 @@ public class GenericSendMessageView extends Composite implements ProfileView {
 	public void initData(KornellSession session, UserInfoTO user, boolean isCurrentUser) {
 		this.session = session;
 		this.user = user;
-		this.isCurrentUser = isCurrentUser;
 		formHelper = new FormHelper();
 		sendMessageFields.clear();
 		initialized = true;
@@ -104,7 +92,6 @@ public class GenericSendMessageView extends Composite implements ProfileView {
 
 	@Override
 	public void setPresenter(Presenter presenter) {
-		// TODO Auto-generated method stub
 	}
 
 }

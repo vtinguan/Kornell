@@ -1,8 +1,6 @@
 
 package kornell.gui.client;
 
-import java.util.List;
-
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
@@ -28,9 +26,6 @@ import kornell.gui.client.presentation.terms.TermsView;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 

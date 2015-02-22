@@ -1,8 +1,5 @@
 package kornell.gui.client.uidget;
 
-import kornell.gui.client.event.ViewReadyEvent;
-import kornell.gui.client.event.ViewReadyEventHandler;
-
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -12,7 +9,6 @@ public class TimerView extends Composite{
 	
 	FlowPanel pnlWidget = new FlowPanel();
 	Label lblTimer = new Label();
-	private ViewReadyEventHandler viewReadyEventHander;
 	
 	public TimerView() {
 		createComponents();
@@ -38,16 +34,5 @@ public class TimerView extends Composite{
 		lblTimer.getElement().setAttribute("style", "font-size: 10em; color: white;");
 		pnlWidget.add(lblTimer);	
 	}
-
-	public TimerView onViewReady(ViewReadyEventHandler viewReadyEventHandler) {
-		this.viewReadyEventHander = viewReadyEventHandler;
-		return this;
-	}
 	
-	private void fireViewReady() {
-		viewReadyEventHander.onViewReady(new ViewReadyEvent());
-	}
-	
-
-
 }

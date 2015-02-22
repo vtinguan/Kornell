@@ -57,7 +57,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	private ViewFactory viewFactory;
 	private EventBus bus;
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
-	private WelcomeView.Presenter presenter;
 	private TOFactory toFactory;
 	private Button selectedFilterButton;
 	private ArrayList<IsWidget> widgets;
@@ -222,6 +221,5 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 
 	@Override
 	public void setPresenter(Presenter presenter) {
-		this.presenter = presenter;
 	}
 }

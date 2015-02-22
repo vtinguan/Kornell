@@ -6,17 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClassState;
-import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassConfigView;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPresenter;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -59,11 +55,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private KornellSession session;
-	private EventBus bus;
 	private PlaceController placeCtrl;
-	private ViewFactory viewFactory;
-	private AdminCourseClassesView.Presenter presenter;
 	final CellTable<CourseClassTO> table;
 	private List<CourseClassTO> courseClassTOs;
 	private KornellPagination pagination;
@@ -80,14 +72,9 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
-	private List<UnreadChatThreadTO> unreadChatThreadTOs;
 
-	// TODO i18n xml
 	public GenericAdminCourseClassesView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
-		this.session = session;
-		this.bus = bus;
 		this.placeCtrl = placeCtrl;
-		this.viewFactory = viewFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		table = new CellTable<CourseClassTO>();
 		pagination = new KornellPagination(table, courseClassTOs, 15);
@@ -181,7 +168,6 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 
 	@Override
 	public void setPresenter(Presenter presenter) {
-		this.presenter = presenter;
 	}
 
 	private Delegate<CourseClassTO> getEditCourseClassDelegate() {
@@ -263,14 +249,6 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 
 	@Override
 	public void setCourseClasses(List<CourseClassTO> courseClasses) {
-		String name, value;
-		for (CourseClassTO courseClassTO : courseClasses) {
-			value = courseClassTO.getCourseClass().getUUID();
-			name = courseClassTO.getCourseVersionTO().getCourse().getTitle() + " - " + courseClassTO.getCourseClass().getName();
-			if(CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState())){
-				name += " (Desabilitada)";
-			}
-		}
 		this.courseClassTOs = courseClasses;
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
@@ -284,7 +262,6 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	
 	@Override
   public void setPresenter(AdminCourseClassesPresenter adminCourseClassesPresenter) {
-	  this.presenter = adminCourseClassesPresenter;
 	  
   }
 
