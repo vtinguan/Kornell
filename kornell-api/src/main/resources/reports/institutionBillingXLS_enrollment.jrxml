@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1550" pageHeight="842" columnWidth="1550" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1800" pageHeight="842" columnWidth="1800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.2396694214876034"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="1187"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="institutionName" class="java.lang.String"/>
 	<parameter name="periodStart" class="java.lang.String"/>
@@ -12,6 +12,7 @@
 	<field name="courseClassName" class="java.lang.String"/>
 	<field name="fullName" class="java.lang.String"/>
 	<field name="username" class="java.lang.String"/>
+	<field name="firstEventFiredAt" class="java.util.Date"/>
 	<title>
 		<band height="67">
 			<textField>
@@ -93,6 +94,14 @@
 				</textElement>
 				<text><![CDATA[NOME DA TURMA]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="713adc44-f77a-46a2-84c9-719993f4ab01" mode="Opaque" x="1550" y="53" width="240" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PRIMEIRO ACESSO]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
@@ -145,6 +154,13 @@
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{courseClassName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="dbb153e7-ff2a-4052-a10f-476b12536836" x="1550" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($F{firstEventFiredAt}).toUpperCase()]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
