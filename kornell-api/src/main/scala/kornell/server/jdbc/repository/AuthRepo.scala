@@ -156,6 +156,12 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
     	and pwd.institutionUUID = $institutionUUID
     """.first[String].isDefined
 
+  def updatePassword(personUUID: String, plainPassword: String) = {
+    sql"""
+    	update Password set password=${SHA256(plainPassword)}, requestPasswordChangeUUID=null where person_uuid=${personUUID}
+    """.executeUpdate
+  }
+    
   def setPlainPassword(institutionUUID: String, personUUID: String, username: String, plainPassword: String) = {
     sql"""
 	  	insert into Password (uuid,person_uuid,username,password,requestPasswordChangeUUID,institutionUUID)

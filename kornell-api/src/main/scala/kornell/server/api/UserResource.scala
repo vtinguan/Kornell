@@ -143,15 +143,14 @@ class UserResource(private val authRepo:AuthRepo) {
       throw new EntityNotFoundException("personOrInstitutionNotFound")
     }
   }
-
-  @GET
-  @Path("changePassword/{password}/{passwordChangeUUID}")
+  
+  @PUT
+  @Path("resetPassword/{passwordChangeUUID}")
   @Produces(Array(UserInfoTO.TYPE))
-  def changePassword(@PathParam("password") password: String,
-    @PathParam("passwordChangeUUID") passwordChangeUUID: String) = {
+  def resetPassword(@PathParam("passwordChangeUUID") passwordChangeUUID: String, password: String) = {
     val person = authRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
     if (person.isDefined) {
-      PersonRepo(person.get.getUUID).setPassword(person.get.getInstitutionUUID, person.get.getEmail, password)
+      PersonRepo(person.get.getUUID).updatePassword(person.get.getUUID, password)
       val user = newUserInfoTO
       user.setUsername(person.get.getEmail())
       Option(user)
@@ -164,8 +163,7 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("changePassword/{targetPersonUUID}/")
   @Produces(Array("text/plain"))
   def changePassword(implicit @Context sc: SecurityContext,
-    @PathParam("targetPersonUUID") targetPersonUUID: String,
-    @QueryParam("password") password: String) = {
+    @PathParam("targetPersonUUID") targetPersonUUID: String, password: String) = {
     authRepo.withPerson { p =>
       if (!PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID))
         throw new UnauthorizedAccessException("passwordChangeDenied")
