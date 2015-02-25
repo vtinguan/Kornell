@@ -127,7 +127,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		});
 
 		btnOK = new Button();
-		btnOK.setText("Salvar Alterações");
+		btnOK.setText("Salvar");
 		btnOK.addStyleName("btnPlaceBar btnAction btnStandard");
 		btnOK.addClickHandler(new ClickHandler() {
 			@Override

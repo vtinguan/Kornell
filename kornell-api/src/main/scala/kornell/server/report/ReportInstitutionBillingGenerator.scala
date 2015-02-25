@@ -64,7 +64,8 @@ object ReportInstitutionBillingGenerator {
 	      rs.getString("courseVersionName"),
 	      rs.getString("courseClassName"),
 	      rs.getString("fullName"),
-	      rs.getString("username"))
+	      rs.getString("username"),
+	      rs.getDate("firstEventFiredAt"))
 	      
     val institutionBillingReportTO = sql"""
     	SELECT 
@@ -72,14 +73,18 @@ object ReportInstitutionBillingGenerator {
 				c.title AS 'courseTitle',
 				cv.name AS 'courseVersionName',
 				cc.name AS 'courseClassName',
-				p.fullName,
-				pw.username
+				p.fullName, 
+				pw.username,
+    			ae.firstEventFiredAt
 			FROM Enrollment e
 			JOIN CourseClass cc ON cc.uuid = e.class_uuid
 			JOIN CourseVersion cv ON cv.uuid = cc.courseVersion_uuid
 			JOIN Course c ON c.uuid = cv.course_uuid
 			JOIN Person p ON p.uuid = e.person_uuid
 			JOIN Password pw on pw.person_uuid = p.uuid
+			LEFT JOIN (
+					SELECT enrollmentUUID, MIN(eventFiredAt) AS firstEventFiredAt FROM ActomEntered GROUP BY enrollmentUUID
+				) AS ae ON ae.enrollmentUUID = e.uuid
 			WHERE cc.institution_uuid = ${institutionUUID}
 			AND (
 					(e.lastBilledAt IS NULL
