@@ -110,7 +110,7 @@ object PeopleRepo {
   }
 
   def createPerson(institutionUUID: String = null, email: String = null, fullName: String = null, cpf: String = null): Person =
-    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, email = email, cpf = cpf, registrationType = RegistrationType.username))
+    create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, email = email, cpf = cpf, registrationType = RegistrationType.email))
   
   def createPersonCPF(institutionUUID: String, cpf: String, fullName: String): Person =
     create(Entities.newPerson(institutionUUID = institutionUUID, fullName = fullName, cpf = cpf, registrationType = RegistrationType.cpf))

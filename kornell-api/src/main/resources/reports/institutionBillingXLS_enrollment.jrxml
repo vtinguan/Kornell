@@ -95,7 +95,7 @@
 				<text><![CDATA[NOME DA TURMA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="713adc44-f77a-46a2-84c9-719993f4ab01" mode="Opaque" x="1550" y="53" width="240" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="713adc44-f77a-46a2-84c9-719993f4ab01" mode="Opaque" x="1550" y="52" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
