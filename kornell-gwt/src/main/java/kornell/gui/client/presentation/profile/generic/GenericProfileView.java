@@ -107,6 +107,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 		// i18n
 		btnEdit = new Button();
+		btnEdit.setVisible(false);
 		btnEdit.setText("Editar");
 		btnEdit.addStyleName("btnPlaceBar btnAction btnStandard");
 		btnEdit.addClickHandler(new ClickHandler() {
@@ -117,6 +118,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		});
 		
 		btnClose = new Button();
+		btnClose.setVisible(false);
 		btnClose.setText("Fechar");
 		btnClose.addStyleName("btnPlaceBar btnNotSelected btnStandard");
 		btnClose.addClickHandler(new ClickHandler() {
@@ -127,6 +129,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		});
 
 		btnOK = new Button();
+		btnOK.setVisible(false);
 		btnOK.setText("Salvar");
 		btnOK.addStyleName("btnPlaceBar btnAction btnStandard");
 		btnOK.addClickHandler(new ClickHandler() {
@@ -137,6 +140,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		});
 		
 		btnCancel = new Button();
+		btnCancel.setVisible(false);
 		btnCancel.setText("Cancelar");
 		btnCancel.addStyleName("btnPlaceBar btnNotSelected btnStandard");
 		btnCancel.addClickHandler(new ClickHandler() {
@@ -147,6 +151,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		});
 		
 		btnChangePassword = new Button();
+		btnChangePassword.setVisible(false);
 		btnChangePassword.setText("Alterar Senha");
 		btnChangePassword.addStyleName("btnPlaceBar btnSelected btnChangePassword");
 		btnChangePassword.addClickHandler(new ClickHandler() {
@@ -157,6 +162,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		});
 		
 		btnSendMessage = new Button();
+		btnSendMessage.setVisible(false);
 		btnSendMessage.setText("Enviar Mensagem");
 		btnSendMessage.addStyleName("btnPlaceBar btnNotSelected btnChangePassword");
 		btnSendMessage.addClickHandler(new ClickHandler() {
