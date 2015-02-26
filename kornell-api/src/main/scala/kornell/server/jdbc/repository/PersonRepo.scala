@@ -23,7 +23,12 @@ class PersonRepo(val uuid: String) {
   def setPassword(institutionUUID: String, username: String, password: String): PersonRepo = {
     AuthRepo().setPlainPassword(institutionUUID, uuid, username, password)
     PersonRepo.this
-  }  
+  }
+  
+  def updatePassword(personUUID: String, plainPassword: String): PersonRepo = {
+    AuthRepo().updatePassword(personUUID, plainPassword)
+    PersonRepo.this
+  }
 
   lazy val finder = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
 

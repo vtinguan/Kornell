@@ -32,11 +32,11 @@ public class UserClient extends RESTClient {
 	}
 
 	public void changePassword(String password, String passwordChangeUUID, Callback<UserInfoTO> cb) {
-		GET("/user/changePassword/" + URL.encodePathSegment(password) + "/" + passwordChangeUUID).sendRequest(null, cb);
+		PUT("/user/resetPassword/" + passwordChangeUUID).sendRequest(password, cb);
 	}
 
 	public void changeTargetPassword(String targetPersonUUID, String password, Callback<Void> cb) {
-		PUT("/user/changePassword/" + targetPersonUUID + "/?password=" + URL.encodePathSegment(password)).sendRequest(null, cb);
+		PUT("/user/changePassword/" + targetPersonUUID).sendRequest(password, cb);
 	}
 
 	public void hasPowerOver(String targetPersonUUID, Callback<Boolean> cb) {

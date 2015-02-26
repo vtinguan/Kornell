@@ -75,7 +75,7 @@ public class ExternalPageView extends Uidget {
 
 	private void placeIframe() {
 		String width = Window.getClientWidth() + "px";
-		iframe.setPropertyString("width", width);
+		iframe.setPropertyString("width", "100%");
 		String height = (Window.getClientHeight() - Positioning.SOUTH_BAR - Positioning.NORTH_BAR)
 				+ "px";
 		iframe.setPropertyString("height", height);
