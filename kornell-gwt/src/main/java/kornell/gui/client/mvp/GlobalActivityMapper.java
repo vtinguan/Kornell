@@ -58,7 +58,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof HomePlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new HomeActivity((HomePlace) place, clientFactory));
@@ -67,7 +67,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof TermsPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new TermsActivity(clientFactory));
@@ -76,7 +76,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof WelcomePlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new WelcomeActivity(clientFactory));
@@ -85,7 +85,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof ProfilePlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new ProfileActivity(clientFactory));
@@ -94,7 +94,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof MessagePlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new MessageActivity(clientFactory));
@@ -103,7 +103,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof ClassroomPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					ClassroomPresenter coursePresenter = clientFactory.getViewFactory().getClassroomPresenter();
@@ -114,7 +114,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof SandboxPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					SandboxPresenter sandboxPresenter = clientFactory.getViewFactory().getSandboxPresenter();
@@ -125,7 +125,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof AdminInstitutionPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminInstitutionActivity(clientFactory));
@@ -134,7 +134,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof AdminCoursesPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminCoursesActivity(clientFactory));
@@ -143,7 +143,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof AdminCoursePlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminCourseActivity(clientFactory));
@@ -152,7 +152,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof AdminCourseVersionsPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminCourseVersionsActivity(clientFactory));
@@ -161,7 +161,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof AdminCourseVersionPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminCourseVersionActivity(clientFactory));
@@ -170,7 +170,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof AdminCourseClassesPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminCourseClassesActivity(clientFactory));
@@ -179,7 +179,7 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 		} else if (place instanceof AdminCourseClassPlace) {
 			GWT.runAsync(new RunAsyncCallback() {
 				public void onFailure(Throwable err) {
-					Window.alert("Failed to load activity");
+					Window.Location.reload();
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminCourseClassActivity(clientFactory));
