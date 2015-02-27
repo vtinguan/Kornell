@@ -34,10 +34,20 @@ public class GenericPlaceBarView extends Composite implements PlaceBarView {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
+	public void clear(){
+		this.icon.setVisible(false);
+		this.title.setVisible(false);
+		this.subtitle.setVisible(false);
+		btnPanel.clear();
+	}
+
 	public void init(IconType iconType, String titleStr, String subtitleStr){
 		this.icon.setIcon(iconType);
 		this.title.setText(titleStr);
 		this.subtitle.setText(subtitleStr);
+		this.icon.setVisible(true);
+		this.title.setVisible(true);
+		this.subtitle.setVisible(true);
 		btnPanel.clear();
 	}
 	

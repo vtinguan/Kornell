@@ -56,8 +56,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		view.setPresenter(this);
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		init();
-
-		initPlaceBar();
+		if(placeCtrl.getWhere() instanceof MessagePlace)
+			initPlaceBar();
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 					@Override

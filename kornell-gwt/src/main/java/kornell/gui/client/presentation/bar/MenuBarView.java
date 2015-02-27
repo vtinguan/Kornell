@@ -16,5 +16,6 @@ public interface MenuBarView extends IsWidget {
 	boolean isVisible();
 
 	void initPlaceBar(IconType iconType, String titleStr, String subtitleStr);
+	void clearPlaceBar();
 	void setPlaceBarWidgets(List<IsWidget> widgets);
 }

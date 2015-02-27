@@ -142,6 +142,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 			addStyleName("shy");
 			scrollPanel.removeStyleName("offsetNorthBar");
 			scrollPanel.removeStyleName("offsetNorthBarPlus");
+			placeBar.setVisible(false);
+			placeBar.clear();
 		} else {
 			loadAssets();
 			setVisible(true);
@@ -154,6 +156,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				scrollPanel.addStyleName("offsetNorthBar");
 				scrollPanel.removeStyleName("offsetNorthBarPlus");
 				placeBar.setVisible(false);
+				placeBar.clear();
 			}
 			showButtons(place);
 		}
@@ -358,9 +361,15 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
 		showButtons(clientFactory.getPlaceController().getWhere());
 	}
+	
+	@Override
+	public void clearPlaceBar() {
+		placeBar.clear();
+	}
 
 	@Override
 	public void initPlaceBar(IconType iconType, String titleStr, String subtitleStr) {
+		GWT.debugger();
 		placeBar.init(iconType, titleStr, subtitleStr);
 	}
 
