@@ -369,7 +369,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@Override
 	public void initPlaceBar(IconType iconType, String titleStr, String subtitleStr) {
-		GWT.debugger();
 		placeBar.init(iconType, titleStr, subtitleStr);
 	}
 
