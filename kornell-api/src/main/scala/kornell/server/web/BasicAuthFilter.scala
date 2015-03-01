@@ -37,13 +37,17 @@ class BasicAuthFilter extends Filter {
     "/institutions",
     "/repository",
     "/healthCheck",
-    "/errors",
-    "/robots.txt")
+    "/errors")
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
     (sreq, sres) match {
-      case (hreq: HttpServletRequest, hres: HttpServletResponse) =>
-        doFilter(hreq, hres, chain)
+      case (hreq: HttpServletRequest, hres: HttpServletResponse) => {
+        if (hreq.getRequestURI.startsWith("/api")) {
+        	doFilter(hreq, hres, chain)
+        } else {
+          chain.doFilter(hreq, hres)
+        }
+      }
     }
 
   def hasCredentials(req: HttpServletRequest): Boolean =
