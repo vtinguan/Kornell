@@ -157,12 +157,12 @@
 				<text><![CDATA[Criada em: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="ef51f64b-c0a6-4078-a40e-ff71ebeacdff" mode="Opaque" x="153" y="10" width="258" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="ef51f64b-c0a6-4078-a40e-ff71ebeacdff" mode="Opaque" x="153" y="10" width="376" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["RELATÓRIO DETALHA DO DE " + ($P{courseClassName} != null ? "TURMA" : "CURSO")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["RELATÓRIO DETALHADO DE " + ($P{courseClassName} != null ? "TURMA" : "CURSO")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="b85be7c1-237f-4971-bf9e-0f5f00c78265" positionType="Float" mode="Opaque" x="3" y="143" width="142" height="16" forecolor="#525252" backcolor="#FFFFFF"/>
