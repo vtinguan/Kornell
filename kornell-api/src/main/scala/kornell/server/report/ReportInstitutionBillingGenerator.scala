@@ -88,10 +88,10 @@ object ReportInstitutionBillingGenerator {
 			WHERE cc.institution_uuid = ${institutionUUID}
 			AND (
 					(e.lastBilledAt IS NULL
-					AND progress IS NOT NULL
-					AND e.lastProgressUpdate >= ${periodStart}
-					AND e.lastProgressUpdate < ${periodEnd})
-				OR (e.lastBilledAt >= ${periodStart}
+					AND ae.firstEventFiredAt >= ${periodStart}
+					AND ae.firstEventFiredAt < ${periodEnd})
+				OR (e.lastBilledAt IS NOT NULL
+					AND e.lastBilledAt >= ${periodStart}
 					AND e.lastBilledAt < ${periodEnd})
 				) 
 			AND (p.email IS NULL OR p.email NOT LIKE '%@craftware.com.br')
