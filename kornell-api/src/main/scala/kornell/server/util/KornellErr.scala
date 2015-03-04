@@ -7,5 +7,5 @@ class KornellErr (code:Int, messageKey: String) extends Err {
 }
 
 object AccessDeniedErr {
-  def apply() = new KornellErr(403, "accessDenied")
+  def apply() = new KornellErr(401, "accessDenied")
 }

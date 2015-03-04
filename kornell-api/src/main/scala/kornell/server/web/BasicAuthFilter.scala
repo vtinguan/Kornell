@@ -13,6 +13,7 @@ import java.sql.ResultSet
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.core.error.exception.UnauthorizedAccessException
+import kornell.core.error.KornellErrorTO
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
@@ -40,8 +41,13 @@ class BasicAuthFilter extends Filter {
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
     (sreq, sres) match {
-      case (hreq: HttpServletRequest, hres: HttpServletResponse) =>
-        doFilter(hreq, hres, chain)
+      case (hreq: HttpServletRequest, hres: HttpServletResponse) => {
+        if (hreq.getRequestURI.startsWith("/api")) {
+        	doFilter(hreq, hres, chain)
+        } else {
+          chain.doFilter(hreq, hres)
+        }
+      }
     }
 
   def hasCredentials(req: HttpServletRequest): Boolean =
@@ -71,13 +77,23 @@ class BasicAuthFilter extends Filter {
         login(institutionUUID, username, password)
         
       } catch {
-        case e: Exception =>
-          e.printStackTrace(); throw new UnauthorizedAccessException("authenticationFailed")
+        case e: Exception => {
+          e.printStackTrace()
+          resp.setContentType(KornellErrorTO.TYPE)
+          resp.setStatus(401)
+          resp.setCharacterEncoding("UTF-8")
+          resp.getWriter().write("{\"messageKey\":\"authenticationFailed\"}")
+        }
           
       }
       chain.doFilter(req, resp);
       logout
-    } else throw new UnauthorizedAccessException("mustAuthenticate")
+    } else {
+      resp.setContentType(KornellErrorTO.TYPE)
+      resp.setStatus(401)
+      resp.setCharacterEncoding("UTF-8")
+      resp.getWriter().write("{\"messageKey\":\"mustAuthenticate\"}")
+    }
   }
 
   override def init(cfg: FilterConfig) {}

@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream
 import kornell.server.dev.util.LibraryFilesParser
 import kornell.core.util.StringUtils
 import scala.util.Try
+import kornell.core.to.LibraryFileTO
 
 object LibraryFilesRepository {
 //TODO: Review
@@ -23,10 +24,14 @@ object LibraryFilesRepository {
     val repositoryUUID = version.getRepositoryUUID
     val repo = S3(repositoryUUID)
     val filesURL = StringUtils.composeURL(version.getDistributionPrefix(), "library")
-    val structureSrc = repo.source(filesURL, "libraryFiles.knl")
-    val libraryFilesText = structureSrc.mkString("")
-    val fullURL = StringUtils.composeURL(repo.baseURL, repo.prefix, version.getDistributionPrefix(), "library")
-    val contents = LibraryFilesParser.parse(fullURL, libraryFilesText)
-    contents
+    try {
+      val structureSrc = repo.source(filesURL, "libraryFiles.knl")
+      val libraryFilesText = structureSrc.mkString("")
+      val fullURL = StringUtils.composeURL(repo.baseURL, repo.prefix, version.getDistributionPrefix(), "library")
+      val contents = LibraryFilesParser.parse(fullURL, libraryFilesText)
+      contents
+    } catch {
+      case e:Exception => TOs.newLibraryFilesTO(List[LibraryFileTO]())
+    }
   }
 }
