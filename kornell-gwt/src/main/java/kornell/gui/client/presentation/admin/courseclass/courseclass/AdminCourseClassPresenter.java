@@ -472,14 +472,21 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			}
 
 		}
-
-		if (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
+		LoadingPopup.show();
+		int requestsThreshold = 100;
+		if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
+			if(StringUtils.isSome(session.getCurrentUser().getPerson().getEmail())){
+				KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma email em \"" + session.getCurrentUser().getPerson().getEmail() + "\" assim que a operação for concluída.", AlertType.INFO, 150000);
+			} else {
+				KornellNotification.show("Favor configurar um email no seu perfil para que possa receber as mensagens de confirmação de matrículas em lote.", AlertType.INFO, 8000);
+			}
+			LoadingPopup.hide();
+		} else if (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
 				&& enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
 			KornellNotification
 					.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
 							+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
 		}
-		LoadingPopup.show();
 
 		enrollmentsCacheMap.remove(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 		session.enrollments().createEnrollments(enrollmentRequestsTO, new Callback<Enrollments>() {

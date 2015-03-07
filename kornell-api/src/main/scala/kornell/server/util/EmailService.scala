@@ -8,16 +8,34 @@ import kornell.core.entity.Person
 import java.util.UUID
 import kornell.core.entity.Course
 import kornell.core.entity.PersonCategory
+import kornell.core.entity.CourseClass
 
 object EmailService {
-  def sendEmailConfirmation(person: Person, institution: Institution) = {
-    val subject = "Bem-vind" + PersonCategory.getSexSuffix(person) + " à " + institution.getFullName() + "!"
+  
+  def sendEmailBatchEnrollment(person: Person, institution: Institution, courseClass: CourseClass) = {
+    val subject = "A geração de matrículas foi concluída."
     val from = getFromEmail(institution)
     val to = person.getEmail
     val body = wrapBody("""
-    		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
+    		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
-    		<p>Bem-vind""" + PersonCategory.getSexSuffix(person) + """ &agrave; """ + institution.getFullName() + """.</p>
+    		<p>A geração de matrículas na turma """ + courseClass.getName + """ foi concluída.</p> """ +
+    		getActionButton(institution.getBaseURL+"#a.courseClass:"+courseClass.getUUID, "Ir para a turma") + """
+    		<p>&nbsp;</p>""" +
+    		getSignature(institution, from))
+			
+    val imgFile = getInstitutionLogoImage(institution)
+    EmailSender.sendEmail(subject, from, to, body, imgFile)
+  }
+  
+  def sendEmailConfirmation(person: Person, institution: Institution) = {
+    val subject = "Bem-vind" + PersonCategory.getSexSuffix(person) + " à " + institution.getFullName + "!"
+    val from = getFromEmail(institution)
+    val to = person.getEmail
+    val body = wrapBody("""
+    		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
+    		<p>&nbsp;</p>
+    		<p>Bem-vind""" + PersonCategory.getSexSuffix(person) + """ &agrave; """ + institution.getFullName + """.</p>
     		<p>Por favor, confirme seu cadastro para ativarmos a sua conta.</p> """ +
     		getActionButton(institution.getBaseURL+"#vitrine:", "Confirmar agora") + """
     		<p>Depois da ativa&ccedil;&atilde;o voc&ecirc;  poder&aacute; acessar os cursos dispon&iacute;veis para voc&ecirc;, assim como todos os recursos deste ambiente.</p>
@@ -30,14 +48,14 @@ object EmailService {
   }
   
   def sendEmailRequestPasswordChange(person: Person, institution: Institution, requestPasswordChangeUUID: String) = {
-    val subject = "Você requisitou uma nova senha da " + institution.getFullName()
+    val subject = "Você requisitou uma nova senha da " + institution.getFullName
     val from = getFromEmail(institution)
     val to = person.getEmail
     val actionLink = institution.getBaseURL+"#vitrine:" + requestPasswordChangeUUID
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
-    		<p>Voc&ecirc; recentemente fez uma requisi&ccedil;&atilde;o de altera&ccedil;&atilde;o de senha da """+ institution.getFullName() +""".</p>
+    		<p>Voc&ecirc; recentemente fez uma requisi&ccedil;&atilde;o de altera&ccedil;&atilde;o de senha da """+ institution.getFullName +""".</p>
     		<p>Clique no bot&atilde;o abaixo para fazer a altera&ccedil;&atilde;o da senha.</p> """ +
     		getActionButton(actionLink, "Alterar senha") + """
     		<p>Caso n&atilde;o tenha requisitado esta mudan&ccedil;a, favor ignorar esta mensagem.</p>
@@ -50,14 +68,14 @@ object EmailService {
   
   //TODO: Consider ASYNC
   def sendEmailEnrolled(person: Person, institution: Institution, course: Course) = {
-    val subject = "Você foi matriculado no curso " + course.getTitle()
+    val subject = "Você foi matriculado no curso " + course.getTitle
     val from = getFromEmail(institution)
     val to = person.getEmail
-    val actionLink = institution.getBaseURL() + "#vitrine:" + person.getEmail
+    val actionLink = institution.getBaseURL + "#vitrine:" + person.getEmail
     val body = wrapBody("""
-    		<p>Ol&aacute;, <b>""" + person.getFullName() + """</b></p>
+    		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
-    		<p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + """ no curso """+ course.getTitle() +""" oferecido pela """+ institution.getFullName() +""".</p> 
+    		<p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + """ no curso """+ course.getTitle +""" oferecido pela """+ institution.getFullName +""".</p> 
     		<p>Clique no bot&atilde;o abaixo para ir ao curso.</p> """ +
     		getActionButton(actionLink, "Acessar o Curso") + """
     		<p>Caso seja seu primeiro acesso, cadastre-se primeiro no sistema utilizando este email: """ + to + """</p>
@@ -81,22 +99,22 @@ object EmailService {
   private def getSignature(institution: Institution, from: String): String = 
     """
 	  	<p>Cordialmente,</p>
-	  	<p><b>Equipe """ + institution.getFullName() + """</b></p>
+	  	<p><b>Equipe """ + institution.getFullName + """</b></p>
 	  	<img alt="" src="cid:logo" style="width: 300px;height: 80px;margin: 0 auto;display: block;">
 	"""
 
   private def getInstitutionLogoImage(institution: Institution): java.io.File = {
     val logoImageName: String = "logo300x80.png"
     val tDir: String = System.getProperty("java.io.tmpdir")
-    val path: String = tDir + institution.getFullName() + "-" + logoImageName
+    val path: String = tDir + institution.getFullName + "-" + logoImageName
     val imgFile: File = new File(path)
     
-    val purgeTime = System.currentTimeMillis() - (1 * 24 * 60 * 60 * 1000) //one day
-    if(imgFile.lastModified() < purgeTime && !imgFile.delete())
+    val purgeTime = System.currentTimeMillis - (1 * 24 * 60 * 60 * 1000) //one day
+    if(imgFile.lastModified < purgeTime && !imgFile.delete)
       System.err.println("Unable to delete file: " + imgFile)
       
-    if (!imgFile.exists()) {
-      val url: URL = new URL(institution.getAssetsURL() + logoImageName)
+    if (!imgFile.exists) {
+      val url: URL = new URL(institution.getAssetsURL + logoImageName)
       FileUtils.copyURLToFile(url, imgFile)
     }
     imgFile

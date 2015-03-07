@@ -28,11 +28,15 @@ import kornell.core.util.TimeUtil
 import kornell.server.util.ServerTime
 import kornell.core.util.StringUtils
 import kornell.core.entity.RegistrationType
+import kornell.server.jdbc.repository.CourseClassRepo
 
 object RegistrationEnrollmentService {
 
-  def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) = 
-    	enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean)) 
+  def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) = {
+   	enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
+   	if(enrollmentRequests.getEnrollmentRequests.size > 100)
+   	  EmailService.sendEmailBatchEnrollment(dean, InstitutionsRepo.byUUID(dean.getInstitutionUUID).get, CourseClassRepo(enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID).get)
+  }
   
 
   def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUsername: String) = {
