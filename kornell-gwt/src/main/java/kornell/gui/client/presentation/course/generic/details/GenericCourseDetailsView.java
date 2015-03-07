@@ -167,10 +167,12 @@ public class GenericCourseDetailsView extends Composite {
 		session.courseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()).libraryFiles(new Callback<LibraryFilesTO>() {
 			@Override
 			public void ok(LibraryFilesTO to) {		
-				libraryPanel = getLibraryPanel(to);
-				libraryPanel.setVisible(false);
-				detailsContentPanel.add(libraryPanel);
-				btnLibrary.setVisible(true);	
+				if(to.getLibraryFiles() != null && to.getLibraryFiles().size() > 0){
+					libraryPanel = getLibraryPanel(to);
+					libraryPanel.setVisible(false);
+					detailsContentPanel.add(libraryPanel);
+					btnLibrary.setVisible(true);	
+				}
 			}
 		});
 	}
