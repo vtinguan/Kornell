@@ -164,6 +164,8 @@ public class GenericAdminCourseClassView extends Composite implements
 	Label lblCourseName;
 	@UiField
 	Label lblEnrollmentsCount;
+	@UiField
+	Label lblEnrollmentsCancelledCount;
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
@@ -526,6 +528,13 @@ public class GenericAdminCourseClassView extends Composite implements
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass()
 				.getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
+		int cancelledCount = 0;
+		for (EnrollmentTO enrollmentTO : enrollmentsIn) {
+			if(EnrollmentState.cancelled.equals(enrollmentTO.getEnrollment().getState())){
+				cancelledCount++;
+			}
+		}
+		lblEnrollmentsCancelledCount.setText(""+cancelledCount);
 
 		if (!refresh)
 			return;
