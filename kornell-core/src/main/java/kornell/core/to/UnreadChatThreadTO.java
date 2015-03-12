@@ -1,5 +1,7 @@
 package kornell.core.to;
 
+import kornell.core.entity.ChatThreadType;
+
 
 public interface UnreadChatThreadTO {
 	public static final String TYPE = TOFactory.PREFIX+"unreadChatThread+json";
@@ -16,4 +18,6 @@ public interface UnreadChatThreadTO {
 	String getCourseClassUUID();
 	void setCourseClassUUID(String courseClassUUID);
 	
+	ChatThreadType getThreadType();
+	void setThreadType(ChatThreadType threadType);
 }

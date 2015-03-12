@@ -26,13 +26,15 @@ import kornell.server.repository.ContentRepository
 import kornell.server.repository.ContentRepository
 import javax.inject.Inject
 import javax.enterprise.context.ApplicationScoped
+import kornell.core.entity.ChatThreadType
 
 @ApplicationScoped
 class EnrollmentRepo @Inject() (
   val contentRepo: ContentRepository,
-  val courseClassesRepo: CourseClassesRepo) {
+  val courseClassesRepo: CourseClassesRepo,
+  val chatThreadsRepo: ChatThreadsRepo) {
 
-  def this() = this(null, null)
+  def this() = this(null, null, null)
   def finder(enrollmentUUID: String) = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
 
   def get(enrollmentUUID: String): Enrollment = finder(enrollmentUUID).get[Enrollment]
@@ -195,6 +197,22 @@ where
     to.setCourseClassName(cc.getName)
     to.setInfosTO(InfosRepo.byCourseVersion(cv.getUUID))
     to
+  }
+  
+  def transfer(enrollmentUUID: String, fromCourseClassUUID: String, toCourseClassUUID: String) = {
+    //disable participation to global class thread for old class
+    val enrollmentBefore = get(enrollmentUUID)
+    chatThreadsRepo.disableParticipantFromCourseClassThread(enrollmentBefore)
+    
+    //update enrollment
+    sql"""update Enrollment set class_uuid = ${toCourseClassUUID} where uuid = ${enrollmentUUID}""".executeUpdate
+      
+    //disable old support and tutoring threads
+    sql"""update ChatThread set active = 0 where courseClassUUID = ${fromCourseClassUUID} and personUUID = ${enrollmentBefore.getPersonUUID} and threadType in  (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})""".executeUpdate
+    
+    //add participation to global class thread for new class
+    val enrollmentAfter = get(enrollmentUUID)
+    chatThreadsRepo.addParticipantToCourseClassThread(enrollmentAfter)
   }
 
 }

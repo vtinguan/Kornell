@@ -66,5 +66,4 @@ public interface ViewFactory {
 	AdminCourseClassView getAdminCourseClassView();
 	AdminCourseClassPresenter getAdminCourseClassPresenter();
 
-
 }

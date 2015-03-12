@@ -4,8 +4,9 @@ import kornell.core.entity.CourseClass
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.jdbc.SQL.rsToString
 import kornell.server.util.Identifiable
+import javax.inject.Inject
 
-class CourseClassRepo(
+class CourseClassRepo @Inject() (
   val chatThreadsRepo: ChatThreadsRepo)
   extends Identifiable {
   

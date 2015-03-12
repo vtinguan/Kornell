@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.Course;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
@@ -15,6 +17,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Person;
 import kornell.core.entity.RegistrationEnrollmentType;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
@@ -29,7 +32,11 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCo
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.uidget.KornellPagination;
+import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.formfield.ListBoxFormField;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -41,6 +48,7 @@ import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.ActionCell;
@@ -109,6 +117,8 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	private boolean canPerformEnrollmentAction = true;
 	private MessagePresenter messagePresenter;
 	private int totalCount = 0;
+	private EnrollmentTO selectedEnrollment;
+	private CourseClassTO courseClassTO;
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -164,6 +174,17 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	com.google.gwt.user.client.ui.Button btnModalCancel;
 
 	@UiField
+	Modal transferModal;
+	@UiField
+	Label txtModalTransfer1;
+	@UiField
+	ListBox courseClassListBox;
+	@UiField
+	com.google.gwt.user.client.ui.Button btnModalTransferOK;
+	@UiField
+	com.google.gwt.user.client.ui.Button btnModalTransferCancel;
+
+	@UiField
 	Label lblCourseClassName;
 	@UiField
 	Label lblCourseName;
@@ -199,6 +220,9 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
+
+		btnModalTransferOK.setText("OK".toUpperCase());
+		btnModalTransferCancel.setText("Cancelar".toUpperCase());
 
 		enrollmentsTab.addClickHandler(new ClickHandler() {
 			@Override
@@ -416,6 +440,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		}, "Data da Matrícula");
 
 		List<HasCell<EnrollmentTO, ?>> cells = new LinkedList<HasCell<EnrollmentTO, ?>>();
+		cells.add(new EnrollmentActionsHasCell("Transferir", getTransferDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Perfil", getGoToProfileDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Certificado", getGenerateCertificateDelegate()));
 		cells.add(new EnrollmentActionsHasCell("Excluir", getDeleteEnrollmentDelegate()));
@@ -455,6 +480,20 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	@UiHandler("btnModalCancel")
 	void onModalCancelButtonClicked(ClickEvent e) {
 		errorModal.hide();
+	}
+
+	@UiHandler("btnModalTransferOK")
+	void onModalTransferOkButtonClicked(ClickEvent e) {
+		if(StringUtils.isSome(courseClassListBox.getSelectedValue())){
+			presenter.onModalTransferOkButtonClicked(selectedEnrollment.getEnrollment().getUUID(), courseClassListBox.getSelectedValue());
+		} else {
+			KornellNotification.show("Selecione uma turma.", AlertType.ERROR);
+		}
+	}
+
+	@UiHandler("btnModalTransferCancel")
+	void onModalTransferCancelButtonClicked(ClickEvent e) {
+		transferModal.hide();
 	}
 
 	@UiHandler("btnAddEnrollment")
@@ -570,10 +609,13 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	
 	@Override
 	public void showModal(boolean show) {
-		if(show)
+		if(show){
 			errorModal.show();
-		else
+			transferModal.show();
+		} else {
 			errorModal.hide();
+			transferModal.hide();
+		}
 	}
 	
 	@Override
@@ -600,6 +642,41 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 				if(canPerformEnrollmentAction){
 					canPerformEnrollmentAction = false;
 					presenter.deleteEnrollment(object);
+				}
+			}
+		};
+	}
+
+	private Delegate<EnrollmentTO> getTransferDelegate() {
+		return new Delegate<EnrollmentTO>() {
+			@Override
+			public void execute(EnrollmentTO object) {
+				if(canPerformEnrollmentAction){
+					selectedEnrollment = object;
+					transferModal.setTitle("Transferir Matrícula");
+					txtModalTransfer1.setText("Selecione a turma para qual deseja transferir esse participante:");
+					LoadingPopup.show();
+					session.courseClasses().getAdministratedCourseClassesByCourseVersion(courseClassTO.getCourseClass().getCourseVersionUUID(), 
+							new Callback<CourseClassesTO>() {
+						@Override
+						public void ok(CourseClassesTO to) {
+							LoadingPopup.hide();
+							if(to.getCourseClasses() == null || 
+									to.getCourseClasses().size() == 0 || 
+									(to.getCourseClasses().size() == 1 && 
+										to.getCourseClasses().get(0).getCourseClass().getUUID().equals(courseClassTO.getCourseClass().getUUID()))){
+								KornellNotification.show("Nenhuma turma encontrada para qual esse usuário possa ser transferido.", AlertType.ERROR);
+							} else {
+								courseClassListBox.clear();
+								courseClassListBox.addItem("[Selecione uma turma]", "");
+								for (CourseClassTO courseClass : to.getCourseClasses()) {
+									if(!courseClass.getCourseClass().getUUID().equals(courseClassTO.getCourseClass().getUUID()))
+										courseClassListBox.addItem(courseClass.getCourseClass().getName(), courseClass.getCourseClass().getUUID());
+								}
+								transferModal.show();
+							}
+						}
+					});
 				}
 			}
 		};
@@ -692,6 +769,9 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 					} else if("Certificado".equals(actionName)){
 						btn.setIcon(IconType.DOWNLOAD_ALT);
 						btn.addStyleName("btnNotSelected");
+					} else if("Transferir".equals(actionName)){
+						btn.setIcon(IconType.EXCHANGE);
+						btn.addStyleName("btnNotSelected");
 					} 
 					btn.addStyleName("btnIconSolo");
 					return btn.toString();
@@ -716,13 +796,10 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	}
 
 	@Override
-	public void setCourseClassName(String courseClassName) {
-		this.lblCourseClassName.setText(courseClassName);
-	}
-
-	@Override
-	public void setCourseName(String courseName) {
-		this.lblCourseName.setText(courseName);
+	public void setCourseClassTO(CourseClassTO courseClassTO) {
+		this.courseClassTO = courseClassTO;
+		this.lblCourseClassName.setText(courseClassTO.getCourseClass().getName());
+		this.lblCourseName.setText(courseClassTO.getCourseVersionTO().getCourse().getTitle());
 	}
 
 	@Override

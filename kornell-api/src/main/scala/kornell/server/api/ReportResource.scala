@@ -13,19 +13,24 @@ import javax.ws.rs.core.Context
 import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.RoleCategory
 import kornell.server.jdbc.repository.AuthRepo
+import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.report.ReportCertificateGenerator
-import kornell.server.repository.s3.S3
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
-import kornell.server.jdbc.repository.CourseClassRepo
+import kornell.server.report.ReportInstitutionBillingGenerator
+import kornell.server.repository.s3.S3
+import java.text.SimpleDateFormat
+import javax.inject.Inject
 
 @Path("/report")
-class ReportResource(
+class ReportResource @Inject() (
     val authRepo:AuthRepo,
-    val courseClassesRepo:CourseClassesRepo) {
+    val courseClassesRepo:CourseClassesRepo, 
+    val courseClassRepo: CourseClassRepo) {
 
-  def this() = this(null,null)
+  def this() = this(null,null,null)
   
   @GET
   @Path("/certificate/{userUUID}/{courseClassUUID}")
@@ -106,12 +111,26 @@ class ReportResource(
       else
         "pdf"
     }
-    resp.addHeader("Content-disposition", "attachment; filename=info."+fType)
+    val courseClass = courseClassRepo.withUUID(courseClassUUID).get
+    val fileName = courseClass.getName + " - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ "."+fType
+    resp.addHeader("Content-disposition", "attachment; filename=" + fileName)
     if(fType != null && fType == "xls")
     	resp.setContentType("application/vnd.ms-excel")
     else
     	resp.setContentType("application/pdf")
     ReportCourseClassGenerator.generateCourseClassReport(courseClassUUID, fType)
+  }
+
+  @GET
+  @Path("/institutionBilling")
+  def getInstitutionBilling(@Context resp: HttpServletResponse,
+    @QueryParam("institutionUUID") institutionUUID: String,
+    @QueryParam("periodStart") periodStart: String,
+    @QueryParam("periodEnd") periodEnd: String) = {
+    val institution = InstitutionRepo(institutionUUID).get
+    resp.addHeader("Content-disposition", "attachment; filename=" + institution.getName + " - " + periodStart + ".xls")
+    resp.setContentType("application/vnd.ms-excel")
+    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institution, periodStart, periodEnd)
   }
 
   @GET

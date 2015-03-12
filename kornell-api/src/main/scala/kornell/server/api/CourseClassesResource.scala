@@ -30,15 +30,17 @@ import java.util.Date
 import java.math.BigDecimal
 import kornell.server.auth.Authorizator
 import kornell.server.util.AccessDeniedErr
+import kornell.server.jdbc.repository.PersonRepo
 
 @Path("courseClasses")
 class CourseClassesResource @Inject() (
   val auth:Authorizator,
   val authRepo: AuthRepo,
+  val personRepo: PersonRepo,
   val courseClassesRepo: CourseClassesRepo,
   val courseClassResourceBean: Instance[CourseClassResource]) {
 
-  def this() = this(null, null, null,null)
+  def this() = this(null, null, null, null,null)
 
   def create(uuid: String = null,
     name: String = null,
@@ -90,14 +92,10 @@ class CourseClassesResource @Inject() (
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
   @Path("administrated")
-  def getAdministratedClasses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID: String) =
-    authRepo.withPerson { person =>
-      {
-        if (institutionUUID != null) {
-          val roles = authRepo.userRoles
-          courseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList)
-        }
+  def getAdministratedClasses(@QueryParam("courseVersionUUID") courseVersionUUID: String) = {
+    	  val person = personRepo.withUUID(auth.getAuthenticatedPersonUUID).get
+    	  val roles = authRepo.userRoles
+          courseClassesRepo.administratedByPersonOnInstitution(person, person.getInstitutionUUID, courseVersionUUID, roles.toList)
       }
-    }
 }
 

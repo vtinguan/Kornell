@@ -11,4 +11,15 @@ public interface ChatThread extends Entity {
 	String getInstitutionUUID();
 	void setInstitutionUUID(String institutionUUID);
 	
+	String getCourseClassUUID();
+	void setCourseClassUUID(String courseClassUUID);
+	
+	String getPersonUUID();
+	void setPersonUUID(String personUUID);
+	
+	String getThreadType();
+	void setThreadType(String threadType);
+	
+	Boolean isActive();
+	void setActive(Boolean active);
 }
