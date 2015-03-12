@@ -10,8 +10,8 @@ import kornell.core.entity.ContentStoreType
 
 class ContentStoreRepo {
 
-  implicit def toContentStore(rs: ResultSet):ContentStore = {
-    val cs = Entities.newContentStore(rs.getString("uuid"))    
+  implicit def toContentStore(rs: ResultSet): ContentStore = {
+    val cs = Entities.newContentStore(rs.getString("uuid"))
     val meta = rs.getMetaData()
     for (i <- 1 to meta.getColumnCount()) {
       val colName = meta.getColumnName(i)
@@ -24,13 +24,15 @@ class ContentStoreRepo {
   def s3Finder(uuid: String) = sql"""
      select *, 'S3' as contentStoreType  from S3ContentStore where uuid=$uuid
   """
-     
+
   def fsFinder(uuid: String) = sql"""
      select *, 'FS' as contentStoreType from FSContentStore where uuid=$uuid
   """
-     
-  def first(uuid: String) = s3Finder(uuid).first[ContentStore]
-		  						.orElse(fsFinder(uuid).first[ContentStore])
-  
+
+  def first(uuid: String) = s3Finder(uuid)
+    .first[ContentStore]
+    .orElse(fsFinder(uuid)
+      .first[ContentStore])
+
   def get(uuid: String) = first(uuid).get
 }

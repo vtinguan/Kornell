@@ -142,6 +142,12 @@
                     <handler name="KNL_HANDLER"/>
                 </handlers>
             </logger>
+            <logger category="kornell.server.scorm.scorm12" use-parent-handlers="true">
+                <level name="FINER"/>
+                <handlers>
+                    <handler name="KNL_HANDLER"/>
+                </handlers>
+            </logger>
             <root-logger>
                 <level name="INFO"/>
                 <handlers>

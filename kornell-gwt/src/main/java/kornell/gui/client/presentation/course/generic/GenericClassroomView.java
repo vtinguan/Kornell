@@ -11,6 +11,7 @@ import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.details.GenericCourseDetailsView;
 
+import com.gargoylesoftware.htmlunit.javascript.host.Console;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -42,13 +43,16 @@ public class GenericClassroomView extends Composite implements ClassroomView,
 	private Presenter presenter;
 
 	public GenericClassroomView(PlaceController placeCtrl, KornellSession session, EventBus bus) {
+		logger.info("==== Starting Classrom View");
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		this.bus = bus;
 		bus.addHandler(ShowDetailsEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		detailsPanel.setVisible(true);
-		contentPanel.setVisible(false);
+		contentPanel.setVisible(true);
+		contentPanel.getElement().setId("knl-content-panel");
+		contentPanel.addStyleName("knl-content-panel");
 	}
 
 	@Override

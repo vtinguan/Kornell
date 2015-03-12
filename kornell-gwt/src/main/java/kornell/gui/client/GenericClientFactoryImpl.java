@@ -107,20 +107,22 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
 			public void ok(final UserHelloTO userHelloTO) {
-				session.setCurrentUser(userHelloTO.getUserInfoTO());
-				if(userHelloTO.getInstitution() == null) {
-					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
-				} else {					
-					Dean.init(session, bus, userHelloTO.getInstitution());
-					if (session.isAuthenticated()) {
-						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-								|| session.isInstitutionAdmin());
-						setDefaultPlace(isAdmin ? new AdminCourseClassesPlace() : new WelcomePlace());
-						startAuthenticated(session);
-					} else {
-						startAnonymous();
+				if(userHelloTO != null){
+					session.setCurrentUser(userHelloTO.getUserInfoTO());
+					if(userHelloTO.getInstitution() == null) {
+						KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
+					} else {					
+						Dean.init(session, bus, userHelloTO.getInstitution());
+						if (session.isAuthenticated()) {
+							boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+									|| session.isInstitutionAdmin());
+							setDefaultPlace(isAdmin ? new AdminCourseClassesPlace() : new WelcomePlace());
+							startAuthenticated(session);
+						} else {
+							startAnonymous();
+						}
 					}
-				}
+				} //else GWT.debugger();
 			}
 		};
 

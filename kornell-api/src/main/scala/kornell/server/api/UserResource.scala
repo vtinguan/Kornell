@@ -29,7 +29,7 @@ import kornell.server.repository.TOs.newUserHelloTO
 import kornell.server.repository.TOs.newUserInfoTO
 import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
-import kornell.server.web.BasicAuthFilter
+import kornell.server.auth.BasicAuthFilter
 import kornell.core.to.UserHelloTO
 import kornell.server.repository.service.RegistrationEnrollmentService
 import javax.inject.Inject

@@ -9,7 +9,6 @@ object ThreadLocalAuthenticator {
 	  val authPerson = getAuthenticatedPersonUUID
 	  if (authPerson.isDefined)
 		  logger.warning(s"!!! Thread changing identity [ ${authPerson.get} -> ${personUUID} ]")
-	  //logger.finer(s"*** Thread assumed identity [$personUUID]")
 	  threadLocal.set(personUUID)
 	  personUUID
 	}

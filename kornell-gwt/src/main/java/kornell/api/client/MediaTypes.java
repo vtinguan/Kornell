@@ -20,6 +20,7 @@ import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
+import kornell.core.to.EnrollmentLaunchTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
@@ -62,8 +63,10 @@ public class MediaTypes {
 		register(ChatThreadMessagesTO.TYPE,ChatThreadMessagesTO.class);
 		register(InstitutionRegistrationPrefixesTO.TYPE,InstitutionRegistrationPrefixesTO.class);
 		register(InstitutionHostNamesTO.TYPE, InstitutionHostNamesTO.class);
+		register(EnrollmentLaunchTO.TYPE,EnrollmentLaunchTO.class);
 	}
 
+	//TODO: Infer TYPE from class?
 	private void register(String type, Class<?> clazz) {
 		type2class.put(type.toLowerCase(),clazz);
 		class2type.put(clazz,type.toLowerCase());

@@ -30,7 +30,7 @@ class ContentRepository @Inject() (
     val versionRepo = classRepo.version
     val cv = versionRepo.get
     val cm = cms.forCourseVersion(cv)
-    val structureSrc = cm.source("structure.knl")
+    val structureSrc = cm.source("structure.knl").get
     val structureText = structureSrc.mkString("")
     val baseURL = "????DEPRECATED????"
     val contents = ContentsParser.parse(baseURL, "????DEPRECATED????", structureText, visited)
@@ -50,7 +50,7 @@ class ContentRepository @Inject() (
     val versionRepo = classRepo.version
     val version = versionRepo.get
     val cm = cms.forCourseVersion(version)
-    val structureIn = cm.getObjectStream ("imsmanifest.xml")
+    val structureIn = cm.getObjectStream ("imsmanifest.xml").get
     val document = builder.parse(structureIn)
     val result = ListBuffer[String]()
     val nodes: NodeList = expr.evaluate(document, XPathConstants.NODESET).asInstanceOf[NodeList]

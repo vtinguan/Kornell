@@ -71,19 +71,19 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	private void dispatchByMimeType(Response response) {
-		String contentTypeHeader = response.getHeader("Content-Type");
-		String contentType = contentTypeHeader.toLowerCase();
+		String contentTypeHeader = response.getHeader("Content-Type");		
+		String contentType = contentTypeHeader != null? contentTypeHeader.toLowerCase() : "";
 		String responseText = response.getText();
 
 		if (contentType.equals("application/boolean")){
 			T bool = bool(responseText);
 			ok(bool);
 		}
-		else if (contentType.contains("json")) {
+		else if (contentType.contains("+json")) {
 			if (MediaTypes.get().containsType(contentType)) {
 				@SuppressWarnings("unchecked")
 				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
-
+				logger.finest("Dispatching response Type ["+contentType+"] to Class ["+clazz.getName()+"]");
 				AutoBean<T> bean = null;
 				AutoBeanFactory factory = factoryFor(contentType);
 				if("null".equals(responseText))
@@ -99,8 +99,9 @@ public abstract class Callback<T> implements RequestCallback {
 					throw new RuntimeException(message, ex);
 				}
 			}
-			else
-				ok(Callback.parseJson(responseText));
+			else {
+				logger.warning("Could not find Class for Type ["+contentType+"]");
+			}
 
 		} 
 		else if (contentType.contains("application/octet-stream")) { 

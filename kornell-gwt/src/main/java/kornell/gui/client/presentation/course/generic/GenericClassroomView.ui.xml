@@ -2,7 +2,9 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
 	<g:FlowPanel>
-		<g:FlowPanel addStyleNames="contentPanel" ui:field="contentPanel"></g:FlowPanel>
+		<g:FlowPanel addStyleNames="contentPanel" ui:field="contentPanel">
+		    <g:Label>UALA UALA UALA</g:Label>
+		</g:FlowPanel>
 		<g:FlowPanel addStyleNames="detailsPanel" ui:field="detailsPanel"></g:FlowPanel>
 	</g:FlowPanel>
 

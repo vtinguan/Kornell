@@ -28,7 +28,7 @@ class LibraryFilesRepository @Inject()(
     val version = versionRepo.get
     val cm = cms.forCourseVersion(version)
     val filesURL = StringUtils.composeURL("library","libraryFiles.knl")
-    val structureSrc = cm.source(filesURL)
+    val structureSrc = cm.source(filesURL).get
     val libraryFilesText = structureSrc.mkString("")
     val fullURL = StringUtils.composeURL(cm.baseURL, "/TODO-REFACT-JULIO-findLibraryFiles", version.getDistributionPrefix(), "library")
     val contents = LibraryFilesParser.parse(fullURL, libraryFilesText)

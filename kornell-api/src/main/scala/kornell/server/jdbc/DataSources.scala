@@ -38,7 +38,7 @@ object DataSources {
   }
 
   def getConnection(url: String, user: String, pass: String): Try[ConnectionFactory] = Try {
-    println(s"Trying to connect to ${url}")
+    println(s"Trying to connect to ${user}@${url}")
     ping { () => DriverManager.getConnection(url, user, pass) }
   }
 

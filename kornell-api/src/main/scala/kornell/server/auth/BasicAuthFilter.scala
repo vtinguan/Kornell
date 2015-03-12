@@ -1,15 +1,11 @@
 
-package kornell.server.web
+package kornell.server.auth
 
 import javax.servlet._
 import javax.servlet.http._
-import javax.servlet.annotation.WebFilter
 import org.apache.commons.codec.binary.Base64
 import java.util.logging.Logger
-import kornell.core.util.StringUtils
 import kornell.server.jdbc.SQL._
-import kornell.server.util.SHA256
-import java.sql.ResultSet
 import kornell.server.jdbc.repository.AuthRepo
 import javax.inject.Inject
 import kornell.server.auth.ThreadLocalAuthenticator

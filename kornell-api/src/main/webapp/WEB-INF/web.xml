@@ -21,7 +21,7 @@
 
 	<filter>
 		<filter-name>BasicAuth</filter-name>
-		<filter-class>kornell.server.web.BasicAuthFilter</filter-class>
+		<filter-class>kornell.server.auth.BasicAuthFilter</filter-class>
 	</filter>
 
 	<filter>

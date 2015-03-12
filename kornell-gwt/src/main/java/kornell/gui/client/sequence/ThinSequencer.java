@@ -2,9 +2,7 @@ package kornell.gui.client.sequence;
 
 import java.util.logging.Logger;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.lom.Contents;
 import kornell.core.scorm.scorm12.rte.action.OpenSCO12Action;
 import kornell.core.to.ActionTO;
 import kornell.core.to.ActionType;
@@ -32,7 +30,7 @@ public class ThinSequencer implements Sequencer, EnrollmentEventHandler {
 	private KornellSession session;
 
 	public ThinSequencer(EventBus bus, KornellSession session) {
-		log.info("ThinSequencer created");
+		log.info("ThinSequencer Created");
 		this.bus = bus;
 		this.session = session;
 		bus.addHandler(EnrollmentEvent.TYPE, this);
@@ -45,18 +43,19 @@ public class ThinSequencer implements Sequencer, EnrollmentEventHandler {
 
 	@Override
 	public void onPrevious(NavigationRequest event) {
+		log.info("ThinSequencer OnPrev");
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onDirect(NavigationRequest event) {
-		// TODO Auto-generated method stub
-
+		log.info("ThinSequencer OnDirect");
 	}
 
 	@Override
 	public Sequencer withPanel(FlowPanel contentPanel) {
+		log.info("ThinSequencer WithPanel");
 		this.contentPanel = contentPanel;
 		return this;
 	}
@@ -69,6 +68,8 @@ public class ThinSequencer implements Sequencer, EnrollmentEventHandler {
 	}
 
 	private Widget createWidgetForAction(ActionTO actionTO) {
+		log.info("Widget For Action "+actionTO.getType());
+
 		ActionType type = actionTO.getType();
 		Widget widget = null;
 		switch (type) {
@@ -82,20 +83,25 @@ public class ThinSequencer implements Sequencer, EnrollmentEventHandler {
 	}
 
 	private Widget openSCO(OpenSCO12Action openSCO) {
-		SCORM12Adapter api = new SCORM12Adapter(bus, session,
-				place.getEnrollmentUUID(), openSCO);
+		SCORM12Adapter api = new SCORM12Adapter(bus, session,place.getEnrollmentUUID(), openSCO);
 		SCORM12Binder.bind(api);
-		return new OpenURLView(openSCO.getHref());
+		String href = openSCO.getHref();
+		log.info("Opening SCO12 ["+href+"]");
+		return new OpenURLView(href);
 	}
 
 	@Override
 	public void stop() {
+		log.info("ThinSequencer OnStop");
+
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void fireProgressEvent() {
+		log.info("ThinSequencer FireProgress");
+
 		// TODO Auto-generated method stub
 
 	}
@@ -105,6 +111,11 @@ public class ThinSequencer implements Sequencer, EnrollmentEventHandler {
 		Widget view = createWidgetForAction(launchTO.getActionTO());
 		contentPanel.clear();
 		contentPanel.add(view);
+		log.info("=== ThinSequencer OnEnrollmentLaunched ===");
+		log.fine(contentPanel.getElement().getInnerHTML());
+		log.info("======");
+		log.fine(view.getElement().getInnerHTML());
+
 	}
 
 }

@@ -3,11 +3,8 @@ package kornell.server.content
 import java.io.InputStream
 import java.io.Serializable
 import java.util.logging.Logger
-
 import scala.io.Source
-
 import org.infinispan.Cache
-
 import javax.inject.Inject
 import kornell.core.entity.ContentStore
 import kornell.core.entity.ContentStoreType.FS
@@ -15,19 +12,22 @@ import kornell.core.entity.ContentStoreType.S3
 import kornell.core.entity.CourseVersion
 import kornell.server.cdi.ContentManagerCache
 import kornell.server.jdbc.repository.ContentStoreRepo
+import scala.util.Try
 
 trait ContentManager extends Serializable {  
-  def getObjectStream(key: String): InputStream
+  def getObjectStream(key: String): Try[InputStream]
   def getURL(key: String): String  
   def getID():String
-  def source(key:String):Source = Source.fromInputStream(getObjectStream(key),"UTF-8")
+  
+  def source(key:String):Try[Source] = getObjectStream(key).map{
+    Source.fromInputStream(_,"UTF-8")
+  }
   def baseURL:String
 }
 
 class ContentManagers @Inject()(
     @ContentManagerCache cache:Cache[String,ContentManager],
-    contentStoreRepo:ContentStoreRepo
-    ) {
+    contentStoreRepo:ContentStoreRepo) {
   private val log = Logger.getLogger("ContentManagers")  
 
   def load(contentStoreUUID: String,distributionPrefix:String): ContentManager =

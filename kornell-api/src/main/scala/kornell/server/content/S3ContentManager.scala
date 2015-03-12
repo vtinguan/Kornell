@@ -40,11 +40,11 @@ class S3ContentManager(cs: ContentStore,distributionPrefix:String) extends Conte
   
   override def getURL(obj:String) = composeURL(fullPrefix,obj) 
 
-  override def getObjectStream(obj: String): InputStream = Try {
+  override def getObjectStream(obj: String): Try[InputStream] = Try {
     val key = composeURL(fullPrefix, obj)
     log.finest(s"Fetching object [s3://$bucket/$key]")
     s3.getObject(bucket, key).getObjectContent
-  }.getOrElse(null)
+  }
   
   override def baseURL = composeURL(prefix)
 }

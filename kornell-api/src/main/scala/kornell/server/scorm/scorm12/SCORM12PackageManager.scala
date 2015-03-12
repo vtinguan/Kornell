@@ -62,5 +62,7 @@ class SCORM12PackageManager(cm: ContentManager) {
   def findResource(id: String, resources: Resources) =
     resources.getResourceList.asScala.find { res => id == res.getIdentifier }
 
-  def getManifest: Manifest = CAM12DOMParser.parse(cm.getObjectStream("imsmanifest.xml"))
+  def getManifest: Manifest = cm.getObjectStream("imsmanifest.xml")
+		  						.map{CAM12DOMParser.parse(_)}
+    							.getOrElse(throw new IllegalStateException("can't find manifest"))
 }
