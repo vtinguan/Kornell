@@ -166,6 +166,8 @@ public class GenericAdminCourseClassView extends Composite implements
 	Label lblEnrollmentsCount;
 	@UiField
 	Label lblEnrollmentsCancelledCount;
+	@UiField
+	Label lblEnrollmentsAvailableCount;
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
@@ -535,6 +537,7 @@ public class GenericAdminCourseClassView extends Composite implements
 			}
 		}
 		lblEnrollmentsCancelledCount.setText(""+cancelledCount);
+		lblEnrollmentsAvailableCount.setText(""+(maxEnrollments-numEnrollments));
 
 		if (!refresh)
 			return;

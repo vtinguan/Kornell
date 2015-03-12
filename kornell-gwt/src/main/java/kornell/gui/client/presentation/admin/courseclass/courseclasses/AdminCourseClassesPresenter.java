@@ -69,6 +69,7 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
 		LoadingPopup.show();
+		view.setCourseClasses(null);
 		session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
 				new Callback<CourseClassesTO>() {
 			@Override

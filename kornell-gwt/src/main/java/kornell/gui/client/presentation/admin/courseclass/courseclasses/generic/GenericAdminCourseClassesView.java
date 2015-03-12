@@ -249,6 +249,10 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 
 	@Override
 	public void setCourseClasses(List<CourseClassTO> courseClasses) {
+		if(courseClasses == null){
+			adminHomePanel.setVisible(false);
+			return;
+		}
 		this.courseClassTOs = courseClasses;
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
@@ -258,6 +262,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		pagination.setRowData(courseClasses);
 		pagination.displayTableData(1);
 		initTable();
+		adminHomePanel.setVisible(true);
 	}
 	
 	@Override

@@ -473,14 +473,16 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 		}
 		LoadingPopup.show();
-		int requestsThreshold = 100;
+		final int requestsThreshold = 100;
 		if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
 			if(StringUtils.isSome(session.getCurrentUser().getPerson().getEmail())){
-				KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma email em \"" + session.getCurrentUser().getPerson().getEmail() + "\" assim que a operação for concluída.", AlertType.INFO, 150000);
+				KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma email em \"" + session.getCurrentUser().getPerson().getEmail() + "\" assim que a operação for concluída.", AlertType.INFO, 20000);
 			} else {
 				KornellNotification.show("Favor configurar um email no seu perfil para que possa receber as mensagens de confirmação de matrículas em lote.", AlertType.INFO, 8000);
 			}
 			LoadingPopup.hide();
+			confirmedEnrollmentsModal = false;
+			view.clearEnrollmentFields();
 		} else if (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
 				&& enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
 			KornellNotification
@@ -492,12 +494,14 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		session.enrollments().createEnrollments(enrollmentRequestsTO, new Callback<Enrollments>() {
 			@Override
 			public void ok(Enrollments to) {
-				getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-				confirmedEnrollmentsModal = false;
-				KornellNotification.show("Matrículas feitas com sucesso.", 1500);
-				view.clearEnrollmentFields();
-				LoadingPopup.hide();
-				PlaceUtils.reloadCurrentPlace(bus, placeController);
+				if(enrollmentRequestsTO.getEnrollmentRequests().size() <= requestsThreshold){
+					getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+					confirmedEnrollmentsModal = false;
+					KornellNotification.show("Matrículas feitas com sucesso.", 1500);
+					view.clearEnrollmentFields();
+					LoadingPopup.hide();
+					PlaceUtils.reloadCurrentPlace(bus, placeController);
+				}
 			}
 
 			@Override

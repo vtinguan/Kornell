@@ -16,7 +16,9 @@
 							<g:Label ui:field="lblEnrollmentsCount" addStyleNames="inlineLabel lblHighlight"></g:Label>
 							<g:Label addStyleNames="inlineLabel">matrículas efetuadas, sendo </g:Label>
 							<g:Label ui:field="lblEnrollmentsCancelledCount" addStyleNames="inlineLabel lblHighlight"></g:Label>
-							<g:Label addStyleNames="inlineLabel">canceladas )</g:Label>
+							<g:Label addStyleNames="inlineLabel">canceladas. Disponíveis: </g:Label>
+							<g:Label ui:field="lblEnrollmentsAvailableCount" addStyleNames="inlineLabel lblHighlight"></g:Label>
+							<g:Label addStyleNames="inlineLabel">  )</g:Label>
 						</g:FlowPanel>
 					</g:FlowPanel>
 					<g:FlowPanel ui:field="enrollmentsWrapper">
