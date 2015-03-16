@@ -467,7 +467,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		form.removeStyleName("shy");
 		setValidity(true);
 
-		passwordChangeWidget.initData(session, user, isCurrentUser);
+		passwordChangeWidget.initData(session, user);
 		sendMessageWidget.initData(session, user, isCurrentUser);
 		
 	}

@@ -49,9 +49,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public static final EventFactory eventFactory = GWT
 			.create(EventFactory.class);
 
+	public static final EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
+	
 	/* History Management */
-	private final EventBus bus = new SimpleEventBus();
-	private final PlaceController placeCtrl = new PlaceController(bus);
+//	private final EventBus bus = new SimpleEventBus();
+	private final PlaceController placeCtrl = new PlaceController(EVENT_BUS);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 	private final DefaultHistorian historian = GWT
 			.create(DefaultHistorian.class);
@@ -61,7 +63,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	/* GUI */
 	private ViewFactory viewFactory;
 	private Place defaultPlace;
-	private KornellSession session = new KornellSession(bus);
+	private KornellSession session = new KornellSession(EVENT_BUS);
 
 	public GenericClientFactoryImpl() {
 	}
@@ -72,7 +74,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initGlobalActivityManager() {
 		AsyncActivityMapper activityMapper = new GlobalActivityMapper(this);
-		AsyncActivityManager activityManager = new AsyncActivityManager(activityMapper, bus);
+		AsyncActivityManager activityManager = new AsyncActivityManager(activityMapper, EVENT_BUS);
 		activityManager.setDisplay(viewFactory.getShell());
 	}
 
@@ -82,7 +84,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		//PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 		//historyHandler.register(placeController, eventBus, defaultPlace);
 		
-		historyHandler.register(placeCtrl, bus, defaultPlace);
+		historyHandler.register(placeCtrl, EVENT_BUS, defaultPlace);
 		// sessions that arent authenticated, go to the default place
 		// except if it's a vitrineplace, then let the history take care of it
 		if (!session.isAuthenticated()
@@ -101,7 +103,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if(userHelloTO.getInstitution() == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {					
-					Dean.init(session, bus, userHelloTO.getInstitution());
+					Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
 					if (session.isAuthenticated()) {
 						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 								|| session.isInstitutionAdmin());
@@ -119,7 +121,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void startAnonymous() {
-		ClientProperties.remove(ClientProperties.X_KNL_A);
+		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
 		defaultPlace = new VitrinePlace();
 		startClient();
 	}
@@ -146,14 +148,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initPersonnel() {
-		new Captain(bus, session, placeCtrl);
-		new Stalker(bus, session);
-		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads(), placeCtrl);
+		new Captain(EVENT_BUS, session, placeCtrl);
+		new Stalker(EVENT_BUS, session);
+		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
 		
 	}
 
 	private void initSCORM12() {
-		SCORM12Binder.bind(new SCORM12Adapter(bus, session));
+		SCORM12Binder.bind(new SCORM12Adapter(EVENT_BUS, session));
 	}
 
 	private void initException() {
@@ -178,7 +180,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public EventBus getEventBus() {
-		return bus;
+		return EVENT_BUS;
 	}
 
 	@Override

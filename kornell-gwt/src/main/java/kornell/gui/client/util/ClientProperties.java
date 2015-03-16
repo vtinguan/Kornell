@@ -11,7 +11,7 @@ public class ClientProperties {
 
 	public static final String SEPARATOR = ".";
 	public static final String PREFIX = "Kornell.v1.";
-	public static final String X_KNL_A = "X-KNL-A";
+	public static final String X_KNL_TOKEN = "X-KNL-TOKEN";
 	public static final String SELECTED_COURSE_CLASS = "SELECTED_COURSE_CLASS";
 	
 	public static String get(String propertyName){
@@ -56,7 +56,5 @@ public class ClientProperties {
 		return new String(Base64Utils.fromBase64(base64));
 	}
 
-	public static String getAuthString(String username, String password) {
-		return  "Basic " + base64Encode(username + ":" + password + ":" + Dean.getInstance().getInstitution().getUUID());
-	};
+
 }

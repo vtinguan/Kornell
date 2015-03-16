@@ -37,7 +37,12 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 	@Override
 	public Request sendRequest(String requestData, RequestCallback callback) {
 		try {
-			return super.sendRequest(requestData, callback);
+			if (requestData == null) {
+				super.setCallback(callback);
+				return super.send();
+			} else {
+				return super.sendRequest(requestData, callback);
+			}
 		} catch (RequestException e) {
 			return handle(e);
 		}

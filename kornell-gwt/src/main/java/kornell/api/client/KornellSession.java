@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
+import kornell.core.to.TokenTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.LoginEvent;
@@ -109,13 +110,10 @@ public class KornellSession extends KornellClient {
 	}
 
 	public void login(String username, String password, final Callback<UserInfoTO> callback) {
-		final String auth = ClientProperties.getAuthString(username, password);
-
-		Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
+		final Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
 			@Override
 			public void ok(UserInfoTO user) {
 				setCurrentUser(user);
-				ClientProperties.set(ClientProperties.X_KNL_A, auth);
 				bus.fireEvent(new LoginEvent(user));
 				callback.ok(user);
 			}
@@ -126,11 +124,27 @@ public class KornellSession extends KornellClient {
 				callback.unauthorized(kornellErrorTO);
 			}
 		};
-		GET("/user").addHeader(ClientProperties.X_KNL_A, auth).sendRequest(null, wrapper);
+		
+		Callback<TokenTO> loginWrapper = new Callback<TokenTO>() {
+
+			@Override
+			public void ok(TokenTO to) {
+				ClientProperties.set(ClientProperties.X_KNL_TOKEN, to.getToken());
+				GET("/user").sendRequest(null, wrapper);
+			}
+			
+			@Override
+			protected void unauthorized(KornellErrorTO kornellErrorTO) {
+				setCurrentUser(null);
+				callback.unauthorized(kornellErrorTO);
+			}
+			
+		};
+		POST_LOGIN(username, password, "/auth/token").sendRequest(null, loginWrapper);
 	}
 	
 	public void logout(){
-		ClientProperties.remove(ClientProperties.X_KNL_A);
+		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
 		setCurrentUser(null);
 	}
 

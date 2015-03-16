@@ -36,6 +36,7 @@ import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.to.PersonTO
+import kornell.core.entity.AuthClientType
 
 //TODO: Consider turning to Object
 object TOs {
@@ -270,4 +271,12 @@ object TOs {
     p
   }
   
+  def newTokenTO(token: String, expiry: Date, personUUID: String, clientType: AuthClientType) = {
+    val to = tos.newTokenTO.as
+    to.setToken(token)
+    to.setExpiry(expiry)
+    to.setPersonUUID(personUUID)
+    to.setClientType(clientType)
+    to
+  }
 }
