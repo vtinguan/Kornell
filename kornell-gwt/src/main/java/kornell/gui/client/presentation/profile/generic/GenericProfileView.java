@@ -608,7 +608,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		fields.add(addressLine2);
 		profileFields.add(addressLine2);
 
-		postalCode = new KornellFormFieldWrapper("Código Postal", formHelper.createTextBoxFormField(user.getPerson().getPostalCode()), isEditMode);
+		postalCode = new KornellFormFieldWrapper("Código Postal (CEP)", formHelper.createTextBoxFormField(user.getPerson().getPostalCode()), isEditMode);
 		fields.add(postalCode);
 		profileFields.add(postalCode);
 	}
