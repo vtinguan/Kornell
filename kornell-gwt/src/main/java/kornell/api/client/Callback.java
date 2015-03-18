@@ -17,6 +17,7 @@ import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstantsHelper;
+import kornell.gui.client.event.LogoutEvent;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
@@ -177,6 +178,7 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void unauthorized(KornellErrorTO kornellErrorTO) {
+		GenericClientFactoryImpl.EVENT_BUS.fireEvent(new LogoutEvent());
 		logger.fine(KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
 	}
 

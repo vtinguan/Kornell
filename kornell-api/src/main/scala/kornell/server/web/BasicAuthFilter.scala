@@ -14,6 +14,9 @@ import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.core.error.KornellErrorTO
+import kornell.server.jdbc.repository.TokenRepo
+import kornell.core.entity.AuthClientType
+import java.util.Date
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
@@ -37,7 +40,8 @@ class BasicAuthFilter extends Filter {
     "/institutions",
     "/repository",
     "/healthCheck",
-    "/errors")
+    "/errors",
+    "/auth")
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
     (sreq, sres) match {
@@ -51,7 +55,7 @@ class BasicAuthFilter extends Filter {
     }
 
   def hasCredentials(req: HttpServletRequest): Boolean =
-    req.getHeader("X-KNL-A") != null
+    req.getHeader("X-KNL-TOKEN") != null
 
   def isPrivate(req: HttpServletRequest, resp: HttpServletResponse) = !isPublic(req, resp)
 
@@ -70,24 +74,19 @@ class BasicAuthFilter extends Filter {
   }
 
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
-    val auth = req.getHeader("X-KNL-A");
+    val auth = req.getHeader("X-KNL-TOKEN");
     if (auth != null && auth.length() > 0) {
-      try {
-        val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
-        login(institutionUUID, username, password)
-        
-      } catch {
-        case e: Exception => {
-          e.printStackTrace()
+        val token = TokenRepo.checkToken(auth)
+        if (!token.isDefined || (token.get.getClientType == AuthClientType.web && token.get.getExpiry.before(new Date))) {
           resp.setContentType(KornellErrorTO.TYPE)
           resp.setStatus(401)
           resp.setCharacterEncoding("UTF-8")
-          resp.getWriter().write("{\"messageKey\":\"authenticationFailed\"}")
+          resp.getWriter().write("{\"messageKey\":\"mustAuthenticate\"}")
+        } else {
+          ThreadLocalAuthenticator.setAuthenticatedPersonUUID(token.get.getPersonUUID)
+          chain.doFilter(req, resp);
         }
-          
-      }
-      chain.doFilter(req, resp);
-      logout
+        logout
     } else {
       resp.setContentType(KornellErrorTO.TYPE)
       resp.setStatus(401)
@@ -100,20 +99,6 @@ class BasicAuthFilter extends Filter {
 
   override def destroy() {}
 
-  def login(institutionUUID: String, username: String, password: String) =
-    AuthRepo().authenticate(institutionUUID, username, password).map { personUUID =>
-      ThreadLocalAuthenticator.setAuthenticatedPersonUUID(personUUID)
-    }
-
   def logout = ThreadLocalAuthenticator.clearAuthenticatedPersonUUID
 }
 
-object BasicAuthFilter{
- 
-  def extractCredentials(auth: String) = {
-    val encoded = auth.split(" ")(1)
-    val decoded = new String(Base64.decodeBase64(encoded))
-    val extracted = decoded.split(":")
-    (extracted(0), extracted(1), extracted(2))
-  }
-}

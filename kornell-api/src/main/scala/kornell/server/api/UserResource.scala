@@ -35,6 +35,7 @@ import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
 import kornell.server.web.BasicAuthFilter
 import kornell.core.to.UserHelloTO
+import kornell.server.jdbc.repository.TokenRepo
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -61,11 +62,11 @@ class UserResource(private val authRepo:AuthRepo) {
     
     val auth = req.getHeader("X-KNL-A")
     if (auth != null && auth.length() > 0 && userHello.getInstitution != null) {
-	    val (username, password, institutionUUID) = BasicAuthFilter.extractCredentials(auth)
-	    AuthRepo().authenticate(userHello.getInstitution.getUUID, username, password).map { personUUID =>
-	  		val person = PersonRepo(personUUID).first.getOrElse(null)
-	  		userHello.setUserInfoTO(getUser(person).getOrElse(null))
-	  	}
+      val token = TokenRepo.checkToken(auth)
+      if (token.isDefined) {
+    	  val person = PersonRepo(token.get.getPersonUUID).first.getOrElse(null)
+		  userHello.setUserInfoTO(getUser(person).getOrElse(null))
+      }
     }
     
     userHello

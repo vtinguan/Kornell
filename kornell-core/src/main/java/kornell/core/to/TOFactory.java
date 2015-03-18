@@ -32,4 +32,5 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<KornellErrorTO> newErrorTO();
 	AutoBean<PersonTO> newPersonTO();
 	AutoBean<PeopleTO> newPeopleTO();
+	AutoBean<TokenTO> newTokenTO();
 }

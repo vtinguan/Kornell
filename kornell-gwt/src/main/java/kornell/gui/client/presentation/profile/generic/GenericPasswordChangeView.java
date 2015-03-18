@@ -10,7 +10,6 @@ import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.ClientProperties;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
 import com.github.gwtbootstrap.client.ui.Modal;
@@ -32,7 +31,6 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 
 	private KornellSession session;
 	private FormHelper formHelper;
-	private boolean isCurrentUser;
 
 	@UiField
 	Modal passwordChangeModal;
@@ -42,7 +40,7 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 	Button btnOK;
 	@UiField
 	Button btnCancel;
-	
+
 	private UserInfoTO user;
 	private KornellFormFieldWrapper modalNewPassword, modalNewPasswordConfirm;
 	private List<KornellFormFieldWrapper> fields;
@@ -52,16 +50,15 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 	public GenericPasswordChangeView() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
-	
+
 	public void show(){
 		if(initialized)
 			passwordChangeModal.show();
 	}
 
-	public void initData(KornellSession session, UserInfoTO user, boolean isCurrentUser) {
+	public void initData(KornellSession session, UserInfoTO user) {
 		this.session = session;
 		this.user = user;
-		this.isCurrentUser = isCurrentUser;
 		formHelper = new FormHelper();
 		fields = new ArrayList<KornellFormFieldWrapper>();
 		passwordChangeFields.clear();
@@ -69,15 +66,15 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
-		
+
 		modalNewPassword = new KornellFormFieldWrapper("Nova Senha", formHelper.createPasswordTextBoxFormField(""), true);
 		fields.add(modalNewPassword);
 		passwordChangeFields.add(modalNewPassword);
-		
+
 		modalNewPasswordConfirm = new KornellFormFieldWrapper("Confirmar Senha", formHelper.createPasswordTextBoxFormField(""), true);
 		fields.add(modalNewPasswordConfirm);
 		passwordChangeFields.add(modalNewPasswordConfirm);
-		
+
 		passwordChangeFields.add(formHelper.getImageSeparator());
 	}
 
@@ -101,16 +98,11 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 			LoadingPopup.show();
 			session.user().changeTargetPassword(user.getPerson().getUUID(), modalNewPassword.getFieldPersistText(), new Callback<Void>() {
 				@Override
-        public void ok(Void to) {
-					if(isCurrentUser){
-						String auth = ClientProperties.getAuthString(user.getUsername(), modalNewPassword.getFieldPersistText());
-						ClientProperties.set(ClientProperties.X_KNL_A, auth);
-					}
-
+				public void ok(Void to) {
 					LoadingPopup.hide();
 					passwordChangeModal.hide();
 					KornellNotification.show("Senha alterada com sucesso!");
-        }
+				}
 			});
 		}
 	}

@@ -30,6 +30,8 @@ import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.to.PersonTO
 import kornell.core.to.RoleTO
 import kornell.core.entity.RoleCategory
+import kornell.core.to.TokenTO
+import kornell.core.entity.AuthClientType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -272,4 +274,10 @@ package object repository {
 	    rs.getString("personUUID"), 
 	    rs.getString("threadType"), 
 	    rs.getBoolean("active"))
+	    
+	implicit def toTokenTO(rs: ResultSet): TokenTO = newTokenTO(
+	    rs.getString("token"),
+	    rs.getTimestamp("expiry"),
+	    rs.getString("personUUID"),
+	    AuthClientType.valueOf(rs.getString("clientType")))
 }
