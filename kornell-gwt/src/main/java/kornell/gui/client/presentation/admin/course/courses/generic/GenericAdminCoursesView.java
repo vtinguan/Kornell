@@ -10,6 +10,7 @@ import kornell.core.entity.Course;
 import kornell.core.entity.EnrollmentState;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
+import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.course.generic.GenericAdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
 import kornell.gui.client.uidget.KornellPagination;
@@ -70,6 +71,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
+	private AdminCourseView view;
 
 	public GenericAdminCoursesView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
 		this.placeCtrl = placeCtrl;
@@ -87,16 +89,18 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 							createCoursePanel.clear();
 						}
 						coursesPanel.setVisible(true);
+						view = null;
 					}
 				});
 
 		btnAddCourse.setVisible(session.isInstitutionAdmin());
 		btnAddCourse.addClickHandler(new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent event) {
 				if (session.isPlatformAdmin()) {
 					coursesPanel.setVisible(false);
-					GenericAdminCourseView view = new GenericAdminCourseView(session, bus, placeCtrl);
+					view = viewFactory.getAdminCourseView();
 					view.setPresenter(viewFactory.getAdminCoursePresenter());
 					view.init();
 					createCoursePanel.add(view);

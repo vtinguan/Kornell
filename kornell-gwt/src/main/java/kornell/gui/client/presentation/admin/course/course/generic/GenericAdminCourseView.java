@@ -88,6 +88,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	private String courseUUID;
 	private GenericCourseReportsView reportsView;
 	private EventBus bus;
+	private boolean initializing = false;
 	
 	public GenericAdminCourseView(final KornellSession session, EventBus bus, PlaceController placeCtrl) {
 		this.session = session;
@@ -107,7 +108,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
-						if(event.getNewPlace() instanceof AdminCoursePlace)
+						if(event.getNewPlace() instanceof AdminCoursePlace && !initializing)
 							init();
 					}
 				});
@@ -172,6 +173,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		courseFields.add(formHelper.getImageSeparator());
 
 		courseFields.setVisible(true);
+		initializing = false;
 	}
 
 	public void buildReportsView() {

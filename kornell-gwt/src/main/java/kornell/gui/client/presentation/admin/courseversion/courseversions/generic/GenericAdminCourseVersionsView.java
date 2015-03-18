@@ -10,7 +10,7 @@ import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EnrollmentState;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.generic.GenericAdminCourseVersionView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
@@ -72,6 +72,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 
 	Tab adminsTab;
 	FlowPanel adminsPanel;
+	private AdminCourseVersionView view;
 
 	public GenericAdminCourseVersionsView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
 		this.placeCtrl = placeCtrl;
@@ -89,16 +90,18 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 							createVersionPanel.clear();
 						}
 						courseVersionsPanel.setVisible(true);
+						view = null;
 					}
 				});
 
 		btnAddCourseVersion.setVisible(session.isInstitutionAdmin());
 		btnAddCourseVersion.addClickHandler(new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent event) {
 				if (session.isPlatformAdmin()) {
 					courseVersionsPanel.setVisible(false);
-					GenericAdminCourseVersionView view = new GenericAdminCourseVersionView(session, bus, placeCtrl);
+					view = viewFactory.getAdminCourseVersionView();
 					view.setPresenter(viewFactory.getAdminCourseVersionPresenter());
 					view.init();
 					createVersionPanel.add(view);
@@ -254,6 +257,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 		pagination.setRowData(courseVersions);
 		pagination.displayTableData(1);
 		initTable();
+		view = null;
 	}
 
 

@@ -83,19 +83,13 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	
 	private List<KornellFormFieldWrapper> fields;
 	private String courseVersionUUID;
+	private boolean initializing = false;
 	
-	public GenericAdminCourseVersionView(final KornellSession session, EventBus bus, PlaceController placeCtrl) {
+	public GenericAdminCourseVersionView(final KornellSession session, EventBus bus, final PlaceController placeCtrl) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.isPlatformAdmin = session.isPlatformAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
-
-		if(placeCtrl.getWhere() instanceof AdminCourseVersionPlace && ((AdminCourseVersionPlace)placeCtrl.getWhere()).getCourseVersionUUID() != null){
-			this.courseVersionUUID = ((AdminCourseVersionPlace)placeCtrl.getWhere()).getCourseVersionUUID();
-			isCreationMode = false;
-		} else {
-			isCreationMode = true;
-		}
 
 		// i18n
 		btnOK.setText("Salvar".toUpperCase());
@@ -108,7 +102,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
-						if(event.getNewPlace() instanceof AdminCourseVersionPlace)
+						if(event.getNewPlace() instanceof AdminCourseVersionPlace && !initializing)
 							init();
 					}
 				});
@@ -116,6 +110,15 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	
 	@Override
 	public void init(){
+		initializing = true;
+		
+		if(placeCtrl.getWhere() instanceof AdminCourseVersionPlace && ((AdminCourseVersionPlace)placeCtrl.getWhere()).getCourseVersionUUID() != null){
+			this.courseVersionUUID = ((AdminCourseVersionPlace)placeCtrl.getWhere()).getCourseVersionUUID();
+			isCreationMode = false;
+		} else {
+			isCreationMode = true;
+		}
+		
 		if(isCreationMode){
 			courseVersion = presenter.getNewCourseVersion();
 			initData();	
@@ -133,7 +136,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	public void initData() {
 		courseVersionFields.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
-
+		GWT.debugger();
 		courseVersionFields.clear();
 		
 		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
@@ -180,6 +183,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		courseVersionFields.add(formHelper.getImageSeparator());
 
 		courseVersionFields.setVisible(true);
+		initializing = false;
 	}
 
 	private void createCoursesField(CoursesTO to) {
