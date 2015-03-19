@@ -15,6 +15,8 @@ import javax.ws.rs.FormParam
 import javax.ws.rs.GET
 import kornell.core.to.TokenTO
 import kornell.core.error.exception.UnauthorizedAccessException
+import javax.ws.rs.core.Context
+import javax.servlet.http.HttpServletRequest
 
 @Path("auth")
 class TokenResource {
@@ -35,7 +37,7 @@ class TokenResource {
           token.get
         } else {
           //token expired, we delete old one and create a new one
-          TokenRepo.deleteToken(personUUID.get)
+          TokenRepo.deleteToken(token.get.getToken)
           TokenRepo.createToken(UUID.random(), personUUID.get, authClientType)
         }
       } else {
@@ -46,6 +48,19 @@ class TokenResource {
       //throw login exception
       throw new UnauthorizedAccessException("authenticationFailed")
     }
+  }
+  
+  @POST
+  @Path("logout")
+  def logout(@Context req: HttpServletRequest) = {
+    val auth = req.getHeader("X-KNL-TOKEN")
+    if (auth != null && auth.length() > 0) {
+      TokenRepo.deleteToken(auth)
+    } else {
+      //Gotta be authenticated to logout!
+      throw new UnauthorizedAccessException("mustAuthenticate")
+    }
+    ""
   }
 
 }

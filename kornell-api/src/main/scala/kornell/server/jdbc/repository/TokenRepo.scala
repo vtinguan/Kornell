@@ -1,4 +1,4 @@
-package kornell.server.jdbc.repository
+	package kornell.server.jdbc.repository
 
 import kornell.core.entity.AuthClientType
 import kornell.server.jdbc.SQL._
@@ -17,8 +17,8 @@ object TokenRepo {
     sql"""select * from Token where personUUID = ${personUUID}""".first[TokenTO]
   }
   
-  def deleteToken(personUUID: String) = {
-    sql"""delete from Token where personUUID = ${personUUID}""".executeUpdate
+  def deleteToken(token: String) = {
+    sql"""delete from Token where token = ${token}""".executeUpdate
   }
   
   def createToken(token: String, personUUID: String, authClientType: AuthClientType) = {

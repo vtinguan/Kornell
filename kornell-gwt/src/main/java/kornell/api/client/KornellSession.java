@@ -144,6 +144,19 @@ public class KornellSession extends KornellClient {
 	}
 	
 	public void logout(){
+		POST("/auth/logout").sendRequest(null, new Callback<String>() {
+			@Override
+			public void ok(String to) {
+				//Nothing to do
+			}
+			
+			@Override
+			protected void unauthorized(KornellErrorTO kornellErrorTO) {
+				//nothing to do here too, if for some reason the token is not there when the user
+				//tries to logout, let's just ignore.
+			}
+		});
+		
 		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
 		setCurrentUser(null);
 	}

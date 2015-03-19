@@ -60,7 +60,7 @@ class UserResource(private val authRepo:AuthRepo) {
 			    InstitutionsRepo.byHostName(hostName)
       }.getOrElse(null));
     
-    val auth = req.getHeader("X-KNL-A")
+    val auth = req.getHeader("X-KNL-TOKEN")
     if (auth != null && auth.length() > 0 && userHello.getInstitution != null) {
       val token = TokenRepo.checkToken(auth)
       if (token.isDefined) {
