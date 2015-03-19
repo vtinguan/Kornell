@@ -24,23 +24,17 @@ class BasicAuthFilter extends Filter {
     "/newrelic",
     "/api",
     "/probes",
-    "/checkup",
-    "/sandbox",
     "/sync",
     "/report",
     "/user/hello",
     "/user/check",
-    "/user/create",
     "/user/registrationRequest",
     "/user/requestPasswordChange",
     "/user/changePassword",
     "/user/resetPassword",
-    "/user/uploadProfileImage",
-    "/email/welcome",
     "/institutions",
     "/repository",
     "/healthCheck",
-    "/errors",
     "/auth")
 
   override def doFilter(sreq: ServletRequest, sres: ServletResponse, chain: FilterChain) =
