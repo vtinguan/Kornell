@@ -36,6 +36,7 @@ object ZipEventsTableFix extends App {
       val entryKey = rs.getString("entryValue")
       val entryValue = rs.getString("entryValue")
       val entryTime = rs.getTimestamp("ingestedAt")
+      
       val entryTimeS = Try {df.format(entryTime)}.getOrElse("unparseable_date@"+System.currentTimeMillis)
       val isRedundant = (entryValue == last_value)
       if (isRedundant) {
