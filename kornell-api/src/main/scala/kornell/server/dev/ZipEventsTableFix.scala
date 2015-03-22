@@ -9,7 +9,7 @@ import java.util.Date
 import java.util.concurrent.atomic.AtomicInteger
 import scala.util.Try
 
-//HOWTO: mvn exec:java -Dexec.mainClass=kornell.server.dev.ZipEventsTableFix
+//HOWTO: mvn exec:java -Dexec.mainClass=kornell.server.dev.ZipEventsTableFix -DcleanupDaemonThreads = false
 object ZipEventsTableFix extends App {
 
   val t0 = System.currentTimeMillis
@@ -107,10 +107,11 @@ object ZipEventsTableFix extends App {
     println(s"==== END ====")
     println(s"** Then [${df.format(new Date(t0))}]")
     println(s"** Now  [${df.format(new Date)}]")
-    println(s"** Count [${count}] rs")
+    println(s"** Count [${count.get}] rs")
+    println(s"** Fixed [${fixed.get}]")
     val t1 = System.currentTimeMillis
     val pace = ((1000) * count.get) / (t1 - t0)
-    println(s"** Pace  [$pace] rs/s")
+    println(s"** Pace  [$pace] rs/s")    
     mainThread.join
   }
   println(s"==== === ====")
