@@ -113,8 +113,6 @@
 			<!-- <scope>provided</scope> -->
 		</dependency>
 
-		<!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-dev</artifactId> 
-			<version>${gwtVersion}</version> </dependency> -->
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -182,15 +180,17 @@
 	</dependencies>
 
 	<build>
+		<finalName>kornell-gwt</finalName>
 		<!-- Generate compiled stuff in the folder used for development mode -->
 		<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 		<plugins>
+		    
 			<plugin>
-				<groupId>br.com.ingenieux</groupId>
-				<artifactId>beanstalk-maven-plugin</artifactId>
-				<version>1.0.1</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
 				<configuration>
-					<s3Key>${project.build.finalName}-${maven.build.timestamp}.war</s3Key>
+					<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 				</configuration>
 			</plugin>
 
@@ -207,11 +207,8 @@
 						<artifactId>gwt-user</artifactId>
 						<version>${gwtVersion}</version>
 					</dependency>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-dev</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
+					<!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-dev</artifactId> 
+						<version>${gwtVersion}</version> </dependency> -->
 				</dependencies>
 				<executions>
 					<!-- JS is only needed in the package phase, this speeds up testing -->
@@ -296,14 +293,17 @@
 						</goals>
 					</execution>
 				</executions>
+
 				<configuration>
 					<mainClass>com.google.gwt.dev.DevMode</mainClass>
+
 					<additionalClasspathElements>
 						<additionalClasspathElement>src/main/java/</additionalClasspathElement>
 					</additionalClasspathElements>
+
 					<arguments>
 						<argument>-war</argument>
-						<argument>target/kornell-gwt-1.2-SNAPSHOT/</argument>
+						<argument>${project.build.directory}/${project.build.finalName}</argument>
 						<argument>-startupUrl</argument>
 						<argument>Kornell.nocache.html</argument>
 						<argument>kornell.gui.Kornell</argument>
@@ -345,32 +345,4 @@
 		</pluginManagement>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>alpha</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>2.3</version>
-						<configuration>
-							<webResources>
-								<resource>
-									<!-- this is relative to the pom.xml directory -->
-									<directory>src/main/environments/alpha</directory>
-								</resource>
-							</webResources>
-						</configuration>
-					</plugin>
-					<plugin>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
