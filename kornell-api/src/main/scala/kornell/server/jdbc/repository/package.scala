@@ -138,7 +138,10 @@ package object repository {
         rs.getDate("versionCreatedAt"), 
         rs.getString("distributionPrefix"), 
         rs.getString("contentSpec"), 
-        rs.getBoolean("courseVersionDisabled"))
+        rs.getBoolean("courseVersionDisabled"),
+        rs.getString("parentVersionUUID"),
+        rs.getInt("instanceCount"),
+        rs.getString("label"))
         
     val course = newCourse(
         rs.getString("courseUUID"), 
