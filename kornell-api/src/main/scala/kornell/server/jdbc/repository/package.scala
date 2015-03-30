@@ -32,6 +32,7 @@ import kornell.core.to.RoleTO
 import kornell.core.entity.RoleCategory
 import kornell.core.to.TokenTO
 import kornell.core.entity.AuthClientType
+import kornell.core.entity.InstitutionType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -58,7 +59,9 @@ package object repository {
         rs.getBoolean("allowRegistrationByUsername"),
         rs.getDate("activatedAt"),
         rs.getString("skin"),
-        BillingType.valueOf(rs.getString("billingType")))
+        BillingType.valueOf(rs.getString("billingType")),
+        InstitutionType.valueOf(rs.getString("institutionType")),
+        rs.getString("dashboardVersionUUID"))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
