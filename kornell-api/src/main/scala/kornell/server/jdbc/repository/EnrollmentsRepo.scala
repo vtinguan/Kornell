@@ -8,6 +8,7 @@ import kornell.core.entity.Enrollments
 import kornell.core.to.EnrollmentTO
 import kornell.core.to.EnrollmentsTO
 import kornell.server.repository.TOs
+import kornell.core.error.exception.EntityConflictException
 
 object EnrollmentsRepo {
 
@@ -54,14 +55,17 @@ object EnrollmentsRepo {
   def create(enrollment: Enrollment) = {
     if (enrollment.getUUID == null)
       enrollment.setUUID(randomUUID)
+    if(enrollment.getCourseClassUUID != null && enrollment.getCourseVersionUUID != null)
+      throw new EntityConflictException("doubleEnrollmentCriteria")
     sql""" 
-    	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state)
+    	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state,courseVersionUUID)
     	values(
     		${enrollment.getUUID},
     		${enrollment.getCourseClassUUID},
     		${enrollment.getPersonUUID}, 
     		now(),
-    		${enrollment.getState.toString}
+    		${enrollment.getState.toString},
+    		${enrollment.getCourseVersionUUID}
     	)""".executeUpdate
     enrollment
   }
