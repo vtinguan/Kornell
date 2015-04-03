@@ -96,8 +96,12 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   	  and actomKey=${actomKey}""".foreach { rs =>
       entries.getEntries().put(rs.getString("entryKey"), rs.getString("entryValue"))
     }
-    entries
+    withDefaults(entries)
   }
+  
+  var properties : List[String] = List()
+  
+  def withDefaults(entries:ActomEntries):ActomEntries = entries
 }
 
 object ActomResource {

@@ -8,9 +8,9 @@ import kornell.server.jdbc.SQL._
 import kornell.server.util.Settings
 
 @Path("")
-class RootResource {
+class RootResource { 
   val buildDescription = Settings.get("build.number").getOrElse("development")
-
+  
   @Produces(Array("text/plain"))
   @GET
   def get = 
