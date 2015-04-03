@@ -29,6 +29,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	private EventBus bus;
 
 	public SCORM12Adapter(EventBus bus, KornellClient client) {
+		logger.info("SCORM API 1.2.2015_04_03_15_48");
 		this.client = client;
 		this.bus = bus;
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
