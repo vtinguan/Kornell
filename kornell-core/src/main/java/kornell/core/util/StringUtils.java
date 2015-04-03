@@ -1,5 +1,7 @@
 package kornell.core.util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,10 +45,21 @@ public class StringUtils {
 		}
 	}
 
-	public static URLBuilder url(String base) {
+	public static URLBuilder with(String base) {
 		return new URLBuilder(base);
 	}
 
+	/**
+	 * Concatenates segments into a single-slashed url or path
+	 */
+	public static String mkurl(String base, String... path){
+		return composeURL(base,path);
+	}
+	
+	/**
+	 * @deprecated Prefer mkurl()   	
+	 */
+	@Deprecated
 	public static String composeURL(String base, String... path) {
 		StringBuffer buf = new StringBuffer();
 		List<String> tokens = new ArrayList<String>();
@@ -131,6 +144,13 @@ public class StringUtils {
 			return null;
 		}
 
+	}
+	
+	public static boolean noneEmpty(Object... objs){
+		for (Object obj : objs) {
+			if (obj == null || obj.toString().length() == 0) return false;
+		}
+		return true;
 	}
 	
 }
