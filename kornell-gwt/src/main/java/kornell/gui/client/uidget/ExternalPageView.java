@@ -4,6 +4,7 @@ import java.util.Date;
 
 import kornell.api.client.KornellClient;
 import kornell.core.lom.ExternalPage;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
@@ -83,7 +84,7 @@ public class ExternalPageView extends Uidget {
 
 	public void setSrc(final String src, final String actomKey) {
 		// TODO: Check if src exists
-		iframe.setSrc(src);
+		iframe.setSrc(StringUtils.composeURL("/", src));
 	}
 
 	private String now() {
