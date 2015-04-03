@@ -23,15 +23,19 @@ import java.io.BufferedInputStream
 import com.google.gwt.http.client.URL
 import java.net.URL
 import kornell.core.error.exception.EntityNotFoundException
+import java.util.logging.Logger
+import scala.util.Try
+
 class S3(regionName: String,
   val accessKey: String,
   val secretKey: String,
   val bucket: String,
-  val prefix: String,
-  distributionURL: String) {
-
+  val prefix: String) {
+  
   val region = Region.getRegion(Regions.fromName(regionName))
 
+  val logger = Logger.getLogger(classOf[S3].getName)
+  
   //TODO: Option instead of null checks
   val creds: AWSCredentials = if (accessKey != null)
     new BasicAWSCredentials(accessKey, secretKey)
@@ -42,8 +46,6 @@ class S3(regionName: String,
   val s3 = if (creds != null)
     new AmazonS3Client(creds)
   else new AmazonS3Client()
-
-  lazy val client = s3
 
   s3.setRegion(region)
 
@@ -78,21 +80,32 @@ class S3(regionName: String,
   def getObject(key: String) =
     s3.getObject(bucket, prefix + "/" + key)
 
-  def source(ditributionPrefix: String, key: String) = Source.fromURL(url(ditributionPrefix, key), "UTF-8")
+  def source( infix: String, key: String) =
+    inputStream(infix,key).map{Source.fromInputStream(_,"UTF-8")}
+  
 
-  def inputStream(ditributionPrefix: String, key: String) = {
-    val keyURL = new java.net.URL(url(ditributionPrefix, key))
-    val urlConnection = keyURL.openConnection
-    val in = new BufferedInputStream(urlConnection.getInputStream());
-    in
+  def inputStream(infix: String, key: String) = Try {
+    logger.info("*************")
+    logger.info(s"inputStream(${infix}, ${key})")    
+    val fqkn = url(infix, key)
+
+    try	{ 
+      s3.getObject(bucket, fqkn).getObjectContent
+    }catch {
+      case e:Exception => {
+        val cmd = s"aws s3api get-object --bucket ${bucket} --key ${fqkn} --region ${region} file.out"
+        logger.warning("Could not load object. Try ["+cmd+"]")
+        throw e
+      }
+    }
   }
 
-  def url(ditributionPrefix: String, key: String) = composeURL(baseURL, prefix, ditributionPrefix, key)
+  def url(infix: String, key: String) = composeURL(prefix, infix, key)
 
   //TODO: https is giving security warnings on chrome
   def url(key: String) = s3.getResourceUrl(bucket,composeURL(prefix, key)).replace("https://", "http://")
   
-  lazy val baseURL = distributionURL
+
 
 }
 
@@ -103,17 +116,16 @@ object S3 {
   val certificates = new S3("sa-east-1",
     null, null,
     USER_CONTENT_BUCKET,
-    "usercontent/certificates", null)
+    "usercontent/certificates")
 
   implicit def toS3(rs: ResultSet) = new S3(
     rs.getString("region"),
     rs.getString("accessKeyId"), rs.getString("secretAccessKey"),
-    rs.getString("bucketName"), rs.getString("prefix"),
-    rs.getString("distributionURL"))
+    rs.getString("bucketName"), rs.getString("prefix"))
 
   def apply(repository_uuid: String) =
     sql"""
-    	select region,accessKeyId,secretAccessKey,bucketName,prefix,distributionURL
+    	select region,accessKeyId,secretAccessKey,bucketName,prefix 
     	from S3ContentRepository
     	where uuid=$repository_uuid
     """.first[S3].getOrElse({ throw new EntityNotFoundException("repositoryNotFound") })

@@ -288,7 +288,6 @@ object Entities {
     bucketName: String = null,
     prefix: String = null,
     region: String = null,
-    distributionURL: String = null,
     institutionUUID: String = null) = {
     val repo = factory.newS3ContentRepository.as
     repo.setUUID(uuid)
@@ -297,7 +296,6 @@ object Entities {
     repo.setPrefix(prefix)
     repo.setRegion(region)
     repo.setSecretAccessKey(secretAccessKey)
-    repo.setDistributionURL(distributionURL)
     repo.setInstitutionUUID(institutionUUID)
     repo
   }

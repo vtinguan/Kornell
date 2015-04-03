@@ -18,7 +18,6 @@ class RepositoriesRepo {
 		    | ${s3repo.getBucketName}, 
 		    | ${s3repo.getPrefix},
 		    | ${s3repo.getRegion},
-		    | ${s3repo.getDistributionURL},
 		    | ${s3repo.getInstitutionUUID})""".executeUpdate
 		s3repo
 	}
