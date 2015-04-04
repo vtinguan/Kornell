@@ -169,7 +169,8 @@ package object repository {
       	.getOrElse(null),
       rs.getString("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt")
+      rs.getString("certifiedAt"),
+      rs.getString("courseVersionUUID")
     )
   }
     
