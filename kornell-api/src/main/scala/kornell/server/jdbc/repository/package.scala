@@ -90,7 +90,10 @@ package object repository {
     rs.getDate("versionCreatedAt"),
     rs.getString("distributionPrefix"),
     rs.getString("contentSpec"),
-    rs.getBoolean("disabled"))    
+    rs.getBoolean("disabled"),
+    rs.getString("parentVersionUUID"),
+    rs.getInt("instanceCount"),
+    rs.getString("label"))    
   
   implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = {
     val course = newCourse(

@@ -43,6 +43,14 @@ object EnrollmentsRepo {
 	    AND e.person_uuid = ${personUUID}
 	    """.first[Enrollment]
 
+  def byCourseVersionAndPerson(courseVersionUUID: String, personUUID: String): Option[Enrollment] = 
+    sql"""
+    	SELECT e.*, p.* 
+    FROM Enrollment e join Person p on e.person_uuid = p.uuid
+    WHERE e.courseVersionUUID = ${courseVersionUUID} 
+	    AND e.person_uuid = ${personUUID}
+	    """.first[Enrollment]
+	    
   def byStateAndPerson(state: EnrollmentState, personUUID: String) =
     sql"""
 	  SELECT e.*, p.* 

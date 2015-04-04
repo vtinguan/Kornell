@@ -29,6 +29,9 @@ import kornell.server.util.ServerTime
 import kornell.core.util.StringUtils
 import kornell.core.entity.RegistrationType
 import kornell.server.jdbc.repository.CourseClassRepo
+import kornell.server.jdbc.repository.CourseVersionRepo
+import kornell.server.api.ActomResource
+import kornell.core.error.exception.EntityConflictException
 
 object RegistrationEnrollmentService {
 
@@ -62,22 +65,58 @@ object RegistrationEnrollmentService {
     if(!enrollmentRequest.getRegistrationType.equals(RegistrationType.email)) {
         personRepo.setPassword(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getPassword)
     }
-    createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
+    val enrollment = createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, enrollmentRequest.getCourseVersionUUID, EnrollmentState.enrolled, dean.getUUID)
+    if (enrollmentRequest.getCourseVersionUUID != null) {
+    	createChildEnrollments(enrollment, person.getUUID, dean.getUUID)
+    }
   }
  
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
     val personRepo = PersonRepo(person.getUUID)
-    EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
-      case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
-      case None => {
-        createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, EnrollmentState.enrolled, dean.getUUID)
+    if (enrollmentRequest.getCourseClassUUID != null) {
+    	EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
+    		case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
+    		case None => {
+    			createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, enrollmentRequest.getCourseVersionUUID, EnrollmentState.enrolled, dean.getUUID)
+    		}
+    	}
+    } else {
+      val courseVersion = CourseVersionRepo(enrollmentRequest.getCourseVersionUUID).get
+      if (courseVersion.getParentVersionUUID != null) {
+        throw new EntityConflictException("cannotEnrollOnChildVersion")
       }
+      EnrollmentsRepo.byCourseVersionAndPerson(enrollmentRequest.getCourseVersionUUID, person.getUUID) match {
+		case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
+		case None => {
+			val enrollment = createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, enrollmentRequest.getCourseVersionUUID, EnrollmentState.enrolled, dean.getUUID)
+			createChildEnrollments(enrollment, person.getUUID, dean.getUUID)
+		}
+	  }
     }
     //if there's no username set, get it from the enrollment request
     if(StringUtils.isNone(person.getFullName)){
       person.setFullName(enrollmentRequest.getFullName)
       personRepo.update(person)
     }
+  }
+  
+  private def createChildEnrollments(enrollment: Enrollment, personUUID : String, deanUUID: String) = {
+	val dashboardEnrollmentMap = collection.mutable.Map[String, String]()
+	var moduleCounter = 0
+	val childEnrollmentMap = Map("knl.dashboard.enrollmentUUID" -> enrollment.getUUID).asJava
+	CourseVersionRepo(enrollment.getCourseVersionUUID).getChildren.foreach(cv => {
+		for (i <- 1 to cv.getInstanceCount) {
+		  val childEnrollment = createEnrollment(personUUID, null, cv.getUUID, EnrollmentState.enrolled, deanUUID)
+		  dashboardEnrollmentMap("knl.module." + moduleCounter + ".name") = cv.getLabel + i
+		  dashboardEnrollmentMap("knl.module." + moduleCounter + ".enrollmentUUID") = childEnrollment.getUUID
+		  moduleCounter += 1
+		  val childActomResource = new ActomResource(childEnrollment.getUUID, "index.html")
+		  childActomResource.putEntries(Entities.newActomEntries(childEnrollment.getUUID, "index.html", childEnrollmentMap))
+		}
+	})
+	dashboardEnrollmentMap("knl.module._count") = moduleCounter.toString
+	val actomResource = new ActomResource(enrollment.getUUID, "index.html")
+	actomResource.putEntries(Entities.newActomEntries(enrollment.getUUID, "index.html", dashboardEnrollmentMap.asJava))
   }
 
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person, cancelEnrollment: Boolean) = {
@@ -142,10 +181,11 @@ object RegistrationEnrollmentService {
     user
   }
 
-  private def createEnrollment(personUUID: String, courseClassUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
-    val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled,null,null,null,null,null))
+  private def createEnrollment(personUUID: String, courseClassUUID: String, courseVersionUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
+    val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled,null,null,null,null,null, courseVersionUUID))
     EventsRepo.logEnrollmentStateChanged(
       UUID.random, ServerTime.now, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState)
+    enrollment
   }
 }

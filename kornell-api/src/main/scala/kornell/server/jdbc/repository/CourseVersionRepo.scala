@@ -57,6 +57,12 @@ class CourseVersionRepo(uuid: String) {
     courseVersion
   }
   
+  def getChildren(): List[CourseVersion] = {
+    sql"""
+    	select * from CourseVersion where parentVersionUUID = ${uuid}"""
+    .map[CourseVersion](toCourseVersion)
+  }
+  
 }
 
 object CourseVersionRepo {
