@@ -9,8 +9,10 @@ var warKey = process.env.KNL_WAR_KEY || "Kornell/kornell-api.war"
 var stackId = process.env.KNL_STACK_ID;
 var appId = process.env.KNL_APP_ID;
 
+var awsRegion = process.env.KNL_REGION || "us-east-1";
+
 AWS.config.update({
-	region : 'sa-east-1',
+	region : awsRegion,
 	logger : process.stdout
 });
 
