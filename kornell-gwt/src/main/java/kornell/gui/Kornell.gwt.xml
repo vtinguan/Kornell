@@ -11,23 +11,23 @@
 	<inherits name="com.google.gwt.xml.XML" />
 
 	<!-- Full Stack Traces IN DEVELOPMENT -->
+	<!-- 
 	<set-property name="compiler.stackMode" value="emulated" />
 	<set-configuration-property name="compiler.emulatedStack.recordFileNames"
 		value="true" />
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers"
 		value="true" />
-
+ 	-->
+ 	
 	<!-- Logging -->
 	<inherits name="com.google.gwt.logging.Logging" />
 	<set-property name="gwt.logging.logLevel" value="FINEST" />
 	<set-property name="gwt.logging.enabled" value="TRUE" />
 
 	<set-property name="gwt.logging.consoleHandler" value="ENABLED" />
-	<set-property name="gwt.logging.simpleRemoteHandler"
-		value="DISABLED" />
+	<set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
 	<set-property name="gwt.logging.systemHandler" value="DISABLED" />
-	<set-property name="gwt.logging.developmentModeHandler"
-		value="DISABLED" />
+	<set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
 
 	<!-- Internationalization -->
 	<inherits name="com.google.gwt.i18n.I18N" />
@@ -54,8 +54,6 @@
 	<inherits name='kornell.api.KornellClient' />
 	<inherits name='kornell.scorm.KornellSCORM' />
 
-
-
 	<entry-point class='kornell.gui.client.Kornell' />
 
 	<replace-with class="kornell.gui.client.GenericClientFactoryImpl">
@@ -64,8 +62,6 @@
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
-
 	<set-property name="bootstrap.responsiveDesign" value="true" />
-
 	<add-linker name="xsiframe" />
 </module>
