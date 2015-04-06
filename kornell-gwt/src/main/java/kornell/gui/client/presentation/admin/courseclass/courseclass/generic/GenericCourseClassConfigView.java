@@ -144,7 +144,7 @@ public class GenericCourseClassConfigView extends Composite {
 		
 
 		if (isCreationMode) {
-			session.courses().get(new Callback<CoursesTO>() {
+			session.courses().get(false, new Callback<CoursesTO>() {
 					@Override
 					public void ok(CoursesTO to) {
 						createCoursesField(to);
