@@ -63,6 +63,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	/* GUI */
 	private ViewFactory viewFactory;
 	private Place defaultPlace;
+	private Place homePlace;
 	private KornellSession session = new KornellSession(EVENT_BUS);
 
 	public GenericClientFactoryImpl() {
@@ -191,6 +192,16 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public void setDefaultPlace(Place place) {
 		this.defaultPlace = place;
+	}
+
+	@Override
+	public Place getHomePlace() {
+		return homePlace != null ? homePlace : defaultPlace;
+	}
+
+	@Override
+	public void setHomePlace(Place place) {
+		this.homePlace = place;
 	}
 
 	@Override

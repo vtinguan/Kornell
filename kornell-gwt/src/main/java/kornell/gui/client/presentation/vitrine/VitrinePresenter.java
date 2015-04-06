@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RegistrationType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassesTO;
@@ -19,6 +20,7 @@ import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -26,6 +28,7 @@ import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -105,9 +108,14 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				} else if (session.isInstitutionAdmin()) {
 					newPlace = new AdminCourseClassesPlace();
 				} else {
+					GWT.debugger();
+					if(InstitutionType.DASHBOARD.equals(institution.getInstitutionType())){
+						welcomePlace = new ClassroomPlace("F489FC12-830A-4FDF-8E9C-10DF87ABF7AD");
+					}
 					newPlace = welcomePlace;
 				}
 				clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
+				clientFactory.setHomePlace(welcomePlace);
 				clientFactory.getPlaceController().goTo(newPlace);
 			}
 		};

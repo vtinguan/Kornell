@@ -26,11 +26,10 @@ public class AdminCoursesPresenter implements AdminCoursesView.Presenter {
 	private CoursesTO coursesTO;
 
 	public AdminCoursesPresenter(KornellSession session,
-			PlaceController placeController, Place defaultPlace,
+			PlaceController placeController,
 			TOFactory toFactory, ViewFactory viewFactory) {
 		this.session = session;
 		this.placeController = placeController;
-		this.defaultPlace = defaultPlace;
 		this.toFactory = toFactory;
 		this.viewFactory = viewFactory;
 		formHelper = new FormHelper();
