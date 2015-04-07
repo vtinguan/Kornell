@@ -178,6 +178,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>kornell-gwt</finalName>
 		<!-- Generate compiled stuff in the folder used for development mode -->
 		<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 		<plugins>
