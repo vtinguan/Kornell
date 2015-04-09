@@ -5,13 +5,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DataType {
-	static DataType CMIString255 = new DataType(){
+	public static DataType CMIString255 = new DataType(){
 		protected boolean isInstance(String value) {
 			return value == null || value.length() <= 255;
 		};
 	};
 	
-	static DataType CMIDecimal = new DataType(){
+	public static DataType CMIString4096 = new DataType(){
+		protected boolean isInstance(String value) {
+			return value == null || value.length() <= 4096;
+		};
+	};
+	
+	public static DataType CMIDecimal = new DataType(){
 		public boolean isInstance(String value) {
 			try{
 				Integer.parseInt(value);

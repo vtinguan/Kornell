@@ -1,4 +1,6 @@
-package kornell.core.scorm12.rte;
+package kornell.core.scorm12.rte.cmi;
+
+import kornell.core.scorm12.rte.DMElement;
 
 public class StudentData extends DMElement {
 	public static final StudentData dme = new StudentData();

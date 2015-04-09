@@ -24,6 +24,10 @@ public class DMElement {
 	}
 	
 	public DMElement(DMElement ...children){
+		addAll(children);
+	}
+
+	protected void addAll(DMElement... children) {
 		for(DMElement c:children) add(c);
 	}
 
@@ -168,7 +172,7 @@ public class DMElement {
 		return defaultTo(entries, value, false);
 	}
 
-	protected Integer asInt(Map<String, String> entries) {
+	public Integer asInt(Map<String, String> entries) {
 		String str = get(entries);
 		return Integer.parseInt(str);
 	}

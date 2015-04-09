@@ -1,4 +1,4 @@
-package kornell.core.scorm12.rte;
+package kornell.core.scorm12.rte.cmi;
 
 import static kornell.core.scorm12.rte.DataType.*;
 import static kornell.core.scorm12.rte.SCOAccess.*;
@@ -7,6 +7,8 @@ import static kornell.core.util.StringUtils.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import kornell.core.scorm12.rte.DMElement;
+import kornell.core.scorm12.rte.KNL;
 import kornell.core.util.StringUtils;
 
 public class LessonStatus extends DMElement {
