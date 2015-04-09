@@ -1,15 +1,13 @@
-package kornell.core.scorm12.rte.cmi;
+package kornell.core.scorm12.rte.cmi.core;
 
-import static kornell.core.scorm12.rte.DataType.*;
-import static kornell.core.scorm12.rte.SCOAccess.*;
-import static kornell.core.util.StringUtils.*;
+import static kornell.core.scorm12.rte.DataType.CMIVocabulary;
+import static kornell.core.scorm12.rte.SCOAccess.RO;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import kornell.core.scorm12.rte.DMElement;
 import kornell.core.scorm12.rte.KNL;
-import kornell.core.util.StringUtils;
+import kornell.core.scorm12.rte.cmi.StudentData;
 
 public class LessonStatus extends DMElement {
 	public static final String passed = "passed";

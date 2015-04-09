@@ -1,4 +1,4 @@
-package kornell.core.scorm12.rte.cmi;
+package kornell.core.scorm12.rte.cmi.core;
 
 import kornell.core.scorm12.rte.DMElement;
 
