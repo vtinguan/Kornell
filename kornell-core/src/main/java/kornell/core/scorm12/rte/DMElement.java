@@ -12,46 +12,47 @@ import kornell.core.util.StringUtils;
 
 public class DMElement {
 	private DMElement parent = null;
-	private  List< DMElement> children = new ArrayList<>();
+	private List<DMElement> children = new ArrayList<>();
 	private String key;
 	private String fqkn;
 	private DataType type;
-	//private Object access;
-	//private boolean mandatory;
+
+	// private Object access;
+	// private boolean mandatory;
 
 	public DMElement() {
 		this("");
 	}
-	
-	public DMElement(DMElement ...children){
+
+	public DMElement(DMElement... children) {
 		addAll(children);
 	}
 
 	protected void addAll(DMElement... children) {
-		for(DMElement c:children) add(c);
+		for (DMElement c : children)
+			add(c);
 	}
 
 	public DMElement(String key, boolean mandatory,
 			DataType type, SCOAccess access) {
 		this.key = key;
 		this.type = type;
-		//this.access = access;
-		//this.mandatory = mandatory;
+		// this.access = access;
+		// this.mandatory = mandatory;
 	}
 
 	public DMElement(String key) {
-		this(key,false,null,null);
+		this(key, false, null, null);
 	}
-	
 
 	public synchronized DMElement add(DMElement child) {
 		if (child != null) {
-		  this.children.add(child);
-		  if(child.parent != null && child.parent != this){
-		  	child.parent.children.remove(child);
-		  }
-		  child.parent = this;
-		} 
+			this.children.add(child);
+			if (child.parent != null && child.parent != this) {
+				child.parent.children.remove(child);
+			}
+			child.parent = this;
+		}
 		return this;
 	}
 
@@ -92,12 +93,14 @@ public class DMElement {
 	 * Fully Qualified Key Name (e.g. cmi.core.lesson_status
 	 */
 	public String getFQKN() {
-		if(fqkn == null){
-			if(parent !=null){
+		if (fqkn == null) {
+			if (parent != null) {
 				fqkn = parent.getFQKN();
-				if (! "".equals(fqkn)) fqkn += ".";
+				if (!"".equals(fqkn))
+					fqkn += ".";
 				fqkn += key;
-			} else fqkn = "";
+			} else
+				fqkn = "";
 		}
 		return fqkn;
 	}
@@ -113,19 +116,25 @@ public class DMElement {
 
 	String dirty_flag = "_";
 
-	protected Map<String, String> set(Map<String, String> out,
-			final String value, final boolean dirty) {
-		if (out == null) {
-			out = nothing();
+	protected Map<String, String> set(final String value,
+			final boolean dirty) {
+		return set(null, value, dirty);
+	}
+
+	protected Map<String, String> set(Map<String, String> entries,
+			final String value,
+			final boolean dirty) {
+		if (entries == null) {
+			entries = nothing();
 			if (type != null && !type.check(value)) {
 				throw new IllegalArgumentException("Type [" + type.toString()
 						+ "] does not contain [" + value + "]");
 			}
 		}
 		String key = dirty ? dirty(getFQKN()) : getFQKN();
-		out.put(key, value);
-		return out;
-	};
+		entries.put(key, value);
+		return entries;
+	}
 
 	protected Map<String, String> set(final String value) {
 		return set(null, value, true);
@@ -141,10 +150,14 @@ public class DMElement {
 
 	private Map<String, String> defaultTo(Map<String, String> entries,
 			String defaultValue, boolean dirty) {
-		if (entries != null) {
-			return set(null, defaultValue, dirty);
-		} else
-			return nothing();
+		if (entries != null){
+			boolean isDefined = entries.containsKey(getFQKN());
+			if(! isDefined){
+				Map<String, String> result = set(null, defaultValue, dirty);
+				return result;
+			}
+		}
+		return nothing();
 	}
 
 	public boolean isSome(Map<String, String> entries) {

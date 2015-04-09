@@ -27,15 +27,20 @@ object SCORM12 {
   }
 
   implicit class Element(el: DMElement) {
-    def initialize(entries: JMap[String, String]): JMap[String, String] =
-      _initialize(entries).asJava
+    def initialize(entries: JMap[String, String]): JMap[String, String] ={
+      val launched = _initialize(entries).asJava
+      val maps = List(entries,launched) 
+      val result = maps.merged
+      result.asJava
+    }
 
     def _initialize(entries: JMap[String, String]): MMap[String, String] = {
       //TODO: .par?
       val msg = el.getFQKN()
       val kids = el.getChildren().asScala.map(c => c.initialize(entries))
       val selfie = List(el.initializeMap(entries))
-      (kids ++ selfie).merged 
+      val result = (kids ++ selfie).merged
+      result
     }
   }
 

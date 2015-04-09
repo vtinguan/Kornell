@@ -7,6 +7,6 @@ public class Score extends DMElement {
 	
 	public Score() {
 		super("score");
-		addAll(Raw.dme,Min.dme);
+		addAll(Raw.dme,Min.dme,Max.dme);
 	}
 }

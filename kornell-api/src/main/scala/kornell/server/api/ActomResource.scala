@@ -107,6 +107,7 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   def initialize(aentries:ActomEntries):ActomEntries = {
     val entries = aentries.getEntries()
     val initilizedEntries = SCORM12.dataModel.initialize(entries)
+    
     aentries.setEntries(initilizedEntries)
     aentries
   }    
