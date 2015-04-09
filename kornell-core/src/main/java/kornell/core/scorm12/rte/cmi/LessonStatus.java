@@ -35,7 +35,7 @@ public class LessonStatus extends DMElement {
 		set(result,completed);
 		Integer masteryScore = StudentData.dme.mastery_score.asInt(entries);
  	  if (masteryScore !=  null){
- 			Integer scoreRaw = Score.dme.raw.asInt(entries);
+ 			Integer scoreRaw = Raw.dme.asInt(entries);
  			if(scoreRaw != null){
  				if(scoreRaw >= masteryScore)
  					set(passed);

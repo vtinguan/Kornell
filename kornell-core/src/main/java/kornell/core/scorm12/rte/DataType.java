@@ -5,6 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DataType {
+	
+	public static DataType EITHER(DataType ...ors){
+		return new DataType(ors);
+	}
+
+	public static DataType CMIBlank = new DataType();
+	
 	public static DataType CMIString255 = new DataType(){
 		protected boolean isInstance(String value) {
 			return value == null || value.length() <= 255;
@@ -28,11 +35,16 @@ public class DataType {
 		}
 	};
 	
+	Set<DataType> ors = new HashSet<>();
 	Set<String> words = new HashSet<>();
 	public DataType(String... words) {
 		this.words.addAll(Arrays.asList(words));
 	}
 	
+	public DataType(DataType[] ors) {
+		this.ors.addAll(Arrays.asList(ors));
+	}
+
 	public static DataType CMIVocabulary(String... words) {		
 		return new DataType(words);
 	}
