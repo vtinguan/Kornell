@@ -1,4 +1,4 @@
-package kornell.core.scorm12;
+package kornell.core.scorm12.rte;
 
 public enum SCOAccess {
 		RO, //Read Only
