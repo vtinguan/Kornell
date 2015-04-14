@@ -1,10 +1,14 @@
 package kornell.gui.client;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.event.EventFactory;
@@ -20,6 +24,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -105,10 +110,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {					
 					Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
+					setHomePlace(new WelcomePlace());
 					if (session.isAuthenticated()) {
-						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-								|| session.isInstitutionAdmin());
-						setDefaultPlace(isAdmin ? new AdminCourseClassesPlace() : new WelcomePlace());
 						startAuthenticated(session);
 					} else {
 						startAnonymous();
@@ -123,14 +126,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void startAnonymous() {
 		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
-		defaultPlace = new VitrinePlace();
+		setDefaultPlace(new VitrinePlace());
 		startClient();
 	}
 
 	private void startAuthenticated(KornellSession session) {
-		if (session.isCourseClassAdmin()) {
-			defaultPlace = new AdminCourseClassesPlace();
-		}
+		boolean isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+				|| session.isInstitutionAdmin();
+		setDefaultPlace(isAdmin ? new AdminCourseClassesPlace() : new WelcomePlace());
 		startClient();
 	}
 
@@ -201,6 +204,20 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void setHomePlace(Place place) {
+		if(session.getCurrentUser() != null &&
+				session.getCurrentUser().getEnrollments() != null &&
+				InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			for (Enrollment enrollment : session.getCurrentUser().getEnrollments().getEnrollments()) {
+				Date date = new Date(0);
+				//get latest active enrollment on a class
+				if(enrollment.getCourseClassUUID() != null && 
+						EnrollmentState.enrolled.equals(enrollment.getState()) && 
+						enrollment.getEnrolledOn().after(date)){
+					date = enrollment.getEnrolledOn();
+					place = new ClassroomPlace(enrollment.getUUID());
+				}				
+			}			
+		}
 		this.homePlace = place;
 	}
 

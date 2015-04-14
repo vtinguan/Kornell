@@ -337,7 +337,6 @@ public class GenericCourseDetailsView extends Composite {
 			displayButton(btnTopics, constants.btnTopics(),
 					constants.btnTopicsInfo(), false);
 		}
-		// TODO: i18n
 		if(isInactiveCourseClass){
 			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
 		} else if(isEnrolled && !isCancelled){
