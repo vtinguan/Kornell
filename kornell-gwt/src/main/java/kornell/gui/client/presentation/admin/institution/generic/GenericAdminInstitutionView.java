@@ -7,6 +7,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.BillingType;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionType;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
@@ -93,7 +94,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private Institution institution;
 
-	private KornellFormFieldWrapper name, fullName, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
+	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private GenericInstitutionReportsView reportsView;
@@ -190,6 +191,16 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		fullName = new KornellFormFieldWrapper("Nome da Instituição", formHelper.createTextBoxFormField(institution.getFullName()), isPlatformAdmin);
 		fields.add(fullName);
 		institutionFields.add(fullName);
+		
+		final ListBox institutionTypes = new ListBox();
+		institutionTypes.addItem("Padrão", InstitutionType.DEFAULT.toString());
+		institutionTypes.addItem("Dashboard", InstitutionType.DASHBOARD.toString());
+		if (!isCreationMode) {
+			institutionTypes.setSelectedValue(institution.getInstitutionType().toString());
+		}
+		institutionType = new KornellFormFieldWrapper("Tipo de Instituição", new ListBoxFormField(institutionTypes), isPlatformAdmin);
+		fields.add(institutionType);
+		institutionFields.add(institutionType);
 		
 		assetsURL = new KornellFormFieldWrapper("URL dos Recursos", formHelper.createTextBoxFormField(institution.getAssetsURL()), isPlatformAdmin);
 		fields.add(assetsURL);
