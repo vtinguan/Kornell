@@ -10,6 +10,7 @@ import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EnrollmentState;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -73,6 +74,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 	Tab adminsTab;
 	FlowPanel adminsPanel;
 	private AdminCourseVersionView view;
+	private AdminCourseVersionPresenter adminCourseVersionPresenter;
 
 	public GenericAdminCourseVersionsView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
 		this.placeCtrl = placeCtrl;
@@ -101,8 +103,8 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 			public void onClick(ClickEvent event) {
 				if (session.isPlatformAdmin()) {
 					courseVersionsPanel.setVisible(false);
-					view = viewFactory.getAdminCourseVersionView();
-					view.setPresenter(viewFactory.getAdminCourseVersionPresenter());
+					adminCourseVersionPresenter = viewFactory.getAdminCourseVersionPresenter();
+					view = adminCourseVersionPresenter.getView();
 					view.init();
 					createVersionPanel.add(view);
 				}
