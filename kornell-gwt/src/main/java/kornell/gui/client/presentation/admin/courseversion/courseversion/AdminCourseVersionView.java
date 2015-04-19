@@ -10,5 +10,6 @@ public interface AdminCourseVersionView extends IsWidget {
 		CourseVersion getNewCourseVersion();
 	}
 	void setPresenter(Presenter presenter);
+	Presenter getPresenter();
 	void init();
 }

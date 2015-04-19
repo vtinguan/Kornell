@@ -16,6 +16,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Enrollments;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
@@ -368,7 +369,11 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 		enrollmentRequestTO.setCancelEnrollment(cancelEnrollment);
 		enrollmentRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
-		enrollmentRequestTO.setCourseClassUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+		if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			enrollmentRequestTO.setCourseVersionUUID(Dean.getInstance().getCourseClassTO().getCourseVersionTO().getCourseVersion().getUUID());
+		} else {
+			enrollmentRequestTO.setCourseClassUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+		}
 		enrollmentRequestTO.setFullName(fullName);
 		enrollmentRequestTO.setRegistrationType(Dean.getInstance().getCourseClassTO().getCourseClass()
 				.getRegistrationType());

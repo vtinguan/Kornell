@@ -15,14 +15,14 @@ class CourseSpec extends UnitSpec
   
   "The platformAdmin" should "be able to create and get a course" in asPlatformAdmin {
     val courseCode = randStr(5)
-    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null))
+    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null, null, false))
     
     assert(courseCode == CoursesResource().getCourse(course.getUUID).get.getCode)
   }
   
   "The institutionAdmin" should "be able to create and get a course" in asInstitutionAdmin {
     val courseCode = randStr(5)
-    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null))
+    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null, null, false))
     
     assert(courseCode == CoursesResource().getCourse(course.getUUID).get.getCode)
   }
@@ -30,7 +30,7 @@ class CourseSpec extends UnitSpec
   "A person" should "not be able to create a course" in asPerson {
     val courseCode = randStr(5)
     try {
-        val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null))
+        val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null, null, false))
         throw new Throwable
     } catch {
       case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
@@ -40,7 +40,7 @@ class CourseSpec extends UnitSpec
   
   "A person" should "not be able to get a course" in asInstitutionAdmin {
     val courseCode = randStr(5)
-    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null))
+    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null, null, false))
     
     asPerson {
         try {
@@ -55,7 +55,7 @@ class CourseSpec extends UnitSpec
 
   "The platformAdmin" should "be able to update a course" in asPlatformAdmin {
     val courseCode = randStr(5)
-    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null))
+    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null, null, false))
     course.setCode("test update")
     
     val updatedCourse = CourseResource(course.getUUID).update(course)
@@ -65,7 +65,7 @@ class CourseSpec extends UnitSpec
   
   "The institutionAdmin" should "be able to update a course" in asInstitutionAdmin {
     val courseCode = randStr(5)
-    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null))
+    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null, null, false))
     course.setCode("test update1")
     
     val updatedCourse = CourseResource(course.getUUID).update(course)
@@ -75,7 +75,7 @@ class CourseSpec extends UnitSpec
   
   "A person" should "not be able to update a course" in asInstitutionAdmin {
     val courseCode = randStr(5)
-    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null))
+    val course = CoursesResource().create(Entities.newCourse(randUUID, courseCode, null, null, null, null, false))
     course.setCode("test update1")
     asPerson {
       try {

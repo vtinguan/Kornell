@@ -64,6 +64,10 @@ public class FormHelper {
 		return field == null ? false : field.trim().length() >= minLength && field.trim().length() <= maxLength;
 	}
 	
+	public boolean isNumberRangeValid(Integer field, int min, int max){
+		return field == null ? false : field >= min && field <= max;
+	}
+	
 	public boolean isLengthValid(String field, int minLength){
 		return isLengthValid(field, minLength, Integer.MAX_VALUE);
 	}

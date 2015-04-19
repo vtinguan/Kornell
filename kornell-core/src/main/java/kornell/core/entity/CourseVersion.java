@@ -23,4 +23,12 @@ public interface CourseVersion extends Named {
 	boolean isDisabled();
 	void setDisabled(boolean disabled);
 	
+	String getParentVersionUUID();
+	void setParentVersionUUID(String parentVersionUUID);
+	
+	Integer getInstanceCount();
+	void setInstanceCount(Integer instanceCount);
+	
+	String getLabel();
+	void setLabel(String label);
 }

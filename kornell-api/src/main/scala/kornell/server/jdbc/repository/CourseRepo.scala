@@ -18,7 +18,8 @@ class CourseRepo(uuid: String) {
     | c.title = ${course.getTitle}, 
     | c.description = ${course.getDescription},
     | c.infoJson = ${course.getInfoJson},
-    | c.institutionUUID = ${course.getInstitutionUUID}
+    | c.institutionUUID = ${course.getInstitutionUUID},
+    | c.childCourse = ${course.isChildCourse}
     | where c.uuid = ${course.getUUID}""".executeUpdate
     course
   }

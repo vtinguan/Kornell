@@ -6,7 +6,11 @@ import kornell.core.to.CoursesTO;
 public class CoursesClient extends RESTClient {
 
 	public void get(Callback<CoursesTO> callback) {
-		GET("/courses").go(callback);
+		get(true, callback);
+	}
+
+	public void get(boolean fetchChildCourses, Callback<CoursesTO> callback) {
+		GET("/courses?fetchChildCourses="+fetchChildCourses).go(callback);
 	}
 	
 	public void create(Course course, Callback<Course> callback) {

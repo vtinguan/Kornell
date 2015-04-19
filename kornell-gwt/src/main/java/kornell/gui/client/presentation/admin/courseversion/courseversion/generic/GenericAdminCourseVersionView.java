@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.admin.courseversion.courseversion.generic;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +10,11 @@ import kornell.core.entity.ContentSpec;
 import kornell.core.entity.Course;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
+import kornell.core.entity.InstitutionType;
 import kornell.core.to.CourseVersionTO;
+import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
@@ -79,7 +83,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 
 	private CourseVersion courseVersion;
 
-	private KornellFormFieldWrapper name, course, distributionPrefix, contentSpec, disabled;
+	private KornellFormFieldWrapper name, course, distributionPrefix, contentSpec, disabled, parentCourseVersion, instanceCount, label;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private String courseVersionUUID;
@@ -136,7 +140,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	public void initData() {
 		courseVersionFields.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
-		GWT.debugger();
 		courseVersionFields.clear();
 		
 		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
@@ -180,10 +183,57 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 			}
 		});
 		
+		if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			if (isCreationMode || isPlatformAdmin) {
+		  		session.courseVersions().get(new Callback<CourseVersionsTO>() {
+		  			@Override
+		  			public void ok(CourseVersionsTO to) {
+						createCourseVersionsField(to);
+		  			}
+		  		});
+			} else {
+				createCourseVersionsField(null);
+			}
+
+			String instanceCountStr = courseVersion.getInstanceCount() == null ? "" : courseVersion.getInstanceCount().toString();
+			instanceCount = new KornellFormFieldWrapper("Quantidade de Instâncias", formHelper.createTextBoxFormField(instanceCountStr), isPlatformAdmin);
+			fields.add(instanceCount);
+			courseVersionFields.add(instanceCount);
+
+			label = new KornellFormFieldWrapper("Rótulo", formHelper.createTextBoxFormField(courseVersion.getLabel()), isPlatformAdmin);
+			fields.add(label);
+			courseVersionFields.add(label);
+		}
+		
 		courseVersionFields.add(formHelper.getImageSeparator());
 
 		courseVersionFields.setVisible(true);
 		initializing = false;
+	}
+
+	private void createCourseVersionsField(CourseVersionsTO to) {
+		final ListBox courseVersions = new ListBox();
+		if(to != null){
+			for (CourseVersion courseVersion : to.getCourseVersions()) {
+				courseVersions.addItem(courseVersion.getName(), courseVersion.getUUID());
+			}
+		} else {
+			courseVersions.addItem(courseVersion.getParentVersionUUID(), courseVersion.getParentVersionUUID());
+		}
+		if(parentCourseVersion != null && courseVersionFields.getElement().isOrHasChild(parentCourseVersion.getElement())){
+			fields.remove(parentCourseVersion);
+			courseVersionFields.getElement().removeChild(parentCourseVersion.getElement());
+		}
+		if (!isCreationMode) {
+			courseVersions.setSelectedValue(courseVersion.getParentVersionUUID());
+		}
+		parentCourseVersion = new KornellFormFieldWrapper("Versão Pai do Curso", new ListBoxFormField(courseVersions), (isCreationMode || isPlatformAdmin));
+		
+		fields.add(parentCourseVersion);
+		courseVersionFields.insert(parentCourseVersion, 5);
+		
+		
+		courseVersionFields.setVisible(true);
 	}
 
 	private void createCoursesField(CoursesTO to) {
@@ -205,7 +255,11 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		}
 		course = new KornellFormFieldWrapper("Curso", new ListBoxFormField(courses), isPlatformAdmin);
 				
-		
+
+		if(course != null && courseVersionFields.getElement().isOrHasChild(course.getElement())){
+			fields.remove(course);
+			courseVersionFields.getElement().removeChild(course.getElement());
+		}
 		fields.add(course);
 		courses.setSelectedIndex(0);
 		courseVersionFields.insert(course, 0);
@@ -230,6 +284,11 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 				contentSpec.setError("Tipo inválido.");
 	    }
 		}
+		if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			if (!formHelper.isValidNumber(instanceCount.getFieldPersistText()) || !formHelper.isNumberRangeValid(Integer.parseInt(instanceCount.getFieldPersistText()), 1, 100)) {
+				instanceCount.setError("Insira a um número entre 1 e 100.");
+			}
+		}
 		
 		return !formHelper.checkErrors(fields);
 	}
@@ -251,6 +310,13 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		version.setDistributionPrefix(distributionPrefix.getFieldPersistText());
 		version.setContentSpec(ContentSpec.valueOf(contentSpec.getFieldPersistText()));
 		version.setDisabled(disabled.getFieldPersistText().equals("true"));
+		if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			version.setParentVersionUUID(parentCourseVersion.getFieldPersistText());
+			version.setInstanceCount(instanceCount.getFieldPersistText().length() > 0 ?
+					Integer.parseInt(instanceCount.getFieldPersistText()) :
+						null);
+			version.setLabel(label.getFieldPersistText());
+		}
 		return version;
 	}
 
@@ -263,5 +329,10 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
   public void setPresenter(Presenter presenter) {
 	  this.presenter = presenter;
   }
+
+	@Override
+	public Presenter getPresenter() {
+		return presenter;
+	}
 
 }

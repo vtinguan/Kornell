@@ -10,6 +10,7 @@ import kornell.server.repository.Entities._
 import kornell.server.repository.TOs._
 import kornell.server.repository.Entities
 import kornell.core.util.UUID
+import kornell.core.to.CoursesTO
 
 object CoursesRepo {
 
@@ -35,11 +36,15 @@ object CoursesRepo {
 	  CourseClass cc on cc.courseVersion_uuid = cv.uuid where cc.uuid = $courseClassUUID
   """.first[Course]
   
-  def byInstitution(institutionUUID: String) = newCoursesTO(
+  def byInstitution(institutionUUID: String): CoursesTO = byInstitution(true, institutionUUID)
+  
+  def byInstitution(fetchChildCourses: Boolean, institutionUUID: String): CoursesTO = newCoursesTO(
     sql"""
 	  	select c.* from Course c
 		join Institution i on c.institutionUUID = i.uuid
 		where c.institutionUUID = $institutionUUID
+		and (childCourse = false or $fetchChildCourses = true) 
+		order by c.code
 	  """.map[Course](toCourse))
   
 }
