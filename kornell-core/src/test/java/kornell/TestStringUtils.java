@@ -1,6 +1,6 @@
 package kornell;
 
-import static kornell.core.util.StringUtils.composeURL;
+import static kornell.core.util.StringUtils.mkurl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import kornell.core.util.StringUtils;
@@ -11,13 +11,14 @@ public class TestStringUtils {
 
 	@Test
 	public void testComposeURL() {
-		assertEquals("http://correct/path",composeURL("http://correct","/path") );		
-		assertEquals("http://no/slashes/is/ok",composeURL("http://no","slashes","is","ok") );
-		assertEquals("http://double/slash/happens",composeURL("http://double/","/slash/","/happens") );		
-		assertEquals("http://empty/segments/too",composeURL("http://empty","/segments","","/too") );
-		assertEquals("http://slash/segments/also",composeURL("http://slash","/segments","/","/also") );
-		assertEquals("/relative/path/welcome",composeURL(null,"/relative","/path","/welcome") );
-		assertEquals("/composite/segments/too",composeURL(null,"/composite/segments","/too") );
+		assertEquals("http://correct/path",mkurl("http://correct","/path") );		
+		assertEquals("http://no/slashes/is/ok",mkurl("http://no","slashes","is","ok") );
+		assertEquals("http://double/slash/happens",mkurl("http://double/","/slash/","/happens") );		
+		assertEquals("http://empty/segments/too",mkurl("http://empty","/segments","","/too") );
+		assertEquals("http://slash/segments/also",mkurl("http://slash","/segments","/","/also") );
+		assertEquals("/relative/path/welcome",mkurl(null,"/relative","/path","/welcome") );
+		assertEquals("/composite/segments/too",mkurl(null,"/composite/segments","/too") );
+		assertEquals("/does/not/start/with/double/slash",mkurl("/","/does/not/start/with/double/slash") );
 	}
 	
 	@Test
@@ -27,4 +28,5 @@ public class TestStringUtils {
 		assertEquals(StringUtils.opt("").orElse("uala").getOrNull(),"uala");
 		assertNull(StringUtils.opt(null).orElse("").getOrNull());
 	}
+
 }

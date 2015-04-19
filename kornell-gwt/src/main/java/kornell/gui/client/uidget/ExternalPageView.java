@@ -84,7 +84,7 @@ public class ExternalPageView extends Uidget {
 
 	public void setSrc(final String src, final String actomKey) {
 		// TODO: Check if src exists
-		iframe.setSrc(StringUtils.composeURL("/", src));
+		iframe.setSrc(StringUtils.mkurl("/", src));
 	}
 
 	private String now() {
