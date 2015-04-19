@@ -15,6 +15,7 @@ import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
@@ -22,6 +23,8 @@ import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -82,7 +85,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 
 	private Course course;
 
-	private KornellFormFieldWrapper code, title, description;
+	private KornellFormFieldWrapper code, title, description, childCourse;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private String courseUUID;
@@ -169,6 +172,17 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		description = new KornellFormFieldWrapper("Descrição", formHelper.createTextBoxFormField(course.getDescription()), isPlatformAdmin);
 		fields.add(description);
 		courseFields.add(description);
+
+		childCourse = new KornellFormFieldWrapper("Curso Filho?", formHelper.createCheckBoxFormField(course.isChildCourse()), isPlatformAdmin);
+		fields.add(childCourse);
+		courseFields.add(childCourse);
+		((CheckBox)childCourse.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
+				}
+			}
+		});
 		
 		courseFields.add(formHelper.getImageSeparator());
 
@@ -210,6 +224,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		course.setCode(code.getFieldPersistText());
 		course.setTitle(title.getFieldPersistText());
 		course.setDescription(description.getFieldPersistText());
+		course.setChildCourse(childCourse.getFieldPersistText().equals("true"));
 		course.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
 		return course;
 	}

@@ -34,7 +34,8 @@ class CourseVersionRepo(uuid: String) {
     | c.title as courseTitle,
     | c.description as courseDescription,
     | c.infoJson as infoJson,
-    | c.institutionUUID as institutionUUID
+    | c.institutionUUID as institutionUUID,
+    | c.childCourse as childCourse
     | from CourseVersion cv 
     | join Course c on cv.course_uuid = c.uuid
     | where cv.uuid = ${uuid}""".map[CourseVersionTO](toCourseVersionTO).head

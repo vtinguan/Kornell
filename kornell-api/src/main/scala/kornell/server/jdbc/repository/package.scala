@@ -33,6 +33,7 @@ import kornell.core.entity.RoleCategory
 import kornell.core.to.TokenTO
 import kornell.core.entity.AuthClientType
 import kornell.core.entity.InstitutionType
+import sun.security.action.GetBooleanAction
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -80,7 +81,8 @@ package object repository {
     rs.getString("title"),
     rs.getString("description"),
     rs.getString("infoJson"),
-    rs.getString("institutionUUID"))    
+    rs.getString("institutionUUID"),
+    rs.getBoolean("childCourse"))    
 
   implicit def toCourseVersion(rs: ResultSet): CourseVersion = newCourseVersion(
     rs.getString("uuid"), 
@@ -97,11 +99,13 @@ package object repository {
   
   implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = {
     val course = newCourse(
-        rs.getString("courseUUID"), 
+    		rs.getString("courseUUID"), 
 		    rs.getString("code"), 
 		    rs.getString("title"),
 		    rs.getString("description"), 
-		    rs.getString("infoJson"));
+		    rs.getString("infoJson"),
+		    rs.getString("institutionUUID"),
+		    rs.getBoolean("childCourse"));
 
     val version = newCourseVersion(
         rs.getString("courseVersionUUID"), 
@@ -152,7 +156,8 @@ package object repository {
         rs.getString("courseTitle"), 
         rs.getString("courseDescription"), 
         rs.getString("infoJson"),
-        rs.getString("institutionUUID"))
+        rs.getString("institutionUUID"),
+        rs.getBoolean("childCourse"))
         
     TOs.newCourseVersionTO(course, courseVersion)
   }

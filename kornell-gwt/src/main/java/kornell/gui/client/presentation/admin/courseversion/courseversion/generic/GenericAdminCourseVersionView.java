@@ -275,9 +275,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		if (!formHelper.isLengthValid(distributionPrefix.getFieldPersistText(), 2, 200)) {
 			distributionPrefix.setError("Insira o prefixo de distribuição");
 		}
-		if (!formHelper.isValidNumber(instanceCount.getFieldPersistText()) || !formHelper.isNumberRangeValid(Integer.parseInt(instanceCount.getFieldPersistText()), 1, 100)) {
-			instanceCount.setError("Insira a um número entre 1 e 100.");
-		}
 		if (!formHelper.isLengthValid(contentSpec.getFieldPersistText(), 2, 20)) {
 			contentSpec.setError("Insira o tipo");
 		} else {
@@ -286,6 +283,11 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	    } catch (Exception e) {
 				contentSpec.setError("Tipo inválido.");
 	    }
+		}
+		if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			if (!formHelper.isValidNumber(instanceCount.getFieldPersistText()) || !formHelper.isNumberRangeValid(Integer.parseInt(instanceCount.getFieldPersistText()), 1, 100)) {
+				instanceCount.setError("Insira a um número entre 1 e 100.");
+			}
 		}
 		
 		return !formHelper.checkErrors(fields);
@@ -308,11 +310,13 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		version.setDistributionPrefix(distributionPrefix.getFieldPersistText());
 		version.setContentSpec(ContentSpec.valueOf(contentSpec.getFieldPersistText()));
 		version.setDisabled(disabled.getFieldPersistText().equals("true"));
-		version.setParentVersionUUID(parentCourseVersion.getFieldPersistText());
-		version.setInstanceCount(instanceCount.getFieldPersistText().length() > 0 ?
-				Integer.parseInt(instanceCount.getFieldPersistText()) :
-					null);
-		version.setLabel(label.getFieldPersistText());
+		if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			version.setParentVersionUUID(parentCourseVersion.getFieldPersistText());
+			version.setInstanceCount(instanceCount.getFieldPersistText().length() > 0 ?
+					Integer.parseInt(instanceCount.getFieldPersistText()) :
+						null);
+			version.setLabel(label.getFieldPersistText());
+		}
 		return version;
 	}
 
