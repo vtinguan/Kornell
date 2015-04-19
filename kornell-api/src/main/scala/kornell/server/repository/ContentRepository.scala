@@ -10,6 +10,7 @@ import javax.xml.xpath.XPathFactory
 import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
 import java.io.ByteArrayInputStream
+import kornell.core.util.StringUtils
 
 object ContentRepository {
 
@@ -21,9 +22,9 @@ object ContentRepository {
     val repositoryUUID = version.getRepositoryUUID
     val repo = S3(repositoryUUID)
     val structureSrc = repo.source(version.getDistributionPrefix(), "structure.knl")
-    val structureText = structureSrc.mkString("")
-    val baseURL = repo.baseURL
-    val contents = ContentsParser.parse(baseURL, repo.prefix + "/" + version.getDistributionPrefix(), structureText, visited)
+    val structureText = structureSrc.get.mkString("")
+    val prefix = StringUtils.mkurl(repo.prefix, version.getDistributionPrefix())
+    val contents = ContentsParser.parse(prefix, structureText, visited)
     contents
   }
 
@@ -41,7 +42,7 @@ object ContentRepository {
     val version = versionRepo.get
     val repositoryUUID = version.getRepositoryUUID();
     val repo = S3(repositoryUUID)
-    val structureIn = repo.inputStream(version.getDistributionPrefix(), "imsmanifest.xml")
+    val structureIn = repo.inputStream(version.getDistributionPrefix(), "imsmanifest.xml").get
     val document = builder.parse(structureIn)
     val result = ListBuffer[String]()
     val nodes: NodeList = expr.evaluate(document, XPathConstants.NODESET).asInstanceOf[NodeList]

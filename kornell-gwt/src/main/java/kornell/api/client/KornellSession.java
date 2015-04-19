@@ -2,9 +2,11 @@ package kornell.api.client;
 
 import java.util.logging.Logger;
 
+import kornell.core.entity.CourseClass;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.TokenTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
@@ -88,8 +90,14 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassAdmin() {
-		if(Dean.getInstance().getCourseClassTO() == null) return false;
-		return isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+		Dean dean = Dean.getInstance();
+		if(dean == null) return false;
+		CourseClassTO courseClassTO = dean.getCourseClassTO();
+		if(courseClassTO == null) return false;
+		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(courseClass == null) return false;
+		String courseClassUUID = courseClass.getUUID();
+		return isCourseClassAdmin(courseClassUUID);
 	}
 
 	private boolean isValidRole(RoleType type, String institutionUUID, String courseClassUUID) {

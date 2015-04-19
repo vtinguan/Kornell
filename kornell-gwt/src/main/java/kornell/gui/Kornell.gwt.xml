@@ -1,65 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to='Kornell'>
-  <!-- Inherit the core Web Toolkit stuff.                        -->
-  <inherits name='com.google.gwt.activity.Activity'/>
-  <inherits name='com.google.gwt.place.Place'/>
-  <inherits name='com.google.gwt.user.User' />
-  
-  <inherits name="com.google.gwt.http.HTTP" />
-  <inherits name="com.google.gwt.json.JSON" />   
-  <inherits name="com.google.gwt.xml.XML" />
-  
-  <!-- Logging -->
-  <inherits name="com.google.gwt.logging.Logging"/>
-  <set-property name="gwt.logging.logLevel" value="FINEST"/>
-  <set-property name="gwt.logging.enabled" value="TRUE"/>
-  
-  <set-property name="gwt.logging.consoleHandler" value="ENABLED"/>
-  <set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
-  <set-property name="gwt.logging.systemHandler" value="DISABLED"/>
-  <set-property name="gwt.logging.developmentModeHandler" value="DISABLED"/>
-  <set-property name="gwt.logging.firebugHandler" value="DISABLED"/>
-  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
- 
-    
-  <!-- Internationalization -->
-  <inherits name="com.google.gwt.i18n.I18N"/>
-  
-  <extend-property name="locale" values="pt_BR" />
-  <set-property name='locale' value='pt_BR'/>
-  <set-property-fallback name='locale' value='pt_BR'/>
-  
-  <!-- We need the JUnit module in the main module,               -->
-  <!-- otherwise eclipse complains (Google plugin bug?)           -->
-  <inherits name='com.google.gwt.junit.JUnit' />
-  
-  <!-- Inherit the default GWT style sheet.  You can change       -->
-  <!-- the theme of your GWT application by uncommenting          -->
-  <!-- any one of the following lines.                            -->
-  <!--  <inherits name='com.google.gwt.user.theme.standard.Standard' /> -->
-  <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
-  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+	<!-- Inherit the core Web Toolkit stuff. -->
+	<inherits name='com.google.gwt.activity.Activity' />
+	<inherits name='com.google.gwt.place.Place' />
+	<inherits name='com.google.gwt.user.User' />
 
-  <!-- 3rd party libs --> 
-  <inherits name="com.github.gwtbootstrap.Bootstrap" />
-  
-  <!-- 1st party libs -->
-  <inherits name='kornell.api.KornellClient' />
-  <inherits name='kornell.scorm.KornellSCORM' />
-  
+	<inherits name="com.google.gwt.http.HTTP" />
+	<inherits name="com.google.gwt.json.JSON" />
+	<inherits name="com.google.gwt.xml.XML" />
 
-  
-  <entry-point class='kornell.gui.client.Kornell' />
-    
-  <replace-with class="kornell.gui.client.GenericClientFactoryImpl">
-    <when-type-is class="kornell.gui.client.ClientFactory"/>
-  </replace-with>
-  
-  <!-- Specify the paths for translatable code                    -->
-  <source path='client' />
-  
-  <set-property name="bootstrap.responsiveDesign" value="true"/>
-  
-  <add-linker name="xsiframe"/>
+	<!-- Full Stack Traces IN DEVELOPMENT -->
+	<!-- 
+	<set-property name="compiler.stackMode" value="emulated" />
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames"
+		value="true" />
+	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers"
+		value="true" />
+ 	-->
+ 	
+	<!-- Logging -->
+	<inherits name="com.google.gwt.logging.Logging" />
+	<set-property name="gwt.logging.logLevel" value="FINEST" />
+	<!-- //TODO: Make sure it logging is (DISABLED or WORKS) out of dev -->
+	<set-property name="gwt.logging.enabled" value="TRUE" />
+	<!--   <set-property name="gwt.logging.enabled" value="TRUE" /> -->
+
+	<set-property name="gwt.logging.consoleHandler" value="ENABLED" />
+	<set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
+	<set-property name="gwt.logging.systemHandler" value="DISABLED" />
+	<set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
+
+	<!-- Internationalization -->
+	<inherits name="com.google.gwt.i18n.I18N" />
+
+	<extend-property name="locale" values="pt_BR" />
+	<set-property name='locale' value='pt_BR' />
+	<set-property-fallback name='locale' value='pt_BR' />
+
+	<!-- We need the JUnit module in the main module, -->
+	<!-- otherwise eclipse complains (Google plugin bug?) -->
+	<inherits name='com.google.gwt.junit.JUnit' />
+
+	<!-- Inherit the default GWT style sheet. You can change -->
+	<!-- the theme of your GWT application by uncommenting -->
+	<!-- any one of the following lines. -->
+	<!-- <inherits name='com.google.gwt.user.theme.standard.Standard' /> -->
+	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
+
+	<!-- 3rd party libs -->
+	<inherits name="com.github.gwtbootstrap.Bootstrap" />
+
+	<!-- 1st party libs -->
+	<inherits name='kornell.api.KornellClient' />
+	<inherits name='kornell.scorm.KornellSCORM' />
+
+	<entry-point class='kornell.gui.client.Kornell' />
+
+	<replace-with class="kornell.gui.client.GenericClientFactoryImpl">
+		<when-type-is class="kornell.gui.client.ClientFactory" />
+	</replace-with>
+
+	<!-- Specify the paths for translatable code -->
+	<source path='client' />
+	<set-property name="bootstrap.responsiveDesign" value="true" />
+	<add-linker name="xsiframe" />
 </module>

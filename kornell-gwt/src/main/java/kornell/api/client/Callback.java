@@ -33,9 +33,7 @@ public abstract class Callback<T> implements RequestCallback {
 	Logger logger = Logger.getLogger(Callback.class.getName());
 
 	@Override
-	public void onResponseReceived(Request request, Response response) {		
-		if (!isTrusted(response))
-			throw new RuntimeException("Won't touch untrusted response");
+	public void onResponseReceived(Request request, Response response) {
 		int statusCode = response.getStatusCode();
 		switch (statusCode) {
 		case SC_OK:
@@ -167,10 +165,6 @@ public abstract class Callback<T> implements RequestCallback {
 	
 	private static JSONValue parseJson(String jsonStr) {
 		return JSONParser.parseStrict(jsonStr);
-	}
-
-	protected boolean isTrusted(Response response) {
-		return true;
 	}
 
 	protected void failed() {

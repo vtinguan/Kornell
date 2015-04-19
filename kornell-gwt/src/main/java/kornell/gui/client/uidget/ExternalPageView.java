@@ -1,12 +1,15 @@
 package kornell.gui.client.uidget;
 
 import java.util.Date;
+import java.util.logging.Logger;
 
 import kornell.api.client.KornellClient;
 import kornell.core.lom.ExternalPage;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -19,6 +22,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 public class ExternalPageView extends Uidget {
+	private static final Logger logger = Logger.getLogger(ExternalPageView.class.getName()); 
 	private IFrameElement iframe;
 
 	private KornellClient client;
@@ -33,7 +37,9 @@ public class ExternalPageView extends Uidget {
 		this.page = page;
 		createIFrame();
 		panel.getElement().appendChild(iframe);
-		setSrc(page.getURL(),page.getKey());
+		String url = page.getURL();
+		String key = page.getKey();
+		setSrc(url,key);
 		initWidget(panel);
 	}
 
@@ -83,7 +89,9 @@ public class ExternalPageView extends Uidget {
 
 	public void setSrc(final String src, final String actomKey) {
 		// TODO: Check if src exists
-		iframe.setSrc(src);
+		String mkurl = StringUtils.mkurl("/", src);
+		logger.info("Iframe source set to ["+mkurl+"]");
+		iframe.setSrc(mkurl);
 	}
 
 	private String now() {

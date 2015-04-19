@@ -15,45 +15,49 @@
 	<servlet>
 		<servlet-name>repositoryProxy</servlet-name>
 		<servlet-class>kornell.server.LocalRepositoryServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
-  
-  <servlet>
-    <servlet-name>remoteLogging</servlet-name>
-    <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
-  </servlet>
-	
+
+	<servlet>
+		<servlet-name>remoteLogging</servlet-name>
+		<servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+	</servlet>
+
 	<servlet>
 		<servlet-name>apiProxy</servlet-name>
 		<servlet-class>kornell.server.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>targetUri</param-name>
 			<param-value>http://localhost:8080</param-value>
-		</init-param>		
+		</init-param>
 		<init-param>
 			<param-name>log</param-name>
 			<param-value>true</param-value>
 		</init-param>
-	</servlet>	
-	
-  <servlet-mapping>
-    <servlet-name>remoteLogging</servlet-name>
-    <url-pattern>/Kornell/remote_logging</url-pattern>
-  </servlet-mapping>
-  
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>remoteLogging</servlet-name>
+		<url-pattern>/Kornell/remote_logging</url-pattern>
+	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>repositoryProxy</servlet-name>
 		<url-pattern>/repository/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>apiProxy</servlet-name>
 		<url-pattern>/api/*</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<url-pattern>/Kornell/junithost/*</url-pattern>
 	</servlet-mapping>
 
-
+	<servlet-mapping>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<url-pattern>/Kornell/remote_logging</url-pattern>
+	</servlet-mapping>
 </web-app>

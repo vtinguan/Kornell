@@ -18,7 +18,7 @@
 
 	<properties>
 		<!-- Convenience property to set the GWT version -->
-		<gwtVersion>2.6.1</gwtVersion>
+		<gwtVersion>2.7.0</gwtVersion>
 
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
@@ -110,14 +110,14 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwtVersion}</version>
-			<!-- <scope>provided</scope> -->
+			<scope>provided</scope>
 		</dependency>
-
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-codeserver</artifactId>
 			<version>${gwtVersion}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -198,24 +198,13 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<!-- TODO: Update version to 2.5.0 once gwt-maven-plugin 2.5.0 final 
-					is released (post-GWT 2.5.0) -->
 				<version>${gwtVersion}</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-user</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
-					<!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-dev</artifactId> 
-						<version>${gwtVersion}</version> </dependency> -->
-				</dependencies>
 				<executions>
-					<!-- JS is only needed in the package phase, this speeds up testing -->
 					<execution>
-						<phase>prepare-package</phase>
 						<goals>
 							<goal>compile</goal>
+							<goal>generateAsync</goal>
+							<goal>test</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -296,7 +285,7 @@
 
 				<configuration>
 					<mainClass>com.google.gwt.dev.DevMode</mainClass>
-
+					<classpathScope>test</classpathScope>
 					<additionalClasspathElements>
 						<additionalClasspathElement>src/main/java/</additionalClasspathElement>
 					</additionalClasspathElements>
@@ -306,6 +295,8 @@
 						<argument>${project.build.directory}/${project.build.finalName}</argument>
 						<argument>-startupUrl</argument>
 						<argument>Kornell.nocache.html</argument>
+						<argument>-XmethodNameDisplayMode</argument>
+						<argument>FULL</argument>
 						<argument>kornell.gui.Kornell</argument>
 					</arguments>
 				</configuration>

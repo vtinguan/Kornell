@@ -9,6 +9,7 @@ import java.util.UUID
 import kornell.core.entity.Course
 import kornell.core.entity.PersonCategory
 import kornell.core.entity.CourseClass
+import  kornell.core.util.StringUtils._
 
 object EmailService {
   
@@ -114,7 +115,8 @@ object EmailService {
       System.err.println("Unable to delete file: " + imgFile)
       
     if (!imgFile.exists) {
-      val url: URL = new URL(institution.getAssetsURL + logoImageName)
+      //TODO: Use ContentStore API
+      val url = new URL(mkurl(institution.getAssetsURL,logoImageName))
       FileUtils.copyURLToFile(url, imgFile)
     }
     imgFile

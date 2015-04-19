@@ -26,8 +26,8 @@ object LibraryFilesRepository {
     val filesURL = StringUtils.composeURL(version.getDistributionPrefix(), "library")
     try {
       val structureSrc = repo.source(filesURL, "libraryFiles.knl")
-      val libraryFilesText = structureSrc.mkString("")
-      val fullURL = StringUtils.composeURL(repo.baseURL, repo.prefix, version.getDistributionPrefix(), "library")
+      val libraryFilesText = structureSrc.get.mkString("")
+      val fullURL = StringUtils.composeURL(repo.prefix, version.getDistributionPrefix(), "library")
       val contents = LibraryFilesParser.parse(fullURL, libraryFilesText)
       contents
     } catch {
