@@ -12,6 +12,10 @@ import kornell.server.repository.TOs
 object EnrollmentsRepo {
 
   def byCourseClass(courseClassUUID: String) =
+    byCourseClassPaged(courseClassUUID, Int.MaxValue, 1)
+ 
+  def byCourseClassPaged(courseClassUUID: String, pageSize: Int, pageNumber: Int) = {
+    val resultOffset = (pageNumber.max(1) - 1) * pageSize
     TOs.newEnrollmentsTO(
       sql"""
 			  select 
@@ -23,9 +27,10 @@ object EnrollmentsRepo {
 				join Person p on e.person_uuid = p.uuid
 				left join Password pw on p.uuid = pw.person_uuid
 				where e.class_uuid = ${courseClassUUID}
-				order by e.state desc, p.fullName, pw.username
+				order by e.state desc, p.fullName, pw.username limit ${resultOffset}, ${pageSize}
 			    """.map[EnrollmentTO](toEnrollmentTO))
- 
+  }
+			    
   def byPerson(personUUID: String) =
     sql"""
     SELECT 

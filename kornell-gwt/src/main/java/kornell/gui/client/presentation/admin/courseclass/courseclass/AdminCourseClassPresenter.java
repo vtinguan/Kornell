@@ -43,7 +43,6 @@ import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -66,7 +65,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private boolean overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
 	private EnrollmentRequestsTO enrollmentRequestsTO;
 	private List<EnrollmentTO> enrollmentsToOverride;
-	private Map<String, EnrollmentsTO> enrollmentsCacheMap;
 	private EventBus bus;
 
 	private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
@@ -81,17 +79,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		this.viewFactory = viewFactory;
 		formHelper = new FormHelper();
 		enrollmentRequestsTO = toFactory.newEnrollmentRequestsTO().as();
-		enrollmentsCacheMap = new HashMap<String, EnrollmentsTO>();
 		// TODO refactor permissions per session/activity
-
-		Timer cacheCleanerTimer = new Timer() {
-			public void run() {
-				clearEnrollmentsCache();
-			}
-		};
-
-		// Schedule the timer to run every 15 minutes
-		cacheCleanerTimer.scheduleRepeating(15 * 60 * 1000);
 		init();
 
 		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
@@ -116,8 +104,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
 			}
 			updateCourseClass(selectedCourseClass);
-
-			clearEnrollmentsCache();
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! " + this.getClass().getName());
 			placeController.goTo(defaultPlace);
@@ -126,36 +112,16 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	private void getEnrollments(final String courseClassUUID) {
 		ClientProperties.set(getLocalStoragePropertyName(), courseClassUUID);
-		EnrollmentsTO enrollments = getCachedEnrollments(courseClassUUID);
-		if (enrollments != null) {
-			showEnrollments(enrollments, true);
-		} else {
-			LoadingPopup.show();
-			session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, new Callback<EnrollmentsTO>() {
-				@Override
-				public void ok(EnrollmentsTO enrollments) {
-					LoadingPopup.hide();
-					if (courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
-						showEnrollments(enrollments, true);
-						updateCachedEnrollments(courseClassUUID, enrollments);
-					}
+		LoadingPopup.show();
+		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, new Callback<EnrollmentsTO>() {
+			@Override
+			public void ok(EnrollmentsTO enrollments) {
+				LoadingPopup.hide();
+				if (courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
+					showEnrollments(enrollments, true);
 				}
-			});
-		}
-	}
-
-	private synchronized EnrollmentsTO getCachedEnrollments(String courseClassUUID) {
-		return enrollmentsCacheMap == null ? null : enrollmentsCacheMap.get(courseClassUUID);
-	}
-
-	private synchronized void updateCachedEnrollments(String courseClassUUID, EnrollmentsTO enrollments) {
-		if (courseClassUUID != null && enrollments != null) {
-			enrollmentsCacheMap.put(courseClassUUID, enrollments);
-		}
-	}
-
-	private synchronized void clearEnrollmentsCache() {
-		enrollmentsCacheMap.clear();
+			}
+		});
 	}
 
 	private void showEnrollments(EnrollmentsTO e, boolean refreshView) {
@@ -168,9 +134,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
-		if (!enrollmentsCacheMap.containsKey(courseClassUUID)) {
-			view.showEnrollmentsPanel(false);
-		}
 		LoadingPopup.show();
 		session.courseClasses().getAdministratedCourseClassesTOByInstitution(
 				Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
@@ -221,13 +184,11 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	public void changeEnrollmentState(final EnrollmentTO enrollmentTO, final EnrollmentState toState) {
 		LoadingPopup.show();
 
-		enrollmentsCacheMap.remove(enrollmentTO.getEnrollment().getCourseClassUUID());
-
 		String personUUID = session.getCurrentUser().getPerson().getUUID();
 		LoadingPopup.show();
 		session.events()
-				.enrollmentStateChanged(enrollmentTO.getEnrollment().getUUID(), personUUID,
-						enrollmentTO.getEnrollment().getState(), toState).fire(new Callback<Void>() {
+		.enrollmentStateChanged(enrollmentTO.getEnrollment().getUUID(), personUUID,
+				enrollmentTO.getEnrollment().getState(), toState).fire(new Callback<Void>() {
 					@Override
 					public void ok(Void to) {
 						LoadingPopup.hide();
@@ -243,12 +204,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	public void changeCourseClassState(final CourseClassTO courseClassTO, final CourseClassState toState) {
 		LoadingPopup.show();
 
-		enrollmentsCacheMap.remove(courseClassTO.getCourseClass().getUUID());
-
 		String personUUID = session.getCurrentUser().getPerson().getUUID();
 		session.events()
-				.courseClassStateChanged(courseClassTO.getCourseClass().getUUID(), personUUID,
-						courseClassTO.getCourseClass().getState(), toState).fire(new Callback<Void>() {
+		.courseClassStateChanged(courseClassTO.getCourseClass().getUUID(), personUUID,
+				courseClassTO.getCourseClass().getState(), toState).fire(new Callback<Void>() {
 					@Override
 					public void ok(Void to) {
 						LoadingPopup.hide();
@@ -406,15 +365,15 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			return;
 		} else if (enrollmentRequestsTO.getEnrollmentRequests().size() == 0) {
 			KornellNotification
-					.show("Verifique se os nomes/"
-							+ formHelper.getRegistrationTypeAsText(
-									Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
-									.toLowerCase() + " dos participantes estão corretos. Nenhuma matrícula encontrada.",
+			.show("Verifique se os nomes/"
+					+ formHelper.getRegistrationTypeAsText(
+							Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
+							.toLowerCase() + " dos participantes estão corretos. Nenhuma matrícula encontrada.",
 							AlertType.WARNING);
 		} else if ((enrollmentRequestsTO.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
 			KornellNotification
-					.show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
-							AlertType.ERROR, 5000);
+			.show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
+					AlertType.ERROR, 5000);
 		} else {
 			if (isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()) {
 				String validation = validateEnrollmentsOverride();
@@ -455,7 +414,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				validation += username + 
 						(StringUtils.isSome(enrollmentTO.getFullName()) ? 
 								" (" + enrollmentTO.getFullName() + ")\n" :
-									"");
+								"");
 			}
 		}
 
@@ -486,11 +445,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		} else if (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
 				&& enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
 			KornellNotification
-					.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
-							+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
+			.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
+					+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
 		}
 
-		enrollmentsCacheMap.remove(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 		session.enrollments().createEnrollments(enrollmentRequestsTO, new Callback<Enrollments>() {
 			@Override
 			public void ok(Enrollments to) {
@@ -557,7 +515,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	@Override
 	public void deleteEnrollment(EnrollmentTO enrollmentTO) {
-		enrollmentsCacheMap.remove(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 		session.enrollment(enrollmentTO.getEnrollment().getUUID()).delete(new Callback<Enrollment>() {
 			@Override
 			public void ok(Enrollment to) {
@@ -591,7 +548,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				}
 			});
 		} else {
-			enrollmentsCacheMap.remove(courseClass.getUUID());
 			session.courseClass(courseClass.getUUID()).update(courseClass, new Callback<CourseClass>() {
 				@Override
 				public void ok(CourseClass courseClass) {
