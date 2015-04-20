@@ -65,19 +65,19 @@ object RegistrationEnrollmentService {
     if(!enrollmentRequest.getRegistrationType.equals(RegistrationType.email)) {
         personRepo.setPassword(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getPassword)
     }
-    val enrollment = createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, enrollmentRequest.getCourseVersionUUID, EnrollmentState.enrolled, dean.getUUID)
+    val enrollment = createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
     if (enrollmentRequest.getCourseVersionUUID != null) {
-    	createChildEnrollments(enrollment, person.getUUID, dean.getUUID)
+    	createChildEnrollments(enrollment, enrollmentRequest.getCourseVersionUUID, person.getUUID, dean.getUUID)
     }
   }
  
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
     val personRepo = PersonRepo(person.getUUID)
-    if (enrollmentRequest.getCourseClassUUID != null) {
+    if (enrollmentRequest.getCourseVersionUUID == null) {
     	EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
     		case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
     		case None => {
-    			createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, enrollmentRequest.getCourseVersionUUID, EnrollmentState.enrolled, dean.getUUID)
+    			createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
     		}
     	}
     } else {
@@ -88,8 +88,8 @@ object RegistrationEnrollmentService {
       EnrollmentsRepo.byCourseVersionAndPerson(enrollmentRequest.getCourseVersionUUID, person.getUUID) match {
 		case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
 		case None => {
-			val enrollment = createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, enrollmentRequest.getCourseVersionUUID, EnrollmentState.enrolled, dean.getUUID)
-			createChildEnrollments(enrollment, person.getUUID, dean.getUUID)
+			val enrollment = createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
+			createChildEnrollments(enrollment, enrollmentRequest.getCourseVersionUUID, person.getUUID, dean.getUUID)
 		}
 	  }
     }
@@ -100,11 +100,11 @@ object RegistrationEnrollmentService {
     }
   }
   
-  private def createChildEnrollments(enrollment: Enrollment, personUUID : String, deanUUID: String) = {
+  private def createChildEnrollments(enrollment: Enrollment, courseVersionUUID: String, personUUID : String, deanUUID: String) = {
 	val dashboardEnrollmentMap = collection.mutable.Map[String, String]()
 	var moduleCounter = 0
 	val childEnrollmentMap = Map("knl.dashboard.enrollmentUUID" -> enrollment.getUUID).asJava
-	CourseVersionRepo(enrollment.getCourseVersionUUID).getChildren.foreach(cv => {
+	CourseVersionRepo(courseVersionUUID).getChildren.foreach(cv => {
 		for (i <- 1 to cv.getInstanceCount) {
 		  val childEnrollment = createEnrollment(personUUID, null, cv.getUUID, EnrollmentState.enrolled, deanUUID)
 		  dashboardEnrollmentMap("knl.module." + moduleCounter + ".name") = cv.getLabel + i
