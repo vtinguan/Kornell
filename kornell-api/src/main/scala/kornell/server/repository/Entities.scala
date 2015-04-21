@@ -24,6 +24,7 @@ import kornell.server.util.ValueFactory
 import kornell.core.entity.RegistrationType
 import kornell.core.entity.BillingType
 import kornell.core.entity.InstitutionRegistrationPrefix
+import kornell.core.entity.InstitutionType
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -98,7 +99,8 @@ object Entities {
   def newCourse(uuid: String = randUUID, code: String = null,
     title: String = null, description: String = null,
     infoJson: String = null,
-    institutionUUID: String = null): Course = {
+    institutionUUID: String = null,
+    childCourse: Boolean): Course = {
     val c = factory.newCourse.as
     c.setUUID(uuid)
     c.setCode(code)
@@ -106,6 +108,7 @@ object Entities {
     c.setTitle(title)
     c.setInfoJson(infoJson)
     c.setInstitutionUUID(institutionUUID)
+    c.setChildCourse(childCourse)
     c
   }
 
@@ -126,7 +129,8 @@ object Entities {
     progress: Integer = 0, notes: String = null,
     state: EnrollmentState, lastProgressUpdate: String = null,
     assessment: Assessment = null, lastAssessmentUpdate: String = null,
-    assessmentScore: BigDecimal = null, certifiedAt: String = null): Enrollment = {
+    assessmentScore: BigDecimal = null, certifiedAt: String = null,
+    courseVersionUUID: String = null): Enrollment = {
     val e = factory.enrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -140,6 +144,7 @@ object Entities {
     e.setLastAssessmentUpdate(lastAssessmentUpdate)
     e.setAssessmentScore(assessmentScore)
     e.setCertifiedAt(certifiedAt)
+    e.setCourseVersionUUID(courseVersionUUID)
     e
   }
 
@@ -150,7 +155,9 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, activatedAt: Date, skin: String, billingType: BillingType) = {
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, 
+      demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, 
+      activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -166,6 +173,8 @@ object Entities {
     i.setActivatedAt(activatedAt)
     i.setSkin(skin)
     i.setBillingType(billingType)
+    i.setInstitutionType(institutionType)
+    i.setDashboardVersionUUID(dashboardVersionUUID)
     i
   }
 
@@ -221,7 +230,8 @@ object Entities {
     uuid: String = randUUID, name: String = null, 
     courseUUID: String = null, repositoryUUID: String = null, 
     versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
-    contentSpec: String = null, disabled: Boolean = false) = {
+    contentSpec: String = null, disabled: Boolean = false, parentVersionUUID: String = null,
+    instanceCount: Integer = 1, label: String = null) = {
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
@@ -230,6 +240,9 @@ object Entities {
     version.setVersionCreatedAt(versionCreatedAt)
     version.setDistributionPrefix(distributionPrefix)
     version.setDisabled(disabled)
+    version.setParentVersionUUID(parentVersionUUID)
+    version.setInstanceCount(instanceCount)
+    version.setLabel(label)
     Option(contentSpec) foreach { spec =>
       val cSpec = ContentSpec.valueOf(spec)
       version.setContentSpec(cSpec);

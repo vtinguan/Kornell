@@ -7,9 +7,9 @@ import kornell.core.util.StringUtils;
 public class CourseVersionsClient extends RESTClient {
 
 	public void findByCourse(String courseUUID, Callback<CourseVersionsTO> callback) {
-		GET("/courseVersions" + (StringUtils.isSome(courseUUID) ?
-				"?courseUUID=" + courseUUID : 
-				"")).go(callback);
+		GET("/courseVersions" + 
+				(StringUtils.isSome(courseUUID) ? "?courseUUID=" + courseUUID : "")
+			).go(callback);
 	}
 
 	public void get(Callback<CourseVersionsTO> callback) {

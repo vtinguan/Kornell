@@ -38,4 +38,10 @@ public interface Institution extends Named {
 	
 	BillingType getBillingType();
 	void setBillingType(BillingType billingType);
+	
+	InstitutionType getInstitutionType();
+	void setInstitutionType(InstitutionType institutionType);
+	
+	String getDashboardVersionUUID();
+	void setDashboardVersionUUID(String dashboardVersionUUID);
 }

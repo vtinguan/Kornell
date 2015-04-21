@@ -5,8 +5,6 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Course;
-import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
@@ -18,7 +16,6 @@ import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseVersionTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
@@ -91,9 +88,8 @@ public class GenericCourseDetailsView extends Composite {
 	private List<Actom> actoms;
 
 	private boolean isEnrolled, isCancelled, isInactiveCourseClass;
-
-	public GenericCourseDetailsView(EventBus bus, KornellSession session,
-			PlaceController placeCtrl) {
+	
+	public GenericCourseDetailsView(EventBus bus, KornellSession session, PlaceController placeCtrl) {
 		this.bus = bus;
 		this.session = session;
 		this.placeCtrl = placeCtrl;
@@ -103,22 +99,21 @@ public class GenericCourseDetailsView extends Composite {
 	public void initData() {
 		setContents(presenter.getContents());
 		certificationPanel = getCertificationPanel();
-		Dean dean = Dean.getInstance();
-		courseClassTO = dean.getCourseClassTO();
+		courseClassTO = Dean.getInstance().getCourseClassTO();
 		display();
 	}
 
 	private void setContents(Contents contents) {
 		this.contents = contents;
 		this.actoms = ContentsOps.collectActoms(contents);
-		// fireProgressChangeEvent();
+		//fireProgressChangeEvent();
 	}
 
 	private void fireProgressChangeEvent() {
 		int pagesVisitedCount = 0;
 		int totalPages = actoms.size();
 		for (Actom actom : actoms) {
-			if (actom.isVisited()) {
+			if(actom.isVisited()){
 				pagesVisitedCount++;
 				continue;
 			}
@@ -126,10 +121,9 @@ public class GenericCourseDetailsView extends Composite {
 		}
 		ProgressEvent progressChangeEvent = new ProgressEvent();
 		progressChangeEvent.setCurrentPage(0);
-		progressChangeEvent.setTotalPages(totalPages);
+		progressChangeEvent.setTotalPages(totalPages);		
 		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
-		progressChangeEvent.setEnrollmentUUID(Dean.getInstance()
-				.getCourseClassTO().getCourseClass().getUUID());
+		progressChangeEvent.setEnrollmentUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 		bus.fireEvent(progressChangeEvent);
 	}
 
@@ -138,38 +132,24 @@ public class GenericCourseDetailsView extends Composite {
 		isCancelled = false;
 		UserInfoTO user = session.getCurrentUser();
 		for (Enrollment enrollment : user.getEnrollments().getEnrollments()) {
-			if (enrollment.getUUID()
-					.equals(((ClassroomPlace) placeCtrl.getWhere())
-							.getEnrollmentUUID())) {
-				if (EnrollmentState.enrolled.equals(enrollment.getState())) {
+			if(enrollment.getUUID().equals(((ClassroomPlace)placeCtrl.getWhere()).getEnrollmentUUID())){
+				if(EnrollmentState.enrolled.equals(enrollment.getState())){
 					isEnrolled = true;
-				} else if (EnrollmentState.cancelled.equals(enrollment
-						.getState())) {
+				} else if(EnrollmentState.cancelled.equals(enrollment.getState())){
 					isCancelled = true;
 				}
 			}
 		}
-
-		CourseClass courseClass = courseClassTO != null ? courseClassTO
-				.getCourseClass() : null;
-		CourseClassState state = courseClass != null ? courseClass.getState()
-				: null;
-		isInactiveCourseClass = CourseClassState.inactive.equals(state);
+		isInactiveCourseClass = CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState());
 		displayButtons();
+		
+		CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(courseClassTO.getCourseVersionTO()
+				.getCourse().getInfoJson());
+		builder.buildCourseDetails();
+		courseDetails = builder.getCourseDetailsTO();
 
-		CourseVersionTO courseVersionTO = courseClassTO != null ? courseClassTO
-				.getCourseVersionTO() : null;
-		Course course = courseVersionTO != null ? courseVersionTO.getCourse()
-				: null;
-		String infoJSON = course != null ? course.getInfoJson() : null;
-		if (infoJSON != null) {
-			CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(
-					infoJSON);
-			builder.buildCourseDetails();
-			courseDetails = builder.getCourseDetailsTO();
-		}
 		topicsPanel = new FlowPanel();
-
+		
 		aboutPanel = getAboutPanel();
 		detailsContentPanel.add(aboutPanel);
 		btnCurrent = btnAbout;
@@ -184,40 +164,29 @@ public class GenericCourseDetailsView extends Composite {
 		detailsContentPanel.add(certificationPanel);
 
 		btnLibrary.setVisible(false);
-
-		Dean dean = Dean.getInstance();
-		CourseClassTO currCourseClassTO = dean != null ? dean
-				.getCourseClassTO() : null;
-		CourseClass currCourseClass = courseClass != null ? currCourseClassTO
-				.getCourseClass() : null;
-		String courseClassUUID = currCourseClass != null ? currCourseClass
-				.getUUID() : null;
-		if (courseClassUUID != null)
-			session.courseClass(courseClassUUID).libraryFiles(
-					new Callback<LibraryFilesTO>() {
-						@Override
-						public void ok(LibraryFilesTO to) {
-							if (to.getLibraryFiles() != null
-									&& to.getLibraryFiles().size() > 0) {
-								libraryPanel = getLibraryPanel(to);
-								libraryPanel.setVisible(false);
-								detailsContentPanel.add(libraryPanel);
-								btnLibrary.setVisible(true);
-							}
-						}
-					});
+		session.courseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()).libraryFiles(new Callback<LibraryFilesTO>() {
+			@Override
+			public void ok(LibraryFilesTO to) {		
+				if(to.getLibraryFiles() != null && to.getLibraryFiles().size() > 0){
+					libraryPanel = getLibraryPanel(to);
+					libraryPanel.setVisible(false);
+					detailsContentPanel.add(libraryPanel);
+					btnLibrary.setVisible(true);	
+				}
+			}
+		});
 	}
 
 	private void displayContent(Button btn) {
 		aboutPanel.setVisible(btn.equals(btnAbout));
 		topicsPanel.setVisible(btn.equals(btnTopics));
 		certificationPanel.setVisible(btn.equals(btnCertification));
-		if (libraryPanel != null)
+		if(libraryPanel != null)
 			libraryPanel.setVisible(btn.equals(btnLibrary));
 		LoadingPopup.hide();
 	}
-
-	private FlowPanel getAboutPanel() {
+	
+	private FlowPanel getAboutPanel(){
 		FlowPanel aboutPanel = new FlowPanel();
 		aboutPanel.add(getInfosPanel());
 		aboutPanel.add(getSidePanel());
@@ -237,8 +206,7 @@ public class GenericCourseDetailsView extends Composite {
 
 	private FlowPanel getLibraryPanel(LibraryFilesTO libraryFilesTO) {
 		FlowPanel libraryPanel = new FlowPanel();
-		libraryPanel.add(new GenericCourseLibraryView(bus, session, placeCtrl,
-				libraryFilesTO));
+		libraryPanel.add(new GenericCourseLibraryView(bus, session, placeCtrl, libraryFilesTO));
 
 		return libraryPanel;
 	}
@@ -252,10 +220,7 @@ public class GenericCourseDetailsView extends Composite {
 		certificationInfo.add(infoTitle);
 
 		Label infoText = new Label(
-				/*
-				 * "Confira abaixo o status dos testes e avaliações presentes neste curso. "
-				 * +
-				 */"Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e tenha sido aprovado na avaliação final.");
+				/*"Confira abaixo o status dos testes e avaliações presentes neste curso. " + */"Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e tenha sido aprovado na avaliação final.");
 		infoText.addStyleName("detailsInfoText");
 		certificationInfo.add(infoText);
 
@@ -266,12 +231,8 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel certificationContentPanel = new FlowPanel();
 		certificationContentPanel.addStyleName("certificationContentPanel");
 
-		// certificationContentPanel.add(new GenericCertificationItemView(bus,
-		// session, Dean.getInstance().getCourseClassTO(),
-		// GenericCertificationItemView.TEST));
-		certificationContentPanel.add(new GenericCertificationItemView(bus,
-				session, Dean.getInstance().getCourseClassTO(),
-				GenericCertificationItemView.CERTIFICATION));
+		//certificationContentPanel.add(new GenericCertificationItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCertificationItemView.TEST));
+		certificationContentPanel.add(new GenericCertificationItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCertificationItemView.CERTIFICATION)); 
 
 		return certificationContentPanel;
 	}
@@ -280,14 +241,10 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel certificationHeaderPanel = new FlowPanel();
 		certificationHeaderPanel.addStyleName("certificationHeaderPanel");
 
-		certificationHeaderPanel.add(getHeaderButton("Item", "btnItem",
-				"btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus",
-				"btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade",
-				"btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions",
-				"btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Item", "btnItem", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions", "btnCertificationHeader"));
 
 		return certificationHeaderPanel;
 	}
@@ -306,18 +263,16 @@ public class GenericCourseDetailsView extends Composite {
 		int i = 0;
 		ExternalPage page;
 		boolean enableAnchorOnNextTopicsFirstChild = true;
-		for (Content content : contents.getChildren()) {
-			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl,
-					session, Dean.getInstance().getCourseClassTO(), content,
-					i++, enableAnchorOnNextTopicsFirstChild));
+		for (Content content: contents.getChildren()) {
+			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, Dean.getInstance().getCourseClassTO(), content, i++, enableAnchorOnNextTopicsFirstChild));
 			enableAnchorOnNextTopicsFirstChild = true;
 			List<Content> children = new ArrayList<Content>();
-			if (ContentFormat.Topic.equals(content.getFormat())) {
+			if(ContentFormat.Topic.equals(content.getFormat()) ){
 				children = content.getTopic().getChildren();
 			}
 			for (Content contentItem : children) {
 				page = contentItem.getExternalPage();
-				if (!page.isVisited()) {
+				if(!page.isVisited()){
 					enableAnchorOnNextTopicsFirstChild = false;
 					break;
 				}
@@ -334,13 +289,7 @@ public class GenericCourseDetailsView extends Composite {
 		titleLabel.addStyleName("titleLabel");
 		titlePanel.add(titleLabel);
 
-		// TODO: CURRENT
-		CourseVersionTO courseVersionTO = courseClassTO != null ? courseClassTO
-				.getCourseVersionTO() : null;
-		Course course = courseVersionTO != null ? courseVersionTO.getCourse()
-				: null;
-		String title = course != null ? course.getTitle() : "";
-		Label courseNameLabel = new Label(title);
+		Label courseNameLabel = new Label(courseClassTO.getCourseVersionTO().getCourse().getTitle());
 		courseNameLabel.addStyleName("courseNameLabel");
 		titlePanel.add(courseNameLabel);
 
@@ -348,10 +297,7 @@ public class GenericCourseDetailsView extends Composite {
 		subTitleLabel.addStyleName("titleLabel subTitleLabel");
 		titlePanel.add(subTitleLabel);
 
-		CourseClass courseClass = courseClassTO != null ? courseClassTO
-				.getCourseClass() : null;
-		String name = courseClass != null ? courseClass.getName() : "";
-		Label courseClassNameLabel = new Label(name);
+		Label courseClassNameLabel = new Label(courseClassTO.getCourseClass().getName());
 		courseClassNameLabel.addStyleName("courseClassNameLabel");
 		titlePanel.add(courseClassNameLabel);
 	}
@@ -359,14 +305,13 @@ public class GenericCourseDetailsView extends Composite {
 	private FlowPanel getInfosPanel() {
 		FlowPanel infoPanel = new FlowPanel();
 		infoPanel.addStyleName("infoPanel");
-		if (courseDetails != null)
-			for (InfoTO infoTO : courseDetails.getInfos()) {
-				infoPanel.add(getInfoPanel(infoTO.getType(), infoTO.getText()));
-			}
+		for (InfoTO infoTO : courseDetails.getInfos()) {
+			infoPanel.add(getInfoPanel(infoTO.getType(), infoTO.getText()));
+		}
 		return infoPanel;
 	}
 
-	private FlowPanel getInfoPanel(String title, String text) {
+	private FlowPanel getInfoPanel(String title, String text) {		
 		FlowPanel info = new FlowPanel();
 		info.addStyleName("infoDetails");
 
@@ -387,34 +332,22 @@ public class GenericCourseDetailsView extends Composite {
 		btnCertification = new Button();
 		btnLibrary = new Button();
 		btnGoToCourse = new Button();
-		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(),
-				true);
-		if (actoms.size() > 1) {
+		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(), true);
+		if(actoms.size() > 1){
 			displayButton(btnTopics, constants.btnTopics(),
 					constants.btnTopicsInfo(), false);
 		}
-		// TODO: i18n
-		if (isInactiveCourseClass) {
-			displayButton(btnCertification, constants.btnCertification(),
-					"Imprimir certificado"/* constants.btnCertificationInfo() */,
-					false);
-		} else if (isEnrolled && !isCancelled) {
-			displayButton(btnCertification, constants.btnCertification(),
-					"Imprimir certificado"/* constants.btnCertificationInfo() */,
-					false);
-			displayButton(
-					btnLibrary,
-					constants.btnLibrary(),
-					"Material complementar"/* constants.btnCertificationInfo() */,
-					false);
-			displayButton(btnGoToCourse, "Ir para o curso", "", false);
+		if(isInactiveCourseClass){
+			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
+		} else if(isEnrolled && !isCancelled){
+			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
+			displayButton(btnLibrary, constants.btnLibrary(), "Material complementar"/*constants.btnCertificationInfo()*/, false);
+			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
 		}
 	}
 
-	private void displayButton(Button btn, String title, String label,
-			boolean isSelected) {
-		btn.addStyleName("btnDetails "
-				+ (isSelected ? "btnSelected" : "btnNotSelected"));
+	private void displayButton(Button btn, String title, String label, boolean isSelected) {
+		btn.addStyleName("btnDetails " + (isSelected ? "btnSelected" : "btnNotSelected"));
 
 		Label btnTitle = new Label(title);
 		btnTitle.addStyleName("btnTitle");
@@ -423,51 +356,50 @@ public class GenericCourseDetailsView extends Composite {
 		Label btnLabel = new Label(label);
 		btnLabel.addStyleName("btnLabel");
 		btn.add(btnLabel);
-
+		
 		btn.addStyleName("gradient");
-
+		
 		btn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				Button btn = (Button) event.getSource();
-				if (!btnGoToCourse.equals(btn)) {
+				if(!btnGoToCourse.equals(btn)){
 					handleEvent(btn);
 				} else {
 					bus.fireEvent(new ShowDetailsEvent(false));
 				}
 			}
 		});
-
+		
 		buttonsPanel.add(btn);
 	}
-
-	private FlowPanel getSidePanel() {
+	
+	private FlowPanel getSidePanel(){
 		FlowPanel sidePanel = new FlowPanel();
 		sidePanel.addStyleName("sidePanel");
 
-		if (isInactiveCourseClass || isCancelled || !isEnrolled) {
+		
+		if(isInactiveCourseClass || isCancelled || !isEnrolled){
 			FlowPanel warningPanel = new FlowPanel();
 			warningPanel.addStyleName("notEnrolledPanel");
 			String text = "";
-			if (isInactiveCourseClass) {
+			if(isInactiveCourseClass){
 				text = "Essa turma foi desabilitada pela instituição."
 						+ "<br><br> O material desta turma está inacessível.<br>";
-			} else if (isCancelled) {
+			} else if(isCancelled) {
 				text = "Sua matrícula foi cancelada pela instituição.";
-			} else if (!isEnrolled) {
+			} else if(!isEnrolled) {
 				text = "Sua matrícula ainda não foi aprovada pela instituição."
-						+ (RegistrationType.email.equals(Dean.getInstance()
-								.getCourseClassTO().getCourseClass()
-								.getRegistrationType()) ? ""
-								: "<br><br> Você receberá um email no momento da aprovação.<br>");
+						+ (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) ?
+								"" : "<br><br> Você receberá um email no momento da aprovação.<br>");
 			}
 			HTMLPanel panel = new HTMLPanel(text);
 			warningPanel.add(panel);
 			sidePanel.add(warningPanel);
 		}
-
+		
 		sidePanel.add(getHintsPanel());
-
+		
 		return sidePanel;
 	}
 
@@ -475,11 +407,9 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel hintsPanel = new FlowPanel();
 		hintsPanel.addStyleName("hintsPanel");
 
-		if (courseDetails != null)
-			for (HintTO hintTO : courseDetails.getHints()) {
-				hintsPanel
-						.add(getHintPanel(hintTO.getType(), hintTO.getName()));
-			}
+		for (HintTO hintTO : courseDetails.getHints()) {
+			hintsPanel.add(getHintPanel(hintTO.getType(), hintTO.getName()));
+		}
 
 		return hintsPanel;
 	}

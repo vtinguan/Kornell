@@ -7,7 +7,10 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RegistrationType;
+import kornell.core.entity.RoleCategory;
+import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
@@ -19,6 +22,7 @@ import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -26,6 +30,7 @@ import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -102,13 +107,15 @@ public class VitrinePresenter implements VitrineView.Presenter {
 								)
 						) && userInfoTO.getPerson().getCity() == null) {
 					newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
-				} else if (session.isInstitutionAdmin()) {
+				} else if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+						|| session.isInstitutionAdmin()) {
 					newPlace = new AdminCourseClassesPlace();
 				} else {
 					newPlace = welcomePlace;
 				}
 				clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
-				clientFactory.getPlaceController().goTo(newPlace);
+				clientFactory.setHomePlace(welcomePlace);
+				clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? clientFactory.getHomePlace() : newPlace);
 			}
 		};
 		
