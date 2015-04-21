@@ -17,7 +17,7 @@ object EnrollmentsRepo {
  
   def byCourseClassPaged(courseClassUUID: String, pageSize: Int, pageNumber: Int) = {
     val resultOffset = (pageNumber.max(1) - 1) * pageSize
-    TOs.newEnrollmentsTO(
+    val enrollmentsTO = TOs.newEnrollmentsTO(
       sql"""
 			  select 
       		e.*, 
@@ -30,7 +30,14 @@ object EnrollmentsRepo {
 				where e.class_uuid = ${courseClassUUID}
 				order by e.state desc, p.fullName, pw.username limit ${resultOffset}, ${pageSize}
 			    """.map[EnrollmentTO](toEnrollmentTO))
+    enrollmentsTO.setCount(
+        sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
+    enrollmentsTO.setCountCancelled(
+        sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}
+            and state = ${EnrollmentState.cancelled.toString}""".first[String].get.toInt)
+	enrollmentsTO	    
   }
+  
 			    
   def byPerson(personUUID: String) =
     sql"""

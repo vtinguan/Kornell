@@ -8,4 +8,9 @@ public interface EnrollmentsTO {
 	List<EnrollmentTO> getEnrollmentTOs();
 	void setEnrollmentTOs(List<EnrollmentTO> enrollmentTOs);
 	
+	Integer getCount();
+	void setCount(Integer count);
+	
+	Integer getCountCancelled();
+	void setCountCancelled(Integer countCancelled);
 }
