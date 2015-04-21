@@ -41,6 +41,21 @@ object EnrollmentsRepo {
             and state = ${EnrollmentState.cancelled.toString}""".first[String].get.toInt)
     enrollmentsTO.setPageSize(pageSize)
     enrollmentsTO.setPageNumber(resultOffset)
+    enrollmentsTO.setSearchCount({
+      if (searchTerm == "")
+        0
+      else
+        sql"""
+          select count(*), 
+          if(pw.username is not null, pw.username, p.email) as username
+          from Enrollment e 
+          join Person p on e.person_uuid = p.uuid
+          left join Password pw on p.uuid = pw.person_uuid
+          where e.class_uuid = ${courseClassUUID} and 
+          (p.fullName like ${filteredSearchTerm}
+          or username like ${filteredSearchTerm})
+        """.first[String].get.toInt
+    })
 	enrollmentsTO	    
   }
   
