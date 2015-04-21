@@ -8,12 +8,12 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
-import kornell.gui.client.uidget.KornellPaginationP;
+import kornell.gui.client.presentation.admin.PaginationPresenter;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AdminCourseClassView extends IsWidget {
-	public interface Presenter extends IsWidget {
+	public interface Presenter extends PaginationPresenter {
 		void changeEnrollmentState(EnrollmentTO object, EnrollmentState state);
 		void changeCourseClassState(CourseClassTO courseClassTO, CourseClassState toState);
 		boolean showActionButton(String actionName, EnrollmentTO enrollmentTO);
@@ -28,10 +28,6 @@ public interface AdminCourseClassView extends IsWidget {
 		void deleteEnrollment(EnrollmentTO enrollmentTO);
 		void onGenerateCertificate(EnrollmentTO enrollmentTO);
 		void upsertCourseClass(CourseClass courseClass);
-		String getPageSize();
-		void setPageSize(String pageSize);
-		String getPageNumber();
-		void setPageNumber(String pageNumber);
 	}
 
 	void setPresenter(Presenter presenter);

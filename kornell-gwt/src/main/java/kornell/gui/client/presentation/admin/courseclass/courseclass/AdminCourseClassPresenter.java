@@ -69,6 +69,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private EventBus bus;
 	private String pageSize = "20";
 	private String pageNumber = "1";
+	private String searchTerm = "";
 
 	private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
 
@@ -116,7 +117,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private void getEnrollments(final String courseClassUUID) {
 		ClientProperties.set(getLocalStoragePropertyName(), courseClassUUID);
 		LoadingPopup.show();
-		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, pageSize, pageNumber, new Callback<EnrollmentsTO>() {
+		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, pageSize, pageNumber, searchTerm, new Callback<EnrollmentsTO>() {
 			@Override
 			public void ok(EnrollmentsTO enrollments) {
 				LoadingPopup.hide();
@@ -593,5 +594,20 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	@Override
 	public void setPageNumber(String pageNumber) {
 		this.pageNumber = pageNumber;
+	}
+
+	@Override
+	public String getSearchTerm() {
+		return searchTerm;
+	}
+
+	@Override
+	public void setSearchTerm(String searchTerm) {
+		this.searchTerm = searchTerm;	
+	}
+
+	@Override
+	public void updateData() {
+    	updateCourseClassUI(Dean.getInstance().getCourseClassTO());
 	}
 }

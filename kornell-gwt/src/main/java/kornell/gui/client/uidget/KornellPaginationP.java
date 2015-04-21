@@ -26,18 +26,6 @@ public class KornellPaginationP extends Pagination{
 		this.presenter = presenter;
 		this.table = table;
 	}
-	
-	public void displayTableData() {
-		int pageSize = Integer.parseInt(presenter.getPageSize());
-		int pageNumber = Integer.parseInt(presenter.getPageNumber());
-		int end = pageNumber * pageSize;
-		int start = end - pageSize; 
-		
-    	if(end > totalRowCount)
-    		end = totalRowCount;
-    	
-    	presenter.updateCourseClassUI(Dean.getInstance().getCourseClassTO());
-	}
 
 	private void updatePagination(List rowData){
 		clear();
@@ -90,20 +78,16 @@ public class KornellPaginationP extends Pagination{
 				public void onClick(ClickEvent event) {
 					IconAnchor thisThing = (IconAnchor) event.getSource();
 					presenter.setPageNumber(thisThing.getName().trim());
-					displayTableData();
+			    	presenter.updateData();
 				}
 			});
 		}
 		return navLink;
 	}
 	
-	public int getTotalRowCount() {
-		return totalRowCount;
-	}
-	
 	public void setRowData(List rowData, int totalRowCount) {
-		updatePagination(rowData);
 		this.totalRowCount = totalRowCount;
+		updatePagination(rowData);
 	}
 	
 }

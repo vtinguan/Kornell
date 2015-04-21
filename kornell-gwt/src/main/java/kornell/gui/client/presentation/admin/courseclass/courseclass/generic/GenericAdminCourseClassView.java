@@ -571,9 +571,8 @@ public class GenericAdminCourseClassView extends Composite implements
 			enrollmentsWrapper.add(tableTools);
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);
-			pagination.displayTableData();
 		}
-		filterEnrollments();
+		pagination.setRowData(enrollmentsOriginal, numEnrollments);
 
 	}
 
@@ -583,46 +582,14 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	private void filterEnrollments() {
-		if (StringUtils.isSome(txtSearch.getText().trim())) {
-			enrollmentsCurrent = new ArrayList<EnrollmentTO>();
-			for (EnrollmentTO enrollmentTO : enrollmentsOriginal) {
-				if (matchesWithSearch(enrollmentTO)) {
-					enrollmentsCurrent.add(enrollmentTO);
-				}
-			}
-			pagination.setRowData(enrollmentsCurrent, numEnrollments);
-		} else {
-			enrollmentsCurrent = new ArrayList<EnrollmentTO>();
-			pagination.setRowData(enrollmentsOriginal, numEnrollments);
+		String newSearchTerm = AsciiUtils.convertNonAscii(txtSearch.getText().trim()).toLowerCase();
+		if(RegistrationType.cpf.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())){
+			newSearchTerm = newSearchTerm.replaceAll("-", "").replaceAll("\\.", "");
 		}
-	}
-
-	private boolean matchesWithSearch(EnrollmentTO one) {
-		Enrollment e = one.getEnrollment();
-
-		boolean fullNameMatch = matchesWithSearch(one.getFullName());
-		boolean usernameMatch = matchesWithSearch(one.getUsername());
-		boolean enrollmentStateMatch = matchesWithSearch(formHelper
-				.getEnrollmentStateAsText(e.getState()));
-		boolean enrollmentProgressMatch = e.getProgress() != null
-				&& matchesWithSearch(formHelper.getEnrollmentProgressAsText(
-						EnrollmentCategory.getEnrollmentProgressDescription(e))
-						.toLowerCase());
-
-		return fullNameMatch || usernameMatch || enrollmentStateMatch
-				|| enrollmentProgressMatch;
-	}
-
-	private boolean matchesWithSearch(String one) {
-		if (one == null)
-			return false;
-		return prepareForSearch(one).indexOf(
-				prepareForSearch(txtSearch.getText().trim())) >= 0;
-	}
-
-	private String prepareForSearch(String str) {
-		str = AsciiUtils.convertNonAscii(str).toLowerCase();
-		return str.replaceAll("-", "").replaceAll("\\.", "");
+		if(!presenter.getSearchTerm().equals(newSearchTerm)){
+			presenter.setSearchTerm(newSearchTerm);
+			presenter.updateData();
+		}
 	}
 
 	@Override
