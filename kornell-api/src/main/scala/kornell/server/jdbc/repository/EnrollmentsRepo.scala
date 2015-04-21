@@ -13,10 +13,12 @@ import kornell.core.error.exception.EntityConflictException
 object EnrollmentsRepo {
 
   def byCourseClass(courseClassUUID: String) =
-    byCourseClassPaged(courseClassUUID, Int.MaxValue, 1)
+    byCourseClassPaged(courseClassUUID, null, Int.MaxValue, 1)
  
-  def byCourseClassPaged(courseClassUUID: String, pageSize: Int, pageNumber: Int) = {
+  def byCourseClassPaged(courseClassUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int) = {
     val resultOffset = (pageNumber.max(1) - 1) * pageSize
+    val filteredSearchTerm = '%' + Option(searchTerm).getOrElse("") + '%'
+
     val enrollmentsTO = TOs.newEnrollmentsTO(
       sql"""
 			  select 
@@ -27,7 +29,9 @@ object EnrollmentsRepo {
 				from Enrollment e 
 				join Person p on e.person_uuid = p.uuid
 				left join Password pw on p.uuid = pw.person_uuid
-				where e.class_uuid = ${courseClassUUID}
+				where e.class_uuid = ${courseClassUUID} and
+                (p.fullName like ${filteredSearchTerm}
+                or username like ${filteredSearchTerm})
 				order by e.state desc, p.fullName, pw.username limit ${resultOffset}, ${pageSize}
 			    """.map[EnrollmentTO](toEnrollmentTO))
     enrollmentsTO.setCount(
