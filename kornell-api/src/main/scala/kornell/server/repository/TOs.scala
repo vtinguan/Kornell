@@ -52,6 +52,7 @@ object TOs {
   def newEnrollmentsTO(enrollmentList: List[EnrollmentTO]): EnrollmentsTO = {
     val enrollments:EnrollmentsTO = newEnrollmentsTO
     enrollments.setEnrollmentTOs(enrollmentList asJava)
+    enrollments.setPageCount(enrollmentList.length)
     enrollments
   }
 
