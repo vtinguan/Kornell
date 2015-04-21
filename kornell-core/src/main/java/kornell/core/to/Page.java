@@ -13,4 +13,7 @@ public interface Page {
     
     Integer getPageCount();
     void setPageCount(Integer pageCount);
+    
+    Integer getSearchCount();
+    void setSearchCount(Integer searchCount);
 }
