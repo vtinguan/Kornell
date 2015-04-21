@@ -35,6 +35,8 @@ object EnrollmentsRepo {
     enrollmentsTO.setCountCancelled(
         sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}
             and state = ${EnrollmentState.cancelled.toString}""".first[String].get.toInt)
+    enrollmentsTO.setPageSize(pageSize)
+    enrollmentsTO.setPageNumber(resultOffset)
 	enrollmentsTO	    
   }
   
