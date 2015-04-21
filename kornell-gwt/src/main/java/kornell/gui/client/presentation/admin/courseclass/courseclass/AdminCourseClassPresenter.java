@@ -67,6 +67,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private EnrollmentRequestsTO enrollmentRequestsTO;
 	private List<EnrollmentTO> enrollmentsToOverride;
 	private EventBus bus;
+	private String pageSize = "20";
+	private String pageNumber = "1";
 
 	private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
 
@@ -114,14 +116,14 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private void getEnrollments(final String courseClassUUID) {
 		ClientProperties.set(getLocalStoragePropertyName(), courseClassUUID);
 		LoadingPopup.show();
-		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, new Callback<EnrollmentsTO>() {
+		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, pageSize, pageNumber, new Callback<EnrollmentsTO>() {
 			@Override
 			public void ok(EnrollmentsTO enrollments) {
 				LoadingPopup.hide();
 				if (courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
 					showEnrollments(enrollments, true);
 				}
-			}
+			} 
 		});
 	}
 
@@ -129,7 +131,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		numEnrollments = e.getEnrollmentTOs().size();
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		enrollmentTOs = e.getEnrollmentTOs();
-		view.setEnrollmentList(e.getEnrollmentTOs(), refreshView);
+		view.setEnrollmentList(e.getEnrollmentTOs(), e.getCount(), e.getCountCancelled(), refreshView);
 		view.showEnrollmentsPanel(true);
 	}
 
@@ -162,7 +164,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				});
 	}
 
-	private void updateCourseClassUI(CourseClassTO courseClassTO) {
+	@Override
+	public void updateCourseClassUI(CourseClassTO courseClassTO) {
 		view.showTabsPanel(courseClassTO != null);
 		view.prepareAddNewCourseClass(false);
 		view.showEnrollmentsPanel(false);
@@ -570,5 +573,25 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				}
 			});
 		}
+	}
+
+	@Override
+	public String getPageSize() {
+		return pageSize;
+	}
+
+	@Override
+	public void setPageSize(String pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	@Override
+	public String getPageNumber() {
+		return pageNumber;
+	}
+
+	@Override
+	public void setPageNumber(String pageNumber) {
+		this.pageNumber = pageNumber;
 	}
 }
