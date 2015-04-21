@@ -8,6 +8,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
+import kornell.gui.client.uidget.KornellPaginationP;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -22,14 +23,19 @@ public interface AdminCourseClassView extends IsWidget {
 		void onModalOkButtonClicked();
 		void onUserClicked(EnrollmentTO enrollmentTO);
 		void updateCourseClass(String courseClassUUID);
+		void updateCourseClassUI(CourseClassTO courseClassTO);
 		List<EnrollmentTO> getEnrollments();
 		void deleteEnrollment(EnrollmentTO enrollmentTO);
 		void onGenerateCertificate(EnrollmentTO enrollmentTO);
 		void upsertCourseClass(CourseClass courseClass);
+		String getPageSize();
+		void setPageSize(String pageSize);
+		String getPageNumber();
+		void setPageNumber(String pageNumber);
 	}
 
 	void setPresenter(Presenter presenter);
-	void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, boolean refresh);
+	void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, boolean refresh);
 	void showModal(boolean b);
 	void setModalErrors(String title, String lbl1, String errors, String lbl2);
 	void setCourseClassName(String courseClassName);

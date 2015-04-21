@@ -22,11 +22,13 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
+import kornell.gui.client.uidget.KornellPaginationP;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -91,7 +93,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	final CellTable<EnrollmentTO> table;
 	private List<EnrollmentTO> enrollmentsCurrent;
 	private List<EnrollmentTO> enrollmentsOriginal;
-	private KornellPagination pagination;
+	private KornellPaginationP pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
 	private boolean isEnabled;
@@ -190,7 +192,6 @@ public class GenericAdminCourseClassView extends Composite implements
 		initWidget(uiBinder.createAndBindUi(this));
 		tabsPanel.setVisible(false);
 		table = new CellTable<EnrollmentTO>();
-		pagination = new KornellPagination(table, enrollmentsCurrent);
 		formHelper = new FormHelper();
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
@@ -484,6 +485,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
+		pagination = new KornellPaginationP(table, (AdminCourseClassPresenter) presenter);
 	}
 
 	@UiHandler("btnModalOK")
@@ -518,25 +520,18 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	@Override
-	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn,
-			boolean refresh) {
+	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, boolean refresh) {
 
 		enrollmentsOriginal = enrollmentsIn;
 		this.isEnabled = CourseClassState.active.equals(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getState());
 		addEnrollmentsPanel.setVisible(isEnabled);
 
-		numEnrollments = enrollmentsIn.size();
+		numEnrollments = count;
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass()
 				.getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
-		int cancelledCount = 0;
-		for (EnrollmentTO enrollmentTO : enrollmentsIn) {
-			if(EnrollmentState.cancelled.equals(enrollmentTO.getEnrollment().getState())){
-				cancelledCount++;
-			}
-		}
-		lblEnrollmentsCancelledCount.setText(""+cancelledCount);
+		lblEnrollmentsCancelledCount.setText(""+countCancelled);
 		lblEnrollmentsAvailableCount.setText(""+(maxEnrollments-numEnrollments));
 
 		if (!refresh)
@@ -556,13 +551,15 @@ public class GenericAdminCourseClassView extends Composite implements
 			pageSizeListBox.addItem("20");
 			pageSizeListBox.addItem("50");
 			pageSizeListBox.addItem("100");
-			pageSizeListBox.setSelectedValue("" + pagination.getPageSize());
+			pageSizeListBox.setSelectedValue(presenter.getPageSize());
 			pageSizeListBox.addChangeHandler(new ChangeHandler() {
 				@Override
 				public void onChange(ChangeEvent event) {
-					if (pageSizeListBox.getValue().matches("[0-9]*"))
-						pagination.setPageSize(Integer.parseInt(pageSizeListBox
-								.getValue()));
+					if (pageSizeListBox.getValue().matches("[0-9]*")){
+						presenter.setPageNumber("1");
+						presenter.setPageSize(pageSizeListBox.getValue());
+						presenter.updateCourseClassUI(Dean.getInstance().getCourseClassTO());
+					}
 				}
 			});
 			pageSizeListBox.addStyleName("pageSizeListBox");
@@ -574,9 +571,10 @@ public class GenericAdminCourseClassView extends Composite implements
 			enrollmentsWrapper.add(tableTools);
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);
+			pagination.displayTableData();
 		}
-
 		filterEnrollments();
+
 	}
 
 	private void scheduleEnrollmentFilter() {
@@ -592,11 +590,11 @@ public class GenericAdminCourseClassView extends Composite implements
 					enrollmentsCurrent.add(enrollmentTO);
 				}
 			}
-			pagination.setRowData(enrollmentsCurrent);
+			pagination.setRowData(enrollmentsCurrent, numEnrollments);
 		} else {
-			pagination.setRowData(enrollmentsOriginal);
+			enrollmentsCurrent = new ArrayList<EnrollmentTO>();
+			pagination.setRowData(enrollmentsOriginal, numEnrollments);
 		}
-		pagination.displayTableData(1);
 	}
 
 	private boolean matchesWithSearch(EnrollmentTO one) {
