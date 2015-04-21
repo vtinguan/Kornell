@@ -10,6 +10,7 @@ import javax.xml.xpath.XPathFactory
 import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
 import java.io.ByteArrayInputStream
+import kornell.core.util.StringUtils
 
 object ContentRepository {
 
@@ -22,7 +23,7 @@ object ContentRepository {
     val repo = S3(repositoryUUID)
     val structureSrc = repo.source(version.getDistributionPrefix(), "structure.knl")
     val structureText = structureSrc.get.mkString("")
-    val prefix = repo.prefix + "/" + version.getDistributionPrefix()
+    val prefix = StringUtils.mkurl(repo.prefix, version.getDistributionPrefix())
     val contents = ContentsParser.parse(prefix, structureText, visited)
     contents
   }

@@ -20,7 +20,7 @@ trait GenCourseClass
   
   val classCode = randStr(5)
   
-  val course = CoursesRepo.create(Entities.newCourse(randUUID, classCode, null, null, null))
+  val course = CoursesRepo.create(Entities.newCourse(randUUID, classCode, null, null, null, null, false))
   val courseUUID = course.getUUID
   
   val courseVersion = {

@@ -69,6 +69,7 @@ object CourseClassesRepo {
 			    c.title, 
 			    c.description,
 			    c.infoJson,
+      			c.childCourse,
 			    cv.uuid as courseVersionUUID,
 			    cv.name as courseVersionName,
 			    cv.repository_uuid as repositoryUUID, 

@@ -45,9 +45,11 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 
 	private void init() {
 		if (session.isPlatformAdmin()) {
-			view = getView();
-			view.setPresenter(this);      
-			view.init();
+			view = viewFactory.getAdminCourseVersionView();
+			if(view.getPresenter() == null){
+				view.init();
+			}
+			view.setPresenter(this);   
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
@@ -66,12 +68,12 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 		return view.asWidget();
 	}
 
-	private AdminCourseVersionView getView() {
-		return viewFactory.getAdminCourseVersionView();
+	public AdminCourseVersionView getView() {
+		return view;
 	}
 
 	@Override
-  public void upsertCourseVersion(CourseVersion courseVersion) {
+	public void upsertCourseVersion(CourseVersion courseVersion) {
 		if(courseVersion.getUUID() == null){
 			session.courseVersions().create(courseVersion, new Callback<CourseVersion>() {
 				@Override

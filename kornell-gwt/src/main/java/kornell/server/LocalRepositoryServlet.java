@@ -80,15 +80,19 @@ public class LocalRepositoryServlet extends HttpServlet {
 				String obj = matcher.group(2);
 				Path repoPath = pathOf(repositoryUUID);				
 				msg.append("["+repoPath+"]");				
-				if (repoPath != null) {
+				if (repoPath != null) {					
+					if (obj.startsWith("/")){
+						obj=obj.substring(1);
+					}
 					msg.append("["+obj+"]");
-					Path file = repoPath.resolve(obj);
+					Path file = repoPath.resolve(obj);					
+					msg.append("=>["+file+"]");
 					if (file.toFile().exists()) {
 						msg.append("[W]");
 						setContentTye(file, req, resp);
 						Files.copy(file, resp.getOutputStream());
 					} else {
-						msg.append("[NO_FILE]");
+						msg.append("[NO_FILE]["+file.toAbsolutePath()+"]");
 						throw new RuntimeException("# "+msg);
 					}
 				} else { 

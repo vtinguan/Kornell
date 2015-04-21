@@ -18,4 +18,7 @@ public interface Course extends Entity{
 	String getInstitutionUUID();
 	void setInstitutionUUID(String institutionUUID);
 	
+	boolean isChildCourse();
+	void setChildCourse(boolean childCourse);
+	
 }

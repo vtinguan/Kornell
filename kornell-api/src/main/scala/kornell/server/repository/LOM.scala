@@ -41,7 +41,7 @@ object LOM {
     }
     
     page.setKey(key)
-    val pageURL = composeURL(baseURL,index)
+    val pageURL = mkurl(baseURL,index)
     page.setURL(pageURL)
     page    
   }

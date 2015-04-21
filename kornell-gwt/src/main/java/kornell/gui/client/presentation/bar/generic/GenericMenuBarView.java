@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UnreadChatThreadTO;
@@ -286,7 +287,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@UiHandler("btnHome")
 	void handleHome(ClickEvent e) {
-		clientFactory.getPlaceController().goTo(new WelcomePlace());
+		clientFactory.getPlaceController().goTo(clientFactory.getHomePlace());
 	}
 
 	@UiHandler("btnAdmin")

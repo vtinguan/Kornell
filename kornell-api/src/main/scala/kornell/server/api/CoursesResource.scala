@@ -24,9 +24,9 @@ class CoursesResource {
   
   @GET
   @Produces(Array(CoursesTO.TYPE))
-  def getCourses =
+  def getCourses(@QueryParam("fetchChildCourses") fetchChildCourses: String) =
 	  AuthRepo().withPerson { person => {
-	    	 CoursesRepo.byInstitution(person.getInstitutionUUID)
+	    	 CoursesRepo.byInstitution(fetchChildCourses == "true", person.getInstitutionUUID)
 	  }
   }
   

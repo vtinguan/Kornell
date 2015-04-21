@@ -92,7 +92,7 @@ class S3(regionName: String,
     try	{ 
       s3.getObject(bucket, fqkn).getObjectContent
     }catch {
-      case e:Exception => {
+      case e:Throwable => {
         val cmd = s"aws s3api get-object --bucket ${bucket} --key ${fqkn} --region ${region} file.out"
         logger.warning("Could not load object. Try ["+cmd+"]")
         throw e
