@@ -59,6 +59,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 			public void ok(final Contents contents) {
 				// check if user has a valid enrollment to this course
 				boolean isEnrolled = false;
+				String enrollmentClassUUID = null;
 				UserInfoTO user = session.getCurrentUser();
 				//TODO: Consider moving this to the server
 				final Dean dean = Dean.getInstance();
@@ -66,13 +67,14 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				for (Enrollment enrollment : enrollments) {
 					String eUUID = enrollment.getUUID();					
 					if(eUUID.equals(enrollmentUUID)){
-						String enrollmentClassUUID = enrollment.getCourseClassUUID();
+						enrollmentClassUUID = enrollment.getCourseClassUUID();
 						dean.setCourseClassTO(enrollmentClassUUID);
 						isEnrolled = EnrollmentState.enrolled.equals(enrollment.getState());
 						break;
 					}
 				}
-				
+				if(enrollmentClassUUID == null)
+					dean.setCourseClassTO((CourseClassTO)null);
 				final boolean hasEnrolled = isEnrolled;
 				
 				//TODO: UGLY DESPERATE HACK due to the courseClasses not yet set on dean

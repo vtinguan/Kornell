@@ -41,7 +41,9 @@ class EnrollmentsResource {
 
   @GET
   @Produces(Array(EnrollmentsTO.TYPE))
-  def getByCourseUUID(@QueryParam("courseClassUUID") courseClassUUID: String) = EnrollmentsRepo.byCourseClass(courseClassUUID)
+  def getByCourseUUID(@QueryParam("courseClassUUID") courseClassUUID: String, @QueryParam("searchTerm") searchTerm: String,
+      @QueryParam("ps") pageSize: Int, @QueryParam("pn") pageNumber: Int) = 
+    EnrollmentsRepo.byCourseClassPaged(courseClassUUID, searchTerm, pageSize, pageNumber)
 
   @PUT
   @Path("requests")

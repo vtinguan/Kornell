@@ -88,15 +88,6 @@ class CourseClassResource(uuid: String) {
       }
   }
 
-  @Produces(Array(Contents.TYPE))
-  @Path("contents")
-  @GET
-  def getLatestContents(implicit @Context sc: SecurityContext): Contents =
-    //TODO: Refactor to Option.map
-    AuthRepo().withPerson { person =>            
-      ContentRepository.findKNLVisitedContent(uuid,person.getUUID)
-    }
-
   @Produces(Array(LibraryFilesTO.TYPE))
   @Path("libraryFiles")
   @GET

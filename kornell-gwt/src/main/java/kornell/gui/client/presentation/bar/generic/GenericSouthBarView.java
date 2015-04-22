@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.bar.generic;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.HideSouthBarEventHandler;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
@@ -58,7 +59,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 			southBar.add(getAdminBarView(newPlace));
 			this.setVisible(true);
 			scrollPanel.addStyleName("offsetSouthBar");
-		} else if (newPlace instanceof ClassroomPlace) {
+		} else if (newPlace instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null) {
 			southBar.clear();
 			southBar.add(getActivityBarView());
 			this.setVisible(true);

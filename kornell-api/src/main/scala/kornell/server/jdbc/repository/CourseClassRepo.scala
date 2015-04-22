@@ -14,7 +14,7 @@ class CourseClassRepo(uuid:String) {
   
   def get = finder.get[CourseClass] 
   
-  def version = CourseVersionRepo(get.getCourseVersionUUID())
+  def version = CourseVersionRepo(get.getCourseVersionUUID)
   
   def update(courseClass: CourseClass): CourseClass = { 
     val courseClassExists = sql"""

@@ -22,11 +22,13 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
+import kornell.gui.client.uidget.KornellPaginationP;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -91,7 +93,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	final CellTable<EnrollmentTO> table;
 	private List<EnrollmentTO> enrollmentsCurrent;
 	private List<EnrollmentTO> enrollmentsOriginal;
-	private KornellPagination pagination;
+	private KornellPaginationP pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
 	private boolean isEnabled;
@@ -190,7 +192,6 @@ public class GenericAdminCourseClassView extends Composite implements
 		initWidget(uiBinder.createAndBindUi(this));
 		tabsPanel.setVisible(false);
 		table = new CellTable<EnrollmentTO>();
-		pagination = new KornellPagination(table, enrollmentsCurrent);
 		formHelper = new FormHelper();
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
@@ -363,7 +364,7 @@ public class GenericAdminCourseClassView extends Composite implements
 				}
 			});
 		}
-		txtSearch.setValue("");
+		txtSearch.setValue(presenter.getSearchTerm());
 		txtSearch.setTitle("nome, "
 				+ formHelper.getRegistrationTypeAsText(Dean.getInstance()
 						.getCourseClassTO().getCourseClass()
@@ -484,6 +485,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
+		pagination = new KornellPaginationP(table, (AdminCourseClassPresenter) presenter);
 	}
 
 	@UiHandler("btnModalOK")
@@ -518,25 +520,18 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	@Override
-	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn,
-			boolean refresh) {
+	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, Integer searchCount, boolean refresh) {
 
 		enrollmentsOriginal = enrollmentsIn;
 		this.isEnabled = CourseClassState.active.equals(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getState());
 		addEnrollmentsPanel.setVisible(isEnabled);
 
-		numEnrollments = enrollmentsIn.size();
+		numEnrollments = count;
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass()
 				.getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
-		int cancelledCount = 0;
-		for (EnrollmentTO enrollmentTO : enrollmentsIn) {
-			if(EnrollmentState.cancelled.equals(enrollmentTO.getEnrollment().getState())){
-				cancelledCount++;
-			}
-		}
-		lblEnrollmentsCancelledCount.setText(""+cancelledCount);
+		lblEnrollmentsCancelledCount.setText(""+countCancelled);
 		lblEnrollmentsAvailableCount.setText(""+(maxEnrollments-numEnrollments));
 
 		if (!refresh)
@@ -556,13 +551,15 @@ public class GenericAdminCourseClassView extends Composite implements
 			pageSizeListBox.addItem("20");
 			pageSizeListBox.addItem("50");
 			pageSizeListBox.addItem("100");
-			pageSizeListBox.setSelectedValue("" + pagination.getPageSize());
+			pageSizeListBox.setSelectedValue(presenter.getPageSize());
 			pageSizeListBox.addChangeHandler(new ChangeHandler() {
 				@Override
 				public void onChange(ChangeEvent event) {
-					if (pageSizeListBox.getValue().matches("[0-9]*"))
-						pagination.setPageSize(Integer.parseInt(pageSizeListBox
-								.getValue()));
+					if (pageSizeListBox.getValue().matches("[0-9]*")){
+						presenter.setPageNumber("1");
+						presenter.setPageSize(pageSizeListBox.getValue());
+						presenter.updateCourseClassUI(Dean.getInstance().getCourseClassTO());
+					}
 				}
 			});
 			pageSizeListBox.addStyleName("pageSizeListBox");
@@ -575,8 +572,8 @@ public class GenericAdminCourseClassView extends Composite implements
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);
 		}
+		pagination.setRowData(enrollmentsOriginal, searchCount);
 
-		filterEnrollments();
 	}
 
 	private void scheduleEnrollmentFilter() {
@@ -585,46 +582,14 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	private void filterEnrollments() {
-		if (StringUtils.isSome(txtSearch.getText().trim())) {
-			enrollmentsCurrent = new ArrayList<EnrollmentTO>();
-			for (EnrollmentTO enrollmentTO : enrollmentsOriginal) {
-				if (matchesWithSearch(enrollmentTO)) {
-					enrollmentsCurrent.add(enrollmentTO);
-				}
-			}
-			pagination.setRowData(enrollmentsCurrent);
-		} else {
-			pagination.setRowData(enrollmentsOriginal);
+		String newSearchTerm = AsciiUtils.convertNonAscii(txtSearch.getText().trim()).toLowerCase();
+		if(RegistrationType.cpf.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())){
+			newSearchTerm = newSearchTerm.replaceAll("-", "").replaceAll("\\.", "");
 		}
-		pagination.displayTableData(1);
-	}
-
-	private boolean matchesWithSearch(EnrollmentTO one) {
-		Enrollment e = one.getEnrollment();
-
-		boolean fullNameMatch = matchesWithSearch(one.getFullName());
-		boolean usernameMatch = matchesWithSearch(one.getUsername());
-		boolean enrollmentStateMatch = matchesWithSearch(formHelper
-				.getEnrollmentStateAsText(e.getState()));
-		boolean enrollmentProgressMatch = e.getProgress() != null
-				&& matchesWithSearch(formHelper.getEnrollmentProgressAsText(
-						EnrollmentCategory.getEnrollmentProgressDescription(e))
-						.toLowerCase());
-
-		return fullNameMatch || usernameMatch || enrollmentStateMatch
-				|| enrollmentProgressMatch;
-	}
-
-	private boolean matchesWithSearch(String one) {
-		if (one == null)
-			return false;
-		return prepareForSearch(one).indexOf(
-				prepareForSearch(txtSearch.getText().trim())) >= 0;
-	}
-
-	private String prepareForSearch(String str) {
-		str = AsciiUtils.convertNonAscii(str).toLowerCase();
-		return str.replaceAll("-", "").replaceAll("\\.", "");
+		if(!presenter.getSearchTerm().equals(newSearchTerm)){
+			presenter.setSearchTerm(newSearchTerm);
+			presenter.updateData();
+		}
 	}
 
 	@Override

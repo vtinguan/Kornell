@@ -22,10 +22,6 @@ public class CourseClassClient extends RESTClient {
 		DELETE("courseClasses",courseClassUUID).go(cb);
 	}
 
-	public void contents(Callback<Contents> callback) {
-		GET("courseClasses",courseClassUUID,"contents").go(callback);
-	}
-
 	public void getAdmins(String bindMode, Callback<RolesTO> cb) {
 		GET("courseClasses",courseClassUUID,"admins"+"?bind="+bindMode).withContentType(CourseClass.TYPE).go(cb);
 	}
