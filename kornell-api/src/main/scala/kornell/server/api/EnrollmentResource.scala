@@ -21,6 +21,7 @@ import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.Err
 import kornell.server.util.AccessDeniedErr
+import kornell.server.repository.ContentRepository
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -48,9 +49,12 @@ class EnrollmentResource(uuid: String) {
   @GET
   @Path("contents")
   @Produces(Array(Contents.TYPE))
-  def contents(implicit @Context sc: SecurityContext): Option[Contents] = first map { e =>
-    CourseClassResource(e.getCourseClassUUID).getLatestContents(sc)
-  }
+  def contents(implicit @Context sc: SecurityContext): Option[Contents] = AuthRepo().withPerson { person =>  
+    first map { e =>
+    	ContentRepository.findKNLVisitedContent(e)
+    }
+   }
+
 
   @GET
   @Path("approved")

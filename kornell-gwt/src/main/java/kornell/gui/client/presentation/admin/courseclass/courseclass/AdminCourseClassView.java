@@ -31,7 +31,7 @@ public interface AdminCourseClassView extends IsWidget {
 	}
 
 	void setPresenter(Presenter presenter);
-	void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, boolean refresh);
+	void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, Integer searchCount, boolean refresh);
 	void showModal(boolean b);
 	void setModalErrors(String title, String lbl1, String errors, String lbl2);
 	void setCourseClassName(String courseClassName);

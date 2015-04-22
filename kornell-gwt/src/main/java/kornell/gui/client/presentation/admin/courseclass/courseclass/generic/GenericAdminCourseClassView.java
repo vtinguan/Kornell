@@ -364,7 +364,7 @@ public class GenericAdminCourseClassView extends Composite implements
 				}
 			});
 		}
-		txtSearch.setValue("");
+		txtSearch.setValue(presenter.getSearchTerm());
 		txtSearch.setTitle("nome, "
 				+ formHelper.getRegistrationTypeAsText(Dean.getInstance()
 						.getCourseClassTO().getCourseClass()
@@ -520,7 +520,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	@Override
-	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, boolean refresh) {
+	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, Integer searchCount, boolean refresh) {
 
 		enrollmentsOriginal = enrollmentsIn;
 		this.isEnabled = CourseClassState.active.equals(Dean.getInstance()
@@ -572,7 +572,7 @@ public class GenericAdminCourseClassView extends Composite implements
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);
 		}
-		pagination.setRowData(enrollmentsOriginal, numEnrollments);
+		pagination.setRowData(enrollmentsOriginal, searchCount);
 
 	}
 

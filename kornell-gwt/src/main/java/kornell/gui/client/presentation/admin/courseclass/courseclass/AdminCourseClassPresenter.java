@@ -132,7 +132,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		numEnrollments = e.getEnrollmentTOs().size();
 		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
 		enrollmentTOs = e.getEnrollmentTOs();
-		view.setEnrollmentList(e.getEnrollmentTOs(), e.getCount(), e.getCountCancelled(), refreshView);
+		view.setEnrollmentList(e.getEnrollmentTOs(), e.getCount(), e.getCountCancelled(), e.getSearchCount(), refreshView);
 		view.showEnrollmentsPanel(true);
 	}
 

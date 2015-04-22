@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import kornell.api.client.KornellClient;
 import kornell.core.lom.ExternalPage;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
@@ -82,8 +83,10 @@ public class ExternalPageView extends Uidget {
 	private void placeIframe() {
 		String width = Window.getClientWidth() + "px";
 		iframe.setPropertyString("width", "100%");
-		String height = (Window.getClientHeight() - Positioning.SOUTH_BAR - Positioning.NORTH_BAR)
-				+ "px";
+		int h = (Window.getClientHeight() - Positioning.NORTH_BAR);
+		if(Dean.getInstance().getCourseClassTO() != null)
+			h -= Positioning.SOUTH_BAR;
+		String height = h + "px";
 		iframe.setPropertyString("height", height);
 	}
 

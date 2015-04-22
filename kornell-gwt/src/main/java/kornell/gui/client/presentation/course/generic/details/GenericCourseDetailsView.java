@@ -100,7 +100,8 @@ public class GenericCourseDetailsView extends Composite {
 		setContents(presenter.getContents());
 		certificationPanel = getCertificationPanel();
 		courseClassTO = Dean.getInstance().getCourseClassTO();
-		display();
+		if(courseClassTO != null)
+			display();
 	}
 
 	private void setContents(Contents contents) {

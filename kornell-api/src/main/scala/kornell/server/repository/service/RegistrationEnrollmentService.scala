@@ -85,7 +85,7 @@ object RegistrationEnrollmentService {
       if (courseVersion.getParentVersionUUID != null) {
         throw new EntityConflictException("cannotEnrollOnChildVersion")
       }
-      EnrollmentsRepo.byCourseVersionAndPerson(enrollmentRequest.getCourseVersionUUID, person.getUUID) match {
+      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
 		case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
 		case None => {
 			val enrollment = createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)

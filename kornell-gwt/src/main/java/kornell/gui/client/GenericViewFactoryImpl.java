@@ -107,7 +107,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 				setPlaceNameAsBodyStyle(event);
 				setBackgroundImage(event.getNewPlace() instanceof VitrinePlace);
 				checkMenuBars(event.getNewPlace() instanceof VitrinePlace);
-				changeOverflow(event.getNewPlace() instanceof ClassroomPlace);
+				changeOverflow(event.getNewPlace() instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null);
 			}
 
 			private void checkMenuBars(boolean removePanels) {

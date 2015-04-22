@@ -55,9 +55,5 @@
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<url-pattern>/Kornell/junithost/*</url-pattern>
 	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>jUnitHostImpl</servlet-name>
-		<url-pattern>/Kornell/remote_logging</url-pattern>
-	</servlet-mapping>
+	
 </web-app>

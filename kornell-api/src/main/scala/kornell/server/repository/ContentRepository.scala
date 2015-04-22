@@ -11,17 +11,25 @@ import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
 import java.io.ByteArrayInputStream
 import kornell.core.util.StringUtils
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.core.entity.Enrollment
+import kornell.server.jdbc.repository.CourseVersionRepo
 
 object ContentRepository {
 
-  def findKNLVisitedContent(courseClassUUID: String, personUUID: String) = {
-    val classRepo = CourseClassesRepo(courseClassUUID)
-    val visited = classRepo.actomsVisitedBy(personUUID)
-    val versionRepo = classRepo.version
-    val version = versionRepo.get
+  def findKNLVisitedContent(enrollment: Enrollment) = {
+    val personRepo = PersonRepo(enrollment.getPersonUUID)
+    val visited = personRepo.actomsVisitedBy(enrollment.getUUID)    
+    val version = {
+      if(enrollment.getCourseVersionUUID != null)
+        CourseVersionRepo(enrollment.getCourseVersionUUID)
+       else 
+        CourseClassesRepo(enrollment.getCourseClassUUID).version
+    }.get
     val repositoryUUID = version.getRepositoryUUID
     val repo = S3(repositoryUUID)
-    val structureSrc = repo.source(version.getDistributionPrefix(), "structure.knl")
+    val x = version.getDistributionPrefix + "structure.knl"
+    val structureSrc = repo.source(version.getDistributionPrefix, "structure.knl")
     val structureText = structureSrc.get.mkString("")
     val prefix = StringUtils.mkurl(repo.prefix, version.getDistributionPrefix())
     val contents = ContentsParser.parse(prefix, structureText, visited)
