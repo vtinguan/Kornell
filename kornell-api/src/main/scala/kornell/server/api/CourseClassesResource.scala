@@ -50,12 +50,13 @@ class CourseClassesResource {
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
   @Path("administrated")
-  def getAdministratedClasses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID: String) =
+  def getAdministratedClasses(implicit @Context sc: SecurityContext, @QueryParam("institutionUUID") institutionUUID: String, @QueryParam("searchTerm") searchTerm: String,
+      @QueryParam("ps") pageSize: Int, @QueryParam("pn") pageNumber: Int) =
     AuthRepo().withPerson { person =>
       {
         if (institutionUUID != null) {
           val roles = AuthRepo().userRoles
-          CourseClassesRepo.administratedByPersonOnInstitution(person, institutionUUID, roles.toList )
+          CourseClassesRepo.administratedByPersonOnInstitution(person.getUUID, institutionUUID, searchTerm, pageSize, pageNumber, roles.toList )
         }
       }
     }
