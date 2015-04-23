@@ -53,7 +53,9 @@ public class LocalRepositoryServlet extends HttpServlet {
 			}
 		});
 
-		for (File child : children) scan(child);
+		if(children != null) 
+			for (File child : children) 
+				scan(child);
 	}
 
 	@Override
