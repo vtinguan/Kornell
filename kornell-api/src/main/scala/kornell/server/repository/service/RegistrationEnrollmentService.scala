@@ -107,7 +107,7 @@ object RegistrationEnrollmentService {
 	val childEnrollmentMap = Map("knl.dashboard.enrollmentUUID" -> enrollment.getUUID).asJava
   //TODO: julio asks: is this recoverable from the enrollment afterwards without checking ActomEntries?
 	CourseVersionRepo(courseVersionUUID).getChildren.foreach(cv => {
-		for (i <- 1 to cv.getInstanceCount) {
+		for (i <- 0 until cv.getInstanceCount) {
 		  val childEnrollment = createEnrollment(personUUID, null, cv.getUUID, EnrollmentState.enrolled, deanUUID)
 		  dashboardEnrollmentMap("knl.module." + moduleCounter + ".name") = cv.getLabel +SEP+i
       dashboardEnrollmentMap("knl.module." + moduleCounter + ".index") = s"$i"

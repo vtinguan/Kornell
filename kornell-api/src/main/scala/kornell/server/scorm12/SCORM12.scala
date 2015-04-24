@@ -8,7 +8,6 @@ import scala.collection.JavaConverters._
 
 import java.util.logging.Logger
 import java.util.HashMap
-import kornell.core.scorm12.rte.knl.Module
 import kornell.core.scorm12._
 
 object SCORM12 { 
