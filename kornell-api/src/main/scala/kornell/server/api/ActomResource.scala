@@ -93,6 +93,11 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   @GET
   def getEntries(): ActomEntries = {
     val entries = Entities.newActomEntries(enrollmentUUID, actomKey, new HashMap[String, String])
+    val query = s"""
+    select * from ActomEntries 
+    where enrollment_uuid='${enrollmentUUID}'
+      and actomKey='${actomKey}'
+    """
     sql"""
   	select * from ActomEntries 
   	where enrollment_uuid=${enrollmentUUID}
@@ -105,10 +110,9 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   var properties : List[String] = List()
   
   def initialize(aentries:ActomEntries):ActomEntries = {
-    val entries = aentries.getEntries()
-    val initilizedEntries = SCORM12.dataModel.initialize(entries)
-    
-    aentries.setEntries(initilizedEntries)
+    val entries = aentries.getEntries()    
+    val initdEntries = SCORM12.dataModel.initialize(entries)    
+    aentries.setEntries(initdEntries)
     aentries
   }    
 }

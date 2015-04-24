@@ -9,11 +9,12 @@ import scala.io.Source
 import scala.io.BufferedSource
 import kornell.core.util.StringUtils._
 import kornell.server.repository.LOM
+import scala.util.Try
 
 object ContentsParser {
   
   val topicPattern = """#\s?(.*)""".r
-  val pagePattern = """(([^;.]*).?([^;]*));?([^;]*)?""".r 
+  //val pagePattern = """(([^;.]*).?([^;]*));?([^;]*)?;?([^;]*)?""".r 
 
   def parse(prefix:String,source: String,visited:List[String]): Contents =
     parseLines(prefix,source.lines,visited)
@@ -28,9 +29,14 @@ object ContentsParser {
           topic = LOM.newTopic(topicName)
           result += LOM.newContent(topic) 
         }
-        
-        case pagePattern(key, index, extension, title) => {
-          val page = LOM.newExternalPage(prefix,index,key,title)
+               
+        case _ => {
+          val tokens = line.split(";")          
+          val fileName = Try{tokens(0)}.getOrElse("")
+          val title = Try{tokens(1)}.getOrElse("")
+          val actomKey = Try{tokens(2)}.getOrElse(fileName)
+
+          val page = LOM.newExternalPage(prefix,fileName,title,actomKey)
           page.setVisited(visited.contains(page.getKey()))
           val content = LOM.newContent(page)
           if (topic != null) topic.getChildren().add(content)

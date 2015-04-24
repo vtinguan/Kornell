@@ -572,7 +572,8 @@ public class GenericAdminCourseClassView extends Composite implements
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);
 		}
-		pagination.setRowData(enrollmentsOriginal, searchCount);
+		
+		pagination.setRowData(enrollmentsOriginal, StringUtils.isSome(presenter.getSearchTerm()) ? searchCount : count);
 
 	}
 
@@ -587,6 +588,7 @@ public class GenericAdminCourseClassView extends Composite implements
 			newSearchTerm = newSearchTerm.replaceAll("-", "").replaceAll("\\.", "");
 		}
 		if(!presenter.getSearchTerm().equals(newSearchTerm)){
+			presenter.setPageNumber("1");
 			presenter.setSearchTerm(newSearchTerm);
 			presenter.updateData();
 		}

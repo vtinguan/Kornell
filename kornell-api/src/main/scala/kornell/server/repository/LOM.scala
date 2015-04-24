@@ -9,45 +9,47 @@ import kornell.core.lom.ContentFormat
 import java.util.ArrayList
 import kornell.core.util.StringUtils._
 import scala.collection.JavaConverters._
+import scala.util.Try
 
 object LOM {
   val factory = AutoBeanFactorySource.create(classOf[LOMFactory])
 
   def newTopic(name: String = "") = {
-    val topic = factory.newTopic.as    
+    val topic = factory.newTopic.as
     topic.setName(name)
     topic.setChildren(new ArrayList)
     topic
   }
-  
-  def newContent(topic:Topic) = {
-    val content = factory.newContent.as    
+
+  def newContent(topic: Topic) = {
+    val content = factory.newContent.as
     content.setFormat(ContentFormat.Topic);
     content.setTopic(topic)
     content
   }
 
-  def newExternalPage(baseURL:String ="",
-		  			  prefix:String = "",
-		  			  index: String = "", 
-		  			  key: String = "", 
-		  			  title: String = "") = {
+  def newExternalPage(
+    prefix: String = "",
+    fileName: String = "",
+    title: String = "",
+    actomKey: String = "") = {
+
+    val baseURL: String = ""
     val page = factory.newExternalPage.as
     page.setTitle(title)
-    try{
-    	page.setIndex(index.toInt)
-    }catch {
-      case e: NumberFormatException => page.setIndex(-666)
-    }
-    
-    page.setKey(key)
-    val pageURL = mkurl(baseURL,index)
+
+    Try {
+      fileName.split(".")(0).toInt
+    }.map { index => page.setIndex(index) }
+
+    page.setKey(actomKey)
+    val pageURL = mkurl(baseURL, prefix, fileName)
     page.setURL(pageURL)
-    page    
+    page
   }
-  
-  def newContent(page:ExternalPage) = {
-    val content = factory.newContent.as    
+
+  def newContent(page: ExternalPage) = {
+    val content = factory.newContent.as
     content.setFormat(ContentFormat.ExternalPage);
     content.setExternalPage(page)
     content
@@ -58,5 +60,5 @@ object LOM {
     contents.setChildren(children asJava)
     contents
   }
-  
+
 }

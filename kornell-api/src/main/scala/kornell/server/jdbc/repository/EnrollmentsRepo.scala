@@ -9,12 +9,13 @@ import kornell.core.to.EnrollmentTO
 import kornell.core.to.EnrollmentsTO
 import kornell.server.repository.TOs
 import kornell.core.error.exception.EntityConflictException
+import scala.collection.mutable.Buffer
 
 object EnrollmentsRepo {
 
   def byCourseClass(courseClassUUID: String) =
     byCourseClassPaged(courseClassUUID, "", Int.MaxValue, 1)
- 
+
   def byCourseClassPaged(courseClassUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int) = {
     val resultOffset = (pageNumber.max(1) - 1) * pageSize
     val filteredSearchTerm = '%' + Option(searchTerm).getOrElse("") + '%'
@@ -36,8 +37,9 @@ object EnrollmentsRepo {
 			    """.map[EnrollmentTO](toEnrollmentTO))
     enrollmentsTO.setCount(
         sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
+      sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
     enrollmentsTO.setCountCancelled(
-        sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}
+      sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}
             and state = ${EnrollmentState.cancelled.toString}""".first[String].get.toInt)
     enrollmentsTO.setPageSize(pageSize)
     enrollmentsTO.setPageNumber(pageNumber.max(1))
@@ -56,10 +58,9 @@ object EnrollmentsRepo {
           or username like ${filteredSearchTerm})
         """.first[String].get.toInt
     })
-	enrollmentsTO	    
+    enrollmentsTO
   }
-  
-			    
+
   def byPerson(personUUID: String) =
     sql"""
     SELECT 
@@ -76,14 +77,14 @@ object EnrollmentsRepo {
 	    AND e.person_uuid = ${personUUID}
 	    """.first[Enrollment]
 
-  def byCourseVersionAndPerson(courseVersionUUID: String, personUUID: String): Option[Enrollment] = 
+  def byCourseVersionAndPerson(courseVersionUUID: String, personUUID: String): Option[Enrollment] =
     sql"""
     	SELECT e.*, p.* 
     FROM Enrollment e join Person p on e.person_uuid = p.uuid
     WHERE e.courseVersionUUID = ${courseVersionUUID} 
 	    AND e.person_uuid = ${personUUID}
 	    """.first[Enrollment]
-	    
+
   def byStateAndPerson(state: EnrollmentState, personUUID: String) =
     sql"""
 	  SELECT e.*, p.* 
@@ -96,7 +97,7 @@ object EnrollmentsRepo {
   def create(enrollment: Enrollment) = {
     if (enrollment.getUUID == null)
       enrollment.setUUID(randomUUID)
-    if(enrollment.getCourseClassUUID != null && enrollment.getCourseVersionUUID != null)
+    if (enrollment.getCourseClassUUID != null && enrollment.getCourseVersionUUID != null)
       throw new EntityConflictException("doubleEnrollmentCriteria")
     sql""" 
     	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state,courseVersionUUID)
@@ -117,4 +118,5 @@ object EnrollmentsRepo {
 	   and course_uuid=${course_uuid}"""
     .first[Enrollment]
     .get
+
 }

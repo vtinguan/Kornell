@@ -1,3 +1,4 @@
+
 package kornell.scorm.client.scorm12;
 
 import java.util.logging.Logger;

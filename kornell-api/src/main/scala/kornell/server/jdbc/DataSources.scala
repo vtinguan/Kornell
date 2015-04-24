@@ -15,13 +15,22 @@ import kornell.server.util.Settings._
 object DataSources { 
   val log = Logger.getLogger(getClass.getName)
 
-  def ping(cf: ConnectionFactory): ConnectionFactory = {
-    val conn = cf()
-    val stmt = conn.createStatement
-    stmt.execute("select 40+2")
-    stmt.close
-    conn.close    
-    cf
+  def ping(cf: ConnectionFactory,dbDesc:String=""): Try[ConnectionFactory] = Try {
+    log.info(s"Pinging database [$dbDesc]")
+    try{
+      val conn = cf()
+      val stmt = conn.createStatement
+      stmt.execute("select 40+2")
+      stmt.close
+      conn.close    
+      cf
+    }catch {
+      case t: Throwable => {
+        log.info("Could not connect to [$dbDesc]")
+        t.printStackTrace() // TODO: handle error
+        throw t
+      }
+    }
   }
 
   lazy val KornellDS = {
@@ -32,15 +41,13 @@ object DataSources {
       .asInstanceOf[DataSource]
   }
 
-  lazy val JNDI: Try[ConnectionFactory] = Try {
-    println(s"Trying to connect to ${JNDI_ROOT}/${JNDI_DATASOURCE}")
-    ping { () => KornellDS.getConnection }
-  }
+  lazy val JNDI: Try[ConnectionFactory] =    
+    ping ({ () => KornellDS.getConnection }, s"$JNDI_ROOT/$JNDI_DATASOURCE")
+  
 
-  def getConnection(url: String, user: String, pass: String): Try[ConnectionFactory] = Try {
-    println(s"Trying to connect to ${url}")
-    ping { () => DriverManager.getConnection(url, user, pass) }
-  }
+  def getConnection(url: String, user: String, pass: String): Try[ConnectionFactory] =     
+    ping ({ () => DriverManager.getConnection(url, user, pass) },s"JDBC@$url,$user,$pass")
+  
 
   lazy val LOCAL = getConnection(DEFAULT_URL,DEFAULT_USERNAME,DEFAULT_PASSWORD)
 
