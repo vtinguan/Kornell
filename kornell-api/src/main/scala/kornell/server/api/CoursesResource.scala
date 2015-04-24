@@ -24,9 +24,10 @@ class CoursesResource {
   
   @GET
   @Produces(Array(CoursesTO.TYPE))
-  def getCourses(@QueryParam("fetchChildCourses") fetchChildCourses: String) =
+  def getCourses(@QueryParam("fetchChildCourses") fetchChildCourses: String, @QueryParam("searchTerm") searchTerm: String,
+      @QueryParam("ps") pageSize: Int, @QueryParam("pn") pageNumber: Int) =
 	  AuthRepo().withPerson { person => {
-	    	 CoursesRepo.byInstitution(fetchChildCourses == "true", person.getInstitutionUUID)
+	    	 CoursesRepo.byInstitution(fetchChildCourses == "true", person.getInstitutionUUID, searchTerm, pageSize, pageNumber)
 	  }
   }
   
