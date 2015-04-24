@@ -8,6 +8,7 @@ import java.util.Map;
 import kornell.core.scorm12.rte.DMElement;
 import kornell.core.scorm12.rte.KNL;
 import kornell.core.scorm12.rte.cmi.StudentData;
+import kornell.core.scorm12.rte.knl.FirstLaunch;
 
 public class LessonStatus extends DMElement {
 	public static final String passed = "passed";
@@ -46,7 +47,7 @@ public class LessonStatus extends DMElement {
 	
 	@Override
 	public Map<String, String> initializeMap(Map<String, String> entries) {
-		boolean firstAttempt = !KNL.first_launch.isSome (entries);
+		boolean firstAttempt = !FirstLaunch.dme.isSome (entries);
 		Map<String, String> result = nothing();
 		if(firstAttempt) {
 			 result = defaultTo(entries,not_attempted);

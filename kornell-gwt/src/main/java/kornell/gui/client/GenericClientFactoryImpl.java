@@ -159,7 +159,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initSCORM12() {
-		SCORM12Binder.bind(new SCORM12Adapter(EVENT_BUS, session));
+		SCORM12Binder.bind(new SCORM12Adapter(EVENT_BUS, session,placeCtrl));
 	}
 
 	private void initException() {

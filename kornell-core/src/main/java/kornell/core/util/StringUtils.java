@@ -2,8 +2,10 @@ package kornell.core.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +153,12 @@ public class StringUtils {
 			if (obj == null || obj.toString().length() == 0) return false;
 		}
 		return true;
+	}
+
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+	public static String isoNow() {		
+		return sdf.format(new Date());
 	}
 	
 }

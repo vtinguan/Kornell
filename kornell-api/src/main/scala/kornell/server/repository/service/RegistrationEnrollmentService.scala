@@ -100,16 +100,21 @@ object RegistrationEnrollmentService {
     }
   }
   
+  val SEP = ":"
   private def createChildEnrollments(enrollment: Enrollment, courseVersionUUID: String, personUUID : String, deanUUID: String) = {
 	val dashboardEnrollmentMap = collection.mutable.Map[String, String]()
 	var moduleCounter = 0
 	val childEnrollmentMap = Map("knl.dashboard.enrollmentUUID" -> enrollment.getUUID).asJava
+  //TODO: julio asks: is this recoverable from the enrollment afterwards without checking ActomEntries?
 	CourseVersionRepo(courseVersionUUID).getChildren.foreach(cv => {
 		for (i <- 1 to cv.getInstanceCount) {
 		  val childEnrollment = createEnrollment(personUUID, null, cv.getUUID, EnrollmentState.enrolled, deanUUID)
-		  dashboardEnrollmentMap("knl.module." + moduleCounter + ".name") = cv.getLabel + i
+		  dashboardEnrollmentMap("knl.module." + moduleCounter + ".name") = cv.getLabel +SEP+i
+      dashboardEnrollmentMap("knl.module." + moduleCounter + ".index") = s"$i"
+      dashboardEnrollmentMap("knl.module." + moduleCounter + ".label") = cv.getLabel
 		  dashboardEnrollmentMap("knl.module." + moduleCounter + ".enrollmentUUID") = childEnrollment.getUUID
 		  moduleCounter += 1
+      //TODO: Reference SCO ID (actomKey) instead of file name
 		  val childActomResource = new ActomResource(childEnrollment.getUUID, "index.html")
 		  childActomResource.putEntries(Entities.newActomEntries(childEnrollment.getUUID, "index.html", childEnrollmentMap))
 		}

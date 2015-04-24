@@ -116,14 +116,15 @@ public class DMElement {
 
 	String dirty_flag = "_";
 
-	protected Map<String, String> set(final String value,
+	
+	public Map<String, String> set(final String value,
 			final boolean dirty) {
 		return set(null, value, dirty);
 	}
-
-	protected Map<String, String> set(Map<String, String> entries,
+			
+	public Map<String, String> set(Map<String, String> entries,
 			final String value,
-			final boolean dirty) {
+			final boolean dirtyCheck) {
 		if (entries == null) {
 			entries = nothing();
 			if (type != null && !type.check(value)) {
@@ -131,7 +132,12 @@ public class DMElement {
 						+ "] does not contain [" + value + "]");
 			}
 		}
-		String key = dirty ? dirty(getFQKN()) : getFQKN();
+		boolean dirty = false;
+		if(dirtyCheck){
+			String curr = get(entries);
+			dirty = curr != null && curr.equals(value);
+		}
+		String key = dirty ? dirty(getFQKN()) : getFQKN();		
 		entries.put(key, value);
 		return entries;
 	}

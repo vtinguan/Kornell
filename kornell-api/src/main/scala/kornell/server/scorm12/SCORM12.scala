@@ -3,47 +3,36 @@ package kornell.server.scorm12
 import kornell.core.scorm12.rte.DMElement
 import kornell.core.scorm12.rte.RTE
 import java.util.{ Map => JMap }
-import scala.collection.JavaConverters._
 import scala.collection.mutable.{ Map => MMap }
+import scala.collection.JavaConverters._
+
 import java.util.logging.Logger
+import java.util.HashMap
+import kornell.core.scorm12.rte.knl.Module
+import kornell.core.scorm12._
 
-object SCORM12 {
-  val logger = Logger.getLogger("kornell.server.scrom12");
-
-  implicit class MergeMap(mms: Seq[JMap[String, String]]) {
-    //Shameless copy: http://stackoverflow.com/questions/1262741/scala-how-to-merge-a-collection-of-maps
-    //val ms = List(Map("hello" -> 1.1, "world" -> 2.2), Map("goodbye" -> 3.3, "hello" -> 4.4))
-    //val mm = mergeMap(ms)((v1, v2) => v1 + v2)
-    //println(mm) // prints Map(hello -> 5.5, world -> 2.2, goodbye -> 3.3)
-    def merged(ms: Seq[JMap[String, String]])(f: (String, String) => String): MMap[String, String] =
-      (MMap[String, String]() /: (for (m <- ms; kv <- m.asScala) yield kv)) { (a, kv) =>
-        a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
-      }
-
-    def merged(): MMap[String, String] = merged(mms) { (a, b) =>
-      logger.warning(s"Siblings conflicted for key, arbitrarily picked [$b]");
-      b
-    }
-  }
-
+object SCORM12 { 
+  
   implicit class Element(el: DMElement) {
     def initialize(entries: JMap[String, String]): JMap[String, String] ={
-      val launched = _initialize(entries).asJava
+      val launched = _initialize(entries).asJava      
       val maps = List(entries,launched) 
-      val result = maps.merged
-      result.asJava
+      val result = merged(maps)
+      result.asJava 
     }
 
     def _initialize(entries: JMap[String, String]): MMap[String, String] = {
-      //TODO: .par?
-      val msg = el.getFQKN()
-      val kids = el.getChildren().asScala.map(c => c.initialize(entries))
-      val selfie = List(el.initializeMap(entries))
-      val result = (kids ++ selfie).merged
+      type Maps = List[JMap[String,String]]      
+      val kids:Maps   = el.getChildren().asScala.map(c => c.initialize(entries)).toList
+      val selfie:Maps = List(el.initializeMap(entries))
+      val maps = kids ++ selfie
+      val result = merged(maps)
       result
     }
   }
 
   val dataModel: Element = RTE.root
+
+  
 
 }
