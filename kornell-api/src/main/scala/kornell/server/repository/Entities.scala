@@ -348,4 +348,6 @@ object Entities {
     institutionRegistrationPrefix.setShowContactInformationOnProfile(showContactInformationOnProfile)
     institutionRegistrationPrefix
   }
+  
+  //def newEnrollmentModule()
 }

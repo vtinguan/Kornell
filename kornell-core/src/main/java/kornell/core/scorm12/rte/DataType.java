@@ -7,6 +7,8 @@ import java.util.Set;
 public class DataType {
 	
 	public static final DataType CMITimespan = new DataType();
+
+	public static final DataType UUID = new DataType();
 	
 	public static DataType EITHER(DataType ...ors){
 		return new DataType(ors);

@@ -66,6 +66,12 @@ object CourseVersionsRepo {
 		join Course c on cv.course_uuid = c.uuid
 		where cv.disabled = 0 and c.uuid = $courseUUID
 		order by cv.versionCreatedAt desc
-	  """.map[CourseVersion](toCourseVersion))
+	  """.map[CourseVersion])
+
+  def byParentVersionUUID(parentVersionUUID: String) = sql"""
+    select * from CourseVersion where parentVersionUUID = ${parentVersionUUID}
+  """.map[CourseVersion]
+
+  
   
 }
