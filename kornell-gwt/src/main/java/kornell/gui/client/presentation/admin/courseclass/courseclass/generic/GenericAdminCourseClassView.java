@@ -48,6 +48,7 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
@@ -485,7 +486,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		pagination = new KornellPaginationP(table, (AdminCourseClassPresenter) presenter);
+		pagination = new KornellPaginationP(table, presenter);
 	}
 
 	@UiHandler("btnModalOK")
@@ -568,6 +569,12 @@ public class GenericAdminCourseClassView extends Composite implements
 			tableTools.add(txtSearch);
 			tableTools.add(btnSearch);
 			tableTools.add(pageSizeListBox);
+			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+				@Override
+				public void execute() {
+					txtSearch.setFocus(true);
+				}
+			});
 			enrollmentsWrapper.add(tableTools);
 			enrollmentsWrapper.add(panel);
 			enrollmentsWrapper.add(pagination);

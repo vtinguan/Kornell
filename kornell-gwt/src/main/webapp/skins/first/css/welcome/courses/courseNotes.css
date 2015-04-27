@@ -10,8 +10,10 @@
 .noTextSelect{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 .marginLogo{margin-left:0px;}
 .BMP0{border:0;margin:0;padding:0;}
+.heightAuto{height:auto !important;}
+.niceTextColor{color:#bec1c3;}
 .highlightText{color:#d88709;}
-.textInfoColor{color:#5b9455;}
+.textInfoColor{color:#5b9455 !important;}
 .font16{font-size:16px !important;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}
@@ -22,6 +24,8 @@
 .marginLeft7{margin-left:7px;}
 .marginLeft25{margin-left:25px;}
 .marginTop25{margin-top:25px;}
+.marginBottom25{margin-bottom:25px;}
+.height200{height:200px !important;}
 .test{color:red;}
 .left{float:left;}
 .right{float:right;}

@@ -2,8 +2,7 @@ package kornell.gui.client.uidget;
 
 import java.util.List;
 
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
+import kornell.gui.client.presentation.admin.PaginationPresenter;
 
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.NavLink;
@@ -16,13 +15,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 public class KornellPaginationP extends Pagination{
 
 	
-	private AdminCourseClassPresenter presenter;
+	private PaginationPresenter presenter;
 	private int maxPaginationTabs = 10;
 	private int totalRowCount = 0;
 	private CellTable table;
 
 
-	public KornellPaginationP(CellTable table, AdminCourseClassPresenter presenter) {
+	public KornellPaginationP(CellTable table, PaginationPresenter presenter) {
 		this.presenter = presenter;
 		this.table = table;
 	}

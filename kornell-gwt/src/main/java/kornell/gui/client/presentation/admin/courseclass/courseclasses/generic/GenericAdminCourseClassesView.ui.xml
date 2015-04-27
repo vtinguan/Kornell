@@ -3,11 +3,13 @@
 
 	<g:FlowPanel ui:field="adminHomePanel" addStyleNames="deanHome">
 	    <g:FlowPanel ui:field="courseClassesPanel" addStyleNames="courseClassesHeaderWrapper">
-	    <g:FlowPanel addStyleNames="left">
-	      <g:HTMLPanel addStyleNames="title">Gerenciar Turmas</g:HTMLPanel>
-	      <g:HTMLPanel addStyleNames="subTitle">Escolha abaixo a turma que deseja gerenciar</g:HTMLPanel>
-	    </g:FlowPanel>
-		<b:Button ui:field="btnAddCourseClass" addStyleNames="btnAction btnIcon right" size="MINI" icon="PLUS_SIGN"/>
+		    <g:FlowPanel addStyleNames="left">
+		      <g:HTMLPanel addStyleNames="title">Gerenciar Turmas</g:HTMLPanel>
+		      <g:HTMLPanel addStyleNames="subTitle">Escolha abaixo a turma que deseja gerenciar</g:HTMLPanel>
+		    </g:FlowPanel>
+			<b:Button ui:field="btnAddCourseClass" addStyleNames="btnAction btnIcon right" size="MINI" icon="PLUS_SIGN"/>
+		</g:FlowPanel>
+	    <g:FlowPanel ui:field="courseClassesWrapper" addStyleNames="courseClassesHeaderWrapper">
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="createClassPanel">
 		</g:FlowPanel>

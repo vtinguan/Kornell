@@ -4,7 +4,7 @@ import java.util.List;
 
 import kornell.core.entity.CourseVersion;
 
-public interface CourseVersionsTO {
+public interface CourseVersionsTO extends Page {
 	public static final String TYPE = TOFactory.PREFIX + "courseVersions+json";
 	
 	List<CourseVersion> getCourseVersions(); 

@@ -19,7 +19,6 @@ public class AdminCourseClassActivity extends AbstractActivity {
 		ViewFactory viewFactory = clientFactory.getViewFactory();
 		AdminCourseClassPresenter presenter = viewFactory.getAdminCourseClassPresenter();
 		panel.setWidget(presenter);
-		
 	}
 
 }

@@ -59,18 +59,21 @@ object TOs {
   def newCoursesTO(coursesList: List[Course]): CoursesTO = {
     val courses = newCoursesTO
     courses.setCourses(coursesList asJava)
+    courses.setPageCount(coursesList.length)
     courses
   }
 
   def newCourseVersionsTO(courseVersionsList: List[CourseVersion]): CourseVersionsTO = {
     val courseVersions = newCourseVersionsTO
     courseVersions.setCourseVersions(courseVersionsList asJava)
+    courseVersions.setPageCount(courseVersionsList.length)
     courseVersions
   }
 
   def newCourseClassesTO(l: List[CourseClassTO]) = {
     val to = tos.newCourseClassesTO.as
     to.setCourseClasses(l asJava)
+    to.setPageCount(l.length)
     to
   }
 

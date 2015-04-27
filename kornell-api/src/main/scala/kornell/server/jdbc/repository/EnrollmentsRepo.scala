@@ -14,7 +14,7 @@ import scala.collection.mutable.Buffer
 object EnrollmentsRepo {
 
   def byCourseClass(courseClassUUID: String) =
-    byCourseClassPaged(courseClassUUID, null, Int.MaxValue, 1)
+    byCourseClassPaged(courseClassUUID, "", Int.MaxValue, 1)
 
   def byCourseClassPaged(courseClassUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int) = {
     val resultOffset = (pageNumber.max(1) - 1) * pageSize
@@ -36,12 +36,12 @@ object EnrollmentsRepo {
 				order by e.state desc, p.fullName, pw.username limit ${resultOffset}, ${pageSize}
 			    """.map[EnrollmentTO](toEnrollmentTO))
     enrollmentsTO.setCount(
-      sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
+        sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
     enrollmentsTO.setCountCancelled(
       sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}
             and state = ${EnrollmentState.cancelled.toString}""".first[String].get.toInt)
     enrollmentsTO.setPageSize(pageSize)
-    enrollmentsTO.setPageNumber(resultOffset)
+    enrollmentsTO.setPageNumber(pageNumber.max(1))
     enrollmentsTO.setSearchCount({
       if (searchTerm == "")
         0

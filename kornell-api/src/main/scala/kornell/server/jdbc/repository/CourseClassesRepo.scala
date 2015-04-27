@@ -60,8 +60,14 @@ object CourseClassesRepo {
     | where state <> ${CourseClassState.deleted}
     """.map[CourseClass](toCourseClass)
 
-  private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = {
-    TOs.newCourseClassesTO(
+  private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = 
+    getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1)
+    
+  private def getAllClassesByInstitutionPaged(institutionUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int): kornell.core.to.CourseClassesTO = {
+    val resultOffset = (pageNumber.max(1) - 1) * pageSize
+    val filteredSearchTerm = '%' + Option(searchTerm).getOrElse("") + '%'
+    
+    val courseClassesTO = TOs.newCourseClassesTO(
       sql"""
 			select     
 				c.uuid as courseUUID, 
@@ -95,9 +101,28 @@ object CourseClassesRepo {
 				join CourseVersion cv on cv.course_uuid = c.uuid
 				join CourseClass cc on cc.courseVersion_uuid = cv.uuid and cc.institution_uuid = ${institutionUUID}
 			    left join InstitutionRegistrationPrefix irp on irp.uuid = cc.institutionRegistrationPrefixUUID
-      	  	where cc.state <> ${CourseClassState.deleted.toString}
-      	  	order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
+      	  	where cc.state <> ${CourseClassState.deleted.toString} and
+            (cv.name like ${filteredSearchTerm}
+            or cc.name like ${filteredSearchTerm})
+      	  	order by cc.state, c.title, cv.versionCreatedAt desc, cc.name limit ${resultOffset}, ${pageSize};
 		""".map[CourseClassTO](toCourseClassTO))
+		courseClassesTO.setCount(
+		    sql"""select count(cc.uuid) from CourseClass cc where cc.state <> ${CourseClassState.deleted.toString}
+		    	and cc.institution_uuid = ${institutionUUID}""".first[String].get.toInt)
+    	courseClassesTO.setPageSize(pageSize)
+    	courseClassesTO.setPageNumber(pageNumber.max(1))
+    	courseClassesTO.setSearchCount({
+    	  if (searchTerm == "")
+    		  0
+		  else
+		    sql"""select count(cc.uuid) from CourseClass cc 
+		    	join CourseVersion cv on cc.courseVersion_uuid = cv.uuid
+		    	where cc.state <> ${CourseClassState.deleted.toString} and
+            	(cv.name like ${filteredSearchTerm}
+            	or cc.name like ${filteredSearchTerm})
+            	and cc.institution_uuid = ${institutionUUID}""".first[String].get.toInt
+    	})
+		courseClassesTO
   }
 
   def byPersonAndInstitution(personUUID: String, institutionUUID: String) = {
@@ -110,8 +135,8 @@ object CourseClassesRepo {
     courseClassesTO
   }
 
-  def administratedByPersonOnInstitution(person: Person, institutionUUID: String, roles: List[Role]) = {
-    val courseClassesTO = getAllClassesByInstitution(institutionUUID)
+  def administratedByPersonOnInstitution(personUUID: String, institutionUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int, roles: List[Role]) = {
+    val courseClassesTO = getAllClassesByInstitutionPaged(institutionUUID, searchTerm, pageSize, pageNumber)
     val classes = courseClassesTO.getCourseClasses().asScala
     courseClassesTO.setCourseClasses(classes.filter(cc => isCourseClassAdmin(cc.getCourseClass().getUUID(), institutionUUID, roles)).asJava)
     courseClassesTO
