@@ -26,6 +26,7 @@ import kornell.core.entity.ChatThreadParticipant
 import java.text.SimpleDateFormat
 import kornell.core.entity.Enrollment
 import kornell.server.util.RequirementNotMet
+import kornell.core.entity.RoleType
 
 
 class ChatThreadsRepo {
@@ -87,7 +88,7 @@ object ChatThreadsRepo {
     val participantsThatShouldExist = threadType match {
       case ChatThreadType.SUPPORT => RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
             .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
-      case ChatThreadType.TUTORING =>RolesRepo.getTutorsForCourseClass(courseClass.getCourseVersionUUID(), RoleCategory.BIND_WITH_PERSON)
+      case ChatThreadType.TUTORING =>RolesRepo.getUsersWithRoleForCourseClass(courseClass.getCourseVersionUUID(), RoleCategory.BIND_WITH_PERSON, RoleType.tutor)
           .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
       case ChatThreadType.COURSE_CLASS | ChatThreadType.DIRECT => throw new IllegalStateException("not-supported-for-this-type")
     }
