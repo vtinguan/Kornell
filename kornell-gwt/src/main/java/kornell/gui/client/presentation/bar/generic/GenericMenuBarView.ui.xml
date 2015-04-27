@@ -2,8 +2,8 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
 	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
 	xmlns:knl="urn:import:kornell.gui.client.presentation.bar.generic">
-	<g:FlowPanel ui:field="menuBar" addStyleNames="menuBar">
-		<g:FlowPanel>
+	<g:FlowPanel ui:field="menuBar" addStyleNames="menuBarContainer">
+		<g:FlowPanel addStyleNames="menuBar">
 		  	<g:Image ui:field="imgMenuBar" addStyleNames="imgMenuBar"/>
 		  	<g:FlowPanel addStyleNames="buttons">
 	      	<b:Button ui:field="btnFullScreen" addStyleNames="menuBarButton" icon="FULLSCREEN" title="Tela Cheia"></b:Button>	

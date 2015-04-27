@@ -2,6 +2,7 @@ package kornell.api.client;
 
 import kornell.core.entity.CourseClass;
 import kornell.core.to.CourseClassesTO;
+import kornell.core.to.EnrollmentsTO;
 
 public class CourseClassesClient extends RESTClient {
 	
@@ -14,7 +15,11 @@ public class CourseClassesClient extends RESTClient {
 	}
 
 	public void getAdministratedCourseClassesTOByInstitution(String institutionUUID, Callback<CourseClassesTO> cb) {
-		GET("/courseClasses/administrated?institutionUUID="+institutionUUID).sendRequest(null, cb);
+		getAdministratedCourseClassesTOByInstitution(institutionUUID, ""+Integer.MAX_VALUE, "1", "", cb);
+	}
+
+	public void getAdministratedCourseClassesTOByInstitution(String institutionUUID, String ps, String pn, String searchTerm, Callback<CourseClassesTO> cb) {
+		GET("/courseClasses/administrated?institutionUUID="+institutionUUID + "&ps=" + ps + "&pn=" + pn + "&searchTerm=" + searchTerm).sendRequest(null, cb);
 	}
 
 }

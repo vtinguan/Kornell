@@ -3,12 +3,14 @@ package kornell.gui.client.presentation.admin.courseversion.courseversions;
 import java.util.List;
 
 import kornell.core.entity.CourseVersion;
+import kornell.gui.client.presentation.admin.PaginationPresenter;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AdminCourseVersionsView extends IsWidget {
-	public interface Presenter extends IsWidget {
+	public interface Presenter extends PaginationPresenter {
 	}
-	void setCourseVersions(List<CourseVersion> list);
-	void setPresenter(Presenter presenter);
+	void setPresenter(AdminCourseVersionsView.Presenter presenter);
+	void setCourseVersions(List<CourseVersion> courseVersions, Integer count, Integer searchCount);
 }

@@ -201,6 +201,9 @@
 				<version>${gwtVersion}</version>
 				<executions>
 					<execution>
+				        <configuration>
+				          <extraJvmArgs>-Xmx512M -Xss1024k -Dfoo=bar</extraJvmArgs>
+				        </configuration>
 						<goals>
 							<goal>compile</goal>
 							<goal>generateAsync</goal>
