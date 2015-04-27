@@ -45,7 +45,8 @@ object CoursesRepo {
 		join Institution i on c.institutionUUID = i.uuid
 		where c.institutionUUID = ${institutionUUID}
 		and (childCourse = false or $fetchChildCourses = true)
-		and c.title like ${filteredSearchTerm}
+		and (c.title like ${filteredSearchTerm}
+            or c.code like ${filteredSearchTerm})
 		order by c.code limit ${resultOffset}, ${pageSize} 
 	  """.map[Course](toCourse))
 	  coursesTO.setPageSize(pageSize)

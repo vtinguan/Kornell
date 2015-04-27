@@ -313,6 +313,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 
 	@Override
 	public void setCourses(List<Course> courses, Integer count, Integer searchCount) {
+		coursesWrapper.clear();
 		this.courses = courses;
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
