@@ -49,11 +49,13 @@ object RegistrationEnrollmentService {
         RoleCategory.isCourseClassAdmin(roles, enrollmentRequest.getCourseClassUUID))
   }
 
-  private def deanRequestEnrollment(req: EnrollmentRequestTO, dean: Person) =
+  private def deanRequestEnrollment(req: EnrollmentRequestTO, dean: Person) = {
+    req.setUsername(req.getUsername.trim)
     PeopleRepo.get(req.getInstitutionUUID, req.getUsername) match {
       case Some(one) => deanEnrollExistingPerson(one, req, dean)
       case None => deanEnrollNewPerson(req, dean)
     }
+  }
 
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
     val person = enrollmentRequest.getRegistrationType match {
