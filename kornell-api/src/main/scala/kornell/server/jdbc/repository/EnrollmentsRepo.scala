@@ -37,7 +37,6 @@ object EnrollmentsRepo {
 			    """.map[EnrollmentTO](toEnrollmentTO))
     enrollmentsTO.setCount(
         sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
-      sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
     enrollmentsTO.setCountCancelled(
       sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}
             and state = ${EnrollmentState.cancelled.toString}""".first[String].get.toInt)

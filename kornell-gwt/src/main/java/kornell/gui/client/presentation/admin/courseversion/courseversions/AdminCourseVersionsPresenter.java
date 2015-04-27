@@ -24,6 +24,10 @@ public class AdminCourseVersionsPresenter implements AdminCourseVersionsView.Pre
 	TOFactory toFactory;
 	private ViewFactory viewFactory;
 	private CourseVersionsTO courseVersionsTO;
+	private String pageSize = "20";
+	private String pageNumber = "1";
+	private String searchTerm = "";
+
 
 	public AdminCourseVersionsPresenter(KornellSession session,
 			PlaceController placeController, Place defaultPlace,
@@ -42,20 +46,24 @@ public class AdminCourseVersionsPresenter implements AdminCourseVersionsView.Pre
 			view = getView();
 			view.setPresenter(this);
 			LoadingPopup.show();
-  		session.courseVersions().get(new Callback<CourseVersionsTO>() {
-  			@Override
-  			public void ok(CourseVersionsTO to) {
-  				courseVersionsTO = to;
-  				view.setCourseVersions(courseVersionsTO.getCourseVersions());
-  				LoadingPopup.hide();
-  			}
-  		});
+			getCourseVersions();
       
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}
+	}
+
+	private void getCourseVersions() {
+		session.courseVersions().get(pageSize, pageNumber, searchTerm, new Callback<CourseVersionsTO>() {
+  			@Override
+  			public void ok(CourseVersionsTO to) {
+  				courseVersionsTO = to;
+  				view.setCourseVersions(courseVersionsTO.getCourseVersions(), to.getCount(), to.getSearchCount());
+  				LoadingPopup.hide();
+  			}
+  		});
 	}
 	
 	@Override
@@ -65,6 +73,41 @@ public class AdminCourseVersionsPresenter implements AdminCourseVersionsView.Pre
 
 	private AdminCourseVersionsView getView() {
 		return viewFactory.getAdminCourseVersionsView();
+	}
+
+	@Override
+	public String getPageSize() {
+		return pageSize;
+	}
+
+	@Override
+	public void setPageSize(String pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	@Override
+	public String getPageNumber() {
+		return pageNumber;
+	}
+
+	@Override
+	public void setPageNumber(String pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	@Override
+	public String getSearchTerm() {
+		return searchTerm;
+	}
+
+	@Override
+	public void setSearchTerm(String searchTerm) {
+		this.searchTerm = searchTerm;	
+	}
+
+	@Override
+	public void updateData() {
+		getCourseVersions();
 	}
 	
 }
