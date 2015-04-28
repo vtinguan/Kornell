@@ -55,7 +55,8 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 		String status = page.isVisited() ? "finished" : "toStart";
 		topicIcon.setUrl(IMAGES_PATH + "status_"+status+".png");
 		lblPage.clear();
-		int index = Integer.parseInt(page.getKey().split(".htm")[0]);
+		//int index = Integer.parseInt(page.getKey().split(".htm")[0]);
+		int index = page.getIndex();
 		String title = index + ".  " + page.getTitle();
 		if(enableAnchor){
 			Anchor pageAnchor = new Anchor(title);
