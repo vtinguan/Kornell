@@ -73,12 +73,18 @@ object RolesRepo {
   private def addRole(role: Role) = {
     if(RoleType.courseClassAdmin.equals(role.getRoleType) || RoleType.tutor.equals(role.getRoleType)
         || RoleType.observer.equals(role.getRoleType)) {
+      val courseClassUUID = {
+        if (RoleType.courseClassAdmin.equals(role.getRoleType)) role.getCourseClassAdminRole.getCourseClassUUID
+        else if (RoleType.tutor.equals(role.getRoleType)) role.getTutorRole.getCourseClassUUID
+        else if (RoleType.observer.equals(role.getRoleType)) role.getObserverRole.getCourseClassUUID
+        else ""
+      }
 	    sql"""
 	    	insert into Role (uuid, person_uuid, role, course_class_uuid)
 	    	values (${UUID.random}, 
     		${role.getPersonUUID}, 
 	    	${role.getRoleType.toString}, 
-	    	${role.getCourseClassAdminRole.getCourseClassUUID})
+	    	${courseClassUUID})
 	    """.executeUpdate
     }
     if (RoleType.institutionAdmin.equals(role.getRoleType)) {
