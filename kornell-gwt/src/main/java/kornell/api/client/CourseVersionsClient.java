@@ -1,7 +1,6 @@
 package kornell.api.client;
 
 import kornell.core.entity.CourseVersion;
-import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.util.StringUtils;
 

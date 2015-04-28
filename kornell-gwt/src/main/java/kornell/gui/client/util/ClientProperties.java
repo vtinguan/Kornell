@@ -1,7 +1,5 @@
 package kornell.gui.client.util;
 
-import kornell.gui.client.personnel.Dean;
-
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
 

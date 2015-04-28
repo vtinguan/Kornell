@@ -531,6 +531,11 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 				view.setCanPerformEnrollmentAction(true);
 			}
+			@Override
+			public void internalServerError(KornellErrorTO kornellErrorTO){
+				KornellNotification.show("Erro ao excluir matrícula. Usuário provavelmente já acessou a plataforma.", AlertType.ERROR, 2500);
+				view.setCanPerformEnrollmentAction(true);
+			}
 		});
 	}
 

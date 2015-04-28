@@ -4,7 +4,6 @@ import java.util.List;
 
 import kornell.core.entity.Course;
 import kornell.gui.client.presentation.admin.PaginationPresenter;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

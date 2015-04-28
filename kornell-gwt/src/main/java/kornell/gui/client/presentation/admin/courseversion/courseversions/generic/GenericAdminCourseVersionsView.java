@@ -10,7 +10,6 @@ import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
@@ -18,7 +17,6 @@ import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminC
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
-import kornell.gui.client.uidget.KornellPaginationP;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -73,7 +71,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 	private PlaceController placeCtrl;
 	final CellTable<CourseVersion> table;
 	private List<CourseVersion> courseVersions;
-	private KornellPaginationP pagination;
+	private KornellPagination pagination;
 	private AdminCourseVersionsView.Presenter presenter;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private TextBox txtSearch;
@@ -249,7 +247,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		pagination = new KornellPaginationP(table, presenter);
+		pagination = new KornellPagination(table, presenter);
 	}
 
 	private Delegate<CourseVersion> getStateChangeDelegate(final EnrollmentState state) {

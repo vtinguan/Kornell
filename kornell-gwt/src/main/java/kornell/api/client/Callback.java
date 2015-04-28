@@ -24,7 +24,6 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
@@ -36,10 +35,7 @@ public abstract class Callback<T> implements RequestCallback {
 	@Override
 	public void onResponseReceived(Request request, Response response) {
 		int statusCode = response.getStatusCode();
-		if (statusCode != SC_OK && (!isKornellError(response))) {
-			logger.severe("Got unknown response. Is API up?");
-			return;
-		}
+		
 		switch (statusCode) {
 		case SC_OK:
 			ok(response);
@@ -124,6 +120,11 @@ public abstract class Callback<T> implements RequestCallback {
 		String contentType = response.getHeader("Content-Type").toLowerCase();
 		AutoBean<T> bean = null;
 		AutoBeanFactory factory = factoryFor(contentType);
+		if(factory == null){
+			KornellErrorTO errorTO = GenericClientFactoryImpl.toFactory.newKornellErrorTO().as();
+			errorTO.setMessageKey("genericUnhandledError");
+			return errorTO;
+		}
 		Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
 		bean = AutoBeanCodex.decode(factory, clazz, responseText);
 		T unwrapped = bean.as();
@@ -132,12 +133,6 @@ public abstract class Callback<T> implements RequestCallback {
 		}
 		throw new RuntimeException("Supposed to get a KornellErrorTO, got "
 				+ unwrapped.getClass());
-	}
-
-	private boolean isKornellError(Response response) {
-		String contentType = response != null ? response.getHeader("Content-Type") : null;
-		boolean isKornellError = contentType !=  null && contentType.startsWith("knl");
-		return isKornellError;
 	}
 
 	protected void notFound(KornellErrorTO kornellErrorTO) {
@@ -168,8 +163,7 @@ public abstract class Callback<T> implements RequestCallback {
 		else if (contentType.startsWith(EntityFactory.PREFIX))
 			return GenericClientFactoryImpl.entityFactory;
 		else
-			throw new IllegalArgumentException(
-					"Unknown factory for content type [" + contentType + "]");
+			return null;
 
 	}
 

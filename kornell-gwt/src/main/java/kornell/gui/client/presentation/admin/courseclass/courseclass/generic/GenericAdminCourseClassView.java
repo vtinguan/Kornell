@@ -2,13 +2,11 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
@@ -22,13 +20,11 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
-import kornell.gui.client.uidget.KornellPaginationP;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -94,7 +90,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	final CellTable<EnrollmentTO> table;
 	private List<EnrollmentTO> enrollmentsCurrent;
 	private List<EnrollmentTO> enrollmentsOriginal;
-	private KornellPaginationP pagination;
+	private KornellPagination pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
 	private boolean isEnabled;
@@ -486,7 +482,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		pagination = new KornellPaginationP(table, presenter);
+		pagination = new KornellPagination(table, presenter);
 	}
 
 	@UiHandler("btnModalOK")

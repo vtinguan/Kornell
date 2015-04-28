@@ -52,7 +52,6 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;

@@ -13,10 +13,8 @@ import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.uidget.KornellPagination;
-import kornell.gui.client.uidget.KornellPaginationP;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -72,7 +70,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 	final CellTable<Course> table;
 	private List<Course> courses;
 	private AdminCoursesView.Presenter presenter;
-	private KornellPaginationP pagination;
+	private KornellPagination pagination;
 	private TextBox txtSearch;
 	private Button btnSearch;
 	private Timer updateTimer;
@@ -231,7 +229,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		pagination = new KornellPaginationP(table, presenter);
+		pagination = new KornellPagination(table, presenter);
 	}
 
 	private Delegate<Course> getStateChangeDelegate(final EnrollmentState state) {

@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
-import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.UnreadChatThreadTO;
@@ -28,7 +27,6 @@ import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
