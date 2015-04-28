@@ -15,6 +15,7 @@ import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
@@ -160,13 +161,19 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			updateCertificationLinkAndLabel();
 		}
 	}
-
 	private void updateCertificationLinkAndLabel(){
+		updateCertificationLinkAndLabel("");
+	}
+
+	private void updateCertificationLinkAndLabel(String gradeIn){
 		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest);
 		status = allowCertificateGeneration ? "Disponível" : "Não disponível";
 		lblStatus.setText(status);
 
-		if(currentCourseClass != null){
+		if(StringUtils.isSome(gradeIn)){
+			this.grade = "" + new BigDecimal(gradeIn).intValue();
+			lblGrade.setText(this.grade);
+		} else if(currentCourseClass != null){
 			Enrollment currEnrollment = currentCourseClass.getEnrollment();
 			CourseClass courseClass = currentCourseClass.getCourseClass();
 			BigDecimal requiredScore = courseClass != null ? courseClass.getRequiredScore() : null;
@@ -179,7 +186,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			} else {
 				this.grade = "-";
 			}
-			lblGrade.setText(grade);
+			lblGrade.setText(this.grade);
 		}
 		
 		displayActionCell(allowCertificateGeneration);
@@ -192,16 +199,16 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 	
 	private void checkCertificateAvailability() {
-		if(!approvedOnTest && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
+		if(/*!approvedOnTest && */Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
 			Timer checkTimer = new Timer() {
 				@Override
 				public void run() {
 			    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
-			    .isApproved(new Callback<Boolean>() {
+			    .isApproved(new Callback<String>() {
 			    	@Override
-			    	public void ok(Boolean approved) {
-			    		approvedOnTest = approved;
-			    		updateCertificationLinkAndLabel();
+			    	public void ok(String grade) {
+			    		approvedOnTest = StringUtils.isSome(grade);
+			    		updateCertificationLinkAndLabel(grade);
 			    	}
 				});
 				}

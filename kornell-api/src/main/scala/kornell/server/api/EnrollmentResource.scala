@@ -58,8 +58,15 @@ class EnrollmentResource(uuid: String) {
 
   @GET
   @Path("approved")
-  @Produces(Array("application/boolean"))
-  def approved =  first map { Assessment.PASSED == _.getAssessment } get
+  @Produces(Array("text/plain"))
+  def approved =  {
+    val e = first.get
+    if(Assessment.PASSED == e.getAssessment){
+      e.getAssessmentScore.toString
+    } else {
+      ""
+    }
+  }
   
   
   @DELETE

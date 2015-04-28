@@ -19,6 +19,7 @@ import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.event.LogoutEvent;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
@@ -35,7 +36,6 @@ public abstract class Callback<T> implements RequestCallback {
 	@Override
 	public void onResponseReceived(Request request, Response response) {
 		int statusCode = response.getStatusCode();
-		
 		switch (statusCode) {
 		case SC_OK:
 			ok(response);
@@ -103,7 +103,7 @@ public abstract class Callback<T> implements RequestCallback {
 			} else
 				ok(Callback.parseJson(responseText));
 
-		} else if (contentType.contains("application/octet-stream")) {
+		} else if (contentType.contains("application/octet-stream") || contentType.contains("text/plain") ) {
 			T txt = (T) responseText;
 			ok(txt);
 		} else
