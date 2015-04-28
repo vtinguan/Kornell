@@ -7,12 +7,14 @@ import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
+import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.uidget.KornellPagination;
 
@@ -58,6 +60,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericAdminCoursesView extends Composite implements AdminCoursesView {
@@ -224,6 +228,19 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 				return course;
 			}
 		}, "Ações");
+		
+		// Add a selection model to handle user selection.
+		final SingleSelectionModel<Course> selectionModel = new SingleSelectionModel<Course>();
+		table.setSelectionModel(selectionModel);
+		selectionModel
+				.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+					public void onSelectionChange(SelectionChangeEvent event) {
+						Course selected = selectionModel.getSelectedObject();
+						if (selected != null) {
+							placeCtrl.goTo(new AdminCoursePlace(selected.getUUID()));
+						}
+					}
+				});
 	}
 
 	@Override
