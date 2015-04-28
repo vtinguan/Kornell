@@ -32,7 +32,9 @@ public interface EntityFactory extends AutoBeanFactory {
 
 	AutoBean<CourseClassAdminRole> newCourseClassAdminRole();
 	
-	AutoBean<CourseClassAdminRole> newTutorRole();
+	AutoBean<TutorRole> newTutorRole();
+	
+	AutoBean<ObserverRole> newObserverRole();
 
 	AutoBean<CourseVersion> newCourseVersion();
 	

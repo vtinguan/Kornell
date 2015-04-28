@@ -222,7 +222,17 @@ object Entities {
     val tutorRole = factory.newTutorRole().as
     tutorRole.setCourseClassUUID(courseClassUUID)
     role.setRoleType(RoleType.tutor)
-    role.setCourseClassAdminRole(tutorRole)
+    role.setTutorRole(tutorRole)
+    role
+  }
+  
+  def newObserverRole(person_uuid: String, courseClassUUID: String) = {
+    val role = factory.newRole().as
+    role.setPersonUUID(person_uuid)
+    val observerRole = factory.newObserverRole().as
+    observerRole.setCourseClassUUID(courseClassUUID)
+    role.setRoleType(RoleType.observer)
+    role.setObserverRole(observerRole)
     role
   }
 

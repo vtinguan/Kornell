@@ -19,13 +19,13 @@ import kornell.core.to.RoleTO
 
 object RolesRepo {
   	
-  def getCourseClassAdmins(courseClassUUID: String, bindMode: String) =
+  def getUsersWithRoleForCourseClass(courseClassUUID: String, bindMode: String, roleType: RoleType) =
 	  TOs.newRolesTO(sql"""
 		    | select *, pw.username
 	      	| from Role r
 	        | join Password pw on pw.person_uuid = r.person_uuid
 	        | where r.course_class_uuid = ${courseClassUUID}
-	  			| and r.role = ${RoleType.courseClassAdmin.toString}
+	  			| and r.role = ${roleType.toString}
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   	
   def getInstitutionAdmins(institutionUUID: String, bindMode: String) =
@@ -56,22 +56,14 @@ object RolesRepo {
 	  			| 	and r.role = ${RoleType.institutionAdmin.toString})
 	  			| or r.role = ${RoleType.platformAdmin.toString}
             """.map[RoleTO](toRoleTO(_,bindMode)))   
-		    
-  def getTutorsForCourseClass(courseClassUUID: String, bindMode: String)=
-      TOs.newRolesTO(sql"""
-		    | select *, pw.username
-            | from Role r
-	        | join Password pw on pw.person_uuid = r.person_uuid
-            | where courseClassUUID = ${courseClassUUID}
-                | and r.role = ${RoleType.tutor.toString}
-            """.map[RoleTO](toRoleTO(_,bindMode)))   
   
+  def updateCourseClassAdmins(courseClassUUID: String, roles: Roles) = removeCourseClassRole(courseClassUUID, RoleType.courseClassAdmin).addRoles(roles)
   
-  def updateCourseClassAdmins(courseClassUUID: String, roles: Roles) = removeCourseClassAdmins(courseClassUUID).addRoles(roles)
+  def updateTutors(courseClassUUID: String, roles: Roles) = removeCourseClassRole(courseClassUUID, RoleType.tutor).addRoles(roles)
+  
+  def updateObservers(courseClassUUID: String, roles: Roles) = removeCourseClassRole(courseClassUUID, RoleType.observer).addRoles(roles)
   
   def updateInstitutionAdmins(institutionUUID: String, roles: Roles) = removeInstitutionAdmins(institutionUUID).addRoles(roles)
-  
-  def updateTutors(courseClassUUID: String, roles: Roles) = removeTutors(courseClassUUID).addRoles(roles)
   
   def addRoles(roles: Roles) = {
     roles.getRoles.asScala.foreach(addRole _)
@@ -79,13 +71,20 @@ object RolesRepo {
   }
 
   private def addRole(role: Role) = {
-    if(RoleType.courseClassAdmin.equals(role.getRoleType)) {
+    if(RoleType.courseClassAdmin.equals(role.getRoleType) || RoleType.tutor.equals(role.getRoleType)
+        || RoleType.observer.equals(role.getRoleType)) {
+      val courseClassUUID = {
+        if (RoleType.courseClassAdmin.equals(role.getRoleType)) role.getCourseClassAdminRole.getCourseClassUUID
+        else if (RoleType.tutor.equals(role.getRoleType)) role.getTutorRole.getCourseClassUUID
+        else if (RoleType.observer.equals(role.getRoleType)) role.getObserverRole.getCourseClassUUID
+        else ""
+      }
 	    sql"""
 	    	insert into Role (uuid, person_uuid, role, course_class_uuid)
 	    	values (${UUID.random}, 
     		${role.getPersonUUID}, 
 	    	${role.getRoleType.toString}, 
-	    	${role.getCourseClassAdminRole.getCourseClassUUID})
+	    	${courseClassUUID})
 	    """.executeUpdate
     }
     if (RoleType.institutionAdmin.equals(role.getRoleType)) {
@@ -99,11 +98,11 @@ object RolesRepo {
     }
   }
   
-  def removeCourseClassAdmins(courseClassUUID: String) = {
+  def removeCourseClassRole(courseClassUUID: String, roleType: RoleType) = {
     sql"""
     	delete from Role
     	where course_class_uuid = ${courseClassUUID}
-        and role = ${RoleType.courseClassAdmin.toString}
+        and role = ${roleType.toString}
     """.executeUpdate
     this
   }
@@ -112,15 +111,6 @@ object RolesRepo {
     sql"""
         delete from Role
         where institution_uuid = ${institutionUUID}
-    """.executeUpdate
-    this
-  }
-  
-  def removeTutors(courseClassUUID: String) = {
-    sql"""
-        delete from Role
-        where course_class_uuid = ${courseClassUUID}
-        and role = ${RoleType.tutor.toString}
     """.executeUpdate
     this
   }

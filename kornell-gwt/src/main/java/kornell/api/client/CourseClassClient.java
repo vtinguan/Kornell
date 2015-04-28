@@ -28,10 +28,25 @@ public class CourseClassClient extends RESTClient {
 	public void updateAdmins(Roles roles, Callback<Roles> cb) {
 		PUT("courseClasses",courseClassUUID,"admins").withContentType(Roles.TYPE).withEntityBody(roles).go(cb);
 	}
+	
+	public void getTutors(String bindMode, Callback<RolesTO> cb) {
+        GET("courseClasses",courseClassUUID,"tutors"+"?bind="+bindMode).withContentType(CourseClass.TYPE).go(cb);
+    }
+
+    public void updateTutors(Roles roles, Callback<Roles> cb) {
+        PUT("courseClasses",courseClassUUID,"tutors").withContentType(Roles.TYPE).withEntityBody(roles).go(cb);
+    }
+    
+    public void getObservers(String bindMode, Callback<RolesTO> cb) {
+        GET("courseClasses",courseClassUUID,"observers"+"?bind="+bindMode).withContentType(CourseClass.TYPE).go(cb);
+    }
+
+    public void updateObservers(Roles roles, Callback<Roles> cb) {
+        PUT("courseClasses",courseClassUUID,"observers").withContentType(Roles.TYPE).withEntityBody(roles).go(cb);
+    }
 
 	public void libraryFiles(Callback<LibraryFilesTO> callback) {
 		GET("courseClasses",courseClassUUID,"libraryFiles").go(callback);
 	}
-	
 	
 }
