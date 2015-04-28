@@ -11,6 +11,7 @@ import kornell.core.entity.EntityFactory;
 import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
@@ -117,6 +118,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 						startAnonymous();
 					}
 				}
+			}
+			@Override
+			public void unauthorized(KornellErrorTO kornellErrorTO){
+				startAnonymous();
 			}
 		};
 

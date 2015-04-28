@@ -14,7 +14,7 @@ object ExceptionMapperHelper {
   val errorFactory = AutoBeanFactorySource.create(classOf[TOFactory])
   
   def handleError(code: Int, messageKey: String, exception: String = null): Response = {
-    var errorTO = errorFactory.newErrorTO.as;
+    var errorTO = errorFactory.newKornellErrorTO.as;
     errorTO.setMessageKey(messageKey)
     errorTO.setException(exception)
     Response

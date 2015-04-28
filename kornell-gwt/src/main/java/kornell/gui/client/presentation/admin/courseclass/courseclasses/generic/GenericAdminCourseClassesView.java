@@ -9,14 +9,13 @@ import kornell.api.client.KornellSession;
 import kornell.core.to.CourseClassTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.PaginationPresenter;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassConfigView;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.uidget.KornellPaginationP;
+import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -60,6 +59,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericAdminCourseClassesView extends Composite implements AdminCourseClassesView {
@@ -71,7 +72,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	private PlaceController placeCtrl;
 	final CellTable<CourseClassTO> table;
 	private List<CourseClassTO> courseClassTOs;
-	private KornellPaginationP pagination;
+	private KornellPagination pagination;
 	private AdminCourseClassesView.Presenter presenter;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private TextBox txtSearch;
@@ -242,12 +243,26 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 				return courseClassTO;
 			}
 		}, "Ações");
+		
+		
+		// Add a selection model to handle user selection.
+		final SingleSelectionModel<CourseClassTO> selectionModel = new SingleSelectionModel<CourseClassTO>();
+		table.setSelectionModel(selectionModel);
+		selectionModel
+				.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+					public void onSelectionChange(SelectionChangeEvent event) {
+		        		CourseClassTO selected = selectionModel.getSelectedObject();
+						if (selected != null) {
+							placeCtrl.goTo(new AdminCourseClassPlace(selected.getCourseClass().getUUID()));
+						}
+					}
+				});
 	}
 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		pagination = new KornellPaginationP(table, presenter);
+		pagination = new KornellPagination(table, presenter);
 	}
 
 	private Delegate<CourseClassTO> getEditCourseClassDelegate() {

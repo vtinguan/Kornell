@@ -6,7 +6,6 @@ import static kornell.core.scorm12.rte.SCOAccess.RO;
 import java.util.Map;
 
 import kornell.core.scorm12.rte.DMElement;
-import kornell.core.scorm12.rte.KNL;
 import kornell.core.scorm12.rte.cmi.StudentData;
 import kornell.core.scorm12.rte.knl.FirstLaunch;
 

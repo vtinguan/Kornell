@@ -15,7 +15,7 @@ class KornellExceptionMapper extends ExceptionMapper[KornellErr] {
   val errorFactory = AutoBeanFactorySource.create(classOf[TOFactory])
   
   override def toResponse(ke: KornellErr): Response = {
-    val errorTO = errorFactory.newErrorTO.as
+    val errorTO = errorFactory.newKornellErrorTO.as
     errorTO.setMessageKey(ke.getMessageKey)
     Response
     	.status(ke.getCode)

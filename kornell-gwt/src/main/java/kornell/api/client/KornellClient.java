@@ -1,7 +1,5 @@
 package kornell.api.client;
 
-import com.google.gwt.user.client.Window;
-
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.util.ClientProperties;
 

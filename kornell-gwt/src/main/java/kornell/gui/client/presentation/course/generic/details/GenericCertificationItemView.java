@@ -1,5 +1,8 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import static kornell.core.util.StringUtils.mkurl;
+import static kornell.core.util.StringUtils.noneEmpty;
+
 import java.math.BigDecimal;
 
 import kornell.api.client.Callback;
@@ -12,7 +15,6 @@ import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
-import static kornell.core.util.StringUtils.*;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;

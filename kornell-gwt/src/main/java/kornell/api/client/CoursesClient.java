@@ -1,9 +1,7 @@
 package kornell.api.client;
 
 import kornell.core.entity.Course;
-import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
-import kornell.core.util.StringUtils;
 
 public class CoursesClient extends RESTClient {
 

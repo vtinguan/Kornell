@@ -1,6 +1,5 @@
 package kornell.gui.client.presentation.admin.courseversion.courseversion.generic;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

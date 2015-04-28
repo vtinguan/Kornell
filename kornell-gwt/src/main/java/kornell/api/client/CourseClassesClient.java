@@ -2,7 +2,6 @@ package kornell.api.client;
 
 import kornell.core.entity.CourseClass;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.EnrollmentsTO;
 
 public class CourseClassesClient extends RESTClient {
 	

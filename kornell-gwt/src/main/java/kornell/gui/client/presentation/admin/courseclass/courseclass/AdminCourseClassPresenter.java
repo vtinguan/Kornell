@@ -99,6 +99,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin)
 				|| session.isInstitutionAdmin()) {
 			view = getView();
+			view.showEnrollmentsPanel(false);
 			view.setPresenter(this);
 			String selectedCourseClass;
 			if (placeController.getWhere() instanceof AdminCourseClassPlace
@@ -139,6 +140,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
 		LoadingPopup.show();
+		view.showEnrollmentsPanel(false);
 		session.courseClasses().getAdministratedCourseClassesTOByInstitution(
 				Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 					@Override
@@ -529,6 +531,11 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			public void ok(Enrollment to) {
 				KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
 				getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+				view.setCanPerformEnrollmentAction(true);
+			}
+			@Override
+			public void internalServerError(KornellErrorTO kornellErrorTO){
+				KornellNotification.show("Erro ao excluir matrícula. Usuário provavelmente já acessou a plataforma.", AlertType.ERROR, 2500);
 				view.setCanPerformEnrollmentAction(true);
 			}
 		});

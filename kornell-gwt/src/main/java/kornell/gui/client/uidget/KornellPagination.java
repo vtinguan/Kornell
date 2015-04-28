@@ -2,6 +2,8 @@ package kornell.gui.client.uidget;
 
 import java.util.List;
 
+import kornell.gui.client.presentation.admin.PaginationPresenter;
+
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.Pagination;
@@ -13,58 +15,44 @@ import com.google.gwt.event.dom.client.ClickHandler;
 public class KornellPagination extends Pagination{
 
 	
-	private int pageSize = 20;
+	private PaginationPresenter presenter;
 	private int maxPaginationTabs = 10;
 	private int totalRowCount = 0;
 	private CellTable table;
-	private List rowData;
 
-	public KornellPagination(CellTable table, List rowData) {
+
+	public KornellPagination(CellTable table, PaginationPresenter presenter) {
+		this.presenter = presenter;
 		this.table = table;
-		this.rowData = rowData;
 	}
 
-	public KornellPagination(CellTable table, List rowData, int pageSize) {
-		this(table, rowData);
-		this.pageSize = pageSize;
-	}
-	
-	public void displayTableData(int pageNumber) {		
-		int end = pageNumber * pageSize;
-		int start = end - pageSize; 
-		
-    	if(end > totalRowCount)
-    		end = totalRowCount;
-    	
-		table.setRowData(rowData.subList(start, end));
-		updatePagination(pageNumber);
-		
-	}
-
-	private void updatePagination(int page) {
+	private void updatePagination(List rowData){
 		clear();
+		table.setRowData(rowData);
+		int pageSize = Integer.parseInt(presenter.getPageSize());
+		int pageNumber = Integer.parseInt(presenter.getPageNumber());
     	int navLinkCount = (totalRowCount+pageSize-1)/pageSize;
     	setVisible(navLinkCount > 1);
     	setAlignment("centered");
     	
     	if(navLinkCount < maxPaginationTabs){
     		for(int i = 1; i <= navLinkCount; i++){
-    			add(createNavLink(i, i==page));
+    			add(createNavLink(i, i==pageNumber));
     		}
-    	} else if(page <= (maxPaginationTabs / 2)){
+    	} else if(pageNumber <= (maxPaginationTabs / 2)){
     		for(int i = 1; i <= maxPaginationTabs; i++){
-    			add(createNavLink(i, i==page));
+    			add(createNavLink(i, i==pageNumber));
     		}
     		add(createNavLink(">", navLinkCount));
-    	} else if(page > navLinkCount - (maxPaginationTabs / 2)){
+    	} else if(pageNumber > navLinkCount - (maxPaginationTabs / 2)){
     		add(createNavLink("<", 1));
     		for(int i = (navLinkCount - maxPaginationTabs) + 1; i <= navLinkCount; i++){
-    			add(createNavLink(i, i==page));
+    			add(createNavLink(i, i==pageNumber));
     		}
     	} else {
     		add(createNavLink("<", 1));
-    		for(int i = page - (maxPaginationTabs / 2); i <= page + (maxPaginationTabs / 2); i++){
-    			add(createNavLink(i, i==page));
+    		for(int i = pageNumber - (maxPaginationTabs / 2); i <= pageNumber + (maxPaginationTabs / 2); i++){
+    			add(createNavLink(i, i==pageNumber));
     		}
     		add(createNavLink(">", navLinkCount));
     	}
@@ -88,29 +76,17 @@ public class KornellPagination extends Pagination{
 				@Override
 				public void onClick(ClickEvent event) {
 					IconAnchor thisThing = (IconAnchor) event.getSource();
-					displayTableData(Integer.parseInt(thisThing.getName().trim()));
+					presenter.setPageNumber(thisThing.getName().trim());
+			    	presenter.updateData();
 				}
 			});
 		}
 		return navLink;
 	}
 	
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-		displayTableData(1);
+	public void setRowData(List rowData, int totalRowCount) {
+		this.totalRowCount = totalRowCount;
+		updatePagination(rowData);
 	}
-	
-	public int getPageSize() {
-		return this.pageSize;
-	}
-	
-	public int getTotalRowCount() {
-		return totalRowCount;
-	}
-	
-	public void setRowData(List rowData) {
-		this.rowData = rowData;
-		this.totalRowCount = rowData.size();
-	}	
 	
 }

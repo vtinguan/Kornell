@@ -1,7 +1,5 @@
 package kornell.core.scorm12.rte.knl;
 
-import java.util.Map;
-
 import kornell.core.scorm12.rte.DMElement;
 import kornell.core.scorm12.rte.DataType;
 import kornell.core.scorm12.rte.SCOAccess;
