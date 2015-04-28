@@ -140,11 +140,11 @@ public class GenericCourseClassAdminsView extends Composite {
 	public void initTutorsData() {
         tutorsFields.clear();
         FlowPanel fieldPanelWrapper = new FlowPanel();
-        fieldPanelWrapper.addStyleName("fieldPanelWrapper tutorsField");
+        fieldPanelWrapper.addStyleName("fieldPanelWrapper courseClassAdminField");
         
         FlowPanel labelPanel = new FlowPanel();
         labelPanel.addStyleName("labelPanel");
-        Label lblLabel = new Label("__TUTORS__");
+        Label lblLabel = new Label("Tutores da Turma");
         lblLabel.addStyleName("lblLabel");
         labelPanel.add(lblLabel);
         fieldPanelWrapper.add(labelPanel);
@@ -175,11 +175,11 @@ public class GenericCourseClassAdminsView extends Composite {
 	public void initObserversData() {
         observersFields.clear();
         FlowPanel fieldPanelWrapper = new FlowPanel();
-        fieldPanelWrapper.addStyleName("fieldPanelWrapper observersField");
+        fieldPanelWrapper.addStyleName("fieldPanelWrapper courseClassAdminField");
         
         FlowPanel labelPanel = new FlowPanel();
         labelPanel.addStyleName("labelPanel");
-        Label lblLabel = new Label("__OBSERVERS__");
+        Label lblLabel = new Label("Observadores da Turma");
         lblLabel.addStyleName("lblLabel");
         labelPanel.add(lblLabel);
         fieldPanelWrapper.add(labelPanel);
@@ -253,7 +253,7 @@ public class GenericCourseClassAdminsView extends Composite {
             session.courseClass(courseClassTO.getCourseClass().getUUID()).updateTutors(roles, new Callback<Roles>() {
                 @Override
                 public void ok(Roles to) {
-                    KornellNotification.show("__TUTORS MODIFICATION OK__", AlertType.SUCCESS);
+                    KornellNotification.show("Os tutores da turma foram atualizados com sucesso.", AlertType.SUCCESS);
                 }
             });
         }
@@ -279,7 +279,7 @@ public class GenericCourseClassAdminsView extends Composite {
             session.courseClass(courseClassTO.getCourseClass().getUUID()).updateObservers(roles, new Callback<Roles>() {
                 @Override
                 public void ok(Roles to) {
-                    KornellNotification.show("__OBSERVERS MODIFICATIONS OK__", AlertType.SUCCESS);
+                    KornellNotification.show("Os observadores da turma foram atualizados com sucesso.", AlertType.SUCCESS);
                 }
             });
         }
