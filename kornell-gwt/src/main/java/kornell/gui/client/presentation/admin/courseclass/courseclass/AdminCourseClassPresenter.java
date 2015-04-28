@@ -99,6 +99,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin)
 				|| session.isInstitutionAdmin()) {
 			view = getView();
+			view.showEnrollmentsPanel(false);
 			view.setPresenter(this);
 			String selectedCourseClass;
 			if (placeController.getWhere() instanceof AdminCourseClassPlace
@@ -139,6 +140,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
 		LoadingPopup.show();
+		view.showEnrollmentsPanel(false);
 		session.courseClasses().getAdministratedCourseClassesTOByInstitution(
 				Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
 					@Override

@@ -14,6 +14,7 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.Gen
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -58,6 +59,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericAdminCourseClassesView extends Composite implements AdminCourseClassesView {
@@ -240,6 +243,20 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 				return courseClassTO;
 			}
 		}, "Ações");
+		
+		
+		// Add a selection model to handle user selection.
+		final SingleSelectionModel<CourseClassTO> selectionModel = new SingleSelectionModel<CourseClassTO>();
+		table.setSelectionModel(selectionModel);
+		selectionModel
+				.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+					public void onSelectionChange(SelectionChangeEvent event) {
+		        		CourseClassTO selected = selectionModel.getSelectedObject();
+						if (selected != null) {
+							placeCtrl.goTo(new AdminCourseClassPlace(selected.getCourseClass().getUUID()));
+						}
+					}
+				});
 	}
 
 	@Override

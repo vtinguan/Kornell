@@ -262,7 +262,7 @@ public class GenericAdminCourseClassView extends Composite implements
 
 			tabsPanel.add(adminsTab);
 		}
-		// new ExceptionalRequestBuilder(RequestBuilder.PUT, url)
+
 	}
 
 	@Override
