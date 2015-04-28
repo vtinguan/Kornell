@@ -38,6 +38,7 @@ import kornell.core.entity.ChatThreadType
 import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.core.error.exception.EntityNotFoundException
 import kornell.core.error.exception.EntityConflictException
+import kornell.core.entity.RoleType
 
 
 class CourseClassResource(uuid: String) {
@@ -114,7 +115,7 @@ class CourseClassResource(uuid: String) {
       @QueryParam("bind") bindMode:String) =
     AuthRepo().withPerson { person =>
       {
-        RolesRepo.getCourseClassAdmins(uuid, bindMode)
+        RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.courseClassAdmin)
       }
     }
   
@@ -133,12 +134,30 @@ class CourseClassResource(uuid: String) {
   @GET
   @Produces(Array(RolesTO.TYPE))
   @Path("tutors")
-  def updateTutors(@QueryParam("bind") bindMode:String) = {
-        RolesRepo.getTutorsForCourseClass(uuid, bindMode)
+  def getTutors(@QueryParam("bind") bindMode:String) = {
+        RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.tutor)
   }.requiring(isPlatformAdmin, AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 
+   @PUT
+  @Consumes(Array(Roles.TYPE))
+  @Produces(Array(Roles.TYPE))
+  @Path("observers")
+  def updateObservers(roles: Roles) = {
+        RolesRepo.updateObservers(uuid, roles)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
+
+  @GET
+  @Produces(Array(RolesTO.TYPE))
+  @Path("observers")
+  def getObservers(@QueryParam("bind") bindMode:String) = {
+        RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.observer)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
 }
 
 object CourseClassResource {

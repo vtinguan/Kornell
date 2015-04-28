@@ -20,4 +20,10 @@ public interface Role {
 	
 	CourseClassAdminRole getCourseClassAdminRole();
 	void setCourseClassAdminRole(CourseClassAdminRole courseClassAdminRole);
+	
+	TutorRole getTutorRole();
+	void setTutorRole(TutorRole tutorRole);
+	
+	ObserverRole getObserverRole();
+	void setObserverRole(ObserverRole observerRole);
 }

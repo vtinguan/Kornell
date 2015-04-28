@@ -238,6 +238,7 @@ package object repository {
       case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("person_uuid"), rs.getString("institution_uuid"))
       case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
       case RoleType.tutor => Entities.newTutorRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
+      case RoleType.observer => Entities.newObserverRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
     }
     role
   }
