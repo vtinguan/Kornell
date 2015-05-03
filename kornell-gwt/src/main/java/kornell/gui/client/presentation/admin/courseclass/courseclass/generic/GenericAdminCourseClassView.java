@@ -370,7 +370,8 @@ public class GenericAdminCourseClassView extends Composite implements
 
 	private void initTable() {
 
-		table.addStyleName("enrollmentsCellTable");
+		table.addStyleName("adminCellTable");
+		table.addStyleName("lineWithoutLink");
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		for (int i = 0; table.getColumnCount() > 0;) {
 			table.removeColumn(i);
