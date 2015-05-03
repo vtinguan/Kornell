@@ -34,6 +34,7 @@ import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.Device;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.ActionCell;
@@ -197,7 +198,7 @@ public class GenericAdminCourseClassView extends Composite implements
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
-
+		
 		enrollmentsTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -238,13 +239,6 @@ public class GenericAdminCourseClassView extends Composite implements
 			}
 		});
 
-		updateTimer = new Timer() {
-			@Override
-			public void run() {
-				filterEnrollments();
-			}
-		};
-
 		if (session.isInstitutionAdmin()) {
 			adminsTab = new Tab();
 			adminsTab.setIcon(IconType.GROUP);
@@ -263,6 +257,22 @@ public class GenericAdminCourseClassView extends Composite implements
 			tabsPanel.add(adminsTab);
 		}
 
+		updateTimer = new Timer() {
+			@Override
+			public void run() {
+				filterEnrollments();
+			}
+		};
+
+	}
+	
+	public void setTabsVisibility(){
+		enrollTab.asTabLink().setVisible(session.isCourseClassAdmin());
+		configTab.asTabLink().setVisible(session.isCourseClassAdmin());
+		reportsTab.asTabLink().setVisible(session.isCourseClassAdmin() || session.isCourseClassObserver());
+		messagesTab.asTabLink().setVisible(session.isCourseClassAdmin());
+		if(adminsTab != null)
+			adminsTab.asTabLink().setVisible(session.isInstitutionAdmin());
 	}
 
 	@Override
@@ -520,6 +530,7 @@ public class GenericAdminCourseClassView extends Composite implements
 	@Override
 	public void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, Integer searchCount, boolean refresh) {
 
+		setTabsVisibility();
 		enrollmentsOriginal = enrollmentsIn;
 		this.isEnabled = CourseClassState.active.equals(Dean.getInstance()
 				.getCourseClassTO().getCourseClass().getState());
@@ -535,6 +546,7 @@ public class GenericAdminCourseClassView extends Composite implements
 		if (!refresh)
 			return;
 
+		final ListBox pageSizeListBox = new ListBox();
 		if (enrollmentsCurrent == null) {
 
 			enrollmentsWrapper.clear();
@@ -543,7 +555,6 @@ public class GenericAdminCourseClassView extends Composite implements
 			panel.setWidth("400");
 			panel.add(table);
 
-			final ListBox pageSizeListBox = new ListBox();
 			// pageSizeListBox.addItem("1");
 			// pageSizeListBox.addItem("10");
 			pageSizeListBox.addItem("20");
@@ -578,6 +589,7 @@ public class GenericAdminCourseClassView extends Composite implements
 		}
 		
 		pagination.setRowData(enrollmentsOriginal, StringUtils.isSome(presenter.getSearchTerm()) ? searchCount : count);
+		pageSizeListBox.setVisible(pagination.isVisible());
 
 	}
 

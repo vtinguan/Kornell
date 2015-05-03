@@ -104,7 +104,7 @@ object CourseClassesRepo {
 			    left join InstitutionRegistrationPrefix irp on irp.uuid = cc.institutionRegistrationPrefixUUID
       	  	where cc.state <> ${CourseClassState.deleted.toString} and
             (cv.name like ${filteredSearchTerm}
-            or cc.name like ${filteredSearchTerm}) and (${StringUtils.isSome(adminUUID)} and
+            or cc.name like ${filteredSearchTerm}) and (${StringUtils.isNone(adminUUID)} or
 			(select count(*) from Role r where person_uuid = ${adminUUID} and (
 				(r.role = ${RoleType.platformAdmin.toString}) or 
 				(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 

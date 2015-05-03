@@ -50,7 +50,8 @@ class ReportResource {
     val roles = AuthRepo().getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
-      RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID)))
+      RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID) ||
+      RoleCategory.isCourseClassObserver(roles, courseClass.getUUID)))
     	throw new UnauthorizedAccessException("unauthorizedAccessReport")
     else {
       try {
