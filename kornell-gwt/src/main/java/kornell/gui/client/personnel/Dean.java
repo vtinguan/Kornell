@@ -148,8 +148,6 @@ public class Dean implements LoginEventHandler, LogoutEventHandler,
 		this.courseClassTO = courseClassTO;
 	}
 	
-	
-
 	public void setCourseClassTO(String uuid) {
 		this.courseClassUUID = uuid;
 		refresh();

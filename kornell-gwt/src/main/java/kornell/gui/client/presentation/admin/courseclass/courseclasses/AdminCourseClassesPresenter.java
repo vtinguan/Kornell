@@ -54,8 +54,10 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	}
 
 	private void init() {
-		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(),
-				RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
+		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin)
+				|| RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.observer)
+				|| RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.tutor)
+				|| session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
 			

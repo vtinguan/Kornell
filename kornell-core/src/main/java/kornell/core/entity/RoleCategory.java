@@ -22,6 +22,22 @@ public class RoleCategory {
 							.equals(courseClassUUID))
 				return true;
 			break;
+		case observer:
+			if (RoleType.observer.equals(type)
+					&& courseClassUUID != null
+					&& role.getObserverRole()
+							.getCourseClassUUID()
+							.equals(courseClassUUID))
+				return true;
+			break;
+		case tutor:
+			if (RoleType.tutor.equals(type)
+					&& courseClassUUID != null
+					&& role.getTutorRole()
+							.getCourseClassUUID()
+							.equals(courseClassUUID))
+				return true;
+			break;
 		case institutionAdmin:
 			if (RoleType.institutionAdmin.equals(type)
 					&& institutionUUID != null
@@ -50,6 +66,14 @@ public class RoleCategory {
 			if (RoleType.courseClassAdmin.equals(type))
 				return true;
 			break;
+		case observer:
+			if (RoleType.observer.equals(type))
+				return true;
+			break;
+		case tutor:
+			if (RoleType.tutor.equals(type))
+				return true;
+			break;
 		case institutionAdmin:
 			if (RoleType.institutionAdmin.equals(type))
 				return true;
@@ -75,6 +99,14 @@ public class RoleCategory {
 
 	public static boolean isCourseClassAdmin(Set<Role> roles, String courseClassUUID) {
 		return isValidRole(roles, RoleType.courseClassAdmin, null, courseClassUUID);
+	}
+
+	public static boolean isCourseClassObserver(Set<Role> roles, String courseClassUUID) {
+		return isValidRole(roles, RoleType.observer, null, courseClassUUID);
+	}
+
+	public static boolean isCourseClassTutor(Set<Role> roles, String courseClassUUID) {
+		return isValidRole(roles, RoleType.tutor, null, courseClassUUID);
 	}
 
 	public static boolean isValidRole(Set<Role> roles, RoleType type, String institutionUUID, String courseClassUUID) {
