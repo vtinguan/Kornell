@@ -145,7 +145,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 		if (showMantle == isMantleShown)
 			return;
 		String style = "position: relative; " + "zoom: 1; " + "-webkit-background-size: cover; "
-				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;";
+				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;" + "overflow:auto;";
 		if (showMantle)
 			style = "background: url('"
 					+ composeURL(Dean.getInstance().getInstitution().getAssetsURL(), "bgVitrine.jpg")
