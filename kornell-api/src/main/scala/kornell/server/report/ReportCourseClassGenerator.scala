@@ -67,6 +67,7 @@ object ReportCourseClassGenerator {
 				left join Password pw on pw.person_uuid = p.uuid
 			where
 				(e.state = 'enrolled' or e.state = 'cancelled') and
+    			cc.state = 'active' and 
 		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 				(c.uuid = ${courseUUID} or ${courseUUID} is null)
 			order by 
