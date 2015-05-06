@@ -160,6 +160,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				placeBar.setVisible(false);
 				placeBar.clear();
 			}
+			showButtons(place);
             if(isVisible())
                 return;
 			final Widget widget = this.asWidget();
@@ -176,7 +177,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				}
 			}).run(Positioning.BAR_ANIMATION_LENGTH);
 			
-			showButtons(place);
 		}
 	}
 
