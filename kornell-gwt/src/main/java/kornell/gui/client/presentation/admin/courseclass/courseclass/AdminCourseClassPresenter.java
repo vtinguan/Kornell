@@ -264,6 +264,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		if ("".equals(fullName) && "".equals(username)) {
 			return;
 		}
+		username = username.replaceAll("\\u200B", "").trim();
 		if (RegistrationType.cpf.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())) {
 			username = FormHelper.stripCPF(username);
 		}
@@ -319,7 +320,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			enrollmentStrA = enrollmentsA[i].indexOf(';') >= 0 ? enrollmentsA[i].split(";") : enrollmentsA[i]
 					.split("\\t");
 			fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
-			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]).replace((char) 160, (char) 32)
+			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]).replace((char) 160, (char) 32).replaceAll("\\u200B", "")
 					.trim();
 			if (isUsernameValid(email)) {
 				batchEnrollments.add(createEnrollment(fullName, email, false));

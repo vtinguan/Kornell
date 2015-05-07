@@ -6,7 +6,9 @@ import java.util.logging.Logger;
 import kornell.api.client.KornellClient;
 import kornell.core.lom.ExternalPage;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
@@ -15,6 +17,8 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -41,6 +45,13 @@ public class ExternalPageView extends Uidget {
 		String key = page.getKey();
 		setSrc(url,key);
 		initWidget(panel);
+
+		GenericClientFactoryImpl.EVENT_BUS.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				placeIframe();
+			}
+		});
 	}
 
 	private void createIFrame() {
@@ -83,8 +94,9 @@ public class ExternalPageView extends Uidget {
 		String width = Window.getClientWidth() + "px";
 		iframe.setPropertyString("width", "100%");
 		int h = (Window.getClientHeight() - Positioning.NORTH_BAR);
-		if(Dean.getInstance().getCourseClassTO() != null)
+		if(Dean.getInstance().getCourseClassTO() != null){
 			h -= Positioning.SOUTH_BAR;
+		}
 		String height = h + "px";
 		iframe.setPropertyString("height", height);
 	}
