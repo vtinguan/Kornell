@@ -9,6 +9,7 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.Positioning;
 import kornell.gui.client.util.easing.Ease;
 import kornell.gui.client.util.easing.Transitions;
@@ -136,7 +137,11 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	@Override
   public void onHideSouthBar(HideSouthBarEvent event) {
 		//clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
-		this.setVisible(!event.isHideSouthBar());
+		if(event.isTestPlace()){
+			pickSouthBar(clientFactory.getPlaceController().getWhere());
+		} else {
+			this.setVisible(!event.isHideSouthBar());
+		}
   }
 
 }
