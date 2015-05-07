@@ -139,7 +139,7 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 
   def authenticate(institutionUUID: String, userkey: String, password: String): Option[String] = Try {
     val usrValue = pwdCache.get((institutionUUID, userkey)).get
-    if (BCrypt.checkpw(password, usrValue._1)) {
+    if (BCrypt.checkpw(SHA256(password), usrValue._1)) {
       Option(usrValue._2)
     } else {
      None 
@@ -188,16 +188,16 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 
   def updatePassword(personUUID: String, plainPassword: String) = {
     sql"""
-    	update Password set password=${SHA256(plainPassword)}, requestPasswordChangeUUID=null where person_uuid=${personUUID}
+    	update Password set password=${BCrypt.hashpw(SHA256(plainPassword), BCrypt.gensalt())}, requestPasswordChangeUUID=null where person_uuid=${personUUID}
     """.executeUpdate
   }
     
   def setPlainPassword(institutionUUID: String, personUUID: String, username: String, plainPassword: String) = {
     sql"""
 	  	insert into Password (uuid,person_uuid,username,password,requestPasswordChangeUUID,institutionUUID)
-	  	values (${randomUUID},$personUUID,$username,${SHA256(plainPassword)}, null, ${institutionUUID})
+	  	values (${randomUUID},$personUUID,$username,${BCrypt.hashpw(SHA256(plainPassword), BCrypt.gensalt())}, null, ${institutionUUID})
 	  	on duplicate key update
-	  	username=$username,password=${SHA256(plainPassword)},requestPasswordChangeUUID=null
+	  	username=$username,password=${BCrypt.hashpw(SHA256(plainPassword), BCrypt.gensalt())},requestPasswordChangeUUID=null
 	  """.executeUpdate
     //    authCache.invalidate((username, plainPassword))
   }
@@ -231,5 +231,13 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 	    	${null} )
 		    """.executeUpdate
   
-  
+  //To be removed when all users are migrated
+  def updatePasswordsToSalted() = {
+      type Password = (String, String)
+      val passwords = sql"""select uuid, password from Password""".map[Password](
+          (rs: ResultSet) => (rs.getString("uuid"), rs.getString("password")))
+      passwords.foreach(p => sql"""update Passwords set password = ${BCrypt.hashpw(p._2, BCrypt.gensalt())}
+          where uuid = ${p._1}""".executeUpdate)
+      sql"""delete from Token""".executeUpdate
+  }
 }
