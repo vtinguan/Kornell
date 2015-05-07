@@ -58,7 +58,7 @@ class EnrollmentResource(uuid: String) {
 
   @GET
   @Path("approved")
-  @Produces(Array("text/plain"))
+  @Produces(Array("application/octet-stream"))
   def approved =  {
     val e = first.get
     if(Assessment.PASSED == e.getAssessment){
