@@ -160,6 +160,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				placeBar.setVisible(false);
 				placeBar.clear();
 			}
+			showButtons(place);
             if(isVisible())
                 return;
 			final Widget widget = this.asWidget();
@@ -176,7 +177,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				}
 			}).run(Positioning.BAR_ANIMATION_LENGTH);
 			
-			showButtons(place);
 		}
 	}
 
@@ -225,10 +225,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		showButton(
 				btnAdmin,
 				isRegistrationCompleted
-						&& (RoleCategory.hasRole(clientFactory
-								.getKornellSession().getCurrentUser()
-								.getRoles(), RoleType.courseClassAdmin) || clientFactory
-								.getKornellSession().isInstitutionAdmin()));
+						&& (RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.courseClassAdmin) || 
+							RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.observer) || 
+							RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.tutor) || 
+							clientFactory.getKornellSession().isInstitutionAdmin()));
 		showButton(btnNotifications, false);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);

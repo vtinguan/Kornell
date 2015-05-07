@@ -84,6 +84,14 @@ public class KornellSession extends KornellClient {
 	public boolean isInstitutionAdmin() {
 		return isInstitutionAdmin(Dean.getInstance().getInstitution().getUUID());
 	}
+	
+	public boolean hasCourseClassRole(String courseClassUUID) {
+		return isCourseClassAdmin(courseClassUUID) || isCourseClassObserver(courseClassUUID) || isCourseClassTutor(courseClassUUID);
+	}
+	
+	public boolean hasCourseClassRole() {
+		return isCourseClassAdmin() || isCourseClassObserver() || isCourseClassTutor();
+	}
 
 	public boolean isCourseClassAdmin(String courseClassUUID) {
 		return isValidRole(RoleType.courseClassAdmin, null, courseClassUUID) || isInstitutionAdmin();
@@ -98,6 +106,36 @@ public class KornellSession extends KornellClient {
 		if(courseClass == null) return false;
 		String courseClassUUID = courseClass.getUUID();
 		return isCourseClassAdmin(courseClassUUID);
+	}
+
+	public boolean isCourseClassObserver(String courseClassUUID) {
+		return isValidRole(RoleType.observer, null, courseClassUUID) || isInstitutionAdmin();
+	}
+
+	public boolean isCourseClassObserver() {
+		Dean dean = Dean.getInstance();
+		if(dean == null) return false;
+		CourseClassTO courseClassTO = dean.getCourseClassTO();
+		if(courseClassTO == null) return false;
+		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(courseClass == null) return false;
+		String courseClassUUID = courseClass.getUUID();
+		return isCourseClassObserver(courseClassUUID);
+	}
+
+	public boolean isCourseClassTutor(String courseClassUUID) {
+		return isValidRole(RoleType.tutor, null, courseClassUUID) || isInstitutionAdmin();
+	}
+
+	public boolean isCourseClassTutor() {
+		Dean dean = Dean.getInstance();
+		if(dean == null) return false;
+		CourseClassTO courseClassTO = dean.getCourseClassTO();
+		if(courseClassTO == null) return false;
+		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(courseClass == null) return false;
+		String courseClassUUID = courseClass.getUUID();
+		return isCourseClassTutor(courseClassUUID);
 	}
 
 	private boolean isValidRole(RoleType type, String institutionUUID, String courseClassUUID) {

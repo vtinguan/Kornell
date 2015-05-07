@@ -401,14 +401,14 @@ a:hover{
 			display: inline-block;
 		}
 	}
-	.enrollmentsCellTable{
+	.adminCellTable{
 		color: @niceTextColor;
 		margin-bottom: 0;
 		margin-top: 20px;
 		border: 0;
 		border-collapse: separate;
 		border-spacing: 0 5px;
-		.btnEnrollmentsCellTable{
+		.btnAdminCellTable{
 			float: left;
 			margin-right: 10px;
 			height: 18px;
@@ -429,6 +429,7 @@ a:hover{
 			tr{
 				background-color: @tableBackgroundColor;
 				font-size: 12px;
+  				cursor: pointer;
 				&:hover {
 					background-color: @tableBackgroundHoverColor;
 				}
@@ -437,6 +438,13 @@ a:hover{
 					padding: 3px;
 					line-height: 22px;
 				}
+			}
+		}
+	}
+	.lineWithoutLink {
+		tbody{
+			tr{
+				cursor: default;
 			}
 		}
 	}

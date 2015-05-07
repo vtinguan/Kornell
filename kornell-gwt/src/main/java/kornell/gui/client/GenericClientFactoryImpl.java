@@ -121,12 +121,30 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 			@Override
 			public void unauthorized(KornellErrorTO kornellErrorTO){
-				startAnonymous();
+				//this case means someone entered a URL in the bar with an expired token in local storage
+				//so we clear his old token and we do the call to hello again
+				ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
+				final Callback<UserHelloTO> userManualAccessCallback = new Callback<UserHelloTO>() {
+					@Override
+					public void ok(final UserHelloTO userHelloTO) {
+						session.setCurrentUser(userHelloTO.getUserInfoTO());
+						if(userHelloTO.getInstitution() == null) {
+							KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
+						} else {
+							Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
+							setHomePlace(new WelcomePlace());
+							if (session.isAuthenticated()) {
+								startAuthenticated(session);
+							} else {
+								startAnonymous();
+							}
+						}
+					}
+				};
+				session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
 			}
 		};
-
 		session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userHelloCallback);
-		
 	}
 
 	private void startAnonymous() {

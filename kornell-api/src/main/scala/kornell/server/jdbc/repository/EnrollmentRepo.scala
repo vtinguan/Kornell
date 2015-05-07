@@ -128,7 +128,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
 
   def updateAssessment = first map { e =>
     val notPassed = !Assessment.PASSED.equals(e.getAssessment)
-    if (notPassed){
+    if (notPassed && e.getCourseClassUUID != null){
     	val (maxScore,assessment) = assess(e)
         e.setAssessmentScore(maxScore)
         e.setAssessment(assessment)

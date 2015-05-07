@@ -27,7 +27,7 @@
 	        </b:Form>       
 	    </g:FlowPanel>
 	
-		<g:FlowPanel addStyleNames="courseClassAdmins shy">
+		<g:FlowPanel addStyleNames="courseClassAdmins">
 	        <g:HTMLPanel addStyleNames="title">Editar Observadores da Turma</g:HTMLPanel>
 	        <g:Label addStyleNames="subTitle">Escolha na lista abaixo os observadores desta turma. Os observadores da turma podem visualizar as matrículas e gerar certificados, mas não podem alterar as matrículas nem as configurações da turma.</g:Label>
 	        <b:Form ui:field="observersForm" addStyleNames="profileForm">

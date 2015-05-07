@@ -185,7 +185,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	
 	private void initTable() {
 
-		table.addStyleName("enrollmentsCellTable");
+		table.addStyleName("adminCellTable");
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		for (int i = 0; table.getColumnCount() > 0;) {
 			table.removeColumn(i);

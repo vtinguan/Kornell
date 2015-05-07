@@ -55,8 +55,7 @@ class CourseClassesResource {
     AuthRepo().withPerson { person =>
       {
         if (institutionUUID != null) {
-          val roles = AuthRepo().userRoles
-          CourseClassesRepo.administratedByPersonOnInstitution(person.getUUID, institutionUUID, searchTerm, pageSize, pageNumber, roles.toList )
+          CourseClassesRepo.getAllClassesByInstitutionPaged(institutionUUID, searchTerm, pageSize, pageNumber, person.getUUID)
         }
       }
     }
