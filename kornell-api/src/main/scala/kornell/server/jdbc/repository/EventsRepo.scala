@@ -53,7 +53,7 @@ object EventsRepo {
   }
 
   def logEnrollmentStateChanged(uuid: String, eventFiredAt: String, fromPersonUUID: String,
-    enrollmentUUID: String, fromState: EnrollmentState, toState: EnrollmentState) = {
+    enrollmentUUID: String, fromState: EnrollmentState, toState: EnrollmentState, sendEmail: Boolean) = {
 
     sql"""insert into EnrollmentStateChanged(uuid,eventFiredAt,person_uuid,enrollment_uuid,fromState,toState)
 	    values(${uuid},
@@ -67,7 +67,7 @@ object EventsRepo {
     sql"""update Enrollment set state = ${toState.toString} where uuid = ${enrollmentUUID};
 		""".executeUpdate
 
-    if (EnrollmentState.enrolled.equals(toState)) {
+    if (EnrollmentState.enrolled.equals(toState) && sendEmail) {
       val enrollment = EnrollmentRepo(enrollmentUUID).get
       val person = PersonRepo(enrollment.getPersonUUID).get
       if (person.getEmail != null && !"true".equals(Settings.get("TEST_MODE").orNull)) {
@@ -88,7 +88,7 @@ object EventsRepo {
 
   def logEnrollmentStateChanged(event: EnrollmentStateChanged): Unit =
     logEnrollmentStateChanged(event.getUUID, event.getEventFiredAt, event.getFromPersonUUID,
-      event.getEnrollmentUUID, event.getFromState, event.getToState)
+      event.getEnrollmentUUID, event.getFromState, event.getToState, true)
 
   def logCourseClassStateChanged(uuid: String, eventFiredAt: String, fromPersonUUID: String,
     courseClassUUID: String, fromState: CourseClassState, toState: CourseClassState) = {
