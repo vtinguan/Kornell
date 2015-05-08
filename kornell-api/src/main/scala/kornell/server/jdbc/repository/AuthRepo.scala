@@ -236,7 +236,7 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
       type Password = (String, String)
       val passwords = sql"""select uuid, password from Password""".map[Password](
           (rs: ResultSet) => (rs.getString("uuid"), rs.getString("password")))
-      passwords.foreach(p => sql"""update Passwords set password = ${BCrypt.hashpw(p._2, BCrypt.gensalt())}
+      passwords.foreach(p => sql"""update Password set password = ${BCrypt.hashpw(p._2, BCrypt.gensalt())}
           where uuid = ${p._1}""".executeUpdate)
       sql"""delete from Token""".executeUpdate
   }

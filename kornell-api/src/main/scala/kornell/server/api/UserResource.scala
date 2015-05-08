@@ -253,11 +253,13 @@ class UserResource(private val authRepo:AuthRepo) {
   }
   
   //This is a temporary call that converts user passwords to bcrypt versions and logs everyone out.
-  @POST
-  @Path("updatePasswordsBCrypt")
+  @GET
+  @Path("update/updatePasswordsBCrypt")
+  @Produces(Array("text/plain"))
   def updatePasswordsToSalted(implicit @Context sc: SecurityContext) = {
       AuthRepo().updatePasswordsToSalted()
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+      "OK"
+  }.requiring(isPlatformAdmin, AccessDeniedErr()).get
 
 }
 
