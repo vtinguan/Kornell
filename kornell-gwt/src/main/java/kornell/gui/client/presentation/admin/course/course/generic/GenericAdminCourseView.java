@@ -21,6 +21,7 @@ import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -119,7 +120,6 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	
 	@Override
 	public void init(){
-
 		if(placeCtrl.getWhere() instanceof AdminCoursePlace && ((AdminCoursePlace)placeCtrl.getWhere()).getCourseUUID() != null){
 			this.courseUUID = ((AdminCoursePlace)placeCtrl.getWhere()).getCourseUUID();
 			isCreationMode = false;
@@ -140,6 +140,12 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 			});
 		}
 	}
+
+	private static native void showNavBar(boolean show) /*-{
+		if($wnd.document.getElementsByClassName("nav-tabs") && $wnd.document.getElementsByClassName("nav-tabs")[0]){
+			$wnd.document.getElementsByClassName("nav-tabs")[0].style.display = (show?"block":"none");
+		}
+	}-*/;
 
 	public void initData() {
 
@@ -186,7 +192,13 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		
 		courseFields.add(formHelper.getImageSeparator());
 
-		courseFields.setVisible(true);
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				showNavBar(!isCreationMode);
+				courseFields.setVisible(true);
+			}
+		});
 		initializing = false;
 	}
 

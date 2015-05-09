@@ -113,6 +113,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 							createVersionPanel.clear();
 						}
 						courseVersionsPanel.setVisible(true);
+						courseVersionsWrapper.setVisible(true);
 						view = null;
 					}
 				});
@@ -124,6 +125,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 			public void onClick(ClickEvent event) {
 				if (session.isPlatformAdmin()) {
 					courseVersionsPanel.setVisible(false);
+					courseVersionsWrapper.setVisible(false);
 					adminCourseVersionPresenter = viewFactory.getAdminCourseVersionPresenter();
 					view = adminCourseVersionPresenter.getView();
 					view.init();

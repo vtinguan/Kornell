@@ -107,6 +107,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 						if(createClassPanel.getWidgetCount() > 0){
 							createClassPanel.clear();
 							courseClassesPanel.setVisible(true);
+							courseClassesWrapper.setVisible(true);
 						}
 					}
 				});
@@ -117,6 +118,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 			public void onClick(ClickEvent event) {
 				if (session.isInstitutionAdmin()) {
 					courseClassesPanel.setVisible(false);
+					courseClassesWrapper.setVisible(false);
 					createClassPanel.add(new GenericCourseClassConfigView(session, bus, placeCtrl, viewFactory.getAdminCourseClassPresenter(), null));
 				}
 			}
