@@ -75,12 +75,12 @@ object EventsRepo {
           val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
 		  val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
           val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get
-          EmailService.sendEmailEnrolled(person, institution, course)
+          EmailService.sendEmailEnrolled(person, institution, course, enrollment)
         } else {
           val courseVersion = CourseVersionRepo(enrollment.getCourseVersionUUID).get
           val course = CourseRepo(courseVersion.getCourseUUID).get
           val institution = InstitutionsRepo.byUUID(course.getInstitutionUUID).get
-          EmailService.sendEmailEnrolled(person, institution, course)
+          EmailService.sendEmailEnrolled(person, institution, course, enrollment)
         }
       }
     }
