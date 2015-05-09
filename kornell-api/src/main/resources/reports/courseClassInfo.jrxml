@@ -40,7 +40,7 @@
 				<reportElement uuid="ce1d68c5-e63c-4ee8-944c-8ff1aa0eed4d" positionType="Float" x="12" y="58" width="540" height="1" forecolor="#666666"/>
 			</line>
 			<textField>
-				<reportElement uuid="59896c45-7bce-4ab7-9585-85ff926ccb4e" positionType="Float" x="156" y="143" width="140" height="16"/>
+				<reportElement uuid="59896c45-7bce-4ab7-9585-85ff926ccb4e" positionType="Float" x="156" y="143" width="384" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -56,14 +56,14 @@
 )]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c8a1e273-10a0-49f7-b0ed-6c2ec620e514" positionType="Float" x="156" y="157" width="140" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>
+				<reportElement uuid="c8a1e273-10a0-49f7-b0ed-6c2ec620e514" positionType="Float" x="156" y="157" width="384" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[""+$P{completed}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" positionType="Float" x="156" y="172" width="140" height="16" forecolor="#006AB7"/>
+				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" positionType="Float" x="156" y="172" width="384" height="16" forecolor="#006AB7"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -208,7 +208,7 @@
 				<textFieldExpression><![CDATA[$P{disabledAt}.split("T").length > 1 ? $P{disabledAt}.split("T")[0] : "";]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" positionType="Float" x="156" y="187" width="140" height="16" forecolor="#CB9902"/>
+				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" positionType="Float" x="156" y="187" width="384" height="16" forecolor="#CB9902"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -292,11 +292,11 @@
     )]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="0bf60a57-f249-4407-9c27-8aa4ee56907e" x="5" y="2" width="18" height="12" forecolor="#666666"/>
+				<reportElement uuid="0bf60a57-f249-4407-9c27-8aa4ee56907e" x="0" y="2" width="33" height="12" forecolor="#666666"/>
 				<textElement textAlignment="Right">
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT} + " "]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -137,7 +137,8 @@ object ReportCourseClassGenerator {
 				join Course c on cv.course_uuid = c.uuid
 				join Institution i on i.uuid = cc.institution_uuid
 			where (cc.uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
-				(cv.course_uuid = ${courseUUID} or ${courseUUID} is null)
+				(cv.course_uuid = ${courseUUID} or ${courseUUID} is null) and
+    			cc.state = 'active'
     """.first[ReportHeaderData](headerDataConvertion)
     
     parameters.put("institutionName", headerInfo.get._1)
@@ -170,6 +171,7 @@ object ReportCourseClassGenerator {
 					join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
 				where      
 					e.state = 'enrolled' and
+    				cc.state = 'active' and 
     		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 					(cv.course_uuid = ${courseUUID} or ${courseUUID} is null)
 				group by 

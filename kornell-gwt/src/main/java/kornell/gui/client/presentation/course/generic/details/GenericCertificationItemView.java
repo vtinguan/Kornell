@@ -203,14 +203,16 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			Timer checkTimer = new Timer() {
 				@Override
 				public void run() {
-			    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
-			    .isApproved(new Callback<String>() {
-			    	@Override
-			    	public void ok(String grade) {
-			    		approvedOnTest = StringUtils.isSome(grade);
-			    		updateCertificationLinkAndLabel(grade);
-			    	}
-				});
+					if(Dean.getInstance().getCourseClassTO() != null){
+					    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
+					    .isApproved(new Callback<String>() {
+					    	@Override
+					    	public void ok(String grade) {
+					    		approvedOnTest = StringUtils.isSome(grade);
+					    		updateCertificationLinkAndLabel(grade);
+					    	}
+						});
+					}
 				}
 			};
 			checkTimer.schedule(3000);
