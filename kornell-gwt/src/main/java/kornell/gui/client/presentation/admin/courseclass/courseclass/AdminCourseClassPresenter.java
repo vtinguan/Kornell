@@ -33,6 +33,7 @@ import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.courseclass.CourseClassPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -140,15 +141,19 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
-		LoadingPopup.show();
-		view.showEnrollmentsPanel(false);
-        session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {
-					@Override            
-					public void ok(CourseClassTO courseClassTO) {
-						LoadingPopup.hide();
-		                updateCourseClassUI(courseClassTO);
-					}
-				});
+		if(placeController.getWhere() instanceof CourseClassPlace){
+			LoadingPopup.show();
+			view.showEnrollmentsPanel(false);
+	        session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {
+						@Override            
+						public void ok(CourseClassTO courseClassTO) {
+							LoadingPopup.hide();
+			                updateCourseClassUI(courseClassTO);
+						}
+					});
+		} else {
+            updateCourseClassUI(null);
+		}
 	}
 
 	@Override
