@@ -114,6 +114,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	@Override
 	public void init(){
 		initializing = true;
+		asWidget().setVisible(false);
 		
 		if(placeCtrl.getWhere() instanceof AdminCourseVersionPlace && ((AdminCourseVersionPlace)placeCtrl.getWhere()).getCourseVersionUUID() != null){
 			this.courseVersionUUID = ((AdminCourseVersionPlace)placeCtrl.getWhere()).getCourseVersionUUID();
@@ -148,6 +149,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 				@Override
 				public void ok(CoursesTO to) {
 					createCoursesField(to);
+					asWidget().setVisible(true);
 					if(!isCreationMode)
 						((ListBox)course.getFieldWidget()).setSelectedValue(courseVersion.getCourseUUID());
 				}

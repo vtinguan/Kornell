@@ -47,9 +47,9 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 		if (session.isPlatformAdmin()) {
 			view = viewFactory.getAdminCourseVersionView();
 			if(view.getPresenter() == null){
+				view.setPresenter(this); 
 				view.init();
-			}
-			view.setPresenter(this);   
+			}  
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
