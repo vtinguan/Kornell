@@ -9,6 +9,7 @@ import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.EventsRepo
 import kornell.core.event.AttendanceSheetSigned
 import kornell.core.event.CourseClassStateChanged
+import kornell.core.event.EnrollmentTransferred
 //TODO: Why are these returning Unit?
 @Path("events")
 class EventsResource {
@@ -39,6 +40,13 @@ class EventsResource {
   @Consumes(Array(AttendanceSheetSigned.TYPE))
   def putAttendanceSheetSigned(event:AttendanceSheetSigned){
      EventsRepo.logAttendanceSheetSigned(event)
+  }
+  
+  @PUT
+  @Path("enrollmentTransferred")
+  @Consumes(Array(EnrollmentTransferred.TYPE))
+  def putEnrollmentTransferred(event:EnrollmentTransferred) = {
+     EventsRepo.logEnrollmentTransferred(event)
   }
 	
 }

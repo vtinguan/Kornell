@@ -202,9 +202,7 @@ public class Dean implements LoginEventHandler, LogoutEventHandler,
 			}
 		};
 		if (session.isAuthenticated()) {
-			session.courseClasses().getCourseClassesTOByInstitution(
-					Dean.getInstance().getInstitution().getUUID(),
-					courseClassesCallback);
+			session.courseClasses().getCourseClassesTO(courseClassesCallback);
 		}
 	}
 
