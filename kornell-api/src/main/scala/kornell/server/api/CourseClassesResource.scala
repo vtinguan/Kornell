@@ -52,7 +52,7 @@ class CourseClassesResource {
       @QueryParam("ps") pageSize: Int, @QueryParam("pn") pageNumber: Int) =
     AuthRepo().withPerson { person =>
       {
-          CourseClassesRepo.getAllClassesByInstitutionPaged(person.getInstitutionUUID, searchTerm, pageSize, pageNumber, person.getUUID, courseVersionUUID)
+          CourseClassesRepo.getAllClassesByInstitutionPaged(person.getInstitutionUUID, searchTerm, pageSize, pageNumber, person.getUUID, courseVersionUUID, null)
       }
     }
 }

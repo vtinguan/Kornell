@@ -124,8 +124,6 @@ public class GenericCourseClassConfigView extends Composite {
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
 
-		this.titleEdit.setVisible(!isCreationMode);
-		this.titleCreate.setVisible(isCreationMode);
 		
 		this.courseClassTO = courseClassTO;
 		
@@ -138,6 +136,9 @@ public class GenericCourseClassConfigView extends Composite {
 		courseClass = isCreationMode ? entityFactory.newCourseClass().as() : courseClassTO.getCourseClass();
 
 		profileFields.clear();
+
+		this.titleEdit.setVisible(!isCreationMode);
+		this.titleCreate.setVisible(isCreationMode);
 		
 		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
 		btnCancel.setVisible(isInstitutionAdmin);

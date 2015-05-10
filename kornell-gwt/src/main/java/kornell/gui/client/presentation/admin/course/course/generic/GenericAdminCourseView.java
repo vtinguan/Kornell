@@ -63,9 +63,11 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	Tab reportsTab;
 	@UiField
 	FlowPanel reportsPanel;
-	
+
 	@UiField
 	HTMLPanel titleEdit;
+	@UiField
+	HTMLPanel titleCreate;
 	@UiField
 	Form form;
 	@UiField
@@ -148,6 +150,9 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	}-*/;
 
 	public void initData() {
+
+		titleEdit.setVisible(!isCreationMode);
+		titleCreate.setVisible(isCreationMode);
 
 		if (session.isPlatformAdmin()) {
 			buildReportsView();

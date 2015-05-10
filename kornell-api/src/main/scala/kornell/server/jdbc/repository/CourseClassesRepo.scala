@@ -62,9 +62,16 @@ object CourseClassesRepo {
     """.map[CourseClass](toCourseClass)
 
   private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = 
-    getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", null) 
+    getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", null, null) 
     
-  def getAllClassesByInstitutionPaged(institutionUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int, adminUUID: String, courseVersionUUID: String ): kornell.core.to.CourseClassesTO = {
+  def getCourseClassTO(institutionUUID: String, courseClassUUID: String) = {
+    val courseClassesTO = getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", null, courseClassUUID) 
+    if(courseClassesTO.getCourseClasses.size > 0){
+      courseClassesTO.getCourseClasses.get(0)
+    }
+  }
+    
+  def getAllClassesByInstitutionPaged(institutionUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int, adminUUID: String, courseVersionUUID: String, courseClassUUID: String ): kornell.core.to.CourseClassesTO = {
     val resultOffset = (pageNumber.max(1) - 1) * pageSize
     val filteredSearchTerm = '%' + Option(searchTerm).getOrElse("") + '%'
     
@@ -104,6 +111,8 @@ object CourseClassesRepo {
 			    left join InstitutionRegistrationPrefix irp on irp.uuid = cc.institutionRegistrationPrefixUUID
       	  	where cc.state <> ${CourseClassState.deleted.toString} and
       	  	    (cc.courseVersion_uuid = ${courseVersionUUID} or ${StringUtils.isNone(courseVersionUUID)}) and
+      	  	    (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)}) and
+		    	cc.institution_uuid = ${institutionUUID} and
 	            (cv.name like ${filteredSearchTerm}
 	            or cc.name like ${filteredSearchTerm}) and (${StringUtils.isNone(adminUUID)} or
 				(select count(*) from Role r where person_uuid = ${adminUUID} and (
@@ -121,6 +130,7 @@ object CourseClassesRepo {
 						( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
 					)) > 0)
       	  	    and (cc.courseVersion_uuid = ${courseVersionUUID} or ${StringUtils.isNone(courseVersionUUID)})
+      	  	    and (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)})
 		    	and cc.institution_uuid = ${institutionUUID}""".first[String].get.toInt)
     	courseClassesTO.setPageSize(pageSize)
     	courseClassesTO.setPageNumber(pageNumber.max(1))
@@ -139,6 +149,7 @@ object CourseClassesRepo {
 					( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
 				)) > 0)
       	  	    and (cc.courseVersion_uuid = ${courseVersionUUID} or ${StringUtils.isNone(courseVersionUUID)})
+      	  	    and (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)})
             	and cc.institution_uuid = ${institutionUUID}""".first[String].get.toInt
     	})
 		courseClassesTO

@@ -63,6 +63,8 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	@UiField
 	HTMLPanel titleEdit;
 	@UiField
+	HTMLPanel titleCreate;
+	@UiField
 	Form form;
 	@UiField
 	FlowPanel courseVersionFields;
@@ -141,6 +143,10 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		courseVersionFields.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		courseVersionFields.clear();
+		
+
+		titleEdit.setVisible(!isCreationMode);
+		titleCreate.setVisible(isCreationMode);
 		
 		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
 		btnCancel.setVisible(isPlatformAdmin);		
