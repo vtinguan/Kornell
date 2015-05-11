@@ -966,4 +966,14 @@ public class GenericAdminCourseClassView extends Composite implements
 		txtAddEnrollmentBatch.setValue("");
 	}
 
+	@Override
+	public void clearPagination() {
+		presenter.setPageNumber("1");
+		presenter.setPageSize("20");
+		presenter.setSearchTerm("");
+		if(txtSearch != null){
+			txtSearch.setText("");
+		}
+	}
+
 }

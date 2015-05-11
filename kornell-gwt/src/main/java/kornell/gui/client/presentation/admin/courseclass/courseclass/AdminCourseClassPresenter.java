@@ -103,6 +103,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			view = getView();
 			view.showEnrollmentsPanel(false);
 			view.setPresenter(this);
+			view.clearPagination();
 			String selectedCourseClass;
 			if (placeController.getWhere() instanceof AdminCourseClassPlace
 					&& ((AdminCourseClassPlace) placeController.getWhere()).getCourseClassUUID() != null) {
