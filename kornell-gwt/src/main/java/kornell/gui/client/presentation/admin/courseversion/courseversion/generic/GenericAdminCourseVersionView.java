@@ -63,6 +63,8 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	@UiField
 	HTMLPanel titleEdit;
 	@UiField
+	HTMLPanel titleCreate;
+	@UiField
 	Form form;
 	@UiField
 	FlowPanel courseVersionFields;
@@ -105,27 +107,24 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 				new PlaceChangeEvent.Handler() {
 					@Override
 					public void onPlaceChange(PlaceChangeEvent event) {
-						if(event.getNewPlace() instanceof AdminCourseVersionPlace && !initializing)
+						if(event.getNewPlace() instanceof AdminCourseVersionPlace && !initializing){
 							init();
+						}
 					}
 				});
+		
+		init();
 	}
 	
 	@Override
 	public void init(){
+		if(initializing) return;
 		initializing = true;
+		asWidget().setVisible(false);
 		
 		if(placeCtrl.getWhere() instanceof AdminCourseVersionPlace && ((AdminCourseVersionPlace)placeCtrl.getWhere()).getCourseVersionUUID() != null){
 			this.courseVersionUUID = ((AdminCourseVersionPlace)placeCtrl.getWhere()).getCourseVersionUUID();
 			isCreationMode = false;
-		} else {
-			isCreationMode = true;
-		}
-		
-		if(isCreationMode){
-			courseVersion = presenter.getNewCourseVersion();
-			initData();	
-		} else {	
 			session.courseVersion(courseVersionUUID).get(new Callback<CourseVersionTO>() {
 				@Override
 				public void ok(CourseVersionTO to) {
@@ -133,6 +132,10 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 					initData();
 				}
 			});
+		} else {
+			isCreationMode = true;
+			courseVersion = entityFactory.newCourseVersion().as();
+			initData();	
 		}
 	}
 
@@ -141,6 +144,10 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		courseVersionFields.clear();
 		
+
+		titleEdit.setVisible(!isCreationMode);
+		titleCreate.setVisible(isCreationMode);
+		
 		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
 		btnCancel.setVisible(isPlatformAdmin);		
 
@@ -148,6 +155,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 				@Override
 				public void ok(CoursesTO to) {
 					createCoursesField(to);
+					asWidget().setVisible(true);
 					if(!isCreationMode)
 						((ListBox)course.getFieldWidget()).setSelectedValue(courseVersion.getCourseUUID());
 				}
@@ -207,7 +215,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		courseVersionFields.add(formHelper.getImageSeparator());
 
 		courseVersionFields.setVisible(true);
-		initializing = false;
 	}
 
 	private void createCourseVersionsField(CourseVersionsTO to) {
@@ -262,6 +269,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		fields.add(course);
 		courses.setSelectedIndex(0);
 		courseVersionFields.insert(course, 0);
+		initializing = false;
 	}
 	
 	private boolean validateFields() {		

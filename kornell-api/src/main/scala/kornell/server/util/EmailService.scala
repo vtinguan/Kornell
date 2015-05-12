@@ -10,6 +10,8 @@ import kornell.core.entity.Course
 import kornell.core.entity.PersonCategory
 import kornell.core.entity.CourseClass
 import  kornell.core.util.StringUtils._
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.core.entity.Enrollment
 
 object EmailService {
   
@@ -68,19 +70,29 @@ object EmailService {
   }
   
   //TODO: Consider ASYNC
-  def sendEmailEnrolled(person: Person, institution: Institution, course: Course) = {
+  def sendEmailEnrolled(person: Person, institution: Institution, course: Course, enrollment: Enrollment) = {
     val subject = "Você foi matriculado no curso " + course.getTitle
     val from = getFromEmail(institution)
     val to = person.getEmail
-    val actionLink = institution.getBaseURL + "#vitrine:" + person.getEmail
+    val hasPassword = PersonRepo(person.getUUID).hasPassword(institution.getUUID)
+    val hasPasswordStr = if(hasPassword) {
+      ""
+    } else {
+      "<p>Caso seja seu primeiro acesso, cadastre-se primeiro no sistema utilizando este email: " + to + "</p>"
+    }
+    val actionLink = if(hasPassword) {
+      institution.getBaseURL + "#classroom:" + enrollment.getUUID
+    } else {
+      institution.getBaseURL + "#vitrine:" + person.getEmail
+    }
     val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
     		<p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + """ no curso """+ course.getTitle +""" oferecido pela """+ institution.getFullName +""".</p> 
     		<p>Clique no bot&atilde;o abaixo para ir ao curso.</p> """ +
-    		getActionButton(actionLink, "Acessar o Curso") + """
-    		<p>Caso seja seu primeiro acesso, cadastre-se primeiro no sistema utilizando este email: """ + to + """</p>
-    		<p>&nbsp;</p>""" +
+    		getActionButton(actionLink, "Acessar o Curso") + 
+    		hasPasswordStr +
+    		"""<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
     val imgFile = getInstitutionLogoImage(institution)

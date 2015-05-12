@@ -75,7 +75,7 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	public void updateCourseClass(final String courseClassUUID) {
 		LoadingPopup.show();
 		view.setCourseClasses(null, 0, 0);
-		session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), pageSize, pageNumber, searchTerm, 
+		session.courseClasses().getAdministratedCourseClassesTOPaged(pageSize, pageNumber, searchTerm, 
 				new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO to) {

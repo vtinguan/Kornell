@@ -33,6 +33,7 @@ import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.courseclass.CourseClassPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -62,7 +63,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private ViewFactory viewFactory;
 	private Integer maxEnrollments = 0;
 	private Integer numEnrollments = 0;
-	private CourseClassesTO courseClassesTO;
 	private boolean overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
 	private EnrollmentRequestsTO enrollmentRequestsTO;
 	private List<EnrollmentTO> enrollmentsToOverride;
@@ -103,6 +103,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			view = getView();
 			view.showEnrollmentsPanel(false);
 			view.setPresenter(this);
+			view.clearPagination();
 			String selectedCourseClass;
 			if (placeController.getWhere() instanceof AdminCourseClassPlace
 					&& ((AdminCourseClassPlace) placeController.getWhere()).getCourseClassUUID() != null) {
@@ -141,32 +142,19 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
-		LoadingPopup.show();
-		view.showEnrollmentsPanel(false);
-		session.courseClasses().getAdministratedCourseClassesTOByInstitution(
-				Dean.getInstance().getInstitution().getUUID(), new Callback<CourseClassesTO>() {
-					@Override
-					public void ok(CourseClassesTO to) {
-						courseClassesTO = to;
-						LoadingPopup.hide();
-						if (courseClassesTO.getCourseClasses().size() == 0) {
-							updateCourseClassUI(null);
-						} else {
-							for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-								if (courseClassUUID == null
-										|| courseClassTO.getCourseClass().getUUID().equals(courseClassUUID)) {
-									updateCourseClassUI(courseClassTO);
-									return;
-								}
-							}
-							if (courseClassesTO != null && courseClassesTO.getCourseClasses().size() > 0) {
-								updateCourseClassUI(courseClassesTO.getCourseClasses().get(0));
-							} else {
-								updateCourseClassUI(null);
-							}
+		if(placeController.getWhere() instanceof CourseClassPlace){
+			LoadingPopup.show();
+			view.showEnrollmentsPanel(false);
+	        session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {
+						@Override            
+						public void ok(CourseClassTO courseClassTO) {
+							LoadingPopup.hide();
+			                updateCourseClassUI(courseClassTO);
 						}
-					}
-				});
+					});
+		} else {
+            updateCourseClassUI(null);
+		}
 	}
 
 	@Override
@@ -177,10 +165,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		view.setHomeTabActive();
 		if (courseClassTO == null)
 			return;
-		Dean.getInstance().setCourseClassTO(courseClassTO);
-		view.setCourseClassName(courseClassTO.getCourseClass().getName());
-		view.setCourseName(courseClassTO.getCourseVersionTO().getCourse().getTitle());
+		Dean.getInstance().setCourseClassTO(courseClassTO);        
+		view.setCourseClassTO(courseClassTO);
 		view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationType());
+		view.setCanPerformEnrollmentAction(true);
 		getEnrollments(courseClassTO.getCourseClass().getUUID());
 	}
 
@@ -255,7 +243,9 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			return true;
 		} else if ("Certificado".equals(actionName)) {
 			return EnrollmentCategory.isFinished(enrollmentTO.getEnrollment()) && (session.isCourseClassAdmin() || session.isCourseClassObserver());
-		}
+        } else if("Transferir".equals(actionName)){
+            return true;
+        }
 		return false;
 	}
 
@@ -497,6 +487,23 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		}
 		prepareCreateEnrollments(true);
 	}
+	
+    @Override
+    public void onModalTransferOkButtonClicked(String enrollmentUUID, String courseClassUUID) {
+        view.showModal(false);        
+        session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
+        .fire(new Callback<Void>() {
+            @Override
+            public void ok(Void to) {
+                LoadingPopup.hide();
+                getEnrollments(Dean.getInstance().getCourseClassTO()
+                        .getCourseClass().getUUID());
+                view.setCanPerformEnrollmentAction(true);
+                KornellNotification.show("Usuário transferido com sucesso.", 2000);
+            }
+        });
+
+    }
 
 	@Override
 	public void onGoToCourseButtonClicked() {

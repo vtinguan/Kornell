@@ -1,20 +1,21 @@
 package kornell.server.jdbc.repository
 
-import java.util.Date
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+
+import kornell.core.entity.CourseClassState
 import kornell.core.entity.EnrollmentState
 import kornell.core.event.ActomEntered
 import kornell.core.event.AttendanceSheetSigned
+import kornell.core.event.CourseClassStateChanged
 import kornell.core.event.EnrollmentStateChanged
+import kornell.core.event.EnrollmentTransferred
 import kornell.core.event.EventFactory
+import kornell.core.util.UUID
+import kornell.server.ep.EnrollmentSEP
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.util.EmailService
-import java.text.SimpleDateFormat
-import kornell.server.util.Settings
-import kornell.server.ep.EnrollmentSEP
 import kornell.server.util.ServerTime
-import kornell.core.event.CourseClassStateChanged
-import kornell.core.entity.CourseClassState
+import kornell.server.util.Settings
 
 object EventsRepo {
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
@@ -75,12 +76,12 @@ object EventsRepo {
           val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
 		  val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
           val institution = InstitutionsRepo.byUUID(courseClass.getInstitutionUUID).get
-          EmailService.sendEmailEnrolled(person, institution, course)
+          EmailService.sendEmailEnrolled(person, institution, course, enrollment)
         } else {
           val courseVersion = CourseVersionRepo(enrollment.getCourseVersionUUID).get
           val course = CourseRepo(courseVersion.getCourseUUID).get
           val institution = InstitutionsRepo.byUUID(course.getInstitutionUUID).get
-          EmailService.sendEmailEnrolled(person, institution, course)
+          EmailService.sendEmailEnrolled(person, institution, course, enrollment)
         }
       }
     }
@@ -110,5 +111,18 @@ object EventsRepo {
   def logCourseClassStateChanged(event: CourseClassStateChanged): Unit =
     logCourseClassStateChanged(event.getUUID, event.getEventFiredAt, event.getFromPersonUUID,
       event.getCourseClassUUID, event.getFromState, event.getToState)
+
+  def logEnrollmentTransferred(event: EnrollmentTransferred): Unit = {
+    sql"""insert into EnrollmentTransferred (uuid, personUUID, enrollmentUUID, fromCourseClassUUID, toCourseClassUUID, eventFiredAt) 
+        values (${UUID.random},
+        ${event.getFromPersonUUID},
+        ${event.getEnrollmentUUID},
+        ${event.getFromCourseClassUUID},
+        ${event.getToCourseClassUUID},
+        now());""".executeUpdate
+        
+        EnrollmentRepo(event.getEnrollmentUUID).transfer(event.getFromCourseClassUUID, event.getToCourseClassUUID)
+  }
+
 
 }

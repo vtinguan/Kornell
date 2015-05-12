@@ -27,17 +27,14 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 	private PlaceController placeController;
 	private EventBus bus;
 	Place defaultPlace;
-	EntityFactory entityFactory;
 	private ViewFactory viewFactory;
 
 	public AdminCourseVersionPresenter(KornellSession session,
-			PlaceController placeController, EventBus bus, Place defaultPlace,
-			EntityFactory entityFactory, ViewFactory viewFactory) {
+			PlaceController placeController, EventBus bus, Place defaultPlace, ViewFactory viewFactory) {
 		this.session = session;
 		this.placeController = placeController;
 		this.bus = bus;
 		this.defaultPlace = defaultPlace;
-		this.entityFactory = entityFactory;
 		this.viewFactory = viewFactory;
 
 		init();
@@ -47,19 +44,13 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 		if (session.isPlatformAdmin()) {
 			view = viewFactory.getAdminCourseVersionView();
 			if(view.getPresenter() == null){
-				view.init();
-			}
-			view.setPresenter(this);   
+				view.setPresenter(this); 
+			}  
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}
-	}
-	
-	@Override
-	public CourseVersion getNewCourseVersion() {
-		return entityFactory.newCourseVersion().as();
 	}
 
 	

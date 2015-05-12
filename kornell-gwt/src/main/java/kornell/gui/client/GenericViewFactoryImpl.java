@@ -327,8 +327,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	public AdminCourseVersionPresenter getAdminCourseVersionPresenter() {
 		if (genericAdminCourseVersionPresenter == null)
 			genericAdminCourseVersionPresenter = new AdminCourseVersionPresenter(clientFactory.getKornellSession(),
-					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(),
-					clientFactory.getEntityFactory(), this);
+					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(), this);
 		return genericAdminCourseVersionPresenter;
 	}
 

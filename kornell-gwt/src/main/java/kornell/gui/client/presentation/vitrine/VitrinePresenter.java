@@ -122,7 +122,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			public void ok(final UserInfoTO user) {
 				view.displayView(null);
 				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
-				session.courseClasses().getCourseClassesTOByInstitution(institution.getUUID(), courseClassesCallback);
+				session.courseClasses().getCourseClassesTO(courseClassesCallback);
 			}
 			@Override
 			protected void unauthorized(KornellErrorTO kornellErrorTO) {

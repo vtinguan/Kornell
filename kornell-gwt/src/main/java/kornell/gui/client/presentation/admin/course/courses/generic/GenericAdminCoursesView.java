@@ -109,6 +109,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 							createCoursePanel.clear();
 						}
 						coursesPanel.setVisible(true);
+						coursesWrapper.setVisible(true);
 						view = null;
 					}
 				});
@@ -120,6 +121,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 			public void onClick(ClickEvent event) {
 				if (session.isPlatformAdmin()) {
 					coursesPanel.setVisible(false);
+					coursesWrapper.setVisible(false);
 					view = viewFactory.getAdminCourseView();
 					view.setPresenter(viewFactory.getAdminCoursePresenter());
 					view.init();

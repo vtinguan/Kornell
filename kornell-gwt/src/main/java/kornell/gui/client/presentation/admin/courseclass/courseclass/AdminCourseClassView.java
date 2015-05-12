@@ -21,6 +21,7 @@ public interface AdminCourseClassView extends IsWidget {
 		void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch);
 		void onGoToCourseButtonClicked();
 		void onModalOkButtonClicked();
+        void onModalTransferOkButtonClicked(String enrollmentUUID, String targetCourseClassUUID);
 		void onUserClicked(EnrollmentTO enrollmentTO);
 		void updateCourseClass(String courseClassUUID);
 		void updateCourseClassUI(CourseClassTO courseClassTO);
@@ -34,8 +35,7 @@ public interface AdminCourseClassView extends IsWidget {
 	void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, Integer searchCount, boolean refresh);
 	void showModal(boolean b);
 	void setModalErrors(String title, String lbl1, String errors, String lbl2);
-	void setCourseClassName(String courseClassName);
-	void setCourseName(String courseName);
+    void setCourseClassTO(CourseClassTO courseClassTO);
 	void setHomeTabActive();
 	void showEnrollmentsPanel(boolean visible);
 	void showTabsPanel(boolean visible);
@@ -47,4 +47,5 @@ public interface AdminCourseClassView extends IsWidget {
 	void setCanPerformEnrollmentAction(boolean allow);
 	void setUserEnrollmentIdentificationType(RegistrationType registrationType);
 	void clearEnrollmentFields();
+	void clearPagination();
 }
