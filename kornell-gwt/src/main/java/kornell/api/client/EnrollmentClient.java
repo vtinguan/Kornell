@@ -27,7 +27,7 @@ public class EnrollmentClient extends RESTClient{
 		return enrollmentUUID;
 	}
 	
-	public void isApproved(Callback<Boolean> callback){
+	public void isApproved(Callback<String> callback){
 		GET("enrollments",enrollmentUUID,"approved").go(callback);		
 	}
 

@@ -19,6 +19,7 @@ import kornell.server.ep.EnrollmentSEP
 import java.math.BigDecimal
 import java.math.BigDecimal._
 import kornell.server.util.ServerTime
+import kornell.core.entity.ChatThreadType
 
 //TODO: Specific column names and proper sql
 class EnrollmentRepo(enrollmentUUID: String) {
@@ -69,7 +70,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
   }
 
   def updateKNLProgress(e: Enrollment) = {
-    val contents = ContentRepository.findKNLVisitedContent(e.getCourseClassUUID, e.getPersonUUID())
+    val contents = ContentRepository.findKNLVisitedContent(e)
     val actoms = ContentsOps.collectActoms(contents).asScala
     val visited = actoms.filter(_.isVisited).size
     val newProgress = visited / actoms.size.toDouble
@@ -84,7 +85,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
       val progress = sql"""
 	  select progress from ActomEntries AE
 		join ProgressMilestone PM on AE.actomKey = PM.actomKey and AE.entryValue = PM.entryValue
-	where AE.enrollment_uuid = ${enrollmentUUID}
+      where AE.enrollment_uuid = ${enrollmentUUID}
 		and AE.actomKey LIKE ${actomLike}
 		and AE.entryKey = 'cmi.core.lesson_location'
   """.map[Integer] { rs => rs.getInt("progress") }
@@ -128,7 +129,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
 
   def updateAssessment = first map { e =>
     val notPassed = !Assessment.PASSED.equals(e.getAssessment)
-    if (notPassed){
+    if (notPassed && e.getCourseClassUUID != null){
     	val (maxScore,assessment) = assess(e)
         e.setAssessmentScore(maxScore)
         e.setAssessment(assessment)
@@ -153,11 +154,11 @@ class EnrollmentRepo(enrollmentUUID: String) {
 
   def findLastEventTime(e: Enrollment) = {
     val lastActomEntered = sql"""
-select max(ingestedAt) as latestEvent
-from ActomEntryChangedEvent 
-where 
-  entryKey='cmi.core.score.raw' 
-  and enrollment_uuid=${e.getUUID()}
+		select max(ingestedAt) as latestEvent
+		from ActomEntryChangedEvent 
+		where 
+		  entryKey='cmi.core.score.raw' 
+		  and enrollment_uuid=${e.getUUID()}
     """
       .first[String] { rs => rs.getString("latestEvent") }
     lastActomEntered
@@ -174,7 +175,23 @@ where
       e.setCertifiedAt(certifiedAt)
       update(e)
     }
+  }  
+  
+  def transfer(fromCourseClassUUID: String, toCourseClassUUID: String) = {
+    val enrollment = first.get
+    //disable participation to global class thread for old class
+    ChatThreadsRepo.disableParticipantFromCourseClassThread(enrollment)
+    
+    //update enrollment
+    sql"""update Enrollment set class_uuid = ${toCourseClassUUID} where uuid = ${enrollmentUUID}""".executeUpdate
+      
+    //disable old support and tutoring threads
+    sql"""update ChatThread set active = 0 where courseClassUUID = ${fromCourseClassUUID} and personUUID = ${enrollment.getPersonUUID} and threadType in  (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})""".executeUpdate
+    
+    //add participation to global class thread for new class
+    ChatThreadsRepo.addParticipantToCourseClassThread(enrollment)
   }
+
 
 }
 

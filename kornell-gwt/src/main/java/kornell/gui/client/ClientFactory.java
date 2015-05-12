@@ -23,6 +23,8 @@ public interface ClientFactory {
 	EventBus getEventBus();
 	Place getDefaultPlace();
 	void setDefaultPlace(Place place);
+	Place getHomePlace();
+	void setHomePlace(Place place);
 
 	EntityFactory getEntityFactory();
 	TOFactory getTOFactory();

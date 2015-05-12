@@ -41,6 +41,10 @@ public class SCORM12Binder {
 			}
 		}
 		
+		API.launch = function(param) {
+			return api.@kornell.scorm.client.scorm12.SCORM12Adapter::launch(Ljava/lang/String;)(param);			
+		}
+				
 		$wnd.API = API;
 	}-*/;
 }

@@ -12,6 +12,9 @@ public interface Enrollment extends Entity{
 	String getCourseClassUUID();
 	void setCourseClassUUID(String courseClassUUID);
 	
+	String getCourseVersionUUID();
+	void setCourseVersionUUID(String courseVersionUUID);
+	
 	String getPersonUUID();
 	void setPersonUUID(String personUUID);
 

@@ -1,43 +1,37 @@
 package kornell.server.api
 
-import javax.ws.rs.Produces
 import scala.collection.JavaConverters._
-import javax.ws.rs.core.SecurityContext
-import javax.ws.rs.GET
-import kornell.server.jdbc.repository.AuthRepo
-import javax.ws.rs.Path
-import javax.ws.rs.core.Context
-import kornell.core.lom.Contents
-import kornell.core.to.CourseClassTO
-import kornell.server.dev.util.ContentsParser
-import kornell.server.repository.s3.S3
-import kornell.server.jdbc.SQL._
-import kornell.server.jdbc.repository.CourseClassesRepo
-import javax.servlet.http.HttpServletRequest
-import kornell.core.entity.CourseClass
-import javax.ws.rs.PUT
-import javax.ws.rs.Consumes
-import kornell.server.jdbc.repository.CourseClassRepo
-import javax.ws.rs.QueryParam
-import kornell.core.entity.Role
-import kornell.core.entity.Roles
-import javax.ws.rs.DELETE
-import kornell.core.entity.RoleCategory
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import kornell.server.repository.ContentRepository
-import kornell.core.to.RolesTO
-import kornell.core.to.LibraryFilesTO
-import kornell.server.repository.LibraryFilesRepository
-import java.io.IOException
-import kornell.server.jdbc.repository.RolesRepo
-import kornell.server.jdbc.repository.ChatThreadsRepo
-import kornell.server.util.Conditional.toConditional
-import kornell.server.util.AccessDeniedErr
-import kornell.server.jdbc.repository.PersonRepo
+import javax.ws.rs.Consumes
+import javax.ws.rs.DELETE
+import javax.ws.rs.GET
+import javax.ws.rs.PUT
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
+import javax.ws.rs.core.Context
+import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.ChatThreadType
-import kornell.core.error.exception.UnauthorizedAccessException
-import kornell.core.error.exception.EntityNotFoundException
+import kornell.core.entity.CourseClass
+import kornell.core.entity.RoleCategory
+import kornell.core.entity.RoleType
+import kornell.core.entity.Roles
 import kornell.core.error.exception.EntityConflictException
+import kornell.core.error.exception.EntityNotFoundException
+import kornell.core.error.exception.UnauthorizedAccessException
+import kornell.core.to.LibraryFilesTO
+import kornell.core.to.RolesTO
+import kornell.server.jdbc.SQL._
+import kornell.server.jdbc.repository.AuthRepo
+import kornell.server.jdbc.repository.ChatThreadsRepo
+import kornell.server.jdbc.repository.CourseClassRepo
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.RolesRepo
+import kornell.server.repository.LibraryFilesRepository
+import kornell.server.util.AccessDeniedErr
+import kornell.server.util.Conditional.toConditional
+import kornell.core.to.CourseClassTO
+import kornell.server.jdbc.repository.CourseClassesRepo
 
 
 class CourseClassResource(uuid: String) {
@@ -45,10 +39,11 @@ class CourseClassResource(uuid: String) {
   @GET
   @Path("to")
   @Produces(Array(CourseClassTO.TYPE))
-  def get(implicit @Context sc: SecurityContext) =
+  def getTO(implicit @Context sc: SecurityContext) =
     AuthRepo().withPerson { person =>
-      //CourseClasses(uuid).byPerson(person.getUUID)
+       	CourseClassesRepo.getCourseClassTO(person.getInstitutionUUID, uuid)
     }
+
 
   @PUT
   @Consumes(Array(CourseClass.TYPE))
@@ -88,15 +83,6 @@ class CourseClassResource(uuid: String) {
       }
   }
 
-  @Produces(Array(Contents.TYPE))
-  @Path("contents")
-  @GET
-  def getLatestContents(implicit @Context sc: SecurityContext): Contents =
-    //TODO: Refactor to Option.map
-    AuthRepo().withPerson { person =>            
-      ContentRepository.findKNLVisitedContent(uuid,person.getUUID)
-    }
-
   @Produces(Array(LibraryFilesTO.TYPE))
   @Path("libraryFiles")
   @GET
@@ -123,7 +109,7 @@ class CourseClassResource(uuid: String) {
       @QueryParam("bind") bindMode:String) =
     AuthRepo().withPerson { person =>
       {
-        RolesRepo.getCourseClassAdmins(uuid, bindMode)
+        RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.courseClassAdmin)
       }
     }
   
@@ -142,12 +128,30 @@ class CourseClassResource(uuid: String) {
   @GET
   @Produces(Array(RolesTO.TYPE))
   @Path("tutors")
-  def updateTutors(@QueryParam("bind") bindMode:String) = {
-        RolesRepo.getTutorsForCourseClass(uuid, bindMode)
+  def getTutors(@QueryParam("bind") bindMode:String) = {
+        RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.tutor)
   }.requiring(isPlatformAdmin, AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 
+   @PUT
+  @Consumes(Array(Roles.TYPE))
+  @Produces(Array(Roles.TYPE))
+  @Path("observers")
+  def updateObservers(roles: Roles) = {
+        RolesRepo.updateObservers(uuid, roles)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
+
+  @GET
+  @Produces(Array(RolesTO.TYPE))
+  @Path("observers")
+  def getObservers(@QueryParam("bind") bindMode:String) = {
+        RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.observer)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
 }
 
 object CourseClassResource {

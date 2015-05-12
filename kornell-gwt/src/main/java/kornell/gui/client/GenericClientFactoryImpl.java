@@ -1,12 +1,17 @@
 package kornell.gui.client;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
@@ -20,6 +25,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
@@ -49,9 +55,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public static final EventFactory eventFactory = GWT
 			.create(EventFactory.class);
 
+	public static final EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
+	
 	/* History Management */
-	private final EventBus bus = new SimpleEventBus();
-	private final PlaceController placeCtrl = new PlaceController(bus);
+//	private final EventBus bus = new SimpleEventBus();
+	private final PlaceController placeCtrl = new PlaceController(EVENT_BUS);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 	private final DefaultHistorian historian = GWT
 			.create(DefaultHistorian.class);
@@ -61,7 +69,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	/* GUI */
 	private ViewFactory viewFactory;
 	private Place defaultPlace;
-	private KornellSession session = new KornellSession(bus);
+	private Place homePlace;
+	private KornellSession session = new KornellSession(EVENT_BUS);
 
 	public GenericClientFactoryImpl() {
 	}
@@ -72,7 +81,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initGlobalActivityManager() {
 		AsyncActivityMapper activityMapper = new GlobalActivityMapper(this);
-		AsyncActivityManager activityManager = new AsyncActivityManager(activityMapper, bus);
+		AsyncActivityManager activityManager = new AsyncActivityManager(activityMapper, EVENT_BUS);
 		activityManager.setDisplay(viewFactory.getShell());
 	}
 
@@ -82,7 +91,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		//PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 		//historyHandler.register(placeController, eventBus, defaultPlace);
 		
-		historyHandler.register(placeCtrl, bus, defaultPlace);
+		historyHandler.register(placeCtrl, EVENT_BUS, defaultPlace);
 		// sessions that arent authenticated, go to the default place
 		// except if it's a vitrineplace, then let the history take care of it
 		if (!session.isAuthenticated()
@@ -101,33 +110,53 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if(userHelloTO.getInstitution() == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
 				} else {					
-					Dean.init(session, bus, userHelloTO.getInstitution());
+					Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
+					setHomePlace(new WelcomePlace());
 					if (session.isAuthenticated()) {
-						boolean isAdmin = (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-								|| session.isInstitutionAdmin());
-						setDefaultPlace(isAdmin ? new AdminCourseClassesPlace() : new WelcomePlace());
 						startAuthenticated(session);
 					} else {
 						startAnonymous();
 					}
 				}
 			}
+			@Override
+			public void unauthorized(KornellErrorTO kornellErrorTO){
+				//this case means someone entered a URL in the bar with an expired token in local storage
+				//so we clear his old token and we do the call to hello again
+				ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
+				final Callback<UserHelloTO> userManualAccessCallback = new Callback<UserHelloTO>() {
+					@Override
+					public void ok(final UserHelloTO userHelloTO) {
+						session.setCurrentUser(userHelloTO.getUserInfoTO());
+						if(userHelloTO.getInstitution() == null) {
+							KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
+						} else {
+							Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
+							setHomePlace(new WelcomePlace());
+							if (session.isAuthenticated()) {
+								startAuthenticated(session);
+							} else {
+								startAnonymous();
+							}
+						}
+					}
+				};
+				session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
+			}
 		};
-
 		session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userHelloCallback);
-		
 	}
 
 	private void startAnonymous() {
-		ClientProperties.remove(ClientProperties.X_KNL_A);
-		defaultPlace = new VitrinePlace();
+		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
+		setDefaultPlace(new VitrinePlace());
 		startClient();
 	}
 
 	private void startAuthenticated(KornellSession session) {
-		if (session.isCourseClassAdmin()) {
-			defaultPlace = new AdminCourseClassesPlace();
-		}
+		boolean isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+				|| session.isInstitutionAdmin();
+		setDefaultPlace(isAdmin ? new AdminCourseClassesPlace() : new WelcomePlace());
 		startClient();
 	}
 
@@ -146,14 +175,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initPersonnel() {
-		new Captain(bus, session, placeCtrl);
-		new Stalker(bus, session);
-		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  bus, session.chatThreads(), placeCtrl);
+		new Captain(EVENT_BUS, session, placeCtrl);
+		new Stalker(EVENT_BUS, session);
+		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
 		
 	}
 
 	private void initSCORM12() {
-		SCORM12Binder.bind(new SCORM12Adapter(bus, session));
+		SCORM12Binder.bind(new SCORM12Adapter(EVENT_BUS, session,placeCtrl));
 	}
 
 	private void initException() {
@@ -178,7 +207,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public EventBus getEventBus() {
-		return bus;
+		return EVENT_BUS;
 	}
 
 	@Override
@@ -189,6 +218,30 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public void setDefaultPlace(Place place) {
 		this.defaultPlace = place;
+	}
+
+	@Override
+	public Place getHomePlace() {
+		return homePlace != null ? homePlace : defaultPlace;
+	}
+
+	@Override
+	public void setHomePlace(Place place) {
+		if(session.getCurrentUser() != null &&
+				session.getCurrentUser().getEnrollments() != null &&
+				InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			for (Enrollment enrollment : session.getCurrentUser().getEnrollments().getEnrollments()) {
+				Date date = new Date(0);
+				//get latest active enrollment on a class
+				if(enrollment.getCourseClassUUID() != null && 
+						EnrollmentState.enrolled.equals(enrollment.getState()) && 
+						enrollment.getEnrolledOn().after(date)){
+					date = enrollment.getEnrolledOn();
+					place = new ClassroomPlace(enrollment.getUUID());
+				}				
+			}			
+		}
+		this.homePlace = place;
 	}
 
 	@Override

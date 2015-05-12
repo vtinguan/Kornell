@@ -89,7 +89,7 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	}
 
 	private void forgetCredentials() {
-		ClientProperties.remove(ClientProperties.X_KNL_A);
+		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
 	}
 
 }

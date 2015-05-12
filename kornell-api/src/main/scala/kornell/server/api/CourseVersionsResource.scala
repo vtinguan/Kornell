@@ -26,11 +26,12 @@ class CourseVersionsResource {
 
   @GET
   @Produces(Array(CourseVersionsTO.TYPE))
-  def getCourseVersions(@QueryParam("courseUUID") courseUUID: String) = {
+  def getCourseVersions(@QueryParam("courseUUID") courseUUID: String, @QueryParam("searchTerm") searchTerm: String,
+      @QueryParam("ps") pageSize: Int, @QueryParam("pn") pageNumber: Int) = {
         if (courseUUID != null)
           CourseVersionsRepo.byCourse(courseUUID)
         else
-          CourseVersionsRepo.byInstitution(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)
+          CourseVersionsRepo.byInstitution(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID, searchTerm, pageSize, pageNumber)
     }.requiring(isPlatformAdmin, AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get

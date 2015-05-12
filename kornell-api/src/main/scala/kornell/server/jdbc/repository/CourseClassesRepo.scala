@@ -16,6 +16,7 @@ import java.util.Date
 import kornell.core.entity.CourseClassState
 import java.sql.ResultSet
 import kornell.core.error.exception.EntityConflictException
+import kornell.core.util.StringUtils
 
 class CourseClassesRepo {
 }
@@ -60,8 +61,21 @@ object CourseClassesRepo {
     | where state <> ${CourseClassState.deleted}
     """.map[CourseClass](toCourseClass)
 
-  private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = {
-    TOs.newCourseClassesTO(
+  private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = 
+    getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", null, null) 
+    
+  def getCourseClassTO(institutionUUID: String, courseClassUUID: String) = {
+    val courseClassesTO = getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", null, courseClassUUID) 
+    if(courseClassesTO.getCourseClasses.size > 0){
+      courseClassesTO.getCourseClasses.get(0)
+    }
+  }
+    
+  def getAllClassesByInstitutionPaged(institutionUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int, adminUUID: String, courseVersionUUID: String, courseClassUUID: String ): kornell.core.to.CourseClassesTO = {
+    val resultOffset = (pageNumber.max(1) - 1) * pageSize
+    val filteredSearchTerm = '%' + Option(searchTerm).getOrElse("") + '%'
+    
+    val courseClassesTO = TOs.newCourseClassesTO(
       sql"""
 			select     
 				c.uuid as courseUUID, 
@@ -69,6 +83,7 @@ object CourseClassesRepo {
 			    c.title, 
 			    c.description,
 			    c.infoJson,
+      			c.childCourse,
 			    cv.uuid as courseVersionUUID,
 			    cv.name as courseVersionName,
 			    cv.repository_uuid as repositoryUUID, 
@@ -94,9 +109,50 @@ object CourseClassesRepo {
 				join CourseVersion cv on cv.course_uuid = c.uuid
 				join CourseClass cc on cc.courseVersion_uuid = cv.uuid and cc.institution_uuid = ${institutionUUID}
 			    left join InstitutionRegistrationPrefix irp on irp.uuid = cc.institutionRegistrationPrefixUUID
-      	  	where cc.state <> ${CourseClassState.deleted.toString}
-      	  	order by cc.state, c.title, cv.versionCreatedAt desc, cc.name;
+      	  	where cc.state <> ${CourseClassState.deleted.toString} and
+      	  	    (cc.courseVersion_uuid = ${courseVersionUUID} or ${StringUtils.isNone(courseVersionUUID)}) and
+      	  	    (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)}) and
+		    	cc.institution_uuid = ${institutionUUID} and
+	            (cv.name like ${filteredSearchTerm}
+	            or cc.name like ${filteredSearchTerm}) and (${StringUtils.isNone(adminUUID)} or
+				(select count(*) from Role r where person_uuid = ${adminUUID} and (
+					(r.role = ${RoleType.platformAdmin.toString}) or 
+					(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
+				( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
+			)) > 0)
+      	  	order by cc.state, c.title, cv.versionCreatedAt desc, cc.name limit ${resultOffset}, ${pageSize};
 		""".map[CourseClassTO](toCourseClassTO))
+		courseClassesTO.setCount(
+		    sql"""select count(cc.uuid) from CourseClass cc where cc.state <> ${CourseClassState.deleted.toString} and (${StringUtils.isSome(adminUUID)} and
+					(select count(*) from Role r where person_uuid = ${adminUUID} and (
+						(r.role = ${RoleType.platformAdmin.toString}) or 
+						(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
+						( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
+					)) > 0)
+      	  	    and (cc.courseVersion_uuid = ${courseVersionUUID} or ${StringUtils.isNone(courseVersionUUID)})
+      	  	    and (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)})
+		    	and cc.institution_uuid = ${institutionUUID}""".first[String].get.toInt)
+    	courseClassesTO.setPageSize(pageSize)
+    	courseClassesTO.setPageNumber(pageNumber.max(1))
+    	courseClassesTO.setSearchCount({
+    	  if (searchTerm == "")
+    		  0
+		  else
+		    sql"""select count(cc.uuid) from CourseClass cc 
+		    	join CourseVersion cv on cc.courseVersion_uuid = cv.uuid
+		    	where cc.state <> ${CourseClassState.deleted.toString} and
+            	(cv.name like ${filteredSearchTerm}
+            	or cc.name like ${filteredSearchTerm}) and (${StringUtils.isSome(adminUUID)} and
+				(select count(*) from Role r where person_uuid = ${adminUUID} and (
+					(r.role = ${RoleType.platformAdmin.toString}) or 
+					(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
+					( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
+				)) > 0)
+      	  	    and (cc.courseVersion_uuid = ${courseVersionUUID} or ${StringUtils.isNone(courseVersionUUID)})
+      	  	    and (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)})
+            	and cc.institution_uuid = ${institutionUUID}""".first[String].get.toInt
+    	})
+		courseClassesTO
   }
 
   def byPersonAndInstitution(personUUID: String, institutionUUID: String) = {
@@ -106,13 +162,6 @@ object CourseClassesRepo {
     classes.foreach(cc => bindEnrollment(personUUID, cc))
     //only return the valid classes for the user (for example, hide private classes)
     courseClassesTO.setCourseClasses(classes.filter(isValidClass _).asJava)
-    courseClassesTO
-  }
-
-  def administratedByPersonOnInstitution(person: Person, institutionUUID: String, roles: List[Role]) = {
-    val courseClassesTO = getAllClassesByInstitution(institutionUUID)
-    val classes = courseClassesTO.getCourseClasses().asScala
-    courseClassesTO.setCourseClasses(classes.filter(cc => isCourseClassAdmin(cc.getCourseClass().getUUID(), institutionUUID, roles)).asJava)
     courseClassesTO
   }
 
@@ -138,6 +187,20 @@ object CourseClassesRepo {
     var hasRole: Boolean = isInstitutionAdmin(institutionUUID, roles)
     roles.foreach(role => hasRole = hasRole
       || RoleCategory.isValidRole(role, RoleType.courseClassAdmin, null, courseClassUUID))
+    hasRole
+  }
+
+  private def isCourseClassObserver(courseClassUUID: String, institutionUUID: String, roles: List[Role]) = {
+    var hasRole: Boolean = isInstitutionAdmin(institutionUUID, roles)
+    roles.foreach(role => hasRole = hasRole
+      || RoleCategory.isValidRole(role, RoleType.observer, null, courseClassUUID))
+    hasRole
+  }
+
+  private def isCourseClassTutor(courseClassUUID: String, institutionUUID: String, roles: List[Role]) = {
+    var hasRole: Boolean = isInstitutionAdmin(institutionUUID, roles)
+    roles.foreach(role => hasRole = hasRole
+      || RoleCategory.isValidRole(role, RoleType.tutor, null, courseClassUUID))
     hasRole
   }
 

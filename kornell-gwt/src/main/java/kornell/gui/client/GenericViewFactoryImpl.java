@@ -1,6 +1,8 @@
 package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
+import kornell.gui.client.event.ShowDetailsEvent;
+import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
@@ -56,7 +58,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class GenericViewFactoryImpl implements ViewFactory {
+public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHandler {
 
 	private ClientFactory clientFactory;
 
@@ -84,6 +86,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
+		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
 	}
 
 	@Override
@@ -103,16 +106,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 				setPlaceNameAsBodyStyle(event);
 				setBackgroundImage(event.getNewPlace() instanceof VitrinePlace);
 				checkMenuBars(event.getNewPlace() instanceof VitrinePlace);
-				checkOverflow(event.getNewPlace() instanceof ClassroomPlace);
-			}
-
-			private void checkOverflow(boolean removeOverflow) {
-				if(removeOverflow){
-					scrollPanel.removeStyleName("overflow");
-				} else {
-					scrollPanel.addStyleName("overflow");
-				}
-				
+				changeOverflow(event.getNewPlace() instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null);
 			}
 
 			private void checkMenuBars(boolean removePanels) {
@@ -133,12 +127,25 @@ public class GenericViewFactoryImpl implements ViewFactory {
 		});
 	}
 
+	@Override
+	public void onShowDetails(ShowDetailsEvent event) {
+		changeOverflow(event.isShowDetails());
+	}
+
+	private void changeOverflow(boolean removeOverflow) {
+		if(removeOverflow){
+			scrollPanel.removeStyleName("overflow");
+		} else {
+			scrollPanel.addStyleName("overflow");
+		}
+	}
+
 	@SuppressWarnings("deprecation")
 	private void setBackgroundImage(boolean showMantle) {
 		if (showMantle == isMantleShown)
 			return;
 		String style = "position: relative; " + "zoom: 1; " + "-webkit-background-size: cover; "
-				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;";
+				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;" + "overflow:auto;";
 		if (showMantle)
 			style = "background: url('"
 					+ composeURL(Dean.getInstance().getInstitution().getAssetsURL(), "bgVitrine.jpg")
@@ -320,8 +327,7 @@ public class GenericViewFactoryImpl implements ViewFactory {
 	public AdminCourseVersionPresenter getAdminCourseVersionPresenter() {
 		if (genericAdminCourseVersionPresenter == null)
 			genericAdminCourseVersionPresenter = new AdminCourseVersionPresenter(clientFactory.getKornellSession(),
-					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(),
-					clientFactory.getEntityFactory(), this);
+					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(), this);
 		return genericAdminCourseVersionPresenter;
 	}
 

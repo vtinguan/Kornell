@@ -36,6 +36,7 @@ import kornell.core.util.StringUtils
 import kornell.server.repository.s3.S3
 import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.to.PersonTO
+import kornell.core.entity.AuthClientType
 
 //TODO: Consider turning to Object
 object TOs {
@@ -51,24 +52,28 @@ object TOs {
   def newEnrollmentsTO(enrollmentList: List[EnrollmentTO]): EnrollmentsTO = {
     val enrollments:EnrollmentsTO = newEnrollmentsTO
     enrollments.setEnrollmentTOs(enrollmentList asJava)
+    enrollments.setPageCount(enrollmentList.length)
     enrollments
   }
 
   def newCoursesTO(coursesList: List[Course]): CoursesTO = {
     val courses = newCoursesTO
     courses.setCourses(coursesList asJava)
+    courses.setPageCount(coursesList.length)
     courses
   }
 
   def newCourseVersionsTO(courseVersionsList: List[CourseVersion]): CourseVersionsTO = {
     val courseVersions = newCourseVersionsTO
     courseVersions.setCourseVersions(courseVersionsList asJava)
+    courseVersions.setPageCount(courseVersionsList.length)
     courseVersions
   }
 
   def newCourseClassesTO(l: List[CourseClassTO]) = {
     val to = tos.newCourseClassesTO.as
     to.setCourseClasses(l asJava)
+    to.setPageCount(l.length)
     to
   }
 
@@ -92,7 +97,7 @@ object TOs {
   def newCourseVersionTO(course: Course, version: CourseVersion): CourseVersionTO = {
     val versionTO = tos.newCourseVersionTO.as
     val s3 = S3(version.getRepositoryUUID)
-    versionTO.setDistributionURL(StringUtils.composeURL(s3.baseURL, s3.prefix))
+    versionTO.setDistributionURL(StringUtils.composeURL(s3.prefix))
     versionTO.setCourse(course)
     versionTO.setCourseVersion(version)
     versionTO
@@ -270,4 +275,12 @@ object TOs {
     p
   }
   
+  def newTokenTO(token: String, expiry: Date, personUUID: String, clientType: AuthClientType) = {
+    val to = tos.newTokenTO.as
+    to.setToken(token)
+    to.setExpiry(expiry)
+    to.setPersonUUID(personUUID)
+    to.setClientType(clientType)
+    to
+  }
 }

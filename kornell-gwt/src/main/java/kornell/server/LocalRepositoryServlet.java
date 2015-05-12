@@ -1,5 +1,7 @@
 package kornell.server;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,57 +19,116 @@ import javax.servlet.http.HttpServletResponse;
 import kornell.core.util.StringUtils;
 
 public class LocalRepositoryServlet extends HttpServlet {
-	static final Pattern pattern = Pattern.compile("[/]?repository/([^/]*)/.*");
-	static final Map<String, Path> repoPaths = new HashMap<String,Path>();
-	static final Path home = Paths.get(System.getProperty("user.home"));
-	static final Path dropbox = home.resolve("Dropbox");
-	static {	
-		if (dropbox.toFile().exists()){
-			repoPaths.put("840e93aa-2373-4fb5-ba4a-999bb3f43888", dropbox.resolve("Content/midway"));
-			repoPaths.put("42df235e-a2e8-455b-b341-84b4f8e5c88b", dropbox.resolve("Content/unicc/"));
-			repoPaths.put("F7A4A77F-D519-4348-8F62-EDB0C2C48395", dropbox.resolve("Content/prismafs"));
-		}
+	static final Pattern pattern = Pattern.compile("[/]?repository/([^/]*)/(.*)");
+	static final String pUUID = "\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}";
+
+	public static final boolean isRepository(File file) {
+		return file.getName().matches(pUUID);
 	}
-	
+
+	static final Path home = Paths.get(System.getProperty("user.home"));
+	static final Path repos = home.resolve("Repositories/");
+	static final Map<String, File> repoPaths = new HashMap<String, File>();
+
+	public static void scan(File file) {
+		assert file.exists() && file.isDirectory();
+
+		if (isRepository(file)) {
+			System.out.println("> Adding repository [" + file+"]");
+			repoPaths.put(file.getName(), file);
+		}
+
+		File[] children = file.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isDirectory();
+			}
+		});
+
+		if(children != null) 
+			for (File child : children) 
+				scan(child);
+	}
+
+	@Override
+	public void init() throws ServletException {
+		System.out.println("*** === INIT === ***");
+		scan(repos.toFile());
+		System.out.println("*** === LISTEN === ***");
+	}
+
+
 	@Override
 	protected void doGet(final HttpServletRequest req,
 			final HttpServletResponse resp) throws ServletException,
 			IOException {
-		String uri = req.getRequestURI();
-		if(uri.startsWith("/"))
-			uri = uri.substring(1);
-		Matcher matcher = pattern.matcher(uri);
-		if(matcher.matches()){
-			String repositoryUUID = matcher.group(1);
-			Path repoPath = repoPaths.get(repositoryUUID);
-			if(repoPath != null){			
-				Path file = repoPath.resolve(uri);
-				if (file.toFile().exists()){
-					setContentTye(file,req,resp);
-					Files.copy(file, resp.getOutputStream());
-				}else {
-					resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+		StringBuilder msg = new StringBuilder();
+		try {
+			String uri = req.getRequestURI();
+			if (uri.startsWith("/"))
+				uri = uri.substring(1);
+			Matcher matcher = pattern.matcher(uri);
+			if (matcher.matches()) {
+				String repositoryUUID = matcher.group(1);
+				msg.append("["+repositoryUUID+"] =>");
+				String obj = matcher.group(2);
+				Path repoPath = pathOf(repositoryUUID);				
+				msg.append("["+repoPath+"]");				
+				if (repoPath != null) {					
+					if (obj.startsWith("/")){
+						obj=obj.substring(1);
+					}
+					msg.append("["+obj+"]");
+					Path file = repoPath.resolve(obj);					
+					msg.append("=>["+file+"]");
+					if (file.toFile().exists()) {
+						msg.append("[W]");
+						setContentTye(file, req, resp);
+						Files.copy(file, resp.getOutputStream());
+					} else {
+						msg.append("[NO_FILE]["+file.toAbsolutePath()+"]");
+						throw new RuntimeException("# "+msg);
+					}
+				} else { 
+					msg.append("[NO_REPO]");
+					throw new RuntimeException("# "+msg);
 				}
-			}else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-		}else {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+			} else {
+				msg.append("[NOT_MINE]");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			resp.sendError(
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"500>"+e.getMessage());
+		}finally{
+			System.out.println(">"+msg);
 		}
 	}
 
-	static final Map<String,String> mimeTypes = new HashMap<String,String>(){{
-		put(".html","text/html");
-		put(".js","application/javascript");
-	}};
-	
+	static final Path pathOf(String storeUUID) {
+		File base = repoPaths.get(storeUUID);
+		return base != null ? Paths.get(base.toURI()) : null;
+	}
+
+	@SuppressWarnings("all")
+	static final Map<String, String> mimeTypes = new HashMap<String, String>() {
+		{
+			put(".txt", "text/plain");
+			put(".html", "text/html");
+			put(".js", "application/javascript");
+		}
+	};
+
 	private void setContentTye(Path file, HttpServletRequest req,
 			HttpServletResponse resp) {
 		String fname = file.toString();
-		String ext =  fname.substring(fname.lastIndexOf("."));
+		String ext = fname.substring(fname.lastIndexOf("."));
 		String type = mimeTypes.get(ext);
-		if(StringUtils.isSome(type)){
+		if (StringUtils.isSome(type)) {
 			resp.setContentType(type);
 		}
-		
+
 	}
-	
+
 }

@@ -27,17 +27,14 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 	private PlaceController placeController;
 	private EventBus bus;
 	Place defaultPlace;
-	EntityFactory entityFactory;
 	private ViewFactory viewFactory;
 
 	public AdminCourseVersionPresenter(KornellSession session,
-			PlaceController placeController, EventBus bus, Place defaultPlace,
-			EntityFactory entityFactory, ViewFactory viewFactory) {
+			PlaceController placeController, EventBus bus, Place defaultPlace, ViewFactory viewFactory) {
 		this.session = session;
 		this.placeController = placeController;
 		this.bus = bus;
 		this.defaultPlace = defaultPlace;
-		this.entityFactory = entityFactory;
 		this.viewFactory = viewFactory;
 
 		init();
@@ -45,19 +42,15 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 
 	private void init() {
 		if (session.isPlatformAdmin()) {
-			view = getView();
-			view.setPresenter(this);      
-			view.init();
+			view = viewFactory.getAdminCourseVersionView();
+			if(view.getPresenter() == null){
+				view.setPresenter(this); 
+			}  
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! "
 					+ this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}
-	}
-	
-	@Override
-	public CourseVersion getNewCourseVersion() {
-		return entityFactory.newCourseVersion().as();
 	}
 
 	
@@ -66,12 +59,12 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 		return view.asWidget();
 	}
 
-	private AdminCourseVersionView getView() {
-		return viewFactory.getAdminCourseVersionView();
+	public AdminCourseVersionView getView() {
+		return view;
 	}
 
 	@Override
-  public void upsertCourseVersion(CourseVersion courseVersion) {
+	public void upsertCourseVersion(CourseVersion courseVersion) {
 		if(courseVersion.getUUID() == null){
 			session.courseVersions().create(courseVersion, new Callback<CourseVersion>() {
 				@Override

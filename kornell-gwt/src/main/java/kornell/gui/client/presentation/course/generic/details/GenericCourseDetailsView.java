@@ -100,7 +100,8 @@ public class GenericCourseDetailsView extends Composite {
 		setContents(presenter.getContents());
 		certificationPanel = getCertificationPanel();
 		courseClassTO = Dean.getInstance().getCourseClassTO();
-		display();
+		if(courseClassTO != null)
+			display();
 	}
 
 	private void setContents(Contents contents) {
@@ -337,7 +338,6 @@ public class GenericCourseDetailsView extends Composite {
 			displayButton(btnTopics, constants.btnTopics(),
 					constants.btnTopicsInfo(), false);
 		}
-		// TODO: i18n
 		if(isInactiveCourseClass){
 			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
 		} else if(isEnrolled && !isCancelled){

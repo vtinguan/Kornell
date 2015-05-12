@@ -35,7 +35,10 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	TOFactory toFactory;
 	private ViewFactory viewFactory;
 	private CourseClassesTO courseClassesTO;
-  private Map<String, EnrollmentsTO> enrollmentsCacheMap;
+	private Map<String, EnrollmentsTO> enrollmentsCacheMap;
+	private String pageSize = "20";
+	private String pageNumber = "1";
+	private String searchTerm = "";
 
 	public AdminCourseClassesPresenter(KornellSession session,
 			PlaceController placeController, Place defaultPlace,
@@ -51,13 +54,15 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	}
 
 	private void init() {
-		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(),
-				RoleType.courseClassAdmin) || session.isInstitutionAdmin()) {
+		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin)
+				|| RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.observer)
+				|| RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.tutor)
+				|| session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
 			
-			String selectedCourseClass = "-----------------------------";
-      updateCourseClass(selectedCourseClass);
+			String selectedCourseClass = "";
+			updateCourseClass(selectedCourseClass);
       
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! "
@@ -69,12 +74,13 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
 		LoadingPopup.show();
-		session.courseClasses().getAdministratedCourseClassesTOByInstitution(Dean.getInstance().getInstitution().getUUID(), 
+		view.setCourseClasses(null, 0, 0);
+		session.courseClasses().getAdministratedCourseClassesTOPaged(pageSize, pageNumber, searchTerm, 
 				new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO to) {
 				courseClassesTO = to;
-				view.setCourseClasses(courseClassesTO.getCourseClasses());
+				view.setCourseClasses(courseClassesTO.getCourseClasses(), to.getCount(), to.getSearchCount());
 				LoadingPopup.hide();
 				if(courseClassesTO.getCourseClasses().size() == 0){
 				} else {
@@ -96,9 +102,9 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	private AdminCourseClassesView getView() {
 		return viewFactory.getAdminCourseClassesView();
 	}
-
+	
 	@Override
-  public void upsertCourseClass(CourseClass courseClass) {
+	public void upsertCourseClass(CourseClass courseClass) {
 		if(courseClass.getUUID() == null){
 			courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
 			session.courseClasses().create(courseClass, new Callback<CourseClass>() {
@@ -137,4 +143,39 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 			});
 		}
   }
+
+	@Override
+	public String getPageSize() {
+		return pageSize;
+	}
+
+	@Override
+	public void setPageSize(String pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	@Override
+	public String getPageNumber() {
+		return pageNumber;
+	}
+
+	@Override
+	public void setPageNumber(String pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	@Override
+	public String getSearchTerm() {
+		return searchTerm;
+	}
+
+	@Override
+	public void setSearchTerm(String searchTerm) {
+		this.searchTerm = searchTerm;	
+	}
+
+	@Override
+	public void updateData() {
+    	updateCourseClass("");
+	}
 }

@@ -106,78 +106,81 @@
 .menuBarPlus{
 	height: @barNorthHeightPlus !important;
 }
-.menuBar{
+.menuBarContainer {
 	.north;
 	.size (100%, @barNorthHeight);
-	.gradient (@barGradientStartColor, @barGradientEndColor);
 	position: fixed;
 	z-index: 1;
-	.imgMenuBar{
-		float: left;
-		.marginLogo;
-	}
-	.buttons{
-		float: right;
-		.menuBarButton {
-			.btnBorder;
-			@paddingTop: 10px;
-			height: @barNorthHeight - @paddingTop;
-			line-height: @barNorthHeight - (@paddingTop*2);
+	.menuBar{
+		.size (100%, @barNorthHeight);
+		.gradient (@barGradientStartColor, @barGradientEndColor);
+		.imgMenuBar{
 			float: left;
-			text-align: center;
-			padding: 10px 14px 0px 14px;
-			font-size: 18px;
-			color: @niceTextColor !important;
-			text-decoration: none;
-			.label{
-				background: transparent;
-				color: @niceTextColor;
-				font-size: 12px;
-				margin-left: 4px;
-			}
-			.icon{
-				.size (25px);
-			}
-			.count {
-				font-size: 11px;
-				font-weight: bold;
-				position: relative;
-				background-color: @textHighlightColor;
-				border-radius: 10px;
-				line-height: 14px;
-				color: @blackOrWhite;
-				margin-top: 5px;
-				padding: 0px 2px;
-				&:hover{
-					text-decoration: none;
+			.marginLogo;
+		}
+		.buttons{
+			float: right;
+			.menuBarButton {
+				.btnBorder;
+				@paddingTop: 10px;
+				height: @barNorthHeight - @paddingTop;
+				line-height: @barNorthHeight - (@paddingTop*2);
+				float: left;
+				text-align: center;
+				padding: 10px 14px 0px 14px;
+				font-size: 18px;
+				color: @niceTextColor !important;
+				text-decoration: none;
+				.label{
+					background: transparent;
+					color: @niceTextColor;
+					font-size: 12px;
+					margin-left: 4px;
+				}
+				.icon{
+					.size (25px);
+				}
+				.count {
+					font-size: 11px;
+					font-weight: bold;
+					position: relative;
+					background-color: @textHighlightColor;
+					border-radius: 10px;
+					line-height: 14px;
+					color: @blackOrWhite;
+					margin-top: 5px;
+					padding: 0px 2px;
+					&:hover{
+						text-decoration: none;
+					}
+				}
+				.countNotifications{
+					left: 12px;
+					top: -27px;
+				}
+				.countMessages{
+					left: 8px;
+					top: -36px;
 				}
 			}
-			.countNotifications{
-				left: 12px;
-				top: -27px;
+			.first{
+				border-left: 0px !important;
+				padding: 0;
+				width: 0;
 			}
-			.countMessages{
-				left: 8px;
-				top: -36px;
+			.last{
+				border-right: 0px;
 			}
 		}
-		.first{
-			border-left: 0px !important;
-			padding: 0;
-			width: 0;
+		.testEnvWarning{
+			color: @textHighlightColor;
+			width: 85px;
+			font-size: 15px;
+			line-height: 45px;
+			font-weight: bold;
+			float: right;
+			text-align: center;
 		}
-		.last{
-			border-right: 0px;
-		}
-	}
-	.testEnvWarning{
-		color: @textHighlightColor;
-		width: 85px;
-		font-size: 15px;
-		line-height: 45px;
-		font-weight: bold;
-		float: right;
-		text-align: center;
 	}
 }
 @media screen and (max-width: 700px) {

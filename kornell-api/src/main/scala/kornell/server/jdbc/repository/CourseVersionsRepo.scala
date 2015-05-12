@@ -52,13 +52,37 @@ object CourseVersionsRepo {
     }
   }  
   
-  def byInstitution(institutionUUID: String) = newCourseVersionsTO(
-    sql"""
+  def byInstitution(institutionUUID: String, searchTerm: String, pageSize: Int, pageNumber: Int) = {
+    val resultOffset = (pageNumber.max(1) - 1) * pageSize
+    val filteredSearchTerm = '%' + Option(searchTerm).getOrElse("") + '%'
+    
+    val courseVersionsTO = newCourseVersionsTO(sql"""
 	  	select cv.* from CourseVersion cv
 		join Course c on cv.course_uuid = c.uuid
 		where c.institutionUUID = $institutionUUID
-		order by c.title, cv.versionCreatedAt desc
+		and cv.name like ${filteredSearchTerm}
+		order by c.title, cv.versionCreatedAt desc limit ${resultOffset}, ${pageSize}
 	  """.map[CourseVersion](toCourseVersion))
+	  courseVersionsTO.setPageSize(pageSize)
+	  courseVersionsTO.setPageNumber(pageNumber.max(1))
+	  courseVersionsTO.setCount({
+	    sql"""select count(cv.uuid) from CourseVersion cv
+	    	join Course c on cv.course_uuid = c.uuid
+			where c.institutionUUID = $institutionUUID
+	    	""".first[String].get.toInt
+	  })
+	  courseVersionsTO.setSearchCount({
+    	  if (searchTerm == "")
+    		  0
+		  else
+		    sql"""select count(cv.uuid) from CourseVersion cv
+	    	join Course c on cv.course_uuid = c.uuid
+			where c.institutionUUID = $institutionUUID
+			and cv.name like ${filteredSearchTerm}
+	    	""".first[String].get.toInt
+	  })
+	  courseVersionsTO
+  }
   
   def byCourse(courseUUID: String) = newCourseVersionsTO(
     sql"""
@@ -66,6 +90,12 @@ object CourseVersionsRepo {
 		join Course c on cv.course_uuid = c.uuid
 		where cv.disabled = 0 and c.uuid = $courseUUID
 		order by cv.versionCreatedAt desc
-	  """.map[CourseVersion](toCourseVersion))
+	  """.map[CourseVersion])
+
+  def byParentVersionUUID(parentVersionUUID: String) = sql"""
+    select * from CourseVersion where parentVersionUUID = ${parentVersionUUID}
+  """.map[CourseVersion]
+
+  
   
 }

@@ -3,7 +3,9 @@ package kornell.gui.client.presentation.course.generic;
 import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
+import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
+import kornell.core.to.CourseClassTO;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -63,7 +65,10 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		detailsView.initData();
 		detailsPanel.clear();
 		detailsPanel.add(detailsView);
-		boolean showDetails = !isEnrolled || EnrollmentCategory.isFinished(Dean.getInstance().getCourseClassTO().getEnrollment());
+		Dean dean = Dean.getInstance();
+		CourseClassTO courseClassTO = dean.getCourseClassTO();
+		Enrollment enrollment = courseClassTO!= null ? courseClassTO.getEnrollment() : null;		
+		boolean showDetails = !isEnrolled || EnrollmentCategory.isFinished(enrollment);
 		bus.fireEvent(new ShowDetailsEvent(showDetails));
 	}
 

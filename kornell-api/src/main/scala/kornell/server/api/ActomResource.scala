@@ -17,8 +17,11 @@ import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.ActomEntriesRepo
 import kornell.server.repository.Entities
 import kornell.server.util.ServerTime
+import kornell.core.scorm12.rte.RTE
+import kornell.core.scorm12.rte.DMElement
+import kornell.server.scorm12.SCORM12
 
-class ActomResource(enrollmentUUID: String, actomURL: String) {
+class  ActomResource(enrollmentUUID: String, actomURL: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
 
   @GET
@@ -90,14 +93,28 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   @GET
   def getEntries(): ActomEntries = {
     val entries = Entities.newActomEntries(enrollmentUUID, actomKey, new HashMap[String, String])
+    val query = s"""
+    select * from ActomEntries 
+    where enrollment_uuid='${enrollmentUUID}'
+      and actomKey='${actomKey}'
+    """
     sql"""
   	select * from ActomEntries 
   	where enrollment_uuid=${enrollmentUUID}
   	  and actomKey=${actomKey}""".foreach { rs =>
       entries.getEntries().put(rs.getString("entryKey"), rs.getString("entryValue"))
     }
-    entries
+    initialize(entries)
   }
+  
+  var properties : List[String] = List()
+  
+  def initialize(aentries:ActomEntries):ActomEntries = {
+    val entries = aentries.getEntries()    
+    val initdEntries = SCORM12.dataModel.initialize(entries)    
+    aentries.setEntries(initdEntries)
+    aentries
+  }    
 }
 
 object ActomResource {

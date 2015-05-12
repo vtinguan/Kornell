@@ -19,9 +19,6 @@ public interface S3ContentRepository {
 	String getRegion();
 	void setRegion(String region);
 	
-	String getDistributionURL();
-	void setDistributionURL(String distirbutionURL);
-	
 	String getInstitutionUUID();
 	void setInstitutionUUID(String institutionUUID);
 }

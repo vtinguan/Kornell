@@ -26,6 +26,7 @@ import kornell.core.entity.ChatThreadParticipant
 import java.text.SimpleDateFormat
 import kornell.core.entity.Enrollment
 import kornell.server.util.RequirementNotMet
+import kornell.core.entity.RoleType
 
 
 class ChatThreadsRepo {
@@ -87,7 +88,7 @@ object ChatThreadsRepo {
     val participantsThatShouldExist = threadType match {
       case ChatThreadType.SUPPORT => RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
             .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
-      case ChatThreadType.TUTORING =>RolesRepo.getTutorsForCourseClass(courseClass.getCourseVersionUUID(), RoleCategory.BIND_WITH_PERSON)
+      case ChatThreadType.TUTORING =>RolesRepo.getUsersWithRoleForCourseClass(courseClass.getCourseVersionUUID(), RoleCategory.BIND_WITH_PERSON, RoleType.tutor)
           .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
       case ChatThreadType.COURSE_CLASS | ChatThreadType.DIRECT => throw new IllegalStateException("not-supported-for-this-type")
     }
@@ -335,12 +336,14 @@ object ChatThreadsRepo {
    */
   def addParticipantToCourseClassThread(enrollment: Enrollment) {
     val chatThread = getCourseClassGlobalChatThread(enrollment.getCourseClassUUID)
-    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
-    if (!participant.isDefined) {
-      val courseClass = CourseClassRepo(enrollment.getCourseClassUUID).get
-      createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
-    } else {
-      updateChatThreadParticipantStatus(participant.get.getUUID, true)
+    if(chatThread.isDefined){
+	    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
+	    if (!participant.isDefined) {
+	      val courseClass = CourseClassRepo(enrollment.getCourseClassUUID).get
+	      createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
+	    } else {
+	      updateChatThreadParticipantStatus(participant.get.getUUID, true)
+	    }
     }
   }
   
@@ -349,9 +352,11 @@ object ChatThreadsRepo {
    */
   def disableParticipantFromCourseClassThread(enrollment: Enrollment) = {
     val chatThread = getCourseClassGlobalChatThread(enrollment.getCourseClassUUID)
-    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
-    if (participant.isDefined) {
-      updateChatThreadParticipantStatus(participant.get.getUUID, false)
+    if(chatThread.isDefined){
+	    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
+	    if (participant.isDefined) {
+	      updateChatThreadParticipantStatus(participant.get.getUUID, false)
+	    }
     }
   }
   

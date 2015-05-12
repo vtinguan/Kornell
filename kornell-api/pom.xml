@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -5,11 +6,9 @@
 	<parent>
 		<groupId>kornell</groupId>
 		<artifactId>kornell</artifactId>
-		<version>${kornell-version}</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 
-
-	<groupId>kornell</groupId>
 	<artifactId>kornell-api</artifactId>
 	<packaging>war</packaging>
 	<name>API Server</name>
@@ -67,7 +66,7 @@
 		<dependency>
 			<groupId>kornell</groupId>
 			<artifactId>kornell-core</artifactId>
-			<version>${kornell-version}</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -90,9 +89,15 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-reflect</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.scalatest</groupId>
 			<artifactId>scalatest_2.10</artifactId>
-			<version>2.0</version>
+			<version>2.2.4</version>
 		</dependency>
 
 		<dependency>
@@ -152,17 +157,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
-		  <groupId>org.apache.poi</groupId>
-		  <artifactId>poi</artifactId>
-		  <version>3.10-FINAL</version>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.10-FINAL</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk</artifactId>
-			<version>1.5.6</version>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.9.24</version>
 		</dependency>
 
 		<dependency>
@@ -227,7 +232,7 @@
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>
-				<version>3.1.6</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -238,10 +243,13 @@
 				</executions>
 				<configuration>
 					<scalaVersion>${scala.version}</scalaVersion>
+					<!-- 
 					<javacArgs>
 						<javacArg>-source 1.7</javacArg>
 						<javacArg>-target 1.7</javacArg>
 					</javacArgs>
+					 -->
+					 <!-- 
 					<args>
 						<arg>-make:transitive</arg>
 						<arg>-dependencyfile</arg>
@@ -251,6 +259,7 @@
 						<jvmArg>-Xms64m</jvmArg>
 						<jvmArg>-Xmx1024m</jvmArg>
 					</jvmArgs>
+					 -->
 				</configuration>
 			</plugin>
 
@@ -371,8 +380,8 @@
 										<groupId>
 											net.alchim31.maven
 										</groupId>
-										<artifactId>
-											scala-maven-plugin
+										<artifactId>											
+										    scala-maven-plugin
 										</artifactId>
 										<versionRange>
 											[3.1.5,)

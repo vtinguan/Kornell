@@ -26,12 +26,16 @@ class CourseVersionRepo(uuid: String) {
     | cv.distributionPrefix as distributionPrefix,
     | cv.contentSpec as contentSpec,
     | cv.disabled as courseVersionDisabled,
+    | cv.parentVersionUUID as parentVersionUUID,
+    | cv.instanceCount as instanceCount,
+    | cv.label as label,
     | c.uuid as courseUUID,
     | c.code as courseCode,
     | c.title as courseTitle,
     | c.description as courseDescription,
     | c.infoJson as infoJson,
-    | c.institutionUUID as institutionUUID
+    | c.institutionUUID as institutionUUID,
+    | c.childCourse as childCourse
     | from CourseVersion cv 
     | join Course c on cv.course_uuid = c.uuid
     | where cv.uuid = ${uuid}""".map[CourseVersionTO](toCourseVersionTO).head
@@ -46,9 +50,18 @@ class CourseVersionRepo(uuid: String) {
     | c.versionCreatedAt = ${courseVersion.getVersionCreatedAt},
     | c.distributionPrefix = ${courseVersion.getDistributionPrefix},
     | c.contentSpec = ${courseVersion.getContentSpec.toString},
-    | c.disabled = ${courseVersion.isDisabled}
+    | c.disabled = ${courseVersion.isDisabled},
+    | c.parentVersionUUID = ${courseVersion.getParentVersionUUID},
+    | c.instanceCount = ${courseVersion.getInstanceCount},
+    | c.label = ${courseVersion.getLabel}
     | where c.uuid = ${courseVersion.getUUID}""".executeUpdate
     courseVersion
+  }
+  
+  def getChildren(): List[CourseVersion] = {
+    sql"""
+    	select * from CourseVersion where parentVersionUUID = ${uuid}"""
+    .map[CourseVersion](toCourseVersion)
   }
   
 }

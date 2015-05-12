@@ -30,6 +30,10 @@ import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.to.PersonTO
 import kornell.core.to.RoleTO
 import kornell.core.entity.RoleCategory
+import kornell.core.to.TokenTO
+import kornell.core.entity.AuthClientType
+import kornell.core.entity.InstitutionType
+import sun.security.action.GetBooleanAction
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -56,7 +60,9 @@ package object repository {
         rs.getBoolean("allowRegistrationByUsername"),
         rs.getDate("activatedAt"),
         rs.getString("skin"),
-        BillingType.valueOf(rs.getString("billingType")))
+        BillingType.valueOf(rs.getString("billingType")),
+        InstitutionType.valueOf(rs.getString("institutionType")),
+        rs.getString("dashboardVersionUUID"))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
@@ -75,7 +81,8 @@ package object repository {
     rs.getString("title"),
     rs.getString("description"),
     rs.getString("infoJson"),
-    rs.getString("institutionUUID"))    
+    rs.getString("institutionUUID"),
+    rs.getBoolean("childCourse"))    
 
   implicit def toCourseVersion(rs: ResultSet): CourseVersion = newCourseVersion(
     rs.getString("uuid"), 
@@ -85,15 +92,20 @@ package object repository {
     rs.getDate("versionCreatedAt"),
     rs.getString("distributionPrefix"),
     rs.getString("contentSpec"),
-    rs.getBoolean("disabled"))    
+    rs.getBoolean("disabled"),
+    rs.getString("parentVersionUUID"),
+    rs.getInt("instanceCount"),
+    rs.getString("label"))    
   
   implicit def toCourseClassTO(rs: ResultSet): CourseClassTO = {
     val course = newCourse(
-        rs.getString("courseUUID"), 
+    		rs.getString("courseUUID"), 
 		    rs.getString("code"), 
 		    rs.getString("title"),
 		    rs.getString("description"), 
-		    rs.getString("infoJson"));
+		    rs.getString("infoJson"),
+		    rs.getString("institutionUUID"),
+		    rs.getBoolean("childCourse"));
 
     val version = newCourseVersion(
         rs.getString("courseVersionUUID"), 
@@ -133,7 +145,10 @@ package object repository {
         rs.getDate("versionCreatedAt"), 
         rs.getString("distributionPrefix"), 
         rs.getString("contentSpec"), 
-        rs.getBoolean("courseVersionDisabled"))
+        rs.getBoolean("courseVersionDisabled"),
+        rs.getString("parentVersionUUID"),
+        rs.getInt("instanceCount"),
+        rs.getString("label"))
         
     val course = newCourse(
         rs.getString("courseUUID"), 
@@ -141,7 +156,8 @@ package object repository {
         rs.getString("courseTitle"), 
         rs.getString("courseDescription"), 
         rs.getString("infoJson"),
-        rs.getString("institutionUUID"))
+        rs.getString("institutionUUID"),
+        rs.getBoolean("childCourse"))
         
     TOs.newCourseVersionTO(course, courseVersion)
   }
@@ -161,7 +177,8 @@ package object repository {
       	.getOrElse(null),
       rs.getString("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt")
+      rs.getString("certifiedAt"),
+      rs.getString("courseVersionUUID")
     )
   }
     
@@ -221,6 +238,7 @@ package object repository {
       case RoleType.institutionAdmin => Entities.newInstitutionAdminRole(rs.getString("person_uuid"), rs.getString("institution_uuid"))
       case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
       case RoleType.tutor => Entities.newTutorRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
+      case RoleType.observer => Entities.newObserverRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
     }
     role
   }
@@ -272,4 +290,10 @@ package object repository {
 	    rs.getString("personUUID"), 
 	    rs.getString("threadType"), 
 	    rs.getBoolean("active"))
+	    
+	implicit def toTokenTO(rs: ResultSet): TokenTO = newTokenTO(
+	    rs.getString("token"),
+	    rs.getTimestamp("expiry"),
+	    rs.getString("personUUID"),
+	    AuthClientType.valueOf(rs.getString("clientType")))
 }

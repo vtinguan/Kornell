@@ -22,14 +22,14 @@ public class GenericSandboxView  extends Composite implements SandboxView {
 	    initWidget(uiBinder.createAndBindUi(this));
 	    panel.add(new Label("Loading some stuff..."));
 	    session.enrollment("8002f404-8488-4fb3-b69e-9828f6fe396b")
-	    .isApproved(new Callback<Boolean>() {
+	    .isApproved(new Callback<String>() {
 	    	@Override
-	    	public void ok(Boolean approved) {
-	    		if(approved){
+	    	public void ok(String approved) {
+	    		/*if(approved){
 	    			panel.add(new Label("Approved!!!!"));
 	    		}else {
 	    			panel.add(new Label("Not this time :("));
-	    		}
+	    		}*/
 	    		
 	    	}
 		});

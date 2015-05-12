@@ -17,7 +17,9 @@ import kornell.core.lom.LOMFactory;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstantsHelper;
+import kornell.gui.client.event.LogoutEvent;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
@@ -26,15 +28,13 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
- 
+
 public abstract class Callback<T> implements RequestCallback {
-	
+
 	Logger logger = Logger.getLogger(Callback.class.getName());
 
 	@Override
-	public void onResponseReceived(Request request, Response response) {		
-		if (!isTrusted(response))
-			throw new RuntimeException("Won't touch untrusted response");
+	public void onResponseReceived(Request request, Response response) {
 		int statusCode = response.getStatusCode();
 		switch (statusCode) {
 		case SC_OK:
@@ -53,7 +53,7 @@ public abstract class Callback<T> implements RequestCallback {
 			notFound(unwrapError(response));
 			break;
 		case SC_NO_CONTENT:
-			ok((T)null);
+			ok((T) null);
 			break;
 		case SC_INTERNAL_SERVER_ERROR:
 			internalServerError(unwrapError(response));
@@ -76,19 +76,20 @@ public abstract class Callback<T> implements RequestCallback {
 		String contentType = contentTypeHeader.toLowerCase();
 		String responseText = response.getText();
 
-		if (contentType.equals("application/boolean")){
+		if (contentType.equals("application/boolean")) {
 			T bool = bool(responseText);
 			ok(bool);
-		}
-		else if (contentType.contains("json")) {
+		} else if (contentType.contains("json")) {
 			if (MediaTypes.get().containsType(contentType)) {
 				@SuppressWarnings("unchecked")
-				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
+				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(
+						contentType);
 
 				AutoBean<T> bean = null;
 				AutoBeanFactory factory = factoryFor(contentType);
-				if("null".equals(responseText))
-					throw new NullPointerException("The remote service returned 'null', this is probably a bug.");
+				if ("null".equals(responseText))
+					throw new NullPointerException(
+							"The remote service returned 'null', this is probably a bug.");
 				bean = AutoBeanCodex.decode(factory, clazz, responseText);
 				T unwrapped = bean.as();
 				try {
@@ -99,18 +100,18 @@ public abstract class Callback<T> implements RequestCallback {
 							+ "] to this callback. Please check that your callback type mapping matches the response ContentType and you are hitting the correct URL.";
 					throw new RuntimeException(message, ex);
 				}
-			}
-			else
+			} else
 				ok(Callback.parseJson(responseText));
 
-		} 
-		else if (contentType.contains("application/octet-stream")) { 
+		} else if (contentType.contains("application/octet-stream")) {
 			T txt = (T) responseText;
 			ok(txt);
-		}
-		else ok((T) null); //TODO: Consider throwing exception "unknow response type" instead, but map "text/*" and "application/*" first
+		} else
+			ok((T) null); // TODO: Consider throwing exception
+							// "unknow response type" instead, but map "text/*"
+							// and "application/*" first
 	}
-	
+
 	private KornellErrorTO unwrapError(Response response) {
 		String responseText = response.getText();
 		if (responseText == null || responseText.trim().equals("")) {
@@ -119,13 +120,19 @@ public abstract class Callback<T> implements RequestCallback {
 		String contentType = response.getHeader("Content-Type").toLowerCase();
 		AutoBean<T> bean = null;
 		AutoBeanFactory factory = factoryFor(contentType);
+		if(factory == null){
+			KornellErrorTO errorTO = GenericClientFactoryImpl.toFactory.newKornellErrorTO().as();
+			errorTO.setMessageKey("genericUnhandledError");
+			return errorTO;
+		}
 		Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
 		bean = AutoBeanCodex.decode(factory, clazz, responseText);
 		T unwrapped = bean.as();
 		if (unwrapped instanceof KornellErrorTO) {
 			return (KornellErrorTO) unwrapped;
 		}
-		throw new RuntimeException("Supposed to get a KornellErrorTO, got " + unwrapped.getClass());
+		throw new RuntimeException("Supposed to get a KornellErrorTO, got "
+				+ unwrapped.getClass());
 	}
 
 	protected void notFound(KornellErrorTO kornellErrorTO) {
@@ -133,43 +140,40 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void internalServerError(KornellErrorTO kornellErrorTO) {
-		logger.severe(KornellConstantsHelper.getInternalServerErrorMessage(kornellErrorTO));
+		logger.severe(KornellConstantsHelper
+				.getInternalServerErrorMessage(kornellErrorTO));
 		logger.severe("Cause: " + kornellErrorTO.getException());
 	}
 
-	
 	@SuppressWarnings("unchecked")
-	private T bool(String responseText) {		
+	private T bool(String responseText) {
 		return (T) Boolean.valueOf(responseText);
 	}
 
 	private AutoBeanFactory factoryFor(String contentType) {
-		if(contentType == null) throw new NullPointerException("Can't create factory without content type");
-		if(contentType.startsWith(TOFactory.PREFIX))
+		if (contentType == null)
+			throw new NullPointerException(
+					"Can't create factory without content type");
+		if (contentType.startsWith(TOFactory.PREFIX))
 			return GenericClientFactoryImpl.toFactory;
-		else if(contentType.startsWith(LOMFactory.PREFIX))
+		else if (contentType.startsWith(LOMFactory.PREFIX))
 			return GenericClientFactoryImpl.lomFactory;
-		else if(contentType.startsWith(EventFactory.PREFIX))
+		else if (contentType.startsWith(EventFactory.PREFIX))
 			return GenericClientFactoryImpl.eventFactory;
 		else if (contentType.startsWith(EntityFactory.PREFIX))
 			return GenericClientFactoryImpl.entityFactory;
-		else throw new IllegalArgumentException("Unknown factory for content type ["+contentType+"]");
-		
+		else
+			return null;
+
 	}
 
 	public abstract void ok(T to);
 
-	
 	protected void ok(JSONValue json) {
 	}
-	
-	
+
 	private static JSONValue parseJson(String jsonStr) {
 		return JSONParser.parseStrict(jsonStr);
-	}
-
-	protected boolean isTrusted(Response response) {
-		return true;
 	}
 
 	protected void failed() {
@@ -177,7 +181,9 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void unauthorized(KornellErrorTO kornellErrorTO) {
-		logger.fine(KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
+		GenericClientFactoryImpl.EVENT_BUS.fireEvent(new LogoutEvent());
+		logger.fine(KornellConstantsHelper
+				.getUnauthorizedMessage(kornellErrorTO));
 	}
 
 	protected void conflict(KornellErrorTO kornellErrorTO) {
@@ -185,8 +191,10 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void forbidden(KornellErrorTO kornellErrorTO) {
-		//Not used for now
-		logger.fine(KornellConstantsHelper.getForbiddenMessage(kornellErrorTO));
+		// Not used for now
+		if (kornellErrorTO != null)
+			logger.fine(KornellConstantsHelper
+					.getForbiddenMessage(kornellErrorTO));
 	}
 
 	@Override

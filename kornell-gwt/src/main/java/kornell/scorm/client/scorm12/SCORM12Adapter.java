@@ -6,14 +6,17 @@ import kornell.api.client.KornellClient;
 import kornell.core.entity.ActomEntries;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
+import kornell.gui.client.presentation.course.ClassroomPlace;
 
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 
 	/**
-	 * How much time a client can stay unsynced with the server after setting a data model value, in milliseconds. 
+	 * How much time a client can stay unsynced with the server after setting a
+	 * data model value, in milliseconds.
 	 */
 	private static final int DIRTY_TOLERANCE = 2000;
 
@@ -28,9 +31,13 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 
 	private EventBus bus;
 
-	public SCORM12Adapter(EventBus bus, KornellClient client) {
+	private PlaceController placeCtrl;
+
+	public SCORM12Adapter(EventBus bus, KornellClient client, PlaceController placeCtrl) {
+		logger.info("SCORM API 1.2.2015_04_23_15_48");
 		this.client = client;
 		this.bus = bus;
+		this.placeCtrl = placeCtrl;
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
 	}
 
@@ -55,9 +62,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	}
 
 	public String LMSGetValue(String param) {
-		String result = null;
-		if (isCMIElement(param))
-			result = dataModel.getValue(param);
+		String result = dataModel.getValue(param);
 		logger.finer("LMSGetValue[" + param + "] = " + result);
 		return result;
 	}
@@ -70,11 +75,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	}
 
 	private void syncOnLMSCommit() {
-		sync();		
-	}
-
-	private boolean isCMIElement(String param) {
-		return param != null && param.startsWith("cmi");
+		sync();
 	}
 
 	public String LMSSetDouble(String key, Double value) {
@@ -84,41 +85,40 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 
 	public String LMSSetString(String key, String value) {
 		String result = FALSE;
-		if (isCMIElement(key)){
-			result = dataModel.setValue(key, value);
-			scheduleSync();
-		}
+		result = dataModel.setValue(key, value);
+		scheduleSync();
 		logger.finer("LMSSetValue [" + key + " = " + value + "] = " + result);
 		return result;
+	}
+	
+	public void launch(String enrollmentUUID){
+		placeCtrl.goTo(new ClassroomPlace(enrollmentUUID));
 	}
 
 	private void scheduleSync() {
 		(new Timer() {
-      public void run() {
-       syncAfterSet();
-      }
+			public void run() {
+				syncAfterSet();
+			}
 
 			private void syncAfterSet() {
 				sync();
 			}
-    }).schedule(DIRTY_TOLERANCE);		
+		}).schedule(DIRTY_TOLERANCE);
 	}
-	
-	
-	
+
 	private void sync() {
-		 class Scrub extends Callback<ActomEntries>{
+		class Scrub extends Callback<ActomEntries> {
 			@Override
 			public void ok(ActomEntries to) {
-				//TODO: Scrub only verified
+				// TODO: Scrub only verified
 				dataModel.scrub();
 			}
 		}
-		
-		if(dataModel != null && dataModel.isDirty()){
-			client.enrollment(currentEnrollmentUUID)
-				.actom(currentActomKey)
-				.put(CMITree.collectDirty(dataModel), new Scrub());
+
+		if (dataModel != null && dataModel.isDirty()) {
+			client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
+					.put(CMITree.collectDirty(dataModel), new Scrub());
 		}
 	}
 
@@ -145,12 +145,12 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	private void refreshDataModel(ActomEnteredEvent event) {
 		syncBeforeLoadinNewActom();
 		this.currentActomKey = event.getActomKey();
-		this.currentEnrollmentUUID = event.getEnrollmentUUID();		
+		this.currentEnrollmentUUID = event.getEnrollmentUUID();
 		loadDataModel();
 	}
 
 	private void syncBeforeLoadinNewActom() {
-		sync();		
+		sync();
 	}
 
 	private void loadDataModel() {
@@ -162,10 +162,11 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 						logger.finest("Loaded data model for [enrollment:"
 								+ to.getEnrollmentUUID() + ",actomKey:"
 								+ to.getActomKey() + "] with ["
-								+ to.getEntries().size() + "] entries");						
+								+ to.getEntries().size() + "] entries");
 					}
 				});
 	}
-
+	
+	
 
 }

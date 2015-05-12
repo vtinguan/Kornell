@@ -1,11 +1,21 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import static kornell.core.util.StringUtils.mkurl;
+import static kornell.core.util.StringUtils.noneEmpty;
+
+import java.math.BigDecimal;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Assessment;
+import kornell.core.entity.CourseClass;
+import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
+import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
@@ -75,7 +85,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		bus.addHandler(ShowDetailsEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		initData();
-		display();
+		displayGenericCertificationItemView();
 	}
 
 	private void initData() {
@@ -88,15 +98,19 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			this.name = "Certificado";
 			this.description = "Impressão do certificado. Uma vez que o curso for terminado, você poderá gerar o certificado aqui.";
 			this.grade = "-";
-
-			courseClassComplete = currentCourseClass.getEnrollment().getProgress() >= 100;
-			approvedOnTest = currentCourseClass.getEnrollment().getAssessment() == Assessment.PASSED;
+			
+			Enrollment enrollment = currentCourseClass != null? currentCourseClass.getEnrollment() : null;
+			Integer progress = enrollment != null ? enrollment.getProgress() : -1;
+			courseClassComplete = progress >= 100;
+			Assessment assessment = enrollment != null ? enrollment.getAssessment() : null; 
+			approvedOnTest = Assessment.PASSED.equals(assessment);
 			updateCertificationLinkAndLabel();
 		}
 	}
 
-	private void display() {
-		certificationIcon.setUrl(IMAGES_PATH + type + ".png");
+	private void displayGenericCertificationItemView() {
+		String url = mkurl(IMAGES_PATH, type + ".png");
+		certificationIcon.setUrl(url);
 		lblName.setText(name);
 		lblDescription.setText(description);
 		lblStatus.setText(status);
@@ -113,9 +127,20 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 				@Override
 				public void onClick(ClickEvent event) {
 					KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
-					Window.Location.assign(session.getApiUrl() + "/report/certificate/"
-							+ session.getCurrentUser().getPerson().getUUID() + "/"
-							+ currentCourseClass.getCourseClass().getUUID());
+					CourseClass courseClass = currentCourseClass != null ? currentCourseClass.getCourseClass() : null;					
+					UserInfoTO currentUser = session.getCurrentUser();
+					Person person = currentUser != null? currentUser.getPerson() : null;
+					String personUUID = person != null ? person.getUUID() : null;
+					String courseClassUUID = courseClass != null ? courseClass.getUUID() : null;
+					String apiURL = session != null ? session.getApiUrl() : null;
+					
+					if (noneEmpty(apiURL,personUUID,courseClassUUID)){
+						String url = mkurl(apiURL,
+								"/report/certificate/",
+								personUUID,
+								courseClassUUID);					
+						Window.Location.assign(url);
+					}
 				}
 			});
 		} else {
@@ -136,22 +161,33 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			updateCertificationLinkAndLabel();
 		}
 	}
-
 	private void updateCertificationLinkAndLabel(){
+		updateCertificationLinkAndLabel("");
+	}
+
+	private void updateCertificationLinkAndLabel(String gradeIn){
 		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest);
 		status = allowCertificateGeneration ? "Disponível" : "Não disponível";
 		lblStatus.setText(status);
 
-		if(currentCourseClass.getEnrollment() != null &&
-				EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(currentCourseClass.getEnrollment())) &&
-				currentCourseClass.getCourseClass().getRequiredScore() != null && 
-				currentCourseClass.getCourseClass().getRequiredScore().intValue() != 0 &&
-				currentCourseClass.getEnrollment().getAssessmentScore() != null){
-			this.grade = ""+currentCourseClass.getEnrollment().getAssessmentScore().intValue();
-		} else {
-			this.grade = "-";
+		if(StringUtils.isSome(gradeIn)){
+			this.grade = "" + new BigDecimal(gradeIn).intValue();
+			lblGrade.setText(this.grade);
+		} else if(currentCourseClass != null){
+			Enrollment currEnrollment = currentCourseClass.getEnrollment();
+			CourseClass courseClass = currentCourseClass.getCourseClass();
+			BigDecimal requiredScore = courseClass != null ? courseClass.getRequiredScore() : null;
+			if(currEnrollment != null &&
+					EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(currEnrollment)) &&
+					requiredScore != null && 
+					requiredScore.intValue() != 0 &&
+					currEnrollment.getAssessmentScore() != null){
+				this.grade = ""+currEnrollment.getAssessmentScore().intValue();
+			} else {
+				this.grade = "-";
+			}
+			lblGrade.setText(this.grade);
 		}
-		lblGrade.setText(grade);
 		
 		displayActionCell(allowCertificateGeneration);
 	}
@@ -163,18 +199,20 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 	
 	private void checkCertificateAvailability() {
-		if(!approvedOnTest && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
+		if(/*!approvedOnTest && */Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
 			Timer checkTimer = new Timer() {
 				@Override
 				public void run() {
-			    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
-			    .isApproved(new Callback<Boolean>() {
-			    	@Override
-			    	public void ok(Boolean approved) {
-			    		approvedOnTest = approved;
-			    		updateCertificationLinkAndLabel();
-			    	}
-				});
+					if(Dean.getInstance().getCourseClassTO() != null){
+					    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
+					    .isApproved(new Callback<String>() {
+					    	@Override
+					    	public void ok(String grade) {
+					    		approvedOnTest = StringUtils.isSome(grade);
+					    		updateCertificationLinkAndLabel(grade);
+					    	}
+						});
+					}
 				}
 			};
 			checkTimer.schedule(3000);

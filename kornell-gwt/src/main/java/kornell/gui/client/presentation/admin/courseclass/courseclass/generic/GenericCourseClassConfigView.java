@@ -124,8 +124,6 @@ public class GenericCourseClassConfigView extends Composite {
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
 
-		this.titleEdit.setVisible(!isCreationMode);
-		this.titleCreate.setVisible(isCreationMode);
 		
 		this.courseClassTO = courseClassTO;
 		
@@ -138,13 +136,16 @@ public class GenericCourseClassConfigView extends Composite {
 		courseClass = isCreationMode ? entityFactory.newCourseClass().as() : courseClassTO.getCourseClass();
 
 		profileFields.clear();
+
+		this.titleEdit.setVisible(!isCreationMode);
+		this.titleCreate.setVisible(isCreationMode);
 		
 		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
 		btnCancel.setVisible(isInstitutionAdmin);
 		
 
 		if (isCreationMode) {
-			session.courses().get(new Callback<CoursesTO>() {
+			session.courses().get(false, new Callback<CoursesTO>() {
 					@Override
 					public void ok(CoursesTO to) {
 						createCoursesField(to);
@@ -344,11 +345,11 @@ public class GenericCourseClassConfigView extends Composite {
 			requiredScore.setError("Número inválido.");
 		}
 		
-		if (!formHelper.isLengthValid(maxEnrollments.getFieldPersistText(), 1, 20)) {
+		if (!formHelper.isLengthValid(maxEnrollments.getFieldPersistText(), 1, 10)) {
 			maxEnrollments.setError("Insira a quantidade máxima de matrículas.");
 		} else if (!formHelper.isValidNumber(maxEnrollments.getFieldPersistText())) {
 			maxEnrollments.setError("Número inteiro inválido.");
-    } else if (!isCreationMode && Integer.parseInt(maxEnrollments.getFieldPersistText()) < presenter.getEnrollments().size()){
+		} else if (!isCreationMode && Integer.parseInt(maxEnrollments.getFieldPersistText()) < presenter.getEnrollments().size()){
 			maxEnrollments.setError("Menor que o número atual de matrículas.");
 		}
 

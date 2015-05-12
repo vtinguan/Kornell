@@ -9,6 +9,8 @@ public interface EnrollmentRequestTO {
 	void setInstitutionUUID(String institutionUUID);
 	String getCourseClassUUID();
 	void setCourseClassUUID(String courseClassUUID);
+	String getCourseVersionUUID();
+	void setCourseVersionUUID(String courseVersionUUID);
 	String getFullName();
 	void setFullName(String fullName);
 	String getUsername();

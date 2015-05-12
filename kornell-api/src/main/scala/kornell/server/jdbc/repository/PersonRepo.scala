@@ -51,6 +51,13 @@ class PersonRepo(val uuid: String) {
     PersonRepo.this
   }
 
+  def hasPassword(institutionUUID: String): Boolean = {
+    var sql = s"select count(*) from Person p join Password pw on pw.person_uuid = p.uuid where p.uuid = '${uuid}' and p.institutionUUID = '${institutionUUID}'"
+    val pstmt = new PreparedStmt(sql,List())    
+    val result = pstmt.get[Boolean]
+    result
+  }
+
   //TODO: Better security against SQLInjection?
   //TODO: Better dynamic queries
   //TODO: Teste BOTH args case!!
@@ -113,6 +120,14 @@ class PersonRepo(val uuid: String) {
       	 set termsAcceptedOn = now()
       	 where uuid=${uuid}
       	   """.executeUpdate
+  
+  def actomsVisitedBy(enrollmentUUID: String): List[String] = sql"""
+  	select actomKey from ActomEntered ae
+  	join Enrollment e on ae.enrollmentUUID=e.uuid
+  	where e.uuid = ${enrollmentUUID}
+  	and e.person_uuid = ${uuid}
+  	order by eventFiredAt
+  	""".map[String]({ rs => rs.getString("actomKey") })
 
 }
 

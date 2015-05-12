@@ -7,7 +7,6 @@ import kornell.gui.client.ViewFactory;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
@@ -24,9 +23,8 @@ public class AdminCoursesActivity extends AbstractActivity {
 		TOFactory toFactory = clientFactory.getTOFactory();
 		KornellSession session = clientFactory.getKornellSession();
 		PlaceController placeController = clientFactory.getPlaceController();
-		Place defaultPlace = clientFactory.getDefaultPlace();
 		ViewFactory viewFactory = clientFactory.getViewFactory();
-		AdminCoursesPresenter presenter = new AdminCoursesPresenter(session,placeController,defaultPlace,toFactory,viewFactory);
+		AdminCoursesPresenter presenter = new AdminCoursesPresenter(session,placeController,toFactory,viewFactory);
 		panel.setWidget(presenter);
 		
 	}
