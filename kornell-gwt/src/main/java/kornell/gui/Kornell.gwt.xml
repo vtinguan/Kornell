@@ -33,7 +33,8 @@
 	<inherits name="com.google.gwt.i18n.I18N" />
 
 	<extend-property name="locale" values="pt_BR" />
-	<set-property name='locale' value='pt_BR' />
+	<extend-property name="locale" values="en"/>
+	<!--  set-property name='locale' value='pt_BR' / -->
 	<set-property-fallback name='locale' value='pt_BR' />
 
 	<!-- We need the JUnit module in the main module, -->

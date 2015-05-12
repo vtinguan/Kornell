@@ -1,5 +1,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+    ui:generateKeys='com.google.gwt.i18n.server.keygen.MD5KeyGenerator'
+    ui:generateLocales='default'>
 
 	<g:FlowPanel ui:field="vitrineWrapper" addStyleNames="vitrine">
 		<g:FlowPanel addStyleNames="boxLogin">
@@ -7,7 +10,7 @@
 			<b:Alert ui:field="alertError" type="ERROR" close="false" animation="true" visible="false"></b:Alert>
 			<g:FlowPanel ui:field="loginPanel">
 				<b:Form ui:field="frmLogin">
-					<g:Label addStyleNames="inputLabel">Usuário (email ou cpf)</g:Label>
+					<g:Label addStyleNames="inputLabel"><ui:msg description="Username">Usuário (email ou cpf)</ui:msg></g:Label>
 					<g:FlowPanel addStyleNames="inputWrapper">
 						<b:TextBox ui:field="txtUsername"></b:TextBox>
 					</g:FlowPanel>

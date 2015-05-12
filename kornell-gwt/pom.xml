@@ -296,6 +296,8 @@
 					<arguments>
 						<argument>-war</argument>
 						<argument>${project.build.directory}/${project.build.finalName}</argument>
+						<argument>-extra</argument>
+						<argument>/tmp/test</argument>
 						<argument>-startupUrl</argument>
 						<argument>Kornell.nocache.html</argument>
 						<argument>-XmethodNameDisplayMode</argument>
