@@ -218,7 +218,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 						LoadingPopup.hide();
 						KornellNotification.show("Erro ao tentar excluir a turma.", AlertType.ERROR);
 						logger.severe(this.getClass().getName() + " - "
-								+ KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
+								+ KornellConstantsHelper.getErrorMessage(kornellErrorTO));
 					}
 				});
 
@@ -471,7 +471,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				@Override
 				public void unauthorized(KornellErrorTO kornellErrorTO) {
 					logger.severe("Error AdminHomePresenter: "
-							+ KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
+							+ KornellConstantsHelper.getErrorMessage(kornellErrorTO));
 					KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
 					LoadingPopup.hide();
 				}
@@ -574,7 +574,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				@Override
 				public void conflict(KornellErrorTO kornellErrorTO) {
 					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO),
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO),
 							AlertType.ERROR, 2500);
 				}
 			});
@@ -591,7 +591,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 				@Override
 				public void conflict(KornellErrorTO kornellErrorTO) {
 					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO),
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO),
 							AlertType.ERROR, 2500);
 				}
 			});

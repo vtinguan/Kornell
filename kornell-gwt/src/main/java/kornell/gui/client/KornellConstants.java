@@ -1,8 +1,8 @@
 package kornell.gui.client;
 
-import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.i18n.client.ConstantsWithLookup;
 
-public interface KornellConstants extends Constants {
+public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("skins/first/icons/")
 	String imagesPath();
@@ -165,8 +165,45 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("classes")
 	String classes();
 
+	/**
+	 * VitrinePresenter
+	 */
+	@DefaultStringValue("Invalid username or password, please try again.")
+	String badUsernamePassword();
 	
+	@DefaultStringValue("Your name must be at least 2 characters long.")
+	String nameTooShort();
 
+	@DefaultStringValue("Invalid email address.")
+	String invalidEmail();
+	
+	@DefaultStringValue("Your password must be at least 6 characters long")
+	String invalidPasswordTooShort();
+	
+	@DefaultStringValue("Your password contains invalid characters.")
+	String invalidPasswordBadChar();
+	
+	@DefaultStringValue("Your passwords don't match.")
+	String passwordMismatch();
+	
+	@DefaultStringValue("User created successfully.")
+	String userCreated();
+	
+	@DefaultStringValue("Email address already exists.")
+	String emailExists();
+	
+	@DefaultStringValue("Request completed. Please check your email.")
+	String requestPasswordReset();
+	
+	@DefaultStringValue("The request was not successful. Please check that the email was entered correctly.")
+	String requestPasswordResetError();
+	
+	@DefaultStringValue("Password changed successfully.")
+	String passwordChangeComplete();
+	
+	@DefaultStringValue("We could not update your password. Please check your email or make another request.")
+	String passwordChangeError();
+	
 	/**
 	 * 
 	 * Util
