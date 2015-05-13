@@ -10,6 +10,9 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("Loading...")
 	String loading();
 	
+	@DefaultStringValue("Select a language")
+	String selectLanguage();
+	
 	/**
 	 * 
 	 * GenericWelcomeView

@@ -1,5 +1,8 @@
 package kornell.gui.client.util;
 
+import java.util.Date;
+
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
 
@@ -29,6 +32,23 @@ public class ClientProperties {
 		}
 	}
 	
+	public static String getLocaleCookie(){
+		final String cookieName = LocaleInfo.getLocaleCookieName();
+		return Cookies.getCookie( cookieName );
+	}
+	
+	public static void setLocaleCookie(String locale){
+	    String cookieName = LocaleInfo.getLocaleCookieName();
+	    String localeCookie = getLocaleCookie();
+	    if (cookieName != null){
+	        Date expires = new Date();
+	        expires.setYear( expires.getYear() + 5 );
+	        Cookies.setCookie( cookieName, locale, expires );
+	    }
+		if(localeCookie != null && !localeCookie.equals(locale))
+			com.google.gwt.user.client.Window.Location.reload();
+	}
+	
 	public static void remove(String propertyName){
 		if(localStorage != null){
 			localStorage.removeItem(propertyName);
@@ -45,6 +65,7 @@ public class ClientProperties {
 	public static void setEncoded(String propertyName, String propertyValue){
 		set(propertyName, base64Encode(propertyValue));
 	}
+	
 
 	public static String base64Encode(String plain) {
 		return Base64Utils.toBase64(plain.getBytes());

@@ -137,7 +137,8 @@
 .forgotPasswordModal .fieldPanelWrapper .fieldPanel{width:275px;}.forgotPasswordModal .fieldPanelWrapper .fieldPanel .textField{width:248px;}
 .VitrinePlace{height:100%;width:100%;}.VitrinePlace .vitrine{width:962px;margin:0 auto;}
 .VitrinePlace .alertVitrine{float:left;margin-top:30px;margin-left:30px;width:300px;}
-.VitrinePlace .boxLogin{background-color:rgba(13, 11, 12, 0.8);width:225px;padding:15px 45px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(13, 11, 12, 0.25);min-height:200px;margin-top:30px;margin-left:30px;margin-bottom:5px;float:left;color:#bec1c3;}.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:20px;}
+.VitrinePlace .boxLogin{background-color:rgba(13, 11, 12, 0.8);width:225px;padding:15px 45px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(13, 11, 12, 0.25);min-height:200px;margin-top:30px;margin-left:30px;margin-bottom:5px;float:left;color:#bec1c3;}.VitrinePlace .boxLogin .flagWrapper{float:left;margin-left:-35px;margin-top:-9px;}
+.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:10px;}
 .VitrinePlace .boxLogin .personIcon{float:left;padding-top:5px;padding-right:15px;padding-left:28px;}
 .VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;margin-top:0;}
 .VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:30px;}
