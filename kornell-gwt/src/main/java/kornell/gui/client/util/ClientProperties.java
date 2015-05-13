@@ -10,6 +10,7 @@ public class ClientProperties {
 	public static final String SEPARATOR = ".";
 	public static final String PREFIX = "Kornell.v1.";
 	public static final String X_KNL_TOKEN = "X-KNL-TOKEN";
+	public static final String X_KNL_TOKEN_LEGACY = "X-KNL-A";
 	public static final String SELECTED_COURSE_CLASS = "SELECTED_COURSE_CLASS";
 	
 	public static String get(String propertyName){

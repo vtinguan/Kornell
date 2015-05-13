@@ -204,6 +204,7 @@ public class KornellSession extends KornellClient {
 		});
 		
 		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
+		ClientProperties.remove(ClientProperties.X_KNL_TOKEN_LEGACY);
 		setCurrentUser(null);
 	}
 
