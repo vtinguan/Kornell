@@ -152,10 +152,10 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			locale = "pt_BR";
 		}
 		Map<String, String> localeToFlagsImage = new HashMap<String, String>();
-		localeToFlagsImage.put("pt_BR", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-br\" alt=\"BR\" />");
-		localeToFlagsImage.put("en", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-gb\" alt=\"EN\" />");
-		localeToFlagsImage.put("fr", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-fr\" alt=\"FR\" />");
-		localeToFlagsImage.put("es", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-es\" alt=\"ES\" />");
+		localeToFlagsImage.put("pt_BR", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-br\" alt=\"BR\" title=\"Português\"/>");
+		localeToFlagsImage.put("en", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-gb\" alt=\"EN\" title=\"English\" />");
+		localeToFlagsImage.put("fr", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-fr\" alt=\"FR\" title=\"Français\" />");
+		localeToFlagsImage.put("es", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-es\" alt=\"ES\" title=\"Español\" />");
 
 		Map<String, Command> localeToCommand = new HashMap<String, Command>();
 		localeToCommand.put("pt_BR", new Command() {
@@ -188,12 +188,16 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	        	flagBar.addItem(entry.getValue(), true, localeToCommand.get(entry.getKey()));
 	        }
 	    }
+    	flagBar.addItem("<span class=\"flagPopupText\">"+constants.selectLanguage()+"</span>", true, new Command() {
+		      public void execute() {
+			      }
+			    });
 	    
-	    flagBar.setAutoOpen(false);
-	    flagBar.setAnimationEnabled(true);
 	    
 	    MenuBar topBar = new MenuBar(true);
-	    topBar.addItem(localeToFlagsImage.get(locale).substring(0, localeToFlagsImage.get(locale).length() - 2) + "title=\""+constants.selectLanguage()+"\"/>", true, flagBar);
+	    topBar.setAutoOpen(true);
+	    topBar.setAnimationEnabled(true);
+	    topBar.addItem(localeToFlagsImage.get(locale), true, flagBar);
 	    flagWrapper.add(topBar);
 	}
 

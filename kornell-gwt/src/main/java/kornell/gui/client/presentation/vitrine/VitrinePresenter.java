@@ -147,9 +147,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onForgotPasswordButtonClicked() {
-		ClientProperties.setLocaleCookie("pt_BR");
-		//view.hideMessage();
-		//view.displayView(VitrineViewType.forgotPassword);
+		view.hideMessage();
+		view.displayView(VitrineViewType.forgotPassword);
 	}
 
 	private List<String> validateFields() {
