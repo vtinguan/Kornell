@@ -1,5 +1,5 @@
 This project is a new e-learning platform, because we need to change the way we educate ourselves. Current e-learning solutions and content, specially in developing countries, leaves much to be desired in technology and services.
-
+ 
 Learning is proven to be more effective when done socially and interactivelly, not by watching silly animations or unchallenging games. This platform shall enable content developers to publish interactive, social and exciting content.
 
 Technology is a key piece of education, and this project shall support the best of modern web technologies, leveraging high quality audio, video and presentations on mobile devices as well as on desktops.
