@@ -33,7 +33,6 @@ class CourseClassRepo(uuid:String) {
 		  		cc.registrationType = ${courseClass.getRegistrationType.toString},
 		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate
-	    ChatThreadsRepo.updateCourseClassThreadsNames(courseClass.getUUID, courseClass.getName)
 	    courseClass
     } else {
       throw new EntityConflictException("courseClassAlreadyExists")

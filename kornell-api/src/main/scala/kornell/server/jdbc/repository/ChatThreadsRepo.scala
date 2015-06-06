@@ -33,14 +33,6 @@ class ChatThreadsRepo {
 }
 
 object ChatThreadsRepo {
-  
-  def getSupportChatThreadName(courseClassName: String): String = "Ajuda para turma: " + courseClassName
-  def getSupportChatThreadNameAdminPerspective(courseClassName: String): String = "\n (Ajuda para turma: " + courseClassName + ")"
-  def getSupportChatThreadNameAdminPerspective(userFullName: String, courseClassName: String): String = userFullName + getSupportChatThreadNameAdminPerspective(courseClassName)
-  
-  def getTutoringChatThreadName(courseClassName: String): String = "Tutor para turma: " + courseClassName
-  def getTutoringChatThreadNameAdminPerspective(courseClassName: String): String = "\n (Tutor para turma: " + courseClassName + ")"
-  def getTutoringChatThreadNameAdminPerspective(userFullName: String, courseClassName: String): String = userFullName + getTutoringChatThreadNameAdminPerspective(courseClassName)
 
   def postMessageToCourseClassSupportThread(personUUID: String, courseClassUUID: String, message: String, threadType: ChatThreadType) = {
       val courseClass = CourseClassRepo(courseClassUUID).get
@@ -124,20 +116,9 @@ object ChatThreadsRepo {
   }
 
   def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, courseClassName: String, threadCreatorUUID: String, targetPersonName: String = null) = {
-    val chatThreadName = {
-      if (courseClassName == null) {
-        "Conversa com: " + targetPersonName
-      } else if (threadCreatorUUID == null) {
-        "Conversa da turma: " + courseClassName
-      } else if(personUUID.equals(threadCreatorUUID)) {
-      	getSupportChatThreadName(courseClassName)
-      } else {
-        getSupportChatThreadNameAdminPerspective(PeopleRepo.uuidLoader.load(threadCreatorUUID).get.getFullName(), courseClassName)
-      }
-    }
     sql"""
-		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, chatThreadName, active, lastJoinDate)
-		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, ${chatThreadName}, 1, ${new Date()})""".executeUpdate
+		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, active, lastJoinDate)
+		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, 1, ${new Date()})""".executeUpdate
   }
 
   def removeChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
@@ -195,39 +176,6 @@ object ChatThreadsRepo {
 		    .foreach(ct => updateChatThreadParticipants(ct._1, ct._2, courseClass, threadType))
   }
   
-  /**
-   * Used for when we change a courseClass name so we want to update all courseClass related threads (tutoring and support)
-   */
-  def updateCourseClassThreadsNames(courseClassUUID: String, courseClassName: String) = {
-    updateCourseClassThreadsName(courseClassUUID, getSupportChatThreadName(courseClassName), getSupportChatThreadNameAdminPerspective(courseClassName), ChatThreadType.SUPPORT)
-    updateCourseClassThreadsName(courseClassUUID, getTutoringChatThreadName(courseClassName), getTutoringChatThreadNameAdminPerspective(courseClassName), ChatThreadType.TUTORING)
-  }
-  
-  def updateCourseClassThreadsName(courseClassUUID: String, threadName: String, adminThreadName: String, chatThreadType: ChatThreadType) = {
-    sql"""
-    	update ChatThreadParticipant ctp set ctp.chatThreadName = ${threadName}
-				where ctp.uuid in (
-    				select uuid from (
-						select tp.uuid from ChatThread ct
-						join ChatThreadParticipant tp on ct.uuid = tp.chatThreadUUID and tp.personUUID = ct.personUUID
-						join CourseClass cc on cc.uuid = ct.courseClassUUID
-						where ct.courseClassUUID = ${courseClassUUID} and ct.threadType = ${chatThreadType.toString}
-					) as ids )""".executeUpdate
-    	
-    	sql"""
-    	update ChatThreadParticipant ctp
-			inner join ChatThread ct on ct.uuid = ctp.chatThreadUUID
-			inner join Person p on p.uuid = ct.personUUID
-			set ctp.chatThreadName = concat(p.fullName, ${adminThreadName})
-			where ctp.uuid in (
-				select uuid from (
-					select tp.uuid from ChatThread t
-					join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID and tp.personUUID <> t.personUUID
-					join CourseClass cc on cc.uuid = t.courseClassUUID
-					where t.courseClassUUID = ${courseClassUUID} and t.threadType = ${chatThreadType.toString}
-				) as ids)""".executeUpdate
-  }
-  
   def getTotalUnreadCountByPerson(personUUID: String, institutionUUID: String) = {
     sql"""
 		    | select count(tm.uuid) as unreadMessages
@@ -247,11 +195,10 @@ object ChatThreadsRepo {
   
   def getTotalUnreadCountsByPersonPerThread(personUUID: String, institutionUUID: String) = {
     TOs.newUnreadChatThreadsTO(sql"""
-				| select count(unreadMessages) as unreadMessages, chatThreadUUID, chatThreadName, courseClassUUID, threadType
+				| select count(unreadMessages) as unreadMessages, chatThreadUUID, courseClassUUID, threadType
 				| from (
 					| select tm.uuid as unreadMessages,
 						| countByCC.chatThreadUUID,
-						| countByCC.chatThreadName,
 						| countByCC.courseClassUUID,
 						| countByCC.threadLastReadAt,
 						| tm.personUUID,
@@ -263,7 +210,6 @@ object ChatThreadsRepo {
 						| select distinct t.uuid as chatThreadUUID,
 							| tp.lastReadAt as threadLastReadAt,
 							| t.courseClassUUID,
-							| tp.chatThreadName as chatThreadName,
 							| max(ctm.sentAt) as lastSentAt
 						| from ChatThread t
 						| join ChatThreadParticipant tp on t.uuid = tp.chatThreadUUID
