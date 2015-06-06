@@ -34,6 +34,7 @@ import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.CourseClassPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -210,8 +211,13 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 					@Override
 					public void ok(Void to) {
 						LoadingPopup.hide();
-						KornellNotification.show("Turma excluída com sucesso!");
-						updateCourseClass(null);
+						if(CourseClassState.inactive.equals(toState)){
+							KornellNotification.show("Turma desabilitada com sucesso!");
+							updateCourseClass(courseClassTO.getCourseClass().getUUID());
+						} else {
+							KornellNotification.show("Turma excluída com sucesso!");
+							placeController.goTo(new AdminCourseClassesPlace());
+						}
 					}
 
 					@Override
@@ -241,11 +247,11 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 		} else if ("Excluir".equals(actionName)) {
 			return isEnabled && EnrollmentProgressDescription.notStarted.equals(progressDescription) && session.isCourseClassAdmin();
 		} else if ("Perfil".equals(actionName)) {
-			return true;
+			return session.isCourseClassAdmin();
 		} else if ("Certificado".equals(actionName)) {
 			return EnrollmentCategory.isFinished(enrollmentTO.getEnrollment()) && (session.isCourseClassAdmin() || session.isCourseClassObserver());
         } else if("Transferir".equals(actionName)){
-            return true;
+            return session.isCourseClassAdmin();
         }
 		return false;
 	}
