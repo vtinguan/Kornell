@@ -66,7 +66,7 @@ object ReportCourseClassGenerator {
 				join Course c on c.uuid = cv.course_uuid
 				left join Password pw on pw.person_uuid = p.uuid
 			where
-				e.state = 'enrolled' and
+				(e.state = 'enrolled' or ${fileType} = 'xls') and
     			cc.state = 'active' and 
 		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 				(c.uuid = ${courseUUID} or ${courseUUID} is null)
@@ -94,7 +94,7 @@ object ReportCourseClassGenerator {
 				p.email
 	    """.map[CourseClassReportTO](toCourseClassReportTO)
 	    
-	    val parameters = getTotalsAsParameters(courseUUID, courseClassUUID)
+	    val parameters = getTotalsAsParameters(courseUUID, courseClassUUID, fileType)
 	    addInfoParameters(courseUUID, courseClassUUID, parameters)
 	
 	    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
@@ -103,11 +103,11 @@ object ReportCourseClassGenerator {
 		  
 	    val cl = Thread.currentThread.getContextClassLoader
 	    val jasperStream = {
-	      	if(fileType != null && fileType == "xls")
-	      	  cl.getResourceAsStream("reports/courseClassInfoXLS.jasper")
-	      	else
-	      	  cl.getResourceAsStream("reports/courseClassInfo.jasper")
-	    	}
+      	if(fileType != null && fileType == "xls")
+      	  cl.getResourceAsStream("reports/courseClassInfoXLS.jasper")
+      	else
+      	  cl.getResourceAsStream("reports/courseClassInfo.jasper")
+    	}
 	    ReportGenerator.getReportBytesFromStream(courseClassReportTO, parameters, jasperStream, fileType)
   }
       
@@ -155,7 +155,7 @@ object ReportCourseClassGenerator {
     parameters
   }
 
-  private def getTotalsAsParameters(courseUUID: String, courseClassUUID: String): HashMap[String,Object] = {
+  private def getTotalsAsParameters(courseUUID: String, courseClassUUID: String, fileType: String): HashMap[String,Object] = {
     val enrollmentStateBreakdown = sql"""
     		select 
 					case    
@@ -170,7 +170,7 @@ object ReportCourseClassGenerator {
 					join CourseClass cc on cc.uuid = e.class_uuid
 					join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
 				where      
-					e.state = 'enrolled' and
+					(e.state = 'enrolled' or ${fileType} = 'xls') and
     				cc.state = 'active' and 
     		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 					(cv.course_uuid = ${courseUUID} or ${courseUUID} is null)

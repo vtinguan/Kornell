@@ -42,6 +42,7 @@ import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -142,7 +143,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	@Override
 	public void updateCourseClass(final String courseClassUUID) {
-		if(placeController.getWhere() instanceof CourseClassPlace){
+		if(placeController.getWhere() instanceof AdminCourseClassPlace){
 			LoadingPopup.show();
 			view.showEnrollmentsPanel(false);
 	        session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {

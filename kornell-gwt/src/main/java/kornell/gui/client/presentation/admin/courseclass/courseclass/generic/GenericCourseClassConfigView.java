@@ -109,7 +109,7 @@ public class GenericCourseClassConfigView extends Composite {
 		this.presenter = presenter;
 		this.isInstitutionAdmin = session.isInstitutionAdmin();
 		this.isCreationMode = (courseClassTO == null) && isInstitutionAdmin;
-		this.allowPrefixEdit = isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
+		this.allowPrefixEdit = Dean.getInstance().getInstitution().isAllowRegistrationByUsername() && (isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID()));
 		this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
 		initWidget(uiBinder.createAndBindUi(this));
 
