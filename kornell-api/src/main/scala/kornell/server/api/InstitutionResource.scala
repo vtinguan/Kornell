@@ -42,7 +42,8 @@ class InstitutionResource(uuid: String) {
   @Path("registrationPrefixes")
   def getRegistrationPrefixes() = {
     InstitutionRepo(uuid).getInstitutionRegistrationPrefixes
-  }.requiring(isPlatformAdmin, AccessDeniedErr()).get
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  .or(isInstitutionAdmin(uuid), AccessDeniedErr()).get
   
   @PUT
   @Consumes(Array(Roles.TYPE))
