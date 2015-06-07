@@ -34,7 +34,7 @@ object CourseClassesRepo {
 	      courseClass.setUUID(UUID.random)
 	    }
 	    sql""" 
-	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID)
+	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, allowBatchCancellation)
 	    	values(${courseClass.getUUID},
 	             ${courseClass.getName},
 	             ${courseClass.getCourseVersionUUID},
@@ -47,7 +47,9 @@ object CourseClassesRepo {
 	             ${new Date()},
 	             ${courseClass.getCreatedBy},
 	             ${courseClass.getRegistrationType.toString},
-	             ${courseClass.getInstitutionRegistrationPrefixUUID})
+	             ${courseClass.getInstitutionRegistrationPrefixUUID},
+	             ${courseClass.isCourseClassChatEnabled},
+	             ${courseClass.isAllowBatchCancellation})
 	    """.executeUpdate
 	    courseClass
     } else {
@@ -103,7 +105,9 @@ object CourseClassesRepo {
       			cc.createdBy as createdBy,
       			cc.state,
 		  		cc.registrationType as registrationType,
-		  		cc.institutionRegistrationPrefixUUID as institutionRegistrationPrefixUUID,
+		  		cc.institutionRegistrationPrefixUUID as institutionRegistrationPrefixUUID, 
+		  		cc.courseClassChatEnabled as courseClassChatEnabled, 
+		  		cc.allowBatchCancellation as allowBatchCancellation, 
       			irp.name as institutionRegistrationPrefixName
 			from Course c
 				join CourseVersion cv on cv.course_uuid = c.uuid

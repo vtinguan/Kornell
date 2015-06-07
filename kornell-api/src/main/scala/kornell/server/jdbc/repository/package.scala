@@ -74,7 +74,8 @@ package object repository {
         r.getDate("createdAt"), r.getString("createdBy"), 
         CourseClassState.valueOf(r.getString("state")), 
         RegistrationType.valueOf(r.getString("registrationType")),
-        r.getString("institutionRegistrationPrefixUUID"), r.getBoolean("courseClassChatEnabled")) 
+        r.getString("institutionRegistrationPrefixUUID"), r.getBoolean("courseClassChatEnabled"), 
+        r.getBoolean("allowBatchCancellation")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -119,20 +120,22 @@ package object repository {
 		    rs.getBoolean("disabled"));
 
     val clazz = newCourseClass(
-        rs.getString("courseClassUUID"),
-		    rs.getString("courseClassName"), 
-		    rs.getString("courseVersionUUID"), 
-		    rs.getString("institutionUUID"),
-		    rs.getBigDecimal("requiredScore"),
-		    rs.getBoolean("publicClass"),
-        rs.getBoolean("overrideEnrollments"),
-        rs.getBoolean("invisible"),
-		    rs.getInt("maxEnrollments"),
-		    rs.getDate("createdAt"),
-		    rs.getString("createdBy"), 
-        CourseClassState.valueOf(rs.getString("state")), 
-        RegistrationType.valueOf(rs.getString("registrationType")),
-		    rs.getString("institutionRegistrationPrefixUUID"));
+			rs.getString("courseClassUUID"),
+			rs.getString("courseClassName"), 
+			rs.getString("courseVersionUUID"), 
+			rs.getString("institutionUUID"),
+			rs.getBigDecimal("requiredScore"),
+			rs.getBoolean("publicClass"),
+			rs.getBoolean("overrideEnrollments"),
+			rs.getBoolean("invisible"),
+			rs.getInt("maxEnrollments"),
+			rs.getDate("createdAt"),
+			rs.getString("createdBy"), 
+			CourseClassState.valueOf(rs.getString("state")), 
+			RegistrationType.valueOf(rs.getString("registrationType")),
+			rs.getString("institutionRegistrationPrefixUUID"),
+			rs.getBoolean("courseClassChatEnabled"),
+			rs.getBoolean("allowBatchCancellation"));
     		
     TOs.newCourseClassTO(course, version, clazz, rs.getString("institutionRegistrationPrefixName"))
   }

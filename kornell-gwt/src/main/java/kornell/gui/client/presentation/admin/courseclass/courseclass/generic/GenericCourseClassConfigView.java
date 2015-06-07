@@ -59,6 +59,7 @@ public class GenericCourseClassConfigView extends Composite {
     private static final String MODAL_PUBLIC = "public";
     private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
     private static final String MODAL_INVISIBLE = "invisible";
+    private static final String MODAL_ALLOW_BATCH_CANCELLATION = "allowBatchCancellation";
 
     private KornellSession session;
     private FormHelper formHelper = GWT.create(FormHelper.class);
@@ -94,7 +95,7 @@ public class GenericCourseClassConfigView extends Composite {
     private CourseClassTO courseClassTO;
     private CourseClass courseClass;
     private KornellFormFieldWrapper course, courseVersion, name, publicClass,
-    requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible;
+    requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible, allowBatchCancellation;
     private List<KornellFormFieldWrapper> fields;
     private String modalMode;
     private ListBox institutionRegistrationPrefixes;
@@ -209,6 +210,21 @@ public class GenericCourseClassConfigView extends Composite {
                 if(event.getValue()){
                     showModal(MODAL_OVERRIDE_ENROLLMENTS);
                     ((CheckBox)overrideEnrollments.getFieldWidget()).setValue(false);
+                }
+            }
+        });
+
+        
+        Boolean isAllowBatchCancellation = courseClass.isAllowBatchCancellation() == null ? false : courseClass.isAllowBatchCancellation();
+        allowBatchCancellation = new KornellFormFieldWrapper("Permitir cancelamento em lote?", formHelper.createCheckBoxFormField(isAllowBatchCancellation), isInstitutionAdmin);
+        fields.add(allowBatchCancellation);
+        profileFields.add(allowBatchCancellation);
+        ((CheckBox)allowBatchCancellation.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if(event.getValue()){
+                    showModal(MODAL_ALLOW_BATCH_CANCELLATION);
+                    ((CheckBox)allowBatchCancellation.getFieldWidget()).setValue(false);
                 }
             }
         });
@@ -378,6 +394,7 @@ public class GenericCourseClassConfigView extends Composite {
                     null);
         courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
         courseClass.setInvisible(invisible.getFieldPersistText().equals("true"));
+        courseClass.setAllowBatchCancellation(allowBatchCancellation.getFieldPersistText().equals("true"));
         courseClass.setRegistrationType(RegistrationType.valueOf(registrationType.getFieldPersistText()));
         if(allowPrefixEdit) {
             courseClass.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefix.getFieldPersistText());
@@ -417,6 +434,8 @@ public class GenericCourseClassConfigView extends Composite {
             confirmText.setText("ATENÇÃO! Tem certeza que deseja habilitar a sobrescrita de matrículas? Toda vez que uma matrícula em lote for feita, todas as matrículas já existentes que não estão presentes no lote serão canceladas.");
         } else if (MODAL_INVISIBLE.equals(modalMode)){
             confirmText.setText("ATENÇÃO! Tem certeza que deseja tornar esta turma invisível? Nenhum participante que esteja matriculado poderá ver essa turma, nem será capaz de gerar o certificado caso tenha sido aprovado.");
+        } else if (MODAL_ALLOW_BATCH_CANCELLATION.equals(modalMode)){
+            confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir o cancelamento em lote de matrículas? Um novo botão aparecerá na tela de matrículas, e qualquer administrador poderá cancelar uma lista de matrículas.");
         }
         confirmModal.show();
     }
@@ -435,6 +454,8 @@ public class GenericCourseClassConfigView extends Composite {
         } else if (MODAL_INVISIBLE.equals(modalMode)){
             ((CheckBox)invisible.getFieldWidget()).setValue(true);
             ((CheckBox)publicClass.getFieldWidget()).setValue(false);
+        } else if (MODAL_ALLOW_BATCH_CANCELLATION.equals(modalMode)){
+            ((CheckBox)allowBatchCancellation.getFieldWidget()).setValue(true);
         }
         confirmModal.hide();
     }

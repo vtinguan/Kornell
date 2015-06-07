@@ -269,7 +269,8 @@ object Entities {
     state: CourseClassState = null,
     registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
-    courseClassChatEnabled: Boolean = false) = {
+    courseClassChatEnabled: Boolean = false,
+    allowBatchCancellation: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -286,6 +287,7 @@ object Entities {
     clazz.setRegistrationType(registrationType)
     clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
+	clazz.setAllowBatchCancellation(allowBatchCancellation)
     clazz
   }
 
