@@ -33,7 +33,7 @@ public interface AdminCourseClassView extends IsWidget {
 
 	void setPresenter(Presenter presenter);
 	void setEnrollmentList(List<EnrollmentTO> enrollmentsIn, Integer count, Integer countCancelled, Integer searchCount, boolean refresh);
-	void showModal(boolean b);
+	void showModal(boolean show, String type);
 	void setModalErrors(String title, String lbl1, String errors, String lbl2);
     void setCourseClassTO(CourseClassTO courseClassTO);
 	void setHomeTabActive();
