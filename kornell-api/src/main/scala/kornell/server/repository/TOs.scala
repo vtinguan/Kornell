@@ -310,7 +310,7 @@ object TOs {
   
   def newSimplePeopleTO(simplePeople: List[SimplePersonTO]) = {
     val to = tos.newSimplePeopleTO.as
-    to.setPeopleTO(simplePeople.asJava)
+    to.setSimplePeopleTO(simplePeople.asJava)
     to
   }
 }
