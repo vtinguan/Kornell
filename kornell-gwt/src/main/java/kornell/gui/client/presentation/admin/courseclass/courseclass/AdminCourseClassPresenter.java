@@ -299,7 +299,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 			view.setModalErrors("Erros ao inserir matrículas", "As seguintes linhas contém erros:",
 					batchEnrollmentErrors, "Deseja ignorar essas linhas e continuar?");
 			overriddenEnrollmentsModalShown = false;
-			view.showModal(true);
+			view.showModal(true, "error");
 		} else {
 			prepareCreateEnrollments(true);
 		}
@@ -397,7 +397,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 					view.setModalErrors("ATENÇÃO! Sobrescrita de matrículas!",
 							"Os seguintes participantes terão suas matrículas canceladas:", validation,
 							"Deseja continuar?");
-					view.showModal(true);
+					view.showModal(true, "error");
 				}
 			} else {
 				createEnrollments();
@@ -488,7 +488,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	@Override
 	public void onModalOkButtonClicked() {
-		view.showModal(false);
+		view.showModal(false, "");
 		if (overriddenEnrollmentsModalShown) {
 			confirmedEnrollmentsModal = true;
 		}
@@ -497,7 +497,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	
     @Override
     public void onModalTransferOkButtonClicked(String enrollmentUUID, String courseClassUUID) {
-        view.showModal(false);        
+        view.showModal(false, "");        
         session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
         .fire(new Callback<Void>() {
             @Override

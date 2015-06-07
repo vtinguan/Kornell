@@ -649,9 +649,10 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	@Override
-	public void showModal(boolean show) {
-		if (show) {
+	public void showModal(boolean show, String type) {
+		if (show && "error".equals(type)) {
 			errorModal.show();
+		} else if (show && "transfer".equals(type)) {
 			transferModal.show();
 		} else {
 			errorModal.hide();
