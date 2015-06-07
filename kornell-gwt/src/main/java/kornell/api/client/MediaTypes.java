@@ -28,6 +28,8 @@ import kornell.core.to.LibraryFilesTO;
 import kornell.core.to.PeopleTO;
 import kornell.core.to.PersonTO;
 import kornell.core.to.RolesTO;
+import kornell.core.to.SimplePeopleTO;
+import kornell.core.to.SimplePersonTO;
 import kornell.core.to.TokenTO;
 import kornell.core.to.UnreadChatThreadsTO;
 import kornell.core.to.UserHelloTO;
@@ -72,6 +74,8 @@ public class MediaTypes {
 		//When auth filter sends 401, it adds the charset and we can't do anything about it
 		register(KornellErrorTO.TYPE + ";charset=utf-8", KornellErrorTO.class);
 		register(TokenTO.TYPE, TokenTO.class);
+		register(SimplePeopleTO.TYPE, SimplePeopleTO.class);
+		register(SimplePersonTO.TYPE, SimplePersonTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

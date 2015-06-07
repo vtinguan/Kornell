@@ -34,6 +34,7 @@ import kornell.core.to.TokenTO
 import kornell.core.entity.AuthClientType
 import kornell.core.entity.InstitutionType
 import sun.security.action.GetBooleanAction
+import kornell.core.to.SimplePersonTO
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -296,4 +297,9 @@ package object repository {
 	    rs.getTimestamp("expiry"),
 	    rs.getString("personUUID"),
 	    AuthClientType.valueOf(rs.getString("clientType")))
+	    
+    implicit def toSimplePersonTO(rs: ResultSet): SimplePersonTO = newSimplePersonTO(
+        rs.getString("uuid"),
+        rs.getString("fullName"),
+        rs.getString("username"))
 }

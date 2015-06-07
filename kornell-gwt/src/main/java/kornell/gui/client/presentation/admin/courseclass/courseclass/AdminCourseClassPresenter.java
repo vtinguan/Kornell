@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -22,18 +21,18 @@ import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentRequestTO;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.EnrollmentsTO;
+import kornell.core.to.SimplePeopleTO;
+import kornell.core.to.SimplePersonTO;
 import kornell.core.to.TOFactory;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseclass.CourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -43,7 +42,6 @@ import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -67,7 +65,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private Integer numEnrollments = 0;
 	private boolean overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
 	private EnrollmentRequestsTO enrollmentRequestsTO;
-	private List<EnrollmentTO> enrollmentsToOverride;
+	private List<SimplePersonTO> enrollmentsToOverride;
+	private SimplePeopleTO simplePeopleTO;
 	private EventBus bus;
 	private String pageSize = "20";
 	private String pageNumber = "1";
@@ -388,7 +387,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 					AlertType.ERROR, 5000);
 		} else {
 			if (isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()) {
-				String validation = validateEnrollmentsOverride();
+				String validation = validateEnrollmentsOverride(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 				if (confirmedEnrollmentsModal || "".equals(validation)) {
 					createEnrollments();
 				} else {
@@ -406,26 +405,31 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
 	}
 
-	private String validateEnrollmentsOverride() {
+	private String validateEnrollmentsOverride(String courseClassUUID) {
 		Map<String, EnrollmentRequestTO> enrollmentRequestsMap = new HashMap<String, EnrollmentRequestTO>();
 		for (EnrollmentRequestTO enrollmentRequestTO : enrollmentRequestsTO.getEnrollmentRequests()) {
 			enrollmentRequestsMap.put(enrollmentRequestTO.getUsername(), enrollmentRequestTO);
 		}
 
 		String validation = "";
-
-		enrollmentsToOverride = new ArrayList<EnrollmentTO>();
-		for (Iterator<EnrollmentTO> iterator = enrollmentTOs.iterator(); iterator.hasNext();) {
-			EnrollmentTO enrollmentTO = (EnrollmentTO) iterator.next();
-			String username = enrollmentTO.getUsername();
+		
+		session.enrollments().simpleEnrollmentsList(courseClassUUID, new Callback<SimplePeopleTO>() {
+            @Override
+            public void ok(SimplePeopleTO to) {
+                simplePeopleTO = to;
+            }
+        });
+		
+		enrollmentsToOverride = new ArrayList<SimplePersonTO>();
+		for (SimplePersonTO simplePersonTO : simplePeopleTO.getSimplePeopleTO()) {
+			String username = simplePersonTO.getUsername();
 			// if the user was already enrolled and is not on the new list,
 			// cancel enrollment
-			if (!enrollmentRequestsMap.containsKey(username)
-					&& EnrollmentState.enrolled.equals(enrollmentTO.getEnrollment().getState())) {
-				enrollmentsToOverride.add(enrollmentTO);
+			if (!enrollmentRequestsMap.containsKey(username)) {
+				enrollmentsToOverride.add(simplePersonTO);
 				validation += username + 
-						(StringUtils.isSome(enrollmentTO.getFullName()) ? 
-								" (" + enrollmentTO.getFullName() + ")\n" :
+						(StringUtils.isSome(simplePersonTO.getFullName()) ? 
+								" (" + simplePersonTO.getFullName() + ")\n" :
 								"");
 			}
 		}
@@ -436,9 +440,9 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 	private void createEnrollments() {
 
 		if (confirmedEnrollmentsModal && enrollmentsToOverride != null && enrollmentsToOverride.size() > 0) {
-			for (EnrollmentTO enrollmentToOverrideTO : enrollmentsToOverride) {
-				EnrollmentRequestTO enrollmentRequestTO = createEnrollment(enrollmentToOverrideTO.getFullName(),
-						enrollmentToOverrideTO.getUsername(), true);
+			for (SimplePersonTO simplePersonTO : enrollmentsToOverride) {
+				EnrollmentRequestTO enrollmentRequestTO = createEnrollment(simplePersonTO.getFullName(),
+				        simplePersonTO.getUsername(), true);
 				enrollmentRequestsTO.getEnrollmentRequests().add(enrollmentRequestTO);
 			}
 

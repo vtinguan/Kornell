@@ -37,6 +37,7 @@ import kornell.server.repository.s3.S3
 import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.to.PersonTO
 import kornell.core.entity.AuthClientType
+import kornell.core.to.SimplePersonTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -296,6 +297,20 @@ object TOs {
     to.setExpiry(expiry)
     to.setPersonUUID(personUUID)
     to.setClientType(clientType)
+    to
+  }
+  
+  def newSimplePersonTO(personUUID: String, fullName: String, username: String) = {
+    val to = tos.newSimplePersonTO.as
+    to.setPersonUUID(personUUID)
+    to.setFullName(fullName)
+    to.setUsername(username)
+    to
+  }
+  
+  def newSimplePeopleTO(simplePeople: List[SimplePersonTO]) = {
+    val to = tos.newSimplePeopleTO.as
+    to.setPeopleTO(simplePeople.asJava)
     to
   }
 }
