@@ -55,4 +55,6 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<ChatThreadMessage> newChatThreadMessage();
 	
 	AutoBean<InstitutionRegistrationPrefix> newInstitutionRegistrationPrefix();
+	
+	AutoBean<EnrollmentEntries> newEnrollmentEntries();
 }

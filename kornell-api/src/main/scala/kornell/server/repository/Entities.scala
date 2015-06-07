@@ -25,6 +25,8 @@ import kornell.core.entity.RegistrationType
 import kornell.core.entity.BillingType
 import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.entity.InstitutionType
+import java.util.HashMap
+import kornell.core.entity.ActomEntries
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -130,7 +132,7 @@ object Entities {
     state: EnrollmentState, lastProgressUpdate: String = null,
     assessment: Assessment = null, lastAssessmentUpdate: String = null,
     assessmentScore: BigDecimal = null, certifiedAt: String = null,
-    courseVersionUUID: String = null): Enrollment = {
+    courseVersionUUID: String = null, parentEnrollmentUUID:String = null): Enrollment = {
     val e = factory.enrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -145,6 +147,7 @@ object Entities {
     e.setAssessmentScore(assessmentScore)
     e.setCertifiedAt(certifiedAt)
     e.setCourseVersionUUID(courseVersionUUID)
+    e.setParentEnrollmentUUID(parentEnrollmentUUID)
     e
   }
 
@@ -358,6 +361,11 @@ object Entities {
     institutionRegistrationPrefix.setShowContactInformationOnProfile(showContactInformationOnProfile)
     institutionRegistrationPrefix
   }
-  
-  //def newEnrollmentModule()
+
+  def newEnrollmentEntries() = {
+    val eEntries = factory.newEnrollmentEntries().as
+    eEntries.setModuleEntries(new HashMap[String,Map[String,ActomEntries]]())
+    eEntries
+  }
+
 }

@@ -8,39 +8,47 @@ import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
+public class SCORM12Adapter implements CMIConstants  {
 
 	/**
 	 * How much time a client can stay unsynced with the server after setting a
 	 * data model value, in milliseconds.
 	 */
 	private static final int DIRTY_TOLERANCE = 2000;
-
+	
+	public static SCORM12Adapter create(String enrollmentUUID, String actomKey,
+			ActomEntries entries) {
+		return new SCORM12Adapter(enrollmentUUID,actomKey,entries);
+	}
+	
+	//Scope Parameters
+	private String enrollmentUUID;
+	private String actomKey;
+	
+	//State
+	private CMITree dataModel = new CMINode();
 	private String lastError = NoError;
 
-	private String currentEnrollmentUUID;
-	private String currentActomKey;
-
-	private CMITree dataModel = new CMINode();
-
+	//UI/Client
 	private KornellClient client;
-
 	private EventBus bus;
-
 	private PlaceController placeCtrl;
 
-	public SCORM12Adapter(EventBus bus, KornellClient client, PlaceController placeCtrl) {
-		logger.info("SCORM API 1.2.2015_04_23_15_48");
-		this.client = client;
-		this.bus = bus;
-		this.placeCtrl = placeCtrl;
-		bus.addHandler(ActomEnteredEvent.TYPE, this);
+	
+	public SCORM12Adapter(String enrollmentUUID, String actomKey,ActomEntries ae) {
+		logger.info("SCORM API 1.2.2015_05_07_20_00");
+		this.enrollmentUUID = enrollmentUUID;
+		this.actomKey = actomKey;
+		this.dataModel = CMITree.create(ae.getEntries());
+		// EventBus bus, KornellClient client, PlaceController placeCtrl
 	}
 
+	
 	public String LMSInitialize(String param) {
 		String result = TRUE;
 		if (dataModel == null) {
@@ -61,9 +69,9 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		return lastError;
 	}
 
-	public String LMSGetValue(String param) {
+	public String LMSGetValue(String param,String moduleUUID) {
 		String result = dataModel.getValue(param);
-		logger.finer("LMSGetValue[" + param + "] = " + result);
+		logger.finer("LMSGetValue["+moduleUUID+"][" + param + "] = " + result);
 		return result;
 	}
 
@@ -79,15 +87,23 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	}
 
 	public String LMSSetDouble(String key, Double value) {
+		return LMSSetDouble(null,key,value);
+	}
+	
+	public String LMSSetDouble(String moduleUUID, String key, Double value) {
 		String strValue = Double.toString(value);
-		return LMSSetString(key, strValue);
+		return LMSSetString(moduleUUID,key, strValue);
 	}
 
 	public String LMSSetString(String key, String value) {
+		return LMSSetString(null,key,value); 
+	}
+	
+	public String LMSSetString(String moduleUUID, String key, String value) {
 		String result = FALSE;
 		result = dataModel.setValue(key, value);
 		scheduleSync();
-		logger.finer("LMSSetValue [" + key + " = " + value + "] = " + result);
+		logger.finer("LMSSetValue ["+moduleUUID+"][" + key + " = " + value + "] = " + result);
 		return result;
 	}
 	
@@ -107,6 +123,10 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		}).schedule(DIRTY_TOLERANCE);
 	}
 
+	public void runtimeSync(){
+		sync();
+	}
+	
 	private void sync() {
 		class Scrub extends Callback<ActomEntries> {
 			@Override
@@ -117,30 +137,17 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 		}
 
 		if (dataModel != null && dataModel.isDirty()) {
-			client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
+			client.enrollment(enrollmentUUID).actom(actomKey)
 					.put(CMITree.collectDirty(dataModel), new Scrub());
 		}
 	}
-
+/*
 	@Override
 	public void onActomEntered(ActomEnteredEvent event) {
 		logger.finer("ActomEntered [" + event.getActomKey() + "]");
 		refreshDataModel(event);
 	}
 
-	// TODO: Fire an event
-	public static native void stopAllVideos() /*-{
-		var frms = $wnd.parent.document.getElementsByTagName("IFRAME")
-		if (console) {
-			console.debug("Stopping videos in # iframes: " + frms.length);
-		}
-		for (var i = 0; i < frms.length; i++) {
-			var frm = frms[i];
-			var stopThem = frm.contentWindow.stopAllVideos;
-			if (stopThem)
-				stopThem();
-		}
-	}-*/;
 
 	private void refreshDataModel(ActomEnteredEvent event) {
 		syncBeforeLoadinNewActom();
@@ -152,21 +159,7 @@ public class SCORM12Adapter implements CMIConstants, ActomEnteredEventHandler {
 	private void syncBeforeLoadinNewActom() {
 		sync();
 	}
-
-	private void loadDataModel() {
-		client.enrollment(currentEnrollmentUUID).actom(currentActomKey)
-				.get(new Callback<ActomEntries>() {
-					@Override
-					public void ok(ActomEntries to) {
-						dataModel = CMITree.create(to.getEntries());
-						logger.finest("Loaded data model for [enrollment:"
-								+ to.getEnrollmentUUID() + ",actomKey:"
-								+ to.getActomKey() + "] with ["
-								+ to.getEntries().size() + "] entries");
-					}
-				});
-	}
-	
+*/	
 	
 
 }

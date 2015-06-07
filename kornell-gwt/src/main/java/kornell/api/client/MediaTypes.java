@@ -9,6 +9,7 @@ import kornell.core.entity.Course;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentEntries;
 import kornell.core.entity.Institution;
 import kornell.core.entity.People;
 import kornell.core.entity.Person;
@@ -21,6 +22,7 @@ import kornell.core.to.CourseClassesTO;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
+import kornell.core.to.EnrollmentLaunchTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
@@ -72,6 +74,8 @@ public class MediaTypes {
 		//When auth filter sends 401, it adds the charset and we can't do anything about it
 		register(KornellErrorTO.TYPE + ";charset=utf-8", KornellErrorTO.class);
 		register(TokenTO.TYPE, TokenTO.class);
+		register(EnrollmentEntries.TYPE,EnrollmentEntries.class);
+		register(EnrollmentLaunchTO.TYPE,EnrollmentLaunchTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

@@ -93,21 +93,15 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   @GET
   def getEntries(): ActomEntries = {
     val entries = Entities.newActomEntries(enrollmentUUID, actomKey, new HashMap[String, String])
-    val query = s"""
-    select * from ActomEntries 
-    where enrollment_uuid='${enrollmentUUID}'
-      and actomKey='${actomKey}'
-    """
     sql"""
   	select * from ActomEntries 
   	where enrollment_uuid=${enrollmentUUID}
   	  and actomKey=${actomKey}""".foreach { rs =>
-      entries.getEntries().put(rs.getString("entryKey"), rs.getString("entryValue"))
+        entries.getEntries().put(rs.getString("entryKey"), rs.getString("entryValue"))
     }
     initialize(entries)
   }
   
-  var properties : List[String] = List()
   
   def initialize(aentries:ActomEntries):ActomEntries = {
     val entries = aentries.getEntries()    

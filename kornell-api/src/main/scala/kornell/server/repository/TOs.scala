@@ -283,4 +283,9 @@ object TOs {
     to.setClientType(clientType)
     to
   }
+
+  def newEnrollmentLaunchTO() = {
+    val to = tos.newEnrollmentLaunchTO().as()
+    to
+  }
 }
