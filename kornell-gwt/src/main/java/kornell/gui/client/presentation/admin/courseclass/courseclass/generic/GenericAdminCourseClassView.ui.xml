@@ -47,6 +47,7 @@
 	                    <g:FlowPanel ui:field="infoPanel">
 	                    </g:FlowPanel>
 	                    <b:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnAction btnAddEnrollmentBatch btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
+	                    <b:Button ui:field="btnCancelEnrollmentBatch" addStyleNames="btnSelected btnAddEnrollmentBatch btnIcon marginLeft25" size="MINI" icon="REMOVE">Cancelar em lote</b:Button>
 	                  </g:FlowPanel>
 	                </g:FlowPanel>
 	              </g:FlowPanel>

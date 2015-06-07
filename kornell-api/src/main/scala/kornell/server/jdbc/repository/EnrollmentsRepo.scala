@@ -10,6 +10,8 @@ import kornell.core.to.EnrollmentsTO
 import kornell.server.repository.TOs
 import kornell.core.error.exception.EntityConflictException
 import scala.collection.mutable.Buffer
+import kornell.core.to.SimplePersonTO
+import kornell.core.to.SimplePeopleTO
 import kornell.server.repository.Entities
 
 object EnrollmentsRepo {
@@ -117,7 +119,7 @@ object EnrollmentsRepo {
     		now(),
     		${enrollment.getState.toString},
     		${enrollment.getCourseVersionUUID},
-        ${enrollment.getParentEnrollmentUUID}
+        	${enrollment.getParentEnrollmentUUID}
     	)""".executeUpdate
     enrollment
   }
@@ -129,4 +131,12 @@ object EnrollmentsRepo {
     .first[Enrollment]
     .get
 
+  def simplePersonList(courseClassUUID: String): SimplePeopleTO = {
+    TOs.newSimplePeopleTO(sql"""select p.uuid as uuid, p.fullName as fullName, pw.username as username
+    from Enrollment enr 
+    join Person p on enr.person_uuid = p.uuid
+    left join Password pw on p.uuid = pw.person_uuid
+    where enr.state <> ${EnrollmentState.cancelled.toString} and
+    enr.class_uuid = ${courseClassUUID}""".map[SimplePersonTO](toSimplePersonTO))
+  }
 }

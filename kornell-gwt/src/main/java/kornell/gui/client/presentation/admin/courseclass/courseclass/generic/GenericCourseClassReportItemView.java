@@ -78,7 +78,7 @@ public class GenericCourseClassReportItemView extends Composite {
 
 	private void displayCourseClassInfo() {
 	  this.name = "Relatório de detalhes da turma";
-		this.description = "Geração do relatório de detalhes da turma, contendo os dados da turma e informações sobre as matrículas da mesma.";
+		this.description = "Geração do relatório de detalhes da turma e de suas matrículas. Por padrão ele é gerado em PDF contendo somente matriculas ativas.";
 		
 		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
 		lblName.setText(name);
@@ -92,7 +92,7 @@ public class GenericCourseClassReportItemView extends Composite {
 		lblDownload.setEnabled(false);
 		
 		Image img = new Image(LIBRARY_IMAGES_PATH + "xls.png");
-		xlsCheckBox = new CheckBox("Gerar em formato Excel");
+		xlsCheckBox = new CheckBox("Gerar em formato Excel (inclui matículas canceladas)");
 		
 		optionPanel.add(img);
 		optionPanel.add(xlsCheckBox);

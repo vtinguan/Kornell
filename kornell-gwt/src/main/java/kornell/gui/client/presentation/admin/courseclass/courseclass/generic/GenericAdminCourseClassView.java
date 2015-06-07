@@ -143,6 +143,8 @@ public class GenericAdminCourseClassView extends Composite implements
 	@UiField
 	Button btnAddEnrollmentBatch;
 	@UiField
+	Button btnCancelEnrollmentBatch;
+	@UiField
 	TextBox txtFullName;
 	@UiField
 	TextBox txtEmail;
@@ -551,9 +553,17 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	@UiHandler("btnAddEnrollmentBatch")
-	void doLogin(ClickEvent e) {
+	void doAddEnrollmentBatch(ClickEvent e) {
 		presenter.onAddEnrollmentBatchButtonClicked(txtAddEnrollmentBatch
 				.getText());
+	}
+
+	@UiHandler("btnCancelEnrollmentBatch")
+	void doCancelEnrollmentBatch(ClickEvent e) {
+		if(courseClassTO.getCourseClass().isAllowBatchCancellation()){
+			presenter.onAddEnrollmentBatchButtonClicked(txtAddEnrollmentBatch
+					.getText());
+		}
 	}
 
 	@Override
@@ -893,6 +903,7 @@ public class GenericAdminCourseClassView extends Composite implements
 				.getInstance().getCourseClassTO().getCourseClass()
 				.getRegistrationType())
 				+ ":");
+		btnCancelEnrollmentBatch.setVisible(courseClassTO.getCourseClass().isAllowBatchCancellation());
 		initTable();
 		initSearch();
 	}
