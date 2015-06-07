@@ -6,6 +6,7 @@ public class CourseClassReportTO {
 	private String fullName;
 	private String username;
 	private String email;
+	private String cpf;
 	private String state;
 	private String progressState;
 	private Integer progress;
@@ -16,6 +17,17 @@ public class CourseClassReportTO {
 	private String courseVersionName;
 	private String courseClassName;
 	private EnrollmentsBreakdownTO enrollmentsBreakdownTO;
+	private String company;
+	private String title;
+	private String sex;
+	private String birthDate;
+	private String telephone;
+	private String country;
+	private String stateProvince;
+	private String city;
+	private String addressLine1;
+	private String addressLine2;
+	private String postalCode;
 
 	public String getFullName() {
 		return fullName;
@@ -120,6 +132,102 @@ public class CourseClassReportTO {
 
 	public void setEnrolledAt(String enrolledAt) {
 		this.enrolledAt = enrolledAt;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public String getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getStateProvince() {
+		return stateProvince;
+	}
+
+	public void setStateProvince(String stateProvince) {
+		this.stateProvince = stateProvince;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getAddressLine1() {
+		return addressLine1;
+	}
+
+	public void setAddressLine1(String addressLine1) {
+		this.addressLine1 = addressLine1;
+	}
+
+	public String getAddressLine2() {
+		return addressLine2;
+	}
+
+	public void setAddressLine2(String addressLine2) {
+		this.addressLine2 = addressLine2;
+	}
+
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
 	}
 
 }

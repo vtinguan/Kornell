@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1900" pageHeight="842" columnWidth="1900" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="3870" pageHeight="842" columnWidth="3870" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="4766"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="notStarted" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
@@ -25,20 +25,32 @@
 	<parameter name="courseClassAdminNames" class="java.lang.String"/>
 	<field name="fullName" class="java.lang.String"/>
 	<field name="username" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="cpf" class="java.lang.String"/>
 	<field name="state" class="java.lang.String"/>
 	<field name="progressState" class="java.lang.String"/>
 	<field name="progress" class="java.lang.Integer"/>
 	<field name="assessmentScore" class="java.math.BigDecimal"/>
-	<field name="email" class="java.lang.String"/>
 	<field name="certifiedAt" class="java.lang.String"/>
 	<field name="enrolledAt" class="java.lang.String"/>
 	<field name="courseName" class="java.lang.String"/>
 	<field name="courseVersionName" class="java.lang.String"/>
 	<field name="courseClassName" class="java.lang.String"/>
+	<field name="company" class="java.lang.String"/>
+	<field name="title" class="java.lang.String"/>
+	<field name="sex" class="java.lang.String"/>
+	<field name="birthDate" class="java.lang.String"/>
+	<field name="telephone" class="java.lang.String"/>
+	<field name="country" class="java.lang.String"/>
+	<field name="stateProvince" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="addressLine1" class="java.lang.String"/>
+	<field name="addressLine2" class="java.lang.String"/>
+	<field name="postalCode" class="java.lang.String"/>
 	<title>
 		<band height="239">
 			<textField>
-				<reportElement uuid="59896c45-7bce-4ab7-9585-85ff926ccb4e" x="210" y="145" width="470" height="16"/>
+				<reportElement uuid="59896c45-7bce-4ab7-9585-85ff926ccb4e" x="210" y="145" width="1005" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -54,14 +66,14 @@
 )]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c8a1e273-10a0-49f7-b0ed-6c2ec620e514" x="210" y="161" width="470" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>
+				<reportElement uuid="c8a1e273-10a0-49f7-b0ed-6c2ec620e514" x="210" y="161" width="1005" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[""+$P{completed}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" x="210" y="177" width="470" height="16" forecolor="#006AB7"/>
+				<reportElement uuid="f9226c93-c99f-4637-8205-49ce7ebe672c" x="210" y="177" width="1005" height="16" forecolor="#006AB7"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -72,7 +84,7 @@
     )]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" x="210" y="49" width="470" height="16">
+				<reportElement uuid="a3a33f62-f631-4a8f-afb6-002de22328bf" x="210" y="49" width="1005" height="16">
 					<printWhenExpression><![CDATA[$P{courseClassName} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -81,14 +93,14 @@
 				<textFieldExpression><![CDATA[$P{courseClassName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="1049025d-fb9b-4467-9ce5-40acac387c1d" x="210" y="65" width="470" height="16"/>
+				<reportElement uuid="1049025d-fb9b-4467-9ce5-40acac387c1d" x="210" y="65" width="1005" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{courseTitle}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="210" y="81" width="470" height="16">
+				<reportElement uuid="8f3ae0ae-0bcd-44b8-ab86-0c1a94521d8a" x="210" y="81" width="1005" height="16">
 					<printWhenExpression><![CDATA[$P{courseClassName} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -117,7 +129,7 @@
 					<font fontName="Serif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[MATRÍCULAS ATIVAS]]></text>
+				<text><![CDATA[MATRÍCULAS ATIVAS  E CANCELADAS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" mode="Opaque" x="0" y="209" width="210" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
@@ -198,7 +210,7 @@
 				<text><![CDATA[Desabilitada em: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="210" y="113" width="470" height="16">
+				<reportElement uuid="d7ab509c-81ae-4d85-b048-3a838ceb9654" x="210" y="113" width="1005" height="16">
 					<printWhenExpression><![CDATA[$P{disabledAt} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -209,7 +221,7 @@
     : $P{disabledAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" x="210" y="193" width="470" height="16" forecolor="#CB9902"/>
+				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" x="210" y="193" width="1005" height="16" forecolor="#CB9902"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
@@ -240,7 +252,7 @@
 				<text><![CDATA[USUÁRIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="47c263a9-ad78-4a12-b3bb-3b9f596b0f4a" mode="Opaque" x="680" y="225" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="47c263a9-ad78-4a12-b3bb-3b9f596b0f4a" mode="Opaque" x="830" y="225" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -256,7 +268,7 @@
 				<text><![CDATA[EMAIL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="08f64b1f-787c-460f-b701-e59ed0a03500" mode="Opaque" x="980" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="08f64b1f-787c-460f-b701-e59ed0a03500" mode="Opaque" x="1130" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -274,14 +286,14 @@
 				<text><![CDATA[Administrador(es): ]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="c2e9978a-fbcb-422e-8833-ae598d337123" x="210" y="97" width="470" height="16"/>
+				<reportElement uuid="c2e9978a-fbcb-422e-8833-ae598d337123" x="210" y="97" width="1005" height="16"/>
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{courseClassAdminNames}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="b83923d3-4f7b-47ec-9630-1d8de4245032" mode="Opaque" x="1065" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="b83923d3-4f7b-47ec-9630-1d8de4245032" mode="Opaque" x="1215" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -289,7 +301,7 @@
 				<text><![CDATA[DATA MATR.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="22b2e8ad-ac8e-46bc-8128-5bfe78d4fa20" mode="Opaque" x="830" y="225" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="22b2e8ad-ac8e-46bc-8128-5bfe78d4fa20" mode="Opaque" x="980" y="225" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -297,7 +309,7 @@
 				<text><![CDATA[PROGRESSO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9b933eca-4ebd-4ce5-9027-1a0f39d714c4" mode="Opaque" x="1150" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="9b933eca-4ebd-4ce5-9027-1a0f39d714c4" mode="Opaque" x="1300" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -305,7 +317,7 @@
 				<text><![CDATA[CURSO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d56b90bd-e20d-4107-b481-c42799b312bd" mode="Opaque" x="1400" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="d56b90bd-e20d-4107-b481-c42799b312bd" mode="Opaque" x="1550" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -313,12 +325,108 @@
 				<text><![CDATA[VERSÃO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="09dbbb6f-e2fe-4913-aaf6-9fcd2774872d" mode="Opaque" x="1650" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="09dbbb6f-e2fe-4913-aaf6-9fcd2774872d" mode="Opaque" x="1800" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[TURMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e63b8abd-41c9-4357-af63-7e468b0286ca" mode="Opaque" x="680" y="225" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CPF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9dd6dfe8-bc92-4ff6-9733-ba23c14e15af" mode="Opaque" x="2050" y="225" width="200" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[EMPRESA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="21b5e909-0b7c-46cb-b9aa-52e741c23114" mode="Opaque" x="2250" y="225" width="200" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09e8a215-32dc-46f5-a12e-9201ce52d9d1" mode="Opaque" x="2450" y="225" width="50" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[SEXO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ab19fe40-158d-48b5-ab62-a3bc56c4d0c5" mode="Opaque" x="2500" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[DATA NASC.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7754446d-01ae-44cc-a194-1d8ce59589ec" mode="Opaque" x="2585" y="225" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[TELEFONE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2441fa99-13ba-4b80-8810-dee9353c46c1" mode="Opaque" x="2735" y="225" width="85" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PAÍS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="101c172b-d9fe-418d-8154-682c39760ab6" mode="Opaque" x="2820" y="225" width="200" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dedd8477-0ab8-42b1-9094-89798e9db99c" mode="Opaque" x="3020" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CIDADE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4a2aa11b-d23b-47f9-b6fa-f47b79ab1034" mode="Opaque" x="3270" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ENDEREÇO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6a6cfb31-eacd-471e-8d5e-d0f21ce7d7ec" mode="Opaque" x="3520" y="225" width="250" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[COMPLEMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="049a7de2-8f6c-41c5-9b3c-d24ca1e38b11" mode="Opaque" x="3770" y="225" width="100" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CEP]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -339,7 +447,7 @@
 				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="63640519-bd0e-46e8-a16f-66dd400a6f38" x="680" y="0" width="150" height="12"/>
+				<reportElement uuid="63640519-bd0e-46e8-a16f-66dd400a6f38" x="830" y="0" width="150" height="12"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -353,7 +461,7 @@
 				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b232573c-07ad-4647-a029-3299b5ee9367" x="980" y="0" width="85" height="12"/>
+				<reportElement uuid="b232573c-07ad-4647-a029-3299b5ee9367" x="1130" y="0" width="85" height="12"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -362,7 +470,7 @@
     : $F{certifiedAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="90520c48-2b19-4007-85b6-b730368d83a7" x="1065" y="0" width="85" height="12"/>
+				<reportElement uuid="90520c48-2b19-4007-85b6-b730368d83a7" x="1215" y="0" width="85" height="12"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -371,7 +479,7 @@
     : $F{enrolledAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="01cf94a2-2b51-4331-993b-adec96eaf0a8" x="830" y="0" width="150" height="12"/>
+				<reportElement uuid="01cf94a2-2b51-4331-993b-adec96eaf0a8" x="980" y="0" width="150" height="12"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -387,25 +495,111 @@
     )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="f520e1a0-f36b-42aa-8a67-a624a40275f1" x="1150" y="0" width="250" height="12" forecolor="#525252"/>
+				<reportElement uuid="f520e1a0-f36b-42aa-8a67-a624a40275f1" x="1300" y="0" width="250" height="12" forecolor="#525252"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{courseName}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a7eecd8d-d696-4a3c-b87e-3dfa19dbcadb" x="1400" y="0" width="250" height="12" forecolor="#525252"/>
+				<reportElement uuid="a7eecd8d-d696-4a3c-b87e-3dfa19dbcadb" x="1550" y="0" width="250" height="12" forecolor="#525252"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{courseVersionName}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="5715a812-7812-4371-9fbf-5927215e6ff8" x="1650" y="0" width="250" height="12" forecolor="#525252"/>
+				<reportElement uuid="5715a812-7812-4371-9fbf-5927215e6ff8" x="1800" y="0" width="250" height="12" forecolor="#525252"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{courseClassName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b8f447e3-c45c-49a8-81e5-f3b8e9647778" x="680" y="0" width="150" height="12"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="73d94e39-568b-4b70-9733-7b73e1d8a07b" x="2050" y="0" width="200" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9d935618-4273-4091-8b57-02a9a504c8a9" x="2250" y="0" width="200" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="64809bde-0957-406e-bb1e-20ed4d1b8025" x="2450" y="0" width="50" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sex}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="6544cec3-599b-45e8-9ab3-9f0cb8150f08" x="2500" y="0" width="85" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{birthDate} == null ?
+    " - "
+    : $F{birthDate}.split(" ")[0].split("T")[0]]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fd10761-871f-40fe-8d21-a89e2c123490" x="2585" y="0" width="150" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telephone}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3b249eab-0a18-4921-9a99-04d4f56e918b" x="2735" y="0" width="85" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{country}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="46ed200c-ebb9-407c-add9-719edb63195c" x="2820" y="0" width="200" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{stateProvince}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="676095cc-005e-4de6-ac8b-34633a4eae85" x="3020" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{city}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b3c49075-96cc-47db-a734-60b9b7bcc1cf" x="3270" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{addressLine1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0793a5a7-edbd-44b2-ba58-ef9758b1df18" x="3520" y="0" width="250" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{addressLine2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="224a36ab-26bf-4bcb-9027-6bbe377194ac" x="3770" y="0" width="100" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{postalCode}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

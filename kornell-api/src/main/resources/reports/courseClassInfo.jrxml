@@ -170,7 +170,7 @@
 					<font fontName="Serif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Total de participantes: ]]></text>
+				<text><![CDATA[Total de participantes ativos: ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="da2f94d4-0a5c-48e8-8657-e8cf17700657" positionType="Float" mode="Opaque" x="3" y="157" width="142" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>
