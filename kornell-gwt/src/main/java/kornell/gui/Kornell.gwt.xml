@@ -10,8 +10,8 @@
 	<inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.gwt.xml.XML" />
 
-	<!-- Full Stack Traces IN DEVELOPMENT -->
-	<!--   
+	<!-- TODO: Automate logging setup per environment -->
+	<!-- Full Logging IN DEVELOPMENT -->   
 	<set-property name="compiler.stackMode" value="emulated" />
 	<set-configuration-property name="compiler.emulatedStack.recordFileNames"
 		value="true" />
@@ -24,7 +24,7 @@
 	<set-property name="gwt.logging.enabled" value="TRUE" />
 	<set-property name="gwt.logging.consoleHandler" value="ENABLED" />
 	<set-property name="gwt.logging.systemHandler" value="DISABLED" />
-	-->
+
 	
 	<!-- Internationalization -->
 	<inherits name="com.google.gwt.i18n.I18N" />

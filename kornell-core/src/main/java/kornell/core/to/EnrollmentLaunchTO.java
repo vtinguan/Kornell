@@ -1,6 +1,6 @@
 package kornell.core.to;
 
-import kornell.core.entity.EnrollmentEntries;
+import kornell.core.entity.EnrollmentsEntries;
 import kornell.core.lom.Contents;
 
 public interface EnrollmentLaunchTO {
@@ -9,7 +9,7 @@ public interface EnrollmentLaunchTO {
 	Contents getContents();
 	void setContents(Contents contents);
 
-	EnrollmentEntries getEnrollmentEntries();
-	void setEnrollmentEntries(EnrollmentEntries entries);
+	EnrollmentsEntries getEnrollmentEntries();
+	void setEnrollmentEntries(EnrollmentsEntries entries);
 
 }

@@ -3,9 +3,8 @@ package kornell.scorm.client.scorm12;
 import static kornell.scorm.client.scorm12.Scorm12.logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellClient;
+import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
-import kornell.gui.client.event.ActomEnteredEvent;
-import kornell.gui.client.event.ActomEnteredEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
 import com.google.gwt.core.shared.GWT;
@@ -21,9 +20,9 @@ public class SCORM12Adapter implements CMIConstants  {
 	 */
 	private static final int DIRTY_TOLERANCE = 2000;
 	
-	public static SCORM12Adapter create(String enrollmentUUID, String actomKey,
+	public static SCORM12Adapter create(KornellSession session, PlaceController placeCtrl,String enrollmentUUID, String actomKey,
 			ActomEntries entries) {
-		return new SCORM12Adapter(enrollmentUUID,actomKey,entries);
+		return new SCORM12Adapter(session,placeCtrl,enrollmentUUID,actomKey,entries);
 	}
 	
 	//Scope Parameters
@@ -35,18 +34,20 @@ public class SCORM12Adapter implements CMIConstants  {
 	private String lastError = NoError;
 
 	//UI/Client
-	private KornellClient client;
-	private EventBus bus;
+	private KornellSession client;
 	private PlaceController placeCtrl;
 
 	
-	public SCORM12Adapter(String enrollmentUUID, String actomKey,ActomEntries ae) {
+	public SCORM12Adapter(KornellSession session, PlaceController placeCtrl,
+			String enrollmentUUID, String actomKey,ActomEntries ae) {
 		logger.info("SCORM API 1.2.2015_05_07_20_00");
 		this.enrollmentUUID = enrollmentUUID;
 		this.actomKey = actomKey;
-		this.dataModel = CMITree.create(ae.getEntries());
-		// EventBus bus, KornellClient client, PlaceController placeCtrl
-	}
+		if(ae != null)
+			this.dataModel = CMITree.create(ae.getEntries());		
+		this.client = session;
+		this.placeCtrl = placeCtrl;
+}
 
 	
 	public String LMSInitialize(String param) {
@@ -137,8 +138,10 @@ public class SCORM12Adapter implements CMIConstants  {
 		}
 
 		if (dataModel != null && dataModel.isDirty()) {
-			client.enrollment(enrollmentUUID).actom(actomKey)
-					.put(CMITree.collectDirty(dataModel), new Scrub());
+			
+			client.enrollment(enrollmentUUID)
+				  .actom(actomKey)
+				  .put(CMITree.collectDirty(dataModel), new Scrub());
 		}
 	}
 /*

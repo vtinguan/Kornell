@@ -56,5 +56,7 @@ public interface EntityFactory extends AutoBeanFactory {
 	
 	AutoBean<InstitutionRegistrationPrefix> newInstitutionRegistrationPrefix();
 	
+	AutoBean<EnrollmentsEntries> newEnrollmentsEntries();
+	
 	AutoBean<EnrollmentEntries> newEnrollmentEntries();
 }

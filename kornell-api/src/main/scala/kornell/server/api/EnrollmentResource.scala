@@ -29,6 +29,7 @@ import kornell.server.repository.Entities
 import kornell.core.to.EnrollmentLaunchTO
 import kornell.server.repository.TOs
 import kornell.server.scorm12.SCORM12
+import kornell.core.entity.EnrollmentsEntries
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -71,10 +72,10 @@ class EnrollmentResource(uuid: String) {
     eLaunch.setContents(eContents)
 
     val eEntries = getEntries
-    val mEntries = eEntries.getModuleEntries.asScala
+    val mEntries = eEntries.getEnrollmentEntriesMap.asScala
     for {
-      (enrollmentUUID, actomEntriesMap) <- mEntries
-      (actomKey,actomEntries) <- actomEntriesMap.asScala
+      (enrollmentUUID, enrollmentEntries) <- mEntries
+      (actomKey,actomEntries) <- enrollmentEntries.getActomEntriesMap.asScala
     } {            
       actomEntries.setEntries(SCORM12.dataModel.initialize(actomEntries.getEntries))
     }
@@ -112,8 +113,8 @@ class EnrollmentResource(uuid: String) {
   @GET
   @Produces(Array(EnrollmentEntries.TYPE))
   def getEntries() = {
-    val eEntries: EnrollmentEntries = Entities.newEnrollmentEntries()
-    val mEntries = eEntries.getModuleEntries();
+    val esEntries: EnrollmentsEntries = Entities.newEnrollmentsEntries()
+    val esEntriesMap = esEntries.getEnrollmentEntriesMap
 
     sql"""
       select * from ActomEntries 
@@ -130,27 +131,29 @@ class EnrollmentResource(uuid: String) {
       val entryKey = rs.getString("entryKey")
       val entryValue = rs.getString("entryValue")
 
-      val enrollmentMap = Option(mEntries.get(enrollmentUUID)) match {
+      val enrollmentEntries = Option(esEntriesMap.get(enrollmentUUID)) match {
         case Some(e) => e
         case None => {
-          val e = new HashMap[String, ActomEntries]()
-          mEntries.put(enrollmentUUID, e)
+          val e = Entities.newEnrollmentEntries
+          esEntriesMap.put(enrollmentUUID, e)
           e
         }
       }
 
-      val actomEntries = Option(enrollmentMap.get(actomKey)) match {
+      val aeMap = enrollmentEntries.getActomEntriesMap() 
+      
+      val actomEntries = Option(aeMap.get(actomKey)) match {
         case Some(a) => a
         case None => {
           val a: ActomEntries = Entities.newActomEntries(enrollmentUUID, actomKey, new HashMap[String, String]())
-          enrollmentMap.put(actomKey, a)
+          aeMap.put(actomKey, a)
           a
         }
       }
 
       actomEntries.getEntries.put(entryKey, entryValue)
     }
-    eEntries
+    esEntries
   }
 
 }

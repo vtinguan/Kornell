@@ -8,8 +8,8 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
-import kornell.core.entity.EnrollmentEntries;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.EnrollmentsEntries;
 import kornell.core.lom.Contents;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentLaunchTO;
@@ -17,14 +17,12 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.scorm.client.scorm12.SCORM12Runtime;
 
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -70,11 +68,8 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				loadContents(enrollmentUUID,to.getContents());
 			};
 			
-						
-			
-			
-			private void loadRuntime(EnrollmentEntries enrollmentEntries) {
-				SCORM12Runtime.launch(bus, enrollmentEntries);
+			private void loadRuntime(EnrollmentsEntries enrollmentEntries) {
+				SCORM12Runtime.launch(bus, session,placeCtrl, enrollmentEntries);
 			}
 
 			private void loadContents(final String enrollmentUUID,

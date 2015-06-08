@@ -27,6 +27,7 @@ import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.entity.InstitutionType
 import java.util.HashMap
 import kornell.core.entity.ActomEntries
+import kornell.core.entity.EnrollmentEntries
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -364,9 +365,15 @@ object Entities {
     institutionRegistrationPrefix
   }
 
-  def newEnrollmentEntries() = {
-    val eEntries = factory.newEnrollmentEntries().as
-    eEntries.setModuleEntries(new HashMap[String,Map[String,ActomEntries]]())
+  def newEnrollmentsEntries() = {
+    val esEntries = factory.newEnrollmentsEntries().as
+    esEntries.setEnrollmentEntriesMap(new HashMap[String,EnrollmentEntries]())
+    esEntries
+  }
+  
+  def newEnrollmentEntries = {
+    val eEntries = factory.newEnrollmentEntries().as()
+    eEntries.setActomEntriesMap(new HashMap[String,ActomEntries]())
     eEntries
   }
 

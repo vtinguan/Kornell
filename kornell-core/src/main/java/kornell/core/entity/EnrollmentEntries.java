@@ -5,9 +5,6 @@ import java.util.Map;
 public interface EnrollmentEntries {
 	public static String TYPE = EntityFactory.PREFIX + "enrollmententries+json"; 
 	
-	String getEnrollmentUUID();
-	void setEnrollmentUUID(String enrollmentUUID);
-	
-	Map</*enrollmentUUID*/String,Map<String /*actomKey*/,ActomEntries>> getModuleEntries();
-	void setModuleEntries(Map</*enrollmentUUID*/String,Map<String /*actomKey*/,ActomEntries>> moduleEntries);
+	Map</*ActomKey*/String,ActomEntries> getActomEntriesMap();
+	void setActomEntriesMap(Map</*ActomKey*/String,ActomEntries> actomEntriesMap);
 }
