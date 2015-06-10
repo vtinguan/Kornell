@@ -34,8 +34,9 @@ object EnrollmentsRepo {
 				left join Password pw on p.uuid = pw.person_uuid
 				where e.class_uuid = ${courseClassUUID} and
                 (p.fullName like ${filteredSearchTerm}
-                or username like ${filteredSearchTerm})
-				order by e.state desc, p.fullName, pw.username limit ${resultOffset}, ${pageSize}
+                or pw.username like ${filteredSearchTerm}
+                or p.email like ${filteredSearchTerm})
+				order by e.state desc, p.fullName, username limit ${resultOffset}, ${pageSize}
 			    """.map[EnrollmentTO](toEnrollmentTO))
     enrollmentsTO.setCount(
         sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
@@ -56,7 +57,8 @@ object EnrollmentsRepo {
           left join Password pw on p.uuid = pw.person_uuid
           where e.class_uuid = ${courseClassUUID} and 
           (p.fullName like ${filteredSearchTerm}
-          or username like ${filteredSearchTerm})
+          or pw.username like ${filteredSearchTerm}
+          or p.email like ${filteredSearchTerm})
         """.first[String].get.toInt
     })
     enrollmentsTO
