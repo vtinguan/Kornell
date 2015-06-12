@@ -102,14 +102,15 @@ object RegistrationEnrollmentService {
   }
 
   val SEP = ":"
+
   private def createChildEnrollments(enrollment: Enrollment, courseVersionUUID: String, personUUID: String, deanUUID: String) = {
     val dashboardEnrollmentMap = collection.mutable.Map[String, String]()
     var moduleCounter = 0
-    val childEnrollmentMap = Map("knl.dashboard.enrollmentUUID" -> enrollment.getUUID).asJava
-    //TODO: julio asks: is this recoverable from the enrollment afterwards without checking ActomEntries?
+    val parentEnrollmentUUID = enrollment.getUUID
+    val childEnrollmentMap = Map("knl.dashboard.enrollmentUUID" -> parentEnrollmentUUID).asJava    
     CourseVersionRepo(courseVersionUUID).getChildren.foreach(cv => {
       for (i <- 0 until cv.getInstanceCount) {
-        val childEnrollment = createEnrollment(personUUID, null, cv.getUUID, EnrollmentState.enrolled, deanUUID)
+        val childEnrollment = createEnrollment(personUUID, null, cv.getUUID, EnrollmentState.enrolled, deanUUID, parentEnrollmentUUID)
         dashboardEnrollmentMap("knl.module." + moduleCounter + ".name") = cv.getLabel + SEP + i
         dashboardEnrollmentMap("knl.module." + moduleCounter + ".index") = s"$i"
         dashboardEnrollmentMap("knl.module." + moduleCounter + ".label") = cv.getLabel
@@ -120,6 +121,7 @@ object RegistrationEnrollmentService {
         childActomResource.putEntries(Entities.newActomEntries(childEnrollment.getUUID, "index.html", childEnrollmentMap))
       }
     })
+
     dashboardEnrollmentMap("knl.module._count") = moduleCounter.toString
     val actomResource = new ActomResource(enrollment.getUUID, "index.html")
     actomResource.putEntries(Entities.newActomEntries(enrollment.getUUID, "index.html", dashboardEnrollmentMap.asJava))
@@ -186,8 +188,13 @@ object RegistrationEnrollmentService {
     user
   }
 
-  private def createEnrollment(personUUID: String, courseClassUUID: String, courseVersionUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String) = {
-    val enrollment = EnrollmentsRepo.create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled, null, null, null, null, null, courseVersionUUID))
+  private def createEnrollment(personUUID: String, courseClassUUID: String, courseVersionUUID: String, enrollmentState: EnrollmentState, enrollerUUID: String, parentEnrollmentUUID: String = null) = {
+    val enrollment = EnrollmentsRepo.create(
+      courseClassUUID = courseClassUUID,
+      personUUID = personUUID,
+      enrollmentState = EnrollmentState.notEnrolled,
+      courseVersionUUID = courseVersionUUID,
+      parentEnrollmentUUID = parentEnrollmentUUID)
     EventsRepo.logEnrollmentStateChanged(
       UUID.random, ServerTime.now, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState, courseVersionUUID == null)

@@ -35,4 +35,5 @@ public interface TOFactory  extends AutoBeanFactory {
 	AutoBean<TokenTO> newTokenTO();
 	AutoBean<SimplePersonTO> newSimplePersonTO();
 	AutoBean<SimplePeopleTO> newSimplePeopleTO();
+	AutoBean<EnrollmentLaunchTO> newEnrollmentLaunchTO();
 }

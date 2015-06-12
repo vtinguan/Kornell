@@ -9,25 +9,28 @@ import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.EnrollmentsEntries;
 import kornell.core.lom.Contents;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.EnrollmentLaunchTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SequencerFactory;
+import kornell.scorm.client.scorm12.SCORM12Runtime;
 
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class ClassroomPresenter implements ClassroomView.Presenter {
+	
 	Logger logger = Logger.getLogger(ClassroomPresenter.class.getName());
 	private ClassroomView view;
 	private ClassroomPlace place;
@@ -36,9 +39,11 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private KornellSession session;
 	private Contents contents;
 	private Sequencer sequencer;
+	private EventBus bus;
 
-	public ClassroomPresenter(ClassroomView view, PlaceController placeCtrl,
+	public ClassroomPresenter(EventBus bus, ClassroomView view, PlaceController placeCtrl,
 			SequencerFactory seqFactory, KornellSession session) {
+		this.bus = bus;
 		this.view = view;
 		view.setPresenter(this);
 		this.placeCtrl = placeCtrl;
@@ -56,11 +61,19 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		
 		view.asWidget().setVisible(false);
 		LoadingPopup.show();				
-		
-		session.enrollment(enrollmentUUID).contents(new Callback<Contents>() {
-			@Override
-			public void ok(final Contents contents) {
-				
+		session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
+			
+			public void ok(EnrollmentLaunchTO to) {
+				loadRuntime(to.getEnrollmentEntries());
+				loadContents(enrollmentUUID,to.getContents());
+			};
+			
+			private void loadRuntime(EnrollmentsEntries enrollmentEntries) {
+				SCORM12Runtime.launch(bus, session,placeCtrl, enrollmentEntries);
+			}
+
+			private void loadContents(final String enrollmentUUID,
+					final Contents contents) {
 				//TODO: UGLY DESPERATE HACK due to the courseClasses not yet set on dean
 				Timer timer = new Timer() { 
 					public void run(){				
@@ -100,9 +113,10 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 				};
 				timer.schedule(1000);
 			}
-			
 
 		});
+		
+	
 	}
 
 	private FlowPanel getPanel() {

@@ -3,7 +3,7 @@ var AWS = require('aws-sdk');
 
 // Environment Variables
 var warFile = process.env.KNL_API_WAR || "kornell-api/kornell-api.war";
-var warBucket = process.env.KNL_WAR_BUCKET || "dist-sa-east-1.craftware.com";
+var warBucket = process.env.KNL_WAR_BUCKET || "dist-us-east-1.craftware.com";
 var warKey = process.env.KNL_WAR_KEY || "Kornell/kornell-api.war"
 
 var stackId = process.env.KNL_STACK_ID;

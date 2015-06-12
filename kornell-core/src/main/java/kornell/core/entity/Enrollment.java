@@ -56,5 +56,8 @@ public interface Enrollment extends Entity{
 	
 	String getLastBilledAt();
 	void setLastBilledAt(String lastBilled);
+	
+	String getParentEnrollmentUUID();
+	void setParentEnrollmentUUID(String enrollmentUUID);
 
 }

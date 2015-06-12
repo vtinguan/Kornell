@@ -298,8 +298,14 @@
 						<argument>${project.build.directory}/${project.build.finalName}</argument>
 						<argument>-startupUrl</argument>
 						<argument>Kornell.nocache.html</argument>
+						
+						<!-- --> 
+						<argument>-logLevel</argument>
+						<argument>INFO</argument>
 						<argument>-XmethodNameDisplayMode</argument>
 						<argument>FULL</argument>
+						 
+						
 						<argument>kornell.gui.Kornell</argument>
 					</arguments>
 				</configuration>

@@ -12,6 +12,7 @@ import kornell.core.error.exception.EntityConflictException
 import scala.collection.mutable.Buffer
 import kornell.core.to.SimplePersonTO
 import kornell.core.to.SimplePeopleTO
+import kornell.server.repository.Entities
 
 object EnrollmentsRepo {
 
@@ -97,20 +98,30 @@ object EnrollmentsRepo {
     ORDER BY e.state desc, p.fullName, p.email
 	    """.map[EnrollmentTO](toEnrollmentTO)
 
-  def create(enrollment: Enrollment) = {
+  def create(
+        courseClassUUID:String,
+        personUUID:String,
+        enrollmentState:EnrollmentState, 
+        courseVersionUUID:String,
+        parentEnrollmentUUID:String):Enrollment = 
+     create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled, null, null, null, null, null, courseVersionUUID,parentEnrollmentUUID))
+
+      
+  def create(enrollment: Enrollment):Enrollment = {
     if (enrollment.getUUID == null)
       enrollment.setUUID(randomUUID)
     if (enrollment.getCourseClassUUID != null && enrollment.getCourseVersionUUID != null)
       throw new EntityConflictException("doubleEnrollmentCriteria")
     sql""" 
-    	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state,courseVersionUUID)
+    	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state,courseVersionUUID,parentEnrollmentUUID)
     	values(
     		${enrollment.getUUID},
     		${enrollment.getCourseClassUUID},
     		${enrollment.getPersonUUID}, 
     		now(),
     		${enrollment.getState.toString},
-    		${enrollment.getCourseVersionUUID}
+    		${enrollment.getCourseVersionUUID},
+        	${enrollment.getParentEnrollmentUUID}
     	)""".executeUpdate
     enrollment
   }

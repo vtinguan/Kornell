@@ -219,7 +219,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 			SequencerFactory rendererFactory = new SequencerFactoryImpl(clientFactory.getEventBus(),
 					clientFactory.getPlaceController(), clientFactory.getKornellSession());
 			ClassroomView activityView = getClassroomView();
-			coursePresenter = new ClassroomPresenter(activityView, clientFactory.getPlaceController(), rendererFactory,
+			coursePresenter = new ClassroomPresenter(clientFactory.getEventBus() ,activityView, clientFactory.getPlaceController(), rendererFactory,
 					clientFactory.getKornellSession());
 		}
 		return coursePresenter;

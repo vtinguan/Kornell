@@ -313,4 +313,9 @@ object TOs {
     to.setSimplePeopleTO(simplePeople.asJava)
     to
   }
+
+  def newEnrollmentLaunchTO() = {
+    val to = tos.newEnrollmentLaunchTO().as()
+    to
+  }
 }
