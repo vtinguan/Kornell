@@ -32,6 +32,7 @@ import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.server.api.ActomResource
 import kornell.core.error.exception.EntityConflictException
+import scala.collection.mutable.ListBuffer
 
 object RegistrationEnrollmentService {
 
@@ -103,28 +104,41 @@ object RegistrationEnrollmentService {
 
   val SEP = ":"
 
+  
+  type EnrollmentUUID = String
+  type ActomKey = String
+  type Props = Map[String,String]
+  type ActomId = (EnrollmentUUID,ActomKey)
+  
+  //TODO: This method is generating ~1000 lines for enrollment in CVS course, consider using references instead of copies
   private def createChildEnrollments(enrollment: Enrollment, courseVersionUUID: String, personUUID: String, deanUUID: String) = {
-    val dashboardEnrollmentMap = collection.mutable.Map[String, String]()
+    val enrollmentMap = collection.mutable.Map[String, String]()
+    val enrolls = new ListBuffer[String]() 
     var moduleCounter = 0
     val parentEnrollmentUUID = enrollment.getUUID
-    val childEnrollmentMap = Map("knl.dashboard.enrollmentUUID" -> parentEnrollmentUUID).asJava    
+    enrollmentMap("knl.dashboard.enrollmentUUID") = parentEnrollmentUUID    
+    enrolls += parentEnrollmentUUID
+    
     CourseVersionRepo(courseVersionUUID).getChildren.foreach(cv => {
       for (i <- 0 until cv.getInstanceCount) {
         val childEnrollment = createEnrollment(personUUID, null, cv.getUUID, EnrollmentState.enrolled, deanUUID, parentEnrollmentUUID)
-        dashboardEnrollmentMap("knl.module." + moduleCounter + ".name") = cv.getLabel + SEP + i
-        dashboardEnrollmentMap("knl.module." + moduleCounter + ".index") = s"$i"
-        dashboardEnrollmentMap("knl.module." + moduleCounter + ".label") = cv.getLabel
-        dashboardEnrollmentMap("knl.module." + moduleCounter + ".enrollmentUUID") = childEnrollment.getUUID
+        val childUUID = childEnrollment.getUUID
+        enrollmentMap(s"knl.module.${moduleCounter}.name") = cv.getLabel + SEP + i
+        enrollmentMap(s"knl.module.${moduleCounter}.index") = s"$i"
+        enrollmentMap(s"knl.module.${moduleCounter}.label") = cv.getLabel
+        enrollmentMap(s"knl.module.${moduleCounter}.enrollmentUUID") = childUUID
+        enrolls += childUUID
         moduleCounter += 1
-        //TODO: Reference SCO ID (actomKey) instead of file name
-        val childActomResource = new ActomResource(childEnrollment.getUUID, "index.html")
-        childActomResource.putEntries(Entities.newActomEntries(childEnrollment.getUUID, "index.html", childEnrollmentMap))
       }
     })
-
-    dashboardEnrollmentMap("knl.module._count") = moduleCounter.toString
-    val actomResource = new ActomResource(enrollment.getUUID, "index.html")
-    actomResource.putEntries(Entities.newActomEntries(enrollment.getUUID, "index.html", dashboardEnrollmentMap.asJava))
+    enrollmentMap("knl.module._count") = moduleCounter.toString
+    val enrollmentsJMap = enrollmentMap.asJava
+    for (uuid <- enrolls) {
+      //TODO: Support MultiSCO
+      val actomResource = new ActomResource(uuid, "index.html")
+      //TODO: Consider batching this
+      actomResource.putEntries(Entities.newActomEntries(uuid, "index.html", enrollmentsJMap))  
+    }    
   }
 
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person, cancelEnrollment: Boolean) = {
