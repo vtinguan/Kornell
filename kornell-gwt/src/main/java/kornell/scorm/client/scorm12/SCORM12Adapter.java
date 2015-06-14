@@ -2,7 +2,6 @@ package kornell.scorm.client.scorm12;
 
 import static kornell.scorm.client.scorm12.Scorm12.logger;
 import kornell.api.client.Callback;
-import kornell.api.client.KornellClient;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.gui.client.presentation.course.ClassroomPlace;
@@ -10,51 +9,50 @@ import kornell.gui.client.presentation.course.ClassroomPlace;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
-import com.google.web.bindery.event.shared.EventBus;
 
-public class SCORM12Adapter implements CMIConstants  {
+import static kornell.core.util.StringUtils.*;
+
+public class SCORM12Adapter implements CMIConstants {
 
 	/**
 	 * How much time a client can stay unsynced with the server after setting a
 	 * data model value, in milliseconds.
 	 */
 	private static final int DIRTY_TOLERANCE = 2000;
-	
-	public static SCORM12Adapter create(KornellSession session, PlaceController placeCtrl,String enrollmentUUID, String actomKey,
-			ActomEntries entries) {
-		return new SCORM12Adapter(session,placeCtrl,enrollmentUUID,actomKey,entries);
+
+	public static SCORM12Adapter create(SCORM12Runtime rte,
+			KornellSession session, PlaceController placeCtrl,
+			String enrollmentUUID, String actomKey, ActomEntries entries) {
+		return new SCORM12Adapter(rte, session, placeCtrl, enrollmentUUID,
+				actomKey, entries);
 	}
-	
-	//Scope Parameters
+
+	// Scope Parameters
 	private String enrollmentUUID;
 	private String actomKey;
-	
-	//State
-	private CMITree dataModel = new CMINode();
+
+	// State
+	//private CMITree dataModel = new CMINode();
 	private String lastError = NoError;
 
-	//UI/Client
+	// UI/Client
 	private KornellSession client;
 	private PlaceController placeCtrl;
+	private SCORM12Runtime rte;
 
-	
-	public SCORM12Adapter(KornellSession session, PlaceController placeCtrl,
-			String enrollmentUUID, String actomKey,ActomEntries ae) {
+	public SCORM12Adapter(SCORM12Runtime rte, KornellSession session,
+			PlaceController placeCtrl, String enrollmentUUID, String actomKey,
+			ActomEntries ae) {
 		logger.info("SCORM API 1.2.2015_05_07_20_00");
+		this.rte = rte;
 		this.enrollmentUUID = enrollmentUUID;
 		this.actomKey = actomKey;
-		if(ae != null)
-			this.dataModel = CMITree.create(ae.getEntries());		
 		this.client = session;
 		this.placeCtrl = placeCtrl;
-}
+	}
 
-	
 	public String LMSInitialize(String param) {
-		String result = TRUE;
-		if (dataModel == null) {
-			logger.warning("LMS initialized without a data model ready.");
-		}
+		String result = TRUE;		
 		logger.finer("LMSInitialize[" + param + "] = " + result);
 		return result;
 	}
@@ -70,9 +68,9 @@ public class SCORM12Adapter implements CMIConstants  {
 		return lastError;
 	}
 
-	public String LMSGetValue(String param,String moduleUUID) {
-		String result = dataModel.getValue(param);
-		logger.finer("LMSGetValue["+moduleUUID+"][" + param + "] = " + result);
+	public String LMSGetValue(String param, String moduleUUID) {
+		String result = getDataModel(moduleUUID,actomKey).getValue(param);
+		logger.finer("LMSGetValue[" + param + "]@[" + moduleUUID + "/"+actomKey+"] = "+ result);
 		return result;
 	}
 
@@ -84,85 +82,84 @@ public class SCORM12Adapter implements CMIConstants  {
 	}
 
 	private void syncOnLMSCommit() {
-		sync();
+		sync(enrollmentUUID,actomKey);
 	}
 
-	public String LMSSetDouble(String key, Double value) {
-		return LMSSetDouble(null,key,value);
-	}
-	
-	public String LMSSetDouble(String moduleUUID, String key, Double value) {
+	public String LMSSetDouble(String key, Double value, String moduleUUID) {
 		String strValue = Double.toString(value);
-		return LMSSetString(moduleUUID,key, strValue);
+		return LMSSetString(key, strValue,moduleUUID);
 	}
 
-	public String LMSSetString(String key, String value) {
-		return LMSSetString(null,key,value); 
-	}
-	
-	public String LMSSetString(String moduleUUID, String key, String value) {
+	//TODO: Consider API changes for MultiSCO
+	public String LMSSetString(String key, String value,String moduleUUID) {
 		String result = FALSE;
+		CMITree dataModel = getDataModel(moduleUUID,actomKey);		
 		result = dataModel.setValue(key, value);
-		scheduleSync();
-		logger.finer("LMSSetValue ["+moduleUUID+"][" + key + " = " + value + "] = " + result);
+		scheduleSync(moduleUUID,actomKey);
+		logger.finer("LMSSetValue [" + key + " = " + value
+				+ "]@[" + moduleUUID + "/"+actomKey+"] = " + result);
 		return result;
 	}
+
 	
-	public void launch(String enrollmentUUID){
+	private CMITree getDataModel(String moduleUUID, String moduleActomKey) {
+		String targetUUID = isSome(moduleUUID) ? moduleUUID : enrollmentUUID;
+		CMITree dataModel = rte.getDataModel(targetUUID,moduleActomKey);
+		return dataModel;
+	}
+
+	public void launch(String enrollmentUUID) {
 		placeCtrl.goTo(new ClassroomPlace(enrollmentUUID));
 	}
 
-	private void scheduleSync() {
+	
+	private void scheduleSync(final String moduleUUID, final String moduleActomKey) {
 		(new Timer() {
 			public void run() {
-				syncAfterSet();
+				syncAfterSet(moduleUUID,moduleActomKey);
 			}
 
-			private void syncAfterSet() {
-				sync();
+			private void syncAfterSet(String moduleUUID,String moduleActomKey) {
+				sync(moduleUUID,moduleActomKey);
 			}
 		}).schedule(DIRTY_TOLERANCE);
 	}
 
-	public void runtimeSync(){
-		sync();
+	
+	public void runtimeSync() {
+		sync(enrollmentUUID,actomKey);
 	}
 	
-	private void sync() {
+
+	private void sync(final String syncEnrollmentUUID,final String syncActomKey) {
 		class Scrub extends Callback<ActomEntries> {
 			@Override
 			public void ok(ActomEntries to) {
 				// TODO: Scrub only verified
-				dataModel.scrub();
+				getDataModel(syncEnrollmentUUID,syncActomKey).scrub();
 			}
 		}
-
+		
+		CMITree dataModel = getDataModel(syncEnrollmentUUID,syncActomKey);		
 		if (dataModel != null && dataModel.isDirty()) {
-			
-			client.enrollment(enrollmentUUID)
-				  .actom(actomKey)
+			GWT.debugger();
+			client.enrollment(syncEnrollmentUUID)
+				  .actom(syncEnrollmentUUID)
 				  .put(CMITree.collectDirty(dataModel), new Scrub());
 		}
 	}
-/*
-	@Override
-	public void onActomEntered(ActomEnteredEvent event) {
-		logger.finer("ActomEntered [" + event.getActomKey() + "]");
-		refreshDataModel(event);
-	}
-
-
-	private void refreshDataModel(ActomEnteredEvent event) {
-		syncBeforeLoadinNewActom();
-		this.currentActomKey = event.getActomKey();
-		this.currentEnrollmentUUID = event.getEnrollmentUUID();
-		loadDataModel();
-	}
-
-	private void syncBeforeLoadinNewActom() {
-		sync();
-	}
-*/	
-	
+	/*
+	 * @Override public void onActomEntered(ActomEnteredEvent event) {
+	 * logger.finer("ActomEntered [" + event.getActomKey() + "]");
+	 * refreshDataModel(event); }
+	 * 
+	 * 
+	 * private void refreshDataModel(ActomEnteredEvent event) {
+	 * syncBeforeLoadinNewActom(); this.currentActomKey = event.getActomKey();
+	 * this.currentEnrollmentUUID = event.getEnrollmentUUID(); loadDataModel();
+	 * }
+	 * 
+	 * private void syncBeforeLoadinNewActom() { sync(); }
+	 */
 
 }

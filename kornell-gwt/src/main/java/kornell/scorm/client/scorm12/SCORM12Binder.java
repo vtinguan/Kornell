@@ -37,9 +37,9 @@ public class SCORM12Binder {
 			switch (typeof value) {
 			case "number":
 				var dbl = @java.lang.Double::valueOf(D)(value);
-				return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSSetDouble(Ljava/lang/String;Ljava/lang/Double;)(param,dbl);
+				return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSSetDouble(Ljava/lang/String;Ljava/lang/Double;Ljava/lang/String;)(param,dbl,moduleUUID);
 			case "string":
-				return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSSetString(Ljava/lang/String;Ljava/lang/String;)(param,value);
+				return api.@kornell.scorm.client.scorm12.SCORM12Adapter::LMSSetString(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(param,value,moduleUUID);
 			default:
 				throw "SCORM 1.2 Unsupported value type"
 			}

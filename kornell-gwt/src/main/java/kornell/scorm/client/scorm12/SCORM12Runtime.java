@@ -1,5 +1,6 @@
 package kornell.scorm.client.scorm12;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -7,13 +8,12 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.EnrollmentEntries;
 import kornell.core.entity.EnrollmentsEntries;
-import kornell.core.to.EnrollmentLaunchTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Runtime implements ActomEnteredEventHandler {
@@ -24,6 +24,8 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 	private SCORM12Adapter currentAPI = null;
 	private KornellSession session;
 	private PlaceController placeCtrl;
+	
+	private Map<String,CMITree> forestCache = new HashMap<>();
 	
 	private SCORM12Runtime(EventBus bus, KornellSession session, PlaceController placeCtrl, EnrollmentsEntries entries){
 		this.entries = entries;
@@ -45,11 +47,36 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 	}
 
 	private void bindNewAdapter(String enrollmentUUID, String actomKey) {
+		ActomEntries actomEntries = lookupActomEntries(enrollmentUUID, actomKey);
+		SCORM12Adapter apiAdapter = SCORM12Adapter.create(this,session,placeCtrl,enrollmentUUID,actomKey,actomEntries);
+		SCORM12Binder.bindToWindow(apiAdapter);
+	}
+
+	private ActomEntries lookupActomEntries(String enrollmentUUID, String actomKey) {
 		Map<String, EnrollmentEntries> enrollmentEntriesMap = entries.getEnrollmentEntriesMap();
 		EnrollmentEntries enrollmentEntries = enrollmentEntriesMap.get(enrollmentUUID);
-		Map<String, ActomEntries> actomEntriesMap = enrollmentEntries.getActomEntriesMap();
-		ActomEntries actomEntries = actomEntriesMap.get(actomKey);
-		SCORM12Adapter apiAdapter = SCORM12Adapter.create(session,placeCtrl,enrollmentUUID,actomKey,actomEntries);
-		SCORM12Binder.bindToWindow(apiAdapter);
+		if(enrollmentEntries != null){
+			Map<String, ActomEntries> actomEntriesMap = enrollmentEntries.getActomEntriesMap();
+			ActomEntries actomEntries = actomEntriesMap.get(actomKey);
+			return actomEntries;
+		} else {
+			logger.warning("Enrollment entries not found for ["+enrollmentUUID+"]["+actomKey+"]");
+			return null;
+		}
+	}
+
+	public CMITree getDataModel(String targetUUID,String actomKey) {
+		String cacheKey = StringUtils.hash(targetUUID,actomKey);
+		CMITree dataModel = forestCache.get(cacheKey);
+		if (dataModel == null){
+			ActomEntries ae = lookupActomEntries(targetUUID,actomKey);
+			if(ae != null){
+				dataModel = CMITree.create(ae.getEntries());	
+				forestCache.put(cacheKey,dataModel);
+			} else {
+				logger.warning("DataModel not found for ["+targetUUID+"]["+actomKey+"]");
+			}
+		}
+		return dataModel;
 	}
 }
