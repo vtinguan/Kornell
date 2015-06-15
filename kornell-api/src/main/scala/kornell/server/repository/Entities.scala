@@ -341,7 +341,6 @@ object Entities {
     chatThreadParticipant.setUUID(uuid)
     chatThreadParticipant.setThreadUUID(chatThreadUUID)
     chatThreadParticipant.setPersonUUID(personUUID)
-    chatThreadParticipant.setChatThreadName(chatThreadName)
     chatThreadParticipant.setLastReadAt(lastReadAt)
     chatThreadParticipant.setActive(active)
     chatThreadParticipant.setLastJoinDate(lastJoinDate)

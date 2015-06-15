@@ -202,13 +202,14 @@ object TOs {
   }
 
   def newUnreadChatThreadTO: UnreadChatThreadTO = tos.newUnreadChatThreadTO.as 
-  def newUnreadChatThreadTO(unreadMessages: String, chatThreadUUID: String, chatThreadName: String, courseClassUUID: String, supportType: String): UnreadChatThreadTO = {
+  def newUnreadChatThreadTO(unreadMessages: String, chatThreadUUID: String, supportType: String, creatorName: String, entityUUID: String, entityName: String): UnreadChatThreadTO = {
     val to = newUnreadChatThreadTO
     to.setUnreadMessages(unreadMessages)
     to.setChatThreadUUID(chatThreadUUID)
-    to.setChatThreadName(chatThreadName)
-    to.setCourseClassUUID(courseClassUUID)
     to.setThreadType(ChatThreadType.valueOf(supportType))
+    to.setChatThreadCreatorName(creatorName)
+    to.setEntityUUID(entityUUID)
+    to.setEntityName(entityName)
     to
   }
 

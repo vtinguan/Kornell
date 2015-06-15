@@ -12,17 +12,14 @@ public interface UnreadChatThreadTO {
 	String getChatThreadUUID();
 	void setChatThreadUUID(String chatThreadUUID);
 
-//	String getChatThreadName();
-//	void setChatThreadName(String chatThreadName);
-
 	String getChatThreadCreatorName();
 	void setChatThreadCreatorName(String chatThreadCreatorName);
 	
-	String getCourseClassUUID();
-	void setCourseClassUUID(String courseClassUUID);
+	String getEntityUUID();
+	void setEntityUUID(String entityUUID);
 	
-	String getCourseClassName();
-	void setCourseClassName(String courseClassName);
+	String getEntityName();
+	void setEntityName(String entityName);
 	
 	ChatThreadType getThreadType();
 	void setThreadType(ChatThreadType threadType);

@@ -117,7 +117,8 @@ public class GenericMessageView extends Composite implements MessageView {
 	private void setLabelContent(final UnreadChatThreadTO unreadChatThreadTO, final Label label, boolean markAsRead) {
 	  String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) && !markAsRead ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
 	  appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
-	  label.getElement().setInnerHTML(unreadChatThreadTO.getChatThreadName() + appendCount);
+	  //TODO put real value
+	  label.getElement().setInnerHTML("THIS IS HARDCODED FOR NOW");
 	  //if it's supposed to be marked as read and there were messages on the thread, update the envelope count
 	  if(markAsRead && !"0".equals(unreadChatThreadTO.getUnreadMessages())){
 	  		bus.fireEvent(new UnreadMessagesCountChangedEvent(Integer.parseInt(unreadChatThreadTO.getUnreadMessages())));
@@ -127,7 +128,8 @@ public class GenericMessageView extends Composite implements MessageView {
 
 	@Override
   public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean setFocus) {
-		threadTitle.setText(unreadChatThreadTO.getChatThreadName());
+		//TODO put real value
+		threadTitle.setText("THIS IS HARDCODED FOR NOW");
 		dateLabelsMap = new HashMap<Label, ChatThreadMessageTO>();
 		
 		threadPanelItems.clear();

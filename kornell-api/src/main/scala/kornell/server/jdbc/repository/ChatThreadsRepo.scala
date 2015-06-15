@@ -195,7 +195,7 @@ object ChatThreadsRepo {
   
   def getTotalUnreadCountsByPersonPerThread(personUUID: String, institutionUUID: String) = {
     TOs.newUnreadChatThreadsTO(sql"""
-				| select count(unreadMessages) as unreadMessages, chatThreadUUID, courseClassUUID, threadType
+				| select count(unreadMessages) as unreadMessages, chatThreadUUID, threadType, creatorName, entityName, entityUUID
 				| from (
 					| select tm.uuid as unreadMessages,
 						| countByCC.chatThreadUUID,
@@ -204,7 +204,11 @@ object ChatThreadsRepo {
 						| tm.personUUID,
 						| tm.sentAt,
 						| countByCC.lastSentAt,
-    					| t.threadType
+    					| t.threadType,
+    					| cc.name as courseClassName,
+						| p.fullName as creatorName,
+    					| (case t.threadType when ${ChatThreadType.DIRECT.toString} then (select 'person') else (select cc.name) end) as entityName,
+    					| (case t.threadType when ${ChatThreadType.DIRECT.toString} then (select 'uuid') else (select cc.uuid) end) as entityUUID
 					| from ChatThread t
 					| join (
 						| select distinct t.uuid as chatThreadUUID,
@@ -220,6 +224,8 @@ object ChatThreadsRepo {
 					| ) countByCC on t.uuid = countByCC.chatThreadUUID
 					| left join ChatThreadMessage tm on tm.chatThreadUUID = t.uuid and tm.personUUID <> ${personUUID}
     				| and (threadLastReadAt < sentAt or threadLastReadAt is null)
+					| join CourseClass cc on t.courseClassUUID = cc.uuid
+					| join Person p on t.personUUID = p.uuid
 				| ) as threadMessages
 				| group by chatThreadUUID
 				| order by unreadMessages desc, lastSentAt desc
