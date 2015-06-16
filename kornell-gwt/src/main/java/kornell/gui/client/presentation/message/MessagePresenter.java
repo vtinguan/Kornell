@@ -115,7 +115,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		List<UnreadChatThreadTO> newUnreadChatThreadTOs = new ArrayList<UnreadChatThreadTO>();
 	  for (Iterator<UnreadChatThreadTO> iterator = unreadChatThreadTOs.iterator(); iterator.hasNext();) {
 	    UnreadChatThreadTO unreadChatThreadTO = (UnreadChatThreadTO) iterator.next();
-	    if(!isClassPresenter || Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(unreadChatThreadTO.getCourseClassUUID())){
+	    if(!isClassPresenter || Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(unreadChatThreadTO.getEntityUUID())){
 	    	newUnreadChatThreadTOs.add(unreadChatThreadTO);
 	    }
     }

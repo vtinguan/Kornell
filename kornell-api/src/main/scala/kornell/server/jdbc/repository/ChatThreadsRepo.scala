@@ -207,8 +207,13 @@ object ChatThreadsRepo {
     					| t.threadType,
     					| cc.name as courseClassName,
 						| p.fullName as creatorName,
-    					| (case t.threadType when ${ChatThreadType.DIRECT.toString} then (select 'person') else (select cc.name) end) as entityName,
-    					| (case t.threadType when ${ChatThreadType.DIRECT.toString} then (select 'uuid') else (select cc.uuid) end) as entityUUID
+    					| (case t.threadType when ${ChatThreadType.DIRECT.toString} then 
+    						(select p.fullName from ChatThreadParticipant ctpin 
+    						join Person pin on ctpin.personUUID = pin.uuid where ctpin.personUUID <> t.personUUID
+    						) else cc.name end) as entityName,
+    					| (case t.threadType when ${ChatThreadType.DIRECT.toString} then 
+    						(select personUUID from ChatThreadParticipant where personUUID <> t.personUUID
+    						) else  cc.uuid end) as entityUUID
 					| from ChatThread t
 					| join (
 						| select distinct t.uuid as chatThreadUUID,
