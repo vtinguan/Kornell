@@ -48,6 +48,7 @@ import kornell.core.to.SimplePersonTO
 package object repository {
   val logger = Logger.getLogger("kornell.server.jdbc")
   
+  //TODO: Move converters to their repos
   implicit def toInstitution(rs:ResultSet):Institution = 
     newInstitution(rs.getString("uuid"), 
         rs.getString("name"),  
@@ -182,7 +183,10 @@ package object repository {
       rs.getString("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
       rs.getString("certifiedAt"),
-      rs.getString("courseVersionUUID")
+      rs.getString("courseVersionUUID"),
+      rs.getString("parentEnrollmentUUID"),
+      rs.getDate("start_date"),
+      rs.getDate("end_date")
     )
   }
     

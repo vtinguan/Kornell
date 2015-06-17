@@ -133,7 +133,8 @@ object Entities {
     state: EnrollmentState, lastProgressUpdate: String = null,
     assessment: Assessment = null, lastAssessmentUpdate: String = null,
     assessmentScore: BigDecimal = null, certifiedAt: String = null,
-    courseVersionUUID: String = null, parentEnrollmentUUID:String = null): Enrollment = {
+    courseVersionUUID: String = null, parentEnrollmentUUID:String = null,
+    startDate:Date=null,endDate:Date=null): Enrollment = {
     val e = factory.enrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -149,6 +150,8 @@ object Entities {
     e.setCertifiedAt(certifiedAt)
     e.setCourseVersionUUID(courseVersionUUID)
     e.setParentEnrollmentUUID(parentEnrollmentUUID)
+    e.setStartDate(startDate)
+    e.setEndDate(endDate)
     e
   }
 
