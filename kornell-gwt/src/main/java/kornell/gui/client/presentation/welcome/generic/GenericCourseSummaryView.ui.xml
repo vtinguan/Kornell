@@ -17,9 +17,10 @@
 				<b:Image ui:field="imgIconCourse" addStyleNames="icon" />
         <b:Paragraph addStyleNames="courseStatus" ui:field="pStatus"/>
         <b:ProgressBar addStyleNames="progressBar shy" ui:field="progressBar"/>
-        <b:Paragraph addStyleNames="courseStatusInfo" ui:field="pStatusInfo"/>
-        <b:Paragraph addStyleNames="courseStatus" ui:field="pStatus2"/>
-        <b:Paragraph addStyleNames="courseStatusInfo" ui:field="pStatusInfo2"/>
+        <b:Paragraph addStyleNames="courseStatus courseStatusInfo" ui:field="pStatusInfo"/>
+        <b:Paragraph addStyleNames="courseStatus courseStatusErr" ui:field="pStatusErr"/>
+        <b:Paragraph addStyleNames="courseStatus courseStatus" ui:field="pStatus2"/>
+        <b:Paragraph addStyleNames="courseStatus courseStatusInfo" ui:field="pStatusInfo2"/>
 			</g:FlowPanel>	
 		</g:FlowPanel>
 	</g:FlowPanel>

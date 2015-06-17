@@ -59,13 +59,19 @@
 				}
 				.courseStatus {
 					display: inline;
+					color: @niceTextColor;
 					text-align: right;
 					font-size: 11px;
 					font-weight: bold;
 					line-height: 23px;
 					padding-left: 7px;
-					color: @niceTextColor;
 					float: left;
+				}
+				.courseStatusInfo {
+					color: @textInfoColor !important;
+				}
+				.courseStatusErr {
+				  color: @textHighlightColor2 !important;
 				}
 				.progress{
 					width: 250px;
@@ -77,16 +83,6 @@
 					.bar{
 						.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
 					}
-				}
-				.courseStatusInfo {
-					display: inline;
-					color: @textInfoColor;
-					text-align: right;
-					font-size: 11px;
-					font-weight: bold;
-					line-height: 23px;
-					padding-left: 7px;
-					float: left;
 				}
 				.courseProgressCertificate {
 					float: right; 
