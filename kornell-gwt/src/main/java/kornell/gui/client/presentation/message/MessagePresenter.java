@@ -124,7 +124,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	  	selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
 	  }
 	  if(newUnreadChatThreadTOs.size() > 0){
-	  	view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID());
+	  	view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
 	  }
 	  return newUnreadChatThreadTOs;
   }

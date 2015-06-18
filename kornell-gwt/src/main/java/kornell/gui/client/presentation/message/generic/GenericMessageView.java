@@ -50,25 +50,25 @@ public class GenericMessageView extends Composite implements MessageView {
 	private List<Label> sideItems;
 	Map<Label, ChatThreadMessageTO> dateLabelsMap;
 
-  @UiField FlowPanel sidePanel;
-  @UiField FlowPanel threadPanel;
-  @UiField ScrollPanel threadPanelItemsScroll;
-  @UiField FlowPanel threadPanelItems;
-  @UiField Label threadTitle;
-  @UiField TextArea messageTextArea;
-  @UiField Button btnSend;
+	@UiField FlowPanel sidePanel;
+	@UiField FlowPanel threadPanel;
+	@UiField ScrollPanel threadPanelItemsScroll;
+	@UiField FlowPanel threadPanelItems;
+	@UiField Label threadTitle;
+	@UiField TextArea messageTextArea;
+	@UiField Button btnSend;
 
 	public GenericMessageView(EventBus eventBus) {
-    this.bus = eventBus;
+		this.bus = eventBus;
 		initWidget(uiBinder.createAndBindUi(this));
 		ensureDebugId("genericMessageInboxView");
 	}
-	
+
 	@Override
-  protected void onEnsureDebugId(String baseID) {
+	protected void onEnsureDebugId(String baseID) {
 		sidePanel.ensureDebugId(baseID + "-sidePanel");
 		threadPanel.ensureDebugId(baseID + "-threadPanel");
-  }
+	}
 
 	@Override
 	public void setPresenter(Presenter p) {
@@ -76,7 +76,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	}
 
 	@Override
-  public void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID) {
+	public void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID, final String currentUserFullName) {
 		sidePanel.clear();
 		sideItems = new ArrayList<Label>();
 		for (final UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadsTO) {
@@ -94,106 +94,128 @@ public class GenericMessageView extends Composite implements MessageView {
 						}
 					};
 					preventDoubleClickTimer.schedule(300);
-					
+
 					for (Label lbl : sideItems) {
-	          lbl.removeStyleName("selected");
-          }
-          label.addStyleName("selected");
+						lbl.removeStyleName("selected");
+					}
+					label.addStyleName("selected");
 					presenter.threadClicked(unreadChatThreadTO);
-					setLabelContent(unreadChatThreadTO, label, true);
+					setLabelContent(unreadChatThreadTO, label, true, currentUserFullName);
 				}
 			});
 			if(unreadChatThreadTO.getChatThreadUUID().equals(selectedChatThreadUUID)){
-        label.addStyleName("selected");
-				setLabelContent(unreadChatThreadTO, label, true);
+				label.addStyleName("selected");
+				setLabelContent(unreadChatThreadTO, label, true, currentUserFullName);
 			} else {
-				setLabelContent(unreadChatThreadTO, label, false);
+				setLabelContent(unreadChatThreadTO, label, false, currentUserFullName);
 			}
 			sidePanel.add(label);
 			sideItems.add(label);
-    }
-  }
+		}
+	}
+	
+	private String getThreadTitle(final UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
+		switch (unreadChatThreadTO.getThreadType()) {
+		case COURSE_CLASS:
+			return "Conversar para turma " + unreadChatThreadTO.getEntityName();
+		case DIRECT:
+			return "Conversar com " + unreadChatThreadTO.getEntityName();
+		case SUPPORT:
+			if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName)) {
+				return "Ajuda para turma: " + unreadChatThreadTO.getEntityName();
+			} else {
+				return unreadChatThreadTO.getChatThreadCreatorName() + "\n (Ajuda para turma: " + unreadChatThreadTO.getEntityName() + ")";
+			}
+		case TUTORING:
+			if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName)) {
+				return "Tutor para turma: " + unreadChatThreadTO.getEntityName();
+			} else {
+				return unreadChatThreadTO.getChatThreadCreatorName() + "\n (Tutor para turma: " + unreadChatThreadTO.getEntityName() + ")";
+			}
+		default:
+			return null;
+		}
+	}
 
-	private void setLabelContent(final UnreadChatThreadTO unreadChatThreadTO, final Label label, boolean markAsRead) {
-	  String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) && !markAsRead ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
-	  appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
-	  //TODO put real value
-	  label.getElement().setInnerHTML("THIS IS HARDCODED FOR NOW");
-	  //if it's supposed to be marked as read and there were messages on the thread, update the envelope count
-	  if(markAsRead && !"0".equals(unreadChatThreadTO.getUnreadMessages())){
-	  		bus.fireEvent(new UnreadMessagesCountChangedEvent(Integer.parseInt(unreadChatThreadTO.getUnreadMessages())));
-		  	unreadChatThreadTO.setUnreadMessages("0");
-	  }
-  }
+	private void setLabelContent(final UnreadChatThreadTO unreadChatThreadTO, final Label label, boolean markAsRead, String currentUserFullName) {
+		String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) && !markAsRead ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
+		appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
+		
+		label.getElement().setInnerHTML(getThreadTitle(unreadChatThreadTO, currentUserFullName));
+		//if it's supposed to be marked as read and there were messages on the thread, update the envelope count
+		if(markAsRead && !"0".equals(unreadChatThreadTO.getUnreadMessages())){
+			bus.fireEvent(new UnreadMessagesCountChangedEvent(Integer.parseInt(unreadChatThreadTO.getUnreadMessages())));
+			unreadChatThreadTO.setUnreadMessages("0");
+		}
+	}
 
 	@Override
-  public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean setFocus) {
-		//TODO put real value
-		threadTitle.setText("THIS IS HARDCODED FOR NOW");
+	public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean setFocus) {
+		threadTitle.setText(getThreadTitle(unreadChatThreadTO, currentUserFullName));
 		dateLabelsMap = new HashMap<Label, ChatThreadMessageTO>();
-		
+
 		threadPanelItems.clear();
 		addMessagesToThreadPanel(chatThreadMessagesTO, currentUserFullName);
-		
+
 		prepareTextArea(setFocus);
-    messageTextArea.addKeyUpHandler(new KeyUpHandler() {
-        @Override
-        public void onKeyUp(KeyUpEvent event) {
-          if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && event.isAnyModifierKeyDown() && event.isControlKeyDown())
-            doSend(null);
-        }
-    });
-  }
+		messageTextArea.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && event.isAnyModifierKeyDown() && event.isControlKeyDown())
+					doSend(null);
+			}
+		});
+	}
 
 	private void scrollToBottom() {
-	  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		    		threadPanelItemsScroll.scrollToBottom();
-		      }
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				threadPanelItemsScroll.scrollToBottom();
+			}
 		});
-  }
+	}
 
 	@Override
 	public void addMessagesToThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, String currentUserFullName) {
-	  for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessagesTO.getChatThreadMessageTOs()) {
+		for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessagesTO.getChatThreadMessageTOs()) {
 			FlowPanel threadMessageWrapper = new FlowPanel();
 			threadMessageWrapper.addStyleName("threadMessageWrapper");
 			Label header = new Label("");
-			
+
 			header.addStyleName("threadMessageHeader");
 			if(currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
 				header.addStyleName("rightText");
 				threadMessageWrapper.addStyleName("overrideWrapper");
 			}
 			threadMessageWrapper.add(header);
-			
+
 			Label item = new Label(chatThreadMessageTO.getMessage());
 			item.addStyleName("threadMessageItem");
 			threadMessageWrapper.add(item);
-			
+
 			threadPanelItems.add(threadMessageWrapper);
 			dateLabelsMap.put(header, chatThreadMessageTO);
-    }
-	  updateDateLabelValues(chatThreadMessagesTO.getServerTime());
-	  if(chatThreadMessagesTO.getChatThreadMessageTOs().size() > 0)
-	  	scrollToBottom();
-  }
+		}
+		updateDateLabelValues(chatThreadMessagesTO.getServerTime());
+		if(chatThreadMessagesTO.getChatThreadMessageTOs().size() > 0)
+			scrollToBottom();
+	}
 
 	private void updateDateLabelValues(String serverTime) {
 		Iterator<Entry<Label, ChatThreadMessageTO>> it = dateLabelsMap.entrySet().iterator();
-    while (it.hasNext()) {
-        Map.Entry<Label, ChatThreadMessageTO> pairs = (Map.Entry<Label, ChatThreadMessageTO>)it.next();
-    		pairs.getKey().setText(getDateLabelValue(serverTime, pairs.getValue()));
-    }
-  }
+		while (it.hasNext()) {
+			Map.Entry<Label, ChatThreadMessageTO> pairs = (Map.Entry<Label, ChatThreadMessageTO>)it.next();
+			pairs.getKey().setText(getDateLabelValue(serverTime, pairs.getValue()));
+		}
+	}
 
 	private String getDateLabelValue(String serverTimeStr, final ChatThreadMessageTO chatThreadMessageTO) {
 		Date sentAt = formHelper.getJudFromString(chatThreadMessageTO.getSentAt());
 		Date serverTime = formHelper.getJudFromString(serverTimeStr);
-	  String dateStr = chatThreadMessageTO.getSenderFullName() + " - " + formHelper.getElapsedTimeSince(sentAt, serverTime);
-	  return dateStr;
-  }
+		String dateStr = chatThreadMessageTO.getSenderFullName() + " - " + formHelper.getElapsedTimeSince(sentAt, serverTime);
+		return dateStr;
+	}
 
 	@UiHandler("btnSend")
 	void doSend(ClickEvent e) {
@@ -204,14 +226,14 @@ public class GenericMessageView extends Composite implements MessageView {
 	}
 
 	private void prepareTextArea(boolean setFocus) {
-	  messageTextArea.setText("");
-	  if(setFocus){
-//		  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-//			      @Override
-//			      public void execute() {
-//			        messageTextArea.setFocus(true);
-//			      }
-//			});
-	  }
-  }
+		messageTextArea.setText("");
+		if(setFocus){
+			//		  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			//			      @Override
+			//			      public void execute() {
+			//			        messageTextArea.setFocus(true);
+			//			      }
+			//			});
+		}
+	}
 }
