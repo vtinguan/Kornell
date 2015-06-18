@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AdminCourseClassesView extends IsWidget {
 	public interface Presenter extends PaginationPresenter {
-		void upsertCourseClass(CourseClass courseClass);
 		void updateCourseClass(String courseClassUUID);
 	}
 	void setPresenter(AdminCourseClassesView.Presenter presenter);

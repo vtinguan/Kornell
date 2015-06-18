@@ -576,7 +576,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                     CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
                     if (courseClassTO2 != null)
                         courseClassTO2.setCourseClass(courseClass);
-                    PlaceUtils.reloadCurrentPlace(bus, placeController);
+					placeController.goTo(new AdminCourseClassPlace(courseClass.getUUID()));
                 }
 
                 @Override

@@ -62,6 +62,9 @@ public class GenericCourseSummaryView extends Composite {
 	
 	@UiField
 	Paragraph pStatusInfo;
+	
+	@UiField
+	Paragraph pStatusErr;
 
 	@UiField
 	Paragraph pStatus2;
@@ -105,6 +108,9 @@ public class GenericCourseSummaryView extends Composite {
 			@Override
 			public void ok(UserInfoTO userInfoTO) {
 				Student student = teacher.student(userInfoTO);
+				if(courseClassTO.getEnrollment() != null && EnrollmentState.cancelled.equals(courseClassTO.getEnrollment().getState())){
+					pStatusErr.setText("(CANCELADA)");
+				}
 				if (student.isEnrolled())
 					onEnrolled(student);
 				else
