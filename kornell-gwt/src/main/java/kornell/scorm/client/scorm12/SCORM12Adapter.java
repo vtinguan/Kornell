@@ -142,7 +142,6 @@ public class SCORM12Adapter implements CMIConstants {
 		
 		CMITree dataModel = getDataModel(syncEnrollmentUUID,syncActomKey);		
 		if (dataModel != null && dataModel.isDirty()) {
-			GWT.debugger();
 			client.enrollment(syncEnrollmentUUID)
 				  .actom(syncEnrollmentUUID)
 				  .put(CMITree.collectDirty(dataModel), new Scrub());
