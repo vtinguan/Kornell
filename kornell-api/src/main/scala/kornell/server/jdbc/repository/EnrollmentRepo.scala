@@ -43,7 +43,9 @@ class EnrollmentRepo(enrollmentUUID: String) {
 				lastAssessmentUpdate = ${e.getLastAssessmentUpdate},
 				assessmentScore = ${e.getAssessmentScore},
 				certifiedAt = ${e.getCertifiedAt},
-        parentEnrollmentUUID = ${e.getParentEnrollmentUUID}
+        parentEnrollmentUUID = ${e.getParentEnrollmentUUID},
+        start_date = ${e.getStartDate},
+        end_date = ${e.getEndDate}
       where uuid = ${e.getUUID} """.executeUpdate
     e
   }
