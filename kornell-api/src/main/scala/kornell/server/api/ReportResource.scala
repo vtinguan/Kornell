@@ -6,7 +6,9 @@ import java.net.URL
 import java.text.SimpleDateFormat
 
 import javax.servlet.http.HttpServletResponse
+import javax.ws.rs.Consumes
 import javax.ws.rs.GET
+import javax.ws.rs.PUT
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
@@ -16,6 +18,7 @@ import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.RoleCategory
 import kornell.core.error.exception.ServerErrorException
 import kornell.core.error.exception.UnauthorizedAccessException
+import kornell.core.to.SimplePeopleTO
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
@@ -42,10 +45,12 @@ class ReportResource {
     ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID)
   }
 
-  @GET
+  @PUT
   @Path("/certificate")
+  @Consumes(Array(SimplePeopleTO.TYPE))
   def get(implicit @Context sc: SecurityContext,
-    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
+    @QueryParam("courseClassUUID") courseClassUUID: String, 
+    peopleTO: SimplePeopleTO) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
     val roles = AuthRepo().getUserRoles
     if (!(RoleCategory.isPlatformAdmin(roles) ||
@@ -55,7 +60,16 @@ class ReportResource {
     	throw new UnauthorizedAccessException("unauthorizedAccessReport")
     else {
       try {
-        val certificateInformationTOsByCourseClass = ReportCertificateGenerator.getCertificateInformationTOsByCourseClass(courseClassUUID)
+        var usernames = ""
+        val people = peopleTO.getSimplePeopleTO
+        
+	    for (i <- 0 until people.size) {
+	      val person = people.get(i)
+	      usernames += "'" + person.getUsername + "',"
+	    }
+        usernames = usernames.substring(0, usernames.size - 1)
+      
+        val certificateInformationTOsByCourseClass = ReportCertificateGenerator.getCertificateInformationTOsByCourseClass(courseClassUUID, usernames)
         if (certificateInformationTOsByCourseClass.length == 0) {
           throw new ServerErrorException("errorGeneratingReport")
         } else {

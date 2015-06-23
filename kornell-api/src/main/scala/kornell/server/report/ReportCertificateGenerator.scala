@@ -3,13 +3,14 @@ package kornell.server.report
 import java.io.File
 import java.net.URL
 import java.sql.ResultSet
-import java.util.Date
 import java.util.HashMap
 
 import org.apache.commons.io.FileUtils
 
+import kornell.core.error.exception.EntityConflictException
 import kornell.core.to.report.CertificateInformationTO
 import kornell.core.util.StringUtils.composeURL
+import kornell.server.jdbc.PreparedStmt
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 
@@ -46,22 +47,26 @@ object ReportCertificateGenerator {
   }
   
   def generateCertificateByCourseClass(courseClassUUID: String): Array[Byte] = {
-    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID))
+    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID, null))
   }
   
-  def getCertificateInformationTOsByCourseClass(courseClassUUID: String) = 
-    sql"""
-				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
-	    	from Person p
-				  join Enrollment e on p.uuid = e.person_uuid
-				  join CourseClass cc on cc.uuid = e.class_uuid
-	    		join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
-	    		join Course c on c.uuid = cv.course_uuid
-					join S3ContentRepository s on s.uuid = cv.repository_uuid
-					join Institution i on i.uuid = cc.institution_uuid
-				where e.certifiedAt is not null and 
-        	cc.uuid = $courseClassUUID
-		    """.map[CertificateInformationTO](toCertificateInformationTO)
+  def getCertificateInformationTOsByCourseClass(courseClassUUID: String, enrollments: String) = {
+    var sql = """select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt 
+      from Person p 
+      join Enrollment e on p.uuid = e.person_uuid 
+      join CourseClass cc on cc.uuid = e.class_uuid 
+      join CourseVersion cv on cv.uuid = cc.courseVersion_uuid 
+      join Course c on c.uuid = cv.course_uuid 
+      join S3ContentRepository s on s.uuid = cv.repository_uuid 
+      join Institution i on i.uuid = cc.institution_uuid 
+      where e.certifiedAt is not null and  """ +
+		s"""cc.uuid = '$courseClassUUID' """
+	if(enrollments != null)
+		sql += s"""and e.uuid in ( $enrollments )"""
+    if (sql.contains("--")) throw new EntityConflictException("invalidValue")
+    val pstmt = new PreparedStmt(sql,List())    
+    pstmt.map[CertificateInformationTO](toCertificateInformationTO)
+  }
 
   private def generateCertificateReport(certificateData: List[CertificateInformationTO]): Array[Byte] = {
     if(certificateData.length == 0){
