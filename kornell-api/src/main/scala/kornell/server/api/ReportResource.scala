@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
-
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
@@ -29,6 +28,7 @@ import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
 import kornell.server.repository.s3.S3
+import kornell.server.jdbc.repository.EnrollmentsRepo
 
 @Path("/report")
 class ReportResource {
@@ -65,9 +65,12 @@ class ReportResource {
         
 	    for (i <- 0 until people.size) {
 	      val person = people.get(i)
-	      usernames += "'" + person.getUsername + "',"
+	      val enrollmentUUID = EnrollmentsRepo.byCourseClassAndUsername(courseClassUUID, person.getUsername)
+	      if(enrollmentUUID.isDefined)
+	      usernames += "'" + enrollmentUUID.get + "',"
 	    }
-        usernames = usernames.substring(0, usernames.size - 1)
+        if(usernames.length > 1)
+        	usernames = usernames.substring(0, usernames.size - 1)
       
         val certificateInformationTOsByCourseClass = ReportCertificateGenerator.getCertificateInformationTOsByCourseClass(courseClassUUID, usernames)
         if (certificateInformationTOsByCourseClass.length == 0) {
