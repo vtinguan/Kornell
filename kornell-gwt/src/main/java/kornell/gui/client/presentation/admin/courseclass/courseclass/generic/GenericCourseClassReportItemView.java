@@ -92,7 +92,7 @@ public class GenericCourseClassReportItemView extends Composite {
 		lblDownload.setEnabled(false);
 		
 		Image img = new Image(LIBRARY_IMAGES_PATH + "xls.png");
-		xlsCheckBox = new CheckBox("Gerar em formato Excel (inclui matículas canceladas)");
+		xlsCheckBox = new CheckBox("Gerar em formato Excel (inclui matrículas canceladas)");
 		
 		optionPanel.add(img);
 		optionPanel.add(xlsCheckBox);
