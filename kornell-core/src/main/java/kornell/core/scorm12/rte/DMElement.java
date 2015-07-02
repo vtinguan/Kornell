@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kornell.core.entity.Person;
 import kornell.core.util.StringUtils;
 
 public class DMElement {
@@ -57,14 +58,6 @@ public class DMElement {
 		this.key = childKey;
 	}
 
-	private void setFQKN(String string) {
-		this.fqkn = string;
-	}
-
-	private String getKey() {
-		return key;
-	}
-
 	public List<DMElement> getChildren() {
 		return children;
 	}
@@ -73,8 +66,12 @@ public class DMElement {
 	 * The launch value is the value to be set to a given data model upon
 	 * launching the SCO
 	 */
-	public Map<String, String> initializeMap(Map<String, String> entries) {
+	public Map<String, String> initializeMap(Map<String, String> entries,Person person) {
 		return nothing();
+	}
+	
+	public Map<String, String> initializeMap(Map<String, String> entries) {
+		return initializeMap(entries,null);
 	}
 
 	/**
