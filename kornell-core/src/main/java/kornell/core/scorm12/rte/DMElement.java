@@ -8,6 +8,11 @@ import java.util.Map;
 import kornell.core.entity.Person;
 import kornell.core.util.StringUtils;
 
+/**
+ * SCORM 1.2 Data Model Element
+ * 
+ * @author jfaerman
+ */
 public class DMElement {
 	private DMElement parent = null;
 	private List<DMElement> children = new ArrayList<>();
@@ -54,9 +59,6 @@ public class DMElement {
 		return this;
 	}
 
-	private void setKey(String childKey) {
-		this.key = childKey;
-	}
 
 	public List<DMElement> getChildren() {
 		return children;
