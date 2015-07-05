@@ -2,7 +2,10 @@ package kornell.scorm.client.scorm12;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
+
+import org.eclipse.jetty.util.log.Log;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
@@ -61,6 +64,11 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 			return actomEntries;
 		} else {
 			logger.warning("Enrollment entries not found for ["+enrollmentUUID+"]["+actomKey+"]");
+			logger.warning("Current enrollments: ");
+			Set<String> enrollments = entries.getEnrollmentEntriesMap().keySet();
+			for (String enroll : enrollments) {
+				logger.warning("- "+enroll);
+			}
 			return null;
 		}
 	}
