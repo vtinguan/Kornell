@@ -60,24 +60,29 @@ class ReportResource {
     	throw new UnauthorizedAccessException("unauthorizedAccessReport")
     else {
       try {
-        var usernames = ""
+        var filename = p.getUUID + courseClassUUID + ".pdf"
+        //S3.certificates.delete(filename)
         val people = peopleTO.getSimplePeopleTO
-        
-	    for (i <- 0 until people.size) {
-	      val person = people.get(i)
-	      val enrollmentUUID = EnrollmentsRepo.byCourseClassAndUsername(courseClassUUID, person.getUsername)
-	      if(enrollmentUUID.isDefined)
-	      usernames += "'" + enrollmentUUID.get + "',"
-	    }
-        if(usernames.length > 1)
-        	usernames = usernames.substring(0, usernames.size - 1)
+        val enrollmentUUIDs = {
+          if(people != null && people.size > 0) {
+            var enrollmentUUIDsVar = ""
+		    for (i <- 0 until people.size) {
+		      val person = people.get(i)
+		      val enrollmentUUID = EnrollmentsRepo.byCourseClassAndUsername(courseClassUUID, person.getUsername)
+		      if(enrollmentUUID.isDefined){
+		          if(enrollmentUUIDsVar.length != 0) enrollmentUUIDsVar += ","
+		    	  enrollmentUUIDsVar += "'" + enrollmentUUID.get + "'"
+		      }
+		    }
+            enrollmentUUIDsVar
+          }
+          else null
+        }
       
-        val certificateInformationTOsByCourseClass = ReportCertificateGenerator.getCertificateInformationTOsByCourseClass(courseClassUUID, usernames)
+        val certificateInformationTOsByCourseClass = ReportCertificateGenerator.getCertificateInformationTOsByCourseClass(courseClassUUID, enrollmentUUIDs)
         if (certificateInformationTOsByCourseClass.length == 0) {
           throw new ServerErrorException("errorGeneratingReport")
         } else {
-          var filename = p.getUUID + courseClassUUID + ".pdf"
-          S3.certificates.delete(filename)
           val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass)
           val bs = new ByteArrayInputStream(report)
           S3.certificates.put(filename,
