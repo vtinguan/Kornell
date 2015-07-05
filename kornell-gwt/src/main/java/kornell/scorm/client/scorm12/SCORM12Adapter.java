@@ -92,20 +92,24 @@ public class SCORM12Adapter implements CMIConstants {
 
 	//TODO: Consider API changes for MultiSCO
 	public String LMSSetString(String key, String value,String moduleUUID) {
+		//GWT.debugger();
 		String result = FALSE;
-		CMITree dataModel = getDataModel(moduleUUID,actomKey);		
+		String targetUUID = getEnrollmentUUID(moduleUUID);
+		CMITree dataModel = getDataModel(targetUUID,actomKey);
 		result = dataModel.setValue(key, value);
-		scheduleSync(moduleUUID,actomKey);
-		logger.finer("LMSSetValue [" + key + " = " + value
-				+ "]@[" + moduleUUID + "/"+actomKey+"] = " + result);
+		scheduleSync(targetUUID,actomKey);
+		logger.finer("LMSSetValue [" + key + " = " + value+ "]@[" + targetUUID + "/"+actomKey+"] = " + result);
 		return result;
 	}
 
-	
 	private CMITree getDataModel(String moduleUUID, String moduleActomKey) {
-		String targetUUID = isSome(moduleUUID) ? moduleUUID : enrollmentUUID;
+		String targetUUID = getEnrollmentUUID(moduleUUID);
 		CMITree dataModel = rte.getDataModel(targetUUID,moduleActomKey);
 		return dataModel;
+	}
+
+	private String getEnrollmentUUID(String moduleUUID) {
+		return isSome(moduleUUID) ? moduleUUID : enrollmentUUID;
 	}
 
 	public void launch(String enrollmentUUID) {
@@ -132,6 +136,7 @@ public class SCORM12Adapter implements CMIConstants {
 	
 
 	private void sync(final String syncEnrollmentUUID,final String syncActomKey) {
+		//GWT.debugger();
 		class Scrub extends Callback<ActomEntries> {
 			@Override
 			public void ok(ActomEntries to) {
@@ -143,7 +148,7 @@ public class SCORM12Adapter implements CMIConstants {
 		CMITree dataModel = getDataModel(syncEnrollmentUUID,syncActomKey);		
 		if (dataModel != null && dataModel.isDirty()) {
 			client.enrollment(syncEnrollmentUUID)
-				  .actom(syncEnrollmentUUID)
+				  .actom(syncActomKey)
 				  .put(CMITree.collectDirty(dataModel), new Scrub());
 		}
 	}

@@ -20,6 +20,7 @@ import kornell.server.util.ServerTime
 import kornell.core.scorm12.rte.RTE
 import kornell.core.scorm12.rte.DMElement
 import kornell.server.scorm12.SCORM12
+import kornell.server.jdbc.repository.AuthRepo
 
 class  ActomResource(enrollmentUUID: String, actomURL: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
@@ -103,9 +104,9 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   }
   
   
-  def initialize(aentries:ActomEntries):ActomEntries = {
+  def initialize(aentries:ActomEntries):ActomEntries = AuthRepo().withPerson { person =>
     val entries = aentries.getEntries()    
-    val initdEntries = SCORM12.dataModel.initialize(entries)    
+    val initdEntries = SCORM12.dataModel.initialize(entries,person)    
     aentries.setEntries(initdEntries)
     aentries
   }    
