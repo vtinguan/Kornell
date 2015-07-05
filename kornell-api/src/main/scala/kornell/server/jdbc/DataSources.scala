@@ -37,8 +37,9 @@ object DataSources {
     val context = new InitialContext()
       .lookup(JNDI_ROOT)
       .asInstanceOf[Context]
-    context.lookup(JNDI_DATASOURCE)
+    val ds = context.lookup(JNDI_DATASOURCE)
       .asInstanceOf[DataSource]
+    ds
   }
 
   lazy val JNDI: Try[ConnectionFactory] =    
