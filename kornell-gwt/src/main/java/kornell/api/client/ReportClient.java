@@ -1,5 +1,8 @@
 package kornell.api.client;
 
+import kornell.core.entity.Course;
+import kornell.core.to.SimplePeopleTO;
+
 
 public class ReportClient extends RESTClient {
 
@@ -7,8 +10,8 @@ public class ReportClient extends RESTClient {
 		GET("/report/courseClassCertificateExists?courseClassUUID="+courseClassUUID).go(callback);		
 	}
 	
-	public void generateCourseClassCertificate(String courseClassUUID, Callback<String> callback){
-		GET("/report/certificate?courseClassUUID="+courseClassUUID).go(callback);		
+	public void generateCourseClassCertificate(String courseClassUUID, SimplePeopleTO people, Callback<String> callback){
+		PUT("/report/certificate?courseClassUUID="+courseClassUUID).withContentType(SimplePeopleTO.TYPE).withEntityBody(people).go(callback);	
 	}
 	
 }

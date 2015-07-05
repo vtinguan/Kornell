@@ -180,7 +180,7 @@ a:hover{
 					border-right: 0px !important;
 				}
 			}
-		}
+		} 
 		.sendMessageWrapper{
 			.boxSizing;
 			border-top: @borderHighlight;
@@ -564,7 +564,6 @@ a:hover{
 	}
 	.reportWrapper{
 		@reportWrapperHeight: 88px;
-		height: @reportWrapperHeight;
 		line-height: @reportWrapperHeight;
 		background-color: @tableBackgroundHoverColor;
 		margin-top: @detailsPanelMargin / 2;
@@ -572,7 +571,8 @@ a:hover{
 		font-size: 13px;
 		.itemPanel{
 			.boxSizing;
-			float: left;
+			display: inline-block;
+  			vertical-align: top;
 			padding-left: @detailsPanelMargin / 2;
 			padding-right: @detailsPanelMargin / 2;
 			width: @reportWidth + 2px;
@@ -625,11 +625,23 @@ a:hover{
 					padding: 0px 7px;
 					width: 100px;
 				}
+				textarea{
+					width: 90%;
+					margin: 10px 15px;
+					height: 150px;
+				}
+				.gwt-Label{
+					color: @textInfoColor;
+					padding: 0px 15px;
+					font-size: 11px;
+					line-height: 13px;
+				}
 			}
 		}
 		.lblGenerate{
 			.boxSizing;
-			float: left;
+			display: inline-block;
+  			vertical-align: top;
 			width: @generateWidth;
 			padding-left: @detailsPanelMargin / 2;
 			padding-right: @detailsPanelMargin / 2;
@@ -637,11 +649,12 @@ a:hover{
 		}
 		.lblDownload{
 			.boxSizing;
-			float: left;
+			display: inline-block;
+  			vertical-align: top;
 			width: @downloadWidth;
-			text-align: center;
 			padding-left: @detailsPanelMargin / 2;
 			padding-right: @detailsPanelMargin / 2;
+			text-align: center;
 		}
 	}
 }

@@ -65,7 +65,7 @@ class EnrollmentResource(uuid: String) {
   @GET
   @Path("launch")
   @Produces(Array(EnrollmentLaunchTO.TYPE))
-  def launch() = {
+  def launch() = AuthRepo().withPerson { person =>
     val eLaunch: EnrollmentLaunchTO = TOs.newEnrollmentLaunchTO
 
     val eContents = contents.get
@@ -76,8 +76,8 @@ class EnrollmentResource(uuid: String) {
     for {
       (enrollmentUUID, enrollmentEntries) <- mEntries
       (actomKey,actomEntries) <- enrollmentEntries.getActomEntriesMap.asScala
-    } {            
-      actomEntries.setEntries(SCORM12.dataModel.initialize(actomEntries.getEntries))
+    } {
+      actomEntries.setEntries(SCORM12.dataModel.initialize(actomEntries.getEntries,person))
     }
 
     eLaunch.setEnrollmentEntries(eEntries)

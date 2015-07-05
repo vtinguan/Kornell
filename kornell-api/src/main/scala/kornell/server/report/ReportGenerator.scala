@@ -42,12 +42,12 @@ object ReportGenerator {
       val exporterXLS = new JRXlsExporter()
       val jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JRBeanCollectionDataSource(certificateData asJava))
       exporterXLS.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint)
-			exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, fileName)
-			exporterXLS.exportReport()
-			val source = scala.io.Source.fromFile(fileName)(scala.io.Codec.ISO8859)
-			val byteArray = source.map(_.toByte).toArray
-			source.close()
-			byteArray
+      exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, fileName)
+      exporterXLS.exportReport()
+      val source = scala.io.Source.fromFile(fileName)(scala.io.Codec.ISO8859)
+      val byteArray = source.map(_.toByte).toArray
+      source.close()
+      byteArray
     }
     else
     	JasperRunManager.runReportToPdf(jasperReport, parameters, new JRBeanCollectionDataSource(certificateData asJava))
