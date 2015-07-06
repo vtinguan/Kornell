@@ -29,6 +29,7 @@ public interface AdminCourseClassView extends IsWidget {
 		void deleteEnrollment(EnrollmentTO enrollmentTO);
 		void onGenerateCertificate(EnrollmentTO enrollmentTO);
 		void upsertCourseClass(CourseClass courseClass);
+		void onBatchCancelModalOkButtonClicked(String txtCancelEnrollmentBatch);
 	}
 
 	void setPresenter(Presenter presenter);

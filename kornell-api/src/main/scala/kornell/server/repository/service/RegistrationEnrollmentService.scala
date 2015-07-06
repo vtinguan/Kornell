@@ -58,18 +58,20 @@ object RegistrationEnrollmentService {
   }
 
   private def deanEnrollNewPerson(enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
-    val person = enrollmentRequest.getRegistrationType match {
-      case RegistrationType.email => PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
-      case RegistrationType.cpf => PeopleRepo.createPersonCPF(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
-      case RegistrationType.username => PeopleRepo.createPersonUsername(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName, enrollmentRequest.getInstitutionRegistrationPrefixUUID)
-    }
-    val personRepo = PersonRepo(person.getUUID)
-    if (!enrollmentRequest.getRegistrationType.equals(RegistrationType.email)) {
-      personRepo.setPassword(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getPassword)
-    }
-    val enrollment = createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
-    if (enrollmentRequest.getCourseVersionUUID != null) {
-      createChildEnrollments(enrollment, enrollmentRequest.getCourseVersionUUID, person.getUUID, dean.getUUID)
+    if(!enrollmentRequest.isCancelEnrollment){
+	    val person = enrollmentRequest.getRegistrationType match {
+	      case RegistrationType.email => PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
+	      case RegistrationType.cpf => PeopleRepo.createPersonCPF(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
+	      case RegistrationType.username => PeopleRepo.createPersonUsername(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName, enrollmentRequest.getInstitutionRegistrationPrefixUUID)
+	    }
+	    val personRepo = PersonRepo(person.getUUID)
+	    if (!enrollmentRequest.getRegistrationType.equals(RegistrationType.email)) {
+	      personRepo.setPassword(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getPassword)
+	    }
+	    val enrollment = createEnrollment(personRepo.get.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
+	    if (enrollmentRequest.getCourseVersionUUID != null) {
+	      createChildEnrollments(enrollment, enrollmentRequest.getCourseVersionUUID, person.getUUID, dean.getUUID)
+	    }
     }
   }
 
@@ -144,9 +146,9 @@ object RegistrationEnrollmentService {
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person, cancelEnrollment: Boolean) = {
     if (cancelEnrollment && !EnrollmentState.cancelled.equals(enrollment.getState))
       EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled, enrollment.getCourseVersionUUID == null)
-    else if (EnrollmentState.cancelled.equals(enrollment.getState)
+    else if (!cancelEnrollment && (EnrollmentState.cancelled.equals(enrollment.getState)
       || EnrollmentState.requested.equals(enrollment.getState())
-      || EnrollmentState.denied.equals(enrollment.getState())) {
+      || EnrollmentState.denied.equals(enrollment.getState()))) {
       EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled, enrollment.getCourseVersionUUID == null)
     }
   }

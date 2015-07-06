@@ -292,7 +292,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
     @Override
     public void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch) {
-        populateEnrollmentsList(txtAddEnrollmentBatch);
+        populateEnrollmentsList(txtAddEnrollmentBatch, false);
         if (batchEnrollmentErrors == null || !"".equals(batchEnrollmentErrors)) {
             view.setModalErrors("Erros ao inserir matrículas", "As seguintes linhas contém erros:",
                     batchEnrollmentErrors, "Deseja ignorar essas linhas e continuar?");
@@ -303,9 +303,48 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         }
     }
 
-    private void populateEnrollmentsList(String txtAddEnrollmentBatch) {
+	@Override
+	public void onBatchCancelModalOkButtonClicked(String txtCancelEnrollmentBatch) {
+        populateEnrollmentsList(txtCancelEnrollmentBatch, true);
+        enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
+
+        for (EnrollmentRequestTO enrollmentRequestTO : enrollmentRequestsTO.getEnrollmentRequests()) {
+        	enrollmentRequestTO.setCancelEnrollment(true);
+        }
+        
+        LoadingPopup.show();
+        final int requestsThreshold = 200;
+        if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
+            KornellNotification.show("Solicitação de cancelamento de matrículas enviada para o servidor.", AlertType.INFO, 20000);
+            LoadingPopup.hide();
+            view.clearEnrollmentFields();
+        }
+
+        if(session.isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
+            session.enrollments().createEnrollments(enrollmentRequestsTO, new Callback<Enrollments>() {
+                @Override
+                public void ok(Enrollments to) {
+                    getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+                    KornellNotification.show("Matrículas canceladas com sucesso.", 1500);
+                    view.clearEnrollmentFields();
+                    LoadingPopup.hide();
+                    PlaceUtils.reloadCurrentPlace(bus, placeController);
+                }
+
+                @Override
+                public void unauthorized(KornellErrorTO kornellErrorTO) {
+                    logger.severe("Error AdminHomePresenter: "
+                            + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
+                    KornellNotification.show("Erro ao cancelar matrícula(s).", AlertType.ERROR, 2500);
+                    LoadingPopup.hide();
+                }
+            });
+        }
+	}
+
+    private void populateEnrollmentsList(String txtAddEnrollmentBatch, boolean isBatchCancel) {
         String[] enrollmentsA = txtAddEnrollmentBatch.split("\n");
-        String fullName, email;
+        String fullName, username;
         String[] enrollmentStrA;
         batchEnrollments = new ArrayList<EnrollmentRequestTO>();
         batchEnrollmentErrors = "";
@@ -315,10 +354,25 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             enrollmentStrA = enrollmentsA[i].indexOf(';') >= 0 ? enrollmentsA[i].split(";") : enrollmentsA[i]
                     .split("\\t");
             fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
-            email = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]).replace((char) 160, (char) 32).replaceAll("\\u200B", "")
+            username = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]).replace((char) 160, (char) 32).replaceAll("\\u200B", "")
                     .trim();
-            if (isUsernameValid(email)) {
-                batchEnrollments.add(createEnrollment(fullName, email, false));
+            if (isBatchCancel) {
+                fullName.trim();
+                username.trim();
+                String usr;
+                EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
+
+                enrollmentRequestTO.setCancelEnrollment(true);
+                enrollmentRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+                if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+                    enrollmentRequestTO.setCourseVersionUUID(Dean.getInstance().getCourseClassTO().getCourseVersionTO().getCourseVersion().getUUID());
+                }
+                enrollmentRequestTO.setCourseClassUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+
+                enrollmentRequestTO.setUsername(username);
+                batchEnrollments.add(enrollmentRequestTO);
+            } else if (isUsernameValid(username)) {            
+                batchEnrollments.add(createEnrollment(fullName, username, false));
             } else {
                 batchEnrollmentErrors += enrollmentsA[i] + "\n";
             }

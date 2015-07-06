@@ -215,7 +215,7 @@ public class GenericCourseClassConfigView extends Composite {
         });
 
         
-        /*Boolean isAllowBatchCancellation = courseClass.isAllowBatchCancellation() == null ? false : courseClass.isAllowBatchCancellation();
+        Boolean isAllowBatchCancellation = courseClass.isAllowBatchCancellation() == null ? false : courseClass.isAllowBatchCancellation();
         allowBatchCancellation = new KornellFormFieldWrapper("Permitir cancelamento em lote?", formHelper.createCheckBoxFormField(isAllowBatchCancellation), isInstitutionAdmin);
         fields.add(allowBatchCancellation);
         profileFields.add(allowBatchCancellation);
@@ -227,7 +227,7 @@ public class GenericCourseClassConfigView extends Composite {
                     ((CheckBox)allowBatchCancellation.getFieldWidget()).setValue(false);
                 }
             }
-        });*/
+        });
 
 
         final ListBox registrationTypes = new ListBox();
