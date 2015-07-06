@@ -1,6 +1,9 @@
 package kornell.scorm.client.scorm12;
 
 import static kornell.scorm.client.scorm12.Scorm12.logger;
+
+import org.eclipse.jetty.util.log.Log;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
@@ -69,7 +72,13 @@ public class SCORM12Adapter implements CMIConstants {
 	}
 
 	public String LMSGetValue(String param, String moduleUUID) {
-		String result = getDataModel(moduleUUID,actomKey).getValue(param);
+		String targetUUID = getEnrollmentUUID(moduleUUID);
+		CMITree dataModel = getDataModel(targetUUID,actomKey);		
+		String result = "";
+		if (dataModel != null) 
+			dataModel.getValue(param);
+		else
+			logger.warning("Null data model for LMSGetValue[" + param + "]@[" + moduleUUID + "/"+actomKey+"]");
 		logger.finer("LMSGetValue[" + param + "]@[" + moduleUUID + "/"+actomKey+"] = "+ result);
 		return result;
 	}
@@ -96,7 +105,10 @@ public class SCORM12Adapter implements CMIConstants {
 		String result = FALSE;
 		String targetUUID = getEnrollmentUUID(moduleUUID);
 		CMITree dataModel = getDataModel(targetUUID,actomKey);
-		result = dataModel.setValue(key, value);
+		if(dataModel != null)
+			result = dataModel.setValue(key, value);
+		else
+			logger.warning("Null data model for LMSSetValue [" + key + " = " + value+ "]@[" + targetUUID + "/"+actomKey+"] = " + result);
 		scheduleSync(targetUUID,actomKey);
 		logger.finer("LMSSetValue [" + key + " = " + value+ "]@[" + targetUUID + "/"+actomKey+"] = " + result);
 		return result;

@@ -11,10 +11,12 @@ public class LaunchDate extends DMElement{
 	public static final LaunchDate dme = new LaunchDate();
 	
 	public LaunchDate() {
-		super("launch_date",false, DataType.CMITimespan, SCOAccess.RO);
+		super("launch_date",false, DataType.CMIString255, SCOAccess.RO);
 	}
 	
 	public Map<String, String> initializeMap(Map<String, String> entries) {
-		return set(isoNow());
+		String isoNow = isoNow();
+		Map<String, String> result = set(isoNow);
+		return result;
 	}
 }
