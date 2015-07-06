@@ -2,6 +2,7 @@ package kornell.core.scorm12.rte.cmi;
 
 import java.util.Map;
 
+import kornell.core.entity.Person;
 import kornell.core.scorm12.rte.DMElement;
 import kornell.core.scorm12.rte.DataType;
 import kornell.core.scorm12.rte.SCOAccess;
@@ -13,7 +14,7 @@ public class SuspendData extends DMElement{
 	}
 	
 	@Override
-	public Map<String, String> initializeMap(Map<String, String> entries) {
+	public Map<String, String> initializeMap(Map<String, String> entries,Person p) {
 		return defaultTo(entries, "");
 	}
 

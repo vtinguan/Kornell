@@ -75,8 +75,11 @@ public class SCORM12Adapter implements CMIConstants {
 		String targetUUID = getEnrollmentUUID(moduleUUID);
 		CMITree dataModel = getDataModel(targetUUID,actomKey);		
 		String result = "";
+		if(param.equals("knl.start_date")){
+			GWT.debugger();
+		}
 		if (dataModel != null) 
-			dataModel.getValue(param);
+			result = dataModel.getValue(param);
 		else
 			logger.warning("Null data model for LMSGetValue[" + param + "]@[" + moduleUUID + "/"+actomKey+"]");
 		logger.finer("LMSGetValue[" + param + "]@[" + moduleUUID + "/"+actomKey+"] = "+ result);

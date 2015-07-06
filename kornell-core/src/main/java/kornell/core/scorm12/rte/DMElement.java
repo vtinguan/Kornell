@@ -71,10 +71,6 @@ public class DMElement {
 	public Map<String, String> initializeMap(Map<String, String> entries,Person person) {
 		return nothing();
 	}
-	
-	public Map<String, String> initializeMap(Map<String, String> entries) {
-		return initializeMap(entries,null);
-	}
 
 	/**
 	 * The finish value is the value to be set to a given when the LMSFinish is
@@ -86,7 +82,7 @@ public class DMElement {
 	}
 
 	/**
-	 * Fully Qualified Key Name (e.g. cmi.core.lesson_status
+	 * Fully Qualified Key Name (e.g. cmi.core.lesson_status)
 	 */
 	public String getFQKN() {
 		if (fqkn == null) {
@@ -147,7 +143,7 @@ public class DMElement {
 	}
 
 	private String dirty(String fqkn) {
-		return dirty_flag + "fqkn";
+		return dirty_flag + fqkn;
 	}
 
 	private Map<String, String> defaultTo(Map<String, String> entries,
