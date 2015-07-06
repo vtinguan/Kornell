@@ -21,19 +21,17 @@ object SCORM12 {
     }
 
     def _initialize(entries: JMap[String, String],person:Person): MMap[String, String] = {
-      type Maps = List[JMap[String,String]]      
-      val kids:Maps   = el.getChildren().asScala
-                        .map(c => c.initialize(entries,person))
+      type Maps = List[JMap[String,String]]
+      val childDataModels = el.getChildren().asScala
+      val kids:Maps   = childDataModels
+                        .map{_.initialize(entries,person)}
                         .toList
-      val selfie:Maps = List(el.initializeMap(entries,person))
-      val maps = kids ++ selfie
+      val selfie = el.initializeMap(entries,person)
+      val maps = kids ++ List(selfie)
       val result = merged(maps)
       result
     }
   }
 
   val dataModel: Element = RTE.root
-
-  
-
 }
