@@ -101,7 +101,6 @@ public class SCORM12Adapter implements CMIConstants {
 
 	//TODO: Consider API changes for MultiSCO
 	public String LMSSetString(String key, String value,String moduleUUID) {
-		//GWT.debugger();
 		String result = FALSE;
 		String targetUUID = getEnrollmentUUID(moduleUUID);
 		CMITree dataModel = getDataModel(targetUUID,actomKey);
@@ -116,7 +115,7 @@ public class SCORM12Adapter implements CMIConstants {
 
 	private CMITree getDataModel(String moduleUUID, String moduleActomKey) {
 		String targetUUID = getEnrollmentUUID(moduleUUID);
-		CMITree dataModel = rte.getDataModel(targetUUID,moduleActomKey);
+		CMITree dataModel = rte.getDataModel(targetUUID,moduleActomKey);	
 		return dataModel;
 	}
 
@@ -156,7 +155,6 @@ public class SCORM12Adapter implements CMIConstants {
 				getDataModel(syncEnrollmentUUID,syncActomKey).scrub();
 			}
 		}
-		
 		CMITree dataModel = getDataModel(syncEnrollmentUUID,syncActomKey);		
 		if (dataModel != null && dataModel.isDirty()) {
 			client.enrollment(syncEnrollmentUUID)
