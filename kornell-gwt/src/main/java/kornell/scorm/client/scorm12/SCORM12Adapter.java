@@ -75,9 +75,7 @@ public class SCORM12Adapter implements CMIConstants {
 		String targetUUID = getEnrollmentUUID(moduleUUID);
 		CMITree dataModel = getDataModel(targetUUID,actomKey);		
 		String result = "";
-		if(param.equals("knl.start_date")){
-			GWT.debugger();
-		}
+		
 		if (dataModel != null) 
 			result = dataModel.getValue(param);
 		else
@@ -150,7 +148,6 @@ public class SCORM12Adapter implements CMIConstants {
 	
 
 	private void sync(final String syncEnrollmentUUID,final String syncActomKey) {
-		//GWT.debugger();
 		class Scrub extends Callback<ActomEntries> {
 			@Override
 			public void ok(ActomEntries to) {
