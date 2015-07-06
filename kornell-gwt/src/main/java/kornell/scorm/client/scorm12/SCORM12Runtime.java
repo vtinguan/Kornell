@@ -79,12 +79,13 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 		if (dataModel == null){
 			ActomEntries ae = lookupActomEntries(targetUUID,actomKey);
 			if(ae != null){
-				dataModel = CMITree.create(ae.getEntries());	
-				forestCache.put(cacheKey,dataModel);
+				dataModel = CMITree.create(ae.getEntries());				
 			} else {
 				logger.warning("DataModel not found for ["+targetUUID+"]["+actomKey+"]");
+				dataModel = CMITree.create(new HashMap<String,String>());
 			}
 		}
+		forestCache.put(cacheKey, dataModel);
 		return dataModel;
 	}
 }
