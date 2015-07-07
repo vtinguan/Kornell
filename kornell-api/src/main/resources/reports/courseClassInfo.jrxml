@@ -113,12 +113,12 @@
 				<reportElement uuid="0c798490-8087-4299-9e4b-b8a178a11839" positionType="Float" x="12" y="217" width="540" height="1" forecolor="#666666"/>
 			</line>
 			<staticText>
-				<reportElement uuid="0341aa1a-fa86-4d5a-9bd2-7cc8eb6296f4" positionType="Float" mode="Opaque" x="4" y="124" width="120" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
+				<reportElement uuid="0341aa1a-fa86-4d5a-9bd2-7cc8eb6296f4" positionType="Float" mode="Opaque" x="4" y="124" width="182" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[ PARTICIPAÇÕES]]></text>
+				<text><![CDATA[ PARTICIPAÇÕES ATIVAS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="b4a55bd4-2f97-47be-a876-42d44b22ed6f" positionType="Float" mode="Opaque" x="4" y="210" width="246" height="13" forecolor="#666666" backcolor="#FFFFFF"/>
@@ -170,7 +170,7 @@
 					<font fontName="Serif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Total de participantes: ]]></text>
+				<text><![CDATA[Total de participantes ativos: ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="da2f94d4-0a5c-48e8-8657-e8cf17700657" positionType="Float" mode="Opaque" x="3" y="157" width="142" height="16" forecolor="#00A84C" backcolor="#FFFFFF"/>

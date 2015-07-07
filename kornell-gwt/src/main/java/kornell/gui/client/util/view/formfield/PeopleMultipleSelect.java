@@ -148,7 +148,6 @@ public class PeopleMultipleSelect extends Composite {
 									+ (StringUtils.isSome(person.getFullName()) ? 
 											" (" + person.getFullName() + ")" : "");
 							oracle.add(oracleStr);
-							KornellNotification.show(oracleStr);
 							oraclePeople.put(username, person);
 							if (++i == 10)
 								break;

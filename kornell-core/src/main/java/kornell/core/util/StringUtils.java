@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class StringUtils {
+	
+	private static final Sha1 sha1 = new Sha1();
 
 	public static class URLBuilder {
 		private String base;
@@ -161,14 +163,29 @@ public class StringUtils {
 	@SuppressWarnings("deprecation")
 	public static String isoNow() {
 		Date date = new Date();
-		String year = i2s(date.getYear());
+		String year = i2s(1900+date.getYear());
 		String month = i2s(date.getMonth());
 		String day = i2s(date.getDate());
 		String hour = i2s(date.getHours());
 		String min = i2s(date.getMinutes());
 		String sec = i2s(date.getSeconds());
-		return year + "-" + month + "-" + day + "T" + hour + ":" + min + ":"
+		String result = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":"
 				+ sec;
+		return result;
+	}
+
+	private static final String HASH_SEP = "|#|";
+	public static String hash(String... args) {
+		StringBuilder builder = new StringBuilder();
+		for (String arg : args) {
+			builder.append(arg);
+			builder.append(HASH_SEP);
+		}
+		return sha1.hex_sha1(builder.toString());
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(StringUtils.isoNow());
 	}
 
 }

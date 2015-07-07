@@ -22,6 +22,14 @@ import kornell.server.util.Conditional.toConditional
 import kornell.server.util.Err
 import kornell.server.util.AccessDeniedErr
 import kornell.server.repository.ContentRepository
+import java.util.HashMap
+import kornell.core.entity.ActomEntries
+import kornell.core.entity.EnrollmentEntries
+import kornell.server.repository.Entities
+import kornell.core.to.EnrollmentLaunchTO
+import kornell.server.repository.TOs
+import kornell.server.scorm12.SCORM12
+import kornell.core.entity.EnrollmentsEntries
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -39,46 +47,113 @@ class EnrollmentResource(uuid: String) {
   def update(enrollment: Enrollment) = {
     EnrollmentRepo(enrollment.getUUID).update(enrollment)
   }
-  .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  AccessDeniedErr() )
-  .get
-  
-  
+    .requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID), AccessDeniedErr())
+    .get
+
   @Path("actoms/{actomKey}")
   def actom(@PathParam("actomKey") actomKey: String) = ActomResource(uuid, actomKey)
 
   @GET
   @Path("contents")
   @Produces(Array(Contents.TYPE))
-  def contents(implicit @Context sc: SecurityContext): Option[Contents] = AuthRepo().withPerson { person =>  
+  def contents(): Option[Contents] = AuthRepo().withPerson { person =>
     first map { e =>
-    	ContentRepository.findKNLVisitedContent(e)
+      ContentRepository.findKNLVisitedContent(e)
     }
-   }
+  }
 
+  @GET
+  @Path("launch")
+  @Produces(Array(EnrollmentLaunchTO.TYPE))
+  def launch() = AuthRepo().withPerson { person =>
+    val eLaunch: EnrollmentLaunchTO = TOs.newEnrollmentLaunchTO
+
+    val eContents = contents.get
+    eLaunch.setContents(eContents)
+
+    val eEntries = getEntries
+    val mEntries = eEntries.getEnrollmentEntriesMap.asScala
+    for {
+      (enrollmentUUID, enrollmentEntries) <- mEntries
+      (actomKey,actomEntries) <- enrollmentEntries.getActomEntriesMap.asScala
+    } {
+      actomEntries.setEntries(SCORM12.dataModel.initialize(actomEntries.getEntries,person))
+    }
+
+    eLaunch.setEnrollmentEntries(eEntries)
+    eLaunch
+  }
 
   @GET
   @Path("approved")
   @Produces(Array("application/octet-stream"))
-  def approved =  {
+  def approved = {
     val e = first.get
-    if(Assessment.PASSED == e.getAssessment){
-      e.getAssessmentScore.toString
+    if (Assessment.PASSED == e.getAssessment) {
+      if (e.getAssessmentScore != null)
+        e.getAssessment.toString()
+      else
+        ""
     } else {
       ""
     }
   }
-  
-  
+
   @DELETE
   @Produces(Array(Enrollment.TYPE))
   def delete(implicit @Context sc: SecurityContext) = {
     val enrollmentRepo = EnrollmentRepo(uuid)
-    val enrollment = enrollmentRepo.get   
+    val enrollment = enrollmentRepo.get
     enrollmentRepo.delete(uuid)
     enrollment
   }.requiring(isPlatformAdmin, AccessDeniedErr())
     .or(isInstitutionAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
     .or(isCourseClassAdmin(EnrollmentRepo(uuid).get.getCourseClassUUID), AccessDeniedErr())
-    
-  
+
+  @GET
+  @Produces(Array(EnrollmentEntries.TYPE))
+  def getEntries() = {
+    val esEntries: EnrollmentsEntries = Entities.newEnrollmentsEntries()
+    val esEntriesMap = esEntries.getEnrollmentEntriesMap
+
+    sql"""
+      select * from ActomEntries 
+      where enrollment_uuid in (
+        select uuid 
+        from Enrollment 
+        where uuid= $uuid
+           or parentEnrollmentUUID = $uuid )
+      order by enrollment_uuid, actomKey
+    """.foreach { rs =>
+
+      val enrollmentUUID = rs.getString("enrollment_uuid")
+      val actomKey = rs.getString("actomKey")
+      val entryKey = rs.getString("entryKey")
+      val entryValue = rs.getString("entryValue")
+
+      val enrollmentEntries = Option(esEntriesMap.get(enrollmentUUID)) match {
+        case Some(e) => e
+        case None => {
+          val e = Entities.newEnrollmentEntries
+          esEntriesMap.put(enrollmentUUID, e)
+          e
+        }
+      }
+
+      val aeMap = enrollmentEntries.getActomEntriesMap() 
+      
+      val actomEntries = Option(aeMap.get(actomKey)) match {
+        case Some(a) => a
+        case None => {
+          val a: ActomEntries = Entities.newActomEntries(enrollmentUUID, actomKey, new HashMap[String, String]())
+          aeMap.put(actomKey, a)
+          a
+        }
+      }
+
+      actomEntries.getEntries.put(entryKey, entryValue)
+    }
+    esEntries
+  }
+
 }

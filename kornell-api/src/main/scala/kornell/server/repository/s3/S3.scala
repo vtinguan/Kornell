@@ -110,10 +110,10 @@ class S3(regionName: String,
 }
 
 object S3 {
-  val DEFAULT_USER_CONTENT_BUCKET = "usercontent.test.eduvem.com";
+  val DEFAULT_USER_CONTENT_BUCKET = "us-east-1.usercontent-develop";
   val USER_CONTENT_BUCKET = Settings.get("USER_CONTENT_BUCKET").getOrElse(DEFAULT_USER_CONTENT_BUCKET)
 
-  val certificates = new S3("sa-east-1",
+  val certificates = new S3("us-east-1",
     null, null,
     USER_CONTENT_BUCKET,
     "usercontent/certificates")

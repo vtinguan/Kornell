@@ -20,6 +20,7 @@ import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.AccessDeniedErr
 import kornell.server.util.Conditional.toConditional
+import kornell.core.to.SimplePeopleTO
 import kornell.core.to.EnrollmentsTO
 
 @Path("enrollments")
@@ -68,6 +69,15 @@ class EnrollmentsResource {
     	""".executeUpdate
     }
 
+  @GET
+  @Path("{courseClassUUID}/simpleEnrollments")
+  @Produces(Array(SimplePeopleTO.TYPE))
+  def getEnrollmentsList(@PathParam("courseClassUUID") courseClassUUID: String) = {
+    EnrollmentsRepo.simplePersonList(courseClassUUID)
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
+  .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
+    
 }
 
 object EnrollmentsResource {

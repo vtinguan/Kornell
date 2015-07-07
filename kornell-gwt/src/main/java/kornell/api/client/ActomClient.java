@@ -2,8 +2,11 @@ package kornell.api.client;
 
 import java.util.Map;
 
+import org.eclipse.jetty.util.StringUtil;
+
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.EntityFactory;
+import static kornell.core.util.StringUtils.*;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.URL;
@@ -19,7 +22,8 @@ public class ActomClient extends RESTClient {
 	public ActomClient(EnrollmentClient enrollmentClient, String actomKey) {
 		this.enrollmentUUID = enrollmentClient.getEnrollmentUUID();
 		this.encodedActomKey = URL.encodePathSegment(actomKey);
-
+		assert(isSome(enrollmentUUID));
+		assert(isSome(encodedActomKey));
 	}
 
 	public void put(Map<String, String> entries, Callback<ActomEntries> callback) {

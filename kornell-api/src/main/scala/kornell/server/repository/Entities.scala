@@ -25,6 +25,9 @@ import kornell.core.entity.RegistrationType
 import kornell.core.entity.BillingType
 import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.entity.InstitutionType
+import java.util.HashMap
+import kornell.core.entity.ActomEntries
+import kornell.core.entity.EnrollmentEntries
 
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
@@ -130,7 +133,8 @@ object Entities {
     state: EnrollmentState, lastProgressUpdate: String = null,
     assessment: Assessment = null, lastAssessmentUpdate: String = null,
     assessmentScore: BigDecimal = null, certifiedAt: String = null,
-    courseVersionUUID: String = null): Enrollment = {
+    courseVersionUUID: String = null, parentEnrollmentUUID:String = null,
+    startDate:Date=null,endDate:Date=null): Enrollment = {
     val e = factory.enrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -145,6 +149,9 @@ object Entities {
     e.setAssessmentScore(assessmentScore)
     e.setCertifiedAt(certifiedAt)
     e.setCourseVersionUUID(courseVersionUUID)
+    e.setParentEnrollmentUUID(parentEnrollmentUUID)
+    e.setStartDate(startDate)
+    e.setEndDate(endDate)
     e
   }
 
@@ -269,7 +276,8 @@ object Entities {
     state: CourseClassState = null,
     registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
-    courseClassChatEnabled: Boolean = false) = {
+    courseClassChatEnabled: Boolean = false,
+    allowBatchCancellation: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -286,6 +294,7 @@ object Entities {
     clazz.setRegistrationType(registrationType)
     clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
+	clazz.setAllowBatchCancellation(allowBatchCancellation)
     clazz
   }
 
@@ -357,6 +366,17 @@ object Entities {
     institutionRegistrationPrefix.setShowContactInformationOnProfile(showContactInformationOnProfile)
     institutionRegistrationPrefix
   }
+
+  def newEnrollmentsEntries() = {
+    val esEntries = factory.newEnrollmentsEntries().as
+    esEntries.setEnrollmentEntriesMap(new HashMap[String,EnrollmentEntries]())
+    esEntries
+  }
   
-  //def newEnrollmentModule()
+  def newEnrollmentEntries = {
+    val eEntries = factory.newEnrollmentEntries().as()
+    eEntries.setActomEntriesMap(new HashMap[String,ActomEntries]())
+    eEntries
+  }
+
 }

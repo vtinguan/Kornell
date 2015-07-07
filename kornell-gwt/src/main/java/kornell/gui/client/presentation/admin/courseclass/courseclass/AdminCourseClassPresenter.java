@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -22,18 +21,19 @@ import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentRequestTO;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.EnrollmentsTO;
+import kornell.core.to.SimplePeopleTO;
+import kornell.core.to.SimplePersonTO;
 import kornell.core.to.TOFactory;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseclass.CourseClassPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -50,447 +50,509 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter {
-	Logger logger = Logger.getLogger(AdminCourseClassPresenter.class.getName());
-	private AdminCourseClassView view;
-	private List<EnrollmentTO> enrollmentTOs;
-	private String batchEnrollmentErrors;
-	private List<EnrollmentRequestTO> batchEnrollments;
-	FormHelper formHelper;
-	private KornellSession session;
-	private PlaceController placeController;
-	private Place defaultPlace;
-	TOFactory toFactory;
-	private ViewFactory viewFactory;
-	private Integer maxEnrollments = 0;
-	private Integer numEnrollments = 0;
-	private boolean overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
-	private EnrollmentRequestsTO enrollmentRequestsTO;
-	private List<EnrollmentTO> enrollmentsToOverride;
-	private EventBus bus;
-	private String pageSize = "20";
-	private String pageNumber = "1";
-	private String searchTerm = "";
+    Logger logger = Logger.getLogger(AdminCourseClassPresenter.class.getName());
+    private AdminCourseClassView view;
+    private List<EnrollmentTO> enrollmentTOs;
+    private String batchEnrollmentErrors;
+    private List<EnrollmentRequestTO> batchEnrollments;
+    FormHelper formHelper;
+    private KornellSession session;
+    private PlaceController placeController;
+    private Place defaultPlace;
+    TOFactory toFactory;
+    private ViewFactory viewFactory;
+    private Integer maxEnrollments = 0;
+    private Integer numEnrollments = 0;
+    private boolean overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
+    private EnrollmentRequestsTO enrollmentRequestsTO;
+    private List<SimplePersonTO> enrollmentsToOverride;
+    private EventBus bus;
+    private String pageSize = "20";
+    private String pageNumber = "1";
+    private String searchTerm = "";
 
-	private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
+    private static final String PREFIX = ClientProperties.PREFIX + "AdminHome";
 
-	public AdminCourseClassPresenter(KornellSession session, EventBus bus, PlaceController placeController,
-			Place defaultPlace, TOFactory toFactory, ViewFactory viewFactory) {
-		this.session = session;
-		this.bus = bus;
-		this.placeController = placeController;
-		this.defaultPlace = defaultPlace;
-		this.toFactory = toFactory;
-		this.viewFactory = viewFactory;
-		formHelper = new FormHelper();
-		enrollmentRequestsTO = toFactory.newEnrollmentRequestsTO().as();
-		// TODO refactor permissions per session/activity
-		init();
+    public AdminCourseClassPresenter(KornellSession session, EventBus bus, PlaceController placeController,
+            Place defaultPlace, TOFactory toFactory, ViewFactory viewFactory) {
+        this.session = session;
+        this.bus = bus;
+        this.placeController = placeController;
+        this.defaultPlace = defaultPlace;
+        this.toFactory = toFactory;
+        this.viewFactory = viewFactory;
+        formHelper = new FormHelper();
+        enrollmentRequestsTO = toFactory.newEnrollmentRequestsTO().as();
+        // TODO refactor permissions per session/activity
+        init();
 
-		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
-			@Override
-			public void onPlaceChange(PlaceChangeEvent event) {
-				if (event.getNewPlace() instanceof AdminCourseClassPlace)
-					init();
-			}
-		});
-	}
+        bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+            @Override
+            public void onPlaceChange(PlaceChangeEvent event) {
+                if (event.getNewPlace() instanceof AdminCourseClassPlace)
+                    init();
+            }
+        });
+    }
 
-	private void init() {
-		if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin)
-				|| RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.observer)
-				|| RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.tutor)
-				|| session.isInstitutionAdmin()) {
-			view = getView();
-			view.showEnrollmentsPanel(false);
-			view.setPresenter(this);
-			view.clearPagination();
-			String selectedCourseClass;
-			if (placeController.getWhere() instanceof AdminCourseClassPlace
-					&& ((AdminCourseClassPlace) placeController.getWhere()).getCourseClassUUID() != null) {
-				selectedCourseClass = ((AdminCourseClassPlace) placeController.getWhere()).getCourseClassUUID();
-			} else {
-				selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
-			}
-			updateCourseClass(selectedCourseClass);
-		} else {
-			logger.warning("Hey, only admins are allowed to see this! " + this.getClass().getName());
-			placeController.goTo(defaultPlace);
-		}
-	}
-
-	private void getEnrollments(final String courseClassUUID) {
-		ClientProperties.set(getLocalStoragePropertyName(), courseClassUUID);
-		LoadingPopup.show();
-		session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, pageSize, pageNumber, searchTerm, new Callback<EnrollmentsTO>() {
-			@Override
-			public void ok(EnrollmentsTO enrollments) {
-				LoadingPopup.hide();
-				if (courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
-					showEnrollments(enrollments, true);
-				}
-			} 
-		});
-	}
-
-	private void showEnrollments(EnrollmentsTO e, boolean refreshView) {
-		numEnrollments = e.getEnrollmentTOs().size();
-		maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
-		enrollmentTOs = e.getEnrollmentTOs();
-		view.setEnrollmentList(e.getEnrollmentTOs(), e.getCount(), e.getCountCancelled(), e.getSearchCount(), refreshView);
-		view.showEnrollmentsPanel(true);
-	}
-
-	@Override
-	public void updateCourseClass(final String courseClassUUID) {
-		if(placeController.getWhere() instanceof CourseClassPlace){
-			LoadingPopup.show();
-			view.showEnrollmentsPanel(false);
-	        session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {
-						@Override            
-						public void ok(CourseClassTO courseClassTO) {
-							LoadingPopup.hide();
-			                updateCourseClassUI(courseClassTO);
-						}
-					});
-		} else {
-            updateCourseClassUI(null);
-		}
-	}
-
-	@Override
-	public void updateCourseClassUI(CourseClassTO courseClassTO) {
-		view.showTabsPanel(courseClassTO != null);
-		view.prepareAddNewCourseClass(false);
-		view.showEnrollmentsPanel(false);
-		view.setHomeTabActive();
-		if (courseClassTO == null)
-			return;
-		Dean.getInstance().setCourseClassTO(courseClassTO);        
-		view.setCourseClassTO(courseClassTO);
-		view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationType());
-		view.setCanPerformEnrollmentAction(true);
-		getEnrollments(courseClassTO.getCourseClass().getUUID());
-	}
-
-	private String getLocalStoragePropertyName() {
-		return PREFIX + ClientProperties.SEPARATOR + Dean.getInstance().getInstitution().getUUID()
-				+ ClientProperties.SEPARATOR + ClientProperties.SELECTED_COURSE_CLASS;
-	}
-
-	@Override
-	public void changeEnrollmentState(final EnrollmentTO enrollmentTO, final EnrollmentState toState) {
-		if(session.isCourseClassAdmin()){
-			LoadingPopup.show();
-	
-			String personUUID = session.getCurrentUser().getPerson().getUUID();
-			LoadingPopup.show();
-			session.events()
-			.enrollmentStateChanged(enrollmentTO.getEnrollment().getUUID(), personUUID,
-					enrollmentTO.getEnrollment().getState(), toState).fire(new Callback<Void>() {
-						@Override
-						public void ok(Void to) {
-							LoadingPopup.hide();
-							getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-							view.setCanPerformEnrollmentAction(true);
-							KornellNotification.show("Alteração feita com sucesso.", 2000);
-						}
-					});
-		}
-	}
-
-	@Override
-	public void changeCourseClassState(final CourseClassTO courseClassTO, final CourseClassState toState) {
-		LoadingPopup.show();
-
-		String personUUID = session.getCurrentUser().getPerson().getUUID();
-		session.events()
-		.courseClassStateChanged(courseClassTO.getCourseClass().getUUID(), personUUID,
-				courseClassTO.getCourseClass().getState(), toState).fire(new Callback<Void>() {
-					@Override
-					public void ok(Void to) {
-						LoadingPopup.hide();
-						KornellNotification.show("Turma excluída com sucesso!");
-						updateCourseClass(null);
-					}
-
-					@Override
-					public void unauthorized(KornellErrorTO kornellErrorTO) {
-						LoadingPopup.hide();
-						KornellNotification.show("Erro ao tentar excluir a turma.", AlertType.ERROR);
-						logger.severe(this.getClass().getName() + " - "
-								+ KornellConstantsHelper.getErrorMessage(kornellErrorTO));
-					}
-				});
-
-	}
-
-	@Override
-	public boolean showActionButton(String actionName, EnrollmentTO enrollmentTO) {
-		boolean isEnabled = CourseClassState.active.equals(Dean.getInstance().getCourseClassTO().getCourseClass()
-				.getState());
-		EnrollmentState state = enrollmentTO.getEnrollment().getState();
-		EnrollmentProgressDescription progressDescription = EnrollmentCategory
-				.getEnrollmentProgressDescription(enrollmentTO.getEnrollment());
-		if ("Aceitar".equals(actionName) || "Negar".equals(actionName)) {
-			return isEnabled && EnrollmentState.requested.equals(state) && session.isCourseClassAdmin();
-		} else if ("Cancelar".equals(actionName)) {
-			return isEnabled && EnrollmentState.enrolled.equals(state) && session.isCourseClassAdmin();
-		} else if ("Matricular".equals(actionName)) {
-			return isEnabled && (EnrollmentState.denied.equals(state) || EnrollmentState.cancelled.equals(state)) && session.isCourseClassAdmin();
-		} else if ("Excluir".equals(actionName)) {
-			return isEnabled && EnrollmentProgressDescription.notStarted.equals(progressDescription) && session.isCourseClassAdmin();
-		} else if ("Perfil".equals(actionName)) {
-			return true;
-		} else if ("Certificado".equals(actionName)) {
-			return EnrollmentCategory.isFinished(enrollmentTO.getEnrollment()) && (session.isCourseClassAdmin() || session.isCourseClassObserver());
-        } else if("Transferir".equals(actionName)){
-            return true;
+    private void init() {
+        if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin)
+                || RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.observer)
+                || RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.tutor)
+                || session.isInstitutionAdmin()) {
+            view = getView();
+            view.showEnrollmentsPanel(false);
+            view.setPresenter(this);
+            view.clearPagination();
+            String selectedCourseClass;
+            if (placeController.getWhere() instanceof AdminCourseClassPlace
+                    && ((AdminCourseClassPlace) placeController.getWhere()).getCourseClassUUID() != null) {
+                selectedCourseClass = ((AdminCourseClassPlace) placeController.getWhere()).getCourseClassUUID();
+            } else {
+                selectedCourseClass = ClientProperties.get(getLocalStoragePropertyName());
+            }
+            updateCourseClass(selectedCourseClass);
+        } else {
+            logger.warning("Hey, only admins are allowed to see this! " + this.getClass().getName());
+            placeController.goTo(defaultPlace);
         }
-		return false;
-	}
+    }
+
+    private void getEnrollments(final String courseClassUUID) {
+        ClientProperties.set(getLocalStoragePropertyName(), courseClassUUID);
+        LoadingPopup.show();
+        session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, pageSize, pageNumber, searchTerm, new Callback<EnrollmentsTO>() {
+            @Override
+            public void ok(EnrollmentsTO enrollments) {
+                LoadingPopup.hide();
+                if (courseClassUUID.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
+                    showEnrollments(enrollments, true);
+                }
+            } 
+        });
+    }
+
+    private void showEnrollments(EnrollmentsTO e, boolean refreshView) {
+        numEnrollments = e.getEnrollmentTOs().size();
+        maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
+        enrollmentTOs = e.getEnrollmentTOs();
+        view.setEnrollmentList(e.getEnrollmentTOs(), e.getCount(), e.getCountCancelled(), e.getSearchCount(), refreshView);
+        view.showEnrollmentsPanel(true);
+    }
+
+    @Override
+    public void updateCourseClass(final String courseClassUUID) {
+        if(placeController.getWhere() instanceof AdminCourseClassPlace){
+            LoadingPopup.show();
+            view.showEnrollmentsPanel(false);
+            session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {
+                @Override            
+                public void ok(CourseClassTO courseClassTO) {
+                    LoadingPopup.hide();
+                    updateCourseClassUI(courseClassTO);
+                }
+            });
+        } else {
+            updateCourseClassUI(null);
+        }
+    }
+
+    @Override
+    public void updateCourseClassUI(CourseClassTO courseClassTO) {
+        view.showTabsPanel(courseClassTO != null);
+        view.prepareAddNewCourseClass(false);
+        view.showEnrollmentsPanel(false);
+        view.setHomeTabActive();
+        if (courseClassTO == null)
+            return;
+        Dean.getInstance().setCourseClassTO(courseClassTO);        
+        view.setCourseClassTO(courseClassTO);
+        view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationType());
+        view.setCanPerformEnrollmentAction(true);
+        getEnrollments(courseClassTO.getCourseClass().getUUID());
+    }
+
+    private String getLocalStoragePropertyName() {
+        return PREFIX + ClientProperties.SEPARATOR + Dean.getInstance().getInstitution().getUUID()
+                + ClientProperties.SEPARATOR + ClientProperties.SELECTED_COURSE_CLASS;
+    }
+
+    @Override
+    public void changeEnrollmentState(final EnrollmentTO enrollmentTO, final EnrollmentState toState) {
+        if(session.isCourseClassAdmin()){
+            LoadingPopup.show();
+
+            String personUUID = session.getCurrentUser().getPerson().getUUID();
+            LoadingPopup.show();
+            session.events()
+            .enrollmentStateChanged(enrollmentTO.getEnrollment().getUUID(), personUUID,
+                    enrollmentTO.getEnrollment().getState(), toState).fire(new Callback<Void>() {
+                        @Override
+                        public void ok(Void to) {
+                            LoadingPopup.hide();
+                            getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+                            view.setCanPerformEnrollmentAction(true);
+                            KornellNotification.show("Alteração feita com sucesso.", 2000);
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public void changeCourseClassState(final CourseClassTO courseClassTO, final CourseClassState toState) {
+        LoadingPopup.show();
+
+        String personUUID = session.getCurrentUser().getPerson().getUUID();
+        session.events()
+        .courseClassStateChanged(courseClassTO.getCourseClass().getUUID(), personUUID,
+                courseClassTO.getCourseClass().getState(), toState).fire(new Callback<Void>() {
+                    @Override
+                    public void ok(Void to) {
+                        LoadingPopup.hide();
+                        if(CourseClassState.inactive.equals(toState)){
+                            KornellNotification.show("Turma desabilitada com sucesso!");
+                            updateCourseClass(courseClassTO.getCourseClass().getUUID());
+                        } else {
+                            KornellNotification.show("Turma excluída com sucesso!");
+                            placeController.goTo(new AdminCourseClassesPlace());
+                        }
+                    }
+
+                    @Override
+                    public void unauthorized(KornellErrorTO kornellErrorTO) {
+                        LoadingPopup.hide();
+                        KornellNotification.show("Erro ao tentar excluir a turma.", AlertType.ERROR);
+                        logger.severe(this.getClass().getName() + " - "
+                                + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
+                    }
+                });
+
+    }
+
+    @Override
+    public boolean showActionButton(String actionName, EnrollmentTO enrollmentTO) {
+        boolean isEnabled = CourseClassState.active.equals(Dean.getInstance().getCourseClassTO().getCourseClass()
+                .getState());
+        EnrollmentState state = enrollmentTO.getEnrollment().getState();
+        EnrollmentProgressDescription progressDescription = EnrollmentCategory
+                .getEnrollmentProgressDescription(enrollmentTO.getEnrollment());
+        if ("Aceitar".equals(actionName) || "Negar".equals(actionName)) {
+            return isEnabled && EnrollmentState.requested.equals(state) && session.isCourseClassAdmin();
+        } else if ("Cancelar".equals(actionName)) {
+            return isEnabled && EnrollmentState.enrolled.equals(state) && session.isCourseClassAdmin();
+        } else if ("Matricular".equals(actionName)) {
+            return isEnabled && (EnrollmentState.denied.equals(state) || EnrollmentState.cancelled.equals(state)) && session.isCourseClassAdmin();
+        } else if ("Excluir".equals(actionName)) {
+            return isEnabled && EnrollmentProgressDescription.notStarted.equals(progressDescription) && session.isCourseClassAdmin();
+        } else if ("Perfil".equals(actionName)) {
+            return session.isCourseClassAdmin();
+        } else if ("Certificado".equals(actionName)) {
+            return EnrollmentCategory.isFinished(enrollmentTO.getEnrollment()) && (session.isCourseClassAdmin() || session.isCourseClassObserver());
+        } else if("Transferir".equals(actionName)){
+            return session.isCourseClassAdmin();
+        }
+        return false;
+    }
+
+    @Override
+    public void onAddEnrollmentButtonClicked(String fullName, String username) {
+        if ("".equals(fullName) && "".equals(username)) {
+            return;
+        }
+        username = username.replaceAll("\\u200B", "").trim();
+        if (RegistrationType.cpf.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())) {
+            username = FormHelper.stripCPF(username);
+        }
+        batchEnrollments = new ArrayList<EnrollmentRequestTO>();
+        batchEnrollments.add(createEnrollment(fullName, username, false));
+        if (!formHelper.isLengthValid(fullName, 2, 50)) {
+            KornellNotification.show("O nome deve ter no mínimo 2 caracteres.", AlertType.ERROR);
+        } else if (!isUsernameValid(username)) {
+            KornellNotification.show(
+                    formHelper.getRegistrationTypeAsText(Dean.getInstance().getCourseClassTO().getCourseClass()
+                            .getRegistrationType())
+                            + " inválido.", AlertType.ERROR);
+        } else {
+            prepareCreateEnrollments(false);
+        }
+    }
+
+    private boolean isUsernameValid(String username) {
+        switch (Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) {
+        case email:
+            return FormHelper.isEmailValid(username);
+        case cpf:
+            return FormHelper.isCPFValid(username);
+        case username:
+            return FormHelper.isUsernameValid(username);
+        default:
+            return false;
+        }
+    }
+
+    @Override
+    public void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch) {
+        populateEnrollmentsList(txtAddEnrollmentBatch, false);
+        if (batchEnrollmentErrors == null || !"".equals(batchEnrollmentErrors)) {
+            view.setModalErrors("Erros ao inserir matrículas", "As seguintes linhas contém erros:",
+                    batchEnrollmentErrors, "Deseja ignorar essas linhas e continuar?");
+            overriddenEnrollmentsModalShown = false;
+            view.showModal(true, "error");
+        } else {
+            prepareCreateEnrollments(true);
+        }
+    }
 
 	@Override
-	public void onAddEnrollmentButtonClicked(String fullName, String username) {
-		if ("".equals(fullName) && "".equals(username)) {
-			return;
-		}
-		username = username.replaceAll("\\u200B", "").trim();
-		if (RegistrationType.cpf.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())) {
-			username = FormHelper.stripCPF(username);
-		}
-		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
-		batchEnrollments.add(createEnrollment(fullName, username, false));
-		if (!formHelper.isLengthValid(fullName, 2, 50)) {
-			KornellNotification.show("O nome deve ter no mínimo 2 caracteres.", AlertType.ERROR);
-		} else if (!isUsernameValid(username)) {
-			KornellNotification.show(
-					formHelper.getRegistrationTypeAsText(Dean.getInstance().getCourseClassTO().getCourseClass()
-							.getRegistrationType())
-							+ " inválido.", AlertType.ERROR);
-		} else {
-			prepareCreateEnrollments(false);
-		}
+	public void onBatchCancelModalOkButtonClicked(String txtCancelEnrollmentBatch) {
+        populateEnrollmentsList(txtCancelEnrollmentBatch, true);
+        enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
+
+        for (EnrollmentRequestTO enrollmentRequestTO : enrollmentRequestsTO.getEnrollmentRequests()) {
+        	enrollmentRequestTO.setCancelEnrollment(true);
+        }
+        
+        LoadingPopup.show();
+        final int requestsThreshold = 200;
+        if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
+            KornellNotification.show("Solicitação de cancelamento de matrículas enviada para o servidor.", AlertType.INFO, 20000);
+            LoadingPopup.hide();
+            view.clearEnrollmentFields();
+        }
+
+        if(session.isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
+            session.enrollments().createEnrollments(enrollmentRequestsTO, new Callback<Enrollments>() {
+                @Override
+                public void ok(Enrollments to) {
+                    getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+                    KornellNotification.show("Matrículas canceladas com sucesso.", 1500);
+                    view.clearEnrollmentFields();
+                    LoadingPopup.hide();
+                    PlaceUtils.reloadCurrentPlace(bus, placeController);
+                }
+
+                @Override
+                public void unauthorized(KornellErrorTO kornellErrorTO) {
+                    logger.severe("Error AdminHomePresenter: "
+                            + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
+                    KornellNotification.show("Erro ao cancelar matrícula(s).", AlertType.ERROR, 2500);
+                    LoadingPopup.hide();
+                }
+            });
+        }
 	}
 
-	private boolean isUsernameValid(String username) {
-		switch (Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) {
-		case email:
-			return FormHelper.isEmailValid(username);
-		case cpf:
-			return FormHelper.isCPFValid(username);
-		case username:
-			return FormHelper.isUsernameValid(username);
-		default:
-			return false;
-		}
-	}
+    private void populateEnrollmentsList(String txtAddEnrollmentBatch, boolean isBatchCancel) {
+        String[] enrollmentsA = txtAddEnrollmentBatch.split("\n");
+        String fullName, username;
+        String[] enrollmentStrA;
+        batchEnrollments = new ArrayList<EnrollmentRequestTO>();
+        batchEnrollmentErrors = "";
+        for (int i = 0; i < enrollmentsA.length; i++) {
+            if ("".equals(enrollmentsA[i].trim()))
+                continue;
+            enrollmentStrA = enrollmentsA[i].indexOf(';') >= 0 ? enrollmentsA[i].split(";") : enrollmentsA[i]
+                    .split("\\t");
+            fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
+            username = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]).replace((char) 160, (char) 32).replaceAll("\\u200B", "")
+                    .trim();
+            if (isBatchCancel) {
+                fullName.trim();
+                username.trim();
+                String usr;
+                EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
-	@Override
-	public void onAddEnrollmentBatchButtonClicked(String txtAddEnrollmentBatch) {
-		populateEnrollmentsList(txtAddEnrollmentBatch);
-		if (batchEnrollmentErrors == null || !"".equals(batchEnrollmentErrors)) {
-			view.setModalErrors("Erros ao inserir matrículas", "As seguintes linhas contém erros:",
-					batchEnrollmentErrors, "Deseja ignorar essas linhas e continuar?");
-			overriddenEnrollmentsModalShown = false;
-			view.showModal(true);
-		} else {
-			prepareCreateEnrollments(true);
-		}
-	}
+                enrollmentRequestTO.setCancelEnrollment(true);
+                enrollmentRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+                if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+                    enrollmentRequestTO.setCourseVersionUUID(Dean.getInstance().getCourseClassTO().getCourseVersionTO().getCourseVersion().getUUID());
+                }
+                enrollmentRequestTO.setCourseClassUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 
-	private void populateEnrollmentsList(String txtAddEnrollmentBatch) {
-		String[] enrollmentsA = txtAddEnrollmentBatch.split("\n");
-		String fullName, email;
-		String[] enrollmentStrA;
-		batchEnrollments = new ArrayList<EnrollmentRequestTO>();
-		batchEnrollmentErrors = "";
-		for (int i = 0; i < enrollmentsA.length; i++) {
-			if ("".equals(enrollmentsA[i].trim()))
-				continue;
-			enrollmentStrA = enrollmentsA[i].indexOf(';') >= 0 ? enrollmentsA[i].split(";") : enrollmentsA[i]
-					.split("\\t");
-			fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
-			email = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]).replace((char) 160, (char) 32).replaceAll("\\u200B", "")
-					.trim();
-			if (isUsernameValid(email)) {
-				batchEnrollments.add(createEnrollment(fullName, email, false));
-			} else {
-				batchEnrollmentErrors += enrollmentsA[i] + "\n";
-			}
-		}
-	}
+                enrollmentRequestTO.setUsername(username);
+                batchEnrollments.add(enrollmentRequestTO);
+            } else if (isUsernameValid(username)) {            
+                batchEnrollments.add(createEnrollment(fullName, username, false));
+            } else {
+                batchEnrollmentErrors += enrollmentsA[i] + "\n";
+            }
+        }
+    }
 
-	private EnrollmentRequestTO createEnrollment(String fullName, String username, boolean cancelEnrollment) {
-		fullName.trim();
-		username.trim();
-		String usr;
-		EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
+    private EnrollmentRequestTO createEnrollment(String fullName, String username, boolean cancelEnrollment) {
+        fullName.trim();
+        username.trim();
+        String usr;
+        EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
-		enrollmentRequestTO.setCancelEnrollment(cancelEnrollment);
-		enrollmentRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
-		if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
-			enrollmentRequestTO.setCourseVersionUUID(Dean.getInstance().getCourseClassTO().getCourseVersionTO().getCourseVersion().getUUID());
-		}
-		enrollmentRequestTO.setCourseClassUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-		
-		enrollmentRequestTO.setFullName(fullName);
-		enrollmentRequestTO.setRegistrationType(Dean.getInstance().getCourseClassTO().getCourseClass()
-				.getRegistrationType());
-		switch (Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) {
-		case email:
-			enrollmentRequestTO.setUsername(username);
-			break;
-		case cpf:
-			usr = FormHelper.stripCPF(username);
-			enrollmentRequestTO.setUsername(usr);
-			enrollmentRequestTO.setPassword(usr);
-			break;
-		case username:
-			usr = !cancelEnrollment && username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? Dean.getInstance().getCourseClassTO()
-					.getRegistrationPrefix()
-					+ FormHelper.USERNAME_SEPARATOR + username : username;
-			enrollmentRequestTO.setUsername(usr);
-			enrollmentRequestTO.setPassword(username);
-			enrollmentRequestTO.setInstitutionRegistrationPrefixUUID(Dean.getInstance().getCourseClassTO()
-					.getCourseClass().getInstitutionRegistrationPrefixUUID());
-			break;
-		default:
-			break;
-		}
-		enrollmentRequestTO.setRegistrationType(Dean.getInstance().getCourseClassTO().getCourseClass()
-				.getRegistrationType());
-		return enrollmentRequestTO;
-	}
+        enrollmentRequestTO.setCancelEnrollment(cancelEnrollment);
+        enrollmentRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+        if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+            enrollmentRequestTO.setCourseVersionUUID(Dean.getInstance().getCourseClassTO().getCourseVersionTO().getCourseVersion().getUUID());
+        }
+        enrollmentRequestTO.setCourseClassUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
 
-	private void prepareCreateEnrollments(boolean isBatch) {
-		enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
-		if (CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState())) {
-			KornellNotification.show("Não é possível matricular participantes em uma turma desabilidada.",
-					AlertType.ERROR);
-			return;
-		} else if (enrollmentRequestsTO.getEnrollmentRequests().size() == 0) {
-			KornellNotification
-			.show("Verifique se os nomes/"
-					+ formHelper.getRegistrationTypeAsText(
-							Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
-							.toLowerCase() + " dos participantes estão corretos. Nenhuma matrícula encontrada.",
-							AlertType.WARNING);
-		} else if ((enrollmentRequestsTO.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
-			KornellNotification
-			.show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
-					AlertType.ERROR, 5000);
-		} else {
-			if (isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()) {
-				String validation = validateEnrollmentsOverride();
-				if (confirmedEnrollmentsModal || "".equals(validation)) {
-					createEnrollments();
-				} else {
-					overriddenEnrollmentsModalShown = true;
-					confirmedEnrollmentsModal = false;
-					view.setModalErrors("ATENÇÃO! Sobrescrita de matrículas!",
-							"Os seguintes participantes terão suas matrículas canceladas:", validation,
-							"Deseja continuar?");
-					view.showModal(true);
-				}
-			} else {
-				createEnrollments();
-			}
-		}
+        enrollmentRequestTO.setFullName(fullName);
+        enrollmentRequestTO.setRegistrationType(Dean.getInstance().getCourseClassTO().getCourseClass()
+                .getRegistrationType());
+        switch (Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) {
+        case email:
+            enrollmentRequestTO.setUsername(username);
+            break;
+        case cpf:
+            usr = FormHelper.stripCPF(username);
+            enrollmentRequestTO.setUsername(usr);
+            enrollmentRequestTO.setPassword(usr);
+            break;
+        case username:
+            usr = !cancelEnrollment && username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? Dean.getInstance().getCourseClassTO()
+                    .getRegistrationPrefix()
+                    + FormHelper.USERNAME_SEPARATOR + username : username;
+            enrollmentRequestTO.setUsername(usr);
+            enrollmentRequestTO.setPassword(username);
+            enrollmentRequestTO.setInstitutionRegistrationPrefixUUID(Dean.getInstance().getCourseClassTO()
+                    .getCourseClass().getInstitutionRegistrationPrefixUUID());
+            break;
+        default:
+            break;
+        }
+        enrollmentRequestTO.setRegistrationType(Dean.getInstance().getCourseClassTO().getCourseClass()
+                .getRegistrationType());
+        return enrollmentRequestTO;
+    }
 
-	}
+    private void prepareCreateEnrollments(boolean isBatch) {
+        enrollmentRequestsTO.setEnrollmentRequests(batchEnrollments);
+        if (CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState())) {
+            KornellNotification.show("Não é possível matricular participantes em uma turma desabilidada.",
+                    AlertType.ERROR);
+            return;
+        } else if (enrollmentRequestsTO.getEnrollmentRequests().size() == 0) {
+            KornellNotification
+            .show("Verifique se os nomes/"
+                    + formHelper.getRegistrationTypeAsText(
+                            Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
+                            .toLowerCase() + " dos participantes estão corretos. Nenhuma matrícula encontrada.",
+                            AlertType.WARNING);
+        } else if ((enrollmentRequestsTO.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
+            KornellNotification
+            .show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
+                    AlertType.ERROR, 5000);
+        } else {
+            if (isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()) {
+                session.enrollments().simpleEnrollmentsList(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), new Callback<SimplePeopleTO>() {
+                    @Override
+                    public void ok(SimplePeopleTO to) {
+                        String validation = validateEnrollmentsOverride(to.getSimplePeopleTO());
+                        if (confirmedEnrollmentsModal || "".equals(validation)) {
+                            createEnrollments();
+                        } else {
+                            overriddenEnrollmentsModalShown = true;
+                            confirmedEnrollmentsModal = false;
+                            view.setModalErrors("ATENÇÃO! Sobrescrita de matrículas!",
+                                    "Os seguintes participantes terão suas matrículas canceladas:", validation,
+                                    "Deseja continuar?");
+                            view.showModal(true, "error");
+                        }
+                    }
+                });
+            } else {
+                createEnrollments();
+            }
+        }
 
-	private String validateEnrollmentsOverride() {
-		Map<String, EnrollmentRequestTO> enrollmentRequestsMap = new HashMap<String, EnrollmentRequestTO>();
-		for (EnrollmentRequestTO enrollmentRequestTO : enrollmentRequestsTO.getEnrollmentRequests()) {
-			enrollmentRequestsMap.put(enrollmentRequestTO.getUsername(), enrollmentRequestTO);
-		}
+    }
 
-		String validation = "";
+    private String validateEnrollmentsOverride(List<SimplePersonTO> simplePeople) {
+        String validation = "";
 
-		enrollmentsToOverride = new ArrayList<EnrollmentTO>();
-		for (Iterator<EnrollmentTO> iterator = enrollmentTOs.iterator(); iterator.hasNext();) {
-			EnrollmentTO enrollmentTO = (EnrollmentTO) iterator.next();
-			String username = enrollmentTO.getUsername();
-			// if the user was already enrolled and is not on the new list,
-			// cancel enrollment
-			if (!enrollmentRequestsMap.containsKey(username)
-					&& EnrollmentState.enrolled.equals(enrollmentTO.getEnrollment().getState())) {
-				enrollmentsToOverride.add(enrollmentTO);
-				validation += username + 
-						(StringUtils.isSome(enrollmentTO.getFullName()) ? 
-								" (" + enrollmentTO.getFullName() + ")\n" :
-								"");
-			}
-		}
+        Map<String, EnrollmentRequestTO> enrollmentRequestsMap = new HashMap<String, EnrollmentRequestTO>();
+        for (EnrollmentRequestTO enrollmentRequestTO : enrollmentRequestsTO.getEnrollmentRequests()) {
+            enrollmentRequestsMap.put(enrollmentRequestTO.getUsername(), enrollmentRequestTO);
+        }
 
-		return validation;
-	}
+        enrollmentsToOverride = new ArrayList<SimplePersonTO>();
+        for (SimplePersonTO simplePersonTO : simplePeople) {
+            String username = simplePersonTO.getUsername();
+            // if the user was already enrolled and is not on the new list,
+            // cancel enrollment
+            if (!enrollmentRequestsMap.containsKey(username)) {
+                enrollmentsToOverride.add(simplePersonTO);
+                validation += username + 
+                        (StringUtils.isSome(simplePersonTO.getFullName()) ? 
+                                " (" + simplePersonTO.getFullName() + ")\n" :
+                                "");
+            }
+        }
+        
+        return validation;
+    }
 
-	private void createEnrollments() {
+    private void createEnrollments() {
 
-		if (confirmedEnrollmentsModal && enrollmentsToOverride != null && enrollmentsToOverride.size() > 0) {
-			for (EnrollmentTO enrollmentToOverrideTO : enrollmentsToOverride) {
-				EnrollmentRequestTO enrollmentRequestTO = createEnrollment(enrollmentToOverrideTO.getFullName(),
-						enrollmentToOverrideTO.getUsername(), true);
-				enrollmentRequestsTO.getEnrollmentRequests().add(enrollmentRequestTO);
-			}
+        if (confirmedEnrollmentsModal && enrollmentsToOverride != null && enrollmentsToOverride.size() > 0) {
+            for (SimplePersonTO simplePersonTO : enrollmentsToOverride) {
+                EnrollmentRequestTO enrollmentRequestTO = createEnrollment(simplePersonTO.getFullName(),
+                        simplePersonTO.getUsername(), true);
+                enrollmentRequestsTO.getEnrollmentRequests().add(enrollmentRequestTO);
+            }
 
-		}
-		LoadingPopup.show();
-		final int requestsThreshold = 100;
-		if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
-			if(StringUtils.isSome(session.getCurrentUser().getPerson().getEmail())){
-				KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma email em \"" + session.getCurrentUser().getPerson().getEmail() + "\" assim que a operação for concluída.", AlertType.INFO, 20000);
-			} else {
-				KornellNotification.show("Favor configurar um email no seu perfil para que possa receber as mensagens de confirmação de matrículas em lote.", AlertType.INFO, 8000);
-			}
-			LoadingPopup.hide();
-			confirmedEnrollmentsModal = false;
-			view.clearEnrollmentFields();
-		} else if (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
-				&& enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
-			KornellNotification
-			.show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
-					+ enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
-		}
+        }
+        LoadingPopup.show();
+        final int requestsThreshold = 100;
+        if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
+            if(StringUtils.isSome(session.getCurrentUser().getPerson().getEmail())){
+                KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma email em \"" + session.getCurrentUser().getPerson().getEmail() + "\" assim que a operação for concluída.", AlertType.INFO, 20000);
+            } else {
+                KornellNotification.show("Favor configurar um email no seu perfil para que possa receber as mensagens de confirmação de matrículas em lote.", AlertType.INFO, 8000);
+            }
+            LoadingPopup.hide();
+            confirmedEnrollmentsModal = false;
+            view.clearEnrollmentFields();
+        } else if (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
+                && enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
+            KornellNotification
+            .show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
+                    + enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
+        }
 
-		if(session.isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
-			session.enrollments().createEnrollments(enrollmentRequestsTO, new Callback<Enrollments>() {
-				@Override
-				public void ok(Enrollments to) {
-					if(enrollmentRequestsTO.getEnrollmentRequests().size() <= requestsThreshold){
-						getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-						confirmedEnrollmentsModal = false;
-						KornellNotification.show("Matrículas feitas com sucesso.", 1500);
-						view.clearEnrollmentFields();
-						LoadingPopup.hide();
-						PlaceUtils.reloadCurrentPlace(bus, placeController);
-					}
-				}
-	
-				@Override
-				public void unauthorized(KornellErrorTO kornellErrorTO) {
-					logger.severe("Error AdminHomePresenter: "
-							+ KornellConstantsHelper.getErrorMessage(kornellErrorTO));
-					KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
-					LoadingPopup.hide();
-				}
-			});
-		}
-	}
+        if(session.isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
+            session.enrollments().createEnrollments(enrollmentRequestsTO, new Callback<Enrollments>() {
+                @Override
+                public void ok(Enrollments to) {
+                    if(enrollmentRequestsTO.getEnrollmentRequests().size() <= requestsThreshold){
+                        getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+                        confirmedEnrollmentsModal = false;
+                        KornellNotification.show("Matrículas feitas com sucesso.", 1500);
+                        view.clearEnrollmentFields();
+                        LoadingPopup.hide();
+                        PlaceUtils.reloadCurrentPlace(bus, placeController);
+                    }
+                }
 
-	@Override
-	public void onModalOkButtonClicked() {
-		view.showModal(false);
-		if (overriddenEnrollmentsModalShown) {
-			confirmedEnrollmentsModal = true;
-		}
-		prepareCreateEnrollments(true);
-	}
-	
+                @Override
+                public void unauthorized(KornellErrorTO kornellErrorTO) {
+                    logger.severe("Error AdminHomePresenter: "
+                            + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
+                    KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
+                    LoadingPopup.hide();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onModalOkButtonClicked() {
+        view.showModal(false, "");
+        if (overriddenEnrollmentsModalShown) {
+            confirmedEnrollmentsModal = true;
+        }
+        prepareCreateEnrollments(true);
+    }
+
     @Override
     public void onModalTransferOkButtonClicked(String enrollmentUUID, String courseClassUUID) {
-        view.showModal(false);        
+        view.showModal(false, "");        
         session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
         .fire(new Callback<Void>() {
             @Override
@@ -505,131 +567,131 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
     }
 
-	@Override
-	public void onGoToCourseButtonClicked() {
-		placeController.goTo(new ClassroomPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
-	}
+    @Override
+    public void onGoToCourseButtonClicked() {
+        placeController.goTo(new ClassroomPlace(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID()));
+    }
 
-	@Override
-	public Widget asWidget() {
-		return view.asWidget();
-	}
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
+    }
 
-	private AdminCourseClassView getView() {
-		return viewFactory.getAdminCourseClassView();
-	}
+    private AdminCourseClassView getView() {
+        return viewFactory.getAdminCourseClassView();
+    }
 
-	@Override
-	public void onUserClicked(EnrollmentTO enrollmentTO) {
-		ProfilePlace place = new ProfilePlace(enrollmentTO.getPersonUUID(), false);
-		placeController.goTo(place);
-	}
+    @Override
+    public void onUserClicked(EnrollmentTO enrollmentTO) {
+        ProfilePlace place = new ProfilePlace(enrollmentTO.getPersonUUID(), false);
+        placeController.goTo(place);
+    }
 
-	@Override
-	public void onGenerateCertificate(EnrollmentTO enrollmentTO) {
-		KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
-		Window.Location.assign(session.getApiUrl() + "/report/certificate/" + enrollmentTO.getPersonUUID() + "/"
-				+ enrollmentTO.getEnrollment().getCourseClassUUID());
-	}
+    @Override
+    public void onGenerateCertificate(EnrollmentTO enrollmentTO) {
+        KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+        Window.Location.assign(session.getApiUrl() + "/report/certificate/" + enrollmentTO.getPersonUUID() + "/"
+                + enrollmentTO.getEnrollment().getCourseClassUUID());
+    }
 
-	@Override
-	public List<EnrollmentTO> getEnrollments() {
-		return enrollmentTOs;
-	}
+    @Override
+    public List<EnrollmentTO> getEnrollments() {
+        return enrollmentTOs;
+    }
 
-	@Override
-	public void deleteEnrollment(EnrollmentTO enrollmentTO) {
-		if(session.isCourseClassAdmin()){
-			session.enrollment(enrollmentTO.getEnrollment().getUUID()).delete(new Callback<Enrollment>() {
-				@Override
-				public void ok(Enrollment to) {
-					KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
-					getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-					view.setCanPerformEnrollmentAction(true);
-				}
-				@Override
-				public void internalServerError(KornellErrorTO kornellErrorTO){
-					KornellNotification.show("Erro ao excluir matrícula. Usuário provavelmente já acessou a plataforma.", AlertType.ERROR, 2500);
-					view.setCanPerformEnrollmentAction(true);
-				}
-			});
-		}
-	}
+    @Override
+    public void deleteEnrollment(EnrollmentTO enrollmentTO) {
+        if(session.isCourseClassAdmin()){
+            session.enrollment(enrollmentTO.getEnrollment().getUUID()).delete(new Callback<Enrollment>() {
+                @Override
+                public void ok(Enrollment to) {
+                    KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
+                    getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+                    view.setCanPerformEnrollmentAction(true);
+                }
+                @Override
+                public void internalServerError(KornellErrorTO kornellErrorTO){
+                    KornellNotification.show("Erro ao excluir matrícula. Usuário provavelmente já acessou a plataforma.", AlertType.ERROR, 2500);
+                    view.setCanPerformEnrollmentAction(true);
+                }
+            });
+        }
+    }
 
-	@Override
-	public void upsertCourseClass(CourseClass courseClass) {
-		if (courseClass.getUUID() == null) {
-			courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
-			session.courseClasses().create(courseClass, new Callback<CourseClass>() {
-				@Override
-				public void ok(CourseClass courseClass) {
-					LoadingPopup.hide();
-					KornellNotification.show("Turma criada com sucesso!");
-					CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
-					if (courseClassTO2 != null)
-						courseClassTO2.setCourseClass(courseClass);
-					PlaceUtils.reloadCurrentPlace(bus, placeController);
-				}
+    @Override
+    public void upsertCourseClass(CourseClass courseClass) {
+        if (courseClass.getUUID() == null) {
+            courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
+            session.courseClasses().create(courseClass, new Callback<CourseClass>() {
+                @Override
+                public void ok(CourseClass courseClass) {
+                    LoadingPopup.hide();
+                    KornellNotification.show("Turma criada com sucesso!");
+                    CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
+                    if (courseClassTO2 != null)
+                        courseClassTO2.setCourseClass(courseClass);
+					placeController.goTo(new AdminCourseClassPlace(courseClass.getUUID()));
+                }
 
-				@Override
-				public void conflict(KornellErrorTO kornellErrorTO) {
-					LoadingPopup.hide();
+                @Override
+                public void conflict(KornellErrorTO kornellErrorTO) {
+                    LoadingPopup.hide();
 					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO),
-							AlertType.ERROR, 2500);
-				}
-			});
-		} else {
-			session.courseClass(courseClass.getUUID()).update(courseClass, new Callback<CourseClass>() {
-				@Override
-				public void ok(CourseClass courseClass) {
-					LoadingPopup.hide();
+                            AlertType.ERROR, 2500);
+                }
+            });
+        } else {
+            session.courseClass(courseClass.getUUID()).update(courseClass, new Callback<CourseClass>() {
+                @Override
+                public void ok(CourseClass courseClass) {
+                    LoadingPopup.hide();
 					KornellNotification.show("Alterações salvas com sucesso!");
-					Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
-					updateCourseClass(courseClass.getUUID());
-				}
+                    Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
+                    updateCourseClass(courseClass.getUUID());
+                }
 
-				@Override
-				public void conflict(KornellErrorTO kornellErrorTO) {
-					LoadingPopup.hide();
+                @Override
+                public void conflict(KornellErrorTO kornellErrorTO) {
+                    LoadingPopup.hide();
 					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO),
-							AlertType.ERROR, 2500);
-				}
-			});
-		}
-	}
+                            AlertType.ERROR, 2500);
+                }
+            });
+        }
+    }
 
-	@Override
-	public String getPageSize() {
-		return pageSize;
-	}
+    @Override
+    public String getPageSize() {
+        return pageSize;
+    }
 
-	@Override
-	public void setPageSize(String pageSize) {
-		this.pageSize = pageSize;
-	}
+    @Override
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
+    }
 
-	@Override
-	public String getPageNumber() {
-		return pageNumber;
-	}
+    @Override
+    public String getPageNumber() {
+        return pageNumber;
+    }
 
-	@Override
-	public void setPageNumber(String pageNumber) {
-		this.pageNumber = pageNumber;
-	}
+    @Override
+    public void setPageNumber(String pageNumber) {
+        this.pageNumber = pageNumber;
+    }
 
-	@Override
-	public String getSearchTerm() {
-		return searchTerm;
-	}
+    @Override
+    public String getSearchTerm() {
+        return searchTerm;
+    }
 
-	@Override
-	public void setSearchTerm(String searchTerm) {
-		this.searchTerm = searchTerm;	
-	}
+    @Override
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;	
+    }
 
-	@Override
-	public void updateData() {
-    	updateCourseClassUI(Dean.getInstance().getCourseClassTO());
-	}
+    @Override
+    public void updateData() {
+        updateCourseClassUI(Dean.getInstance().getCourseClassTO());
+    }
 }

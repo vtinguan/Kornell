@@ -49,7 +49,7 @@ class CourseVersionSpec extends UnitSpec
   }
   
   "A person" should "not be able to create a courseVersion" in asPlatformAdmin {
-    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "sa-east-1").getUUID
+    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
     asPerson {
       try {
         CourseVersionsResource().create(Entities.newCourseVersion(repositoryUUID=repositoryUUID, courseUUID = courseUUID))
@@ -62,21 +62,21 @@ class CourseVersionSpec extends UnitSpec
   }
   
   "The platformAdmin" should "be able to update a courseVersion" in asPlatformAdmin {
-    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "sa-east-1").getUUID
+    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
     val name = "test name"
     val updatedCourseVersion = CourseVersionResource(courseVersionUUID).update(Entities.newCourseVersion(uuid = courseVersionUUID, repositoryUUID=repositoryUUID, courseUUID = courseUUID, name = name))
     assert(name == updatedCourseVersion.getName)
   }
   
   "The institutionAdmin" should "be able to update a courseVersion" in asInstitutionAdmin {
-    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "sa-east-1").getUUID
+    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
     val name = "test name1"
     val updatedCourseVersion = CourseVersionResource(courseVersionUUID).update(Entities.newCourseVersion(uuid = courseVersionUUID, repositoryUUID=repositoryUUID, courseUUID = courseUUID, name = name))
     assert(name == updatedCourseVersion.getName)
   }
 
   "A person" should "not be able to update a courseVersion" in asPlatformAdmin {
-    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "sa-east-1").getUUID
+    val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
     val name = "test name1"
       asPerson {
         try {

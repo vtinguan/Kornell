@@ -143,6 +143,8 @@ public class GenericAdminCourseClassView extends Composite implements
 	@UiField
 	Button btnAddEnrollmentBatch;
 	@UiField
+	Button btnCancelEnrollmentBatch;
+	@UiField
 	TextBox txtFullName;
 	@UiField
 	TextBox txtEmail;
@@ -176,6 +178,13 @@ public class GenericAdminCourseClassView extends Composite implements
     com.google.gwt.user.client.ui.Button btnModalTransferOK;
     @UiField
     com.google.gwt.user.client.ui.Button btnModalTransferCancel;
+
+    @UiField
+    Modal batchCancelModal;
+    @UiField
+    com.google.gwt.user.client.ui.Button btnBatchCancelModalOK;
+    @UiField
+    com.google.gwt.user.client.ui.Button btnBatchCancelModalCancel;
 
 	@UiField
 	Label lblCourseClassName;
@@ -217,6 +226,9 @@ public class GenericAdminCourseClassView extends Composite implements
 
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
+
+		btnBatchCancelModalOK.setText("OK".toUpperCase());
+		btnBatchCancelModalCancel.setText("Cancelar".toUpperCase());
 		
         btnModalTransferOK.setText("OK".toUpperCase());
         btnModalTransferCancel.setText("Cancelar".toUpperCase());
@@ -542,6 +554,18 @@ public class GenericAdminCourseClassView extends Composite implements
     void onModalTransferCancelButtonClicked(ClickEvent e) {
         transferModal.hide();
     }
+	
+	@UiHandler("btnBatchCancelModalOK")
+    void onBatchCancelModalOkButtonClicked(ClickEvent e) {
+		presenter.onBatchCancelModalOkButtonClicked(txtAddEnrollmentBatch.getText());
+    	batchCancelModal.hide();
+    	
+    }
+
+    @UiHandler("btnBatchCancelModalCancel")
+    void onBatchCancelModalCancelButtonClicked(ClickEvent e) {
+    	batchCancelModal.hide();
+    }
 
 
 	@UiHandler("btnAddEnrollment")
@@ -551,9 +575,16 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	@UiHandler("btnAddEnrollmentBatch")
-	void doLogin(ClickEvent e) {
+	void doAddEnrollmentBatch(ClickEvent e) {
 		presenter.onAddEnrollmentBatchButtonClicked(txtAddEnrollmentBatch
 				.getText());
+	}
+
+	@UiHandler("btnCancelEnrollmentBatch")
+	void doCancelEnrollmentBatch(ClickEvent e) {
+		if(courseClassTO.getCourseClass().isAllowBatchCancellation()){
+	    	batchCancelModal.show();
+		}
 	}
 
 	@Override
@@ -649,9 +680,10 @@ public class GenericAdminCourseClassView extends Composite implements
 	}
 
 	@Override
-	public void showModal(boolean show) {
-		if (show) {
+	public void showModal(boolean show, String type) {
+		if (show && "error".equals(type)) {
 			errorModal.show();
+		} else if (show && "transfer".equals(type)) {
 			transferModal.show();
 		} else {
 			errorModal.hide();
@@ -861,8 +893,7 @@ public class GenericAdminCourseClassView extends Composite implements
 		switch (registrationType) {
 		case email:
 			infoPanel.add(getLabel("Formato:", false));
-			infoPanel
-					.add(getLabel("\"nome;email\" ou somente \"email\".", true));
+			infoPanel.add(getLabel("\"nome;email\" ou somente \"email\".", true));
 			infoPanel.add(getLabel("* Um participante por linha", true));
 			infoPanel.add(getLabel("Exemplo:", false));
 			infoPanel.add(getLabel("Nome Sobrenome;email@example.com", true));
@@ -888,10 +919,15 @@ public class GenericAdminCourseClassView extends Composite implements
 		default:
 			break;
 		}
+		if(courseClassTO.getCourseClass().isAllowBatchCancellation()){
+			infoPanel.add(getLabel("Cancelamento:", false));
+			infoPanel.add(getLabel("* Só os nomes de usuário", true));
+		}
 		identifierLabel.setText(formHelper.getRegistrationTypeAsText(Dean
 				.getInstance().getCourseClassTO().getCourseClass()
 				.getRegistrationType())
 				+ ":");
+		btnCancelEnrollmentBatch.setVisible(courseClassTO.getCourseClass().isAllowBatchCancellation());
 		initTable();
 		initSearch();
 	}

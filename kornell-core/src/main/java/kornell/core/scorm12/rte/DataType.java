@@ -16,11 +16,14 @@ public class DataType {
 
 	public static DataType CMIBlank = new DataType();
 	
+	
 	public static DataType CMIString255 = new DataType(){
 		protected boolean isInstance(String value) {
 			return value == null || value.length() <= 255;
 		};
 	};
+	
+	public static DataType CMIIdentifier = CMIString255;
 	
 	public static DataType CMIString4096 = new DataType(){
 		protected boolean isInstance(String value) {

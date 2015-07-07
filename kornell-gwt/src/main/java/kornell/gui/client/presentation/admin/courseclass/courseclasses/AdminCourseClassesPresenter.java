@@ -16,6 +16,7 @@ import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
@@ -102,47 +103,6 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	private AdminCourseClassesView getView() {
 		return viewFactory.getAdminCourseClassesView();
 	}
-	
-	@Override
-	public void upsertCourseClass(CourseClass courseClass) {
-		if(courseClass.getUUID() == null){
-			courseClass.setCreatedBy(session.getCurrentUser().getPerson().getUUID());
-			session.courseClasses().create(courseClass, new Callback<CourseClass>() {
-				@Override
-				public void ok(CourseClass courseClass) {
-						LoadingPopup.hide();
-						KornellNotification.show("Turma criada com sucesso!");
-						CourseClassTO courseClassTO2 = Dean.getInstance().getCourseClassTO();
-						if(courseClassTO2 != null)
-							courseClassTO2.setCourseClass(courseClass);
-						updateCourseClass(courseClass.getUUID());
-				}
-				
-				@Override
-				public void conflict(KornellErrorTO kornellErrorTO){
-					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 2500);
-				}
-			});
-		} else {
-	  	enrollmentsCacheMap.remove(courseClass.getUUID());
-			session.courseClass(courseClass.getUUID()).update(courseClass, new Callback<CourseClass>() {
-				@Override
-				public void ok(CourseClass courseClass) {
-						LoadingPopup.hide();
-						KornellNotification.show("Alterações salvas com sucesso!");
-						Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
-						updateCourseClass(courseClass.getUUID());
-				}		
-				
-				@Override
-				public void conflict(KornellErrorTO kornellErrorTO){
-					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 2500);
-				}
-			});
-		}
-  }
 
 	@Override
 	public String getPageSize() {

@@ -31,8 +31,10 @@ class CourseClassRepo(uuid:String) {
 		  		cc.invisible = ${courseClass.isInvisible},
 		  		cc.maxEnrollments = ${courseClass.getMaxEnrollments},
 		  		cc.registrationType = ${courseClass.getRegistrationType.toString},
-		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID}
-	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate
+		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID},
+		  		cc.courseClassChatEnabled = ${courseClass.isCourseClassChatEnabled},
+		  		cc.allowBatchCancellation = ${courseClass.isAllowBatchCancellation}
+	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate 
 	    courseClass
     } else {
       throw new EntityConflictException("courseClassAlreadyExists")
