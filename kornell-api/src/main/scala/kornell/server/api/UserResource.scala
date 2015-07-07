@@ -259,7 +259,7 @@ class UserResource(private val authRepo:AuthRepo) {
   def updatePasswordsToSalted(implicit @Context sc: SecurityContext) = {
       AuthRepo().updatePasswordsToSalted()
       "OK"
-  }.requiring(isPlatformAdmin, AccessDeniedErr()).get
+  }
 
 }
 
