@@ -186,7 +186,9 @@ package object repository {
       rs.getString("courseVersionUUID"),
       rs.getString("parentEnrollmentUUID"),
       rs.getDate("start_date"),
-      rs.getDate("end_date")
+      rs.getDate("end_date"),
+      rs.getBigDecimal("preAssessmentScore"),
+      rs.getBigDecimal("postAssessmentScore")
     )
   }
     
