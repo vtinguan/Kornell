@@ -180,6 +180,11 @@ class EnrollmentRepo(enrollmentUUID: String) {
     }
   }  
   
+  def checkExistingEnrollment(courseClassUUID: String):Boolean = {
+    sql"""select count(*) as enrollmentExists from Enrollment where  person_uuid = ${first.get.getPersonUUID} and class_uuid = ${courseClassUUID}"""
+    	.first[Integer] { rs => rs.getInt("enrollmentExists") }.get >= 1
+  }
+  
   def transfer(fromCourseClassUUID: String, toCourseClassUUID: String) = {
     val enrollment = first.get
     //disable participation to global class thread for old class

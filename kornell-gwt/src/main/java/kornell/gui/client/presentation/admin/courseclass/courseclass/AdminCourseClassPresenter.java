@@ -563,6 +563,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                 view.setCanPerformEnrollmentAction(true);
                 KornellNotification.show("Usuário transferido com sucesso.", 2000);
             }
+            @Override
+            protected void conflict(KornellErrorTO kornellErrorTO) {
+            	KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO), AlertType.ERROR);
+            }
         });
 
     }
