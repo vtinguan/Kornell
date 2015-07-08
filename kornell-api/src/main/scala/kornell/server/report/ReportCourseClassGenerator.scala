@@ -17,18 +17,30 @@ object ReportCourseClassGenerator {
 
   implicit def toCourseClassReportTO(rs: ResultSet): CourseClassReportTO =
     TOs.newCourseClassReportTO(
-      rs.getString("fullName"),
-      rs.getString("username"),
-      rs.getString("email"),
-      rs.getString("state"),
-      rs.getString("progressState"),
-      rs.getInt("progress"),
-      rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt"),
-      rs.getString("enrolledAt"),
-      rs.getString("courseName"),
-      rs.getString("courseVersionName"),
-      rs.getString("courseClassName"))
+		rs.getString("fullName"),
+		rs.getString("username"),
+		rs.getString("email"),
+		rs.getString("cpf"),
+		rs.getString("state"),
+		rs.getString("progressState"),
+		rs.getInt("progress"),
+		rs.getBigDecimal("assessmentScore"),
+		rs.getString("certifiedAt"),
+		rs.getString("enrolledAt"),
+		rs.getString("courseName"),
+		rs.getString("courseVersionName"),
+		rs.getString("courseClassName"),
+		rs.getString("company"),
+		rs.getString("title"),
+		rs.getString("sex"),
+		rs.getString("birthDate"),
+		rs.getString("telephone"),
+		rs.getString("country"),
+		rs.getString("stateProvince"),
+		rs.getString("city"),
+		rs.getString("addressLine1"),
+		rs.getString("addressLine2"),
+		rs.getString("postalCode"))
       
   type BreakdownData = Tuple2[String,Integer] 
   implicit def breakdownConvertion(rs:ResultSet): BreakdownData = (rs.getString(1), rs.getInt(2))
@@ -39,6 +51,7 @@ object ReportCourseClassGenerator {
 				p.fullName, 
 				if(pw.username is not null, pw.username, p.email) as username,
 				p.email,
+    			p.cpf,
 				case    
 					when e.state = 'cancelled' then 'Cancelada'  
 					when e.state = 'requested' then 'Requisitada'  
@@ -57,7 +70,18 @@ object ReportCourseClassGenerator {
 				e.enrolledOn as enrolledAt,
     			c.title as courseName,
     			cv.name as courseVersionName,
-    			cc.name as courseClassName
+    			cc.name as courseClassName,
+				p.company,
+				p.title,
+				p.sex,
+				p.birthDate,
+				p.telephone,
+				p.country,
+				p.state as stateProvince,
+				p.city,
+				p.addressLine1,
+				p.addressLine2,
+				p.postalCode
 			from 
 				Enrollment e 
 				join Person p on p.uuid = e.person_uuid
@@ -66,7 +90,7 @@ object ReportCourseClassGenerator {
 				join Course c on c.uuid = cv.course_uuid
 				left join Password pw on pw.person_uuid = p.uuid
 			where
-				e.state = 'enrolled' and
+				(e.state = 'enrolled' or ${fileType} = 'xls') and
     			cc.state = 'active' and 
 		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 				(c.uuid = ${courseUUID} or ${courseUUID} is null)
@@ -94,7 +118,7 @@ object ReportCourseClassGenerator {
 				p.email
 	    """.map[CourseClassReportTO](toCourseClassReportTO)
 	    
-	    val parameters = getTotalsAsParameters(courseUUID, courseClassUUID)
+	    val parameters = getTotalsAsParameters(courseUUID, courseClassUUID, fileType)
 	    addInfoParameters(courseUUID, courseClassUUID, parameters)
 	
 	    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
@@ -103,11 +127,11 @@ object ReportCourseClassGenerator {
 		  
 	    val cl = Thread.currentThread.getContextClassLoader
 	    val jasperStream = {
-	      	if(fileType != null && fileType == "xls")
-	      	  cl.getResourceAsStream("reports/courseClassInfoXLS.jasper")
-	      	else
-	      	  cl.getResourceAsStream("reports/courseClassInfo.jasper")
-	    	}
+      	if(fileType != null && fileType == "xls")
+      	  cl.getResourceAsStream("reports/courseClassInfoXLS.jasper")
+      	else
+      	  cl.getResourceAsStream("reports/courseClassInfo.jasper")
+    	}
 	    ReportGenerator.getReportBytesFromStream(courseClassReportTO, parameters, jasperStream, fileType)
   }
       
@@ -155,7 +179,7 @@ object ReportCourseClassGenerator {
     parameters
   }
 
-  private def getTotalsAsParameters(courseUUID: String, courseClassUUID: String): HashMap[String,Object] = {
+  private def getTotalsAsParameters(courseUUID: String, courseClassUUID: String, fileType: String): HashMap[String,Object] = {
     val enrollmentStateBreakdown = sql"""
     		select 
 					case    
@@ -170,7 +194,7 @@ object ReportCourseClassGenerator {
 					join CourseClass cc on cc.uuid = e.class_uuid
 					join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
 				where      
-					e.state = 'enrolled' and
+					(e.state = 'enrolled' or ${fileType} = 'xls') and
     				cc.state = 'active' and 
     		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 					(cv.course_uuid = ${courseUUID} or ${courseUUID} is null)

@@ -10,9 +10,10 @@ public class Core extends DMElement {
 		super("core");
 		addAll(LessonStatus.dme,
 				LessonLocation.dme,
-				LessonMode.dme,
-	  SessionTime.dme,
-	  Exit.dme,
-		Score.dme);
+				LessonMode.dme,		
+		SessionTime.dme,
+	  	Exit.dme,
+		Score.dme,
+		StudentName.dme);
 	}
 }

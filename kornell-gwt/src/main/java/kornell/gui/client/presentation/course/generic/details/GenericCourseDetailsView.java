@@ -243,9 +243,9 @@ public class GenericCourseDetailsView extends Composite {
 		certificationHeaderPanel.addStyleName("certificationHeaderPanel");
 
 		certificationHeaderPanel.add(getHeaderButton("Item", "btnItem", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus centerText", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade centerText", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions centerText", "btnCertificationHeader"));
 
 		return certificationHeaderPanel;
 	}

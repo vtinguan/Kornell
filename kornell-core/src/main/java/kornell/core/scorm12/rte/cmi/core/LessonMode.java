@@ -2,6 +2,7 @@ package kornell.core.scorm12.rte.cmi.core;
 
 import java.util.Map;
 
+import kornell.core.entity.Person;
 import kornell.core.scorm12.rte.DMElement;
 import kornell.core.scorm12.rte.DataType;
 import kornell.core.scorm12.rte.SCOAccess;
@@ -18,7 +19,7 @@ public class LessonMode extends DMElement{
 	}
 	
 	@Override
-	public Map<String, String> initializeMap(Map<String, String> entries) {
+	public Map<String, String> initializeMap(Map<String, String> entries, Person p) {
 		//TODO: SCORM 1.2: Detect and initilialize in other modes
 		return defaultTo(entries, normal);
 	}

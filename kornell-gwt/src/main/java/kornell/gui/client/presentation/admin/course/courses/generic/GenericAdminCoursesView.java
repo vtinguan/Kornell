@@ -221,7 +221,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 		}, "Descrição");
 
 		List<HasCell<Course, ?>> cells = new LinkedList<HasCell<Course, ?>>();
-		cells.add(new EnrollmentActionsHasCell("Editar", getStateChangeDelegate(EnrollmentState.enrolled)));
+		cells.add(new EnrollmentActionsHasCell("Gerenciar", getManageCourseDelegate(EnrollmentState.enrolled)));
 
 		CompositeCell<Course> cell = new CompositeCell<Course>(cells);
 		table.addColumn(new Column<Course, Course>(cell) {
@@ -251,7 +251,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 		pagination = new KornellPagination(table, presenter);
 	}
 
-	private Delegate<Course> getStateChangeDelegate(final EnrollmentState state) {
+	private Delegate<Course> getManageCourseDelegate(final EnrollmentState state) {
 		return new Delegate<Course>() {
 			@Override
 			public void execute(Course course) {
@@ -301,8 +301,8 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 					Button btn = new Button();
 					btn.setSize(ButtonSize.SMALL);
 					btn.setTitle(actionName);
-					if("Editar".equals(actionName)){
-						btn.setIcon(IconType.EDIT);
+					if("Gerenciar".equals(actionName)){
+						btn.setIcon(IconType.COG);
 						btn.addStyleName("btnAction");
 					}
 					btn.addStyleName("btnIconSolo");

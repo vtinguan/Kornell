@@ -5,8 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kornell.core.entity.Person;
 import kornell.core.util.StringUtils;
 
+/**
+ * SCORM 1.2 Data Model Element
+ * 
+ * @author jfaerman
+ */
 public class DMElement {
 	private DMElement parent = null;
 	private List<DMElement> children = new ArrayList<>();
@@ -53,17 +59,6 @@ public class DMElement {
 		return this;
 	}
 
-	private void setKey(String childKey) {
-		this.key = childKey;
-	}
-
-	private void setFQKN(String string) {
-		this.fqkn = string;
-	}
-
-	private String getKey() {
-		return key;
-	}
 
 	public List<DMElement> getChildren() {
 		return children;
@@ -73,7 +68,7 @@ public class DMElement {
 	 * The launch value is the value to be set to a given data model upon
 	 * launching the SCO
 	 */
-	public Map<String, String> initializeMap(Map<String, String> entries) {
+	public Map<String, String> initializeMap(Map<String, String> entries,Person person) {
 		return nothing();
 	}
 
@@ -87,7 +82,7 @@ public class DMElement {
 	}
 
 	/**
-	 * Fully Qualified Key Name (e.g. cmi.core.lesson_status
+	 * Fully Qualified Key Name (e.g. cmi.core.lesson_status)
 	 */
 	public String getFQKN() {
 		if (fqkn == null) {
@@ -148,7 +143,7 @@ public class DMElement {
 	}
 
 	private String dirty(String fqkn) {
-		return dirty_flag + "fqkn";
+		return dirty_flag + fqkn;
 	}
 
 	private Map<String, String> defaultTo(Map<String, String> entries,

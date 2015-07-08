@@ -171,8 +171,12 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		lblStatus.setText(status);
 
 		if(StringUtils.isSome(gradeIn)){
-			this.grade = "" + new BigDecimal(gradeIn).intValue();
-			lblGrade.setText(this.grade);
+			try{
+				this.grade = "" + new BigDecimal(gradeIn).intValue();
+				lblGrade.setText(this.grade);
+			}catch(NumberFormatException ex){
+				this.grade = "";
+			}			
 		} else if(currentCourseClass != null){
 			Enrollment currEnrollment = currentCourseClass.getEnrollment();
 			CourseClass courseClass = currentCourseClass.getCourseClass();

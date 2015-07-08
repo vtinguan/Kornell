@@ -12,7 +12,7 @@ function log(){
 if [ -z "$KNL_BUCKET" ]; 
 	then suicide "Set KNL_BUCKET to the name of the deployment bucket"; fi
 
-REGION=${REGION:-"sa-east-1"}
+REGION=${REGION:-"us-east-1"}
 AWS_CLI=${AWS_CLI:-"aws"}
 SRC_DIR=${SRC_DIR:-"${PWD}/kornell-gwt/target/kornell-gwt"}
 

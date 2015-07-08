@@ -37,6 +37,7 @@ import kornell.server.repository.s3.S3
 import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.to.PersonTO
 import kornell.core.entity.AuthClientType
+import kornell.core.to.SimplePersonTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -150,11 +151,15 @@ object TOs {
   }
 
   def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
-  def newCourseClassReportTO(fullName: String, username: String, email: String, state: String, progressState: String, progress: Int, assessmentScore: BigDecimal, certifiedAt: String, enrolledAt: String, courseName: String, courseVersionName: String, courseClassName: String): CourseClassReportTO = {
+  def newCourseClassReportTO(fullName: String, username: String, email: String, cpf: String, state: String, progressState: String, 
+      progress: Int, assessmentScore: BigDecimal, certifiedAt: String, enrolledAt: String, courseName: String, courseVersionName: String, courseClassName: String, 
+      company: String, title: String, sex: String, birthDate: String, telephone: String, country: String, stateProvince: String, 
+      city: String, addressLine1: String, addressLine2: String, postalCode: String): CourseClassReportTO = {
     val to = newCourseClassReportTO
     to.setFullName(fullName)
     to.setUsername(username)
     to.setEmail(email)
+    to.setCpf(cpf)
     to.setState(state)
     to.setProgressState(progressState)
     to.setProgress(progress)
@@ -164,6 +169,17 @@ object TOs {
     to.setCourseName(courseName)
     to.setCourseVersionName(courseVersionName)
     to.setCourseClassName(courseClassName)
+	to.setCompany(company)
+	to.setTitle(title)
+	to.setSex(sex)
+	to.setBirthDate(birthDate)
+	to.setTelephone(telephone)
+	to.setCountry(country)
+	to.setStateProvince(stateProvince)
+	to.setCity(city)
+	to.setAddressLine1(addressLine1)
+	to.setAddressLine2(addressLine2)
+	to.setPostalCode(postalCode)
     to
   }
 
@@ -281,6 +297,25 @@ object TOs {
     to.setExpiry(expiry)
     to.setPersonUUID(personUUID)
     to.setClientType(clientType)
+    to
+  }
+  
+  def newSimplePersonTO(personUUID: String, fullName: String, username: String) = {
+    val to = tos.newSimplePersonTO.as
+    to.setPersonUUID(personUUID)
+    to.setFullName(fullName)
+    to.setUsername(username)
+    to
+  }
+  
+  def newSimplePeopleTO(simplePeople: List[SimplePersonTO]) = {
+    val to = tos.newSimplePeopleTO.as
+    to.setSimplePeopleTO(simplePeople.asJava)
+    to
+  }
+
+  def newEnrollmentLaunchTO() = {
+    val to = tos.newEnrollmentLaunchTO().as()
     to
   }
 }

@@ -4,6 +4,7 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.Enrollments;
 import kornell.core.to.EnrollmentRequestsTO;
 import kornell.core.to.EnrollmentsTO;
+import kornell.core.to.SimplePeopleTO;
 
 public class EnrollmentsClient extends RESTClient {
 	
@@ -37,4 +38,7 @@ public class EnrollmentsClient extends RESTClient {
 				});
 	}
 
+	public void simpleEnrollmentsList(String courseClassUUID, Callback<SimplePeopleTO> cb) {
+	    GET("/enrollments/" + courseClassUUID + "/simpleEnrollments").sendRequest(null, cb);
+	}
 }

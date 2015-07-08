@@ -10,6 +10,9 @@ import kornell.core.to.EnrollmentsTO
 import kornell.server.repository.TOs
 import kornell.core.error.exception.EntityConflictException
 import scala.collection.mutable.Buffer
+import kornell.core.to.SimplePersonTO
+import kornell.core.to.SimplePeopleTO
+import kornell.server.repository.Entities
 
 object EnrollmentsRepo {
 
@@ -32,8 +35,9 @@ object EnrollmentsRepo {
 				left join Password pw on p.uuid = pw.person_uuid
 				where e.class_uuid = ${courseClassUUID} and
                 (p.fullName like ${filteredSearchTerm}
-                or username like ${filteredSearchTerm})
-				order by e.state desc, p.fullName, pw.username limit ${resultOffset}, ${pageSize}
+                or pw.username like ${filteredSearchTerm}
+                or p.email like ${filteredSearchTerm})
+				order by e.state desc, p.fullName, username limit ${resultOffset}, ${pageSize}
 			    """.map[EnrollmentTO](toEnrollmentTO))
     enrollmentsTO.setCount(
         sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
@@ -54,7 +58,8 @@ object EnrollmentsRepo {
           left join Password pw on p.uuid = pw.person_uuid
           where e.class_uuid = ${courseClassUUID} and 
           (p.fullName like ${filteredSearchTerm}
-          or username like ${filteredSearchTerm})
+          or pw.username like ${filteredSearchTerm}
+          or p.email like ${filteredSearchTerm})
         """.first[String].get.toInt
     })
     enrollmentsTO
@@ -76,6 +81,15 @@ object EnrollmentsRepo {
 	    AND e.person_uuid = ${personUUID}
 	    """.first[Enrollment]
 
+  def byCourseClassAndUsername(courseClassUUID: String, username: String): Option[String] =
+    sql"""
+	  SELECT e.uuid
+    FROM Enrollment e join Person p on e.person_uuid = p.uuid
+	join Password pw on pw.person_uuid = p.uuid
+    WHERE e.class_uuid = ${courseClassUUID} 
+	    AND pw.username = ${username}
+	    """.first[String]
+
   def byCourseVersionAndPerson(courseVersionUUID: String, personUUID: String): Option[Enrollment] =
     sql"""
     	SELECT e.*, p.* 
@@ -93,20 +107,30 @@ object EnrollmentsRepo {
     ORDER BY e.state desc, p.fullName, p.email
 	    """.map[EnrollmentTO](toEnrollmentTO)
 
-  def create(enrollment: Enrollment) = {
+  def create(
+        courseClassUUID:String,
+        personUUID:String,
+        enrollmentState:EnrollmentState, 
+        courseVersionUUID:String,
+        parentEnrollmentUUID:String):Enrollment = 
+     create(Entities.newEnrollment(null, null, courseClassUUID, personUUID, null, "", EnrollmentState.notEnrolled, null, null, null, null, null, courseVersionUUID,parentEnrollmentUUID))
+
+      
+  def create(enrollment: Enrollment):Enrollment = {
     if (enrollment.getUUID == null)
       enrollment.setUUID(randomUUID)
     if (enrollment.getCourseClassUUID != null && enrollment.getCourseVersionUUID != null)
       throw new EntityConflictException("doubleEnrollmentCriteria")
     sql""" 
-    	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state,courseVersionUUID)
+    	insert into Enrollment(uuid,class_uuid,person_uuid,enrolledOn,state,courseVersionUUID,parentEnrollmentUUID)
     	values(
     		${enrollment.getUUID},
     		${enrollment.getCourseClassUUID},
     		${enrollment.getPersonUUID}, 
     		now(),
     		${enrollment.getState.toString},
-    		${enrollment.getCourseVersionUUID}
+    		${enrollment.getCourseVersionUUID},
+        	${enrollment.getParentEnrollmentUUID}
     	)""".executeUpdate
     enrollment
   }
@@ -118,4 +142,12 @@ object EnrollmentsRepo {
     .first[Enrollment]
     .get
 
+  def simplePersonList(courseClassUUID: String): SimplePeopleTO = {
+    TOs.newSimplePeopleTO(sql"""select p.uuid as uuid, p.fullName as fullName, pw.username as username
+    from Enrollment enr 
+    join Person p on enr.person_uuid = p.uuid
+    left join Password pw on p.uuid = pw.person_uuid
+    where enr.state <> ${EnrollmentState.cancelled.toString} and
+    enr.class_uuid = ${courseClassUUID}""".map[SimplePersonTO](toSimplePersonTO))
+  }
 }

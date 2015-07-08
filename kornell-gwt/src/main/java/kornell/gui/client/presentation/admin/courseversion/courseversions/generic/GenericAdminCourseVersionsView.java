@@ -239,7 +239,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 		}, "Data de Criação");
 
 		List<HasCell<CourseVersion, ?>> cells = new LinkedList<HasCell<CourseVersion, ?>>();
-		cells.add(new EnrollmentActionsHasCell("Editar", getStateChangeDelegate(EnrollmentState.enrolled)));
+		cells.add(new EnrollmentActionsHasCell("Gerenciar", getManageCourseVersionDelegate(EnrollmentState.enrolled)));
 
 		CompositeCell<CourseVersion> cell = new CompositeCell<CourseVersion>(cells);
 		table.addColumn(new Column<CourseVersion, CourseVersion>(cell) {
@@ -269,7 +269,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 		pagination = new KornellPagination(table, presenter);
 	}
 
-	private Delegate<CourseVersion> getStateChangeDelegate(final EnrollmentState state) {
+	private Delegate<CourseVersion> getManageCourseVersionDelegate(final EnrollmentState state) {
 		return new Delegate<CourseVersion>() {
 			@Override
 			public void execute(CourseVersion courseVersion) {
@@ -319,8 +319,8 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 					Button btn = new Button();
 					btn.setSize(ButtonSize.SMALL);
 					btn.setTitle(actionName);
-					if("Editar".equals(actionName)){
-						btn.setIcon(IconType.EDIT);
+					if("Gerenciar".equals(actionName)){
+						btn.setIcon(IconType.COG);
 						btn.addStyleName("btnAction");
 					}
 					btn.addStyleName("btnIconSolo");

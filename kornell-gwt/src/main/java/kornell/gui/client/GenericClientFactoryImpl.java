@@ -165,7 +165,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		initActivityManagers();
 		initHistoryHandler(defaultPlace);
 		initException();
-		initSCORM12();
 		initPersonnel();
 	}
 
@@ -179,10 +178,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		new Stalker(EVENT_BUS, session);
 		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
 		
-	}
-
-	private void initSCORM12() {
-		SCORM12Binder.bind(new SCORM12Adapter(EVENT_BUS, session,placeCtrl));
 	}
 
 	private void initException() {

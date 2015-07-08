@@ -47,6 +47,7 @@
 	                    <g:FlowPanel ui:field="infoPanel">
 	                    </g:FlowPanel>
 	                    <b:Button ui:field="btnAddEnrollmentBatch" addStyleNames="btnAction btnAddEnrollmentBatch btnIcon" size="MINI" icon="BOOK">Matricular</b:Button>
+	                    <b:Button ui:field="btnCancelEnrollmentBatch" addStyleNames="btnSelected btnAddEnrollmentBatch btnIcon marginLeft25" size="MINI" icon="REMOVE">Cancelar em lote</b:Button>
 	                  </g:FlowPanel>
 	                </g:FlowPanel>
 	              </g:FlowPanel>
@@ -75,6 +76,15 @@
 				</g:FlowPanel>
 			</g:FlowPanel>
 		</b:Modal>
+	    <b:Modal ui:field="batchCancelModal" title="ATENÇÃO! Cancelamento de matrículas!" backdrop="NORMAL" addStyleNames="forgotPasswordModal">
+	      <g:FlowPanel>
+	        <g:Label>Os participantes terão suas matrículas canceladas. Deseja continuar?</g:Label>
+	        <g:FlowPanel addStyleNames="standardButtonBar">
+	          <g:Button ui:field="btnBatchCancelModalOK" addStyleNames="btnAction btnStandard"/>
+	          <g:Button ui:field="btnBatchCancelModalCancel" addStyleNames="btnNotSelected btnStandard"/>
+	        </g:FlowPanel>
+	      </g:FlowPanel>
+	    </b:Modal>
 	    <b:Modal ui:field="transferModal" backdrop="STATIC" addStyleNames="forgotPasswordModal">
 	       <g:FlowPanel>
 	           <g:Label ui:field="txtModalTransfer1"></g:Label>
