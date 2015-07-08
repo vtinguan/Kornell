@@ -47,4 +47,6 @@ public interface Person {
 	void setRegistrationType(RegistrationType registrationType);
 	String getInstitutionRegistrationPrefixUUID();
 	void setInstitutionRegistrationPrefixUUID(String institutionRegistrationPrefixUUID);
+	boolean getReceiveEmailCommunication();
+	void setReceiveEmailCommunication(boolean receiveEmailCommunication);
 }

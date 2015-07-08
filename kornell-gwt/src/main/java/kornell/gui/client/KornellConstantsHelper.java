@@ -67,6 +67,8 @@ public class KornellConstantsHelper {
 			return constants.invalidValue();
 		case "constraintViolatedUUIDName":
 			return constants.constraintViolatedUUIDName();
+		case "userAlreadyEnrolledInClass":
+			return constants.userAlreadyEnrolledInClass();
 		default:
 			return "Error message not set for key [" + kornellErrorTO.getMessageKey() + "]";
 		}
