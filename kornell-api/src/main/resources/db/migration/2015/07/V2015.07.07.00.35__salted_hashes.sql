@@ -5,7 +5,7 @@ SET @sql = (SELECT IF(
           AND table_name='Password_bak' 
     ) > 0,
     "SELECT 0",
-    "CREATE TABLE Password_bak LIKE Password; INSERT Password_bak SELECT * FROM Password;"
+    "CREATE TABLE Password_bak AS SELECT * FROM Password;"
 ));
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
