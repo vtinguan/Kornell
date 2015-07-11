@@ -454,7 +454,7 @@ public class GenericCourseClassConfigView extends Composite {
         } else if (MODAL_ALLOW_BATCH_CANCELLATION.equals(modalMode)){
             confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir o cancelamento em lote de matrículas? Um novo botão aparecerá na tela de matrículas, e qualquer administrador poderá cancelar uma lista de matrículas.");
         } else if (MODAL_COURSE_CLASS_CHAT_ENABLED.equals(modalMode)){
-            confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir a criação da chat da turma? Um novo botão aparecerá na tela de detalhes do curso para os alunos, e todos os alunos da turma poderão conversar entre si.");
+            confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir a criação do chat global da turma? Um novo botão aparecerá na tela de detalhes do curso para os participantes, e todos os participantes da turma poderão conversar entre si.");
         }
         confirmModal.show();
     }
