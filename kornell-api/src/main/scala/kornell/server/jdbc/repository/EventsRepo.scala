@@ -1,7 +1,6 @@
 package kornell.server.jdbc.repository
 
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
-
 import kornell.core.entity.CourseClassState
 import kornell.core.entity.EnrollmentState
 import kornell.core.event.ActomEntered
@@ -16,6 +15,7 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.util.EmailService
 import kornell.server.util.ServerTime
 import kornell.server.util.Settings
+import kornell.core.error.exception.EntityConflictException
 
 object EventsRepo {
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
@@ -113,6 +113,9 @@ object EventsRepo {
       event.getCourseClassUUID, event.getFromState, event.getToState)
 
   def logEnrollmentTransferred(event: EnrollmentTransferred): Unit = {
+    if (EnrollmentRepo(event.getEnrollmentUUID).checkExistingEnrollment(event.getToCourseClassUUID)) {
+      throw new EntityConflictException("userAlreadyEnrolledInClass") 
+    }
     sql"""insert into EnrollmentTransferred (uuid, personUUID, enrollmentUUID, fromCourseClassUUID, toCourseClassUUID, eventFiredAt) 
         values (${UUID.random},
         ${event.getFromPersonUUID},

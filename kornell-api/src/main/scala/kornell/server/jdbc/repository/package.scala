@@ -186,7 +186,9 @@ package object repository {
       rs.getString("courseVersionUUID"),
       rs.getString("parentEnrollmentUUID"),
       rs.getDate("start_date"),
-      rs.getDate("end_date")
+      rs.getDate("end_date"),
+      rs.getBigDecimal("preAssessmentScore"),
+      rs.getBigDecimal("postAssessmentScore")
     )
   }
     
@@ -233,7 +235,8 @@ package object repository {
 	    rs.getString("institutionUUID"),
 	    rs.getString("termsAcceptedOn"),
 	    RegistrationType.valueOf(rs.getString("registrationType")),
-	    rs.getString("institutionRegistrationPrefixUUID"))
+	    rs.getString("institutionRegistrationPrefixUUID"),
+	    rs.getBoolean("receiveEmailCommunication"))
 	
 	implicit def toPersonTO(rs:ResultSet):PersonTO = newPersonTO(toPerson(rs),
 	    rs.getString("username"))

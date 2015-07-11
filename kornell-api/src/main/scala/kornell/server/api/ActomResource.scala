@@ -75,6 +75,7 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
     val hasProgress = containsProgress(actomEntries)
     if (hasProgress)
       EnrollmentSEP.onProgress(enrollmentUUID)
+
     val hasAssessment = containsAssessment(actomEntries)
     if (hasAssessment) {
       EnrollmentSEP.onAssessment(enrollmentUUID);
@@ -83,12 +84,14 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   }
 
   def containsProgress(entries: java.util.Map[String, String]) =
-    entries.containsKey("cmi.core.lesson_status") ||
-      entries.containsKey("cmi.core.lesson_location")
+      entries.containsKey("cmi.core.lesson_status") ||
+      entries.containsKey("cmi.core.lesson_location") ||
+      entries.containsKey("cmi.core.suspend_data")
 
   def containsAssessment(entries: java.util.Map[String, String]) =
-    entries.containsKey("cmi.core.score.raw")
-
+    entries.containsKey("cmi.core.score.raw") || 
+    entries.containsKey("cmi.suspend_data")
+    
   @Path("entries")
   @Produces(Array(ActomEntries.TYPE))
   @GET

@@ -57,7 +57,8 @@ object Entities {
     institutionUUID: String = null,
     termsAcceptedOn: String = null,
     registrationType: RegistrationType = null,
-    institutionRegistrationPrefixUUID: String = null) = {
+    institutionRegistrationPrefixUUID: String = null,
+    receiveEmailCommunication: Boolean = true) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -82,6 +83,7 @@ object Entities {
     person.setTermsAcceptedOn(termsAcceptedOn)
     person.setRegistrationType(registrationType)
     person.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
+    person.setReceiveEmailCommunication(receiveEmailCommunication)
     person
   }
 
@@ -134,7 +136,8 @@ object Entities {
     assessment: Assessment = null, lastAssessmentUpdate: String = null,
     assessmentScore: BigDecimal = null, certifiedAt: String = null,
     courseVersionUUID: String = null, parentEnrollmentUUID:String = null,
-    startDate:Date=null,endDate:Date=null): Enrollment = {
+    startDate:Date=null,endDate:Date=null,
+    preAssessment:BigDecimal=null,postAssessment:BigDecimal=null): Enrollment = {
     val e = factory.enrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -152,6 +155,8 @@ object Entities {
     e.setParentEnrollmentUUID(parentEnrollmentUUID)
     e.setStartDate(startDate)
     e.setEndDate(endDate)
+    e.setPreAssessmentScore(preAssessment)
+    e.setPostAssessmentScore(postAssessment)
     e
   }
 

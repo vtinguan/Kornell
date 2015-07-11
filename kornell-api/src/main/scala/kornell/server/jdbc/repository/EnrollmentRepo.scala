@@ -20,6 +20,7 @@ import java.math.BigDecimal
 import java.math.BigDecimal._
 import kornell.server.util.ServerTime
 import kornell.core.entity.ChatThreadType
+import scala.util.Try
 
 //TODO: Specific column names and proper sql
 class EnrollmentRepo(enrollmentUUID: String) {
@@ -96,15 +97,36 @@ class EnrollmentRepo(enrollmentUUID: String) {
       if (progress.isEmpty) None else Some(progress.head)
     }
 
-  def updateSCORM12Progress(e: Enrollment) = {
-    //TODO: Consider lesson_status
+  def progressFromMilestones(e: Enrollment): Option[Int] = {
     val actomKeys = ContentRepository.findSCORM12Actoms(e.getCourseClassUUID)
     val progresses = actomKeys
       .flatMap { actomKey => findProgressMilestone(e, actomKey) }
-    val progress = progresses.foldLeft(1)(_ max _)
-
-    setEnrollmentProgress(e, progress)
+    if (progresses.isEmpty)
+      None
+    else
+      Some(progresses.foldLeft(1)(_ max _))
   }
+
+  val progress_r = """.*::progress,(\d+).*""".r
+  def parseProgress(sdata: String) = 
+    sdata match {
+      case progress_r(matched) => Try {matched.toInt}.toOption
+      case _ => None
+  }
+
+
+  def progressFromSuspendData(e: Enrollment): Option[Int] = {
+    val suspend_data = ActomEntriesRepo.getValue(e.getUUID, "%", "cmi.suspend_data")
+    val progress = suspend_data.flatMap { parseProgress(_) }
+    progress
+  }
+
+  //TODO: Consider lesson_status
+  def updateSCORM12Progress(e: Enrollment) = 
+    progressFromSuspendData(e)
+      .orElse(progressFromMilestones(e))
+      .foreach { p => setEnrollmentProgress(e, p) }
+  
 
   def setEnrollmentProgress(e: Enrollment, newProgress: Int) = {
     //TODO: Consider using client timestamp
@@ -132,28 +154,27 @@ class EnrollmentRepo(enrollmentUUID: String) {
 
   def updateAssessment = first map { e =>
     val notPassed = !Assessment.PASSED.equals(e.getAssessment)
-    if (notPassed && e.getCourseClassUUID != null){
-    	val (maxScore,assessment) = assess(e)
-        e.setAssessmentScore(maxScore)
-        e.setAssessment(assessment)
-        //TODO: Add client timestap
-        e.setLastAssessmentUpdate(ServerTime.now)
-        update(e)
-        checkCompletion(e)
+    if (notPassed && e.getCourseClassUUID != null) {
+      val (maxScore, assessment) = assess(e)
+      e.setAssessmentScore(maxScore)
+      e.setAssessment(assessment)
+      //TODO: Add client timestap
+      e.setLastAssessmentUpdate(ServerTime.now)
+      update(e)
+      checkCompletion(e)
     }
   }
 
-  
-  def assess(e:Enrollment) = {
+  def assess(e: Enrollment) = {
     val cc = CourseClassRepo(e.getCourseClassUUID).get
-    	val reqScore: BigDecimal = Option(cc.getRequiredScore).getOrElse(ZERO)
-    	val maxScore = findMaxScore(e.getUUID).getOrElse(ZERO)
-    	val assessment = if (maxScore.compareTo(reqScore) >= 0)
-          Assessment.PASSED
-        else
-          Assessment.FAILED
-        (maxScore,assessment)
-  }  
+    val reqScore: BigDecimal = Option(cc.getRequiredScore).getOrElse(ZERO)
+    val maxScore = findMaxScore(e.getUUID).getOrElse(ZERO)
+    val assessment = if (maxScore.compareTo(reqScore) >= 0)
+      Assessment.PASSED
+    else
+      Assessment.FAILED
+    (maxScore, assessment)
+  }
 
   def findLastEventTime(e: Enrollment) = {
     val lastActomEntered = sql"""
@@ -161,7 +182,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
 		from ActomEntryChangedEvent 
 		where 
 		  entryKey='cmi.core.score.raw' 
-		  and enrollment_uuid=${e.getUUID()}
+		  and enrollment_uuid=${e.getUUID()} 
     """
       .first[String] { rs => rs.getString("latestEvent") }
     lastActomEntered
@@ -180,21 +201,25 @@ class EnrollmentRepo(enrollmentUUID: String) {
     }
   }  
   
+  def checkExistingEnrollment(courseClassUUID: String):Boolean = {
+    sql"""select count(*) as enrollmentExists from Enrollment where  person_uuid = ${first.get.getPersonUUID} and class_uuid = ${courseClassUUID}"""
+    	.first[Integer] { rs => rs.getInt("enrollmentExists") }.get >= 1
+  }
+  
   def transfer(fromCourseClassUUID: String, toCourseClassUUID: String) = {
     val enrollment = first.get
     //disable participation to global class thread for old class
     ChatThreadsRepo.disableParticipantFromCourseClassThread(enrollment)
-    
+
     //update enrollment
     sql"""update Enrollment set class_uuid = ${toCourseClassUUID} where uuid = ${enrollmentUUID}""".executeUpdate
-      
+
     //disable old support and tutoring threads
     sql"""update ChatThread set active = 0 where courseClassUUID = ${fromCourseClassUUID} and personUUID = ${enrollment.getPersonUUID} and threadType in  (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})""".executeUpdate
-    
+
     //add participation to global class thread for new class
     ChatThreadsRepo.addParticipantToCourseClassThread(enrollment)
   }
-
 
 }
 

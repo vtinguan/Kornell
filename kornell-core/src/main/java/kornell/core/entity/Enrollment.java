@@ -60,10 +60,16 @@ public interface Enrollment extends Entity{
 	String getParentEnrollmentUUID();
 	void setParentEnrollmentUUID(String enrollmentUUID);
 	
+	//TODO: Consider removing this attribute
 	Date getStartDate();
 	void setStartDate(Date startDate);
 	
 	Date getEndDate();
 	void setEndDate(Date endDate);
 
+	BigDecimal getPreAssessmentScore();
+	void setPreAssessmentScore(BigDecimal preAssessmentScore);
+	
+	BigDecimal getPostAssessmentScore();
+	void setPostAssessmentScore(BigDecimal assessmentScore);
 }

@@ -2,10 +2,13 @@ package kornell.server.jdbc.repository
 import kornell.server.jdbc.SQL._
 
 object ActomEntriesRepo {
-  def getValue(enrollmentUUID:String,actomKey:String,entryKey:String) = sql"""
+  def getValue(enrollmentUUID: String, actomKey: String, entryKey: String) = {
+    val value = sql"""
   	select * from ActomEntries
   	where enrollment_uuid = $enrollmentUUID 
-  	and actomKey = $actomKey
+  	and actomKey like $actomKey
   	and entryKey = $entryKey
-  """.first[String]{ _.getString("entryValue") } 
+  """.first[String] { _.getString("entryValue") }
+    value
+  }
 }
