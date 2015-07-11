@@ -565,7 +565,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             }
             @Override
             protected void conflict(KornellErrorTO kornellErrorTO) {
-            	KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO), AlertType.ERROR);
+            	KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR);
             }
         });
 

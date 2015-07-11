@@ -176,16 +176,16 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		new Captain(EVENT_BUS, session, placeCtrl);
 		new Stalker(EVENT_BUS, session);
 
-	  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		  		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
 				viewFactory.getMessagePresenter();
 				viewFactory.getMessagePresenterClassroomGlobalChat();
 				if(session.hasAnyAdminRole(session.getCurrentUser().getRoles())){
 					viewFactory.getMessagePresenterCourseClass();
 				}
-		      }
+			}
 		});
 	}
 
