@@ -14,8 +14,8 @@ public interface ChatThreadParticipant extends Entity {
 	Date getLastReadAt();
 	void setLastReadAt(Date lastReadAt);
 	
-	String getChatThreadName();
-	void setChatThreadName(String chatThreadName);
+//	String getChatThreadName();
+//	void setChatThreadName(String chatThreadName);
 	
 	Boolean isActive();
 	void setActive(Boolean active);

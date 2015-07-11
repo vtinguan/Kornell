@@ -13,7 +13,11 @@
 .heightAuto{height:auto !important;}
 .niceTextColor{color:#bec1c3;}
 .highlightText{color:#d88709;}
+.highlightText2{color:#d14242;}
+.highlightTextDiscreteColor{color:#e3e3e3;}
+.plainDiscreteTextColor{color:#888888;}
 .textInfoColor{color:#5b9455 !important;}
+.bold{font-weight:bold !important;}
 .font16{font-size:16px !important;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}
@@ -138,9 +142,11 @@
 .dropdown-menu .active>a,.dropdown-menu .active>a:hover,.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a{color:#bec1c3;background-color:#0d0b0c !important;background-image:webkit-gradient(linear, 0 0, 0 100%, from(#0d0b0c), to(#0d0b0c)) !important;background-image:linear-gradient(to bottom, #0d0b0c, #0d0b0c) !important;}
 .forgotPasswordModal .fieldPanelWrapper{width:auto !important;}.forgotPasswordModal .fieldPanelWrapper .labelPanel{width:140px !important;}
 .forgotPasswordModal .fieldPanelWrapper .fieldPanel{width:275px;}.forgotPasswordModal .fieldPanelWrapper .fieldPanel .textField{width:248px;}
+.flagPopupText{color:#bec1c3;}
 .VitrinePlace{height:100%;width:100%;}.VitrinePlace .vitrine{width:962px;margin:0 auto;}
 .VitrinePlace .alertVitrine{float:left;margin-top:30px;margin-left:30px;width:300px;}
-.VitrinePlace .boxLogin{background-color:rgba(13, 11, 12, 0.8);width:225px;padding:15px 45px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(13, 11, 12, 0.25);min-height:200px;margin-top:30px;margin-left:30px;margin-bottom:5px;float:left;color:#bec1c3;}.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:20px;}
+.VitrinePlace .boxLogin{background-color:rgba(13, 11, 12, 0.8);width:225px;padding:15px 45px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(13, 11, 12, 0.25);min-height:200px;margin-top:30px;margin-left:30px;margin-bottom:5px;float:left;color:#bec1c3;}.VitrinePlace .boxLogin .flagWrapper{float:left;margin-left:-35px;margin-top:-9px;}
+.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:10px;}
 .VitrinePlace .boxLogin .personIcon{float:left;padding-top:5px;padding-right:15px;padding-left:28px;}
 .VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;margin-top:0;}
 .VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:30px;}
@@ -389,7 +395,11 @@
 .heightAuto{height:auto !important;}
 .niceTextColor{color:#bec1c3;}
 .highlightText{color:#d88709;}
+.highlightText2{color:#d14242;}
+.highlightTextDiscreteColor{color:#e3e3e3;}
+.plainDiscreteTextColor{color:#888888;}
 .textInfoColor{color:#5b9455 !important;}
+.bold{font-weight:bold !important;}
 .font16{font-size:16px !important;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}
@@ -428,16 +438,21 @@ a{color:#5b9455 !important;}
 ::-webkit-scrollbar{width:18px;height:18px;}
 ::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(13, 11, 12, 0.5) !important;border-radius:5px;background-color:#222222;}
 ::-webkit-scrollbar-thumb{-webkit-box-shadow:inset 0 0 6px rgba(0, 0, 0, 0.5) !important;border-radius:5px;background-color:#333333;}
-.messageInboxPanel{width:962px;margin:0 auto;margin-top:10px;height:500px;border:1px solid rgba(190, 193, 195, 0.25);border-radius:8px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}.messageInboxPanel .sidePanelScroll{width:240px;height:487px;padding:5px;border-radius:8px 0px 0px 8px;background-color:rgba(0, 0, 0, 0.1);border-right:2px solid rgba(0, 0, 0, 0.1);}.messageInboxPanel .sidePanelScroll .sidePanel{width:100%;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;color:#bec1c3;background-color:rgba(0, 0, 0, 0.1);font-size:12px;line-height:20px;margin-bottom:3px;border-radius:5px;padding:6px;font-weight:bold;}.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem:hover{background-color:rgba(0, 0, 0, 0.4);}
+.MessagePlace .messageInboxPanel{width:962px;height:calc(100vh - 105px);}.MessagePlace .messageInboxPanel .threadPanel .threadPanelItemsScroll{height:calc(100vh - 261px);}
+.AdminCourseClassPlace .messageInboxPanel{width:962px;height:calc(100vh - 240px);}.AdminCourseClassPlace .messageInboxPanel .threadPanel .threadPanelItemsScroll{height:calc(100vh - 397px);}
+.ClassroomPlace .messageInboxPanel{width:721.5px;height:calc(100vh - 220px);min-height:460px;margin-top:20px;}.ClassroomPlace .messageInboxPanel .threadPanel{width:721.5px;}.ClassroomPlace .messageInboxPanel .threadPanel .threadPanelItemsScroll{height:calc(100vh - 377px);min-height:302px;}
+.ClassroomPlace .messageInboxPanel .sidePanelScroll{display:none;}
+.messageInboxPanel{min-height:350px;margin:0 auto;margin-top:10px;height:500px;border:1px solid rgba(190, 193, 195, 0.25);border-radius:8px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}.messageInboxPanel .sidePanelScroll{width:22%;height:calc(100% - 11px);padding:5px;border-radius:8px 0px 0px 8px;background-color:rgba(0, 0, 0, 0.1);border-right:2px solid rgba(0, 0, 0, 0.1);}.messageInboxPanel .sidePanelScroll .sidePanel{width:100%;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;color:#bec1c3;background-color:rgba(0, 0, 0, 0.1);font-size:11px;line-height:20px;margin-bottom:6px;border-radius:5px;padding:6px;font-weight:bold;overflow:hidden;}.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem:hover{background-color:rgba(0, 0, 0, 0.4);}
 .messageInboxPanel .sidePanelScroll .sidePanel .threadListItem .unreadCount{color:#5b9455;padding-left:5px;}
 .messageInboxPanel .sidePanelScroll .sidePanel .selected{background-color:rgba(0, 0, 0, 0.4);}
-.messageInboxPanel .threadPanel{width:708px;background-color:rgba(0, 0, 0, 0.1);padding:10px;border-radius:0px 8px 8px 0px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}.messageInboxPanel .threadPanel .threadTitle{font-size:14px;color:#5b9455;padding-bottom:15px;margin-bottom:5px;border-bottom:1px solid rgba(91, 148, 85, 0.5);text-align:center;font-weight:bold;}
-.messageInboxPanel .threadPanel .threadPanelItemsScroll{height:360px;margin-bottom:5px;padding-right:5px;}.messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;background:rgba(0, 0, 0, 0.4);margin:5px;padding:5px 8px;margin-left:15px;border-radius:10px;position:relative;}.messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper .threadMessageHeader{color:#e3e3e3;font-size:8px;font-size:10px;margin-bottom:5px;}
+.messageInboxPanel .threadPanel{width:calc(78% - 12px);background-color:rgba(0, 0, 0, 0.1);padding:10px;border-radius:0px 8px 8px 0px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}.messageInboxPanel .threadPanel .threadTitle{font-size:13px;color:#bec1c3;padding-top:8px;padding-bottom:15px;margin-bottom:5px;border-bottom:1px solid rgba(91, 148, 85, 0.5);text-align:center;font-weight:bold;height:24px;}.messageInboxPanel .threadPanel .threadTitle span{height:20px;overflow:hidden;}
+.messageInboxPanel .threadPanel .threadPanelItemsScroll{min-height:192px;margin-bottom:5px;padding-right:5px;}.messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;background:rgba(0, 0, 0, 0.4);margin:5px;padding:5px 8px;margin-left:15px;border-radius:10px;position:relative;}.messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper .threadMessageHeader{color:#e3e3e3;font-size:8px;font-size:10px;margin-bottom:5px;}
 .messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper .threadMessageItem{color:#bec1c3;font-size:12px;padding:0px 10px;white-space:pre-wrap;}
 .messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper:after{content:'';position:absolute;top:40%;left:0%;margin-left:-12px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:12px solid rgba(0, 0, 0, 0.4);}
 .messageInboxPanel .threadPanel .threadPanelItemsScroll .overrideWrapper{margin-left:0px !important;margin-right:15px !important;background:rgba(0, 0, 0, 0.1) !important;}.messageInboxPanel .threadPanel .threadPanelItemsScroll .overrideWrapper:after{left:100% !important;margin-left:0px !important;margin-right:-12px !important;border-left:12px solid rgba(0, 0, 0, 0.1) !important;border-right:0px !important;}
 .messageInboxPanel .threadPanel .sendMessageWrapper{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;border-top:1px solid rgba(91, 148, 85, 0.5);padding-top:10px;}.messageInboxPanel .threadPanel .sendMessageWrapper .messageTextArea{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;width:83%;float:left;height:60px;font-size:12px;line-height:14px;resize:none;}
 .messageInboxPanel .threadPanel .sendMessageWrapper .btnSend{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;width:15%;float:left;margin-top:19px;margin-left:10px;}
+.messageInboxPanel .threadPanel .sendMessageWrapper span{color:#888888;font-size:9px;text-align:center;display:block;line-height:25px;font-weight:bold;}
 .messagesPopup{right:0 !important;left:initial !important;width:auto;}.messagesPopup .messagesPanel{width:510px;margin:0 auto;border-radius:0px 0px 0px 15px;background-color:#222222;}.messagesPopup .messagesPanel .titlePanel{height:auto;padding-top:12px;margin-left:13px;text-align:center;margin-bottom:3px;}.messagesPopup .messagesPanel .titlePanel .lblTitle{color:#d88709;font-size:18px;font-weight:bold;width:100%;text-align:center;}
 .messagesPopup .messagesPanel .titlePanel .lblSubTitle{color:#5b9455;font-size:13px;float:left;width:100%;}
 .messagesPopup .messagesPanel .titlePanel .profileSeparatorBar{width:100%;}
@@ -466,6 +481,7 @@ a{color:#5b9455 !important;}
 .deanHome .adminCellTable thead tr{background-color:transparent !important;background-color:#4c4f54;background:-webkit-gradient(linear, left top, left bottom, from(#4c4f54), to(#252629));background:-webkit-linear-gradient(top, #4c4f54, #252629);background:-moz-linear-gradient(top, #4c4f54, #252629);background:-ms-linear-gradient(top, #4c4f54, #252629);background:-o-linear-gradient(top, #4c4f54, #252629);background:#4c4f54 !important;background:-moz-linear-gradient(top, #4c4f54 0%, #252629 100%) !important;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c4f54), color-stop(100%, #252629)) !important;background:-webkit-linear-gradient(top, #4c4f54 0%, #252629 100%) !important;background:-o-linear-gradient(top, #4c4f54 0%, #252629 100%) !important;background:-ms-linear-gradient(top, #4c4f54 0%, #252629 100%) !important;background:linear-gradient(to bottom, #4c4f54 0%, #252629 100%) !important;filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4f54', endColorstr='#252629',GradientType=0 ) !important;}.deanHome .adminCellTable thead tr th{border-right:1px solid #505864;padding:3px;}
 .deanHome .adminCellTable tbody tr{background-color:rgba(0, 0, 0, 0.1);font-size:12px;cursor:pointer;}.deanHome .adminCellTable tbody tr:hover{background-color:rgba(0, 0, 0, 0.4);}
 .deanHome .adminCellTable tbody tr td{border:0;padding:3px;line-height:22px;}
+.deanHome .courseClassCellTable tr td:nth-child(3){font-weight:bold;font-size:14px;}
 .deanHome .lineWithoutLink tbody tr{cursor:default;}
 .deanHome table{border-color:transparent !important;width:100%;float:left;}
 .deanHome .pagination{width:100%;float:left;}

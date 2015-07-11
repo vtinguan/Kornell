@@ -13,7 +13,11 @@
 .heightAuto{height:auto !important;}
 .niceTextColor{color:#bec1c3;}
 .highlightText{color:#d88709;}
+.highlightText2{color:#d14242;}
+.highlightTextDiscreteColor{color:#e3e3e3;}
+.plainDiscreteTextColor{color:#888888;}
 .textInfoColor{color:#5b9455 !important;}
+.bold{font-weight:bold !important;}
 .font16{font-size:16px !important;}
 .borderNone{border:0 !important;}
 .paddingTop30{padding-top:30px;}

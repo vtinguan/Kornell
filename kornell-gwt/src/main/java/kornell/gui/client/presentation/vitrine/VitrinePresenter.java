@@ -27,6 +27,7 @@ import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;
@@ -126,8 +127,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			}
 			@Override
 			protected void unauthorized(KornellErrorTO kornellErrorTO) {
-				logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
-				view.setMessage("Usuário ou senha incorretos, por favor tente novamente.");
+				logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
+				view.setMessage(KornellConstantsHelper.getMessage("badUsernamePassword"));
 				view.showMessage();
 			}
 		};
@@ -154,19 +155,19 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		FormHelper validator = new FormHelper();
 		List<String> errors = new ArrayList<String>();
 		if (!validator.isLengthValid(view.getSuName(), 2, 50)) {
-			errors.add("O nome deve ter no mínimo 2 caracteres.");
+			errors.add(KornellConstantsHelper.getMessage("nameTooShort"));
 		}
 		if (!FormHelper.isEmailValid(view.getSuEmail())) {
-			errors.add("Email inválido.");
+			errors.add(KornellConstantsHelper.getMessage("invalidEmail"));
 		}
 		if (!validator.isPasswordValid(view.getSuPassword())) {
-			errors.add("Senha inválida (mínimo de 6 caracteres).");
+			errors.add(KornellConstantsHelper.getMessage("invalidPasswordTooShort"));
 		}
 		if (view.getSuPassword().indexOf(':') >= 0) {
-			errors.add("Senha inválida (não pode conter o caractere ':').");
+			errors.add(KornellConstantsHelper.getMessage("invalidPasswordBadChar"));
 		}
 		if (!view.getSuPassword().equals(view.getSuPasswordConfirm())) {
-			errors.add("As senhas não conferem.");
+			errors.add(KornellConstantsHelper.getMessage("passwordMismatch"));
 		}
 		return errors;
 	}
@@ -193,7 +194,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			@Override
 			public void ok(UserInfoTO user) {
 				logger.info("User created");
-				KornellNotification.show("Usuário criado com sucesso.", 2000);
+				KornellNotification.show(KornellConstantsHelper.getMessage("userCreated"), 2000);
 				view.displayView(VitrineViewType.login);
 				view.setEmail(view.getSuEmail());
 				view.setPassword(suPassword);
@@ -205,7 +206,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			@Override
 			public void ok(UserInfoTO user) {
 				if (user.getUsername() != null) {
-					view.setMessage("O email já existe.");
+					view.setMessage(KornellConstantsHelper.getMessage("emailExists"));
 					view.showMessage();
 					return;
 				}
@@ -242,14 +243,14 @@ public class VitrinePresenter implements VitrineView.Presenter {
 					public void ok(Void to) {
 						view.displayView(VitrineViewType.login);
 						KornellNotification
-								.show("Requisição feita. Confira seu e-mail.");
+								.show(KornellConstantsHelper.getMessage("requestPasswordReset"));
 					}
 
 					@Override
 					public void notFound(KornellErrorTO kornellErrorTO) {
 						logger.severe(this.getClass().getName() + " - not found");
 						KornellNotification
-								.show("Não foi possivel fazer a requisição. Confira se o seu email foi digitado corretamente.",
+								.show(KornellConstantsHelper.getMessage("requestPasswordResetError"),
 										AlertType.ERROR);
 					}
 				});
@@ -268,13 +269,13 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		List<String> errors = new ArrayList<String>();
 
 		if (!validator.isPasswordValid(view.getNewPassword())) {
-			errors.add("Senha inválida (mínimo de 6 caracteres).");
+			errors.add(KornellConstantsHelper.getMessage("invalidPasswordTooShort"));
 		}
 		if (view.getNewPassword().indexOf(':') >= 0) {
-			errors.add("Senha inválida (não pode conter o caractere ':').");
+			errors.add(KornellConstantsHelper.getMessage("invalidPasswordBadChar"));
 		}
 		if (!view.getNewPassword().equals(view.getNewPasswordConfirm())) {
-			errors.add("As senhas não conferem.");
+			errors.add(KornellConstantsHelper.getMessage("passwordMismatch"));
 		}
 		if (errors.size() == 0) {
 			session.user().changePassword(view.getNewPassword(), passwordChangeUUID,
@@ -282,7 +283,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 						@Override
 						public void ok(UserInfoTO to) {
 							view.displayView(VitrineViewType.login);
-							KornellNotification.show("Senha alterada com sucesso.");
+							KornellNotification.show(KornellConstantsHelper.getMessage("passwordChangeComplete"));
 							view.setEmail(to.getUsername());
 							view.setPassword(view.getNewPassword());
 							doLogin();
@@ -290,9 +291,9 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 						@Override
 						public void unauthorized(KornellErrorTO kornellErrorTO) {
-							logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
+							logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
 							KornellNotification
-									.show("Não foi possível alterar a senha. Verifique seu email ou faça uma nova requisição de alteração de senha.",
+									.show(KornellConstantsHelper.getMessage("passwordChangeError"),
 											AlertType.ERROR, 8000);
 						}
 					});

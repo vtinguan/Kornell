@@ -275,9 +275,10 @@ package object repository {
 	implicit def toUnreadChatThreadTO(rs:ResultSet):UnreadChatThreadTO = newUnreadChatThreadTO(
 	    rs.getString("unreadMessages"),
 	    rs.getString("chatThreadUUID"), 
-	    rs.getString("chatThreadName"),
-	    rs.getString("courseClassUUID"),
-	    rs.getString("threadType"))
+	    rs.getString("threadType"),
+	    rs.getString("creatorName"),
+	    rs.getString("entityUUID"),
+	    rs.getString("entityName"))
 	
 	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
 	    rs.getString("senderFullName"),

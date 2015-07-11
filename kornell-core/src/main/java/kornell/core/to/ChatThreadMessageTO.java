@@ -1,7 +1,5 @@
 package kornell.core.to;
 
-
-
 public interface ChatThreadMessageTO {
 	public static final String TYPE = TOFactory.PREFIX+"chatThreadMessage+json";
 

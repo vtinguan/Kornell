@@ -19,7 +19,6 @@ import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.event.LogoutEvent;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
@@ -136,12 +135,12 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void notFound(KornellErrorTO kornellErrorTO) {
-		logger.fine(KornellConstantsHelper.getNotFoundMessage(kornellErrorTO));
+		logger.fine(KornellConstantsHelper.getErrorMessage(kornellErrorTO));
 	}
 
 	protected void internalServerError(KornellErrorTO kornellErrorTO) {
 		logger.severe(KornellConstantsHelper
-				.getInternalServerErrorMessage(kornellErrorTO));
+				.getErrorMessage(kornellErrorTO));
 		logger.severe("Cause: " + kornellErrorTO.getException());
 	}
 
@@ -183,18 +182,18 @@ public abstract class Callback<T> implements RequestCallback {
 	protected void unauthorized(KornellErrorTO kornellErrorTO) {
 		GenericClientFactoryImpl.EVENT_BUS.fireEvent(new LogoutEvent());
 		logger.fine(KornellConstantsHelper
-				.getUnauthorizedMessage(kornellErrorTO));
+				.getErrorMessage(kornellErrorTO));
 	}
 
 	protected void conflict(KornellErrorTO kornellErrorTO) {
-		logger.info(KornellConstantsHelper.getConflictMessage(kornellErrorTO));
+		logger.info(KornellConstantsHelper.getErrorMessage(kornellErrorTO));
 	}
 
 	protected void forbidden(KornellErrorTO kornellErrorTO) {
 		// Not used for now
 		if (kornellErrorTO != null)
 			logger.fine(KornellConstantsHelper
-					.getForbiddenMessage(kornellErrorTO));
+					.getErrorMessage(kornellErrorTO));
 	}
 
 	@Override

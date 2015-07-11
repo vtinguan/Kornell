@@ -6,6 +6,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.to.CourseClassTO;
+import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -28,6 +29,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	private PlaceController placeCtrl;
 	private KornellSession session;
 	private EventBus bus;
+	private ViewFactory viewFactory;
 
 	Logger logger = Logger.getLogger(AdminInstitutionPresenter.class.getName());
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -43,10 +45,11 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 
 	private Presenter presenter;
 
-	public GenericClassroomView(PlaceController placeCtrl, KornellSession session, EventBus bus) {
+	public GenericClassroomView(PlaceController placeCtrl, KornellSession session, EventBus bus, ViewFactory viewFactory) {
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		this.bus = bus;
+		this.viewFactory = viewFactory;
 		bus.addHandler(ShowDetailsEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		detailsPanel.setVisible(true);
@@ -60,7 +63,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		if(this.showCourseClassContent){
 			presenter.startSequencer();
 		}
-		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl);
+		detailsView = new GenericCourseDetailsView(bus, session, placeCtrl, viewFactory);
 		detailsView.setPresenter(presenter);
 		detailsView.initData();
 		detailsPanel.clear();

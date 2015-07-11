@@ -975,7 +975,7 @@ public class GenericAdminCourseClassView extends Composite implements
 								.getCourseClassTO()
 								.getCourseClass()
 								.getUUID()
-								.equals(unreadChatThreadTO.getCourseClassUUID()))
+								.equals(unreadChatThreadTO.getEntityUUID()))
 					count = count
 							+ Integer.parseInt(unreadChatThreadTO
 									.getUnreadMessages());
