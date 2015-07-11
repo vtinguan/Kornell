@@ -31,11 +31,10 @@ import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
-import kornell.scorm.client.scorm12.SCORM12Adapter;
-import kornell.scorm.client.scorm12.SCORM12Binder;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -176,8 +175,18 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void initPersonnel() {
 		new Captain(EVENT_BUS, session, placeCtrl);
 		new Stalker(EVENT_BUS, session);
-		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
-		
+
+	  Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+		      @Override
+		      public void execute() {
+		  		new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
+				viewFactory.getMessagePresenter();
+				viewFactory.getMessagePresenterClassroomGlobalChat();
+				if(session.hasAnyAdminRole(session.getCurrentUser().getRoles())){
+					viewFactory.getMessagePresenterCourseClass();
+				}
+		      }
+		});
 	}
 
 	private void initException() {

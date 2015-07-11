@@ -48,6 +48,7 @@ public interface ViewFactory {
 	MessageComposeView getMessageComposeView();
 	MessagePresenter getMessagePresenter();
 	MessagePresenter getMessagePresenterCourseClass();
+	MessagePresenter getMessagePresenterClassroomGlobalChat();
 
 	ClassroomView getClassroomView();
 	ClassroomPresenter getClassroomPresenter();
@@ -65,5 +66,6 @@ public interface ViewFactory {
 	AdminCourseClassesView getAdminCourseClassesView();
 	AdminCourseClassView getAdminCourseClassView();
 	AdminCourseClassPresenter getAdminCourseClassPresenter();
+
 
 }

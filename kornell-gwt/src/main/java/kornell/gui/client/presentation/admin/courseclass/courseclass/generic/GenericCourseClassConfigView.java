@@ -60,6 +60,7 @@ public class GenericCourseClassConfigView extends Composite {
     private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
     private static final String MODAL_INVISIBLE = "invisible";
     private static final String MODAL_ALLOW_BATCH_CANCELLATION = "allowBatchCancellation";
+    private static final String MODAL_COURSE_CLASS_CHAT_ENABLED = "courseClassChatEnabled";
 
     private KornellSession session;
     private FormHelper formHelper = GWT.create(FormHelper.class);
@@ -95,7 +96,7 @@ public class GenericCourseClassConfigView extends Composite {
     private CourseClassTO courseClassTO;
     private CourseClass courseClass;
     private KornellFormFieldWrapper course, courseVersion, name, publicClass,
-    requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible, allowBatchCancellation;
+    requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible, allowBatchCancellation, courseClassChatEnabled;
     private List<KornellFormFieldWrapper> fields;
     private String modalMode;
     private ListBox institutionRegistrationPrefixes;
@@ -225,6 +226,21 @@ public class GenericCourseClassConfigView extends Composite {
                 if(event.getValue()){
                     showModal(MODAL_ALLOW_BATCH_CANCELLATION);
                     ((CheckBox)allowBatchCancellation.getFieldWidget()).setValue(false);
+                }
+            }
+        });
+
+        
+        Boolean isCourseClassChatEnabled = courseClass.isCourseClassChatEnabled() == null ? false : courseClass.isCourseClassChatEnabled();
+        courseClassChatEnabled = new KornellFormFieldWrapper("Permitir chat global da turma?", formHelper.createCheckBoxFormField(isCourseClassChatEnabled), isInstitutionAdmin);
+        fields.add(courseClassChatEnabled);
+        profileFields.add(courseClassChatEnabled);
+        ((CheckBox)courseClassChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if(event.getValue()){
+                    showModal(MODAL_COURSE_CLASS_CHAT_ENABLED);
+                    ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(false);
                 }
             }
         });
@@ -395,6 +411,7 @@ public class GenericCourseClassConfigView extends Composite {
         courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
         courseClass.setInvisible(invisible.getFieldPersistText().equals("true"));
         courseClass.setAllowBatchCancellation(allowBatchCancellation != null ? allowBatchCancellation.getFieldPersistText().equals("true") : false);
+        courseClass.setCourseClassChatEnabled(courseClassChatEnabled != null ? courseClassChatEnabled.getFieldPersistText().equals("true") : false);
         courseClass.setRegistrationType(RegistrationType.valueOf(registrationType.getFieldPersistText()));
         if(allowPrefixEdit) {
             courseClass.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefix.getFieldPersistText());
@@ -436,6 +453,8 @@ public class GenericCourseClassConfigView extends Composite {
             confirmText.setText("ATENÇÃO! Tem certeza que deseja tornar esta turma invisível? Nenhum participante que esteja matriculado poderá ver essa turma, nem será capaz de gerar o certificado caso tenha sido aprovado.");
         } else if (MODAL_ALLOW_BATCH_CANCELLATION.equals(modalMode)){
             confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir o cancelamento em lote de matrículas? Um novo botão aparecerá na tela de matrículas, e qualquer administrador poderá cancelar uma lista de matrículas.");
+        } else if (MODAL_COURSE_CLASS_CHAT_ENABLED.equals(modalMode)){
+            confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir a criação da chat da turma? Um novo botão aparecerá na tela de detalhes do curso para os alunos, e todos os alunos da turma poderão conversar entre si.");
         }
         confirmModal.show();
     }
@@ -456,6 +475,8 @@ public class GenericCourseClassConfigView extends Composite {
             ((CheckBox)publicClass.getFieldWidget()).setValue(false);
         } else if (MODAL_ALLOW_BATCH_CANCELLATION.equals(modalMode)){
             ((CheckBox)allowBatchCancellation.getFieldWidget()).setValue(true);
+        } else if (MODAL_COURSE_CLASS_CHAT_ENABLED.equals(modalMode)){
+            ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(true);
         }
         confirmModal.hide();
     }

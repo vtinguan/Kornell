@@ -162,7 +162,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		});
 		
 		btnSendMessage = new Button();
-		btnSendMessage.setVisible(false);
+		btnSendMessage.setVisible(true);
 		btnSendMessage.setText("Enviar Mensagem");
 		btnSendMessage.addStyleName("btnPlaceBar btnNotSelected btnChangePassword");
 		btnSendMessage.addClickHandler(new ClickHandler() {

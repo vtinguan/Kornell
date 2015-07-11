@@ -225,10 +225,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		showButton(
 				btnAdmin,
 				isRegistrationCompleted
-						&& (RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.courseClassAdmin) || 
-							RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.observer) || 
-							RoleCategory.hasRole(clientFactory.getKornellSession().getCurrentUser().getRoles(), RoleType.tutor) || 
-							clientFactory.getKornellSession().isInstitutionAdmin()));
+						&& clientFactory.getKornellSession().hasAnyAdminRole(clientFactory.getKornellSession().getCurrentUser().getRoles()));
 		showButton(btnNotifications, false);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);

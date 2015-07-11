@@ -75,8 +75,53 @@ a:hover{
 	background-color: @background;
 }
 
+.MessagePlace { 
+	.messageInboxPanel{
+		width: @wrapperWidth;
+		height: ~"calc(100vh - 105px)";
+		.threadPanel {
+			.threadPanelItemsScroll {
+				height: ~"calc(100vh - 261px)";
+			}
+		}
+	}
+}  
+.AdminCourseClassPlace { 
+	.messageInboxPanel{
+		width: @wrapperWidth;
+		height: ~"calc(100vh - 240px)";
+		.threadPanel {
+			.threadPanelItemsScroll {
+				height: ~"calc(100vh - 397px)";
+			}
+		}
+	}
+}  
+.ClassroomPlace { 
+	.messageInboxPanel{
+		width: @rightPanelWidth;
+		height: ~"calc(100vh - 220px)";
+		min-height: 460px;
+		margin-top: 20px;
+		.threadPanel {
+			width: @rightPanelWidth;
+			.threadPanelItemsScroll {
+				height: ~"calc(100vh - 377px)";
+				min-height: 302px;
+			}
+		}
+		.sidePanelScroll {
+			display: none;
+		}
+	}
+}  
+/*.threadPanelItemsScroll > div  { 
+  position: absolute !important;
+  bottom: 0px;
+  width: 100%;
+}*/
 .messageInboxPanel{
-	width: @wrapperWidth;
+	min-height: 350px;
 	margin: 0 auto;
 	margin-top: 10px;
 	@border: 1px solid fade(@niceTextColor, 25%);
@@ -86,8 +131,8 @@ a:hover{
 	border-radius: 8px;
 	.boxSizing;
 	.sidePanelScroll{
-		width: 240px;
-		height: 487px;
+		width: 22%;
+		height: ~"calc(100% - 11px)";
 		padding: 5px;
 		border-radius: 8px 0px 0px 8px;
 		background-color: @tableBackgroundColor;
@@ -99,12 +144,13 @@ a:hover{
 				.boxSizing;
 				color: @niceTextColor;
 				background-color: @tableBackgroundColor;
-				font-size: 12px;
+				font-size: 11px;
 				line-height: 20px;
-				margin-bottom: 3px;
+				margin-bottom: 6px;
 				border-radius: 5px;
 				padding: 6px;
 				font-weight: bold;
+				overflow: hidden;
 				&:hover {
 					background-color: @tableBackgroundHoverColor;
 				}
@@ -119,22 +165,28 @@ a:hover{
 		}
 	}
 	.threadPanel{
-		width: 708px;
+		width: ~"calc(78% - 12px)";
 		background-color: @tableBackgroundColor;
 		padding: 10px;
 		border-radius: 0px 8px 8px 0px;
 		.boxSizing;
 		.threadTitle{
-			font-size: 14px;
-			color: @textInfoColor;
+			font-size: 13px;
+			color: @niceTextColor;
+			padding-top: 8px;
 			padding-bottom: 15px;
 			margin-bottom: 5px;
 			border-bottom: @borderHighlight;
 			text-align: center;
 			font-weight: bold;
+			height: 24px;
+			span{
+				height: 20px;
+				overflow: hidden;
+			}
 		}
 		.threadPanelItemsScroll{
-			height: 360px;
+			min-height: 192px;
 			margin-bottom: 5px;
 			padding-right: 5px;
 			.threadMessageWrapper{
@@ -200,6 +252,14 @@ a:hover{
 				float: left;
 				margin-top: 19px;
 				margin-left: 10px;
+			}
+			span{
+				color: @plainDiscreteTextColor;
+				font-size: 9px;
+				text-align: center;
+				display: block;
+				line-height: 25px;
+				font-weight: bold;
 			}
 		}
 	}

@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import kornell.api.client.KornellSession;
 import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
+import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
 
@@ -45,6 +47,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	private static FormHelper formHelper = GWT.create(FormHelper.class);
 	private MessageView.Presenter presenter;
 	private EventBus bus;
+	private KornellSession session;
 
 
 	private List<Label> sideItems;
@@ -57,9 +60,14 @@ public class GenericMessageView extends Composite implements MessageView {
 	@UiField Label threadTitle;
 	@UiField TextArea messageTextArea;
 	@UiField Button btnSend;
+	
+	String INFO_CLASS = "textInfoColor";
+	String HIGHLIGHT_CLASS = "highlightTextDiscreteColor";
+	String PLAIN_CLASS = "plainDiscreteTextColor";
 
-	public GenericMessageView(EventBus eventBus) {
+	public GenericMessageView(EventBus eventBus, KornellSession session) {
 		this.bus = eventBus;
+		this.session = session;
 		initWidget(uiBinder.createAndBindUi(this));
 		ensureDebugId("genericMessageInboxView");
 	}
@@ -114,34 +122,46 @@ public class GenericMessageView extends Composite implements MessageView {
 		}
 	}
 	
-	private String getThreadTitle(final UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
+	private String getThreadTitle(final UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean lineBreak) {
 		switch (unreadChatThreadTO.getThreadType()) {
-		case COURSE_CLASS:
-			return "Conversar para turma " + unreadChatThreadTO.getEntityName();
-		case DIRECT:
-			return "Conversar com " + unreadChatThreadTO.getEntityName();
-		case SUPPORT:
-			if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName)) {
-				return "Ajuda para turma: " + unreadChatThreadTO.getEntityName();
-			} else {
-				return unreadChatThreadTO.getChatThreadCreatorName() + "\n (Ajuda para turma: " + unreadChatThreadTO.getEntityName() + ")";
+			case COURSE_CLASS:
+				return span("Chat global da turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+			case DIRECT:
+				return span("Chat direto com:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+			case SUPPORT:
+				if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName) && !session.isCourseClassAdmin(unreadChatThreadTO.getEntityUUID())) {
+					return span("Ajuda para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+				} else {
+					return span(unreadChatThreadTO.getChatThreadCreatorName(), INFO_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) ? "" : separator(lineBreak, true) + span("Ajuda para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS));
+				}
+			case TUTORING:
+				if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName) && !session.isCourseClassTutor(unreadChatThreadTO.getEntityUUID())) {
+					return span("Tutor para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+				} else {
+					return span(unreadChatThreadTO.getChatThreadCreatorName(), INFO_CLASS) + (MessagePanelType.courseClassTutor.equals(presenter.getMessagePanelType()) ? "" : separator(lineBreak, true) + span("Tutoria para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS));
+				}
+			default:
+				return  "";
 			}
-		case TUTORING:
-			if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName)) {
-				return "Tutor para turma: " + unreadChatThreadTO.getEntityName();
-			} else {
-				return unreadChatThreadTO.getChatThreadCreatorName() + "\n (Tutor para turma: " + unreadChatThreadTO.getEntityName() + ")";
-			}
-		default:
-			return null;
-		}
+	}
+
+	private String separator(boolean lineBreak) {
+		return separator(lineBreak, false);
+	}
+
+	private String separator(boolean lineBreak, boolean dash) {
+		return lineBreak ? "<br>" : (dash ? "&nbsp;&nbsp;-&nbsp;&nbsp;" : "&nbsp;&nbsp;&nbsp;");
+	}
+
+	private String span(String str, String className) {
+		return "<span class=\""+className+"\">"+str+"</span>";
 	}
 
 	private void setLabelContent(final UnreadChatThreadTO unreadChatThreadTO, final Label label, boolean markAsRead, String currentUserFullName) {
 		String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) && !markAsRead ? " (" + unreadChatThreadTO.getUnreadMessages() + ")" : "";
 		appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
 		
-		label.getElement().setInnerHTML(getThreadTitle(unreadChatThreadTO, currentUserFullName));
+		label.getElement().setInnerHTML(getThreadTitle(unreadChatThreadTO, currentUserFullName, true));
 		//if it's supposed to be marked as read and there were messages on the thread, update the envelope count
 		if(markAsRead && !"0".equals(unreadChatThreadTO.getUnreadMessages())){
 			bus.fireEvent(new UnreadMessagesCountChangedEvent(Integer.parseInt(unreadChatThreadTO.getUnreadMessages())));
@@ -150,14 +170,16 @@ public class GenericMessageView extends Composite implements MessageView {
 	}
 
 	@Override
-	public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean setFocus) {
-		threadTitle.setText(getThreadTitle(unreadChatThreadTO, currentUserFullName));
+	public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
+
+		threadTitle.getElement().setInnerHTML(getThreadTitle(unreadChatThreadTO, currentUserFullName, false));
 		dateLabelsMap = new HashMap<Label, ChatThreadMessageTO>();
 
 		threadPanelItems.clear();
 		addMessagesToThreadPanel(chatThreadMessagesTO, currentUserFullName);
 
-		prepareTextArea(setFocus);
+		prepareTextArea(MessagePanelType.inbox.equals(presenter.getMessagePanelType()));
+		
 		messageTextArea.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -206,14 +228,14 @@ public class GenericMessageView extends Composite implements MessageView {
 		Iterator<Entry<Label, ChatThreadMessageTO>> it = dateLabelsMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Label, ChatThreadMessageTO> pairs = (Map.Entry<Label, ChatThreadMessageTO>)it.next();
-			pairs.getKey().setText(getDateLabelValue(serverTime, pairs.getValue()));
+			pairs.getKey().getElement().setInnerHTML(getDateLabelValue(serverTime, pairs.getValue()));
 		}
 	}
 
 	private String getDateLabelValue(String serverTimeStr, final ChatThreadMessageTO chatThreadMessageTO) {
 		Date sentAt = formHelper.getJudFromString(chatThreadMessageTO.getSentAt());
 		Date serverTime = formHelper.getJudFromString(serverTimeStr);
-		String dateStr = chatThreadMessageTO.getSenderFullName() + " - " + formHelper.getElapsedTimeSince(sentAt, serverTime);
+		String dateStr = span(chatThreadMessageTO.getSenderFullName(), INFO_CLASS) + separator(false, false) + span(formHelper.getElapsedTimeSince(sentAt, serverTime), PLAIN_CLASS);
 		return dateStr;
 	}
 

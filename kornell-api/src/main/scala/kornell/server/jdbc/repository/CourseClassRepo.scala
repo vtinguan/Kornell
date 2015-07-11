@@ -35,6 +35,7 @@ class CourseClassRepo(uuid:String) {
 		  		cc.courseClassChatEnabled = ${courseClass.isCourseClassChatEnabled},
 		  		cc.allowBatchCancellation = ${courseClass.isAllowBatchCancellation}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate 
+	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    courseClass
     } else {
       throw new EntityConflictException("courseClassAlreadyExists")

@@ -51,6 +51,7 @@ object CourseClassesRepo {
 	             ${courseClass.isCourseClassChatEnabled},
 	             ${courseClass.isAllowBatchCancellation})
 	    """.executeUpdate
+	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    courseClass
     } else {
       throw new EntityConflictException("courseClassAlreadyExists")

@@ -19,6 +19,7 @@ import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -72,9 +73,9 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 
 					@Override 
 					public void onPlaceChange(PlaceChangeEvent event) {
-						Place place = placeCtrl.getWhere();
-						if(place instanceof MessagePlace || place instanceof AdminCourseClassPlace){
-							getUnreadMessagesPerThread();
+						Place place = event.getNewPlace();
+						if(place instanceof MessagePlace || place instanceof AdminCourseClassPlace || place instanceof ClassroomPlace){
+							getUnreadMessagesPerThread(true);
 						}
 						if(popup != null && popup.isShowing()){
 							boolean showingPlacePanel = !(place instanceof VitrinePlace || place instanceof ClassroomPlace || place instanceof AdminPlace);;
