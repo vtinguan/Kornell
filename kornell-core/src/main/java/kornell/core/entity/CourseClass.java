@@ -47,4 +47,7 @@ public interface CourseClass extends Named{
 	
 	Boolean isAllowBatchCancellation();
 	void setAllowBatchCancellation(Boolean allowBatchCancellation);
+	
+	Boolean isTutorChatEnabled();
+	void setTutorChatEnabled(Boolean tutorChatEnabled);
 }

@@ -75,7 +75,7 @@ object ChatThreadsRepo {
     val participantsThatShouldExist = threadType match {
       case ChatThreadType.SUPPORT => RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
             .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
-      case ChatThreadType.TUTORING =>RolesRepo.getUsersWithRoleForCourseClass(courseClass.getCourseVersionUUID(), RoleCategory.BIND_WITH_PERSON, RoleType.tutor)
+      case ChatThreadType.TUTORING => RolesRepo.getUsersWithRoleForCourseClass(courseClass.getUUID, RoleCategory.BIND_WITH_PERSON, RoleType.tutor)
           .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
       case ChatThreadType.COURSE_CLASS | ChatThreadType.DIRECT => throw new IllegalStateException("not-supported-for-this-type")
     }
@@ -177,10 +177,11 @@ object ChatThreadsRepo {
 	  
     val courseClass = CourseClassRepo(courseClassUUID).get
     sql"""
-    		select uuid, personUUID from ChatThread
-    		  where courseClassUUID = ${courseClassUUID}
-		    """.map[CourseClassSupportThreadData](courseClassSupportThreadConvertion)
-		    .foreach(ct => updateChatThreadParticipants(ct._1, ct._2, courseClass, threadType))
+		select uuid, personUUID from ChatThread
+		  where courseClassUUID = ${courseClassUUID}
+	  	  and threadType = ${threadType.toString}
+	    """.map[CourseClassSupportThreadData](courseClassSupportThreadConvertion)
+	    .foreach(ct => updateChatThreadParticipants(ct._1, ct._2, courseClass, threadType))
   }
   
   def getTotalUnreadCountByPerson(personUUID: String, institutionUUID: String) = {

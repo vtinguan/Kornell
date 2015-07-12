@@ -33,7 +33,8 @@ class CourseClassRepo(uuid:String) {
 		  		cc.registrationType = ${courseClass.getRegistrationType.toString},
 		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID},
 		  		cc.courseClassChatEnabled = ${courseClass.isCourseClassChatEnabled},
-		  		cc.allowBatchCancellation = ${courseClass.isAllowBatchCancellation}
+		  		cc.allowBatchCancellation = ${courseClass.isAllowBatchCancellation},
+		  		cc.tutorChatEnabled = ${courseClass.isTutorChatEnabled}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate 
 	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    courseClass

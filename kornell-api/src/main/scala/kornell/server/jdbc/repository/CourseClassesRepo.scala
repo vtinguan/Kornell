@@ -49,7 +49,8 @@ object CourseClassesRepo {
 	             ${courseClass.getRegistrationType.toString},
 	             ${courseClass.getInstitutionRegistrationPrefixUUID},
 	             ${courseClass.isCourseClassChatEnabled},
-	             ${courseClass.isAllowBatchCancellation})
+	             ${courseClass.isAllowBatchCancellation},
+	             ${courseClass.isTutorChatEnabled})
 	    """.executeUpdate
 	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    courseClass
