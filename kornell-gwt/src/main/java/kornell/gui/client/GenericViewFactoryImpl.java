@@ -80,7 +80,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	private GenericAdminCourseVersionView genericAdminCourseVersionView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
-	private MessagePresenter messagePresenter, messagePresenterCourseClass, messagePresenterClassroomGlobalChat;
+	private MessagePresenter messagePresenter, messagePresenterCourseClass, messagePresenterClassroomGlobalChat, messagePresenterClassroomTutorChat;
 	private boolean isMantleShown = false;
 
 	SimplePanel shell = new SimplePanel();
@@ -272,6 +272,15 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(),
 					MessagePanelType.courseClassGlobal);
 		return messagePresenterClassroomGlobalChat;
+	}
+
+	@Override
+	public MessagePresenter getMessagePresenterClassroomTutorChat() {
+		if (messagePresenterClassroomTutorChat == null)
+			messagePresenterClassroomTutorChat = new MessagePresenter(clientFactory.getKornellSession(),
+					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(),
+					MessagePanelType.courseClassTutor);
+		return messagePresenterClassroomTutorChat;
 	}
 
 	@Override

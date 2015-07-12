@@ -182,6 +182,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
 				viewFactory.getMessagePresenter();
 				viewFactory.getMessagePresenterClassroomGlobalChat();
+				viewFactory.getMessagePresenterClassroomTutorChat();
 				if(session.hasAnyAdminRole(session.getCurrentUser().getRoles())){
 					viewFactory.getMessagePresenterCourseClass();
 				}

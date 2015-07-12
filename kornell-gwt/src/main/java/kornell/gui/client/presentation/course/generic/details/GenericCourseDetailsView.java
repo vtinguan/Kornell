@@ -60,8 +60,8 @@ public class GenericCourseDetailsView extends Composite {
 	private PlaceController placeCtrl;
 	private EventBus bus;
 	private ViewFactory viewFactory;
-	private MessagePresenter messagePresenter;
-	private GenericCourseClassMessagesView messagesView;
+	private MessagePresenter messagePresenterClassroomGlobalChat, messagePresenterClassroomTutorChat;
+	private GenericCourseClassMessagesView messagesGlobalChatView, messagesTutorChatView;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
 
@@ -78,6 +78,7 @@ public class GenericCourseDetailsView extends Composite {
 	private Button btnTopics;
 	private Button btnCertification;
 	private Button btnChat;
+	private Button btnTutor;
 	private Button btnLibrary;
 	private Button btnGoToCourse;
 
@@ -88,6 +89,7 @@ public class GenericCourseDetailsView extends Composite {
 	private FlowPanel topicsPanel;
 	private FlowPanel certificationPanel;
 	private FlowPanel chatPanel;
+	private FlowPanel tutorPanel;
 	private FlowPanel libraryPanel;
 
 	private Presenter presenter;
@@ -105,8 +107,10 @@ public class GenericCourseDetailsView extends Composite {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.viewFactory = viewFactory;
-		this.messagePresenter = viewFactory.getMessagePresenterClassroomGlobalChat();
-		this.messagePresenter.enableMessagesUpdate(false);
+		this.messagePresenterClassroomGlobalChat = viewFactory.getMessagePresenterClassroomGlobalChat();
+		this.messagePresenterClassroomGlobalChat.enableMessagesUpdate(false);
+		this.messagePresenterClassroomTutorChat = viewFactory.getMessagePresenterClassroomTutorChat();
+		this.messagePresenterClassroomTutorChat.enableMessagesUpdate(false);
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -196,11 +200,19 @@ public class GenericCourseDetailsView extends Composite {
 		aboutPanel.setVisible(btn.equals(btnAbout));
 		topicsPanel.setVisible(btn.equals(btnTopics));
 		certificationPanel.setVisible(btn.equals(btnCertification));
+		
 		if(btn.equals(btnChat))
 			buildChatPanel();
 		if(chatPanel != null)
 			chatPanel.setVisible(btn.equals(btnChat));
-		messagePresenter.enableMessagesUpdate(btn.equals(btnChat));
+		messagePresenterClassroomGlobalChat.enableMessagesUpdate(btn.equals(btnChat));
+
+		if(btn.equals(btnTutor))
+			buildTutorPanel();
+		if(tutorPanel != null)
+			tutorPanel.setVisible(btn.equals(btnTutor));
+		messagePresenterClassroomTutorChat.enableMessagesUpdate(btn.equals(btnTutor));
+		
 		if(libraryPanel != null)
 			libraryPanel.setVisible(btn.equals(btnLibrary));
 		LoadingPopup.hide();
@@ -225,19 +237,35 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private void buildChatPanel() {
-		if (messagesView == null) {
-			messagesView = new GenericCourseClassMessagesView(session, bus,
-					placeCtrl, viewFactory, messagePresenter, Dean
+		if (messagesGlobalChatView == null) {
+			messagesGlobalChatView = new GenericCourseClassMessagesView(session, bus,
+					placeCtrl, viewFactory, messagePresenterClassroomGlobalChat, Dean
 							.getInstance().getCourseClassTO());
 		}
 		if(chatPanel == null){
 			chatPanel = new FlowPanel();
 			detailsContentPanel.add(chatPanel);
 		}
-		messagePresenter.filterAndShowThreads();
+		messagePresenterClassroomGlobalChat.filterAndShowThreads();
 		chatPanel.clear();
 		chatPanel.addStyleName("certificationPanel");
-		chatPanel.add(messagesView);
+		chatPanel.add(messagesGlobalChatView);
+	}
+
+	private void buildTutorPanel() {
+		if (messagesTutorChatView == null) {
+			messagesTutorChatView = new GenericCourseClassMessagesView(session, bus,
+					placeCtrl, viewFactory, messagePresenterClassroomTutorChat, Dean
+							.getInstance().getCourseClassTO());
+		}
+		if(tutorPanel == null){
+			tutorPanel = new FlowPanel();
+			detailsContentPanel.add(tutorPanel);
+		}
+		messagePresenterClassroomTutorChat.filterAndShowThreads();
+		tutorPanel.clear();
+		tutorPanel.addStyleName("certificationPanel");
+		tutorPanel.add(messagesTutorChatView);
 	}
 
 	private FlowPanel getLibraryPanel(LibraryFilesTO libraryFilesTO) {
@@ -367,6 +395,7 @@ public class GenericCourseDetailsView extends Composite {
 		btnTopics = new Button();
 		btnCertification = new Button();
 		btnChat = new Button();
+		btnTutor = new Button();
 		btnLibrary = new Button();
 		btnGoToCourse = new Button();
 		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(), true);
@@ -380,6 +409,9 @@ public class GenericCourseDetailsView extends Composite {
 			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
 			if(courseClassTO.getCourseClass().isCourseClassChatEnabled()){
 				displayButton(btnChat, constants.btnChat(), "Com todos os participantes da turma"/*constants.btnCertificationInfo()*/, false);
+			}
+			if(courseClassTO.getCourseClass().isTutorChatEnabled()){
+				displayButton(btnTutor, constants.btnTutor(), "Com um especialista"/*constants.btnCertificationInfo()*/, false);
 			}
 			displayButton(btnLibrary, constants.btnLibrary(), "Material complementar"/*constants.btnCertificationInfo()*/, false);
 			displayButton(btnGoToCourse, "Ir para o curso", "", false);	

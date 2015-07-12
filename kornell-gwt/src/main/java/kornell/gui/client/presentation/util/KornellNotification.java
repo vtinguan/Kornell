@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.util;
 
+import kornell.core.util.StringUtils;
 import kornell.gui.client.util.Positioning;
 
 import com.github.gwtbootstrap.client.ui.Alert;
@@ -23,6 +24,7 @@ public class KornellNotification {
 	}
 
 	public static void show(String message, AlertType alertType, int timer) {	
+		if(StringUtils.isNone(message)) return;
 		final PopupPanel popup = new PopupPanel();
 		Alert alert = new Alert();
 		alert.addStyleName("kornellMessage");

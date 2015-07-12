@@ -102,6 +102,9 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Chat")
 	String btnChat();
 	
+	@DefaultStringValue("Tutoring")
+	String btnTutor();
+	
 	@DefaultStringValue("Library")
 	String btnLibrary();
 	

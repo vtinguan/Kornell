@@ -51,15 +51,15 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 	public void okButtonClicked() {
 		if(validateMessage()){
 			String messageText = view.getMessageText().getFieldPersistText();
-			Callback<Void> chatThreadCallback = new Callback<Void>() {
+			Callback<String> chatThreadCallback = new Callback<String>() {
 				@Override
-				public void ok(Void to) {
+				public void ok(String str) {
 					KornellNotification.show("Mensagem enviada com sucesso!");
 					MrPostman.hide();
 				}
 			};
 			String entityUUID = view.getRecipient().getFieldPersistText();
-			threadsClient.postMessageToCourseClassThread(messageText, entityUUID, chatThreadCallback);
+			threadsClient.postMessageToSupportCourseClassThread(messageText, entityUUID, chatThreadCallback);
 		}
 	}
 
