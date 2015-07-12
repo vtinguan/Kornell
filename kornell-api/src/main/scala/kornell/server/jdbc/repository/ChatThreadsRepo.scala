@@ -346,7 +346,7 @@ object ChatThreadsRepo {
             EnrollmentsRepo.byCourseClass(courseClass.getUUID).getEnrollmentTOs().asScala.foreach(enrollment => {
               val participant = getChatTreadParticipant(enrollment.getPersonUUID, createdChatThread.getUUID)
               if (!participant.isDefined) {
-                  createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
+                  createChatThreadParticipant(createdChatThread.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
               }})
         } else {
           //chat is enabled on class and thread exists
