@@ -99,6 +99,20 @@ object EmailService {
     EmailSender.sendEmail(subject, from, to, body, imgFile)
   }
   
+  def sendEmailEspinafreReminder(person: Person, institution: Institution) = {
+    val subject = "Espinafre Reminder! " + institution.getFullName
+    val from = getFromEmail(institution)
+    val to = person.getEmail
+    val actionLink = institution.getBaseURL
+    val body = wrapBody("""
+    	espinafre reminder body	
+        """ +
+    		getSignature(institution, from))
+			
+    val imgFile = getInstitutionLogoImage(institution)
+    EmailSender.sendEmail(subject, from, to, body, imgFile)
+  }
+  
   private def getFromEmail(institution: kornell.core.entity.Institution):String = EmailSender.SMTP_FROM
   
   

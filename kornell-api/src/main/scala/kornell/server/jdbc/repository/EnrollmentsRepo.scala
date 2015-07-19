@@ -13,6 +13,7 @@ import scala.collection.mutable.Buffer
 import kornell.core.to.SimplePersonTO
 import kornell.core.to.SimplePeopleTO
 import kornell.server.repository.Entities
+import kornell.core.entity.Person
 
 object EnrollmentsRepo {
 
@@ -151,8 +152,8 @@ object EnrollmentsRepo {
     enr.class_uuid = ${courseClassUUID}""".map[SimplePersonTO](toSimplePersonTO))
   }
     
-  def getEmailList(institutionUUID: String): List[String] = {
-    sql"""select p.email from ActomEntries ae 
+  def getEmailList(institutionUUID: String): List[Person] = {
+    sql"""select p.* from ActomEntries ae 
     	join ActomEntries ae1 on ae.uuid = ae1.uuid
     	join Enrollment e on ae.enrollment_uuid = e.uuid
     	join CourseClass cc on e.class_uuid = cc.uuid
@@ -163,6 +164,6 @@ object EnrollmentsRepo {
     	and ae.entryValue = concat(curdate(), ' 23:59:59')
     	and ae1.entryKey = 'cmi.core.lesson_status'
     	and ae1.entryValue = 'false'
-    """.map[String]
+    """.map[Person](toPerson)
   }
 }

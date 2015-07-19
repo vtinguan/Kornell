@@ -22,6 +22,8 @@ import kornell.server.util.AccessDeniedErr
 import kornell.server.util.Conditional.toConditional
 import kornell.core.to.SimplePeopleTO
 import kornell.core.to.EnrollmentsTO
+import kornell.server.jdbc.repository.InstitutionRepo
+import kornell.server.util.EmailService
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
@@ -77,6 +79,14 @@ class EnrollmentsResource {
   }.requiring(isPlatformAdmin, AccessDeniedErr())
   .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
+  
+  @GET
+  @Path("{institutionUUID}/sendEspinafreReminder")
+  @Produces(Array(SimplePeopleTO.TYPE))
+  def setnEspinafreReminder(@PathParam("institutionUUID") institutionUUID: String) = {
+    val institution = InstitutionRepo(institutionUUID).get
+    EnrollmentsRepo.getEmailList(institutionUUID).foreach(person => EmailService.sendEmailEspinafreReminder(person, institution))
+  }.requiring(isPlatformAdmin, AccessDeniedErr())
     
 }
 
