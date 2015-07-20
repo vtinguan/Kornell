@@ -226,7 +226,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 
 	private void getChatThreadMessagesSinceLast() {
-		GWT.debugger();
+		//GWT.debugger();
 		if(((placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof AdminCourseClassPlace && MessagePanelType.courseClassSupport.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof ClassroomPlace && 

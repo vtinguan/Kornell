@@ -66,21 +66,30 @@ class EnrollmentResource(uuid: String) {
   @Path("launch")
   @Produces(Array(EnrollmentLaunchTO.TYPE))
   def launch() = AuthRepo().withPerson { person =>
+    //val t0 = System.currentTimeMillis();
+    //var t1 = 0L;
+    //logger.info(s"perf: t0 = $t0")
     val eLaunch: EnrollmentLaunchTO = TOs.newEnrollmentLaunchTO
-
     val eContents = contents.get
     eLaunch.setContents(eContents)
 
     val eEntries = getEntries
     val mEntries = eEntries.getEnrollmentEntriesMap.asScala
+    //t1 = System.currentTimeMillis
+    //logger.info (s"perf: entries fetch = ${t1-t0}")
     for {
       (enrollmentUUID, enrollmentEntries) <- mEntries
       (actomKey,actomEntries) <- enrollmentEntries.getActomEntriesMap.asScala
     } {
+      //val tn0 = System.currentTimeMillis
       actomEntries.setEntries(SCORM12.dataModel.initialize(actomEntries.getEntries,person))
+      //val tn = System.currentTimeMillis
+      //logger.info (s"perf: SCORM init [${enrollmentUUID}/${actomKey}] = ${tn-tn0}")
     }
 
     eLaunch.setEnrollmentEntries(eEntries)
+    //t1 = System.currentTimeMillis
+    //logger.info (s"perf: total = ${t1-t0}")
     eLaunch
   }
 
