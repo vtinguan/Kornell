@@ -85,8 +85,7 @@ class S3(regionName: String,
   
 
   def inputStream(infix: String, key: String) = Try {
-    logger.info("*************")
-    logger.info(s"inputStream(${infix}, ${key})")    
+    logger.finest(s"loading inputStream(${infix}, ${key})")    
     val fqkn = url(infix, key)
 
     try	{ 
