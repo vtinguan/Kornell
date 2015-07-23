@@ -51,7 +51,8 @@ class KornellAPI extends Application {
     classOf[ProbesResource],
     classOf[HealthCheckResource],
     classOf[NewRelicResource],
-    classOf[TokenResource]
+    classOf[TokenResource],
+    classOf[LoggerResource]
   )
     
   override def getClasses() = 
