@@ -238,6 +238,5 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
           (rs: ResultSet) => (rs.getString("uuid"), rs.getString("password")))
       passwords.foreach(p => sql"""update Password set password = ${BCrypt.hashpw(p._2, BCrypt.gensalt())}, migrated = true
           where uuid = ${p._1}""".executeUpdate)
-      sql"""delete from Token""".executeUpdate
   }
 }
