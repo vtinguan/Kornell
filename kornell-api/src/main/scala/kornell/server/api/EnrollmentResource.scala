@@ -63,18 +63,30 @@ class EnrollmentResource(uuid: String) {
     }
   }
     
- def findParentOf(uuid:String):Option[String] = sql"""
+ def findRootOf(uuid:String): String ={ 
+   val parent = sql"""
    select parentEnrollmentUUID from Enrollment where uuid = $uuid
- """.first
+   """.first[String] match {
+     case Some(p) => p
+     case None => uuid
+   }
+   parent 
+ }
  
- def findFamilyOf(parentUUID:String):List[String] = List(parentUUID) ++ 
- sql"""
+ def findFamilyOf(parentUUID:String):List[String] ={
+   val selfie = List(parentUUID)
+   val children = sql"""
    select uuid from Enrollment where parentEnrollmentUUID = $parentUUID
   """.map[String]
+   val result = selfie ++ children
+   result
+ }
+ 
+ 
   
  def findEnrollmentsFamilyUUIDs():List[String] = {
    val selfie = Set(uuid)
-   val family = findParentOf(uuid).map(findFamilyOf(_)).getOrElse(List()).toSet
+   val family = findFamilyOf(findRootOf(uuid)).toSet
    val result = (selfie ++ family).toList
    result
  }
