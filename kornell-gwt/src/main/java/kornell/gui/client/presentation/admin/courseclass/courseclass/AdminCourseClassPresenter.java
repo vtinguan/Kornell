@@ -264,7 +264,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             username = FormHelper.stripCPF(username);
         }
         batchEnrollments = new ArrayList<EnrollmentRequestTO>();
-        batchEnrollments.add(createEnrollment(fullName, username, false));
+        batchEnrollments.add(createEnrollment(fullName, username, null, false));
         if (!formHelper.isLengthValid(fullName, 2, 50)) {
             KornellNotification.show("O nome deve ter no mínimo 2 caracteres.", AlertType.ERROR);
         } else if (!isUsernameValid(username)) {
@@ -344,7 +344,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
     private void populateEnrollmentsList(String txtAddEnrollmentBatch, boolean isBatchCancel) {
         String[] enrollmentsA = txtAddEnrollmentBatch.split("\n");
-        String fullName, username;
+        String fullName, username, email;
         String[] enrollmentStrA;
         batchEnrollments = new ArrayList<EnrollmentRequestTO>();
         batchEnrollmentErrors = "";
@@ -356,6 +356,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
             username = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]).replace((char) 160, (char) 32).replaceAll("\\u200B", "")
                     .trim();
+            email = (enrollmentStrA.length > 2 ? enrollmentStrA[2].replace((char) 160, (char) 32).replaceAll("\\u200B", "").trim() : null);
             if (isBatchCancel) {
                 fullName.trim();
                 username.trim();
@@ -371,15 +372,15 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
                 enrollmentRequestTO.setUsername(username);
                 batchEnrollments.add(enrollmentRequestTO);
-            } else if (isUsernameValid(username)) {            
-                batchEnrollments.add(createEnrollment(fullName, username, false));
+            } else if (isUsernameValid(username) && (email == null || FormHelper.isEmailValid(email))) {
+                batchEnrollments.add(createEnrollment(fullName, username, email, false));
             } else {
                 batchEnrollmentErrors += enrollmentsA[i] + "\n";
             }
         }
     }
 
-    private EnrollmentRequestTO createEnrollment(String fullName, String username, boolean cancelEnrollment) {
+    private EnrollmentRequestTO createEnrollment(String fullName, String username, String email, boolean cancelEnrollment) {
         fullName.trim();
         username.trim();
         String usr;
@@ -403,6 +404,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             usr = FormHelper.stripCPF(username);
             enrollmentRequestTO.setUsername(usr);
             enrollmentRequestTO.setPassword(usr);
+            enrollmentRequestTO.setEmail(email);
             break;
         case username:
             usr = !cancelEnrollment && username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? Dean.getInstance().getCourseClassTO()
@@ -493,7 +495,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         if (confirmedEnrollmentsModal && enrollmentsToOverride != null && enrollmentsToOverride.size() > 0) {
             for (SimplePersonTO simplePersonTO : enrollmentsToOverride) {
                 EnrollmentRequestTO enrollmentRequestTO = createEnrollment(simplePersonTO.getFullName(),
-                        simplePersonTO.getUsername(), true);
+                        simplePersonTO.getUsername(), null, true);
                 enrollmentRequestsTO.getEnrollmentRequests().add(enrollmentRequestTO);
             }
 

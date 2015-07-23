@@ -23,8 +23,8 @@ public class KornellNotification {
 		show(message, AlertType.SUCCESS, timer);
 	}
 
-	public static void show(String message, AlertType alertType, int timer) {	
-		if(StringUtils.isNone(message)) return;
+	public static PopupPanel show(String message, AlertType alertType, int timer) {	
+		if(StringUtils.isNone(message)) return null;
 		final PopupPanel popup = new PopupPanel();
 		Alert alert = new Alert();
 		alert.addStyleName("kornellMessage");
@@ -48,6 +48,8 @@ public class KornellNotification {
 				}
 			}.scheduleRepeating(timer);
 		}
+		
+		return popup;
 	}
 	
 	

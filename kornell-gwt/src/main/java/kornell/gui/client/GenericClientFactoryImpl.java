@@ -105,6 +105,22 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
 			public void ok(final UserHelloTO userHelloTO) {
+				doCallbackOk(userHelloTO);
+			}
+			@Override
+			public void unauthorized(KornellErrorTO kornellErrorTO){
+				//this case means someone entered a URL in the bar with an expired token in local storage
+				//so we clear his old token and we do the call to hello again
+				ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
+				final Callback<UserHelloTO> userManualAccessCallback = new Callback<UserHelloTO>() {
+					@Override
+					public void ok(final UserHelloTO userHelloTO) {
+						doCallbackOk(userHelloTO);
+					}
+				};
+				session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
+			}
+			private void doCallbackOk(final UserHelloTO userHelloTO) {
 				session.setCurrentUser(userHelloTO.getUserInfoTO());
 				if(userHelloTO.getInstitution() == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
@@ -118,30 +134,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					}
 				}
 			}
-			@Override
-			public void unauthorized(KornellErrorTO kornellErrorTO){
-				//this case means someone entered a URL in the bar with an expired token in local storage
-				//so we clear his old token and we do the call to hello again
-				ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
-				final Callback<UserHelloTO> userManualAccessCallback = new Callback<UserHelloTO>() {
-					@Override
-					public void ok(final UserHelloTO userHelloTO) {
-						session.setCurrentUser(userHelloTO.getUserInfoTO());
-						if(userHelloTO.getInstitution() == null) {
-							KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
-						} else {
-							Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
-							setHomePlace(new WelcomePlace());
-							if (session.isAuthenticated()) {
-								startAuthenticated(session);
-							} else {
-								startAnonymous();
-							}
-						}
-					}
-				};
-				session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
-			}
 		};
 		session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userHelloCallback);
 	}
@@ -153,9 +145,14 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void startAuthenticated(KornellSession session) {
-		boolean isAdmin = RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-				|| session.isInstitutionAdmin();
-		setDefaultPlace(isAdmin ? new AdminCourseClassesPlace() : new WelcomePlace());
+		if(RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+				|| session.isInstitutionAdmin()){
+			setDefaultPlace(new AdminCourseClassesPlace());
+		} else if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			setDefaultPlace(getHomePlace());
+		} else {
+			setDefaultPlace(new WelcomePlace());
+		}
 		startClient();
 	}
 

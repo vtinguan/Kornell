@@ -183,7 +183,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				@Override
 				public void ok(String uuid) {
 					selectedChatThreadInfo.setChatThreadUUID(uuid);
-					KornellNotification.show("weeee"+uuid);
 					/*ChatThreadMessagesTO chatThreadMessagesTO = toFactory.newChatThreadMessagesTO().as();
 					ChatThreadMessageTO chatThreadMessageTO = toFactory.newChatThreadMessageTO().as();
 					chatThreadMessageTO.setMessage(message);
@@ -226,7 +225,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 
 	private void getChatThreadMessagesSinceLast() {
-		GWT.debugger();
 		if(((placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof AdminCourseClassPlace && MessagePanelType.courseClassSupport.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof ClassroomPlace && 

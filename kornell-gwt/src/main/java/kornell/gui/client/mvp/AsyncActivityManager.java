@@ -42,7 +42,7 @@ public class AsyncActivityManager implements PlaceChangeEvent.Handler,
 		}
 
 		public void setWidget(IsWidget view) {
-			if (this.activity == AsyncActivityManager.this.currentActivity) {
+			if (this.activity == AsyncActivityManager.this.currentActivity && view != null) {
 				startingNext = false;
 				showWidget(view);
 			}
@@ -242,7 +242,7 @@ public class AsyncActivityManager implements PlaceChangeEvent.Handler,
 	}
 
 	private void showWidget(IsWidget view) {
-		if (display != null) {
+		if (display != null && view != null) {
 			display.setWidget(view);
 		}
 	}
