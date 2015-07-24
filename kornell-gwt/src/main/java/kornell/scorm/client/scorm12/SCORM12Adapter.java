@@ -35,7 +35,6 @@ public class SCORM12Adapter implements CMIConstants {
 	private String actomKey;
 
 	// State
-	//private CMITree dataModel = new CMINode();
 	private String lastError = NoError;
 
 	// UI/Client
@@ -157,23 +156,11 @@ public class SCORM12Adapter implements CMIConstants {
 		}
 		CMITree dataModel = getDataModel(syncEnrollmentUUID,syncActomKey);		
 		if (dataModel != null && dataModel.isDirty()) {
+			//GWT.debugger();
 			client.enrollment(syncEnrollmentUUID)
 				  .actom(syncActomKey)
 				  .put(CMITree.collectDirty(dataModel), new Scrub());
 		}
 	}
-	/*
-	 * @Override public void onActomEntered(ActomEnteredEvent event) {
-	 * logger.finer("ActomEntered [" + event.getActomKey() + "]");
-	 * refreshDataModel(event); }
-	 * 
-	 * 
-	 * private void refreshDataModel(ActomEnteredEvent event) {
-	 * syncBeforeLoadinNewActom(); this.currentActomKey = event.getActomKey();
-	 * this.currentEnrollmentUUID = event.getEnrollmentUUID(); loadDataModel();
-	 * }
-	 * 
-	 * private void syncBeforeLoadinNewActom() { sync(); }
-	 */
 
 }

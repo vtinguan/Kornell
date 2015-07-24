@@ -30,6 +30,7 @@ import kornell.core.to.EnrollmentLaunchTO
 import kornell.server.repository.TOs
 import kornell.server.scorm12.SCORM12
 import kornell.core.entity.EnrollmentsEntries
+import kornell.server.jdbc.PreparedStmt
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -61,23 +62,45 @@ class EnrollmentResource(uuid: String) {
       ContentRepository.findKNLVisitedContent(e)
     }
   }
+    
+ def findParentOf(uuid:String):Option[String] = sql"""
+   select parentEnrollmentUUID from Enrollment where uuid = $uuid
+ """.first
+ 
+ def findFamilyOf(parentUUID:String):List[String] = List(parentUUID) ++ 
+ sql"""
+   select uuid from Enrollment where parentEnrollmentUUID = $parentUUID
+  """.map[String]
+  
+ def findEnrollmentsFamilyUUIDs():List[String] = {
+   val selfie = Set(uuid)
+   val family = findParentOf(uuid).map(findFamilyOf(_)).getOrElse(List()).toSet
+   val result = (selfie ++ family).toList
+   result
+ }
 
   @GET
   @Path("launch")
   @Produces(Array(EnrollmentLaunchTO.TYPE))
   def launch() = AuthRepo().withPerson { person =>
     val eLaunch: EnrollmentLaunchTO = TOs.newEnrollmentLaunchTO
-
+    
     val eContents = contents.get
     eLaunch.setContents(eContents)
+    
+    val enrollments:List[String] = findEnrollmentsFamilyUUIDs
+    val eEntries = getEntries(enrollments)
 
-    val eEntries = getEntries
     val mEntries = eEntries.getEnrollmentEntriesMap.asScala
+
     for {
-      (enrollmentUUID, enrollmentEntries) <- mEntries
+      (enrollmentUUID, enrollmentEntries) <- mEntries.par
       (actomKey,actomEntries) <- enrollmentEntries.getActomEntriesMap.asScala
     } {
-      actomEntries.setEntries(SCORM12.dataModel.initialize(actomEntries.getEntries,person))
+      val entriesMap = actomEntries.getEntries
+      val launchedMap = SCORM12.dataModel.initialize(entriesMap,person)
+      entriesMap.putAll(launchedMap)
+      actomEntries.setEntries(entriesMap)
     }
 
     eLaunch.setEnrollmentEntries(eEntries)
@@ -110,22 +133,20 @@ class EnrollmentResource(uuid: String) {
     .or(isInstitutionAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
     .or(isCourseClassAdmin(EnrollmentRepo(uuid).get.getCourseClassUUID), AccessDeniedErr())
 
-  @GET
-  @Produces(Array(EnrollmentEntries.TYPE))
-  def getEntries() = {
+    
+    
+  
+  def getEntries(es:List[String]):EnrollmentsEntries = {
     val esEntries: EnrollmentsEntries = Entities.newEnrollmentsEntries()
     val esEntriesMap = esEntries.getEnrollmentEntriesMap
-
-    sql"""
-      select * from ActomEntries 
-      where enrollment_uuid in (
-        select uuid 
-        from Enrollment 
-        where uuid= $uuid
-           or parentEnrollmentUUID = $uuid )
-      order by enrollment_uuid, actomKey
-    """.foreach { rs =>
-
+    
+    val sql = s"""
+      select * from ActomEntries
+      where enrollment_uuid IN (${es.map{s => s"'${s}'"}.mkString(",")})
+      order by enrollment_uuid, actomKey      
+    """
+    
+    new PreparedStmt(sql,List()).foreach { rs =>  
       val enrollmentUUID = rs.getString("enrollment_uuid")
       val actomKey = rs.getString("actomKey")
       val entryKey = rs.getString("entryKey")
@@ -153,7 +174,11 @@ class EnrollmentResource(uuid: String) {
 
       actomEntries.getEntries.put(entryKey, entryValue)
     }
-    esEntries
+    esEntries   
   }
+    
+  @GET
+  @Produces(Array(EnrollmentsEntries.TYPE))
+  def getEntries():EnrollmentsEntries = getEntries(List(uuid))
 
 }
