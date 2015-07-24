@@ -80,14 +80,6 @@ class EnrollmentsResource {
   .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
   
-  @GET
-  @Path("{institutionUUID}/sendEspinafreReminder")
-  @Produces(Array(SimplePeopleTO.TYPE))
-  def setnEspinafreReminder(@PathParam("institutionUUID") institutionUUID: String) = {
-    val institution = InstitutionRepo(institutionUUID).get
-    EnrollmentsRepo.getEmailList(institutionUUID).foreach(person => EmailService.sendEmailEspinafreReminder(person, institution))
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
-    
 }
 
 object EnrollmentsResource {

@@ -152,18 +152,15 @@ object EnrollmentsRepo {
     enr.class_uuid = ${courseClassUUID}""".map[SimplePersonTO](toSimplePersonTO))
   }
     
-  def getEmailList(institutionUUID: String): List[Person] = {
-    sql"""select p.* from ActomEntries ae 
-    	join ActomEntries ae1 on ae.uuid = ae1.uuid
-    	join Enrollment e on ae.enrollment_uuid = e.uuid
+  def getEspinafreEmailList(): List[Person] = {
+    sql"""select p.* from Enrollment e 
     	join CourseClass cc on e.class_uuid = cc.uuid
+        join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
     	join Person p on e.person_uuid = p.uuid
-    	where cc.institution_uuid = ${institutionUUID}
+        and cv.label = 'espinafre'
     	and p.receiveEmailCommunication = 1
-    	and ae.entryKey = 'knl.end_date'
-    	and ae.entryValue = concat(curdate(), ' 23:59:59')
-    	and ae1.entryKey = 'cmi.core.lesson_status'
-    	and ae1.entryValue = 'false'
+    	and e.end_date = concat(curdate(), ' 23:59:59')
+    	and e.progress < 100
     """.map[Person](toPerson)
   }
 }
