@@ -11,10 +11,11 @@ import kornell.core.entity.InstitutionType
 class EspinafreEmailBatch {
   
   //3pm Brasilia time
-  @Schedule(minute="58", hour="23", persistent=false)
+  @Schedule(hour="18", persistent=false)
   def sendEspinafreEmailReminder() = {
     val institution = InstitutionsRepo.byType(InstitutionType.DASHBOARD).get
-    EnrollmentsRepo.getEspinafreEmailList.foreach(
+    val emailList = EnrollmentsRepo.getEspinafreEmailList
+    emailList.foreach(
         person => EmailService.sendEmailEspinafreReminder(person, institution))
   }
 }

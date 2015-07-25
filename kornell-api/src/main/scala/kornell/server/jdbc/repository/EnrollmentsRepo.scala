@@ -154,10 +154,9 @@ object EnrollmentsRepo {
     
   def getEspinafreEmailList(): List[Person] = {
     sql"""select p.* from Enrollment e 
-    	join CourseClass cc on e.class_uuid = cc.uuid
-        join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
+        join CourseVersion cv on cv.uuid = e.courseVersionUUID
     	join Person p on e.person_uuid = p.uuid
-        and cv.label = 'espinafre'
+        where cv.label = 'espinafre'
     	and p.receiveEmailCommunication = 1
     	and e.end_date = concat(curdate(), ' 23:59:59')
     	and e.progress < 100
