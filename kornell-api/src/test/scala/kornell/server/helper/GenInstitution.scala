@@ -10,7 +10,7 @@ import kornell.core.entity.InstitutionType
 trait GenInstitution extends Generator {
   
   val institution = InstitutionsRepo.create(
-      Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null)
+      Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false)
   )
   
   val institutionUUID = institution.getUUID()

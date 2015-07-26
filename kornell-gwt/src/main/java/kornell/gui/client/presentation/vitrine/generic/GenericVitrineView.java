@@ -118,7 +118,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	// TODO i18n xml
 	public GenericVitrineView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		buildFlagsPanel();
+		//buildFlagsPanel();
 		displayView(VitrineViewType.login);
 		
 		KeyPressHandler kpHandler = new KeyPressHandler() {
@@ -147,7 +147,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	private void buildFlagsPanel() {
-		if(Dean.getInstance().getInstitution().isAllowRegistrationByUsername()){
+		if(Dean.getInstance().getInstitution().isInternationalized()){
 			String locale = ClientProperties.getLocaleCookie();
 			if(locale == null){
 				locale = "pt_BR";
