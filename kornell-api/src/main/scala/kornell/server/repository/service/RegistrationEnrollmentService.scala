@@ -61,7 +61,7 @@ object RegistrationEnrollmentService {
     if(!enrollmentRequest.isCancelEnrollment){
 	    val person = enrollmentRequest.getRegistrationType match {
 	      case RegistrationType.email => PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
-	      case RegistrationType.cpf => PeopleRepo.createPersonCPF(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName)
+	      case RegistrationType.cpf => PeopleRepo.createPerson(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getEmail, enrollmentRequest.getFullName, enrollmentRequest.getUsername)
 	      case RegistrationType.username => PeopleRepo.createPersonUsername(enrollmentRequest.getInstitutionUUID, enrollmentRequest.getUsername, enrollmentRequest.getFullName, enrollmentRequest.getInstitutionRegistrationPrefixUUID)
 	    }
 	    val personRepo = PersonRepo(person.getUUID)
