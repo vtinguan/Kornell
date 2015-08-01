@@ -2,8 +2,6 @@ package kornell.scorm.client.scorm12;
 
 import static kornell.scorm.client.scorm12.Scorm12.logger;
 
-import com.google.gwt.core.shared.GWT;
-
 public class SCORM12Binder {
 
 	public static void bindToWindow(SCORM12Adapter api) {

@@ -1,19 +1,14 @@
 package kornell.scorm.client.scorm12;
 
+import static kornell.core.util.StringUtils.isSome;
 import static kornell.scorm.client.scorm12.Scorm12.logger;
-
-import org.eclipse.jetty.util.log.Log;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
-
-import static kornell.core.util.StringUtils.*;
 
 public class SCORM12Adapter implements CMIConstants {
 

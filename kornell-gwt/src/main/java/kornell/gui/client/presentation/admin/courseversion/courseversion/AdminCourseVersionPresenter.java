@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseVersion;
-import kornell.core.entity.EntityFactory;
 import kornell.core.error.KornellErrorTO;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;

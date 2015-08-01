@@ -5,23 +5,16 @@ import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClass;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
-import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
-import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;

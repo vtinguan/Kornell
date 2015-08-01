@@ -5,8 +5,6 @@ import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
-import kornell.core.entity.RoleCategory;
-import kornell.core.entity.RoleType;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;

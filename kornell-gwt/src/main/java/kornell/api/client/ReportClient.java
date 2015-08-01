@@ -1,6 +1,5 @@
 package kornell.api.client;
 
-import kornell.core.entity.Course;
 import kornell.core.to.SimplePeopleTO;
 
 

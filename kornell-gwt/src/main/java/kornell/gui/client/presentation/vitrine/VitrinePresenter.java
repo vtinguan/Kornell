@@ -27,7 +27,6 @@ import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
-import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;

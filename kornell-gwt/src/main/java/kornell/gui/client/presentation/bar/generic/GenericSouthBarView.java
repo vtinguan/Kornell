@@ -9,7 +9,6 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.Positioning;
 import kornell.gui.client.util.easing.Ease;
 import kornell.gui.client.util.easing.Transitions;

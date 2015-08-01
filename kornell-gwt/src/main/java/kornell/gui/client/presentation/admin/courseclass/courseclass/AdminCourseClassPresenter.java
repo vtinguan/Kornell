@@ -358,8 +358,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                     .trim();
             email = (enrollmentStrA.length > 2 ? enrollmentStrA[2].replace((char) 160, (char) 32).replaceAll("\\u200B", "").trim() : null);
             if (isBatchCancel) {
-                fullName.trim();
-                username.trim();
+            	fullName = fullName.trim();
+            	username = username.trim();
                 String usr;
                 EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
@@ -381,8 +381,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     }
 
     private EnrollmentRequestTO createEnrollment(String fullName, String username, String email, boolean cancelEnrollment) {
-        fullName.trim();
-        username.trim();
+    	fullName = fullName.trim();
+    	username = username.trim();
         String usr;
         EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 

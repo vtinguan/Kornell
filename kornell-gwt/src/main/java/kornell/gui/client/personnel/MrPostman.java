@@ -19,7 +19,6 @@ import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;

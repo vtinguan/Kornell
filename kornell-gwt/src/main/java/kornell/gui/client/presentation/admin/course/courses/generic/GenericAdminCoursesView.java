@@ -7,14 +7,12 @@ import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
-import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.uidget.KornellPagination;
 

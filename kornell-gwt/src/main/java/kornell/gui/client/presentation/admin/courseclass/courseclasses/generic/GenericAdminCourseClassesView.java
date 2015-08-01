@@ -14,7 +14,6 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.Gen
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
