@@ -21,6 +21,9 @@ import kornell.core.scorm12.rte.RTE
 import kornell.core.scorm12.rte.DMElement
 import kornell.server.scorm12.SCORM12
 import kornell.server.jdbc.repository.AuthRepo
+import scala.collection.mutable.ListBuffer
+import java.util.Map
+import kornell.server.jdbc.PreparedStmt
 
 class  ActomResource(enrollmentUUID: String, actomURL: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
@@ -63,6 +66,25 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   	on duplicate key update entryValue = ${entryValue}
   """.executeUpdate
 
+  //Batch version of put value using a map
+  def putValues(actomEntries: Map[String, String], modifiedAt: String) = {
+    var eventModelQuery = "insert into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) values "
+    val eventModelStrings = new ListBuffer[String] 
+    for ((key, value) <- actomEntries) {
+      eventModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "',null)") 
+    }
+    eventModelQuery += eventModelStrings.mkString(",")  
+    new PreparedStmt(eventModelQuery, List[String]()).executeUpdate
+    
+    var queryModelQuery = "insert into ActomEntries (uuid, enrollment_uuid, actomKey, entryKey, entryValue) values "
+    val queryModelStrings = new ListBuffer[String] 
+    for ((key, value) <- actomEntries) {
+      queryModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "')") 
+    }
+    queryModelQuery += queryModelStrings.mkString(",")    
+    new PreparedStmt(queryModelQuery, List[String]()).executeUpdate
+  }
+  
   @Path("entries")
   @Consumes(Array(ActomEntries.TYPE))
   @Produces(Array(ActomEntries.TYPE))

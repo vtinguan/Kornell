@@ -138,8 +138,7 @@ object RegistrationEnrollmentService {
     for (uuid <- enrolls) {
       //TODO: Support MultiSCO
       val actomResource = new ActomResource(uuid, "index.html")
-      //TODO: Consider batching this
-      actomResource.putEntries(Entities.newActomEntries(uuid, "index.html", enrollmentsJMap))  
+      actomResource.putValues(enrollmentsJMap, "")  
     }    
   }
 
