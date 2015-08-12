@@ -553,24 +553,39 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     }
 
     @Override
-    public void onModalTransferOkButtonClicked(String enrollmentUUID, String courseClassUUID) {
-        view.showModal(false, "");        
-        session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
-        .fire(new Callback<Void>() {
-            @Override
-            public void ok(Void to) {
-                LoadingPopup.hide();
-                getEnrollments(Dean.getInstance().getCourseClassTO()
-                        .getCourseClass().getUUID());
-                view.setCanPerformEnrollmentAction(true);
-                KornellNotification.show("Usuário transferido com sucesso.", 2000);
-            }
-            @Override
-            protected void conflict(KornellErrorTO kornellErrorTO) {
-            	KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR);
-            }
-        });
-
+    public void onModalTransferOkButtonClicked(final String enrollmentUUID, final String courseClassUUID) {
+    	session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, new Callback<EnrollmentsTO>() {
+    		@Override
+    		public void ok(final EnrollmentsTO enrollmentsTO) {
+    			session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {
+    				@Override
+    				public void ok(CourseClassTO courseClassTO) {
+    					if ((enrollmentsTO.getEnrollmentTOs().size() + 1) > courseClassTO.getCourseClass().getMaxEnrollments()) {
+    	    	    		KornellNotification
+    	    	            .show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
+    	    	                    AlertType.ERROR, 5000);
+    	    	    	} else {
+    	    	    		view.showModal(false, "");  
+    	    	            session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
+    	    	            .fire(new Callback<Void>() {
+    	    	                @Override
+    	    	                public void ok(Void to) {
+    	    	                    LoadingPopup.hide();
+    	    	                    getEnrollments(Dean.getInstance().getCourseClassTO()
+    	    	                            .getCourseClass().getUUID());
+    	    	                    view.setCanPerformEnrollmentAction(true);
+    	    	                    KornellNotification.show("Usuário transferido com sucesso.", 2000);
+    	    	                }
+    	    	                @Override
+    	    	                protected void conflict(KornellErrorTO kornellErrorTO) {
+    	    	                	KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR);
+    	    	                }
+    	    	            });
+    	    	    	}
+    				}
+				});
+    		}
+		});
     }
 
     @Override
