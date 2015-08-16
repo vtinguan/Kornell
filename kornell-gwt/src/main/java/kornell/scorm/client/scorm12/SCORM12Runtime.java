@@ -42,7 +42,7 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 	@Override
 	public void onActomEntered(ActomEnteredEvent event) {
 		logger.info("Loading [enrollmentUUID:"+event.getEnrollmentUUID()+"][actomKey:"+event.getActomKey()+"]");
-		if (currentAPI != null) currentAPI.runtimeSync();
+		if (currentAPI != null) currentAPI.onActomEntered();
 		bindNewAdapter(event.getEnrollmentUUID(),event.getActomKey());
 	}
 

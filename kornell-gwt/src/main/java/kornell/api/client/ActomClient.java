@@ -25,15 +25,17 @@ public class ActomClient extends RESTClient {
 		assert(isSome(encodedActomKey));
 	}
 
-	public void put(Map<String, String> entries, Callback<ActomEntries> callback) {
+	public void put(Map<String, String> entries, String cause,Callback<ActomEntries> callback) {
 		ActomEntries actomEntries = entityFactory.newActomEntries().as();
 		actomEntries.setActomKey(encodedActomKey);
 		actomEntries.setEnrollmentUUID(enrollmentUUID);
 		actomEntries.setEntries(entries);
 		actomEntries.setLastModifiedAt(ClientTime.now());
+		String debug = "Entries PUT caused by: \n"+cause;
 		PUT("enrollments", enrollmentUUID, "actoms", encodedActomKey, "entries")
 				.withContentType(ActomEntries.TYPE)
 				.withEntityBody(actomEntries)
+				.addHeader("X-KNL-DEBUG", debug )						
 				.go(callback);
 	}
 

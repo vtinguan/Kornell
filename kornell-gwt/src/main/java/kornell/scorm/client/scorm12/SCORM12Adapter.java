@@ -86,7 +86,7 @@ public class SCORM12Adapter implements CMIConstants {
 	}
 
 	private void syncOnLMSCommit() {
-		sync(enrollmentUUID,actomKey);
+		sync(enrollmentUUID,actomKey,"syncOnLMSCommit");
 	}
 
 	public String LMSSetDouble(String key, Double value, String moduleUUID) {
@@ -130,18 +130,18 @@ public class SCORM12Adapter implements CMIConstants {
 			}
 
 			private void syncAfterSet(String moduleUUID,String moduleActomKey) {
-				sync(moduleUUID,moduleActomKey);
+				sync(moduleUUID,moduleActomKey,"scheduledSync");
 			}
 		}).schedule(DIRTY_TOLERANCE);
 	}
 
 	
-	public void runtimeSync() {
-		sync(enrollmentUUID,actomKey);
+	public void onActomEntered() {
+		sync(enrollmentUUID,actomKey,"onActomEntered");
 	}
 	
 
-	private void sync(final String syncEnrollmentUUID,final String syncActomKey) {
+	private void sync(final String syncEnrollmentUUID,final String syncActomKey, final String syncCause) {
 		class Scrub extends Callback<ActomEntries> {
 			@Override
 			public void ok(ActomEntries to) {
@@ -154,7 +154,7 @@ public class SCORM12Adapter implements CMIConstants {
 			//GWT.debugger();
 			client.enrollment(syncEnrollmentUUID)
 				  .actom(syncActomKey)
-				  .put(CMITree.collectDirty(dataModel), new Scrub());
+				  .put(CMITree.collectDirty(dataModel), syncCause, new Scrub());
 		}
 	}
 
