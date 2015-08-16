@@ -127,12 +127,12 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 				@Override
 				public void onClick(ClickEvent event) {
 					KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
-					CourseClass courseClass = currentCourseClass != null ? currentCourseClass.getCourseClass() : null;					
-					UserInfoTO currentUser = session.getCurrentUser();
+					CourseClass courseClass = currentCourseClass != null ? currentCourseClass.getCourseClass() : null;			
+					String apiURL = session != null ? session.getApiUrl() : null;		
+					UserInfoTO currentUser = session != null ? session.getCurrentUser() : null;
 					Person person = currentUser != null? currentUser.getPerson() : null;
 					String personUUID = person != null ? person.getUUID() : null;
 					String courseClassUUID = courseClass != null ? courseClass.getUUID() : null;
-					String apiURL = session != null ? session.getApiUrl() : null;
 					
 					if (noneEmpty(apiURL,personUUID,courseClassUUID)){
 						String url = mkurl(apiURL,

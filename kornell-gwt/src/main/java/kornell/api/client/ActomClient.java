@@ -1,12 +1,11 @@
 package kornell.api.client;
 
-import java.util.Map;
+import static kornell.core.util.StringUtils.isSome;
 
-import org.eclipse.jetty.util.StringUtil;
+import java.util.Map;
 
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.EntityFactory;
-import static kornell.core.util.StringUtils.*;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.URL;

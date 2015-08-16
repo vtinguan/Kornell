@@ -5,8 +5,8 @@ import kornell.core.entity.EntityFactory;
 import com.google.gwt.core.shared.GWT;
 
 
-public class Entities extends kornell.core.entity.Entities{
-	private static final Entities instance = new Entities();
+public class EntitiesC extends kornell.core.entity.Entities{
+	private static final EntitiesC instance = new EntitiesC();
 	private static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
 	
 	@Override
@@ -14,7 +14,7 @@ public class Entities extends kornell.core.entity.Entities{
 		return entityFactory;
 	}
 
-	public static Entities get() {
+	public static EntitiesC get() {
 		return instance;
 	}
 

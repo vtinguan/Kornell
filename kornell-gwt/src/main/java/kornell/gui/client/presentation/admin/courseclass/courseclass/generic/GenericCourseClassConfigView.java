@@ -60,6 +60,8 @@ public class GenericCourseClassConfigView extends Composite {
     private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
     private static final String MODAL_INVISIBLE = "invisible";
     private static final String MODAL_ALLOW_BATCH_CANCELLATION = "allowBatchCancellation";
+    private static final String MODAL_COURSE_CLASS_CHAT_ENABLED = "courseClassChatEnabled";
+    private static final String MODAL_TUTOR_CHAT_ENABLED = "tutorChatEnabled";
 
     private KornellSession session;
     private FormHelper formHelper = GWT.create(FormHelper.class);
@@ -95,7 +97,7 @@ public class GenericCourseClassConfigView extends Composite {
     private CourseClassTO courseClassTO;
     private CourseClass courseClass;
     private KornellFormFieldWrapper course, courseVersion, name, publicClass,
-    requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible, allowBatchCancellation;
+    requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible, allowBatchCancellation, courseClassChatEnabled, tutorChatEnabled;
     private List<KornellFormFieldWrapper> fields;
     private String modalMode;
     private ListBox institutionRegistrationPrefixes;
@@ -229,6 +231,36 @@ public class GenericCourseClassConfigView extends Composite {
             }
         });
 
+        
+        Boolean isCourseClassChatEnabled = courseClass.isCourseClassChatEnabled() == null ? false : courseClass.isCourseClassChatEnabled();
+        courseClassChatEnabled = new KornellFormFieldWrapper("Permitir chat global da turma?", formHelper.createCheckBoxFormField(isCourseClassChatEnabled), isInstitutionAdmin);
+        fields.add(courseClassChatEnabled);
+        profileFields.add(courseClassChatEnabled);
+        ((CheckBox)courseClassChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if(event.getValue()){
+                    showModal(MODAL_COURSE_CLASS_CHAT_ENABLED);
+                    ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(false);
+                }
+            }
+        });
+
+        
+        Boolean isTutorChatEnabled = courseClass.isTutorChatEnabled() == null ? false : courseClass.isTutorChatEnabled();
+        tutorChatEnabled = new KornellFormFieldWrapper("Permitir tutoria da turma?", formHelper.createCheckBoxFormField(isTutorChatEnabled), isInstitutionAdmin);
+        fields.add(tutorChatEnabled);
+        profileFields.add(tutorChatEnabled);
+        ((CheckBox)tutorChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if(event.getValue()){
+                    showModal(MODAL_TUTOR_CHAT_ENABLED);
+                    ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(false);
+                }
+            }
+        });
+        
 
         final ListBox registrationTypes = new ListBox();
         registrationTypes.addItem("Email", RegistrationType.email.toString());
@@ -395,6 +427,8 @@ public class GenericCourseClassConfigView extends Composite {
         courseClass.setOverrideEnrollments(overrideEnrollments.getFieldPersistText().equals("true"));
         courseClass.setInvisible(invisible.getFieldPersistText().equals("true"));
         courseClass.setAllowBatchCancellation(allowBatchCancellation != null ? allowBatchCancellation.getFieldPersistText().equals("true") : false);
+        courseClass.setCourseClassChatEnabled(courseClassChatEnabled != null ? courseClassChatEnabled.getFieldPersistText().equals("true") : false);
+        courseClass.setTutorChatEnabled(tutorChatEnabled != null ? tutorChatEnabled.getFieldPersistText().equals("true") : false);
         courseClass.setRegistrationType(RegistrationType.valueOf(registrationType.getFieldPersistText()));
         if(allowPrefixEdit) {
             courseClass.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefix.getFieldPersistText());
@@ -436,6 +470,10 @@ public class GenericCourseClassConfigView extends Composite {
             confirmText.setText("ATENÇÃO! Tem certeza que deseja tornar esta turma invisível? Nenhum participante que esteja matriculado poderá ver essa turma, nem será capaz de gerar o certificado caso tenha sido aprovado.");
         } else if (MODAL_ALLOW_BATCH_CANCELLATION.equals(modalMode)){
             confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir o cancelamento em lote de matrículas? Um novo botão aparecerá na tela de matrículas, e qualquer administrador poderá cancelar uma lista de matrículas.");
+        } else if (MODAL_COURSE_CLASS_CHAT_ENABLED.equals(modalMode)){
+            confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir a criação do chat global da turma? Um novo botão aparecerá na tela de detalhes do curso para os participantes, e todos os participantes da turma poderão conversar entre si.");
+        } else if (MODAL_TUTOR_CHAT_ENABLED.equals(modalMode)){
+            confirmText.setText("ATENÇÃO! Tem certeza que deseja permitir a criação de chats de tutoria na turma? Um novo botão aparecerá na tela de detalhes do curso para os participantes, e todos os participantes da turma poderão iniciar uma conversa com um tutor. Não se esqueça de configurar o(s) tutor(es)!");
         }
         confirmModal.show();
     }
@@ -456,6 +494,10 @@ public class GenericCourseClassConfigView extends Composite {
             ((CheckBox)publicClass.getFieldWidget()).setValue(false);
         } else if (MODAL_ALLOW_BATCH_CANCELLATION.equals(modalMode)){
             ((CheckBox)allowBatchCancellation.getFieldWidget()).setValue(true);
+        } else if (MODAL_COURSE_CLASS_CHAT_ENABLED.equals(modalMode)){
+            ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(true);
+        } else if (MODAL_TUTOR_CHAT_ENABLED.equals(modalMode)){
+            ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(true);
         }
         confirmModal.hide();
     }

@@ -2,11 +2,16 @@ package kornell.gui.client.presentation.vitrine.generic;
 
 import static kornell.core.util.StringUtils.composeURL;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.VitrineViewType;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.Form;
@@ -22,10 +27,12 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenericVitrineView extends Composite implements VitrineView {
@@ -33,12 +40,16 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private VitrineView.Presenter presenter;
 	private VitrineViewType currentViewType = VitrineViewType.login;
 	private String registrationEmail;
 
 	@UiField
 	FlowPanel vitrineWrapper;
+	
+	@UiField
+	FlowPanel flagWrapper;
 	
 	@UiField
 	Image imgLogo;
@@ -107,6 +118,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	// TODO i18n xml
 	public GenericVitrineView() {
 		initWidget(uiBinder.createAndBindUi(this));
+		//buildFlagsPanel();
 		displayView(VitrineViewType.login);
 		
 		KeyPressHandler kpHandler = new KeyPressHandler() {
@@ -132,6 +144,63 @@ public class GenericVitrineView extends Composite implements VitrineView {
 		
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");
+	}
+
+	private void buildFlagsPanel() {
+		if(Dean.getInstance().getInstitution().isInternationalized()){
+			String locale = ClientProperties.getLocaleCookie();
+			if(locale == null){
+				locale = "pt_BR";
+			}
+			Map<String, String> localeToFlagsImage = new HashMap<String, String>();
+			localeToFlagsImage.put("pt_BR", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-br\" alt=\"BR\" title=\"Português\"/>");
+			localeToFlagsImage.put("en", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-gb\" alt=\"EN\" title=\"English\" />");
+			localeToFlagsImage.put("fr", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-fr\" alt=\"FR\" title=\"Français\" />");
+			localeToFlagsImage.put("es", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-es\" alt=\"ES\" title=\"Español\" />");
+	
+			Map<String, Command> localeToCommand = new HashMap<String, Command>();
+			localeToCommand.put("pt_BR", new Command() {
+			      public void execute() {
+			    	  	ClientProperties.setLocaleCookie("pt_BR");
+				      }
+				    });
+			localeToCommand.put("en", new Command() {
+			      public void execute() {
+			    	  	ClientProperties.setLocaleCookie("en");
+				      }
+				    });
+			localeToCommand.put("fr", new Command() {
+			      public void execute() {
+			    	  	ClientProperties.setLocaleCookie("fr");
+				      }
+				    });
+			localeToCommand.put("es", new Command() {
+			      public void execute() {
+			    	  	ClientProperties.setLocaleCookie("es");
+				      }
+				    });
+	
+		    MenuBar flagBar = new MenuBar(false);
+		    
+		    Iterator<Map.Entry<String, String>> entries = localeToFlagsImage.entrySet().iterator();
+		    while (entries.hasNext()) {
+		        Map.Entry<String, String> entry = entries.next();
+		        if(!entry.getKey().equals(locale)){
+		        	flagBar.addItem(entry.getValue(), true, localeToCommand.get(entry.getKey()));
+		        }
+		    }
+	    	flagBar.addItem("<span class=\"flagPopupText\">"+constants.selectLanguage()+"</span>", true, new Command() {
+			      public void execute() {
+				      }
+				    });
+		    
+		    
+		    MenuBar topBar = new MenuBar(true);
+		    topBar.setAutoOpen(true);
+		    topBar.setAnimationEnabled(true);
+		    topBar.addItem(localeToFlagsImage.get(locale), true, flagBar);
+		    flagWrapper.add(topBar);
+		}
 	}
 
 	@Override

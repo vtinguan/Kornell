@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.eclipse.jetty.util.log.Log;
-
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.EnrollmentEntries;
@@ -15,7 +13,6 @@ import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 

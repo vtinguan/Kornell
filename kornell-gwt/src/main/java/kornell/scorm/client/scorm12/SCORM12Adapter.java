@@ -1,19 +1,14 @@
 package kornell.scorm.client.scorm12;
 
+import static kornell.core.util.StringUtils.isSome;
 import static kornell.scorm.client.scorm12.Scorm12.logger;
-
-import org.eclipse.jetty.util.log.Log;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
-
-import static kornell.core.util.StringUtils.*;
 
 public class SCORM12Adapter implements CMIConstants {
 
@@ -35,7 +30,6 @@ public class SCORM12Adapter implements CMIConstants {
 	private String actomKey;
 
 	// State
-	//private CMITree dataModel = new CMINode();
 	private String lastError = NoError;
 
 	// UI/Client
@@ -157,23 +151,11 @@ public class SCORM12Adapter implements CMIConstants {
 		}
 		CMITree dataModel = getDataModel(syncEnrollmentUUID,syncActomKey);		
 		if (dataModel != null && dataModel.isDirty()) {
+			//GWT.debugger();
 			client.enrollment(syncEnrollmentUUID)
 				  .actom(syncActomKey)
 				  .put(CMITree.collectDirty(dataModel), new Scrub());
 		}
 	}
-	/*
-	 * @Override public void onActomEntered(ActomEnteredEvent event) {
-	 * logger.finer("ActomEntered [" + event.getActomKey() + "]");
-	 * refreshDataModel(event); }
-	 * 
-	 * 
-	 * private void refreshDataModel(ActomEnteredEvent event) {
-	 * syncBeforeLoadinNewActom(); this.currentActomKey = event.getActomKey();
-	 * this.currentEnrollmentUUID = event.getEnrollmentUUID(); loadDataModel();
-	 * }
-	 * 
-	 * private void syncBeforeLoadinNewActom() { sync(); }
-	 */
 
 }

@@ -75,7 +75,7 @@ public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter
 				@Override
 				public void conflict(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO), AlertType.ERROR, 2500);
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 2500);
 				}
 			});
   }

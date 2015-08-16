@@ -17,15 +17,18 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.scorm.client.scorm12.SCORM12Runtime;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -60,10 +63,13 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		}
 		
 		view.asWidget().setVisible(false);
-		LoadingPopup.show();				
+		LoadingPopup.show();			
+		
+		final PopupPanel popup = KornellNotification.show("Carregando o curso... Esta operação pode levar alguns segundos.", AlertType.INFO, -1);
 		session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
 			
 			public void ok(EnrollmentLaunchTO to) {
+				popup.hide();
 				loadRuntime(to.getEnrollmentEntries());
 				loadContents(enrollmentUUID,to.getContents());
 			};

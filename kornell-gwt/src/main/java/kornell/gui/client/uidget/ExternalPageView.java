@@ -8,7 +8,6 @@ import kornell.core.lom.ExternalPage;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
@@ -17,7 +16,6 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;

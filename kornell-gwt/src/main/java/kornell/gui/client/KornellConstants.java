@@ -1,14 +1,64 @@
 package kornell.gui.client;
 
-import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.i18n.client.ConstantsWithLookup;
 
-public interface KornellConstants extends Constants {
+public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("skins/first/icons/")
 	String imagesPath();
 	
 	@DefaultStringValue("Loading...")
 	String loading();
+
+	/**
+	 * VitrinePlace
+	 */
+	
+	@DefaultStringValue("Select a language")
+	String selectLanguage();
+	
+	@DefaultStringValue("Invalid username or password, please try again.")
+	String badUsernamePassword();
+	
+	@DefaultStringValue("Your name must be at least 2 characters long.")
+	String nameTooShort();
+
+	@DefaultStringValue("Invalid email address.")
+	String invalidEmail();
+	
+	@DefaultStringValue("Your password must be at least 6 characters long")
+	String invalidPasswordTooShort();
+	
+	@DefaultStringValue("Your password contains invalid characters.")
+	String invalidPasswordBadChar();
+	
+	@DefaultStringValue("Your passwords don't match.")
+	String passwordMismatch();
+	
+	@DefaultStringValue("User created successfully.")
+	String userCreated();
+	
+	@DefaultStringValue("Email address already exists.")
+	String emailExists();
+	
+	@DefaultStringValue("Request completed. Please check your email.")
+	String requestPasswordReset();
+	
+	@DefaultStringValue("The request was not successful. Please check that the email was entered correctly.")
+	String requestPasswordResetError();
+	
+	@DefaultStringValue("Password changed successfully.")
+	String passwordChangeComplete();
+	
+	@DefaultStringValue("We could not update your password. Please check your email or make another request.")
+	String passwordChangeError();
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 
@@ -21,66 +71,13 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("Finished")
 	String finished();
 
-	@DefaultStringValue("To acquire")
-	String toAcquire();
-
 	@DefaultStringValue("To start")
 	String toStart();
 
 	@DefaultStringValue("In progress")
 	String inProgress();
 
-	@DefaultStringValue("Select a class below:")
-	String selectClassBelow();
-
 	
-
-
-	/**
-	 * 
-	 * GenericMenuLeftItemView
-	 * 
-	 */
-	@DefaultStringValue(":")
-	String colon();
-
-	@DefaultStringValue("Network Activities")
-	String networkActivities();
-
-	@DefaultStringValue("Messages")
-	String messages();
-
-	@DefaultStringValue("Forums")
-	String forums();
-
-	@DefaultStringValue("Complete")
-	String complete();
-
-	@DefaultStringValue("Courses")
-	String courses();
-
-	@DefaultStringValue("Notifications")
-	String notifications();
-
-	@DefaultStringValue("My Participation")
-	String myParticipation();
-
-	@DefaultStringValue("Profile")
-	String profile();
-
-
-
-	/**
-	 * 
-	 * GenericCourseSummaryView
-	 * 
-	 */
-	@DefaultStringValue("Course finished.")
-	String courseFinished();
-	@DefaultStringValue("Certificate")
-	String certificate();
-
-
 
 	/**
 	 * 
@@ -101,6 +98,12 @@ public interface KornellConstants extends Constants {
 	
 	@DefaultStringValue("Certification")
 	String btnCertification();
+	
+	@DefaultStringValue("Chat")
+	String btnChat();
+	
+	@DefaultStringValue("Tutoring")
+	String btnTutor();
 	
 	@DefaultStringValue("Library")
 	String btnLibrary();
@@ -159,14 +162,15 @@ public interface KornellConstants extends Constants {
 	@DefaultStringValue("institution")
 	String institution();
 	
+	@DefaultStringValue("courses")
+	String courses();
+	
 	@DefaultStringValue("versions")
 	String versions();
 	
 	@DefaultStringValue("classes")
 	String classes();
-
 	
-
 	/**
 	 * 
 	 * Util
@@ -240,7 +244,6 @@ public interface KornellConstants extends Constants {
 	/**
 	 * Errors 404
 	 */
-	
 	@DefaultStringValue("Person not found.")
 	String personNotFound();
 	@DefaultStringValue("Repository not found.")
@@ -282,7 +285,8 @@ public interface KornellConstants extends Constants {
 	String invalidValue();
 	@DefaultStringValue("Constraint Violated (uuid or name).")
 	String constraintViolatedUUIDName();
-	
+	@DefaultStringValue("User is already enrolled on the selected class.")
+	String userAlreadyEnrolledInClass();
 	
 	/**
 	 * Errors 500

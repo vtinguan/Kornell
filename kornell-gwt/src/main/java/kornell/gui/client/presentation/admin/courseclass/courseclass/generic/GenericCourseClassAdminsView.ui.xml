@@ -14,7 +14,7 @@
 			</b:Form>		
 		</g:FlowPanel>
 	
-		<g:FlowPanel addStyleNames="courseClassAdmins shy">
+		<g:FlowPanel addStyleNames="courseClassAdmins">
 	        <g:HTMLPanel addStyleNames="title">Editar Tutores da Turma</g:HTMLPanel>
 	        <g:Label addStyleNames="subTitle">Escolha na lista abaixo os tutores desta turma. Os tutores da turma tem acesso às mensagens de ajuda da turma e às mensagens de tutoria. Eles podem gerar relatórios, mas não podem alterar as matrículas nem as configurações da turma.</g:Label>
 	        <b:Form ui:field="tutorsForm" addStyleNames="profileForm">

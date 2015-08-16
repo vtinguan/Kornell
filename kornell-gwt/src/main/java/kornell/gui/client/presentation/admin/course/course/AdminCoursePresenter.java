@@ -85,7 +85,7 @@ public class AdminCoursePresenter implements AdminCourseView.Presenter {
 				@Override
 				public void unauthorized(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO), AlertType.ERROR, 2500);
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 2500);
 				}
 			});
 		} else {
@@ -100,7 +100,7 @@ public class AdminCoursePresenter implements AdminCourseView.Presenter {
 				@Override
 				public void unauthorized(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO), AlertType.ERROR, 2500);
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 2500);
 				}
 			});
 		}

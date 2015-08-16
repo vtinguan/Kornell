@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 import kornell.api.client.KornellSession;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.message.MessagePresenter;
 
 import com.google.gwt.core.client.GWT;
@@ -41,18 +42,18 @@ public class GenericCourseClassMessagesView extends Composite {
 
 	public void initData() {
 		messagesPanel.setVisible(false);
-		messagesPanel.add(getReportPanel());
+		messagesPanel.add(getPanel());
 		messagesPanel.setVisible(true);
 
 	}
 
-	private FlowPanel getReportPanel() {
-		FlowPanel reportPanel = new FlowPanel();
-		reportPanel.addStyleName("reportPanel");
-		reportPanel.add(getMessagesInfo());
-		reportPanel.add(getMessagesContent());
-
-		return reportPanel;
+	private FlowPanel getPanel() {
+		FlowPanel panel = new FlowPanel();
+		panel.addStyleName("reportPanel");
+		if(placeCtrl.getWhere() instanceof AdminCourseClassPlace)
+			panel.add(getMessagesInfo());
+		panel.add(getMessagesContent());
+		return panel;
 	}
 
 	private FlowPanel getMessagesInfo() {

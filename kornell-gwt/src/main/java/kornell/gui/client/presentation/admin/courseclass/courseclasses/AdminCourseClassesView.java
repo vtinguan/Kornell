@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.admin.courseclass.courseclasses;
 
 import java.util.List;
 
-import kornell.core.entity.CourseClass;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.presentation.admin.PaginationPresenter;
 

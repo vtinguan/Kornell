@@ -64,7 +64,8 @@ package object repository {
         rs.getString("skin"),
         BillingType.valueOf(rs.getString("billingType")),
         InstitutionType.valueOf(rs.getString("institutionType")),
-        rs.getString("dashboardVersionUUID"))
+        rs.getString("dashboardVersionUUID"),
+        rs.getBoolean("internationalized"))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
@@ -76,7 +77,7 @@ package object repository {
         CourseClassState.valueOf(r.getString("state")), 
         RegistrationType.valueOf(r.getString("registrationType")),
         r.getString("institutionRegistrationPrefixUUID"), r.getBoolean("courseClassChatEnabled"), 
-        r.getBoolean("allowBatchCancellation")) 
+        r.getBoolean("allowBatchCancellation"),  r.getBoolean("tutorChatEnabled")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -136,7 +137,8 @@ package object repository {
 			RegistrationType.valueOf(rs.getString("registrationType")),
 			rs.getString("institutionRegistrationPrefixUUID"),
 			rs.getBoolean("courseClassChatEnabled"),
-			rs.getBoolean("allowBatchCancellation"));
+			rs.getBoolean("allowBatchCancellation"),  
+			rs.getBoolean("tutorChatEnabled"))
     		
     TOs.newCourseClassTO(course, version, clazz, rs.getString("institutionRegistrationPrefixName"))
   }
@@ -186,7 +188,9 @@ package object repository {
       rs.getString("courseVersionUUID"),
       rs.getString("parentEnrollmentUUID"),
       rs.getDate("start_date"),
-      rs.getDate("end_date")
+      rs.getDate("end_date"),
+      rs.getBigDecimal("preAssessmentScore"),
+      rs.getBigDecimal("postAssessmentScore")
     )
   }
     
@@ -273,9 +277,10 @@ package object repository {
 	implicit def toUnreadChatThreadTO(rs:ResultSet):UnreadChatThreadTO = newUnreadChatThreadTO(
 	    rs.getString("unreadMessages"),
 	    rs.getString("chatThreadUUID"), 
-	    rs.getString("chatThreadName"),
-	    rs.getString("courseClassUUID"),
-	    rs.getString("threadType"))
+	    rs.getString("threadType"),
+	    rs.getString("creatorName"),
+	    rs.getString("entityUUID"),
+	    rs.getString("entityName"))
 	
 	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
 	    rs.getString("senderFullName"),

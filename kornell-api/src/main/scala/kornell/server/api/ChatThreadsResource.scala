@@ -27,12 +27,13 @@ import kornell.server.jdbc.repository.PersonRepo
 class ChatThreadsResource {
   
   @POST
-  @Path("courseClass/{courseClassUUID}")
+  @Path("courseClass/{courseClassUUID}/support")
   @Produces(Array("text/plain"))
   def postMessageToCourseClassSupportThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
   		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.SUPPORT)
+  		ChatThreadsRepo.getCourseClassChatThreadUUID(person.getUUID, courseClassUUID: String, ChatThreadType.SUPPORT).get
   }
   
   @POST
@@ -42,6 +43,7 @@ class ChatThreadsResource {
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
         ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.TUTORING)
+  		ChatThreadsRepo.getCourseClassChatThreadUUID(person.getUUID, courseClassUUID: String, ChatThreadType.TUTORING).get
   }
   
   @POST

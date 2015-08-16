@@ -162,7 +162,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		});
 		
 		btnSendMessage = new Button();
-		btnSendMessage.setVisible(false);
+		btnSendMessage.setVisible(true);
 		btnSendMessage.setText("Enviar Mensagem");
 		btnSendMessage.addStyleName("btnPlaceBar btnNotSelected btnChangePassword");
 		btnSendMessage.addClickHandler(new ClickHandler() {
@@ -379,12 +379,6 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
 		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
-		if(RegistrationType.username.equals(user.getPerson().getRegistrationType())){
-			InstitutionRegistrationPrefix institutionRegistrationPrefix = user.getInstitutionRegistrationPrefix(); 
-			showEmail = institutionRegistrationPrefix.isShowEmailOnProfile();
-			showCPF = institutionRegistrationPrefix.isShowCPFOnProfile();
-			showContactDetails = showContactDetails && institutionRegistrationPrefix.isShowContactInformationOnProfile();
-		}
 
 		form.addStyleName("shy");
 		
@@ -399,6 +393,13 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			KornellNotification.show("Usuário não encontrado.", AlertType.ERROR);
 			return;
 		} 
+		
+		if(RegistrationType.username.equals(user.getPerson().getRegistrationType())){
+			InstitutionRegistrationPrefix institutionRegistrationPrefix = user.getInstitutionRegistrationPrefix(); 
+			showEmail = institutionRegistrationPrefix.isShowEmailOnProfile();
+			showCPF = institutionRegistrationPrefix.isShowCPFOnProfile();
+			showContactDetails = showContactDetails && institutionRegistrationPrefix.isShowContactInformationOnProfile();
+		}
 				
 		if(isEditMode && showContactDetails && validateContactDetails && session.getCurrentUser().getPerson().getCity() == null){
 			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO, 5000);

@@ -5,8 +5,12 @@ import kornell.core.to.UnreadChatThreadsTO;
 
 public class ChatThreadsClient extends RESTClient {
 
-	public void postMessageToCourseClassThread(String message, String courseClassUUID, Callback<Void> callback) {
-		POST("/chatThreads/courseClass/" + courseClassUUID).sendRequest(message, callback);
+	public void postMessageToSupportCourseClassThread(String message, String courseClassUUID, Callback<String> callback) {
+		POST("/chatThreads/courseClass/" + courseClassUUID + "/support").sendRequest(message, callback);
+	}
+
+	public void postMessageToTutoringCourseClassThread(String message, String courseClassUUID, Callback<String> callback) {
+		POST("/chatThreads/courseClass/" + courseClassUUID + "/tutoring").sendRequest(message, callback);
 	}
 	
 	public void postMessageToDirectThread(String message, String personUUID, Callback<Void> callback) {

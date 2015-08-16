@@ -34,7 +34,7 @@ object CourseClassesRepo {
 	      courseClass.setUUID(UUID.random)
 	    }
 	    sql""" 
-	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, allowBatchCancellation)
+	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, allowBatchCancellation, tutorChatEnabled)
 	    	values(${courseClass.getUUID},
 	             ${courseClass.getName},
 	             ${courseClass.getCourseVersionUUID},
@@ -49,8 +49,10 @@ object CourseClassesRepo {
 	             ${courseClass.getRegistrationType.toString},
 	             ${courseClass.getInstitutionRegistrationPrefixUUID},
 	             ${courseClass.isCourseClassChatEnabled},
-	             ${courseClass.isAllowBatchCancellation})
+	             ${courseClass.isAllowBatchCancellation},
+	             ${courseClass.isTutorChatEnabled})
 	    """.executeUpdate
+	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    courseClass
     } else {
       throw new EntityConflictException("courseClassAlreadyExists")
@@ -108,6 +110,7 @@ object CourseClassesRepo {
 		  		cc.institutionRegistrationPrefixUUID as institutionRegistrationPrefixUUID, 
 		  		cc.courseClassChatEnabled as courseClassChatEnabled, 
 		  		cc.allowBatchCancellation as allowBatchCancellation, 
+		  		cc.tutorChatEnabled as tutorChatEnabled, 
       			irp.name as institutionRegistrationPrefixName
 			from Course c
 				join CourseVersion cv on cv.course_uuid = c.uuid

@@ -223,7 +223,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                         LoadingPopup.hide();
                         KornellNotification.show("Erro ao tentar excluir a turma.", AlertType.ERROR);
                         logger.severe(this.getClass().getName() + " - "
-                                + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
+                                + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
                     }
                 });
 
@@ -264,7 +264,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             username = FormHelper.stripCPF(username);
         }
         batchEnrollments = new ArrayList<EnrollmentRequestTO>();
-        batchEnrollments.add(createEnrollment(fullName, username, false));
+        batchEnrollments.add(createEnrollment(fullName, username, null, false));
         if (!formHelper.isLengthValid(fullName, 2, 50)) {
             KornellNotification.show("O nome deve ter no mínimo 2 caracteres.", AlertType.ERROR);
         } else if (!isUsernameValid(username)) {
@@ -334,7 +334,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                 @Override
                 public void unauthorized(KornellErrorTO kornellErrorTO) {
                     logger.severe("Error AdminHomePresenter: "
-                            + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
+                            + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
                     KornellNotification.show("Erro ao cancelar matrícula(s).", AlertType.ERROR, 2500);
                     LoadingPopup.hide();
                 }
@@ -344,7 +344,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
     private void populateEnrollmentsList(String txtAddEnrollmentBatch, boolean isBatchCancel) {
         String[] enrollmentsA = txtAddEnrollmentBatch.split("\n");
-        String fullName, username;
+        String fullName, username, email;
         String[] enrollmentStrA;
         batchEnrollments = new ArrayList<EnrollmentRequestTO>();
         batchEnrollmentErrors = "";
@@ -356,9 +356,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             fullName = (enrollmentStrA.length > 1 ? enrollmentStrA[0] : "");
             username = (enrollmentStrA.length > 1 ? enrollmentStrA[1] : enrollmentStrA[0]).replace((char) 160, (char) 32).replaceAll("\\u200B", "")
                     .trim();
+            email = (enrollmentStrA.length > 2 ? enrollmentStrA[2].replace((char) 160, (char) 32).replaceAll("\\u200B", "").trim() : null);
             if (isBatchCancel) {
-                fullName.trim();
-                username.trim();
+            	fullName = fullName.trim();
+            	username = username.trim();
                 String usr;
                 EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
@@ -371,17 +372,17 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
                 enrollmentRequestTO.setUsername(username);
                 batchEnrollments.add(enrollmentRequestTO);
-            } else if (isUsernameValid(username)) {            
-                batchEnrollments.add(createEnrollment(fullName, username, false));
+            } else if (isUsernameValid(username) && (email == null || FormHelper.isEmailValid(email))) {
+                batchEnrollments.add(createEnrollment(fullName, username, email, false));
             } else {
                 batchEnrollmentErrors += enrollmentsA[i] + "\n";
             }
         }
     }
 
-    private EnrollmentRequestTO createEnrollment(String fullName, String username, boolean cancelEnrollment) {
-        fullName.trim();
-        username.trim();
+    private EnrollmentRequestTO createEnrollment(String fullName, String username, String email, boolean cancelEnrollment) {
+    	fullName = fullName.trim();
+    	username = username.trim();
         String usr;
         EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
@@ -403,6 +404,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             usr = FormHelper.stripCPF(username);
             enrollmentRequestTO.setUsername(usr);
             enrollmentRequestTO.setPassword(usr);
+            enrollmentRequestTO.setEmail(email);
             break;
         case username:
             usr = !cancelEnrollment && username.indexOf(FormHelper.USERNAME_SEPARATOR) == -1 ? Dean.getInstance().getCourseClassTO()
@@ -493,7 +495,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         if (confirmedEnrollmentsModal && enrollmentsToOverride != null && enrollmentsToOverride.size() > 0) {
             for (SimplePersonTO simplePersonTO : enrollmentsToOverride) {
                 EnrollmentRequestTO enrollmentRequestTO = createEnrollment(simplePersonTO.getFullName(),
-                        simplePersonTO.getUsername(), true);
+                        simplePersonTO.getUsername(), null, true);
                 enrollmentRequestsTO.getEnrollmentRequests().add(enrollmentRequestTO);
             }
 
@@ -533,7 +535,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                 @Override
                 public void unauthorized(KornellErrorTO kornellErrorTO) {
                     logger.severe("Error AdminHomePresenter: "
-                            + KornellConstantsHelper.getUnauthorizedMessage(kornellErrorTO));
+                            + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
                     KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
                     LoadingPopup.hide();
                 }
@@ -551,20 +553,39 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     }
 
     @Override
-    public void onModalTransferOkButtonClicked(String enrollmentUUID, String courseClassUUID) {
-        view.showModal(false, "");        
-        session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
-        .fire(new Callback<Void>() {
-            @Override
-            public void ok(Void to) {
-                LoadingPopup.hide();
-                getEnrollments(Dean.getInstance().getCourseClassTO()
-                        .getCourseClass().getUUID());
-                view.setCanPerformEnrollmentAction(true);
-                KornellNotification.show("Usuário transferido com sucesso.", 2000);
-            }
-        });
-
+    public void onModalTransferOkButtonClicked(final String enrollmentUUID, final String courseClassUUID) {
+    	session.enrollments().getEnrollmentsByCourseClass(courseClassUUID, new Callback<EnrollmentsTO>() {
+    		@Override
+    		public void ok(final EnrollmentsTO enrollmentsTO) {
+    			session.courseClass(courseClassUUID).getTO(new Callback<CourseClassTO>() {
+    				@Override
+    				public void ok(CourseClassTO courseClassTO) {
+    					if ((enrollmentsTO.getEnrollmentTOs().size() + 1) > courseClassTO.getCourseClass().getMaxEnrollments()) {
+    	    	    		KornellNotification
+    	    	            .show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
+    	    	                    AlertType.ERROR, 5000);
+    	    	    	} else {
+    	    	    		view.showModal(false, "");  
+    	    	            session.events().enrollmentTransfered(enrollmentUUID, courseClassUUID, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), session.getCurrentUser().getPerson().getUUID())
+    	    	            .fire(new Callback<Void>() {
+    	    	                @Override
+    	    	                public void ok(Void to) {
+    	    	                    LoadingPopup.hide();
+    	    	                    getEnrollments(Dean.getInstance().getCourseClassTO()
+    	    	                            .getCourseClass().getUUID());
+    	    	                    view.setCanPerformEnrollmentAction(true);
+    	    	                    KornellNotification.show("Usuário transferido com sucesso.", 2000);
+    	    	                }
+    	    	                @Override
+    	    	                protected void conflict(KornellErrorTO kornellErrorTO) {
+    	    	                	KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR);
+    	    	                }
+    	    	            });
+    	    	    	}
+    				}
+				});
+    		}
+		});
     }
 
     @Override
@@ -636,7 +657,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                 @Override
                 public void conflict(KornellErrorTO kornellErrorTO) {
                     LoadingPopup.hide();
-                    KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO),
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO),
                             AlertType.ERROR, 2500);
                 }
             });
@@ -645,7 +666,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                 @Override
                 public void ok(CourseClass courseClass) {
                     LoadingPopup.hide();
-                    KornellNotification.show("Alterações salvas com sucesso!");
+					KornellNotification.show("Alterações salvas com sucesso!");
                     Dean.getInstance().getCourseClassTO().setCourseClass(courseClass);
                     updateCourseClass(courseClass.getUUID());
                 }
@@ -653,7 +674,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                 @Override
                 public void conflict(KornellErrorTO kornellErrorTO) {
                     LoadingPopup.hide();
-                    KornellNotification.show(KornellConstantsHelper.getConflictMessage(kornellErrorTO),
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO),
                             AlertType.ERROR, 2500);
                 }
             });

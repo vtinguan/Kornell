@@ -5,7 +5,7 @@ import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgress;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
-import kornell.gui.client.entity.Entities;
+import kornell.gui.client.entity.EntitiesC;
 
 public class StudentImpl implements Student {
 
@@ -31,7 +31,7 @@ public class StudentImpl implements Student {
 
 	private EnrollmentProgress enrollmentProgressOf(Enrollment enrollment) {
 		Integer progress = enrollment.getProgress();
-		EnrollmentProgress ep = Entities.get().newEnrollmentProgress();
+		EnrollmentProgress ep = EntitiesC.get().newEnrollmentProgress();
 		if (progress != null) {
 			if (progress <= 0) {
 				ep.setProgress(0);

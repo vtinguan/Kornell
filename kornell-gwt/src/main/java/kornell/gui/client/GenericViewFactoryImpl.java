@@ -32,6 +32,7 @@ import kornell.gui.client.presentation.course.ClassroomView;
 import kornell.gui.client.presentation.course.generic.GenericClassroomView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
+import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.message.compose.GenericMessageComposeView;
@@ -79,7 +80,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	private GenericAdminCourseVersionView genericAdminCourseVersionView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
-	private MessagePresenter messagePresenter, messagePresenterCourseClass;
+	private MessagePresenter messagePresenter, messagePresenterCourseClass, messagePresenterClassroomGlobalChat, messagePresenterClassroomTutorChat;
 	private boolean isMantleShown = false;
 
 	SimplePanel shell = new SimplePanel();
@@ -194,7 +195,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 
 	@Override
 	public MessageView getMessageView() {
-		return new GenericMessageView(clientFactory.getEventBus());
+		return new GenericMessageView(clientFactory.getEventBus(), clientFactory.getKornellSession());
 	}
 
 	@Override
@@ -205,7 +206,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	@Override
 	public ClassroomView getClassroomView() {
 		return new GenericClassroomView(clientFactory.getPlaceController(), clientFactory.getKornellSession(),
-				clientFactory.getEventBus());
+				clientFactory.getEventBus(), this);
 	}
 
 	@Override
@@ -248,12 +249,38 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	}
 
 	@Override
+	public MessagePresenter getMessagePresenter() {
+		if (messagePresenter == null)
+			messagePresenter = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(),
+					clientFactory.getPlaceController(), clientFactory.getViewFactory(), MessagePanelType.inbox);
+		return messagePresenter;
+	}
+
+	@Override
 	public MessagePresenter getMessagePresenterCourseClass() {
 		if (messagePresenterCourseClass == null)
 			messagePresenterCourseClass = new MessagePresenter(clientFactory.getKornellSession(),
 					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(),
-					true);
+					MessagePanelType.courseClassSupport);
 		return messagePresenterCourseClass;
+	}
+
+	@Override
+	public MessagePresenter getMessagePresenterClassroomGlobalChat() {
+		if (messagePresenterClassroomGlobalChat == null)
+			messagePresenterClassroomGlobalChat = new MessagePresenter(clientFactory.getKornellSession(),
+					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(),
+					MessagePanelType.courseClassGlobal);
+		return messagePresenterClassroomGlobalChat;
+	}
+
+	@Override
+	public MessagePresenter getMessagePresenterClassroomTutorChat() {
+		if (messagePresenterClassroomTutorChat == null)
+			messagePresenterClassroomTutorChat = new MessagePresenter(clientFactory.getKornellSession(),
+					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory(),
+					MessagePanelType.courseClassTutor);
+		return messagePresenterClassroomTutorChat;
 	}
 
 	@Override
@@ -264,14 +291,6 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	@Override
 	public ScrollPanel getScrollPanel() {
 		return scrollPanel;
-	}
-
-	@Override
-	public MessagePresenter getMessagePresenter() {
-		if (messagePresenter == null)
-			messagePresenter = new MessagePresenter(clientFactory.getKornellSession(), clientFactory.getEventBus(),
-					clientFactory.getPlaceController(), clientFactory.getViewFactory());
-		return messagePresenter;
 	}
 
 	@Override

@@ -136,7 +136,8 @@ object Entities {
     assessment: Assessment = null, lastAssessmentUpdate: String = null,
     assessmentScore: BigDecimal = null, certifiedAt: String = null,
     courseVersionUUID: String = null, parentEnrollmentUUID:String = null,
-    startDate:Date=null,endDate:Date=null): Enrollment = {
+    startDate:Date=null,endDate:Date=null,
+    preAssessment:BigDecimal=null,postAssessment:BigDecimal=null): Enrollment = {
     val e = factory.enrollment.as
     e.setUUID(uuid)
     e.setEnrolledOn(enrolledOn)
@@ -154,6 +155,8 @@ object Entities {
     e.setParentEnrollmentUUID(parentEnrollmentUUID)
     e.setStartDate(startDate)
     e.setEndDate(endDate)
+    e.setPreAssessmentScore(preAssessment)
+    e.setPostAssessmentScore(postAssessment)
     e
   }
 
@@ -166,7 +169,7 @@ object Entities {
   //FTW: Default parameter values
   def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, 
       demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, 
-      activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String) = {
+      activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String, internationalized: Boolean) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
@@ -184,6 +187,7 @@ object Entities {
     i.setBillingType(billingType)
     i.setInstitutionType(institutionType)
     i.setDashboardVersionUUID(dashboardVersionUUID)
+    i.setInternationalized(internationalized)
     i
   }
 
@@ -279,7 +283,8 @@ object Entities {
     registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
     courseClassChatEnabled: Boolean = false,
-    allowBatchCancellation: Boolean = false) = {
+    allowBatchCancellation: Boolean = false,
+    tutorChatEnabled: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -296,7 +301,8 @@ object Entities {
     clazz.setRegistrationType(registrationType)
     clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
-	clazz.setAllowBatchCancellation(allowBatchCancellation)
+    clazz.setAllowBatchCancellation(allowBatchCancellation)
+	clazz.setTutorChatEnabled(tutorChatEnabled)
     clazz
   }
 
@@ -352,7 +358,6 @@ object Entities {
     chatThreadParticipant.setUUID(uuid)
     chatThreadParticipant.setThreadUUID(chatThreadUUID)
     chatThreadParticipant.setPersonUUID(personUUID)
-    chatThreadParticipant.setChatThreadName(chatThreadName)
     chatThreadParticipant.setLastReadAt(lastReadAt)
     chatThreadParticipant.setActive(active)
     chatThreadParticipant.setLastJoinDate(lastJoinDate)

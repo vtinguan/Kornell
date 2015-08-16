@@ -33,9 +33,10 @@ class CourseClassRepo(uuid:String) {
 		  		cc.registrationType = ${courseClass.getRegistrationType.toString},
 		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID},
 		  		cc.courseClassChatEnabled = ${courseClass.isCourseClassChatEnabled},
-		  		cc.allowBatchCancellation = ${courseClass.isAllowBatchCancellation}
+		  		cc.allowBatchCancellation = ${courseClass.isAllowBatchCancellation},
+		  		cc.tutorChatEnabled = ${courseClass.isTutorChatEnabled}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate 
-	    ChatThreadsRepo.updateCourseClassThreadsNames(courseClass.getUUID, courseClass.getName)
+	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    courseClass
     } else {
       throw new EntityConflictException("courseClassAlreadyExists")

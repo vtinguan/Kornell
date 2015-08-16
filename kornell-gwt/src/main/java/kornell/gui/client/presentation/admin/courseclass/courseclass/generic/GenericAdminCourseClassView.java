@@ -94,7 +94,6 @@ public class GenericAdminCourseClassView extends Composite implements
 	private ViewFactory viewFactory;
 	private AdminCourseClassView.Presenter presenter;
 	final CellTable<EnrollmentTO> table;
-	private List<EnrollmentTO> enrollmentsCurrent;
 	private List<EnrollmentTO> enrollmentsOriginal;
 	private KornellPagination pagination;
 	private TextBox txtSearch;
@@ -616,46 +615,44 @@ public class GenericAdminCourseClassView extends Composite implements
 			return;
 
 		final ListBox pageSizeListBox = new ListBox();
-		if (enrollmentsCurrent == null) {
+		
+		enrollmentsWrapper.clear();
 
-			enrollmentsWrapper.clear();
+		VerticalPanel panel = new VerticalPanel();
+		panel.setWidth("400");
+		panel.add(table);
 
-			VerticalPanel panel = new VerticalPanel();
-			panel.setWidth("400");
-			panel.add(table);
-
-			// pageSizeListBox.addItem("1");
-			// pageSizeListBox.addItem("10");
-			pageSizeListBox.addItem("20");
-			pageSizeListBox.addItem("50");
-			pageSizeListBox.addItem("100");
-			pageSizeListBox.setSelectedValue(presenter.getPageSize());
-			pageSizeListBox.addChangeHandler(new ChangeHandler() {
-				@Override
-				public void onChange(ChangeEvent event) {
-					if (pageSizeListBox.getValue().matches("[0-9]*")){
-						presenter.setPageNumber("1");
-						presenter.setPageSize(pageSizeListBox.getValue());
-						presenter.updateCourseClassUI(Dean.getInstance().getCourseClassTO());
-					}
+		// pageSizeListBox.addItem("1");
+		// pageSizeListBox.addItem("10");
+		pageSizeListBox.addItem("20");
+		pageSizeListBox.addItem("50");
+		pageSizeListBox.addItem("100");
+		pageSizeListBox.setSelectedValue(presenter.getPageSize());
+		pageSizeListBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				if (pageSizeListBox.getValue().matches("[0-9]*")){
+					presenter.setPageNumber("1");
+					presenter.setPageSize(pageSizeListBox.getValue());
+					presenter.updateCourseClassUI(Dean.getInstance().getCourseClassTO());
 				}
-			});
-			pageSizeListBox.addStyleName("pageSizeListBox");
-			FlowPanel tableTools = new FlowPanel();
-			tableTools.addStyleName("marginTop25");
-			tableTools.add(txtSearch);
-			tableTools.add(btnSearch);
-			tableTools.add(pageSizeListBox);
-			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-				@Override
-				public void execute() {
-					txtSearch.setFocus(true);
-				}
-			});
-			enrollmentsWrapper.add(tableTools);
-			enrollmentsWrapper.add(panel);
-			enrollmentsWrapper.add(pagination);
-		}
+			}
+		});
+		pageSizeListBox.addStyleName("pageSizeListBox");
+		FlowPanel tableTools = new FlowPanel();
+		tableTools.addStyleName("marginTop25");
+		tableTools.add(txtSearch);
+		tableTools.add(btnSearch);
+		tableTools.add(pageSizeListBox);
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				txtSearch.setFocus(true);
+			}
+		});
+		enrollmentsWrapper.add(tableTools);
+		enrollmentsWrapper.add(panel);
+		enrollmentsWrapper.add(pagination);
 		
 		pagination.setRowData(enrollmentsOriginal, StringUtils.isSome(presenter.getSearchTerm()) ? searchCount : count);
 		pageSizeListBox.setVisible(pagination.isVisible());
@@ -975,7 +972,7 @@ public class GenericAdminCourseClassView extends Composite implements
 								.getCourseClassTO()
 								.getCourseClass()
 								.getUUID()
-								.equals(unreadChatThreadTO.getCourseClassUUID()))
+								.equals(unreadChatThreadTO.getEntityUUID()))
 					count = count
 							+ Integer.parseInt(unreadChatThreadTO
 									.getUnreadMessages());
