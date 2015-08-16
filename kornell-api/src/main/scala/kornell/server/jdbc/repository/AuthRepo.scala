@@ -18,6 +18,7 @@ import scala.util.Try
 import kornell.core.entity.RoleType
 import kornell.core.error.exception.EntityNotFoundException
 import kornell.core.error.exception.UnauthorizedAccessException
+import org.mindrot.BCrypt
 
 object AuthRepo {
   val AUTH_CACHE_SIZE = 300;
@@ -32,54 +33,78 @@ object AuthRepo {
 
   def apply() = new AuthRepo(newPasswordCache(), newRolesCache())
 
-  val authLoader = new CacheLoader[UsrPwd, Option[String]]() {
-    override def load(auth: UsrPwd): Option[String] =
-      lookup(auth._1, auth._2, auth._3) match {
-        case s: Some[String] => s
+  val authLoader = new CacheLoader[UsrKey, Option[UsrValue]]() {
+    override def load(auth: UsrKey): Option[UsrValue] =
+      lookup(auth._1, auth._2) match {
+        case s: Some[UsrValue] => s
         case None => throw new CredentialsNotFound
       }
   }
 
   case class CredentialsNotFound() extends Exception
 
-  def lookup(institutionUUID: String, userkey: String, password: String): Option[String] =
-    authByUsername(institutionUUID, userkey, password)
-      .orElse(authByCPF(institutionUUID, userkey, password))
-      .orElse(authByEmail(institutionUUID, userkey, password))
+  def lookup(institutionUUID: String, userkey: String) = 
+   authByUsername(institutionUUID, userkey)
+      .orElse(authByCPF(institutionUUID, userkey))
+      .orElse(authByEmail(institutionUUID, userkey))
+  
+  
+  implicit def toUsrValue(r: ResultSet): UsrValue = 
+    (r.getString("password"), r.getString("person_uuid"))
 
-  type UsrPwd = (String, String, String)
+  type UsrKey = (String, String)
+  type UsrValue = (UsrPassword, PersonUUID) //1st String is bcrypt(sha256(password)), 2nd 
+  type UsrPassword = String
   type PersonUUID = String
-  type PasswordCache = LoadingCache[UsrPwd, Option[PersonUUID]]
+  type PasswordCache = LoadingCache[UsrKey, Option[UsrValue]]
   type RolesCache = LoadingCache[Option[PersonUUID], Set[Role]]
 
   def newPasswordCache() = cacheBuilder.build(authLoader)
   def newRolesCache() = cacheBuilder.build(rolesLoader)
 
-  def authByEmail(institutionUUID: String, email: String, password: String) = sql"""
-   select person_uuid 
+  def authByEmail(institutionUUID: String, email: String) = {
+    val res = sql"""
+   select pwd.password as password, person_uuid
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.email=${email}
-     and pwd.password=${SHA256(password)}
      and p.institutionUUID=${institutionUUID}
-    """.first[String]
+    """.map[UsrValue](toUsrValue).head
+    if (res._2 != null) {
+      Option(res)
+    } else {
+      None
+    }
+  }
 
-  def authByCPF(institutionUUID: String, cpf: String, password: String) = sql"""
-   select person_uuid 
+  def authByCPF(institutionUUID: String, cpf: String) = {
+    val res = sql"""
+   select pwd.password as password, person_uuid 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.cpf=${cpf}
-     and pwd.password=${SHA256(password)}
      and p.institutionUUID=${institutionUUID}
-    """.first[String]
+    """.map[UsrValue](toUsrValue).head
+    if (res._2 != null) {
+      Option(res)
+    } else {
+      None
+    }
+  }
 
-  def authByUsername(institutionUUID: String, username: String, password: String) = sql"""
-    select person_uuid 
+  def authByUsername(institutionUUID: String, username: String) = {
+    val res = sql"""
+    select password, person_uuid 
     from Password
     		where username=${username}
-    		and password=${SHA256(password)}
     		and institutionUUID=${institutionUUID}
-    """.first[String]
+    """.map[UsrValue](toUsrValue).head
+    if (res._2 != null) {
+      Option(res)
+    } else {
+      None
+    }
+  }
 
   val rolesLoader = new CacheLoader[Option[String], Set[Role]]() {
     override def load(personUUID: Option[String]): Set[Role] =
@@ -113,7 +138,12 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
   rolesCache: AuthRepo.RolesCache) {
 
   def authenticate(institutionUUID: String, userkey: String, password: String): Option[String] = Try {
-    pwdCache.get((institutionUUID, userkey, password))
+    val usrValue = pwdCache.get((institutionUUID, userkey)).get
+    if (BCrypt.checkpw(SHA256(password), usrValue._1)) {
+      Option(usrValue._2)
+    } else {
+     None 
+    }
   }.getOrElse(None)
 
   def getUserRoles = userRoles().asJava
@@ -158,16 +188,16 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 
   def updatePassword(personUUID: String, plainPassword: String) = {
     sql"""
-    	update Password set password=${SHA256(plainPassword)}, requestPasswordChangeUUID=null where person_uuid=${personUUID}
+    	update Password set password=${BCrypt.hashpw(SHA256(plainPassword), BCrypt.gensalt())}, requestPasswordChangeUUID=null where person_uuid=${personUUID}
     """.executeUpdate
   }
     
   def setPlainPassword(institutionUUID: String, personUUID: String, username: String, plainPassword: String) = {
     sql"""
 	  	insert into Password (uuid,person_uuid,username,password,requestPasswordChangeUUID,institutionUUID)
-	  	values (${randomUUID},$personUUID,$username,${SHA256(plainPassword)}, null, ${institutionUUID})
+	  	values (${randomUUID},$personUUID,$username,${BCrypt.hashpw(SHA256(plainPassword), BCrypt.gensalt())}, null, ${institutionUUID})
 	  	on duplicate key update
-	  	username=$username,password=${SHA256(plainPassword)},requestPasswordChangeUUID=null
+	  	username=$username,password=${BCrypt.hashpw(SHA256(plainPassword), BCrypt.gensalt())},requestPasswordChangeUUID=null
 	  """.executeUpdate
     //    authCache.invalidate((username, plainPassword))
   }
@@ -201,5 +231,12 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 	    	${null} )
 		    """.executeUpdate
   
-  
+  //To be removed when all users are migrated
+  def updatePasswordsToSalted() = {
+      type Password = (String, String)
+      val passwords = sql"""select uuid, password from Password where migrated = false""".map[Password](
+          (rs: ResultSet) => (rs.getString("uuid"), rs.getString("password")))
+      passwords.foreach(p => sql"""update Password set password = ${BCrypt.hashpw(p._2, BCrypt.gensalt())}, migrated = true
+          where uuid = ${p._1}""".executeUpdate)
+  }
 }

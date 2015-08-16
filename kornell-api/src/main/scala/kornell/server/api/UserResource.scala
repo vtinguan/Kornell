@@ -36,6 +36,9 @@ import kornell.server.util.EmailService
 import kornell.server.web.BasicAuthFilter
 import kornell.core.to.UserHelloTO
 import kornell.server.jdbc.repository.TokenRepo
+import kornell.server.util.Conditional.toConditional
+import javax.ws.rs.POST
+import kornell.server.util.AccessDeniedErr
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -247,6 +250,15 @@ class UserResource(private val authRepo:AuthRepo) {
   def createUser(institutionUUID: String, fullName: String, email: String, cpf: String, username: String, password: String): String = {
     val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username, RegistrationType.email)
     createUser(regreq).getPerson.getUUID
+  }
+  
+  //This is a temporary call that converts user passwords to bcrypt versions and logs everyone out.
+  @GET
+  @Path("update/updatePasswordsBCrypt")
+  @Produces(Array("text/plain"))
+  def updatePasswordsToSalted(implicit @Context sc: SecurityContext) = {
+      AuthRepo().updatePasswordsToSalted()
+      "OK"
   }
 
 }
