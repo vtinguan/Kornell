@@ -103,7 +103,7 @@ public class DMElement {
 
 	public boolean is(Map<String, String> entries, String value) {
 		String entryValue = get(entries);
-		return (entryValue == null) ? null : entryValue.equals(value);
+		return (entryValue == null) ? false : entryValue.equals(value);
 	}
 
 	String dirty_flag = "_";
