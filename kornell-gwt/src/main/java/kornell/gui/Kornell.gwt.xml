@@ -35,6 +35,9 @@
 
 	<!-- 3rd party libs -->
 	<inherits name="com.github.gwtbootstrap.Bootstrap" />
+	
+	<inherits name="com.google.gwt.logging.Logging" />
+	<set-property name="gwt.logging.enabled" value="FALSE" />
 
 	<!-- 1st party libs -->
 	<inherits name='kornell.api.KornellClient' />
