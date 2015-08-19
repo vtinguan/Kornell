@@ -9,7 +9,7 @@
 .standardButtonBar{width:260px;margin:0 auto;clear:both;}.standardButtonBar .btnStandard{margin:15px;}
 .btnStandard{font-weight:bold;font-size:10px;width:100px;height:22px;line-height:21px;border-radius:5px;border:0;display:inline-block;}
 .btnBorder{border-left:1px solid #505864 !important;}
-.last .btnPanel{border-right:1px solid #181c22 !important;}
+.last .btnPanel{border-right:1px solid #505864 !important;}
 .fieldPanelWrapper{width:725px;height:55px;float:left;}.fieldPanelWrapper .labelPanelImg{height:98px;}
 .fieldPanelWrapper .fieldPanelImage{height:100px;}
 .fieldPanelWrapper .labelPanel{width:230px;margin-right:15px;float:left;}.fieldPanelWrapper .labelPanel .lblLabelImg{color:#bec1c3;font-size:16px;padding-top:25px;line-height:25px;}

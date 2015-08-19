@@ -92,17 +92,17 @@ class PersonRepo(val uuid: String) {
         (uuid == targetPersonUUID) ||
           {
             //platformAdmin has power over everyone, except other platformAdmins
-            !RoleCategory.isPlatformAdmin(targetRolesSet) &&
-              RoleCategory.isPlatformAdmin(actorRolesSet)
+            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
+              RoleCategory.isPlatformAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
           } || {
             //institutionAdmin doesn't have power over platformAdmins, other institutionAdmins or people from other institutions 
-            !RoleCategory.isPlatformAdmin(targetRolesSet) &&
+            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
               !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) && 
               RoleCategory.isInstitutionAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
           } || {
             //courseClassAdmin doesn't have power over platformAdmins, institutionAdmins, other courseClassAdmins or non enrolled users
             val enrollmentTOs = EnrollmentsRepo.byPerson(targetPersonUUID)
-            !RoleCategory.isPlatformAdmin(targetRolesSet) &&
+            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
               !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) &&
               !RoleCategory.hasRole(targetRolesSet, RoleType.courseClassAdmin) && {
                 enrollmentTOs exists {

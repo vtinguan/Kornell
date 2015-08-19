@@ -141,7 +141,7 @@ class EnrollmentResource(uuid: String) {
     val enrollment = enrollmentRepo.get
     enrollmentRepo.delete(uuid)
     enrollment
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
     .or(isInstitutionAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
     .or(isCourseClassAdmin(EnrollmentRepo(uuid).get.getCourseClassUUID), AccessDeniedErr())
 

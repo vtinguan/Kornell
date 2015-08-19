@@ -36,7 +36,7 @@ class CoursesResource {
   @Consumes(Array(Course.TYPE))
   def create(course: Course) = {
     CoursesRepo.create(course)
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 }

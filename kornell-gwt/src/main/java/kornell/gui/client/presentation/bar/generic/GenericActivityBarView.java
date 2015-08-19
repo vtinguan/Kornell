@@ -305,10 +305,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		btnNext.setVisible(!isMonoSCO);
 		btnPrevious.setVisible(!isMonoSCO);		
 		progressBarPanel.setVisible(!isMonoSCO);
-		if(isMonoSCO)
+		if(isMonoSCO){
 			btnDetails.addStyleName("firstMonoSCO");
-		else
+			btnNotes.addStyleName("last");
+		}
+		else {
 			btnDetails.removeStyleName("firstMonoSCO");
+			btnNotes.removeStyleName("last");
+		}
 		shouldShowActivityBar = isEnrolled && Dean.getInstance().getCourseClassTO() != null &&
 				!CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 		clientFactory.getEventBus().fireEvent(new HideSouthBarEvent(!shouldShowActivityBar));

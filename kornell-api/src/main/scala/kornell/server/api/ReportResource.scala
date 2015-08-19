@@ -53,7 +53,7 @@ class ReportResource {
     peopleTO: SimplePeopleTO) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
     val roles = AuthRepo().getUserRoles
-    if (!(RoleCategory.isPlatformAdmin(roles) ||
+    if (!(RoleCategory.isPlatformAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID) ||
       RoleCategory.isCourseClassObserver(roles, courseClass.getUUID)))

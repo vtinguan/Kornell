@@ -75,12 +75,16 @@ public class KornellSession extends KornellClient {
 				+ ClientProperties.SEPARATOR + key;
 	}
 
+	public boolean isPlatformAdmin(String institutionUUID) {
+		return isValidRole(RoleType.platformAdmin, institutionUUID, null);
+	}
+
 	public boolean isPlatformAdmin() {
-		return isValidRole(RoleType.platformAdmin, null, null);
+		return isValidRole(RoleType.platformAdmin, Dean.getInstance().getInstitution().getUUID(), null);
 	}
 
 	public boolean isInstitutionAdmin(String institutionUUID) {
-		return isValidRole(RoleType.institutionAdmin, institutionUUID, null) || isPlatformAdmin();
+		return isValidRole(RoleType.institutionAdmin, institutionUUID, null) || isPlatformAdmin(institutionUUID);
 	}
 
 	public boolean isInstitutionAdmin() {

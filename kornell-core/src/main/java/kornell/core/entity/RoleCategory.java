@@ -47,7 +47,11 @@ public class RoleCategory {
 				return true;
 			break;
 		case platformAdmin:
-			if (RoleType.platformAdmin.equals(type))
+			if (RoleType.platformAdmin.equals(type)
+					&& institutionUUID != null
+					&& role.getPlatformAdminRole()
+							.getInstitutionUUID()
+							.equals(institutionUUID))
 				return true;
 			break;
 		default:
@@ -89,8 +93,8 @@ public class RoleCategory {
 	}
 	
 
-	public static boolean isPlatformAdmin(Set<Role> roles) {
-		return isValidRole(roles, RoleType.platformAdmin, null, null);
+	public static boolean isPlatformAdmin(Set<Role> roles, String institutionUUID) {
+		return isValidRole(roles, RoleType.platformAdmin, institutionUUID, null);
 	}
 
 	public static boolean isInstitutionAdmin(Set<Role> roles, String institutionUUID) {

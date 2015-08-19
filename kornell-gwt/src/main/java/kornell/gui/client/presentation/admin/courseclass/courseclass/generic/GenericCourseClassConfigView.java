@@ -119,7 +119,7 @@ public class GenericCourseClassConfigView extends Composite {
         // i18n
         btnOK.setText("OK".toUpperCase());
         btnCancel.setText(isCreationMode ? "Cancelar".toUpperCase() : "Limpar".toUpperCase());
-        btnDelete.setVisible(!isCreationMode && CourseClassState.active.equals(Dean.getInstance()
+        btnDelete.setVisible(isInstitutionAdmin && !isCreationMode && CourseClassState.active.equals(Dean.getInstance()
                 .getCourseClassTO().getCourseClass().getState()));
         btnDelete.setText(canDelete?"Excluir".toUpperCase():"Desabilitar".toUpperCase());
 
@@ -231,35 +231,36 @@ public class GenericCourseClassConfigView extends Composite {
             }
         });
 
-        
-        Boolean isCourseClassChatEnabled = courseClass.isCourseClassChatEnabled() == null ? false : courseClass.isCourseClassChatEnabled();
-        courseClassChatEnabled = new KornellFormFieldWrapper("Permitir chat global da turma?", formHelper.createCheckBoxFormField(isCourseClassChatEnabled), isInstitutionAdmin);
-        fields.add(courseClassChatEnabled);
-        profileFields.add(courseClassChatEnabled);
-        ((CheckBox)courseClassChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                if(event.getValue()){
-                    showModal(MODAL_COURSE_CLASS_CHAT_ENABLED);
-                    ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(false);
-                }
-            }
-        });
-
-        
-        Boolean isTutorChatEnabled = courseClass.isTutorChatEnabled() == null ? false : courseClass.isTutorChatEnabled();
-        tutorChatEnabled = new KornellFormFieldWrapper("Permitir tutoria da turma?", formHelper.createCheckBoxFormField(isTutorChatEnabled), isInstitutionAdmin);
-        fields.add(tutorChatEnabled);
-        profileFields.add(tutorChatEnabled);
-        ((CheckBox)tutorChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                if(event.getValue()){
-                    showModal(MODAL_TUTOR_CHAT_ENABLED);
-                    ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(false);
-                }
-            }
-        });
+        if(session.isPlatformAdmin()){        
+	        Boolean isCourseClassChatEnabled = courseClass.isCourseClassChatEnabled() == null ? false : courseClass.isCourseClassChatEnabled();
+	        courseClassChatEnabled = new KornellFormFieldWrapper("Permitir chat global da turma?", formHelper.createCheckBoxFormField(isCourseClassChatEnabled), isInstitutionAdmin);
+	        fields.add(courseClassChatEnabled);
+	        profileFields.add(courseClassChatEnabled);
+	        ((CheckBox)courseClassChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+	            @Override
+	            public void onValueChange(ValueChangeEvent<Boolean> event) {
+	                if(event.getValue()){
+	                    showModal(MODAL_COURSE_CLASS_CHAT_ENABLED);
+	                    ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(false);
+	                }
+	            }
+	        });
+	
+	        
+	        Boolean isTutorChatEnabled = courseClass.isTutorChatEnabled() == null ? false : courseClass.isTutorChatEnabled();
+	        tutorChatEnabled = new KornellFormFieldWrapper("Permitir tutoria da turma?", formHelper.createCheckBoxFormField(isTutorChatEnabled), isInstitutionAdmin);
+	        fields.add(tutorChatEnabled);
+	        profileFields.add(tutorChatEnabled);
+	        ((CheckBox)tutorChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+	            @Override
+	            public void onValueChange(ValueChangeEvent<Boolean> event) {
+	                if(event.getValue()){
+	                    showModal(MODAL_TUTOR_CHAT_ENABLED);
+	                    ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(false);
+	                }
+	            }
+	        });
+        }
         
 
         final ListBox registrationTypes = new ListBox();
@@ -447,6 +448,8 @@ public class GenericCourseClassConfigView extends Composite {
 
     @UiHandler("btnDelete")
     void doDelete(ClickEvent e) {
+    	if(!isInstitutionAdmin)
+    		return;
         if(!isCreationMode && canDelete){
             showModal(MODAL_DELETE);
         } else {

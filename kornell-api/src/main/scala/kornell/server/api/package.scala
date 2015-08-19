@@ -10,7 +10,7 @@ import kornell.server.authentication.ThreadLocalAuthenticator
 package object api {
   val logger = Logger.getLogger("kornell.server.api")
 
-  def isPlatformAdmin:Boolean = RoleCategory.isPlatformAdmin(AuthRepo().getUserRoles)
+  def isPlatformAdmin(institutionUUID:String):Boolean = RoleCategory.isPlatformAdmin(AuthRepo().getUserRoles, institutionUUID)
     
   def isInstitutionAdmin(institutionUUID:String):Boolean = 
     RoleCategory.isInstitutionAdmin(AuthRepo().getUserRoles, institutionUUID)

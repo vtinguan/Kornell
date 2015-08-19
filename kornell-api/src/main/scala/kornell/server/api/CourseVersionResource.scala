@@ -19,7 +19,7 @@ class CourseVersionResource(uuid: String) {
   @Produces(Array(CourseVersionTO.TYPE))
   def get : CourseVersionTO  = {
     CourseVersionRepo(uuid).getWithCourse
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
    
@@ -28,7 +28,7 @@ class CourseVersionResource(uuid: String) {
   @Produces(Array(CourseVersion.TYPE))
   def update(courseVersion: CourseVersion) = {
     CourseVersionRepo(uuid).update(courseVersion)
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 }

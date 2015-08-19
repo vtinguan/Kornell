@@ -198,14 +198,13 @@ object Entities {
     role
   }
 
-  def newPlatformAdminRole(): PlatformAdminRole =
-    factory.newPlatformAdminRole().as
-
-  def newRoleAsPlatformAdmin(person_uuid: String): Role = {
+  def newRoleAsPlatformAdmin(person_uuid: String, institutionUUID: String): Role = {
     val role = factory.newRole().as
     role.setPersonUUID(person_uuid)
+    val platformAdminRole = factory.newPlatformAdminRole().as
+    platformAdminRole.setInstitutionUUID(institutionUUID)
     role.setRoleType(RoleType.platformAdmin)
-    role.setPlatformAdminRole(newPlatformAdminRole())
+    role.setPlatformAdminRole(platformAdminRole)
     role
   }
 

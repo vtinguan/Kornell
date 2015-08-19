@@ -32,7 +32,7 @@ class CourseVersionsResource {
           CourseVersionsRepo.byCourse(courseUUID)
         else
           CourseVersionsRepo.byInstitution(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID, searchTerm, pageSize, pageNumber)
-    }.requiring(isPlatformAdmin, AccessDeniedErr())
+    }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
   
@@ -41,7 +41,7 @@ class CourseVersionsResource {
   @Consumes(Array(CourseVersion.TYPE))
   def create(courseVersion: CourseVersion) = {
     CourseVersionsRepo.create(courseVersion)
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 }

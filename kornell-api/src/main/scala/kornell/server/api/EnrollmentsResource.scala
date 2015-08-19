@@ -74,7 +74,7 @@ class EnrollmentsResource {
   @Produces(Array(SimplePeopleTO.TYPE))
   def getEnrollmentsList(@PathParam("courseClassUUID") courseClassUUID: String) = {
     EnrollmentsRepo.simplePersonList(courseClassUUID)
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
     

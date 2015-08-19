@@ -166,7 +166,7 @@ class InstitutionSpec extends UnitSpec
   
   "The platformAdmin" should "be able to update the list of institution admins" in asPlatformAdmin { 
     val institutionAdmin = institutionAdminUUID
-    val admins = Entities.newRoles(List(Entities.newRoleAsPlatformAdmin(institutionAdmin)))
+    val admins = Entities.newRoles(List(Entities.newRoleAsPlatformAdmin(institutionAdmin, institutionUUID)))
     val updatedAdmins = InstitutionResource(institutionUUID).updateAdmins(admins)
     
     assert(updatedAdmins.getRoles.get(0).getPersonUUID == institutionAdmin)
@@ -174,7 +174,7 @@ class InstitutionSpec extends UnitSpec
   
   "The institutionAdmin" should "not be able to update the list of institution admins" in asInstitutionAdmin { 
     val institutionAdmin = institutionAdminUUID
-    val admins = Entities.newRoles(List(Entities.newRoleAsPlatformAdmin(institutionAdmin)))
+    val admins = Entities.newRoles(List(Entities.newRoleAsPlatformAdmin(institutionAdmin, institutionUUID)))
     try {
       val updatedAdmins = InstitutionResource(institutionUUID).updateAdmins(admins)
       throw new Throwable
@@ -186,7 +186,7 @@ class InstitutionSpec extends UnitSpec
   
   "A person" should "not be able to update the list of institution admins" in asPlatformAdmin { 
     val institutionAdmin = institutionAdminUUID
-    val admins = Entities.newRoles(List(Entities.newRoleAsPlatformAdmin(institutionAdmin)))
+    val admins = Entities.newRoles(List(Entities.newRoleAsPlatformAdmin(institutionAdmin, institutionUUID)))
     asPerson {
       try {
           val updatedAdmins = InstitutionResource(institutionUUID).updateAdmins(admins)

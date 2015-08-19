@@ -28,21 +28,21 @@ class InstitutionResource(uuid: String) {
   @Produces(Array(Institution.TYPE))
   def get =  {
     InstitutionRepo(uuid).get
-   }.requiring(isPlatformAdmin, AccessDeniedErr()).get
+   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr()).get
   
   @PUT
   @Consumes(Array(Institution.TYPE))
   @Produces(Array(Institution.TYPE))
   def update(institution: Institution) = {
     InstitutionRepo(uuid).update(institution)
-  }.requiring(isPlatformAdmin, AccessDeniedErr()).get
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr()).get
   
   @GET
   @Produces(Array(InstitutionRegistrationPrefixesTO.TYPE))
   @Path("registrationPrefixes")
   def getRegistrationPrefixes() = {
     InstitutionRepo(uuid).getInstitutionRegistrationPrefixes
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
   .or(isInstitutionAdmin(uuid), AccessDeniedErr()).get
   
   @PUT
@@ -53,7 +53,7 @@ class InstitutionResource(uuid: String) {
         val r = RolesRepo.updateInstitutionAdmins(uuid, roles)
         ChatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid)
         r
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
    .get
 
   @GET
@@ -61,7 +61,7 @@ class InstitutionResource(uuid: String) {
   @Path("admins")
   def getAdmins(@QueryParam("bind") bindMode:String) = {
         RolesRepo.getInstitutionAdmins(uuid, bindMode)
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
    .get
    
   @PUT
@@ -70,7 +70,7 @@ class InstitutionResource(uuid: String) {
   @Path("hostnames")
   def updateHostnames(hostnames: InstitutionHostNamesTO) = {
       InstitutionHostNameRepo(uuid).updateHostnames(hostnames)
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
    .get
 
   @GET
@@ -78,7 +78,7 @@ class InstitutionResource(uuid: String) {
   @Path("hostnames")
   def getHostnames() = {
         InstitutionHostNameRepo(uuid).get
-  }.requiring(isPlatformAdmin, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
    .get
 }
 

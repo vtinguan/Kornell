@@ -104,7 +104,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 
 	@Override
 	public void filterAndShowThreads() {
-		if(updateMessages && unreadChatThreadsTOFetchedFromEvent != null){
+		if(updateMessages && unreadChatThreadsTOFetchedFromEvent != null && placeCtrl.getWhere() instanceof MessagePlace){
 			this.unreadChatThreadsTO = filterTO(unreadChatThreadsTOFetchedFromEvent);
 			asWidget().setVisible(unreadChatThreadsTO.size() > 0);
 			if(unreadChatThreadsTO.size() == 0 && MessagePanelType.inbox.equals(messagePanelType)){

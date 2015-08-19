@@ -29,7 +29,7 @@ class CourseClassesResource {
   @Produces(Array(CourseClass.TYPE))
   def create(courseClass: CourseClass) = {
     CourseClassesRepo.create(courseClass)
-  }.requiring(isPlatformAdmin, AccessDeniedErr()) 
+  }.requiring(isPlatformAdmin(courseClass.getInstitutionUUID), AccessDeniedErr()) 
    .or(isInstitutionAdmin(courseClass.getInstitutionUUID), AccessDeniedErr())
    .get
    

@@ -21,7 +21,7 @@ class InstitutionsResource {
   @Consumes(Array(Institution.TYPE))
   def create(institution: Institution) = {
     InstitutionsRepo.create(institution)
-  }.requiring(isPlatformAdmin, AccessDeniedErr()).get
+  }.requiring(isPlatformAdmin(institution.getUUID), AccessDeniedErr()).get
 
 }
 
