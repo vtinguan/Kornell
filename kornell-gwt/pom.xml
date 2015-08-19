@@ -184,7 +184,7 @@
 		<!-- Generate compiled stuff in the folder used for development mode -->
 		<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 		<plugins>
-		    
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -201,9 +201,9 @@
 				<version>${gwtVersion}</version>
 				<executions>
 					<execution>
-				        <configuration>
-				          <extraJvmArgs>-Xmx512M -Xss1024k -Dfoo=bar</extraJvmArgs>
-				        </configuration>
+						<configuration>
+							<extraJvmArgs>-Xmx512M -Xss1024k -Dfoo=bar</extraJvmArgs>
+						</configuration>
 						<goals>
 							<goal>compile</goal>
 							<goal>generateAsync</goal>
@@ -271,6 +271,7 @@
 							</resources>
 						</configuration>
 					</execution>
+
 				</executions>
 			</plugin>
 
@@ -300,19 +301,18 @@
 						<argument>/tmp/test</argument>
 						<argument>-startupUrl</argument>
 						<argument>Kornell.nocache.html</argument>
-						
-						<!-- --> 
+
+						<!-- -->
 						<argument>-logLevel</argument>
 						<argument>INFO</argument>
 						<argument>-XmethodNameDisplayMode</argument>
 						<argument>FULL</argument>
-						 
-						
-						<argument>kornell.gui.Kornell</argument>
+
+
+						<argument>kornell.gui.KornellDev</argument>
 					</arguments>
 				</configuration>
 			</plugin>
-
 		</plugins>
 
 		<!-- Required by m2e for import into eclipse. No effect on command line 
