@@ -12,14 +12,16 @@ import kornell.core.entity.CourseClass
 import  kornell.core.util.StringUtils._
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.Enrollment
+import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
 
 object EmailService {
   
   def sendEmailBatchEnrollment(person: Person, institution: Institution, courseClass: CourseClass) = {
-    val subject = "A geração de matrículas foi concluída."
-    val from = getFromEmail(institution)
-    val to = person.getEmail
-    val body = wrapBody("""
+    if (checkWhitelistForDomain(institution, person.getEmail)) {
+      val subject = "A geração de matrículas foi concluída."
+      val from = getFromEmail(institution)
+      val to = person.getEmail
+      val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
     		<p>A geração de matrículas na turma """ + courseClass.getName + """ foi concluída.</p> """ +
@@ -27,15 +29,17 @@ object EmailService {
     		<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
-    val imgFile = getInstitutionLogoImage(institution)
-    EmailSender.sendEmail(subject, from, to, body, imgFile)
+      val imgFile = getInstitutionLogoImage(institution)
+      EmailSender.sendEmail(subject, from, to, body, imgFile)
+    }
   }
   
   def sendEmailConfirmation(person: Person, institution: Institution) = {
-    val subject = "Bem-vind" + PersonCategory.getSexSuffix(person) + " à " + institution.getFullName + "!"
-    val from = getFromEmail(institution)
-    val to = person.getEmail
-    val body = wrapBody("""
+    if (checkWhitelistForDomain(institution, person.getEmail)) {
+      val subject = "Bem-vind" + PersonCategory.getSexSuffix(person) + " à " + institution.getFullName + "!"
+      val from = getFromEmail(institution)
+      val to = person.getEmail
+      val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
     		<p>Bem-vind""" + PersonCategory.getSexSuffix(person) + """ &agrave; """ + institution.getFullName + """.</p>
@@ -46,16 +50,18 @@ object EmailService {
     		<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
-    val imgFile = getInstitutionLogoImage(institution)
-    EmailSender.sendEmail(subject, from, to, body, imgFile)
+      val imgFile = getInstitutionLogoImage(institution)
+      EmailSender.sendEmail(subject, from, to, body, imgFile)
+    }
   }
   
   def sendEmailRequestPasswordChange(person: Person, institution: Institution, requestPasswordChangeUUID: String) = {
-    val subject = "Você requisitou uma nova senha da " + institution.getFullName
-    val from = getFromEmail(institution)
-    val to = person.getEmail
-    val actionLink = institution.getBaseURL+"#vitrine:" + requestPasswordChangeUUID
-    val body = wrapBody("""
+    if (checkWhitelistForDomain(institution, person.getEmail)) {
+      val subject = "Você requisitou uma nova senha da " + institution.getFullName
+      val from = getFromEmail(institution)
+      val to = person.getEmail
+      val actionLink = institution.getBaseURL+"#vitrine:" + requestPasswordChangeUUID
+      val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
     		<p>Voc&ecirc; recentemente fez uma requisi&ccedil;&atilde;o de altera&ccedil;&atilde;o de senha da """+ institution.getFullName +""".</p>
@@ -65,27 +71,29 @@ object EmailService {
     		<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
-    val imgFile = getInstitutionLogoImage(institution)
-    EmailSender.sendEmail(subject, from, to, body, imgFile)
+      val imgFile = getInstitutionLogoImage(institution)
+      EmailSender.sendEmail(subject, from, to, body, imgFile)
+    }
   }
   
   //TODO: Consider ASYNC
   def sendEmailEnrolled(person: Person, institution: Institution, course: Course, enrollment: Enrollment) = {
-    val subject = "Você foi matriculado no curso " + course.getTitle
-    val from = getFromEmail(institution)
-    val to = person.getEmail
-    val hasPassword = PersonRepo(person.getUUID).hasPassword(institution.getUUID)
-    val hasPasswordStr = if(hasPassword) {
-      ""
-    } else {
-      "<p>Caso seja seu primeiro acesso, cadastre-se primeiro no sistema utilizando este email: " + to + "</p>"
-    }
-    val actionLink = if(hasPassword) {
-      institution.getBaseURL + "#classroom:" + enrollment.getUUID
-    } else {
-      institution.getBaseURL + "#vitrine:" + person.getEmail
-    }
-    val body = wrapBody("""
+    if (checkWhitelistForDomain(institution, person.getEmail)) {
+      val subject = "Você foi matriculado no curso " + course.getTitle
+      val from = getFromEmail(institution)
+      val to = person.getEmail
+      val hasPassword = PersonRepo(person.getUUID).hasPassword(institution.getUUID)
+      val hasPasswordStr = if(hasPassword) {
+        ""
+      } else {
+        "<p>Caso seja seu primeiro acesso, cadastre-se primeiro no sistema utilizando este email: " + to + "</p>"
+      }
+      val actionLink = if(hasPassword) {
+        institution.getBaseURL + "#classroom:" + enrollment.getUUID
+      } else {
+        institution.getBaseURL + "#vitrine:" + person.getEmail
+      }
+      val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
     		<p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + """ no curso """+ course.getTitle +""" oferecido pela """+ institution.getFullName +""".</p> 
@@ -95,8 +103,9 @@ object EmailService {
     		"""<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
-    val imgFile = getInstitutionLogoImage(institution)
-    EmailSender.sendEmail(subject, from, to, body, imgFile)
+      val imgFile = getInstitutionLogoImage(institution)
+      EmailSender.sendEmail(subject, from, to, body, imgFile)
+    }
   }
   
   private def getFromEmail(institution: kornell.core.entity.Institution):String = EmailSender.SMTP_FROM
@@ -142,4 +151,14 @@ object EmailService {
 			</a>
 		</div>
 	"""
+				
+  def checkWhitelistForDomain(institution: Institution, email: String) = {
+    //If we don't use the whitelist, just continue with the sending
+    if (!institution.isUseEmailWhitelist) {
+      true
+    } else {
+      //If we use the whitelist, we have to check that the domain works.
+      InstitutionEmailWhitelistRepo(institution.getUUID).get.getDomains.contains(email.split("@")(1))
+    }
+  }				
 }

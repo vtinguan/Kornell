@@ -29,7 +29,8 @@ class InstitutionRepo(uuid: String) {
     | i.billingType = ${institution.getBillingType.toString},
     | i.institutionType = ${institution.getInstitutionType.toString},
     | i.dashboardVersionUUID = ${institution.getDashboardVersionUUID},
-    | i.internationalized = ${institution.isInternationalized}
+    | i.internationalized = ${institution.isInternationalized},
+    | i.useEmailWhitelist = ${institution.isUseEmailWhitelist}
     | where i.uuid = ${institution.getUUID}""".executeUpdate
     institution
   }

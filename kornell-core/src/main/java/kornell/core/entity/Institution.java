@@ -47,4 +47,7 @@ public interface Institution extends Named {
 
 	boolean isInternationalized();
 	void setInternationalized(boolean internationalized);
+	
+	boolean isUseEmailWhitelist();
+	void setUseEmailWhitelist(boolean useEmailWhitelist);
 }

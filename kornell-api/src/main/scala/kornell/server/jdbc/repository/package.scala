@@ -65,7 +65,8 @@ package object repository {
         BillingType.valueOf(rs.getString("billingType")),
         InstitutionType.valueOf(rs.getString("institutionType")),
         rs.getString("dashboardVersionUUID"),
-        rs.getBoolean("internationalized"))
+        rs.getBoolean("internationalized"),
+        rs.getBoolean("useEmailWhitelist"))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 

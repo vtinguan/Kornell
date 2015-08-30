@@ -256,6 +256,12 @@ object TOs {
     to.setInstitutionHostNames(l asJava)
     to
   }
+  
+  def newInstitutionEmailWhitelistTO(l: List[String]) = {
+    val to = tos.newInstitutionEmailWhitelistTO().as
+    to.setDomains(l asJava)
+    to
+  }
 
   def newInstitutionBillingEnrollmentReportTO: InstitutionBillingEnrollmentReportTO = new InstitutionBillingEnrollmentReportTO
   def newInstitutionBillingEnrollmentReportTO(enrollmentUUID: String, courseTitle: String, courseVersionName: String, courseClassName: String, fullName: String, username: String, firstEventFiredAt: Date): InstitutionBillingEnrollmentReportTO = {
