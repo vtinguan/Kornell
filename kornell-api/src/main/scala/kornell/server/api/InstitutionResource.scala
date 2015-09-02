@@ -20,6 +20,8 @@ import kornell.server.util.AccessDeniedErr
 import kornell.server.jdbc.repository.InstitutionHostNameRepo
 import kornell.server.jdbc.repository.InstitutionHostNameRepo
 import kornell.core.to.InstitutionHostNamesTO
+import kornell.core.to.InstitutionEmailWhitelistTO
+import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
 
 
 class InstitutionResource(uuid: String) {
@@ -78,6 +80,23 @@ class InstitutionResource(uuid: String) {
   @Path("hostnames")
   def getHostnames() = {
         InstitutionHostNameRepo(uuid).get
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .get
+   
+   @PUT
+  @Consumes(Array(InstitutionEmailWhitelistTO.TYPE))
+  @Produces(Array(InstitutionEmailWhitelistTO.TYPE))
+  @Path("emailWhitelist")
+  def updateEmailWhitelist(domains: InstitutionEmailWhitelistTO) = {
+      InstitutionEmailWhitelistRepo(uuid).updateDomains(domains)
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .get
+
+  @GET
+  @Produces(Array(InstitutionEmailWhitelistTO.TYPE))
+  @Path("emailWhitelist")
+  def getEmailWhitelist() = {
+        InstitutionEmailWhitelistRepo(uuid).get
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
    .get
 }

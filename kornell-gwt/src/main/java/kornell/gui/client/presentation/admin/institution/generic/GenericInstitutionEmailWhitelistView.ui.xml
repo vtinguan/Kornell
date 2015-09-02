@@ -1,0 +1,17 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+
+  <g:FlowPanel addStyleNames="courseClassAdmins">
+		<g:HTMLPanel addStyleNames="title">Editar Email Whitelist</g:HTMLPanel>
+		<g:Label addStyleNames="subTitle">Configure abaixo os domínios onde essa instituição deve funcionar.</g:Label>
+		<b:Form ui:field="form" addStyleNames="profileForm">
+			<g:FlowPanel ui:field="adminsFields" addStyleNames="fieldsWrapper marginTop25">		
+			</g:FlowPanel>		
+			<g:FlowPanel addStyleNames="standardButtonBar">
+				<g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
+				<g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
+			</g:FlowPanel>
+		</b:Form>		
+	</g:FlowPanel>
+
+</ui:UiBinder>

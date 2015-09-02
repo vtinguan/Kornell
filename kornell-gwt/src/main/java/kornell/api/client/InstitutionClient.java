@@ -3,6 +3,7 @@ package kornell.api.client;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Institution;
 import kornell.core.entity.Roles;
+import kornell.core.to.InstitutionEmailWhitelistTO;
 import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.RolesTO;
@@ -43,5 +44,11 @@ public class InstitutionClient extends RESTClient {
 		PUT("institutions",institutionUUID,"hostnames").withContentType(InstitutionHostNamesTO.TYPE).withEntityBody(institutionHostNamesTO).go(cb);
 	}
 
-	
+	public void getEmailWhitelist(Callback<InstitutionEmailWhitelistTO> cb) {
+		GET("institutions",institutionUUID,"emailWhitelist").go(cb);
+	}
+
+	public void updateHostnames(InstitutionEmailWhitelistTO institutionEmailWhitelistTO, Callback<InstitutionEmailWhitelistTO> cb) {
+		PUT("institutions",institutionUUID,"emailWhitelist").withContentType(InstitutionEmailWhitelistTO.TYPE).withEntityBody(institutionEmailWhitelistTO).go(cb);
+	}
 }

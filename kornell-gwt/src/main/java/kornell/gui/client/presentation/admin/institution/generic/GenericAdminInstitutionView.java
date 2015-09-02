@@ -64,6 +64,10 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	@UiField
 	FlowPanel hostnamesPanel;
 	@UiField
+	Tab emailWhitelistTab;
+	@UiField
+	FlowPanel emailWhitelistPanel;
+	@UiField
 	Tab reportsTab;
 	@UiField
 	FlowPanel reportsPanel;
@@ -100,6 +104,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	private GenericInstitutionReportsView reportsView;
 	private GenericInstitutionAdminsView adminsView;
 	private GenericInstitutionHostnamesView hostnamesView;
+	private GenericInstitutionEmailWhitelistView emailWhitelistView;
 	private EventBus bus;
 	
 	public GenericAdminInstitutionView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
@@ -136,6 +141,13 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 				}
 			});
 			
+			emailWhitelistTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildEmailWhitelistView();
+				}
+			});
+			
 			adminsTab.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -158,6 +170,12 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		hostnamesView = new GenericInstitutionHostnamesView(session, presenter, institution);
 		hostnamesPanel.clear();
 		hostnamesPanel.add(hostnamesView);
+	}
+	
+	public void buildEmailWhitelistView() {
+		emailWhitelistView = new GenericInstitutionEmailWhitelistView(session, presenter, institution);
+		emailWhitelistPanel.clear();
+		emailWhitelistPanel.add(emailWhitelistView);
 	}
 
 	public void buildReportsView() {
