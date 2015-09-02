@@ -233,7 +233,7 @@ public class GenericCourseClassConfigView extends Composite {
 
         if(session.isPlatformAdmin()){        
 	        Boolean isCourseClassChatEnabled = courseClass.isCourseClassChatEnabled() == null ? false : courseClass.isCourseClassChatEnabled();
-	        courseClassChatEnabled = new KornellFormFieldWrapper("Permitir chat global da turma?", formHelper.createCheckBoxFormField(isCourseClassChatEnabled), isInstitutionAdmin);
+	        courseClassChatEnabled = new KornellFormFieldWrapper("Permitir chat global da turma?", formHelper.createCheckBoxFormField(isCourseClassChatEnabled), session.isPlatformAdmin());
 	        fields.add(courseClassChatEnabled);
 	        profileFields.add(courseClassChatEnabled);
 	        ((CheckBox)courseClassChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -248,7 +248,7 @@ public class GenericCourseClassConfigView extends Composite {
 	
 	        
 	        Boolean isTutorChatEnabled = courseClass.isTutorChatEnabled() == null ? false : courseClass.isTutorChatEnabled();
-	        tutorChatEnabled = new KornellFormFieldWrapper("Permitir tutoria da turma?", formHelper.createCheckBoxFormField(isTutorChatEnabled), isInstitutionAdmin);
+	        tutorChatEnabled = new KornellFormFieldWrapper("Permitir tutoria da turma?", formHelper.createCheckBoxFormField(isTutorChatEnabled), session.isPlatformAdmin());
 	        fields.add(tutorChatEnabled);
 	        profileFields.add(tutorChatEnabled);
 	        ((CheckBox)tutorChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {

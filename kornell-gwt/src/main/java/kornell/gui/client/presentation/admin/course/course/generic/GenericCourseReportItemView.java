@@ -99,8 +99,8 @@ public class GenericCourseReportItemView extends Composite {
 			@Override
 			public void onClick(ClickEvent event) {
 				KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
-				String url = StringUtils.composeURL(session.getApiUrl(), "/report/courseClassInfo/?courseUUID="
-						+ course.getUUID() + "&fileType=" + (xlsCheckBox.getValue() ? "xls" : "pdf"));
+				String url = session.getApiUrl() + "/report/courseClassInfo/?courseUUID="
+						+ course.getUUID() + "&fileType=" + (xlsCheckBox.getValue() ? "xls" : "pdf");
 				Window.Location.assign(url);
 			}
 		});
