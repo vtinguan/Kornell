@@ -106,10 +106,10 @@ public class GenericInstitutionEmailWhitelistView extends Composite {
 				domains.add(multipleSelect.getValue(i));  
 			}
 			institutionEmailWhitelistTO.setDomains(domains);
-			session.institution(institution.getUUID()).updateHostnames(institutionEmailWhitelistTO, new Callback<InstitutionEmailWhitelistTO>() {
+			session.institution(institution.getUUID()).updateEmailWhitelist(institutionEmailWhitelistTO, new Callback<InstitutionEmailWhitelistTO>() {
 				@Override
 				public void ok(InstitutionEmailWhitelistTO to) {
-					KornellNotification.show("Email whitelist domains updated successfully.", AlertType.SUCCESS);
+					KornellNotification.show("Os domínios de email permitidos da instituição foram atualizados com sucesso.", AlertType.SUCCESS);
 				}
 			});
 		}

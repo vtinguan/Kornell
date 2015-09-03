@@ -28,7 +28,7 @@
       <b:Tab ui:field="hostnamesTab" icon="LINK" heading="Domínios" active="false">
         <g:FlowPanel ui:field="hostnamesPanel"></g:FlowPanel>
       </b:Tab>
-      <b:Tab ui:field="emailWhitelistTab" icon="LINK" heading="Email whitelist" active="false">
+      <b:Tab ui:field="emailWhitelistTab" icon="LINK" heading="Domínios de Email" active="false">
         <g:FlowPanel ui:field="emailWhitelistPanel"></g:FlowPanel>
       </b:Tab>
       <b:Tab ui:field="reportsTab" icon="BAR_CHART" heading="Relatórios" active="false">

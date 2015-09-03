@@ -48,7 +48,7 @@ public class InstitutionClient extends RESTClient {
 		GET("institutions",institutionUUID,"emailWhitelist").go(cb);
 	}
 
-	public void updateHostnames(InstitutionEmailWhitelistTO institutionEmailWhitelistTO, Callback<InstitutionEmailWhitelistTO> cb) {
+	public void updateEmailWhitelist(InstitutionEmailWhitelistTO institutionEmailWhitelistTO, Callback<InstitutionEmailWhitelistTO> cb) {
 		PUT("institutions",institutionUUID,"emailWhitelist").withContentType(InstitutionEmailWhitelistTO.TYPE).withEntityBody(institutionEmailWhitelistTO).go(cb);
 	}
 }

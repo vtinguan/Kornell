@@ -25,6 +25,7 @@ import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.EnrollmentLaunchTO;
 import kornell.core.to.EnrollmentsTO;
+import kornell.core.to.InstitutionEmailWhitelistTO;
 import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.LibraryFilesTO;
@@ -93,7 +94,7 @@ public class MediaTypes {
 		register(TokenTO.TYPE, TokenTO.class);
 		register(SimplePeopleTO.TYPE, SimplePeopleTO.class);
 		register(SimplePersonTO.TYPE, SimplePersonTO.class);
-		
+		register(InstitutionEmailWhitelistTO.TYPE, InstitutionEmailWhitelistTO.class);
 	}
 
 	private void register(String type, Class<?> clazz) {

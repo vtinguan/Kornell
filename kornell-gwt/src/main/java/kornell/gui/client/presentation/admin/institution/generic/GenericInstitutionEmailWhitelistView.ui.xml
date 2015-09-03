@@ -2,8 +2,8 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <g:FlowPanel addStyleNames="courseClassAdmins">
-		<g:HTMLPanel addStyleNames="title">Editar Email Whitelist</g:HTMLPanel>
-		<g:Label addStyleNames="subTitle">Configure abaixo os domínios onde essa instituição deve funcionar.</g:Label>
+		<g:HTMLPanel addStyleNames="title">Editar Domínios Permitidos Para Emails</g:HTMLPanel>
+		<g:Label addStyleNames="subTitle">Configure abaixo os domínios que poderão receber emails da instituição.</g:Label>
 		<b:Form ui:field="form" addStyleNames="profileForm">
 			<g:FlowPanel ui:field="adminsFields" addStyleNames="fieldsWrapper marginTop25">		
 			</g:FlowPanel>		
