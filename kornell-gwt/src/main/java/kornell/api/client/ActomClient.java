@@ -31,12 +31,10 @@ public class ActomClient extends RESTClient {
 		actomEntries.setEnrollmentUUID(enrollmentUUID);
 		actomEntries.setEntries(entries);
 		actomEntries.setLastModifiedAt(ClientTime.now());
-		String debug = "Entries PUT caused by: \n"+cause;
-		PUT("enrollments", enrollmentUUID, "actoms", encodedActomKey, "entries")
+		ExceptionalRequestBuilder put = PUT("enrollments", enrollmentUUID, "actoms", encodedActomKey, "entries")
 				.withContentType(ActomEntries.TYPE)
-				.withEntityBody(actomEntries)
-				.addHeader("X-KNL-DEBUG", debug )						
-				.go(callback);
+				.withEntityBody(actomEntries);
+		put.go(callback);
 	}
 
 	public void get(Callback<ActomEntries> callback) {

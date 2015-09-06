@@ -18,7 +18,6 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 	static Logger logger = Logger.getLogger(ExceptionalRequestBuilder.class.getName());
 
 	protected static final RequestCallback NOOP = new RequestCallback() {
-
 		@Override
 		public void onResponseReceived(Request request, Response response) {
 			logger.fine("NOOP ResponseReceived");
@@ -50,8 +49,7 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 
 	private Request handle(RequestException e) {
 		logger.fine(e.getMessage());
-		// TODO: what Request should be returned?
-		return null;
+		throw new RuntimeException(e);
 	}
 
 	public ExceptionalRequestBuilder addHeader(String header, String value) {
@@ -61,7 +59,7 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 
 	public void go(Callback callback) {
 		if(callback != null){
-		setCallback(callback);
+			setCallback(callback);
 		}
 		go();
 	}
@@ -70,7 +68,7 @@ public class ExceptionalRequestBuilder extends RequestBuilder {
 		try {
 			if (getCallback() == null) {
 				setCallback(NOOP);
-			}
+			}			
 			send();
 		} catch (RequestException e) {
 			handle(e);

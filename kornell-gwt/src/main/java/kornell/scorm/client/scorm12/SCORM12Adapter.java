@@ -7,6 +7,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 
@@ -150,7 +151,8 @@ public class SCORM12Adapter implements CMIConstants {
 			}
 		}
 		CMITree dataModel = getDataModel(syncEnrollmentUUID,syncActomKey);		
-		if (dataModel != null && dataModel.isDirty()) {
+		boolean isDirty = dataModel.isDirty();
+		if (dataModel != null && isDirty) {
 			//GWT.debugger();
 			client.enrollment(syncEnrollmentUUID)
 				  .actom(syncActomKey)
