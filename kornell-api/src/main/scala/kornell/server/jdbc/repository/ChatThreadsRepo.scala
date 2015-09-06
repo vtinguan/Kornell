@@ -203,9 +203,9 @@ object ChatThreadsRepo {
   
   def getTotalUnreadCountsByPersonPerThread(personUUID: String, institutionUUID: String) = {
     TOs.newUnreadChatThreadsTO(sql"""
-				| select count(unreadMessages) as unreadMessages, chatThreadUUID, threadType, creatorName, entityName, entityUUID
+				| select count(unreadMessage) as unreadMessages, chatThreadUUID, threadType, creatorName, entityName, entityUUID
 				| from (
-					| select tm.uuid as unreadMessages,
+					| select distinct tm.uuid as unreadMessage,
 						| countByCC.chatThreadUUID,
 						| countByCC.courseClassUUID,
 						| countByCC.threadLastReadAt,
