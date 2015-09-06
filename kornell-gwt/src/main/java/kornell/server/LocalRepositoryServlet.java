@@ -117,6 +117,7 @@ public class LocalRepositoryServlet extends HttpServlet {
 			put(".txt", "text/plain");
 			put(".html", "text/html");
 			put(".js", "application/javascript");
+			put(".css", "text/css");
 		}
 	};
 
