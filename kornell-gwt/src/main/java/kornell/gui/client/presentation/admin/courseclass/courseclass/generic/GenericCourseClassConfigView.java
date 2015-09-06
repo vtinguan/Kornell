@@ -231,37 +231,37 @@ public class GenericCourseClassConfigView extends Composite {
             }
         });
 
+        if(session.isPlatformAdmin()){        
+	        Boolean isCourseClassChatEnabled = courseClass.isCourseClassChatEnabled() == null ? false : courseClass.isCourseClassChatEnabled();
+	        courseClassChatEnabled = new KornellFormFieldWrapper("Permitir chat global da turma?", formHelper.createCheckBoxFormField(isCourseClassChatEnabled), isInstitutionAdmin);
+	        fields.add(courseClassChatEnabled);
+	        profileFields.add(courseClassChatEnabled);
+	        ((CheckBox)courseClassChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+	            @Override
+	            public void onValueChange(ValueChangeEvent<Boolean> event) {
+	                if(event.getValue()){
+	                    showModal(MODAL_COURSE_CLASS_CHAT_ENABLED);
+	                    ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(false);
+	                }
+	            }
+	        });
+	
+	        
+	        Boolean isTutorChatEnabled = courseClass.isTutorChatEnabled() == null ? false : courseClass.isTutorChatEnabled();
+	        tutorChatEnabled = new KornellFormFieldWrapper("Permitir tutoria da turma?", formHelper.createCheckBoxFormField(isTutorChatEnabled), isInstitutionAdmin);
+	        fields.add(tutorChatEnabled);
+	        profileFields.add(tutorChatEnabled);
+	        ((CheckBox)tutorChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+	            @Override
+	            public void onValueChange(ValueChangeEvent<Boolean> event) {
+	                if(event.getValue()){
+	                    showModal(MODAL_TUTOR_CHAT_ENABLED);
+	                    ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(false);
+	                }
+	            }
+	        });
+        }
         
-        Boolean isCourseClassChatEnabled = courseClass.isCourseClassChatEnabled() == null ? false : courseClass.isCourseClassChatEnabled();
-        courseClassChatEnabled = new KornellFormFieldWrapper("Permitir chat global da turma?", formHelper.createCheckBoxFormField(isCourseClassChatEnabled), isInstitutionAdmin);
-        fields.add(courseClassChatEnabled);
-        profileFields.add(courseClassChatEnabled);
-        ((CheckBox)courseClassChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                if(event.getValue()){
-                    showModal(MODAL_COURSE_CLASS_CHAT_ENABLED);
-                    ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(false);
-                }
-            }
-        });
-
-        
-        Boolean isTutorChatEnabled = courseClass.isTutorChatEnabled() == null ? false : courseClass.isTutorChatEnabled();
-        tutorChatEnabled = new KornellFormFieldWrapper("Permitir tutoria da turma?", formHelper.createCheckBoxFormField(isTutorChatEnabled), isInstitutionAdmin);
-        fields.add(tutorChatEnabled);
-        profileFields.add(tutorChatEnabled);
-        ((CheckBox)tutorChatEnabled.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                if(event.getValue()){
-                    showModal(MODAL_TUTOR_CHAT_ENABLED);
-                    ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(false);
-                }
-            }
-        });
-        
-
         final ListBox registrationTypes = new ListBox();
         registrationTypes.addItem("Email", RegistrationType.email.toString());
         registrationTypes.addItem("CPF", RegistrationType.cpf.toString());
