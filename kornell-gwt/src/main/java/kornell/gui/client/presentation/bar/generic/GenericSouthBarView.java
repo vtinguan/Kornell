@@ -78,7 +78,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 				Dean.getInstance().getCourseClassTO().getEnrollment() != null &&
 				EnrollmentState.enrolled.equals(Dean.getInstance().getCourseClassTO().getEnrollment().getState())) {
 			if(currentSouthBar != ACTIVITY_BAR){
-				GWT.log("show it");
 				currentSouthBar = ACTIVITY_BAR;
 				barView = getActivityBarView();
 				showSouthBar(barView);
@@ -92,7 +91,6 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	}
 	
 	private void hideSouthBar(final IsWidget barView){
-		GWT.log("hide it");
 		scrollPanel.removeStyleName("offsetSouthBar");
 		if(barView == null){
 			setVisible(false);
