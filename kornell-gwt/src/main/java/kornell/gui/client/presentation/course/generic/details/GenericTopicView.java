@@ -46,7 +46,8 @@ public class GenericTopicView extends Composite {
 	private CourseClassTO currentCourse;
 	private int index;
 	private boolean enableAnchorOnFirstChild;
-
+	private boolean show = false;
+	
 	@UiField
 	CollapseTrigger trigger;
 	@UiField
@@ -93,6 +94,14 @@ public class GenericTopicView extends Composite {
 		};
 		timer.schedule(500);
 	}
+	
+	public void show(boolean show){
+		this.show = show;
+		//don't touch collapse before we assign the toggle's id
+		if(collapse.getId().startsWith("toggle") && show){
+			collapse.show();
+		}
+	}
 
 	private void display() {
 		trigger.setTarget("#toggle" + index);
@@ -137,6 +146,13 @@ public class GenericTopicView extends Composite {
 		}
 
 		topicWrapper.removeStyleName("shy");
+
+		
+		new Timer() {
+			public void run() {
+				show(show);
+			}
+		}.schedule(2000);
 	}
 
 	private void updateIconURL(boolean isOpened) {

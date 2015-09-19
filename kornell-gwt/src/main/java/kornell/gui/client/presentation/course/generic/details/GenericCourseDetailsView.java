@@ -342,6 +342,10 @@ public class GenericCourseDetailsView extends Composite {
 				}
 			}
 		}
+		//When there's only one topic it should appear expanded by default
+		if(topicsPanel.getWidgetCount() == 1){
+			((GenericTopicView)topicsPanel.getWidget(0)).show(true);
+		}
 	}
 
 	private void displayTitle() {

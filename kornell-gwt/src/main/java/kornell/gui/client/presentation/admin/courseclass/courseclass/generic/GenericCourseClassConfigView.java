@@ -295,10 +295,7 @@ public class GenericCourseClassConfigView extends Composite {
             });
         }
 
-
-
         profileFields.add(formHelper.getImageSeparator());
-
     }
 
     private void loadInstitutionPrefixes() {
