@@ -33,6 +33,7 @@ import kornell.gui.client.validation.CPFValidator;
 import kornell.gui.client.validation.EmailValidator;
 import kornell.gui.client.validation.ValidationChangedHandler;
 
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -43,6 +44,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -87,7 +90,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private UserInfoTO user;
 	
 	
-	private KornellFormFieldWrapper cpf, email, username, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate;
+	private KornellFormFieldWrapper cpf, email, username, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate, receiveEmailCommunication;
 	private List<KornellFormFieldWrapper> fields;
 	private Button btnChangePassword, btnSendMessage, btnEdit, btnClose, btnOK, btnCancel;
 	private ClientFactory clientFactory;
@@ -331,14 +334,17 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			person.setAddressLine2(addressLine2.getFieldPersistText());
 			person.setPostalCode(postalCode.getFieldPersistText());
 		}
+		
+		person.setReceiveEmailCommunication(receiveEmailCommunication.getFieldPersistText().equals("true"));
+		
 
-    if("".equals(person.getCPF())) 
-    	person.setCPF(null);
-    if("".equals(person.getEmail())) 
-    	person.setEmail(null);
-    
-    userTmp.setPerson(person);
-		return userTmp;
+	    if("".equals(person.getCPF())) 
+	    	person.setCPF(null);
+	    if("".equals(person.getEmail())) 
+	    	person.setEmail(null);
+	    
+	    userTmp.setPerson(person);
+			return userTmp;
 	}
 
 	void doCancel(ClickEvent e) {
@@ -460,6 +466,17 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			fields.add(birthDate);
 			profileFields.add(birthDate);
 		}
+
+		receiveEmailCommunication = new KornellFormFieldWrapper("Receber emails da plataforma?", formHelper.createCheckBoxFormField(user.getPerson().isReceiveEmailCommunication()), isEditMode);
+		fields.add(receiveEmailCommunication);
+		profileFields.add(receiveEmailCommunication);
+		((CheckBox)receiveEmailCommunication.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
+				}
+			}
+		});
 
 		if((isCurrentUser || isAdmin)&& showContactDetails){
 			displayContactDetails();

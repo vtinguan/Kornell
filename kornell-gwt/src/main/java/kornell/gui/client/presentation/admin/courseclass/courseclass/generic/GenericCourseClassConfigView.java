@@ -57,6 +57,7 @@ public class GenericCourseClassConfigView extends Composite {
     private static final String MODAL_DELETE = "delete";
     private static final String MODAL_DEACTIVATE = "deactivate";
     private static final String MODAL_PUBLIC = "public";
+    private static final String MODAL_APPROVE_EMAILS_AUTOMATICALLY = "approveEnrollmentsAutomatically";
     private static final String MODAL_OVERRIDE_ENROLLMENTS = "overrideEnrollments";
     private static final String MODAL_INVISIBLE = "invisible";
     private static final String MODAL_ALLOW_BATCH_CANCELLATION = "allowBatchCancellation";
@@ -96,7 +97,7 @@ public class GenericCourseClassConfigView extends Composite {
 
     private CourseClassTO courseClassTO;
     private CourseClass courseClass;
-    private KornellFormFieldWrapper course, courseVersion, name, publicClass,
+    private KornellFormFieldWrapper course, courseVersion, name, publicClass, approveEnrollmentsAutomatically,
     requiredScore, registrationType, institutionRegistrationPrefix, maxEnrollments, overrideEnrollments, invisible, allowBatchCancellation, courseClassChatEnabled, tutorChatEnabled;
     private List<KornellFormFieldWrapper> fields;
     private String modalMode;
@@ -179,9 +180,28 @@ public class GenericCourseClassConfigView extends Composite {
         ((CheckBox)publicClass.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
+                GWT.log("check " + event.getValue());
                 if(event.getValue()){
                     showModal(MODAL_PUBLIC);
                     ((CheckBox)publicClass.getFieldWidget()).setValue(false);
+                } else {
+                    ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setValue(false);
+                    ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setEnabled(false);
+                }
+            }
+        });
+
+        Boolean isApproveEnrollmentsAutomatically = courseClass.isApproveEnrollmentsAutomatically() == null ? false : courseClass.isApproveEnrollmentsAutomatically();
+        approveEnrollmentsAutomatically = new KornellFormFieldWrapper("Aprovar matrículas automaticamente?", formHelper.createCheckBoxFormField(isApproveEnrollmentsAutomatically), isInstitutionAdmin);
+        ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setEnabled(courseClass.isPublicClass());
+        fields.add(approveEnrollmentsAutomatically);
+        profileFields.add(approveEnrollmentsAutomatically);
+        ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if(event.getValue()){
+                    showModal(MODAL_APPROVE_EMAILS_AUTOMATICALLY);
+                    ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setValue(false);
                 }
             }
         });
@@ -417,6 +437,7 @@ public class GenericCourseClassConfigView extends Composite {
         courseClass.setName(name.getFieldPersistText());
         courseClass.setCourseVersionUUID(courseVersion.getFieldPersistText());
         courseClass.setPublicClass(publicClass.getFieldPersistText().equals("true"));
+        courseClass.setApproveEnrollmentsAutomatically(approveEnrollmentsAutomatically.getFieldPersistText().equals("true"));
         courseClass.setMaxEnrollments(new Integer(maxEnrollments.getFieldPersistText()));
         courseClass.setRequiredScore(requiredScore.getFieldPersistText().length() > 0 ?
                 new BigDecimal(requiredScore.getFieldPersistText()) :
@@ -463,6 +484,8 @@ public class GenericCourseClassConfigView extends Composite {
                     + "\nEsta operação não pode ser desfeita.");
         } else if (MODAL_PUBLIC.equals(modalMode)){
             confirmText.setText("ATENÇÃO! Tem certeza que deseja tornar esta turma pública? Ela será visível e disponível para solicitação de matrícula para TODOS os alunos registrados nesta instituição.");
+        } else if (MODAL_APPROVE_EMAILS_AUTOMATICALLY.equals(modalMode)){
+            confirmText.setText("ATENÇÃO! Tem certeza que deseja aprovar as matrículas automaticamente? Toda vez que um participante solicitar uma matrícula, ele poderá iniciar o curso instantaneamente.");
         } else if (MODAL_OVERRIDE_ENROLLMENTS.equals(modalMode)){
             confirmText.setText("ATENÇÃO! Tem certeza que deseja habilitar a sobrescrita de matrículas? Toda vez que uma matrícula em lote for feita, todas as matrículas já existentes que não estão presentes no lote serão canceladas.");
         } else if (MODAL_INVISIBLE.equals(modalMode)){
@@ -486,11 +509,16 @@ public class GenericCourseClassConfigView extends Composite {
         } else if (MODAL_PUBLIC.equals(modalMode)){
             ((CheckBox)publicClass.getFieldWidget()).setValue(true);
             ((CheckBox)invisible.getFieldWidget()).setValue(false);
+            ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setEnabled(true);
+        } else if (MODAL_APPROVE_EMAILS_AUTOMATICALLY.equals(modalMode)){
+            ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setValue(true);
         } else if (MODAL_OVERRIDE_ENROLLMENTS.equals(modalMode)){
             ((CheckBox)overrideEnrollments.getFieldWidget()).setValue(true);
         } else if (MODAL_INVISIBLE.equals(modalMode)){
             ((CheckBox)invisible.getFieldWidget()).setValue(true);
             ((CheckBox)publicClass.getFieldWidget()).setValue(false);
+            ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setValue(false);
+            ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setEnabled(false);
         } else if (MODAL_ALLOW_BATCH_CANCELLATION.equals(modalMode)){
             ((CheckBox)allowBatchCancellation.getFieldWidget()).setValue(true);
         } else if (MODAL_COURSE_CLASS_CHAT_ENABLED.equals(modalMode)){
