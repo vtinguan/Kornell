@@ -284,7 +284,8 @@ object Entities {
     institutionRegistrationPrefixUUID: String = null,
     courseClassChatEnabled: Boolean = false,
     allowBatchCancellation: Boolean = false,
-    tutorChatEnabled: Boolean = false) = {
+    tutorChatEnabled: Boolean = false,
+    approveEnrollmentsAutomatically: Boolean = false) = {
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -303,6 +304,7 @@ object Entities {
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
     clazz.setAllowBatchCancellation(allowBatchCancellation)
 	clazz.setTutorChatEnabled(tutorChatEnabled)
+	clazz.setApproveEnrollmentsAutomatically(approveEnrollmentsAutomatically)
     clazz
   }
 

@@ -38,7 +38,7 @@ class EnrollmentsResource {
   }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  AccessDeniedErr() )
   .requiring(CourseClassRepo(enrollment.getCourseClassUUID()).get.isPublicClass() == true, AccessDeniedErr())
   .requiring(enrollment.getState.equals(EnrollmentState.requested) || 
-      (enrollment.getState.equals(EnrollmentState.enrolled) && CourseClassRepo(enrollment.getCourseClassUUID()).get.isPublicClass()/*isApproveEnrollmentsAutomatically*/ == true), AccessDeniedErr())
+      (enrollment.getState.equals(EnrollmentState.enrolled) && CourseClassRepo(enrollment.getCourseClassUUID()).get.isApproveEnrollmentsAutomatically == true), AccessDeniedErr())
   .get
 
   @GET

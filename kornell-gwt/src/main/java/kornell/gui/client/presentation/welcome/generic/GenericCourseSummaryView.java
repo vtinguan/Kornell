@@ -216,7 +216,7 @@ public class GenericCourseSummaryView extends Composite {
 				enrollment.setCourseClassUUID(courseClassTO.getCourseClass()
 						.getUUID());
 				enrollment.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
-				enrollment.setState(courseClassTO.getCourseClass().isPublicClass()/*isApproveEnrollmentsAutomatically*/ ? EnrollmentState.enrolled : EnrollmentState.requested);
+				enrollment.setState(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? EnrollmentState.enrolled : EnrollmentState.requested);
 				session.enrollments().createEnrollment(enrollment,
 						new Callback<Enrollment>() {
 							@Override

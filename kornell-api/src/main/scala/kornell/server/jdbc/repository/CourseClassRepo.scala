@@ -34,7 +34,8 @@ class CourseClassRepo(uuid:String) {
 		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID},
 		  		cc.courseClassChatEnabled = ${courseClass.isCourseClassChatEnabled},
 		  		cc.allowBatchCancellation = ${courseClass.isAllowBatchCancellation},
-		  		cc.tutorChatEnabled = ${courseClass.isTutorChatEnabled}
+		  		cc.tutorChatEnabled = ${courseClass.isTutorChatEnabled},
+		  		cc.approveEnrollmentsAutomatically = ${courseClass.isApproveEnrollmentsAutomatically}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate 
 	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    courseClass

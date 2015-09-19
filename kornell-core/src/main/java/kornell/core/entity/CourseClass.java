@@ -50,4 +50,7 @@ public interface CourseClass extends Named{
 	
 	Boolean isTutorChatEnabled();
 	void setTutorChatEnabled(Boolean tutorChatEnabled);
+	
+	Boolean isApproveEnrollmentsAutomatically();
+	void setApproveEnrollmentsAutomatically(Boolean approveEnrollmentsAutomatically);
 }
