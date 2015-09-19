@@ -79,7 +79,7 @@ object EmailService {
   
   //TODO: Consider ASYNC
   def sendEmailEnrolled(person: Person, institution: Institution, course: Course, enrollment: Enrollment) = {
-    if (checkWhitelistForDomain(institution, person.getEmail) && person.getReceiveEmailCommunication) {
+    if (checkWhitelistForDomain(institution, person.getEmail) && person.isReceiveEmailCommunication) {
       val subject = "Você foi matriculado no curso " + course.getTitle
       val from = getFromEmail(institution)
       val to = person.getEmail
@@ -110,7 +110,7 @@ object EmailService {
   }
   
   def sendEmailNewChatThread(person: Person, institution: Institution, courseClass: CourseClass, chatThread: ChatThread) = {
-    if (checkWhitelistForDomain(institution, person.getEmail) && person.getReceiveEmailCommunication) {
+    if (checkWhitelistForDomain(institution, person.getEmail) && person.isReceiveEmailCommunication) {
       val subject = "New  " + chatThread.getThreadType.toLowerCase.capitalize + " thread created for " + courseClass.getName
       val from = getFromEmail(institution)
       val to = person.getEmail
