@@ -1,5 +1,8 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import kornell.core.entity.CourseClassState;
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentState;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.HideSouthBarEventHandler;
@@ -71,8 +74,11 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 				barView = getAdminBarView(newPlace);
 				showSouthBar(barView);
 			}
-		} else if (newPlace instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null) {
+		} else if (newPlace instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null && 
+				Dean.getInstance().getCourseClassTO().getEnrollment() != null &&
+				EnrollmentState.enrolled.equals(Dean.getInstance().getCourseClassTO().getEnrollment().getState())) {
 			if(currentSouthBar != ACTIVITY_BAR){
+				GWT.log("show it");
 				currentSouthBar = ACTIVITY_BAR;
 				barView = getActivityBarView();
 				showSouthBar(barView);
@@ -86,6 +92,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	}
 	
 	private void hideSouthBar(final IsWidget barView){
+		GWT.log("hide it");
 		scrollPanel.removeStyleName("offsetSouthBar");
 		if(barView == null){
 			setVisible(false);

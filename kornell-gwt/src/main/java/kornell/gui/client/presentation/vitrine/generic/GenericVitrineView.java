@@ -141,6 +141,9 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			}
 		};
 		pwdPassword.addKeyPressHandler(kpHandler);
+		suPasswordConfirm.addKeyPressHandler(kpHandler);
+		fpEmail.addKeyPressHandler(kpHandler);
+		newPasswordConfirm.addKeyPressHandler(kpHandler);
 		
 		txtUsername.getElement().setAttribute("autocorrect", "off");
 		txtUsername.getElement().setAttribute("autocapitalize", "off");

@@ -100,7 +100,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			this.grade = "-";
 			
 			Enrollment enrollment = currentCourseClass != null? currentCourseClass.getEnrollment() : null;
-			Integer progress = enrollment != null ? enrollment.getProgress() : -1;
+			Integer progress = enrollment != null && enrollment.getProgress() != null ? enrollment.getProgress() : -1;
 			courseClassComplete = progress >= 100;
 			Assessment assessment = enrollment != null ? enrollment.getAssessment() : null; 
 			approvedOnTest = Assessment.PASSED.equals(assessment);
