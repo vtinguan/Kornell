@@ -13,6 +13,7 @@ import  kornell.core.util.StringUtils._
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.Enrollment
 import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
+import kornell.core.entity.ChatThread
 
 object EmailService {
   
@@ -103,6 +104,27 @@ object EmailService {
     		"""<p>&nbsp;</p>""" +
     		getSignature(institution, from))
 			
+      val imgFile = getInstitutionLogoImage(institution)
+      EmailSender.sendEmail(subject, from, to, body, imgFile)
+    }
+  }
+  
+  def sendEmailNewChatThread(person: Person, institution: Institution, courseClass: CourseClass, chatThread: ChatThread) = {
+    if (checkWhitelistForDomain(institution, person.getEmail) && person.getReceiveEmailCommunication) {
+      val subject = "New  " + chatThread.getThreadType.toLowerCase.capitalize + " thread created for " + courseClass.getName
+      val from = getFromEmail(institution)
+      val to = person.getEmail
+      
+      val actionLink = institution.getBaseURL + "#message:"
+      val body = wrapBody("""
+            <p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
+            <p>&nbsp;</p>
+            <p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + """ no curso """+ courseClass.getName +""" oferecido pela """+ institution.getFullName +""".</p> 
+            <p>Clique no bot&atilde;o abaixo para ir ao curso.</p> """ +
+            getActionButton(actionLink, "Acessar o Curso") + 
+            """<p>&nbsp;</p>""" +
+            getSignature(institution, from))
+            
       val imgFile = getInstitutionLogoImage(institution)
       EmailSender.sendEmail(subject, from, to, body, imgFile)
     }
