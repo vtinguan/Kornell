@@ -98,7 +98,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private Institution institution;
 
-	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername;
+	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private GenericInstitutionReportsView reportsView;
@@ -281,15 +281,23 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 				}
 			}
 		});
+
+		useEmailWhitelist = new KornellFormFieldWrapper("Configurar domínios para emails?", formHelper.createCheckBoxFormField(institution.isUseEmailWhitelist()), isPlatformAdmin);
+		fields.add(useEmailWhitelist);
+		institutionFields.add(useEmailWhitelist);
+		((CheckBox)useEmailWhitelist.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()){
+				}
+			}
+		});
 		
 		terms = new KornellFormFieldWrapper("Termos de Uso", formHelper.createTextAreaFormField(institution.getTerms(), 20), isPlatformAdmin);
 		terms.addStyleName("heightAuto");
 		terms.addStyleName("marginBottom25");
 		fields.add(terms);
 		institutionFields.add(terms);
-
-		
-		//name, fullName, terms, assetsURL, baseURL, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername
 		
 		institutionFields.add(formHelper.getImageSeparator());
 
@@ -334,6 +342,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setValidatePersonContactDetails(validatePersonContactDetails.getFieldPersistText().equals("true"));
 		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));
 		institution.setAllowRegistrationByUsername(allowRegistrationByUsername.getFieldPersistText().equals("true"));
+		institution.setUseEmailWhitelist(useEmailWhitelist.getFieldPersistText().equals("true"));
 		return institution;
 	}
 
