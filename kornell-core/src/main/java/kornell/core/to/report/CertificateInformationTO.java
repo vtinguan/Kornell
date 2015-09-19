@@ -9,6 +9,7 @@ public class CertificateInformationTO {
 	String courseClassName;
 	String assetsURL;
 	String distributionPrefix;
+	String courseVersionUUID;
 	Date courseClassFinishedDate;
 	
 	public String getPersonFullName() {
@@ -52,6 +53,12 @@ public class CertificateInformationTO {
 	}
 	public void setCourseClassFinishedDate(Date courseClassFinishedDate) {
 		this.courseClassFinishedDate = courseClassFinishedDate;
+	}
+	public String getCourseVersionUUID() {
+		return courseVersionUUID;
+	}
+	public void setCourseVersionUUID(String courseVersionUUID) {
+		this.courseVersionUUID = courseVersionUUID;
 	}
 	
 }

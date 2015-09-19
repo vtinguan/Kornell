@@ -24,11 +24,12 @@ object ReportCertificateGenerator {
       rs.getString("name"),
       rs.getDate("certifiedAt"),
       rs.getString("assetsURL"),
-      rs.getString("distributionPrefix"))
+      rs.getString("distributionPrefix"),
+      rs.getString("courseVersionUUID"))
       
    def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
     generateCertificateReport(sql"""
-				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt
+				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
 	    	from Person p
 					join Enrollment e on p.uuid = e.person_uuid
 					join CourseClass cc on cc.uuid = e.class_uuid
@@ -51,7 +52,7 @@ object ReportCertificateGenerator {
   }
   
   def getCertificateInformationTOsByCourseClass(courseClassUUID: String, enrollments: String) = {
-    var sql = """select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt 
+    var sql = """select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
       from Person p 
       join Enrollment e on p.uuid = e.person_uuid 
       join CourseClass cc on cc.uuid = e.class_uuid 
@@ -77,7 +78,7 @@ object ReportCertificateGenerator {
     parameters.put("assetsURL", assetsURL + "/")
 	  
   	//store one jasperfile per course
-    val fileName = System.getProperty("java.io.tmpdir") + "/tmp-" + certificateData.head.getCourseTitle + ".jasper"
+    val fileName = System.getProperty("java.io.tmpdir") + "/tmp-" + certificateData.head.getCourseVersionUUID + ".jasper"
     val jasperFile: File = new File(fileName)
         
     /*val diff = new Date().getTime - jasperFile.lastModified

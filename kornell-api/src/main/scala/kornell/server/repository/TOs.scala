@@ -138,7 +138,7 @@ object TOs {
   }
 
   def newCertificateInformationTO: CertificateInformationTO = new CertificateInformationTO
-  def newCertificateInformationTO(personFullName: String, personCPF: String, courseTitle: String, courseClassName: String, courseClassFinishedDate: Date, assetsURL: String, distributionPrefix: String): CertificateInformationTO = {
+  def newCertificateInformationTO(personFullName: String, personCPF: String, courseTitle: String, courseClassName: String, courseClassFinishedDate: Date, assetsURL: String, distributionPrefix: String, courseVersionUUID: String): CertificateInformationTO = {
     val to = newCertificateInformationTO
     to.setPersonFullName(personFullName)
     to.setPersonCPF(personCPF)
@@ -147,6 +147,7 @@ object TOs {
     to.setCourseClassFinishedDate(courseClassFinishedDate)
     to.setAssetsURL(assetsURL)
     to.setDistributionPrefix(distributionPrefix)
+    to.setCourseVersionUUID(courseVersionUUID)
     to
   }
 
