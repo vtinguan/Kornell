@@ -17,7 +17,7 @@ import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
 object EmailService {
   
   def sendEmailBatchEnrollment(person: Person, institution: Institution, courseClass: CourseClass) = {
-    if (checkWhitelistForDomain(institution, person.getEmail)) {
+    if (checkWhitelistForDomain(institution, person.getEmail) && person.getReceiveEmailCommunication) {
       val subject = "A geração de matrículas foi concluída."
       val from = getFromEmail(institution)
       val to = person.getEmail
