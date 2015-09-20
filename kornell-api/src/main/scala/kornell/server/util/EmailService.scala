@@ -28,7 +28,7 @@ object EmailService {
     		<p>A geração de matrículas na turma """ + courseClass.getName + """ foi concluída.</p> """ +
     		getActionButton(institution.getBaseURL+"#a.courseClass:"+courseClass.getUUID, "Ir para a turma") + """
     		<p>&nbsp;</p>""" +
-    		getSignature(institution, from))
+    		getSignature(institution))
 			
       val imgFile = getInstitutionLogoImage(institution)
       EmailSender.sendEmail(subject, from, to, body, imgFile)
@@ -49,7 +49,7 @@ object EmailService {
     		<p>Depois da ativa&ccedil;&atilde;o voc&ecirc;  poder&aacute; acessar os cursos dispon&iacute;veis para voc&ecirc;, assim como todos os recursos deste ambiente.</p>
     		<p>Aproveite para trocar experi&ecirc;ncias e ampliar o seu conhecimento.</p>
     		<p>&nbsp;</p>""" +
-    		getSignature(institution, from))
+    		getSignature(institution))
 			
       val imgFile = getInstitutionLogoImage(institution)
       EmailSender.sendEmail(subject, from, to, body, imgFile)
@@ -70,7 +70,7 @@ object EmailService {
     		getActionButton(actionLink, "Alterar senha") + """
     		<p>Caso n&atilde;o tenha requisitado esta mudan&ccedil;a, favor ignorar esta mensagem.</p>
     		<p>&nbsp;</p>""" +
-    		getSignature(institution, from))
+    		getSignature(institution))
 			
       val imgFile = getInstitutionLogoImage(institution)
       EmailSender.sendEmail(subject, from, to, body, imgFile)
@@ -102,33 +102,39 @@ object EmailService {
     		getActionButton(actionLink, "Acessar o Curso") + 
     		hasPasswordStr +
     		"""<p>&nbsp;</p>""" +
-    		getSignature(institution, from))
+    		getSignature(institution))
 			
       val imgFile = getInstitutionLogoImage(institution)
       EmailSender.sendEmail(subject, from, to, body, imgFile)
     }
   }
   
-  def sendEmailNewChatThread(person: Person, institution: Institution, courseClass: CourseClass, chatThread: ChatThread) = {
+  def sendEmailNewChatThread(person: Person, institution: Institution, courseClass: CourseClass, chatThread: ChatThread, message: String) = {
     if (checkWhitelistForDomain(institution, person.getEmail) && person.isReceiveEmailCommunication) {
       val subject = "Uma nova conversa " + {
         if("SUPPORT".equalsIgnoreCase(chatThread.getThreadType))
-          "de suporte "
+          "de ajuda "
         else if("TUTORING".equalsIgnoreCase(chatThread.getThreadType))
           "de tutoria "
           } + "criada para a turma: " + courseClass.getName
       val from = getFromEmail(institution)
       val to = person.getEmail
+      val participant = PersonRepo(chatThread.getPersonUUID).get
       
       val actionLink = institution.getBaseURL + "#message:"
       val body = wrapBody("""
             <p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
             <p>&nbsp;</p>
             <p>""" + subject +""".</p> 
+            <p>&nbsp;</p>
+            <p>Participante: """ + participant.getFullName + """  (""" + participant.getEmail + """)""" +""".</p> 
+            <p>&nbsp;</p>
+            <p>Mensagem: <br />""" + message.replace("\n", "<br />\n") + """ </p>
+            <p>&nbsp;</p>
             <p>Clique no bot&atilde;o abaixo para acessar a conversa.</p> """ +
             getActionButton(actionLink, "Acessar a Conversa") + 
             """<p>&nbsp;</p>""" +
-            getSignature(institution, from))
+    		"""<img alt="" src="cid:logo" style="width: 300px;height: 80px;margin: 0 auto;display: block;">""")
             
       val imgFile = getInstitutionLogoImage(institution)
       EmailSender.sendEmail(subject, from, to, body, imgFile)
@@ -145,7 +151,7 @@ object EmailService {
 		</div>
     """
   
-  private def getSignature(institution: Institution, from: String): String = 
+  private def getSignature(institution: Institution): String = 
     """
 	  	<p>Cordialmente,</p>
 	  	<p><b>Equipe """ + institution.getFullName + """</b></p>

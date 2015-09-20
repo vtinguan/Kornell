@@ -178,7 +178,6 @@ public class GenericCourseClassConfigView extends Composite {
         ((CheckBox)publicClass.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                GWT.log("check " + event.getValue());
                 if(event.getValue()){
                     showModal(MODAL_PUBLIC);
                     ((CheckBox)publicClass.getFieldWidget()).setValue(false);
@@ -191,7 +190,6 @@ public class GenericCourseClassConfigView extends Composite {
 
         Boolean isApproveEnrollmentsAutomatically = courseClass.isApproveEnrollmentsAutomatically() == null ? false : courseClass.isApproveEnrollmentsAutomatically();
         approveEnrollmentsAutomatically = new KornellFormFieldWrapper("Auto-aprovar matrículas?", formHelper.createCheckBoxFormField(isApproveEnrollmentsAutomatically), isInstitutionAdmin);
-        ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setEnabled(courseClass.isPublicClass());
         fields.add(approveEnrollmentsAutomatically);
         profileFields.add(approveEnrollmentsAutomatically);
         ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {

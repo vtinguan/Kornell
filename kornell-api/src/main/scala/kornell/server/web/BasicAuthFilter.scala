@@ -88,18 +88,20 @@ class BasicAuthFilter extends Filter {
           resp.setContentType(KornellErrorTO.TYPE)
           resp.setStatus(401)
           resp.setCharacterEncoding("UTF-8")
-          var cookies = "";
-          val l = req.getCookies()
-          for( a <- 0 to (l.length - 1)){
-	         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
+	      var cookies = "";
+	      val l = req.getCookies()
+	      if(l != null){
+	          cookies = req.getCookies().length+" - "+
+	        		  req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).length+" - "
+		      for( a <- 0 to (l.length - 1)){
+		         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
+		      }
 	      }
-          val x = "{\"messageKey\":\"mustAuthenticate"+
-              " - "+auth+
-              " - "+req.getCookies().length+
-              " - "+req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).length+
-              " - "+X_KNL_TOKEN+
-              " - "+cookies+
-              "\"}"
+	      val x = "{\"messageKey\":\"mustAuthenticate"+
+	          " - "+auth+
+	          " - "+X_KNL_TOKEN+
+	          " - "+cookies+
+	          "\"}"
           resp.getWriter().write(x)
         } else {
           ThreadLocalAuthenticator.setAuthenticatedPersonUUID(token.get.getPersonUUID)
@@ -109,13 +111,15 @@ class BasicAuthFilter extends Filter {
     } else {
       var cookies = "";
       val l = req.getCookies()
-      for( a <- 0 to (l.length - 1)){
-         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
+      if(l != null){
+          cookies = req.getCookies().length+" - "+
+        		  req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).length+" - "
+	      for( a <- 0 to (l.length - 1)){
+	         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
+	      }
       }
       val x = "{\"messageKey\":\"mustAuthenticate"+
           " - "+auth+
-          " - "+req.getCookies().length+
-          " - "+req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).length+
           " - "+X_KNL_TOKEN+
           " - "+cookies+
           "\"}"

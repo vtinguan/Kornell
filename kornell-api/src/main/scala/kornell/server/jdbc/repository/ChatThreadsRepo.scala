@@ -46,7 +46,7 @@ object ChatThreadsRepo {
         val chatThread = createChatThread(courseClass.getInstitutionUUID, courseClass.getUUID, personUUID, threadType)
         updateChatThreadParticipants(chatThread.getUUID, personUUID, courseClass, threadType)
         createChatThreadMessage(chatThread.getUUID, personUUID, message)
-        sendEmailForThreadCreation(courseClass, chatThread, threadType)
+        sendEmailForThreadCreation(courseClass, chatThread, threadType, message)
       } else {
       	createChatThreadMessage(chatThreadUUID.get, personUUID, message)
       }
@@ -77,13 +77,13 @@ object ChatThreadsRepo {
     }
   }
   
-  def sendEmailForThreadCreation(courseClass: CourseClass, chatThread: ChatThread, threadType: ChatThreadType) = {
+  def sendEmailForThreadCreation(courseClass: CourseClass, chatThread: ChatThread, threadType: ChatThreadType, message: String) = {
     val institution = new InstitutionRepo(chatThread.getInstitutionUUID).get
     threadType match {
       case ChatThreadType.SUPPORT => RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, RoleCategory.BIND_WITH_PERSON)
-            .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread))
+            .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread, message))
       case ChatThreadType.TUTORING => RolesRepo.getUsersWithRoleForCourseClass(courseClass.getUUID, RoleCategory.BIND_WITH_PERSON, RoleType.tutor)
-          .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread))
+          .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread, message))
       case ChatThreadType.COURSE_CLASS | ChatThreadType.DIRECT => throw new IllegalStateException("not-supported-for-this-type")
     }
   }

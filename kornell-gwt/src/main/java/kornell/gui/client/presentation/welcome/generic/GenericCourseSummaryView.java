@@ -128,11 +128,14 @@ public class GenericCourseSummaryView extends Composite {
 				addHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
-						if (courseClassTO.getEnrollment() == null)
+						if(courseClassTO.getEnrollment() == null && courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically()){
+							requestEnrollment();
 							return;
-						Dean.getInstance().setCourseClassTO(courseClassTO);
-						placeCtrl.goTo(new ClassroomPlace(courseClassTO
-								.getEnrollment().getUUID()));
+						} else if (courseClassTO.getEnrollment() != null){
+							Dean.getInstance().setCourseClassTO(courseClassTO);
+							placeCtrl.goTo(new ClassroomPlace(courseClassTO
+									.getEnrollment().getUUID()));
+						}
 					}
 				}, ClickEvent.getType());
 
@@ -205,41 +208,45 @@ public class GenericCourseSummaryView extends Composite {
 	}
 
 	private Button getRequestEnrollmentButton() {
-		Button requestEnrollmentBtn = new Button("Solicitar Matrícula");
+		Button requestEnrollmentBtn = new Button(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? "Iniciar Curso" : "Solicitar Matrícula");
 		requestEnrollmentBtn.addStyleName("right btnAction");
 
 		requestEnrollmentBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				EntityFactory entityFactory = GWT.create(EntityFactory.class);
-				Enrollment enrollment = entityFactory.enrollment().as();
-				enrollment.setCourseClassUUID(courseClassTO.getCourseClass()
-						.getUUID());
-				enrollment.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
-				enrollment.setState(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? EnrollmentState.enrolled : EnrollmentState.requested);
-				session.enrollments().createEnrollment(enrollment,
-						new Callback<Enrollment>() {
-							@Override
-							public void ok(Enrollment enrollment) {
-								TOFactory toFactory = GWT.create(TOFactory.class);
-								EnrollmentTO enrollmentTO = toFactory.newEnrollmentTO().as();
-								enrollmentTO.setEnrollment(enrollment);
-								enrollmentTO.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
-								enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
-								enrollmentTO.setUsername(session.getCurrentUser().getUsername());
-								session.getCurrentUser().getEnrollments().getEnrollments().add(enrollment);
-								for (CourseClassTO courseClassTO : Dean.getInstance().getCourseClassesTO().getCourseClasses()) {
-									if (courseClassTO.getCourseClass().getUUID().equals(enrollment.getCourseClassUUID())) {
-										courseClassTO.setEnrollment(enrollment);
-										Dean.getInstance().setCourseClassTO(courseClassTO);
-										break;
-									}
-								}
-								placeCtrl.goTo(new ClassroomPlace(enrollment.getUUID()));
-							}
-						});
+				requestEnrollment();
 			}
 		});
 		return requestEnrollmentBtn;
+	}
+
+	private void requestEnrollment() {
+		EntityFactory entityFactory = GWT.create(EntityFactory.class);
+		Enrollment enrollment = entityFactory.enrollment().as();
+		enrollment.setCourseClassUUID(courseClassTO.getCourseClass()
+				.getUUID());
+		enrollment.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
+		enrollment.setState(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? EnrollmentState.enrolled : EnrollmentState.requested);
+		session.enrollments().createEnrollment(enrollment,
+				new Callback<Enrollment>() {
+					@Override
+					public void ok(Enrollment enrollment) {
+						TOFactory toFactory = GWT.create(TOFactory.class);
+						EnrollmentTO enrollmentTO = toFactory.newEnrollmentTO().as();
+						enrollmentTO.setEnrollment(enrollment);
+						enrollmentTO.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
+						enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
+						enrollmentTO.setUsername(session.getCurrentUser().getUsername());
+						session.getCurrentUser().getEnrollments().getEnrollments().add(enrollment);
+						for (CourseClassTO courseClassTO : Dean.getInstance().getCourseClassesTO().getCourseClasses()) {
+							if (courseClassTO.getCourseClass().getUUID().equals(enrollment.getCourseClassUUID())) {
+								courseClassTO.setEnrollment(enrollment);
+								Dean.getInstance().setCourseClassTO(courseClassTO);
+								break;
+							}
+						}
+						placeCtrl.goTo(new ClassroomPlace(enrollment.getUUID()));
+					}
+				});
 	}
 }
