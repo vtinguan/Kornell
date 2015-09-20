@@ -124,10 +124,8 @@ public class GenericCourseClassConfigView extends Composite {
                 .getCourseClassTO().getCourseClass().getState()));
         btnDelete.setText(canDelete?"Excluir".toUpperCase():"Desabilitar".toUpperCase());
 
-
         btnModalOK.setText("OK".toUpperCase());
         btnModalCancel.setText("Cancelar".toUpperCase());
-
 
         this.courseClassTO = courseClassTO;
 
@@ -192,7 +190,7 @@ public class GenericCourseClassConfigView extends Composite {
         });
 
         Boolean isApproveEnrollmentsAutomatically = courseClass.isApproveEnrollmentsAutomatically() == null ? false : courseClass.isApproveEnrollmentsAutomatically();
-        approveEnrollmentsAutomatically = new KornellFormFieldWrapper("Aprovar matrículas automaticamente?", formHelper.createCheckBoxFormField(isApproveEnrollmentsAutomatically), isInstitutionAdmin);
+        approveEnrollmentsAutomatically = new KornellFormFieldWrapper("Auto-aprovar matrículas?", formHelper.createCheckBoxFormField(isApproveEnrollmentsAutomatically), isInstitutionAdmin);
         ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setEnabled(courseClass.isPublicClass());
         fields.add(approveEnrollmentsAutomatically);
         profileFields.add(approveEnrollmentsAutomatically);
