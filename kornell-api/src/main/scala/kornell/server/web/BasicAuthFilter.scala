@@ -85,31 +85,19 @@ class BasicAuthFilter extends Filter {
     if (auth != null && auth.length() > 0) {
         val token = TokenRepo.checkToken(auth)
         if (!token.isDefined || (token.get.getClientType == AuthClientType.web && token.get.getExpiry.before(new Date))) {
-          resp.setContentType(KornellErrorTO.TYPE)
-          resp.setStatus(401)
-          resp.setCharacterEncoding("UTF-8")
-	      var cookies = "";
-	      val l = req.getCookies()
-	      if(l != null){
-	          cookies = req.getCookies().length+" - "+
-	        		  req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).length+" - "
-		      for( a <- 0 to (l.length - 1)){
-		         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
-		      }
-	      }
-	      val x = "{\"messageKey\":\"mustAuthenticate"+
-	          " - "+auth+
-	          " - "+X_KNL_TOKEN+
-	          " - "+cookies+
-	          "\"}"
-          resp.getWriter().write(x)
+        	writeMustAuthenticateMessage(req, resp)
         } else {
           ThreadLocalAuthenticator.setAuthenticatedPersonUUID(token.get.getPersonUUID)
           chain.doFilter(req, resp);
         }
         logout
     } else {
-      var cookies = "";
+      writeMustAuthenticateMessage(req, resp)
+    }
+  }
+  
+  def writeMustAuthenticateMessage(req: HttpServletRequest, resp: HttpServletResponse) = {
+    var cookies = "";
       val l = req.getCookies()
       if(l != null){
           cookies = req.getCookies().length+" - "+
@@ -118,16 +106,20 @@ class BasicAuthFilter extends Filter {
 	         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
 	      }
       }
-      val x = "{\"messageKey\":\"mustAuthenticate"+
-          " - "+auth+
+      val l2 = req.getHeaderNames
+      if(l2 != null){
+	      while( l2.hasMoreElements ){
+	         val e = l2.nextElement
+	         cookies = " [[[[" + cookies + e + " - " + req.getHeader(e) + "]]]] -  "
+	      }
+      }
+      val x = " - "+getCredentials(req)+
           " - "+X_KNL_TOKEN+
-          " - "+cookies+
-          "\"}"
+          " - "+cookies
       resp.setContentType(KornellErrorTO.TYPE)
       resp.setStatus(401)
       resp.setCharacterEncoding("UTF-8")
-          resp.getWriter().write(x)
-    }
+      resp.getWriter().write("{\"messageKey\":\"mustAuthenticate"+"\"}"+x)
   }
 
   override def init(cfg: FilterConfig) {}
