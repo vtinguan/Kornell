@@ -78,9 +78,9 @@ object ChatThreadsRepo {
   }
   
   def sendEmailForThreadCreation(courseClass: CourseClass, chatThread: ChatThread, threadType: ChatThreadType) = {
-    val institution = new InstitutionResource(chatThread.getInstitutionUUID).get
+    val institution = new InstitutionRepo(chatThread.getInstitutionUUID).get
     threadType match {
-      case ChatThreadType.SUPPORT => RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
+      case ChatThreadType.SUPPORT => RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, RoleCategory.BIND_WITH_PERSON)
             .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread))
       case ChatThreadType.TUTORING => RolesRepo.getUsersWithRoleForCourseClass(courseClass.getUUID, RoleCategory.BIND_WITH_PERSON, RoleType.tutor)
           .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread))

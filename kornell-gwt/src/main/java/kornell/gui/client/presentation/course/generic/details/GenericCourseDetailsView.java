@@ -199,6 +199,12 @@ public class GenericCourseDetailsView extends Composite {
 	private void displayContent(Button btn) {
 		aboutPanel.setVisible(btn.equals(btnAbout));
 		topicsPanel.setVisible(btn.equals(btnTopics));
+		if(btn.equals(btnTopics)){
+			//When there's only one topic it should appear expanded by default
+			if(topicsPanel.getWidgetCount() == 1){
+				((GenericTopicView)topicsPanel.getWidget(0)).show(true);
+			}
+		}
 		certificationPanel.setVisible(btn.equals(btnCertification));
 		
 		if(btn.equals(btnChat))
@@ -341,10 +347,6 @@ public class GenericCourseDetailsView extends Composite {
 					break;
 				}
 			}
-		}
-		//When there's only one topic it should appear expanded by default
-		if(topicsPanel.getWidgetCount() == 1){
-			((GenericTopicView)topicsPanel.getWidget(0)).show(true);
 		}
 	}
 

@@ -22,6 +22,7 @@ import com.github.gwtbootstrap.client.ui.event.HideHandler;
 import com.github.gwtbootstrap.client.ui.event.ShowEvent;
 import com.github.gwtbootstrap.client.ui.event.ShowHandler;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -95,12 +96,16 @@ public class GenericTopicView extends Composite {
 		timer.schedule(500);
 	}
 	
-	public void show(boolean show){
-		this.show = show;
-		//don't touch collapse before we assign the toggle's id
-		if(collapse.getId().startsWith("toggle") && show){
-			collapse.show();
-		}
+	public void show(final boolean show){
+	    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+	        @Override
+	        public void execute() {
+				if(show)
+					collapse.show();
+				else
+					collapse.hide();
+	        }
+	    });
 	}
 
 	private void display() {
@@ -146,13 +151,6 @@ public class GenericTopicView extends Composite {
 		}
 
 		topicWrapper.removeStyleName("shy");
-
-		
-		new Timer() {
-			public void run() {
-				show(show);
-			}
-		}.schedule(2000);
 	}
 
 	private void updateIconURL(boolean isOpened) {

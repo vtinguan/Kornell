@@ -34,7 +34,7 @@ object CourseClassesRepo {
 	      courseClass.setUUID(UUID.random)
 	    }
 	    sql""" 
-	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, allowBatchCancellation, tutorChatEnabled)
+	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, allowBatchCancellation, tutorChatEnabled,approveEnrollmentsAutomatically)
 	    	values(${courseClass.getUUID},
 	             ${courseClass.getName},
 	             ${courseClass.getCourseVersionUUID},
@@ -50,7 +50,8 @@ object CourseClassesRepo {
 	             ${courseClass.getInstitutionRegistrationPrefixUUID},
 	             ${courseClass.isCourseClassChatEnabled},
 	             ${courseClass.isAllowBatchCancellation},
-	             ${courseClass.isTutorChatEnabled})
+	             ${courseClass.isTutorChatEnabled},
+	             ${courseClass.isApproveEnrollmentsAutomatically})
 	    """.executeUpdate
 	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    courseClass
@@ -111,6 +112,7 @@ object CourseClassesRepo {
 		  		cc.courseClassChatEnabled as courseClassChatEnabled, 
 		  		cc.allowBatchCancellation as allowBatchCancellation, 
 		  		cc.tutorChatEnabled as tutorChatEnabled, 
+		  		cc.approveEnrollmentsAutomatically as approveEnrollmentsAutomatically,
       			irp.name as institutionRegistrationPrefixName
 			from Course c
 				join CourseVersion cv on cv.course_uuid = c.uuid

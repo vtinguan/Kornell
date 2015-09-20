@@ -111,7 +111,12 @@ object EmailService {
   
   def sendEmailNewChatThread(person: Person, institution: Institution, courseClass: CourseClass, chatThread: ChatThread) = {
     if (checkWhitelistForDomain(institution, person.getEmail) && person.isReceiveEmailCommunication) {
-      val subject = "New  " + chatThread.getThreadType.toLowerCase.capitalize + " thread created for " + courseClass.getName
+      val subject = "Uma nova conversa " + {
+        if("SUPPORT".equalsIgnoreCase(chatThread.getThreadType))
+          "de suporte "
+        else if("TUTORING".equalsIgnoreCase(chatThread.getThreadType))
+          "de tutoria "
+          } + "criada para a turma: " + courseClass.getName
       val from = getFromEmail(institution)
       val to = person.getEmail
       
@@ -119,9 +124,9 @@ object EmailService {
       val body = wrapBody("""
             <p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
             <p>&nbsp;</p>
-            <p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + """ no curso """+ courseClass.getName +""" oferecido pela """+ institution.getFullName +""".</p> 
-            <p>Clique no bot&atilde;o abaixo para ir ao curso.</p> """ +
-            getActionButton(actionLink, "Acessar o Curso") + 
+            <p>""" + subject +""".</p> 
+            <p>Clique no bot&atilde;o abaixo para acessar a conversa.</p> """ +
+            getActionButton(actionLink, "Acessar a Conversa") + 
             """<p>&nbsp;</p>""" +
             getSignature(institution, from))
             

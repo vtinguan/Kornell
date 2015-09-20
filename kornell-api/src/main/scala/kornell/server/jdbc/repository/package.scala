@@ -139,7 +139,8 @@ package object repository {
 			rs.getString("institutionRegistrationPrefixUUID"),
 			rs.getBoolean("courseClassChatEnabled"),
 			rs.getBoolean("allowBatchCancellation"),  
-			rs.getBoolean("tutorChatEnabled"))
+			rs.getBoolean("tutorChatEnabled"),
+			rs.getBoolean("approveEnrollmentsAutomatically"))
     		
     TOs.newCourseClassTO(course, version, clazz, rs.getString("institutionRegistrationPrefixName"))
   }
