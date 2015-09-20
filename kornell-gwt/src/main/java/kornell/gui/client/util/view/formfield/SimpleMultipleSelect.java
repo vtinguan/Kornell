@@ -41,7 +41,7 @@ public class SimpleMultipleSelect extends Composite {
 
 		multipleSelectPanel.add(multipleSelect);
 		
-		Button btnRemove = new Button("REMOVER");
+		Button btnRemove = new Button("Remover");
 		btnRemove.addStyleName("btnSelected btnStandard");
 		
 		btnRemove.addClickHandler(new ClickHandler() {
@@ -64,7 +64,7 @@ public class SimpleMultipleSelect extends Composite {
     search.setPlaceholder("Digite o nome do domínio a adicionar");
 		typeaheadPanel.add(search);
 
-		Button btnAdd = new Button("ADICIONAR");
+		Button btnAdd = new Button("Adicionar");
 		btnAdd.addStyleName("btnAction btnStandard");
 		
 		btnAdd.addClickHandler(new ClickHandler() {

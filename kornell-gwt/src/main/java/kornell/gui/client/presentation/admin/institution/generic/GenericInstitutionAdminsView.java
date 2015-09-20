@@ -65,8 +65,8 @@ public class GenericInstitutionAdminsView extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
-		btnOK.setText("OK".toUpperCase());
-		btnCancel.setText("Limpar".toUpperCase());
+		btnOK.setText("Salvar Alterações");
+		btnCancel.setText("Cancelar Alterações");
 		
 		initData();
 	}
@@ -74,7 +74,7 @@ public class GenericInstitutionAdminsView extends Composite {
 	public void initData() {
 		adminsFields.clear();
 		FlowPanel fieldPanelWrapper = new FlowPanel();
-		fieldPanelWrapper.addStyleName("fieldPanelWrapper courseClassAdminField");
+		fieldPanelWrapper.addStyleName("fieldPanelWrapper");
 		
 		FlowPanel labelPanel = new FlowPanel();
 		labelPanel.addStyleName("labelPanel");
@@ -101,8 +101,6 @@ public class GenericInstitutionAdminsView extends Composite {
 		});
 		peopleMultipleSelect = new PeopleMultipleSelect(session);
 		fieldPanelWrapper.add(peopleMultipleSelect.asWidget());
-		
-		fieldPanelWrapper.add(formHelper.getImageSeparator());
 		adminsFields.add(fieldPanelWrapper);
 	}
 

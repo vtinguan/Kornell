@@ -561,6 +561,26 @@
 		}
 	}
 }*/
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #474747;
+}
+.multiSelect .selectField {
+  margin-bottom: 10px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #bec1c3 !important;
 }

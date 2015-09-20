@@ -561,6 +561,26 @@
 		}
 	}
 }*/
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #474747;
+}
+.multiSelect .selectField {
+  margin-bottom: 10px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #08929e !important;
 }
@@ -813,6 +833,9 @@
 .activityBarWrapper .activityBar .btnProgress {
   cursor: default;
   border-left: 1px solid #505864 !important;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .activityBarWrapper .activityBar .btnProgress .progressBarPanel {
   height: 35px;
@@ -1357,6 +1380,26 @@
 		}
 	}
 }*/
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #474747;
+}
+.multiSelect .selectField {
+  margin-bottom: 10px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #08929e !important;
 }
@@ -2107,6 +2150,26 @@
 		}
 	}
 }*/
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #474747;
+}
+.multiSelect .selectField {
+  margin-bottom: 10px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #08929e !important;
 }
@@ -2653,13 +2716,7 @@
   margin-bottom: 25px;
   float: left;
 }
-/*@media screen and (max-width: @wrapperWidth) {
-	.profileFields{
-		@profileWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
-		@profilePadding: 10px;
-		width: @profileWidth;
-	}
-}*//* Backgrounds Group
+/* Backgrounds Group
 ========================== */
 /* @group gradient-veritical() */
 /* @end */
@@ -3087,6 +3144,26 @@
 		}
 	}
 }*/
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #474747;
+}
+.multiSelect .selectField {
+  margin-bottom: 10px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #08929e !important;
 }
@@ -3938,6 +4015,26 @@
 		}
 	}
 }*/
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #474747;
+}
+.multiSelect .selectField {
+  margin-bottom: 10px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #08929e !important;
 }
@@ -4834,13 +4931,7 @@
   margin-bottom: 25px;
   float: left;
 }
-/*@media screen and (max-width: @wrapperWidth) {
-	.profileFields{
-		@profileWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
-		@profilePadding: 10px;
-		width: @profileWidth;
-	}
-}*/body,
+body,
 html {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #ffffff !important;
@@ -5374,13 +5465,6 @@ a {
 .deanHome .courseClassMessages {
   width: 962px;
   margin: 0 auto;
-}
-.deanHome .courseClassAdmins {
-  width: 962px;
-  margin: 0 auto;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #474747;
 }
 .courseClassAdminField {
   height: auto !important;

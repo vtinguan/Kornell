@@ -88,12 +88,12 @@ public class GenericCourseClassAdminsView extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
-		courseClassAdminsBtnOK.setText("OK".toUpperCase());
-		courseClassAdminsBtnCancel.setText("Limpar".toUpperCase());
-		tutorsBtnOK.setText("OK".toUpperCase());
-		tutorsBtnCancel.setText("Limpar".toUpperCase());
-        observersBtnOK.setText("OK".toUpperCase());
-        observersBtnCancel.setText("Limpar".toUpperCase());
+		courseClassAdminsBtnOK.setText("Salvar Alterações");
+		courseClassAdminsBtnCancel.setText("Cancelar Alterações");
+		tutorsBtnOK.setText("Salvar Alterações");
+		tutorsBtnCancel.setText("Cancelar Alterações");
+        observersBtnOK.setText("Salvar Alterações");
+        observersBtnCancel.setText("Cancelar Alterações");
 
 		this.courseClassTO = courseClassTO;
 		
@@ -105,7 +105,7 @@ public class GenericCourseClassAdminsView extends Composite {
 	public void initCourseClassAdminsData() {
 	    courseClassAdminsFields.clear();
 		FlowPanel fieldPanelWrapper = new FlowPanel();
-		fieldPanelWrapper.addStyleName("fieldPanelWrapper courseClassAdminField");
+		fieldPanelWrapper.addStyleName("fieldPanelWrapper");
 		
 		FlowPanel labelPanel = new FlowPanel();
 		labelPanel.addStyleName("labelPanel");
@@ -132,15 +132,13 @@ public class GenericCourseClassAdminsView extends Composite {
 		courseClassAdminsMultipleSelect = new PeopleMultipleSelect(session);
 		fieldPanelWrapper.add(courseClassAdminsMultipleSelect.asWidget());
 		
-		fieldPanelWrapper.add(formHelper.getImageSeparator());
-		
 		courseClassAdminsFields.add(fieldPanelWrapper);
 	}
 	
 	public void initTutorsData() {
         tutorsFields.clear();
         FlowPanel fieldPanelWrapper = new FlowPanel();
-        fieldPanelWrapper.addStyleName("fieldPanelWrapper courseClassAdminField");
+        fieldPanelWrapper.addStyleName("fieldPanelWrapper");
         
         FlowPanel labelPanel = new FlowPanel();
         labelPanel.addStyleName("labelPanel");
@@ -167,15 +165,13 @@ public class GenericCourseClassAdminsView extends Composite {
         tutorsMultipleSelect = new PeopleMultipleSelect(session);
         fieldPanelWrapper.add(tutorsMultipleSelect.asWidget());
         
-        fieldPanelWrapper.add(formHelper.getImageSeparator());
-        
         tutorsFields.add(fieldPanelWrapper);
     }
 	
 	public void initObserversData() {
         observersFields.clear();
         FlowPanel fieldPanelWrapper = new FlowPanel();
-        fieldPanelWrapper.addStyleName("fieldPanelWrapper courseClassAdminField");
+        fieldPanelWrapper.addStyleName("fieldPanelWrapper");
         
         FlowPanel labelPanel = new FlowPanel();
         labelPanel.addStyleName("labelPanel");
@@ -201,8 +197,6 @@ public class GenericCourseClassAdminsView extends Composite {
         });
         observersMultipleSelect = new PeopleMultipleSelect(session);
         fieldPanelWrapper.add(observersMultipleSelect.asWidget());
-        
-        fieldPanelWrapper.add(formHelper.getImageSeparator());
         
         observersFields.add(fieldPanelWrapper);
     }

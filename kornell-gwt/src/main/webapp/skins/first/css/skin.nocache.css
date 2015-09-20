@@ -561,6 +561,56 @@
 		}
 	}
 }*/
+.rolesAdmin .multiSelect {
+  border-bottom: 1px solid #474747;
+}
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+.multiSelect .fieldPanelWrapper {
+  height: auto !important;
+  width: 760px !important;
+}
+.multiSelect .fieldPanelWrapper .labelPanel {
+  width: 200px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel {
+  width: 540px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .textField {
+  float: left;
+  width: 400px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnAction {
+  float: left;
+  margin-left: 15px;
+  margin-top: 4px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .selectField {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
+  height: 100px;
+  width: 414px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnSelected {
+  float: left;
+  margin-left: 15px;
+  margin-top: 92px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #bec1c3 !important;
 }
@@ -1360,6 +1410,56 @@
 		}
 	}
 }*/
+.rolesAdmin .multiSelect {
+  border-bottom: 1px solid #474747;
+}
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+.multiSelect .fieldPanelWrapper {
+  height: auto !important;
+  width: 760px !important;
+}
+.multiSelect .fieldPanelWrapper .labelPanel {
+  width: 200px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel {
+  width: 540px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .textField {
+  float: left;
+  width: 400px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnAction {
+  float: left;
+  margin-left: 15px;
+  margin-top: 4px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .selectField {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
+  height: 100px;
+  width: 414px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnSelected {
+  float: left;
+  margin-left: 15px;
+  margin-top: 92px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #bec1c3 !important;
 }
@@ -2110,6 +2210,56 @@
 		}
 	}
 }*/
+.rolesAdmin .multiSelect {
+  border-bottom: 1px solid #474747;
+}
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+.multiSelect .fieldPanelWrapper {
+  height: auto !important;
+  width: 760px !important;
+}
+.multiSelect .fieldPanelWrapper .labelPanel {
+  width: 200px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel {
+  width: 540px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .textField {
+  float: left;
+  width: 400px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnAction {
+  float: left;
+  margin-left: 15px;
+  margin-top: 4px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .selectField {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
+  height: 100px;
+  width: 414px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnSelected {
+  float: left;
+  margin-left: 15px;
+  margin-top: 92px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #bec1c3 !important;
 }
@@ -2656,13 +2806,7 @@
   margin-bottom: 25px;
   float: left;
 }
-/*@media screen and (max-width: @wrapperWidth) {
-	.profileFields{
-		@profileWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
-		@profilePadding: 10px;
-		width: @profileWidth;
-	}
-}*//* Backgrounds Group
+/* Backgrounds Group
 ========================== */
 /* @group gradient-veritical() */
 /* @end */
@@ -3090,6 +3234,56 @@
 		}
 	}
 }*/
+.rolesAdmin .multiSelect {
+  border-bottom: 1px solid #474747;
+}
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+.multiSelect .fieldPanelWrapper {
+  height: auto !important;
+  width: 760px !important;
+}
+.multiSelect .fieldPanelWrapper .labelPanel {
+  width: 200px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel {
+  width: 540px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .textField {
+  float: left;
+  width: 400px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnAction {
+  float: left;
+  margin-left: 15px;
+  margin-top: 4px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .selectField {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
+  height: 100px;
+  width: 414px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnSelected {
+  float: left;
+  margin-left: 15px;
+  margin-top: 92px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #bec1c3 !important;
 }
@@ -3941,6 +4135,56 @@
 		}
 	}
 }*/
+.rolesAdmin .multiSelect {
+  border-bottom: 1px solid #474747;
+}
+.multiSelect {
+  width: 962px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+.multiSelect .fieldPanelWrapper {
+  height: auto !important;
+  width: 760px !important;
+}
+.multiSelect .fieldPanelWrapper .labelPanel {
+  width: 200px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel {
+  width: 540px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .textField {
+  float: left;
+  width: 400px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnAction {
+  float: left;
+  margin-left: 15px;
+  margin-top: 4px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .selectField {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
+  height: 100px;
+  width: 414px;
+}
+.multiSelect .fieldPanelWrapper .fieldPanel .btnSelected {
+  float: left;
+  margin-left: 15px;
+  margin-top: 92px;
+}
+.multiSelect .standardButtonBar {
+  padding-left: 100px;
+  width: 414px;
+}
+.multiSelect .standardButtonBar .btnStandard {
+  width: 130px;
+}
+.multiSelect .standardButtonBar .btnAction {
+  margin-left: 68px;
+}
 .anchorToLabel {
   color: #bec1c3 !important;
 }
@@ -4837,13 +5081,7 @@
   margin-bottom: 25px;
   float: left;
 }
-/*@media screen and (max-width: @wrapperWidth) {
-	.profileFields{
-		@profileWidth: @wrapperWidthUnder990 - @menuLeftWidth - 18px;
-		@profilePadding: 10px;
-		width: @profileWidth;
-	}
-}*/body,
+body,
 html {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #333333 !important;
@@ -5377,44 +5615,6 @@ a {
 .deanHome .courseClassMessages {
   width: 962px;
   margin: 0 auto;
-}
-.deanHome .courseClassAdmins {
-  width: 962px;
-  margin: 0 auto;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #474747;
-}
-.courseClassAdminField {
-  height: auto !important;
-  width: 760px !important;
-}
-.courseClassAdminField .labelPanel {
-  width: 200px;
-}
-.courseClassAdminField .fieldPanel {
-  width: 540px;
-}
-.courseClassAdminField .fieldPanel .textField {
-  float: left;
-  width: 400px;
-}
-.courseClassAdminField .fieldPanel .btnAction {
-  float: left;
-  margin-left: 15px;
-  margin-top: 4px;
-}
-.courseClassAdminField .fieldPanel .selectField {
-  margin-top: 15px;
-  margin-bottom: 25px;
-  float: left;
-  height: 100px;
-  width: 414px;
-}
-.courseClassAdminField .fieldPanel .btnSelected {
-  float: left;
-  margin-left: 15px;
-  margin-top: 92px;
 }
 .reportPanel {
   float: left;

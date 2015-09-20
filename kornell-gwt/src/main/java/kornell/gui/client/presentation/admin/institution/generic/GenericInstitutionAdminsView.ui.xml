@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <g:FlowPanel addStyleNames="courseClassAdmins">
+  <g:FlowPanel addStyleNames="multiSelect">
 		<g:HTMLPanel addStyleNames="title">Editar Administradores da Instituição</g:HTMLPanel>
 		<g:Label addStyleNames="subTitle">Escolha na lista abaixo os administradores da instituição. Os administradores da instituição podem alterar as configurações da turma, adicionar novos administradores de turma, criar turmas, matricular alunos e responder as mensagens da turma.</g:Label>
 		<b:Form ui:field="form" addStyleNames="profileForm">

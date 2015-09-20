@@ -1,16 +1,149 @@
-.flagPopupText{color:#bec1c3;}
-.VitrinePlace{height:100%;width:100%;}.VitrinePlace .vitrine{width:962px;margin:0 auto;}
-.VitrinePlace .alertVitrine{float:left;margin-top:30px;margin-left:30px;width:300px;}
-.VitrinePlace .boxLogin{background-color:rgba(13, 11, 12, 0.8);width:225px;padding:15px 45px;border-radius:8px;box-shadow:0px 0px 2px 8px rgba(13, 11, 12, 0.25);min-height:200px;margin-top:30px;margin-left:30px;margin-bottom:5px;float:left;color:#bec1c3;}.VitrinePlace .boxLogin .flagWrapper{float:left;margin-left:-35px;margin-top:-9px;}
-.VitrinePlace .boxLogin .logo{margin-bottom:25px;margin-top:10px;}
-.VitrinePlace .boxLogin .personIcon{float:left;padding-top:5px;padding-right:15px;padding-left:28px;}
-.VitrinePlace .boxLogin h1{font-size:1.7em;font-weight:normal;margin-top:0;}
-.VitrinePlace .boxLogin .btnVitrine{width:160px;height:30px;font-size:12px;margin:0 auto;margin-top:30px;}
-.VitrinePlace .boxLogin .inputLabel{padding-bottom:5px;}
-.VitrinePlace .boxLogin .inputWrapper{width:213px;height:18px;background:white;padding-left:10px;padding-top:6px;padding-bottom:6px;border:1px solid #474747;margin-bottom:14px;}.VitrinePlace .boxLogin .inputWrapper .inputBar{height:20px;float:left;width:3px;background:#d14242;margin-right:5px;margin-top:-2px;}
-.VitrinePlace .boxLogin .inputWrapper input{width:200px;padding:0;border:0;box-shadow:none;font-size:12px;font-weight:bold;}
-.VitrinePlace .boxLogin .linkButton{background:transparent !important;margin-top:5px;text-decoration:underline;color:#bec1c3 !important;}
-.VitrinePlace .boxLogin .panelHR hr{border-bottom:0 !important;border-top:1px solid #bec1c3;margin-top:30px;margin-bottom:40px;}
-.VitrinePlace .boxLogin .alert{width:202px;font-size:12px;line-height:14px;padding:10px;}
-.kornellMessage{width:250px;margin:0 auto;}
-@media screen and (max-width:962px){.VitrinePlace .vitrine{width:100%;}}
+/* Backgrounds Group
+========================== */
+/* @group gradient-veritical() */
+/* @end */
+/* @group background-clip() */
+/* @end */
+/* Box Group
+========================== */
+/* @option: box-display() */
+/* @end */
+/* @group box-shadow() */
+/* @end */
+/* Border Group
+========================== */
+/* @group rounded() */
+/* @end */
+/* Transform Group
+========================== */
+/* @group matrix() */
+/* @end */
+/* @group rotate() */
+/* @end */
+/* @group scale() */
+/* @end */
+/* @group translate() */
+/* @end */
+/* @group skew() */
+/* @end */
+/* Transition
+========================== */
+/* Animation Group
+========================== */
+/* Column
+========================== */
+/* Misc Group
+========================== */
+.flagPopupText {
+  color: #bec1c3;
+}
+.VitrinePlace {
+  height: 100%;
+  width: 100%;
+}
+.VitrinePlace .vitrine {
+  width: 962px;
+  margin: 0 auto;
+}
+.VitrinePlace .alertVitrine {
+  float: left;
+  margin-top: 30px;
+  margin-left: 30px;
+  width: 300px;
+}
+.VitrinePlace .boxLogin {
+  background-color: rgba(13, 11, 12, 0.8);
+  width: 225px;
+  padding: 15px 45px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 2px 8px rgba(13, 11, 12, 0.25);
+  min-height: 200px;
+  margin-top: 30px;
+  margin-left: 30px;
+  margin-bottom: 5px;
+  float: left;
+  color: #bec1c3;
+}
+.VitrinePlace .boxLogin .flagWrapper {
+  float: left;
+  margin-left: -35px;
+  margin-top: -9px;
+}
+.VitrinePlace .boxLogin .logo {
+  margin-bottom: 25px;
+  margin-top: 10px;
+}
+.VitrinePlace .boxLogin .personIcon {
+  float: left;
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-left: 28px;
+}
+.VitrinePlace .boxLogin h1 {
+  font-size: 1.7em;
+  font-weight: normal;
+  margin-top: 0;
+}
+.VitrinePlace .boxLogin .btnVitrine {
+  width: 160px;
+  height: 30px;
+  font-size: 12px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+.VitrinePlace .boxLogin .inputLabel {
+  padding-bottom: 5px;
+}
+.VitrinePlace .boxLogin .inputWrapper {
+  width: 213px;
+  height: 18px;
+  background: white;
+  padding-left: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border: 1px solid #474747;
+  margin-bottom: 14px;
+}
+.VitrinePlace .boxLogin .inputWrapper .inputBar {
+  height: 20px;
+  float: left;
+  width: 3px;
+  background: #d14242;
+  margin-right: 5px;
+  margin-top: -2px;
+}
+.VitrinePlace .boxLogin .inputWrapper input {
+  width: 200px;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: bold;
+}
+.VitrinePlace .boxLogin .linkButton {
+  background: transparent !important;
+  margin-top: 5px;
+  text-decoration: underline;
+  color: #bec1c3 !important;
+}
+.VitrinePlace .boxLogin .panelHR hr {
+  border-bottom: 0 !important;
+  border-top: 1px solid #bec1c3;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+.VitrinePlace .boxLogin .alert {
+  width: 202px;
+  font-size: 12px;
+  line-height: 14px;
+  padding: 10px;
+}
+.kornellMessage {
+  width: 250px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 962px) {
+  .VitrinePlace .vitrine {
+    width: 100%;
+  }
+}

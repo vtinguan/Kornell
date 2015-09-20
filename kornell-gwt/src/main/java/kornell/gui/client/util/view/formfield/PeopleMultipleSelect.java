@@ -42,10 +42,10 @@ public class PeopleMultipleSelect extends Composite {
 
 	@Override
 	public Widget asWidget() {
-		return getCourseClassAdminsFieldPanel();
+		return getPeopleMultipleSelectPanel();
 	}
 
-	private FlowPanel getCourseClassAdminsFieldPanel() {
+	private FlowPanel getPeopleMultipleSelectPanel() {
 		FlowPanel courseClassAdminsPanel = new FlowPanel();
 		courseClassAdminsPanel.addStyleName("fieldPanel");
 
@@ -63,7 +63,7 @@ public class PeopleMultipleSelect extends Composite {
 
 		multipleSelectPanel.add(multipleSelect);
 
-		Button btnRemove = new Button("REMOVER");
+		Button btnRemove = new Button("Remover");
 		btnRemove.addStyleName("btnSelected btnStandard");
 
 		btnRemove.addClickHandler(new ClickHandler() {
@@ -115,7 +115,7 @@ public class PeopleMultipleSelect extends Composite {
 
 		typeaheadPanel.add(typeahead);
 
-		Button btnAdd = new Button("ADICIONAR");
+		Button btnAdd = new Button("Adicionar");
 		btnAdd.addStyleName("btnAction btnStandard");
 
 		btnAdd.addClickHandler(new ClickHandler() {

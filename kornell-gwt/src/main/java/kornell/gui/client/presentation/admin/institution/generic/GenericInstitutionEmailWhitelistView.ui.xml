@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <g:FlowPanel addStyleNames="courseClassAdmins">
+  <g:FlowPanel addStyleNames="multiSelect">
 		<g:HTMLPanel addStyleNames="title">Editar Domínios Permitidos Para Emails</g:HTMLPanel>
 		<g:Label addStyleNames="subTitle">Configure abaixo os domínios que poderão receber emails da instituição.</g:Label>
 		<b:Form ui:field="form" addStyleNames="profileForm">
