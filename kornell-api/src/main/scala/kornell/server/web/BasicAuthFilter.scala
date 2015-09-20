@@ -17,15 +17,16 @@ import kornell.core.error.KornellErrorTO
 import kornell.server.jdbc.repository.TokenRepo
 import kornell.core.entity.AuthClientType
 import java.util.Date
+import com.google.gwt.uibinder.elementparsers.IsEmptyParser
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
+  val X_KNL_TOKEN = "X-KNL-TOKEN"
   val pubPaths = Set(
     "/newrelic",
     "/api",
     "/probes",
     "/sync",
-    "/report",
     "/user/hello",
     "/user/check",
     "/user/registrationRequest",
@@ -50,9 +51,17 @@ class BasicAuthFilter extends Filter {
       }
     }
 
-  def hasCredentials(req: HttpServletRequest): Boolean =
-    req.getHeader("X-KNL-TOKEN") != null
-
+  def getCredentials(req: HttpServletRequest): String = {
+    if(req.getHeader(X_KNL_TOKEN) != null)
+      req.getHeader(X_KNL_TOKEN)
+    else if(req.getCookies() != null && !req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).isEmpty)
+      req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).head.getValue
+    else
+      null
+  }    
+    
+  def hasCredentials(req: HttpServletRequest): Boolean = getCredentials(req) != null 
+    
   def isPrivate(req: HttpServletRequest, resp: HttpServletResponse) = !isPublic(req, resp)
 
   def doFilter(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) =
@@ -70,7 +79,8 @@ class BasicAuthFilter extends Filter {
   }
 
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
-    val auth = req.getHeader("X-KNL-TOKEN");
+    val auth = getCredentials(req)
+    
     if (auth != null && auth.length() > 0) {
         val token = TokenRepo.checkToken(auth)
         if (!token.isDefined || (token.get.getClientType == AuthClientType.web && token.get.getExpiry.before(new Date))) {

@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
+import static kornell.core.util.StringUtils.noneEmpty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -610,9 +612,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
     @Override
     public void onGenerateCertificate(EnrollmentTO enrollmentTO) {
-        KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
-        Window.Location.assign(session.getApiUrl() + "/report/certificate/" + enrollmentTO.getPersonUUID() + "/"
-                + enrollmentTO.getEnrollment().getCourseClassUUID());
+		KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+		session.report().locationAssign("/report/certificate",
+				enrollmentTO.getPersonUUID(),
+				enrollmentTO.getEnrollment().getCourseClassUUID());
     }
 
     @Override

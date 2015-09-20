@@ -1,8 +1,9 @@
 package kornell.api.client;
 
-import static kornell.core.util.StringUtils.composeURL;
 import static kornell.core.util.StringUtils.isSome;
+import static kornell.core.util.StringUtils.mkurl;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 import kornell.core.entity.AuthClientType;
@@ -10,6 +11,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.user.client.Window;
 
 public class RESTClient {
 	
@@ -22,7 +24,7 @@ public class RESTClient {
 	}
 	
 	protected ExceptionalRequestBuilder GET(String... path) {
-		String url = composeURL(getApiUrl(), path);
+		String url = mkurl(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.GET, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -30,7 +32,7 @@ public class RESTClient {
 	}
 
 	protected ExceptionalRequestBuilder HEAD(String... path) {
-		String url = composeURL(getApiUrl(), path);
+		String url = mkurl(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.HEAD, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -38,7 +40,7 @@ public class RESTClient {
 	}
 
 	protected ExceptionalRequestBuilder PUT(String... path) {
-		String url = composeURL(getApiUrl(), path);
+		String url = mkurl(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.PUT, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -46,7 +48,7 @@ public class RESTClient {
 	}
 
 	protected ExceptionalRequestBuilder POST(String... path) {
-		String url = composeURL(getApiUrl(), path);
+		String url = mkurl(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.POST, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -54,7 +56,7 @@ public class RESTClient {
 	}
 	
 	protected ExceptionalRequestBuilder POST_LOGIN(String username, String password, String... path) {
-		String url = composeURL(getApiUrl(), path);
+		String url = mkurl(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.POST, url);
 		reqBuilder.setHeader("Content-Type","application/x-www-form-urlencoded");
@@ -70,7 +72,7 @@ public class RESTClient {
 	}
 
 	protected ExceptionalRequestBuilder DELETE(String... path) {
-		String url = composeURL(getApiUrl(), path);
+		String url = mkurl(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.DELETE, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -82,5 +84,10 @@ public class RESTClient {
 		if (isSome(auth)) {
 			reqBuilder.setHeader(ClientProperties.X_KNL_TOKEN, auth);
 		}
+	}
+	
+	public void locationAssign(String... path) {
+		ClientProperties.setCookie(ClientProperties.X_KNL_TOKEN, ClientProperties.get(ClientProperties.X_KNL_TOKEN), new Date(new Date().getTime() + 2000));					
+		Window.Location.assign(mkurl(getApiUrl(), path));
 	}
 }

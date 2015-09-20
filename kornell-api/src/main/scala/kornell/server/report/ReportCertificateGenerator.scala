@@ -4,15 +4,14 @@ import java.io.File
 import java.net.URL
 import java.sql.ResultSet
 import java.util.HashMap
-
 import org.apache.commons.io.FileUtils
-
 import kornell.core.error.exception.EntityConflictException
 import kornell.core.to.report.CertificateInformationTO
 import kornell.core.util.StringUtils.composeURL
 import kornell.server.jdbc.PreparedStmt
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
+import kornell.server.util.Settings
 
 object ReportCertificateGenerator {
 
@@ -30,7 +29,7 @@ object ReportCertificateGenerator {
    def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
     generateCertificateReport(sql"""
 				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
-	    	from Person p
+	    		from Person p
 					join Enrollment e on p.uuid = e.person_uuid
 					join CourseClass cc on cc.uuid = e.class_uuid
 		    	join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
@@ -38,7 +37,7 @@ object ReportCertificateGenerator {
 					join S3ContentRepository s on s.uuid = cv.repository_uuid
 					join Institution i on i.uuid = cc.institution_uuid
 				where e.certifiedAt is not null and 
-        	p.uuid = $userUUID and
+        		  p.uuid = $userUUID and
 				  cc.uuid = $courseClassUUID
 		    """.map[CertificateInformationTO](toCertificateInformationTO))
   }
@@ -77,8 +76,10 @@ object ReportCertificateGenerator {
     val assetsURL: String = composeURL(certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
     parameters.put("assetsURL", assetsURL + "/")
 	  
+   
   	//store one jasperfile per course
-    val fileName = System.getProperty("java.io.tmpdir") + "/tmp-" + certificateData.head.getCourseVersionUUID + ".jasper"
+    val fileName = Settings.tmpDir + "tmp-" + certificateData.head.getCourseVersionUUID + ".jasper"
+    println(fileName);
     val jasperFile: File = new File(fileName)
         
     /*val diff = new Date().getTime - jasperFile.lastModified

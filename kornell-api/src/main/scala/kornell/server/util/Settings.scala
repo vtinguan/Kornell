@@ -21,5 +21,12 @@ object Settings {
   def fromProperties(implicit key: String):Option[String] = properties flatMap {props => Option(props.getProperty(key))}
   def fromSystem(implicit key: String):Option[String] = Option(System.getProperty(key))
   def fromEnv(implicit key: String):Option[String] = Option(System.getenv(key))
+  
+  def tmpDir = 
+    if(System.getProperty("java.io.tmpdir").endsWith("\\"))
+      System.getProperty("java.io.tmpdir")
+    else
+      System.getProperty("java.io.tmpdir") + "/"
+  
 
 }

@@ -29,6 +29,7 @@ import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
 import kornell.server.repository.s3.S3
 import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.jdbc.repository.PersonRepo
 
 @Path("/report")
 class ReportResource {
@@ -36,20 +37,22 @@ class ReportResource {
   @GET
   @Path("/certificate/{userUUID}/{courseClassUUID}")
   @Produces(Array("application/pdf"))
-  def get( /*implicit @Context sc:SecurityContext,*/
-    @Context resp: HttpServletResponse,
+  def get(@Context resp: HttpServletResponse,
     @PathParam("userUUID") userUUID: String,
-    @PathParam("courseClassUUID") courseClassUUID: String) = /*Auth.withPerson{ person =>*/ {
-
-    resp.addHeader("Content-disposition", "attachment; filename=Certificado.pdf")
-    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID)
+    @PathParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
+	    val roles = AuthRepo().getUserRoles
+	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
+	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)))
+	      throw new UnauthorizedAccessException("accessDenied")
+	    resp.addHeader("Content-disposition", "attachment; filename=Certificado.pdf")
+	    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID)
+	  }
   }
 
   @PUT
   @Path("/certificate")
   @Consumes(Array(SimplePeopleTO.TYPE))
-  def get(implicit @Context sc: SecurityContext,
-    @QueryParam("courseClassUUID") courseClassUUID: String, 
+  def get(@QueryParam("courseClassUUID") courseClassUUID: String, 
     peopleTO: SimplePeopleTO) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
     val roles = AuthRepo().getUserRoles
@@ -101,14 +104,12 @@ class ReportResource {
 
   @GET
   @Path("courseClassCertificateExists")
-  def fileExists(implicit @Context sc: SecurityContext,
-    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
+  def fileExists(@QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
       val url = S3.certificates.url(filename)
 
       HttpURLConnection.setFollowRedirects(false);
-      //HttpURLConnection.setInstanceFollowRedirects(false)
       val con = new URL(url).openConnection.asInstanceOf[HttpURLConnection]
       con.setRequestMethod("HEAD")
       if (con.getResponseCode() == HttpURLConnection.HTTP_OK)
@@ -125,7 +126,7 @@ class ReportResource {
   def getCourseClassInfo(@Context resp: HttpServletResponse,
     @QueryParam("courseUUID") courseUUID: String,
     @QueryParam("courseClassUUID") courseClassUUID: String,
-    @QueryParam("fileType") fileType: String) = {
+    @QueryParam("fileType") fileType: String) = AuthRepo().withPerson{ person => {
 	  if(courseUUID != null || courseClassUUID != null){
 	    val fType = {
 	      if(fileType != null && fileType == "xls")
@@ -147,6 +148,7 @@ class ReportResource {
 	    	resp.setContentType("application/pdf")
 	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
 	  }
+    }  
   }
 
   @GET
@@ -154,11 +156,16 @@ class ReportResource {
   def getInstitutionBilling(@Context resp: HttpServletResponse,
     @QueryParam("institutionUUID") institutionUUID: String,
     @QueryParam("periodStart") periodStart: String,
-    @QueryParam("periodEnd") periodEnd: String) = {
-    val institution = InstitutionRepo(institutionUUID).get
-    resp.addHeader("Content-disposition", "attachment; filename=" + institution.getName + " - " + periodStart + ".xls")
-    resp.setContentType("application/vnd.ms-excel")
-    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institution, periodStart, periodEnd)
+    @QueryParam("periodEnd") periodEnd: String) = AuthRepo().withPerson{ person => {
+	    val roles = AuthRepo().getUserRoles
+	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
+	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)))
+	      throw new UnauthorizedAccessException("accessDenied")
+	    val institution = InstitutionRepo(institutionUUID).get
+	    resp.addHeader("Content-disposition", "attachment; filename=" + institution.getName + " - " + periodStart + ".xls")
+	    resp.setContentType("application/vnd.ms-excel")
+	    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institution, periodStart, periodEnd)
+    }
   }
 
   @GET

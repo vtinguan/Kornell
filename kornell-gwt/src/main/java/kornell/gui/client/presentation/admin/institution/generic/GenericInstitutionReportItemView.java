@@ -63,41 +63,37 @@ public class GenericInstitutionReportItemView extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 	}
-	
+
 	private void display() {
-		if(BILLING.equals(this.type))
-			displayCourseClassInfo();
-	}
-
-	private void displayCourseClassInfo() {
-	  this.name = "Relatório de utilização";
-		this.description = "Escolha o período desejado na lista abaixo:";
+		if(BILLING.equals(this.type)){
+			this.name = "Relatório de utilização";
+			this.description = "Escolha o período desejado na lista abaixo:";
+			
+			certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
+			lblName.setText(name);
+			lblDescription.setText(description);
+			lblGenerate.setText("Gerar");
+			lblGenerate.addStyleName("cursorPointer");
+			
+			addItemsToPeriodList();
+			optionPanel.add(periodListBox);
 		
-		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
-		lblName.setText(name);
-		lblDescription.setText(description);
-		lblGenerate.setText("Gerar");
-		lblGenerate.addStyleName("cursorPointer");
-		
-		addItemsToPeriodList();
-		optionPanel.add(periodListBox);
-
-		lblDownload.setText("-");
-		lblDownload.removeStyleName("cursorPointer");
-		lblDownload.addStyleName("anchorToLabel");
-		lblDownload.setEnabled(false);
-		
-		lblGenerate.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
-				String url = StringUtils.composeURL(session.getApiUrl(), "/report/institutionBilling/" + 
-				"?institutionUUID=" + Dean.getInstance().getInstitution().getUUID() +
-				"&periodStart=" + periodListBox.getValue() +
-				"&periodEnd=" + getNextPeriod(periodListBox.getValue()));
-				Window.Location.assign(url);
-			}
-		});
+			lblDownload.setText("-");
+			lblDownload.removeStyleName("cursorPointer");
+			lblDownload.addStyleName("anchorToLabel");
+			lblDownload.setEnabled(false);
+			
+			lblGenerate.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+					session.report().locationAssign("/report/institutionBilling", 
+							"?institutionUUID=" + Dean.getInstance().getInstitution().getUUID() +
+							"&periodStart=" + periodListBox.getValue() +
+							"&periodEnd=" + getNextPeriod(periodListBox.getValue()));
+				}
+			});
+		}
   }
 
 	private String getNextPeriod(String start) {

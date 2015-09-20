@@ -22,6 +22,7 @@ import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -127,19 +128,13 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 				@Override
 				public void onClick(ClickEvent event) {
 					KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
-					CourseClass courseClass = currentCourseClass != null ? currentCourseClass.getCourseClass() : null;			
-					String apiURL = session != null ? session.getApiUrl() : null;		
+					CourseClass courseClass = currentCourseClass != null ? currentCourseClass.getCourseClass() : null;		
 					UserInfoTO currentUser = session != null ? session.getCurrentUser() : null;
 					Person person = currentUser != null? currentUser.getPerson() : null;
 					String personUUID = person != null ? person.getUUID() : null;
 					String courseClassUUID = courseClass != null ? courseClass.getUUID() : null;
-					
-					if (noneEmpty(apiURL,personUUID,courseClassUUID)){
-						String url = mkurl(apiURL,
-								"/report/certificate/",
-								personUUID,
-								courseClassUUID);					
-						Window.Location.assign(url);
+					if (noneEmpty(personUUID,courseClassUUID)){
+						session.report().locationAssign("/report/certificate/",personUUID,courseClassUUID);
 					}
 				}
 			});

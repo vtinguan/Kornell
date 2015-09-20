@@ -2,6 +2,8 @@ package kornell.gui.client.util;
 
 import java.util.Date;
 
+import kornell.core.util.StringUtils;
+
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
@@ -49,11 +51,25 @@ public class ClientProperties {
 			com.google.gwt.user.client.Window.Location.reload();
 	}
 	
+	public static void setCookie(String name, String value, Date expires){
+	    if (StringUtils.isSome(name) && value != null){
+	    	if(expires == null){
+		        expires = new Date();
+		        expires.setYear( expires.getYear() + 5 );
+	    	}
+	        Cookies.setCookie( name, value, expires );
+	    }
+	}
+	
+	public static void removeCookie(String name){
+		Cookies.removeCookie(name);
+	}
+	
 	public static void remove(String propertyName){
 		if(localStorage != null){
 			localStorage.removeItem(propertyName);
 		} else if (Cookies.isCookieEnabled()) {
-			Cookies.removeCookie(propertyName);
+			removeCookie(propertyName);
 		}
 	}
 	

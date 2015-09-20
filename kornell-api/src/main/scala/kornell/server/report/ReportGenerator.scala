@@ -17,6 +17,7 @@ import net.sf.jasperreports.engine.util.JRLoader
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter
 import kornell.core.util.UUID
 import java.io.FileInputStream
+import kornell.server.util.Settings
 
 
 object ReportGenerator {
@@ -38,7 +39,7 @@ object ReportGenerator {
   
   def runReportToPdf(certificateData: List[Any], parameters: HashMap[String, Object], jasperReport: JasperReport, fileType: String) =
     if(fileType != null && fileType == "xls"){
-      val fileName = System.getProperty("java.io.tmpdir") + "/tmp-" + UUID.random + ".xls"
+      val fileName = Settings.tmpDir + "tmp-" + UUID.random + ".xls"
       val exporterXLS = new JRXlsExporter()
       val jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JRBeanCollectionDataSource(certificateData asJava))
       exporterXLS.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint)
@@ -53,7 +54,7 @@ object ReportGenerator {
     	JasperRunManager.runReportToPdf(jasperReport, parameters, new JRBeanCollectionDataSource(certificateData asJava))
     
   def clearJasperFiles = { 
-    val folder = new File(System.getProperty("java.io.tmpdir"))
+    val folder = new File(Settings.tmpDir)
     var deleted = "Deleting files from folder " + folder.getAbsolutePath +": "
     folder.listFiles().foreach(file => 
 		    if (file.getName.endsWith(".jasper") || file.getName.endsWith(".xls")) {
