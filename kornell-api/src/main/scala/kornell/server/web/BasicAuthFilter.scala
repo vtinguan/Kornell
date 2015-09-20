@@ -85,41 +85,22 @@ class BasicAuthFilter extends Filter {
     if (auth != null && auth.length() > 0) {
         val token = TokenRepo.checkToken(auth)
         if (!token.isDefined || (token.get.getClientType == AuthClientType.web && token.get.getExpiry.before(new Date))) {
-        	writeMustAuthenticateMessage(req, resp)
+        	writeErrorMessage("mustAuthenticate",req, resp)
         } else {
           ThreadLocalAuthenticator.setAuthenticatedPersonUUID(token.get.getPersonUUID)
           chain.doFilter(req, resp);
         }
         logout
     } else {
-      writeMustAuthenticateMessage(req, resp)
+      writeErrorMessage("mustAuthenticate",req, resp)
     }
   }
   
-  def writeMustAuthenticateMessage(req: HttpServletRequest, resp: HttpServletResponse) = {
-    var cookies = "";
-      val l = req.getCookies()
-      if(l != null){
-          cookies = req.getCookies().length+" - "+
-        		  req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).length+" - "
-	      for( a <- 0 to (l.length - 1)){
-	         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
-	      }
-      }
-      val l2 = req.getHeaderNames
-      if(l2 != null){
-	      while( l2.hasMoreElements ){
-	         val e = l2.nextElement
-	         cookies = " [[[[" + cookies + e + " - " + req.getHeader(e) + "]]]] -  "
-	      }
-      }
-      val x = " - "+getCredentials(req)+
-          " - "+X_KNL_TOKEN+
-          " - "+cookies
+  def writeErrorMessage(messageKey: String, req: HttpServletRequest, resp: HttpServletResponse) = {
       resp.setContentType(KornellErrorTO.TYPE)
       resp.setStatus(401)
       resp.setCharacterEncoding("UTF-8")
-      resp.getWriter().write("{\"messageKey\":\"mustAuthenticate"+"\"}"+x)
+      resp.getWriter().write("{\"messageKey\":\""+messageKey+"\"}")
   }
 
   override def init(cfg: FilterConfig) {}
