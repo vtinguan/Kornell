@@ -78,6 +78,7 @@ class BasicAuthFilter extends Filter {
     isOption || isPublic
   }
 
+
   def checkCredentials(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) = {
     val auth = getCredentials(req)
     
@@ -87,17 +88,41 @@ class BasicAuthFilter extends Filter {
           resp.setContentType(KornellErrorTO.TYPE)
           resp.setStatus(401)
           resp.setCharacterEncoding("UTF-8")
-          resp.getWriter().write("{\"messageKey\":\"mustAuthenticate\"}")
+          var cookies = "";
+          val l = req.getCookies()
+          for( a <- 0 to (l.length - 1)){
+	         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
+	      }
+          val x = "{\"messageKey\":\"mustAuthenticate"+
+              " - "+auth+
+              " - "+req.getCookies().length+
+              " - "+req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).length+
+              " - "+X_KNL_TOKEN+
+              " - "+cookies+
+              "\"}"
+          resp.getWriter().write(x)
         } else {
           ThreadLocalAuthenticator.setAuthenticatedPersonUUID(token.get.getPersonUUID)
           chain.doFilter(req, resp);
         }
         logout
     } else {
+      var cookies = "";
+      val l = req.getCookies()
+      for( a <- 0 to (l.length - 1)){
+         cookies = cookies + l(a).getName() +  " - " + l(a).getValue() + "; "
+      }
+      val x = "{\"messageKey\":\"mustAuthenticate"+
+          " - "+auth+
+          " - "+req.getCookies().length+
+          " - "+req.getCookies().filter(c => X_KNL_TOKEN.equals(c.getName())).length+
+          " - "+X_KNL_TOKEN+
+          " - "+cookies+
+          "\"}"
       resp.setContentType(KornellErrorTO.TYPE)
       resp.setStatus(401)
       resp.setCharacterEncoding("UTF-8")
-      resp.getWriter().write("{\"messageKey\":\"mustAuthenticate\"}")
+          resp.getWriter().write(x)
     }
   }
 
