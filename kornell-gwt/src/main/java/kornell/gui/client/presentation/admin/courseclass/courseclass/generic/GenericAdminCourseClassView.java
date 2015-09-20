@@ -132,10 +132,14 @@ public class GenericAdminCourseClassView extends Composite implements
 	Tab reportsTab;
 	@UiField
 	FlowPanel reportsPanel;
-	@UiField
-	Tab messagesTab;
-	@UiField
-	FlowPanel messagesPanel;
+	//@UiField
+	Tab messagesTab = new Tab();
+	//@UiField
+	FlowPanel messagesPanel = new FlowPanel();
+
+    /*<b:Tab ui:field="messagesTab" icon="ENVELOPE" heading="Mensagens" active="false">
+      <g:FlowPanel ui:field="messagesPanel"></g:FlowPanel >
+    </b:Tab>*/
 
 	@UiField
 	Button btnAddEnrollment;
