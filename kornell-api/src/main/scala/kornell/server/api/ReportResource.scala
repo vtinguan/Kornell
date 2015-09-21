@@ -42,7 +42,8 @@ class ReportResource {
     @PathParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
 	    val roles = AuthRepo().getUserRoles
 	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
-	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)))
+	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
+	      person.getUUID == userUUID))
 	      throw new UnauthorizedAccessException("accessDenied")
 	    resp.addHeader("Content-disposition", "attachment; filename=Certificado.pdf")
 	    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID)
