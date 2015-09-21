@@ -126,7 +126,7 @@ class EnrollmentResource(uuid: String) {
     val e = first.get
     if (Assessment.PASSED == e.getAssessment) {
       if (e.getAssessmentScore != null)
-        e.getAssessment.toString()
+        e.getAssessmentScore.toString
       else
         ""
     } else {
