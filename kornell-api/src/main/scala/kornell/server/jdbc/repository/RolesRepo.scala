@@ -34,7 +34,7 @@ object RolesRepo {
 	      	| from Role r
 	        | join Password pw on pw.person_uuid = r.person_uuid
 	        | where r.institution_uuid = ${institutionUUID}
-	  			| and r.role = ${RoleType.institutionAdmin.toString}
+	  		| and r.role = ${RoleType.institutionAdmin.toString}
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   	
   def getPlatformAdmins(bindMode: String) =
@@ -111,6 +111,7 @@ object RolesRepo {
     sql"""
         delete from Role
         where institution_uuid = ${institutionUUID}
+        and role = ${RoleType.institutionAdmin}
     """.executeUpdate
     this
   }
