@@ -111,7 +111,7 @@ object RolesRepo {
     sql"""
         delete from Role
         where institution_uuid = ${institutionUUID}
-        and role = ${RoleType.institutionAdmin}
+        and role = ${RoleType.institutionAdmin.toString}
     """.executeUpdate
     this
   }
