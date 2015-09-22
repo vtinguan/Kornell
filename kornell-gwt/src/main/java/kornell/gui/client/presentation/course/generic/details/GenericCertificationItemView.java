@@ -4,6 +4,7 @@ import static kornell.core.util.StringUtils.mkurl;
 import static kornell.core.util.StringUtils.noneEmpty;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -167,7 +168,11 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 
 		if(StringUtils.isSome(gradeIn)){
 			try{
-				this.grade = "" + new BigDecimal(gradeIn).intValue();
+				if(currentCourseClass.getCourseClass().getRequiredScore() == null || currentCourseClass.getCourseClass().getRequiredScore().equals(BigInteger.ZERO)){
+					this.grade = "-";
+				} else {
+					this.grade = "" + new BigDecimal(gradeIn).intValue();
+				}
 				lblGrade.setText(this.grade);
 			}catch(NumberFormatException ex){
 				this.grade = "";
