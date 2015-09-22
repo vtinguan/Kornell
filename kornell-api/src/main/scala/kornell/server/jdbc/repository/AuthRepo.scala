@@ -62,49 +62,32 @@ object AuthRepo {
   def newPasswordCache() = cacheBuilder.build(authLoader)
   def newRolesCache() = cacheBuilder.build(rolesLoader)
 
-  def authByEmail(institutionUUID: String, email: String) = {
-    val res = sql"""
+  def authByEmail(institutionUUID: String, email: String) = 
+   sql"""
    select pwd.password as password, person_uuid
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.email=${email}
      and p.institutionUUID=${institutionUUID}
-    """.map[UsrValue](toUsrValue).head
-    if (res._2 != null) {
-      Option(res)
-    } else {
-      None
-    }
-  }
+    """.first[UsrValue](toUsrValue)
 
-  def authByCPF(institutionUUID: String, cpf: String) = {
-    val res = sql"""
+  def authByCPF(institutionUUID: String, cpf: String) = 
+   sql"""
    select pwd.password as password, person_uuid 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.cpf=${cpf}
      and p.institutionUUID=${institutionUUID}
-    """.map[UsrValue](toUsrValue).head
-    if (res._2 != null) {
-      Option(res)
-    } else {
-      None
-    }
-  }
+    """.first[UsrValue](toUsrValue)
 
-  def authByUsername(institutionUUID: String, username: String) = {
-    val res = sql"""
+  def authByUsername(institutionUUID: String, username: String) = 
+	sql"""
     select password, person_uuid 
     from Password
-    		where username=${username}
-    		and institutionUUID=${institutionUUID}
-    """.map[UsrValue](toUsrValue).head
-    if (res._2 != null) {
-      Option(res)
-    } else {
-      None
-    }
-  }
+	where username=${username}
+	and institutionUUID=${institutionUUID}
+    """.first[UsrValue](toUsrValue)
+  
 
   val rolesLoader = new CacheLoader[Option[String], Set[Role]]() {
     override def load(personUUID: Option[String]): Set[Role] =
