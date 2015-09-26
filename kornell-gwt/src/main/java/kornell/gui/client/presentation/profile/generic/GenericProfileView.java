@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.profile.generic;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
@@ -51,6 +52,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -84,6 +86,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	
 	@UiField Form form;
 	@UiField FlowPanel profileFields;
+	@UiField FlowPanel btnPanelBottom;
 	@UiField GenericPasswordChangeView passwordChangeWidget;
 	@UiField GenericSendMessageView sendMessageWidget;
 	
@@ -93,6 +96,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private KornellFormFieldWrapper cpf, email, username, fullName, telephone, country, state, city, addressLine1, addressLine2, postalCode, company, position, sex, birthDate, receiveEmailCommunication;
 	private List<KornellFormFieldWrapper> fields;
 	private Button btnChangePassword, btnSendMessage, btnEdit, btnClose, btnOK, btnCancel;
+	private Button btnChangePassword2, btnSendMessage2, btnEdit2, btnClose2, btnOK2, btnCancel2;
 	private ClientFactory clientFactory;
 
 	private String profileUserUUID;
@@ -109,72 +113,43 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
-		btnEdit = new Button();
-		btnEdit.setVisible(false);
-		btnEdit.setText("Editar");
-		btnEdit.addStyleName("btnPlaceBar btnAction btnStandard");
-		btnEdit.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent e) {
-				doEdit(e);
-			}
+		btnEdit = createButton("Editar", "btnAction btnPlaceBar", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {doEdit(e);}
 		});
-		
-		btnClose = new Button();
-		btnClose.setVisible(false);
-		btnClose.setText("Fechar");
-		btnClose.addStyleName("btnPlaceBar btnNotSelected btnStandard");
-		btnClose.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent e) {
-				doClose(e);
-			}
+		btnEdit2 = createButton("Editar", "btnAction btnBottom", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {doEdit(e);}
+		});
+		btnClose = createButton("Fechar", "btnNotSelected btnPlaceBar", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {doClose(e);}
+		});
+		btnClose2 = createButton("Fechar", "btnNotSelected btnBottom", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {doClose(e);}
+		});
+		btnOK = createButton("Salvar", "btnAction btnPlaceBar", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {doOK(e);}
+		});
+		btnOK2 = createButton("Salvar", "btnAction btnBottom", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {doOK(e);}
+		});
+		btnCancel = createButton("Cancelar", "btnNotSelected btnPlaceBar", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {doCancel(e);}
+		});
+		btnCancel2 = createButton("Cancelar", "btnNotSelected btnBottom", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {doCancel(e);}
+		});
+		btnChangePassword = createButton("Alterar Senha", "btnSelected btnPlaceBar", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {passwordChangeWidget.show();}
+		});
+		btnChangePassword2 = createButton("Alterar Senha", "btnSelected btnBottom", false, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {passwordChangeWidget.show();}
+		});
+		btnSendMessage = createButton("Enviar Mensagem", "btnNotSelected btnPlaceBar", true, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {sendMessageWidget.show();}
+		});
+		btnSendMessage2 = createButton("Enviar Mensagem", "btnNotSelected btnBottom", true, new ClickHandler() {
+			@Override public void onClick(ClickEvent e) {sendMessageWidget.show();}
 		});
 
-		btnOK = new Button();
-		btnOK.setVisible(false);
-		btnOK.setText("Salvar");
-		btnOK.addStyleName("btnPlaceBar btnAction btnStandard");
-		btnOK.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent e) {
-				doOK(e);
-			}
-		});
-		
-		btnCancel = new Button();
-		btnCancel.setVisible(false);
-		btnCancel.setText("Cancelar");
-		btnCancel.addStyleName("btnPlaceBar btnNotSelected btnStandard");
-		btnCancel.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent e) {
-				doCancel(e);
-			}
-		});
-		
-		btnChangePassword = new Button();
-		btnChangePassword.setVisible(false);
-		btnChangePassword.setText("Alterar Senha");
-		btnChangePassword.addStyleName("btnPlaceBar btnSelected btnChangePassword");
-		btnChangePassword.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				passwordChangeWidget.show();
-			}
-		});
-		
-		btnSendMessage = new Button();
-		btnSendMessage.setVisible(true);
-		btnSendMessage.setText("Enviar Mensagem");
-		btnSendMessage.addStyleName("btnPlaceBar btnNotSelected btnChangePassword");
-		btnSendMessage.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				sendMessageWidget.show();
-			}
-		});
-		
 		initData();
 		
 		bus.addHandler(PlaceChangeEvent.TYPE,
@@ -185,6 +160,16 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					initData();
 				}
 			}});
+	}
+
+	private Button createButton(String text, String className, boolean visible, ClickHandler clickHandler) {
+		Button btn = new Button();
+		btn.setVisible(visible);
+		btn.setText(text);
+		btn.addStyleName(className);
+		btn.addStyleName("btnStandard");
+		btn.addClickHandler(clickHandler);
+		return btn;
 	}
 
 	private void initData() {
@@ -203,17 +188,25 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			@Override
 			public void ok(Boolean hasPowerOverTargetUser) {
 				List<IsWidget> widgets = new ArrayList<IsWidget>();
+				List<IsWidget> widgets2 = new ArrayList<IsWidget>();
 				if(!isCurrentUser){
 					widgets.add(btnSendMessage);
+					widgets2.add(btnSendMessage2);
 				}
 				if(hasPowerOverTargetUser){
 					widgets.add(btnChangePassword);
+					widgets2.add(btnChangePassword2);
 				}
 				widgets.add(btnCancel);
+				widgets2.add(btnCancel2);
 				//widgets.add(btnClose);
+				//widgets2.add(btnClose2);
 				widgets.add(btnEdit);
+				widgets2.add(btnEdit2);
 				widgets.add(btnOK);
+				widgets2.add(btnOK2);
 				viewFactory.getMenuBarView().setPlaceBarWidgets(widgets);
+				buildButtonBar(widgets2);
 				
 				hasPowerOver = hasPowerOverTargetUser;
 				session.user().getUser(profileUserUUID, new Callback<UserInfoTO>() {
@@ -231,6 +224,15 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 				});
 			}
 		});
+	}
+
+	private void buildButtonBar(List<IsWidget> widgets) {
+		btnPanelBottom.clear();
+		ListIterator<IsWidget> li = widgets.listIterator(widgets.size());
+		// Iterate in reverse.
+		while(li.hasPrevious()) {
+			btnPanelBottom.add(li.previous());
+		}
 	}
 
 	private boolean validateFields() {
@@ -284,6 +286,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					LoadingPopup.hide();
 					KornellNotification.show("Alterações salvas com sucesso!");
 					btnOK.setEnabled(true);
+					btnOK2.setEnabled(true);
 					isEditMode = false;
 					display();
 					if(isCurrentUser){
@@ -387,12 +390,17 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
 
 		form.addStyleName("shy");
-		
+
 		btnOK.setVisible(isEditMode);
+		btnOK2.setVisible(isEditMode);
 		btnCancel.setVisible(isEditMode);
+		btnCancel2.setVisible(isEditMode);
 		btnClose.setVisible(!isEditMode);
+		btnClose2.setVisible(!isEditMode);
 		btnChangePassword.setVisible(isEditMode && (isCurrentUser || hasPowerOver));
+		btnChangePassword2.setVisible(isEditMode && (isCurrentUser || hasPowerOver));
 		btnEdit.setVisible(!isEditMode && (isCurrentUser || hasPowerOver));
+		btnEdit2.setVisible(!isEditMode && (isCurrentUser || hasPowerOver));
 
 		profileFields.clear();
 		if(user == null){
@@ -558,16 +566,25 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	
 	void setValidity(boolean isValid){
 		btnOK.setEnabled(isValid);
+		btnOK2.setEnabled(isValid);
 		if(isValid){
 			btnOK.removeStyleName(DISABLED_CLASS);
 			btnOK.addStyleName(ENABLED_CLASS);			
 			btnOK.removeStyleName(CURSOR_DEFAULT_CLASS);
-			btnOK.addStyleName(CURSOR_POINTER_CLASS);		
+			btnOK.addStyleName(CURSOR_POINTER_CLASS);	
+			btnOK2.removeStyleName(DISABLED_CLASS);
+			btnOK2.addStyleName(ENABLED_CLASS);			
+			btnOK2.removeStyleName(CURSOR_DEFAULT_CLASS);
+			btnOK2.addStyleName(CURSOR_POINTER_CLASS);		
 		}else{
 			btnOK.addStyleName(DISABLED_CLASS);
 			btnOK.removeStyleName(ENABLED_CLASS);
 			btnOK.removeStyleName(CURSOR_POINTER_CLASS);
 			btnOK.addStyleName(CURSOR_DEFAULT_CLASS);		
+			btnOK2.addStyleName(DISABLED_CLASS);
+			btnOK2.removeStyleName(ENABLED_CLASS);
+			btnOK2.removeStyleName(CURSOR_POINTER_CLASS);
+			btnOK2.addStyleName(CURSOR_DEFAULT_CLASS);		
 			KornellNotification.show("Existem erros nos dados.", AlertType.WARNING);
 		}
 	}

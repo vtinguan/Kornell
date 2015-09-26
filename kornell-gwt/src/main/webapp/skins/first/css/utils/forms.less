@@ -37,16 +37,25 @@
 	.btnDefault;
 	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
 	.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+	&:hover{
+		.gradient(@buttonNotSelectedGradientEnd, @buttonNotSelectedGradientEnd);
+	}
 }
 .btnSelected{
 	.btnDefault;
 	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
  	.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
+	&:hover{
+		.gradient(@buttonSelectedGradientEnd, @buttonSelectedGradientEnd);
+	}
 }
 .btnAction{
 	.btnDefault;
 	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
  	.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
+	&:hover{
+		.gradient(@buttonActionGradientEnd, @buttonActionGradientEnd);
+	}
 }
 .standardButtonBarSmall{
 	width: 130px !important;
@@ -77,7 +86,7 @@
 }
 
 .fieldPanelWrapper{
-	width: 725px;
+	width: @fieldPanelWrapper;
 	height: 55px;
 	float: left;
 	.labelPanelImg{
@@ -130,7 +139,30 @@
 		.checkbox{
 			margin-top: 8px;
 		}
+		.datePicker{
+			.dropBoxDay{
+				width: 60px;
+				margin-right: 8px;
+			}
+			.dropBoxMonth{
+				width: 120px;
+				margin-right: 8px;
+			}
+			.dropBoxYear{
+				width: 80px;
+			}
+		}
 	}
+}
+.btnPanelBottom{
+	float: left;
+    text-align: center;
+    height: 25px;
+	width: @fieldPanelWrapper;
+    padding: 30px 0px 30px 100px;
+    .btnBottom{
+    	margin-right: 6px;
+    }
 }
 /*@media screen and (max-width: @wrapperWidth) {
 	.fieldPanelWrapper{

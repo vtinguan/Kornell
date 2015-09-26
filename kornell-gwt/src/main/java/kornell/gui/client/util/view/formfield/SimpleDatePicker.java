@@ -20,6 +20,7 @@ public class SimpleDatePicker extends FlowPanel {
 
 	public SimpleDatePicker() {
 		this(null);
+		this.addStyleName("datePicker");
 	}
 
 	public SimpleDatePicker(Date birthDate) {
@@ -29,7 +30,7 @@ public class SimpleDatePicker extends FlowPanel {
 			dropBoxDay.addItem("" + day);
 		}
 		dropBoxDay.ensureDebugId("dropBoxDay");
-		dropBoxDay.setWidth("60px");
+		dropBoxDay.addStyleName("dropBoxDay");
 		this.add(dropBoxDay);
 
 		dropBoxMonth = new ListBox(false);
@@ -39,7 +40,7 @@ public class SimpleDatePicker extends FlowPanel {
 			dropBoxMonth.addItem(months.get(i), "" + (i + 1));
 		}
 		dropBoxMonth.ensureDebugId("dropBoxMonth");
-		dropBoxMonth.setWidth("120px");
+		dropBoxMonth.addStyleName("dropBoxMonth");
 		this.add(dropBoxMonth);
 
 		dropBoxYear = new ListBox(false);
@@ -49,7 +50,7 @@ public class SimpleDatePicker extends FlowPanel {
 			dropBoxYear.addItem("" + year);
 		}
 		dropBoxYear.ensureDebugId("dropBoxYear");
-		dropBoxYear.setWidth("80px");
+		dropBoxYear.addStyleName("dropBoxYear");
 		this.add(dropBoxYear);
 
 		dropBoxMonth.addChangeHandler(new ChangeHandler() {
