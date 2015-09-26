@@ -42,7 +42,7 @@ public class Captain implements LogoutEventHandler, LoginEventHandler{
 						//if the user hasn't passed the class and the type of the version isn't KNL (small htmls, user won't lose progress)
 						if(Dean.getInstance().getCourseClassTO() != null &&
 								Dean.getInstance().getCourseClassTO().getCourseClass() != null &&
-								!ContentSpec.KNL.equals(Dean.getInstance().getCourseClassTO().getCourseVersionTO().getCourseVersion().getContentSpec()) &&
+								ContentSpec.SCORM12.equals(Dean.getInstance().getCourseClassTO().getCourseVersionTO().getCourseVersion().getContentSpec()) &&
 								Dean.getInstance().getCourseClassTO().getEnrollment() != null &&
 								Dean.getInstance().getCourseClassTO().getEnrollment().getCertifiedAt() == null){
 							event.setWarning("Tem certeza que deseja sair do curso? Seu progresso desde o último salvamento poderá ser perdido.");
