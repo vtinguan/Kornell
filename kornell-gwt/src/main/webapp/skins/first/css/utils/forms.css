@@ -307,6 +307,27 @@
 .fieldPanelWrapper .fieldPanel .checkbox {
   margin-top: 8px;
 }
+.fieldPanelWrapper .fieldPanel .datePicker .dropBoxDay {
+  width: 60px;
+  margin-right: 8px;
+}
+.fieldPanelWrapper .fieldPanel .datePicker .dropBoxMonth {
+  width: 120px;
+  margin-right: 8px;
+}
+.fieldPanelWrapper .fieldPanel .datePicker .dropBoxYear {
+  width: 80px;
+}
+.btnPanelBottom {
+  float: left;
+  text-align: center;
+  height: 25px;
+  width: 725px;
+  padding: 30px 0px 30px 100px;
+}
+.btnPanelBottom .btnBottom {
+  margin-right: 6px;
+}
 /*@media screen and (max-width: @wrapperWidth) {
 	.fieldPanelWrapper{
 			width: @wrapperWidthUnder990;

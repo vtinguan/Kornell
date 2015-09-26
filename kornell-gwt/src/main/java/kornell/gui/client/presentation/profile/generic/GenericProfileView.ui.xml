@@ -9,6 +9,7 @@
 					do perfil</g:Label> </g:FlowPanel> <g:FlowPanel addStyleNames="imagePanel"> 
 					<g:Image ui:field="imgProfile"></g:Image> </g:FlowPanel> </g:FlowPanel -->
 			</g:FlowPanel>
+			<g:FlowPanel ui:field="btnPanelBottom" addStyleNames="btnPanelBottom"></g:FlowPanel>
 		</b:Form>
 		<knl:GenericPasswordChangeView ui:field="passwordChangeWidget"></knl:GenericPasswordChangeView>
 		<knl:GenericSendMessageView ui:field="sendMessageWidget"></knl:GenericSendMessageView>
