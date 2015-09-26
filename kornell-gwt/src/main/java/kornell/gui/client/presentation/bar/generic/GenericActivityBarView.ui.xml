@@ -2,11 +2,11 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 	<g:FlowPanel addStyleNames="activityBarWrapper">
 		<g:FlowPanel ui:field="activityBar" addStyleNames="activityBar">
-			<g:FocusPanel ui:field="btnDetails" addStyleNames="activityBarButton first"></g:FocusPanel>	
-			<g:FocusPanel ui:field="btnNotes" addStyleNames="activityBarButton"></g:FocusPanel>	
+			<g:FocusPanel ui:field="btnDetails" addStyleNames="activityBarButton activityBarWrapperHover first"></g:FocusPanel>	
+			<g:FocusPanel ui:field="btnNotes" addStyleNames="activityBarButton activityBarWrapperHover"></g:FocusPanel>	
 			<g:FocusPanel ui:field="btnProgress" addStyleNames="activityBarButton btnProgress"></g:FocusPanel>
-			<g:FocusPanel ui:field="btnPrevious" addStyleNames="activityBarButton"></g:FocusPanel>
-			<g:FocusPanel ui:field="btnNext" addStyleNames="activityBarButton last"></g:FocusPanel>	
+			<g:FocusPanel ui:field="btnPrevious" addStyleNames="activityBarButton activityBarWrapperHover"></g:FocusPanel>
+			<g:FocusPanel ui:field="btnNext" addStyleNames="activityBarButton last activityBarWrapperHover"></g:FocusPanel>	
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>
