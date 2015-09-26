@@ -5560,7 +5560,7 @@ a {
   width: auto;
 }
 .messagesPopup .messagesPanel {
-  width: 510px;
+  width: 530px;
   margin: 0 auto;
   border-radius: 0px 0px 0px 15px;
   background-color: #222222;
@@ -5582,6 +5582,7 @@ a {
 .messagesPopup .messagesPanel .titlePanel .lblSubTitle {
   color: #5b9455;
   font-size: 13px;
+  margin-top: 5px;
   float: left;
   width: 100%;
 }
@@ -5596,6 +5597,7 @@ a {
 .messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel {
   width: 80px;
   margin-right: 7px;
+  margin-left: 20px;
   text-align: initial;
   float: left;
 }
@@ -5635,6 +5637,7 @@ a {
 }
 .messagesPopup .messagesPanel .standardButtonBar {
   width: 220px;
+  padding: 15px 0px 10px 0px;
 }
 .messagesPopup .messagesPanel .standardButtonBar .btnStandard {
   margin: 5px;
