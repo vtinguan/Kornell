@@ -408,7 +408,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		}
 				
 		if(isEditMode && showContactDetails && validateContactDetails && session.getCurrentUser().getPerson().getCity() == null){
-			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.INFO, 5000);
+			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.WARNING, 5000);
 		}
 
 		//profileFields.add(getPictureUploadFormPanel());

@@ -108,7 +108,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			this.unreadChatThreadsTO = filterTO(unreadChatThreadsTOFetchedFromEvent);
 			asWidget().setVisible(unreadChatThreadsTO.size() > 0);
 			if(unreadChatThreadsTO.size() == 0 && MessagePanelType.inbox.equals(messagePanelType)){
-				KornellNotification.show("Você não tem nenhuma conversa criada.", AlertType.INFO, 5000);
+				KornellNotification.show("Você não tem nenhuma conversa criada.", AlertType.WARNING, 5000);
 			} 
 		}
 	}

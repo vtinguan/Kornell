@@ -130,7 +130,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		final int classesCount = tos.getCourseClasses().size();
 		if(classesCount == 0){
 			coursesWrapper.setVisible(false);
-			KornellNotification.show("Você não está matriculado em uma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.INFO, 8000);
+			KornellNotification.show("Você não está matriculado em uma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.WARNING, 8000);
 		} else {
 			coursesWrapper.setVisible(true);
 		}

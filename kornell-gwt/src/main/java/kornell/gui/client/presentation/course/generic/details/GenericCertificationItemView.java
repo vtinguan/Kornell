@@ -128,7 +128,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			actionHandler = lblActions.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+					KornellNotification.show("Aguarde um instante...", AlertType.WARNING, 2000);
 					CourseClass courseClass = currentCourseClass != null ? currentCourseClass.getCourseClass() : null;		
 					UserInfoTO currentUser = session != null ? session.getCurrentUser() : null;
 					Person person = currentUser != null? currentUser.getPerson() : null;

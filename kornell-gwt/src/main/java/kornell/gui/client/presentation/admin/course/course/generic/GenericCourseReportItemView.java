@@ -99,7 +99,7 @@ public class GenericCourseReportItemView extends Composite {
 		lblGenerate.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+				KornellNotification.show("Aguarde um instante...", AlertType.WARNING, 2000);
 				session.report().locationAssign("/report/courseClassInfo",
 						"?courseUUID=" + course.getUUID() + 
 						"&fileType=" + (xlsCheckBox.getValue() ? "xls" : "pdf"));

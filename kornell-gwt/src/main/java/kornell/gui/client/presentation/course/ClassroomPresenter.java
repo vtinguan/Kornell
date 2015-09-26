@@ -66,7 +66,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		view.asWidget().setVisible(false);
 		LoadingPopup.show();			
 		
-		final PopupPanel popup = KornellNotification.show("Carregando o curso... Esta operação pode levar alguns segundos.", AlertType.INFO, -1);
+		final PopupPanel popup = KornellNotification.show("Carregando o curso...", AlertType.WARNING, -1);
 		session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
 			
 			public void ok(EnrollmentLaunchTO to) {

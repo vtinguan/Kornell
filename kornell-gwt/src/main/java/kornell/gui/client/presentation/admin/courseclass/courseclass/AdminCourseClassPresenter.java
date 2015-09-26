@@ -317,7 +317,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         LoadingPopup.show();
         final int requestsThreshold = 200;
         if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
-            KornellNotification.show("Solicitação de cancelamento de matrículas enviada para o servidor.", AlertType.INFO, 20000);
+            KornellNotification.show("Solicitação de cancelamento de matrículas enviada para o servidor.", AlertType.WARNING, 20000);
             LoadingPopup.hide();
             view.clearEnrollmentFields();
         }
@@ -506,9 +506,9 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         final int requestsThreshold = 100;
         if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
             if(StringUtils.isSome(session.getCurrentUser().getPerson().getEmail())){
-                KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma email em \"" + session.getCurrentUser().getPerson().getEmail() + "\" assim que a operação for concluída.", AlertType.INFO, 20000);
+                KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma email em \"" + session.getCurrentUser().getPerson().getEmail() + "\" assim que a operação for concluída.", AlertType.WARNING, 20000);
             } else {
-                KornellNotification.show("Favor configurar um email no seu perfil para que possa receber as mensagens de confirmação de matrículas em lote.", AlertType.INFO, 8000);
+                KornellNotification.show("Favor configurar um email no seu perfil para que possa receber as mensagens de confirmação de matrículas em lote.", AlertType.WARNING, 8000);
             }
             LoadingPopup.hide();
             confirmedEnrollmentsModal = false;
@@ -517,7 +517,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                 && enrollmentRequestsTO.getEnrollmentRequests().size() > 5) {
             KornellNotification
             .show("Solicitação de matrículas enviada para o servidor. Você receberá uma confirmação quando a operação for concluída (Tempo estimado: "
-                    + enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.INFO, 6000);
+                    + enrollmentRequestsTO.getEnrollmentRequests().size() + " segundos).", AlertType.WARNING, 6000);
         }
 
         if(session.isCourseClassAdmin(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID())) {
@@ -612,7 +612,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
     @Override
     public void onGenerateCertificate(EnrollmentTO enrollmentTO) {
-		KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+		KornellNotification.show("Aguarde um instante...", AlertType.WARNING, 2000);
 		session.report().locationAssign("/report/certificate",
 				enrollmentTO.getPersonUUID(),
 				enrollmentTO.getEnrollment().getCourseClassUUID());

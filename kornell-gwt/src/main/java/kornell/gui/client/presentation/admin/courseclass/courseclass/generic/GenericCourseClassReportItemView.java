@@ -122,7 +122,7 @@ public class GenericCourseClassReportItemView extends Composite {
 		lblGenerate.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				KornellNotification.show("Aguarde um instante...", AlertType.INFO, 2000);
+				KornellNotification.show("Aguarde um instante...", AlertType.WARNING, 2000);
 				session.report().locationAssign("/report/courseClassInfo",
 						"?courseClassUUID=" + currentCourseClass.getCourseClass().getUUID() + 
 						"&fileType=" + (checkBox.getValue() ? "xls" : "pdf"));
@@ -194,7 +194,7 @@ public class GenericCourseClassReportItemView extends Composite {
 					
 					@Override
 					public void ok(String url) {
-						KornellNotification.show("Os certificados foram gerados.", AlertType.INFO, 2000);
+						KornellNotification.show("Os certificados foram gerados.", AlertType.WARNING, 2000);
 						displayCertificateActionCell(url);
 						LoadingPopup.hide();
 					}
