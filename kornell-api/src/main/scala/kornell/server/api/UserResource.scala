@@ -251,16 +251,6 @@ class UserResource(private val authRepo:AuthRepo) {
     val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username, RegistrationType.email)
     createUser(regreq).getPerson.getUUID
   }
-  
-  //This is a temporary call that converts user passwords to bcrypt versions and logs everyone out.
-  @GET
-  @Path("update/updatePasswordsBCrypt")
-  @Produces(Array("text/plain"))
-  def updatePasswordsToSalted(implicit @Context sc: SecurityContext) = {
-      AuthRepo().updatePasswordsToSalted()
-      "OK"
-  }
-
 }
 
 object UserResource {

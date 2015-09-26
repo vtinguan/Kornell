@@ -213,13 +213,4 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 	    	${institutionUUID}, 
 	    	${null} )
 		    """.executeUpdate
-  
-  //To be removed when all users are migrated
-  def updatePasswordsToSalted() = {
-      type Password = (String, String)
-      val passwords = sql"""select uuid, password from Password where migrated = false""".map[Password](
-          (rs: ResultSet) => (rs.getString("uuid"), rs.getString("password")))
-      passwords.foreach(p => sql"""update Password set password = ${BCrypt.hashpw(p._2, BCrypt.gensalt())}, migrated = true
-          where uuid = ${p._1}""".executeUpdate)
-  }
 }
