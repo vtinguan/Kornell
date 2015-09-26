@@ -37,16 +37,25 @@
 	.btnDefault;
 	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
 	.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+	&:hover{
+		.gradient(@buttonNotSelectedGradientEnd, @buttonNotSelectedGradientEnd);
+	}
 }
 .btnSelected{
 	.btnDefault;
 	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
  	.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
+	&:hover{
+		.gradient(@buttonSelectedGradientEnd, @buttonSelectedGradientEnd);
+	}
 }
 .btnAction{
 	.btnDefault;
 	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
  	.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
+	&:hover{
+		.gradient(@buttonActionGradientEnd, @buttonActionGradientEnd);
+	}
 }
 .standardButtonBarSmall{
 	width: 130px !important;

@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.profile.generic;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
@@ -227,8 +228,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	private void buildButtonBar(List<IsWidget> widgets) {
 		btnPanelBottom.clear();
-		for (final IsWidget widget : widgets) {
-			btnPanelBottom.add(widget);
+		ListIterator<IsWidget> li = widgets.listIterator(widgets.size());
+		// Iterate in reverse.
+		while(li.hasPrevious()) {
+			btnPanelBottom.add(li.previous());
 		}
 	}
 
