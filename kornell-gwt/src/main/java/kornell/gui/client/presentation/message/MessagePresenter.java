@@ -190,7 +190,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 
 	@Override
-	public void threadClicked(UnreadChatThreadTO unreadChatThreadTO) {
+	public void threadClicked(final UnreadChatThreadTO unreadChatThreadTO) {
 		initializeChatThreadMessagesTimer();
 		this.selectedChatThreadInfo = unreadChatThreadTO;
 		if(unreadChatThreadTO.getChatThreadUUID() != null){
@@ -199,7 +199,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				@Override
 				public void ok(ChatThreadMessagesTO to) {
 					chatThreadMessageTOs = to.getChatThreadMessageTOs();
-					view.updateThreadPanel(to, selectedChatThreadInfo, session.getCurrentUser().getPerson().getFullName());
+					view.updateThreadPanel(to, unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
 					LoadingPopup.hide();
 				}
 			});
