@@ -233,6 +233,10 @@ public class GenericCourseClassAdminsView extends Composite {
             Roles roles = entityFactory.newRoles().as();
             List<Role> rolesList = new ArrayList<Role>();
             ListBox multipleSelect = tutorsMultipleSelect.getMultipleSelect();
+            if(multipleSelect.getItemCount() == 0 && courseClassTO.getCourseClass().isTutorChatEnabled()){
+            	KornellNotification.show("Você não pode remover todos os tutores desta turma. Desabilite a opção \"Permitir tutoria da turma\" na aba Configurações.", AlertType.WARNING, 4000);
+            	return;
+            }
             for (int i = 0; i < multipleSelect.getItemCount(); i++) {
                 String personUUID = multipleSelect.getValue(i);
                 Role role = entityFactory.newRole().as();

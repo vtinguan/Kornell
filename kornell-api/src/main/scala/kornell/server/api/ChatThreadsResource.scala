@@ -28,21 +28,21 @@ class ChatThreadsResource {
   
   @POST
   @Path("courseClass/{courseClassUUID}/support")
-  @Produces(Array("text/plain"))
+  @Produces(Array("application/octet-stream"))
   def postMessageToCourseClassSupportThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.SUPPORT)
+  		ChatThreadsRepo.postMessageToCourseClassThread(person.getUUID, courseClassUUID, message, ChatThreadType.SUPPORT)
   		ChatThreadsRepo.getCourseClassChatThreadUUID(person.getUUID, courseClassUUID: String, ChatThreadType.SUPPORT).get
   }
   
   @POST
   @Path("courseClass/{courseClassUUID}/tutoring")
-  @Produces(Array("text/plain"))
+  @Produces(Array("application/octet-stream"))
   def postMessageToCourseClassTutoringThread(implicit @Context sc: SecurityContext, 
     @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
-        ChatThreadsRepo.postMessageToCourseClassSupportThread(person.getUUID, courseClassUUID, message, ChatThreadType.TUTORING)
+        ChatThreadsRepo.postMessageToCourseClassThread(person.getUUID, courseClassUUID, message, ChatThreadType.TUTORING)
   		ChatThreadsRepo.getCourseClassChatThreadUUID(person.getUUID, courseClassUUID: String, ChatThreadType.TUTORING).get
   }
   

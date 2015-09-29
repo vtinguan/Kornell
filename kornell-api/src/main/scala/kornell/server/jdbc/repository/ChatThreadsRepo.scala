@@ -39,7 +39,7 @@ class ChatThreadsRepo {
 
 object ChatThreadsRepo {
 
-  def postMessageToCourseClassSupportThread(personUUID: String, courseClassUUID: String, message: String, threadType: ChatThreadType) = {
+  def postMessageToCourseClassThread(personUUID: String, courseClassUUID: String, message: String, threadType: ChatThreadType) = {
       val courseClass = CourseClassRepo(courseClassUUID).get
       val chatThreadUUID = getCourseClassChatThreadUUID(personUUID, courseClass.getUUID, threadType)
       if(!chatThreadUUID.isDefined){

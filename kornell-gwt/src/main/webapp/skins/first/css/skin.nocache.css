@@ -7363,7 +7363,6 @@ a {
 }
 .messageInboxPanel .sidePanelScroll .sidePanel .threadListItem .unreadCount {
   color: #5b9455;
-  padding-left: 5px;
 }
 .messageInboxPanel .sidePanelScroll .sidePanel .selected {
   background-color: rgba(0, 0, 0, 0.4);

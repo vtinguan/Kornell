@@ -13,15 +13,19 @@ import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.InstitutionRegistrationPrefix;
 import kornell.core.entity.RegistrationType;
+import kornell.core.entity.RoleCategory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
+import kornell.core.to.RoleTO;
+import kornell.core.to.RolesTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
 import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.ListBoxFormField;
@@ -30,6 +34,7 @@ import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -520,7 +525,19 @@ public class GenericCourseClassConfigView extends Composite {
         } else if (MODAL_COURSE_CLASS_CHAT_ENABLED.equals(modalMode)){
             ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(true);
         } else if (MODAL_TUTOR_CHAT_ENABLED.equals(modalMode)){
-            ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(true);
+            LoadingPopup.show();
+            session.courseClass(courseClassTO.getCourseClass().getUUID()).getTutors(RoleCategory.BIND_WITH_PERSON,
+                    new Callback<RolesTO>() {
+                @Override
+                public void ok(RolesTO to) {
+                    if(to.getRoleTOs().size() == 0){
+                    	KornellNotification.show("Você precisa configurar os tutores na aba \"Administradores\" antes de habilitar esta opção.", AlertType.WARNING, 3000);
+                    } else {
+                        ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(true);
+                    }
+                    LoadingPopup.hide();
+                }
+            });
         }
         confirmModal.hide();
     }

@@ -132,14 +132,11 @@ public class GenericAdminCourseClassView extends Composite implements
 	Tab reportsTab;
 	@UiField
 	FlowPanel reportsPanel;
-	//@UiField
+	@UiField
 	Tab messagesTab = new Tab();
-	//@UiField
+	@UiField
 	FlowPanel messagesPanel = new FlowPanel();
 
-    /*<b:Tab ui:field="messagesTab" icon="ENVELOPE" heading="Mensagens" active="false">
-      <g:FlowPanel ui:field="messagesPanel"></g:FlowPanel >
-    </b:Tab>*/
 
 	@UiField
 	Button btnAddEnrollment;
@@ -972,11 +969,7 @@ public class GenericAdminCourseClassView extends Composite implements
 			int count = 0;
 			for (UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadTOs) {
 				if (Dean.getInstance().getCourseClassTO() != null
-						&& Dean.getInstance()
-								.getCourseClassTO()
-								.getCourseClass()
-								.getUUID()
-								.equals(unreadChatThreadTO.getEntityUUID()))
+						&& Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(unreadChatThreadTO.getEntityUUID()))
 					count = count
 							+ Integer.parseInt(unreadChatThreadTO
 									.getUnreadMessages());

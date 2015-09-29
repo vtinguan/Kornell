@@ -211,13 +211,14 @@ public class GenericCourseDetailsView extends Composite {
 			buildChatPanel();
 		if(chatPanel != null)
 			chatPanel.setVisible(btn.equals(btnChat));
-		messagePresenterClassroomGlobalChat.enableMessagesUpdate(btn.equals(btnChat));
-
-		if(btn.equals(btnTutor))
+			messagePresenterClassroomGlobalChat.enableMessagesUpdate(btn.equals(btnChat));
+			messagePresenterClassroomGlobalChat.filterAndShowThreads();
+		if(btn.equals(btnTutor)){
 			buildTutorPanel();
+			messagePresenterClassroomTutorChat.enableMessagesUpdate(true);
+		}
 		if(tutorPanel != null)
 			tutorPanel.setVisible(btn.equals(btnTutor));
-		messagePresenterClassroomTutorChat.enableMessagesUpdate(btn.equals(btnTutor));
 		
 		if(libraryPanel != null)
 			libraryPanel.setVisible(btn.equals(btnLibrary));
