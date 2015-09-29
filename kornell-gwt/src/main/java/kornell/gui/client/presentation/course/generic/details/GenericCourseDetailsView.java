@@ -207,18 +207,25 @@ public class GenericCourseDetailsView extends Composite {
 		}
 		certificationPanel.setVisible(btn.equals(btnCertification));
 		
-		if(btn.equals(btnChat))
+		if(btn.equals(btnChat)){
 			buildChatPanel();
-		if(chatPanel != null)
-			chatPanel.setVisible(btn.equals(btnChat));
-			messagePresenterClassroomGlobalChat.enableMessagesUpdate(btn.equals(btnChat));
+			chatPanel.setVisible(true);
+			messagePresenterClassroomGlobalChat.enableMessagesUpdate(true);
 			messagePresenterClassroomGlobalChat.filterAndShowThreads();
+		} else if(chatPanel != null){
+			chatPanel.setVisible(false);
+			messagePresenterClassroomGlobalChat.enableMessagesUpdate(false);
+		}
+		
 		if(btn.equals(btnTutor)){
 			buildTutorPanel();
+			tutorPanel.setVisible(true);
 			messagePresenterClassroomTutorChat.enableMessagesUpdate(true);
-		}
-		if(tutorPanel != null)
-			tutorPanel.setVisible(btn.equals(btnTutor));
+			messagePresenterClassroomTutorChat.filterAndShowThreads();
+		} else if(tutorPanel != null){
+			tutorPanel.setVisible(false);
+			messagePresenterClassroomTutorChat.enableMessagesUpdate(false);
+		}		
 		
 		if(libraryPanel != null)
 			libraryPanel.setVisible(btn.equals(btnLibrary));
