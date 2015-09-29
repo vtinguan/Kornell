@@ -701,7 +701,7 @@
 .btnStandard {
   font-weight: bold;
   font-size: 10px;
-  width: 100px;
+  min-width: 100px;
   height: 22px;
   line-height: 21px;
   border-radius: 5px;
@@ -1955,7 +1955,7 @@
 .btnStandard {
   font-weight: bold;
   font-size: 10px;
-  width: 100px;
+  min-width: 100px;
   height: 22px;
   line-height: 21px;
   border-radius: 5px;
@@ -3032,7 +3032,7 @@
 .btnStandard {
   font-weight: bold;
   font-size: 10px;
-  width: 100px;
+  min-width: 100px;
   height: 22px;
   line-height: 21px;
   border-radius: 5px;
@@ -4653,7 +4653,7 @@
 .btnStandard {
   font-weight: bold;
   font-size: 10px;
-  width: 100px;
+  min-width: 100px;
   height: 22px;
   line-height: 21px;
   border-radius: 5px;
@@ -6151,7 +6151,7 @@
 .btnStandard {
   font-weight: bold;
   font-size: 10px;
-  width: 100px;
+  min-width: 100px;
   height: 22px;
   line-height: 21px;
   border-radius: 5px;

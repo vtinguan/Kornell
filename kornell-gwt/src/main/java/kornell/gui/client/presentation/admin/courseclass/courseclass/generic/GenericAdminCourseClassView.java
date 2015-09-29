@@ -133,9 +133,9 @@ public class GenericAdminCourseClassView extends Composite implements
 	@UiField
 	FlowPanel reportsPanel;
 	@UiField
-	Tab messagesTab = new Tab();
+	Tab messagesTab;
 	@UiField
-	FlowPanel messagesPanel = new FlowPanel();
+	FlowPanel messagesPanel;
 
 
 	@UiField
@@ -303,8 +303,8 @@ public class GenericAdminCourseClassView extends Composite implements
 	public void setTabsVisibility(){
 		enrollTab.asTabLink().setVisible(session.isCourseClassAdmin());
 		configTab.asTabLink().setVisible(session.isCourseClassAdmin());
-		reportsTab.asTabLink().setVisible(session.isCourseClassAdmin() || session.isCourseClassObserver());
-		messagesTab.asTabLink().setVisible(session.isCourseClassAdmin());
+		reportsTab.asTabLink().setVisible(session.isCourseClassAdmin() || session.isCourseClassObserver() || session.isCourseClassTutor());
+		messagesTab.asTabLink().setVisible(session.isCourseClassAdmin() || session.isCourseClassTutor());
 		if(adminsTab != null)
 			adminsTab.asTabLink().setVisible(session.isInstitutionAdmin());
 	}

@@ -43,6 +43,9 @@ class ReportResource {
 	    val roles = AuthRepo().getUserRoles
 	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
+	      RoleCategory.isCourseClassAdmin(roles, courseClassUUID) ||
+	      RoleCategory.isCourseClassObserver(roles, courseClassUUID) ||
+	      RoleCategory.isCourseClassTutor(roles, courseClassUUID) ||
 	      person.getUUID == userUUID))
 	      throw new UnauthorizedAccessException("accessDenied")
 	    resp.addHeader("Content-disposition", "attachment; filename=Certificado.pdf")
@@ -60,7 +63,8 @@ class ReportResource {
     if (!(RoleCategory.isPlatformAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID) ||
-      RoleCategory.isCourseClassObserver(roles, courseClass.getUUID)))
+      RoleCategory.isCourseClassObserver(roles, courseClass.getUUID) ||
+      RoleCategory.isCourseClassTutor(roles, courseClass.getUUID)))
     	throw new UnauthorizedAccessException("unauthorizedAccessReport")
     else {
       try {
