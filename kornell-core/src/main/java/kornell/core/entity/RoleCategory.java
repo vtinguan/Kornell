@@ -54,6 +54,10 @@ public class RoleCategory {
 							.equals(institutionUUID))
 				return true;
 			break;
+		case controlPanelAdmin:
+			if (RoleType.controlPanelAdmin.equals(type))
+				return true;
+			break;
 		default:
 			break;
 		}
@@ -86,13 +90,19 @@ public class RoleCategory {
 			if (RoleType.platformAdmin.equals(type))
 				return true;
 			break;
+		case controlPanelAdmin:
+			if (RoleType.controlPanelAdmin.equals(type))
+				return true;
 		default:
 			break;
 		}
 		return false;
 	}
 	
-
+	public static boolean isControlPanelAdmin(Set<Role> roles) {
+		return isValidRole(roles, RoleType.controlPanelAdmin, null, null);
+	}
+	
 	public static boolean isPlatformAdmin(Set<Role> roles, String institutionUUID) {
 		return isValidRole(roles, RoleType.platformAdmin, institutionUUID, null);
 	}

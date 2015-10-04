@@ -26,4 +26,7 @@ public interface Role {
 	
 	ObserverRole getObserverRole();
 	void setObserverRole(ObserverRole observerRole);
+	
+	ControlPanelAdminRole getControlPanelAdminRole();
+	void setControlPanelAdminRole(ControlPanelAdminRole controlPanelAdminRole);
 }

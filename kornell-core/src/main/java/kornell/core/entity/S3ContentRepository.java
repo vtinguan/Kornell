@@ -1,6 +1,8 @@
 package kornell.core.entity;
 
 public interface S3ContentRepository {
+	public static String TYPE = EntityFactory.PREFIX + "contentRepo+json";
+	
 	String getUUID();
 	void setUUID(String UUID);
 	

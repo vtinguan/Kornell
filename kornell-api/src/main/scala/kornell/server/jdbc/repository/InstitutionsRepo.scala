@@ -7,12 +7,20 @@ import kornell.core.entity.Person
 import kornell.core.entity.Institution
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.TOs
+import kornell.core.util.UUID
+import java.util.Date
 
 object InstitutionsRepo {
   
-  def create(institution: Institution): Institution = {    
+  def create(institution: Institution): Institution = {
+    if (institution.getUUID == null) {
+      institution.setUUID(UUID.random)
+    }
+    if (institution.getActivatedAt == null) {
+      institution.setActivatedAt(new Date)
+    }
     sql"""
-    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType) 
+    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType,institutionType,dashboardVersionUUID,internationalized,useEmailWHitelist) 
     | values(
     | ${institution.getUUID},
     | ${institution.getName},
@@ -26,7 +34,11 @@ object InstitutionsRepo {
     | ${institution.isAllowRegistrationByUsername},
     | ${institution.getActivatedAt},
     | ${institution.getSkin},
-    | ${institution.getBillingType.toString})""".executeUpdate
+    | ${institution.getBillingType.toString},
+    | ${institution.getInstitutionType.toString},
+    | ${institution.getDashboardVersionUUID},
+    | ${institution.isInternationalized},
+    | ${institution.isUseEmailWhitelist})""".executeUpdate
     institution
   }  
   

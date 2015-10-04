@@ -35,6 +35,7 @@ import kornell.core.entity.AuthClientType
 import kornell.core.entity.InstitutionType
 import sun.security.action.GetBooleanAction
 import kornell.core.to.SimplePersonTO
+import kornell.core.entity.S3ContentRepository
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -67,6 +68,15 @@ package object repository {
         rs.getString("dashboardVersionUUID"),
         rs.getBoolean("internationalized"),
         rs.getBoolean("useEmailWhitelist"))
+        
+  implicit def toS3ContentRepository(rs:ResultSet):S3ContentRepository = 
+    newS3ContentRepository(rs.getString("uuid"),
+        rs.getString("accessKeyId"),
+        rs.getString("secretAccessKey"),
+        rs.getString("bucketName"),
+        rs.getString("prefix"),
+        rs.getString("region"),
+        rs.getString("institutionUUID"))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
@@ -254,6 +264,7 @@ package object repository {
       case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
       case RoleType.tutor => Entities.newTutorRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
       case RoleType.observer => Entities.newObserverRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
+      case RoleType.controlPanelAdmin => Entities.newControlPanelAdminRole(rs.getString("person_uuid"))
     }
     role
   }

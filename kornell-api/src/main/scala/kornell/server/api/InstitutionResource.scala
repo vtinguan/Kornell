@@ -30,14 +30,16 @@ class InstitutionResource(uuid: String) {
   @Produces(Array(Institution.TYPE))
   def get =  {
     InstitutionRepo(uuid).get
-   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr()).get
+   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .or(isControlPanelAdmin, AccessDeniedErr()).get
   
   @PUT
   @Consumes(Array(Institution.TYPE))
   @Produces(Array(Institution.TYPE))
   def update(institution: Institution) = {
     InstitutionRepo(uuid).update(institution)
-  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr()).get
+  }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+  .or(isControlPanelAdmin, AccessDeniedErr()).get
   
   @GET
   @Produces(Array(InstitutionRegistrationPrefixesTO.TYPE))

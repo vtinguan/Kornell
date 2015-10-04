@@ -35,6 +35,8 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<TutorRole> newTutorRole();
 	
 	AutoBean<ObserverRole> newObserverRole();
+	
+	AutoBean<ControlPanelAdminRole> newControlPanelAdminRole();
 
 	AutoBean<CourseVersion> newCourseVersion();
 	

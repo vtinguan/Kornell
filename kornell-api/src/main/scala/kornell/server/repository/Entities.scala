@@ -248,6 +248,15 @@ object Entities {
     role.setObserverRole(observerRole)
     role
   }
+  
+  def newControlPanelAdminRole(person_uuid: String) = {
+    val role = factory.newRole().as
+    role.setPersonUUID(person_uuid)
+    val controlPanelAdminRole = factory.newControlPanelAdminRole().as
+    role.setRoleType(RoleType.controlPanelAdmin)
+    role.setControlPanelAdminRole(controlPanelAdminRole)
+    role
+  }
 
   def newCourseVersion(
     uuid: String = randUUID, name: String = null, 
