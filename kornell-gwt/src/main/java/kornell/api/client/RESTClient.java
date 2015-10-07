@@ -8,10 +8,12 @@ import java.util.logging.Logger;
 
 import kornell.core.entity.AuthClientType;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.ClientProperties;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 
 public class RESTClient {
@@ -89,8 +91,13 @@ public class RESTClient {
 	}
 	
 	public void locationAssign(String... path) {
-		ClientProperties.setCookie(ClientProperties.X_KNL_TOKEN, ClientProperties.get(ClientProperties.X_KNL_TOKEN), new Date(new Date().getTime() + 2000));					
-		Window.Location.assign(mkurl(getApiUrl(), path));
+		if(Cookies.isCookieEnabled()){
+			ClientProperties.setCookie(ClientProperties.X_KNL_TOKEN, ClientProperties.get(ClientProperties.X_KNL_TOKEN), new Date(new Date().getTime() + 2000));			
+			String url = appendTimestampIfIE(mkurl(getApiUrl(), path));
+			Window.Location.assign(url);
+		} else {
+			KornellNotification.show("Por motivos de segurança, é necessário que os cookies estejam ativados para esta operação. Entre em contato com o suporte caso tenha alguma dúvida.", AlertType.ERROR, 10000);
+		}
 	}
 	
 	public String appendTimestampIfIE(String url) {
