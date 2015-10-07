@@ -39,7 +39,6 @@ import kornell.server.jdbc.repository.TokenRepo
 import kornell.server.util.Conditional.toConditional
 import javax.ws.rs.POST
 import kornell.server.util.AccessDeniedErr
-import javax.servlet.http.HttpServletResponse
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -53,8 +52,7 @@ class UserResource(private val authRepo:AuthRepo) {
   @GET
   def hello(@Context req: HttpServletRequest,
       @QueryParam("name") name:String, 
-      @QueryParam("hostName") hostName:String,
-      @Context resp: HttpServletResponse) = {
+      @QueryParam("hostName") hostName:String) = {
     val userHello = newUserHelloTO
     
     userHello.setInstitution(
@@ -73,9 +71,7 @@ class UserResource(private val authRepo:AuthRepo) {
 		  userHello.setUserInfoTO(getUser(person).getOrElse(null))
       }
     }
-    resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
-    resp.setHeader("Pragma", "no-cache")
-    resp.setHeader("Expires", "0")
+    
     userHello
   }
   

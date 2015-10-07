@@ -17,7 +17,6 @@ import kornell.core.to.TokenTO
 import kornell.core.error.exception.UnauthorizedAccessException
 import javax.ws.rs.core.Context
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Path("auth")
 class TokenResource {
@@ -26,14 +25,11 @@ class TokenResource {
   @Produces(Array(TokenTO.TYPE))
   @Path("token")
   def getToken(@FormParam("clientType") clientType: String, @FormParam("institutionUUID") institutionUUID: String,
-      @FormParam("userkey") userkey: String, @FormParam("password") password: String, @Context resp: HttpServletResponse) = {
+      @FormParam("userkey") userkey: String, @FormParam("password") password: String) = {
     //gotta escape because form params and plus signs are weird
     val personUUID = AuthRepo().authenticate(institutionUUID, userkey.replaceAll(" ", "\\+"), password)
     val authClientType = AuthClientType.valueOf(clientType)
     if (personUUID.isDefined) {
-      resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
-      resp.setHeader("Pragma", "no-cache")
-      resp.setHeader("Expires", "0")
       val token = TokenRepo.getToken(personUUID.get)
       if (token.isDefined) {
         if (token.get.getExpiry == null || token.get.getExpiry.after(new Date)) {
@@ -56,12 +52,9 @@ class TokenResource {
   
   @POST
   @Path("logout")
-  def logout(@Context req: HttpServletRequest, @Context resp: HttpServletResponse) = {
+  def logout(@Context req: HttpServletRequest) = {
     val auth = req.getHeader("X-KNL-TOKEN")
     if (auth != null && auth.length() > 0) {
-      resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
-      resp.setHeader("Pragma", "no-cache")
-      resp.setHeader("Expires", "0")
       TokenRepo.deleteToken(auth)
     } else {
       //Gotta be authenticated to logout!
