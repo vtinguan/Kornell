@@ -11,6 +11,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
 
 public class RESTClient {
@@ -25,6 +26,7 @@ public class RESTClient {
 	
 	protected ExceptionalRequestBuilder GET(String... path) {
 		String url = mkurl(getApiUrl(), path);
+		url = appendTimestampIfIE(url);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.GET, url);
 		setAuthenticationHeaders(reqBuilder);
@@ -89,5 +91,11 @@ public class RESTClient {
 	public void locationAssign(String... path) {
 		ClientProperties.setCookie(ClientProperties.X_KNL_TOKEN, ClientProperties.get(ClientProperties.X_KNL_TOKEN), new Date(new Date().getTime() + 2000));					
 		Window.Location.assign(mkurl(getApiUrl(), path));
+	}
+	
+	public String appendTimestampIfIE(String url) {
+		if((Window.Navigator.getUserAgent().toLowerCase().indexOf("trident/") != -1))
+			return url + (url.indexOf("?") == -1 ? "?" : "&") + "t=" + (new Date()).getTime();				
+	    return url;
 	}
 }
