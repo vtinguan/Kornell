@@ -47,7 +47,6 @@ public class GenericTopicView extends Composite {
 	private CourseClassTO currentCourse;
 	private int index;
 	private boolean enableAnchorOnFirstChild;
-	private boolean show = false;
 	
 	@UiField
 	CollapseTrigger trigger;

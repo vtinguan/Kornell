@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.event.HideSouthBarEvent;

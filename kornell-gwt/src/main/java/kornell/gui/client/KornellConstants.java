@@ -172,6 +172,15 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String classes();
 	
 	/**
+	 * GenericActivityBarView
+	 */
+	@DefaultStringValue("completed")
+	String completed();
+	
+	@DefaultStringValue("Page")
+    String pageForPagination();
+	
+	/**
 	 * 
 	 * Util
 	 */
