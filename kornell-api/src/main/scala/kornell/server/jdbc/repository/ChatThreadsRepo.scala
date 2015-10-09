@@ -295,6 +295,23 @@ object ChatThreadsRepo {
 		    getServerTime)
   } 
 
+  def getChatThreadMessagesBefore(chatThreadUUID: String, firstFetchedMessageSentAt: String) = {
+    val date = if("none".equals(firstFetchedMessageSentAt)){
+      new Date
+    } else {
+      firstFetchedMessageSentAt
+    }
+    TOs.newChatThreadMessagesTO(sql"""
+				| select p.fullName as senderFullName, tm.sentAt, tm.message from
+				| 	ChatThreadMessage tm 
+				| 	join Person p on p.uuid = tm.personUUID
+				| 	where tm.chatThreadUUID = ${chatThreadUUID}
+    	  		|   and tm.sentAt < ${date}
+				| 	order by tm.sentAt desc limit 20
+		    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
+		    getServerTime)
+  } 
+
   def markAsRead(chatThreadUUID: String, personUUID: String) = {
     sql"""
     	| update ChatThreadParticipant p set

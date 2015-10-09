@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ChatThreadType;
 import kornell.core.to.ChatThreadMessageTO;
@@ -17,7 +15,6 @@ import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -30,6 +27,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -54,10 +54,14 @@ public class GenericMessageView extends Composite implements MessageView {
 	private MessageView.Presenter presenter;
 	private EventBus bus;
 	private KornellSession session;
+	private MessagePanelType messagePanelType;
 
 
 	private List<Label> sideItems;
-	Map<Label, ChatThreadMessageTO> dateLabelsMap;
+	Map<String, MessageItem> dateLabelsMap;
+	ScrollHandler scrollHandler;
+	HandlerRegistration handlerRegistration;
+	
 
 	@UiField FlowPanel sidePanel;
 	@UiField FlowPanel threadPanel;
@@ -76,6 +80,22 @@ public class GenericMessageView extends Composite implements MessageView {
 		this.session = session;
 		initWidget(uiBinder.createAndBindUi(this));
 		ensureDebugId("genericMessageInboxView");
+
+		dateLabelsMap = new HashMap<String, MessageItem>();
+		
+		if(handlerRegistration != null){
+			handlerRegistration.removeHandler(); 
+		}
+		
+		scrollHandler = new ScrollHandler() {
+			@Override
+			public void onScroll(ScrollEvent event) {
+				if(threadPanelItemsScroll.getVerticalScrollPosition() == 0){
+					presenter.onScrollToTop(false);
+				}
+			}
+		};
+		handlerRegistration = threadPanelItemsScroll.addScrollHandler(scrollHandler);
 	}
 
 	@Override
@@ -176,20 +196,14 @@ public class GenericMessageView extends Composite implements MessageView {
 	}
 
 	@Override
-	public void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
-
+	public void updateThreadPanel(UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
+		handlerRegistration.removeHandler();
 		threadTitle.getElement().setInnerHTML(getThreadTitle(unreadChatThreadTO, currentUserFullName, false));
-		dateLabelsMap = new HashMap<Label, ChatThreadMessageTO>();
-		
+		synchronized(dateLabelsMap){
+			dateLabelsMap = new HashMap<String, MessageItem>();
+		}
 		threadPanelItems.clear();
-		addMessagesToThreadPanel(chatThreadMessagesTO, currentUserFullName);
-
 		prepareTextArea(false);
-		
-		messageTextArea.setPlaceholder(ChatThreadType.TUTORING.equals(unreadChatThreadTO.getThreadType()) && chatThreadMessagesTO.getChatThreadMessageTOs().size() == 0 ?
-				"Digite aqui sua dúvida e um tutor entrará em contato com você em breve." :
-					"");
-		
 		messageTextArea.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -197,9 +211,11 @@ public class GenericMessageView extends Composite implements MessageView {
 					doSend(null);
 			}
 		});
+		
 	}
 
-	private void scrollToBottom() {
+	@Override
+	public void scrollToBottom() {
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
@@ -207,38 +223,68 @@ public class GenericMessageView extends Composite implements MessageView {
 			}
 		});
 	}
+	
+	@Override
+	public void setPlaceholder(String placeholder){
+		messageTextArea.setPlaceholder(placeholder);
+	}
 
 	@Override
-	public void addMessagesToThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, String currentUserFullName) {
-		for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessagesTO.getChatThreadMessageTOs()) {
-			FlowPanel threadMessageWrapper = new FlowPanel();
-			threadMessageWrapper.addStyleName("threadMessageWrapper");
-			Label header = new Label("");
-
-			header.addStyleName("threadMessageHeader");
-			if(currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
-				header.addStyleName("rightText");
-				threadMessageWrapper.addStyleName("overrideWrapper");
-			}
-			threadMessageWrapper.add(header);
-
-			Label item = new Label(chatThreadMessageTO.getMessage());
-			item.addStyleName("threadMessageItem");
-			threadMessageWrapper.add(item);
-
-			threadPanelItems.add(threadMessageWrapper);
-			dateLabelsMap.put(header, chatThreadMessageTO);
+	public void addMessagesToThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, String currentUserFullName, final boolean insertOnTop) {
+		final int oldPosition = threadPanelItemsScroll.getMaximumVerticalScrollPosition();
+		synchronized(dateLabelsMap){
+			for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessagesTO.getChatThreadMessageTOs()) {
+				FlowPanel threadMessageWrapper = new FlowPanel();
+				threadMessageWrapper.addStyleName("threadMessageWrapper");
+				Label header = new Label("");
+	
+				header.addStyleName("threadMessageHeader");
+				if(currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
+					header.addStyleName("rightText");
+					threadMessageWrapper.addStyleName("overrideWrapper");
+				}
+				threadMessageWrapper.add(header);
+	
+				Label item = new Label(chatThreadMessageTO.getMessage());
+				item.addStyleName("threadMessageItem");
+				threadMessageWrapper.add(item);
+				
+				if(!dateLabelsMap.containsKey(chatThreadMessageTO.getSentAt())){
+					dateLabelsMap.put(chatThreadMessageTO.getSentAt(), new MessageItem(header, chatThreadMessageTO));
+					if(insertOnTop){
+						threadPanelItems.insert(threadMessageWrapper, 0);
+					} else {
+						threadPanelItems.add(threadMessageWrapper);
+					}
+				}
+			} 
 		}
 		updateDateLabelValues(chatThreadMessagesTO.getServerTime());
-		if(chatThreadMessagesTO.getChatThreadMessageTOs().size() > 0)
-			scrollToBottom();
+		
+		if(insertOnTop){
+			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+				@Override
+				public void execute() {
+					threadPanelItemsScroll.setVerticalScrollPosition(threadPanelItemsScroll.getMaximumVerticalScrollPosition() - oldPosition);
+					if(threadPanelItemsScroll.getVerticalScrollPosition() == 0){
+						handlerRegistration.removeHandler();
+						presenter.onScrollToTop(oldPosition > 0);
+					} else {
+						handlerRegistration.removeHandler();
+						handlerRegistration = threadPanelItemsScroll.addScrollHandler(scrollHandler);
+					}
+				}
+			});
+		}
 	}
 
 	private void updateDateLabelValues(String serverTime) {
-		Iterator<Entry<Label, ChatThreadMessageTO>> it = dateLabelsMap.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<Label, ChatThreadMessageTO> pairs = (Map.Entry<Label, ChatThreadMessageTO>)it.next();
-			pairs.getKey().getElement().setInnerHTML(getDateLabelValue(serverTime, pairs.getValue()));
+		synchronized(dateLabelsMap){
+			Iterator<Entry<String, MessageItem>> it = dateLabelsMap.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry<String, MessageItem> pairs = (Map.Entry<String, MessageItem>)it.next();
+				pairs.getValue().getLabel().getElement().setInnerHTML(getDateLabelValue(serverTime, pairs.getValue().getChatThreadMessageTO()));
+			}
 		}
 	}
 
@@ -268,5 +314,10 @@ public class GenericMessageView extends Composite implements MessageView {
 			      }
 			});
 		}
+	}
+	
+	@Override
+	public void setMessagePanelType(MessagePanelType messagePanelType) {
+		this.messagePanelType = messagePanelType;
 	}
 }

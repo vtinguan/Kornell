@@ -33,12 +33,12 @@ public class ChatThreadsClient extends RESTClient {
 		GET("/chatThreads/unreadCountPerThread/?institutionUUID=" + institutionUUID).sendRequest(null, callback);
 	}
 	
-	public void getChatThreadMessages(String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
-		getChatThreadMessages(chatThreadUUID, "", callback);
+	public void getChatThreadMessagesx(String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
+		getChatThreadMessages(chatThreadUUID, "", "", callback);
 	}
 	
-	public void getChatThreadMessages(String chatThreadUUID, String since, Callback<ChatThreadMessagesTO> callback) {
-		GET("/chatThreads/"+chatThreadUUID+"/messages/?since="+since).sendRequest(null, callback);
+	public void getChatThreadMessages(String chatThreadUUID, String since, String before, Callback<ChatThreadMessagesTO> callback) {
+		GET("/chatThreads/"+chatThreadUUID+"/messages/?since="+since+"&before="+before).sendRequest(null, callback);
 	}
 
 }

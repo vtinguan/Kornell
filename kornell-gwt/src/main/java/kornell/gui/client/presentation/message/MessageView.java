@@ -15,10 +15,14 @@ public interface MessageView  extends IsWidget {
 		void enableMessagesUpdate(boolean enable);
 		void clearThreadSelection();
 		MessagePanelType getMessagePanelType();
+		void onScrollToTop(boolean scrollToBottomAfterFetchingMessages);
 	}
 
 	void setPresenter(Presenter presenter);
 	void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID, String currentUserFullName);
-	void addMessagesToThreadPanel(ChatThreadMessagesTO to, String currentUserFullName);
-	void updateThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName);
+	void updateThreadPanel(UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName);
+	void addMessagesToThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, String currentUserFullName, boolean insertOnTop);
+	void scrollToBottom();
+	void setPlaceholder(String placeholder);
+	void setMessagePanelType(MessagePanelType messagePanelType);
 }
