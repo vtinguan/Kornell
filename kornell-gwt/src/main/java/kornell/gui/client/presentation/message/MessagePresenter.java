@@ -55,14 +55,9 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		this.placeCtrl = placeCtrl;
 		this.viewFactory = viewFactory;
 		this.messagePanelType = messagePanelType;
-		view = viewFactory.getMessageView();
-		view.setPresenter(this);
-		view.setMessagePanelType(messagePanelType);
+
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
-		init();
-		chatThreadMessageTOs = new ArrayList<>();
-		if(placeCtrl.getWhere() instanceof MessagePlace)
-			initPlaceBar();
+		
 		bus.addHandler(PlaceChangeEvent.TYPE,
 				new PlaceChangeEvent.Handler() {
 			@Override
@@ -79,139 +74,22 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					updateMessages = true;
 			}
 		});
+		
+		init();
 	}
 
 	private void initPlaceBar() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, "Chat", "Acompanhe suas conversas com outros participantes da plataforma");
+		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, "Central de Mensagens", "Acompanhe suas conversas com outros participantes da plataforma");
 	}
 
 	private void init() {
-	}
-
-	@Override
-	public void enableMessagesUpdate(boolean enable){
-		this.updateMessages = enable;
-		filterAndShowThreads();
-	}
-
-	@Override
-	public Widget asWidget() {
-		return view.asWidget();
-	}
-
-	@Override
-	public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
-		unreadChatThreadsTOFetchedFromEvent = event.getUnreadChatThreadTOs();
-		if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminPlace || placeCtrl.getWhere() instanceof ClassroomPlace)
-			filterAndShowThreads();
-	}
-
-	@Override
-	public void filterAndShowThreads() {
-		if(updateMessages && unreadChatThreadsTOFetchedFromEvent != null){
-			if(Dean.getInstance().getCourseClassTO() != null){
-				filter();
-			} else {
-				//TODO: UGLY DESPERATE HACK due to the courseClasses not yet set on dean
-				Timer timer = new Timer() { 
-					public void run(){		
-						filter();		
-					}
-				};
-				timer.schedule(3000);
-			}
-		}
-	}
-	
-	private void filter(){
-		this.unreadChatThreadsTO = filterTO(unreadChatThreadsTOFetchedFromEvent);
-		asWidget().setVisible(unreadChatThreadsTO.size() > 0);
-		if(placeCtrl.getWhere() instanceof MessagePlace){
-			if(unreadChatThreadsTO.size() == 0 && MessagePanelType.inbox.equals(messagePanelType)){
-				KornellNotification.show("Você não tem nenhuma conversa criada.", AlertType.WARNING, 5000);
-			} 
-		}
-	}
-	
-	private boolean isCourseClassThread(String courseClassUUID) {
-		return Dean.getInstance().getCourseClassTO() != null
-				&& Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(courseClassUUID);
-	}
-
-	private boolean showOnCourseClassSupport(UnreadChatThreadTO unreadChatThreadTO) {
-		return isCourseClassThread(unreadChatThreadTO.getEntityUUID())
-				&& MessagePanelType.courseClassSupport.equals(messagePanelType)
-				&& ChatThreadType.SUPPORT.equals(unreadChatThreadTO.getThreadType());
-	}
-
-
-	private boolean showOnCourseClassTutor(UnreadChatThreadTO unreadChatThreadTO) {
-		return isCourseClassThread(unreadChatThreadTO.getEntityUUID())
-				&& (MessagePanelType.courseClassTutor.equals(messagePanelType) || MessagePanelType.courseClassSupport.equals(messagePanelType))
-				&& ChatThreadType.TUTORING.equals(unreadChatThreadTO.getThreadType())
-				&& unreadChatThreadTO.getChatThreadCreatorName().equals(session.getCurrentUser().getPerson().getFullName());
-	}
-
-	private boolean showOnCourseClassGlobal(UnreadChatThreadTO unreadChatThreadTO) {
-		return isCourseClassThread(unreadChatThreadTO.getEntityUUID())
-				&& MessagePanelType.courseClassGlobal.equals(messagePanelType)
-				&& ChatThreadType.COURSE_CLASS.equals(unreadChatThreadTO.getThreadType());
-	}
-
-	private List<UnreadChatThreadTO> filterTO(List<UnreadChatThreadTO> unreadChatThreadTOs) {
-		List<UnreadChatThreadTO> newUnreadChatThreadTOs = new ArrayList<UnreadChatThreadTO>();
-		for (Iterator<UnreadChatThreadTO> iterator = unreadChatThreadTOs.iterator(); iterator.hasNext();) {
-			UnreadChatThreadTO unreadChatThreadTO = (UnreadChatThreadTO) iterator.next();
-			if(MessagePanelType.inbox.equals(messagePanelType) || 
-					showOnCourseClassSupport(unreadChatThreadTO) ||
-					showOnCourseClassGlobal(unreadChatThreadTO) || 
-					showOnCourseClassTutor(unreadChatThreadTO)){
-				newUnreadChatThreadTOs.add(unreadChatThreadTO);
-			}
-		}
-		if(MessagePanelType.courseClassTutor.equals(messagePanelType) && newUnreadChatThreadTOs.size() == 0){
-			UnreadChatThreadTO newUnreadChatThreadTO = toFactory.newUnreadChatThreadTO().as();
-			newUnreadChatThreadTO.setThreadType(ChatThreadType.TUTORING);
-			newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
-			if(Dean.getInstance().getCourseClassTO() != null){
-				newUnreadChatThreadTO.setEntityUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-				newUnreadChatThreadTO.setEntityName(Dean.getInstance().getCourseClassTO().getCourseClass().getName());
-			}
-			newUnreadChatThreadTO.setUnreadMessages("0");
-			newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
-			newUnreadChatThreadTOs.add(newUnreadChatThreadTO);
-			selectedChatThreadInfo = null;
-		}
-		if(selectedChatThreadInfo == null && newUnreadChatThreadTOs.size() > 0){
-			threadClicked(newUnreadChatThreadTOs.get(0));
-			selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
-		}
-		if(newUnreadChatThreadTOs.size() > 0){
-			view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
-		}
-		//view.scrollToBottom();
-		return newUnreadChatThreadTOs;
-	}
-
-	@Override
-	public void threadClicked(final UnreadChatThreadTO unreadChatThreadTO) {
-		threadBeginningReached = false;
+		view = viewFactory.getMessageView();
+		view.setPresenter(this);
+		view.setMessagePanelType(messagePanelType);
 		chatThreadMessageTOs = new ArrayList<>();
-		initializeChatThreadMessagesTimer();
-		this.selectedChatThreadInfo = unreadChatThreadTO;
-		if(unreadChatThreadTO.getChatThreadUUID() != null){
-			view.updateThreadPanel(unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
-			onScrollToTop(true);
-		} else {
-			ChatThreadMessagesTO chatThreadMessagesTO = toFactory.newChatThreadMessagesTO().as();
-			chatThreadMessagesTO.setChatThreadMessageTOs(new ArrayList<ChatThreadMessageTO>());
-			view.updateThreadPanel(/*chatThreadMessagesTO, */selectedChatThreadInfo, session.getCurrentUser().getPerson().getFullName());
+		if(placeCtrl.getWhere() instanceof MessagePlace){
+			initPlaceBar();
 		}
-	}
-
-	@Override
-	public void clearThreadSelection(){
-		this.selectedChatThreadInfo = null;
 	}
 
 	private void initializeChatThreadMessagesTimer() {
@@ -225,6 +103,92 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		};
 		// Schedule the timer to run every 13 secs
 		chatThreadMessagesTimer.scheduleRepeating(13 * 1000);
+	}
+
+	@Override
+	public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
+		unreadChatThreadsTOFetchedFromEvent = event.getUnreadChatThreadTOs();
+		if(placeCtrl.getWhere() instanceof MessagePlace || placeCtrl.getWhere() instanceof AdminPlace || placeCtrl.getWhere() instanceof ClassroomPlace){
+			filterAndShowThreads();
+		}
+	}
+
+	@Override
+	public void filterAndShowThreads() {
+		if(updateMessages && unreadChatThreadsTOFetchedFromEvent != null){
+			if(Dean.getInstance().getCourseClassTO() != null){
+				filterTO();
+			} else {
+				//TODO: UGLY DESPERATE HACK due to the courseClasses not yet set on dean
+				Timer timer = new Timer() { 
+					public void run(){		
+						filterTO();		
+					}
+				};
+				timer.schedule(3000);
+			}
+		}
+	}
+
+	private void filterTO() {
+		List<UnreadChatThreadTO> newUnreadChatThreadTOs = new ArrayList<UnreadChatThreadTO>();
+		for (Iterator<UnreadChatThreadTO> iterator = unreadChatThreadsTOFetchedFromEvent.iterator(); iterator.hasNext();) {
+			UnreadChatThreadTO unreadChatThreadTO = (UnreadChatThreadTO) iterator.next();
+			if(MessagePanelType.inbox.equals(messagePanelType) || 
+					showOnCourseClassSupport(unreadChatThreadTO) ||
+					showOnCourseClassGlobal(unreadChatThreadTO) || 
+					showOnCourseClassTutor(unreadChatThreadTO)){
+				newUnreadChatThreadTOs.add(unreadChatThreadTO);
+			}
+		}
+		
+		// create placeholder thread for tutor, since it's only created after the first message
+		if(MessagePanelType.courseClassTutor.equals(messagePanelType) && newUnreadChatThreadTOs.size() == 0){
+			UnreadChatThreadTO newUnreadChatThreadTO = toFactory.newUnreadChatThreadTO().as();
+			newUnreadChatThreadTO.setThreadType(ChatThreadType.TUTORING);
+			newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
+			if(Dean.getInstance().getCourseClassTO() != null){
+				newUnreadChatThreadTO.setEntityUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+				newUnreadChatThreadTO.setEntityName(Dean.getInstance().getCourseClassTO().getCourseClass().getName());
+			}
+			newUnreadChatThreadTO.setUnreadMessages("0");
+			newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
+			newUnreadChatThreadTOs.add(newUnreadChatThreadTO);
+			selectedChatThreadInfo = null;
+		}
+		
+		if(newUnreadChatThreadTOs.size() > 0){
+			// if no thread is selected, "click" the first one
+			if(selectedChatThreadInfo == null){
+				threadClicked(newUnreadChatThreadTOs.get(0));
+				selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
+			}
+			view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
+		} else if(placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)){
+			KornellNotification.show("Você não tem nenhuma conversa criada.", AlertType.WARNING, 5000);
+		} 
+
+		asWidget().setVisible(newUnreadChatThreadTOs.size() > 0);
+		
+		this.unreadChatThreadsTO =  newUnreadChatThreadTOs;
+	}
+
+	@Override
+	public void threadClicked(final UnreadChatThreadTO unreadChatThreadTO) {
+		threadBeginningReached = false;
+		synchronized (chatThreadMessageTOs) {
+			chatThreadMessageTOs = new ArrayList<>();
+		}
+		initializeChatThreadMessagesTimer();
+		this.selectedChatThreadInfo = unreadChatThreadTO;
+		if(unreadChatThreadTO.getChatThreadUUID() != null){
+			view.updateThreadPanel(unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
+			onScrollToTop(true);
+		} else {
+			ChatThreadMessagesTO chatThreadMessagesTO = toFactory.newChatThreadMessagesTO().as();
+			chatThreadMessagesTO.setChatThreadMessageTOs(new ArrayList<ChatThreadMessageTO>());
+			view.updateThreadPanel(selectedChatThreadInfo, session.getCurrentUser().getPerson().getFullName());
+		}
 	}
 
 	private void getChatThreadMessagesSinceLast() {
@@ -256,11 +220,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 
 	@Override
-	public MessagePanelType getMessagePanelType() {
-		return messagePanelType;
-	}
-
-	@Override
 	public void onScrollToTop(final boolean scrollToBottomAfterFetchingMessages) {
 		if(!threadBeginningReached && selectedChatThreadInfo != null && selectedChatThreadInfo.getChatThreadUUID() != null){
 			final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
@@ -287,23 +246,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			});
 		}
 	}
-
-	private String lastFetchedMessageSentAt() {
-		String date;
-		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : "";
-		}
-		return date;
-	}
-
-	private String firstFetchedMessageSentAt() {
-		String date;
-		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : "none";
-		}
-		return date;
-	}
-
 
 	@Override
 	public void sendMessage(final String message) {
@@ -332,4 +274,67 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			});
 		}
 	}
+	
+	private boolean isCourseClassThread(String courseClassUUID) {
+		return Dean.getInstance().getCourseClassTO() != null
+				&& Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(courseClassUUID);
+	}
+
+	private boolean showOnCourseClassSupport(UnreadChatThreadTO unreadChatThreadTO) {
+		return isCourseClassThread(unreadChatThreadTO.getEntityUUID())
+				&& MessagePanelType.courseClassSupport.equals(messagePanelType)
+				&& ChatThreadType.SUPPORT.equals(unreadChatThreadTO.getThreadType());
+	}
+
+
+	private boolean showOnCourseClassTutor(UnreadChatThreadTO unreadChatThreadTO) {
+		return isCourseClassThread(unreadChatThreadTO.getEntityUUID())
+				&& (MessagePanelType.courseClassTutor.equals(messagePanelType) || MessagePanelType.courseClassSupport.equals(messagePanelType))
+				&& ChatThreadType.TUTORING.equals(unreadChatThreadTO.getThreadType())
+				&& unreadChatThreadTO.getChatThreadCreatorName().equals(session.getCurrentUser().getPerson().getFullName());
+	}
+
+	private boolean showOnCourseClassGlobal(UnreadChatThreadTO unreadChatThreadTO) {
+		return isCourseClassThread(unreadChatThreadTO.getEntityUUID())
+				&& MessagePanelType.courseClassGlobal.equals(messagePanelType)
+				&& ChatThreadType.COURSE_CLASS.equals(unreadChatThreadTO.getThreadType());
+	}
+
+	@Override
+	public void enableMessagesUpdate(boolean enable){
+		this.updateMessages = enable;
+		filterAndShowThreads();
+	}
+
+	@Override
+	public Widget asWidget() {
+		return view.asWidget();
+	}
+
+	@Override
+	public void clearThreadSelection(){
+		this.selectedChatThreadInfo = null;
+	}
+
+	private String lastFetchedMessageSentAt() {
+		String date;
+		synchronized (chatThreadMessageTOs) {
+			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : "";
+		}
+		return date;
+	}
+
+	private String firstFetchedMessageSentAt() {
+		String date;
+		synchronized (chatThreadMessageTOs) {
+			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : "none";
+		}
+		return date;
+	}
+
+	@Override
+	public MessagePanelType getMessagePanelType() {
+		return messagePanelType;
+	}
+
 }
