@@ -122,7 +122,51 @@ public interface KornellConstants extends ConstantsWithLookup {
 
 	@DefaultStringValue("Topic")
 	String topic();
-
+	
+	@DefaultStringValue("Certification")
+	String certification();
+	
+	@DefaultStringValue("Certification")
+	String certificationInfoText();
+	
+	@DefaultStringValue("Info")
+	String certificationTableInfo();
+	
+	@DefaultStringValue("Status")
+	String certificationTableStatus();
+	
+	@DefaultStringValue("Grade")
+	String certificationTableGrade();
+	
+	@DefaultStringValue("Actions")
+	String certificationTableActions();
+	
+	@DefaultStringValue("Print certificate")
+	String printCertificateButton();
+	
+	@DefaultStringValue("--TODO--")
+	String classChatButton();
+	
+	@DefaultStringValue("With a tutor")
+	String tutorChatButton();
+	
+	@DefaultStringValue("Supplemental material")
+	String libraryButton();
+	
+	@DefaultStringValue("Go to class")
+	String goToClassButton();
+	
+	@DefaultStringValue("This class has been disabled by the institution.<br><br> The material in this class is inaccessible.<br>")
+	String inactiveCourseClass();
+	
+	@DefaultStringValue("Your registration was canceled by the institution.")
+	String cancelledEnrollment();
+	
+	@DefaultStringValue("Your registration has not yet been approved by the institution.")
+	String enrollmentNotApproved();
+	
+	@DefaultStringValue("You will receive an email at the time of approval.")
+	String enrollmentConfirmationEmail();
 	
 	/**
 	 * 
@@ -179,6 +223,87 @@ public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("Page")
     String pageForPagination();
+	
+	/**
+	 * ClassroomPresenter
+	 */
+	@DefaultStringValue("Loading the course...")
+	String loadingTheCourse();
+	
+	/**
+	* GenericCertificationItemVIew
+	*/
+	@DefaultStringValue("Evaluation")
+	String testName();
+	
+	@DefaultStringValue("--TODO--")
+	String testDescription();
+	
+	@DefaultStringValue("To complete")
+	String testStatus();
+	
+	@DefaultStringValue("Certificate")
+	String certificateName();
+	
+	@DefaultStringValue("--TODO--")
+	String certificateDescription();
+	
+	@DefaultStringValue("Generage")
+	String generate();
+	
+	@DefaultStringValue("Wait a minute...")
+	String waitAMinute();
+	
+	@DefaultStringValue("Available")
+	String certificateAvailable();
+	
+	@DefaultStringValue("Unavailable")
+	String certificateNotAvailable();
+	
+	/**
+	 * GenericCourseLibraryView
+	 */
+	@DefaultStringValue("Library")
+	String libraryTitle();
+	
+	@DefaultStringValue("--TODO--")
+	String libraryInfo();
+	
+	@DefaultStringValue("Type")
+	String libraryEntryIcon();
+	
+	@DefaultStringValue("File name")
+	String libraryEntryName();
+	
+	@DefaultStringValue("Size")
+	String libraryEntrySize();
+	
+	@DefaultStringValue("Publication date")
+	String libraryEntryDate();
+	
+	/**
+	 * GenericIncludeFileView
+	 */
+	@DefaultStringValue("--TODO--")
+	String fileFormInfoTitle();
+	
+	@DefaultStringValue("--TODO--")
+	String fileFormInfoText();
+	
+	@DefaultStringValue("--TODO--")
+	String fileDescription();
+	
+	@DefaultStringValue("Relevance:")
+	String starsLabelText();
+	
+	@DefaultStringValue("Publish")
+	String btnPublish();
+	
+	/**
+	 * NotesPopup
+	 */
+	@DefaultStringValue("--TODO--")
+	String notesPopupPlaceholder();
 	
 	/**
 	 * 

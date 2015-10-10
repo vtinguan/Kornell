@@ -9,6 +9,7 @@ import java.util.Map;
 import kornell.api.client.KornellSession;
 import kornell.core.to.LibraryFileTO;
 import kornell.core.to.LibraryFilesTO;
+import kornell.gui.client.KornellConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,6 +33,7 @@ public class GenericCourseLibraryView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	private KornellConstants constants = GWT.create(KornellConstants.class);
 	
 	private String IMAGES_PATH = "skins/first/icons/courseLibrary/";
 
@@ -88,11 +90,11 @@ public class GenericCourseLibraryView extends Composite {
 		FlowPanel certificationInfo = new FlowPanel();
 		certificationInfo.addStyleName("detailsInfo");
 
-		Label infoTitle = new Label("Biblioteca");
+		Label infoTitle = new Label(constants.libraryTitle());
 		infoTitle.addStyleName("detailsInfoTitle");
 		certificationInfo.add(infoTitle);
 
-		Label infoText = new Label("Aqui você encontra os materiais complementares ao curso.");
+		Label infoText = new Label(constants.libraryInfo());
 		infoText.addStyleName("detailsInfoText");
 		certificationInfo.add(infoText);
 
@@ -167,19 +169,19 @@ public class GenericCourseLibraryView extends Composite {
 		filesHeader = new FlowPanel();
 		filesHeader.addStyleName("filesHeader");
 		
-		btnIcon = btnIcon != null ? btnIcon : new Button("Tipo");
+		btnIcon = btnIcon != null ? btnIcon : new Button(constants.libraryEntryIcon());
 		displayHeaderButton(btnIcon, "btnIcon", false);
 		filesHeader.add(btnIcon);
 
-		btnName = btnName != null ? btnName : new Button("Nome do Arquivo");
+		btnName = btnName != null ? btnName : new Button(constants.libraryEntryName());
 		displayHeaderButton(btnName, "btnName", true);
 		filesHeader.add(btnName);
 
-		btnSize = btnSize != null ? btnSize : new Button("Tamanho");
+		btnSize = btnSize != null ? btnSize : new Button(constants.libraryEntrySize());
 		displayHeaderButton(btnSize, "btnSize", false);
 		filesHeader.add(btnSize);
 
-		btnPublishingDate = btnPublishingDate != null ? btnPublishingDate : new Button("Data da publicação");
+		btnPublishingDate = btnPublishingDate != null ? btnPublishingDate : new Button(constants.libraryEntryDate());
 		displayHeaderButton(btnPublishingDate, "btnPublishingDate", false);
 		filesHeader.add(btnPublishingDate);
 		
