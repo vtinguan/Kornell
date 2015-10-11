@@ -98,7 +98,8 @@ class CourseClassResource(uuid: String) {
     AuthRepo().withPerson { person =>
       {
         val r = RolesRepo.updateCourseClassAdmins(uuid, roles)
-        ChatThreadsRepo.updateParticipantsInSupportThreads(uuid, ChatThreadType.SUPPORT)
+        ChatThreadsRepo.updateParticipantsInThreads(uuid, person.getInstitutionUUID, ChatThreadType.SUPPORT)
+        ChatThreadsRepo.updateParticipantsInThreads(uuid, person.getInstitutionUUID, ChatThreadType.INSTITUTION_SUPPORT)
         r
       }
     }
@@ -118,10 +119,13 @@ class CourseClassResource(uuid: String) {
   @Consumes(Array(Roles.TYPE))
   @Produces(Array(Roles.TYPE))
   @Path("tutors")
-  def updateTutors(roles: Roles) = {
+  def updateTutors(roles: Roles) = 
+  AuthRepo().withPerson { person =>
+    {
         val r = RolesRepo.updateTutors(uuid, roles)
-        ChatThreadsRepo.updateParticipantsInSupportThreads(uuid, ChatThreadType.TUTORING)
+        ChatThreadsRepo.updateParticipantsInThreads(uuid, person.getInstitutionUUID, ChatThreadType.TUTORING)
         r
+    }
   }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get

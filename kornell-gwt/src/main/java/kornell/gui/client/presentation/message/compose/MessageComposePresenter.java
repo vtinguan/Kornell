@@ -59,7 +59,9 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 				}
 			};
 			String entityUUID = view.getRecipient().getFieldPersistText();
-			threadsClient.postMessageToSupportCourseClassThread(messageText, entityUUID, chatThreadCallback);
+			//threadsClient.postMessageToSupportCourseClassThread(messageText, entityUUID, chatThreadCallback);
+			//threadsClient.postMessageToSupportInstitutionThread(messageText, entityUUID, chatThreadCallback);
+			threadsClient.postMessageToSupportPlatformThread(messageText, chatThreadCallback);
 		}
 	}
 

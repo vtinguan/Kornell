@@ -28,7 +28,6 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -44,8 +43,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	private Timer chatThreadMessagesTimer;
 
 	private List<UnreadChatThreadTO> unreadChatThreadsTOFetchedFromEvent;
-
-	private List<UnreadChatThreadTO> unreadChatThreadsTO;
 	List<ChatThreadMessageTO> chatThreadMessageTOs;
 	private boolean updateMessages = true;
 	private boolean threadBeginningReached;
@@ -169,8 +166,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		} 
 
 		asWidget().setVisible(newUnreadChatThreadTOs.size() > 0);
-		
-		this.unreadChatThreadsTO =  newUnreadChatThreadTOs;
 	}
 
 	@Override

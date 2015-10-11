@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-
 public class GenericMessageComposeView extends Composite implements MessageComposeView {
 
 	interface GenericMessageComposeUiBinder extends UiBinder<Widget, GenericMessageComposeView> {
@@ -34,95 +33,100 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private MessageComposeView.Presenter presenter;
 
-  KornellFormFieldWrapper recipient, messageText;
+	KornellFormFieldWrapper recipient, messageText;
 	private List<KornellFormFieldWrapper> fields;
 
-	@UiField Label lblTitle;
-	@UiField Label lblSubTitle;
-	@UiField Image separatorBar;
-  @UiField FlowPanel fieldsPanel;
-  @UiField Button btnOK;
-  @UiField Button btnCancel;
+	@UiField
+	Label lblTitle;
+	@UiField
+	Label lblSubTitle;
+	@UiField
+	Image separatorBar;
+	@UiField
+	FlowPanel fieldsPanel;
+	@UiField
+	Button btnOK;
+	@UiField
+	Button btnCancel;
 
 	public GenericMessageComposeView() {
 		initWidget(uiBinder.createAndBindUi(this));
-    ensureDebugId("genericMessageComposeView");
+		ensureDebugId("genericMessageComposeView");
 	}
-	
+
 	@Override
-	public void show(String courseClassUUID){
-			initialize(courseClassUUID);
+	public void show(String courseClassUUID) {
+		initialize(courseClassUUID);
 	}
- 
-  private void initialize(String courseClassUUID) {
-  	lblTitle.setText(constants.composeTitle());
-  	lblSubTitle.setText(constants.composeSubTitle());
-  	separatorBar.setUrl(FormHelper.SEPARATOR_BAR_IMG_PATH);
-  	separatorBar.addStyleName(FormHelper.SEPARATOR_BAR_CLASS);
-  	
+
+	private void initialize(String courseClassUUID) {
+		lblTitle.setText(constants.composeTitle());
+		lblSubTitle.setText(constants.composeSubTitle());
+		separatorBar.setUrl(FormHelper.SEPARATOR_BAR_IMG_PATH);
+		separatorBar.addStyleName(FormHelper.SEPARATOR_BAR_CLASS);
+
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		fieldsPanel.clear();
 
 		final ListBox recipients = new ListBox();
 
-		
-		
 		for (CourseClassTO courseClassTO : Dean.getInstance().getHelpCourseClasses()) {
 			recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
 		}
-		
-		if(courseClassUUID == null && recipients.getItemCount() <= 0) this.setVisible(false);
+
+		if (courseClassUUID == null && recipients.getItemCount() <= 0)
+			this.setVisible(false);
 
 		recipients.setSelectedValue(courseClassUUID);
-		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), recipients.getItemCount() > 1 && courseClassUUID == null);
+		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients),recipients.getItemCount() > 1 && courseClassUUID == null);
 		fields.add(recipient);
 		fieldsPanel.add(recipient);
 
-  	messageText = new KornellFormFieldWrapper(constants.message(), formHelper.createTextAreaFormField(""), true);
+		messageText = new KornellFormFieldWrapper(constants.message(), formHelper.createTextAreaFormField(""), true);
 		fields.add(messageText);
 		fieldsPanel.add(messageText);
-  }
+	}
 
 	@Override
-  protected void onEnsureDebugId(String baseID) {
+	protected void onEnsureDebugId(String baseID) {
 		recipient.ensureDebugId(baseID + "-recipient");
-  	messageText.ensureDebugId(baseID + "-messageText");
-  	btnOK.ensureDebugId(baseID + "-btnOK");
-  	btnCancel.ensureDebugId(baseID + "-btnCancel");
-  }
+		messageText.ensureDebugId(baseID + "-messageText");
+		btnOK.ensureDebugId(baseID + "-btnOK");
+		btnCancel.ensureDebugId(baseID + "-btnCancel");
+	}
 
-  @UiHandler("btnOK")
-  void onOkButtonClicked(ClickEvent e) {
-    presenter.okButtonClicked();
-  }
+	@UiHandler("btnOK")
+	void onOkButtonClicked(ClickEvent e) {
+		presenter.okButtonClicked();
+	}
 
-  @UiHandler("btnCancel")
-  void onCancelButtonClicked(ClickEvent e) {
-  	presenter.cancelButtonClicked();
-  }
-  
+	@UiHandler("btnCancel")
+	void onCancelButtonClicked(ClickEvent e) {
+		presenter.cancelButtonClicked();
+	}
+
 	@Override
 	public void setPresenter(Presenter p) {
 		presenter = p;
 	}
 
 	@Override
-  public KornellFormFieldWrapper getRecipient() {
-	  return recipient;
-  }
+	public KornellFormFieldWrapper getRecipient() {
+		return recipient;
+	}
 
-  @Override
+	@Override
 	public KornellFormFieldWrapper getMessageText() {
 		return messageText;
 	}
 
 	@Override
-  public boolean checkErrors() {
-	  return formHelper.checkErrors(fields);
-  }
+	public boolean checkErrors() {
+		return formHelper.checkErrors(fields);
+	}
 
 	@Override
-  public void clearErrors() {
+	public void clearErrors() {
 		formHelper.clearErrors(fields);
-  }
+	}
 }
