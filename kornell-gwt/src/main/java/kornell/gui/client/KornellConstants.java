@@ -306,6 +306,32 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String notesPopupPlaceholder();
 	
 	/**
+	 * MessagePresenter
+	 */
+	@DefaultStringValue("Messages")
+	String messagesTitle();
+	
+	@DefaultStringValue("Keep track of your conversations with other platform participants")
+	String messagesDescription();
+	
+	@DefaultStringValue("You have no established conversations.")
+	String noThreadsMessage();
+	
+	/**
+	 * MessageComposePresenter
+	 */
+	@DefaultStringValue("Message sent successfully!")
+	String messageSentSuccess();
+	
+	@DefaultStringValue("Please fill the message body.")
+	String noMessageBodyError();
+	
+	/**
+	 * GenericMessageView
+	 */
+	
+	
+	/**
 	 * 
 	 * Util
 	 */

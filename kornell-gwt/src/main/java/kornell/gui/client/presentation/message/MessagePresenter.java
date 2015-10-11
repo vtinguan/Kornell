@@ -12,6 +12,7 @@ import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
@@ -28,7 +29,6 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -39,6 +39,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	private ViewFactory viewFactory;
 	private MessagePanelType messagePanelType;
 	private static TOFactory toFactory = GWT.create(TOFactory.class);
+	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private UnreadChatThreadTO selectedChatThreadInfo;
 	private Timer chatThreadMessagesTimer;
@@ -79,7 +80,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 
 	private void initPlaceBar() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, "Chat", "Acompanhe suas conversas com outros participantes da plataforma");
+		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, constants.messagesTitle(), constants.messagesDescription());
 	}
 
 	private void init() {
@@ -125,7 +126,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		asWidget().setVisible(unreadChatThreadsTO.size() > 0);
 		if(placeCtrl.getWhere() instanceof MessagePlace){
 			if(unreadChatThreadsTO.size() == 0 && MessagePanelType.inbox.equals(messagePanelType)){
-				KornellNotification.show("Você não tem nenhuma conversa criada.", AlertType.WARNING, 5000);
+				KornellNotification.show(constants.noThreadsMessage(), AlertType.WARNING, 5000);
 			} 
 		}
 	}
