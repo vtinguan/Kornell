@@ -34,6 +34,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -235,6 +236,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	@Override
 	public void addMessagesToThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, String currentUserFullName, final boolean insertOnTop) {
 		final int oldPosition = threadPanelItemsScroll.getMaximumVerticalScrollPosition();
+		boolean shouldScrollToBottom = (threadPanelItemsScroll.getMaximumVerticalScrollPosition()  == threadPanelItemsScroll.getVerticalScrollPosition()) && !insertOnTop;
 		synchronized(dateLabelsMap){
 			for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessagesTO.getChatThreadMessageTOs()) {
 				FlowPanel threadMessageWrapper = new FlowPanel();
@@ -262,6 +264,7 @@ public class GenericMessageView extends Composite implements MessageView {
 				}
 			} 
 		}
+		
 		updateDateLabelValues(chatThreadMessagesTO.getServerTime());
 		
 		if(insertOnTop){
@@ -278,6 +281,9 @@ public class GenericMessageView extends Composite implements MessageView {
 					}
 				}
 			});
+		}
+		if(shouldScrollToBottom){
+			scrollToBottom();
 		}
 	}
 
