@@ -3,7 +3,10 @@ package kornell.gui.client.presentation.message.compose;
 import java.util.ArrayList;
 import java.util.List;
 
+import kornell.api.client.KornellSession;
+import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.RoleTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -35,6 +38,7 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 
 	KornellFormFieldWrapper recipient, messageText;
 	private List<KornellFormFieldWrapper> fields;
+	private KornellSession session;
 
 	@UiField
 	Label lblTitle;
@@ -49,7 +53,8 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	@UiField
 	Button btnCancel;
 
-	public GenericMessageComposeView() {
+	public GenericMessageComposeView(KornellSession session) {
+		this.session = session;
 		initWidget(uiBinder.createAndBindUi(this));
 		ensureDebugId("genericMessageComposeView");
 	}
@@ -68,7 +73,19 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		fieldsPanel.clear();
 
+		boolean hasNonCourseClassThreadAcces = false;
 		final ListBox recipients = new ListBox();
+		
+		for (RoleTO roleTO : session.getCurrentUser().getRoles()) {
+			if(RoleType.courseClassAdmin.equals(roleTO.getRole().getRoleType())){
+				recipients.addItem("Responsável pela instituição" + ": " + Dean.getInstance().getInstitution().getName() , "i-" + roleTO.getRole().getCourseClassAdminRole().getCourseClassUUID());
+				hasNonCourseClassThreadAcces = true;
+			}
+			else if(RoleType.institutionAdmin.equals(roleTO.getRole().getRoleType())){
+				recipients.addItem("Responsável pela plataforma", "");
+				hasNonCourseClassThreadAcces = true;
+			}
+		}
 
 		for (CourseClassTO courseClassTO : Dean.getInstance().getHelpCourseClasses()) {
 			recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
@@ -78,7 +95,7 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 			this.setVisible(false);
 
 		recipients.setSelectedValue(courseClassUUID);
-		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients),recipients.getItemCount() > 1 && courseClassUUID == null);
+		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), recipients.getItemCount() > 1 && (hasNonCourseClassThreadAcces || courseClassUUID == null));
 		fields.add(recipient);
 		fieldsPanel.add(recipient);
 
