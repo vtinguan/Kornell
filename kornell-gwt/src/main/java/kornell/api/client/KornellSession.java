@@ -1,14 +1,14 @@
 package kornell.api.client;
 
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Logger;
 
 import kornell.core.entity.CourseClass;
-import kornell.core.entity.Role;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.RoleTO;
 import kornell.core.to.TokenTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
@@ -223,10 +223,10 @@ public class KornellSession extends KornellClient {
 				currentUser.getPerson().getTermsAcceptedOn() != null;
 	}
 
-	public boolean hasAnyAdminRole(Set<Role> roles) {
-		return (RoleCategory.hasRole(roles, RoleType.courseClassAdmin) || 
-				RoleCategory.hasRole(roles, RoleType.observer) || 
-				RoleCategory.hasRole(roles, RoleType.tutor) || 
+	public boolean hasAnyAdminRole(List<RoleTO> roleTOs) {
+		return (RoleCategory.hasRole(roleTOs, RoleType.courseClassAdmin) || 
+				RoleCategory.hasRole(roleTOs, RoleType.observer) || 
+				RoleCategory.hasRole(roleTOs, RoleType.tutor) || 
 				isInstitutionAdmin());
 	}
 

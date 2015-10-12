@@ -39,6 +39,8 @@ import kornell.server.jdbc.repository.TokenRepo
 import kornell.server.util.Conditional.toConditional
 import javax.ws.rs.POST
 import kornell.server.util.AccessDeniedErr
+import kornell.server.jdbc.repository.RolesRepo
+import kornell.core.entity.RoleCategory
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -88,8 +90,8 @@ class UserResource(private val authRepo:AuthRepo) {
     user.setUsername(username)
     user.setPerson(person)
     user.setLastPlaceVisited(person.getLastPlaceVisited)
-    val roles = authRepo.rolesOf(person.getUUID)
-    user.setRoles((Set.empty ++ roles).asJava)
+    val roleTOs = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT)
+    user.setRoles(roleTOs.getRoleTOs)
     user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
     if(RegistrationType.username.equals(person.getRegistrationType)){
     	user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
@@ -229,9 +231,8 @@ class UserResource(private val authRepo:AuthRepo) {
         throw new UnauthorizedAccessException("passwordChangeDenied")
       else {
 	      PersonRepo(personUUID).update(userInfo.getPerson)
-	
-	      val roles = authRepo.rolesOf(userInfo.getPerson.getUUID)
-	      userInfo.setRoles((Set.empty ++ roles).asJava)
+	      val roleTOs = RolesRepo.getUserRoles(personUUID, RoleCategory.BIND_DEFAULT)
+	      userInfo.setRoles(roleTOs.getRoleTOs)
 	      userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
 	      userInfo
       }

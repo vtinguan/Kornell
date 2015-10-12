@@ -200,7 +200,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 
 	@Override
 	public MessageComposeView getMessageComposeView() {
-		return new GenericMessageComposeView();
+		return new GenericMessageComposeView(clientFactory.getKornellSession());
 	}
 
 	@Override

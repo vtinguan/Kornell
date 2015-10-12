@@ -212,6 +212,7 @@ public class GenericCourseDetailsView extends Composite {
 			chatPanel.setVisible(true);
 			messagePresenterClassroomGlobalChat.enableMessagesUpdate(true);
 			messagePresenterClassroomGlobalChat.filterAndShowThreads();
+			messagePresenterClassroomGlobalChat.scrollToBottom();
 		} else if(chatPanel != null){
 			chatPanel.setVisible(false);
 			messagePresenterClassroomGlobalChat.enableMessagesUpdate(false);
@@ -222,6 +223,7 @@ public class GenericCourseDetailsView extends Composite {
 			tutorPanel.setVisible(true);
 			messagePresenterClassroomTutorChat.enableMessagesUpdate(true);
 			messagePresenterClassroomTutorChat.filterAndShowThreads();
+			messagePresenterClassroomTutorChat.scrollToBottom();
 		} else if(tutorPanel != null){
 			tutorPanel.setVisible(false);
 			messagePresenterClassroomTutorChat.enableMessagesUpdate(false);
@@ -260,7 +262,6 @@ public class GenericCourseDetailsView extends Composite {
 			chatPanel = new FlowPanel();
 			detailsContentPanel.add(chatPanel);
 		}
-		messagePresenterClassroomGlobalChat.filterAndShowThreads();
 		chatPanel.clear();
 		chatPanel.addStyleName("certificationPanel");
 		chatPanel.add(messagesGlobalChatView);
@@ -276,7 +277,6 @@ public class GenericCourseDetailsView extends Composite {
 			tutorPanel = new FlowPanel();
 			detailsContentPanel.add(tutorPanel);
 		}
-		messagePresenterClassroomTutorChat.filterAndShowThreads();
 		tutorPanel.clear();
 		tutorPanel.addStyleName("certificationPanel");
 		tutorPanel.add(messagesTutorChatView);
@@ -333,7 +333,6 @@ public class GenericCourseDetailsView extends Composite {
 		btn.removeStyleName("btn");
 		btn.addStyleName(styleNameGlobal);
 		btn.addStyleName(styleName);
-		btn.addStyleName("btnNotSelected");
 		return btn;
 	}
 

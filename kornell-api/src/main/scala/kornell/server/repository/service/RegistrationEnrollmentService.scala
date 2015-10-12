@@ -33,6 +33,7 @@ import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.server.api.ActomResource
 import kornell.core.error.exception.EntityConflictException
 import scala.collection.mutable.ListBuffer
+import kornell.server.jdbc.repository.RolesRepo
 
 object RegistrationEnrollmentService {
 
@@ -42,8 +43,8 @@ object RegistrationEnrollmentService {
       EmailService.sendEmailBatchEnrollment(dean, InstitutionsRepo.byUUID(dean.getInstitutionUUID).get, CourseClassRepo(enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID).get)
   }
 
-  def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUsername: String) = {
-    val roles = (Set.empty ++ AuthRepo().rolesOf(deanUsername)).asJava
+  def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUUID: String) = {
+    val roles = RolesRepo.getUserRoles(deanUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
     !(RoleCategory.isPlatformAdmin(roles, enrollmentRequest.getInstitutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, enrollmentRequest.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, enrollmentRequest.getCourseClassUUID))
