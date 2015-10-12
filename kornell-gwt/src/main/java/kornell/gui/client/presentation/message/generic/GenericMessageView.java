@@ -17,14 +17,12 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessageView;
-import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -38,12 +36,10 @@ import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -69,8 +65,6 @@ public class GenericMessageView extends Composite implements MessageView {
 	private List<Label> sideItems;
 	private Map<String, MessageItem> dateLabelsMap;
 	private HashMap<String, Label> sidePanelItemsMap;
-	private ScrollHandler scrollHandler;
-	private HandlerRegistration handlerRegistration;
 	private TextBox txtSearch;
 	private Timer updateTimer;
 	private com.github.gwtbootstrap.client.ui.Button btnClear;
@@ -104,19 +98,14 @@ public class GenericMessageView extends Composite implements MessageView {
 			}
 		};
 		
-		if(handlerRegistration != null){
-			handlerRegistration.removeHandler(); 
-		}
-		
-		scrollHandler = new ScrollHandler() {
+		threadPanelItemsScroll.addScrollHandler(new ScrollHandler() {
 			@Override
 			public void onScroll(ScrollEvent event) {
 				if(threadPanelItemsScroll.getVerticalScrollPosition() == 0){
 					presenter.onScrollToTop(false);
 				}
 			}
-		};
-		handlerRegistration = threadPanelItemsScroll.addScrollHandler(scrollHandler);
+		});
 	}
 
 	@Override
@@ -287,7 +276,6 @@ public class GenericMessageView extends Composite implements MessageView {
 
 	@Override
 	public void updateThreadPanel(UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
-		handlerRegistration.removeHandler();
 		threadTitle.getElement().setInnerHTML(getThreadTitle(unreadChatThreadTO, currentUserFullName, false));
 		synchronized(dateLabelsMap){
 			dateLabelsMap = new HashMap<String, MessageItem>();
@@ -358,13 +346,6 @@ public class GenericMessageView extends Composite implements MessageView {
 				@Override
 				public void execute() {
 					threadPanelItemsScroll.setVerticalScrollPosition(threadPanelItemsScroll.getMaximumVerticalScrollPosition() - oldPosition);
-					if(threadPanelItemsScroll.getVerticalScrollPosition() == 0){
-						handlerRegistration.removeHandler();
-						presenter.onScrollToTop(oldPosition > 0);
-					} else {
-						handlerRegistration.removeHandler();
-						handlerRegistration = threadPanelItemsScroll.addScrollHandler(scrollHandler);
-					}
 				}
 			});
 		}

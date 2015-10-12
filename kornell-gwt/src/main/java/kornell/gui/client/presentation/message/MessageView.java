@@ -16,6 +16,7 @@ public interface MessageView  extends IsWidget {
 		void clearThreadSelection();
 		MessagePanelType getMessagePanelType();
 		void onScrollToTop(boolean scrollToBottomAfterFetchingMessages);
+		void scrollToBottom();
 	}
 
 	void setPresenter(Presenter presenter);

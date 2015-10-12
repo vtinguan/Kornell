@@ -78,10 +78,12 @@ a:hover{
 .MessagePlace { 
 	.messageInboxPanel{
 		width: @wrapperWidth;
+		max-height: 1000px;
 		height: ~"calc(100vh - 105px)";
 		.threadPanel {
 			.threadPanelItemsScroll {
-				height: ~"calc(100vh - 246px)";
+				height: ~"calc(100vh - 246px)";    
+				max-height: ~"calc(1000px - 146px)";
 			}
 		}
 	}
@@ -89,10 +91,12 @@ a:hover{
 .AdminCourseClassPlace { 
 	.messageInboxPanel{
 		width: @wrapperWidth;
+		max-height: 1000px;
 		height: ~"calc(100vh - 240px)";
 		.threadPanel {
 			.threadPanelItemsScroll {
 				height: ~"calc(100vh - 385px)";
+				max-height: ~"calc(1000px - 146px)";
 			}
 		}
 	}
@@ -100,6 +104,7 @@ a:hover{
 .ClassroomPlace { 
 	.messageInboxPanel{
 		width: @rightPanelWidth;
+		max-height: 1000px;
 		height: ~"calc(100vh - 220px)";
 		min-height: 460px;
 		margin-top: 20px;
@@ -107,6 +112,7 @@ a:hover{
 			width: @rightPanelWidth;
 			.threadPanelItemsScroll {
 				height: ~"calc(100vh - 365px)";
+				max-height: ~"calc(1000px - 146px)";
 				min-height: 302px;
 			}
 		}

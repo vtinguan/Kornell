@@ -326,6 +326,11 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		}
 		return date;
 	}
+	
+	@Override
+	public void scrollToBottom(){
+		view.scrollToBottom();
+	}
 
 	@Override
 	public MessagePanelType getMessagePanelType() {

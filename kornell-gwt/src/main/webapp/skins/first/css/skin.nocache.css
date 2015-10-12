@@ -7325,20 +7325,25 @@ a {
 }
 .MessagePlace .messageInboxPanel {
   width: 962px;
+  max-height: 1000px;
   height: calc(100vh - 105px);
 }
 .MessagePlace .messageInboxPanel .threadPanel .threadPanelItemsScroll {
   height: calc(100vh - 246px);
+  max-height: calc(1000px - 146px);
 }
 .AdminCourseClassPlace .messageInboxPanel {
   width: 962px;
+  max-height: 1000px;
   height: calc(100vh - 240px);
 }
 .AdminCourseClassPlace .messageInboxPanel .threadPanel .threadPanelItemsScroll {
   height: calc(100vh - 385px);
+  max-height: calc(1000px - 146px);
 }
 .ClassroomPlace .messageInboxPanel {
   width: 721.5px;
+  max-height: 1000px;
   height: calc(100vh - 220px);
   min-height: 460px;
   margin-top: 20px;
@@ -7348,6 +7353,7 @@ a {
 }
 .ClassroomPlace .messageInboxPanel .threadPanel .threadPanelItemsScroll {
   height: calc(100vh - 365px);
+  max-height: calc(1000px - 146px);
   min-height: 302px;
 }
 .ClassroomPlace .messageInboxPanel .sidePanelScroll {
