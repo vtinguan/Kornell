@@ -17,11 +17,18 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessageView;
+import kornell.gui.client.presentation.util.AsciiUtils;
 import kornell.gui.client.presentation.util.FormHelper;
 
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.TextArea;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -29,6 +36,8 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -58,9 +67,13 @@ public class GenericMessageView extends Composite implements MessageView {
 
 
 	private List<Label> sideItems;
-	Map<String, MessageItem> dateLabelsMap;
-	ScrollHandler scrollHandler;
-	HandlerRegistration handlerRegistration;
+	private Map<String, MessageItem> dateLabelsMap;
+	private HashMap<String, Label> sidePanelItemsMap;
+	private ScrollHandler scrollHandler;
+	private HandlerRegistration handlerRegistration;
+	private TextBox txtSearch;
+	private Timer updateTimer;
+	private com.github.gwtbootstrap.client.ui.Button btnClear;
 	
 
 	@UiField FlowPanel sidePanel;
@@ -71,9 +84,10 @@ public class GenericMessageView extends Composite implements MessageView {
 	@UiField TextArea messageTextArea;
 	@UiField Button btnSend;
 	
-	String INFO_CLASS = "textInfoColor";
-	String HIGHLIGHT_CLASS = "highlightTextDiscreteColor";
-	String PLAIN_CLASS = "plainDiscreteTextColor";
+	private String INFO_CLASS = "textInfoColor";
+	private String HIGHLIGHT_CLASS = "highlightTextDiscreteColor";
+	private String PLAIN_CLASS = "plainDiscreteTextColor";
+	private FlowPanel searchPanel;
 
 	public GenericMessageView(EventBus eventBus, KornellSession session) {
 		this.bus = eventBus;
@@ -82,6 +96,13 @@ public class GenericMessageView extends Composite implements MessageView {
 		ensureDebugId("genericMessageInboxView");
 
 		dateLabelsMap = new HashMap<String, MessageItem>();
+
+		updateTimer = new Timer() {
+			@Override
+			public void run() {
+				filter();
+			}
+		};
 		
 		if(handlerRegistration != null){
 			handlerRegistration.removeHandler(); 
@@ -108,11 +129,73 @@ public class GenericMessageView extends Composite implements MessageView {
 	public void setPresenter(Presenter p) {
 		presenter = p;
 	}
+	
+	private void initSearch() {
+		if (searchPanel == null) {
+			txtSearch = new TextBox();
+			txtSearch.addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					scheduleFilter();
+				}
+			});
+			txtSearch.addKeyUpHandler(new KeyUpHandler() {
+				@Override
+				public void onKeyUp(KeyUpEvent event) {
+					scheduleFilter();
+				}
+			});
+			txtSearch.addValueChangeHandler(new ValueChangeHandler<String>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<String> event) {
+					scheduleFilter();
+				}
+			});
+			searchPanel = new FlowPanel();
+			
+			searchPanel.add(txtSearch);
+			searchPanel.addStyleName("filterPanel");
+			searchPanel.add(new Icon(IconType.SEARCH));
+			txtSearch.setPlaceholder("Filtrar conversas...");
+			btnClear = new com.github.gwtbootstrap.client.ui.Button("");
+			btnClear.removeStyleName("btn");
+			btnClear.setVisible(false);
+			btnClear.setIcon(IconType.REMOVE);
+			btnClear.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					txtSearch.setText("");
+					filter();
+				}
+			});
+			searchPanel.add(btnClear);
+		}
+	}
+
+	private void scheduleFilter() {
+		updateTimer.cancel();
+		updateTimer.schedule(300);
+	}
+
+	private void filter() {
+		String searchTerm = txtSearch.getText().trim().toLowerCase();
+		btnClear.setVisible(searchTerm.length() > 0);
+		for (Map.Entry<String, Label> entry : sidePanelItemsMap.entrySet()){
+			if(entry.getKey().indexOf(searchTerm) >= 0){
+				entry.getValue().removeStyleName("shy");
+			} else {
+				entry.getValue().addStyleName("shy");
+			}
+		}
+	}
 
 	@Override
 	public void updateSidePanel(List<UnreadChatThreadTO> unreadChatThreadsTO, String selectedChatThreadUUID, final String currentUserFullName) {
 		sidePanel.clear();
+		initSearch();
+		sidePanel.add(searchPanel);
 		sideItems = new ArrayList<Label>();
+		sidePanelItemsMap = new HashMap<String, Label>();
 		for (final UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadsTO) {
 			final Label label = new Label();
 			label.addStyleName("threadListItem");
@@ -146,6 +229,7 @@ public class GenericMessageView extends Composite implements MessageView {
 			sidePanel.add(label);
 			sideItems.add(label);
 		}
+		filter();
 	}
 	
 	private String getThreadTitle(final UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean lineBreak) {
@@ -190,8 +274,10 @@ public class GenericMessageView extends Composite implements MessageView {
 	private void setLabelContent(final UnreadChatThreadTO unreadChatThreadTO, final Label label, boolean markAsRead, String currentUserFullName) {
 		String appendCount = !"0".equals(unreadChatThreadTO.getUnreadMessages()) && !markAsRead ? " (" + unreadChatThreadTO.getUnreadMessages() + ")&nbsp;&nbsp;" : "";
 		appendCount = "<span class=\"unreadCount\">" + appendCount + "</span>";
-		
-		label.getElement().setInnerHTML(appendCount + getThreadTitle(unreadChatThreadTO, currentUserFullName, true));
+		String title = getThreadTitle(unreadChatThreadTO, currentUserFullName, true);
+		String titleStripped = title.replaceAll(separator(true), " ").replaceAll("\\<[^>]*>","").replaceAll(separator(false, true), " ").replaceAll(separator(false, false), " ").toLowerCase();
+		sidePanelItemsMap.put(titleStripped, label);
+		label.getElement().setInnerHTML(appendCount + title);
 		//if it's supposed to be marked as read and there were messages on the thread, update the envelope count
 		if(markAsRead && !"0".equals(unreadChatThreadTO.getUnreadMessages())){
 			bus.fireEvent(new UnreadMessagesCountChangedEvent(Integer.parseInt(unreadChatThreadTO.getUnreadMessages())));

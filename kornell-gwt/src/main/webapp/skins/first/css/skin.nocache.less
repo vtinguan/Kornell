@@ -137,6 +137,40 @@ a:hover{
 		.sidePanel{
 			width: 100%;
 			.boxSizing;
+			.filterPanel{
+				background-color: @tableBackgroundColor;
+			    margin-bottom: 8px;
+			    height: 30px;
+			    border-radius: 5px;
+			    input{
+			    	width: 75%;
+				    font-size: 11px;
+				    background-color: transparent;
+				    border: 1px solid transparent;
+				    color: #e3e3e3;
+			    }
+			    i{
+				    color: @plainDiscreteTextColor;
+				    background-color: transparent;
+				    display: block;
+				    line-height: 30px;
+				    font-size: 12px;
+					&:hover {
+						cursor: pointer;
+					}
+			    }
+			    .icon-search{
+			    	float: right;
+				    padding-right: 8px;
+				}
+				a{
+			    	float: right;
+				    padding-right: 4px;
+					&:hover {
+						text-decoration: none;
+					}
+				}
+			}
 			.threadListItem{
 				.boxSizing;
 				color: @niceTextColor;
