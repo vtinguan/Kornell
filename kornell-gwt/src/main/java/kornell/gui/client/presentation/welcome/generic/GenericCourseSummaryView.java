@@ -194,7 +194,7 @@ public class GenericCourseSummaryView extends Composite {
 	private void onCourseCompleted(String certifiedAt) {
 		String statusText = formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.completed);
 		if(certifiedAt != null) {
-			statusText += " em: ";
+			statusText += " " + constants.completedOnToken() + ": ";
 			pStatusInfo.setText(formHelper.getStringFromDate(certifiedAt));
 		}
 		if(courseClassTO.getCourseClass().getRequiredScore() != null && 

@@ -495,7 +495,10 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String requestEnrollmentLabel();
 	
 	@DefaultStringValue("Note")
-	String completedCourseNoteLabel();	
+	String completedCourseNoteLabel();
+	
+	@DefaultStringValue("on")
+	String completedOnToken();
 	
 	/**
 	 * GenericWelcomeView
@@ -578,6 +581,18 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Message:")
 	String message();
 	
+	
+	/**
+	 * Validations
+	 */
+	@DefaultStringValue("Invalid CPF")
+	String invalidCPF();
+	
+	@DefaultStringValue("CPF already exists")
+	String existingCPF();
+	
+	@DefaultStringValue("Email already exists")
+	String existingEmail();
 	
 	/**
 	 * Errors 404
