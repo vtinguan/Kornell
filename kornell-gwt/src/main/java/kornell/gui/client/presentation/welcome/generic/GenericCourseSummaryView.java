@@ -109,7 +109,7 @@ public class GenericCourseSummaryView extends Composite {
 			public void ok(UserInfoTO userInfoTO) {
 				Student student = teacher.student(userInfoTO);
 				if(courseClassTO.getEnrollment() != null && EnrollmentState.cancelled.equals(courseClassTO.getEnrollment().getState())){
-					pStatusErr.setText("(CANCELADA)");
+					pStatusErr.setText(constants.cancelledClassLabel());
 				}
 				if (student.isEnrolled())
 					onEnrolled(student);
@@ -145,7 +145,7 @@ public class GenericCourseSummaryView extends Composite {
 				Button requestEnrollmentBtn = getRequestEnrollmentButton();
 				pnlCourseSummaryBar.add(requestEnrollmentBtn);
 
-				pStatus.setText("Disponível");
+				pStatus.setText(constants.availableClassLabel());
 				iconCourseURL += "iconAcquire.png";
 			}
 
@@ -169,7 +169,7 @@ public class GenericCourseSummaryView extends Composite {
 
 	private void onCourseInProgress(Integer progress) {
 		if(progress >= 100){
-			pStatus.setText("Aguardando Avaliação");
+			pStatus.setText(constants.pendingGradeLabel());
 		} else {
 			pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.inProgress)+": ");
 			progressBar.removeStyleName("shy");
@@ -183,7 +183,7 @@ public class GenericCourseSummaryView extends Composite {
 	private void onCourseNotStarted() {
 		if(courseClassTO.getEnrollment() != null &&
 				EnrollmentState.requested.equals(courseClassTO.getEnrollment().getState())){
-			pStatus.setText("Aguardando aprovação da matrícula");
+			pStatus.setText(constants.pendingEnrollmentApproval());
 			iconCourseURL += "iconWaiting.png";
 		} else {
 			pStatus.setText(constants.toStart());
@@ -200,7 +200,7 @@ public class GenericCourseSummaryView extends Composite {
 		if(courseClassTO.getCourseClass().getRequiredScore() != null && 
 				courseClassTO.getCourseClass().getRequiredScore().intValue() != 0 &&
 				courseClassTO.getEnrollment().getAssessmentScore() != null){
-			pStatus2.setText(" - Nota: ");
+			pStatus2.setText(" - " + constants.completedCourseNoteLabel() + ":");
 			pStatusInfo2.setText(""+courseClassTO.getEnrollment().getAssessmentScore().intValue());
 		}
 		pStatus.setText(statusText);
@@ -208,7 +208,7 @@ public class GenericCourseSummaryView extends Composite {
 	}
 
 	private Button getRequestEnrollmentButton() {
-		Button requestEnrollmentBtn = new Button(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? "Iniciar Curso" : "Solicitar Matrícula");
+		Button requestEnrollmentBtn = new Button(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? constants.startCourseLabel() : constants.requestEnrollmentLabel());
 		requestEnrollmentBtn.addStyleName("right btnAction");
 
 		requestEnrollmentBtn.addClickHandler(new ClickHandler() {

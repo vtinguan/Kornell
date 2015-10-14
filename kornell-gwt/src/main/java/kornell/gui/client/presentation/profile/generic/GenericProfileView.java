@@ -17,6 +17,7 @@ import kornell.core.error.KornellErrorTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.TimeUtil;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
@@ -69,7 +70,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	Logger logger = Logger.getLogger(GenericProfileView.class.getName());
+	private static final Logger logger = Logger.getLogger(GenericProfileView.class.getName());
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private KornellSession session;
 	private ViewFactory viewFactory;
@@ -112,40 +114,40 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
-		btnEdit = createButton("Editar", "btnAction btnPlaceBar", false, new ClickHandler() {
+		btnEdit = createButton(constants.editButton(), "btnAction btnPlaceBar", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {doEdit(e);}
 		});
-		btnEdit2 = createButton("Editar", "btnAction btnBottom", false, new ClickHandler() {
+		btnEdit2 = createButton(constants.editButton(), "btnAction btnBottom", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {doEdit(e);}
 		});
-		btnClose = createButton("Fechar", "btnNotSelected btnPlaceBar", false, new ClickHandler() {
+		btnClose = createButton(constants.closeButton(), "btnNotSelected btnPlaceBar", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {doClose(e);}
 		});
-		btnClose2 = createButton("Fechar", "btnNotSelected btnBottom", false, new ClickHandler() {
+		btnClose2 = createButton(constants.closeButton(), "btnNotSelected btnBottom", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {doClose(e);}
 		});
-		btnOK = createButton("Salvar", "btnAction btnPlaceBar", false, new ClickHandler() {
+		btnOK = createButton(constants.saveButton(), "btnAction btnPlaceBar", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {doOK(e);}
 		});
-		btnOK2 = createButton("Salvar", "btnAction btnBottom", false, new ClickHandler() {
+		btnOK2 = createButton(constants.saveButton(), "btnAction btnBottom", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {doOK(e);}
 		});
-		btnCancel = createButton("Cancelar", "btnNotSelected btnPlaceBar", false, new ClickHandler() {
+		btnCancel = createButton(constants.cancelButton(), "btnNotSelected btnPlaceBar", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {doCancel(e);}
 		});
-		btnCancel2 = createButton("Cancelar", "btnNotSelected btnBottom", false, new ClickHandler() {
+		btnCancel2 = createButton(constants.cancelButton(), "btnNotSelected btnBottom", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {doCancel(e);}
 		});
-		btnChangePassword = createButton("Alterar Senha", "btnSelected btnPlaceBar", false, new ClickHandler() {
+		btnChangePassword = createButton(constants.changePasswordButton(), "btnSelected btnPlaceBar", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {passwordChangeWidget.show();}
 		});
-		btnChangePassword2 = createButton("Alterar Senha", "btnSelected btnBottom", false, new ClickHandler() {
+		btnChangePassword2 = createButton(constants.changePasswordButton(), "btnSelected btnBottom", false, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {passwordChangeWidget.show();}
 		});
-		btnSendMessage = createButton("Enviar Mensagem", "btnNotSelected btnPlaceBar", true, new ClickHandler() {
+		btnSendMessage = createButton(constants.sendMessageButton(), "btnNotSelected btnPlaceBar", true, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {sendMessageWidget.show();}
 		});
-		btnSendMessage2 = createButton("Enviar Mensagem", "btnNotSelected btnBottom", true, new ClickHandler() {
+		btnSendMessage2 = createButton(constants.sendMessageButton(), "btnNotSelected btnBottom", true, new ClickHandler() {
 			@Override public void onClick(ClickEvent e) {sendMessageWidget.show();}
 		});
 
@@ -173,7 +175,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	private void initData() {
 
-		viewFactory.getMenuBarView().initPlaceBar(IconType.USER, "Perfil", "Mantenha seus dados atualizados");
+		viewFactory.getMenuBarView().initPlaceBar(IconType.USER, constants.profileTitle(), constants.profileDescription());
 		
 		isCurrentUser = session.getCurrentUser().getPerson().getUUID().equals(((ProfilePlace) placeCtrl.getWhere()).getPersonUUID());
 		isEditMode = ((ProfilePlace)placeCtrl.getWhere()).isEdit() && isCurrentUser;
@@ -236,37 +238,37 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	private boolean validateFields() {
 		if(!formHelper.isLengthValid(fullName.getFieldPersistText(), 5, 50)){
-			fullName.setError("Insira seu nome.");
+			fullName.setError(constants.missingNameMessage());
 		} 
 		
 		if(showContactDetails && validateContactDetails){
 			if(!formHelper.isLengthValid(telephone.getFieldPersistText(), 7, 20)){
-				telephone.setError("Insira seu telefone.");
+				telephone.setError(constants.missingTelephoneMessage());
 			} else telephone.setError("");
 			
 			if(!formHelper.isLengthValid(country.getFieldPersistText(), 0, 2)){
-				country.setError("Selecione seu país.");
+				country.setError(constants.missingCountryMessage());
 			} else country.setError("");
 			
 			if("BR".equals(country.getFieldPersistText())){
 				if(!formHelper.isListBoxSelected(((ListBox) state.getFieldWidget()))){
-					state.setError("Selecione seu estado.");
+					state.setError(constants.selectStateMessage());
 				} else state.setError("");
 			} else {
 				if(!formHelper.isLengthValid(state.getFieldPersistText(), 2, 100)){
-					state.setError("Insira seu estado.");
+					state.setError(constants.missingStateMessage());
 				} else state.setError("");
 			}
 			if(!formHelper.isLengthValid(city.getFieldPersistText(), 2, 100)){
-				city.setError("Insira sua cidade.");
+				city.setError(constants.missingCityMessage());
 			} else city.setError("");
 			
 			if(!formHelper.isLengthValid(addressLine1.getFieldPersistText(), 2, 100)){
-				addressLine1.setError("Insira seu endereço.");
+				addressLine1.setError(constants.missingAddressMessage());
 			} else addressLine1.setError("");
 			
 			if(!formHelper.isLengthValid(postalCode.getFieldPersistText(), 2, 100)){
-				postalCode.setError("Insira seu código postal.");
+				postalCode.setError(constants.missingPostalCodeMessage());
 			} else postalCode.setError("");
 			
 		}
@@ -283,7 +285,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 				@Override
 				public void ok(UserInfoTO userInfo){
 					LoadingPopup.hide();
-					KornellNotification.show("Alterações salvas com sucesso!");
+					KornellNotification.show(constants.confirmSaveProfile());
 					btnOK.setEnabled(true);
 					btnOK2.setEnabled(true);
 					isEditMode = false;
@@ -303,7 +305,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 				@Override
 				public void unauthorized(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show("Erros ao salvar usuário.", AlertType.ERROR);
+					KornellNotification.show(constants.errorSaveProfile(), AlertType.ERROR);
 				}
 			});   
 		}
@@ -375,7 +377,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private boolean checkErrors() {
 		for (KornellFormFieldWrapper field : fields) 
 			if(!"".equals(field.getError())){
-				KornellNotification.show("Existem erros nos dados.", AlertType.WARNING);
+				KornellNotification.show(constants.formContainsErrors(), AlertType.WARNING);
 				if(field.getFieldWidget() instanceof FocusWidget)
 					((FocusWidget)field.getFieldWidget()).setFocus(true);
 				return true;		
@@ -403,7 +405,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 		profileFields.clear();
 		if(user == null){
-			KornellNotification.show("Usuário não encontrado.", AlertType.ERROR);
+			KornellNotification.show(constants.userNotFound(), AlertType.ERROR);
 			return;
 		} 
 		
@@ -415,23 +417,23 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		}
 				
 		if(isEditMode && showContactDetails && validateContactDetails && session.getCurrentUser().getPerson().getCity() == null){
-			KornellNotification.show("Por favor, conclua o preenchimento do seu cadastro.", AlertType.WARNING, 5000);
+			KornellNotification.show(constants.pleaseCompleteRegistrationMessage(), AlertType.WARNING, 5000);
 		}
 
 		//profileFields.add(getPictureUploadFormPanel());
 
-		username = new KornellFormFieldWrapper("Usuário", formHelper.createTextBoxFormField(user.getUsername()), false);
+		username = new KornellFormFieldWrapper(constants.usernameLabel(), formHelper.createTextBoxFormField(user.getUsername()), false);
 		fields.add(username);
 		profileFields.add(username);
 
-		fullName = new KornellFormFieldWrapper("Nome Completo", formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode);
+		fullName = new KornellFormFieldWrapper(constants.fullnameLabel(), formHelper.createTextBoxFormField(user.getPerson().getFullName()), isEditMode);
 		fields.add(fullName);
 		profileFields.add(fullName);
 		
 		KornellSession session = clientFactory.getKornellSession();
 		if(showEmail){
 			email = 
-					new KornellFormFieldWrapper("Email", 
+					new KornellFormFieldWrapper(constants.emailLabel(), 
 							formHelper.createTextBoxFormField(user.getPerson().getEmail()), 
 							isEditMode,
 							EmailValidator.unregisteredEmailValidator(profileUserUUID, session));
@@ -441,7 +443,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		}
 		if(showCPF && (isCurrentUser || isAdmin)){
 			cpf = new KornellFormFieldWrapper
-					("CPF", 
+					(constants.cpfLabel(), 
 					formHelper.createTextBoxFormField(user.getPerson().getCPF()), 
 					isEditMode,
 					CPFValidator.unregisteredCPFValidator(profileUserUUID, session));
@@ -450,18 +452,18 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			profileFields.add(cpf);
 		}
 
-		company = new KornellFormFieldWrapper("Empresa", formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
+		company = new KornellFormFieldWrapper(constants.companyLabel(), formHelper.createTextBoxFormField(user.getPerson().getCompany()), isEditMode);
 		fields.add(company);
 		profileFields.add(company);
 
-		position = new KornellFormFieldWrapper("Cargo", formHelper.createTextBoxFormField(user.getPerson().getTitle()), isEditMode);
+		position = new KornellFormFieldWrapper(constants.posititonLabel(), formHelper.createTextBoxFormField(user.getPerson().getTitle()), isEditMode);
 		fields.add(position);
 		profileFields.add(position);
 
 		if(isCurrentUser || isAdmin){
 			final ListBox sexes = formHelper.getSexList();
 			sexes.setSelectedValue(user.getPerson().getSex());
-			sex = new KornellFormFieldWrapper("Sexo", new ListBoxFormField(sexes), isEditMode);
+			sex = new KornellFormFieldWrapper(constants.genderLabel(), new ListBoxFormField(sexes), isEditMode);
 			fields.add(sex);
 			profileFields.add(sex);
 
@@ -469,12 +471,12 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			if(isEditMode || isCurrentUser || isAdmin){
 				datePicker.setFields(TimeUtil.toJUD(user.getPerson().getBirthDate()));
 			}
-			birthDate = new KornellFormFieldWrapper("Data de Nascimento", new SimpleDatePickerFormField(datePicker), isEditMode);
+			birthDate = new KornellFormFieldWrapper(constants.birthDateLabel(), new SimpleDatePickerFormField(datePicker), isEditMode);
 			fields.add(birthDate);
 			profileFields.add(birthDate);
 		}
 
-		receiveEmailCommunication = new KornellFormFieldWrapper("Receber emails da plataforma?", formHelper.createCheckBoxFormField(user.getPerson().isReceiveEmailCommunication()), isEditMode);
+		receiveEmailCommunication = new KornellFormFieldWrapper(constants.receiveEmailCommunicationLabel(), formHelper.createCheckBoxFormField(user.getPerson().isReceiveEmailCommunication()), isEditMode);
 		fields.add(receiveEmailCommunication);
 		profileFields.add(receiveEmailCommunication);
 		((CheckBox)receiveEmailCommunication.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -584,7 +586,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			btnOK2.removeStyleName(ENABLED_CLASS);
 			btnOK2.removeStyleName(CURSOR_POINTER_CLASS);
 			btnOK2.addStyleName(CURSOR_DEFAULT_CLASS);		
-			KornellNotification.show("Existem erros nos dados.", AlertType.WARNING);
+			KornellNotification.show(constants.formContainsErrors(), AlertType.WARNING);
 		}
 	}
 	
@@ -592,7 +594,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private void displayContactDetails() {
 		profileFields.add(getImageSeparator());
 
-		telephone = new KornellFormFieldWrapper("Telefone", formHelper.createTextBoxFormField(user.getPerson().getTelephone()), isEditMode);
+		telephone = new KornellFormFieldWrapper(constants.telephoneLabel(), formHelper.createTextBoxFormField(user.getPerson().getTelephone()), isEditMode);
 		fields.add(telephone);
 		profileFields.add(telephone);
 
@@ -613,7 +615,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 				}
 			}
 		});
-		country = new KornellFormFieldWrapper("País", new ListBoxFormField(countries), isEditMode);
+		country = new KornellFormFieldWrapper(constants.countryLabel(), new ListBoxFormField(countries), isEditMode);
 		fields.add(country);
 		profileFields.add(country);
 
@@ -623,26 +625,26 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			if(user.getPerson().getState() != null){
 				states.setSelectedValue(user.getPerson().getState());
 			}
-			state = new KornellFormFieldWrapper("Estado", new ListBoxFormField(states), isEditMode);
+			state = new KornellFormFieldWrapper(constants.stateLabel(), new ListBoxFormField(states), isEditMode);
 		} else {
-			state = new KornellFormFieldWrapper("Estado", formHelper.createTextBoxFormField(user.getPerson().getState()), isEditMode);
+			state = new KornellFormFieldWrapper(constants.stateLabel(), formHelper.createTextBoxFormField(user.getPerson().getState()), isEditMode);
 		}
 		fields.add(state);
 		profileFields.add(state);
 
-		city = new KornellFormFieldWrapper("Cidade", formHelper.createTextBoxFormField(user.getPerson().getCity()), isEditMode);
+		city = new KornellFormFieldWrapper(constants.cityLabel(), formHelper.createTextBoxFormField(user.getPerson().getCity()), isEditMode);
 		fields.add(city);
 		profileFields.add(city);
 
-		addressLine1 = new KornellFormFieldWrapper("Endereço", formHelper.createTextBoxFormField(user.getPerson().getAddressLine1()), isEditMode);
+		addressLine1 = new KornellFormFieldWrapper(constants.address1Label(), formHelper.createTextBoxFormField(user.getPerson().getAddressLine1()), isEditMode);
 		fields.add(addressLine1);
 		profileFields.add(addressLine1);
 
-		addressLine2 = new KornellFormFieldWrapper("Complemento", formHelper.createTextBoxFormField(user.getPerson().getAddressLine2()), isEditMode);
+		addressLine2 = new KornellFormFieldWrapper(constants.address2Label(), formHelper.createTextBoxFormField(user.getPerson().getAddressLine2()), isEditMode);
 		fields.add(addressLine2);
 		profileFields.add(addressLine2);
 
-		postalCode = new KornellFormFieldWrapper("Código Postal (CEP)", formHelper.createTextBoxFormField(user.getPerson().getPostalCode()), isEditMode);
+		postalCode = new KornellFormFieldWrapper(constants.postalCodeLabel(), formHelper.createTextBoxFormField(user.getPerson().getPostalCode()), isEditMode);
 		fields.add(postalCode);
 		profileFields.add(postalCode);
 	}

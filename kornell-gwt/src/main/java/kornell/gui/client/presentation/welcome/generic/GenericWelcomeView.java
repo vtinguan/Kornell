@@ -112,7 +112,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	}
 
 	private void initData() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, "Cursos", "Selecione uma turma abaixo");
+		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, constants.homeTitle(), constants.homeDescription());
 		session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
 			@Override
 			public void ok(CourseClassesTO tos) {
@@ -130,7 +130,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		final int classesCount = tos.getCourseClasses().size();
 		if(classesCount == 0){
 			coursesWrapper.setVisible(false);
-			KornellNotification.show("Você não está matriculado em uma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.WARNING, 8000);
+			KornellNotification.show(constants.noClassesAvailable(), AlertType.WARNING, 8000);
 		} else {
 			coursesWrapper.setVisible(true);
 		}

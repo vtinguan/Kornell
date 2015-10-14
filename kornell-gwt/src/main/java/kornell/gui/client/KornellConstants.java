@@ -17,6 +17,9 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Select a language")
 	String selectLanguage();
 	
+	@DefaultStringValue("Use the same email in which you receive the registration.")
+	String registrationEmailMessage();
+	
 	@DefaultStringValue("Invalid username or password, please try again.")
 	String badUsernamePassword();
 	
@@ -327,9 +330,184 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String noMessageBodyError();
 	
 	/**
-	 * GenericMessageView
+	 * GenericPasswordChangeView
 	 */
+	@DefaultStringValue("New Password")
+	String newPassword();
 	
+	@DefaultStringValue("Confirm Password")
+	String confirmPassword();
+	
+	@DefaultStringValue("Password change successful!")
+	String confirmPasswordChange();
+	
+	/**
+	 * GenericProfileView
+	 */
+	@DefaultStringValue("Edit")
+	String editButton();
+	
+	@DefaultStringValue("Close")
+	String closeButton();
+	
+	@DefaultStringValue("Save")
+	String saveButton();
+	
+	@DefaultStringValue("Cancel")
+	String cancelButton();
+	
+	@DefaultStringValue("OK")
+	String okButton();
+	
+	@DefaultStringValue("Change password")
+	String changePasswordButton();
+	
+	@DefaultStringValue("Send message")
+	String sendMessageButton();
+	
+	@DefaultStringValue("Profile")
+	String profileTitle();
+	
+	@DefaultStringValue("Keep your details updated")
+	String profileDescription();
+	
+	@DefaultStringValue("Enter a name.")
+	String missingNameMessage();
+	
+	@DefaultStringValue("Enter a telephone number.")
+	String missingTelephoneMessage();
+	
+	@DefaultStringValue("Enter a country.")
+	String missingCountryMessage();
+	
+	@DefaultStringValue("Select a state.")
+	String selectStateMessage();
+	
+	@DefaultStringValue("Enter a state.")
+	String missingStateMessage();
+	
+	@DefaultStringValue("Enter a city.")
+	String missingCityMessage();
+	
+	@DefaultStringValue("Enter an affress.")
+	String missingAddressMessage();
+	
+	@DefaultStringValue("Enter a postal code.")
+	String missingPostalCodeMessage();
+	
+	@DefaultStringValue("Successfully saved changes!")
+	String confirmSaveProfile();
+	
+	@DefaultStringValue("Errors when saving user.")
+	String errorSaveProfile();
+	
+	@DefaultStringValue("There are errors with your entries.")
+	String formContainsErrors();
+	
+	@DefaultStringValue("User not found.")
+	String userNotFound();
+	
+	@DefaultStringValue("Please complete registration")
+	String pleaseCompleteRegistrationMessage();
+	
+	@DefaultStringValue("Username")
+	String usernameLabel();
+	
+	@DefaultStringValue("Full name")
+	String fullnameLabel();
+	
+	@DefaultStringValue("Email")
+	String emailLabel();
+	
+	@DefaultStringValue("CPF")
+	String cpfLabel();
+	
+	@DefaultStringValue("Company")
+	String companyLabel();
+	
+	@DefaultStringValue("Position")
+	String posititonLabel();
+	
+	@DefaultStringValue("Gender")
+	String genderLabel();
+	
+	@DefaultStringValue("Date of birth")
+	String birthDateLabel();
+	
+	@DefaultStringValue("Receive email communication")
+	String receiveEmailCommunicationLabel();
+	
+	@DefaultStringValue("Telephone")
+	String telephoneLabel();
+	
+	@DefaultStringValue("Country")
+	String countryLabel();
+	
+	@DefaultStringValue("State")
+	String stateLabel();
+	
+	@DefaultStringValue("City")
+	String cityLabel();
+	
+	@DefaultStringValue("Address")
+	String address1Label();
+	
+	@DefaultStringValue("Suite/App")
+	String address2Label();
+	
+	@DefaultStringValue("Postal code")
+	String postalCodeLabel();
+	
+	/**
+	 * GenericTermsView
+	 */
+	@DefaultStringValue("Accept")
+	String agreeTerms();
+	
+	@DefaultStringValue("Refuse")
+	String refuseTerms();
+	
+	@DefaultStringValue("Terms of Use")
+	String termsTitle();
+	
+	@DefaultStringValue("Read and sign the terms of use before proceeding")
+	String termsDescription();
+	
+	/**
+	 * GenericCourseSummaryView
+	 */
+	@DefaultStringValue("(CANCELLED)")
+	String cancelledClassLabel();
+	
+	@DefaultStringValue("Available")
+	String availableClassLabel();
+	
+	@DefaultStringValue("Awaiting grade")
+	String pendingGradeLabel();
+	
+	@DefaultStringValue("Awaiting enrollment approval")
+	String pendingEnrollmentApproval();
+	
+	@DefaultStringValue("Start class")
+	String startCourseLabel();
+	
+	@DefaultStringValue("Request enrollment")
+	String requestEnrollmentLabel();
+	
+	@DefaultStringValue("Note")
+	String completedCourseNoteLabel();	
+	
+	/**
+	 * GenericWelcomeView
+	 */
+	@DefaultStringValue("Classes")
+	String homeTitle();
+	
+	@DefaultStringValue("Select a class below")
+	String homeDescription();
+	
+	@DefaultStringValue("You are not enrolled in a class and there are no classes available to request a new registration.")
+	String noClassesAvailable();
 	
 	/**
 	 * 

@@ -115,7 +115,6 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	HTMLPanel panelHR;
 	
 	
-	// TODO i18n xml
 	public GenericVitrineView() {
 		initWidget(uiBinder.createAndBindUi(this));
 		//buildFlagsPanel();
@@ -325,7 +324,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			if(registrationEmail != null){
 				suEmail.setText(registrationEmail);
 				suEmail.setEnabled(false);
-				suEmail.setTitle("Use o mesmo email no qual recebeu a matrícula.");
+				suEmail.setTitle(constants.registrationEmailMessage());
 			}
 			signUpPanel.setVisible(true);
 			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {

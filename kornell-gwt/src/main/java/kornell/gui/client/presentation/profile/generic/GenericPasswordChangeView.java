@@ -6,6 +6,7 @@ import java.util.List;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -28,6 +29,7 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private KornellSession session;
 	private FormHelper formHelper;
@@ -67,11 +69,11 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 		btnOK.setText("OK".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());
 
-		modalNewPassword = new KornellFormFieldWrapper("Nova Senha", formHelper.createPasswordTextBoxFormField(""), true);
+		modalNewPassword = new KornellFormFieldWrapper(constants.newPassword(), formHelper.createPasswordTextBoxFormField(""), true);
 		fields.add(modalNewPassword);
 		passwordChangeFields.add(modalNewPassword);
 
-		modalNewPasswordConfirm = new KornellFormFieldWrapper("Confirmar Senha", formHelper.createPasswordTextBoxFormField(""), true);
+		modalNewPasswordConfirm = new KornellFormFieldWrapper(constants.confirmPassword(), formHelper.createPasswordTextBoxFormField(""), true);
 		fields.add(modalNewPasswordConfirm);
 		passwordChangeFields.add(modalNewPasswordConfirm);
 
@@ -80,12 +82,12 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 
 	private boolean validateFields() {
 		if (!formHelper.isPasswordValid(modalNewPassword.getFieldPersistText())) {
-			modalNewPassword.setError("Senha inválida (mínimo de 6 caracteres).");
+			modalNewPassword.setError(constants.invalidPasswordTooShort());
 		} else if(modalNewPassword.getFieldPersistText().indexOf(':') >= 0){
-			modalNewPassword.setError("Senha inválida (não pode conter o caractere ':').");
+			modalNewPassword.setError(constants.invalidPasswordBadChar());
 		}
 		if (!modalNewPassword.getFieldPersistText().equals(modalNewPasswordConfirm.getFieldPersistText())) {
-			modalNewPasswordConfirm.setError("As senhas não conferem.");
+			modalNewPasswordConfirm.setError(constants.passwordMismatch());
 		}
 		return !checkErrors();
 	}
@@ -101,7 +103,7 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 				public void ok(Void to) {
 					LoadingPopup.hide();
 					passwordChangeModal.hide();
-					KornellNotification.show("Senha alterada com sucesso!");
+					KornellNotification.show(constants.confirmPasswordChange());
 				}
 			});
 		}
