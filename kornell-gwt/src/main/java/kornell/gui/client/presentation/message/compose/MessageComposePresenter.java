@@ -44,9 +44,9 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 
 	private String getCourseClassUUIDFromPlace() {
 		if(placeCtrl.getWhere() instanceof ClassroomPlace){
-	    return Dean.getInstance().getCourseClassTO().getCourseClass().getUUID();
+			return Dean.getInstance().getCourseClassTO().getCourseClass().getUUID();
 		}
-	  return null;
+		return null;
   }
 
 	@Override
@@ -61,7 +61,13 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 				}
 			};
 			String entityUUID = view.getRecipient().getFieldPersistText();
-			threadsClient.postMessageToSupportCourseClassThread(messageText, entityUUID, chatThreadCallback);
+			if(entityUUID.startsWith("i-")){
+				threadsClient.postMessageToSupportInstitutionThread(messageText, entityUUID.substring(2), chatThreadCallback);
+			} else if("".equals(entityUUID)){
+				threadsClient.postMessageToSupportPlatformThread(messageText, chatThreadCallback);
+			} else {
+				threadsClient.postMessageToSupportCourseClassThread(messageText, entityUUID, chatThreadCallback);
+			}
 		}
 	}
 

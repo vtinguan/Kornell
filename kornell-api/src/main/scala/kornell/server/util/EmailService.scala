@@ -113,31 +113,36 @@ object EmailService {
     if (checkWhitelistForDomain(institution, person.getEmail) && person.isReceiveEmailCommunication) {
       val subject = "Uma nova conversa " + {
         if("SUPPORT".equalsIgnoreCase(chatThread.getThreadType))
-          "de ajuda "
+          "de ajuda criada para a turma: " + courseClass.getName
+        else if("INSTITUTION_SUPPORT".equalsIgnoreCase(chatThread.getThreadType))
+          "de ajuda de instituição criada para a turma: " + courseClass.getName
+        else if("PLATFORM_SUPPORT".equalsIgnoreCase(chatThread.getThreadType))
+          "de ajuda criada para a instituição: " + institution.getName
         else if("TUTORING".equalsIgnoreCase(chatThread.getThreadType))
-          "de tutoria "
-          } + "criada para a turma: " + courseClass.getName
+          "de tutoria criada para a turma: " + courseClass.getName
+      }
       val from = getFromEmail(institution)
       val to = person.getEmail
       val participant = PersonRepo(chatThread.getPersonUUID).get
-      
-      val actionLink = institution.getBaseURL + "#message:"
-      val body = wrapBody("""
-            <p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
-            <p>&nbsp;</p>
-            <p>""" + subject +""".</p> 
-            <p>&nbsp;</p>
-            <p>Participante: """ + participant.getFullName + """  (""" + participant.getEmail + """)""" +""".</p> 
-            <p>&nbsp;</p>
-            <p>Mensagem: <br />""" + message.replace("\n", "<br />\n") + """ </p>
-            <p>&nbsp;</p>
-            <p>Clique no bot&atilde;o abaixo para acessar a conversa.</p> """ +
-            getActionButton(actionLink, "Acessar a Conversa") + 
-            """<p>&nbsp;</p>""" +
-    		"""<img alt="" src="cid:logo" style="width: 300px;height: 80px;margin: 0 auto;display: block;">""")
-            
-      val imgFile = getInstitutionLogoImage(institution)
-      EmailSender.sendEmail(subject, from, to, body, imgFile)
+      if(!participant.getUUID.equals(person.getUUID)){
+	      val actionLink = institution.getBaseURL + "#message:"
+	      val body = wrapBody("""
+	            <p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
+	            <p>&nbsp;</p>
+	            <p>""" + subject +""".</p> 
+	            <p>&nbsp;</p>
+	            <p>Participante: """ + participant.getFullName + """  (""" + participant.getEmail + """)""" +""".</p> 
+	            <p>&nbsp;</p>
+	            <p>Mensagem: <br /><br /><i>""" + message.replace("\n", "<br />\n") + """</i></p>
+	            <p>&nbsp;</p>
+	            <p>Clique no bot&atilde;o abaixo para acessar a conversa.</p> """ +
+	            getActionButton(actionLink, "Acessar a Conversa") + 
+	            """<p>&nbsp;</p>""" +
+	    		"""<img alt="" src="cid:logo" style="width: 300px;height: 80px;margin: 0 auto;display: block;">""")
+	            
+	      val imgFile = getInstitutionLogoImage(institution)
+	      EmailSender.sendEmail(subject, from, to, body, imgFile)
+      }
     }
   }
   

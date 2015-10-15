@@ -19,18 +19,28 @@ import kornell.core.to.RoleTO
 
 object RolesRepo {
   	
-  def getUsersWithRoleForCourseClass(courseClassUUID: String, bindMode: String, roleType: RoleType) =
+  def getUserRoles(personUUID: String, bindMode: String) =
 	  TOs.newRolesTO(sql"""
-		    | select *, pw.username
+		    | select *, pw.username, cc.name as courseClassName
 	      	| from Role r
 	        | join Password pw on pw.person_uuid = r.person_uuid
+	        | left join CourseClass cc on r.course_class_uuid = cc.uuid
+	        | where pw.person_uuid = ${personUUID}
+            """.map[RoleTO](toRoleTO(_,bindMode)))   
+  	
+  def getUsersWithRoleForCourseClass(courseClassUUID: String, bindMode: String, roleType: RoleType) =
+	  TOs.newRolesTO(sql"""
+		    | select *, pw.username, cc.name as courseClassName
+	      	| from Role r
+	        | join Password pw on pw.person_uuid = r.person_uuid
+	        | left join CourseClass cc on r.course_class_uuid = cc.uuid
 	        | where r.course_class_uuid = ${courseClassUUID}
 	  			| and r.role = ${roleType.toString}
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   	
   def getInstitutionAdmins(institutionUUID: String, bindMode: String) =
 	  TOs.newRolesTO(sql"""
-		    | select *, pw.username
+		    | select *, pw.username, null as courseClassName
 	      	| from Role r
 	        | join Password pw on pw.person_uuid = r.person_uuid
 	        | where r.institution_uuid = ${institutionUUID}
@@ -39,22 +49,46 @@ object RolesRepo {
   	
   def getPlatformAdmins(bindMode: String) =
 	  TOs.newRolesTO(sql"""
-		    | select *, pw.username
+		    | select *, pw.username, null as courseClassName
 	      	| from Role r
 	        | join Password pw on pw.person_uuid = r.person_uuid
 	  			| and r.role = ${RoleType.platformAdmin.toString}
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   	
-  def getCourseClassThreadSupportParticipants(courseClassUUID: String, institutionUUID: String, bindMode: String) =
+  def getCourseClassSupportThreadParticipants(courseClassUUID: String, institutionUUID: String, bindMode: String) =
 	  TOs.newRolesTO(sql"""
-		    | select *, pw.username
-	      	| from Role r
+		    | select *, pw.username, cc.name as courseClassName
+	      	| from (select * from Role 
+				|  	order by case `role`
+				|	when 'platformAdmin' then 1
+				|	when 'institutionAdmin' then 2
+				|	when 'courseClassAdmin' then 3
+				|	END) r
 	        | join Password pw on pw.person_uuid = r.person_uuid
+	        | left join CourseClass cc on r.course_class_uuid = cc.uuid
 	        | where (r.course_class_uuid = ${courseClassUUID}
 	  			| 	and r.role = ${RoleType.courseClassAdmin.toString})
-	  			| or  (r.institution_uuid = ${institutionUUID}
+	  			| or (r.institution_uuid = ${institutionUUID}
 	  			| 	and r.role = ${RoleType.institutionAdmin.toString})
-	  			| or r.role = ${RoleType.platformAdmin.toString}
+	  			| or (r.institution_uuid = ${institutionUUID}
+	  			|   and r.role = ${RoleType.platformAdmin.toString})
+			| group by pw.username
+            """.map[RoleTO](toRoleTO(_,bindMode)))   
+  	
+  def getPlatformSupportThreadParticipants(institutionUUID: String, bindMode: String) =
+	  TOs.newRolesTO(sql"""
+		    | select *, pw.username, null as courseClassName
+	      	| from (select * from Role 
+				|  	order by case `role`
+				|	when 'platformAdmin' then 1
+				|	when 'institutionAdmin' then 2
+				|	END) r
+	        | join Password pw on pw.person_uuid = r.person_uuid
+	        | where (r.institution_uuid = ${institutionUUID}
+	  			| 	and r.role = ${RoleType.institutionAdmin.toString})
+	  			| or (r.institution_uuid = ${institutionUUID}
+	  			|   and r.role = ${RoleType.platformAdmin.toString})
+			| group by pw.username
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   
   def updateCourseClassAdmins(courseClassUUID: String, roles: Roles) = removeCourseClassRole(courseClassUUID, RoleType.courseClassAdmin).addRoles(roles)

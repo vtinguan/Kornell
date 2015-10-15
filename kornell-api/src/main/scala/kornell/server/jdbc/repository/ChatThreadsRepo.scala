@@ -44,9 +44,21 @@ object ChatThreadsRepo {
       val chatThreadUUID = getCourseClassChatThreadUUID(personUUID, courseClass.getUUID, threadType)
       if(!chatThreadUUID.isDefined){
         val chatThread = createChatThread(courseClass.getInstitutionUUID, courseClass.getUUID, personUUID, threadType)
-        updateChatThreadParticipants(chatThread.getUUID, personUUID, courseClass, threadType)
+        updateChatThreadParticipants(chatThread.getUUID, personUUID, courseClass, threadType, courseClass.getInstitutionUUID)
         createChatThreadMessage(chatThread.getUUID, personUUID, message)
-        sendEmailForThreadCreation(courseClass, chatThread, threadType, message)
+        sendEmailForThreadCreation(courseClass, chatThread, threadType, message, courseClass.getInstitutionUUID)
+      } else {
+      	createChatThreadMessage(chatThreadUUID.get, personUUID, message)
+      }
+  }
+
+  def postMessageToInstitutionThread(personUUID: String, institutionUUID: String, message: String, threadType: ChatThreadType) = {
+      val chatThreadUUID = getInstitutionChatThreadUUID(personUUID, institutionUUID, threadType)
+      if(!chatThreadUUID.isDefined){
+        val chatThread = createChatThread(institutionUUID, null, personUUID, threadType)
+        updateChatThreadParticipants(chatThread.getUUID, personUUID, null, threadType, institutionUUID)
+        createChatThreadMessage(chatThread.getUUID, personUUID, message)
+        sendEmailForThreadCreation(null, chatThread, threadType, message, institutionUUID)
       } else {
       	createChatThreadMessage(chatThreadUUID.get, personUUID, message)
       }
@@ -69,30 +81,36 @@ object ChatThreadsRepo {
     }
     if (chatThreadUUID == null) {
       val chatThread = createChatThread(fromPerson.getInstitutionUUID, null, fromPersonUUID, ChatThreadType.DIRECT)
-      createChatThreadParticipant(chatThread.getUUID, fromPersonUUID, null, null, toPerson.getFullName)
-      createChatThreadParticipant(chatThread.getUUID, toPersonUUID, null, null, fromPerson.getFullName)
+      createChatThreadParticipant(chatThread.getUUID, fromPersonUUID)
+      createChatThreadParticipant(chatThread.getUUID, toPersonUUID)
       createChatThreadMessage(chatThread.getUUID, fromPersonUUID, message)
     } else {
       createChatThreadMessage(chatThreadUUID.get, fromPersonUUID, message)
     }
   }
   
-  def sendEmailForThreadCreation(courseClass: CourseClass, chatThread: ChatThread, threadType: ChatThreadType, message: String) = {
+  def sendEmailForThreadCreation(courseClass: CourseClass, chatThread: ChatThread, threadType: ChatThreadType, message: String, institutionUUID: String) = {
     val institution = new InstitutionRepo(chatThread.getInstitutionUUID).get
     threadType match {
-      case ChatThreadType.SUPPORT => RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, RoleCategory.BIND_WITH_PERSON)
+      case ChatThreadType.SUPPORT | ChatThreadType.INSTITUTION_SUPPORT => RolesRepo.getCourseClassSupportThreadParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, RoleCategory.BIND_WITH_PERSON)
             .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread, message))
       case ChatThreadType.TUTORING => RolesRepo.getUsersWithRoleForCourseClass(courseClass.getUUID, RoleCategory.BIND_WITH_PERSON, RoleType.tutor)
           .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread, message))
+      case ChatThreadType.PLATFORM_SUPPORT => RolesRepo.getPlatformSupportThreadParticipants(institutionUUID, RoleCategory.BIND_WITH_PERSON)
+            .getRoleTOs.asScala.map(role => EmailService.sendEmailNewChatThread(role.getPerson, institution, courseClass, chatThread, message))
       case ChatThreadType.COURSE_CLASS | ChatThreadType.DIRECT => throw new IllegalStateException("not-supported-for-this-type")
     }
   }
 
-  def updateChatThreadParticipants(chatThreadUUID: String, threadCreatorUUID: String, courseClass: CourseClass, threadType: ChatThreadType) = {
+  def updateChatThreadParticipants(chatThreadUUID: String, threadCreatorUUID: String, courseClass: CourseClass, threadType: ChatThreadType, institutionUUID: String) = {
     val participantsThatShouldExist = threadType match {
-      case ChatThreadType.SUPPORT => RolesRepo.getCourseClassThreadSupportParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
+      case ChatThreadType.SUPPORT => RolesRepo.getCourseClassSupportThreadParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
             .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
       case ChatThreadType.TUTORING => RolesRepo.getUsersWithRoleForCourseClass(courseClass.getUUID, RoleCategory.BIND_WITH_PERSON, RoleType.tutor)
+          .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
+      case ChatThreadType.INSTITUTION_SUPPORT => RolesRepo.getCourseClassSupportThreadParticipants(courseClass.getUUID, courseClass.getInstitutionUUID, null)
+          .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
+      case ChatThreadType.PLATFORM_SUPPORT => RolesRepo.getPlatformSupportThreadParticipants(institutionUUID, null)
           .getRoleTOs.asScala.map(_.getRole.getPersonUUID).+:(threadCreatorUUID).toList.distinct
       case ChatThreadType.COURSE_CLASS | ChatThreadType.DIRECT => throw new IllegalStateException("not-supported-for-this-type")
     }
@@ -100,7 +118,7 @@ object ChatThreadsRepo {
     val participants = getChatTreadParticipantsUUIDs(chatThreadUUID).distinct
     val createThese = participantsThatShouldExist.filterNot(participants.contains)
     val removeThese = participants.filterNot(participantsThatShouldExist.contains)
-    createThese.foreach(createChatThreadParticipant(chatThreadUUID, _, courseClass.getName, threadCreatorUUID))
+    createThese.foreach(createChatThreadParticipant(chatThreadUUID, _))
     removeThese.foreach(removeChatThreadParticipant(chatThreadUUID, _))
   }
   
@@ -127,7 +145,7 @@ object ChatThreadsRepo {
     
   }
 
-  def createChatThreadParticipant(chatThreadUUID: String, personUUID: String, courseClassName: String, threadCreatorUUID: String, targetPersonName: String = null) = {
+  def createChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
     sql"""
 		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, active, lastJoinDate)
 		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, 1, ${new Date()})""".executeUpdate
@@ -171,6 +189,16 @@ object ChatThreadsRepo {
 		    """.first[String]
   }
   
+  def getInstitutionChatThreadUUID(personUUID: String, institutionUUID: String, threadType: ChatThreadType) = {
+    sql"""
+		    | select uuid
+	      	| from ChatThread 
+    			| where ( personUUID = ${personUUID} or ${personUUID} is null )
+    			| and ( institutionUUID = ${institutionUUID} or ${institutionUUID} is null )
+    			| and threadType = ${threadType.toString}
+		    """.first[String]
+  }
+  
   def getDirectChatThreadUUID(fromPersonUUID: String, toPersonUUID: String) = {
     sql"""
 		    | select t.uuid
@@ -183,22 +211,31 @@ object ChatThreadsRepo {
 		    """.first[String]
   }
   
-  def updateParticipantsInCourseClassSupportThreadsForInstitution(institutionUUID: String) = {
+  def updateParticipantsInCourseClassSupportThreadsForInstitution(institutionUUID: String, threadType: ChatThreadType) = {
     sql"""select uuid from CourseClass where institution_uuid = ${institutionUUID}""".map[String](toString)
-    .foreach(cc => updateParticipantsInSupportThreads(cc, ChatThreadType.SUPPORT))
+    .foreach(cc => updateParticipantsInThreads(cc, institutionUUID, threadType))
   }
   
-  def updateParticipantsInSupportThreads(courseClassUUID: String, threadType: ChatThreadType) = {
-	  type CourseClassSupportThreadData = Tuple2[String,String] 
-	  implicit def courseClassSupportThreadConvertion(rs:ResultSet): CourseClassSupportThreadData = (rs.getString(1), rs.getString(2))
+  def updateParticipantsInThreads(courseClassUUID: String, institutionUUID: String, threadType: ChatThreadType) = {
+	type CourseClassSupportThreadData = Tuple2[String,String] 
+	implicit def courseClassSupportThreadConvertion(rs:ResultSet): CourseClassSupportThreadData = (rs.getString(1), rs.getString(2))
 	  
-    val courseClass = CourseClassRepo(courseClassUUID).get
-    sql"""
-		select uuid, personUUID from ChatThread
-		  where courseClassUUID = ${courseClassUUID}
-	  	  and threadType = ${threadType.toString}
-	    """.map[CourseClassSupportThreadData](courseClassSupportThreadConvertion)
-	    .foreach(ct => updateChatThreadParticipants(ct._1, ct._2, courseClass, threadType))
+	if(!ChatThreadType.PLATFORM_SUPPORT.equals(threadType)) {
+	    val courseClass = CourseClassRepo(courseClassUUID).get
+	    sql"""
+			select uuid, personUUID from ChatThread
+			  where courseClassUUID = ${courseClassUUID}
+		  	  and threadType = ${threadType.toString}
+		    """.map[CourseClassSupportThreadData](courseClassSupportThreadConvertion)
+		    .foreach(ct => updateChatThreadParticipants(ct._1, ct._2, courseClass, threadType, courseClass.getInstitutionUUID))
+	} else {
+	    sql"""
+			select uuid, personUUID from ChatThread
+			  where institutionUUID = ${institutionUUID}
+		  	  and threadType = ${threadType.toString}
+		    """.map[CourseClassSupportThreadData](courseClassSupportThreadConvertion)
+		    .foreach(ct => updateChatThreadParticipants(ct._1, ct._2, null, threadType, institutionUUID))
+	}
   }
   
   def getTotalUnreadCountByPerson(personUUID: String, institutionUUID: String) = {
@@ -295,6 +332,23 @@ object ChatThreadsRepo {
 		    getServerTime)
   } 
 
+  def getChatThreadMessagesBefore(chatThreadUUID: String, firstFetchedMessageSentAt: String) = {
+    val date = if("none".equals(firstFetchedMessageSentAt)){
+      new Date
+    } else {
+      firstFetchedMessageSentAt
+    }
+    TOs.newChatThreadMessagesTO(sql"""
+				| select p.fullName as senderFullName, tm.sentAt, tm.message from
+				| 	ChatThreadMessage tm 
+				| 	join Person p on p.uuid = tm.personUUID
+				| 	where tm.chatThreadUUID = ${chatThreadUUID}
+    	  		|   and tm.sentAt < ${date}
+				| 	order by tm.sentAt desc limit 20
+		    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
+		    getServerTime)
+  } 
+
   def markAsRead(chatThreadUUID: String, personUUID: String) = {
     sql"""
     	| update ChatThreadParticipant p set
@@ -330,7 +384,7 @@ object ChatThreadsRepo {
 	    val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
 	    if (!participant.isDefined) {
 	      val courseClass = CourseClassRepo(enrollment.getCourseClassUUID).get
-	      createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
+	      createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID)
 	    } else {
 	      updateChatThreadParticipantStatus(participant.get.getUUID, true)
 	    }
@@ -363,7 +417,7 @@ object ChatThreadsRepo {
             EnrollmentsRepo.byCourseClass(courseClass.getUUID).getEnrollmentTOs().asScala.foreach(enrollment => {
               val participant = getChatTreadParticipant(enrollment.getPersonUUID, createdChatThread.getUUID)
               if (!participant.isDefined) {
-                  createChatThreadParticipant(createdChatThread.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
+                  createChatThreadParticipant(createdChatThread.getUUID, enrollment.getPersonUUID)
               }})
         } else {
           //chat is enabled on class and thread exists
@@ -374,7 +428,7 @@ object ChatThreadsRepo {
             EnrollmentsRepo.byCourseClass(courseClass.getUUID).getEnrollmentTOs().asScala.foreach(enrollment => {
               val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
               if (!participant.isDefined) {
-                  createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID, courseClass.getName, null)
+                  createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID)
               }})
           }
         }

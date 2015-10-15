@@ -78,10 +78,12 @@ a:hover{
 .MessagePlace { 
 	.messageInboxPanel{
 		width: @wrapperWidth;
+		max-height: 1000px;
 		height: ~"calc(100vh - 105px)";
 		.threadPanel {
 			.threadPanelItemsScroll {
-				height: ~"calc(100vh - 246px)";
+				height: ~"calc(100vh - 246px)";    
+				max-height: ~"calc(1000px - 146px)";
 			}
 		}
 	}
@@ -89,10 +91,12 @@ a:hover{
 .AdminCourseClassPlace { 
 	.messageInboxPanel{
 		width: @wrapperWidth;
+		max-height: 1000px;
 		height: ~"calc(100vh - 240px)";
 		.threadPanel {
 			.threadPanelItemsScroll {
 				height: ~"calc(100vh - 385px)";
+				max-height: ~"calc(1000px - 146px)";
 			}
 		}
 	}
@@ -100,6 +104,7 @@ a:hover{
 .ClassroomPlace { 
 	.messageInboxPanel{
 		width: @rightPanelWidth;
+		max-height: 1000px;
 		height: ~"calc(100vh - 220px)";
 		min-height: 460px;
 		margin-top: 20px;
@@ -107,6 +112,7 @@ a:hover{
 			width: @rightPanelWidth;
 			.threadPanelItemsScroll {
 				height: ~"calc(100vh - 365px)";
+				max-height: ~"calc(1000px - 146px)";
 				min-height: 302px;
 			}
 		}
@@ -137,6 +143,40 @@ a:hover{
 		.sidePanel{
 			width: 100%;
 			.boxSizing;
+			.filterPanel{
+				background-color: @tableBackgroundColor;
+			    margin-bottom: 8px;
+			    height: 30px;
+			    border-radius: 5px;
+			    input{
+			    	width: 75%;
+				    font-size: 11px;
+				    background-color: transparent;
+				    border: 1px solid transparent;
+				    color: #e3e3e3;
+			    }
+			    i{
+				    color: @plainDiscreteTextColor;
+				    background-color: transparent;
+				    display: block;
+				    line-height: 30px;
+				    font-size: 12px;
+					&:hover {
+						cursor: pointer;
+					}
+			    }
+			    .icon-search{
+			    	float: right;
+				    padding-right: 8px;
+				}
+				a{
+			    	float: right;
+				    padding-right: 4px;
+					&:hover {
+						text-decoration: none;
+					}
+				}
+			}
 			.threadListItem{
 				.boxSizing;
 				color: @niceTextColor;
@@ -566,6 +606,8 @@ a:hover{
 		margin-bottom: 10px;
 		.btnReportHeader{
 			.boxSizing;
+			.btnDefault;
+			.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
 			border-radius: 0px !important;
 			height: @reportHeaderPanelHeight;
 			line-height: @reportHeaderPanelHeight;

@@ -30,6 +30,7 @@ import kornell.server.report.ReportInstitutionBillingGenerator
 import kornell.server.repository.s3.S3
 import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.RolesRepo
 
 @Path("/report")
 class ReportResource {
@@ -40,7 +41,7 @@ class ReportResource {
   def get(@Context resp: HttpServletResponse,
     @PathParam("userUUID") userUUID: String,
     @PathParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
-	    val roles = AuthRepo().getUserRoles
+	    val roles = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
 	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isCourseClassAdmin(roles, courseClassUUID) ||
@@ -59,7 +60,7 @@ class ReportResource {
   def get(@QueryParam("courseClassUUID") courseClassUUID: String, 
     peopleTO: SimplePeopleTO) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
-    val roles = AuthRepo().getUserRoles
+	val roles = RolesRepo.getUserRoles(p.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
     if (!(RoleCategory.isPlatformAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID) ||
@@ -162,7 +163,7 @@ class ReportResource {
     @QueryParam("institutionUUID") institutionUUID: String,
     @QueryParam("periodStart") periodStart: String,
     @QueryParam("periodEnd") periodEnd: String) = AuthRepo().withPerson{ person => {
-	    val roles = AuthRepo().getUserRoles
+	    val roles = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
 	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)))
 	      throw new UnauthorizedAccessException("accessDenied")
