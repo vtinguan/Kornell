@@ -78,7 +78,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 
 	private void initPlaceBar() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, "Central de Mensagens", "Acompanhe suas conversas com outros participantes da plataforma");
+		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, constants.messagesTitle(), constants.messagesDescription());
 	}
 
 	private void init() {
@@ -228,7 +228,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					if(to.getChatThreadMessageTOs().size() == 0){
 						threadBeginningReached = true;
 						view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), true);
-						view.setPlaceholder(messagePanelType.equals(MessagePanelType.courseClassTutor) ? "Digite aqui sua dúvida e um tutor entrará em contato com você em breve." : "");
+						view.setPlaceholder(messagePanelType.equals(MessagePanelType.courseClassTutor) ? constants.tutorPlaceholderMessage() : "");
 					} else if(selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
 						synchronized (chatThreadMessageTOs) {
 							chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());

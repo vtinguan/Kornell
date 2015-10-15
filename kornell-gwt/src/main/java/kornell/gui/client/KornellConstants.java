@@ -56,13 +56,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("We could not update your password. Please check your email or make another request.")
 	String passwordChangeError();
 	
-	
-	
-	
-	
-	
-	
-	
+
 	/**
 	 * 
 	 * GenericWelcomeView
@@ -80,7 +74,6 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("In progress")
 	String inProgress();
 
-	
 
 	/**
 	 * 
@@ -171,6 +164,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("You will receive an email at the time of approval.")
 	String enrollmentConfirmationEmail();
 	
+	
 	/**
 	 * 
 	 * GenericBarView
@@ -218,6 +212,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("classes")
 	String classes();
 	
+	
 	/**
 	 * GenericActivityBarView
 	 */
@@ -227,11 +222,13 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Page")
     String pageForPagination();
 	
+	
 	/**
 	 * ClassroomPresenter
 	 */
 	@DefaultStringValue("Loading the course...")
 	String loadingTheCourse();
+	
 	
 	/**
 	* GenericCertificationItemVIew
@@ -263,6 +260,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Unavailable")
 	String certificateNotAvailable();
 	
+	
 	/**
 	 * GenericCourseLibraryView
 	 */
@@ -284,6 +282,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Publication date")
 	String libraryEntryDate();
 	
+	
 	/**
 	 * GenericIncludeFileView
 	 */
@@ -302,11 +301,13 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Publish")
 	String btnPublish();
 	
+	
 	/**
 	 * NotesPopup
 	 */
 	@DefaultStringValue("--TODO--")
 	String notesPopupPlaceholder();
+	
 	
 	/**
 	 * MessagePresenter
@@ -320,6 +321,20 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("You have no established conversations.")
 	String noThreadsMessage();
 	
+	@DefaultStringValue("Enter your question here and a tutor will contact you soon.")
+	String tutorPlaceholderMessage();
+	
+	
+	/**
+	 * GenericMessageComposeView
+	 */
+	@DefaultStringValue("Institution admin")
+	String institutionAdminLabel();
+	
+	@DefaultStringValue("Platform admin")
+	String platformAdminLabel();
+	
+	
 	/**
 	 * MessageComposePresenter
 	 */
@@ -328,6 +343,38 @@ public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("Please fill the message body.")
 	String noMessageBodyError();
+	
+	
+	/**
+	 * GenericMessageView
+	 */
+	@DefaultStringValue("Filter conversations...")
+	String filterConversationPlaceholder();
+	
+	@DefaultStringValue("Global class chat:")
+	String courseClassChatThreadLabel();
+	
+	@DefaultStringValue("Direct chat with:")
+	String directChatLabel();
+	
+	@DefaultStringValue("Support chat:")
+	String supportChatThreadLabel();
+	
+	@DefaultStringValue("Support")
+	String supportLabel();
+	
+	@DefaultStringValue("Tutor chat:")
+	String tutorChatThreadLabel();
+	
+	@DefaultStringValue("Tutor")
+	String tutorLabel();
+	
+	@DefaultStringValue("Institution help for class:")
+	String institutionSupportChatThreadLabel();
+	
+	@DefaultStringValue("Platform support:")
+	String platformSupportChatThreadLabel();
+	
 	
 	/**
 	 * GenericPasswordChangeView
@@ -340,6 +387,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("Password change successful!")
 	String confirmPasswordChange();
+	
 	
 	/**
 	 * GenericProfileView
@@ -458,6 +506,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Postal code")
 	String postalCodeLabel();
 	
+	
 	/**
 	 * GenericTermsView
 	 */
@@ -472,6 +521,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("Read and sign the terms of use before proceeding")
 	String termsDescription();
+	
 	
 	/**
 	 * GenericCourseSummaryView
@@ -500,6 +550,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("on")
 	String completedOnToken();
 	
+	
 	/**
 	 * GenericWelcomeView
 	 */
@@ -512,8 +563,8 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("You are not enrolled in a class and there are no classes available to request a new registration.")
 	String noClassesAvailable();
 	
+	
 	/**
-	 * 
 	 * Util
 	 */
 	@DefaultStringValue("January")
@@ -540,32 +591,9 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String november();
 	@DefaultStringValue("December")
 	String december();
-	
-
 
 	
-
 	/**
-	 * 
-	 * EnrollmentState
-	 */
-	@DefaultStringValue("notEnrolled")
-	String notEnrolled();
-	@DefaultStringValue("enrolled")
-	String enrolled();
-	@DefaultStringValue("requested")
-	String requested();
-	@DefaultStringValue("denied")
-	String denied();
-	@DefaultStringValue("cancelled")
-	String cancelled();
-	
-
-
-	
-
-	/**
-	 * 
 	 * Message
 	 */
 	@DefaultStringValue("Help")
@@ -593,6 +621,78 @@ public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("Email already exists")
 	String existingEmail();
+	
+	
+	/**
+	 * FormHelper
+	 */
+	@DefaultStringValue("Select:")
+	String selectboxDefault();
+	
+	@DefaultStringValue("Female")
+	String genderFemale();
+	
+	@DefaultStringValue("Male")
+	String genderMale();
+	
+	
+	/**
+	 * CourseClassState
+	 */
+	@DefaultStringValue("Active")
+	String CourseClassState_active();
+	
+	@DefaultStringValue("Inactive")
+	String CourseClassState_inactive();
+	
+	@DefaultStringValue("Deleted")
+	String CourseClassState_deleted();
+	
+	
+	/**
+	 * EnrollmentState
+	 */
+	@DefaultStringValue("notEnrolled")
+	String EnrollmentState_notEnrolled();
+	
+	@DefaultStringValue("enrolled")
+	String EnrollmentState_enrolled();
+	
+	@DefaultStringValue("requested")
+	String EnrollmentState_requested();
+	
+	@DefaultStringValue("denied")
+	String EnrollmentState_denied();
+	
+	@DefaultStringValue("cancelled")
+	String EnrollmentState_cancelled();
+	
+	
+	/**
+	 * EnrollmentProgressDescription
+	 */
+	@DefaultStringValue("Not started")
+	String EnrollmentProgressDescription_notStarted();
+	
+	@DefaultStringValue("In progress")
+	String EnrollmentProgressDescription_inProgress();
+	
+	@DefaultStringValue("Completed")
+	String EnrollmentProgressDescription_completed();
+	
+	
+	/**
+	 * RegistrationType
+	 */
+	@DefaultStringValue("Email")
+	String RegistrationType_email();
+	
+	@DefaultStringValue("CPF")
+	String RegistrationType_cpf();
+	
+	@DefaultStringValue("Username")
+	String RegistrationType_username();
+	
 	
 	/**
 	 * Errors 404
@@ -629,7 +729,6 @@ public interface KornellConstants extends ConstantsWithLookup {
 	/**
 	 * Errors 409
 	 */
-	
 	@DefaultStringValue("A class with this name already exists.")
 	String courseClassAlreadyExists();
 	@DefaultStringValue("A course version with this name already exists.")

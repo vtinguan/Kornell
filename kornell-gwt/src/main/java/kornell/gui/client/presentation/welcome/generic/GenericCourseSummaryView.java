@@ -19,6 +19,7 @@ import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teacher;
 import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.util.EnumTranslator;
 import kornell.gui.client.presentation.util.FormHelper;
 
 import com.github.gwtbootstrap.client.ui.Heading;
@@ -171,7 +172,7 @@ public class GenericCourseSummaryView extends Composite {
 		if(progress >= 100){
 			pStatus.setText(constants.pendingGradeLabel());
 		} else {
-			pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.inProgress)+": ");
+			pStatus.setText(EnumTranslator.translateEnum(EnrollmentProgressDescription.inProgress)+": ");
 			progressBar.removeStyleName("shy");
 			progressBar.setPercent(progress);
 			pStatusInfo.setText(progress + "% ");
@@ -192,7 +193,7 @@ public class GenericCourseSummaryView extends Composite {
 	}
 
 	private void onCourseCompleted(String certifiedAt) {
-		String statusText = formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.completed);
+		String statusText = EnumTranslator.translateEnum(EnrollmentProgressDescription.completed);
 		if(certifiedAt != null) {
 			statusText += " " + constants.completedOnToken() + ": ";
 			pStatusInfo.setText(formHelper.getStringFromDate(certifiedAt));

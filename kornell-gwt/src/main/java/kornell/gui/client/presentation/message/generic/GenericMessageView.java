@@ -13,7 +13,9 @@ import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -54,6 +56,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	}
 
 	private static GenericMessageUiBinder uiBinder = GWT.create(GenericMessageUiBinder.class);
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private static FormHelper formHelper = GWT.create(FormHelper.class);
 	private MessageView.Presenter presenter;
 	private EventBus bus;
@@ -144,7 +147,7 @@ public class GenericMessageView extends Composite implements MessageView {
 			searchPanel.add(txtSearch);
 			searchPanel.addStyleName("filterPanel");
 			searchPanel.add(new Icon(IconType.SEARCH));
-			txtSearch.setPlaceholder("Filtrar conversas...");
+			txtSearch.setPlaceholder(constants.filterConversationPlaceholder());
 			btnClear = new com.github.gwtbootstrap.client.ui.Button("");
 			btnClear.removeStyleName("btn");
 			btnClear.setVisible(false);
@@ -223,25 +226,25 @@ public class GenericMessageView extends Composite implements MessageView {
 	private String getThreadTitle(final UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean lineBreak) {
 		switch (unreadChatThreadTO.getThreadType()) {
 			case COURSE_CLASS:
-				return span("Chat global da turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+				return span(constants.courseClassChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
 			case DIRECT:
-				return span("Chat direto com:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+				return span(constants.directChatLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
 			case SUPPORT:
 				if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName) && !session.isCourseClassAdmin(unreadChatThreadTO.getEntityUUID())) {
-					return span("Ajuda para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+					return span(constants.supportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
 				} else {
-					return span(unreadChatThreadTO.getChatThreadCreatorName(), HIGHLIGHT_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) ? separator(lineBreak, true) + span("Ajuda", PLAIN_CLASS) : separator(lineBreak, true) + span("Ajuda para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS));
+					return span(unreadChatThreadTO.getChatThreadCreatorName(), HIGHLIGHT_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) ? separator(lineBreak, true) + span(constants.supportLabel(), PLAIN_CLASS) : separator(lineBreak, true) + span(constants.supportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS));
 				}
 			case TUTORING:
 				if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName) && !session.isCourseClassTutor(unreadChatThreadTO.getEntityUUID())) {
-					return span("Tutoria para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+					return span(constants.tutorChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
 				} else {
-					return span(unreadChatThreadTO.getChatThreadCreatorName(), HIGHLIGHT_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) || MessagePanelType.courseClassTutor.equals(presenter.getMessagePanelType()) ? separator(lineBreak, true) + span("Tutoria", PLAIN_CLASS) : separator(lineBreak, true) + span("Tutoria para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS));
+					return span(unreadChatThreadTO.getChatThreadCreatorName(), HIGHLIGHT_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) || MessagePanelType.courseClassTutor.equals(presenter.getMessagePanelType()) ? separator(lineBreak, true) + span(constants.tutorLabel(), PLAIN_CLASS) : separator(lineBreak, true) + span(constants.tutorChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS));
 				}
 			case INSTITUTION_SUPPORT:
-				return span("Ajuda de instituição para turma:", PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+				return span(constants.institutionSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
 			case PLATFORM_SUPPORT:
-				return span("Ajuda para instituição:", PLAIN_CLASS) + separator(lineBreak) + span(Dean.getInstance().getInstitution().getName(), INFO_CLASS);
+				return span(constants.platformSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(Dean.getInstance().getInstitution().getName(), INFO_CLASS);
 			default:
 				return  "";
 			}

@@ -3,12 +3,9 @@ package kornell.gui.client.presentation.util;
 import java.util.Date;
 import java.util.List;
 
-import kornell.core.entity.CourseClassState;
-import kornell.core.entity.EnrollmentProgressDescription;
-import kornell.core.entity.EnrollmentState;
-import kornell.core.entity.RegistrationType;
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.KornellMessages;
 import kornell.gui.client.util.view.formfield.CheckBoxFormField;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PasswordTextBoxFormField;
@@ -25,7 +22,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
 import com.google.gwt.user.client.ui.Image;
 
-//TODO i18n
 @SuppressWarnings("deprecation")
 public class FormHelper {
 	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
@@ -35,6 +31,7 @@ public class FormHelper {
 	public static Character USERNAME_ALTERNATE_SEPARATOR = '\\';
 	
 	private KornellConstants constants = GWT.create(KornellConstants.class);
+	private KornellMessages messages = GWT.create(KornellMessages.class);
 
 	private static final String EMAIL_PATTERN = "^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}$";
 	private static final String USERNAME_PATTERN = "^[A-z0-9._]{3,}$";
@@ -329,6 +326,7 @@ public class FormHelper {
 		return countries;
 	}
 	
+	//No i18n needed for now, this list will only be shown on pt_BR locales 
 	public ListBox getBrazilianStatesList(){
 		ListBox states = new ListBox();
 
@@ -367,9 +365,9 @@ public class FormHelper {
 	public ListBox getSexList(){
 		ListBox sex = new ListBox();
 		
-		sex.addItem("Selecione:", "-");
-		sex.addItem("Feminino", "F");
-		sex.addItem("Masculino", "M");
+		sex.addItem(constants.selectboxDefault(), "-");
+		sex.addItem(constants.genderFemale(), "F");
+		sex.addItem(constants.genderMale(), "M");
 
 		return sex;
 	}
@@ -552,62 +550,6 @@ public class FormHelper {
 		return image;
 	}
 	
-	public String getCourseClassStateAsText(CourseClassState state){
-		switch (state) {
-		case active:
-			return "Ativada";
-		case inactive:
-			return "Desativada";
-		case deleted:
-			return "Excluída";			
-		default:
-			return "";
-		}
-	}
-	
-	public String getEnrollmentStateAsText(EnrollmentState state){
-		switch (state) {
-		case notEnrolled:
-			return constants.notEnrolled();
-		case enrolled:
-			return constants.enrolled();
-		case requested:
-			return constants.requested();
-		case denied:
-			return constants.denied();
-		case cancelled:
-			return constants.cancelled();
-		default:
-			return "";
-		}
-	}
-
-	public String getEnrollmentProgressAsText(EnrollmentProgressDescription progressDescription) {
-		switch (progressDescription) {
-		case notStarted:
-			return "A iniciar";
-		case inProgress:
-			return "Em andamento";
-		case completed:
-			return "Concluído";
-		default:
-			return "???";
-		}
-	}
-
-	public String getRegistrationTypeAsText(RegistrationType registrationType) {
-		switch (registrationType) {
-		case email:
-			return "Email";
-		case cpf:
-			return "CPF";
-		case username:
-			return "Usuário";
-		default:
-			return "???";
-		}
-	}
-	
 	public String formatCPF(String cpf) {
 	  cpf = stripCPF(cpf);
 	  if(cpf == null || cpf.length() != 11)
@@ -631,11 +573,11 @@ public class FormHelper {
 		if(days > 0)
 			return dateToString(date);
 		else if(hours > 0)
-			return "Há " + hours + " hora" + (hours > 1 ? "s" : "");
+			return messages.hoursAgo(hours, hours > 1);
 		else if(minutes > 0)
-			return "Há " + minutes + " minuto" + (minutes > 1 ? "s" : "");
+			return messages.minutesAgo(minutes, minutes > 1);
 		else
-			return "Há " + seconds + " segundo" + (seconds > 1 ? "s" : "");
+			return messages.secondsAgo(seconds, seconds > 1);
   }
 	
 	public String dateToString(Date date){
