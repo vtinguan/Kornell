@@ -78,7 +78,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 
 	private void initPlaceBar() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, constants.messagesTitle(), constants.messagesDescription());
+		viewFactory.getMenuBarView().initPlaceBar(IconType.COMMENTS, constants.messagesTitle(), constants.messagesDescription());
 	}
 
 	private void init() {
