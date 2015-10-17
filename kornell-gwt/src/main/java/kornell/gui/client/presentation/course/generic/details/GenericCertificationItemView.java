@@ -17,13 +17,13 @@ import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.KornellNotification;
-import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -33,7 +33,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
@@ -45,6 +44,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	interface MyUiBinder extends UiBinder<Widget, GenericCertificationItemView> {
 	}
 
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private EventBus bus;
 	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
@@ -92,13 +92,13 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 
 	private void initData() {
 		if(TEST.equals(type)){
-			this.name = "Avaliação";
-			this.description = "Esta avaliação final tem a intenção de identificar o seu conhecimento após a conclusão do curso.";
-			this.status = "A fazer";
+			this.name = constants.testName();
+			this.description = constants.testDescription();
+			this.status = constants.testStatus();
 			this.grade = "-";
 		} else if(CERTIFICATION.equals(type)){
-			this.name = "Certificado";
-			this.description = "Impressão do certificado. Uma vez que o curso for terminado, você poderá gerar o certificado aqui.";
+			this.name = constants.certificateName();
+			this.description = constants.certificateDescription();
 			this.grade = "-";
 			
 			Enrollment enrollment = currentCourseClass != null? currentCourseClass.getEnrollment() : null;
@@ -123,12 +123,12 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 
 	private void displayActionCell(boolean show) {
 		if (show) {
-			lblActions.setText("Gerar");
+			lblActions.setText(constants.generate());
 			lblActions.addStyleName("cursorPointer");
 			actionHandler = lblActions.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					KornellNotification.show("Aguarde um instante...", AlertType.WARNING, 2000);
+					KornellNotification.show(constants.waitAMinute(), AlertType.WARNING, 2000);
 					CourseClass courseClass = currentCourseClass != null ? currentCourseClass.getCourseClass() : null;		
 					UserInfoTO currentUser = session != null ? session.getCurrentUser() : null;
 					Person person = currentUser != null? currentUser.getPerson() : null;
@@ -163,7 +163,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 
 	private void updateCertificationLinkAndLabel(String gradeIn){
 		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest);
-		status = allowCertificateGeneration ? "Disponível" : "Não disponível";
+		status = allowCertificateGeneration ? constants.certificateAvailable() : constants.certificateNotAvailable();
 		lblStatus.setText(status);
 
 		if(StringUtils.isSome(gradeIn)){

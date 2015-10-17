@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.profile.generic;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -25,6 +26,7 @@ public class GenericSendMessageView extends Composite implements ProfileView {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private KornellSession session;
 	private FormHelper formHelper;
@@ -59,8 +61,8 @@ public class GenericSendMessageView extends Composite implements ProfileView {
 		sendMessageFields.clear();
 		initialized = true;
 
-		btnOK.setText("OK".toUpperCase());
-		btnCancel.setText("Cancelar".toUpperCase());
+		btnOK.setText(constants.okButton().toUpperCase());
+		btnCancel.setText(constants.cancelButton().toUpperCase());
 		
 		modalMessageTextArea = new TextArea();
 		sendMessageFields.add(modalMessageTextArea);
@@ -78,7 +80,7 @@ public class GenericSendMessageView extends Composite implements ProfileView {
 					LoadingPopup.hide();
 					modalMessageTextArea.setText("");
 					sendMessageModal.hide();
-					KornellNotification.show("Mensagem enviada com sucesso!");
+					KornellNotification.show(constants.messageSentSuccess());
 				}
 			});
 

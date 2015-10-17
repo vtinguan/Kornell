@@ -17,6 +17,9 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Select a language")
 	String selectLanguage();
 	
+	@DefaultStringValue("Use the same email in which you receive the registration.")
+	String registrationEmailMessage();
+	
 	@DefaultStringValue("Invalid username or password, please try again.")
 	String badUsernamePassword();
 	
@@ -53,13 +56,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("We could not update your password. Please check your email or make another request.")
 	String passwordChangeError();
 	
-	
-	
-	
-	
-	
-	
-	
+
 	/**
 	 * 
 	 * GenericWelcomeView
@@ -77,7 +74,6 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("In progress")
 	String inProgress();
 
-	
 
 	/**
 	 * 
@@ -122,7 +118,52 @@ public interface KornellConstants extends ConstantsWithLookup {
 
 	@DefaultStringValue("Topic")
 	String topic();
-
+	
+	@DefaultStringValue("Certification")
+	String certification();
+	
+	@DefaultStringValue("Certification")
+	String certificationInfoText();
+	
+	@DefaultStringValue("Info")
+	String certificationTableInfo();
+	
+	@DefaultStringValue("Status")
+	String certificationTableStatus();
+	
+	@DefaultStringValue("Grade")
+	String certificationTableGrade();
+	
+	@DefaultStringValue("Actions")
+	String certificationTableActions();
+	
+	@DefaultStringValue("Print certificate")
+	String printCertificateButton();
+	
+	@DefaultStringValue("--TODO--")
+	String classChatButton();
+	
+	@DefaultStringValue("With a tutor")
+	String tutorChatButton();
+	
+	@DefaultStringValue("Supplemental material")
+	String libraryButton();
+	
+	@DefaultStringValue("Go to class")
+	String goToClassButton();
+	
+	@DefaultStringValue("This class has been disabled by the institution.<br><br> The material in this class is inaccessible.<br>")
+	String inactiveCourseClass();
+	
+	@DefaultStringValue("Your registration was canceled by the institution.")
+	String cancelledEnrollment();
+	
+	@DefaultStringValue("Your registration has not yet been approved by the institution.")
+	String enrollmentNotApproved();
+	
+	@DefaultStringValue("You will receive an email at the time of approval.")
+	String enrollmentConfirmationEmail();
+	
 	
 	/**
 	 * 
@@ -171,8 +212,359 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("classes")
 	String classes();
 	
+	
 	/**
-	 * 
+	 * GenericActivityBarView
+	 */
+	@DefaultStringValue("completed")
+	String completed();
+	
+	@DefaultStringValue("Page")
+    String pageForPagination();
+	
+	
+	/**
+	 * ClassroomPresenter
+	 */
+	@DefaultStringValue("Loading the course...")
+	String loadingTheCourse();
+	
+	
+	/**
+	* GenericCertificationItemVIew
+	*/
+	@DefaultStringValue("Evaluation")
+	String testName();
+	
+	@DefaultStringValue("--TODO--")
+	String testDescription();
+	
+	@DefaultStringValue("To complete")
+	String testStatus();
+	
+	@DefaultStringValue("Certificate")
+	String certificateName();
+	
+	@DefaultStringValue("--TODO--")
+	String certificateDescription();
+	
+	@DefaultStringValue("Generage")
+	String generate();
+	
+	@DefaultStringValue("Wait a minute...")
+	String waitAMinute();
+	
+	@DefaultStringValue("Available")
+	String certificateAvailable();
+	
+	@DefaultStringValue("Unavailable")
+	String certificateNotAvailable();
+	
+	
+	/**
+	 * GenericCourseLibraryView
+	 */
+	@DefaultStringValue("Library")
+	String libraryTitle();
+	
+	@DefaultStringValue("--TODO--")
+	String libraryInfo();
+	
+	@DefaultStringValue("Type")
+	String libraryEntryIcon();
+	
+	@DefaultStringValue("File name")
+	String libraryEntryName();
+	
+	@DefaultStringValue("Size")
+	String libraryEntrySize();
+	
+	@DefaultStringValue("Publication date")
+	String libraryEntryDate();
+	
+	
+	/**
+	 * GenericIncludeFileView
+	 */
+	@DefaultStringValue("--TODO--")
+	String fileFormInfoTitle();
+	
+	@DefaultStringValue("--TODO--")
+	String fileFormInfoText();
+	
+	@DefaultStringValue("--TODO--")
+	String fileDescription();
+	
+	@DefaultStringValue("Relevance:")
+	String starsLabelText();
+	
+	@DefaultStringValue("Publish")
+	String btnPublish();
+	
+	
+	/**
+	 * NotesPopup
+	 */
+	@DefaultStringValue("--TODO--")
+	String notesPopupPlaceholder();
+	
+	
+	/**
+	 * MessagePresenter
+	 */
+	@DefaultStringValue("Messages")
+	String messagesTitle();
+	
+	@DefaultStringValue("Keep track of your conversations with other platform participants")
+	String messagesDescription();
+	
+	@DefaultStringValue("You have no established conversations.")
+	String noThreadsMessage();
+	
+	@DefaultStringValue("Enter your question here and a tutor will contact you soon.")
+	String tutorPlaceholderMessage();
+	
+	
+	/**
+	 * GenericMessageComposeView
+	 */
+	@DefaultStringValue("Institution admin")
+	String institutionAdminLabel();
+	
+	@DefaultStringValue("Platform admin")
+	String platformAdminLabel();
+	
+	
+	/**
+	 * MessageComposePresenter
+	 */
+	@DefaultStringValue("Message sent successfully!")
+	String messageSentSuccess();
+	
+	@DefaultStringValue("Please fill the message body.")
+	String noMessageBodyError();
+	
+	
+	/**
+	 * GenericMessageView
+	 */
+	@DefaultStringValue("Filter conversations...")
+	String filterConversationPlaceholder();
+	
+	@DefaultStringValue("Global class chat:")
+	String courseClassChatThreadLabel();
+	
+	@DefaultStringValue("Direct chat with:")
+	String directChatLabel();
+	
+	@DefaultStringValue("Support chat:")
+	String supportChatThreadLabel();
+	
+	@DefaultStringValue("Support")
+	String supportLabel();
+	
+	@DefaultStringValue("Tutor chat:")
+	String tutorChatThreadLabel();
+	
+	@DefaultStringValue("Tutor")
+	String tutorLabel();
+	
+	@DefaultStringValue("Institution help for class:")
+	String institutionSupportChatThreadLabel();
+	
+	@DefaultStringValue("Platform support:")
+	String platformSupportChatThreadLabel();
+	
+	
+	/**
+	 * GenericPasswordChangeView
+	 */
+	@DefaultStringValue("New Password")
+	String newPassword();
+	
+	@DefaultStringValue("Confirm Password")
+	String confirmPassword();
+	
+	@DefaultStringValue("Password change successful!")
+	String confirmPasswordChange();
+	
+	
+	/**
+	 * GenericProfileView
+	 */
+	@DefaultStringValue("Edit")
+	String editButton();
+	
+	@DefaultStringValue("Close")
+	String closeButton();
+	
+	@DefaultStringValue("Save")
+	String saveButton();
+	
+	@DefaultStringValue("Cancel")
+	String cancelButton();
+	
+	@DefaultStringValue("OK")
+	String okButton();
+	
+	@DefaultStringValue("Change password")
+	String changePasswordButton();
+	
+	@DefaultStringValue("Send message")
+	String sendMessageButton();
+	
+	@DefaultStringValue("Profile")
+	String profileTitle();
+	
+	@DefaultStringValue("Keep your details updated")
+	String profileDescription();
+	
+	@DefaultStringValue("Enter a name.")
+	String missingNameMessage();
+	
+	@DefaultStringValue("Enter a telephone number.")
+	String missingTelephoneMessage();
+	
+	@DefaultStringValue("Enter a country.")
+	String missingCountryMessage();
+	
+	@DefaultStringValue("Select a state.")
+	String selectStateMessage();
+	
+	@DefaultStringValue("Enter a state.")
+	String missingStateMessage();
+	
+	@DefaultStringValue("Enter a city.")
+	String missingCityMessage();
+	
+	@DefaultStringValue("Enter an affress.")
+	String missingAddressMessage();
+	
+	@DefaultStringValue("Enter a postal code.")
+	String missingPostalCodeMessage();
+	
+	@DefaultStringValue("Successfully saved changes!")
+	String confirmSaveProfile();
+	
+	@DefaultStringValue("Errors when saving user.")
+	String errorSaveProfile();
+	
+	@DefaultStringValue("There are errors with your entries.")
+	String formContainsErrors();
+	
+	@DefaultStringValue("User not found.")
+	String userNotFound();
+	
+	@DefaultStringValue("Please complete registration")
+	String pleaseCompleteRegistrationMessage();
+	
+	@DefaultStringValue("Username")
+	String usernameLabel();
+	
+	@DefaultStringValue("Full name")
+	String fullnameLabel();
+	
+	@DefaultStringValue("Email")
+	String emailLabel();
+	
+	@DefaultStringValue("CPF")
+	String cpfLabel();
+	
+	@DefaultStringValue("Company")
+	String companyLabel();
+	
+	@DefaultStringValue("Position")
+	String posititonLabel();
+	
+	@DefaultStringValue("Gender")
+	String genderLabel();
+	
+	@DefaultStringValue("Date of birth")
+	String birthDateLabel();
+	
+	@DefaultStringValue("Receive email communication")
+	String receiveEmailCommunicationLabel();
+	
+	@DefaultStringValue("Telephone")
+	String telephoneLabel();
+	
+	@DefaultStringValue("Country")
+	String countryLabel();
+	
+	@DefaultStringValue("State")
+	String stateLabel();
+	
+	@DefaultStringValue("City")
+	String cityLabel();
+	
+	@DefaultStringValue("Address")
+	String address1Label();
+	
+	@DefaultStringValue("Suite/App")
+	String address2Label();
+	
+	@DefaultStringValue("Postal code")
+	String postalCodeLabel();
+	
+	
+	/**
+	 * GenericTermsView
+	 */
+	@DefaultStringValue("Accept")
+	String agreeTerms();
+	
+	@DefaultStringValue("Refuse")
+	String refuseTerms();
+	
+	@DefaultStringValue("Terms of Use")
+	String termsTitle();
+	
+	@DefaultStringValue("Read and sign the terms of use before proceeding")
+	String termsDescription();
+	
+	
+	/**
+	 * GenericCourseSummaryView
+	 */
+	@DefaultStringValue("(CANCELLED)")
+	String cancelledClassLabel();
+	
+	@DefaultStringValue("Available")
+	String availableClassLabel();
+	
+	@DefaultStringValue("Awaiting grade")
+	String pendingGradeLabel();
+	
+	@DefaultStringValue("Awaiting enrollment approval")
+	String pendingEnrollmentApproval();
+	
+	@DefaultStringValue("Start class")
+	String startCourseLabel();
+	
+	@DefaultStringValue("Request enrollment")
+	String requestEnrollmentLabel();
+	
+	@DefaultStringValue("Note")
+	String completedCourseNoteLabel();
+	
+	@DefaultStringValue("on")
+	String completedOnToken();
+	
+	
+	/**
+	 * GenericWelcomeView
+	 */
+	@DefaultStringValue("Classes")
+	String homeTitle();
+	
+	@DefaultStringValue("Select a class below")
+	String homeDescription();
+	
+	@DefaultStringValue("You are not enrolled in a class and there are no classes available to request a new registration.")
+	String noClassesAvailable();
+	
+	
+	/**
 	 * Util
 	 */
 	@DefaultStringValue("January")
@@ -199,32 +591,9 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String november();
 	@DefaultStringValue("December")
 	String december();
-	
-
 
 	
-
 	/**
-	 * 
-	 * EnrollmentState
-	 */
-	@DefaultStringValue("notEnrolled")
-	String notEnrolled();
-	@DefaultStringValue("enrolled")
-	String enrolled();
-	@DefaultStringValue("requested")
-	String requested();
-	@DefaultStringValue("denied")
-	String denied();
-	@DefaultStringValue("cancelled")
-	String cancelled();
-	
-
-
-	
-
-	/**
-	 * 
 	 * Message
 	 */
 	@DefaultStringValue("Help")
@@ -239,6 +608,90 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String recipient();
 	@DefaultStringValue("Message:")
 	String message();
+	
+	
+	/**
+	 * Validations
+	 */
+	@DefaultStringValue("Invalid CPF")
+	String invalidCPF();
+	
+	@DefaultStringValue("CPF already exists")
+	String existingCPF();
+	
+	@DefaultStringValue("Email already exists")
+	String existingEmail();
+	
+	
+	/**
+	 * FormHelper
+	 */
+	@DefaultStringValue("Select:")
+	String selectboxDefault();
+	
+	@DefaultStringValue("Female")
+	String genderFemale();
+	
+	@DefaultStringValue("Male")
+	String genderMale();
+	
+	
+	/**
+	 * CourseClassState
+	 */
+	@DefaultStringValue("Active")
+	String CourseClassState_active();
+	
+	@DefaultStringValue("Inactive")
+	String CourseClassState_inactive();
+	
+	@DefaultStringValue("Deleted")
+	String CourseClassState_deleted();
+	
+	
+	/**
+	 * EnrollmentState
+	 */
+	@DefaultStringValue("notEnrolled")
+	String EnrollmentState_notEnrolled();
+	
+	@DefaultStringValue("enrolled")
+	String EnrollmentState_enrolled();
+	
+	@DefaultStringValue("requested")
+	String EnrollmentState_requested();
+	
+	@DefaultStringValue("denied")
+	String EnrollmentState_denied();
+	
+	@DefaultStringValue("cancelled")
+	String EnrollmentState_cancelled();
+	
+	
+	/**
+	 * EnrollmentProgressDescription
+	 */
+	@DefaultStringValue("Not started")
+	String EnrollmentProgressDescription_notStarted();
+	
+	@DefaultStringValue("In progress")
+	String EnrollmentProgressDescription_inProgress();
+	
+	@DefaultStringValue("Completed")
+	String EnrollmentProgressDescription_completed();
+	
+	
+	/**
+	 * RegistrationType
+	 */
+	@DefaultStringValue("Email")
+	String RegistrationType_email();
+	
+	@DefaultStringValue("CPF")
+	String RegistrationType_cpf();
+	
+	@DefaultStringValue("Username")
+	String RegistrationType_username();
 	
 	
 	/**
@@ -276,7 +729,6 @@ public interface KornellConstants extends ConstantsWithLookup {
 	/**
 	 * Errors 409
 	 */
-	
 	@DefaultStringValue("A class with this name already exists.")
 	String courseClassAlreadyExists();
 	@DefaultStringValue("A course version with this name already exists.")

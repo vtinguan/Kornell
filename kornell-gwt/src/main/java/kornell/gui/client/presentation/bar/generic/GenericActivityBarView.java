@@ -168,9 +168,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		
 		if(showDetails){
 			pagePanel.add(createSpan(progressPercent+"%", true));
-			pagePanel.add(createSpan("concluído", false));
+			pagePanel.add(createSpan(constants.completed(), false));
 		} else {
-			pagePanel.add(createSpan("Página", false));
+			pagePanel.add(createSpan(constants.pageForPagination(), false));
 			pagePanel.add(createSpan(currentPage == 0 ? "-" : ""+currentPage, true));
 			pagePanel.add(createSpan("/", false));
 			pagePanel.add(createSpan(""+totalPages, false));

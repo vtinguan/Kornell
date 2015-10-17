@@ -25,7 +25,6 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
-import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassMessagesView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
@@ -53,8 +52,6 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
-	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 
 	private KornellSession session;
 	private PlaceController placeCtrl;
@@ -98,9 +95,6 @@ public class GenericCourseDetailsView extends Composite {
 	private List<Actom> actoms;
 
 	private boolean isEnrolled, isCancelled, isInactiveCourseClass;
-
-
-
 	
 	public GenericCourseDetailsView(EventBus bus, KornellSession session, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.bus = bus;
@@ -293,12 +287,11 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel certificationInfo = new FlowPanel();
 		certificationInfo.addStyleName("detailsInfo");
 
-		Label infoTitle = new Label("Certificação");
+		Label infoTitle = new Label(constants.certification());
 		infoTitle.addStyleName("detailsInfoTitle");
 		certificationInfo.add(infoTitle);
 
-		Label infoText = new Label(
-				/*"Confira abaixo o status dos testes e avaliações presentes neste curso. " + */"Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e tenha sido aprovado na avaliação final.");
+		Label infoText = new Label(constants.certificationInfoText());
 		infoText.addStyleName("detailsInfoText");
 		certificationInfo.add(infoText);
 
@@ -319,10 +312,10 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel certificationHeaderPanel = new FlowPanel();
 		certificationHeaderPanel.addStyleName("certificationHeaderPanel");
 
-		certificationHeaderPanel.add(getHeaderButton("Item", "btnItem", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus centerText", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade centerText", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions centerText", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton(constants.certificationTableInfo(), "btnItem", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton(constants.certificationTableStatus(), "btnStatus centerText", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton(constants.certificationTableGrade(), "btnGrade centerText", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton(constants.certificationTableActions(), "btnActions centerText", "btnCertificationHeader"));
 
 		return certificationHeaderPanel;
 	}
@@ -417,17 +410,17 @@ public class GenericCourseDetailsView extends Composite {
 					constants.btnTopicsInfo(), false);
 		}
 		if(isInactiveCourseClass){
-			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
+			displayButton(btnCertification, constants.btnCertification(), constants.printCertificateButton(), false);
 		} else if(isEnrolled && !isCancelled){
-			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
+			displayButton(btnCertification, constants.btnCertification(), constants.printCertificateButton(), false);
 			if(courseClassTO.getCourseClass().isCourseClassChatEnabled()){
-				displayButton(btnChat, constants.btnChat(), "Com todos os participantes da turma"/*constants.btnCertificationInfo()*/, false);
+				displayButton(btnChat, constants.btnChat(), constants.classChatButton(), false);
 			}
 			if(courseClassTO.getCourseClass().isTutorChatEnabled()){
-				displayButton(btnTutor, constants.btnTutor(), "Com um especialista"/*constants.btnCertificationInfo()*/, false);
+				displayButton(btnTutor, constants.btnTutor(), constants.tutorChatButton(), false);
 			}
-			displayButton(btnLibrary, constants.btnLibrary(), "Material complementar"/*constants.btnCertificationInfo()*/, false);
-			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
+			displayButton(btnLibrary, constants.btnLibrary(), constants.libraryButton(), false);
+			displayButton(btnGoToCourse, constants.goToClassButton(), "", false);	
 		}
 	}
 
@@ -469,14 +462,13 @@ public class GenericCourseDetailsView extends Composite {
 			warningPanel.addStyleName("notEnrolledPanel");
 			String text = "";
 			if(isInactiveCourseClass){
-				text = "Essa turma foi desabilitada pela instituição."
-						+ "<br><br> O material desta turma está inacessível.<br>";
+				text = constants.inactiveCourseClass();
 			} else if(isCancelled) {
-				text = "Sua matrícula foi cancelada pela instituição.";
+				text = constants.cancelledEnrollment();
 			} else if(!isEnrolled) {
-				text = "Sua matrícula ainda não foi aprovada pela instituição."
+				text = constants.enrollmentNotApproved()
 						+ (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) ?
-								"" : "<br><br> Você receberá um email no momento da aprovação.<br>");
+								"" : constants.enrollmentConfirmationEmail());
 			}
 			HTMLPanel panel = new HTMLPanel(text);
 			warningPanel.add(panel);
