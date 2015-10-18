@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.AuditedEntityType;
-import kornell.core.entity.EnrollmentState;
 import kornell.core.event.EntityChanged;
+import kornell.core.to.EntityChangedEventsTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.audit.AdminAuditPresenter;
@@ -20,7 +20,6 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourse
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
-import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
@@ -74,7 +73,6 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
 	final CellTable<EntityChanged> table;
-	private List<EntityChanged> entitiesChanged;
 	private KornellPagination pagination;
 	private AdminAuditView.Presenter presenter;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
@@ -96,6 +94,7 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 	private AdminCourseVersionView view;
 	private AdminAuditPresenter adminAuditPresenter;
 	private FlowPanel tableTools;
+	private EntityChangedEventsTO entityChangedEventsTO;
 
 	public GenericAdminAuditView(final KornellSession session, final EventBus bus, final PlaceController placeCtrl, final ViewFactory viewFactory) {
 		this.placeCtrl = placeCtrl;
@@ -113,6 +112,11 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 				});
 		
 		displayDiff(null);
+	}
+	
+	@Override
+	public EntityChangedEventsTO getEntityChangedEventsTO(){
+		return entityChangedEventsTO;
 	}
 
 	private void filter() {
@@ -132,10 +136,8 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 			entityTypesList.addChangeHandler(new ChangeHandler() {
 				@Override
 				public void onChange(ChangeEvent event) {
-					if(StringUtils.isSome(entityTypesList.getValue())){
-						displayDiff(null);
-						filter();
-					}
+					displayDiff(null);
+					filter();
 				}
 			});
 		}
@@ -361,9 +363,10 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 
 
 	@Override
-	public void setEntitiesChangedEvents(List<EntityChanged> entitiesChanged, Integer count, Integer searchCount) {
-		this.entitiesChanged = entitiesChanged;
+	public void setEntitiesChangedEvents(EntityChangedEventsTO entityChangedEventsTO) {
+		this.entityChangedEventsTO = entityChangedEventsTO;
 		table.setVisible(false);
+		pagination.setVisible(true);
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
 		panel.add(table);
@@ -375,10 +378,11 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 		entitiesChangedWrapper.add(panel);
 		entitiesChangedWrapper.add(pagination);
 
-		if(entitiesChanged != null){
-			pagination.setRowData(entitiesChanged, StringUtils.isSome(presenter.getSearchTerm()) ? searchCount : count);
+		if(entityChangedEventsTO != null){
+			pagination.setRowData(entityChangedEventsTO.getEntitiesChanged(), StringUtils.isSome(presenter.getSearchTerm()) ? entityChangedEventsTO.getSearchCount() : entityChangedEventsTO.getCount());
 			initTable();
 			table.setVisible(true);
+			pagination.setVisible(true);
 		}
 	
 		adminHomePanel.setVisible(true);

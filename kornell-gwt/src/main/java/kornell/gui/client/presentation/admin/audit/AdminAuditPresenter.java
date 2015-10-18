@@ -48,10 +48,11 @@ public class AdminAuditPresenter implements AdminAuditView.Presenter {
 		if (session.isPlatformAdmin()) {
 			view = getView();
 			view.setPresenter(this);
+			entityChangedEventsTO = view.getEntityChangedEventsTO();
 			if(entityChangedEventsTO == null){
-				view.setEntitiesChangedEvents(null, 0, 0); 
+				view.setEntitiesChangedEvents(null); 
 			} else {
-				view.setEntitiesChangedEvents(entityChangedEventsTO.getEntitiesChanged(), entityChangedEventsTO.getCount(), entityChangedEventsTO.getSearchCount());
+				view.setEntitiesChangedEvents(entityChangedEventsTO);
 			}     
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! "
@@ -61,17 +62,19 @@ public class AdminAuditPresenter implements AdminAuditView.Presenter {
 	}
 
 	private void getEntitiesChanged() {
-		if(StringUtils.isNone(searchTerm))
-			return;
-		LoadingPopup.show();
-		session.events().getEntityChangedEvents(searchTerm, pageSize, pageNumber,  new Callback<EntityChangedEventsTO>() {
-  			@Override
-  			public void ok(EntityChangedEventsTO to) {
-  				entityChangedEventsTO = to;
-  				view.setEntitiesChangedEvents(entityChangedEventsTO.getEntitiesChanged(), to.getCount(), to.getSearchCount());
-  				LoadingPopup.hide();
-  			}
-  		});
+		if(StringUtils.isNone(searchTerm)){
+			view.setEntitiesChangedEvents(null);
+		} else {
+			LoadingPopup.show();
+			session.events().getEntityChangedEvents(searchTerm, pageSize, pageNumber,  new Callback<EntityChangedEventsTO>() {
+	  			@Override
+	  			public void ok(EntityChangedEventsTO to) {
+	  				entityChangedEventsTO = to;
+	  				view.setEntitiesChangedEvents(entityChangedEventsTO);
+	  				LoadingPopup.hide();
+	  			}
+	  		});
+		}
 	}
 	
 	@Override

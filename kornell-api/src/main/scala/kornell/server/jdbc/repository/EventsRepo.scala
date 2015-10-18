@@ -201,15 +201,19 @@ object EventsRepo {
    
    def getEntityName(entityChanged: EntityChanged): String = {
       entityChanged.getEntityType match {
+	      case AuditedEntityType.person | 
+	      	AuditedEntityType.password => PersonRepo(entityChanged.getEntityUUID).first.get.getFullName
 	      case AuditedEntityType.institution | 
-	      	AuditedEntityType.institutionAdmin => InstitutionRepo(entityChanged.getEntityUUID).first.get.getName
+	      	AuditedEntityType.institutionAdmin | 
+	      	AuditedEntityType.institutionHostName | 
+	      	AuditedEntityType.institutionEmailWhitelist => InstitutionRepo(entityChanged.getEntityUUID).first.get.getName
 	      case AuditedEntityType.course => CourseRepo(entityChanged.getEntityUUID).first.get.getTitle
 	      case AuditedEntityType.courseVersion => CourseVersionRepo(entityChanged.getEntityUUID).first.get.getName
 	      case AuditedEntityType.courseClass | 
 	      	AuditedEntityType.courseClassAdmin | 
 	      	AuditedEntityType.courseClassObserver |
 	      	AuditedEntityType.courseClassTutor =>  CourseClassRepo(entityChanged.getEntityUUID).first.get.getName
-	      case _ => throw new EntityConflictException("invalidValue")
+	      case _ => "FIX-ME"
       }
    } 
    

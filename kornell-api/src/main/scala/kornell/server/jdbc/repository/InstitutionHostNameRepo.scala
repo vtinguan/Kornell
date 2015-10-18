@@ -6,6 +6,7 @@ import kornell.core.util.UUID
 import kornell.server.repository.TOs
 import kornell.core.to.InstitutionHostNamesTO
 import scala.collection.JavaConverters._
+import kornell.core.entity.AuditedEntityType
 
 class InstitutionHostNameRepo(institutionUUID: String) {
 
@@ -13,13 +14,20 @@ class InstitutionHostNameRepo(institutionUUID: String) {
     TOs.newInstitutionHostNamesTO(
         sql"""
         | select hostName from InstitutionHostName 
-        | where institutionUUID = ${institutionUUID}"""
+        | where institutionUUID = ${institutionUUID}
+        | order by hostName"""
     .map[String])
   }
   
   def updateHostnames(hostnames: InstitutionHostNamesTO) = {
+    val from = get
+    
     removeHostnames(institutionUUID)
     hostnames.getInstitutionHostNames.asScala.foreach(hostname => addHostname(hostname))
+    
+    //log entity change
+    EventsRepo.logEntityChange(institutionUUID, AuditedEntityType.institutionHostName, institutionUUID, from, hostnames)
+    
     hostnames
   }
   

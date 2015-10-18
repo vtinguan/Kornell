@@ -123,15 +123,15 @@ areas.left.editor = CodeMirror.fromTextArea(areas.left.element, {
 areas.right.editor = CodeMirror.fromTextArea(areas.right.element, {
     mode: 'javascript', json: true, readOnly: true
 });
+jsondiffpatch.formatters.html.showUnchanged(false, null, 800);
 
 
 var init = function(from, to){
-
   loadData({
     left: from,
     right: to
   });
-  jsondiffpatch.formatters.html.showUnchanged(false, null, 800);
+  jsondiffpatch.formatters.html.showUnchanged(true, null, 0);
 
 };
 

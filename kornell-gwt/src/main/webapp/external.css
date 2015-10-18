@@ -41,6 +41,10 @@
   transition: all 0.5s;
   -webkit-transition: all 0.5s;
   overflow-y: hidden;
+  
+  
+  
+  display: none;
 }
 .jsondiffpatch-unchanged-showing .jsondiffpatch-unchanged,
 .jsondiffpatch-unchanged-showing .jsondiffpatch-movedestination > .jsondiffpatch-value {
