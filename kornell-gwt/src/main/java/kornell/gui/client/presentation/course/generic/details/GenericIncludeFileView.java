@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.course.generic.details;
 
 import kornell.api.client.KornellClient;
+import kornell.gui.client.KornellConstants;
 
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
@@ -20,6 +21,7 @@ public class GenericIncludeFileView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericIncludeFileView> {
 	}
 
+	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	
 	private String IMAGES_PATH = "skins/first/icons/courseLibrary/";
@@ -67,19 +69,19 @@ public class GenericIncludeFileView extends Composite {
 
 
 	private void display() {
-		includeFileFormInfoTitle.setText("Incluir arquivo");
-		includeFileFormInfoText.setText("Ao incluir um arquivo dê a ele uma descrição para facilitar o entendimento do mesmo. Informe a sua relevância com o tema deste curso relacionando com as estrelas da seguinte forma: 1 estrela é de pouca relevância, 5 estrelas é altamente relevante, praticamente fundamental.");
+		includeFileFormInfoTitle.setText(constants.fileFormInfoTitle());
+		includeFileFormInfoText.setText(constants.fileFormInfoText());
 		
-		fileDescription.setPlaceholder("Como este arquivo pode auxiliar as pessoas? Para o que ele serve?");
+		fileDescription.setPlaceholder(constants.fileDescription());
 		
-		starsLabel.setText("Relevância:");
+		starsLabel.setText(constants.starsLabelText());
 		star1.setUrl(IMAGES_PATH + "starOff.png");
 		star2.setUrl(IMAGES_PATH + "starOff.png");
 		star3.setUrl(IMAGES_PATH + "starOff.png");
 		star4.setUrl(IMAGES_PATH + "starOff.png");
 		star5.setUrl(IMAGES_PATH + "starOff.png");
 		
-		btnPublish.setText("Publicar");
+		btnPublish.setText(constants.btnPublish());
 		btnPublish.removeStyleName("btn");
 	}
 }

@@ -1,10 +1,10 @@
 package kornell.gui.client.presentation.course.generic.notes;
 
 import kornell.api.client.KornellClient;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.util.Positioning;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -17,14 +17,15 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class NotesPopup {
+	
+	private KornellConstants constants = GWT.create(KornellConstants.class);
+	
 	PopupPanel popup;
 	PopupPanel glass;
 	TextArea richTextArea;
 	KornellClient client;
 	String courseClassUUID;
 	String notes;
-
-	
 
 	public NotesPopup(final KornellClient client, final String courseUUID, final String notes) {
 		this.courseClassUUID = courseUUID;
@@ -68,7 +69,7 @@ public class NotesPopup {
 		popup.show();
 
 		richTextArea.setFocus(true);
-		richTextArea.getElement().setAttribute("placeholder", "< Use este espaço para fazer suas anotações ao longo do curso. >");
+		richTextArea.getElement().setAttribute("placeholder", constants.notesPopupPlaceholder());
 		
 	}
 

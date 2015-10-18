@@ -12,6 +12,7 @@ import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
@@ -38,6 +39,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	private ViewFactory viewFactory;
 	private MessagePanelType messagePanelType;
 	private static TOFactory toFactory = GWT.create(TOFactory.class);
+	private KornellConstants constants = GWT.create(KornellConstants.class);
 
 	private UnreadChatThreadTO selectedChatThreadInfo;
 	private Timer chatThreadMessagesTimer;
@@ -76,7 +78,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 
 	private void initPlaceBar() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, "Central de Mensagens", "Acompanhe suas conversas com outros participantes da plataforma");
+		viewFactory.getMenuBarView().initPlaceBar(IconType.ENVELOPE, constants.messagesTitle(), constants.messagesDescription());
 	}
 
 	private void init() {
@@ -162,7 +164,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			}
 			view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
 		} else if(placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)){
-			KornellNotification.show("Você não tem nenhuma conversa criada.", AlertType.WARNING, 5000);
+			KornellNotification.show(constants.noThreadsMessage(), AlertType.WARNING, 5000);
 		} 
 
 		asWidget().setVisible(newUnreadChatThreadTOs.size() > 0);
@@ -226,7 +228,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					if(to.getChatThreadMessageTOs().size() == 0){
 						threadBeginningReached = true;
 						view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), true);
-						view.setPlaceholder(messagePanelType.equals(MessagePanelType.courseClassTutor) ? "Digite aqui sua dúvida e um tutor entrará em contato com você em breve." : "");
+						view.setPlaceholder(messagePanelType.equals(MessagePanelType.courseClassTutor) ? constants.tutorPlaceholderMessage() : "");
 					} else if(selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
 						synchronized (chatThreadMessageTOs) {
 							chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());

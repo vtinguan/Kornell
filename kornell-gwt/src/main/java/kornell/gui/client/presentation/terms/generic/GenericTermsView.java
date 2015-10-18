@@ -4,6 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -30,6 +31,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 	@UiField
 	Paragraph titleUser;
@@ -64,9 +66,8 @@ public class GenericTermsView extends Composite implements TermsView {
 					initData();
 				}
 			}});
-		// TODO i18n
-		btnAgree.setText("Concordo".toUpperCase());
-		btnDontAgree.setText("Não Concordo".toUpperCase());
+		btnAgree.setText(constants.agreeTerms().toUpperCase());
+		btnDontAgree.setText(constants.refuseTerms().toUpperCase());
 	}
 
 	private void initData() {
@@ -77,7 +78,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void paint() {
-		clientFactory.getViewFactory().getMenuBarView().initPlaceBar(IconType.LEGAL, "Termos de Uso", "Leia e assine os termos de uso antes de continuar");
+		clientFactory.getViewFactory().getMenuBarView().initPlaceBar(IconType.LEGAL, constants.termsTitle(), constants.termsDescription());
 		titleUser.setText(session.getCurrentUser().getPerson().getFullName());
 		if (Dean.getInstance().getInstitution() != null) {
 			txtTerms.getElement().setInnerHTML(Dean.getInstance().getInstitution().getTerms());

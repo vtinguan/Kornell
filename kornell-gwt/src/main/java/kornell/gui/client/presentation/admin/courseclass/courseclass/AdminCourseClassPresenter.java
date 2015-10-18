@@ -38,6 +38,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.util.EnumTranslator;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
@@ -271,7 +272,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             KornellNotification.show("O nome deve ter no mínimo 2 caracteres.", AlertType.ERROR);
         } else if (!isUsernameValid(username)) {
             KornellNotification.show(
-                    formHelper.getRegistrationTypeAsText(Dean.getInstance().getCourseClassTO().getCourseClass()
+            		EnumTranslator.translateEnum(Dean.getInstance().getCourseClassTO().getCourseClass()
                             .getRegistrationType())
                             + " inválido.", AlertType.ERROR);
         } else {
@@ -434,7 +435,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         } else if (enrollmentRequestsTO.getEnrollmentRequests().size() == 0) {
             KornellNotification
             .show("Verifique se os nomes/"
-                    + formHelper.getRegistrationTypeAsText(
+                    + EnumTranslator.translateEnum(
                             Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
                             .toLowerCase() + " dos participantes estão corretos. Nenhuma matrícula encontrada.",
                             AlertType.WARNING);

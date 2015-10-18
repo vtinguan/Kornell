@@ -6,6 +6,7 @@ import java.util.List;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.FormHelper;
 
 import com.google.gwt.core.client.GWT;
@@ -13,7 +14,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 public class EmailValidator implements Validator {
-	ValidationMessages msgs = GWT.create(ValidationMessages.class);
+	KornellConstants constants = GWT.create(KornellConstants.class);
 	KornellSession session;
 	String personUUID;
 
@@ -36,14 +37,14 @@ public class EmailValidator implements Validator {
 			String email = txtWidget.getText();
 			if (StringUtils.isSome(email)) {
 				if (!isValidEmail(email)) {
-					errors.add(msgs.invalidEmail());
+					errors.add(constants.invalidEmail());
 					cb.ok(errors);
 				} else {
 					session.person(personUUID).isEmailRegistered(email, new Callback<Boolean>() {
 						@Override
 						public void ok(Boolean exists) {
 							if (exists) {
-								errors.add(msgs.existingEmail());
+								errors.add(constants.existingEmail());
 							}
 							cb.ok(errors);
 						}
