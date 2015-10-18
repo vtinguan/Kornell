@@ -10,5 +10,5 @@ public interface Event {
 	
 	//TODO: Consider timezone issues with i18n
 	String getEventFiredAt();
-	void setEventFiredAt(String time);
+	void setEventFiredAt(String eventFiredAt);
 }

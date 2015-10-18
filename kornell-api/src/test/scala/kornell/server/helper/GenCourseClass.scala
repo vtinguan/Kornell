@@ -25,7 +25,7 @@ trait GenCourseClass
   
   val courseVersion = {
     val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
-    CourseVersionsRepo.create(Entities.newCourseVersion(repositoryUUID=repositoryUUID, courseUUID = courseUUID))
+    CourseVersionsRepo.create(Entities.newCourseVersion(repositoryUUID=repositoryUUID, courseUUID = courseUUID), institutionUUID)
   }
   val courseVersionUUID = courseVersion.getUUID
    

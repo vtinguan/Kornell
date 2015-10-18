@@ -1,8 +1,12 @@
 package kornell.server.jdbc.repository
 
+import com.google.web.bindery.autobean.shared.AutoBeanCodex
+import com.google.web.bindery.autobean.shared.AutoBeanUtils
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+import kornell.core.entity.AuditedEntityType
 import kornell.core.entity.CourseClassState
 import kornell.core.entity.EnrollmentState
+import kornell.core.error.exception.EntityConflictException
 import kornell.core.event.ActomEntered
 import kornell.core.event.AttendanceSheetSigned
 import kornell.core.event.CourseClassStateChanged
@@ -10,12 +14,29 @@ import kornell.core.event.EnrollmentStateChanged
 import kornell.core.event.EnrollmentTransferred
 import kornell.core.event.EventFactory
 import kornell.core.util.UUID
+import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.ep.EnrollmentSEP
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.util.EmailService
 import kornell.server.util.ServerTime
 import kornell.server.util.Settings
+import com.google.web.bindery.autobean.shared.AutoBean
+import kornell.core.to.EntityChangedEventsTO
+import kornell.core.event.EnrollmentTransferred
+import kornell.core.event.AttendanceSheetSigned
+import kornell.core.event.EnrollmentStateChanged
+import kornell.core.event.EventFactory
+import kornell.core.entity.CourseClassState
+import kornell.core.entity.EnrollmentState
+import kornell.core.event.ActomEntered
+import kornell.core.event.CourseClassStateChanged
+import kornell.core.to.EntityChangedEventsTO
 import kornell.core.error.exception.EntityConflictException
+import kornell.core.entity.AuditedEntityType
+import kornell.server.repository.TOs._
+import kornell.server.jdbc.SQL._
+import scala.collection.JavaConverters._
+import kornell.core.event.EntityChanged
 
 object EventsRepo {
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
@@ -96,11 +117,11 @@ object EventsRepo {
 
     sql"""insert into CourseClassStateChanged(uuid,eventFiredAt,personUUID,courseClassUUID,fromState,toState)
 	    values(${uuid},
-			   ${eventFiredAt},
+		 ${eventFiredAt},
          ${fromPersonUUID},
          ${courseClassUUID},
          ${fromState.toString},
-			   ${toState.toString});
+		 ${toState.toString});
 		""".executeUpdate
 
     sql"""update CourseClass set state = ${toState.toString} where uuid = ${courseClassUUID};
@@ -127,5 +148,74 @@ object EventsRepo {
         EnrollmentRepo(event.getEnrollmentUUID).transfer(event.getFromCourseClassUUID, event.getToCourseClassUUID)
   }
 
+  def logEntityChange(institutionUUID: String, auditedEntityType: AuditedEntityType, entityUUID: String, fromBean: Any, toBean: Any) = {
+	val toAB = AutoBeanUtils.getAutoBean(toBean)
+    val toValue: String = AutoBeanCodex.encode(toAB).getPayload.toString
+    var fromAB: AutoBean[Any] = null  
+    var fromValue: String = null
+    if(fromBean != null){
+    	fromAB = AutoBeanUtils.getAutoBean(fromBean)
+    	fromValue = AutoBeanCodex.encode(fromAB).getPayload.toString
+    }
+	val logChange = fromBean == null || {
+	  val diffMap = AutoBeanUtils.diff(fromAB, toAB)
+	  diffMap.size() > 0 && fromValue != toValue
+	}
+    if(logChange){
+	    sql"""insert into EntityChanged(uuid, personUUID, institutionUUID, entityType, entityUUID, fromValue, toValue, eventFiredAt)
+		    values(${UUID.random},
+	         ${ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get},
+	         ${institutionUUID},
+	         ${auditedEntityType.toString},
+	         ${entityUUID},
+	         ${fromValue},
+	         ${toValue},
+			 now());
+			""".executeUpdate
+    }
+  }
+  
+  def getEntityChangedEvents(institutionUUID: String, entityType: AuditedEntityType, pageSize: Int, pageNumber: Int): EntityChangedEventsTO = {
+    val resultOffset = (pageNumber.max(1) - 1) * pageSize
+    
+    val entityChangedEventsTO = newEntityChangedEventsTO(sql"""
+	  	select ec.*, p.fullName as fromPersonName, pwd.username as fromUsername, 'FIX-ME' as entityName
+		from EntityChanged ec
+			join Person p on p.uuid = ec.personUUID
+			join Password pwd on p.uuid = pwd.person_uuid
+		where ec.institutionUUID = ${institutionUUID}
+    		and ec.entityType = ${entityType.toString}
+		order by eventFiredAt desc limit ${resultOffset}, ${pageSize} 
+	  """.map[EntityChanged](toEntityChanged))
+	  
+   entityChangedEventsTO.setPageSize(pageSize)
+   entityChangedEventsTO.setPageNumber(pageNumber.max(1))
+   entityChangedEventsTO.setCount({
+    sql"""select count(ec.uuid)
+		from EntityChanged ec
+		where ec.institutionUUID = ${institutionUUID}
+    		and ec.entityType = ${entityType.toString}"""
+	    	.first[String].get.toInt
+   })
+   entityChangedEventsTO.setSearchCount(entityChangedEventsTO.getCount)
+   
+   def getEntityName(entityChanged: EntityChanged): String = {
+      entityChanged.getEntityType match {
+	      case AuditedEntityType.institution | 
+	      	AuditedEntityType.institutionAdmin => InstitutionRepo(entityChanged.getEntityUUID).first.get.getName
+	      case AuditedEntityType.course => CourseRepo(entityChanged.getEntityUUID).first.get.getTitle
+	      case AuditedEntityType.courseVersion => CourseVersionRepo(entityChanged.getEntityUUID).first.get.getName
+	      case AuditedEntityType.courseClass | 
+	      	AuditedEntityType.courseClassAdmin | 
+	      	AuditedEntityType.courseClassObserver |
+	      	AuditedEntityType.courseClassTutor =>  CourseClassRepo(entityChanged.getEntityUUID).first.get.getName
+	      case _ => throw new EntityConflictException("invalidValue")
+      }
+   } 
+   
+   entityChangedEventsTO.getEntitiesChanged.asScala.foreach(ec => ec.setEntityName(getEntityName(ec)))
+
+   entityChangedEventsTO
+  }
 
 }

@@ -5,13 +5,20 @@ import kornell.core.entity.Course
 import kornell.core.entity.Person
 import kornell.server.repository.Entities.newCourse
 import kornell.server.jdbc.SQL._ 
+import kornell.core.entity.AuditedEntityType
 
 
 class CourseRepo(uuid: String) {
 
-  def get = sql"""select * from Course where uuid=$uuid""".get[Course]
+  val finder = sql"select * from Course where uuid=$uuid"
+
+  def get = finder.get[Course]
+  def first = finder.first[Course]
   
   def update(course: Course): Course = {    
+    //get previous version
+    val oldCourse = CourseRepo(course.getUUID).first.get
+
     sql"""
     | update Course c
     | set c.code = ${course.getCode},
@@ -21,6 +28,10 @@ class CourseRepo(uuid: String) {
     | c.institutionUUID = ${course.getInstitutionUUID},
     | c.childCourse = ${course.isChildCourse}
     | where c.uuid = ${course.getUUID}""".executeUpdate
+	    
+    //log entity change
+    EventsRepo.logEntityChange(course.getInstitutionUUID, AuditedEntityType.course, course.getUUID, oldCourse, course)
+	        
     course
   }
 

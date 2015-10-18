@@ -17,6 +17,7 @@ import kornell.core.entity.CourseClassState
 import java.sql.ResultSet
 import kornell.core.error.exception.EntityConflictException
 import kornell.core.util.StringUtils
+import kornell.core.entity.AuditedEntityType
 
 class CourseClassesRepo {
 }
@@ -54,6 +55,9 @@ object CourseClassesRepo {
 	             ${courseClass.isApproveEnrollmentsAutomatically})
 	    """.executeUpdate
 	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
+	    
+	    //log creation event
+	    EventsRepo.logEntityChange(courseClass.getInstitutionUUID, AuditedEntityType.courseClass, courseClass.getUUID, null, courseClass)
 	    courseClass
     } else {
       throw new EntityConflictException("courseClassAlreadyExists")
@@ -63,7 +67,7 @@ object CourseClassesRepo {
   def byInstitution(institutionUUID: String) =
     sql"""
     | select * from CourseClass where institution_uuid = $institutionUUID
-    | where state <> ${CourseClassState.deleted}
+    | and state <> ${CourseClassState.deleted}
     """.map[CourseClass](toCourseClass)
 
   private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = 
@@ -122,10 +126,10 @@ object CourseClassesRepo {
       	  	    (cc.courseVersion_uuid = ${courseVersionUUID} or ${StringUtils.isNone(courseVersionUUID)}) and
       	  	    (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)}) and
 		    	cc.institution_uuid = ${institutionUUID} and
-	            (cv.name like ${filteredSearchTerm}
-	            or cc.name like ${filteredSearchTerm}) and (${StringUtils.isNone(adminUUID)} or
+	            (cv.name like ${filteredSearchTerm} or cc.name like ${filteredSearchTerm}) and 
+	            (${StringUtils.isNone(adminUUID)} or
 				(select count(*) from Role r where person_uuid = ${adminUUID} and (
-					(r.role = ${RoleType.platformAdmin.toString}) or 
+					(r.role = ${RoleType.platformAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 					(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 				( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
 			)) > 0)

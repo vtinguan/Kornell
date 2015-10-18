@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import kornell.api.client.Callback;
@@ -247,7 +248,7 @@ public class GenericCourseClassAdminsView extends Composite {
                 role.setTutorRole(tutorRole);
                 rolesList.add(role);  
             }
-            roles.setRoles(rolesList);
+			roles.setRoles(rolesList);
             session.courseClass(courseClassTO.getCourseClass().getUUID()).updateTutors(roles, new Callback<Roles>() {
                 @Override
                 public void ok(Roles to) {
@@ -273,7 +274,7 @@ public class GenericCourseClassAdminsView extends Composite {
                 role.setObserverRole(observerRole);
                 rolesList.add(role);  
             }
-            roles.setRoles(rolesList);
+			roles.setRoles(rolesList);
             session.courseClass(courseClassTO.getCourseClass().getUUID()).updateObservers(roles, new Callback<Roles>() {
                 @Override
                 public void ok(Roles to) {

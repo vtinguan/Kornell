@@ -11,6 +11,7 @@ import kornell.server.repository.TOs._
 import kornell.server.repository.Entities
 import kornell.core.util.UUID
 import kornell.core.to.CoursesTO
+import kornell.core.entity.AuditedEntityType
 
 object CoursesRepo {
 
@@ -27,6 +28,10 @@ object CoursesRepo {
     | ${course.getDescription},
     | ${course.getInfoJson},
     | ${course.getInstitutionUUID})""".executeUpdate
+	    
+    //log creation event
+    EventsRepo.logEntityChange(course.getInstitutionUUID, AuditedEntityType.course, course.getUUID, null, course)
+    
     course
   }  
   

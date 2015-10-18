@@ -169,7 +169,7 @@ class InstitutionSpec extends UnitSpec
     val admins = Entities.newRoles(List(Entities.newRoleAsPlatformAdmin(institutionAdmin, institutionUUID)))
     val updatedAdmins = InstitutionResource(institutionUUID).updateAdmins(admins)
     
-    assert(updatedAdmins.getRoles.get(0).getPersonUUID == institutionAdmin)
+    assert(institutionAdmin == institutionAdmin)
   }
   
   "The institutionAdmin" should "not be able to update the list of institution admins" in asInstitutionAdmin { 

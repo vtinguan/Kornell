@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.admin.institution.generic;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import kornell.api.client.Callback;
