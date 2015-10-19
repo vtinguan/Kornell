@@ -128,8 +128,8 @@ jsondiffpatch.formatters.html.showUnchanged(false, null, 800);
 
 var init = function(from, to){
   loadData({
-    left: from,
-    right: to
+    left: from || "{}",
+    right: to || "{}"
   });
   jsondiffpatch.formatters.html.showUnchanged(true, null, 0);
 

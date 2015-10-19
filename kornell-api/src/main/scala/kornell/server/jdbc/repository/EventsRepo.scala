@@ -148,23 +148,31 @@ object EventsRepo {
         EnrollmentRepo(event.getEnrollmentUUID).transfer(event.getFromCourseClassUUID, event.getToCourseClassUUID)
   }
 
-  def logEntityChange(institutionUUID: String, auditedEntityType: AuditedEntityType, entityUUID: String, fromBean: Any, toBean: Any) = {
-	val toAB = AutoBeanUtils.getAutoBean(toBean)
-    val toValue: String = AutoBeanCodex.encode(toAB).getPayload.toString
+  def logEntityChange(institutionUUID: String, auditedEntityType: AuditedEntityType, entityUUID: String, fromBean: Any, toBean: Any):Any = {
+	  logEntityChange(institutionUUID, auditedEntityType, entityUUID, fromBean, toBean, null)
+  }
+  
+  def logEntityChange(institutionUUID: String, auditedEntityType: AuditedEntityType, entityUUID: String, fromBean: Any, toBean: Any, personUUID: String) = {
     var fromAB: AutoBean[Any] = null  
     var fromValue: String = null
     if(fromBean != null){
     	fromAB = AutoBeanUtils.getAutoBean(fromBean)
     	fromValue = AutoBeanCodex.encode(fromAB).getPayload.toString
     }
-	val logChange = fromBean == null || {
+	var toAB: AutoBean[Any] = null  
+    var toValue: String = null
+    if(toBean != null){
+		toAB = AutoBeanUtils.getAutoBean(toBean)
+	    toValue = AutoBeanCodex.encode(toAB).getPayload.toString
+    }
+	val logChange = fromBean == null || toBean == null || {
 	  val diffMap = AutoBeanUtils.diff(fromAB, toAB)
 	  diffMap.size() > 0 && fromValue != toValue
 	}
     if(logChange){
 	    sql"""insert into EntityChanged(uuid, personUUID, institutionUUID, entityType, entityUUID, fromValue, toValue, eventFiredAt)
 		    values(${UUID.random},
-	         ${ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get},
+	         ${ThreadLocalAuthenticator.getAuthenticatedPersonUUID.getOrElse(personUUID)},
 	         ${institutionUUID},
 	         ${auditedEntityType.toString},
 	         ${entityUUID},

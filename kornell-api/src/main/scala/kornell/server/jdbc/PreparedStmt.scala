@@ -49,7 +49,7 @@ class PreparedStmt(query: String, params: List[Any]) {
         .zipWithIndex
         .foreach(param => setQueryParam(param._2 + 1, param._1))
 
-      logger.severe(s"Executing query [$query].")
+      logger.finer(s"Executing query [$query].")
 
       try fun(pstmt)
       finally pstmt.close

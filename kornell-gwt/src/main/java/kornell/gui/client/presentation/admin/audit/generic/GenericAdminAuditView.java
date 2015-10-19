@@ -20,6 +20,7 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourse
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
@@ -246,8 +247,14 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 	
 	public void goToEntityPlace(EntityChanged entityChanged){
 		switch (entityChanged.getEntityType()) {
+		case person:
+		case password:
+			placeCtrl.goTo(new ProfilePlace(entityChanged.getEntityUUID(), false));
+			break;
 		case institution:
 		case institutionAdmin:
+		case institutionHostName:
+		case institutionEmailWhitelist:
 			placeCtrl.goTo(new AdminInstitutionPlace());
 			break;
 		case course:
