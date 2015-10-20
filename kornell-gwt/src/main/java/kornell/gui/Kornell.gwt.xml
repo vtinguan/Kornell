@@ -34,8 +34,8 @@
 
 	<extend-property name="locale" values="pt_BR" />
 	<extend-property name="locale" values="en"/>
-	<extend-property name="locale" values="fr"/>
-	<extend-property name="locale" values="es"/>
+	<!-- extend-property name="locale" values="fr"/>
+	<extend-property name="locale" values="es"--/>
 	<!--  set-property name='locale' value='pt_BR' / -->
 	<set-property-fallback name='locale' value='pt_BR' />
 	<set-configuration-property name="locale.cookie" value="knlLocale" />
