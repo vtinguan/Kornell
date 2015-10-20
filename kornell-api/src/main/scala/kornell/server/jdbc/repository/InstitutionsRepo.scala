@@ -7,6 +7,7 @@ import kornell.core.entity.Person
 import kornell.core.entity.Institution
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.TOs
+import kornell.core.entity.AuditedEntityType
 
 object InstitutionsRepo {
   
@@ -27,6 +28,10 @@ object InstitutionsRepo {
     | ${institution.getActivatedAt},
     | ${institution.getSkin},
     | ${institution.getBillingType.toString})""".executeUpdate
+	    
+    //log creation event
+    EventsRepo.logEntityChange(institution.getUUID, AuditedEntityType.institution, institution.getUUID, null, institution)
+    
     institution
   }  
   

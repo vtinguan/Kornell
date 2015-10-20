@@ -40,7 +40,7 @@ class CourseVersionsResource {
   @Produces(Array(CourseVersion.TYPE))
   @Consumes(Array(CourseVersion.TYPE))
   def create(courseVersion: CourseVersion) = {
-    CourseVersionsRepo.create(courseVersion)
+    CourseVersionsRepo.create(courseVersion, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)
   }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get

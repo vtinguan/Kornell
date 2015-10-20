@@ -10,4 +10,5 @@ public interface EventFactory extends AutoBeanFactory  {
 	AutoBean<EnrollmentStateChanged> newEnrollmentStateChanged();
 	AutoBean<CourseClassStateChanged> newCourseClassStateChanged();
     AutoBean<EnrollmentTransferred> newEnrollmentTransferred();
+    AutoBean<EntityChanged> newEntityChanged();
 }

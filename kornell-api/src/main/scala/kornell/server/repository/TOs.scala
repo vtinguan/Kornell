@@ -38,10 +38,15 @@ import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.to.PersonTO
 import kornell.core.entity.AuthClientType
 import kornell.core.to.SimplePersonTO
+import kornell.core.to.EntityChangedEventsTO
+import kornell.core.event.EntityChanged
+import kornell.core.event.EventFactory
+import kornell.core.entity.AuditedEntityType
 
 //TODO: Consider turning to Object
 object TOs {
   val tos = AutoBeanFactorySource.create(classOf[TOFactory])
+  val events = AutoBeanFactorySource.create(classOf[EventFactory])
 
   def newUserInfoTO = tos.newUserInfoTO.as
   def newUserHelloTO = tos.newUserHelloTO.as
@@ -49,6 +54,7 @@ object TOs {
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
   def newCourseVersionsTO: CourseVersionsTO = tos.newCourseVersionsTO.as
   def newLibraryFileTO: LibraryFileTO = tos.newLibraryFileTO.as
+  def newEntityChangedEventsTO: EntityChangedEventsTO = tos.newEntityChangedEventsTO.as
 
   def newEnrollmentsTO(enrollmentList: List[EnrollmentTO]): EnrollmentsTO = {
     val enrollments:EnrollmentsTO = newEnrollmentsTO
@@ -325,5 +331,28 @@ object TOs {
   def newEnrollmentLaunchTO() = {
     val to = tos.newEnrollmentLaunchTO().as()
     to
+  }
+  
+  def newEntityChanged(uuid: String, eventFiredAt: String, institutionUUID: String, fromPersonUUID: String, entityType: AuditedEntityType, entityUUID: String, fromValue: String, toValue: String, entityName: String, fromPersonName: String, fromUsername: String) = {
+    val event = events.newEntityChanged.as
+    event.setUUID(uuid)
+    event.setEventFiredAt(eventFiredAt)
+	event.setInstitutionUUID(institutionUUID)
+	event.setFromPersonUUID(fromPersonUUID)
+	event.setEntityType(entityType)
+	event.setEntityUUID(entityUUID)
+	event.setFromValue(fromValue)
+	event.setToValue(toValue)
+	event.setEntityName(entityName)
+	event.setFromPersonName(fromPersonName)
+	event.setFromUsername(fromUsername)
+    event
+  }
+
+  def newEntityChangedEventsTO(entitiesChangedList: List[EntityChanged]): EntityChangedEventsTO = {
+    val courses = newEntityChangedEventsTO
+    courses.setEntitiesChanged(entitiesChangedList asJava)
+    courses.setPageCount(entitiesChangedList.length)
+    courses
   }
 }

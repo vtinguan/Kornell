@@ -9,6 +9,7 @@ import kornell.core.event.EnrollmentStateChanged;
 import kornell.core.event.EnrollmentTransferred;
 import kornell.core.event.Event;
 import kornell.core.event.EventFactory;
+import kornell.core.to.EntityChangedEventsTO;
 import kornell.core.util.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -67,7 +68,10 @@ public class EventsClient extends RESTClient {
         enrollmentTransferred.setUUID(UUID.random());
         return withEvent("/events/enrollmentTransferred",EnrollmentTransferred.TYPE,enrollmentTransferred);
     }
-
+	
+	public void getEntityChangedEvents(String entityType, String ps, String pn, Callback<EntityChangedEventsTO> cb) {
+		GET("/events/entityChanged/?entityType=" + entityType + "&ps=" + ps + "&pn=" + pn).sendRequest(null, cb);
+	}
 
 	private EventClient withEvent(String path, String contentType, Event event) {
 		return new EventClient(path,contentType,event);

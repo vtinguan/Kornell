@@ -35,6 +35,8 @@ import kornell.core.entity.AuthClientType
 import kornell.core.entity.InstitutionType
 import sun.security.action.GetBooleanAction
 import kornell.core.to.SimplePersonTO
+import kornell.core.entity.AuditedEntityType
+import kornell.core.event.EntityChanged
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -46,7 +48,7 @@ import kornell.core.to.SimplePersonTO
  * find() => Return Collection[T], as the result of a query
  */
 package object repository {
-  val logger = Logger.getLogger("kornell.server.jdbc")
+  val logger = Logger.getLogger("kornell.server.jdbc.repository")
   
   //TODO: Move converters to their repos
   implicit def toInstitution(rs:ResultSet):Institution = 
@@ -317,4 +319,18 @@ package object repository {
         rs.getString("uuid"),
         rs.getString("fullName"),
         rs.getString("username"))
+        
+   
+  implicit def toEntityChanged(rs: ResultSet): EntityChanged = newEntityChanged(
+    rs.getString("uuid"), 
+    rs.getString("eventFiredAt"),
+    rs.getString("institutionUUID"),
+    rs.getString("personUUID"),
+    AuditedEntityType.valueOf(rs.getString("entityType")),
+    rs.getString("entityUUID"),
+    rs.getString("fromValue"),
+    rs.getString("toValue"),
+    rs.getString("entityName"),
+    rs.getString("fromPersonName"),
+    rs.getString("fromUsername")) 
 }

@@ -16,6 +16,8 @@ import kornell.core.entity.Roles
 import kornell.core.entity.RoleType
 import kornell.core.entity.RoleCategory
 import kornell.core.to.RoleTO
+import kornell.core.entity.AuditedEntityType
+import kornell.core.error.exception.EntityConflictException
 
 object RolesRepo {
   	
@@ -23,36 +25,41 @@ object RolesRepo {
 	  TOs.newRolesTO(sql"""
 		    | select *, pw.username, cc.name as courseClassName
 	      	| from Role r
-	        | join Password pw on pw.person_uuid = r.person_uuid
-	        | left join CourseClass cc on r.course_class_uuid = cc.uuid
+			  | join Password pw on pw.person_uuid = r.person_uuid
+			  | left join CourseClass cc on r.course_class_uuid = cc.uuid
 	        | where pw.person_uuid = ${personUUID}
+	  		| order by r.role, pw.username
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   	
   def getUsersWithRoleForCourseClass(courseClassUUID: String, bindMode: String, roleType: RoleType) =
 	  TOs.newRolesTO(sql"""
 		    | select *, pw.username, cc.name as courseClassName
 	      	| from Role r
-	        | join Password pw on pw.person_uuid = r.person_uuid
-	        | left join CourseClass cc on r.course_class_uuid = cc.uuid
+		        | join Password pw on pw.person_uuid = r.person_uuid
+		        | left join CourseClass cc on r.course_class_uuid = cc.uuid
 	        | where r.course_class_uuid = ${courseClassUUID}
 	  			| and r.role = ${roleType.toString}
+	  		| order by r.role, pw.username
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   	
   def getInstitutionAdmins(institutionUUID: String, bindMode: String) =
 	  TOs.newRolesTO(sql"""
 		    | select *, pw.username, null as courseClassName
 	      	| from Role r
-	        | join Password pw on pw.person_uuid = r.person_uuid
+			  | join Password pw on pw.person_uuid = r.person_uuid
 	        | where r.institution_uuid = ${institutionUUID}
-	  		| and r.role = ${RoleType.institutionAdmin.toString}
+	  			| and r.role = ${RoleType.institutionAdmin.toString}
+	  		| order by r.role, pw.username
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   	
-  def getPlatformAdmins(bindMode: String) =
+  def getPlatformAdmins(institutionUUID: String, bindMode: String) =
 	  TOs.newRolesTO(sql"""
 		    | select *, pw.username, null as courseClassName
 	      	| from Role r
-	        | join Password pw on pw.person_uuid = r.person_uuid
+			  | join Password pw on pw.person_uuid = r.person_uuid
+	        | where r.institution_uuid = ${institutionUUID}
 	  			| and r.role = ${RoleType.platformAdmin.toString}
+	  		| order by r.role, pw.username
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   	
   def getCourseClassSupportThreadParticipants(courseClassUUID: String, institutionUUID: String, bindMode: String) =
@@ -91,13 +98,46 @@ object RolesRepo {
 			| group by pw.username
             """.map[RoleTO](toRoleTO(_,bindMode)))   
   
-  def updateCourseClassAdmins(courseClassUUID: String, roles: Roles) = removeCourseClassRole(courseClassUUID, RoleType.courseClassAdmin).addRoles(roles)
+  def updateCourseClassAdmins(institutionUUID: String, courseClassUUID: String, roles: Roles) = updateCourseClassRole(institutionUUID, courseClassUUID, RoleType.courseClassAdmin, roles)
   
-  def updateTutors(courseClassUUID: String, roles: Roles) = removeCourseClassRole(courseClassUUID, RoleType.tutor).addRoles(roles)
+  def updateTutors(institutionUUID: String, courseClassUUID: String, roles: Roles) = updateCourseClassRole(institutionUUID, courseClassUUID, RoleType.tutor, roles)
   
-  def updateObservers(courseClassUUID: String, roles: Roles) = removeCourseClassRole(courseClassUUID, RoleType.observer).addRoles(roles)
+  def updateObservers(institutionUUID: String, courseClassUUID: String, roles: Roles) = updateCourseClassRole(institutionUUID, courseClassUUID, RoleType.observer, roles)
   
-  def updateInstitutionAdmins(institutionUUID: String, roles: Roles) = removeInstitutionAdmins(institutionUUID).addRoles(roles)
+  def updateCourseClassRole(institutionUUID: String, courseClassUUID: String, roleType: RoleType, roles: Roles) = {
+    val from = getUsersWithRoleForCourseClass(courseClassUUID, RoleCategory.BIND_DEFAULT, roleType)
+    
+    removeCourseClassRole(courseClassUUID, roleType).addRoles(roles)
+    
+    val to = getUsersWithRoleForCourseClass(courseClassUUID, RoleCategory.BIND_DEFAULT, roleType)
+    
+    val auditedEntityType = {
+      roleType match {
+	      case RoleType.courseClassAdmin => AuditedEntityType.courseClassAdmin
+	      case RoleType.tutor  => AuditedEntityType.courseClassTutor
+	      case RoleType.observer => AuditedEntityType.courseClassObserver
+	      case _ => throw new EntityConflictException("invalidValue")
+      }
+    }
+    
+    //log entity change
+    EventsRepo.logEntityChange(institutionUUID, auditedEntityType, courseClassUUID, from, to)
+    
+    roles
+  }
+  
+  def updateInstitutionAdmins(institutionUUID: String, roles: Roles) = {
+    val from = getInstitutionAdmins(institutionUUID, RoleCategory.BIND_DEFAULT)
+    
+    removeInstitutionAdmins(institutionUUID).addRoles(roles)
+    
+    val to = getInstitutionAdmins(institutionUUID, RoleCategory.BIND_DEFAULT)
+    
+    //log entity change
+    EventsRepo.logEntityChange(institutionUUID, AuditedEntityType.institutionAdmin, institutionUUID, from, to)
+    
+    roles
+  }
   
   def addRoles(roles: Roles) = {
     roles.getRoles.asScala.foreach(addRole _)
