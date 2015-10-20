@@ -218,7 +218,7 @@
 					<!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
 					<runTarget>Kornell.nocache.html</runTarget>
 					<!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
-					<compileReport>true</compileReport>
+					<compileReport>false</compileReport>
 					<module>kornell.gui.Kornell</module>
 
 					<logLevel>INFO</logLevel>
