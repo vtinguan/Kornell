@@ -1,7 +1,6 @@
 package kornell.server.repository
 
 import kornell.server.dev.util.ContentsParser
-import kornell.server.repository.s3.S3
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.core.entity.Person
 import javax.xml.parsers.DocumentBuilderFactory
@@ -14,7 +13,9 @@ import kornell.core.util.StringUtils
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.Enrollment
 import kornell.server.jdbc.repository.CourseVersionRepo
+import kornell.server.content.ContentManagers
 
+@Deprecated
 object ContentRepository {
 
   def findKNLVisitedContent(enrollment: Enrollment) = {
@@ -27,11 +28,12 @@ object ContentRepository {
         CourseClassesRepo(enrollment.getCourseClassUUID).version
     }.get
     val repositoryUUID = version.getRepositoryUUID
-    val repo = S3(repositoryUUID)
+    val repo = ContentManagers.forRepository(repositoryUUID)
     val x = version.getDistributionPrefix + "structure.knl"
-    val structureSrc = repo.source(version.getDistributionPrefix, "structure.knl")
+    val versionPrefix = version.getDistributionPrefix
+    val structureSrc = repo.source(versionPrefix, "structure.knl")
     val structureText = structureSrc.get.mkString("")
-    val prefix = StringUtils.mkurl(repo.prefix, version.getDistributionPrefix())
+    val prefix = repo.url(version.getDistributionPrefix())
     val contents = ContentsParser.parse(prefix, structureText, visited)
     contents
   }
@@ -49,7 +51,7 @@ object ContentRepository {
     val versionRepo = classRepo.version
     val version = versionRepo.get
     val repositoryUUID = version.getRepositoryUUID();
-    val repo = S3(repositoryUUID)
+    val repo = ContentManagers.forRepository(repositoryUUID)
     val structureIn = repo.inputStream(version.getDistributionPrefix(), "imsmanifest.xml").get
     val document = builder.parse(structureIn)
     val result = ListBuffer[String]()

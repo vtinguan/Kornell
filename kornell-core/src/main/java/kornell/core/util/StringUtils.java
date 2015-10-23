@@ -1,4 +1,4 @@
-package kornell.core.util; 
+package kornell.core.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StringUtils {
-	
+
 	private static final Sha1 sha1 = new Sha1();
 
 	public static class URLBuilder {
@@ -63,26 +63,28 @@ public class StringUtils {
 	@Deprecated
 	public static String composeURL(String base, String... path) {
 		StringBuffer buf = new StringBuffer();
-		List<String> tokens = new ArrayList<String>();
-		if (isSome(base))
-			buf.append(removeTrailingSlashes(base));
-		if (path != null)
-			tokens.addAll(Arrays.asList(path));
-		for (String segment : tokens) {
-			if (isSome(segment)) {
-				if (!segment.startsWith("/"))
-					buf.append("/");
-				segment = removeTrailingSlashes(segment);
-				buf.append(segment);
+		buf.append(base);
+		if (path != null && path.length > 0) {			
+			for (int i = 0; i < path.length; i++) {
+				String segment = trimSlashes(path[i]);
+				if (isSome(segment)) {					
+					if ((buf.length()>0) && (buf.charAt(buf.length()-1) != '/')) 
+						buf.append("/");
+					buf.append(segment);
+				}
 			}
 		}
 		return buf.toString();
 	}
 
-	private static String removeTrailingSlashes(String segment) {
-		while (isSome(segment) && segment.endsWith("/"))
-			segment = segment.substring(0, segment.length() - 1);
-		return segment;
+	public static String trimSlashes(String segment) {
+		if (isSome(segment)){
+			if(segment.startsWith("/")) 
+				return trimSlashes(segment.substring(1));
+			else if (segment.endsWith("/")) 
+				return trimSlashes(segment.substring(0,segment.length()-1));
+			else return segment;
+		}else return segment;
 	}
 
 	public static final boolean isNone(String str) {
@@ -163,18 +165,19 @@ public class StringUtils {
 	@SuppressWarnings("deprecation")
 	public static String isoNow() {
 		Date date = new Date();
-		String year = i2s(1900+date.getYear());
+		String year = i2s(1900 + date.getYear());
 		String month = i2s(date.getMonth());
 		String day = i2s(date.getDate());
 		String hour = i2s(date.getHours());
 		String min = i2s(date.getMinutes());
 		String sec = i2s(date.getSeconds());
-		String result = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":"
-				+ sec;
+		String result = year + "-" + month + "-" + day + "T" + hour + ":" + min
+				+ ":" + sec;
 		return result;
 	}
 
 	private static final String HASH_SEP = "|#|";
+
 	public static String hash(String... args) {
 		StringBuilder builder = new StringBuilder();
 		for (String arg : args) {
@@ -183,7 +186,7 @@ public class StringUtils {
 		}
 		return sha1.hex_sha1(builder.toString());
 	}
-	
+
 	public static void main(String[] args) {
 		System.out.println(StringUtils.isoNow());
 	}

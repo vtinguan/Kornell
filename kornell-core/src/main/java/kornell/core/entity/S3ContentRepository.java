@@ -1,9 +1,6 @@
 package kornell.core.entity;
 
-public interface S3ContentRepository {
-	String getUUID();
-	void setUUID(String UUID);
-	
+public interface S3ContentRepository extends ContentRepository {
 	String getAccessKeyId();
 	void setAccessKeyId(String accessKeyId);
 	

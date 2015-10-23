@@ -33,7 +33,6 @@ import kornell.core.to.report.EnrollmentsBreakdownTO
 import kornell.core.to.report.InstitutionBillingEnrollmentReportTO
 import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 import kornell.core.util.StringUtils
-import kornell.server.repository.s3.S3
 import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.to.PersonTO
 import kornell.core.entity.AuthClientType
@@ -42,6 +41,7 @@ import kornell.core.to.EntityChangedEventsTO
 import kornell.core.event.EntityChanged
 import kornell.core.event.EventFactory
 import kornell.core.entity.AuditedEntityType
+import kornell.server.content.ContentManagers
 
 //TODO: Consider turning to Object
 object TOs {
@@ -103,8 +103,8 @@ object TOs {
 
   def newCourseVersionTO(course: Course, version: CourseVersion): CourseVersionTO = {
     val versionTO = tos.newCourseVersionTO.as
-    val s3 = S3(version.getRepositoryUUID)
-    versionTO.setDistributionURL(StringUtils.composeURL(s3.prefix))
+    val repo = ContentManagers.forRepository(version.getRepositoryUUID)
+    versionTO.setDistributionURL(repo.url("DEPRECATED_DISTRIBUTION_URL"))
     versionTO.setCourse(course)
     versionTO.setCourseVersion(version)
     versionTO

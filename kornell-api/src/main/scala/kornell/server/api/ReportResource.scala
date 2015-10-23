@@ -27,10 +27,10 @@ import kornell.server.report.ReportCertificateGenerator
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
-import kornell.server.repository.s3.S3
 import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.server.jdbc.repository.RolesRepo
+import kornell.server.content.ContentManagers
 
 @Path("/report")
 class ReportResource {
@@ -94,12 +94,13 @@ class ReportResource {
         } else {
           val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass)
           val bs = new ByteArrayInputStream(report)
-          S3.certificates.put(filename,
+          val repo = ContentManagers.forCertificates(p.getInstitutionUUID())
+          repo.put(filename,
             bs,
             "application/pdf",
             "Content-Disposition: attachment; filename=\"" + filename + ".pdf\"",
             Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()))
-          S3.certificates.url(filename)
+          repo.url(filename)
         }
       } catch {
         case e: Exception =>
@@ -113,7 +114,7 @@ class ReportResource {
   def fileExists(@QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
-      val url = S3.certificates.url(filename)
+      val url = ContentManagers.forCertificates(p.getInstitutionUUID).url(filename)
 
       HttpURLConnection.setFollowRedirects(false);
       val con = new URL(url).openConnection.asInstanceOf[HttpURLConnection]
