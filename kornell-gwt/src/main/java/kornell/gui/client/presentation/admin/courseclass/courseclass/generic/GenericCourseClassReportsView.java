@@ -74,7 +74,10 @@ public class GenericCourseClassReportsView extends Composite {
 		FlowPanel reportContentPanel = new FlowPanel();
 		reportContentPanel.addStyleName("reportContentPanel");
 		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.CERTIFICATE));
-		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.COURSE_CLASS_INFO)); 
+		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.COURSE_CLASS_INFO));
+		if(session.isInstitutionAdmin()){
+			reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.COURSE_CLASS_AUDIT));
+		}
 
 		return reportContentPanel;
 	}
