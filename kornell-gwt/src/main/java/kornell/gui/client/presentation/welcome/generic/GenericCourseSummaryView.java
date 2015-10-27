@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.welcome.generic;
 
+import static kornell.core.util.StringUtils.mkurl;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
@@ -21,6 +22,7 @@ import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.util.EnumTranslator;
 import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Paragraph;
@@ -85,7 +87,7 @@ public class GenericCourseSummaryView extends Composite {
 	@UiField
 	FlowPanel pnlCourseSummaryBar;
 
-	String iconCourseURL = "skins/first/icons/welcomeCourses/";
+	String ICON_COURSE_URL = mkurl(ClientConstants.IMAGES_PATH, "welcomeCourses");
 
 	private CourseClassTO courseClassTO;
 	private PlaceController placeCtrl;
@@ -123,7 +125,7 @@ public class GenericCourseSummaryView extends Composite {
 				String assetsURL = StringUtils.composeURL(courseClassTO.getCourseVersionTO().getDistributionURL(),
 						courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix());
 				imgThumb.setUrl(StringUtils.composeURL("/",assetsURL, "/images/thumb.jpg"));
-				imgIconCourse.setUrl(iconCourseURL);
+				imgIconCourse.setUrl(ICON_COURSE_URL);
 
 				sinkEvents(Event.ONCLICK);
 				addHandler(new ClickHandler() {
@@ -147,7 +149,7 @@ public class GenericCourseSummaryView extends Composite {
 				pnlCourseSummaryBar.add(requestEnrollmentBtn);
 
 				pStatus.setText(constants.availableClassLabel());
-				iconCourseURL += "iconAcquire.png";
+				ICON_COURSE_URL += "iconAcquire.png";
 			}
 
 			private void onEnrolled(Student student) {
@@ -177,7 +179,7 @@ public class GenericCourseSummaryView extends Composite {
 			progressBar.setPercent(progress);
 			pStatusInfo.setText(progress + "% ");
 		}
-		iconCourseURL += "iconInProgress.png";
+		ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconInProgress.png");
 		
 	}
 
@@ -185,10 +187,10 @@ public class GenericCourseSummaryView extends Composite {
 		if(courseClassTO.getEnrollment() != null &&
 				EnrollmentState.requested.equals(courseClassTO.getEnrollment().getState())){
 			pStatus.setText(constants.pendingEnrollmentApproval());
-			iconCourseURL += "iconWaiting.png";
+			ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconWaiting.png");
 		} else {
 			pStatus.setText(constants.toStart());
-			iconCourseURL += "iconNotStarted.png";
+			ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconNotStarted.png");
 		}
 	}
 
@@ -205,7 +207,7 @@ public class GenericCourseSummaryView extends Composite {
 			pStatusInfo2.setText(""+courseClassTO.getEnrollment().getAssessmentScore().intValue());
 		}
 		pStatus.setText(statusText);
-		iconCourseURL += "iconFinished.png";
+		ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconFinished.png");
 	}
 
 	private Button getRequestEnrollmentButton() {

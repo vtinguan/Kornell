@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import static kornell.core.util.StringUtils.mkurl;
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,6 +27,7 @@ import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.Positioning;
 import kornell.gui.client.util.easing.Ease;
 import kornell.gui.client.util.easing.Transitions;
@@ -65,8 +68,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	// TODO: Dependency Injection
 	ClientFactory clientFactory;
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
-	private static final String IMAGES_PATH = "skins/first/icons/menuBar/";
 
 	private boolean visible = false;
 
@@ -189,7 +190,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		Timer screenfulJsTimer = new Timer() {
 			public void run() {
 				ScriptInjector
-						.fromUrl("/js/screenfull.min.js")
+						.fromUrl(mkurl(ClientConstants.JS_PATH, "screenfull.min.js"))
 						.setCallback(
 								new com.google.gwt.core.client.Callback<Void, Exception>() {
 									public void onFailure(Exception reason) {

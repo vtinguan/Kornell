@@ -5,6 +5,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
@@ -27,9 +28,8 @@ public class GenericCourseReportItemView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private String BASE_IMAGES_PATH = "skins/first/icons/";
-	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
-	private String LIBRARY_IMAGES_PATH = BASE_IMAGES_PATH + "courseLibrary/";
+	private String ADMIN_IMAGES_PATH = ClientConstants.IMAGES_PATH + "admin/";
+	private String LIBRARY_IMAGES_PATH = ClientConstants.IMAGES_PATH + "courseLibrary/";
 	private KornellSession session;
 	private Course course;
 	private String type;

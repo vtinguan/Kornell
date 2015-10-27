@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import static kornell.core.util.StringUtils.mkurl;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.to.LibraryFileTO;
 import kornell.core.to.LibraryFilesTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.util.ClientConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,7 +38,7 @@ public class GenericCourseLibraryView extends Composite {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	
-	private String IMAGES_PATH = "skins/first/icons/courseLibrary/";
+	private String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseLibrary");
 
 	@UiField
 	FlowPanel libraryPanel;

@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.vitrine.generic;
 
 import static kornell.core.util.StringUtils.composeURL;
+import static kornell.core.util.StringUtils.mkurl;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +12,7 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.VitrineViewType;
+import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Alert;
@@ -155,10 +157,11 @@ public class GenericVitrineView extends Composite implements VitrineView {
 				locale = "pt_BR";
 			}
 			Map<String, String> localeToFlagsImage = new HashMap<String, String>();
-			localeToFlagsImage.put("pt_BR", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-br\" alt=\"BR\" title=\"Português\"/>");
-			localeToFlagsImage.put("en", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-gb\" alt=\"EN\" title=\"English\" />");
-			localeToFlagsImage.put("fr", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-fr\" alt=\"FR\" title=\"Français\" />");
-			localeToFlagsImage.put("es", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-es\" alt=\"ES\" title=\"Español\" />");
+			String blank = mkurl(ClientConstants.IMAGES_PATH, "blank.gif");
+			localeToFlagsImage.put("pt_BR", "<img src=\""+blank+"\" class=\"flag flag-br\" alt=\"BR\" title=\"Português\"/>");
+			localeToFlagsImage.put("en",    "<img src=\""+blank+"\" class=\"flag flag-gb\" alt=\"EN\" title=\"English\" />");
+			localeToFlagsImage.put("fr",    "<img src=\""+blank+"\" class=\"flag flag-fr\" alt=\"FR\" title=\"Français\" />");
+			localeToFlagsImage.put("es",    "<img src=\""+blank+"\" class=\"flag flag-es\" alt=\"ES\" title=\"Español\" />");
 	
 			Map<String, Command> localeToCommand = new HashMap<String, Command>();
 			localeToCommand.put("pt_BR", new Command() {

@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import static kornell.core.util.StringUtils.mkurl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,7 @@ import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.LoadingPopup;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -60,7 +63,7 @@ public class GenericCourseDetailsView extends Composite {
 	private MessagePresenter messagePresenterClassroomGlobalChat, messagePresenterClassroomTutorChat;
 	private GenericCourseClassMessagesView messagesGlobalChatView, messagesTutorChatView;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
+	private String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseDetails");
 
 	@UiField
 	FlowPanel detailsPanel;

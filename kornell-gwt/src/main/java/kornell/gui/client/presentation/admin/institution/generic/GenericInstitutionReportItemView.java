@@ -10,6 +10,7 @@ import kornell.core.util.StringUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
@@ -33,8 +34,7 @@ public class GenericInstitutionReportItemView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private String BASE_IMAGES_PATH = "skins/first/icons/";
-	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
+	private String ADMIN_IMAGES_PATH = ClientConstants.IMAGES_PATH + "admin/";
 	private KornellSession session;
 	private String type;
 	private String name;

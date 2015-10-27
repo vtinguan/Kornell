@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import static kornell.core.util.StringUtils.mkurl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import kornell.core.lom.ContentFormat;
 import kornell.core.lom.ExternalPage;
 import kornell.core.lom.Topic;
 import kornell.core.to.CourseClassTO;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
@@ -41,7 +44,7 @@ public class GenericTopicView extends Composite {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
 	private EventBus bus;
-	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
+	private String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseDetails");
 	private Content content;
 	private KornellSession session;
 	private CourseClassTO currentCourse;
@@ -154,8 +157,8 @@ public class GenericTopicView extends Composite {
 
 	private void updateIconURL(boolean isOpened) {
 		if(isOpened)
-			topicIcon.setUrl(IMAGES_PATH + "topic-expanded.png");
+			topicIcon.setUrl(mkurl(IMAGES_PATH, "topic-expanded.png"));
 		else
-			topicIcon.setUrl(IMAGES_PATH + "topic-contracted.png");
+			topicIcon.setUrl(mkurl(IMAGES_PATH + "topic-contracted.png"));
 	}
 }

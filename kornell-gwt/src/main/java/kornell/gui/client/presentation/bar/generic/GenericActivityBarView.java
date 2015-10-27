@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.bar.generic;
 
+import static kornell.core.util.StringUtils.mkurl;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
@@ -18,6 +19,7 @@ import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.generic.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.ProgressBar;
 import com.google.gwt.core.client.GWT;
@@ -49,7 +51,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
-	private static final String IMAGES_PATH = constants.imagesPath() + "southBar/";
+	private static final String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "southBar");
 
 	private static String BUTTON_PREVIOUS = constants.previous();
 	private static String BUTTON_NEXT = constants.next();

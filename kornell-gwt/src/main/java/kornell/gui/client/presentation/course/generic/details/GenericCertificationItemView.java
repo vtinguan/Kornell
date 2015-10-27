@@ -24,6 +24,7 @@ import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -47,7 +48,6 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private EventBus bus;
-	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
 	private KornellSession session;
 	private CourseClassTO currentCourseClass;
 	private String type;
@@ -111,7 +111,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 
 	private void displayGenericCertificationItemView() {
-		String url = mkurl(IMAGES_PATH, type + ".png");
+		String url = mkurl(ClientConstants.IMAGES_PATH, "courseDetails", type + ".png");
 		certificationIcon.setUrl(url);
 		lblName.setText(name);
 		lblDescription.setText(description);

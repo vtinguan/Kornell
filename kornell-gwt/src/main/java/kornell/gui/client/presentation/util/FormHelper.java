@@ -1,11 +1,14 @@
 package kornell.gui.client.presentation.util;
 
+import static kornell.core.util.StringUtils.mkurl;
+
 import java.util.Date;
 import java.util.List;
 
 import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.KornellMessages;
+import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.view.formfield.CheckBoxFormField;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.PasswordTextBoxFormField;
@@ -24,7 +27,7 @@ import com.google.gwt.user.client.ui.Image;
 
 @SuppressWarnings("deprecation")
 public class FormHelper {
-	public static String SEPARATOR_BAR_IMG_PATH = "skins/first/icons/profile/separatorBar.png";
+	public static String SEPARATOR_BAR_IMG_PATH = mkurl(ClientConstants.IMAGES_PATH, "profile", "separatorBar.png");
 	public static String SEPARATOR_BAR_CLASS = "profileSeparatorBar";
 
 	public static Character USERNAME_SEPARATOR = '/';

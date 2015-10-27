@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.admin.audit.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+import static kornell.core.util.StringUtils.mkurl;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -213,7 +215,7 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 				display(entityChanged.getFromValue(), entityChanged.getToValue());
 		} else {
 			ScriptInjector
-			.fromUrl("/js/jsondiffpatch.js")
+			.fromUrl(mkurl(ClientConstants.JS_PATH, "jsondiffpatch.js"))
 			.setCallback(
 					new com.google.gwt.core.client.Callback<Void, Exception>() {
 	

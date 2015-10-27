@@ -4,9 +4,6 @@ import com.google.gwt.i18n.client.ConstantsWithLookup;
 
 public interface KornellConstants extends ConstantsWithLookup {
 	
-	@DefaultStringValue("skins/first/icons/")
-	String imagesPath();
-	
 	@DefaultStringValue("Loading...")
 	String loading();
 
