@@ -59,6 +59,7 @@ public class GenericCourseClassReportItemView extends Composite {
 	
 	public static final String COURSE_CLASS_INFO = "courseClassInfo";
 	public static final String CERTIFICATE = "certificate";
+	public static final String COURSE_CLASS_AUDIT = "courseClassAudit";
 	
 	@UiField
 	Image certificationIcon;
@@ -87,9 +88,36 @@ public class GenericCourseClassReportItemView extends Composite {
 	private void display() {
 		if(CERTIFICATE.equals(this.type))
 			displayCertificate();
-		else
+		else if(COURSE_CLASS_INFO.equals(this.type))
 			displayCourseClassInfo();
+		else if(COURSE_CLASS_AUDIT.equals(this.type))
+			displayCourseClassAudit();
 	}
+
+	private void displayCourseClassAudit() {
+		this.name = "Relatório de auditoria da turma";
+		this.description = "Geração do relatório de histórico de alteração de matrículas e de transferências.";
+		
+		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
+		lblName.setText(name);
+		lblDescription.setText(description);
+		lblGenerate.setText("Gerar");
+		lblGenerate.addStyleName("cursorPointer");
+
+		lblDownload.setText("-");
+		lblDownload.removeStyleName("cursorPointer");
+		lblDownload.addStyleName("anchorToLabel");
+		lblDownload.setEnabled(false);
+		
+		lblGenerate.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				KornellNotification.show("Aguarde um instante...", AlertType.WARNING, 2000);
+				session.report().locationAssign("/report/courseClassAudit",
+						"?courseClassUUID=" + currentCourseClass.getCourseClass().getUUID());
+			}
+		});
+  }
 
 	private void displayCourseClassInfo() {
 	  this.name = "Relatório de detalhes da turma";
