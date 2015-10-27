@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
+
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
@@ -13,24 +14,26 @@ import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Context
-import javax.ws.rs.core.SecurityContext
 import kornell.core.entity.RoleCategory
 import kornell.core.error.exception.ServerErrorException
 import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.core.to.SimplePeopleTO
+import kornell.server.content.ContentManagers
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.server.jdbc.repository.CourseRepo
+import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.InstitutionRepo
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.report.ReportCertificateGenerator
+import kornell.server.report.ReportCourseClassAuditGenerator
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
-import kornell.server.jdbc.repository.EnrollmentsRepo
-import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.jdbc.repository.RolesRepo
-import kornell.server.content.ContentManagers
 
 @Path("/report")
 class ReportResource {
@@ -154,6 +157,20 @@ class ReportResource {
 	    else
 	    	resp.setContentType("application/pdf")
 	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
+	  }
+    }  
+  }
+
+  @GET
+  @Path("/courseClassAudit")
+  def getCourseClassAudit(@Context resp: HttpServletResponse,
+    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
+	  if(courseClassUUID != null){
+	    val courseClass = CourseClassRepo(courseClassUUID).get
+	    val fileName = courseClass.getName + " - Audit - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ ".xls"
+	    resp.addHeader("Content-disposition", "attachment; filename=" + fileName)
+	    resp.setContentType("application/vnd.ms-excel")
+	    ReportCourseClassAuditGenerator.generateCourseClassAuditReport(courseClass)
 	  }
     }  
   }
