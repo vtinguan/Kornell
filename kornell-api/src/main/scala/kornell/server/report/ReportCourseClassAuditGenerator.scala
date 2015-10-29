@@ -13,16 +13,18 @@ import kornell.core.entity.BillingType
 import kornell.core.entity.Institution
 import kornell.core.entity.CourseClass
 import kornell.core.to.report.CourseClassAuditTO
+import kornell.server.jdbc.repository.InstitutionsRepo
 
 object ReportCourseClassAuditGenerator {
   
   def generateCourseClassAuditReport(courseClass: CourseClass): Array[Byte] = {
     val parameters: HashMap[String, Object] = new HashMap()
     parameters.put("courseClassName", courseClass.getName)
+    parameters.put("institutionBaseURL", InstitutionRepo(courseClass.getInstitutionUUID).get.getBaseURL)
 	    
     generateCourseClassAuditReport(courseClass.getUUID, parameters)
   }
-
+ 
   private def generateCourseClassAuditReport(courseClassUUID: String, parameters: HashMap[String,Object]): Array[Byte] = {
 
 	  implicit def toCourseClassAuditTO(rs: ResultSet): CourseClassAuditTO =
@@ -34,7 +36,7 @@ object ReportCourseClassAuditGenerator {
 			rs.getString("participantFullName"),
 			rs.getString("participantUsername"),
 			rs.getString("fromCourseClassName"),
-			rs.getString("toCourseClassName"),
+			rs.getString("toCourseClassName"), 
 			rs.getString("fromState"),
 			rs.getString("toState"),
 			rs.getString("adminUUID"),
