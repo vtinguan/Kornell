@@ -25,7 +25,6 @@ import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassMessagesView;
@@ -122,25 +121,6 @@ public class GenericCourseDetailsView extends Composite {
 	private void setContents(Contents contents) {
 		this.contents = contents;
 		this.actoms = ContentsOps.collectActoms(contents);
-		//fireProgressChangeEvent();
-	}
-
-	private void fireProgressChangeEvent() {
-		int pagesVisitedCount = 0;
-		int totalPages = actoms.size();
-		for (Actom actom : actoms) {
-			if(actom.isVisited()){
-				pagesVisitedCount++;
-				continue;
-			}
-			break;
-		}
-		ProgressEvent progressChangeEvent = new ProgressEvent();
-		progressChangeEvent.setCurrentPage(0);
-		progressChangeEvent.setTotalPages(totalPages);		
-		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
-		progressChangeEvent.setEnrollmentUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-		bus.fireEvent(progressChangeEvent);
 	}
 
 	private void display() {

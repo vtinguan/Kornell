@@ -61,7 +61,6 @@ public class GenericMessageView extends Composite implements MessageView {
 	private MessageView.Presenter presenter;
 	private EventBus bus;
 	private KornellSession session;
-	private MessagePanelType messagePanelType;
 
 
 	private List<Label> sideItems;
@@ -85,6 +84,8 @@ public class GenericMessageView extends Composite implements MessageView {
 	private String PLAIN_CLASS = "plainDiscreteTextColor";
 	private FlowPanel searchPanel;
 	private boolean bla;
+	@SuppressWarnings("unused")
+	private MessagePanelType messagePanelType;
 
 	public GenericMessageView(EventBus eventBus, KornellSession session) {
 		this.bus = eventBus;

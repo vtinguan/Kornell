@@ -43,7 +43,6 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -125,7 +124,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 			String skin = Dean.getInstance().getInstitution().getSkin();
 			String barLogoFileName = "logo300x45"
 					+ (!"_light".equals(skin) ? "_light" : "") + ".png";
-			imgMenuBarUrl = StringUtils.composeURL(assetsURL, barLogoFileName);
+			imgMenuBarUrl = StringUtils.mkurl(assetsURL, barLogoFileName);
 		}
 		addOffsets(scrollPanel, clientFactory.getPlaceController().getWhere());
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE,
@@ -164,7 +163,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
                 return;
 			final Widget widget = this.asWidget();
 			final int point = (showingPlacePanel ? Positioning.NORTH_BAR_PLUS : Positioning.NORTH_BAR);
-		    DOM.setStyleAttribute(widget.getElement(), "top", (point * -1) + "px");
+			widget.getElement().getStyle().setProperty("top", (point * -1) + "px");
 			setVisible(true);
 			removeStyleName("shy");
 		
@@ -172,7 +171,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				@Override
 				public void update(double progress) {
 					int position = ((int) (point * progress)) - point;
-					DOM.setStyleAttribute(widget.getElement(), "top", position + "px");
+					widget.getElement().getStyle().setProperty("top", position + "px");
 				}
 			}).run(Positioning.BAR_ANIMATION_LENGTH);
 			

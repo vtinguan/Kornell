@@ -4,7 +4,6 @@ import static kornell.core.util.StringUtils.composeURL;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.audit.AdminAuditPresenter;
 import kornell.gui.client.presentation.admin.audit.AdminAuditView;
 import kornell.gui.client.presentation.admin.audit.generic.GenericAdminAuditView;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;

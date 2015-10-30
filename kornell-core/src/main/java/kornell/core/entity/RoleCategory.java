@@ -1,7 +1,6 @@
 package kornell.core.entity;
 
 import java.util.List;
-import java.util.Set;
 
 import kornell.core.to.RoleTO;
 

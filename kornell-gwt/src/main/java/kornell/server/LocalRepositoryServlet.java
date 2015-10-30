@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import kornell.core.util.StringUtils;
 
+@SuppressWarnings("serial")
 public class LocalRepositoryServlet extends HttpServlet {
 	static final Pattern pattern = Pattern.compile("[/]?repository/([^/]*)/(.*)");
 	static final String pUUID = "\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}";

@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
-import static kornell.core.util.StringUtils.noneEmpty;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +46,6 @@ import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -363,7 +360,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             if (isBatchCancel) {
             	fullName = fullName.trim();
             	username = username.trim();
-                String usr;
                 EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
                 enrollmentRequestTO.setCancelEnrollment(true);

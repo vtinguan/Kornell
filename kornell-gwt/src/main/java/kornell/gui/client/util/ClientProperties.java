@@ -4,6 +4,7 @@ import java.util.Date;
 
 import kornell.core.util.StringUtils;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
@@ -16,6 +17,8 @@ public class ClientProperties {
 	public static final String PREFIX = "Kornell.v1.";
 	public static final String X_KNL_TOKEN = "X-KNL-TOKEN";
 	public static final String SELECTED_COURSE_CLASS = "SELECTED_COURSE_CLASS";
+	
+	private static DateTimeFormat format = DateTimeFormat.getFormat("dd/MM/yyyy");
 	
 	public static String get(String propertyName){
 		if(localStorage != null){
@@ -43,9 +46,7 @@ public class ClientProperties {
 	    String cookieName = LocaleInfo.getLocaleCookieName();
 	    String localeCookie = getLocaleCookie();
 	    if (cookieName != null){
-	        Date expires = new Date();
-	        expires.setYear( expires.getYear() + 5 );
-	        Cookies.setCookie( cookieName, locale, expires );
+	        Cookies.setCookie( cookieName, locale, format.parse("01/01/2030"));
 	    }
 		if(localeCookie != null && !localeCookie.equals(locale))
 			com.google.gwt.user.client.Window.Location.reload();
@@ -53,11 +54,7 @@ public class ClientProperties {
 	
 	public static void setCookie(String name, String value, Date expires){
 	    if (StringUtils.isSome(name) && value != null){
-	    	if(expires == null){
-		        expires = new Date();
-		        expires.setYear( expires.getYear() + 5 );
-	    	}
-	        Cookies.setCookie( name, value, expires );
+	        Cookies.setCookie( name, value, format.parse("01/01/2030"));
 	    }
 	}
 	

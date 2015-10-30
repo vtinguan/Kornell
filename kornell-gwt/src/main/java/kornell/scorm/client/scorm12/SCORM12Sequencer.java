@@ -1,6 +1,5 @@
 package kornell.scorm.client.scorm12;
 
-import kornell.api.client.KornellClient;
 import kornell.core.lom.Contents;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.sequence.NavigationRequest;
@@ -13,11 +12,10 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Sequencer implements Sequencer{
 	
+	@SuppressWarnings("unused")
 	private ClassroomPlace place;
-	private KornellClient client;
 
-	public SCORM12Sequencer(EventBus bus, KornellClient client) {
-		this.client = client;
+	public SCORM12Sequencer(EventBus bus) {
 		bus.addHandler(NavigationRequest.TYPE, this);
 	}
 

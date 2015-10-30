@@ -71,7 +71,6 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
 	final CellTable<CourseClassTO> table;
-	private List<CourseClassTO> courseClassTOs;
 	private KornellPagination pagination;
 	private AdminCourseClassesView.Presenter presenter;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
@@ -352,7 +351,6 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 			adminHomePanel.setVisible(false);
 			return;
 		}
-		this.courseClassTOs = courseClasses;
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
 		panel.add(table);

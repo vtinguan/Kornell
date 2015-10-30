@@ -122,9 +122,9 @@ public class GenericCourseSummaryView extends Composite {
 			}
 
 			private void onEnrolledOrNot() {
-				String assetsURL = StringUtils.composeURL(courseClassTO.getCourseVersionTO().getDistributionURL(),
+				String assetsURL = StringUtils.mkurl(courseClassTO.getCourseVersionTO().getDistributionURL(),
 						courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix());
-				imgThumb.setUrl(StringUtils.composeURL("/",assetsURL, "/images/thumb.jpg"));
+				imgThumb.setUrl(StringUtils.mkurl("/",assetsURL, "/images/thumb.jpg"));
 				imgIconCourse.setUrl(ICON_COURSE_URL);
 
 				sinkEvents(Event.ONCLICK);

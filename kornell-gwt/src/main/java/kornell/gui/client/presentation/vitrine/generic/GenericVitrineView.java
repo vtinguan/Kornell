@@ -1,6 +1,5 @@
 package kornell.gui.client.presentation.vitrine.generic;
 
-import static kornell.core.util.StringUtils.composeURL;
 import static kornell.core.util.StringUtils.mkurl;
 
 import java.util.HashMap;
@@ -119,7 +118,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	
 	public GenericVitrineView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		//buildFlagsPanel();
+		buildFlagsPanel();
 		displayView(VitrineViewType.login);
 		
 		KeyPressHandler kpHandler = new KeyPressHandler() {
@@ -398,7 +397,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	public void setLogoURL(String assetsURL) {
 		String skin = Dean.getInstance().getInstitution().getSkin();
 		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png";
-		imgLogo.setUrl(composeURL(assetsURL, barLogoFileName));
+		imgLogo.setUrl(mkurl(assetsURL, barLogoFileName));
 	}
 
 	@Override

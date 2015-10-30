@@ -1,6 +1,5 @@
 package kornell.gui.client.presentation.admin.courseclass.courseclasses;
 
-import java.util.Map;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
@@ -9,7 +8,6 @@ import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -29,7 +27,6 @@ public class AdminCourseClassesPresenter implements AdminCourseClassesView.Prese
 	TOFactory toFactory;
 	private ViewFactory viewFactory;
 	private CourseClassesTO courseClassesTO;
-	private Map<String, EnrollmentsTO> enrollmentsCacheMap;
 	private String pageSize = "20";
 	private String pageNumber = "1";
 	private String searchTerm = "";

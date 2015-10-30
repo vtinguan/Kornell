@@ -4,8 +4,6 @@ import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.AuditedEntityType;
-import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.EntityChangedEventsTO;
 import kornell.core.to.TOFactory;
 import kornell.core.util.StringUtils;

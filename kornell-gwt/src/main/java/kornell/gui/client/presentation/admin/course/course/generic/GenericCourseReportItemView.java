@@ -1,9 +1,7 @@
 package kornell.gui.client.presentation.admin.course.course.generic;
 
-import static kornell.core.util.StringUtils.noneEmpty;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.ClientConstants;
 
@@ -14,7 +12,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;

@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.profile.generic;
 
-import static kornell.core.util.StringUtils.mkurl;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +26,6 @@ import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.formfield.ListBoxFormField;
 import kornell.gui.client.util.view.formfield.SimpleDatePicker;

@@ -300,7 +300,6 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 		};
 	}
 
-	@SuppressWarnings("hiding")
   private class AuditActionsActionCell<CourseVersion> extends ActionCell<EntityChanged> {
 		
 		public AuditActionsActionCell(String message, Delegate<EntityChanged> delegate) {

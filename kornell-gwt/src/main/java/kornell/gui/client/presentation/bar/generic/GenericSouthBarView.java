@@ -20,7 +20,6 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -94,12 +93,12 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 			setVisible(false);
 			return;
 		}
-        DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", "0px");
+		barView.asWidget().getElement().getStyle().setProperty("bottom", "0px");
 		Ease.out(Transitions.QUAD, new Updater() {
 			@Override
 			public void update(double progress) {
 				int position = -((int) (Positioning.SOUTH_BAR * progress));
-				DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", position + "px");
+				barView.asWidget().getElement().getStyle().setProperty("bottom", position + "px");
 				if(position == -Positioning.SOUTH_BAR){
 					setVisible(false);
 				}
@@ -109,14 +108,14 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	
 	private void showSouthBar(final IsWidget barView){
 		southBar.clear();
-        DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", (Positioning.SOUTH_BAR * -1) + "px");
+		barView.asWidget().getElement().getStyle().setProperty("bottom", (Positioning.SOUTH_BAR * -1) + "px");
 		southBar.add(barView);
 		this.setVisible(true);
 		Ease.out(Transitions.QUAD, new Updater() {
 			@Override
 			public void update(double progress) {
 				int position = ((int) (Positioning.SOUTH_BAR * progress)) - Positioning.SOUTH_BAR;
-				DOM.setStyleAttribute(barView.asWidget().getElement(), "bottom", position + "px");
+				barView.asWidget().getElement().getStyle().setProperty("bottom", position + "px");
 			}
 		}).run(Positioning.BAR_ANIMATION_LENGTH);
 		scrollPanel.addStyleName("offsetSouthBar");

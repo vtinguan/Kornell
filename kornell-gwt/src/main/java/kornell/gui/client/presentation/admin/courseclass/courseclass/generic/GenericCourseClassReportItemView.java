@@ -10,7 +10,6 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.SimplePeopleTO;
 import kornell.core.to.SimplePersonTO;
 import kornell.core.to.TOFactory;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.ClientConstants;
