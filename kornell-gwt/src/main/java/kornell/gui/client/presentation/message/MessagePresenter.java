@@ -173,9 +173,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	@Override
 	public void threadClicked(final UnreadChatThreadTO unreadChatThreadTO) {
 		threadBeginningReached = false;
-		synchronized (chatThreadMessageTOs) {
-			chatThreadMessageTOs = new ArrayList<>();
-		}
+		chatThreadMessageTOs = new ArrayList<>();
 		initializeChatThreadMessagesTimer();
 		this.selectedChatThreadInfo = unreadChatThreadTO;
 		if(unreadChatThreadTO.getChatThreadUUID() != null){

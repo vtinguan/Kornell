@@ -281,9 +281,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	@Override
 	public void updateThreadPanel(UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName) {
 		threadTitle.getElement().setInnerHTML(getThreadTitle(unreadChatThreadTO, currentUserFullName, false));
-		synchronized(dateLabelsMap){
-			dateLabelsMap = new HashMap<String, MessageItem>();
-		}
+		dateLabelsMap = new HashMap<String, MessageItem>();
 		threadPanelItems.clear();
 		prepareTextArea(false);
 		messageTextArea.addKeyUpHandler(new KeyUpHandler() {
