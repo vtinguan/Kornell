@@ -194,12 +194,12 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
   //TODO: Cache / remove external reference
   def rolesOf(personUUID: String) = AuthRepo.lookupRolesOf(personUUID)
 
-  def grantPlatformAdmin(personUUID: String) = {
+  def grantPlatformAdmin(personUUID: String, institutionUUID: String) = {
     sql"""
 	    	insert into Role (uuid, person_uuid, role, institution_uuid, course_class_uuid)
 	    	values (${randomUUID}, ${personUUID}, 
 	    	${RoleType.platformAdmin.toString}, 
-	    	${null}, 
+	    	${institutionUUID}, 
 	    	${null})
 		    """.executeUpdate
   }

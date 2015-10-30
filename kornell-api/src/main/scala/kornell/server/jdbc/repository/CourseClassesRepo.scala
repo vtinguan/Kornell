@@ -138,7 +138,7 @@ object CourseClassesRepo {
 		courseClassesTO.setCount(
 		    sql"""select count(cc.uuid) from CourseClass cc where cc.state <> ${CourseClassState.deleted.toString} and (${StringUtils.isSome(adminUUID)} and
 					(select count(*) from Role r where person_uuid = ${adminUUID} and (
-						(r.role = ${RoleType.platformAdmin.toString}) or 
+						(r.role = ${RoleType.platformAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 						(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 						( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
 					)) > 0)
@@ -157,7 +157,7 @@ object CourseClassesRepo {
             	(cv.name like ${filteredSearchTerm}
             	or cc.name like ${filteredSearchTerm}) and (${StringUtils.isSome(adminUUID)} and
 				(select count(*) from Role r where person_uuid = ${adminUUID} and (
-					(r.role = ${RoleType.platformAdmin.toString}) or 
+					(r.role = ${RoleType.platformAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 					(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 					( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
 				)) > 0)
@@ -182,15 +182,15 @@ object CourseClassesRepo {
     cc.getCourseClass().isPublicClass() || cc.getEnrollment() != null
   }
 
-  private def isPlatformAdmin(roles: List[Role]) = {
+  private def isPlatformAdmin(institutionUUID: String, roles: List[Role]) = {
     var hasRole: Boolean = false
     roles.foreach(role => hasRole = hasRole
-      || RoleCategory.isValidRole(role, RoleType.platformAdmin, null, null))
+      || RoleCategory.isValidRole(role, RoleType.platformAdmin, institutionUUID, null))
     hasRole
   }
 
   private def isInstitutionAdmin(institutionUUID: String, roles: List[Role]) = {
-    var hasRole: Boolean = isPlatformAdmin(roles)
+    var hasRole: Boolean = isPlatformAdmin(institutionUUID, roles)
     roles.foreach(role => hasRole = hasRole
       || RoleCategory.isValidRole(role, RoleType.institutionAdmin, institutionUUID, null))
     hasRole
