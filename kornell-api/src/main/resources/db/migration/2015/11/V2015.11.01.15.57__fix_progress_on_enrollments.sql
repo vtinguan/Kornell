@@ -1,0 +1,1 @@
+update Enrollment e left join ActomEntered ae on e.uuid = ae.enrollmentUUID set e.progress = 1 where e.progress = 0 and ae.actomKey is not null;
