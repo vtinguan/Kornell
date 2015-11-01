@@ -53,7 +53,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
 
   def delete(enrollmentUUID: String) = {
     sql"""
-      delete from Enrollment 
+      update Enrollment set state = ${EnrollmentState.deleted.toString} 
       where uuid = ${enrollmentUUID}""".executeUpdate
   }
 
