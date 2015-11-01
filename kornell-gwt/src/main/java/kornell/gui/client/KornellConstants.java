@@ -736,6 +736,8 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String constraintViolatedUUIDName();
 	@DefaultStringValue("User is already enrolled on the selected class.")
 	String userAlreadyEnrolledInClass();
+	@DefaultStringValue("Could not complete the request. Check the amount of enrollments available in this class.")
+	String tooManyEnrollments();
 	
 	/**
 	 * Errors 500

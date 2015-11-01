@@ -61,8 +61,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     private Place defaultPlace;
     TOFactory toFactory;
     private ViewFactory viewFactory;
-    private Integer maxEnrollments = 0;
-    private Integer numEnrollments = 0;
     private boolean overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
     private EnrollmentRequestsTO enrollmentRequestsTO;
     private List<SimplePersonTO> enrollmentsToOverride;
@@ -133,8 +131,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     }
 
     private void showEnrollments(EnrollmentsTO e, boolean refreshView) {
-        numEnrollments = e.getEnrollmentTOs().size();
-        maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
         enrollmentTOs = e.getEnrollmentTOs();
         view.setEnrollmentList(e.getEnrollmentTOs(), e.getCount(), e.getCountCancelled(), e.getSearchCount(), refreshView);
         view.showEnrollmentsPanel(true);
@@ -435,10 +431,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                             Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
                             .toLowerCase() + " dos participantes estão corretos. Nenhuma matrícula encontrada.",
                             AlertType.WARNING);
-        } else if ((enrollmentRequestsTO.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
-            KornellNotification
-            .show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
-                    AlertType.ERROR, 5000);
         } else {
             if (isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()) {
                 session.enrollments().simpleEnrollmentsList(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), new Callback<SimplePeopleTO>() {
@@ -455,7 +447,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                                     "Deseja continuar?");
                             view.showModal(true, "error");
                         }
-                    }
+                    }                    
                 });
             } else {
                 createEnrollments();
@@ -537,6 +529,12 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                             + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
                     KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
                     LoadingPopup.hide();
+                }
+                
+                @Override
+                protected void conflict(KornellErrorTO kornellErrorTO) {
+                	KornellNotification
+                    .show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 5000);
                 }
             });
         }

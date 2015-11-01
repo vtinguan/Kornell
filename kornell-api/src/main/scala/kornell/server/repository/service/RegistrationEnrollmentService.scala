@@ -38,6 +38,12 @@ import kornell.server.jdbc.repository.RolesRepo
 object RegistrationEnrollmentService {
 
   def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) = {
+    val courseClassUUID = enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID
+    val courseClass = CourseClassRepo(courseClassUUID).get
+    val currentEnrollmentCount = EnrollmentsRepo.byCourseClass(courseClassUUID).getCount
+    if ((currentEnrollmentCount + enrollmentRequests.getEnrollmentRequests.size) > courseClass.getMaxEnrollments()) {
+      throw new EntityConflictException("tooManyEnrollments")
+    }
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
     if (enrollmentRequests.getEnrollmentRequests.size > 100)
       EmailService.sendEmailBatchEnrollment(dean, InstitutionsRepo.byUUID(dean.getInstitutionUUID).get, CourseClassRepo(enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID).get)
