@@ -122,9 +122,7 @@ public class GenericCourseSummaryView extends Composite {
 			}
 
 			private void onEnrolledOrNot() {
-				String assetsURL = StringUtils.mkurl(courseClassTO.getCourseVersionTO().getDistributionURL(),
-						courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix());
-				imgThumb.setUrl(StringUtils.mkurl("/",assetsURL, "/images/thumb.jpg"));
+				imgThumb.setUrl(StringUtils.mkurl("/",courseClassTO.getCourseVersionTO().getDistributionURL(),courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix(),"/images/thumb.jpg"));
 				imgIconCourse.setUrl(ICON_COURSE_URL);
 
 				sinkEvents(Event.ONCLICK);
@@ -149,7 +147,7 @@ public class GenericCourseSummaryView extends Composite {
 				pnlCourseSummaryBar.add(requestEnrollmentBtn);
 
 				pStatus.setText(constants.availableClassLabel());
-				ICON_COURSE_URL += "iconAcquire.png";
+				ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconAcquire.png");
 			}
 
 			private void onEnrolled(Student student) {

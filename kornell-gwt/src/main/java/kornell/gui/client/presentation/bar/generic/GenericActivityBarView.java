@@ -6,6 +6,7 @@ import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.HideSouthBarEvent;
@@ -51,7 +52,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
-	private static final String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "southBar");
+	private static final String SOUTH_BAR_IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "southBar");
 
 	private static String BUTTON_PREVIOUS = constants.previous();
 	private static String BUTTON_NEXT = constants.next();
@@ -122,16 +123,16 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				!CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
 		
 		showDetails = !isEnrolled;
-		
-		iconPrevious = new Image(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+".png");
+
+		iconPrevious = new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS)+".png"));
 		displayButton(btnPrevious, BUTTON_PREVIOUS, iconPrevious);
 		
-		iconNext = new Image(IMAGES_PATH + getItemName(BUTTON_NEXT)+".png");
+		iconNext = new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NEXT)+".png"));
 		displayButton(btnNext, BUTTON_NEXT, iconNext, true);	
 		
-		displayButton(btnDetails, showDetails ? constants.course() : BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
+		displayButton(btnDetails, showDetails ? constants.course() : BUTTON_DETAILS, new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS)+".png")));	
 		
-		displayButton(btnNotes, BUTTON_NOTES, new Image(IMAGES_PATH + getItemName(BUTTON_NOTES)+".png"));	
+		displayButton(btnNotes, BUTTON_NOTES, new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NOTES)+".png")));	
 		
 		displayProgressButton();
 		
@@ -272,19 +273,19 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private void enableButton(String btn, boolean enable){
 		if(BUTTON_NEXT.equals(btn)){
 			if(enable && !showDetails){
-				iconNext.setUrl(IMAGES_PATH + getItemName(BUTTON_NEXT)+".png");
+				iconNext.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NEXT)+".png"));
 				btnNext.removeStyleName("disabled");
 			} else {
-				iconNext.setUrl(IMAGES_PATH + getItemName(BUTTON_NEXT)+"Disabled.png");
+				iconNext.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NEXT)+"Disabled.png"));
 				btnNext.addStyleName("disabled");
 			}
 		}
 		else if(BUTTON_PREVIOUS.equals(btn)){
 			if(enable && !showDetails){
-				iconPrevious.setUrl(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+".png");
+				iconPrevious.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS)+".png"));
 				btnPrevious.removeStyleName("disabled");
 			} else {
-				iconPrevious.setUrl(IMAGES_PATH + getItemName(BUTTON_PREVIOUS)+"Disabled.png");
+				iconPrevious.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS)+"Disabled.png"));
 				btnPrevious.addStyleName("disabled");
 			}
 		}
@@ -333,10 +334,10 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 		if(showDetails){	
 			btnDetails.addStyleName("btnSelected");	
-			displayButton(btnDetails, constants.course(), new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
+			displayButton(btnDetails, constants.course(), new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS)+".png")));	
 		} else {		
 			btnDetails.removeStyleName("btnSelected");
-			displayButton(btnDetails, BUTTON_DETAILS, new Image(IMAGES_PATH + getItemName(BUTTON_DETAILS)+".png"));	
+			displayButton(btnDetails, BUTTON_DETAILS, new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS)+".png")));	
 		}
 		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev);
 		enableButton(BUTTON_NEXT, !showDetails && enableNext);	

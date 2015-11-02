@@ -11,6 +11,7 @@ import java.util.Map;
 import kornell.api.client.KornellSession;
 import kornell.core.to.LibraryFileTO;
 import kornell.core.to.LibraryFilesTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.util.ClientConstants;
 
@@ -38,7 +39,7 @@ public class GenericCourseLibraryView extends Composite {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	
-	private String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseLibrary");
+	private static String COURSE_LIBRARY_IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseLibrary");
 
 	@UiField
 	FlowPanel libraryPanel;
@@ -263,15 +264,17 @@ public class GenericCourseLibraryView extends Composite {
 	}
 
 	private String getIconImageByFileType(String fileType) {
+		String imgFileTypeName;
 		if("pdf".equals(fileType)){
-			return IMAGES_PATH + "pdf.png";
+			imgFileTypeName = "pdf";
 		} else if("xlsx".equals(fileType) || "xls".equals(fileType)){
-			return IMAGES_PATH + "xls.png";
+			imgFileTypeName = "xls";
 		} else if("docx".equals(fileType) || "doc".equals(fileType)){
-			return IMAGES_PATH + "doc.png";
+			imgFileTypeName = "doc";
 		} else {
-			return IMAGES_PATH + "unknownFileType.png";
+			imgFileTypeName = "unknownFileType";
 		}
+		return StringUtils.mkurl(COURSE_LIBRARY_IMAGES_PATH, imgFileTypeName + ".png");
 	}
 
 	private final class LibraryHeaderClickHandler implements ClickHandler {

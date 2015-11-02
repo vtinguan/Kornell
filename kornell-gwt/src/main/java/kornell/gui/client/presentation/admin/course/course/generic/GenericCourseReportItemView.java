@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.admin.course.course.generic;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.ClientConstants;
 
@@ -25,8 +26,8 @@ public class GenericCourseReportItemView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private String ADMIN_IMAGES_PATH = ClientConstants.IMAGES_PATH + "admin/";
-	private String LIBRARY_IMAGES_PATH = ClientConstants.IMAGES_PATH + "courseLibrary/";
+	private String ADMIN_IMAGES_PATH = StringUtils.mkurl(ClientConstants.IMAGES_PATH, "admin/");
+	private String LIBRARY_IMAGES_PATH = StringUtils.mkurl(ClientConstants.IMAGES_PATH, "courseLibrary/");
 	private KornellSession session;
 	private Course course;
 	private String type;
@@ -68,8 +69,8 @@ public class GenericCourseReportItemView extends Composite {
 	private void displayCourseClassInfo() {
 	  this.name = "Relatório de detalhes do curso";
 		this.description = "Geração do relatório de detalhes do curso, contendo os dados das matrículas nas turmas.";
-		
-		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
+
+		certificationIcon.setUrl(StringUtils.mkurl(ADMIN_IMAGES_PATH, type + ".png"));
 		lblName.setText(name);
 		lblDescription.setText(description);
 		lblGenerate.setText("Gerar");
@@ -79,8 +80,8 @@ public class GenericCourseReportItemView extends Composite {
 		lblDownload.removeStyleName("cursorPointer");
 		lblDownload.addStyleName("anchorToLabel");
 		lblDownload.setEnabled(false);
-		
-		Image img = new Image(LIBRARY_IMAGES_PATH + "xls.png");
+
+		Image img = new Image(StringUtils.mkurl(LIBRARY_IMAGES_PATH, "xls.png"));
 		xlsCheckBox = new CheckBox("Gerar em formato Excel");
 		
 		optionPanel.add(img);

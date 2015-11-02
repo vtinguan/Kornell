@@ -5,7 +5,6 @@ import kornell.server.test.UnitSpec
 import kornell.server.helper.GenInstitution
 import org.scalatest.junit.JUnitRunner
 import kornell.server.helper.GenPerson
-import kornell.server.api.PersonResource
 
 @RunWith(classOf[JUnitRunner])
 class PeopleResourceSpec extends UnitSpec with GenPerson {

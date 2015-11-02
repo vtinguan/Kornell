@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import kornell.api.client.KornellSession;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -32,7 +33,7 @@ public class GenericInstitutionReportItemView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private String ADMIN_IMAGES_PATH = ClientConstants.IMAGES_PATH + "admin/";
+	private String ADMIN_IMAGES_PATH = StringUtils.mkurl(ClientConstants.IMAGES_PATH, "admin/");
 	private KornellSession session;
 	private String type;
 	private String name;
@@ -66,8 +67,8 @@ public class GenericInstitutionReportItemView extends Composite {
 		if(BILLING.equals(this.type)){
 			this.name = "Relatório de utilização";
 			this.description = "Escolha o período desejado na lista abaixo:";
-			
-			certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
+
+			certificationIcon.setUrl(StringUtils.mkurl(ADMIN_IMAGES_PATH, type + ".png"));
 			lblName.setText(name);
 			lblDescription.setText(description);
 			lblGenerate.setText("Gerar");

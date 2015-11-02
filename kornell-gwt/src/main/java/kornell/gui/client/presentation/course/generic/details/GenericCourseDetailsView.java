@@ -23,6 +23,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ShowDetailsEvent;
@@ -334,7 +335,7 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private void displayTitle() {
-		Image titleImage = new Image(IMAGES_PATH + "details.png");
+		Image titleImage = new Image(StringUtils.mkurl(IMAGES_PATH, "details.png"));
 		titleImage.addStyleName("titleImage");
 		titlePanel.add(titleImage);
 
@@ -478,7 +479,7 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel hint = new FlowPanel();
 		hint.addStyleName("hintDetails");
 
-		Image hintImg = new Image(IMAGES_PATH + img + ".png");
+		Image hintImg = new Image(StringUtils.mkurl(IMAGES_PATH, img + ".png"));
 		hintImg.addStyleName("hintImg");
 		hint.add(hintImg);
 
