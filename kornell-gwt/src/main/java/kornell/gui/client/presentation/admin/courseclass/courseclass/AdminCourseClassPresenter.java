@@ -10,7 +10,6 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
@@ -621,19 +620,23 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     @Override
     public void deleteEnrollment(EnrollmentTO enrollmentTO) {
         if(session.isCourseClassAdmin()){
-            session.enrollment(enrollmentTO.getEnrollment().getUUID()).delete(new Callback<Enrollment>() {
-                @Override
-                public void ok(Enrollment to) {
-                    KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
+        	session.events().enrollmentStateChanged(
+        			enrollmentTO.getEnrollment().getUUID(), 
+        			session.getCurrentUser().getPerson().getUUID(), 
+        			enrollmentTO.getEnrollment().getState(), 
+        			EnrollmentState.deleted).fire(new Callback<Void>(){
+				@Override
+				public void ok(Void to) {
+					KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
                     getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
                     view.setCanPerformEnrollmentAction(true);
-                }
-                @Override
+				}
+				@Override
                 public void internalServerError(KornellErrorTO kornellErrorTO){
                     KornellNotification.show("Erro ao excluir matrícula. Usuário provavelmente já acessou a plataforma.", AlertType.ERROR, 2500);
                     view.setCanPerformEnrollmentAction(true);
                 }
-            });
+        	});
         }
     }
 
