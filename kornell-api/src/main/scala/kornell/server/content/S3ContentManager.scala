@@ -40,5 +40,7 @@ class S3ContentManager(s3: AmazonS3Client,repo: S3ContentRepository)
     Option(contentDisposition).foreach { metadata.setContentDisposition(_) }
     s3.putObject(repo.getBucketName(), url(key), value, metadata)
   }
+  
+  def getPrefix = repo.getPrefix
 
 }

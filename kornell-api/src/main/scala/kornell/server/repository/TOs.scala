@@ -103,8 +103,8 @@ object TOs {
 
   def newCourseVersionTO(course: Course, version: CourseVersion): CourseVersionTO = {
     val versionTO = tos.newCourseVersionTO.as
-    val repo = ContentManagers.forRepository(version.getRepositoryUUID)
-    versionTO.setDistributionURL(repo.url("DEPRECATED_DISTRIBUTION_URL"))
+    val cm = ContentManagers.forRepository(version.getRepositoryUUID)
+    versionTO.setDistributionURL(cm.getPrefix)
     versionTO.setCourse(course)
     versionTO.setCourseVersion(version)
     versionTO

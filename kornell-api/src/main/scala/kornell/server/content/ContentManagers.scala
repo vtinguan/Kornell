@@ -6,6 +6,7 @@ import kornell.server.jdbc.repository.RepositoriesRepo
 import kornell.core.entity.S3ContentRepository
 import kornell.server.util.Settings
 import kornell.server.repository.Entities
+import kornell.core.entity.FSContentRepository
 
 //TODO: Caching
 object ContentManagers {
@@ -17,6 +18,7 @@ object ContentManagers {
     	.first(repoUUID)
     	.map {	_ match {
     	  case s3repo:S3ContentRepository => new S3ContentManager(s3,s3repo)
+    	  case fsRepo:FSContentRepository => new FSContentManager(fsRepo)
     	  case _ => throw new IllegalStateException("Unknow repository type")
     	}
   	}.get
