@@ -358,8 +358,8 @@ public class GenericMessageView extends Composite implements MessageView {
 
 	private void updateDateLabelValues(String serverTime) {
 		synchronized(dateLabelsMap){
-			if(bla)return;
-			bla = true;
+			/*if(bla)return;
+			bla = true;*/
 			Iterator<Entry<String, MessageItem>> it = dateLabelsMap.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry<String, MessageItem> pairs = (Map.Entry<String, MessageItem>)it.next();
@@ -372,7 +372,7 @@ public class GenericMessageView extends Composite implements MessageView {
 		if(StringUtils.isNone(chatThreadMessageTO.getSentAt())) return "";
 		Date sentAt = formHelper.getJudFromString(chatThreadMessageTO.getSentAt());
 		Date serverTime = formHelper.getJudFromString(serverTimeStr);
-		String dateStr = span(chatThreadMessageTO.getSenderFullName(), INFO_CLASS) + separator(false, false) + "<i class=\"icon-comments\" title=\"Administrador de Instituição\"></i>" + separator(false, false) + span(formHelper.getElapsedTimeSince(sentAt, serverTime), PLAIN_CLASS);
+		String dateStr = span(chatThreadMessageTO.getSenderFullName(), INFO_CLASS) /*+ separator(false, false) + "<i class=\"icon-comments\" title=\"Administrador de Instituição\"></i>"*/ + separator(false, false) + span(formHelper.getElapsedTimeSince(sentAt, serverTime), PLAIN_CLASS);
 		return dateStr;
 	}
 
