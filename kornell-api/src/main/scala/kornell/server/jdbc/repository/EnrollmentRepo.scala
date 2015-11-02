@@ -51,12 +51,6 @@ class EnrollmentRepo(enrollmentUUID: String) {
     e
   }
 
-  def delete(enrollmentUUID: String) = {
-    sql"""
-      update Enrollment set state = ${EnrollmentState.deleted.toString} 
-      where uuid = ${enrollmentUUID}""".executeUpdate
-  }
-
   def findGrades: List[String] = sql"""
     	select * from ActomEntries
     	where enrollment_uuid = ${enrollmentUUID}
