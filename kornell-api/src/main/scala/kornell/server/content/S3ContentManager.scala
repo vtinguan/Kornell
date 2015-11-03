@@ -9,11 +9,18 @@ import scala.io.Source
 import java.io.InputStream
 import com.amazonaws.services.s3.model.ObjectMetadata
 import scala.collection.JavaConverters._
+import com.amazonaws.auth.BasicAWSCredentials
 
-class S3ContentManager(s3: AmazonS3Client,repo: S3ContentRepository)
+class S3ContentManager(repo: S3ContentRepository)
   extends SyncContentManager {
+  
   val logger = Logger.getLogger(classOf[S3ContentManager].getName)
 
+  lazy val s3 = if (isSome(repo.getAccessKeyId()))
+    new AmazonS3Client(new BasicAWSCredentials(repo.getAccessKeyId(),repo.getSecretAccessKey()))
+  else  
+    new AmazonS3Client
+  
   def source(infix: String, key: String) =
     inputStream(infix, key).map { Source.fromInputStream(_, "UTF-8") }
   

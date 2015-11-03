@@ -17,7 +17,7 @@ object ContentManagers {
     RepositoriesRepo()
     	.first(repoUUID)
     	.map {	_ match {
-    	  case s3repo:S3ContentRepository => new S3ContentManager(s3,s3repo)
+    	  case s3repo:S3ContentRepository => new S3ContentManager(s3repo)
     	  case fsRepo:FSContentRepository => new FSContentManager(fsRepo)
     	  case _ => throw new IllegalStateException("Unknow repository type")
     	}
@@ -32,6 +32,6 @@ object ContentManagers {
   def certsRepo(institutionUUID:String) = 
     Entities.newS3ContentRepository(null , null, null, USER_CONTENT_BUCKET, "usercontent/certificates", USER_CONTENT_REGION, institutionUUID)
   
-  def forCertificates(institutionUUID:String): SyncContentManager = new S3ContentManager(s3,certsRepo(institutionUUID))
+  def forCertificates(institutionUUID:String): SyncContentManager = new S3ContentManager(certsRepo(institutionUUID))
   
 }
