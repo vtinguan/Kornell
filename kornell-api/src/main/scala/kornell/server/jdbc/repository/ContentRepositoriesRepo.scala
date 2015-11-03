@@ -6,6 +6,7 @@ import kornell.server.repository.Entities
 import kornell.server.repository.ContentRepository
 import kornell.core.entity.ContentRepository
 import java.sql.ResultSet
+import kornell.core.entity.FSContentRepository
 
 class RepositoriesRepo {
 	def createS3Repository(accessKeyId:String, secretAccessKey:String, bucketName:String, uuid:String = randomUUID, institutionUUID: String, region: String):S3ContentRepository = 
@@ -30,14 +31,24 @@ class RepositoriesRepo {
 	""".first[String]
 	   .flatMap { _ match {
 	     case "S3" => firstS3Repository(repoUUID)
+	     case "FS" => firstFSRepository(repoUUID)
 	     case _ => throw new IllegalStateException("Unknown repositoryType")
 	   	} 
 	  }
 	
 	def firstS3Repository(repoUUID:String) = sql"""
-			select * from S3ContentRepository where uuid=$repoUUID
+		select * from S3ContentRepository where uuid=$repoUUID
 	""".first[S3ContentRepository]
 	
+	def firstFSRepository(repoUUID:String) = sql"""
+		select * from FSContentRepository where uuid=$repoUUID
+	""".first[FSContentRepository]
+	
+	implicit def toFSContentRepository(rs:ResultSet):FSContentRepository = Entities.newFSContentRepository(
+			rs.getString("uuid"),
+			rs.getString("path"),
+			rs.getString("prefix")
+	)
 	
 	implicit def toS3ContentRepository(rs:ResultSet):S3ContentRepository = Entities.newS3ContentRepository(
 			rs.getString("uuid"),

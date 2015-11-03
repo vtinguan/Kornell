@@ -2,53 +2,61 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
 
-    <context-param>
-    	<param-name>resteasy.use.builtin.providers</param-name>
-    	<param-value>true</param-value>
-    </context-param>
-    
+	<context-param>
+		<param-name>resteasy.use.builtin.providers</param-name>
+		<param-value>true</param-value>
+	</context-param>
 
-    <!-- 
-	<filter>
-		<filter-name>SetCharacterEncodingFilter</filter-name>
-		<filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
-		<init-param>
-			<param-name>encoding</param-name>
-			<param-value>UTF-8</param-value>
-		</init-param>
-	</filter>
-	-->
+
+	<!-- <filter> <filter-name>SetCharacterEncodingFilter</filter-name> <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class> 
+		<init-param> <param-name>encoding</param-name> <param-value>UTF-8</param-value> 
+		</init-param> </filter> -->
 
 	<filter>
 		<filter-name>BasicAuth</filter-name>
 		<filter-class>kornell.server.web.BasicAuthFilter</filter-class>
 	</filter>
 
-	<!-- 
-	<filter>
-		<filter-name>CacheControlFilter</filter-name>
-		<filter-class>kornell.server.web.CacheControlFilter</filter-class>
-	</filter> -->
+	<!-- <filter> <filter-name>CacheControlFilter</filter-name> <filter-class>kornell.server.web.CacheControlFilter</filter-class> 
+		</filter> -->
 
 	<servlet>
-		<servlet-name>Resteasy</servlet-name>
+		<servlet-name>KornellAPI</servlet-name>
 		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
 			<param-value>kornell.server.api.KornellAPI</param-value>
 		</init-param>
 		<init-param>
-		    <param-name>resteasy.servlet.mapping.prefix</param-name>
-		    <param-value>/api</param-value>
+			<param-name>resteasy.servlet.mapping.prefix</param-name>
+			<param-value>/api</param-value>
+		</init-param>
+		<multipart-config />
+	</servlet>
+
+	<servlet>
+		<servlet-name>RepositoryProxy</servlet-name>
+		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>kornell.server.content.RepositoryApp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>resteasy.servlet.mapping.prefix</param-name>
+			<param-value>/repository</param-value>
 		</init-param>
 		<multipart-config />
 	</servlet>
 
 
-
 	<servlet-mapping>
-		<servlet-name>Resteasy</servlet-name>
+		<servlet-name>KornellAPI</servlet-name>
 		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>RepositoryProxy</servlet-name>
+		<url-pattern>/repository/*</url-pattern>
 	</servlet-mapping>
 
 	<filter-mapping>
@@ -56,45 +64,16 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-<!-- 
-	<filter-mapping>
-		<filter-name>SetCharacterEncodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
--->
- <!-- 
-	<filter-mapping>
-		<filter-name>CacheControlFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
- -->
- <!-- 
-	<security-role>
-		<role-name>user</role-name>
-	</security-role>
-
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>All resources</web-resource-name>
-			<description>Protects all resources</description>
-			<url-pattern>/road-to-nowhere</url-pattern>
-		</web-resource-collection>
-
-		<auth-constraint>
-			<role-name>user</role-name>
-		</auth-constraint>
-	</security-constraint>
-
-	<login-config>
-		<auth-method>BASIC</auth-method>
-		<realm-name>KornellRealm</realm-name>
-	</login-config>
-
-	<resource-ref>
-		<description>Kornell Datasource</description>
-		<res-ref-name>jdbc/KornellDS</res-ref-name>
-		<res-type>javax.sql.DataSource</res-type>
-		<res-auth>Container</res-auth>
-	</resource-ref>
- -->	
+	<!-- <filter-mapping> <filter-name>SetCharacterEncodingFilter</filter-name> 
+		<url-pattern>/*</url-pattern> </filter-mapping> -->
+	<!-- <filter-mapping> <filter-name>CacheControlFilter</filter-name> <url-pattern>/*</url-pattern> 
+		</filter-mapping> -->
+	<!-- <security-role> <role-name>user</role-name> </security-role> <security-constraint> 
+		<web-resource-collection> <web-resource-name>All resources</web-resource-name> 
+		<description>Protects all resources</description> <url-pattern>/road-to-nowhere</url-pattern> 
+		</web-resource-collection> <auth-constraint> <role-name>user</role-name> 
+		</auth-constraint> </security-constraint> <login-config> <auth-method>BASIC</auth-method> 
+		<realm-name>KornellRealm</realm-name> </login-config> <resource-ref> <description>Kornell 
+		Datasource</description> <res-ref-name>jdbc/KornellDS</res-ref-name> <res-type>javax.sql.DataSource</res-type> 
+		<res-auth>Container</res-auth> </resource-ref> -->
 </web-app>

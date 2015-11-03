@@ -7,6 +7,9 @@ import java.io.InputStream
 trait SyncContentManager {
 	 def source( infix: String, key: String): Try[Source]
 	 def inputStream(infix: String, key: String): Try[InputStream]
-	 def url(segments:String*):String
+	 def url(segments:String*):String  
 	 def put(key: String, value: InputStream, contentType: String, contentDisposition: String, metadataMap: Map[String, String])
+	 
+	 //TODO: Consider urls generated on the client side and remove this method
+	 def getPrefix():String
 }

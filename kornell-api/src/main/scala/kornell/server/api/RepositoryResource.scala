@@ -5,7 +5,7 @@ import kornell.core.entity.WebRepository
 import java.sql.ResultSet
 import kornell.server.repository.Entities
 import kornell.server.jdbc.SQL._ 
-
+//TODO: DEAD CODE?
 @Path("repository")
 @Produces(Array(WebRepository.TYPE))
 class RepositoryResource {
