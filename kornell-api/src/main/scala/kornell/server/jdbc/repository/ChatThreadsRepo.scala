@@ -300,7 +300,8 @@ object ChatThreadsRepo {
 					| left join CourseClass cc on t.courseClassUUID = cc.uuid
 					| left join Person p on t.personUUID = p.uuid 
 					| join ChatThreadParticipant ctp on ctp.personUUID = ${personUUID}
-					| where t.institutionUUID = ${institutionUUID}
+					| where t.institutionUUID = ${institutionUUID} and
+					| t.active = true 
 				| ) as threadMessages
 				| group by chatThreadUUID
 				| order by unreadMessages desc, lastSentAt desc
@@ -311,25 +312,63 @@ object ChatThreadsRepo {
 
   def getChatThreadMessages(chatThreadUUID: String) = {
     TOs.newChatThreadMessagesTO(sql"""
-				| select p.fullName as senderFullName, tm.sentAt, tm.message from
-				| 	ChatThreadMessage tm 
-				| 	join Person p on p.uuid = tm.personUUID
-				| 	where tm.chatThreadUUID = ${chatThreadUUID}
-				| 	order by tm.sentAt
-		    """.map[ChatThreadMessageTO](toChatThreadMessageTO), 
-		    getServerTime)
+			select 
+				p.fullName as senderFullName, 
+				(select role 
+				from Role r
+				where r.person_uuid = p.uuid and
+				(r.institution_uuid = t.institutionUUID or r.course_class_uuid = t.courseClassUUID) and
+				(r.role <> ${RoleType.tutor.toString} or t.threadType = ${ChatThreadType.TUTORING.toString})
+				order by 
+					case 
+						when (r.role = ${RoleType.tutor.toString} and t.threadType = ${ChatThreadType.TUTORING.toString}) then 1
+						when r.role = ${RoleType.platformAdmin.toString} then 2
+						when r.role = ${RoleType.institutionAdmin.toString}  then 3
+						when r.role = ${RoleType.courseClassAdmin.toString}  then 4
+						else 5
+						end
+				limit 1
+				) as senderRole,
+				tm.sentAt, 
+			    tm.message
+			from ChatThreadMessage tm 
+			join ChatThread t on t.uuid = tm.chatThreadUUID
+			join Person p on p.uuid = tm.personUUID
+		 	where tm.chatThreadUUID = ${chatThreadUUID}
+			order by tm.sentAt
+	    """.map[ChatThreadMessageTO](toChatThreadMessageTO), 
+	    getServerTime)
   } 
 
   def getChatThreadMessagesSince(chatThreadUUID: String, lastFetchedMessageSentAt: String) = {
     TOs.newChatThreadMessagesTO(sql"""
-				| select p.fullName as senderFullName, tm.sentAt, tm.message from
-				| 	ChatThreadMessage tm 
-				| 	join Person p on p.uuid = tm.personUUID
-				| 	where tm.chatThreadUUID = ${chatThreadUUID}
-    	  |   and tm.sentAt > ${lastFetchedMessageSentAt}
-				| 	order by tm.sentAt
-		    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
-		    getServerTime)
+			select 
+				p.fullName as senderFullName, 
+				(select role 
+				from Role r
+				where r.person_uuid = p.uuid and
+				(r.institution_uuid = t.institutionUUID or r.course_class_uuid = t.courseClassUUID) and
+				(r.role <> ${RoleType.tutor.toString} or t.threadType = ${ChatThreadType.TUTORING.toString})
+				order by 
+					case 
+						when (r.role = ${RoleType.tutor.toString} and t.threadType = ${ChatThreadType.TUTORING.toString}) then 1
+						when r.role = ${RoleType.platformAdmin.toString} then 2
+						when r.role = ${RoleType.institutionAdmin.toString}  then 3
+						when r.role = ${RoleType.courseClassAdmin.toString}  then 4
+						else 5
+						end
+				limit 1
+				) as senderRole,
+				tm.sentAt, 
+			    tm.message
+			from ChatThreadMessage tm 
+			join ChatThread t on t.uuid = tm.chatThreadUUID
+			join Person p on p.uuid = tm.personUUID
+		    where tm.chatThreadUUID = ${chatThreadUUID}
+  		    and tm.sentAt > ${lastFetchedMessageSentAt}
+		    order by tm.sentAt
+	    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
+	    getServerTime)
   } 
 
   def getChatThreadMessagesBefore(chatThreadUUID: String, firstFetchedMessageSentAt: String) = {
@@ -339,14 +378,33 @@ object ChatThreadsRepo {
       firstFetchedMessageSentAt
     }
     TOs.newChatThreadMessagesTO(sql"""
-				| select p.fullName as senderFullName, tm.sentAt, tm.message from
-				| 	ChatThreadMessage tm 
-				| 	join Person p on p.uuid = tm.personUUID
-				| 	where tm.chatThreadUUID = ${chatThreadUUID}
-    	  		|   and tm.sentAt < ${date}
-				| 	order by tm.sentAt desc limit 20
-		    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
-		    getServerTime)
+			select 
+				p.fullName as senderFullName, 
+				(select role 
+				from Role r
+				where r.person_uuid = p.uuid and
+				(r.institution_uuid = t.institutionUUID or r.course_class_uuid = t.courseClassUUID) and
+				(r.role <> ${RoleType.tutor.toString} or t.threadType = ${ChatThreadType.TUTORING.toString})
+				order by 
+					case 
+						when (r.role = ${RoleType.tutor.toString} and t.threadType = ${ChatThreadType.TUTORING.toString}) then 1
+						when r.role = ${RoleType.platformAdmin.toString} then 2
+						when r.role = ${RoleType.institutionAdmin.toString}  then 3
+						when r.role = ${RoleType.courseClassAdmin.toString}  then 4
+						else 5
+						end
+				limit 1
+				) as senderRole,
+				tm.sentAt, 
+			    tm.message
+			from ChatThreadMessage tm 
+			join ChatThread t on t.uuid = tm.chatThreadUUID
+			join Person p on p.uuid = tm.personUUID
+		 	where tm.chatThreadUUID = ${chatThreadUUID}
+  		    and tm.sentAt < ${date}
+		 	order by tm.sentAt desc limit 20
+	    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
+	    getServerTime)
   } 
 
   def markAsRead(chatThreadUUID: String, personUUID: String) = {
@@ -371,8 +429,8 @@ object ChatThreadsRepo {
     sql"""update ChatThreadParticipant set active = ${status} where uuid = ${chatThreadParticipantUUID}""".executeUpdate
   }
   
-  def updateChatThreadStatus(chatThreadUUID: String, status: Boolean) = {
-    sql"""update ChatThread set active = ${status} where uuid = ${chatThreadUUID}""".executeUpdate
+  def updateCourseClassChatThreadStatusByThreadType(courseClassUUID: String, chatThreadType: ChatThreadType, status: Boolean) = {
+    sql"""update ChatThread set active = ${status} where courseClassUUID = ${courseClassUUID} and threadType = ${chatThreadType.toString}""".executeUpdate
   }
   
   /**
@@ -408,35 +466,14 @@ object ChatThreadsRepo {
    * Call this when updating the course class properties
    */
   def addParticipantsToCourseClassThread(courseClass: CourseClass) = {
-    val chatThread = getCourseClassGlobalChatThread(courseClass.getUUID)
     if (courseClass.isCourseClassChatEnabled) {
-        if (!chatThread.isDefined) {
-          //create new chat thread
-            val createdChatThread = createChatThread(courseClass.getInstitutionUUID, courseClass.getUUID, null, ChatThreadType.COURSE_CLASS)
-            //add everyone in the class to the thread
-            EnrollmentsRepo.byCourseClass(courseClass.getUUID).getEnrollmentTOs().asScala.foreach(enrollment => {
-              val participant = getChatTreadParticipant(enrollment.getPersonUUID, createdChatThread.getUUID)
-              if (!participant.isDefined) {
-                  createChatThreadParticipant(createdChatThread.getUUID, enrollment.getPersonUUID)
-              }})
-        } else {
-          //chat is enabled on class and thread exists
-          if (!chatThread.get.isActive) {
-            updateChatThreadStatus(chatThread.get.getUUID, true)
-          } else {
-            //add everyone in the class to the thread
-            EnrollmentsRepo.byCourseClass(courseClass.getUUID).getEnrollmentTOs().asScala.foreach(enrollment => {
-              val participant = getChatTreadParticipant(enrollment.getPersonUUID, chatThread.get.getUUID)
-              if (!participant.isDefined) {
-                  createChatThreadParticipant(chatThread.get.getUUID, enrollment.getPersonUUID)
-              }})
-          }
-        }
-    } else {
-        if (chatThread.isDefined) {
-          //Chat thread exists but property is disabled on course class
-          updateChatThreadStatus(chatThread.get.getUUID, false)
-        }
+	    val threadUUID = (getCourseClassGlobalChatThread(courseClass.getUUID).
+	    		getOrElse(createChatThread(courseClass.getInstitutionUUID, courseClass.getUUID, null, ChatThreadType.COURSE_CLASS))).getUUID
+        EnrollmentsRepo.byCourseClass(courseClass.getUUID).getEnrollmentTOs().asScala.foreach(enrollment => {
+          val participant = getChatTreadParticipant(enrollment.getPersonUUID, threadUUID)
+          if (!participant.isDefined) {
+              createChatThreadParticipant(threadUUID, enrollment.getPersonUUID)
+          }})
     }
   }
   

@@ -46,6 +46,7 @@ import kornell.core.event.EntityChanged
 import kornell.core.event.EventFactory
 import kornell.core.entity.AuditedEntityType
 import kornell.server.content.ContentManagers
+import kornell.core.entity.RoleType
 
 //TODO: Consider turning to Object
 object TOs {
@@ -248,9 +249,10 @@ object TOs {
   }
 
   def newChatThreadMessageTO: ChatThreadMessageTO = tos.newChatThreadMessageTO.as 
-  def newChatThreadMessageTO(senderFullName: String, sentAt: String, message: String): ChatThreadMessageTO = {
+  def newChatThreadMessageTO(senderFullName: String, senderRole: RoleType, sentAt: String, message: String): ChatThreadMessageTO = {
     val to = newChatThreadMessageTO
     to.setSenderFullName(senderFullName)
+    to.setSenderRole(senderRole)
     to.setSentAt(sentAt)
     to.setMessage(message)
     to

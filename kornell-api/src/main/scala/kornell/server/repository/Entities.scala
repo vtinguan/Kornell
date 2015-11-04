@@ -309,14 +309,6 @@ object Entities {
     clazz
   }
 
-  def newWebRepository(uuid: String, distributionURL: String, prefix: String) = {
-    val webRepo = factory.newWebReposiory.as
-    webRepo.setUUID(uuid)
-    webRepo.setPrefix(prefix)
-    webRepo.setDistributionURL(distributionURL)
-    webRepo
-  }
-
   def newActomEntries(enrollmentUUID: String, actomKey: String, entriesMap: Map[String, String]) = {
     val entries = factory.newActomEntries.as
     entries.setActomKey(actomKey)

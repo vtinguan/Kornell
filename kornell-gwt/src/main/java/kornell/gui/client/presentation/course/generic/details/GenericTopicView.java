@@ -159,6 +159,6 @@ public class GenericTopicView extends Composite {
 		if(isOpened)
 			topicIcon.setUrl(mkurl(IMAGES_PATH, "topic-expanded.png"));
 		else
-			topicIcon.setUrl(mkurl(IMAGES_PATH + "topic-contracted.png"));
+			topicIcon.setUrl(mkurl(IMAGES_PATH, "topic-contracted.png"));
 	}
 }

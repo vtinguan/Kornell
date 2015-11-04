@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import kornell.api.client.KornellSession;
+import kornell.core.entity.RoleType;
 import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
@@ -18,6 +19,7 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessageView;
+import kornell.gui.client.presentation.util.EnumTranslator;
 import kornell.gui.client.presentation.util.FormHelper;
 
 import com.github.gwtbootstrap.client.ui.Icon;
@@ -358,8 +360,8 @@ public class GenericMessageView extends Composite implements MessageView {
 
 	private void updateDateLabelValues(String serverTime) {
 		synchronized(dateLabelsMap){
-			/*if(bla)return;
-			bla = true;*/
+			if(bla)return;
+			bla = false;
 			Iterator<Entry<String, MessageItem>> it = dateLabelsMap.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry<String, MessageItem> pairs = (Map.Entry<String, MessageItem>)it.next();
@@ -372,8 +374,31 @@ public class GenericMessageView extends Composite implements MessageView {
 		if(StringUtils.isNone(chatThreadMessageTO.getSentAt())) return "";
 		Date sentAt = formHelper.getJudFromString(chatThreadMessageTO.getSentAt());
 		Date serverTime = formHelper.getJudFromString(serverTimeStr);
-		String dateStr = span(chatThreadMessageTO.getSenderFullName(), INFO_CLASS) /*+ separator(false, false) + "<i class=\"icon-comments\" title=\"Administrador de Instituição\"></i>"*/ + separator(false, false) + span(formHelper.getElapsedTimeSince(sentAt, serverTime), PLAIN_CLASS);
+		String dateStr = span(chatThreadMessageTO.getSenderFullName(), INFO_CLASS) + getIcons(chatThreadMessageTO.getSenderRole()) + separator(false, false) + span(formHelper.getElapsedTimeSince(sentAt, serverTime), PLAIN_CLASS);
 		return dateStr;
+	}
+	
+	private String getIcons(RoleType type) {
+		switch (type) {
+	        case platformAdmin:
+	        	return getIcons(3, "fa fa-star", EnumTranslator.translateEnum(type));
+	        case institutionAdmin:
+	        	return getIcons(2, "fa fa-star", EnumTranslator.translateEnum(type));
+	        case courseClassAdmin:
+	        	return getIcons(1, "fa fa-star", EnumTranslator.translateEnum(type));
+	        case tutor:
+	        	return getIcons(1, "fa fa-graduation-cap", EnumTranslator.translateEnum(type));
+	        default:
+	        	return "";
+		}
+	}
+	
+	private String getIcons(int count, String classes, String title){
+		String icons = "&nbsp;";
+		for(int i = 0; i < count; i++){
+			icons += "<i class=\"" + classes + " plainDiscreteTextColor\" title=\"" + title + "\"></i>";
+		}
+		return icons;
 	}
 
 	@UiHandler("btnSend")

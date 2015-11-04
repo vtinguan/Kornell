@@ -5,6 +5,7 @@ import kornell.core.error.exception.EntityConflictException
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.jdbc.SQL.rsToString
 import kornell.core.entity.AuditedEntityType
+import kornell.core.entity.ChatThreadType
 
 class CourseClassRepo(uuid:String) {
   lazy val finder = sql"""
@@ -41,6 +42,10 @@ class CourseClassRepo(uuid:String) {
 		  		cc.tutorChatEnabled = ${courseClass.isTutorChatEnabled},
 		  		cc.approveEnrollmentsAutomatically = ${courseClass.isApproveEnrollmentsAutomatically}
 	      where cc.uuid = ${courseClass.getUUID}""".executeUpdate 
+	    
+        //update course class threads active states per threadType and add participants to the global class chat, if applicable
+	    ChatThreadsRepo.updateCourseClassChatThreadStatusByThreadType(courseClass.getUUID, ChatThreadType.COURSE_CLASS, courseClass.isCourseClassChatEnabled)
+	    ChatThreadsRepo.updateCourseClassChatThreadStatusByThreadType(courseClass.getUUID, ChatThreadType.TUTORING, courseClass.isTutorChatEnabled)
 	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 	    
 	    //log entity change

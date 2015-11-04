@@ -7,7 +7,6 @@ import kornell.server.api.CoursesResource
 import kornell.server.api.CourseVersionsResource
 import kornell.server.api.CourseClassesResource
 import kornell.core.entity.CourseClass
-import kornell.server.api.RepositoryResource
 import kornell.server.jdbc.repository.RepositoriesRepo
 import kornell.core.entity.RegistrationType
 import kornell.server.jdbc.repository.CourseVersionsRepo

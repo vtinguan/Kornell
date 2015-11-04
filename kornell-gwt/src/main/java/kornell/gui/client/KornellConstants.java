@@ -692,6 +692,28 @@ public interface KornellConstants extends ConstantsWithLookup {
 	
 	
 	/**
+	 * RoleType
+	 */
+	@DefaultStringValue("Participant")
+	String RoleType_user();
+
+	@DefaultStringValue("Course Class Admin")
+	String RoleType_courseClassAdmin();
+
+	@DefaultStringValue("Institution Admin")
+	String RoleType_institutionAdmin();
+
+	@DefaultStringValue("Platform Admin")
+	String RoleType_platformAdmin();
+
+	@DefaultStringValue("Tutor")
+	String RoleType_tutor();
+
+	@DefaultStringValue("Observer")
+	String RoleType_observer();
+	
+	
+	/**
 	 * Errors 404
 	 */
 	@DefaultStringValue("Person not found.")
