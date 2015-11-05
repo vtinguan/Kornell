@@ -4,14 +4,14 @@ import java.io.InputStream
 import java.sql.ResultSet
 import java.util.Date
 import java.util.HashMap
-
 import scala.collection.JavaConverters.seqAsJavaListConverter
 import scala.collection.mutable.ListBuffer
-
 import kornell.core.to.report.CourseClassReportTO
 import kornell.core.to.report.EnrollmentsBreakdownTO
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
+import kornell.core.entity.EnrollmentState
+import kornell.core.entity.CourseClassState
 
 object ReportCourseClassGenerator {
 
@@ -53,9 +53,9 @@ object ReportCourseClassGenerator {
 				p.email,
     			p.cpf,
 				case    
-					when e.state = 'cancelled' then 'Cancelada'  
-					when e.state = 'requested' then 'Requisitada'  
-					when e.state = 'denied' then 'Negada'  
+					when e.state = ${EnrollmentState.cancelled.toString} then 'Cancelada'  
+					when e.state = ${EnrollmentState.requested.toString} then 'Requisitada'  
+					when e.state = ${EnrollmentState.denied.toString} then 'Negada'  
 					else 'Matriculado'   
 				end as state,
 				case    
@@ -90,16 +90,17 @@ object ReportCourseClassGenerator {
 				join Course c on c.uuid = cv.course_uuid
 				left join Password pw on pw.person_uuid = p.uuid
 			where
-				(e.state = 'enrolled' or ${fileType} = 'xls') and
-    			cc.state = 'active' and 
+				(e.state = ${EnrollmentState.enrolled.toString} or ${fileType} = 'xls') and
+    			cc.state = ${CourseClassState.active.toString} and 
 		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
-				(c.uuid = ${courseUUID} or ${courseUUID} is null)
+				(c.uuid = ${courseUUID} or ${courseUUID} is null) and
+				e.state <> ${EnrollmentState.deleted.toString}
 			order by 
 				case 
-					when e.state = 'enrolled' then 1
-					when e.state = 'requested'  then 2
-					when e.state = 'denied'  then 3
-					when e.state = 'cancelled'  then 4
+					when e.state = ${EnrollmentState.enrolled.toString} then 1
+					when e.state = ${EnrollmentState.requested.toString}  then 2
+					when e.state = ${EnrollmentState.denied.toString}  then 3
+					when e.state = ${EnrollmentState.cancelled.toString}  then 4
 					else 5
 					end,
 				case 
@@ -162,7 +163,7 @@ object ReportCourseClassGenerator {
 				join Institution i on i.uuid = cc.institution_uuid
 			where (cc.uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 				(cv.course_uuid = ${courseUUID} or ${courseUUID} is null) and
-    			cc.state = 'active'
+    			cc.state = ${CourseClassState.active.toString}
     """.first[ReportHeaderData](headerDataConvertion)
     
     parameters.put("institutionName", headerInfo.get._1)
@@ -194,10 +195,11 @@ object ReportCourseClassGenerator {
 					join CourseClass cc on cc.uuid = e.class_uuid
 					join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
 				where      
-					(e.state = 'enrolled' or ${fileType} = 'xls') and
-    				cc.state = 'active' and 
+					(e.state = ${EnrollmentState.enrolled.toString} or ${fileType} = 'xls') and
+    				cc.state = ${CourseClassState.active.toString} and 
     		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
-					(cv.course_uuid = ${courseUUID} or ${courseUUID} is null)
+					(cv.course_uuid = ${courseUUID} or ${courseUUID} is null) and
+					e.state <> ${EnrollmentState.deleted.toString}
 				group by 
 					case    
 						when progress is null OR progress = 0 then 'notStarted'  

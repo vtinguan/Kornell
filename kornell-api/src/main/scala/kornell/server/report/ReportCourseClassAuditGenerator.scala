@@ -14,6 +14,7 @@ import kornell.core.entity.Institution
 import kornell.core.entity.CourseClass
 import kornell.core.to.report.CourseClassAuditTO
 import kornell.server.jdbc.repository.InstitutionsRepo
+import kornell.core.entity.EnrollmentState
 
 object ReportCourseClassAuditGenerator {
   
@@ -56,18 +57,22 @@ object ReportCourseClassAuditGenerator {
 		    cc.name as fromCourseClassName,
 		    '-' as toCourseClassName,
 			case    
-				when esc.fromState = 'notEnrolled' then '-'  
-				when esc.fromState = 'cancelled' then 'Cancelada'  
-				when esc.fromState = 'requested' then 'Requisitada'  
-				when esc.fromState = 'denied' then 'Negada'  
-				else 'Matriculado'   
+				when esc.fromState = ${EnrollmentState.notEnrolled.toString} then '-'  
+				when esc.fromState = ${EnrollmentState.cancelled.toString} then 'Cancelada'  
+				when esc.fromState = ${EnrollmentState.requested.toString} then 'Requisitada'  
+				when esc.fromState = ${EnrollmentState.denied.toString} then 'Negada'  
+				when esc.fromState = ${EnrollmentState.enrolled.toString} then 'Matriculado'  
+				when esc.fromState = ${EnrollmentState.deleted.toString} then 'Excluída'  
+				else '?'   
 			end as fromState,
 			case    
-				when esc.toState = 'notEnrolled' then '-'  
-				when esc.toState = 'cancelled' then 'Cancelada'  
-				when esc.toState = 'requested' then 'Requisitada'  
-				when esc.toState = 'denied' then 'Negada'  
-				else 'Matriculado'   
+				when esc.toState = ${EnrollmentState.notEnrolled.toString} then '-'  
+				when esc.toState = ${EnrollmentState.cancelled.toString} then 'Cancelada'  
+				when esc.toState = ${EnrollmentState.requested.toString} then 'Requisitada'  
+				when esc.toState = ${EnrollmentState.denied.toString} then 'Negada'  
+				when esc.toState = ${EnrollmentState.enrolled.toString} then 'Matriculado'  
+				when esc.toState = ${EnrollmentState.deleted.toString} then 'Excluída'  
+				else '?'   
 			end as toState,
 		    admin.uuid as adminUUID,
 		    participant.uuid as participantUUID,
