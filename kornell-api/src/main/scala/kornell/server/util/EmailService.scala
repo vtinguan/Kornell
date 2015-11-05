@@ -147,7 +147,7 @@ object EmailService {
   }
   
   def sendEmailEspinafreReminder(person: Person, institution: Institution) = {
-    if (person.getReceiveEmailCommunication) {
+    if (person.isReceiveEmailCommunication) {
       val subject = "Espinafre Reminder! " + institution.getFullName
       val from = getFromEmail(institution)
       val to = person.getEmail
@@ -155,7 +155,7 @@ object EmailService {
       val body = wrapBody("""
     	espinafre reminder body	
         """ +
-    		getSignature(institution, from))
+    		getSignature(institution))
 			
       val imgFile = getInstitutionLogoImage(institution)
       EmailSender.sendEmail(subject, from, to, body, imgFile)
