@@ -22,6 +22,8 @@ import kornell.server.util.AccessDeniedErr
 import kornell.server.util.Conditional.toConditional
 import kornell.core.to.SimplePeopleTO
 import kornell.core.to.EnrollmentsTO
+import kornell.server.jdbc.repository.InstitutionRepo
+import kornell.server.util.EmailService
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
@@ -78,7 +80,7 @@ class EnrollmentsResource {
   }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
-    
+  
 }
 
 object EnrollmentsResource {

@@ -8,6 +8,7 @@ import kornell.core.entity.Institution
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.TOs
 import kornell.core.entity.AuditedEntityType
+import kornell.core.entity.InstitutionType
 
 object InstitutionsRepo {
   
@@ -48,4 +49,8 @@ object InstitutionsRepo {
       	| where ihn.hostName = ${hostName}
 	    """.first[Institution]
 
+  def byType(institutionType: InstitutionType) = 
+    sql"""
+        select * from Institution where institutionType = ${institutionType.toString}
+    """.first[Institution]
 }
