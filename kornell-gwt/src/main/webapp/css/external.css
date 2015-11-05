@@ -2,7 +2,7 @@
 .flag {
 	width: 32px;
 	height: 32px;
-	background:url(skins/first/icons/flags.png) no-repeat
+	background:url(/img/flags.png) no-repeat
 }
 
 .flag.flag-br {background-position: -32px 0}

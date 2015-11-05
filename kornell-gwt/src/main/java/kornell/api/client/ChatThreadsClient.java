@@ -13,8 +13,8 @@ public class ChatThreadsClient extends RESTClient {
 		POST("/chatThreads/courseClass/" + courseClassUUID + "/tutoring").sendRequest(message, callback);
 	}
 
-	public void postMessageToSupportInstitutionThread(String message, String courseClassUUID, Callback<String> callback) {
-		POST("/chatThreads/courseClass/" + courseClassUUID + "/institutionSupport").sendRequest(message, callback);
+	public void postMessageToSupportInstitutionThread(String message, Callback<String> callback) {
+		POST("/chatThreads/institutionSupport").sendRequest(message, callback);
 	}
 
 	public void postMessageToSupportPlatformThread(String message, Callback<String> callback) {

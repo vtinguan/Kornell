@@ -60,13 +60,13 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 					MrPostman.hide();
 				}
 			};
-			String entityUUID = view.getRecipient().getFieldPersistText();
-			if(entityUUID.startsWith("i-")){
-				threadsClient.postMessageToSupportInstitutionThread(messageText, entityUUID.substring(2), chatThreadCallback);
-			} else if("".equals(entityUUID)){
+			String threadSelectValue = view.getRecipient().getFieldPersistText();
+			if("platformSupport".equals(threadSelectValue)){
 				threadsClient.postMessageToSupportPlatformThread(messageText, chatThreadCallback);
+			} else if("institutionSupport".equals(threadSelectValue)){
+				threadsClient.postMessageToSupportInstitutionThread(messageText, chatThreadCallback);
 			} else {
-				threadsClient.postMessageToSupportCourseClassThread(messageText, entityUUID, chatThreadCallback);
+				threadsClient.postMessageToSupportCourseClassThread(messageText, threadSelectValue, chatThreadCallback);
 			}
 		}
 	}

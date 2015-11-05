@@ -47,13 +47,12 @@ class ChatThreadsResource {
   }
   
   @POST
-  @Path("courseClass/{courseClassUUID}/institutionSupport")
+  @Path("institutionSupport")
   @Produces(Array("application/octet-stream"))
   def postMessageToInstitutionSupportThread(implicit @Context sc: SecurityContext, 
-    @PathParam("courseClassUUID") courseClassUUID: String,
     message: String) = AuthRepo().withPerson { person => 
-        ChatThreadsRepo.postMessageToCourseClassThread(person.getUUID, courseClassUUID, message, ChatThreadType.INSTITUTION_SUPPORT)
-  		ChatThreadsRepo.getCourseClassChatThreadUUID(person.getUUID, courseClassUUID: String, ChatThreadType.INSTITUTION_SUPPORT).get
+        ChatThreadsRepo.postMessageToInstitutionThread(person.getUUID, person.getInstitutionUUID, message, ChatThreadType.INSTITUTION_SUPPORT)
+  		ChatThreadsRepo.getInstitutionChatThreadUUID(person.getUUID, person.getInstitutionUUID: String, ChatThreadType.INSTITUTION_SUPPORT).get
   }
   
   @POST

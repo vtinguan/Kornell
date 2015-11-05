@@ -80,7 +80,8 @@ object RolesRepo {
 	  			| or (r.institution_uuid = ${institutionUUID}
 	  			|   and r.role = ${RoleType.platformAdmin.toString})
 			| group by pw.username
-            """.map[RoleTO](toRoleTO(_,bindMode)))   
+            """.map[RoleTO](toRoleTO(_,bindMode)))    	
+
   	
   def getPlatformSupportThreadParticipants(institutionUUID: String, bindMode: String) =
 	  TOs.newRolesTO(sql"""

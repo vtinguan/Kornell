@@ -1,7 +1,9 @@
 package kornell.gui.client.presentation.message.compose;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.RoleType;
@@ -19,6 +21,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -73,18 +76,25 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		fieldsPanel.clear();
 
-		boolean hasNonCourseClassThreadAcces = false;
+		boolean hasPlatformThreadAccess = false;
+		boolean hasInstitutionThreadAccess = false;
+		
 		final ListBox recipients = new ListBox();
 		
 		for (RoleTO roleTO : session.getCurrentUser().getRoles()) {
-			if(RoleType.courseClassAdmin.equals(roleTO.getRole().getRoleType())){
-				recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getName() , "i-" + roleTO.getRole().getCourseClassAdminRole().getCourseClassUUID());
-				hasNonCourseClassThreadAcces = true;
+			if(RoleType.institutionAdmin.equals(roleTO.getRole().getRoleType())){
+				hasPlatformThreadAccess = true;
+			} else if(RoleType.courseClassAdmin.equals(roleTO.getRole().getRoleType())){
+				hasInstitutionThreadAccess = true;
 			}
-			else if(RoleType.institutionAdmin.equals(roleTO.getRole().getRoleType())){
-				recipients.addItem(constants.platformAdminLabel(), "");
-				hasNonCourseClassThreadAcces = true;
-			}
+		}
+		
+		if(hasPlatformThreadAccess){
+			recipients.addItem(constants.platformAdminLabel(), "platformSupport");
+		}
+		
+		if(hasInstitutionThreadAccess){
+			recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getName(), "institutionSupport");
 		}
 
 		for (CourseClassTO courseClassTO : Dean.getInstance().getHelpCourseClasses()) {
@@ -95,7 +105,7 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 			this.setVisible(false);
 
 		recipients.setSelectedValue(courseClassUUID);
-		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), recipients.getItemCount() > 1 && (hasNonCourseClassThreadAcces || courseClassUUID == null));
+		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), recipients.getItemCount() > 1 && (hasPlatformThreadAccess || courseClassUUID == null));
 		fields.add(recipient);
 		fieldsPanel.add(recipient);
 
