@@ -1,4 +1,4 @@
-CREATE TABLE ContentRepository (
+CREATE TABLE IF NOT EXISTS ContentRepository (
   `uuid` char(36) NOT NULL,
   `repositoryType` varchar(255) NOT NULL, 
   PRIMARY KEY (`uuid`)
