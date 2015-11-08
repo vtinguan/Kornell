@@ -31,7 +31,7 @@ object ContentRepository {
     val repo = ContentManagers.forRepository(repositoryUUID)
     val x = version.getDistributionPrefix + "structure.knl"
     val versionPrefix = version.getDistributionPrefix
-    val structureSrc = repo.source(mkurl(versionPrefix, "structure.knl"))
+    val structureSrc = repo.source(versionPrefix, "structure.knl")
     val structureText = structureSrc.get.mkString("")
     val prefix = repo.url(version.getDistributionPrefix())
     val contents = ContentsParser.parse(prefix, structureText, visited)

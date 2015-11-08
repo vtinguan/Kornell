@@ -98,11 +98,11 @@ class ReportResource {
           val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass)
           val bs = new ByteArrayInputStream(report)
           val repo = ContentManagers.forCertificates(p.getInstitutionUUID())
-          repo.put(filename,
+          repo.put(
             bs,
             "application/pdf",
             "Content-Disposition: attachment; filename=\"" + filename + ".pdf\"",
-            Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()))
+            Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()),filename)
           repo.url(filename)
         }
       } catch {

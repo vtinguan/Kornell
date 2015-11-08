@@ -21,12 +21,12 @@ class S3ContentManager(repo: S3ContentRepository)
   else  
     new AmazonS3Client
   
-  def source(key: String) =
-    inputStream(key).map { Source.fromInputStream(_, "UTF-8") }
+  def source(keys: String*) =
+    inputStream(keys:_*).map { Source.fromInputStream(_, "UTF-8") }
   
-  def inputStream(key: String): Try[InputStream] = Try {
-    logger.finest(s"loading inputStream(${key})")
-    val fqkn = url(key)
+  def inputStream(keys: String*): Try[InputStream] = Try {
+    val fqkn = url(keys:_*)
+    logger.finest(s"loading key [${fqkn}]")
     try {
       s3.getObject(repo.getBucketName, fqkn).getObjectContent
     } catch {
@@ -38,12 +38,12 @@ class S3ContentManager(repo: S3ContentRepository)
     }
   }
   
-  def put(key: String, value: InputStream, contentType: String, contentDisposition: String, metadataMap: Map[String, String]) = {
+  def put(value: InputStream, contentType: String, contentDisposition: String, metadataMap: Map[String, String],keys: String*) = {
     val metadata = new ObjectMetadata()
     metadata.setUserMetadata(metadataMap asJava)
     Option(contentType).foreach { metadata.setContentType(_) }
     Option(contentDisposition).foreach { metadata.setContentDisposition(_) }
-    s3.putObject(repo.getBucketName(), url(key), value, metadata)
+    s3.putObject(repo.getBucketName(), url(keys:_*), value, metadata)
   }
   
   def getPrefix = repo.getPrefix
