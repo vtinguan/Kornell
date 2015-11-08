@@ -21,14 +21,12 @@ class S3ContentManager(repo: S3ContentRepository)
   else  
     new AmazonS3Client
   
-  def source(infix: String, key: String) =
-    inputStream(infix, key).map { Source.fromInputStream(_, "UTF-8") }
+  def source(key: String) =
+    inputStream(key).map { Source.fromInputStream(_, "UTF-8") }
   
-  def url(segments:String*):String = composeURL(repo.getPrefix, segments:_*) 
-
-  def inputStream(infix: String, key: String): Try[InputStream] = Try {
-    logger.finest(s"loading inputStream(${infix}, ${key})")
-    val fqkn = url(infix, key)
+  def inputStream(key: String): Try[InputStream] = Try {
+    logger.finest(s"loading inputStream(${key})")
+    val fqkn = url(key)
     try {
       s3.getObject(repo.getBucketName, fqkn).getObjectContent
     } catch {

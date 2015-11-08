@@ -28,7 +28,7 @@ class RepositoryResource {
     val repositoryUUID = repoData.getRepositoryUUID()
     val cm = ContentManagers.forRepository(repositoryUUID);
     val key = repoData.getKey()
-    cm.inputStream(cm.getPrefix, key) match {
+    cm.inputStream(key) match {
       case Success(in) => {  
 		  val out: OutputStream = resp.getOutputStream();
 		  try {
