@@ -7,8 +7,10 @@ import kornell.core.entity.Person
 import kornell.core.entity.Institution
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.TOs
-import kornell.core.util.UUID
+import kornell.core.entity.AuditedEntityType
 import java.util.Date
+import kornell.core.util.UUID
+import kornell.core.entity.InstitutionType
 
 object InstitutionsRepo {
   
@@ -20,7 +22,7 @@ object InstitutionsRepo {
       institution.setActivatedAt(new Date)
     }
     sql"""
-    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType,institutionType,dashboardVersionUUID,internationalized,useEmailWHitelist) 
+    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType,institutionType,dashboardVersionUUID,internationalized,useEmailWhitelist) 
     | values(
     | ${institution.getUUID},
     | ${institution.getName},
@@ -39,6 +41,10 @@ object InstitutionsRepo {
     | ${institution.getDashboardVersionUUID},
     | ${institution.isInternationalized},
     | ${institution.isUseEmailWhitelist})""".executeUpdate
+    
+    //log creation event
+    EventsRepo.logEntityChange(institution.getUUID, AuditedEntityType.institution, institution.getUUID, null, institution)
+    
     institution
   }  
   
@@ -55,4 +61,8 @@ object InstitutionsRepo {
       	| where ihn.hostName = ${hostName}
 	    """.first[Institution]
 
+  def byType(institutionType: InstitutionType) = 
+    sql"""
+        select * from Institution where institutionType = ${institutionType.toString}
+    """.first[Institution]
 }

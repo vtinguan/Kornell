@@ -72,7 +72,6 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
 	final CellTable<CourseVersion> table;
-	private List<CourseVersion> courseVersions;
 	private KornellPagination pagination;
 	private AdminCourseVersionsView.Presenter presenter;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
@@ -347,7 +346,6 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 	@Override
 	public void setCourseVersions(List<CourseVersion> courseVersions, Integer count, Integer searchCount) {
 		courseVersionsWrapper.clear();
-		this.courseVersions = courseVersions;
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
 		panel.add(table);

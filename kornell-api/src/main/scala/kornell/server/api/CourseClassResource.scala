@@ -49,7 +49,7 @@ class CourseClassResource(uuid: String) {
   @Consumes(Array(CourseClass.TYPE))
   @Produces(Array(CourseClass.TYPE))
   def update(courseClass: CourseClass) = AuthRepo().withPerson { p =>
-    val roles = AuthRepo().getUserRoles
+    val roles = RolesRepo.getUserRoles(p.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
     if (!(RoleCategory.isPlatformAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID)))
       throw new UnauthorizedAccessException("classNoRights")
@@ -69,7 +69,7 @@ class CourseClassResource(uuid: String) {
     if (courseClass == null)
       throw new EntityNotFoundException("classNotFound")
     
-    val roles = AuthRepo().getUserRoles
+    val roles = RolesRepo.getUserRoles(p.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
     val institutionUUID = CourseClassRepo(uuid).get.getInstitutionUUID
     if (!(RoleCategory.isPlatformAdmin(roles, institutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, institutionUUID)))
@@ -89,39 +89,40 @@ class CourseClassResource(uuid: String) {
   @GET
   def getLibraryFiles =  LibraryFilesRepository.findLibraryFiles(uuid)
      
-
+  
   @PUT
   @Consumes(Array(Roles.TYPE))
   @Produces(Array(Roles.TYPE))
   @Path("admins")
-  def updateAdmins(implicit @Context sc: SecurityContext, roles: Roles) =
-    AuthRepo().withPerson { person =>
-      {
-        val r = RolesRepo.updateCourseClassAdmins(uuid, roles)
-        ChatThreadsRepo.updateParticipantsInSupportThreads(uuid, ChatThreadType.SUPPORT)
-        r
-      }
+  def updateAdmins(roles: Roles) = AuthRepo().withPerson { person =>
+    {
+        val r = RolesRepo.updateCourseClassAdmins(person.getInstitutionUUID, uuid, roles)
+        ChatThreadsRepo.updateParticipantsInThreads(uuid, person.getInstitutionUUID, ChatThreadType.SUPPORT)
+        ChatThreadsRepo.updateParticipantsInThreads(uuid, person.getInstitutionUUID, ChatThreadType.INSTITUTION_SUPPORT)
     }
+  }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
 
   @GET
   @Produces(Array(RolesTO.TYPE))
   @Path("admins")
-  def getAdmins(implicit @Context sc: SecurityContext,
-      @QueryParam("bind") bindMode:String) =
-    AuthRepo().withPerson { person =>
-      {
+  def getAdmins(@QueryParam("bind") bindMode:String) = AuthRepo().withPerson { person =>
         RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.courseClassAdmin)
-      }
-    }
+  }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
   
   @PUT
   @Consumes(Array(Roles.TYPE))
   @Produces(Array(Roles.TYPE))
   @Path("tutors")
-  def updateTutors(roles: Roles) = {
-        val r = RolesRepo.updateTutors(uuid, roles)
-        ChatThreadsRepo.updateParticipantsInSupportThreads(uuid, ChatThreadType.TUTORING)
+  def updateTutors(roles: Roles) = AuthRepo().withPerson { person =>
+    {
+        val r = RolesRepo.updateTutors(person.getInstitutionUUID, uuid, roles)
+        ChatThreadsRepo.updateParticipantsInThreads(uuid, person.getInstitutionUUID, ChatThreadType.TUTORING)
         r
+    }
   }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
@@ -129,7 +130,7 @@ class CourseClassResource(uuid: String) {
   @GET
   @Produces(Array(RolesTO.TYPE))
   @Path("tutors")
-  def getTutors(@QueryParam("bind") bindMode:String) = {
+  def getTutors(@QueryParam("bind") bindMode:String) = AuthRepo().withPerson { person =>
         RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.tutor)
   }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
@@ -139,8 +140,8 @@ class CourseClassResource(uuid: String) {
   @Consumes(Array(Roles.TYPE))
   @Produces(Array(Roles.TYPE))
   @Path("observers")
-  def updateObservers(roles: Roles) = {
-        RolesRepo.updateObservers(uuid, roles)
+  def updateObservers(roles: Roles) = AuthRepo().withPerson { person =>
+        RolesRepo.updateObservers(person.getInstitutionUUID, uuid, roles)
   }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
@@ -148,7 +149,7 @@ class CourseClassResource(uuid: String) {
   @GET
   @Produces(Array(RolesTO.TYPE))
   @Path("observers")
-  def getObservers(@QueryParam("bind") bindMode:String) = {
+  def getObservers(@QueryParam("bind") bindMode:String) = AuthRepo().withPerson { person =>
         RolesRepo.getUsersWithRoleForCourseClass(uuid, bindMode, RoleType.observer)
   }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())

@@ -13,6 +13,7 @@ import kornell.core.to.TOFactory;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Collapse;
@@ -43,9 +44,8 @@ public class GenericCourseClassReportItemView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private String BASE_IMAGES_PATH = "skins/first/icons/";
-	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
-	private String LIBRARY_IMAGES_PATH = BASE_IMAGES_PATH + "courseLibrary/";
+	private String ADMIN_IMAGES_PATH = StringUtils.mkurl(ClientConstants.IMAGES_PATH, "admin/");
+	private String LIBRARY_IMAGES_PATH = StringUtils.mkurl(ClientConstants.IMAGES_PATH, "courseLibrary/");
 	private KornellSession session;
 	private CourseClassTO currentCourseClass;
 	private String type;
@@ -59,6 +59,7 @@ public class GenericCourseClassReportItemView extends Composite {
 	
 	public static final String COURSE_CLASS_INFO = "courseClassInfo";
 	public static final String CERTIFICATE = "certificate";
+	public static final String COURSE_CLASS_AUDIT = "courseClassAudit";
 	
 	@UiField
 	Image certificationIcon;
@@ -87,15 +88,17 @@ public class GenericCourseClassReportItemView extends Composite {
 	private void display() {
 		if(CERTIFICATE.equals(this.type))
 			displayCertificate();
-		else
+		else if(COURSE_CLASS_INFO.equals(this.type))
 			displayCourseClassInfo();
+		else if(COURSE_CLASS_AUDIT.equals(this.type))
+			displayCourseClassAudit();
 	}
 
-	private void displayCourseClassInfo() {
-	  this.name = "Relatório de detalhes da turma";
-		this.description = "Geração do relatório de detalhes da turma e de suas matrículas. Por padrão ele é gerado em PDF contendo somente matriculas ativas.";
-		
-		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
+	private void displayCourseClassAudit() {
+		this.name = "Relatório de auditoria da turma";
+		this.description = "Geração do relatório de histórico de alteração de matrículas e de transferências.";
+
+		certificationIcon.setUrl(StringUtils.mkurl(ADMIN_IMAGES_PATH, type + ".png"));
 		lblName.setText(name);
 		lblDescription.setText(description);
 		lblGenerate.setText("Gerar");
@@ -106,7 +109,32 @@ public class GenericCourseClassReportItemView extends Composite {
 		lblDownload.addStyleName("anchorToLabel");
 		lblDownload.setEnabled(false);
 		
-		Image img = new Image(LIBRARY_IMAGES_PATH + "xls.png");
+		lblGenerate.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				KornellNotification.show("Aguarde um instante...", AlertType.WARNING, 2000);
+				session.report().locationAssign("/report/courseClassAudit",
+						"?courseClassUUID=" + currentCourseClass.getCourseClass().getUUID());
+			}
+		});
+  }
+
+	private void displayCourseClassInfo() {
+	  this.name = "Relatório de detalhes da turma";
+		this.description = "Geração do relatório de detalhes da turma e de suas matrículas. Por padrão ele é gerado em PDF contendo somente matriculas ativas.";
+
+		certificationIcon.setUrl(StringUtils.mkurl(ADMIN_IMAGES_PATH, type + ".png"));
+		lblName.setText(name);
+		lblDescription.setText(description);
+		lblGenerate.setText("Gerar");
+		lblGenerate.addStyleName("cursorPointer");
+
+		lblDownload.setText("-");
+		lblDownload.removeStyleName("cursorPointer");
+		lblDownload.addStyleName("anchorToLabel");
+		lblDownload.setEnabled(false);
+
+		Image img = new Image(StringUtils.mkurl(LIBRARY_IMAGES_PATH, "xls.png"));
 		checkBox = new CheckBox("Gerar em formato Excel (inclui matrículas canceladas)");
 		
 		optionPanel.add(img);
@@ -133,8 +161,8 @@ public class GenericCourseClassReportItemView extends Composite {
 	private void displayCertificate() {
 	  this.name = "Certificados de conclusão de curso";
 		this.description = "Geração do certificado de todos os alunos desta turma que concluíram o curso. A geração pode chegar a levar a alguns minutos, dependendo do tamanho da turma. Assim que o relatório for gerado, ele estará disponível para ser baixado aqui.";
-		
-		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
+
+		certificationIcon.setUrl(StringUtils.mkurl(ADMIN_IMAGES_PATH, type + ".png"));
 		lblName.setText(name);
 		lblDescription.setText(description);
 		lblGenerate.setText("Gerar");
@@ -144,8 +172,8 @@ public class GenericCourseClassReportItemView extends Composite {
 		final Collapse collapse = new Collapse();
 		trigger.setTarget("#toggleCertUsernames");
 		collapse.setId("toggleCertUsernames");
-		
-		Image img = new Image(LIBRARY_IMAGES_PATH + "pdf.png");
+
+		Image img = new Image(StringUtils.mkurl(LIBRARY_IMAGES_PATH, "pdf.png"));
 		checkBox = new CheckBox("Gerar somente para um conjunto de participantes dessa turma");
 		
 		FlowPanel triggerPanel = new FlowPanel();

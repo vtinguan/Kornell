@@ -303,7 +303,7 @@ public class PrefetchSequencer implements Sequencer {
 		if (actom == null)
 			return null;
 		if (actom instanceof ExternalPage)
-			return new ExternalPageView(session, (ExternalPage) actom);
+			return new ExternalPageView((ExternalPage) actom);
 		throw new IllegalArgumentException("Do not know how to view [" + actom
 				+ "]");
 	}

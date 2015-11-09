@@ -6,6 +6,7 @@ import java.util.List;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.presentation.util.FormHelper;
 
 import com.google.gwt.core.client.GWT;
@@ -13,7 +14,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CPFValidator implements Validator {
-	ValidationMessages msgs = GWT.create(ValidationMessages.class);
+	KornellConstants constants = GWT.create(KornellConstants.class);
 	KornellSession session;
 	String personUUID;
 
@@ -36,14 +37,14 @@ public class CPFValidator implements Validator {
 			String cpf = txtWidget.getText();
 			if (StringUtils.isSome(cpf)) {
 				if (!isValidCPF(cpf)) {
-					errors.add(msgs.invalidCPF());
+					errors.add(constants.invalidCPF());
 					cb.ok(errors);
 				} else {
 					session.person(personUUID).isCPFRegistered(cpf, new Callback<Boolean>() {
 						@Override
 						public void ok(Boolean to) {
 							if (to) {
-								errors.add(msgs.existingCPF());
+								errors.add(constants.existingCPF());
 							}
 							cb.ok(errors);
 						}

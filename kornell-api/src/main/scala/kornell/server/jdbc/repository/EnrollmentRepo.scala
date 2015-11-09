@@ -51,12 +51,6 @@ class EnrollmentRepo(enrollmentUUID: String) {
     e
   }
 
-  def delete(enrollmentUUID: String) = {
-    sql"""
-      delete from Enrollment 
-      where uuid = ${enrollmentUUID}""".executeUpdate
-  }
-
   def findGrades: List[String] = sql"""
     	select * from ActomEntries
     	where enrollment_uuid = ${enrollmentUUID}
@@ -78,7 +72,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
     val actoms = ContentsOps.collectActoms(contents).asScala
     val visited = actoms.filter(_.isVisited).size
     val newProgress = visited / actoms.size.toDouble
-    val newProgressPerc = (newProgress * 100).floor.toInt
+    val newProgressPerc = math.max((newProgress * 100).floor.toInt, 1)
     setEnrollmentProgress(e, newProgressPerc)
   }
 

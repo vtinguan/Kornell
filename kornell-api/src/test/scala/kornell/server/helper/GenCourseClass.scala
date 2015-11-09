@@ -7,7 +7,6 @@ import kornell.server.api.CoursesResource
 import kornell.server.api.CourseVersionsResource
 import kornell.server.api.CourseClassesResource
 import kornell.core.entity.CourseClass
-import kornell.server.api.RepositoryResource
 import kornell.server.jdbc.repository.RepositoriesRepo
 import kornell.core.entity.RegistrationType
 import kornell.server.jdbc.repository.CourseVersionsRepo
@@ -25,7 +24,7 @@ trait GenCourseClass
   
   val courseVersion = {
     val repositoryUUID = RepositoriesRepo().createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
-    CourseVersionsRepo.create(Entities.newCourseVersion(repositoryUUID=repositoryUUID, courseUUID = courseUUID))
+    CourseVersionsRepo.create(Entities.newCourseVersion(repositoryUUID=repositoryUUID, courseUUID = courseUUID), institutionUUID)
   }
   val courseVersionUUID = courseVersion.getUUID
    

@@ -18,7 +18,6 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
-import kornell.core.to.RoleTO;
 import kornell.core.to.RolesTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.mvp.PlaceUtils;

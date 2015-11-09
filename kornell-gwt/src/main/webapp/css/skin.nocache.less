@@ -1,0 +1,789 @@
+@import "Kornell.nocache.css";
+@import "external.css";
+@import "//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css";
+//UTILS
+@import "utils/bars";
+@import "utils/forms";
+@import "utils/mixins";
+@import "utils/colors";
+@import "utils/lesshat";
+//VITRINE
+@import "vitrine/vitrine";
+//TERMS
+@import "terms/terms";
+//WELCOME
+@import "welcome/welcome";
+@import "welcome/profile";
+@import "welcome/courses/courses";
+	@import "welcome/courses/courseLibrary";
+	@import "welcome/courses/courseDetails";
+	@import "welcome/courses/courseNotes";
+@import "welcome/profile";
+
+body, html {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	background: @background !important;
+	background-size: 100% 100%;
+}
+a{
+	color: @textInfoColor !important;
+}
+a:hover{
+	//color: darken(@textInfoColor, 25%) !important;
+}
+.vScrollBar{
+	width: 100%;
+	position: fixed !important;
+	top: 0;
+	bottom: 0;
+}
+.overflow{
+	overflow-y: auto !important;
+	overflow-x: auto !important;
+}
+.offsetNorthBar{
+	top: @barNorthHeight !important;
+}
+.offsetNorthBarPlus{
+	top: @barNorthHeightPlus !important;
+}
+.offsetSouthBar{
+	bottom: @barSouthHeight !important;
+}
+.wrapper {
+    margin: 0 auto;  
+} 
+.wrapperWidth {
+	width: @wrapperWidth;
+	margin: 0 auto;
+}
+@media screen and (max-width: @wrapperWidth) {
+    .wrapper {
+	}
+}
+.contentWrapper {}
+	
+::-webkit-scrollbar {
+    width: 18px;
+    height: 18px;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px fade(@contentBoxBackgroundColor, 50%) !important; 
+    border-radius: 5px;
+	background-color: @modalBackgroundColor;
+}
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px fade(@tableBackgroundColor, 50%) !important; 
+    border-radius: 5px;
+	background-color: @background;
+}
+
+.MessagePlace { 
+	.messageInboxPanel{
+		width: @wrapperWidth;
+		max-height: 1000px;
+		height: ~"calc(100vh - 105px)";
+		.threadPanel {
+			.threadPanelItemsScroll {
+				height: ~"calc(100vh - 246px)";    
+				max-height: ~"calc(1000px - 146px)";
+			}
+		}
+	}
+}  
+.AdminCourseClassPlace { 
+	.messageInboxPanel{
+		width: @wrapperWidth;
+		max-height: 1000px;
+		height: ~"calc(100vh - 240px)";
+		.threadPanel {
+			.threadPanelItemsScroll {
+				height: ~"calc(100vh - 385px)";
+				max-height: ~"calc(1000px - 146px)";
+			}
+		}
+	}
+}  
+.ClassroomPlace { 
+	.messageInboxPanel{
+		width: @rightPanelWidth;
+		max-height: 1000px;
+		height: ~"calc(100vh - 220px)";
+		min-height: 460px;
+		margin-top: 20px;
+		.threadPanel {
+			width: @rightPanelWidth;
+			.threadPanelItemsScroll {
+				height: ~"calc(100vh - 365px)";
+				max-height: ~"calc(1000px - 146px)";
+				min-height: 302px;
+			}
+		}
+		.sidePanelScroll {
+			display: none;
+		}
+	}
+}  
+/*.threadPanelItemsScroll > div  { 
+  position: absolute !important;
+  bottom: 0px;
+  width: 100%;
+}*/
+.messageInboxPanel{
+	min-height: 350px;
+	margin: 0 auto;
+	margin-top: 10px;
+	@borderHighlight: 1px solid fade(@textInfoColor, 50%);
+	background-color: rgba(0, 0, 0, 0.05);
+	height: 500px;
+	border-radius: 8px;
+	.boxSizing;
+	.sidePanelScroll{
+		width: 22%;
+		height: ~"calc(100% - 11px)";
+		padding: 5px;
+		border-radius: 8px 0px 0px 8px;
+		.sidePanel{
+			width: 100%;
+			.boxSizing;
+			.filterPanel{
+				background-color: @tableBackgroundColor;
+			    margin-bottom: 8px;
+			    height: 30px;
+			    border-radius: 5px;
+			    input{
+			    	width: 75%;
+				    font-size: 11px;
+				    background-color: transparent;
+				    border: 1px solid transparent;
+				    color: #e3e3e3;
+			    }
+			    i{
+				    color: @plainDiscreteTextColor;
+				    background-color: transparent;
+				    display: block;
+				    line-height: 30px;
+				    font-size: 12px;
+					&:hover {
+						cursor: pointer;
+					}
+			    }
+			    .icon-search{
+			    	float: right;
+				    padding-right: 8px;
+				}
+				a{
+			    	float: right;
+				    padding-right: 4px;
+					&:hover {
+						text-decoration: none;
+					}
+				}
+			}
+			.threadListItem{
+				.boxSizing;
+				color: @niceTextColor;
+				background-color: @tableBackgroundColor;
+				font-size: 11px;
+				line-height: 20px;
+				margin-bottom: 6px;
+				border-radius: 5px;
+				padding: 6px;
+				font-weight: bold;
+				overflow: hidden;
+				&:hover {
+					background-color: @tableBackgroundHoverColor;
+				}
+				.unreadCount{
+					color: @textInfoColor;
+				}
+			}
+			.selected{
+				background-color: @tableBackgroundHoverColor;
+			}
+		}
+	}
+	.threadPanel{
+		width: ~"calc(78% - 12px)";
+		padding: 10px;
+		border-radius: 0px 8px 8px 0px;
+		.boxSizing;
+		.threadTitle{
+			font-size: 13px;
+			color: @niceTextColor;
+			padding-top: 8px;
+			padding-bottom: 15px;
+			margin-bottom: 5px;
+			text-align: center;
+			font-weight: bold;
+			height: 22px;
+			span{
+				height: 20px;
+				overflow: hidden;
+			}
+		}
+		.threadPanelItemsScroll{
+			min-height: 192px;
+			margin-bottom: 5px;
+			padding-right: 5px;
+			.threadMessageWrapper{
+				.boxSizing;
+				background: @tableBackgroundHoverColor;
+				margin: 5px;
+				padding: 5px 8px;
+				margin-left: 15px;
+				border-radius: 10px;
+				position: relative;
+				.threadMessageHeader{
+					color: @textHighlightDiscreteColor;
+					font-size: 8px;
+					font-size: 10px;
+					margin-bottom: 5px;
+				}
+				.threadMessageItem{
+					color: @niceTextColor;
+					font-size: 12px;
+					padding: 0px 10px;
+					white-space: pre-wrap;
+				}
+				&:after {
+					content: '';
+					position: absolute;
+					top: 40%;
+					left: 0%;
+					margin-left: -12px;
+					border-top: 7px solid transparent;
+					border-bottom: 7px solid transparent;
+					border-right: 12px solid @tableBackgroundHoverColor;
+				}
+			}
+			.overrideWrapper{
+				margin-left: 0px !important;
+				margin-right: 15px !important;
+				background: @tableBackgroundColor !important;
+				&:after {
+					left: 100% !important;
+					margin-left: 0px !important;
+					margin-right: -12px !important;
+					border-left: 12px solid @tableBackgroundColor !important;
+					border-right: 0px !important;
+				}
+			}
+		} 
+		.sendMessageWrapper{
+			.boxSizing;
+			padding-top: 6px;
+			.messageTextArea{
+				.boxSizing;
+				width: 83%;
+				float: left;
+				height: 60px;
+				font-size: 12px;
+				line-height: 14px;
+				resize: none;
+			}
+			.btnSend{
+				.boxSizing;
+				width: 15%;
+				float: left;
+				margin-top: 19px;
+				margin-left: 10px;
+			}
+			span{
+				color: @plainDiscreteTextColor;
+				font-size: 9px;
+				text-align: center;
+				display: block;
+				line-height: 25px;
+				font-weight: bold;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+.messagesPopup{
+	right: 0 !important;
+	left: initial !important;
+	width: auto;
+	.messagesPanel{
+		width: 530px;
+		margin: 0 auto;
+		border-radius: 0px 0px 0px 15px;
+		background-color: @modalBackgroundColor;
+		.titlePanel{
+			height: auto;
+			padding-top: 12px;
+			margin-left: 13px;
+			text-align: center;
+			margin-bottom: 3px;
+			.lblTitle{
+				color: @textHighlightColor;
+				font-size: 18px;
+				font-weight: bold;
+				width: 100%;
+				text-align: center;
+			}
+			.lblSubTitle{
+				color: @textInfoColor;
+				font-size: 13px;
+				margin-top: 5px;
+				float: left;
+				width: 100%;
+			}
+			.profileSeparatorBar{
+				width: 100%;
+			}
+		}
+		.fieldPanelWrapper{
+			height: auto;
+			margin-bottom: 5px;
+			width: 100%;
+			.labelPanel{
+				width: 80px;
+				margin-right: 7px;
+				margin-left: 20px;
+				text-align: initial;
+				float: left;
+				.lblLabel{
+					line-height: 12px;
+					font-size: 12px;
+					text-decoration: none;
+				}
+			}
+			.fieldPanel{
+				width: 275px;
+				.lblValue{
+					line-height: 14px;
+					margin-left: 2px;
+					margin-top: 5px;
+					margin-bottom: 5px;
+					font-size: 14px;
+					font-weight: bold;
+					width: 400px;
+				}
+				.textField{
+					width: 380px;
+					height: 12px;
+					font-size: 12px;
+				}
+				.selectField{
+					width: 393px;
+					height: 24px;
+						font-size: 11px;
+				}
+				.error{
+					font-size: 10px;
+					line-height: 12px;
+				}
+				.gwt-TextArea{
+					height: 180px;
+				}
+			}
+		}
+		.standardButtonBar{
+			width: 220px;
+			padding: 15px 0px 10px 0px;
+			.btnStandard{
+				margin: 5px;
+				margin-bottom: 10px;
+			}
+		}
+	}
+}
+
+
+.deanHome{
+	min-width: @wrapperWidth;
+	margin: 0 auto;
+	padding: 10px;
+	@insertPanelHeight: 45px;
+	.nav-tabs>li>a{
+		border: 1px solid darken(@tableBackgroundColor, 100%) !important;
+		border-bottom: 0px;
+	}
+	.inlineLabel{
+		margin-right: 5px;
+		display: inline;
+		color: @niceTextColor;
+		font-size: 12px;
+	}
+	.lblHighlight{
+		color: @textHighlightDiscreteColor;
+		font-weight: bold;
+		font-size: 13px;
+	}
+	.titlePanel{
+		margin-bottom: 20px;
+		height: auto;
+		padding-top: 0;
+	}
+	.title{
+		color: @textHighlightColor;
+		font-size: 18px;
+		line-height: 28px;
+		clear: both;
+	}
+	.subTitle{
+		color: @niceTextColor;
+	}
+	.courseClassesHeaderWrapper{
+		margin-top: 20px;
+		height: 45px;
+		.listBoxCourseClasses{
+			float: left;
+			height: 26px;
+			margin-left: 15px;
+			width: 550px;
+			font-size: 12px;
+		}
+		.btnAction{
+			float: right;
+		}
+	}
+	.controlsPanel{
+		float: left;
+		width: 100%;
+		.insertPanel{
+			float: left;
+			line-height: 45px;
+			.btnAction{
+				margin-left: 10px;
+				display: inline-block;
+			}
+			input{
+				margin-top: 10px;
+				width: 180px;
+				height: 14px;
+				font-size: 12px;
+				margin-left: 5px;
+				margin-right: 10px;
+			}
+		}
+		.insertBatchPanel{
+			float: right;
+			height: @insertPanelHeight;
+			.btnNotSelected{
+				margin-top: 12px;
+				margin-right: 12px;
+			}
+		}	
+	}
+	.addEnrollmentBatchPanel{
+		display: block;
+		margin: 0px auto;
+		.infoPanel{
+			font-size: 12px;
+			line-height: 16px;
+			float: left;
+			margin-left: 20px;
+			margin-top: 225px;
+		}
+		textarea{
+			width: 528px;
+			float: left;
+			height: 350px;
+			margin-bottom: 20px;
+			margin-top: 20px;
+		}
+		.btn{
+			margin-top: 15px !important;
+			display: inline-block;
+		}
+	}
+	.adminCellTable{
+		color: @niceTextColor;
+		margin-bottom: 0;
+		margin-top: 20px;
+		border: 0;
+		border-collapse: separate;
+		border-spacing: 0 5px;
+		.btnAdminCellTable{
+			float: left;
+			margin-right: 10px;
+			height: 18px;
+			line-height: 14px;
+			font-size: 10px;
+		}
+		thead{
+			tr{
+				background-color: transparent !important;
+				.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+				th{
+					border-right: 1px solid @buttonBorderLeftColor;
+					padding: 3px;
+				}
+			}
+		}
+		tbody{
+			tr{
+				background-color: @tableBackgroundColor;
+				font-size: 12px;
+  				cursor: pointer;
+				&:hover {
+					background-color: @tableBackgroundHoverColor;
+				}
+				td{
+					border: 0;
+					padding: 3px;
+					line-height: 22px;
+				}
+			}
+		}
+	}
+	.courseClassCellTable {
+		tr {
+			td:nth-child(3) {
+		    	font-weight: bold;
+		    	font-size: 14px;
+		    }
+		}
+	}
+	.lineWithoutLink {
+		tbody{
+			tr{
+				cursor: default;
+			}
+		}
+	}
+	table{
+		border-color: transparent !important;
+		width: 100%;
+		float: left;
+	}
+	.pagination{
+		width: 100%;
+		float: left;
+	}
+	.pageSizeListBox{
+		font-size: 12px;
+		width: 65px;
+		height: 26px;
+		margin-left: 5px;
+		margin-right: 5px;
+		float: right;
+		background-color: transparent;
+		border: 1px solid @buttonBorderLeftColor;
+		color: @niceTextColor;
+	}
+	.txtSearch{
+		font-size: 12px;
+		height: 17px;
+		margin-right: 5px;
+		float: left;
+		background-color: transparent;
+		border: 1px solid @buttonBorderLeftColor;
+		color: @niceTextColor;
+	}
+	.btnSearch{
+		float: left;
+		margin-top: 3px;
+	}
+	.courseClassConfig, .courseClassReports, .courseClassMessages{
+		width: @wrapperWidth;
+		margin: 0 auto;
+	}
+}
+
+
+.reportPanel{
+	@detailsPanelMargin: 20px;
+	@reportPanelWidth: @wrapperWidth - @detailsPanelMargin;
+
+	@reportWidth: .6 * @reportPanelWidth;
+	@generateWidth: .2 * @reportPanelWidth;
+	@downloadWidth: .2 * @reportPanelWidth;
+	float: left;
+	.reportHeaderPanel{
+		@reportHeaderPanelHeight: 24px;
+		height: @reportHeaderPanelHeight;
+		margin-bottom: 10px;
+		.btnReportHeader{
+			.boxSizing;
+			.btnDefault;
+			.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+			border-radius: 0px !important;
+			height: @reportHeaderPanelHeight;
+			line-height: @reportHeaderPanelHeight;
+			padding-left: @detailsPanelMargin / 2 !important;
+			padding-right: @detailsPanelMargin / 2 !important;
+			.btnBorder;
+			display: block;
+			float: left;
+			&:hover{
+				text-decoration: none;
+				cursor: default;
+			}
+		}
+		.btnReport{width: @reportWidth; text-align: left;}
+		.btnGenerate{width: @generateWidth;}
+		.btnDownload{width: @downloadWidth;}
+	}
+	.reportWrapper{
+		@reportWrapperHeight: 88px;
+		line-height: @reportWrapperHeight;
+		background-color: @tableBackgroundHoverColor;
+		margin-top: @detailsPanelMargin / 2;
+		color: @niceTextColor;
+		font-size: 13px;
+		.itemPanel{
+			.boxSizing;
+			display: inline-block;
+  			vertical-align: top;
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+			width: @reportWidth + 2px;
+			.reportIcon{
+				float: left;
+				padding-top: (@reportWrapperHeight - 18px) / 2;
+				padding-bottom: (@reportWrapperHeight - 18px) / 2;
+				padding-left: @detailsPanelMargin / 2;
+				padding-right: @detailsPanelMargin;
+			}
+			.lblName{
+				.lightenOrDarkenColor(@niceTextColor, 20%);
+				padding-left: @detailsPanelMargin;
+				line-height: 10px;
+				font-size: 14px;
+				font-weight: bold;
+				padding-top: @detailsPanelMargin * 2 / 3;
+				padding-bottom: 9px;
+			}
+			.lblDescription{
+				color: @textInfoColor;
+				padding-left: 55px;
+				font-size: 12px;
+				line-height: 14px;
+			}
+			.optionPanel{
+				padding-left: 48px;
+				padding-top: 5px;
+				img{
+					height: 18px;
+					width: 18px;
+					float: left;
+					.cursorPointer;
+				}
+				input{
+					height: 12px;
+					margin-left: 6px;
+				}
+				span{
+					font-size: 10px;
+					margin-left: 2px;
+					float: left;
+					.cursorPointer;
+				}
+				select{
+					height: 25px;
+					float: left;
+					margin-left: 8px;
+					font-size: 14px;
+					padding: 0px 7px;
+					width: 100px;
+				}
+				textarea{
+					width: 90%;
+					margin: 10px 15px;
+					height: 150px;
+				}
+				.gwt-Label{
+					color: @textInfoColor;
+					padding: 0px 15px;
+					font-size: 11px;
+					line-height: 13px;
+				}
+			}
+		}
+		.lblGenerate{
+			.boxSizing;
+			display: inline-block;
+  			vertical-align: top;
+			width: @generateWidth;
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+			text-align: center;
+		}
+		.lblDownload{
+			.boxSizing;
+			display: inline-block;
+  			vertical-align: top;
+			width: @downloadWidth;
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+			text-align: center;
+		}
+	}
+}
+
+
+.placeBar{
+	width: 100%;
+	height: 35px;
+	float: left;
+	background: @modalBackgroundColor;
+	.centerBar{
+		width: 962px;
+		margin: 0 auto;
+		i{
+			font-size: 19px;
+			float: left;
+			width: 25px;
+			margin-top: 8px;
+			margin-left: 10px;
+			color: @niceTextColor;
+		}
+		.title{
+			font-size: 17px;
+			padding-top: 8px;
+			padding-left: 7px;
+			color: @textHighlightColor;
+			float: left;
+			font-weight: bold;
+		}
+		.separator{
+			font-size: 15px;
+			padding-top: 6px;
+			padding-left: 10px;
+			color: @plainDiscreteTextColor;
+			float: left;
+			font-weight: bold;
+		}
+		.subtitle{
+			font-size: 12px;
+			padding-top: 8px;
+			padding-left: 10px;
+			color: @plainDiscreteTextColor;
+			float: left;
+			font-weight: bold;
+			font-style: italic;
+		}
+		.btnPanel{
+			padding-top: 2px;
+			.btnPlaceBar{
+				float: right;
+				margin-top: 6px;
+				margin-right: 6px;
+			}
+		}
+	}
+}
+@media screen and (max-width: @wrapperWidth) {
+	.placeBar{
+		.centerBar{
+    		width: @wrapperWidthUnder990;
+    		.separator, .subtitle {
+    			display: none;
+    		}
+		}
+    }
+}

@@ -2,7 +2,13 @@ package kornell.server.jdbc
 
 import java.sql.ResultSet
 import java.util.logging.Logger
+
 import kornell.core.entity.Assessment
+import kornell.core.entity.AuditedEntityType
+import kornell.core.entity.AuthClientType
+import kornell.core.entity.BillingType
+import kornell.core.entity.ChatThread
+import kornell.core.entity.ChatThreadParticipant
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseClassState
@@ -10,31 +16,27 @@ import kornell.core.entity.CourseVersion
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.Institution
+import kornell.core.entity.InstitutionRegistrationPrefix
+import kornell.core.entity.InstitutionType
 import kornell.core.entity.Person
+import kornell.core.entity.RegistrationType
+import kornell.core.entity.RegistrationType
+import kornell.core.entity.RoleCategory
 import kornell.core.entity.RoleType
+import kornell.core.event.EntityChanged
 import kornell.core.to.ChatThreadMessageTO
 import kornell.core.to.CourseClassTO
+import kornell.core.to.CourseVersionTO
 import kornell.core.to.EnrollmentTO
+import kornell.core.to.PersonTO
+import kornell.core.to.RoleTO
+import kornell.core.to.SimplePersonTO
+import kornell.core.to.TokenTO
 import kornell.core.to.UnreadChatThreadTO
 import kornell.server.repository.Entities._
 import kornell.server.repository.Entities
 import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
-import kornell.core.entity.RegistrationType
-import kornell.core.to.CourseVersionTO
-import kornell.core.entity.ChatThreadParticipant
-import kornell.core.entity.ChatThread
-import kornell.core.entity.BillingType
-import kornell.core.entity.RegistrationType
-import kornell.core.entity.InstitutionRegistrationPrefix
-import kornell.core.to.PersonTO
-import kornell.core.to.RoleTO
-import kornell.core.entity.RoleCategory
-import kornell.core.to.TokenTO
-import kornell.core.entity.AuthClientType
-import kornell.core.entity.InstitutionType
-import sun.security.action.GetBooleanAction
-import kornell.core.to.SimplePersonTO
 import kornell.core.entity.S3ContentRepository
 
 /**
@@ -47,7 +49,7 @@ import kornell.core.entity.S3ContentRepository
  * find() => Return Collection[T], as the result of a query
  */
 package object repository {
-  val logger = Logger.getLogger("kornell.server.jdbc")
+  val logger = Logger.getLogger("kornell.server.jdbc.repository")
   
   //TODO: Move converters to their repos
   implicit def toInstitution(rs:ResultSet):Institution = 
@@ -297,6 +299,10 @@ package object repository {
 	
 	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
 	    rs.getString("senderFullName"),
+	    if(rs.getString("senderRole") == null)
+	      RoleType.user
+	    else
+	      RoleType.valueOf(rs.getString("senderRole")),
 	    rs.getString("sentAt"), 
 	    rs.getString("message"))
   
@@ -328,4 +334,18 @@ package object repository {
         rs.getString("uuid"),
         rs.getString("fullName"),
         rs.getString("username"))
+        
+   
+  implicit def toEntityChanged(rs: ResultSet): EntityChanged = newEntityChanged(
+    rs.getString("uuid"), 
+    rs.getString("eventFiredAt"),
+    rs.getString("institutionUUID"),
+    rs.getString("personUUID"),
+    AuditedEntityType.valueOf(rs.getString("entityType")),
+    rs.getString("entityUUID"),
+    rs.getString("fromValue"),
+    rs.getString("toValue"),
+    rs.getString("entityName"),
+    rs.getString("fromPersonName"),
+    rs.getString("fromUsername")) 
 }

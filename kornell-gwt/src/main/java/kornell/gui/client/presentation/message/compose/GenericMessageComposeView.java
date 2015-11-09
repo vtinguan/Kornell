@@ -1,9 +1,14 @@
 package kornell.gui.client.presentation.message.compose;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import kornell.api.client.KornellSession;
+import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.RoleTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
@@ -16,13 +21,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-
 
 public class GenericMessageComposeView extends Composite implements MessageComposeView {
 
@@ -34,95 +39,121 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private MessageComposeView.Presenter presenter;
 
-  KornellFormFieldWrapper recipient, messageText;
+	KornellFormFieldWrapper recipient, messageText;
 	private List<KornellFormFieldWrapper> fields;
+	private KornellSession session;
 
-	@UiField Label lblTitle;
-	@UiField Label lblSubTitle;
-	@UiField Image separatorBar;
-  @UiField FlowPanel fieldsPanel;
-  @UiField Button btnOK;
-  @UiField Button btnCancel;
+	@UiField
+	Label lblTitle;
+	@UiField
+	Label lblSubTitle;
+	@UiField
+	Image separatorBar;
+	@UiField
+	FlowPanel fieldsPanel;
+	@UiField
+	Button btnOK;
+	@UiField
+	Button btnCancel;
 
-	public GenericMessageComposeView() {
+	public GenericMessageComposeView(KornellSession session) {
+		this.session = session;
 		initWidget(uiBinder.createAndBindUi(this));
-    ensureDebugId("genericMessageComposeView");
+		ensureDebugId("genericMessageComposeView");
 	}
-	
+
 	@Override
-	public void show(String courseClassUUID){
-			initialize(courseClassUUID);
+	public void show(String courseClassUUID) {
+		initialize(courseClassUUID);
 	}
- 
-  private void initialize(String courseClassUUID) {
-  	lblTitle.setText(constants.composeTitle());
-  	lblSubTitle.setText(constants.composeSubTitle());
-  	separatorBar.setUrl(FormHelper.SEPARATOR_BAR_IMG_PATH);
-  	separatorBar.addStyleName(FormHelper.SEPARATOR_BAR_CLASS);
-  	
+
+	private void initialize(String courseClassUUID) {
+		lblTitle.setText(constants.composeTitle());
+		lblSubTitle.setText(constants.composeSubTitle());
+		separatorBar.setUrl(FormHelper.SEPARATOR_BAR_IMG_PATH);
+		separatorBar.addStyleName(FormHelper.SEPARATOR_BAR_CLASS);
+
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		fieldsPanel.clear();
 
+		boolean hasPlatformThreadAccess = false;
+		boolean hasInstitutionThreadAccess = false;
+		
 		final ListBox recipients = new ListBox();
+		
+		for (RoleTO roleTO : session.getCurrentUser().getRoles()) {
+			if(RoleType.institutionAdmin.equals(roleTO.getRole().getRoleType())){
+				hasPlatformThreadAccess = true;
+			} else if(RoleType.courseClassAdmin.equals(roleTO.getRole().getRoleType())){
+				hasInstitutionThreadAccess = true;
+			}
+		}
+		
+		if(hasPlatformThreadAccess){
+			recipients.addItem(constants.platformAdminLabel(), "platformSupport");
+		}
+		
+		if(hasInstitutionThreadAccess){
+			recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getName(), "institutionSupport");
+		}
 
-		
-		
 		for (CourseClassTO courseClassTO : Dean.getInstance().getHelpCourseClasses()) {
 			recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
 		}
-		
-		if(courseClassUUID == null && recipients.getItemCount() <= 0) this.setVisible(false);
+
+		if (courseClassUUID == null && recipients.getItemCount() <= 0)
+			this.setVisible(false);
 
 		recipients.setSelectedValue(courseClassUUID);
-		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), recipients.getItemCount() > 1 && courseClassUUID == null);
+		recipient = new KornellFormFieldWrapper(constants.recipient(), new ListBoxFormField(recipients), recipients.getItemCount() > 1 && (hasPlatformThreadAccess || courseClassUUID == null));
 		fields.add(recipient);
 		fieldsPanel.add(recipient);
 
-  	messageText = new KornellFormFieldWrapper(constants.message(), formHelper.createTextAreaFormField(""), true);
+		messageText = new KornellFormFieldWrapper(constants.message(), formHelper.createTextAreaFormField(""), true);
 		fields.add(messageText);
 		fieldsPanel.add(messageText);
-  }
+	}
 
 	@Override
-  protected void onEnsureDebugId(String baseID) {
+	protected void onEnsureDebugId(String baseID) {
 		recipient.ensureDebugId(baseID + "-recipient");
-  	messageText.ensureDebugId(baseID + "-messageText");
-  	btnOK.ensureDebugId(baseID + "-btnOK");
-  	btnCancel.ensureDebugId(baseID + "-btnCancel");
-  }
+		messageText.ensureDebugId(baseID + "-messageText");
+		btnOK.ensureDebugId(baseID + "-btnOK");
+		btnCancel.ensureDebugId(baseID + "-btnCancel");
+	}
 
-  @UiHandler("btnOK")
-  void onOkButtonClicked(ClickEvent e) {
-    presenter.okButtonClicked();
-  }
+	@UiHandler("btnOK")
+	void onOkButtonClicked(ClickEvent e) {
+		presenter.okButtonClicked();
+	}
 
-  @UiHandler("btnCancel")
-  void onCancelButtonClicked(ClickEvent e) {
-  	presenter.cancelButtonClicked();
-  }
-  
+	@UiHandler("btnCancel")
+	void onCancelButtonClicked(ClickEvent e) {
+		presenter.cancelButtonClicked();
+	}
+
 	@Override
 	public void setPresenter(Presenter p) {
 		presenter = p;
 	}
 
 	@Override
-  public KornellFormFieldWrapper getRecipient() {
-	  return recipient;
-  }
+	public KornellFormFieldWrapper getRecipient() {
+		return recipient;
+	}
 
-  @Override
+	@Override
 	public KornellFormFieldWrapper getMessageText() {
 		return messageText;
 	}
 
 	@Override
-  public boolean checkErrors() {
-	  return formHelper.checkErrors(fields);
-  }
+	public boolean checkErrors() {
+		return formHelper.checkErrors(fields);
+	}
 
 	@Override
-  public void clearErrors() {
+	public void clearErrors() {
 		formHelper.clearErrors(fields);
-  }
+	}
 }

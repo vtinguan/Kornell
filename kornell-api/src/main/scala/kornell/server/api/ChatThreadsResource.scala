@@ -47,6 +47,24 @@ class ChatThreadsResource {
   }
   
   @POST
+  @Path("institutionSupport")
+  @Produces(Array("application/octet-stream"))
+  def postMessageToInstitutionSupportThread(implicit @Context sc: SecurityContext, 
+    message: String) = AuthRepo().withPerson { person => 
+        ChatThreadsRepo.postMessageToInstitutionThread(person.getUUID, person.getInstitutionUUID, message, ChatThreadType.INSTITUTION_SUPPORT)
+  		ChatThreadsRepo.getInstitutionChatThreadUUID(person.getUUID, person.getInstitutionUUID: String, ChatThreadType.INSTITUTION_SUPPORT).get
+  }
+  
+  @POST
+  @Path("platformSupport")
+  @Produces(Array("application/octet-stream"))
+  def postMessageToPlatformSupportThread(implicit @Context sc: SecurityContext,
+    message: String) = AuthRepo().withPerson { person => 
+        ChatThreadsRepo.postMessageToInstitutionThread(person.getUUID, person.getInstitutionUUID, message, ChatThreadType.PLATFORM_SUPPORT)
+  		ChatThreadsRepo.getInstitutionChatThreadUUID(person.getUUID, person.getInstitutionUUID: String, ChatThreadType.PLATFORM_SUPPORT).get
+  }
+  
+  @POST
   @Path("{chatThreadUUID}/message")
   @Produces(Array(ChatThreadMessagesTO.TYPE))
   def postMessageToChatThread(implicit @Context sc: SecurityContext, 
@@ -88,10 +106,13 @@ class ChatThreadsResource {
   @GET
   def getChatThreadMessages(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String, 
-    @QueryParam("since") since: String) = AuthRepo().withPerson { person => {
+    @QueryParam("since") since: String, 
+    @QueryParam("before") before: String) = AuthRepo().withPerson { person => {
       ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
   		if(StringUtils.isSome(since))
   			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
+  		else if(StringUtils.isSome(before))
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, before)
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
     }

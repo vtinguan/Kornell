@@ -134,20 +134,6 @@ class EnrollmentResource(uuid: String) {
     }
   }
 
-  @DELETE
-  @Produces(Array(Enrollment.TYPE))
-  def delete(implicit @Context sc: SecurityContext) = {
-    val enrollmentRepo = EnrollmentRepo(uuid)
-    val enrollment = enrollmentRepo.get
-    enrollmentRepo.delete(uuid)
-    enrollment
-  }.requiring(isPlatformAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
-    .or(isInstitutionAdmin(CourseClassRepo(EnrollmentRepo(uuid).get.getCourseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
-    .or(isCourseClassAdmin(EnrollmentRepo(uuid).get.getCourseClassUUID), AccessDeniedErr())
-
-    
-    
-  
   def getEntries(es:List[String]):EnrollmentsEntries = {
     val esEntries: EnrollmentsEntries = Entities.newEnrollmentsEntries()
     val esEntriesMap = esEntries.getEnrollmentEntriesMap

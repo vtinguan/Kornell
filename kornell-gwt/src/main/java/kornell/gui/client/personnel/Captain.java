@@ -3,7 +3,6 @@ package kornell.gui.client.personnel;
 import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Assessment;
 import kornell.core.entity.ContentSpec;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.LoginEvent;
@@ -13,7 +12,6 @@ import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceChangeRequestEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;

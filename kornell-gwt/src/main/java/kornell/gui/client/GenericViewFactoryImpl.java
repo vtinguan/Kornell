@@ -4,6 +4,8 @@ import static kornell.core.util.StringUtils.composeURL;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.presentation.admin.audit.AdminAuditView;
+import kornell.gui.client.presentation.admin.audit.generic.GenericAdminAuditView;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.course.generic.GenericAdminCourseView;
@@ -78,6 +80,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	private AdminCoursePresenter genericAdminCoursePresenter;
 	private GenericAdminCourseVersionsView genericAdminCourseVersionsView;
 	private GenericAdminCourseVersionView genericAdminCourseVersionView;
+	private GenericAdminAuditView genericAdminAuditView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
 	private MessagePresenter messagePresenter, messagePresenterCourseClass, messagePresenterClassroomGlobalChat, messagePresenterClassroomTutorChat;
@@ -200,7 +203,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 
 	@Override
 	public MessageComposeView getMessageComposeView() {
-		return new GenericMessageComposeView();
+		return new GenericMessageComposeView(clientFactory.getKornellSession());
 	}
 
 	@Override
@@ -365,5 +368,13 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getDefaultPlace(),
 					clientFactory.getTOFactory(), this);
 		return genericAdminCourseClassPresenter;
+	}
+
+	@Override
+	public AdminAuditView getAdminAuditView() {
+		if (genericAdminAuditView == null)
+			genericAdminAuditView = new GenericAdminAuditView(clientFactory.getKornellSession(),
+					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
+		return genericAdminAuditView;
 	}
 }

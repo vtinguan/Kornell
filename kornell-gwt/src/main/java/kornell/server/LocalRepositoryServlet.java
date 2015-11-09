@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import kornell.core.util.StringUtils;
 
+@SuppressWarnings("serial")
 public class LocalRepositoryServlet extends HttpServlet {
 	static final Pattern pattern = Pattern.compile("[/]?repository/([^/]*)/(.*)");
 	static final String pUUID = "\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}";
@@ -111,21 +112,12 @@ public class LocalRepositoryServlet extends HttpServlet {
 		return base != null ? Paths.get(base.toURI()) : null;
 	}
 
-	@SuppressWarnings("all")
-	static final Map<String, String> mimeTypes = new HashMap<String, String>() {
-		{
-			put(".txt", "text/plain");
-			put(".html", "text/html");
-			put(".js", "application/javascript");
-			put(".css", "text/css");
-		}
-	};
+	
 
 	private void setContentTye(Path file, HttpServletRequest req,
 			HttpServletResponse resp) {
-		String fname = file.toString();
-		String ext = fname.substring(fname.lastIndexOf("."));
-		String type = mimeTypes.get(ext);
+		String fname = file.toString();		
+		String type = StringUtils.getMimeType(fname);
 		if (StringUtils.isSome(type)) {
 			resp.setContentType(type);
 		}

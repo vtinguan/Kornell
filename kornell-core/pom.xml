@@ -8,13 +8,12 @@
 		<version>1.2-SNAPSHOT</version>
 	</parent>
 
-	<groupId>kornell</groupId>
 	<artifactId>kornell-core</artifactId>
 	<packaging>jar</packaging>
 	<name>Shared Core</name>
 
 	<properties>
-		<gwtVersion>2.6.1</gwtVersion>
+		<gwtVersion>2.7.0</gwtVersion>
 
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>

@@ -11,6 +11,7 @@ import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 import kornell.core.entity.BillingType
 import kornell.core.entity.Institution
+import kornell.core.entity.EnrollmentState
 
 object ReportInstitutionBillingGenerator {
   
@@ -35,7 +36,7 @@ object ReportInstitutionBillingGenerator {
 	      rs.getString("username"))
 	      
     val institutionBillingReportTO = sql"""
-    	SELECT
+    			SELECT
 					p.uuid AS 'personUUID', 
 					p.fullName AS 'fullName',
 					pw.username AS 'username'
@@ -68,7 +69,7 @@ object ReportInstitutionBillingGenerator {
 	      rs.getDate("firstEventFiredAt"))
 	      
     val institutionBillingReportTO = sql"""
-    	SELECT 
+    		SELECT 
 				e.uuid AS 'enrollmentUUID', 
 				c.title AS 'courseTitle',
 				cv.name AS 'courseVersionName',

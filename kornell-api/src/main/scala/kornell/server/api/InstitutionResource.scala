@@ -22,6 +22,7 @@ import kornell.server.jdbc.repository.InstitutionHostNameRepo
 import kornell.core.to.InstitutionHostNamesTO
 import kornell.core.to.InstitutionEmailWhitelistTO
 import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
+import kornell.core.entity.ChatThreadType
 
 
 class InstitutionResource(uuid: String) {
@@ -55,7 +56,9 @@ class InstitutionResource(uuid: String) {
   @Path("admins")
   def updateAdmins(roles: Roles) = {
         val r = RolesRepo.updateInstitutionAdmins(uuid, roles)
-        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid)
+        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid, ChatThreadType.SUPPORT)
+        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid, ChatThreadType.INSTITUTION_SUPPORT)
+        ChatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid, ChatThreadType.PLATFORM_SUPPORT)
         r
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
    .get

@@ -1,7 +1,6 @@
 package kornell.gui.client.presentation.course;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -15,6 +14,7 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentLaunchTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.KornellNotification;
@@ -35,7 +35,8 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class ClassroomPresenter implements ClassroomView.Presenter {
 	
-	Logger logger = Logger.getLogger(ClassroomPresenter.class.getName());
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
+
 	private ClassroomView view;
 	private ClassroomPlace place;
 	private PlaceController placeCtrl;
@@ -66,7 +67,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		view.asWidget().setVisible(false);
 		LoadingPopup.show();			
 		
-		final PopupPanel popup = KornellNotification.show("Carregando o curso...", AlertType.WARNING, -1);
+		final PopupPanel popup = KornellNotification.show(constants.loadingTheCourse(), AlertType.WARNING, -1);
 		session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
 			
 			public void ok(EnrollmentLaunchTO to) {

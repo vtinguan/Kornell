@@ -29,6 +29,7 @@ import java.util.HashMap
 import kornell.core.entity.ActomEntries
 import kornell.core.entity.EnrollmentEntries
 
+//TODO: Remove this class without spreading dependency on AutoBeanFactorySource
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
 
@@ -317,14 +318,6 @@ object Entities {
     clazz
   }
 
-  def newWebRepository(uuid: String, distributionURL: String, prefix: String) = {
-    val webRepo = factory.newWebReposiory.as
-    webRepo.setUUID(uuid)
-    webRepo.setPrefix(prefix)
-    webRepo.setDistributionURL(distributionURL)
-    webRepo
-  }
-
   def newActomEntries(enrollmentUUID: String, actomKey: String, entriesMap: Map[String, String]) = {
     val entries = factory.newActomEntries.as
     entries.setActomKey(actomKey)
@@ -393,9 +386,18 @@ object Entities {
   }
   
   def newEnrollmentEntries = {
-    val eEntries = factory.newEnrollmentEntries().as()
+    val eEntries = factory.newEnrollmentEntries.as
     eEntries.setActomEntriesMap(new HashMap[String,ActomEntries]())
     eEntries
   }
+  
+  def newFSContentRepository(uuid:String,path:String,prefix:String) = {
+    val fsRepo = factory.newFSContentRepository.as
+    fsRepo.setUUID(uuid)
+    fsRepo.setPath(path)
+    fsRepo.setPrefix(prefix)
+    fsRepo
+  }
 
 }
+

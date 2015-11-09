@@ -17,7 +17,6 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.RoleTO;
 import kornell.core.to.RolesTO;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
-import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.PeopleMultipleSelect;
@@ -42,7 +41,6 @@ public class GenericCourseClassAdminsView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
-	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	private KornellSession session;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -84,7 +82,6 @@ public class GenericCourseClassAdminsView extends Composite {
 			Presenter presenter, CourseClassTO courseClassTO) {
 		this.session = session;
 		this.courseClassTO = courseClassTO;
-		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
@@ -247,7 +244,7 @@ public class GenericCourseClassAdminsView extends Composite {
                 role.setTutorRole(tutorRole);
                 rolesList.add(role);  
             }
-            roles.setRoles(rolesList);
+			roles.setRoles(rolesList);
             session.courseClass(courseClassTO.getCourseClass().getUUID()).updateTutors(roles, new Callback<Roles>() {
                 @Override
                 public void ok(Roles to) {
@@ -273,7 +270,7 @@ public class GenericCourseClassAdminsView extends Composite {
                 role.setObserverRole(observerRole);
                 rolesList.add(role);  
             }
-            roles.setRoles(rolesList);
+			roles.setRoles(rolesList);
             session.courseClass(courseClassTO.getCourseClass().getUUID()).updateObservers(roles, new Callback<Roles>() {
                 @Override
                 public void ok(Roles to) {

@@ -16,7 +16,7 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
 public class CourseDetailsTOBuilder {
-	Logger logger = Logger.getLogger(AdminInstitutionPresenter.class.getName());
+	private final static Logger logger = Logger.getLogger(AdminInstitutionPresenter.class.getName());
 	
 	private String jsonString;
 	private CourseDetailsTO courseDetailsTO;
@@ -60,10 +60,6 @@ public class CourseDetailsTOBuilder {
 	    JSONObject jsonObject;
 		JSONString type;
 		JSONString text;
-		JSONString index;
-		JSONString title;
-		JSONString certificationHeaderTitle;
-		JSONString certificationHeaderText;
 		
 		if (jsonValue == null) {
 			logger.warning("Error parsing the JSON");
@@ -125,85 +121,6 @@ public class CourseDetailsTOBuilder {
 				courseDetailsTO.setInfos(infos);	
 			}
 			break;
-			
-		/*	
-		case TOPICS:
-			List<TopicTO> topics = new ArrayList<TopicTO>();
-			for (int i = 0; i < jsonArray.size(); i++) {
-				jsonValue = jsonArray.get(i);
-				if ((jsonObject = jsonValue.isObject()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}
-				jsonValue = jsonObject.get("index");
-				if ((index = jsonValue.isString()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}
-				
-				jsonValue = jsonObject.get("title");
-				if ((title = jsonValue.isString()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}		
-				topics.add(new TopicTO(index.stringValue(),title.stringValue(),"toStart"));
-				courseDetailsTO.setTopics(topics);	
-			}
-			break;
-			
-			*/
-		/*case GENERAL:
-			for (int i = 0; i < jsonArray.size(); i++) {
-				jsonValue = jsonArray.get(i);
-				if ((jsonObject = jsonValue.isObject()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}
-				jsonValue = jsonObject.get("certificationHeaderTitle");
-				if ((certificationHeaderTitle = jsonValue.isString()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}
-				
-				jsonValue = jsonObject.get("certificationHeaderText");
-				if ((certificationHeaderText = jsonValue.isString()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}		
-				courseDetailsTO.setCertificationHeaderInfoTO(new InfoTO(certificationHeaderTitle.stringValue(), certificationHeaderText.stringValue()));
-			}
-			break;*/
-			
-			
-		/*case CERTIFICATIONS:
-			List<CertificationTO> certifications = new ArrayList<CertificationTO>();
-			for (int i = 0; i < jsonArray.size(); i++) {
-				jsonValue = jsonArray.get(i);
-				if ((jsonObject = jsonValue.isObject()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}
-				jsonValue = jsonObject.get("type");
-				if ((type = jsonValue.isString()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}
-				
-				jsonValue = jsonObject.get("name");
-				if ((title = jsonValue.isString()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}	
-				
-				jsonValue = jsonObject.get("text");
-				if ((text = jsonValue.isString()) == null) {
-					logger.warning("Error parsing the JSON");
-					return false;
-				}		
-				certifications.add(new CertificationTO(type.stringValue(),title.stringValue(),text.stringValue()));
-				courseDetailsTO.setCertifications(certifications);	
-			}
-			break;*/
 		default:
 			break;
 		}

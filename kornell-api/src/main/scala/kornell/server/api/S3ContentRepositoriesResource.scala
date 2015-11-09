@@ -20,7 +20,7 @@ class S3ContentRepositoriesResource {
   @Produces(Array(S3ContentRepository.TYPE))
   @Consumes(Array(S3ContentRepository.TYPE))
   def create(contentRepository: S3ContentRepository) = {
-    RepositoriesRepo().create(contentRepository)
+    RepositoriesRepo().createS3Repo(contentRepository)
   }.requiring(isControlPanelAdmin(), AccessDeniedErr()).get
 
 }

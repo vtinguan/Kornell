@@ -76,37 +76,34 @@ class PersonRepo(val uuid: String) {
   }
 
   def hasPowerOver(targetPersonUUID: String) = {
-    val actorRoles = AuthRepo().rolesOf(uuid)
-    val actorRolesSet = (Set.empty ++ actorRoles).asJava
+    val actorRoles = RolesRepo.getUserRoles(uuid, RoleCategory.BIND_DEFAULT).getRoleTOs
     val targetPerson = PersonRepo(targetPersonUUID).get
-
     val targetUsername = AuthRepo().getUsernameByPersonUUID(targetPersonUUID)
 
     //if there's no username yet, any admin can have power
     (!targetUsername.isDefined) ||
       {
-        val targetRoles = AuthRepo().rolesOf(targetPersonUUID)
-        val targetRolesSet = (Set.empty ++ targetRoles).asJava
+    	val targetRoles = RolesRepo.getUserRoles(targetPersonUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
 
         //people have power over themselves
         (uuid == targetPersonUUID) ||
           {
             //platformAdmin has power over everyone, except other platformAdmins
-            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
-              RoleCategory.isPlatformAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
+            !RoleCategory.isPlatformAdmin(targetRoles, targetPerson.getInstitutionUUID) &&
+              RoleCategory.isPlatformAdmin(targetRoles, targetPerson.getInstitutionUUID)
           } || {
             //institutionAdmin doesn't have power over platformAdmins, other institutionAdmins or people from other institutions 
-            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
-              !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) && 
-              RoleCategory.isInstitutionAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
+            !RoleCategory.isPlatformAdmin(targetRoles, targetPerson.getInstitutionUUID) &&
+              !RoleCategory.hasRole(targetRoles, RoleType.institutionAdmin) && 
+              RoleCategory.isInstitutionAdmin(actorRoles, targetPerson.getInstitutionUUID)
           } || {
             //courseClassAdmin doesn't have power over platformAdmins, institutionAdmins, other courseClassAdmins or non enrolled users
             val enrollmentTOs = EnrollmentsRepo.byPerson(targetPersonUUID)
-            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
-              !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) &&
-              !RoleCategory.hasRole(targetRolesSet, RoleType.courseClassAdmin) && {
+            !RoleCategory.isPlatformAdmin(targetRoles, targetPerson.getInstitutionUUID) &&
+              !RoleCategory.hasRole(targetRoles, RoleType.institutionAdmin) &&
+              !RoleCategory.hasRole(targetRoles, RoleType.courseClassAdmin) && {
                 enrollmentTOs exists {
-                  to => RoleCategory.isCourseClassAdmin(actorRolesSet, to.getCourseClassUUID)
+                  to => RoleCategory.isCourseClassAdmin(actorRoles, to.getCourseClassUUID)
                 }
               }
           }

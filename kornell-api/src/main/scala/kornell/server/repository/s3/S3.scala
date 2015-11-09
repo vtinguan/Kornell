@@ -26,12 +26,12 @@ import kornell.core.error.exception.EntityNotFoundException
 import java.util.logging.Logger
 import scala.util.Try
 
-class S3(regionName: String,
+class S3_DEPRECATED(regionName: String,
   val accessKey: String,
   val secretKey: String,
   val bucket: String,
   val prefix: String) {
-  
+  /*
   val region = Region.getRegion(Regions.fromName(regionName))
 
   val logger = Logger.getLogger(classOf[S3].getName)
@@ -128,5 +128,5 @@ object S3 {
     	from S3ContentRepository
     	where uuid=$repository_uuid
     """.first[S3].getOrElse({ throw new EntityNotFoundException("repositoryNotFound") })
-
+*/
 }

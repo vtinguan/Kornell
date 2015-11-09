@@ -45,7 +45,6 @@ class KornellAPI extends Application {
     classOf[ReportResource],
     classOf[EnrollmentsResource],
     classOf[EventsResource],
-    classOf[RepositoryResource],
     classOf[ActomResource],
     classOf[ChatThreadsResource],
     classOf[ProbesResource],

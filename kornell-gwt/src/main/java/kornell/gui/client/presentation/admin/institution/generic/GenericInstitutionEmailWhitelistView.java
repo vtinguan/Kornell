@@ -8,7 +8,6 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.to.InstitutionEmailWhitelistTO;
 import kornell.core.to.TOFactory;
-import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.SimpleMultipleSelect;
@@ -33,7 +32,6 @@ public class GenericInstitutionEmailWhitelistView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final TOFactory toFactory = GWT.create(TOFactory.class);
-	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	private KornellSession session;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -55,7 +53,6 @@ public class GenericInstitutionEmailWhitelistView extends Composite {
 			kornell.gui.client.presentation.admin.institution.AdminInstitutionView.Presenter presenter, Institution institution) {
 		this.session = session;
 		this.institution = institution;
-		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n

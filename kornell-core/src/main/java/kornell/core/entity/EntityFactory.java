@@ -42,8 +42,6 @@ public interface EntityFactory extends AutoBeanFactory {
 	
 	AutoBean<CourseClass> newCourseClass();
 	
-	AutoBean<WebRepository> newWebReposiory();
-	
 	AutoBean<ActomEntries> newActomEntries();
 
 	AutoBean<EnrollmentProgress> newEnrollmentProgress();
@@ -61,4 +59,6 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<EnrollmentsEntries> newEnrollmentsEntries();
 	
 	AutoBean<EnrollmentEntries> newEnrollmentEntries();
+	
+	AutoBean<FSContentRepository> newFSContentRepository();
 }

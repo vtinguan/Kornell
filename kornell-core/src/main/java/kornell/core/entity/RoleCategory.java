@@ -1,6 +1,8 @@
 package kornell.core.entity;
 
-import java.util.Set;
+import java.util.List;
+
+import kornell.core.to.RoleTO;
 
 
 public class RoleCategory {
@@ -99,41 +101,41 @@ public class RoleCategory {
 		return false;
 	}
 	
-	public static boolean isControlPanelAdmin(Set<Role> roles) {
+	public static boolean isControlPanelAdmin(List<RoleTO> roles) {
 		return isValidRole(roles, RoleType.controlPanelAdmin, null, null);
 	}
 	
-	public static boolean isPlatformAdmin(Set<Role> roles, String institutionUUID) {
-		return isValidRole(roles, RoleType.platformAdmin, institutionUUID, null);
+	public static boolean isPlatformAdmin(List<RoleTO> roleTOs, String institutionUUID) {
+		return isValidRole(roleTOs, RoleType.platformAdmin, institutionUUID, null);
 	}
 
-	public static boolean isInstitutionAdmin(Set<Role> roles, String institutionUUID) {
-		return isValidRole(roles, RoleType.institutionAdmin, institutionUUID, null);
+	public static boolean isInstitutionAdmin(List<RoleTO> roleTOs, String institutionUUID) {
+		return isValidRole(roleTOs, RoleType.institutionAdmin, institutionUUID, null);
 	}
 
-	public static boolean isCourseClassAdmin(Set<Role> roles, String courseClassUUID) {
-		return isValidRole(roles, RoleType.courseClassAdmin, null, courseClassUUID);
+	public static boolean isCourseClassAdmin(List<RoleTO> roleTOs, String courseClassUUID) {
+		return isValidRole(roleTOs, RoleType.courseClassAdmin, null, courseClassUUID);
 	}
 
-	public static boolean isCourseClassObserver(Set<Role> roles, String courseClassUUID) {
-		return isValidRole(roles, RoleType.observer, null, courseClassUUID);
+	public static boolean isCourseClassObserver(List<RoleTO> roleTOs, String courseClassUUID) {
+		return isValidRole(roleTOs, RoleType.observer, null, courseClassUUID);
 	}
 
-	public static boolean isCourseClassTutor(Set<Role> roles, String courseClassUUID) {
-		return isValidRole(roles, RoleType.tutor, null, courseClassUUID);
+	public static boolean isCourseClassTutor(List<RoleTO> roleTOs, String courseClassUUID) {
+		return isValidRole(roleTOs, RoleType.tutor, null, courseClassUUID);
 	}
 
-	public static boolean isValidRole(Set<Role> roles, RoleType type, String institutionUUID, String courseClassUUID) {
-		for (Role role : roles) {
-			if(isValidRole(role, type, institutionUUID, courseClassUUID))
+	public static boolean isValidRole(List<RoleTO> roleTOs, RoleType type, String institutionUUID, String courseClassUUID) {
+		for (RoleTO roleTO : roleTOs) {
+			if(isValidRole(roleTO.getRole(), type, institutionUUID, courseClassUUID))
 				return true;
 		}
 		return false;
 	}
 
-	public static boolean hasRole(Set<Role> roles, RoleType type) {
-		for (Role role : roles) {
-			if(RoleCategory.isRole(role, type))
+	public static boolean hasRole(List<RoleTO> roleTOs, RoleType type) {
+		for (RoleTO roleTO : roleTOs) {
+			if(RoleCategory.isRole(roleTO.getRole(), type))
 				return true;
 		}
 		return false;

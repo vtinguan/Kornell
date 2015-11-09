@@ -21,10 +21,11 @@ object Migration {
   def migrate = Try {
     println("[SYSOUT] Starting Database Mygration")
     log.info("[INFO] Starting Database Mygration")
-    val flyway = new Flyway();
+    val flyway = new Flyway()
     setDataSource(flyway)
-    flyway.setLocations("db/");
-    flyway.migrate();
+    flyway.setLocations("db/")
+    flyway.setOutOfOrder(true)
+    flyway.migrate()
   }
 
   //TODO: Clean this ugly hack moving it to a "DataSources" method

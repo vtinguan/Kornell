@@ -13,10 +13,11 @@ import kornell.core.to.CourseVersionsTO
 import kornell.core.util.UUID
 import java.util.Date
 import kornell.core.error.exception.EntityConflictException
+import kornell.core.entity.AuditedEntityType
 
 object CourseVersionsRepo {
   
-  def create(courseVersion: CourseVersion): CourseVersion = {  
+  def create(courseVersion: CourseVersion, institutionUUID: String): CourseVersion = {  
     val courseVersionExists = sql"""
 	    select count(*) from CourseVersion where course_uuid = ${courseVersion.getCourseUUID} and name = ${courseVersion.getName}
 	    """.first[String].get
@@ -46,6 +47,10 @@ object CourseVersionsRepo {
 	    | ${courseVersion.getDistributionPrefix},
 	    | ${courseVersion.getContentSpec.toString},
 	    | ${courseVersion.isDisabled})""".executeUpdate
+	    
+	    //log creation event
+	    EventsRepo.logEntityChange(institutionUUID, AuditedEntityType.courseVersion, courseVersion.getUUID, null, courseVersion)
+	    
 	    courseVersion
     } else {
       throw new EntityConflictException("courseVersionAlreadyExists")

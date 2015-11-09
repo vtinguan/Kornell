@@ -14,7 +14,6 @@ import kornell.core.entity.RoleType;
 import kornell.core.entity.Roles;
 import kornell.core.to.RoleTO;
 import kornell.core.to.RolesTO;
-import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.view.formfield.PeopleMultipleSelect;
@@ -39,7 +38,6 @@ public class GenericInstitutionAdminsView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	public static final EntityFactory entityFactory = GWT.create(EntityFactory.class);
-	private FormHelper formHelper = GWT.create(FormHelper.class);
 
 	private KornellSession session;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -61,7 +59,6 @@ public class GenericInstitutionAdminsView extends Composite {
 			kornell.gui.client.presentation.admin.institution.AdminInstitutionView.Presenter presenter, Institution institution) {
 		this.session = session;
 		this.institution = institution;
-		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n

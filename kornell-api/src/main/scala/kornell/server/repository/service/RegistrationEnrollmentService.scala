@@ -33,17 +33,24 @@ import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.server.api.ActomResource
 import kornell.core.error.exception.EntityConflictException
 import scala.collection.mutable.ListBuffer
+import kornell.server.jdbc.repository.RolesRepo
 
 object RegistrationEnrollmentService {
 
   def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) = {
+    val courseClassUUID = enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID
+    val courseClass = CourseClassRepo(courseClassUUID).get
+    val currentEnrollmentCount = EnrollmentsRepo.byCourseClass(courseClassUUID).getCount
+    if ((currentEnrollmentCount + enrollmentRequests.getEnrollmentRequests.size) > courseClass.getMaxEnrollments()) {
+      throw new EntityConflictException("tooManyEnrollments")
+    }
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
     if (enrollmentRequests.getEnrollmentRequests.size > 100)
       EmailService.sendEmailBatchEnrollment(dean, InstitutionsRepo.byUUID(dean.getInstitutionUUID).get, CourseClassRepo(enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID).get)
   }
 
-  def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUsername: String) = {
-    val roles = (Set.empty ++ AuthRepo().rolesOf(deanUsername)).asJava
+  def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUUID: String) = {
+    val roles = RolesRepo.getUserRoles(deanUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
     !(RoleCategory.isPlatformAdmin(roles, enrollmentRequest.getInstitutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, enrollmentRequest.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, enrollmentRequest.getCourseClassUUID))

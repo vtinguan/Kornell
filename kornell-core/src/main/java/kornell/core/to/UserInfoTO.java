@@ -1,11 +1,10 @@
 package kornell.core.to;
 
-import java.util.Set;
+import java.util.List;
 
 import kornell.core.entity.Enrollments;
 import kornell.core.entity.InstitutionRegistrationPrefix;
 import kornell.core.entity.Person;
-import kornell.core.entity.Role;
 
 public interface UserInfoTO {
 	public static String TYPE = TOFactory.PREFIX + "userinfo+json";
@@ -22,8 +21,8 @@ public interface UserInfoTO {
 	String getLastPlaceVisited();
 	void setLastPlaceVisited(String lastPlaceVisited);
 	
-	Set<Role> getRoles();
-	void setRoles(Set<Role> roles);
+	List<RoleTO> getRoles();
+	void setRoles(List<RoleTO> roles);
 	
 	Enrollments getEnrollments();
 	void setEnrollments(Enrollments e);

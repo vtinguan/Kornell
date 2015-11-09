@@ -102,7 +102,7 @@ public class Dean implements LoginEventHandler, LogoutEventHandler,
 	}
 
 	private void setDefaultFavicon() {
-		updateFavicon("skins/first/" + ICON_NAME);
+		updateFavicon(ICON_NAME);
 	}
 
 	private static native void updateFavicon(String url) /*-{
@@ -120,11 +120,11 @@ public class Dean implements LoginEventHandler, LogoutEventHandler,
 
 	private static native void updateSkin(String skinName) /*-{
 		var link = $wnd.document.createElement('link'), oldLink = $wnd.document
-				.getElementById('Skin');
-		link.id = 'Skin';
+				.getElementById('kornellSkin');
+		link.id = 'kornellSkin';
 		link.rel = 'stylesheet';
 		link.type = 'text/css';
-		link.href = 'skins/first/css/skin' + (skinName ? skinName : '')
+		link.href = ClientConstants.CSS_PATH + (skinName ? skinName : '')
 				+ '.nocache.css';
 		if (oldLink) {
 			$wnd.document.head.removeChild(oldLink);

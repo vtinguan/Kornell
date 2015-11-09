@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import static kornell.core.util.StringUtils.mkurl;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
@@ -7,6 +8,7 @@ import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.sequence.NavigationRequest;
+import kornell.gui.client.util.ClientConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,10 +31,12 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	private EventBus bus;
-	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
+	private String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseDetails");
 
 	@UiField
 	FlowPanel topicWrapper;
+	@UiField
+	Image topicImg;
 	@UiField
 	FlowPanel topicPanel;
 	@UiField
@@ -53,7 +57,8 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 	
 	private void display(boolean enableAnchor) {
 		String status = page.isVisited() ? "finished" : "toStart";
-		topicIcon.setUrl(IMAGES_PATH + "status_"+status+".png");
+		topicImg.setUrl(mkurl(IMAGES_PATH, "pageIdent.png"));
+		topicIcon.setUrl(mkurl(IMAGES_PATH, "status_"+status+".png"));
 		lblPage.clear();
 		int index = page.getIndex();
 		String title = index + ".  " + page.getTitle();

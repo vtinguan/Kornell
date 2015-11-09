@@ -9,5 +9,4 @@ class MigrationListener extends ServletContextListener {
   override def contextInitialized(e: ServletContextEvent): Unit = Migration()
   
   override def contextDestroyed(e: ServletContextEvent): Unit = {}
-
 }

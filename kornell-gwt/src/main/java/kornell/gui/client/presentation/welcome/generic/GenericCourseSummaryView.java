@@ -1,5 +1,6 @@
 package kornell.gui.client.presentation.welcome.generic;
 
+import static kornell.core.util.StringUtils.mkurl;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
@@ -19,7 +20,9 @@ import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teacher;
 import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.util.EnumTranslator;
 import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Paragraph;
@@ -84,7 +87,7 @@ public class GenericCourseSummaryView extends Composite {
 	@UiField
 	FlowPanel pnlCourseSummaryBar;
 
-	String iconCourseURL = "skins/first/icons/welcomeCourses/";
+	String ICON_COURSE_URL = mkurl(ClientConstants.IMAGES_PATH, "welcomeCourses");
 
 	private CourseClassTO courseClassTO;
 	private PlaceController placeCtrl;
@@ -109,7 +112,7 @@ public class GenericCourseSummaryView extends Composite {
 			public void ok(UserInfoTO userInfoTO) {
 				Student student = teacher.student(userInfoTO);
 				if(courseClassTO.getEnrollment() != null && EnrollmentState.cancelled.equals(courseClassTO.getEnrollment().getState())){
-					pStatusErr.setText("(CANCELADA)");
+					pStatusErr.setText(constants.cancelledClassLabel());
 				}
 				if (student.isEnrolled())
 					onEnrolled(student);
@@ -119,10 +122,8 @@ public class GenericCourseSummaryView extends Composite {
 			}
 
 			private void onEnrolledOrNot() {
-				String assetsURL = StringUtils.composeURL(courseClassTO.getCourseVersionTO().getDistributionURL(),
-						courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix());
-				imgThumb.setUrl(StringUtils.composeURL("/",assetsURL, "/images/thumb.jpg"));
-				imgIconCourse.setUrl(iconCourseURL);
+				imgThumb.setUrl(StringUtils.mkurl("/",courseClassTO.getCourseVersionTO().getDistributionURL(),courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix(),"/images/thumb.jpg"));
+				imgIconCourse.setUrl(ICON_COURSE_URL);
 
 				sinkEvents(Event.ONCLICK);
 				addHandler(new ClickHandler() {
@@ -145,8 +146,8 @@ public class GenericCourseSummaryView extends Composite {
 				Button requestEnrollmentBtn = getRequestEnrollmentButton();
 				pnlCourseSummaryBar.add(requestEnrollmentBtn);
 
-				pStatus.setText("Disponível");
-				iconCourseURL += "iconAcquire.png";
+				pStatus.setText(constants.availableClassLabel());
+				ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconAcquire.png");
 			}
 
 			private void onEnrolled(Student student) {
@@ -169,46 +170,46 @@ public class GenericCourseSummaryView extends Composite {
 
 	private void onCourseInProgress(Integer progress) {
 		if(progress >= 100){
-			pStatus.setText("Aguardando Avaliação");
+			pStatus.setText(constants.pendingGradeLabel());
 		} else {
-			pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.inProgress)+": ");
+			pStatus.setText(EnumTranslator.translateEnum(EnrollmentProgressDescription.inProgress)+": ");
 			progressBar.removeStyleName("shy");
 			progressBar.setPercent(progress);
 			pStatusInfo.setText(progress + "% ");
 		}
-		iconCourseURL += "iconInProgress.png";
+		ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconInProgress.png");
 		
 	}
 
 	private void onCourseNotStarted() {
 		if(courseClassTO.getEnrollment() != null &&
 				EnrollmentState.requested.equals(courseClassTO.getEnrollment().getState())){
-			pStatus.setText("Aguardando aprovação da matrícula");
-			iconCourseURL += "iconWaiting.png";
+			pStatus.setText(constants.pendingEnrollmentApproval());
+			ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconWaiting.png");
 		} else {
 			pStatus.setText(constants.toStart());
-			iconCourseURL += "iconNotStarted.png";
+			ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconNotStarted.png");
 		}
 	}
 
 	private void onCourseCompleted(String certifiedAt) {
-		String statusText = formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.completed);
+		String statusText = EnumTranslator.translateEnum(EnrollmentProgressDescription.completed);
 		if(certifiedAt != null) {
-			statusText += " em: ";
+			statusText += " " + constants.completedOnToken() + ": ";
 			pStatusInfo.setText(formHelper.getStringFromDate(certifiedAt));
 		}
 		if(courseClassTO.getCourseClass().getRequiredScore() != null && 
 				courseClassTO.getCourseClass().getRequiredScore().intValue() != 0 &&
 				courseClassTO.getEnrollment().getAssessmentScore() != null){
-			pStatus2.setText(" - Nota: ");
+			pStatus2.setText(" - " + constants.completedCourseNoteLabel() + ":");
 			pStatusInfo2.setText(""+courseClassTO.getEnrollment().getAssessmentScore().intValue());
 		}
 		pStatus.setText(statusText);
-		iconCourseURL += "iconFinished.png";
+		ICON_COURSE_URL = mkurl(ICON_COURSE_URL, "iconFinished.png");
 	}
 
 	private Button getRequestEnrollmentButton() {
-		Button requestEnrollmentBtn = new Button(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? "Iniciar Curso" : "Solicitar Matrícula");
+		Button requestEnrollmentBtn = new Button(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? constants.startCourseLabel() : constants.requestEnrollmentLabel());
 		requestEnrollmentBtn.addStyleName("right btnAction");
 
 		requestEnrollmentBtn.addClickHandler(new ClickHandler() {
