@@ -22,7 +22,7 @@ class S3ContentRepositoryResource(uuid: String) {
   @Consumes(Array(S3ContentRepository.TYPE))
   @Produces(Array(S3ContentRepository.TYPE))
   def update(contentRepository: S3ContentRepository) = {
-    //S3ContentRepositoryRepo(uuid).update(contentRepository)
+    RepositoriesRepo().updateS3Repo(contentRepository)
   }.requiring(isControlPanelAdmin(), AccessDeniedErr()).get
   
 }

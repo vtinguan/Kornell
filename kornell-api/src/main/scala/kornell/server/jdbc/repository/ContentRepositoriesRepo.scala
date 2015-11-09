@@ -11,6 +11,9 @@ import kornell.core.entity.FSContentRepository
 class RepositoriesRepo {
 	def createS3Repository(accessKeyId:String, secretAccessKey:String, bucketName:String, uuid:String = randomUUID, institutionUUID: String, region: String):S3ContentRepository = 
 			createS3Repo(Entities.newS3ContentRepository(uuid = uuid, accessKeyId = accessKeyId, secretAccessKey = secretAccessKey, bucketName = bucketName, institutionUUID = institutionUUID, region = region))
+			
+	def createFSRepository(uuid:String = randomUUID, path: String, prefix: String):FSContentRepository = 
+			createFSRepo(Entities.newFSContentRepository(uuid = uuid, path = path, prefix = prefix))
 	
 	def createS3Repo(s3repo : S3ContentRepository): S3ContentRepository = {
 	  sql"""
@@ -24,6 +27,38 @@ class RepositoriesRepo {
 		    | ${s3repo.getRegion},
 		    | ${s3repo.getInstitutionUUID})""".executeUpdate
 		s3repo
+	}
+	
+	def createFSRepo(fsRepo : FSContentRepository): FSContentRepository = {
+	  sql"""
+		    | insert into FSContentRepository (uuid,path,prefix) 
+		    | values(
+		    | ${fsRepo.getUUID},
+		    | ${fsRepo.getPath},
+		    | ${fsRepo.getPrefix})""".executeUpdate
+	    fsRepo
+	}
+	
+	def updateS3Repo(s3repo : S3ContentRepository): S3ContentRepository = {
+	  sql"""
+		    | update S3ContentRepository set
+		    | accessKeyId = ${s3repo.getAccessKeyId},
+		    | secretAccessKey = ${s3repo.getSecretAccessKey},
+		    | bucketName = ${s3repo.getBucketName}, 
+		    | prefix = ${s3repo.getPrefix},
+		    | region = ${s3repo.getRegion},
+		    | institutionUUID = ${s3repo.getInstitutionUUID}
+		    | where uuid = ${s3repo.getUUID}""".executeUpdate
+		s3repo
+	}
+	
+	def updateFSRepo(fsRepo: FSContentRepository): FSContentRepository = {
+	  sql"""
+		    | update FSContentRepository set
+		    | path = ${fsRepo.getPath},
+		    | prefix = ${fsRepo.getPrefix}
+		    | where uuid = ${fsRepo.getUUID}""".executeUpdate
+	    fsRepo
 	}
 	
 	def first(repoUUID:String):Option[ContentRepository] = sql"""
