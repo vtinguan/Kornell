@@ -9,7 +9,7 @@ import javax.xml.xpath.XPathFactory
 import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
 import java.io.ByteArrayInputStream
-import kornell.core.util.StringUtils
+import kornell.core.util.StringUtils._
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.Enrollment
 import kornell.server.jdbc.repository.CourseVersionRepo
@@ -52,7 +52,7 @@ object ContentRepository {
     val version = versionRepo.get
     val repositoryUUID = version.getRepositoryUUID();
     val repo = ContentManagers.forRepository(repositoryUUID)
-    val structureIn = repo.inputStream(version.getDistributionPrefix(), "imsmanifest.xml").get
+    val structureIn = repo.inputStream(mkurl(version.getDistributionPrefix(), "imsmanifest.xml")).get
     val document = builder.parse(structureIn)
     val result = ListBuffer[String]()
     val nodes: NodeList = expr.evaluate(document, XPathConstants.NODESET).asInstanceOf[NodeList]

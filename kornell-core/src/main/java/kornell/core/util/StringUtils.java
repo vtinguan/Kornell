@@ -205,7 +205,7 @@ public class StringUtils {
 			int idx = value.indexOf("/");
 			if (idx > 0) {
 				this.repositoryUUID = value.substring(0, idx);
-				this.key = value.substring(idx);
+				this.key = value.substring(idx+1);
 			} else {
 				this.repositoryUUID = value;
 				this.key = "";

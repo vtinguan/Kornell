@@ -14,6 +14,8 @@ import kornell.core.util.StringUtils
 import scala.util.Try
 import kornell.core.to.LibraryFileTO
 import kornell.server.content.ContentManagers
+import kornell.core.util.StringUtils._
+
 
 object LibraryFilesRepository {
 //TODO: Review
