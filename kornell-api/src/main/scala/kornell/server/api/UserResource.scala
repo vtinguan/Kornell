@@ -31,7 +31,6 @@ import kornell.server.repository.Entities.newEnrollments
 import kornell.server.repository.TOs
 import kornell.server.repository.TOs.newUserHelloTO
 import kornell.server.repository.TOs.newUserInfoTO
-import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.EmailService
 import kornell.server.web.BasicAuthFilter
 import kornell.core.to.UserHelloTO
@@ -43,6 +42,7 @@ import kornell.server.jdbc.repository.RolesRepo
 import kornell.core.entity.RoleCategory
 import kornell.server.jdbc.repository.EventsRepo
 import kornell.core.entity.AuditedEntityType
+import kornell.server.service.RegistrationEnrollmentService
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {

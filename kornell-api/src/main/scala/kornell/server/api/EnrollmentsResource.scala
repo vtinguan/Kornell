@@ -17,13 +17,13 @@ import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.PersonRepo
-import kornell.server.repository.service.RegistrationEnrollmentService
 import kornell.server.util.AccessDeniedErr
 import kornell.server.util.Conditional.toConditional
 import kornell.core.to.SimplePeopleTO
 import kornell.core.to.EnrollmentsTO
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.util.EmailService
+import kornell.server.service.RegistrationEnrollmentService
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))

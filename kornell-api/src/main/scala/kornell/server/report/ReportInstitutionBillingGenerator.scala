@@ -12,22 +12,23 @@ import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 import kornell.core.entity.BillingType
 import kornell.core.entity.Institution
 import kornell.core.entity.EnrollmentState
+import kornell.server.util.ServerTime
 
 object ReportInstitutionBillingGenerator {
   
-  def generateInstitutionBillingReport(institution: Institution, periodStart: String, periodEnd: String): Array[Byte] = {
+  def generateInstitutionBillingReport(institution: Institution, periodStart: String, periodEnd: String, tsOffset: String): Array[Byte] = {
     val parameters: HashMap[String, Object] = new HashMap()
     parameters.put("institutionName", institution.getName)
     parameters.put("periodStart", periodStart)
     parameters.put("periodEnd", periodEnd)
 	    
     institution.getBillingType match {
-      case BillingType.monthly => generateInstitutionBillingMonthlyReport(institution.getUUID, periodStart, periodEnd, parameters)
-      case BillingType.enrollment => generateInstitutionBillingEnrollmentReport(institution.getUUID, periodStart, periodEnd, parameters)
+      case BillingType.monthly => generateInstitutionBillingMonthlyReport(institution.getUUID, periodStart, periodEnd, parameters, tsOffset)
+      case BillingType.enrollment => generateInstitutionBillingEnrollmentReport(institution.getUUID, periodStart, periodEnd, parameters, tsOffset)
     }
   }
 
-  private def generateInstitutionBillingMonthlyReport(institutionUUID: String, periodStart: String, periodEnd: String, parameters: HashMap[String,Object]): Array[Byte] = {
+  private def generateInstitutionBillingMonthlyReport(institutionUUID: String, periodStart: String, periodEnd: String, parameters: HashMap[String,Object], tsOffset: String): Array[Byte] = {
 
 	  implicit def toInstitutionBillingMonthlyReportTO(rs: ResultSet): InstitutionBillingMonthlyReportTO =
 	    TOs.newInstitutionBillingMonthlyReportTO(
@@ -56,7 +57,7 @@ object ReportInstitutionBillingGenerator {
     ReportGenerator.getReportBytesFromStream(institutionBillingReportTO, parameters, jasperStream, "xls")
   }
 
-  private def generateInstitutionBillingEnrollmentReport(institutionUUID: String, periodStart: String, periodEnd: String, parameters: HashMap[String,Object]): Array[Byte] = {
+  private def generateInstitutionBillingEnrollmentReport(institutionUUID: String, periodStart: String, periodEnd: String, parameters: HashMap[String,Object], tsOffset: String): Array[Byte] = {
 
 	  implicit def toInstitutionBillingEnrollmentReportTO(rs: ResultSet): InstitutionBillingEnrollmentReportTO =
 	    TOs.newInstitutionBillingEnrollmentReportTO(
@@ -66,7 +67,7 @@ object ReportInstitutionBillingGenerator {
 	      rs.getString("courseClassName"),
 	      rs.getString("fullName"),
 	      rs.getString("username"),
-	      rs.getDate("firstEventFiredAt"))
+	      rs.getString("firstEventFiredAt"))
 	      
     val institutionBillingReportTO = sql"""
     		SELECT 
@@ -101,7 +102,12 @@ object ReportInstitutionBillingGenerator {
 		  
     val cl = Thread.currentThread.getContextClassLoader
     val jasperStream = cl.getResourceAsStream("reports/institutionBillingXLS_enrollment.jasper")
-    ReportGenerator.getReportBytesFromStream(institutionBillingReportTO, parameters, jasperStream, "xls")
+    ReportGenerator.getReportBytesFromStream(institutionBillingReportTO.map(fixDates(_, tsOffset)), parameters, jasperStream, "xls")
+  }
+  
+  private def fixDates(to: InstitutionBillingEnrollmentReportTO, tsOffset: String) = {
+	to.setFirstEventFiredAt(ServerTime.adjustTimezoneOffset(to.getFirstEventFiredAt, tsOffset.toInt))
+    to
   }
  
 }

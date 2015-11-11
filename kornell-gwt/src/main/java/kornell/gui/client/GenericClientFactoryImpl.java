@@ -135,6 +135,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				}
 			}
 		};
+		ClientProperties.removeCookie(ClientProperties.X_KNL_TOKEN);
 		session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userHelloCallback);
 	}
 

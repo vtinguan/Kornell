@@ -92,8 +92,10 @@ public class RESTClient {
 	
 	public void locationAssign(String... path) {
 		if(Cookies.isCookieEnabled()){
-			ClientProperties.setCookie(ClientProperties.X_KNL_TOKEN, ClientProperties.get(ClientProperties.X_KNL_TOKEN), new Date(new Date().getTime() + 2000));			
+			ClientProperties.setCookie(ClientProperties.X_KNL_TOKEN, ClientProperties.get(ClientProperties.X_KNL_TOKEN), new Date(new Date().getTime() + 2000));	
+			//skip browser cache
 			String url = appendTimestampIfIE(mkurl(getApiUrl(), path));
+			url = appendParameterToURL(url, "tsOffset=" + getClientOffsetTimeZone());
 			Window.Location.assign(url);
 		} else {
 			KornellNotification.show("Por motivos de segurança, é necessário que os cookies estejam ativados para esta operação. Entre em contato com o suporte caso tenha alguma dúvida.", AlertType.ERROR, 10000);
@@ -102,7 +104,15 @@ public class RESTClient {
 	
 	public String appendTimestampIfIE(String url) {
 		if((Window.Navigator.getUserAgent().toLowerCase().indexOf("trident/") != -1))
-			return url + (url.indexOf("?") == -1 ? "?" : "&") + "t=" + (new Date()).getTime();				
+			return appendParameterToURL(url, "t=" + (new Date()).getTime());				
 	    return url;
 	}
+	
+	private String appendParameterToURL(String url, String append) {
+		return url + (url.indexOf("?") == -1 ? "?" : "&") + append;
+	}
+
+	public native int getClientOffsetTimeZone() /*-{
+	    return new Date().getTimezoneOffset();
+	}-*/;
 }

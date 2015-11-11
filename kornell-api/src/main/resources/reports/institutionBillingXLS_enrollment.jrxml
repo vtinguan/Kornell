@@ -12,7 +12,7 @@
 	<field name="courseClassName" class="java.lang.String"/>
 	<field name="fullName" class="java.lang.String"/>
 	<field name="username" class="java.lang.String"/>
-	<field name="firstEventFiredAt" class="java.util.Date"/>
+	<field name="firstEventFiredAt" class="java.lang.String"/>
 	<title>
 		<band height="67">
 			<textField>
@@ -160,7 +160,9 @@
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($F{firstEventFiredAt}).toUpperCase()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{firstEventFiredAt} == null ?
+    " - "
+    : $F{firstEventFiredAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

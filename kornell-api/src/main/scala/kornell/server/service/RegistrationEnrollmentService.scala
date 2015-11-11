@@ -1,4 +1,4 @@
-package kornell.server.repository.service
+package kornell.server.service
 
 import kornell.server.jdbc.repository.EventsRepo
 import kornell.server.repository.Entities._
@@ -104,7 +104,7 @@ object RegistrationEnrollmentService {
         }
       }
     }
-    //if there's no username set, get it from the enrollment request
+    //if there's no full name set, get it from the enrollment request
     if (StringUtils.isNone(person.getFullName)) {
       person.setFullName(enrollmentRequest.getFullName)
       personRepo.update(person)

@@ -26,7 +26,7 @@ object ReportCertificateGenerator {
       rs.getString("distributionPrefix"),
       rs.getString("courseVersionUUID"))
       
-   def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
+   def generateCertificate(userUUID: String, courseClassUUID: String, tsOffset: String): Array[Byte] = {
     generateCertificateReport(sql"""
 				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
 	    		from Person p
@@ -39,15 +39,15 @@ object ReportCertificateGenerator {
 				where e.certifiedAt is not null and 
         		  p.uuid = $userUUID and
 				  cc.uuid = $courseClassUUID
-		    """.map[CertificateInformationTO](toCertificateInformationTO))
+		    """.map[CertificateInformationTO](toCertificateInformationTO), tsOffset)
   }
   
-  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO]): Array[Byte] = {
-    generateCertificateReport(certificateInformationTOs)
+  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO], tsOffset: String): Array[Byte] = {
+    generateCertificateReport(certificateInformationTOs, tsOffset)
   }
   
-  def generateCertificateByCourseClass(courseClassUUID: String): Array[Byte] = {
-    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID, null))
+  def generateCertificateByCourseClass(courseClassUUID: String, tsOffset: String): Array[Byte] = {
+    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID, null), tsOffset)
   }
   
   def getCertificateInformationTOsByCourseClass(courseClassUUID: String, enrollments: String) = {
@@ -68,7 +68,7 @@ object ReportCertificateGenerator {
     pstmt.map[CertificateInformationTO](toCertificateInformationTO)
   }
 
-  private def generateCertificateReport(certificateData: List[CertificateInformationTO]): Array[Byte] = {
+  private def generateCertificateReport(certificateData: List[CertificateInformationTO], tsOffset: String): Array[Byte] = {
     if(certificateData.length == 0){
     	return null
     }
