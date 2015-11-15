@@ -68,7 +68,8 @@ package object repository {
         InstitutionType.valueOf(rs.getString("institutionType")),
         rs.getString("dashboardVersionUUID"),
         rs.getBoolean("internationalized"),
-        rs.getBoolean("useEmailWhitelist"))
+        rs.getBoolean("useEmailWhitelist"),
+        rs.getString("assetsRepositoryUUID"))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 

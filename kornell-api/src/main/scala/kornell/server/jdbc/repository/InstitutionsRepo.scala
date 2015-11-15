@@ -14,7 +14,7 @@ object InstitutionsRepo {
   
   def create(institution: Institution): Institution = {    
     sql"""
-    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType) 
+    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType,assetsRepositoryUUID) 
     | values(
     | ${institution.getUUID},
     | ${institution.getName},
@@ -28,7 +28,8 @@ object InstitutionsRepo {
     | ${institution.isAllowRegistrationByUsername},
     | ${institution.getActivatedAt},
     | ${institution.getSkin},
-    | ${institution.getBillingType.toString})""".executeUpdate
+    | ${institution.getBillingType.toString},
+    | ${institution.getAssetsRepositoryUUID})""".executeUpdate
 	    
     //log creation event
     EventsRepo.logEntityChange(institution.getUUID, AuditedEntityType.institution, institution.getUUID, null, institution)

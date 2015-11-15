@@ -21,7 +21,7 @@ object ContentManagers {
     	  case fsRepo:FSContentRepository => new FSContentManager(fsRepo)
     	  case _ => throw new IllegalStateException("Unknow repository type")
     	}
-  	}.get
+  	}.getOrElse(throw new IllegalArgumentException(s"Could not find repository [$repoUUID]"))
   
   
   lazy val DEFAULT_USER_CONTENT_BUCKET = "us-east-1.usercontent-develop";

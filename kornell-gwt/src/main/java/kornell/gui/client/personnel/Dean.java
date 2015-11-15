@@ -24,6 +24,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
+import static kornell.core.util.StringUtils.*;
 
 public class Dean implements LoginEventHandler, LogoutEventHandler,
 		UnreadMessagesPerThreadFetchedEventHandler,
@@ -86,7 +87,7 @@ public class Dean implements LoginEventHandler, LogoutEventHandler,
 	private void initInstitutionSkin() {
 		String url = institution.getAssetsURL();
 		if (url != null) {
-			updateFavicon(url + ICON_NAME);
+			updateFavicon(mkurl(url, ICON_NAME));
 		} else {
 			setDefaultFavicon();
 		}
