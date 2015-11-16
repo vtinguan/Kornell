@@ -4,6 +4,10 @@ import static kornell.core.util.StringUtils.mkurl;
 import static kornell.core.util.StringUtils.trimSlashes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import kornell.core.util.StringUtils;
 
 import org.junit.Test;
@@ -43,6 +47,18 @@ public class TestStringUtils {
 		assertNull(StringUtils.opt(null).getOrNull());
 		assertEquals(StringUtils.opt("").orElse("uala").getOrNull(),"uala");
 		assertNull(StringUtils.opt(null).orElse("").getOrNull());
+	}
+	
+	@Test
+	public void testComposeProperties(){
+		Map<String, String> props = new HashMap<String, String>(){{
+			put("a", "0");
+			put("b", "1");
+			put("c", "2");
+		}};
+		String composed = StringUtils.composeProperties(props);
+		Map<String,String> parsed = StringUtils.parseProperties(composed);
+		assertEquals(props, parsed);
 	}
 
 }

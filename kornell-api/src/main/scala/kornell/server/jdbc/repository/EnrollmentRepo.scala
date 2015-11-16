@@ -110,8 +110,12 @@ class EnrollmentRepo(enrollmentUUID: String) {
 
 
   def progressFromSuspendData(e: Enrollment): Option[Int] = {
-    val suspend_data = ActomEntriesRepo.getValue(e.getUUID, "%", "cmi.suspend_data")
-    val progress = suspend_data.flatMap { parseProgress(_) }
+    val suspend_datas = ActomEntriesRepo.getValues(e.getUUID, "%", "cmi.suspend_data")
+    val progresses = suspend_datas.flatMap { parseProgress(_) }
+    val progress = if (progresses.isEmpty)
+      None
+    else
+      Some(progresses.max)
     progress
   }
 
