@@ -12,19 +12,42 @@ import kornell.server.jdbc.PreparedStmt
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 import kornell.server.util.Settings
-
+import kornell.server.util.ServerTime
+import java.util.logging.Logger
+import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.DateTime
+import java.util.Date
+  
 object ReportCertificateGenerator {
+  
+  val log = Logger.getLogger(getClass.getName)
 
-  implicit def toCertificateInformationTO(rs: ResultSet): CertificateInformationTO =
+  implicit def toCertificateInformationTO(rs: ResultSet): CertificateInformationTO = {
+    
+    log.info("[INFO] Date: " + rs.getString("certifiedAt"))
+    log.info("[INFO] Date: " + rs.getTimestamp("certifiedAt"))
+    log.info("[INFO] Date: " + rs.getDate("certifiedAt"))
+    log.info("[INFO] Date: " + rs.getTimestamp("certifiedAt"))
+    log.info("[INFO] Date: " + rs.getTimestamp("certifiedAt").getTime())
+    log.info("[INFO] Date: " + ISODateTimeFormat.dateTime.print(rs.getTimestamp("certifiedAt").getTime()))
+    
+    val dateStr = ServerTime.adjustTimezoneOffsetDate(ISODateTimeFormat.dateTime.print(new DateTime(rs.getTimestamp("certifiedAt").getTime())), 300)
+    
+    log.info("[INFO] Date Adjusted from: " + dateStr)
+    
+    
+    log.info("[INFO] Date: " + ISODateTimeFormat.dateTime.print(new DateTime(rs.getTimestamp("certifiedAt").getTime())))
+    
     TOs.newCertificateInformationTO(
       rs.getString("fullName"),
       rs.getString("cpf"),
       rs.getString("title"),
       rs.getString("name"),
-      rs.getDate("certifiedAt"),
+      new Date(rs.getTimestamp("certifiedAt").getTime()),
       rs.getString("assetsURL"),
       rs.getString("distributionPrefix"),
       rs.getString("courseVersionUUID"))
+  }
       
    def generateCertificate(userUUID: String, courseClassUUID: String, tsOffset: String): Array[Byte] = {
     generateCertificateReport(sql"""
@@ -89,8 +112,17 @@ object ReportCertificateGenerator {
     if(!jasperFile.exists)
     	FileUtils.copyURLToFile(new URL(composeURL(assetsURL, "certificate.jasper")), jasperFile)
     	
-    ReportGenerator.getReportBytes(certificateData, parameters, jasperFile)
+    ReportGenerator.getReportBytes(certificateData.map(fixDates(_, tsOffset)), parameters, jasperFile)  
+  }
+  
+  private def fixDates(to: CertificateInformationTO, tsOffset: String) = {
+    val dateStr = ServerTime.adjustTimezoneOffsetDate(ISODateTimeFormat.dateTime.print(new DateTime(to.getCourseClassFinishedDate)), tsOffset.toInt)
+    val x= new DateTime(to.getCourseClassFinishedDate)
     
+    log.info("[INFO] Date Adjusted from: " + ISODateTimeFormat.dateTime.print(new DateTime(to.getCourseClassFinishedDate))  + " to " + dateStr)
+    
+	//to.setCourseClassFinishedDate(x) 
+    to
   }
   
 }
