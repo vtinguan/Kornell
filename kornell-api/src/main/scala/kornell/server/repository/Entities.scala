@@ -28,6 +28,7 @@ import kornell.core.entity.InstitutionType
 import java.util.HashMap
 import kornell.core.entity.ActomEntries
 import kornell.core.entity.EnrollmentEntries
+import kornell.core.util.StringUtils._
 
 //TODO: Remove this class without spreading dependency on AutoBeanFactorySource
 object Entities {
@@ -170,14 +171,16 @@ object Entities {
   //FTW: Default parameter values
   def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, 
       demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, 
-      activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String, internationalized: Boolean, useEmailWhitelist: Boolean = false) = {
+      activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String, internationalized: Boolean, 
+      useEmailWhitelist: Boolean = false,assetsRepositoryUUID:String=null) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
     i.setUUID(uuid)
     if (terms != null)
       i.setTerms(terms.stripMargin)
-    i.setAssetsURL(assetsURL)
+    i.setAssetsURL(mkurl("/repository",assetsRepositoryUUID));
+    i.setAssetsRepositoryUUID(assetsRepositoryUUID);
     i.setBaseURL(baseURL)
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
     i.setValidatePersonContactDetails(validatePersonContactDetails)

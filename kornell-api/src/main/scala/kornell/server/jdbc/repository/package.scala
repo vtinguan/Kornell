@@ -69,7 +69,8 @@ package object repository {
         InstitutionType.valueOf(rs.getString("institutionType")),
         rs.getString("dashboardVersionUUID"),
         rs.getBoolean("internationalized"),
-        rs.getBoolean("useEmailWhitelist"))
+        rs.getBoolean("useEmailWhitelist"),
+        rs.getString("assetsRepositoryUUID"))
         
   implicit def toS3ContentRepository(rs:ResultSet):S3ContentRepository = 
     newS3ContentRepository(rs.getString("uuid"),
