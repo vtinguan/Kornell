@@ -7,17 +7,23 @@ import kornell.server.repository.ContentRepository
 import kornell.core.entity.ContentRepository
 import java.sql.ResultSet
 import kornell.core.entity.FSContentRepository
+import kornell.core.util.UUID
 
-class RepositoriesRepo {
+class ContentRepositoriesRepo {
 	def createS3Repository(accessKeyId:String, secretAccessKey:String, bucketName:String, uuid:String = randomUUID, institutionUUID: String, region: String):S3ContentRepository = 
 			createS3Repo(Entities.newS3ContentRepository(uuid = uuid, accessKeyId = accessKeyId, secretAccessKey = secretAccessKey, bucketName = bucketName, institutionUUID = institutionUUID, region = region))
 			
-	def createFSRepository(uuid:String = randomUUID, path: String, prefix: String):FSContentRepository = 
-			createFSRepo(Entities.newFSContentRepository(uuid = uuid, path = path, prefix = prefix))
+	def createFSRepository(uuid:String = randomUUID, path: String, prefix: String, institutionUUID: String):FSContentRepository = 
+			createFSRepo(Entities.newFSContentRepository(uuid = uuid, path = path, prefix = prefix, institutionUUID = institutionUUID))
 	
 	def createS3Repo(s3repo : S3ContentRepository): S3ContentRepository = {
+	  if (s3repo.getUUID == null) {
+		  s3repo.setUUID(UUID.random)
+	  }
+	  sql"""insert into ContentRepository (uuid, repositoryType) values (${s3repo.getUUID}, 'S3')""".executeUpdate
+	  
 	  sql"""
-		    | insert into S3ContentRepository (uuid,accessKeyId,secretAccessKey,bucketName,prefix,region,distributionURL, institutionUUID) 
+		    | insert into S3ContentRepository (uuid,accessKeyId,secretAccessKey,bucketName,prefix,region,institutionUUID) 
 		    | values(
 		    | ${s3repo.getUUID},
 		    | ${s3repo.getAccessKeyId},
@@ -30,12 +36,18 @@ class RepositoriesRepo {
 	}
 	
 	def createFSRepo(fsRepo : FSContentRepository): FSContentRepository = {
+	  if (fsRepo.getUUID == null) {
+		  fsRepo.setUUID(UUID.random)
+	  }
+	  sql"""insert into ContentRepository (uuid, repositoryType) values (${fsRepo.getUUID}, 'FS')""".executeUpdate
+	  
 	  sql"""
-		    | insert into FSContentRepository (uuid,path,prefix) 
+		    | insert into FSContentRepository (uuid,path,prefix,institutionUUID) 
 		    | values(
 		    | ${fsRepo.getUUID},
 		    | ${fsRepo.getPath},
-		    | ${fsRepo.getPrefix})""".executeUpdate
+		    | ${fsRepo.getPrefix},
+		    | ${fsRepo.getInstitutionUUID})""".executeUpdate
 	    fsRepo
 	}
 	
@@ -46,8 +58,7 @@ class RepositoriesRepo {
 		    | secretAccessKey = ${s3repo.getSecretAccessKey},
 		    | bucketName = ${s3repo.getBucketName}, 
 		    | prefix = ${s3repo.getPrefix},
-		    | region = ${s3repo.getRegion},
-		    | institutionUUID = ${s3repo.getInstitutionUUID}
+		    | region = ${s3repo.getRegion}
 		    | where uuid = ${s3repo.getUUID}""".executeUpdate
 		s3repo
 	}
@@ -82,7 +93,8 @@ class RepositoriesRepo {
 	implicit def toFSContentRepository(rs:ResultSet):FSContentRepository = Entities.newFSContentRepository(
 			rs.getString("uuid"),
 			rs.getString("path"),
-			rs.getString("prefix")
+			rs.getString("prefix"),
+			rs.getString("institutionUUID")
 	)
 	
 	implicit def toS3ContentRepository(rs:ResultSet):S3ContentRepository = Entities.newS3ContentRepository(
@@ -95,6 +107,6 @@ class RepositoriesRepo {
 			rs.getString("institutionUUID"))   
 } 
 
-object RepositoriesRepo {
-  def apply() = new RepositoriesRepo()
+object ContentRepositoriesRepo {
+  def apply() = new ContentRepositoriesRepo()
 }

@@ -52,7 +52,7 @@ class KornellAPI extends Application {
     classOf[NewRelicResource],
     classOf[TokenResource],
     classOf[LoggerResource],
-    classOf[S3ContentRepositoriesResource]
+    classOf[ContentRepositoriesResource]
   )
     
   override def getClasses() = 

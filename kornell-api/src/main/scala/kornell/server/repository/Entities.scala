@@ -394,11 +394,12 @@ object Entities {
     eEntries
   }
   
-  def newFSContentRepository(uuid:String,path:String,prefix:String) = {
+  def newFSContentRepository(uuid:String,path:String,prefix:String,institutionUUID:String) = {
     val fsRepo = factory.newFSContentRepository.as
     fsRepo.setUUID(uuid)
     fsRepo.setPath(path)
     fsRepo.setPrefix(prefix)
+    fsRepo.setInstitutionUUID(institutionUUID)
     fsRepo
   }
 

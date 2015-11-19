@@ -1,7 +1,7 @@
 package kornell.core.entity;
 
 public interface S3ContentRepository extends ContentRepository {
-	public static String TYPE = EntityFactory.PREFIX + "contentRepo+json";
+	public static String TYPE = EntityFactory.PREFIX + "s3ContentRepo+json";
 	
 	String getUUID();
 	void setUUID(String UUID);
