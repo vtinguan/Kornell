@@ -10,6 +10,8 @@ import kornell.server.jdbc.repository.RolesRepo
 
 package object api {
   val logger = Logger.getLogger("kornell.server.api")
+  
+  def isControlPanelAdmin():Boolean = RoleCategory.isControlPanelAdmin(RolesRepo.getUserRoles(getAuthenticatedPersonUUID, RoleCategory.BIND_DEFAULT).getRoleTOs)
 
   def isPlatformAdmin(institutionUUID:String):Boolean = RoleCategory.isPlatformAdmin(RolesRepo.getUserRoles(getAuthenticatedPersonUUID, RoleCategory.BIND_DEFAULT).getRoleTOs, institutionUUID)
     

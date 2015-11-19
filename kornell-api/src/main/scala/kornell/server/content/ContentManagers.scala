@@ -2,7 +2,7 @@ package kornell.server.content
 
 import kornell.server.jdbc.SQL._
 import com.amazonaws.services.s3.AmazonS3Client
-import kornell.server.jdbc.repository.RepositoriesRepo
+import kornell.server.jdbc.repository.ContentRepositoriesRepo
 import kornell.core.entity.S3ContentRepository
 import kornell.server.util.Settings
 import kornell.server.repository.Entities
@@ -14,7 +14,7 @@ object ContentManagers {
   lazy val s3 = new AmazonS3Client
 
   def forRepository(repoUUID: String): SyncContentManager = 
-    RepositoriesRepo()
+    ContentRepositoriesRepo()
     	.first(repoUUID)
     	.map {	_ match {
     	  case s3repo:S3ContentRepository => new S3ContentManager(s3repo)

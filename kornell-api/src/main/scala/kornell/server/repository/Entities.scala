@@ -252,6 +252,15 @@ object Entities {
     role.setObserverRole(observerRole)
     role
   }
+  
+  def newControlPanelAdminRole(person_uuid: String) = {
+    val role = factory.newRole().as
+    role.setPersonUUID(person_uuid)
+    val controlPanelAdminRole = factory.newControlPanelAdminRole().as
+    role.setRoleType(RoleType.controlPanelAdmin)
+    role.setControlPanelAdminRole(controlPanelAdminRole)
+    role
+  }
 
   def newCourseVersion(
     uuid: String = randUUID, name: String = null, 
@@ -385,11 +394,12 @@ object Entities {
     eEntries
   }
   
-  def newFSContentRepository(uuid:String,path:String,prefix:String) = {
+  def newFSContentRepository(uuid:String,path:String,prefix:String,institutionUUID:String) = {
     val fsRepo = factory.newFSContentRepository.as
     fsRepo.setUUID(uuid)
     fsRepo.setPath(path)
     fsRepo.setPrefix(prefix)
+    fsRepo.setInstitutionUUID(institutionUUID)
     fsRepo
   }
 

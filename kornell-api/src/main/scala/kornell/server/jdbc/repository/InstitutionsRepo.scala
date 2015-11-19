@@ -8,13 +8,21 @@ import kornell.core.entity.Institution
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.TOs
 import kornell.core.entity.AuditedEntityType
+import java.util.Date
+import kornell.core.util.UUID
 import kornell.core.entity.InstitutionType
 
 object InstitutionsRepo {
   
-  def create(institution: Institution): Institution = {    
+  def create(institution: Institution): Institution = {
+    if (institution.getUUID == null) {
+      institution.setUUID(UUID.random)
+    }
+    if (institution.getActivatedAt == null) {
+      institution.setActivatedAt(new Date)
+    }
     sql"""
-    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType,assetsRepositoryUUID) 
+    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType,institutionType,dashboardVersionUUID,internationalized,useEmailWhitelist,assetsRepositoryUUID) 
     | values(
     | ${institution.getUUID},
     | ${institution.getName},
@@ -29,8 +37,12 @@ object InstitutionsRepo {
     | ${institution.getActivatedAt},
     | ${institution.getSkin},
     | ${institution.getBillingType.toString},
+    | ${institution.getInstitutionType.toString},
+    | ${institution.getDashboardVersionUUID},
+    | ${institution.isInternationalized},
+    | ${institution.isUseEmailWhitelist},
     | ${institution.getAssetsRepositoryUUID})""".executeUpdate
-	    
+    
     //log creation event
     EventsRepo.logEntityChange(institution.getUUID, AuditedEntityType.institution, institution.getUUID, null, institution)
     
