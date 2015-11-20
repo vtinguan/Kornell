@@ -6,5 +6,6 @@ public enum RoleType {
 	institutionAdmin,
 	platformAdmin,
 	tutor,
-	observer
+	observer,
+	controlPanelAdmin
 }

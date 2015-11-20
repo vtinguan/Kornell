@@ -3,9 +3,13 @@ package kornell.core.util;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.logging.*;
 
 public class StringUtils {
-
+	private static final Logger logger = Logger.getLogger(StringUtils.class
+			.getName());
 	private static final Sha1 sha1 = new Sha1();
 
 	public static class URLBuilder {
@@ -205,7 +209,7 @@ public class StringUtils {
 			int idx = value.indexOf("/");
 			if (idx > 0) {
 				this.repositoryUUID = value.substring(0, idx);
-				this.key = value.substring(idx+1);
+				this.key = value.substring(idx + 1);
 			} else {
 				this.repositoryUUID = value;
 				this.key = "";
@@ -224,10 +228,6 @@ public class StringUtils {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(StringUtils.parseRepositoryData("teste"));
-	}
-	
 	@SuppressWarnings("all")
 	static final Map<String, String> mimeTypes = new HashMap<String, String>() {
 		{
@@ -238,8 +238,60 @@ public class StringUtils {
 		}
 	};
 
-	public static final String getMimeType(String key){
+	public static final String getMimeType(String key) {
 		String ext = key.substring(key.lastIndexOf("."));
 		return mimeTypes.get(ext);
 	}
+
+	private static final String SEP = "--";
+
+	public static Map<String, String> parseProperties(String str) {
+		Map<String, String> result = new HashMap<>();
+		String[] split = str.split(SEP);
+		for (String token : split) {
+			String[] kv = token.split("=");
+			if (kv.length == 2)
+				result.put(kv[0], kv[1]);
+			else
+				logger.warning("Could not parse [" + token + "]");
+		}
+		return result;
+	}
+
+	public static String composeProperties(Map<String, String> props) {
+		StringBuilder bud = new StringBuilder();
+		Set<Entry<String, String>> entrySet = props.entrySet();
+		for (Entry<String, String> entry : entrySet) {
+			if (bud.length() > 0)
+				bud.append(SEP);
+			bud.append(entry.getKey());
+			bud.append("=");
+			bud.append(entry.getValue());
+		}
+		return bud.toString();
+	}
+	
+	public static String[] parseStrings(String str){
+		return str.split(SEP);
+	}
+	
+	public static String composeStrings(String[] strs){
+		StringBuilder bud = new StringBuilder();
+		for (String string : strs) {
+			if(bud.length()>0)
+				bud.append(SEP);
+			bud.append(string);
+		}
+		return bud.toString();
+	}
+	
+	public static void main(String[] args) {
+		Map<String, String> props = new HashMap<String, String>(){{
+			put("a", "0");
+			put("b", "1");
+			put("c", "2");
+		}};
+		System.out.println(StringUtils.composeProperties(props));
+	}
+
 }

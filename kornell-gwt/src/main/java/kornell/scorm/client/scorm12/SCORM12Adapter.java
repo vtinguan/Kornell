@@ -5,8 +5,10 @@ import static kornell.scorm.client.scorm12.Scorm12.logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
+import kornell.core.entity.ContentSpec;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 
@@ -119,7 +121,7 @@ public class SCORM12Adapter implements CMIConstants {
 	}
 
 	public void launch(String enrollmentUUID) {
-		placeCtrl.goTo(new ClassroomPlace(enrollmentUUID));
+		placeCtrl.goTo(new ClassroomPlace(enrollmentUUID,ContentSpec.SCORM12));
 	}
 
 	

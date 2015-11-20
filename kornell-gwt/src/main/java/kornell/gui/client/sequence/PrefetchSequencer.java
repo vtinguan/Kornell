@@ -22,17 +22,10 @@ import kornell.gui.client.uidget.Uidget;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class PrefetchSequencer implements Sequencer {
+public class PrefetchSequencer extends SimpleSequencer implements Sequencer {
 	Logger logger = Logger.getLogger(PrefetchSequencer.class.getName());
 	private FlowPanel contentPanel;
 	private String enrollmentUUID;
-	private KornellSession session;
-	private EventBus bus;
-	private List<Actom> actoms;
-
-	private int currentIndex;
-	private Actom currentActom;
-
 	private Actom nextActom;
 	private Uidget nextUidget;
 	private Uidget currentUidget;
@@ -41,9 +34,7 @@ public class PrefetchSequencer implements Sequencer {
 	private boolean isActive;
 
 	public PrefetchSequencer(EventBus bus, KornellSession session) {
-		this.session = session;
-		this.bus = bus;
-		bus.addHandler(NavigationRequest.TYPE, this);
+		super(bus,session);
 	}
 
 	@Override
@@ -72,11 +63,6 @@ public class PrefetchSequencer implements Sequencer {
 		makeCurrentVisible();
 		dropBreadcrumb();
 		debug("PREVED");
-	}
-
-	private String getBreadcrumbKey() {
-		return PrefetchSequencer.class.getName() + "." + enrollmentUUID
-				+ ".CURRENT_KEY";
 	}
 	
 	@Override
@@ -108,9 +94,7 @@ public class PrefetchSequencer implements Sequencer {
 		return " " + (prevUidget != null ? prevUidget.isVisible() : "-");
 	}
 
-	private String currentKey() {
-		return currentActom != null ? currentActom.getKey() : "";
-	}
+
 
 	private String prevKey() {
 		return prevActom != null ? prevActom.getKey() : "";
@@ -149,18 +133,7 @@ public class PrefetchSequencer implements Sequencer {
 			prevUidget.setVisible(false);
 	}
 
-	private void dropBreadcrumb() {
-		session.setItem(getBreadcrumbKey(), currentKey());
-		String key = "";
-		if (currentActom != null) {
-			key = currentActom.getKey();
-			currentActom.setVisited(true);
-		}
-		if (StringUtils.isNone(key))
-			key = "????????????????";
-		bus.fireEvent(new ActomEnteredEvent(enrollmentUUID, key));
-		fireProgressEvent();
-	}
+
 	
 	private void makeCurrentNext() {
 		nextUidget = currentUidget;
@@ -201,7 +174,7 @@ public class PrefetchSequencer implements Sequencer {
 
 	@Override
 	public Sequencer withPlace(ClassroomPlace place) {
-		this.enrollmentUUID = place.getEnrollmentUUID();
+		setEnrollmentUUID(place.getEnrollmentUUID());
 		return this;
 	}
 
@@ -226,18 +199,7 @@ public class PrefetchSequencer implements Sequencer {
 		initialLoad();
 	}
 
-	private int lookupCurrentIndex(String currentKey) {
-		int currentIndex = 0;
-		if (currentKey != null && !currentKey.isEmpty()) {
-			for (int i = 0; i < actoms.size(); i++) {
-				Actom actom = actoms.get(i);
-				if (currentKey.equals(actom.getKey())) {
-					return i;
-				}
-			}
-		}
-		return currentIndex;
-	}
+	
 
 	class ShowWhenReady implements ViewReadyEventHandler {
 		private Uidget uidget;
@@ -268,7 +230,7 @@ public class PrefetchSequencer implements Sequencer {
 		} else {
 			int nextIndex = currentIndex + 1;
 			nextActom = actoms.get(nextIndex);
-			nextUidget = uidgetFor(nextActom);
+			nextUidget = Uidget.forActom(nextActom);
 			contentPanel.add(nextUidget);
 		}
 	}
@@ -280,7 +242,7 @@ public class PrefetchSequencer implements Sequencer {
 		} else {
 			int previousIndex = currentIndex - 1;
 			prevActom = actoms.get(previousIndex);
-			prevUidget = uidgetFor(prevActom);
+			prevUidget = Uidget.forActom(prevActom);
 			contentPanel.add(prevUidget);
 		}
 	}
@@ -290,7 +252,7 @@ public class PrefetchSequencer implements Sequencer {
 			currentActom = null;
 			currentUidget = null;
 		} else {
-			currentUidget = uidgetFor(currentActom);
+			currentUidget = Uidget.forActom(currentActom);
 			currentUidget.setVisible(false);
 			currentUidget.onViewReady(new ShowWhenReady(currentUidget));
 			contentPanel.add(currentUidget);
@@ -299,19 +261,13 @@ public class PrefetchSequencer implements Sequencer {
 		}
 	}
 
-	private Uidget uidgetFor(Actom actom) {
-		if (actom == null)
-			return null;
-		if (actom instanceof ExternalPage)
-			return new ExternalPageView((ExternalPage) actom);
-		throw new IllegalArgumentException("Do not know how to view [" + actom
-				+ "]");
-	}
+
 
 	private void setContents(Contents contents) {
 		this.actoms = ContentsOps.collectActoms(contents);
 	}
 
+	//TODO: Smells... progress acct may be different per ContentSpec
 	@Override
 	public void fireProgressEvent() {
 		if(actoms == null) return;
