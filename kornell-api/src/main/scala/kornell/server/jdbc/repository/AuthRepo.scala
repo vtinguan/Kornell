@@ -50,12 +50,13 @@ object AuthRepo {
   
   
   implicit def toUsrValue(r: ResultSet): UsrValue = 
-    (r.getString("password"), r.getString("person_uuid"))
+    (r.getString("password"), r.getString("person_uuid"), r.getBoolean("forcePasswordReset"))
 
   type UsrKey = (String, String)
-  type UsrValue = (UsrPassword, PersonUUID) //1st String is bcrypt(sha256(password)), 2nd 
+  type UsrValue = (UsrPassword, PersonUUID, PasswordResetRequired) //1st String is bcrypt(sha256(password)), 2nd 
   type UsrPassword = String
   type PersonUUID = String
+  type PasswordResetRequired = Boolean
   type PasswordCache = LoadingCache[UsrKey, Option[UsrValue]]
   type RolesCache = LoadingCache[Option[PersonUUID], Set[Role]]
 
@@ -64,7 +65,7 @@ object AuthRepo {
 
   def authByEmail(institutionUUID: String, email: String) = 
    sql"""
-   select pwd.password as password, person_uuid
+   select pwd.password as password, person_uuid, forcePasswordReset 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.email=${email}
@@ -73,7 +74,7 @@ object AuthRepo {
 
   def authByCPF(institutionUUID: String, cpf: String) = 
    sql"""
-   select pwd.password as password, person_uuid 
+   select pwd.password as password, person_uuid, forcePasswordReset 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.cpf=${cpf}
@@ -82,7 +83,7 @@ object AuthRepo {
 
   def authByUsername(institutionUUID: String, username: String) = 
 	sql"""
-    select password, person_uuid 
+    select password, person_uuid, forcePasswordReset 
     from Password
 	where username=${username}
 	and institutionUUID=${institutionUUID}
@@ -120,10 +121,12 @@ object AuthRepo {
 class AuthRepo(pwdCache: AuthRepo.PasswordCache,
   rolesCache: AuthRepo.RolesCache) {
 
-  def authenticate(institutionUUID: String, userkey: String, password: String): Option[String] = Try {
+  type AuthValue = (String, Boolean)
+  
+  def authenticate(institutionUUID: String, userkey: String, password: String): Option[AuthValue] = Try {
     val usrValue = pwdCache.get((institutionUUID, userkey)).get
     if (BCrypt.checkpw(SHA256(password), usrValue._1)) {
-      Option(usrValue._2)
+      Option((usrValue._2, usrValue._3))
     } else {
      None 
     }
