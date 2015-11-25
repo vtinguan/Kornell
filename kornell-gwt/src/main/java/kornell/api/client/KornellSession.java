@@ -175,13 +175,6 @@ public class KornellSession extends KornellClient {
 				setCurrentUser(null);
 				callback.unauthorized(kornellErrorTO);
 			}
-			
-			//user must change his password
-			@Override
-			protected void forbidden(KornellErrorTO kornellErrorTO) {
-				setCurrentUser(null);
-				callback.forbidden(kornellErrorTO);
-			}
 		};
 		
 		Callback<TokenTO> loginWrapper = new Callback<TokenTO>() {
@@ -196,6 +189,12 @@ public class KornellSession extends KornellClient {
 			protected void unauthorized(KornellErrorTO kornellErrorTO) {
 				setCurrentUser(null);
 				callback.unauthorized(kornellErrorTO);
+			}
+			
+			//user must change his password
+			@Override
+			protected void forbidden(KornellErrorTO kornellErrorTO) {
+				callback.forbidden(kornellErrorTO);
 			}
 			
 		};

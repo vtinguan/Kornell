@@ -50,7 +50,7 @@ object AuthRepo {
   
   
   implicit def toUsrValue(r: ResultSet): UsrValue = 
-    (r.getString("password"), r.getString("person_uuid"), r.getBoolean("forcePasswordReset"))
+    (r.getString("password"), r.getString("person_uuid"), r.getBoolean("forcePasswordUpdate"))
 
   type UsrKey = (String, String)
   type UsrValue = (UsrPassword, PersonUUID, PasswordResetRequired) //1st String is bcrypt(sha256(password)), 2nd 
@@ -65,7 +65,7 @@ object AuthRepo {
 
   def authByEmail(institutionUUID: String, email: String) = 
    sql"""
-   select pwd.password as password, person_uuid, forcePasswordReset 
+   select pwd.password as password, pwd.person_uuid, p.forcePasswordUpdate 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.email=${email}
@@ -74,7 +74,7 @@ object AuthRepo {
 
   def authByCPF(institutionUUID: String, cpf: String) = 
    sql"""
-   select pwd.password as password, person_uuid, forcePasswordReset 
+   select pwd.password as password, pwd.person_uuid, p.forcePasswordUpdate 
    from Password pwd
    join Person p on p.uuid = pwd.person_uuid
    where p.cpf=${cpf}
@@ -83,10 +83,11 @@ object AuthRepo {
 
   def authByUsername(institutionUUID: String, username: String) = 
 	sql"""
-    select password, person_uuid, forcePasswordReset 
-    from Password
-	where username=${username}
-	and institutionUUID=${institutionUUID}
+    select pwd.password, pwd.person_uuid, p.forcePasswordUpdate 
+    from Password pwd
+	join Person p on p.uuid = pwd.person_uuid
+	where pwd.username=${username}
+	and pwd.institutionUUID=${institutionUUID}
     """.first[UsrValue](toUsrValue)
   
 
@@ -123,14 +124,14 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 
   type AuthValue = (String, Boolean)
   
-  def authenticate(institutionUUID: String, userkey: String, password: String): Option[AuthValue] = Try {
+  def authenticate(institutionUUID: String, userkey: String, password: String): Option[AuthValue] =  {
     val usrValue = pwdCache.get((institutionUUID, userkey)).get
     if (BCrypt.checkpw(SHA256(password), usrValue._1)) {
       Option((usrValue._2, usrValue._3))
     } else {
      None 
     }
-  }.getOrElse(None)
+  }
 
   def getUserRoles = userRoles().asJava
 
@@ -164,6 +165,13 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
     	select pwd.username from Password pwd
     	where pwd.person_uuid = $personUUID
     """.first[String]
+  
+  def getPersonByUsernameAndPasswordUpdateFlag(username: String) = 
+    sql"""
+    	select p.* from Person p
+    	join Password pwd on pwd.person_uuid = p.uuid
+    	where pwd.username = ${username} and p.forcePasswordUpdate = true
+  	""".first[Person]
 
   def hasPassword(institutionUUID: String, username: String) =
     sql"""
@@ -172,10 +180,15 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
     	and pwd.institutionUUID = $institutionUUID
     """.first[String].isDefined
 
-  def updatePassword(personUUID: String, plainPassword: String) = {
+  def updatePassword(personUUID: String, plainPassword: String, disableForceUpdatePassword: Boolean) = {
     sql"""
     	update Password set password=${BCrypt.hashpw(SHA256(plainPassword), BCrypt.gensalt())}, requestPasswordChangeUUID=null where person_uuid=${personUUID}
     """.executeUpdate
+    if (disableForceUpdatePassword) {
+      sql"""
+    	   update Person set forcePasswordUpdate=false where uuid=${personUUID}
+      """.executeUpdate
+    }
   }
     
   def setPlainPassword(institutionUUID: String, personUUID: String, username: String, plainPassword: String) = {
