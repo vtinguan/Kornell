@@ -188,7 +188,6 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void forbidden(KornellErrorTO kornellErrorTO) {
-		// Not used for now
 		if (kornellErrorTO != null)
 			logger.fine(KornellConstantsHelper
 					.getErrorMessage(kornellErrorTO));

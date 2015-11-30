@@ -17,6 +17,7 @@ import kornell.core.to.TokenTO
 import kornell.core.error.exception.UnauthorizedAccessException
 import javax.ws.rs.core.Context
 import javax.servlet.http.HttpServletRequest
+import kornell.core.error.exception.AuthenticationException
 
 @Path("auth")
 class TokenResource {
@@ -27,10 +28,15 @@ class TokenResource {
   def getToken(@FormParam("clientType") clientType: String, @FormParam("institutionUUID") institutionUUID: String,
       @FormParam("userkey") userkey: String, @FormParam("password") password: String) = {
     //gotta escape because form params and plus signs are weird
-    val personUUID = AuthRepo().authenticate(institutionUUID, userkey.replaceAll(" ", "\\+"), password)
+    val authValue = AuthRepo().authenticate(institutionUUID, userkey.replaceAll(" ", "\\+"), password)
     val authClientType = AuthClientType.valueOf(clientType)
-    if (personUUID.isDefined) {
-      val token = TokenRepo.getToken(personUUID.get)
+    if (authValue.isDefined) {
+      if (authValue.get._2) {
+        //forced password reset flag is on
+        throw new AuthenticationException("mustUpdatePassword")
+      }
+      val personUUID = authValue.get._1
+      val token = TokenRepo.getToken(personUUID)
       if (token.isDefined) {
         if (token.get.getExpiry == null || token.get.getExpiry.after(new Date)) {
           //token exists and still valid
@@ -38,11 +44,11 @@ class TokenResource {
         } else {
           //token expired, we delete old one and create a new one
           TokenRepo.deleteToken(token.get.getToken)
-          TokenRepo.createToken(UUID.random(), personUUID.get, authClientType)
+          TokenRepo.createToken(UUID.random(), personUUID, authClientType)
         }
       } else {
         //token did not exist, we create one
-    	  TokenRepo.createToken(UUID.random(), personUUID.get, authClientType)
+    	  TokenRepo.createToken(UUID.random(), personUUID, authClientType)
       }
     } else {
       //throw login exception

@@ -191,6 +191,26 @@ class UserResource(private val authRepo:AuthRepo) {
       }
     }
   }
+  
+  //Used when user has the forcePasswordUpdate flag on his account
+  @PUT
+  @Path("updatePassword/{username}")
+  @Produces(Array(UserInfoTO.TYPE))
+  def updatePassword(@PathParam("username") username: String, password: String) = {
+    val person = authRepo.getPersonByUsernameAndPasswordUpdateFlag(username)
+    if (person.isDefined) {
+      PersonRepo(person.get.getUUID).updatePassword(person.get.getUUID, password, true)
+
+	  //log entity change
+	  EventsRepo.logEntityChange(person.get.getInstitutionUUID, AuditedEntityType.password, person.get.getUUID, null, null, person.get.getUUID)
+	  
+	  val user = newUserInfoTO
+      user.setUsername(person.get.getEmail())
+      Option(user)
+    } else {
+      throw new UnauthorizedAccessException("passwordChangeFailed")
+    }
+  }
 
   @GET
   @Path("hasPowerOver/{targetPersonUUID}")

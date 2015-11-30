@@ -49,4 +49,6 @@ public interface Person {
 	void setInstitutionRegistrationPrefixUUID(String institutionRegistrationPrefixUUID);
 	boolean isReceiveEmailCommunication();
 	void setReceiveEmailCommunication(boolean receiveEmailCommunication);
+	boolean isForcePasswordUpdate();
+	void setForcePasswordUpdate(boolean forcePasswordUpdate);
 }
