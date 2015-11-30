@@ -124,14 +124,14 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 
   type AuthValue = (String, Boolean)
   
-  def authenticate(institutionUUID: String, userkey: String, password: String): Option[AuthValue] =  {
+  def authenticate(institutionUUID: String, userkey: String, password: String): Option[AuthValue] =  Try {
     val usrValue = pwdCache.get((institutionUUID, userkey)).get
     if (BCrypt.checkpw(SHA256(password), usrValue._1)) {
       Option((usrValue._2, usrValue._3))
     } else {
      None 
     }
-  }
+  }.getOrElse(None)
 
   def getUserRoles = userRoles().asJava
 

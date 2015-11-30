@@ -133,9 +133,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			@Override
 			protected void forbidden(KornellErrorTO kornellErrorTO) {
 				logger.info(this.getClass().getName() + " - " + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
-				view.setMessage(KornellConstantsHelper.getMessage("forcedPasswordChange"));
 				view.setForcedPasswordUpdate(true);
 				view.displayView(VitrineViewType.newPassword);
+				view.setMessage(KornellConstantsHelper.getMessage("forcedPasswordChange"));
+				view.showMessage();
 			}
 		};
 		String email = view.getEmail().toLowerCase().trim().replace(FormHelper.USERNAME_ALTERNATE_SEPARATOR, FormHelper.USERNAME_SEPARATOR); 
