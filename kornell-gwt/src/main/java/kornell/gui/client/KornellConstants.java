@@ -744,6 +744,12 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Access denied.")
 	String accessDenied();
 	
+	/**
+	 * Errors 403
+	 * 
+	 */
+	@DefaultStringValue("For security reasons, you must update your password.")
+	String forcedPasswordChange();
 	
 	/**
 	 * Errors 409

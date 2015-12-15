@@ -191,6 +191,12 @@ public class KornellSession extends KornellClient {
 				callback.unauthorized(kornellErrorTO);
 			}
 			
+			//user must change his password
+			@Override
+			protected void forbidden(KornellErrorTO kornellErrorTO) {
+				callback.forbidden(kornellErrorTO);
+			}
+			
 		};
 		POST_LOGIN(username, password, "/auth/token").sendRequest(null, loginWrapper);
 	}

@@ -253,7 +253,8 @@ package object repository {
 	    rs.getString("termsAcceptedOn"),
 	    RegistrationType.valueOf(rs.getString("registrationType")),
 	    rs.getString("institutionRegistrationPrefixUUID"),
-	    rs.getBoolean("receiveEmailCommunication"))
+	    rs.getBoolean("receiveEmailCommunication"),
+	    rs.getBoolean("forcePasswordUpdate"))
 	
 	implicit def toPersonTO(rs:ResultSet):PersonTO = newPersonTO(toPerson(rs),
 	    rs.getString("username"))

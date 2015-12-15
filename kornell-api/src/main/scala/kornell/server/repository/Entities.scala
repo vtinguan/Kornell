@@ -60,7 +60,8 @@ object Entities {
     termsAcceptedOn: String = null,
     registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
-    receiveEmailCommunication: Boolean = true) = {
+    receiveEmailCommunication: Boolean = true,
+    forcePasswordUpdate: Boolean = false) = {
 
     val bday = ValueFactory.newDate
     val person = factory.newPerson.as
@@ -86,6 +87,7 @@ object Entities {
     person.setRegistrationType(registrationType)
     person.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     person.setReceiveEmailCommunication(receiveEmailCommunication)
+    person.setForcePasswordUpdate(forcePasswordUpdate)
     person
   }
 

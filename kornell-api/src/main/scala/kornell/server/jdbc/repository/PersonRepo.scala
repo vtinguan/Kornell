@@ -25,8 +25,8 @@ class PersonRepo(val uuid: String) {
     PersonRepo.this
   }
   
-  def updatePassword(personUUID: String, plainPassword: String): PersonRepo = {
-    AuthRepo().updatePassword(personUUID, plainPassword)
+  def updatePassword(personUUID: String, plainPassword: String, disableForceUpdatePassword: Boolean = false): PersonRepo = {
+    AuthRepo().updatePassword(personUUID, plainPassword, disableForceUpdatePassword)
     PersonRepo.this
   }
 

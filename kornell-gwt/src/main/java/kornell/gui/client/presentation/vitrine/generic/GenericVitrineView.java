@@ -45,6 +45,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private VitrineView.Presenter presenter;
 	private VitrineViewType currentViewType = VitrineViewType.login;
 	private String registrationEmail;
+	private boolean forcedPasswordUpdate = false;
 
 	@UiField
 	FlowPanel vitrineWrapper;
@@ -343,7 +344,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 				}
 			});
 			break;
-		case newPassword: 
+		case newPassword:
 			newPasswordPanel.setVisible(true);
 			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 				public void execute() {
@@ -407,8 +408,18 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	@Override
-  public void setRegistrationEmail(String email) {
+	public void setRegistrationEmail(String email) {
 		this.registrationEmail = email;  
-  }
+	}
+
+	@Override
+	public boolean isForcedPasswordUpdate() {
+		return forcedPasswordUpdate;
+	}
+
+	@Override
+	public void setForcedPasswordUpdate(boolean forcedPasswordUpdate) {
+		this.forcedPasswordUpdate = forcedPasswordUpdate;
+	}
 
 }
