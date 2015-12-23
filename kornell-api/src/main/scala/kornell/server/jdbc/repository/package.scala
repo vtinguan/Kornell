@@ -70,7 +70,8 @@ package object repository {
         rs.getString("dashboardVersionUUID"),
         rs.getBoolean("internationalized"),
         rs.getBoolean("useEmailWhitelist"),
-        rs.getString("assetsRepositoryUUID"))
+        rs.getString("assetsRepositoryUUID"),
+        rs.getString("timeZone"))
         
   implicit def toS3ContentRepository(rs:ResultSet):S3ContentRepository = 
     newS3ContentRepository(rs.getString("uuid"),
