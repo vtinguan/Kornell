@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
-
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
@@ -34,6 +33,8 @@ import kornell.server.report.ReportCourseClassAuditGenerator
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
+import javax.servlet.http.HttpServletRequest
+import kornell.core.util.StringUtils.composeURL
 
 @Path("/report")
 class ReportResource {
@@ -42,6 +43,7 @@ class ReportResource {
   @Path("/certificate/{userUUID}/{courseClassUUID}")
   @Produces(Array("application/pdf"))
   def get(@Context resp: HttpServletResponse,
+    @Context req: HttpServletRequest,
     @PathParam("userUUID") userUUID: String,
     @PathParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
 	    val roles = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
@@ -53,14 +55,15 @@ class ReportResource {
 	      person.getUUID == userUUID))
 	      throw new UnauthorizedAccessException("accessDenied")
 	    resp.addHeader("Content-disposition", "attachment; filename=Certificado.pdf")
-	    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID)
+	    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID, getServerURL(req))
 	  }
   }
 
   @PUT
   @Path("/certificate")
   @Consumes(Array(SimplePeopleTO.TYPE))
-  def get(@QueryParam("courseClassUUID") courseClassUUID: String, 
+  def get(@Context req: HttpServletRequest,
+   @QueryParam("courseClassUUID") courseClassUUID: String, 
     peopleTO: SimplePeopleTO) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
 	val roles = RolesRepo.getUserRoles(p.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
@@ -95,7 +98,7 @@ class ReportResource {
         if (certificateInformationTOsByCourseClass.length == 0) {
           throw new ServerErrorException("errorGeneratingReport")
         } else {
-          val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass)
+          val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass, getServerURL(req))
           val bs = new ByteArrayInputStream(report)
           val repo = ContentManagers.forCertificates(p.getInstitutionUUID())
           repo.put(
@@ -103,7 +106,7 @@ class ReportResource {
             "application/pdf",
             "Content-Disposition: attachment; filename=\"" + filename + ".pdf\"",
             Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()),filename)
-          repo.url(filename)
+          composeURL(ContentManagers.USER_CONTENT_URL, repo.url(filename)) 
         }
       } catch {
         case e: Exception =>
@@ -117,7 +120,8 @@ class ReportResource {
   def fileExists(@QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
-      val url = ContentManagers.forCertificates(p.getInstitutionUUID).url(filename)
+      
+      val url = composeURL(ContentManagers.USER_CONTENT_URL, ContentManagers.forCertificates(p.getInstitutionUUID).url(filename)) 
 
       HttpURLConnection.setFollowRedirects(false);
       val con = new URL(url).openConnection.asInstanceOf[HttpURLConnection]
@@ -134,6 +138,7 @@ class ReportResource {
   @GET
   @Path("/courseClassInfo")
   def getCourseClassInfo(@Context resp: HttpServletResponse,
+    @Context req: HttpServletRequest,
     @QueryParam("courseUUID") courseUUID: String,
     @QueryParam("courseClassUUID") courseClassUUID: String,
     @QueryParam("fileType") fileType: String) = AuthRepo().withPerson{ person => {
@@ -156,7 +161,7 @@ class ReportResource {
 	    	resp.setContentType("application/vnd.ms-excel")
 	    else
 	    	resp.setContentType("application/pdf")
-	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
+	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, getServerURL(req), fType)
 	  }
     }  
   }
@@ -196,5 +201,8 @@ class ReportResource {
   @Path("/clear")
   @Produces(Array("application/pdf"))
   def clearJasperFiles = ReportGenerator.clearJasperFiles
+  
+  
+  def getServerURL(req: HttpServletRequest) = req.getRequestURL.toString.split("/api").head
 
 }

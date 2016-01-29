@@ -22,13 +22,13 @@ object ReportCertificateGenerator {
       rs.getString("title"),
       rs.getString("name"),
       rs.getDate("certifiedAt"),
-      rs.getString("assetsURL"),
+      rs.getString("assetsRepositoryUUID"),
       rs.getString("distributionPrefix"),
       rs.getString("courseVersionUUID"))
       
-   def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
+   def generateCertificate(userUUID: String, courseClassUUID: String, serverURL: String): Array[Byte] = {
     generateCertificateReport(sql"""
-				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
+				select p.fullName, c.title, cc.name, i.assetsRepositoryUUID, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
 	    		from Person p
 					join Enrollment e on p.uuid = e.person_uuid
 					join CourseClass cc on cc.uuid = e.class_uuid
@@ -39,19 +39,19 @@ object ReportCertificateGenerator {
 				where e.certifiedAt is not null and 
         		  p.uuid = $userUUID and
 				  cc.uuid = $courseClassUUID
-		    """.map[CertificateInformationTO](toCertificateInformationTO))
+		    """.map[CertificateInformationTO](toCertificateInformationTO), serverURL)
   }
   
-  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO]): Array[Byte] = {
-    generateCertificateReport(certificateInformationTOs)
+  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO], serverURL: String): Array[Byte] = {
+    generateCertificateReport(certificateInformationTOs, serverURL)
   }
   
-  def generateCertificateByCourseClass(courseClassUUID: String): Array[Byte] = {
-    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID, null))
+  def generateCertificateByCourseClass(courseClassUUID: String, serverURL: String): Array[Byte] = {
+    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID, null), serverURL)
   }
   
   def getCertificateInformationTOsByCourseClass(courseClassUUID: String, enrollments: String) = {
-    var sql = """select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
+    var sql = """select p.fullName, c.title, cc.name, i.assetsRepositoryUUID, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
       from Person p 
       join Enrollment e on p.uuid = e.person_uuid 
       join CourseClass cc on cc.uuid = e.class_uuid 
@@ -68,12 +68,12 @@ object ReportCertificateGenerator {
     pstmt.map[CertificateInformationTO](toCertificateInformationTO)
   }
 
-  private def generateCertificateReport(certificateData: List[CertificateInformationTO]): Array[Byte] = {
+  private def generateCertificateReport(certificateData: List[CertificateInformationTO], serverURL: String): Array[Byte] = {
     if(certificateData.length == 0){
     	return null
     }
     val parameters: HashMap[String, Object] = new HashMap()
-    val assetsURL: String = composeURL(certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
+    val assetsURL: String = composeURL(serverURL, "repository", certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
     parameters.put("assetsURL", assetsURL + "/")
 	  
    

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.*;
+import java.util.logging.Logger;
 
 public class StringUtils {
 	private static final Logger logger = Logger.getLogger(StringUtils.class

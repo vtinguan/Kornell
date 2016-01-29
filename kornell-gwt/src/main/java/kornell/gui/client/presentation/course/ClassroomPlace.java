@@ -1,9 +1,5 @@
 package kornell.gui.client.presentation.course;
 
-import java.util.Map;
-
-import org.eclipse.jetty.util.StringUtil;
-
 import kornell.core.entity.ContentSpec;
 import kornell.core.util.StringUtils;
 

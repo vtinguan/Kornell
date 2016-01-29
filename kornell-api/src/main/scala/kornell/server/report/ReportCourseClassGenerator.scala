@@ -12,6 +12,9 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.CourseClassState
+import kornell.core.util.StringUtils._
+import kornell.server.jdbc.PreparedStmt
+import kornell.server.jdbc.SQL.SQLHelper
 
 object ReportCourseClassGenerator {
 
@@ -45,7 +48,7 @@ object ReportCourseClassGenerator {
   type BreakdownData = Tuple2[String,Integer] 
   implicit def breakdownConvertion(rs:ResultSet): BreakdownData = (rs.getString(1), rs.getInt(2))
   
-  def generateCourseClassReport(courseUUID: String, courseClassUUID: String, fileType: String): Array[Byte] = {
+  def generateCourseClassReport(courseUUID: String, courseClassUUID: String, serverURL: String, fileType: String): Array[Byte] = {
     val courseClassReportTO = sql"""
 			select 
 				p.fullName, 
@@ -91,7 +94,8 @@ object ReportCourseClassGenerator {
 				left join Password pw on pw.person_uuid = p.uuid
 			where
 				(e.state = ${EnrollmentState.enrolled.toString} or ${fileType} = 'xls') and
-    			cc.state = ${CourseClassState.active.toString} and 
+    			cc.state <> ${CourseClassState.deleted.toString} and 
+    			(cc.state = ${CourseClassState.active.toString} or ${courseUUID} is null) and
 		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 				(c.uuid = ${courseUUID} or ${courseUUID} is null) and
 				e.state <> ${EnrollmentState.deleted.toString}
@@ -120,7 +124,7 @@ object ReportCourseClassGenerator {
 	    """.map[CourseClassReportTO](toCourseClassReportTO)
 	    
 	    val parameters = getTotalsAsParameters(courseUUID, courseClassUUID, fileType)
-	    addInfoParameters(courseUUID, courseClassUUID, parameters)
+	    addInfoParameters(courseUUID, courseClassUUID, serverURL, parameters)
 	
 	    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
 	    enrollmentBreakdowns += TOs.newEnrollmentsBreakdownTO("aa", new Integer(1))
@@ -139,7 +143,7 @@ object ReportCourseClassGenerator {
   type ReportHeaderData = Tuple8[String,String, String, Date, String, String, String, String]
   implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8))
   
-  private def addInfoParameters(courseUUID: String, courseClassUUID: String, parameters: HashMap[String, Object]) = {
+  private def addInfoParameters(courseUUID: String, courseClassUUID: String, serverURL: String, parameters: HashMap[String, Object]) = {
     val headerInfo = sql"""
 			select 
 				i.fullName as 'institutionName',
@@ -147,7 +151,7 @@ object ReportCourseClassGenerator {
 				cc.name as 'courseClassName',
 				cc.createdAt,
 				cc.maxEnrollments,
-				i.assetsURL,
+				i.assetsRepositoryUUID,
 				(select eventFiredAt from CourseClassStateChanged 
 					where toState = 'inactive' and courseClassUUID = cc.uuid
 					order by eventFiredAt desc) as disabledAt,
@@ -163,12 +167,13 @@ object ReportCourseClassGenerator {
 				join Institution i on i.uuid = cc.institution_uuid
 			where (cc.uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 				(cv.course_uuid = ${courseUUID} or ${courseUUID} is null) and
-    			cc.state = ${CourseClassState.active.toString}
+    			cc.state <> ${CourseClassState.deleted.toString} and 
+    			(cc.state = ${CourseClassState.active.toString} or ${courseUUID} is null)
     """.first[ReportHeaderData](headerDataConvertion)
     
     parameters.put("institutionName", headerInfo.get._1)
     parameters.put("courseTitle", headerInfo.get._2)
-	parameters.put("assetsURL", headerInfo.get._6)
+	parameters.put("assetsURL", mkurl(serverURL, "repository", headerInfo.get._6, ""))
     if(courseClassUUID != null){
 	    parameters.put("courseClassName", headerInfo.get._3)
 	    parameters.put("createdAt", headerInfo.get._4)

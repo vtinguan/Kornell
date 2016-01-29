@@ -5,7 +5,6 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
