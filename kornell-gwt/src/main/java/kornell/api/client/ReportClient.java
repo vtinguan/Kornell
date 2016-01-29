@@ -10,7 +10,7 @@ public class ReportClient extends RESTClient {
 	}
 	
 	public void generateCourseClassCertificate(String courseClassUUID, SimplePeopleTO people, Callback<String> callback){
-		PUT("/report/certificate?courseClassUUID="+courseClassUUID+"&tsOffset=" + getClientOffsetTimeZone()).withContentType(SimplePeopleTO.TYPE).withEntityBody(people).go(callback);	
+		PUT("/report/certificate?courseClassUUID="+courseClassUUID).withContentType(SimplePeopleTO.TYPE).withEntityBody(people).go(callback);	
 	}
 	
 }

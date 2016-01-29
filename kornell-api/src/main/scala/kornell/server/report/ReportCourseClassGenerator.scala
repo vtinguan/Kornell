@@ -12,7 +12,6 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.CourseClassState
-import kornell.server.util.ServerTime
 
 object ReportCourseClassGenerator {
 
@@ -46,7 +45,7 @@ object ReportCourseClassGenerator {
   type BreakdownData = Tuple2[String,Integer] 
   implicit def breakdownConvertion(rs:ResultSet): BreakdownData = (rs.getString(1), rs.getInt(2))
   
-  def generateCourseClassReport(courseUUID: String, courseClassUUID: String, fileType: String, tsOffset: String): Array[Byte] = {
+  def generateCourseClassReport(courseUUID: String, courseClassUUID: String, fileType: String): Array[Byte] = {
     val courseClassReportTO = sql"""
 			select 
 				p.fullName, 
@@ -134,13 +133,7 @@ object ReportCourseClassGenerator {
       	else
       	  cl.getResourceAsStream("reports/courseClassInfo.jasper")
     	}
-	    ReportGenerator.getReportBytesFromStream(courseClassReportTO.map(fixDates(_, tsOffset)), parameters, jasperStream, fileType)
-  }
-  
-  private def fixDates(to: CourseClassReportTO, tsOffset: String) = {
-	to.setCertifiedAt(ServerTime.adjustTimezoneOffset(to.getCertifiedAt, tsOffset.toInt))
-	to.setEnrolledAt(ServerTime.adjustTimezoneOffset(to.getEnrolledAt, tsOffset.toInt))
-    to
+	    ReportGenerator.getReportBytesFromStream(courseClassReportTO, parameters, jasperStream, fileType)
   }
       
   type ReportHeaderData = Tuple8[String,String, String, Date, String, String, String, String]

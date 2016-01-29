@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
+
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
@@ -33,7 +34,6 @@ import kornell.server.report.ReportCourseClassAuditGenerator
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
-import kornell.server.util.ServerTime
 
 @Path("/report")
 class ReportResource {
@@ -43,8 +43,7 @@ class ReportResource {
   @Produces(Array("application/pdf"))
   def get(@Context resp: HttpServletResponse,
     @PathParam("userUUID") userUUID: String,
-    @PathParam("courseClassUUID") courseClassUUID: String,
-    @QueryParam("tsOffset") tsOffset: String) = AuthRepo().withPerson{ person => {
+    @PathParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
 	    val roles = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
 	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
@@ -54,15 +53,14 @@ class ReportResource {
 	      person.getUUID == userUUID))
 	      throw new UnauthorizedAccessException("accessDenied")
 	    resp.addHeader("Content-disposition", "attachment; filename=Certificado.pdf")
-	    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID, tsOffset)
+	    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID)
 	  }
   }
 
   @PUT
   @Path("/certificate")
   @Consumes(Array(SimplePeopleTO.TYPE))
-  def get(@QueryParam("courseClassUUID") courseClassUUID: String,
-    @QueryParam("tsOffset") tsOffset: String, 
+  def get(@QueryParam("courseClassUUID") courseClassUUID: String, 
     peopleTO: SimplePeopleTO) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
 	val roles = RolesRepo.getUserRoles(p.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
@@ -97,7 +95,7 @@ class ReportResource {
         if (certificateInformationTOsByCourseClass.length == 0) {
           throw new ServerErrorException("errorGeneratingReport")
         } else {
-          val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass, tsOffset)
+          val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass)
           val bs = new ByteArrayInputStream(report)
           val repo = ContentManagers.forCertificates(p.getInstitutionUUID())
           repo.put(
@@ -138,8 +136,7 @@ class ReportResource {
   def getCourseClassInfo(@Context resp: HttpServletResponse,
     @QueryParam("courseUUID") courseUUID: String,
     @QueryParam("courseClassUUID") courseClassUUID: String,
-    @QueryParam("fileType") fileType: String,
-    @QueryParam("tsOffset") tsOffset: String) = AuthRepo().withPerson{ person => {
+    @QueryParam("fileType") fileType: String) = AuthRepo().withPerson{ person => {
 	  if(courseUUID != null || courseClassUUID != null){
 	    val fType = {
 	      if(fileType != null && fileType == "xls")
@@ -152,14 +149,14 @@ class ReportResource {
 	    	  CourseRepo(courseUUID).get.getTitle
 	    	else
 	    	  CourseClassRepo(courseClassUUID).get.getName
-	    } + " - " + ServerTime.adjustTimezoneOffset(tsOffset.toInt).split("T")(0) + "."+fType
+	    } + " - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ "."+fType
 	    
 	    resp.addHeader("Content-disposition", "attachment; filename=" + fileName)
 	    if(fType != null && fType == "xls")
 	    	resp.setContentType("application/vnd.ms-excel")
 	    else
 	    	resp.setContentType("application/pdf")
-	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType, tsOffset)
+	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
 	  }
     }  
   }
@@ -167,15 +164,13 @@ class ReportResource {
   @GET
   @Path("/courseClassAudit")
   def getCourseClassAudit(@Context resp: HttpServletResponse,
-    @QueryParam("courseClassUUID") courseClassUUID: String,
-    @QueryParam("tsOffset") tsOffset: String) = AuthRepo().withPerson{ person => {
+    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
 	  if(courseClassUUID != null){
 	    val courseClass = CourseClassRepo(courseClassUUID).get
 	    val fileName = courseClass.getName + " - Audit - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ ".xls"
 	    resp.addHeader("Content-disposition", "attachment; filename=" + fileName)
-	    resp.addHeader("getCurrentTimeZoneOffset", ""+ServerTime.getCurrentTimeZoneOffset)
 	    resp.setContentType("application/vnd.ms-excel")
-	    ReportCourseClassAuditGenerator.generateCourseClassAuditReport(courseClass, tsOffset)
+	    ReportCourseClassAuditGenerator.generateCourseClassAuditReport(courseClass)
 	  }
     }  
   }
@@ -185,8 +180,7 @@ class ReportResource {
   def getInstitutionBilling(@Context resp: HttpServletResponse,
     @QueryParam("institutionUUID") institutionUUID: String,
     @QueryParam("periodStart") periodStart: String,
-    @QueryParam("periodEnd") periodEnd: String,
-    @QueryParam("tsOffset") tsOffset: String) = AuthRepo().withPerson{ person => {
+    @QueryParam("periodEnd") periodEnd: String) = AuthRepo().withPerson{ person => {
 	    val roles = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
 	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)))
@@ -194,7 +188,7 @@ class ReportResource {
 	    val institution = InstitutionRepo(institutionUUID).get
 	    resp.addHeader("Content-disposition", "attachment; filename=" + institution.getName + " - " + periodStart + ".xls")
 	    resp.setContentType("application/vnd.ms-excel")
-	    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institution, periodStart, periodEnd, tsOffset)
+	    ReportInstitutionBillingGenerator.generateInstitutionBillingReport(institution, periodStart, periodEnd)
     }
   }
 

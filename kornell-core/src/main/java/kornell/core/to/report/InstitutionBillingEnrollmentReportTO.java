@@ -1,5 +1,6 @@
 package kornell.core.to.report;
 
+import java.util.Date;
 
 
 public class InstitutionBillingEnrollmentReportTO {
@@ -9,7 +10,7 @@ public class InstitutionBillingEnrollmentReportTO {
 	private String courseClassName;
 	private String fullName;
 	private String username;
-	private String firstEventFiredAt;
+	private Date firstEventFiredAt;
 	
 	public String getEnrollmentUUID() {
 		return enrollmentUUID;
@@ -47,10 +48,10 @@ public class InstitutionBillingEnrollmentReportTO {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getFirstEventFiredAt() {
+	public Date getFirstEventFiredAt() {
 		return firstEventFiredAt;
 	}
-	public void setFirstEventFiredAt(String firstEventFiredAt) {
+	public void setFirstEventFiredAt(Date firstEventFiredAt) {
 		this.firstEventFiredAt = firstEventFiredAt;
 	}
 }
