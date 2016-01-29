@@ -541,6 +541,9 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Request enrollment")
 	String requestEnrollmentLabel();
 	
+	@DefaultStringValue("Inactive class")
+	String inactiveClassLabel();
+	
 	@DefaultStringValue("Note")
 	String completedCourseNoteLabel();
 	

@@ -18,15 +18,18 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
+import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.Positioning;
 import kornell.gui.client.util.easing.Ease;
@@ -40,6 +43,7 @@ import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -299,7 +303,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@UiHandler("btnHome")
 	void handleHome(ClickEvent e) {
-		clientFactory.getPlaceController().goTo(clientFactory.getHomePlace());
+		if(clientFactory.getPlaceController().getWhere().getClass().getName().equals(clientFactory.getHomePlace().getClass().getName())){
+			PlaceUtils.reloadCurrentPlace(clientFactory.getEventBus(), clientFactory.getPlaceController());	
+		} else {
+			clientFactory.getPlaceController().goTo(clientFactory.getHomePlace());
+		}
 	}
 
 	@UiHandler("btnAdmin")

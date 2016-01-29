@@ -143,7 +143,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		final int classesCount = tos.getCourseClasses().size();
 		
 	  for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
-	  	if(courseClassTO.getCourseClass().isInvisible() || !CourseClassState.active.equals(courseClassTO.getCourseClass().getState())) continue;
+	  	if(courseClassTO.getCourseClass().isInvisible()) continue;
 	  	
 			final Teacher teacher = Teachers.of(courseClassTO);
 
