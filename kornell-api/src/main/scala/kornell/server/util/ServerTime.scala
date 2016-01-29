@@ -7,12 +7,7 @@ import org.joda.time.DateTimeZone
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.format.DateTimeFormat
 
-import java.util.logging.Logger
-
 object ServerTime {
-  
-  val log = Logger.getLogger(getClass.getName)
-  
   val fmt = ISODateTimeFormat.dateTime
   
   def now():String = fmt.print(DateTime.now)
@@ -25,33 +20,21 @@ object ServerTime {
     fmt.print(DateTime.now.minusMinutes(offset + ServerTime.getCurrentTimeZoneOffset))
   }
   
-  def adjustTimezoneOffsetDate(ds: String, offset: Int): DateTime = {
-    //@TODO unify all the formats across all entities from all databases 
+  def adjustTimezoneOffset(ds: String, offset: Int): String = {
     if(ds == null)
-      null
+      ds
     else {
       try {
-    	fmt.parseDateTime(ds).minusMinutes(offset + 0)
+    	fmt.print(fmt.parseDateTime(ds).minusMinutes(offset + ServerTime.getCurrentTimeZoneOffset))
       } catch {
         case iae: IllegalArgumentException =>  
 	      try {
-		    DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0").parseDateTime(ds).minusMinutes(offset + ServerTime.getCurrentTimeZoneOffset)
+	    	fmt.print(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").parseDateTime(ds).minusMinutes(offset + ServerTime.getCurrentTimeZoneOffset))
 	      } catch {
-	      	case iae: IllegalArgumentException =>  
-		      try {
-		    	DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").parseDateTime(ds).minusMinutes(offset + ServerTime.getCurrentTimeZoneOffset)
-		      } catch {
-		        case iae: IllegalArgumentException => DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(ds).minusMinutes(offset + ServerTime.getCurrentTimeZoneOffset)
-		      }
+	        case iae: IllegalArgumentException =>  fmt.print(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0").parseDateTime(ds).minusMinutes(offset + ServerTime.getCurrentTimeZoneOffset))
 	      }
       }
     }
-  }
-  
-  def adjustTimezoneOffset(ds: String, offset: Int): String = {
-    val dateStr = fmt.print(adjustTimezoneOffsetDate(ds, offset))
-    log.info("[INFO] Date Adjusted from: " + ds + " to " + dateStr)
-    dateStr
   }
   
   def getCurrentTimeZoneOffset():Int = {
