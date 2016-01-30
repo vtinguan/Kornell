@@ -174,6 +174,7 @@ object ReportCourseClassGenerator {
     parameters.put("institutionName", headerInfo.get._1)
     parameters.put("courseTitle", headerInfo.get._2)
 	parameters.put("assetsURL", mkurl(serverURL, "repository", headerInfo.get._6, ""))
+    println(parameters.get("assetsURL"))
     if(courseClassUUID != null){
 	    parameters.put("courseClassName", headerInfo.get._3)
 	    parameters.put("createdAt", headerInfo.get._4)

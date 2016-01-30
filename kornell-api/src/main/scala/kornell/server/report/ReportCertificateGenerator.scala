@@ -74,6 +74,7 @@ object ReportCertificateGenerator {
     }
     val parameters: HashMap[String, Object] = new HashMap()
     val assetsURL: String = composeURL(serverURL, "repository", certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
+    println(assetsURL)
     parameters.put("assetsURL", assetsURL + "/")
 	  
    
