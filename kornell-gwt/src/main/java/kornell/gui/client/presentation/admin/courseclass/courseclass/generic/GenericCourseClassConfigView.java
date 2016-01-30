@@ -481,7 +481,7 @@ public class GenericCourseClassConfigView extends Composite {
                     + "\nEsta operação não pode ser desfeita.");
         } else if (MODAL_DEACTIVATE.equals(modalMode)){
             confirmText.setText("Tem certeza que deseja desabilitar esta turma? Os participantes matriculados ainda poderão acessar os detalhes da turma e emitir o certificado, mas não terão acesso ao material relacionado à turma."
-                    + "\nEsta operação não pode ser desfeita.");
+                    + "\nEsta operação não pode ser desfeita. Caso deseje evitar que essa turma apareça para os participantes, coloque-a como invisível.");
         } else if (MODAL_PUBLIC.equals(modalMode)){
             confirmText.setText("ATENÇÃO! Tem certeza que deseja tornar esta turma pública? Ela será visível e disponível para solicitação de matrícula para TODOS os alunos registrados nesta instituição.");
         } else if (MODAL_APPROVE_EMAILS_AUTOMATICALLY.equals(modalMode)){
