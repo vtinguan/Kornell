@@ -54,7 +54,7 @@ public class ClientProperties {
 	
 	public static void setCookie(String name, String value, Date expires){
 	    if (StringUtils.isSome(name) && value != null){
-	        Cookies.setCookie( name, value, format.parse("01/01/2030"));
+	        Cookies.setCookie( name, value, expires != null ? expires : format.parse("01/01/2030"));
 	    }
 	}
 	

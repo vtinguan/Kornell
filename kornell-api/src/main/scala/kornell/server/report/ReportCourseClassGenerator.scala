@@ -48,7 +48,7 @@ object ReportCourseClassGenerator {
   type BreakdownData = Tuple2[String,Integer] 
   implicit def breakdownConvertion(rs:ResultSet): BreakdownData = (rs.getString(1), rs.getInt(2))
   
-  def generateCourseClassReport(courseUUID: String, courseClassUUID: String, serverURL: String, fileType: String): Array[Byte] = {
+  def generateCourseClassReport(courseUUID: String, courseClassUUID: String, fileType: String): Array[Byte] = {
     val courseClassReportTO = sql"""
 			select 
 				p.fullName, 
@@ -124,7 +124,7 @@ object ReportCourseClassGenerator {
 	    """.map[CourseClassReportTO](toCourseClassReportTO)
 	    
 	    val parameters = getTotalsAsParameters(courseUUID, courseClassUUID, fileType)
-	    addInfoParameters(courseUUID, courseClassUUID, serverURL, parameters)
+	    addInfoParameters(courseUUID, courseClassUUID, parameters)
 	
 	    val enrollmentBreakdowns: ListBuffer[EnrollmentsBreakdownTO] = ListBuffer()
 	    enrollmentBreakdowns += TOs.newEnrollmentsBreakdownTO("aa", new Integer(1))
@@ -140,10 +140,10 @@ object ReportCourseClassGenerator {
 	    ReportGenerator.getReportBytesFromStream(courseClassReportTO, parameters, jasperStream, fileType)
   }
       
-  type ReportHeaderData = Tuple8[String,String, String, Date, String, String, String, String]
-  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8))
+  type ReportHeaderData = Tuple9[String,String, String, Date, String, String, String, String, String]
+  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9))
   
-  private def addInfoParameters(courseUUID: String, courseClassUUID: String, serverURL: String, parameters: HashMap[String, Object]) = {
+  private def addInfoParameters(courseUUID: String, courseClassUUID: String, parameters: HashMap[String, Object]) = {
     val headerInfo = sql"""
 			select 
 				i.fullName as 'institutionName',
@@ -159,7 +159,8 @@ object ReportCourseClassGenerator {
 					from Role r 
 					join Person p on p.uuid = r.person_uuid 
 					where course_class_uuid = cc.uuid
-					group by course_class_uuid) as courseClassAdminNames
+					group by course_class_uuid) as courseClassAdminNames,
+                    i.baseURL
 			from
 				CourseClass cc
 				join CourseVersion cv on cc.courseVersion_uuid = cv.uuid
@@ -173,7 +174,7 @@ object ReportCourseClassGenerator {
     
     parameters.put("institutionName", headerInfo.get._1)
     parameters.put("courseTitle", headerInfo.get._2)
-	parameters.put("assetsURL", mkurl(serverURL, "repository", headerInfo.get._6, ""))
+	parameters.put("assetsURL", mkurl(headerInfo.get._9, "repository", headerInfo.get._6, ""))
     println(parameters.get("assetsURL"))
     if(courseClassUUID != null){
 	    parameters.put("courseClassName", headerInfo.get._3)

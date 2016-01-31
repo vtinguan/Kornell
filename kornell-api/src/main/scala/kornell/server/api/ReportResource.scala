@@ -55,7 +55,7 @@ class ReportResource {
 	      person.getUUID == userUUID))
 	      throw new UnauthorizedAccessException("accessDenied")
 	    resp.addHeader("Content-disposition", "attachment; filename=Certificado.pdf")
-	    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID, getServerURL(req))
+	    ReportCertificateGenerator.generateCertificate(userUUID, courseClassUUID)
 	  }
   }
 
@@ -98,7 +98,7 @@ class ReportResource {
         if (certificateInformationTOsByCourseClass.length == 0) {
           throw new ServerErrorException("errorGeneratingReport")
         } else {
-          val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass, getServerURL(req))
+          val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass)
           val bs = new ByteArrayInputStream(report)
           val repo = ContentManagers.forCertificates(p.getInstitutionUUID())
           repo.put(
@@ -161,7 +161,7 @@ class ReportResource {
 	    	resp.setContentType("application/vnd.ms-excel")
 	    else
 	    	resp.setContentType("application/pdf")
-	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, getServerURL(req), fType)
+	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
 	  }
     }  
   }
@@ -202,7 +202,4 @@ class ReportResource {
   @Produces(Array("application/pdf"))
   def clearJasperFiles = ReportGenerator.clearJasperFiles
   
-  
-  def getServerURL(req: HttpServletRequest) = req.getRequestURL.toString.split("/api").head
-
 }
