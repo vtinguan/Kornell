@@ -191,7 +191,7 @@ object EmailService {
       
     if (!imgFile.exists) {
       //TODO: Use ContentStore API
-      val url = new URL(mkurl(institution.getAssetsURL,logoImageName))
+      val url = new URL(mkurl(institution.getBaseURL, "repository", institution.getAssetsRepositoryUUID, logoImageName))
       FileUtils.copyURLToFile(url, imgFile)
     }
     imgFile
