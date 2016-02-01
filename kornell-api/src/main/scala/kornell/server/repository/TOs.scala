@@ -149,7 +149,7 @@ object TOs {
   }
 
   def newCertificateInformationTO: CertificateInformationTO = new CertificateInformationTO
-  def newCertificateInformationTO(personFullName: String, personCPF: String, courseTitle: String, courseClassName: String, courseClassFinishedDate: Date, assetsURL: String, distributionPrefix: String, courseVersionUUID: String): CertificateInformationTO = {
+  def newCertificateInformationTO(personFullName: String, personCPF: String, courseTitle: String, courseClassName: String, courseClassFinishedDate: Date, assetsURL: String, distributionPrefix: String, courseVersionUUID: String, baseURL: String): CertificateInformationTO = {
     val to = newCertificateInformationTO
     to.setPersonFullName(personFullName)
     to.setPersonCPF(personCPF)
@@ -159,6 +159,7 @@ object TOs {
     to.setAssetsURL(assetsURL)
     to.setDistributionPrefix(distributionPrefix)
     to.setCourseVersionUUID(courseVersionUUID)
+    to.setBaseURL(baseURL)
     to
   }
 
@@ -277,7 +278,7 @@ object TOs {
   }
 
   def newInstitutionBillingEnrollmentReportTO: InstitutionBillingEnrollmentReportTO = new InstitutionBillingEnrollmentReportTO
-  def newInstitutionBillingEnrollmentReportTO(enrollmentUUID: String, courseTitle: String, courseVersionName: String, courseClassName: String, fullName: String, username: String, firstEventFiredAt: String): InstitutionBillingEnrollmentReportTO = {
+  def newInstitutionBillingEnrollmentReportTO(enrollmentUUID: String, courseTitle: String, courseVersionName: String, courseClassName: String, fullName: String, username: String, firstEventFiredAt: Date): InstitutionBillingEnrollmentReportTO = {
     val to = newInstitutionBillingEnrollmentReportTO
     to.setEnrollmentUUID(enrollmentUUID)
     to.setCourseTitle(courseTitle)

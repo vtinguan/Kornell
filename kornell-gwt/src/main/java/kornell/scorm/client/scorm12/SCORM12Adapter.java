@@ -8,7 +8,6 @@ import kornell.core.entity.ActomEntries;
 import kornell.core.entity.ContentSpec;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 

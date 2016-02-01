@@ -1,7 +1,5 @@
 package kornell.scorm.client.scorm12;
 
-import java.util.List;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;

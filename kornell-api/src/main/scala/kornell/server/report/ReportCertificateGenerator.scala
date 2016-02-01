@@ -12,46 +12,24 @@ import kornell.server.jdbc.PreparedStmt
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 import kornell.server.util.Settings
-import kornell.server.util.ServerTime
-import java.util.logging.Logger
-import org.joda.time.format.ISODateTimeFormat
-import org.joda.time.DateTime
-import java.util.Date
-  
-object ReportCertificateGenerator {
-  
-  val log = Logger.getLogger(getClass.getName)
 
-  implicit def toCertificateInformationTO(rs: ResultSet): CertificateInformationTO = {
-    
-    log.info("[INFO] Date: " + rs.getString("certifiedAt"))
-    log.info("[INFO] Date: " + rs.getTimestamp("certifiedAt"))
-    log.info("[INFO] Date: " + rs.getDate("certifiedAt"))
-    log.info("[INFO] Date: " + rs.getTimestamp("certifiedAt"))
-    log.info("[INFO] Date: " + rs.getTimestamp("certifiedAt").getTime())
-    log.info("[INFO] Date: " + ISODateTimeFormat.dateTime.print(rs.getTimestamp("certifiedAt").getTime()))
-    
-    val dateStr = ServerTime.adjustTimezoneOffsetDate(ISODateTimeFormat.dateTime.print(new DateTime(rs.getTimestamp("certifiedAt").getTime())), 300)
-    
-    log.info("[INFO] Date Adjusted from: " + dateStr)
-    
-    
-    log.info("[INFO] Date: " + ISODateTimeFormat.dateTime.print(new DateTime(rs.getTimestamp("certifiedAt").getTime())))
-    
+object ReportCertificateGenerator {
+
+  implicit def toCertificateInformationTO(rs: ResultSet): CertificateInformationTO =
     TOs.newCertificateInformationTO(
       rs.getString("fullName"),
       rs.getString("cpf"),
       rs.getString("title"),
       rs.getString("name"),
-      new Date(rs.getTimestamp("certifiedAt").getTime()),
-      rs.getString("assetsURL"),
+      rs.getDate("certifiedAt"),
+      rs.getString("assetsRepositoryUUID"),
       rs.getString("distributionPrefix"),
-      rs.getString("courseVersionUUID"))
-  }
+      rs.getString("courseVersionUUID"),
+      rs.getString("baseURL"))
       
-   def generateCertificate(userUUID: String, courseClassUUID: String, tsOffset: String): Array[Byte] = {
+   def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
     generateCertificateReport(sql"""
-				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
+				select p.fullName, c.title, cc.name, i.assetsRepositoryUUID, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID, i.baseURL
 	    		from Person p
 					join Enrollment e on p.uuid = e.person_uuid
 					join CourseClass cc on cc.uuid = e.class_uuid
@@ -62,19 +40,19 @@ object ReportCertificateGenerator {
 				where e.certifiedAt is not null and 
         		  p.uuid = $userUUID and
 				  cc.uuid = $courseClassUUID
-		    """.map[CertificateInformationTO](toCertificateInformationTO), tsOffset)
+		    """.map[CertificateInformationTO](toCertificateInformationTO))
   }
   
-  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO], tsOffset: String): Array[Byte] = {
-    generateCertificateReport(certificateInformationTOs, tsOffset)
+  def generateCertificate(certificateInformationTOs: List[CertificateInformationTO]): Array[Byte] = {
+    generateCertificateReport(certificateInformationTOs)
   }
   
-  def generateCertificateByCourseClass(courseClassUUID: String, tsOffset: String): Array[Byte] = {
-    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID, null), tsOffset)
+  def generateCertificateByCourseClass(courseClassUUID: String): Array[Byte] = {
+    generateCertificateReport(getCertificateInformationTOsByCourseClass(courseClassUUID, null))
   }
   
   def getCertificateInformationTOsByCourseClass(courseClassUUID: String, enrollments: String) = {
-    var sql = """select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
+    var sql = """select p.fullName, c.title, cc.name, i.assetsRepositoryUUID, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID, i.baseURL
       from Person p 
       join Enrollment e on p.uuid = e.person_uuid 
       join CourseClass cc on cc.uuid = e.class_uuid 
@@ -91,18 +69,17 @@ object ReportCertificateGenerator {
     pstmt.map[CertificateInformationTO](toCertificateInformationTO)
   }
 
-  private def generateCertificateReport(certificateData: List[CertificateInformationTO], tsOffset: String): Array[Byte] = {
+  private def generateCertificateReport(certificateData: List[CertificateInformationTO]): Array[Byte] = {
     if(certificateData.length == 0){
     	return null
     }
     val parameters: HashMap[String, Object] = new HashMap()
-    val assetsURL: String = composeURL(certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
+    val assetsURL: String = composeURL(certificateData.head.getBaseURL, "repository", certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
     parameters.put("assetsURL", assetsURL + "/")
 	  
    
   	//store one jasperfile per course
     val fileName = Settings.tmpDir + "tmp-" + certificateData.head.getCourseVersionUUID + ".jasper"
-    println(fileName);
     val jasperFile: File = new File(fileName)
         
     /*val diff = new Date().getTime - jasperFile.lastModified
@@ -112,17 +89,8 @@ object ReportCertificateGenerator {
     if(!jasperFile.exists)
     	FileUtils.copyURLToFile(new URL(composeURL(assetsURL, "certificate.jasper")), jasperFile)
     	
-    ReportGenerator.getReportBytes(certificateData.map(fixDates(_, tsOffset)), parameters, jasperFile)  
-  }
-  
-  private def fixDates(to: CertificateInformationTO, tsOffset: String) = {
-    val dateStr = ServerTime.adjustTimezoneOffsetDate(ISODateTimeFormat.dateTime.print(new DateTime(to.getCourseClassFinishedDate)), tsOffset.toInt)
-    val x= new DateTime(to.getCourseClassFinishedDate)
+    ReportGenerator.getReportBytes(certificateData, parameters, jasperFile)
     
-    log.info("[INFO] Date Adjusted from: " + ISODateTimeFormat.dateTime.print(new DateTime(to.getCourseClassFinishedDate))  + " to " + dateStr)
-    
-	//to.setCourseClassFinishedDate(x) 
-    to
   }
   
 }

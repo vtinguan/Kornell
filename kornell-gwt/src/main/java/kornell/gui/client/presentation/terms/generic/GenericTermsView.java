@@ -83,7 +83,7 @@ public class GenericTermsView extends Composite implements TermsView {
 		if (Dean.getInstance().getInstitution() != null) {
 			txtTerms.getElement().setInnerHTML(Dean.getInstance().getInstitution().getTerms());
 			String skin = Dean.getInstance().getInstitution().getSkin();
-			String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png?1";
+			String barLogoFileName = "/logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png?1";
 			institutionLogo.setUrl(Dean.getInstance().getInstitution().getAssetsURL() + barLogoFileName);
 		}
 	}

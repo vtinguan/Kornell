@@ -1,6 +1,5 @@
 package kornell.gui.client.sequence;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
@@ -8,15 +7,11 @@ import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
-import kornell.core.lom.ExternalPage;
 import kornell.core.to.UserInfoTO;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.uidget.ExternalPageView;
 import kornell.gui.client.uidget.Uidget;
 
 import com.google.gwt.user.client.ui.FlowPanel;

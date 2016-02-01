@@ -1,5 +1,7 @@
 package kornell.gui.client.personnel;
 
+import static kornell.core.util.StringUtils.mkurl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +26,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
-import static kornell.core.util.StringUtils.*;
 
 public class Dean implements LoginEventHandler, LogoutEventHandler,
 		UnreadMessagesPerThreadFetchedEventHandler,

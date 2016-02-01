@@ -15,21 +15,18 @@ import kornell.core.entity.CourseClass
 import kornell.core.to.report.CourseClassAuditTO
 import kornell.server.jdbc.repository.InstitutionsRepo
 import kornell.core.entity.EnrollmentState
-import kornell.server.util.ServerTime
-import java.util.logging.Logger
 
 object ReportCourseClassAuditGenerator {
-  val log = Logger.getLogger(getClass.getName)
   
-  def generateCourseClassAuditReport(courseClass: CourseClass, tsOffset: String): Array[Byte] = {
+  def generateCourseClassAuditReport(courseClass: CourseClass): Array[Byte] = {
     val parameters: HashMap[String, Object] = new HashMap()
     parameters.put("courseClassName", courseClass.getName)
     parameters.put("institutionBaseURL", InstitutionRepo(courseClass.getInstitutionUUID).get.getBaseURL)
 	    
-    generateCourseClassAuditReport(courseClass.getUUID, parameters, tsOffset)
+    generateCourseClassAuditReport(courseClass.getUUID, parameters)
   }
  
-  private def generateCourseClassAuditReport(courseClassUUID: String, parameters: HashMap[String,Object], tsOffset: String): Array[Byte] = {
+  private def generateCourseClassAuditReport(courseClassUUID: String, parameters: HashMap[String,Object]): Array[Byte] = {
 
 	  implicit def toCourseClassAuditTO(rs: ResultSet): CourseClassAuditTO =
 	    TOs.newCourseClassAuditTO(
@@ -117,16 +114,11 @@ object ReportCourseClassAuditGenerator {
 		order by eventFiredAt desc
 	    """.map[CourseClassAuditTO](toCourseClassAuditTO)
 		  
-	
     val cl = Thread.currentThread.getContextClassLoader
     val jasperStream = cl.getResourceAsStream("reports/courseClassAuditXLS.jasper")
-    ReportGenerator.getReportBytesFromStream(courseClassAuditTO.map(fixDates(_, tsOffset)), parameters, jasperStream, "xls")
+    ReportGenerator.getReportBytesFromStream(courseClassAuditTO, parameters, jasperStream, "xls")
   }
-  
-  private def fixDates(to: CourseClassAuditTO, tsOffset: String) = {
-	to.setEventFiredAt(ServerTime.adjustTimezoneOffset(to.getEventFiredAt, tsOffset.toInt))
-    to
-  }
+
   
  
 }

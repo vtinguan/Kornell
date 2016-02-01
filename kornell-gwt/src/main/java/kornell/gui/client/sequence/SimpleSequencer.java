@@ -3,12 +3,12 @@ package kornell.gui.client.sequence;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.google.web.bindery.event.shared.EventBus;
-
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ActomEnteredEvent;
+
+import com.google.web.bindery.event.shared.EventBus;
 
 public abstract class SimpleSequencer implements Sequencer {
 	static final Logger logger = Logger.getLogger(SimpleSequencer.class.getName());

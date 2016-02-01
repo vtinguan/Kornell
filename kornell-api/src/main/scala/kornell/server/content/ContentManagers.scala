@@ -28,6 +28,7 @@ object ContentManagers {
   lazy val USER_CONTENT_BUCKET = Settings.get("USER_CONTENT_BUCKET").getOrElse(DEFAULT_USER_CONTENT_BUCKET)
   lazy val DEFAULT_USER_CONTENT_REGION = "us-east-1";
   lazy val USER_CONTENT_REGION = Settings.get("USER_CONTENT_REGION").getOrElse(DEFAULT_USER_CONTENT_REGION)
+  lazy val USER_CONTENT_URL = "https://s3.amazonaws.com/" + USER_CONTENT_BUCKET 
   
   def certsRepo(institutionUUID:String) = 
     Entities.newS3ContentRepository(null , null, null, USER_CONTENT_BUCKET, "usercontent/certificates", USER_CONTENT_REGION, institutionUUID)

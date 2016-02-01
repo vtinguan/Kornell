@@ -137,13 +137,13 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Print certificate")
 	String printCertificateButton();
 	
-	@DefaultStringValue("--TODO--")
+	@DefaultStringValue("With all the participants of this class")
 	String classChatButton();
 	
 	@DefaultStringValue("With a tutor")
 	String tutorChatButton();
 	
-	@DefaultStringValue("Supplemental material")
+	@DefaultStringValue("Supplementary material")
 	String libraryButton();
 	
 	@DefaultStringValue("Go to class")
@@ -233,7 +233,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Evaluation")
 	String testName();
 	
-	@DefaultStringValue("--TODO--")
+	@DefaultStringValue("Evaluation")
 	String testDescription();
 	
 	@DefaultStringValue("To complete")
@@ -242,10 +242,10 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Certificate")
 	String certificateName();
 	
-	@DefaultStringValue("--TODO--")
+	@DefaultStringValue("Certificate generation. Once the course is finished, you'll be able to generate the certificate here.")
 	String certificateDescription();
 	
-	@DefaultStringValue("Generage")
+	@DefaultStringValue("Generate")
 	String generate();
 	
 	@DefaultStringValue("Wait a minute...")
@@ -264,7 +264,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Library")
 	String libraryTitle();
 	
-	@DefaultStringValue("--TODO--")
+	@DefaultStringValue("Here you can find the supplementary material for the course.")
 	String libraryInfo();
 	
 	@DefaultStringValue("Type")
@@ -302,7 +302,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	/**
 	 * NotesPopup
 	 */
-	@DefaultStringValue("--TODO--")
+	@DefaultStringValue("< Use this space to make your notes during the course. >")
 	String notesPopupPlaceholder();
 	
 	
@@ -540,6 +540,9 @@ public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("Request enrollment")
 	String requestEnrollmentLabel();
+	
+	@DefaultStringValue("Inactive class")
+	String inactiveClassLabel();
 	
 	@DefaultStringValue("Note")
 	String completedCourseNoteLabel();

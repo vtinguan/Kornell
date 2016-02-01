@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import kornell.api.client.KornellSession;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.scorm.client.scorm12.SCORM12Sequencer;
-import kornell.core.entity.ContentSpec;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
