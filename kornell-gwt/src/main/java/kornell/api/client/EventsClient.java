@@ -22,7 +22,6 @@ public class EventsClient extends RESTClient {
 		ActomEntered actomEntered = factory.newActomEntered().as();
 		actomEntered.setEnrollmentUUID(enrollmentUUID);
 		actomEntered.setActomKey(actomKey);		
-		actomEntered.setEventFiredAt(ClientTime.now());
 		actomEntered.setUUID(UUID.random());
 		return withEvent("/events/actomEntered",ActomEntered.TYPE,actomEntered);
 	}
@@ -31,7 +30,6 @@ public class EventsClient extends RESTClient {
 		AttendanceSheetSigned attendanceSheetSigned = factory.newAttendanceSheetSigned().as();
 		attendanceSheetSigned.setInstitutionUUID(institutionUUID);
 		attendanceSheetSigned.setPersonUUID(personUUID);	
-		attendanceSheetSigned.setEventFiredAt(ClientTime.now());
 		attendanceSheetSigned.setUUID(UUID.random());
 		return withEvent("/events/attendanceSheetSigned",AttendanceSheetSigned.TYPE,attendanceSheetSigned);
 	}
@@ -39,7 +37,6 @@ public class EventsClient extends RESTClient {
 	public EventClient enrollmentStateChanged(String enrollmentUUID, String personUUID, EnrollmentState fromState, EnrollmentState toState) {
 		EnrollmentStateChanged enrollmentStateChanged = factory.newEnrollmentStateChanged().as();
 		enrollmentStateChanged.setEnrollmentUUID(enrollmentUUID);
-		enrollmentStateChanged.setEventFiredAt(ClientTime.now());
 		enrollmentStateChanged.setFromPersonUUID(personUUID);
 		enrollmentStateChanged.setFromState(fromState);
 		enrollmentStateChanged.setToState(toState);
@@ -50,7 +47,6 @@ public class EventsClient extends RESTClient {
 	public EventClient courseClassStateChanged(String courseClassUUID, String personUUID, CourseClassState fromState, CourseClassState toState) {
 		CourseClassStateChanged courseClassStateChanged = factory.newCourseClassStateChanged().as();
 		courseClassStateChanged.setCourseClassUUID(courseClassUUID);
-		courseClassStateChanged.setEventFiredAt(ClientTime.now());
 		courseClassStateChanged.setFromPersonUUID(personUUID);
 		courseClassStateChanged.setFromState(fromState);
 		courseClassStateChanged.setToState(toState);
@@ -64,7 +60,6 @@ public class EventsClient extends RESTClient {
         enrollmentTransferred.setEnrollmentUUID(enrollmentUUID);
         enrollmentTransferred.setFromCourseClassUUID(fromCourseClassUUID);
         enrollmentTransferred.setToCourseClassUUID(toCourseClassUUID);
-        enrollmentTransferred.setEventFiredAt(ClientTime.now());
         enrollmentTransferred.setUUID(UUID.random());
         return withEvent("/events/enrollmentTransferred",EnrollmentTransferred.TYPE,enrollmentTransferred);
     }

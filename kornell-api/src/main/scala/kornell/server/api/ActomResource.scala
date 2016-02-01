@@ -46,17 +46,17 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   @Produces(Array("text/plain"))
   @Consumes(Array("text/plain"))
   @PUT
-  def putValue(@PathParam("entryKey") entryKey: String, entryValue: String, modifiedAt: String) = {
-    updateEventModel(entryKey, entryValue, modifiedAt)
+  def putValue(@PathParam("entryKey") entryKey: String, entryValue: String) = {
+    updateEventModel(entryKey, entryValue)
     updateQueryModel(entryKey, entryValue)
   }
 
-  def updateEventModel(entryKey: String, entryValue: String, modifiedAt: String) = {
+  def updateEventModel(entryKey: String, entryValue: String) = {
     val currentValue = getValue(entryKey)
     if (entryValue != currentValue)
       sql"""
   		insert into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) 
-  		values (${randomUUID}, ${enrollmentUUID} , ${actomKey}, ${entryKey}, ${entryValue}, ${modifiedAt})
+  		values (${randomUUID}, ${enrollmentUUID} , ${actomKey}, ${entryKey}, ${entryValue}, now())
   	  """.executeUpdate
   }
 
@@ -71,7 +71,7 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
     var eventModelQuery = "insert into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) values "
     val eventModelStrings = new ListBuffer[String] 
     for ((key, value) <- actomEntries) {
-      eventModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "',null)") 
+      eventModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "',now())") 
     }
     eventModelQuery += eventModelStrings.mkString(",")  
     new PreparedStmt(eventModelQuery, List[String]()).executeUpdate
@@ -92,7 +92,7 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   def putEntries(entries: ActomEntries) = {
     val modifiedAt = entries.getLastModifiedAt()
     val actomEntries = entries.getEntries
-    for ((key, value) <- actomEntries) putValue(key, value, modifiedAt)
+    for ((key, value) <- actomEntries) putValue(key, value)
     
     val hasProgress = containsProgress(actomEntries)
     if (hasProgress)

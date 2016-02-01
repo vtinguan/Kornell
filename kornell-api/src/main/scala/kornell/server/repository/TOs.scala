@@ -361,7 +361,7 @@ object TOs {
     to
   }
   
-  def newEntityChanged(uuid: String, eventFiredAt: String, institutionUUID: String, fromPersonUUID: String, entityType: AuditedEntityType, entityUUID: String, fromValue: String, toValue: String, entityName: String, fromPersonName: String, fromUsername: String) = {
+  def newEntityChanged(uuid: String, eventFiredAt: Date, institutionUUID: String, fromPersonUUID: String, entityType: AuditedEntityType, entityUUID: String, fromValue: String, toValue: String, entityName: String, fromPersonName: String, fromUsername: String) = {
     val event = events.newEntityChanged.as
     event.setUUID(uuid)
     event.setEventFiredAt(eventFiredAt)

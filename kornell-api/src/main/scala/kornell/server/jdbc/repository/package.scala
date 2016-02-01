@@ -341,7 +341,7 @@ package object repository {
    
   implicit def toEntityChanged(rs: ResultSet): EntityChanged = newEntityChanged(
     rs.getString("uuid"), 
-    rs.getString("eventFiredAt"),
+    rs.getTimestamp("eventFiredAt"),
     rs.getString("institutionUUID"),
     rs.getString("personUUID"),
     AuditedEntityType.valueOf(rs.getString("entityType")),
