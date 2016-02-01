@@ -524,19 +524,23 @@ public class GenericCourseClassConfigView extends Composite {
         } else if (MODAL_COURSE_CLASS_CHAT_ENABLED.equals(modalMode)){
             ((CheckBox)courseClassChatEnabled.getFieldWidget()).setValue(true);
         } else if (MODAL_TUTOR_CHAT_ENABLED.equals(modalMode)){
-            LoadingPopup.show();
-            session.courseClass(courseClassTO.getCourseClass().getUUID()).getTutors(RoleCategory.BIND_WITH_PERSON,
-                    new Callback<RolesTO>() {
-                @Override
-                public void ok(RolesTO to) {
-                    if(to.getRoleTOs().size() == 0){
-                    	KornellNotification.show("Você precisa configurar os tutores na aba \"Administradores\" antes de habilitar esta opção.", AlertType.WARNING, 3000);
-                    } else {
-                        ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(true);
+        	if(courseClassTO != null && courseClassTO.getCourseClass() != null && courseClassTO.getCourseClass().getUUID() != null){
+                LoadingPopup.show();
+                session.courseClass(courseClassTO.getCourseClass().getUUID()).getTutors(RoleCategory.BIND_WITH_PERSON,
+                        new Callback<RolesTO>() {
+                    @Override
+                    public void ok(RolesTO to) {
+                        if(to.getRoleTOs().size() == 0){
+                        	KornellNotification.show("Você precisa configurar os tutores na aba \"Administradores\" antes de habilitar esta opção.", AlertType.WARNING, 4000);
+                        } else {
+                            ((CheckBox)tutorChatEnabled.getFieldWidget()).setValue(true);
+                        }
+                        LoadingPopup.hide();
                     }
-                    LoadingPopup.hide();
-                }
-            });
+                });
+        	} else {
+            	KornellNotification.show("Para habilitar esta opção, você precisa configurar os tutores na aba \"Administradores\" após finalizar a criação da turma.", AlertType.WARNING, 4000);
+        	}
         }
         confirmModal.hide();
     }
