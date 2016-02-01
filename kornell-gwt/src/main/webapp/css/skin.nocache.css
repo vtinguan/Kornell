@@ -1206,6 +1206,9 @@
 .activityBarWrapper .activityBar .disabled .label {
   color: #6f7579;
 }
+.activityBarWrapper .activityBar .disabled .btnPanel {
+  cursor: default;
+}
 .activityBarWrapper .activityBar .btnProgress {
   cursor: default;
   border-left: 1px solid #505864 !important;

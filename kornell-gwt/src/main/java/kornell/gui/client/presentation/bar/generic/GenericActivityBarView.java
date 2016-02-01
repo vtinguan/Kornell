@@ -248,13 +248,13 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	
 	@UiHandler("btnNext")
 	public void btnNextClicked(ClickEvent e){
-		if(!showDetails)
+		if(!showDetails && btnNext.getStyleName().indexOf("disabled") < 0)
 			clientFactory.getEventBus().fireEvent(NavigationRequest.next());
 	}
 
 	@UiHandler("btnPrevious")
 	public void btnPrevClicked(ClickEvent e){
-		if(!showDetails)
+		if(!showDetails && btnPrevious.getStyleName().indexOf("disabled") < 0)
 			clientFactory.getEventBus().fireEvent(NavigationRequest.prev());		
 	}
 	
