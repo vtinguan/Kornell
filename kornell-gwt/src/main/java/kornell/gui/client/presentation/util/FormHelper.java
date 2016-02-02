@@ -393,21 +393,6 @@ public class FormHelper {
 		return kdate;
 	}
 	
-	public String getStringFromDate(String date) {
-		if(date == null)
-			return null;
-		//TODO: Adjust to locale pattern
-		//String pattern = "yyyy-MM-dd"; /*your pattern here*/ 
-		//DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
-		//DateTimeFormat dtf = new DateTimeFormat(pattern, info) {};
-		// return dtf.format(date).toString();
-		//TODO fix this poop
-		//dates could be '2014-07-08T09:40:00.098-03:00', '2014-07-08 09:40:00' or '2014-07-08'
-		String[] dateArraySplitBySpace = date.split(" ");
-		String[] dateArraySplitByT = dateArraySplitBySpace[0].split("T");
-		return dateArraySplitByT[0];
-	}
-	
 	public Date getJudFromString(String dateStr){
 		if(dateStr == null)
 			return null;

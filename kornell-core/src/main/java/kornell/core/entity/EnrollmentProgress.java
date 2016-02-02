@@ -1,5 +1,7 @@
 package kornell.core.entity;
 
+import java.util.Date;
+
 
 public interface EnrollmentProgress {
 	Integer getProgress();
@@ -8,6 +10,6 @@ public interface EnrollmentProgress {
 	EnrollmentProgressDescription getDescription();
 	void setDescription(EnrollmentProgressDescription description);
 	
-	String getCertifiedAt();
-	void setCertifiedAt(String certifiedAt);
+	Date getCertifiedAt();
+	void setCertifiedAt(Date certifiedAt);
 }

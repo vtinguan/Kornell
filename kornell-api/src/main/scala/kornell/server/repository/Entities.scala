@@ -29,6 +29,7 @@ import java.util.HashMap
 import kornell.core.entity.ActomEntries
 import kornell.core.entity.EnrollmentEntries
 import kornell.core.util.StringUtils._
+import org.joda.time.LocalDate
 
 //TODO: Remove this class without spreading dependency on AutoBeanFactorySource
 object Entities {
@@ -57,7 +58,7 @@ object Entities {
     postalCode: String = null,
     cpf: String = null,
     institutionUUID: String = null,
-    termsAcceptedOn: String = null,
+    termsAcceptedOn: Date = null,
     registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
     receiveEmailCommunication: Boolean = true,
@@ -72,7 +73,7 @@ object Entities {
     person.setCompany(company)
     person.setTitle(title)
     person.setSex(sex)
-    person.setBirthDate(TimeUtil.fromJUD(bday, birthDate))
+    person.setBirthDate(new LocalDate(birthDate).toDate)
     person.setConfirmation(confirmation)
     person.setTelephone(telephone)
     person.setCountry(country)
@@ -136,9 +137,9 @@ object Entities {
   def newEnrollment(uuid: String = randUUID, enrolledOn: Date = null,
     courseClassUUID: String, personUUID: String,
     progress: Integer = 0, notes: String = null,
-    state: EnrollmentState, lastProgressUpdate: String = null,
-    assessment: Assessment = null, lastAssessmentUpdate: String = null,
-    assessmentScore: BigDecimal = null, certifiedAt: String = null,
+    state: EnrollmentState, lastProgressUpdate: Date = null,
+    assessment: Assessment = null, lastAssessmentUpdate: Date = null,
+    assessmentScore: BigDecimal = null, certifiedAt: Date = null,
     courseVersionUUID: String = null, parentEnrollmentUUID:String = null,
     startDate:Date=null,endDate:Date=null,
     preAssessment:BigDecimal=null,postAssessment:BigDecimal=null): Enrollment = {

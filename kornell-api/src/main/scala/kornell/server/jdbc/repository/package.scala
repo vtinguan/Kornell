@@ -194,13 +194,13 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),      
       EnrollmentState.valueOf(rs.getString("state")),
-      rs.getString("lastProgressUpdate"),
+      rs.getTimestamp("lastProgressUpdate"),
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getString("lastAssessmentUpdate"),
+      rs.getTimestamp("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt"),
+      rs.getTimestamp("certifiedAt"),
       rs.getString("courseVersionUUID"),
       rs.getString("parentEnrollmentUUID"),
       rs.getDate("start_date"),
@@ -220,13 +220,13 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),      
       EnrollmentState.valueOf(rs.getString("state")),
-      rs.getString("lastProgressUpdate"),
+      rs.getTimestamp("lastProgressUpdate"),
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getString("lastAssessmentUpdate"),
+      rs.getTimestamp("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt")
+      rs.getTimestamp("certifiedAt")
     )
     
     TOs.newEnrollmentTO(enrollment, rs.getString("personUUID"), rs.getString("fullName"), rs.getString("username"))
@@ -251,7 +251,7 @@ package object repository {
 	    rs.getString("postalCode"),
 	    rs.getString("cpf"),
 	    rs.getString("institutionUUID"),
-	    rs.getString("termsAcceptedOn"),
+	    rs.getTimestamp("termsAcceptedOn"),
 	    RegistrationType.valueOf(rs.getString("registrationType")),
 	    rs.getString("institutionRegistrationPrefixUUID"),
 	    rs.getBoolean("receiveEmailCommunication"),

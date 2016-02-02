@@ -1,6 +1,7 @@
 package kornell.core.entity;
 
-import kornell.core.value.Date;
+import java.util.Date;
+
 
 public interface Person {
 	public static String TYPE = EntityFactory.PREFIX + "person+json";
@@ -41,8 +42,8 @@ public interface Person {
 	void setPostalCode(String postalCode);
 	String getInstitutionUUID();
 	void setInstitutionUUID(String institutionUUID);
-	String getTermsAcceptedOn();
-	void setTermsAcceptedOn(String termsAcceptedOn);
+	Date getTermsAcceptedOn();
+	void setTermsAcceptedOn(Date termsAcceptedOn);
 	RegistrationType getRegistrationType();
 	void setRegistrationType(RegistrationType registrationType);
 	String getInstitutionRegistrationPrefixUUID();

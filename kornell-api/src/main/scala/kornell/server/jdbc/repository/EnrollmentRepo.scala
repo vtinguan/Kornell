@@ -21,6 +21,7 @@ import java.math.BigDecimal._
 import kornell.server.util.ServerTime
 import kornell.core.entity.ChatThreadType
 import scala.util.Try
+import org.joda.time.DateTime
 
 //TODO: Specific column names and proper sql
 class EnrollmentRepo(enrollmentUUID: String) {
@@ -182,7 +183,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
 		  entryKey='cmi.core.score.raw' 
 		  and enrollment_uuid=${e.getUUID()} 
     """
-      .first[String] { rs => rs.getString("latestEvent") }
+      .first[Date] { rs => rs.getTimestamp("latestEvent") }
     lastActomEntered
   }
 

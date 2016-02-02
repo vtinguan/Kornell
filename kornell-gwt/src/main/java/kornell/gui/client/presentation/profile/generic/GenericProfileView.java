@@ -15,7 +15,6 @@ import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.UserInfoTO;
-import kornell.core.util.TimeUtil;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
@@ -48,6 +47,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -327,7 +327,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		person.setCompany(company.getFieldPersistText());
 		person.setTitle(position.getFieldPersistText());
 		person.setSex(sex.getFieldPersistText());
-		person.setBirthDate(formHelper.getDateFromString(birthDate.getFieldPersistText()));
+		person.setBirthDate(DateTimeFormat.getFormat("yyyy-MM-dd").parse(birthDate.getFieldPersistText()));
 
 		if(showContactDetails){
 			person.setTelephone(telephone.getFieldPersistText());
@@ -469,7 +469,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 			SimpleDatePicker datePicker = new SimpleDatePicker();
 			if(isEditMode || isCurrentUser || isAdmin){
-				datePicker.setFields(TimeUtil.toJUD(user.getPerson().getBirthDate()));
+				datePicker.setFields(user.getPerson().getBirthDate());
 			}
 			birthDate = new KornellFormFieldWrapper(constants.birthDateLabel(), new SimpleDatePickerFormField(datePicker), isEditMode);
 			fields.add(birthDate);
