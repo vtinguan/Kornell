@@ -242,15 +242,15 @@ object TOs {
     to
   }
 
-  def newChatThreadMessagesTO(l: List[ChatThreadMessageTO], serverTime: String) = {
+  def newChatThreadMessagesTO(l: List[ChatThreadMessageTO]) = {
     val to = tos.newChatThreadMessagesTO.as
     to.setChatThreadMessageTOs(l asJava)
-    to.setServerTime(serverTime)
+    to.setServerTime(new Date)
     to
   }
 
   def newChatThreadMessageTO: ChatThreadMessageTO = tos.newChatThreadMessageTO.as 
-  def newChatThreadMessageTO(senderFullName: String, senderRole: RoleType, sentAt: String, message: String): ChatThreadMessageTO = {
+  def newChatThreadMessageTO(senderFullName: String, senderRole: RoleType, sentAt: Date, message: String): ChatThreadMessageTO = {
     val to = newChatThreadMessageTO
     to.setSenderFullName(senderFullName)
     to.setSenderRole(senderRole)

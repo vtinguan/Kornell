@@ -13,7 +13,6 @@ import kornell.core.entity.RoleType;
 import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.personnel.Dean;
@@ -39,6 +38,7 @@ import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -63,7 +63,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	private MessageView.Presenter presenter;
 	private EventBus bus;
 	private KornellSession session;
-
+	private DateTimeFormat chatDateFormat = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
 
 	private List<Label> sideItems;
 	private Map<String, MessageItem> dateLabelsMap;
@@ -333,7 +333,7 @@ public class GenericMessageView extends Composite implements MessageView {
 				threadMessageWrapper.add(item);
 				
 				if(!dateLabelsMap.containsKey(chatThreadMessageTO.getSentAt())){
-					dateLabelsMap.put(chatThreadMessageTO.getSentAt(), new MessageItem(header, chatThreadMessageTO));
+					dateLabelsMap.put(chatDateFormat.format(chatThreadMessageTO.getSentAt()), new MessageItem(header, chatThreadMessageTO));
 					if(insertOnTop){
 						threadPanelItems.insert(threadMessageWrapper, 0);
 					} else {
@@ -358,7 +358,7 @@ public class GenericMessageView extends Composite implements MessageView {
 		}
 	}
 
-	private void updateDateLabelValues(String serverTime) {
+	private void updateDateLabelValues(Date serverTime) {
 		synchronized(dateLabelsMap){
 			if(bla)return;
 			bla = false;
@@ -370,11 +370,9 @@ public class GenericMessageView extends Composite implements MessageView {
 		}
 	}
 
-	private String getDateLabelValue(String serverTimeStr, final ChatThreadMessageTO chatThreadMessageTO) {
-		if(StringUtils.isNone(chatThreadMessageTO.getSentAt())) return "";
-		Date sentAt = formHelper.getJudFromString(chatThreadMessageTO.getSentAt());
-		Date serverTime = formHelper.getJudFromString(serverTimeStr);
-		String dateStr = span(chatThreadMessageTO.getSenderFullName(), INFO_CLASS) + getIcons(chatThreadMessageTO.getSenderRole()) + separator(false, false) + span(formHelper.getElapsedTimeSince(sentAt, serverTime), PLAIN_CLASS);
+	private String getDateLabelValue(Date serverTime, final ChatThreadMessageTO chatThreadMessageTO) {
+		if(chatThreadMessageTO.getSentAt() == null) return "";
+		String dateStr = span(chatThreadMessageTO.getSenderFullName(), INFO_CLASS) + getIcons(chatThreadMessageTO.getSenderRole()) + separator(false, false) + span(formHelper.getElapsedTimeSince(chatThreadMessageTO.getSentAt(), serverTime), PLAIN_CLASS);
 		return dateStr;
 	}
 	

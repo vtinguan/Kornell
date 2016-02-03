@@ -5,7 +5,6 @@ import static kornell.core.util.StringUtils.mkurl;
 import java.util.Date;
 import java.util.List;
 
-import kornell.core.value.ValueFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.KornellMessages;
 import kornell.gui.client.util.ClientConstants;
@@ -21,8 +20,6 @@ import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
 import com.google.gwt.user.client.ui.Image;
 
 @SuppressWarnings("deprecation")
@@ -379,33 +376,7 @@ public class FormHelper {
 		return value != null && !("-".equals(((ListBox)value).getValue()) || ((ListBox)value).getValue() == null);
 	}
 
-	static final ValueFactory valueFactory = GWT.create(ValueFactory.class);
-	
-	public kornell.core.value.Date getDateFromString(String dateStr) {
-		if(dateStr == null)
-			return null;
-		DateTimeFormat dtf = new DateTimeFormat("yyyy-MM-dd", new DefaultDateTimeFormatInfo()) {};  // <= trick here
-		Date jdate = dtf.parse(dateStr);
-		kornell.core.value.Date kdate = valueFactory.newDate().as();
-		kdate.setDay(jdate.getDate());
-		kdate.setMonth(jdate.getMonth());
-		kdate.setYear(jdate.getYear());
-		return kdate;
-	}
-	
-	public Date getJudFromString(String dateStr){
-		if(dateStr == null)
-			return null;
-		Date jdate = null;
-		try {
-			DateTimeFormat dtf = new DateTimeFormat("yyyy-MM-dd hh:mm:ss.SSS", new DefaultDateTimeFormatInfo()) {};
-			jdate = dtf.parse(dateStr); 
-    } catch (IllegalArgumentException iae) {
-    	DateTimeFormat dtf = new DateTimeFormat("yyyy-MM-dd hh:mm:ss", new DefaultDateTimeFormatInfo()) {};
-			jdate = dtf.parse(dateStr);
-    }
-		return jdate;
-	}
+//	static final ValueFactory valueFactory = GWT.create(ValueFactory.class);
 	
 	public TextBoxFormField createTextBoxFormField(String text, String textBoxFormFieldType){
 		TextBox fieldTextBox = new TextBox();

@@ -19,8 +19,6 @@ import kornell.core.entity.Person
 import kornell.core.entity.PlatformAdminRole
 import kornell.core.entity.Role
 import kornell.core.entity.RoleType
-import kornell.core.util.TimeUtil
-import kornell.server.util.ValueFactory
 import kornell.core.entity.RegistrationType
 import kornell.core.entity.BillingType
 import kornell.core.entity.InstitutionRegistrationPrefix
@@ -64,7 +62,6 @@ object Entities {
     receiveEmailCommunication: Boolean = true,
     forcePasswordUpdate: Boolean = false) = {
 
-    val bday = ValueFactory.newDate
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)

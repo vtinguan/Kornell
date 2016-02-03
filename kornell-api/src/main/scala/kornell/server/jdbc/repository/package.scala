@@ -306,7 +306,7 @@ package object repository {
 	      RoleType.user
 	    else
 	      RoleType.valueOf(rs.getString("senderRole")),
-	    rs.getString("sentAt"), 
+	    rs.getTimestamp("sentAt"), 
 	    rs.getString("message"))
   
 	implicit def toChatThreadParticipant(rs: ResultSet): ChatThreadParticipant = newChatThreadParticipant(
@@ -314,13 +314,13 @@ package object repository {
 	    rs.getString("chatThreadUUID"),
 	    rs.getString("personUUID"),
 	    rs.getString("chatThreadName"),
-	    rs.getDate("lastReadAt"),
+	    rs.getTimestamp("lastReadAt"),
 	    rs.getBoolean("active"),
-	    rs.getDate("lastJoinDate"))
+	    rs.getTimestamp("lastJoinDate"))
 	    
 	implicit def toChatThread(rs: ResultSet): ChatThread = newChatThread(
 	    rs.getString("uuid"), 
-	    rs.getDate("createdAt"), 
+	    rs.getTimestamp("createdAt"), 
 	    rs.getString("institutionUUID"), 
 	    rs.getString("courseClassUUID"), 
 	    rs.getString("personUUID"), 

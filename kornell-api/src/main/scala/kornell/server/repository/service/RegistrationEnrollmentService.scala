@@ -24,7 +24,6 @@ import scala.collection.JavaConverters._
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.RoleCategory
 import kornell.server.repository.Entities
-import kornell.core.util.TimeUtil
 import kornell.server.util.ServerTime
 import kornell.core.util.StringUtils
 import kornell.core.entity.RegistrationType

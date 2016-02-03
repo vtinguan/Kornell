@@ -21,6 +21,7 @@ import kornell.core.util.StringUtils
 import kornell.core.entity.ChatThreadType
 import kornell.server.util.Conditional.toConditional
 import kornell.server.jdbc.repository.PersonRepo
+import java.util.Date
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
@@ -70,10 +71,10 @@ class ChatThreadsResource {
   def postMessageToChatThread(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String,
     message: String, 
-    @QueryParam("since") since: String) = AuthRepo().withPerson { person => 
+    @QueryParam("since") since: Long) = AuthRepo().withPerson { person => 
   		ChatThreadsRepo.createChatThreadMessage(chatThreadUUID, person.getUUID, message)
-  		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
+  		if(since > 0)
+  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since))
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
   }
@@ -106,13 +107,13 @@ class ChatThreadsResource {
   @GET
   def getChatThreadMessages(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String, 
-    @QueryParam("since") since: String, 
-    @QueryParam("before") before: String) = AuthRepo().withPerson { person => {
+    @QueryParam("since") since: Long, 
+    @QueryParam("before") before: Long) = AuthRepo().withPerson { person => {
       ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
-  		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
-  		else if(StringUtils.isSome(before))
-  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, before)
+  		if(since > 0)
+  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since))
+  		else if(before > 0)
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(before))
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
     }

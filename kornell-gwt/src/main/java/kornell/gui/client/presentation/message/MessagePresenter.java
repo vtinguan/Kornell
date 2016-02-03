@@ -26,6 +26,7 @@ import kornell.gui.client.presentation.util.LoadingPopup;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
@@ -48,6 +49,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	List<ChatThreadMessageTO> chatThreadMessageTOs;
 	private boolean updateMessages = true;
 	private boolean threadBeginningReached;
+	
+	private DateTimeFormat chatDateFormat = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
 
 	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, final ViewFactory viewFactory, final MessagePanelType messagePanelType) {
 		this.session = session;
@@ -314,7 +317,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	private String lastFetchedMessageSentAt() {
 		String date;
 		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : "";
+			date = chatThreadMessageTOs.size() > 0 ? chatDateFormat.format(chatThreadMessageTOs.get(0).getSentAt()) : "";
 		}
 		return date;
 	}
@@ -322,7 +325,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	private String firstFetchedMessageSentAt() {
 		String date;
 		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : "none";
+			date = chatThreadMessageTOs.size() > 0 ? chatDateFormat.format(chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt())  : "none";
 		}
 		return date;
 	}

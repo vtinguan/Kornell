@@ -140,7 +140,7 @@ object ChatThreadsRepo {
 
   def updateChatThreadParticipantActivation(chatThreadParticipantUUID: String, active: Boolean) = {
     if (active) {
-      sql"""update ChatThreadParticipant set active = ${active}, lastJoinDate = ${new Date} where uuid = ${chatThreadParticipantUUID}""".executeUpdate
+      sql"""update ChatThreadParticipant set active = ${active}, lastJoinDate = now() where uuid = ${chatThreadParticipantUUID}""".executeUpdate
     } else {
       sql"""update ChatThreadParticipant set active = ${active} where uuid = ${chatThreadParticipantUUID}""".executeUpdate
     }
@@ -150,7 +150,7 @@ object ChatThreadsRepo {
   def createChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
     sql"""
 		insert into ChatThreadParticipant (uuid, chatThreadUUID, personUUID, lastReadAt, active, lastJoinDate)
-		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, ${new Date()}, 1, ${new Date()})""".executeUpdate
+		values (${UUID.random}, ${chatThreadUUID} , ${personUUID}, now(), 1, now())""".executeUpdate
   }
 
   def removeChatThreadParticipant(chatThreadUUID: String, personUUID: String) = {
@@ -177,7 +177,7 @@ object ChatThreadsRepo {
   def createChatThreadMessage(chatThreadUUID: String, personUUID: String, message: String) = {
     sql"""
 		insert into ChatThreadMessage (uuid, chatThreadUUID, sentAt, personUUID, message)
-		values (${UUID.random}, ${chatThreadUUID} , ${new Date()}, ${personUUID}, ${message})
+		values (${UUID.random}, ${chatThreadUUID} , now(), ${personUUID}, ${message})
 	  """.executeUpdate
   }
   
@@ -310,8 +310,6 @@ object ChatThreadsRepo {
 		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
   }
   
-  def getServerTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) 
-
   def getChatThreadMessages(chatThreadUUID: String) = {
     TOs.newChatThreadMessagesTO(sql"""
 			select 
@@ -338,11 +336,10 @@ object ChatThreadsRepo {
 			join Person p on p.uuid = tm.personUUID
 		 	where tm.chatThreadUUID = ${chatThreadUUID}
 			order by tm.sentAt
-	    """.map[ChatThreadMessageTO](toChatThreadMessageTO), 
-	    getServerTime)
+	    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
   } 
 
-  def getChatThreadMessagesSince(chatThreadUUID: String, lastFetchedMessageSentAt: String) = {
+  def getChatThreadMessagesSince(chatThreadUUID: String, lastFetchedMessageSentAt: Date) = {
     TOs.newChatThreadMessagesTO(sql"""
 			select 
 				p.fullName as senderFullName, 
@@ -369,11 +366,10 @@ object ChatThreadsRepo {
 		    where tm.chatThreadUUID = ${chatThreadUUID}
   		    and tm.sentAt > ${lastFetchedMessageSentAt}
 		    order by tm.sentAt
-	    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
-	    getServerTime)
+	    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
   } 
 
-  def getChatThreadMessagesBefore(chatThreadUUID: String, firstFetchedMessageSentAt: String) = {
+  def getChatThreadMessagesBefore(chatThreadUUID: String, firstFetchedMessageSentAt: Date) = {
     val date = if("none".equals(firstFetchedMessageSentAt)){
       new Date
     } else {
@@ -405,8 +401,7 @@ object ChatThreadsRepo {
 		 	where tm.chatThreadUUID = ${chatThreadUUID}
   		    and tm.sentAt < ${date}
 		 	order by tm.sentAt desc limit 20
-	    """.map[ChatThreadMessageTO](toChatThreadMessageTO),
-	    getServerTime)
+	    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
   } 
 
   def markAsRead(chatThreadUUID: String, personUUID: String) = {
