@@ -22,10 +22,14 @@ import kornell.core.entity.ChatThreadType
 import kornell.server.util.Conditional.toConditional
 import kornell.server.jdbc.repository.PersonRepo
 import java.util.Date
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.DateTime
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
 class ChatThreadsResource {
+  
+  val dateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
   
   @POST
   @Path("courseClass/{courseClassUUID}/support")
@@ -71,10 +75,10 @@ class ChatThreadsResource {
   def postMessageToChatThread(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String,
     message: String, 
-    @QueryParam("since") since: Long) = AuthRepo().withPerson { person => 
+    @QueryParam("since") since: String) = AuthRepo().withPerson { person => 
   		ChatThreadsRepo.createChatThreadMessage(chatThreadUUID, person.getUUID, message)
-  		if(since > 0)
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since))
+  		if(StringUtils.isSome(since))
+  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
   }
@@ -107,13 +111,13 @@ class ChatThreadsResource {
   @GET
   def getChatThreadMessages(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String, 
-    @QueryParam("since") since: Long, 
-    @QueryParam("before") before: Long) = AuthRepo().withPerson { person => {
+    @QueryParam("since") since: String, 
+    @QueryParam("before") before: String) = AuthRepo().withPerson { person => {
       ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
-  		if(since > 0)
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since))
-  		else if(before > 0)
-  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(before))
+  		if(StringUtils.isSome(since))
+  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
+  		else if(StringUtils.isSome(before))
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(since.toLong))
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
     }
