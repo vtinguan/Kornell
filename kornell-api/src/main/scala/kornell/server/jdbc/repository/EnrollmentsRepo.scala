@@ -135,6 +135,8 @@ object EnrollmentsRepo {
     		${enrollment.getCourseVersionUUID},
         	${enrollment.getParentEnrollmentUUID}
     	)""".executeUpdate
+    	
+    	ChatThreadsRepo.addParticipantsToCourseClassThread(CourseClassesRepo(enrollment.getCourseClassUUID).get)
     enrollment
   }
 
