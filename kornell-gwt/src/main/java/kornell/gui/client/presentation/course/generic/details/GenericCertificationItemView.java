@@ -73,7 +73,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	@UiField
 	Anchor lblActions;
 	
-	private boolean courseClassComplete, approvedOnTest;
+	private boolean courseClassComplete;
 
 
 	public GenericCertificationItemView(EventBus eventBus, KornellSession session, CourseClassTO currentCourseClass,
@@ -99,12 +99,6 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			this.name = constants.certificateName();
 			this.description = constants.certificateDescription();
 			this.grade = "-";
-			
-			Enrollment enrollment = currentCourseClass != null? currentCourseClass.getEnrollment() : null;
-			Integer progress = enrollment != null && enrollment.getProgress() != null ? enrollment.getProgress() : -1;
-			courseClassComplete = progress >= 100;
-			Assessment assessment = enrollment != null ? enrollment.getAssessment() : null; 
-			approvedOnTest = Assessment.PASSED.equals(assessment);
 			updateCertificationLinkAndLabel();
 		}
 	}
@@ -152,45 +146,39 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		if(CERTIFICATION.equals(type)){
 			if(event.getProgressPercent() >= 100){
 				courseClassComplete = true;
+				checkCertificateAvailability();
 			}
-			updateCertificationLinkAndLabel();
+			currentCourseClass.getEnrollment().setProgress(event.getProgressPercent());
 		}
 	}
-	private void updateCertificationLinkAndLabel(){
-		updateCertificationLinkAndLabel("");
-	}
 
-	private void updateCertificationLinkAndLabel(String gradeIn){
+	private void updateCertificationLinkAndLabel(){
+		currentCourseClass = Dean.getInstance().getCourseClassTO();
+		if(currentCourseClass == null) return;
+		CourseClass courseClass = currentCourseClass.getCourseClass();
+		Enrollment currEnrollment = currentCourseClass.getEnrollment();
+		
+		Integer progress = currEnrollment.getProgress() != null ? currEnrollment.getProgress() : -1;
+		courseClassComplete = progress >= 100;
+		
+		Assessment assessment = currEnrollment.getAssessment(); 
+		boolean approvedOnTest = Assessment.PASSED.equals(assessment) && currEnrollment.getCertifiedAt() != null;
+		
 		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest);
 		status = allowCertificateGeneration ? constants.certificateAvailable() : constants.certificateNotAvailable();
 		lblStatus.setText(status);
 
-		if(StringUtils.isSome(gradeIn)){
-			try{
-				if(currentCourseClass.getCourseClass().getRequiredScore() == null || currentCourseClass.getCourseClass().getRequiredScore().equals(BigDecimal.ZERO)){
-					this.grade = "-";
-				} else {
-					this.grade = "" + new BigDecimal(gradeIn).intValue();
-				}
-				lblGrade.setText(this.grade);
-			}catch(NumberFormatException ex){
-				this.grade = "";
-			}			
-		} else if(currentCourseClass != null){
-			Enrollment currEnrollment = currentCourseClass.getEnrollment();
-			CourseClass courseClass = currentCourseClass.getCourseClass();
-			BigDecimal requiredScore = courseClass != null ? courseClass.getRequiredScore() : null;
-			if(currEnrollment != null &&
-					EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(currEnrollment)) &&
-					requiredScore != null && 
-					requiredScore.intValue() != 0 &&
-					currEnrollment.getAssessmentScore() != null){
-				this.grade = ""+currEnrollment.getAssessmentScore().intValue();
-			} else {
-				this.grade = "-";
-			}
-			lblGrade.setText(this.grade);
+		BigDecimal requiredScore = courseClass != null ? courseClass.getRequiredScore() : null;
+		if(currEnrollment != null &&
+				EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(currEnrollment)) &&
+				requiredScore != null && 
+				requiredScore.intValue() != 0 &&
+				currEnrollment.getAssessmentScore() != null){
+			this.grade = ""+currEnrollment.getAssessmentScore().intValue();
+		} else {
+			this.grade = "-";
 		}
+		lblGrade.setText(this.grade);
 		
 		displayActionCell(allowCertificateGeneration);
 	}
@@ -211,8 +199,10 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 					    .isApproved(new Callback<String>() {
 					    	@Override
 					    	public void ok(String grade) {
-					    		approvedOnTest = StringUtils.isSome(grade);
-					    		updateCertificationLinkAndLabel(grade);
+					    		if(StringUtils.isSome(grade)){
+						    		currentCourseClass.getEnrollment().setAssessmentScore(new BigDecimal(grade));	
+					    		}
+					    		updateCertificationLinkAndLabel();
 					    	}
 						});
 					}
