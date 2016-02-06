@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import kornell.core.lom.ExternalPage;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.event.ShowChatDockEvent;
+import kornell.gui.client.event.ShowChatDockEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.Positioning;
 
@@ -20,14 +22,16 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 
-public class ExternalPageView extends Uidget {
+public class ExternalPageView extends Uidget implements ShowChatDockEventHandler{
 	private static final Logger logger = Logger.getLogger(ExternalPageView.class.getName()); 
 	private IFrameElement iframe;
-
+	
 	FlowPanel panel = new FlowPanel();
 
 	public ExternalPageView(ExternalPage page) {
+		GenericClientFactoryImpl.EVENT_BUS.addHandler(ShowChatDockEvent.TYPE,this);
 		createIFrame();
+		panel.setStyleName("contentWrapper");
 		panel.getElement().appendChild(iframe);
 		String url = page.getURL();
 		String key = page.getKey();
@@ -93,6 +97,15 @@ public class ExternalPageView extends Uidget {
 		String mkurl = StringUtils.mkurl("/", src);
 		logger.info("Iframe source set to ["+mkurl+"]");
 		iframe.setSrc(mkurl);
+	}
+
+	@Override
+	public void onShowChatDock(ShowChatDockEvent event) {
+		if(event.isShowChatDock()){
+			panel.addStyleName("chatDocked");
+		} else {
+			panel.removeStyleName("chatDocked");
+		}
 	}
 
 }

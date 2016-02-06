@@ -47,7 +47,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 
 	private ScrollPanel scrollPanel;
 
-	public GenericSouthBarView(ClientFactory clientFactory, ScrollPanel scrollPanel) {
+	public GenericSouthBarView(final ClientFactory clientFactory, ScrollPanel scrollPanel) {
 		this.clientFactory = clientFactory;
 		clientFactory.getEventBus().addHandler(HideSouthBarEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
@@ -137,12 +137,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 
 	@Override
   public void onHideSouthBar(HideSouthBarEvent event) {
-		//clientFactory.getViewFactory().getDockLayoutPanel().setWidgetHidden((Widget) this, event.isHideSouthBar());
-		if(event.isTestPlace()){
-			pickSouthBar(clientFactory.getPlaceController().getWhere());
-		} else {
-			this.setVisible(!event.isHideSouthBar());
-		}
+		pickSouthBar(clientFactory.getPlaceController().getWhere());
   }
 
 }

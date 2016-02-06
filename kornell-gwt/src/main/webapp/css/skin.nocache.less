@@ -20,6 +20,58 @@
 	@import "welcome/courses/courseNotes";
 @import "welcome/profile";
 
+
+
+
+
+@media screen and ( max-height: 540px ){
+    .ClassroomPlace {
+    	.dockChatPanel{
+	    	display: none;
+	    }
+	    .contentWrapper.chatDocked{
+			width: 100%;
+		}
+    }
+}
+@media screen and ( min-height: 541px ){
+    .ClassroomPlace{
+    	.dockChatPanel{    
+		    position: fixed !important;
+		    top: 45px;
+		    bottom: 35px;
+		    right: 0;
+		    width: 320px !important;
+		    border-left: 2px solid #3D6539;
+		    margin-right: 1px;
+		    border-radius: 0px;
+    		background: fade(@blackOrWhite, 30%);
+		    box-sizing: border-box;
+			    .messageInboxPanel {
+				.sidePanelScroll{	
+					display: none;
+				}
+				.threadPanel {
+					width: 320px;
+					.messageTextArea {
+						width: 74% !important;
+					}
+					.btnSend {
+						width: 20%;
+					}
+					.threadPanelItemsScroll {
+					    height: ~"calc(100vh - 245px)" !important;
+					}
+				}
+		    }
+	    }
+	    .contentWrapper.chatDocked{
+	    	width: ~"calc(100% - 320px)";
+	    }
+	}
+}
+
+
 body, html {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	background: @background !important;

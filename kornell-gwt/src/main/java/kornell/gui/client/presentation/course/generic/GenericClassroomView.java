@@ -7,6 +7,8 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.event.ShowChatDockEvent;
+import kornell.gui.client.event.ShowChatDockEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -23,7 +25,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericClassroomView extends Composite implements ClassroomView, ShowDetailsEventHandler {
+public class GenericClassroomView extends Composite implements ClassroomView, ShowDetailsEventHandler, ShowChatDockEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericClassroomView> {
 	}
 	private PlaceController placeCtrl;
@@ -38,6 +40,8 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	FlowPanel contentPanel;
 	@UiField
 	FlowPanel detailsPanel;
+	@UiField
+	FlowPanel dockChatPanel;
 	
 	private boolean showCourseClassContent;
 	
@@ -49,11 +53,13 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		this.bus = bus;
+		this.bus.addHandler(ShowChatDockEvent.TYPE,this);
 		this.viewFactory = viewFactory;
 		bus.addHandler(ShowDetailsEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		detailsPanel.setVisible(true);
 		contentPanel.setVisible(false);
+		dockChatPanel.setVisible(false);
 	}
 
 	@Override
@@ -73,6 +79,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		Enrollment enrollment = courseClassTO!= null ? courseClassTO.getEnrollment() : null;		
 		boolean showDetails = !isEnrolled || EnrollmentCategory.isFinished(enrollment);
 		bus.fireEvent(new ShowDetailsEvent(showDetails));
+		bus.fireEvent(new ShowChatDockEvent(!showDetails && Dean.getInstance().getCourseClassTO().getCourseClass().isCourseClassChatEnabled()));
 	}
 
 	@Override
@@ -92,5 +99,14 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		detailsPanel.setVisible(showDetails);
 		if(showDetails)
 			presenter.fireProgressEvent();
+	}
+
+	@Override
+	public void onShowChatDock(ShowChatDockEvent event) {
+		dockChatPanel.setVisible(event.isShowChatDock());
+		if(event.isShowChatDock()){
+			dockChatPanel.clear();
+			dockChatPanel.add(viewFactory.getMessagePresenterClassroomGlobalChat().asWidget());
+		}
 	}
 }
