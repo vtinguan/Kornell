@@ -11,13 +11,9 @@ import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
-import kornell.gui.client.uidget.KornellPagination;
 import kornell.gui.client.util.ClientProperties;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceChangeRequestEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
