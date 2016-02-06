@@ -58,6 +58,11 @@ public class ClientProperties {
 	    }
 	}
 	
+	public static String getCookie(String name){
+	    return Cookies.getCookie(name);
+	}
+	
+	
 	public static void removeCookie(String name){
 		Cookies.removeCookie(name);
 	}
