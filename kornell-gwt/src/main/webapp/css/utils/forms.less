@@ -1,5 +1,6 @@
 @import "colors";
 @import "mixins";
+@import "constants";
 
 .btn-primary {
   .btnSelected;
@@ -407,6 +408,138 @@
 			.textField {
 				width: 248px;
 			}
+		}
+	}
+}
+
+
+
+.reportPanel{
+	@detailsPanelMargin: 20px;
+	@reportPanelWidth: @wrapperWidth - @detailsPanelMargin;
+
+	@reportWidth: .6 * @reportPanelWidth;
+	@generateWidth: .2 * @reportPanelWidth;
+	@downloadWidth: .2 * @reportPanelWidth;
+	float: left;
+	.reportHeaderPanel{
+		@reportHeaderPanelHeight: 24px;
+		height: @reportHeaderPanelHeight;
+		margin-bottom: 10px;
+		.btnReportHeader{
+			.boxSizing;
+			.btnDefault;
+			.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+			border-radius: 0px !important;
+			height: @reportHeaderPanelHeight;
+			line-height: @reportHeaderPanelHeight;
+			padding-left: @detailsPanelMargin / 2 !important;
+			padding-right: @detailsPanelMargin / 2 !important;
+			.btnBorder;
+			display: block;
+			float: left;
+			&:hover{
+				text-decoration: none;
+				cursor: default;
+			}
+		}
+		.btnReport{width: @reportWidth; text-align: left;}
+		.btnGenerate{width: @generateWidth;}
+		.btnDownload{width: @downloadWidth;}
+	}
+	.reportWrapper{
+		@reportWrapperHeight: 88px;
+		line-height: @reportWrapperHeight;
+		background-color: @tableBackgroundHoverColor;
+		margin-top: @detailsPanelMargin / 2;
+		color: @niceTextColor;
+		font-size: 13px;
+		.itemPanel{
+			.boxSizing;
+			display: inline-block;
+  			vertical-align: top;
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+			width: @reportWidth + 2px;
+			.reportIcon{
+				float: left;
+				padding-top: (@reportWrapperHeight - 18px) / 2;
+				padding-bottom: (@reportWrapperHeight - 18px) / 2;
+				padding-left: @detailsPanelMargin / 2;
+				padding-right: @detailsPanelMargin;
+			}
+			.lblName{
+				.lightenOrDarkenColor(@niceTextColor, 20%);
+				padding-left: @detailsPanelMargin;
+				line-height: 10px;
+				font-size: 14px;
+				font-weight: bold;
+				padding-top: @detailsPanelMargin * 2 / 3;
+				padding-bottom: 9px;
+			}
+			.lblDescription{
+				color: @textInfoColor;
+				padding-left: 55px;
+				font-size: 12px;
+				line-height: 14px;
+			}
+			.optionPanel{
+				padding-left: 48px;
+				padding-top: 5px;
+				img{
+					height: 18px;
+					width: 18px;
+					float: left;
+					.cursorPointer;
+				}
+				input{
+					height: 12px;
+					margin-left: 6px;
+				}
+				span{
+					font-size: 10px;
+					margin-left: 2px;
+					float: left;
+					.cursorPointer;
+				}
+				select{
+					height: 25px;
+					float: left;
+					margin-left: 8px;
+					font-size: 14px;
+					padding: 0px 7px;
+					width: 100px;
+				}
+				textarea{
+					width: 90%;
+					margin: 10px 15px;
+					height: 150px;
+				}
+				.gwt-Label{
+					color: @textInfoColor;
+					padding: 0px 15px;
+					font-size: 11px;
+					line-height: 13px;
+				}
+			}
+		}
+		.lblGenerate{
+			.boxSizing;
+			display: inline-block;
+  			vertical-align: top;
+			width: @generateWidth;
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+			text-align: center;
+		}
+		.lblDownload{
+			.boxSizing;
+			display: inline-block;
+  			vertical-align: top;
+			width: @downloadWidth;
+			padding-left: @detailsPanelMargin / 2;
+			padding-right: @detailsPanelMargin / 2;
+			text-align: center;
 		}
 	}
 }

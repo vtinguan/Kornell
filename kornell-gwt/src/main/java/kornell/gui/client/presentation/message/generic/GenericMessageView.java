@@ -397,11 +397,11 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 	}
 	
 	private String getIcons(int count, String classes, String title){
-		String icons = "&nbsp;";
+		String icons = "&nbsp;<nobr>";
 		for(int i = 0; i < count; i++){
 			icons += "<i class=\"" + classes + " plainDiscreteTextColor\" title=\"" + title + "\"></i>";
 		}
-		return icons;
+		return icons + "</nobr>";
 	}
 
 	@UiHandler("btnSend")
