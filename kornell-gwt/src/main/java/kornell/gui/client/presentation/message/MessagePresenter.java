@@ -63,6 +63,13 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			public void onPlaceChange(PlaceChangeEvent event) {
 				if(event.getNewPlace() instanceof MessagePlace){
 					initPlaceBar();
+					if(MessagePanelType.inbox.equals(messagePanelType)){
+						asWidget().removeStyleName("shy");
+					}
+				} else {
+					if(MessagePanelType.inbox.equals(messagePanelType)){
+						asWidget().addStyleName("shy");
+					}
 				}
 				selectedChatThreadInfo = null;
 				if(MessagePanelType.courseClassSupport.equals(messagePanelType))
@@ -227,7 +234,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 						threadBeginningReached = true;
 						view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), true);
 						view.setPlaceholder(messagePanelType.equals(MessagePanelType.courseClassTutor) ? constants.tutorPlaceholderMessage() : "");
-					} else if(selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
+					} else if(selectedChatThreadInfo != null && selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
 						synchronized (chatThreadMessageTOs) {
 							chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
 						}
