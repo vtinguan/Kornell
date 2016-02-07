@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.course.generic.notes;
 
 import kornell.api.client.KornellClient;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.GWT;
@@ -52,12 +53,18 @@ public class NotesPopup {
 	}
 	
 	private void placePopup() {
-		int left = (Window.getClientWidth() - Positioning.BAR_WIDTH) / 2;
+		int barWidth = Positioning.BAR_WIDTH;
+		int left = (Window.getClientWidth() - barWidth) / 2;
 		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
 		int top = Window.getClientHeight() - Positioning.SOUTH_BAR - Positioning.NOTES_MIN_HEIGHT;
 		
+		if(Window.getClientWidth() < barWidth){
+			left = 0;
+			barWidth = Window.getClientWidth();
+		}
+		
 		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
-		popup.setWidth(Positioning.BAR_WIDTH + "px");
+		popup.setWidth(barWidth + "px");
 		popup.getElement().getStyle().setPropertyPx("size", Positioning.NOTES_MIN_HEIGHT);
 		popup.getElement().getStyle().setPropertyPx("bottom", Positioning.SOUTH_BAR);
 		popup.setVisible(true);
