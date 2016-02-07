@@ -1,0 +1,1 @@
+alter table CourseClass add column chatDockEnabled tinyint(1) not null default 0;

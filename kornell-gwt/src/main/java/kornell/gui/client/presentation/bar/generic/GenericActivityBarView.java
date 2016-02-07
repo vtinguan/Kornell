@@ -295,7 +295,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	@UiHandler("btnChat")
 	void handleClickBtnChat(ClickEvent e) {
-		clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(!chatDockEnabled));
+		if(!(chatDockEnabled && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()) && !showDetails){
+			clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(!chatDockEnabled));
+		}
 	}
 
 	private void enableButton(String btn, boolean enable) {
@@ -364,6 +366,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			displayButton(btnDetails, constants.course(),
 					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
 		} else {
+			if(!chatDockEnabled && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()){
+				clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(true));
+			}
 			btnDetails.removeStyleName("btnSelected");
 			displayButton(btnDetails, BUTTON_DETAILS,
 					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
@@ -377,7 +382,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	public void onShowChatDock(ShowChatDockEvent event) {
 		this.chatDockEnabled = event.isShowChatDock();
 		if (chatDockEnabled) {
-			clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(false));
+			if(showDetails){
+				clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(false));
+			}
 			btnChat.addStyleName("btnSelected");
 		} else {
 			btnChat.removeStyleName("btnSelected");

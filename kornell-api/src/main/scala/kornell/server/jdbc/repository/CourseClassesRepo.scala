@@ -35,7 +35,7 @@ object CourseClassesRepo {
 	      courseClass.setUUID(UUID.random)
 	    }
 	    sql""" 
-	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, allowBatchCancellation, tutorChatEnabled,approveEnrollmentsAutomatically)
+	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, chatDockEnabled, allowBatchCancellation, tutorChatEnabled,approveEnrollmentsAutomatically)
 	    	values(${courseClass.getUUID},
 	             ${courseClass.getName},
 	             ${courseClass.getCourseVersionUUID},
@@ -50,6 +50,7 @@ object CourseClassesRepo {
 	             ${courseClass.getRegistrationType.toString},
 	             ${courseClass.getInstitutionRegistrationPrefixUUID},
 	             ${courseClass.isCourseClassChatEnabled},
+	             ${courseClass.isChatDockEnabled},
 	             ${courseClass.isAllowBatchCancellation},
 	             ${courseClass.isTutorChatEnabled},
 	             ${courseClass.isApproveEnrollmentsAutomatically})
@@ -114,6 +115,7 @@ object CourseClassesRepo {
 		  		cc.registrationType as registrationType,
 		  		cc.institutionRegistrationPrefixUUID as institutionRegistrationPrefixUUID, 
 		  		cc.courseClassChatEnabled as courseClassChatEnabled, 
+		  		cc.chatDockEnabled as chatDockEnabled, 
 		  		cc.allowBatchCancellation as allowBatchCancellation, 
 		  		cc.tutorChatEnabled as tutorChatEnabled, 
 		  		cc.approveEnrollmentsAutomatically as approveEnrollmentsAutomatically,
