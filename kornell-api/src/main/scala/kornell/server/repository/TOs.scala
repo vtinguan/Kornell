@@ -47,6 +47,8 @@ import kornell.core.event.EventFactory
 import kornell.core.entity.AuditedEntityType
 import kornell.server.content.ContentManagers
 import kornell.core.entity.RoleType
+import kornell.server.util.DateConverter
+import kornell.server.authentication.ThreadLocalAuthenticator
 
 //TODO: Consider turning to Object
 object TOs {
@@ -150,12 +152,13 @@ object TOs {
 
   def newCertificateInformationTO: CertificateInformationTO = new CertificateInformationTO
   def newCertificateInformationTO(personFullName: String, personCPF: String, courseTitle: String, courseClassName: String, courseClassFinishedDate: Date, assetsURL: String, distributionPrefix: String, courseVersionUUID: String, baseURL: String): CertificateInformationTO = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val to = newCertificateInformationTO
     to.setPersonFullName(personFullName)
     to.setPersonCPF(personCPF)
     to.setCourseTitle(courseTitle)
     to.setCourseClassName(courseClassName)
-    to.setCourseClassFinishedDate(courseClassFinishedDate)
+    to.setCourseClassFinishedDate(dateConverter.dateToInstitutionTimezone(courseClassFinishedDate))
     to.setAssetsURL(assetsURL)
     to.setDistributionPrefix(distributionPrefix)
     to.setCourseVersionUUID(courseVersionUUID)
@@ -165,9 +168,10 @@ object TOs {
 
   def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
   def newCourseClassReportTO(fullName: String, username: String, email: String, cpf: String, state: String, progressState: String, 
-      progress: Int, assessmentScore: BigDecimal, certifiedAt: String, enrolledAt: String, courseName: String, courseVersionName: String, courseClassName: String, 
+      progress: Int, assessmentScore: BigDecimal, certifiedAt: Date, enrolledAt: Date, courseName: String, courseVersionName: String, courseClassName: String, 
       company: String, title: String, sex: String, birthDate: String, telephone: String, country: String, stateProvince: String, 
       city: String, addressLine1: String, addressLine2: String, postalCode: String): CourseClassReportTO = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val to = newCourseClassReportTO
     to.setFullName(fullName)
     to.setUsername(username)
@@ -177,8 +181,8 @@ object TOs {
     to.setProgressState(progressState)
     to.setProgress(progress)
     to.setAssessmentScore(assessmentScore)
-    to.setCertifiedAt(certifiedAt)
-    to.setEnrolledAt(enrolledAt)
+    to.setCertifiedAt(dateConverter.dateToInstitutionTimezone(certifiedAt))
+    to.setEnrolledAt(dateConverter.dateToInstitutionTimezone(enrolledAt))
     to.setCourseName(courseName)
     to.setCourseVersionName(courseVersionName)
     to.setCourseClassName(courseClassName)
@@ -279,6 +283,7 @@ object TOs {
 
   def newInstitutionBillingEnrollmentReportTO: InstitutionBillingEnrollmentReportTO = new InstitutionBillingEnrollmentReportTO
   def newInstitutionBillingEnrollmentReportTO(enrollmentUUID: String, courseTitle: String, courseVersionName: String, courseClassName: String, fullName: String, username: String, firstEventFiredAt: Date): InstitutionBillingEnrollmentReportTO = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val to = newInstitutionBillingEnrollmentReportTO
     to.setEnrollmentUUID(enrollmentUUID)
     to.setCourseTitle(courseTitle)
@@ -286,7 +291,7 @@ object TOs {
     to.setCourseClassName(courseClassName)
     to.setFullName(fullName)
     to.setUsername(username)
-    to.setFirstEventFiredAt(firstEventFiredAt)
+    to.setFirstEventFiredAt(dateConverter.dateToInstitutionTimezone(firstEventFiredAt))
     to
   }
 
@@ -300,9 +305,10 @@ object TOs {
   }
 
   def newCourseClassAuditTO: CourseClassAuditTO = new CourseClassAuditTO
-  def newCourseClassAuditTO(eventFiredAt: String, eventType: String, adminFullName: String, adminUsername: String, participantFullName: String, participantUsername: String, fromCourseClassName: String, toCourseClassName: String, fromState: String, toState: String, adminUUID: String, participantUUID: String, enrollmentUUID: String, fromCourseClassUUID: String, toCourseClassUUID: String): CourseClassAuditTO = {
+  def newCourseClassAuditTO(eventFiredAt: Date, eventType: String, adminFullName: String, adminUsername: String, participantFullName: String, participantUsername: String, fromCourseClassName: String, toCourseClassName: String, fromState: String, toState: String, adminUUID: String, participantUUID: String, enrollmentUUID: String, fromCourseClassUUID: String, toCourseClassUUID: String): CourseClassAuditTO = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val to = newCourseClassAuditTO
-    to.setEventFiredAt(eventFiredAt)
+    to.setEventFiredAt(dateConverter.dateToInstitutionTimezone(eventFiredAt))
 	to.setEventType(eventType)
 	to.setAdminFullName(adminFullName)
 	to.setAdminUsername(adminUsername)
@@ -362,9 +368,10 @@ object TOs {
   }
   
   def newEntityChanged(uuid: String, eventFiredAt: Date, institutionUUID: String, fromPersonUUID: String, entityType: AuditedEntityType, entityUUID: String, fromValue: String, toValue: String, entityName: String, fromPersonName: String, fromUsername: String) = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val event = events.newEntityChanged.as
     event.setUUID(uuid)
-    event.setEventFiredAt(eventFiredAt)
+    event.setEventFiredAt(dateConverter.dateToInstitutionTimezone(eventFiredAt))
 	event.setInstitutionUUID(institutionUUID)
 	event.setFromPersonUUID(fromPersonUUID)
 	event.setEntityType(entityType)

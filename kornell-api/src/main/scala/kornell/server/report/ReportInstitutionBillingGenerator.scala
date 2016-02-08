@@ -66,7 +66,7 @@ object ReportInstitutionBillingGenerator {
 	      rs.getString("courseClassName"),
 	      rs.getString("fullName"),
 	      rs.getString("username"),
-	      rs.getDate("firstEventFiredAt"))
+	      rs.getTimestamp("firstEventFiredAt"))
 	      
     val institutionBillingReportTO = sql"""
     		SELECT 

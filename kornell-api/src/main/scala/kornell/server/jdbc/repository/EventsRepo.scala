@@ -18,7 +18,6 @@ import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.ep.EnrollmentSEP
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.util.EmailService
-import kornell.server.util.ServerTime
 import kornell.server.util.Settings
 import com.google.web.bindery.autobean.shared.AutoBean
 import kornell.core.to.EntityChangedEventsTO
@@ -38,6 +37,7 @@ import kornell.server.jdbc.SQL._
 import scala.collection.JavaConverters._
 import kornell.core.event.EntityChanged
 import java.util.Date
+import org.joda.time.DateTime
 
 object EventsRepo {
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
@@ -58,8 +58,8 @@ object EventsRepo {
   }
 
   def logAttendanceSheetSigned(event: AttendanceSheetSigned) = {
-    val todayStart = ServerTime.todayStart
-    val todayEnd = ServerTime.todayEnd
+    val todayStart = DateTime.now.withTimeAtStartOfDay.toDate
+    val todayEnd = DateTime.now.plusDays(1).withTimeAtStartOfDay.minusMillis(1).toDate
     // don't log more than once a day
     val attendanceSheetSignedUUID = sql"""
 			  select uuid from AttendanceSheetSigned

@@ -1,9 +1,8 @@
-	package kornell.server.jdbc.repository
+package kornell.server.jdbc.repository
 
 import kornell.core.entity.AuthClientType
 import kornell.server.jdbc.SQL._
 import org.joda.time.DateTime
-import java.util.Date
 import kornell.server.repository.TOs
 import kornell.core.to.TokenTO
 
@@ -24,7 +23,7 @@ object TokenRepo {
   def createToken(token: String, personUUID: String, authClientType: AuthClientType) = {
     val expiry = {
       if (authClientType == AuthClientType.web) {
-        new DateTime(new Date).plusDays(7).toDate
+        new DateTime().plusDays(7).toDate
       } else {
         null
       }

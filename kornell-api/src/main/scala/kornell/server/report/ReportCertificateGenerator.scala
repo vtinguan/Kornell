@@ -21,7 +21,7 @@ object ReportCertificateGenerator {
       rs.getString("cpf"),
       rs.getString("title"),
       rs.getString("name"),
-      rs.getDate("certifiedAt"),
+      rs.getTimestamp("certifiedAt"),
       rs.getString("assetsRepositoryUUID"),
       rs.getString("distributionPrefix"),
       rs.getString("courseVersionUUID"),
