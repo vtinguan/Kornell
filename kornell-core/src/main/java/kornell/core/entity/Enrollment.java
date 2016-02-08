@@ -30,8 +30,8 @@ public interface Enrollment extends Entity{
 	EnrollmentState getState();
 	void setState(EnrollmentState state);
 	
-	String getLastProgressUpdate();
-	void setLastProgressUpdate(String lastProgressUpdate);
+	Date getLastProgressUpdate();
+	void setLastProgressUpdate(Date lastProgressUpdate);
 	
 	/**
 	 * use lastProgressUpdate / lastAssessmentUpdate
@@ -45,17 +45,17 @@ public interface Enrollment extends Entity{
 	Assessment getAssessment();
 	void setAssessment(Assessment assessment);
 	
-	String getLastAssessmentUpdate();
-	void setLastAssessmentUpdate(String lastAssessmentUpdate);
+	Date getLastAssessmentUpdate();
+	void setLastAssessmentUpdate(Date lastAssessmentUpdate);
 	
-	String getCertifiedAt();
-	void setCertifiedAt(String certifiedAt);
+	Date getCertifiedAt();
+	void setCertifiedAt(Date certifiedAt);
 	
 	BigDecimal getAssessmentScore();
 	void setAssessmentScore(BigDecimal assessmentScore);
 	
-	String getLastBilledAt();
-	void setLastBilledAt(String lastBilled);
+	Date getLastBilledAt();
+	void setLastBilledAt(Date lastBilled);
 	
 	String getParentEnrollmentUUID();
 	void setParentEnrollmentUUID(String enrollmentUUID);

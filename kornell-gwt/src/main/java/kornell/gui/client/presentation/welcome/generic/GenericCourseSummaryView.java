@@ -1,6 +1,9 @@
 package kornell.gui.client.presentation.welcome.generic;
 
 import static kornell.core.util.StringUtils.mkurl;
+
+import java.util.Date;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
@@ -22,7 +25,6 @@ import kornell.gui.client.personnel.Teacher;
 import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.util.EnumTranslator;
-import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Heading;
@@ -31,6 +33,7 @@ import com.github.gwtbootstrap.client.ui.ProgressBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -50,8 +53,6 @@ public class GenericCourseSummaryView extends Composite {
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	
-	private FormHelper formHelper = GWT.create(FormHelper.class);
-
 	@UiField
 	Heading hTitle;
 	
@@ -198,11 +199,11 @@ public class GenericCourseSummaryView extends Composite {
 		}
 	}
 
-	private void onCourseCompleted(String certifiedAt) {
+	private void onCourseCompleted(Date certifiedAt) {
 		String statusText = EnumTranslator.translateEnum(EnrollmentProgressDescription.completed);
 		if(certifiedAt != null) {
 			statusText += " " + constants.completedOnToken() + ": ";
-			pStatusInfo.setText(formHelper.getStringFromDate(certifiedAt));
+			pStatusInfo.setText(DateTimeFormat.getFormat("yyyy-MM-dd").format(certifiedAt));
 		}
 		if(courseClassTO.getCourseClass().getRequiredScore() != null && 
 				courseClassTO.getCourseClass().getRequiredScore().intValue() != 0 &&

@@ -10,7 +10,6 @@ import scala.collection.JavaConverters._
 import kornell.core.entity.RoleType
 import java.text.SimpleDateFormat
 import java.text.DateFormat
-import kornell.core.util.TimeUtil
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import java.util.concurrent.TimeUnit

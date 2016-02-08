@@ -24,8 +24,6 @@ import scala.collection.JavaConverters._
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.RoleCategory
 import kornell.server.repository.Entities
-import kornell.core.util.TimeUtil
-import kornell.server.util.ServerTime
 import kornell.core.util.StringUtils
 import kornell.core.entity.RegistrationType
 import kornell.server.jdbc.repository.CourseClassRepo
@@ -151,11 +149,11 @@ object RegistrationEnrollmentService {
 
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person, cancelEnrollment: Boolean) = {
     if (cancelEnrollment && !EnrollmentState.cancelled.equals(enrollment.getState))
-      EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled, enrollment.getCourseVersionUUID == null)
+      EventsRepo.logEnrollmentStateChanged(UUID.random, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled, enrollment.getCourseVersionUUID == null)
     else if (!cancelEnrollment && (EnrollmentState.cancelled.equals(enrollment.getState)
       || EnrollmentState.requested.equals(enrollment.getState())
       || EnrollmentState.denied.equals(enrollment.getState()))) {
-      EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled, enrollment.getCourseVersionUUID == null)
+      EventsRepo.logEnrollmentStateChanged(UUID.random, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled, enrollment.getCourseVersionUUID == null)
     }
   }
 
@@ -218,7 +216,7 @@ object RegistrationEnrollmentService {
       courseVersionUUID = courseVersionUUID,
       parentEnrollmentUUID = parentEnrollmentUUID)
     EventsRepo.logEnrollmentStateChanged(
-      UUID.random, ServerTime.now, enrollerUUID,
+      UUID.random, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState, courseVersionUUID == null)
     enrollment
   }

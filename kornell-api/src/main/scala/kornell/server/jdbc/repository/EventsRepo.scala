@@ -18,7 +18,6 @@ import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.ep.EnrollmentSEP
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.util.EmailService
-import kornell.server.util.ServerTime
 import kornell.server.util.Settings
 import com.google.web.bindery.autobean.shared.AutoBean
 import kornell.core.to.EntityChangedEventsTO
@@ -37,6 +36,8 @@ import kornell.server.repository.TOs._
 import kornell.server.jdbc.SQL._
 import scala.collection.JavaConverters._
 import kornell.core.event.EntityChanged
+import java.util.Date
+import org.joda.time.DateTime
 
 object EventsRepo {
   val events = AutoBeanFactorySource.create(classOf[EventFactory])
@@ -47,7 +48,7 @@ object EventsRepo {
     sql"""
     insert into ActomEntered(uuid,eventFiredAt,enrollmentUUID,actomKey) 
     values(${event.getUUID},
-  		   ${event.getEventFiredAt},
+  		   now(),
            ${event.getEnrollmentUUID},
 		   ${event.getActomKey}); 
 	""".executeUpdate
@@ -57,8 +58,8 @@ object EventsRepo {
   }
 
   def logAttendanceSheetSigned(event: AttendanceSheetSigned) = {
-    val todayStart = ServerTime.todayStart
-    val todayEnd = ServerTime.todayEnd
+    val todayStart = DateTime.now.withTimeAtStartOfDay.toDate
+    val todayEnd = DateTime.now.plusDays(1).withTimeAtStartOfDay.minusMillis(1).toDate
     // don't log more than once a day
     val attendanceSheetSignedUUID = sql"""
 			  select uuid from AttendanceSheetSigned
@@ -69,17 +70,17 @@ object EventsRepo {
     if (!attendanceSheetSignedUUID.isDefined)
       sql"""
 		    insert into AttendanceSheetSigned(uuid,eventFiredAt,institutionUUID,personUUID)
-		    values(${event.getUUID}, ${event.getEventFiredAt}, ${event.getInstitutionUUID}, ${event.getPersonUUID});
+		    values(${event.getUUID}, now(), ${event.getInstitutionUUID}, ${event.getPersonUUID});
 			""".executeUpdate
 
   }
 
-  def logEnrollmentStateChanged(uuid: String, eventFiredAt: String, fromPersonUUID: String,
+  def logEnrollmentStateChanged(uuid: String, fromPersonUUID: String,
     enrollmentUUID: String, fromState: EnrollmentState, toState: EnrollmentState, sendEmail: Boolean) = {
 
     sql"""insert into EnrollmentStateChanged(uuid,eventFiredAt,person_uuid,enrollment_uuid,fromState,toState)
 	    values(${uuid},
-			   ${eventFiredAt},
+			   now(),
          ${fromPersonUUID},
          ${enrollmentUUID},
          ${fromState.toString},
@@ -109,15 +110,15 @@ object EventsRepo {
   }
 
   def logEnrollmentStateChanged(event: EnrollmentStateChanged): Unit =
-    logEnrollmentStateChanged(event.getUUID, event.getEventFiredAt, event.getFromPersonUUID,
+    logEnrollmentStateChanged(event.getUUID, event.getFromPersonUUID,
       event.getEnrollmentUUID, event.getFromState, event.getToState, true)
 
-  def logCourseClassStateChanged(uuid: String, eventFiredAt: String, fromPersonUUID: String,
+  def logCourseClassStateChanged(uuid: String, fromPersonUUID: String,
     courseClassUUID: String, fromState: CourseClassState, toState: CourseClassState) = {
 
     sql"""insert into CourseClassStateChanged(uuid,eventFiredAt,personUUID,courseClassUUID,fromState,toState)
 	    values(${uuid},
-		 ${eventFiredAt},
+		 now(),
          ${fromPersonUUID},
          ${courseClassUUID},
          ${fromState.toString},
@@ -130,7 +131,7 @@ object EventsRepo {
   }
 
   def logCourseClassStateChanged(event: CourseClassStateChanged): Unit =
-    logCourseClassStateChanged(event.getUUID, event.getEventFiredAt, event.getFromPersonUUID,
+    logCourseClassStateChanged(event.getUUID, event.getFromPersonUUID,
       event.getCourseClassUUID, event.getFromState, event.getToState)
 
   def logEnrollmentTransferred(event: EnrollmentTransferred): Unit = {

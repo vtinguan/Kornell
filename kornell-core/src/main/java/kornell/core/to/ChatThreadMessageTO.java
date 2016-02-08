@@ -1,5 +1,7 @@
 package kornell.core.to;
 
+import java.util.Date;
+
 import kornell.core.entity.RoleType;
 
 public interface ChatThreadMessageTO {
@@ -11,8 +13,8 @@ public interface ChatThreadMessageTO {
 	RoleType getSenderRole();
 	void setSenderRole(RoleType senderRole);
 
-	String getSentAt();
-	void setSentAt(String sentAt);
+	Date getSentAt();
+	void setSentAt(Date sentAt);
 
 	String getMessage();
 	void setMessage(String message);

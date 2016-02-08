@@ -1,6 +1,7 @@
 package kornell.gui.client.presentation.message;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	List<ChatThreadMessageTO> chatThreadMessageTOs;
 	private boolean updateMessages = true;
 	private boolean threadBeginningReached;
-
+	
 	public MessagePresenter(KornellSession session, EventBus bus, PlaceController placeCtrl, final ViewFactory viewFactory, final MessagePanelType messagePanelType) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
@@ -205,7 +206,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			if(selectedChatThreadInfo != null && selectedChatThreadInfo.getChatThreadUUID() != null){
 				final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
 				LoadingPopup.show();
-				session.chatThreads().getChatThreadMessages(chatThreadUUID, lastFetchedMessageSentAt(), "", new Callback<ChatThreadMessagesTO>() {
+				session.chatThreads().getChatThreadMessages(chatThreadUUID, lastFetchedMessageSentAt(), null, new Callback<ChatThreadMessagesTO>() {
 					@Override
 					public void ok(ChatThreadMessagesTO to) {
 						if(selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
@@ -227,7 +228,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
 			//before
 			LoadingPopup.show();
-			session.chatThreads().getChatThreadMessages(chatThreadUUID, "", firstFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
+			session.chatThreads().getChatThreadMessages(chatThreadUUID, null, firstFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
 				@Override
 				public void ok(ChatThreadMessagesTO to) {
 					if(to.getChatThreadMessageTOs().size() == 0){
@@ -318,18 +319,18 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		this.selectedChatThreadInfo = null;
 	}
 
-	private String lastFetchedMessageSentAt() {
-		String date;
+	private Date lastFetchedMessageSentAt() {
+		Date date;
 		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : "";
+			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : null;
 		}
 		return date;
 	}
 
-	private String firstFetchedMessageSentAt() {
-		String date;
+	private Date firstFetchedMessageSentAt() {
+		Date date;
 		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : "none";
+			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : null;
 		}
 		return date;
 	}

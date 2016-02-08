@@ -30,7 +30,7 @@ object ReportCourseClassAuditGenerator {
 
 	  implicit def toCourseClassAuditTO(rs: ResultSet): CourseClassAuditTO =
 	    TOs.newCourseClassAuditTO(
-	    	rs.getString("eventFiredAt"),
+	    	rs.getTimestamp("eventFiredAt"),
 			rs.getString("eventType"),
 			rs.getString("adminFullName"),
 			rs.getString("adminUsername"),

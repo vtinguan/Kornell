@@ -21,10 +21,15 @@ import kornell.core.util.StringUtils
 import kornell.core.entity.ChatThreadType
 import kornell.server.util.Conditional.toConditional
 import kornell.server.jdbc.repository.PersonRepo
+import java.util.Date
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.DateTime
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
 class ChatThreadsResource {
+  
+  val dateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
   
   @POST
   @Path("courseClass/{courseClassUUID}/support")
@@ -73,7 +78,7 @@ class ChatThreadsResource {
     @QueryParam("since") since: String) = AuthRepo().withPerson { person => 
   		ChatThreadsRepo.createChatThreadMessage(chatThreadUUID, person.getUUID, message)
   		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
+  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
   }
@@ -110,9 +115,9 @@ class ChatThreadsResource {
     @QueryParam("before") before: String) = AuthRepo().withPerson { person => {
       ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
   		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
+  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
   		else if(StringUtils.isSome(before))
-  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, before)
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(since.toLong))
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
     }

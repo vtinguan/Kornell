@@ -55,4 +55,7 @@ public interface Institution extends Named {
 	
 	boolean isUseEmailWhitelist();
 	void setUseEmailWhitelist(boolean useEmailWhitelist);
+	
+	String getTimeZone();
+	void setTimeZone(String timeZone);
 }

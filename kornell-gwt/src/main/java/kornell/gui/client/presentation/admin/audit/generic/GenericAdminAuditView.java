@@ -47,6 +47,7 @@ import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -178,7 +179,7 @@ public class GenericAdminAuditView extends Composite implements AdminAuditView {
 		table.addColumn(new TextColumn<EntityChanged>() {
 			@Override
 			public String getValue(EntityChanged entityChanged) {
-				return entityChanged.getEventFiredAt();
+				return DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss").format(entityChanged.getEventFiredAt());
 			}
 		}, "Data");
 

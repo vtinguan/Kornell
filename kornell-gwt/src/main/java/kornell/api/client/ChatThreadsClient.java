@@ -1,5 +1,7 @@
 package kornell.api.client;
 
+import java.util.Date;
+
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadsTO;
 
@@ -26,11 +28,11 @@ public class ChatThreadsClient extends RESTClient {
 	}
 	
 	public void postMessageToChatThread(String message, String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
-		postMessageToChatThread(message, chatThreadUUID, "", callback);
+		postMessageToChatThread(message, chatThreadUUID, null, callback);
 	}
 	
-	public void postMessageToChatThread(String message, String chatThreadUUID, String since, Callback<ChatThreadMessagesTO> callback) {
-		POST("/chatThreads/"+chatThreadUUID+"/message/?since="+since).sendRequest(message, callback);
+	public void postMessageToChatThread(String message, String chatThreadUUID, Date since, Callback<ChatThreadMessagesTO> callback) {
+		POST("/chatThreads/"+chatThreadUUID+"/message/?since="+((since != null) ? since.getTime() : "")).sendRequest(message, callback);
 	}
 	
 	public void getTotalUnreadCount(String institutionUUID, Callback<String> callback) {
@@ -42,11 +44,11 @@ public class ChatThreadsClient extends RESTClient {
 	}
 	
 	public void getChatThreadMessagesx(String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
-		getChatThreadMessages(chatThreadUUID, "", "", callback);
+		getChatThreadMessages(chatThreadUUID, null, null, callback);
 	}
 	
-	public void getChatThreadMessages(String chatThreadUUID, String since, String before, Callback<ChatThreadMessagesTO> callback) {
-		GET("/chatThreads/"+chatThreadUUID+"/messages/?since="+since+"&before="+before).sendRequest(null, callback);
+	public void getChatThreadMessages(String chatThreadUUID, Date since, Date before, Callback<ChatThreadMessagesTO> callback) {
+		GET("/chatThreads/"+chatThreadUUID+"/messages/?since="+((since != null) ? since.getTime() : "")+"&before="+((before != null) ? before.getTime() : "")).sendRequest(null, callback);
 	}
 
 }

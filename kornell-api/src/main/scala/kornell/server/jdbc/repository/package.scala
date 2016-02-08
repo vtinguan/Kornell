@@ -70,7 +70,8 @@ package object repository {
         rs.getString("dashboardVersionUUID"),
         rs.getBoolean("internationalized"),
         rs.getBoolean("useEmailWhitelist"),
-        rs.getString("assetsRepositoryUUID"))
+        rs.getString("assetsRepositoryUUID"),
+        rs.getString("timeZone"))
         
   implicit def toS3ContentRepository(rs:ResultSet):S3ContentRepository = 
     newS3ContentRepository(rs.getString("uuid"),
@@ -195,13 +196,13 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),      
       EnrollmentState.valueOf(rs.getString("state")),
-      rs.getString("lastProgressUpdate"),
+      rs.getTimestamp("lastProgressUpdate"),
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getString("lastAssessmentUpdate"),
+      rs.getTimestamp("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt"),
+      rs.getTimestamp("certifiedAt"),
       rs.getString("courseVersionUUID"),
       rs.getString("parentEnrollmentUUID"),
       rs.getDate("start_date"),
@@ -221,13 +222,13 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),      
       EnrollmentState.valueOf(rs.getString("state")),
-      rs.getString("lastProgressUpdate"),
+      rs.getTimestamp("lastProgressUpdate"),
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getString("lastAssessmentUpdate"),
+      rs.getTimestamp("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt")
+      rs.getTimestamp("certifiedAt")
     )
     
     TOs.newEnrollmentTO(enrollment, rs.getString("personUUID"), rs.getString("fullName"), rs.getString("username"))
@@ -252,7 +253,7 @@ package object repository {
 	    rs.getString("postalCode"),
 	    rs.getString("cpf"),
 	    rs.getString("institutionUUID"),
-	    rs.getString("termsAcceptedOn"),
+	    rs.getTimestamp("termsAcceptedOn"),
 	    RegistrationType.valueOf(rs.getString("registrationType")),
 	    rs.getString("institutionRegistrationPrefixUUID"),
 	    rs.getBoolean("receiveEmailCommunication"),
@@ -307,7 +308,7 @@ package object repository {
 	      RoleType.user
 	    else
 	      RoleType.valueOf(rs.getString("senderRole")),
-	    rs.getString("sentAt"), 
+	    rs.getTimestamp("sentAt"), 
 	    rs.getString("message"))
   
 	implicit def toChatThreadParticipant(rs: ResultSet): ChatThreadParticipant = newChatThreadParticipant(
@@ -315,13 +316,13 @@ package object repository {
 	    rs.getString("chatThreadUUID"),
 	    rs.getString("personUUID"),
 	    rs.getString("chatThreadName"),
-	    rs.getDate("lastReadAt"),
+	    rs.getTimestamp("lastReadAt"),
 	    rs.getBoolean("active"),
-	    rs.getDate("lastJoinDate"))
+	    rs.getTimestamp("lastJoinDate"))
 	    
 	implicit def toChatThread(rs: ResultSet): ChatThread = newChatThread(
 	    rs.getString("uuid"), 
-	    rs.getDate("createdAt"), 
+	    rs.getTimestamp("createdAt"), 
 	    rs.getString("institutionUUID"), 
 	    rs.getString("courseClassUUID"), 
 	    rs.getString("personUUID"), 
@@ -342,7 +343,7 @@ package object repository {
    
   implicit def toEntityChanged(rs: ResultSet): EntityChanged = newEntityChanged(
     rs.getString("uuid"), 
-    rs.getString("eventFiredAt"),
+    rs.getTimestamp("eventFiredAt"),
     rs.getString("institutionUUID"),
     rs.getString("personUUID"),
     AuditedEntityType.valueOf(rs.getString("entityType")),

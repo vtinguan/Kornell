@@ -1,6 +1,7 @@
 package kornell.core.to.report;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class CourseClassReportTO {
 	private String fullName;
@@ -11,8 +12,8 @@ public class CourseClassReportTO {
 	private String progressState;
 	private Integer progress;
 	private BigDecimal assessmentScore;
-	private String certifiedAt;
-	private String enrolledAt;
+	private Date certifiedAt;
+	private Date enrolledAt;
 	private String courseName;
 	private String courseVersionName;
 	private String courseClassName;
@@ -94,15 +95,15 @@ public class CourseClassReportTO {
 		this.assessmentScore = assessmentScore;
 	}
 
-	public String getCertifiedAt() {
+	public Date getCertifiedAt() {
 		return certifiedAt;
 	}
 
-	public void setCertifiedAt(String certifiedAt) {
+	public void setCertifiedAt(Date certifiedAt) {
 		this.certifiedAt = certifiedAt;
 	}
 
-	public String getEnrolledAt() {
+	public Date getEnrolledAt() {
 		return enrolledAt;
 	}
 
@@ -130,7 +131,7 @@ public class CourseClassReportTO {
 		this.courseClassName = courseClassName;
 	}
 
-	public void setEnrolledAt(String enrolledAt) {
+	public void setEnrolledAt(Date enrolledAt) {
 		this.enrolledAt = enrolledAt;
 	}
 

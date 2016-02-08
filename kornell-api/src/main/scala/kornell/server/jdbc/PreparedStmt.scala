@@ -6,13 +6,12 @@ import java.sql.ResultSet
 import java.sql.Timestamp
 import java.sql.{ Date => SQLDate }
 import java.util.{ Date => JDate }
-import kornell.core.value.{ Date => KDate }
+//import kornell.core.value.{ Date => KDate }
 import java.math.BigDecimal
 import scala.collection.mutable.ListBuffer
 import DataSources._
 import kornell.server.util.Settings
 import java.sql.Date
-import kornell.core.util.TimeUtil
 import java.sql.SQLException
 import kornell.core.error.exception.EntityConflictException
 
@@ -35,7 +34,7 @@ class PreparedStmt(query: String, params: List[Any]) {
           case p: Integer => pstmt.setInt(i, p)
           case p: Double => pstmt.setDouble(i, p)
           case p: JDate => pstmt.setTimestamp(i, new Timestamp(p.getTime))
-          case p: KDate => pstmt.setDate(i, new SQLDate(TimeUtil.toJUD(p).getTime()))
+//          case p: KDate => pstmt.setDate(i, new SQLDate(TimeUtil.toJUD(p).getTime()))
           case p: BigDecimal => pstmt.setBigDecimal(i, p)
           case p: Boolean => pstmt.setBoolean(i, p)
           //TODO: make this work: case (p: Entity, i) => pstmt.setString(i, p.getUUID) 

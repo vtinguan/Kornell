@@ -198,7 +198,6 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 	  	on duplicate key update
 	  	username=$username,password=${BCrypt.hashpw(SHA256(plainPassword), BCrypt.gensalt())},requestPasswordChangeUUID=null
 	  """.executeUpdate
-    //    authCache.invalidate((username, plainPassword))
   }
 
   def updateRequestPasswordChangeUUID(personUUID: String, requestPasswordChangeUUID: String) =

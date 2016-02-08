@@ -18,9 +18,9 @@ import java.util.Date
 import kornell.server.ep.EnrollmentSEP
 import java.math.BigDecimal
 import java.math.BigDecimal._
-import kornell.server.util.ServerTime
 import kornell.core.entity.ChatThreadType
 import scala.util.Try
+import org.joda.time.DateTime
 
 //TODO: Specific column names and proper sql
 class EnrollmentRepo(enrollmentUUID: String) {
@@ -32,6 +32,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
     finder.first[Enrollment]
 
   def update(e: Enrollment): Enrollment = {
+    e.setLastProgressUpdate(DateTime.now.toDate)
     sql"""
     UPDATE Enrollment    
      SET 
@@ -129,13 +130,10 @@ class EnrollmentRepo(enrollmentUUID: String) {
   
 
   def setEnrollmentProgress(e: Enrollment, newProgress: Int) = {
-    //TODO: Consider using client timestamp
-    val lastProgressUpdate = ServerTime.now
     val currentProgress = e.getProgress
     val isProgress = newProgress > currentProgress
     val isValid = newProgress >= 0 && newProgress <= 100
     if (isValid && isProgress) {
-      e.setLastProgressUpdate(lastProgressUpdate)
       e.setProgress(newProgress)
       update(e)
       checkCompletion(e);
@@ -158,8 +156,6 @@ class EnrollmentRepo(enrollmentUUID: String) {
       val (maxScore, assessment) = assess(e)
       e.setAssessmentScore(maxScore)
       e.setAssessment(assessment)
-      //TODO: Add client timestap
-      e.setLastAssessmentUpdate(ServerTime.now)
       update(e)
       checkCompletion(e)
     }
@@ -184,7 +180,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
 		  entryKey='cmi.core.score.raw' 
 		  and enrollment_uuid=${e.getUUID()} 
     """
-      .first[String] { rs => rs.getString("latestEvent") }
+      .first[Date] { rs => rs.getTimestamp("latestEvent") }
     lastActomEntered
   }
 
@@ -195,7 +191,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
     if (isPassed
       && isCompleted
       && isUncertified) {
-      val certifiedAt = findLastEventTime(e).getOrElse(ServerTime.now)
+      val certifiedAt = findLastEventTime(e).getOrElse(DateTime.now.toDate)
       e.setCertifiedAt(certifiedAt)
       update(e)
     }
