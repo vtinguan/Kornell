@@ -20,6 +20,10 @@
 								<g:Label ui:field="lblEnrollmentsAvailableCount" addStyleNames="inlineLabel lblHighlight"></g:Label>
 								<g:Label addStyleNames="inlineLabel">  )</g:Label>
 							</g:FlowPanel>
+							<g:FlowPanel>
+								<g:Label addStyleNames="inlineLabel">Status: </g:Label>
+								<g:Label ui:field="lblStatus" addStyleNames="inlineLabel lblHighlight"></g:Label>
+							</g:FlowPanel>
 						</g:FlowPanel>
 						<g:FlowPanel ui:field="enrollmentsWrapper">
 						</g:FlowPanel>

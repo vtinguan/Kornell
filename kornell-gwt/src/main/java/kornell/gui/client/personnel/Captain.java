@@ -5,12 +5,14 @@ import java.util.logging.Logger;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ContentSpec;
 import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.util.ClientProperties;
 
 import com.google.gwt.place.shared.PlaceChangeRequestEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -46,7 +48,10 @@ public class Captain implements LogoutEventHandler, LoginEventHandler {
 									.getCourseVersion().getContentSpec())
 							&& Dean.getInstance().getCourseClassTO().getEnrollment() != null
 							&& Dean.getInstance().getCourseClassTO().getEnrollment().getCertifiedAt() == null) {
-						event.setWarning("Tem certeza que deseja sair do curso? Seu progresso desde o último salvamento poderá ser perdido.");
+						//If there is a token cookie, a certificate is being generated. Bypass confirm on this case.
+						if(StringUtils.isNone(ClientProperties.getCookie(ClientProperties.X_KNL_TOKEN))){
+							event.setWarning("Tem certeza que deseja sair do curso? Seu progresso desde o último salvamento poderá ser perdido.");	
+						}
 					}
 				}
 			}

@@ -27,6 +27,7 @@ import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ShowDetailsEvent;
+import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassMessagesView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericCourseDetailsView extends Composite {
+public class GenericCourseDetailsView extends Composite implements ShowDetailsEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseDetailsView> {
 	}
 
@@ -101,6 +102,7 @@ public class GenericCourseDetailsView extends Composite {
 	
 	public GenericCourseDetailsView(EventBus bus, KornellSession session, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.bus = bus;
+		this.bus.addHandler(ShowDetailsEvent.TYPE,this);
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.viewFactory = viewFactory;
@@ -187,10 +189,6 @@ public class GenericCourseDetailsView extends Composite {
 		
 		if(btn.equals(btnChat)){
 			buildChatPanel();
-			chatPanel.setVisible(true);
-			messagePresenterClassroomGlobalChat.enableMessagesUpdate(true);
-			messagePresenterClassroomGlobalChat.filterAndShowThreads();
-			messagePresenterClassroomGlobalChat.scrollToBottom();
 		} else if(chatPanel != null){
 			chatPanel.setVisible(false);
 			messagePresenterClassroomGlobalChat.enableMessagesUpdate(false);
@@ -236,13 +234,17 @@ public class GenericCourseDetailsView extends Composite {
 					placeCtrl, viewFactory, messagePresenterClassroomGlobalChat, Dean
 							.getInstance().getCourseClassTO());
 		}
+		messagesGlobalChatView.initData();
 		if(chatPanel == null){
 			chatPanel = new FlowPanel();
 			detailsContentPanel.add(chatPanel);
 		}
 		chatPanel.clear();
-		chatPanel.addStyleName("certificationPanel");
 		chatPanel.add(messagesGlobalChatView);
+		chatPanel.setVisible(true);
+		messagePresenterClassroomGlobalChat.enableMessagesUpdate(true);
+		messagePresenterClassroomGlobalChat.filterAndShowThreads();
+		messagePresenterClassroomGlobalChat.scrollToBottom();
 	}
 
 	private void buildTutorPanel() {
@@ -498,6 +500,13 @@ public class GenericCourseDetailsView extends Composite {
 
 		displayContent(btn);
 		btnCurrent = btn;
+	}
+	
+	@Override
+	public void onShowDetails(ShowDetailsEvent event) {
+		if(btnChat.equals(btnCurrent) && event.isShowDetails()){
+			buildChatPanel();
+		}
 	}
 
 	public void setPresenter(Presenter presenter) {

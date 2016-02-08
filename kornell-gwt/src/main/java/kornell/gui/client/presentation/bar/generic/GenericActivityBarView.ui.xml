@@ -3,6 +3,7 @@
 	<g:FlowPanel addStyleNames="activityBarWrapper">
 		<g:FlowPanel ui:field="activityBar" addStyleNames="activityBar">
 			<g:FocusPanel ui:field="btnDetails" addStyleNames="activityBarButton first"></g:FocusPanel>	
+			<g:FocusPanel ui:field="btnChat" addStyleNames="activityBarButton"></g:FocusPanel>	
 			<g:FocusPanel ui:field="btnNotes" addStyleNames="activityBarButton"></g:FocusPanel>	
 			<g:FocusPanel ui:field="btnProgress" addStyleNames="activityBarButton btnProgress"></g:FocusPanel>
 			<g:FocusPanel ui:field="btnPrevious" addStyleNames="activityBarButton"></g:FocusPanel>

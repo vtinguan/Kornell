@@ -299,6 +299,7 @@ object Entities {
     registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
     courseClassChatEnabled: Boolean = false,
+    chatDockEnabled: Boolean = false,
     allowBatchCancellation: Boolean = false,
     tutorChatEnabled: Boolean = false,
     approveEnrollmentsAutomatically: Boolean = false) = {
@@ -319,6 +320,7 @@ object Entities {
     clazz.setRegistrationType(registrationType)
     clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
+    clazz.setChatDockEnabled(chatDockEnabled)
     clazz.setAllowBatchCancellation(allowBatchCancellation)
 	clazz.setTutorChatEnabled(tutorChatEnabled)
 	clazz.setApproveEnrollmentsAutomatically(approveEnrollmentsAutomatically)

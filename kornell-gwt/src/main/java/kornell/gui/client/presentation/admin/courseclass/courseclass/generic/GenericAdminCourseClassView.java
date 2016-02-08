@@ -197,6 +197,8 @@ public class GenericAdminCourseClassView extends Composite implements
 	Label lblEnrollmentsCancelledCount;
 	@UiField
 	Label lblEnrollmentsAvailableCount;
+	@UiField
+	Label lblStatus;
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
@@ -881,6 +883,11 @@ public class GenericAdminCourseClassView extends Composite implements
         this.courseClassTO = courseClassTO;
         this.lblCourseClassName.setText(courseClassTO.getCourseClass().getName());
         this.lblCourseName.setText(courseClassTO.getCourseVersionTO().getCourse().getTitle());
+		String status = EnumTranslator.translateEnum(courseClassTO.getCourseClass().getState());
+		status += courseClassTO.getCourseClass().isInvisible() ? " / Invísivel" : "";
+		status += courseClassTO.getCourseClass().isPublicClass() ? " / Pública" : "";
+        this.lblStatus.setText(status);
+        
     }
 
 

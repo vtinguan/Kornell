@@ -49,6 +49,8 @@ class EnrollmentRepo(enrollmentUUID: String) {
         start_date = ${e.getStartDate},
         end_date = ${e.getEndDate}
       where uuid = ${e.getUUID} """.executeUpdate
+    
+	ChatThreadsRepo.addParticipantsToCourseClassThread(CourseClassesRepo(e.getCourseClassUUID).get)
     e
   }
 

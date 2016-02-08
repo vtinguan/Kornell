@@ -41,6 +41,7 @@ public class GenericCourseClassMessagesView extends Composite {
 	}
 
 	public void initData() {
+		messagesPanel.clear();
 		messagesPanel.setVisible(false);
 		messagesPanel.add(getPanel());
 		messagesPanel.setVisible(true);

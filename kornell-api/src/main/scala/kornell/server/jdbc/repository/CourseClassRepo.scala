@@ -38,6 +38,7 @@ class CourseClassRepo(uuid:String) {
 		  		cc.registrationType = ${courseClass.getRegistrationType.toString},
 		  		cc.institutionRegistrationPrefixUUID = ${courseClass.getInstitutionRegistrationPrefixUUID},
 		  		cc.courseClassChatEnabled = ${courseClass.isCourseClassChatEnabled},
+		  		cc.chatDockEnabled = ${courseClass.isChatDockEnabled},
 		  		cc.allowBatchCancellation = ${courseClass.isAllowBatchCancellation},
 		  		cc.tutorChatEnabled = ${courseClass.isTutorChatEnabled},
 		  		cc.approveEnrollmentsAutomatically = ${courseClass.isApproveEnrollmentsAutomatically}

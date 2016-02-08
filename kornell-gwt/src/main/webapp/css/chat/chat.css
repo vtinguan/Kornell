@@ -995,3 +995,358 @@
   padding-right: 10px;
   text-align: center;
 }
+.MessagePlace .messageInboxPanel {
+  width: 962px;
+  max-height: 1000px;
+  height: calc(100vh - 105px);
+}
+.MessagePlace .messageInboxPanel .threadPanel .threadPanelItemsScroll {
+  height: calc(100vh - 246px);
+  max-height: calc(1000px - 146px);
+}
+.AdminCourseClassPlace .messageInboxPanel {
+  width: 962px;
+  max-height: 1000px;
+  height: calc(100vh - 240px);
+}
+.AdminCourseClassPlace .messageInboxPanel .threadPanel .threadPanelItemsScroll {
+  height: calc(100vh - 385px);
+  max-height: calc(1000px - 146px);
+}
+.ClassroomPlace .messageInboxPanel {
+  width: 721.5px;
+  max-height: 1000px;
+  height: calc(100vh - 220px);
+  min-height: 460px;
+  margin-top: 20px;
+}
+.ClassroomPlace .messageInboxPanel .threadPanel {
+  width: 721.5px;
+}
+.ClassroomPlace .messageInboxPanel .threadPanel .threadPanelItemsScroll {
+  height: calc(100vh - 365px);
+  max-height: calc(1000px - 146px);
+  min-height: 302px;
+}
+.ClassroomPlace .messageInboxPanel .sidePanelScroll {
+  display: none;
+}
+/*.threadPanelItemsScroll > div  { 
+  position: absolute !important;
+  bottom: 0px;
+  width: 100%;
+}*/
+.messageInboxPanel {
+  min-height: 350px;
+  margin: 0 auto;
+  margin-top: 10px;
+  background-color: rgba(0, 0, 0, 0.05);
+  height: 500px;
+  border-radius: 8px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.messageInboxPanel .sidePanelScroll {
+  width: 22%;
+  height: calc(100% - 11px);
+  padding: 5px;
+  border-radius: 8px 0px 0px 8px;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel {
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .filterPanel {
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-bottom: 8px;
+  height: 30px;
+  border-radius: 5px;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .filterPanel input {
+  width: 75%;
+  font-size: 11px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: #e3e3e3;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .filterPanel i {
+  color: #888888;
+  background-color: transparent;
+  display: block;
+  line-height: 30px;
+  font-size: 12px;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .filterPanel i:hover {
+  cursor: pointer;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .filterPanel .icon-search {
+  float: right;
+  padding-right: 8px;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .filterPanel a {
+  float: right;
+  padding-right: 4px;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .filterPanel a:hover {
+  text-decoration: none;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #bec1c3;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-size: 11px;
+  line-height: 20px;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  padding: 6px;
+  font-weight: bold;
+  overflow: hidden;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .threadListItem .unreadCount {
+  color: #5b9455;
+}
+.messageInboxPanel .sidePanelScroll .sidePanel .selected {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.messageInboxPanel .threadPanel {
+  width: calc(78% - 12px);
+  padding: 10px;
+  border-radius: 0px 8px 8px 0px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.messageInboxPanel .threadPanel .threadTitle {
+  font-size: 13px;
+  color: #bec1c3;
+  padding-top: 8px;
+  padding-bottom: 15px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-weight: bold;
+  height: 22px;
+}
+.messageInboxPanel .threadPanel .threadTitle span {
+  height: 20px;
+  overflow: hidden;
+}
+.messageInboxPanel .threadPanel .threadPanelItemsScroll {
+  min-height: 192px;
+  margin-bottom: 5px;
+  padding-right: 5px;
+}
+.messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.4);
+  margin: 5px;
+  padding: 5px 8px;
+  margin-left: 15px;
+  border-radius: 10px;
+  position: relative;
+}
+.messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper .threadMessageHeader {
+  color: #e3e3e3;
+  font-size: 8px;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+.messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper .threadMessageItem {
+  color: #bec1c3;
+  font-size: 12px;
+  padding: 0px 10px;
+  white-space: pre-wrap;
+}
+.messageInboxPanel .threadPanel .threadPanelItemsScroll .threadMessageWrapper:after {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: 0%;
+  margin-left: -12px;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 12px solid rgba(0, 0, 0, 0.4);
+}
+.messageInboxPanel .threadPanel .threadPanelItemsScroll .overrideWrapper {
+  margin-left: 0px !important;
+  margin-right: 15px !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+.messageInboxPanel .threadPanel .threadPanelItemsScroll .overrideWrapper:after {
+  left: 100% !important;
+  margin-left: 0px !important;
+  margin-right: -12px !important;
+  border-left: 12px solid rgba(0, 0, 0, 0.1) !important;
+  border-right: 0px !important;
+}
+.messageInboxPanel .threadPanel .sendMessageWrapper {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-top: 6px;
+}
+.messageInboxPanel .threadPanel .sendMessageWrapper .messageTextArea {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 83%;
+  float: left;
+  height: 60px;
+  font-size: 12px;
+  line-height: 14px;
+  resize: none;
+}
+.messageInboxPanel .threadPanel .sendMessageWrapper .btnSend {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 15%;
+  float: left;
+  margin-top: 19px;
+  margin-left: 10px;
+}
+.messageInboxPanel .threadPanel .sendMessageWrapper span {
+  color: #888888;
+  font-size: 9px;
+  text-align: center;
+  display: block;
+  line-height: 25px;
+  font-weight: bold;
+}
+@media screen and (max-height: 540px) {
+  .ClassroomPlace .dockChatPanel {
+    display: none;
+  }
+  .ClassroomPlace .contentWrapper.chatDocked {
+    width: 100%;
+  }
+}
+@media screen and (min-height: 541px) {
+  .ClassroomPlace .dockChatPanel {
+    position: fixed !important;
+    top: 45px;
+    bottom: 35px;
+    right: 0;
+    width: 320px !important;
+    border-left: 1px solid #3D6539;
+    border-radius: 0px;
+    background: rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+  }
+  .ClassroomPlace .dockChatPanel .messageInboxPanel .sidePanelScroll {
+    display: none;
+  }
+  .ClassroomPlace .dockChatPanel .messageInboxPanel .threadPanel {
+    width: 320px;
+  }
+  .ClassroomPlace .dockChatPanel .messageInboxPanel .threadPanel .messageTextArea {
+    width: 74% !important;
+  }
+  .ClassroomPlace .dockChatPanel .messageInboxPanel .threadPanel .btnSend {
+    width: 20%;
+  }
+  .ClassroomPlace .dockChatPanel .messageInboxPanel .threadPanel .threadPanelItemsScroll {
+    height: calc(100vh - 245px) !important;
+  }
+  .ClassroomPlace .contentWrapper.chatDocked {
+    width: calc(100% - 320px);
+  }
+}
+.messagesPopup {
+  right: 0 !important;
+  left: initial !important;
+  width: auto;
+}
+.messagesPopup .messagesPanel {
+  width: 530px;
+  margin: 0 auto;
+  border-radius: 0px 0px 0px 15px;
+  background-color: #222222;
+}
+.messagesPopup .messagesPanel .titlePanel {
+  height: auto;
+  padding-top: 12px;
+  margin-left: 13px;
+  text-align: center;
+  margin-bottom: 3px;
+}
+.messagesPopup .messagesPanel .titlePanel .lblTitle {
+  color: #d88709;
+  font-size: 18px;
+  font-weight: bold;
+  width: 100%;
+  text-align: center;
+}
+.messagesPopup .messagesPanel .titlePanel .lblSubTitle {
+  color: #5b9455;
+  font-size: 13px;
+  margin-top: 5px;
+  float: left;
+  width: 100%;
+}
+.messagesPopup .messagesPanel .titlePanel .profileSeparatorBar {
+  width: 100%;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper {
+  height: auto;
+  margin-bottom: 5px;
+  width: 100%;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel {
+  width: 80px;
+  margin-right: 7px;
+  margin-left: 20px;
+  text-align: initial;
+  float: left;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper .labelPanel .lblLabel {
+  line-height: 12px;
+  font-size: 12px;
+  text-decoration: none;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel {
+  width: 275px;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .lblValue {
+  line-height: 14px;
+  margin-left: 2px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  width: 400px;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .textField {
+  width: 380px;
+  height: 12px;
+  font-size: 12px;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .selectField {
+  width: 393px;
+  height: 24px;
+  font-size: 11px;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .error {
+  font-size: 10px;
+  line-height: 12px;
+}
+.messagesPopup .messagesPanel .fieldPanelWrapper .fieldPanel .gwt-TextArea {
+  height: 180px;
+}
+.messagesPopup .messagesPanel .standardButtonBar {
+  width: 220px;
+  padding: 15px 0px 10px 0px;
+}
+.messagesPopup .messagesPanel .standardButtonBar .btnStandard {
+  margin: 5px;
+  margin-bottom: 10px;
+}

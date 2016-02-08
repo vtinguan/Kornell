@@ -29,7 +29,6 @@ object ContentRepository {
     }.get
     val repositoryUUID = version.getRepositoryUUID
     val repo = ContentManagers.forRepository(repositoryUUID)
-    val x = version.getDistributionPrefix + "structure.knl"
     val versionPrefix = version.getDistributionPrefix
     val structureSrc = repo.source(versionPrefix, "structure.knl")
     val structureText = structureSrc.get.mkString("")

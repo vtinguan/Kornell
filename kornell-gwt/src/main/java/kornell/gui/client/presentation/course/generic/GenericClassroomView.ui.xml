@@ -4,6 +4,7 @@
 	<g:FlowPanel>
 		<g:FlowPanel addStyleNames="contentPanel" ui:field="contentPanel"></g:FlowPanel>
 		<g:FlowPanel addStyleNames="detailsPanel" ui:field="detailsPanel"></g:FlowPanel>
+		<g:FlowPanel addStyleNames="dockChatPanel" ui:field="dockChatPanel"></g:FlowPanel>
 	</g:FlowPanel>
 
 </ui:UiBinder>

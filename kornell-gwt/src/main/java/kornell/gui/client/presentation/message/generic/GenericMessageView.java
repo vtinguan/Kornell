@@ -14,6 +14,8 @@ import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.ShowChatDockEvent;
+import kornell.gui.client.event.ShowChatDockEventHandler;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessagePanelType;
@@ -52,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 
-public class GenericMessageView extends Composite implements MessageView {
+public class GenericMessageView extends Composite implements MessageView, ShowChatDockEventHandler {
 
 	interface GenericMessageUiBinder extends UiBinder<Widget, GenericMessageView> {
 	}
@@ -92,6 +94,7 @@ public class GenericMessageView extends Composite implements MessageView {
 	public GenericMessageView(EventBus eventBus, KornellSession session) {
 		this.bus = eventBus;
 		this.session = session;
+		this.bus.addHandler(ShowChatDockEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		ensureDebugId("genericMessageInboxView");
 
@@ -392,11 +395,11 @@ public class GenericMessageView extends Composite implements MessageView {
 	}
 	
 	private String getIcons(int count, String classes, String title){
-		String icons = "&nbsp;";
+		String icons = "&nbsp;<nobr>";
 		for(int i = 0; i < count; i++){
 			icons += "<i class=\"" + classes + " plainDiscreteTextColor\" title=\"" + title + "\"></i>";
 		}
-		return icons;
+		return icons + "</nobr>";
 	}
 
 	@UiHandler("btnSend")
@@ -422,5 +425,12 @@ public class GenericMessageView extends Composite implements MessageView {
 	@Override
 	public void setMessagePanelType(MessagePanelType messagePanelType) {
 		this.messagePanelType = messagePanelType;
+	}
+
+	@Override
+	public void onShowChatDock(ShowChatDockEvent event) {
+		if(event.isShowChatDock()){
+			scrollToBottom();
+		}
 	}
 }

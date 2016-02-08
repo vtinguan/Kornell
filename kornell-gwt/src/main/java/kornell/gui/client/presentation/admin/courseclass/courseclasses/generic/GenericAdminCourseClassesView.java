@@ -217,7 +217,10 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		table.addColumn(new TextColumn<CourseClassTO>() {
 			@Override
 			public String getValue(CourseClassTO courseClassTO) {
-				return EnumTranslator.translateEnum(courseClassTO.getCourseClass().getState());
+				String value = EnumTranslator.translateEnum(courseClassTO.getCourseClass().getState());
+				value += courseClassTO.getCourseClass().isInvisible() ? " / Invísivel" : "";
+				value += courseClassTO.getCourseClass().isPublicClass() ? " / Pública" : "";
+				return value;
 			}
 		}, "Status");
 		
