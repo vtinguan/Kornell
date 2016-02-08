@@ -6,9 +6,9 @@ update EnrollmentTransferred set eventFiredAt = replace(replace(replace(replace(
 update EntityChanged set eventFiredAt = replace(replace(replace(replace(replace(eventFiredAt, '-02:00', ''), '-03:00', ''), '-04:00', ''), '-05:00', ''), 'Z', '');
 update CourseClassStateChanged set eventFiredAt = replace(replace(replace(replace(replace(eventFiredAt, '-02:00', ''), '-03:00', ''), '-04:00', ''), '-05:00', ''), 'Z', '');
 
-alter table ActomEntered modify eventFiredAt timestamp;
-alter table AttendanceSheetSigned modify eventFiredAt timestamp;
-alter table EnrollmentStateChanged modify eventFiredAt timestamp;
-alter table EnrollmentTransferred modify eventFiredAt timestamp;
-alter table EntityChanged modify eventFiredAt timestamp;
-alter table CourseClassStateChanged modify eventFiredAt timestamp;
+alter table ActomEntered modify eventFiredAt timestamp null default null;
+alter table AttendanceSheetSigned modify eventFiredAt timestamp null default null;
+alter table EnrollmentStateChanged modify eventFiredAt timestamp null default null;
+alter table EnrollmentTransferred modify eventFiredAt timestamp null default null;
+alter table EntityChanged modify eventFiredAt timestamp null default null;
+alter table CourseClassStateChanged modify eventFiredAt timestamp null default null;

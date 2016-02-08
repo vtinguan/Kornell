@@ -4,8 +4,8 @@ update Enrollment set lastAssessmentUpdate = replace(replace(replace(replace(rep
 update Enrollment set certifiedAt = replace(replace(replace(replace(replace(certifiedAt, '-02:00', ''), '-03:00', ''), '-04:00', ''), '-05:00', ''), 'Z', '');
 update Enrollment set lastBilledAt = replace(replace(replace(replace(replace(lastBilledAt, '-02:00', ''), '-03:00', ''), '-04:00', ''), '-05:00', ''), 'Z', '');
 
-alter table ActomEntryChangedEvent modify ingestedAt timestamp;
-alter table Enrollment modify lastProgressUpdate timestamp;
-alter table Enrollment modify lastAssessmentUpdate timestamp;
-alter table Enrollment modify certifiedAt timestamp;
-alter table Enrollment modify lastBilledAt timestamp;
+alter table ActomEntryChangedEvent modify ingestedAt timestamp null default null;
+alter table Enrollment modify lastProgressUpdate timestamp null default null;
+alter table Enrollment modify lastAssessmentUpdate timestamp null default null;
+alter table Enrollment modify certifiedAt timestamp null default null;
+alter table Enrollment modify lastBilledAt timestamp null default null;
