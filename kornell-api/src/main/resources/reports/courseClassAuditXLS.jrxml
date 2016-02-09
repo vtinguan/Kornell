@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1800" pageHeight="842" columnWidth="1800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.024520183047606"/>
-	<property name="ireport.x" value="698"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="courseClassName" class="java.lang.String"/>
 	<parameter name="institutionBaseURL" class="java.lang.String"/>
-	<field name="eventFiredAt" class="java.lang.String"/>
+	<field name="eventFiredAt" class="java.util.Date"/>
 	<field name="eventType" class="java.lang.String"/>
 	<field name="adminFullName" class="java.lang.String"/>
 	<field name="adminUsername" class="java.lang.String"/>
@@ -102,14 +102,14 @@
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{eventFiredAt}.replace('T', ' ').split("\\.")[0]]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format($F{eventFiredAt})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="f0a8a246-dfb7-4bfd-8ee7-9d879194bd5c" x="250" y="0" width="250" height="12"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA["stateChanged".equals($F{eventType}) ? "Alteração de Estado" : "Transferência"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["stateChanged".equals($F{eventType}) ? "Alteração de Estado" : ("transferred".equals($F{eventType}) ?  "Transferência" : "Exclusão")]]></textFieldExpression>
 			</textField>
 			<textField hyperlinkTarget="Blank">
 				<reportElement uuid="f2d667ac-db81-4f89-8c01-33db72215cd5" x="500" y="0" width="350" height="12" forecolor="#000000"/>

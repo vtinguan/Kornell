@@ -15,11 +15,48 @@ import kornell.core.entity.CourseClassState
 import kornell.core.util.StringUtils._
 import kornell.server.jdbc.PreparedStmt
 import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.util.DateConverter
+import kornell.server.authentication.ThreadLocalAuthenticator
+import java.math.BigDecimal
 
 object ReportCourseClassGenerator {
 
+  def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
+  def newCourseClassReportTO(fullName: String, username: String, email: String, cpf: String, state: String, progressState: String, 
+      progress: Int, assessmentScore: BigDecimal, certifiedAt: Date, enrolledAt: Date, courseName: String, courseVersionName: String, courseClassName: String, 
+      company: String, title: String, sex: String, birthDate: String, telephone: String, country: String, stateProvince: String, 
+      city: String, addressLine1: String, addressLine2: String, postalCode: String): CourseClassReportTO = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
+    val to = newCourseClassReportTO
+    to.setFullName(fullName)
+    to.setUsername(username)
+    to.setEmail(email)
+    to.setCpf(cpf)
+    to.setState(state)
+    to.setProgressState(progressState)
+    to.setProgress(progress)
+    to.setAssessmentScore(assessmentScore)
+    to.setCertifiedAt(dateConverter.dateToInstitutionTimezone(certifiedAt))
+    to.setEnrolledAt(dateConverter.dateToInstitutionTimezone(enrolledAt))
+    to.setCourseName(courseName)
+    to.setCourseVersionName(courseVersionName)
+    to.setCourseClassName(courseClassName)
+	to.setCompany(company)
+	to.setTitle(title)
+	to.setSex(sex)
+	to.setBirthDate(birthDate)
+	to.setTelephone(telephone)
+	to.setCountry(country)
+	to.setStateProvince(stateProvince)
+	to.setCity(city)
+	to.setAddressLine1(addressLine1)
+	to.setAddressLine2(addressLine2)
+	to.setPostalCode(postalCode)
+    to
+  }
+
   implicit def toCourseClassReportTO(rs: ResultSet): CourseClassReportTO =
-    TOs.newCourseClassReportTO(
+    newCourseClassReportTO(
 		rs.getString("fullName"),
 		rs.getString("username"),
 		rs.getString("email"),
@@ -140,8 +177,8 @@ object ReportCourseClassGenerator {
 	    ReportGenerator.getReportBytesFromStream(courseClassReportTO, parameters, jasperStream, fileType)
   }
       
-  type ReportHeaderData = Tuple9[String,String, String, Date, String, String, String, String, String]
-  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9))
+  type ReportHeaderData = Tuple9[String,String, String, Date, String, String, Date, String, String]
+  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6), rs.getDate(7), rs.getString(8), rs.getString(9))
   
   private def addInfoParameters(courseUUID: String, courseClassUUID: String, parameters: HashMap[String, Object]) = {
     val headerInfo = sql"""
@@ -160,7 +197,7 @@ object ReportCourseClassGenerator {
 					join Person p on p.uuid = r.person_uuid 
 					where course_class_uuid = cc.uuid
 					group by course_class_uuid) as courseClassAdminNames,
-                    i.baseURL
+                i.baseURL
 			from
 				CourseClass cc
 				join CourseVersion cv on cc.courseVersion_uuid = cv.uuid
@@ -175,7 +212,6 @@ object ReportCourseClassGenerator {
     parameters.put("institutionName", headerInfo.get._1)
     parameters.put("courseTitle", headerInfo.get._2)
 	parameters.put("assetsURL", mkurl(headerInfo.get._9, "repository", headerInfo.get._6, ""))
-    println(parameters.get("assetsURL"))
     if(courseClassUUID != null){
 	    parameters.put("courseClassName", headerInfo.get._3)
 	    parameters.put("createdAt", headerInfo.get._4)

@@ -14,6 +14,7 @@ import kornell.core.to.SimplePersonTO
 import kornell.core.to.SimplePeopleTO
 import kornell.server.repository.Entities
 import kornell.core.entity.Person
+import kornell.core.util.UUID
 
 object EnrollmentsRepo {
 
@@ -135,18 +136,15 @@ object EnrollmentsRepo {
     		${enrollment.getCourseVersionUUID},
         	${enrollment.getParentEnrollmentUUID}
     	)""".executeUpdate
-    	
     	ChatThreadsRepo.addParticipantsToCourseClassThread(CourseClassesRepo(enrollment.getCourseClassUUID).get)
     enrollment
   }
 
-  def find(person: PersonRepo, course_uuid: String): Enrollment = sql"""
+  def find(personUUID: String, courseClassUUID: String): Option[Enrollment] = sql"""
 	  select * from Enrollment 
-	  where person_uuid=${person.uuid}
-	   and course_uuid=${course_uuid}
-	   and e.state <> ${EnrollmentState.deleted.toString}"""
+	  where person_uuid=${personUUID}
+	   and class_uuid=${courseClassUUID}"""
     .first[Enrollment]
-    .get
 
   def simplePersonList(courseClassUUID: String): SimplePeopleTO = {
     TOs.newSimplePeopleTO(sql"""select p.uuid as uuid, p.fullName as fullName, pw.username as username

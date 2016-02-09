@@ -150,6 +150,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		if (Dean.getInstance().getCourseClassTO().getCourseClass().isCourseClassChatEnabled()) {
 			btnChat.addStyleName("activityBarButtonSmall");
 			btnNotes.addStyleName("activityBarButtonSmall");
+			btnChat.removeStyleName("shy");
+		} else {
+			btnChat.addStyleName("shy");
 		}
 
 		displayProgressButton();

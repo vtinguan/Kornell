@@ -43,7 +43,7 @@ object ReportInstitutionBillingGenerator {
 				FROM AttendanceSheetSigned att
 				JOIN Person p ON p.uuid = att.personUUID
 				JOIN Password pw ON pw.person_uuid = p.uuid
-				WHERE att.eventFiredAt > ${periodStart} AND att.eventFiredAt < ${periodEnd}
+				WHERE att.eventFiredAt >= ${periodStart + "-01 00:00:00"} AND att.eventFiredAt < ${periodEnd + "-01 00:00:00"}
 				AND (email IS null OR email NOT LIKE '%craftware.com.br%')
 				AND att.institutionUUID = ${institutionUUID} 
 				AND (SELECT count(uuid) FROM Enrollment where person_uuid = p.uuid and DATE_FORMAT(enrolledOn, '%Y-%m-%d')< ${periodEnd}) > 0
@@ -89,13 +89,13 @@ object ReportInstitutionBillingGenerator {
 			WHERE cc.institution_uuid = ${institutionUUID}
 			AND (
 					(e.lastBilledAt IS NULL
-					AND ae.firstEventFiredAt >= ${periodStart}
-					AND ae.firstEventFiredAt < ${periodEnd})
+					AND ae.firstEventFiredAt >= ${periodStart + "-01 00:00:00"}
+					AND ae.firstEventFiredAt < ${periodEnd + "-01 00:00:00"})
 				OR (e.lastBilledAt IS NOT NULL
-					AND e.lastBilledAt >= ${periodStart}
-					AND e.lastBilledAt < ${periodEnd})
+					AND e.lastBilledAt >= ${periodStart + "-01 00:00:00"}
+					AND e.lastBilledAt < ${periodEnd + "-01 00:00:00"})
 				) 
-			AND (p.email IS NULL OR p.email NOT LIKE '%@craftware.com.br')
+			AND (email IS null OR email NOT LIKE '%craftware.com.br%')
 			ORDER BY LOWER(c.title),LOWER(cv.name),LOWER(cc.name), LOWER(p.fullName)
 	    """.map[InstitutionBillingEnrollmentReportTO](toInstitutionBillingEnrollmentReportTO)
 		  

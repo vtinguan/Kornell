@@ -8,6 +8,7 @@ import kornell.core.entity.BillingType;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.entity.InstitutionType;
+import kornell.core.entity.RegistrationType;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
@@ -342,6 +343,8 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setTerms(terms.getFieldPersistText());
 		institution.setAssetsURL(assetsURL.getFieldPersistText());
 		institution.setBaseURL(baseURL.getFieldPersistText());
+		institution.setBillingType(BillingType.valueOf(billingType.getFieldPersistText()));
+		institution.setInstitutionType(InstitutionType.valueOf(institutionType.getFieldPersistText()));
 		institution.setDemandsPersonContactDetails(demandsPersonContactDetails.getFieldPersistText().equals("true"));
 		institution.setValidatePersonContactDetails(validatePersonContactDetails.getFieldPersistText().equals("true"));
 		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));

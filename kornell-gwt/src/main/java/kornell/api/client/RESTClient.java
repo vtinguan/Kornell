@@ -94,7 +94,7 @@ public class RESTClient {
 		if(Cookies.isCookieEnabled()){
 			ClientProperties.setCookie(ClientProperties.X_KNL_TOKEN, ClientProperties.get(ClientProperties.X_KNL_TOKEN), new Date(new Date().getTime() + 2000));			
 			String url = appendTimestampIfIE(mkurl(getApiUrl(), path));
-			Window.Location.assign(url);
+			Window.open(url, "_blank", "");
 		} else {
 			KornellNotification.show("Por motivos de segurança, é necessário que os cookies estejam ativados para esta operação. Entre em contato com o suporte caso tenha alguma dúvida.", AlertType.ERROR, 10000);
 		}

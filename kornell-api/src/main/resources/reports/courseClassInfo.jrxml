@@ -21,7 +21,7 @@
 	<parameter name="createdAt" class="java.util.Date"/>
 	<parameter name="maxEnrollments" class="java.lang.String"/>
 	<parameter name="assetsURL" class="java.lang.String"/>
-	<parameter name="disabledAt" class="java.lang.String"/>
+	<parameter name="disabledAt" class="java.util.Date"/>
 	<field name="fullName" class="java.lang.String"/>
 	<field name="username" class="java.lang.String"/>
 	<field name="state" class="java.lang.String"/>
@@ -205,7 +205,7 @@
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{disabledAt}.split("T").length > 1 ? $P{disabledAt}.split("T")[0] : "";]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{disabledAt})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" positionType="Float" x="156" y="187" width="384" height="16" forecolor="#CB9902"/>

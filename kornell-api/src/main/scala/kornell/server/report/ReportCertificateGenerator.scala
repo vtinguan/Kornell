@@ -74,8 +74,8 @@ object ReportCertificateGenerator {
     	return null
     }
     val parameters: HashMap[String, Object] = new HashMap()
-    val assetsURL: String = composeURL(certificateData.head.getBaseURL, "repository", certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
-    parameters.put("assetsURL", assetsURL + "/")
+    val assetsURL: String = composeURL(certificateData.head.getBaseURL, "repository", certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports") + "/"
+    parameters.put("assetsURL", assetsURL)
 	  
    
   	//store one jasperfile per course

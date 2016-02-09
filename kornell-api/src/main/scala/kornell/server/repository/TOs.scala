@@ -166,40 +166,6 @@ object TOs {
     to
   }
 
-  def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
-  def newCourseClassReportTO(fullName: String, username: String, email: String, cpf: String, state: String, progressState: String, 
-      progress: Int, assessmentScore: BigDecimal, certifiedAt: Date, enrolledAt: Date, courseName: String, courseVersionName: String, courseClassName: String, 
-      company: String, title: String, sex: String, birthDate: String, telephone: String, country: String, stateProvince: String, 
-      city: String, addressLine1: String, addressLine2: String, postalCode: String): CourseClassReportTO = {
-    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
-    val to = newCourseClassReportTO
-    to.setFullName(fullName)
-    to.setUsername(username)
-    to.setEmail(email)
-    to.setCpf(cpf)
-    to.setState(state)
-    to.setProgressState(progressState)
-    to.setProgress(progress)
-    to.setAssessmentScore(assessmentScore)
-    to.setCertifiedAt(dateConverter.dateToInstitutionTimezone(certifiedAt))
-    to.setEnrolledAt(dateConverter.dateToInstitutionTimezone(enrolledAt))
-    to.setCourseName(courseName)
-    to.setCourseVersionName(courseVersionName)
-    to.setCourseClassName(courseClassName)
-	to.setCompany(company)
-	to.setTitle(title)
-	to.setSex(sex)
-	to.setBirthDate(birthDate)
-	to.setTelephone(telephone)
-	to.setCountry(country)
-	to.setStateProvince(stateProvince)
-	to.setCity(city)
-	to.setAddressLine1(addressLine1)
-	to.setAddressLine2(addressLine2)
-	to.setPostalCode(postalCode)
-    to
-  }
-
   def newEnrollmentsBreakdownTO: EnrollmentsBreakdownTO = new EnrollmentsBreakdownTO
   def newEnrollmentsBreakdownTO(name: String, count: Integer): EnrollmentsBreakdownTO = {
     val to = newEnrollmentsBreakdownTO
