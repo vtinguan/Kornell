@@ -69,7 +69,7 @@ class UserResource(private val authRepo:AuthRepo) {
     
     val auth = req.getHeader("X-KNL-TOKEN")
     if (auth != null && auth.length() > 0 && userHello.getInstitution != null) {
-      val token = TokenRepo.checkToken(auth)
+      val token = TokenRepo().checkToken(auth)
       if (token.isDefined) {
     	  val person = PersonRepo(token.get.getPersonUUID).first.getOrElse(null)
 		  userHello.setUserInfoTO(getUser(person).getOrElse(null))
@@ -80,7 +80,7 @@ class UserResource(private val authRepo:AuthRepo) {
   }
   
   @GET
-  @Produces(Array(UserInfoTO.TYPE)) //TODO: Cache
+  @Produces(Array(UserInfoTO.TYPE))
   def first: Option[UserInfoTO] =
     authRepo.withPerson { p =>
       getUser(p)

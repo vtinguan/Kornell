@@ -21,6 +21,7 @@ import com.google.gwt.uibinder.elementparsers.IsEmptyParser
 
 class BasicAuthFilter extends Filter {
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
+  val tokenRepo = TokenRepo()
   val X_KNL_TOKEN = "X-KNL-TOKEN"
   val pubPaths = Set(
     "/newrelic",
@@ -82,7 +83,7 @@ class BasicAuthFilter extends Filter {
     val auth = getCredentials(req)
     
     if (auth != null && auth.length() > 0) {
-        val token = TokenRepo.checkToken(auth)
+        val token = tokenRepo.checkToken(auth)
         if (!token.isDefined || (token.get.getClientType == AuthClientType.web && token.get.getExpiry.before(new Date))) {
         	writeErrorMessage("mustAuthenticate",req, resp)
         } else {

@@ -43,7 +43,7 @@ class TokenResource {
           token.get
         } else {
           //token expired, we delete old one and create a new one
-          TokenRepo.deleteToken(token.get.getToken)
+          TokenRepo().deleteToken(token.get.getToken)
           TokenRepo.createToken(UUID.random(), personUUID, authClientType)
         }
       } else {
@@ -61,7 +61,7 @@ class TokenResource {
   def logout(@Context req: HttpServletRequest) = {
     val auth = req.getHeader("X-KNL-TOKEN")
     if (auth != null && auth.length() > 0) {
-      TokenRepo.deleteToken(auth)
+      TokenRepo().deleteToken(auth)
     } else {
       //Gotta be authenticated to logout!
       throw new UnauthorizedAccessException("mustAuthenticate")

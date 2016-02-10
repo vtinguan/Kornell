@@ -21,33 +21,13 @@ import kornell.core.error.exception.UnauthorizedAccessException
 import org.mindrot.BCrypt
 
 object AuthRepo {
-  val AUTH_CACHE_SIZE = 300;
 
-  val cacheBuilder = CacheBuilder
-    .newBuilder()
-    .expireAfterAccess(15, MINUTES)
-    .maximumSize(AUTH_CACHE_SIZE)
-
-  def apply(pwdCache: AuthRepo.PasswordCache, rolesCache: AuthRepo.RolesCache) =
-    new AuthRepo(pwdCache, rolesCache)
-
-  def apply() = new AuthRepo(newPasswordCache(), newRolesCache())
-
-  val authLoader = new CacheLoader[UsrKey, Option[UsrValue]]() {
-    override def load(auth: UsrKey): Option[UsrValue] =
-      lookup(auth._1, auth._2) match {
-        case s: Some[UsrValue] => s
-        case None => throw new CredentialsNotFound
-      }
-  }
-
-  case class CredentialsNotFound() extends Exception
-
+  def apply() = new AuthRepo
+  
   def lookup(institutionUUID: String, userkey: String) = 
    authByUsername(institutionUUID, userkey)
       .orElse(authByCPF(institutionUUID, userkey))
       .orElse(authByEmail(institutionUUID, userkey))
-  
   
   implicit def toUsrValue(r: ResultSet): UsrValue = 
     (r.getString("password"), r.getString("person_uuid"), r.getBoolean("forcePasswordUpdate"))
@@ -58,10 +38,6 @@ object AuthRepo {
   type PersonUUID = String
   type PasswordResetRequired = Boolean
   type PasswordCache = LoadingCache[UsrKey, Option[UsrValue]]
-  type RolesCache = LoadingCache[Option[PersonUUID], Set[Role]]
-
-  def newPasswordCache() = cacheBuilder.build(authLoader)
-  def newRolesCache() = cacheBuilder.build(rolesLoader)
 
   def authByEmail(institutionUUID: String, email: String) = 
    sql"""
@@ -89,19 +65,7 @@ object AuthRepo {
 	where pwd.username=${username}
 	and pwd.institutionUUID=${institutionUUID}
     """.first[UsrValue](toUsrValue)
-  
 
-  val rolesLoader = new CacheLoader[Option[String], Set[Role]]() {
-    override def load(personUUID: Option[String]): Set[Role] =
-      lookupUserRoles(personUUID)
-  }
-
-  def lookupUserRoles(personUUID: Option[String]) = {
-    val roles = personUUID
-      .map { lookupRolesOf }
-      .getOrElse(Set.empty)
-    roles
-  }
 
   def usernameOf(personUUID: String) = {
     val username = sql"""
@@ -110,34 +74,20 @@ object AuthRepo {
     username
   }
 
-  def lookupRolesOf(personUUID: String): Set[Role] = sql"""
-  	select r.person_uuid, r.role, r.institution_uuid, r.course_class_uuid 
-  	from Role r
-  	where person_uuid = $personUUID
-  """.map[Role] { rs => toRole(rs) }
-  	 .toSet
-
 }
 
-class AuthRepo(pwdCache: AuthRepo.PasswordCache,
-  rolesCache: AuthRepo.RolesCache) {
+class AuthRepo() {
 
   type AuthValue = (String, Boolean)
   
   def authenticate(institutionUUID: String, userkey: String, password: String): Option[AuthValue] =  Try {
-    val usrValue = pwdCache.get((institutionUUID, userkey)).get
+    val usrValue = AuthRepo.lookup(institutionUUID, userkey).get
     if (BCrypt.checkpw(SHA256(password), usrValue._1)) {
       Option((usrValue._2, usrValue._3))
     } else {
      None 
     }
   }.getOrElse(None)
-
-  def getUserRoles = userRoles().asJava
-
-  def userRoles(personUUID: Option[String]) = rolesCache.get(personUUID)
-
-  def userRoles(): Set[Role] = userRoles(ThreadLocalAuthenticator.getAuthenticatedPersonUUID)
 
   def withPerson[T](fun: Person => T): T = {
     val personUUID = ThreadLocalAuthenticator.getAuthenticatedPersonUUID
@@ -205,9 +155,6 @@ class AuthRepo(pwdCache: AuthRepo.PasswordCache,
 	  	update Password set requestPasswordChangeUUID = $requestPasswordChangeUUID
     	where person_uuid = $personUUID
 	  """.executeUpdate
-
-  //TODO: Cache / remove external reference
-  def rolesOf(personUUID: String) = AuthRepo.lookupRolesOf(personUUID)
 
   def grantPlatformAdmin(personUUID: String, institutionUUID: String) = {
     sql"""
