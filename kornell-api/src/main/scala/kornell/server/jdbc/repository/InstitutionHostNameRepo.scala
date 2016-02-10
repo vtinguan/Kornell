@@ -33,6 +33,7 @@ class InstitutionHostNameRepo(institutionUUID: String) {
   
   def removeHostnames(institutionUUID: String) = {
     sql"""delete from InstitutionHostName where institutionUUID = ${institutionUUID}""".executeUpdate
+    InstitutionsRepo.cleanUpHostNameCache
     this
   }
   
@@ -41,6 +42,7 @@ class InstitutionHostNameRepo(institutionUUID: String) {
     (${UUID.random},
     ${hostName},
     ${institutionUUID})""".executeUpdate
+    InstitutionsRepo.updateHostNameCache(institutionUUID, hostName)
   }
 }
 

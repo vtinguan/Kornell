@@ -62,9 +62,9 @@ class UserResource(private val authRepo:AuthRepo) {
     userHello.setInstitution(
       {
         if(name != null)
-			    InstitutionsRepo.byName(name)
-			  else
-			    InstitutionsRepo.byHostName(hostName)
+		    InstitutionsRepo.lookupByName(name)
+		  else
+		    InstitutionsRepo.getByHostName(hostName)
       }.getOrElse(null));
     
     val auth = req.getHeader("X-KNL-TOKEN")
@@ -110,7 +110,7 @@ class UserResource(private val authRepo:AuthRepo) {
     @PathParam("personUUID") personUUID: String): Option[UserInfoTO] =
     authRepo.withPerson { p =>
       val user = newUserInfoTO
-      val person = PersonRepo(personUUID).get
+      val person = PersonRepo(personUUID).first.get
       if (person != null) {
         user.setPerson(person)
         user.setUsername(PersonRepo(person.getUUID).getUsername)
@@ -141,7 +141,7 @@ class UserResource(private val authRepo:AuthRepo) {
   @Produces(Array("text/plain"))
   def requestPasswordChange(@PathParam("email") email: String,
     @PathParam("institutionName") institutionName: String) = {
-    val institution = InstitutionsRepo.byName(institutionName)
+    val institution = InstitutionsRepo.getByName(institutionName)
     val person = PeopleRepo.getByEmail(institution.get.getUUID, email)
     if (person.isDefined && institution.isDefined) {
       val requestPasswordChangeUUID = UUID.random

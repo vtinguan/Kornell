@@ -11,8 +11,56 @@ import kornell.core.entity.AuditedEntityType
 import java.util.Date
 import kornell.core.util.UUID
 import kornell.core.entity.InstitutionType
+import com.google.common.cache.CacheLoader
+import com.google.common.cache.CacheBuilder
+import java.util.concurrent.TimeUnit.MINUTES
 
 object InstitutionsRepo {
+
+  val cacheBuilder = CacheBuilder
+    .newBuilder()
+    .expireAfterAccess(5, MINUTES)
+    .maximumSize(1000)
+
+  /*uuid cache*/  
+  val uuidLoader = new CacheLoader[String, Option[Institution]]() {
+    override def load(uuid: String): Option[Institution] = lookupByUUID(uuid)
+  }
+  val uuidCache = cacheBuilder.build(uuidLoader)
+  def getByUUID(uuid: String) = uuidCache.get(uuid)
+  def lookupByUUID(UUID:String) = 
+	sql"select * from Institution where uuid = ${UUID}".first[Institution]
+  
+	
+  /*name cache*/  
+  val nameLoader = new CacheLoader[String, Option[Institution]]() {
+    override def load(name: String): Option[Institution] = lookupByName(name)
+  }
+  val nameCache = cacheBuilder.build(nameLoader)
+  def getByName(name: String) = nameCache.get(name)
+  def lookupByName(institutionName:String) = 
+	sql"select * from Institution where name = ${institutionName}".first[Institution]
+  
+	
+  /*hostName cache*/  
+  val hostNameLoader = new CacheLoader[String, Option[Institution]]() {
+    override def load(hostName: String): Option[Institution] = lookupByHostName(hostName)
+  }
+  val hostNameCache = cacheBuilder.build(hostNameLoader)
+  def getByHostName(hostName: String) = hostNameCache.get(hostName)
+  def lookupByHostName(hostName:String) =
+      sql"""
+      	| select i.* from Institution i 
+      	| join InstitutionHostName ihn on i.uuid = ihn.institutionUUID
+      	| where ihn.hostName = ${hostName}
+	    """.first[Institution]
+  
+
+	    
+  def byType(institutionType: InstitutionType) = 
+    sql"""
+        select * from Institution where institutionType = ${institutionType.toString}
+    """.first[Institution]
   
   def create(institution: Institution): Institution = {
     if (institution.getUUID == null) {
@@ -49,22 +97,19 @@ object InstitutionsRepo {
     
     institution
   }  
-  
-  def byUUID(UUID:String) = 
-	sql"select * from Institution where uuid = ${UUID}".first[Institution]
-  
-  def byName(institutionName:String) = 
-	sql"select * from Institution where name = ${institutionName}".first[Institution]
-  
-  def byHostName(hostName:String) =
-      sql"""
-      	| select i.* from Institution i 
-      	| join InstitutionHostName ihn on i.uuid = ihn.institutionUUID
-      	| where ihn.hostName = ${hostName}
-	    """.first[Institution]
 
-  def byType(institutionType: InstitutionType) = 
-    sql"""
-        select * from Institution where institutionType = ${institutionType.toString}
-    """.first[Institution]
+  def updateCaches(i: Institution) = {
+    val oi = Some(i)
+    uuidCache.put(i.getUUID, oi)
+    nameCache.put(i.getName, oi)
+  }
+
+  def cleanUpHostNameCache = {
+    nameCache.cleanUp
+  }
+  
+  def updateHostNameCache(institutionUUID: String, hostName: String) = {
+    val oi = getByUUID(institutionUUID)
+    hostNameCache.put(hostName, oi)    
+  }
 }

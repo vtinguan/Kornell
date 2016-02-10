@@ -23,40 +23,41 @@ import scala.util.Try
 import org.joda.time.DateTime
 
 //TODO: Specific column names and proper sql
-class EnrollmentRepo(enrollmentUUID: String) {
-  lazy val finder = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
+class EnrollmentRepo(uuid: String) {
+  
+  lazy val finder = sql" SELECT * FROM Enrollment e WHERE uuid = ${uuid} "
 
-  def get: Enrollment = finder.get[Enrollment]
+  def get: Enrollment = first.get
 
-  def first: Option[Enrollment] =
-    finder.first[Enrollment]
+  def first: Option[Enrollment] = EnrollmentsRepo.getByUUID(uuid)
 
   def update(e: Enrollment): Enrollment = {
     e.setLastProgressUpdate(DateTime.now.toDate)
     sql"""
     UPDATE Enrollment    
      SET 
-				enrolledOn = ${e.getEnrolledOn},
-				progress = ${e.getProgress},
-				notes = ${e.getNotes},
-				state = ${e.getState.toString},
-				lastProgressUpdate = ${e.getLastProgressUpdate},
-				assessment = ${Option(e.getAssessment).map(_.toString).getOrElse(null)},
-				lastAssessmentUpdate = ${e.getLastAssessmentUpdate},
-				assessmentScore = ${e.getAssessmentScore},
-				certifiedAt = ${e.getCertifiedAt},
+		enrolledOn = ${e.getEnrolledOn},
+		progress = ${e.getProgress},
+		notes = ${e.getNotes},
+		state = ${e.getState.toString},
+		lastProgressUpdate = ${e.getLastProgressUpdate},
+		assessment = ${Option(e.getAssessment).map(_.toString).getOrElse(null)},
+		lastAssessmentUpdate = ${e.getLastAssessmentUpdate},
+		assessmentScore = ${e.getAssessmentScore},
+		certifiedAt = ${e.getCertifiedAt},
         parentEnrollmentUUID = ${e.getParentEnrollmentUUID},
         start_date = ${e.getStartDate},
         end_date = ${e.getEndDate}
       where uuid = ${e.getUUID} """.executeUpdate
     
+    EnrollmentsRepo.updateCache(e)
 	ChatThreadsRepo.addParticipantsToCourseClassThread(CourseClassesRepo(e.getCourseClassUUID).get)
     e
   }
 
   def findGrades: List[String] = sql"""
     	select * from ActomEntries
-    	where enrollment_uuid = ${enrollmentUUID}
+    	where enrollment_uuid = ${uuid}
     	and entryKey = 'cmi.core.score.raw'
     """.map { rs => rs.getString("entryValue") }
 
@@ -208,11 +209,13 @@ class EnrollmentRepo(enrollmentUUID: String) {
     ChatThreadsRepo.disableParticipantFromCourseClassThread(enrollment)
 
     //update enrollment
-    sql"""update Enrollment set class_uuid = ${toCourseClassUUID} where uuid = ${enrollmentUUID}""".executeUpdate
+    sql"""update Enrollment set class_uuid = ${toCourseClassUUID} where uuid = ${uuid}""".executeUpdate
 
     //disable old support and tutoring threads
     sql"""update ChatThread set active = 0 where courseClassUUID = ${fromCourseClassUUID} and personUUID = ${enrollment.getPersonUUID} and threadType in  (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})""".executeUpdate
 
+    EnrollmentsRepo.invalidateCache(uuid)
+    
     //add participation to global class thread for new class
     ChatThreadsRepo.addParticipantToCourseClassThread(enrollment)
   }

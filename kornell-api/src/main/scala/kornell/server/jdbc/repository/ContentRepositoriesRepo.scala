@@ -8,8 +8,12 @@ import kornell.core.entity.ContentRepository
 import java.sql.ResultSet
 import kornell.core.entity.FSContentRepository
 import kornell.core.util.UUID
+import com.google.common.cache.CacheLoader
+import com.google.common.cache.CacheBuilder
+import java.util.concurrent.TimeUnit.MINUTES
 
-class ContentRepositoriesRepo {
+object ContentRepositoriesRepo {
+  
 	def createS3Repository(accessKeyId:String, secretAccessKey:String, bucketName:String, uuid:String = randomUUID, institutionUUID: String, region: String):S3ContentRepository = 
 			createS3Repo(Entities.newS3ContentRepository(uuid = uuid, accessKeyId = accessKeyId, secretAccessKey = secretAccessKey, bucketName = bucketName, institutionUUID = institutionUUID, region = region))
 			
@@ -72,7 +76,7 @@ class ContentRepositoriesRepo {
 	    fsRepo
 	}
 	
-	def first(repoUUID:String):Option[ContentRepository] = sql"""
+	private def first(repoUUID:String):Option[ContentRepository] = sql"""
 		select repositoryType from ContentRepository  where uuid=$repoUUID
 	""".first[String]
 	   .flatMap { _ match {
@@ -105,8 +109,16 @@ class ContentRepositoriesRepo {
 			rs.getString("prefix"),
 			rs.getString("region"),
 			rs.getString("institutionUUID"))   
-} 
+  
+  val cacheBuilder = CacheBuilder
+    .newBuilder()
+    .expireAfterAccess(5, MINUTES)
+    .maximumSize(20)
 
-object ContentRepositoriesRepo {
-  def apply() = new ContentRepositoriesRepo()
+  val contentRepositoryLoader = new CacheLoader[String, Option[ContentRepository]]() {
+    override def load(repositoryUUID: String): Option[ContentRepository] = first(repositoryUUID)
+  }
+  val contentRepositoryCache = cacheBuilder.build(contentRepositoryLoader)
+  def getByRepositoryUUID(repositoryUUID: String) = contentRepositoryCache.get(repositoryUUID)
+  	
 }

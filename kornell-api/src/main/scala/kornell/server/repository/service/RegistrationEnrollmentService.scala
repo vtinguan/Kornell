@@ -44,7 +44,7 @@ object RegistrationEnrollmentService {
     }
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
     if (enrollmentRequests.getEnrollmentRequests.size > 100)
-      EmailService.sendEmailBatchEnrollment(dean, InstitutionsRepo.byUUID(dean.getInstitutionUUID).get, CourseClassRepo(enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID).get)
+      EmailService.sendEmailBatchEnrollment(dean, InstitutionsRepo.getByUUID(dean.getInstitutionUUID).get, CourseClassRepo(enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID).get)
   }
 
   def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUUID: String) = {
