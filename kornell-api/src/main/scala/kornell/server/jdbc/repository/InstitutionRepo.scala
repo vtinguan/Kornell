@@ -43,6 +43,8 @@ class InstitutionRepo(uuid: String) {
     //log entity change
     EventsRepo.logEntityChange(institution.getUUID, AuditedEntityType.institution, institution.getUUID, oldInstitution, institution)
     
+	InstitutionsRepo.updateCaches(institution)
+	  
     institution
   }
   

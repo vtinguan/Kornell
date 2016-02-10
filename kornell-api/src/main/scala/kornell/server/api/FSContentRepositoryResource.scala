@@ -14,14 +14,14 @@ class FSContentRepositoryResource(uuid: String) {
   @GET
   @Produces(Array(FSContentRepository.TYPE))
   def get = {
-    ContentRepositoriesRepo().firstFSRepository(uuid).get
+    ContentRepositoriesRepo.firstFSRepository(uuid).get
   }.requiring(isControlPanelAdmin(), AccessDeniedErr()).get
    
   @PUT
   @Consumes(Array(FSContentRepository.TYPE))
   @Produces(Array(FSContentRepository.TYPE))
   def update(contentRepository: FSContentRepository) = {
-    ContentRepositoriesRepo().updateFSRepo(contentRepository)
+    ContentRepositoriesRepo.updateFSRepo(contentRepository)
   }.requiring(isControlPanelAdmin(), AccessDeniedErr()).get
 
 }

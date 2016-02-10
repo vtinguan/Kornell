@@ -29,12 +29,9 @@ class PersonRepo(val uuid: String) {
     PersonRepo.this
   }
 
-  lazy val finder = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
+  def get: Person = first.get
 
-  def get: Person = finder.get[Person]
-
-  def first: Option[Person] =
-    finder.first[Person]
+  def first: Option[Person] = PeopleRepo.getByUUID(uuid)
 
   def update(person: Person) = {    
     sql"""
@@ -127,19 +124,6 @@ class PersonRepo(val uuid: String) {
 
 }
 
-object PersonRepo {
-    
-  val uuidLoader = new CacheLoader[String, Option[Person]]() {
-    override def load(uuid: String): Option[Person] = PersonRepo(uuid).first
-  } 
-
-  val personCache = CacheBuilder
-    .newBuilder()
-    .expireAfterAccess(5, TimeUnit.MINUTES)
-    .maximumSize(1000)
-    .build(uuidLoader)
-    
-  
-    
+object PersonRepo {    
   def apply(uuid: String) = new PersonRepo(uuid)
 }

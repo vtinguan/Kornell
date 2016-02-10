@@ -15,6 +15,9 @@ import kornell.core.to.SimplePeopleTO
 import kornell.server.repository.Entities
 import kornell.core.entity.Person
 import kornell.core.util.UUID
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import java.util.concurrent.TimeUnit.MINUTES
 
 object EnrollmentsRepo {
 
@@ -164,5 +167,28 @@ object EnrollmentsRepo {
     	and e.end_date = concat(curdate(), ' 23:59:59')
     	and e.progress < 100
     """.map[Person](toPerson)
+  }
+
+
+  val cacheBuilder = CacheBuilder
+    .newBuilder()
+    .expireAfterAccess(5, MINUTES)
+    .maximumSize(1000)
+
+  val uuidLoader = new CacheLoader[String, Option[Enrollment]]() {
+    override def load(uuid: String): Option[Enrollment] = sql" SELECT * FROM Enrollment e WHERE uuid = ${uuid}".first[Enrollment]
+  }
+    
+  val uuidCache = cacheBuilder.build(uuidLoader)
+  
+  def getByUUID(uuid: String) = Option(uuid) flatMap uuidCache.get
+  
+  def updateCache(e: Enrollment) = {
+    val oe = Some(e)
+    uuidCache.put(e.getUUID, oe)
+  }
+  
+  def invalidateCache(enrollmentUUID: String) = {
+    uuidCache.invalidate(enrollmentUUID)
   }
 }

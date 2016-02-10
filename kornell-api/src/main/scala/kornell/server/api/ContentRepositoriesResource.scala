@@ -26,7 +26,7 @@ class ContentRepositoriesResource {
   @Produces(Array(S3ContentRepository.TYPE))
   @Consumes(Array(S3ContentRepository.TYPE))
   def createS3Repo(contentRepository: S3ContentRepository) = {
-    ContentRepositoriesRepo().createS3Repo(contentRepository)
+    ContentRepositoriesRepo.createS3Repo(contentRepository)
   }.requiring(isControlPanelAdmin(), AccessDeniedErr()).get
 
   @POST
@@ -34,6 +34,6 @@ class ContentRepositoriesResource {
   @Produces(Array(FSContentRepository.TYPE))
   @Consumes(Array(FSContentRepository.TYPE))
   def createFSRepo(contentRepository: FSContentRepository) = {
-    ContentRepositoriesRepo().createFSRepo(contentRepository)
+    ContentRepositoriesRepo.createFSRepo(contentRepository)
   }.requiring(isControlPanelAdmin(), AccessDeniedErr()).get
 }

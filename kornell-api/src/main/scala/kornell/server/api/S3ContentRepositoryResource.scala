@@ -15,14 +15,14 @@ class S3ContentRepositoryResource(uuid: String) {
   @GET
   @Produces(Array(S3ContentRepository.TYPE))
   def get = {
-    ContentRepositoriesRepo().firstS3Repository(uuid).get
+    ContentRepositoriesRepo.firstS3Repository(uuid).get
   }.requiring(isControlPanelAdmin(), AccessDeniedErr()).get
    
   @PUT
   @Consumes(Array(S3ContentRepository.TYPE))
   @Produces(Array(S3ContentRepository.TYPE))
   def update(contentRepository: S3ContentRepository) = {
-    ContentRepositoriesRepo().updateS3Repo(contentRepository)
+    ContentRepositoriesRepo.updateS3Repo(contentRepository)
   }.requiring(isControlPanelAdmin(), AccessDeniedErr()).get
   
 }

@@ -8,14 +8,13 @@ import kornell.server.util.Settings
 import kornell.server.repository.Entities
 import kornell.core.entity.FSContentRepository
 
-//TODO: Caching
 object ContentManagers {
   
   lazy val s3 = new AmazonS3Client
 
   def forRepository(repoUUID: String): SyncContentManager = 
-    ContentRepositoriesRepo()
-    	.first(repoUUID)
+    ContentRepositoriesRepo
+    	.getByRepositoryUUID(repoUUID)
     	.map {	_ match {
     	  case s3repo:S3ContentRepository => new S3ContentManager(s3repo)
     	  case fsRepo:FSContentRepository => new FSContentManager(fsRepo)
