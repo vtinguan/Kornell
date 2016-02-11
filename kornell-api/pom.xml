@@ -22,7 +22,7 @@
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
 		<buildNumber>Development Build</buildNumber>
-		<scala.version>2.10.6</scala.version>
+		<scala.version>2.10.4</scala.version>
 		<aws.sdk.version>1.10.27</aws.sdk.version>
 	</properties>
 
