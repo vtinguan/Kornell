@@ -190,7 +190,7 @@ package object repository {
   implicit def toEnrollment(rs: ResultSet): Enrollment = {
     newEnrollment(
       rs.getString("uuid"),
-      rs.getDate("enrolledOn"),
+      rs.getTimestamp("enrolledOn"),
       rs.getString("class_uuid"),
       rs.getString("person_uuid"),
       rs.getInt("progress"),

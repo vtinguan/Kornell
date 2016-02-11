@@ -234,8 +234,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		if(session.getCurrentUser() != null &&
 				session.getCurrentUser().getEnrollments() != null &&
 				InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			Date date = new Date(0);
 			for (Enrollment enrollment : session.getCurrentUser().getEnrollments().getEnrollments()) {
-				Date date = new Date(0);
 				//get latest active enrollment on a class
 				if(enrollment.getCourseClassUUID() != null && 
 						EnrollmentState.enrolled.equals(enrollment.getState()) && 

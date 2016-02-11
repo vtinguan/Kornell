@@ -36,7 +36,6 @@ class EnrollmentRepo(uuid: String) {
     sql"""
     UPDATE Enrollment    
      SET 
-		enrolledOn = ${e.getEnrolledOn},
 		progress = ${e.getProgress},
 		notes = ${e.getNotes},
 		state = ${e.getState.toString},
