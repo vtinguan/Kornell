@@ -14,6 +14,7 @@ import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserHelloTO;
 import kornell.gui.client.mvp.AsyncActivityManager;
@@ -126,11 +127,18 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				session.setCurrentUser(userHelloTO.getUserInfoTO());
 				if(userHelloTO.getInstitution() == null) {
 					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
-				} else {					
+				} else {		
 					Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
-					setHomePlace(new WelcomePlace());
+					final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
+						@Override
+						public void ok(final CourseClassesTO courseClassesTO) {
+							Dean.getInstance().setCourseClassesTO(courseClassesTO);
+							setHomePlace(new WelcomePlace());
+							startAuthenticated(session);
+						}
+					};
 					if (session.isAuthenticated()) {
-						startAuthenticated(session);
+						session.courseClasses().getCourseClassesTO(courseClassesCallback);
 					} else {
 						startAnonymous();
 					}
@@ -231,19 +239,23 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void setHomePlace(Place place) {
+		String enrollmentUUID = null;
 		if(session.getCurrentUser() != null &&
 				session.getCurrentUser().getEnrollments() != null &&
 				InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			Date date = new Date(0);
 			for (Enrollment enrollment : session.getCurrentUser().getEnrollments().getEnrollments()) {
-				Date date = new Date(0);
 				//get latest active enrollment on a class
 				if(enrollment.getCourseClassUUID() != null && 
 						EnrollmentState.enrolled.equals(enrollment.getState()) && 
 						enrollment.getEnrolledOn().after(date)){
 					date = enrollment.getEnrolledOn();
-					place = new ClassroomPlace(enrollment.getUUID());
+					enrollmentUUID = enrollment.getUUID();
 				}				
 			}			
+		}
+		if(enrollmentUUID != null){
+			place = new ClassroomPlace(enrollmentUUID);
 		}
 		this.homePlace = place;
 	}

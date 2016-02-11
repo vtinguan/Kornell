@@ -63,9 +63,9 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	}
 
 	@Override
-	public void display(boolean isEnrolled) {
+	public void display(boolean showCourseClassContent) {
 		presenter.stopSequencer();
-		this.showCourseClassContent = isEnrolled;
+		this.showCourseClassContent = showCourseClassContent;
 		if(this.showCourseClassContent){
 			presenter.startSequencer();
 		}
@@ -77,7 +77,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		Dean dean = Dean.getInstance();
 		CourseClassTO courseClassTO = dean.getCourseClassTO();
 		Enrollment enrollment = courseClassTO!= null ? courseClassTO.getEnrollment() : null;		
-		boolean showDetails = !isEnrolled || EnrollmentCategory.isFinished(enrollment);
+		boolean showDetails = !showCourseClassContent || EnrollmentCategory.isFinished(enrollment);
 		bus.fireEvent(new ShowDetailsEvent(showDetails));
 		bus.fireEvent(new ShowChatDockEvent(!showDetails && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()));
 	}

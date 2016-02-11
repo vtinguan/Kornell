@@ -112,14 +112,14 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 
 	private void initData() {
 		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, constants.homeTitle(), constants.homeDescription());
-		session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
-			@Override
-			public void ok(CourseClassesTO tos) {
-				Dean.getInstance().setCourseClassesTO(tos);
-				startPlaceBar();
-				display(tos);
-			}
-		});
+        session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
+            @Override
+            public void ok(CourseClassesTO tos) {
+                Dean.getInstance().setCourseClassesTO(tos);
+                startPlaceBar();
+                display(tos);
+            }
+        });
 	}
 
 	private void display(final CourseClassesTO tos) {

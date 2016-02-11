@@ -8,7 +8,6 @@ import kornell.core.entity.BillingType;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.entity.InstitutionType;
-import kornell.core.entity.RegistrationType;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;

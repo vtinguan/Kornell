@@ -78,6 +78,8 @@ public class GenericPasswordChangeView extends Composite implements ProfileView 
 		passwordChangeFields.add(modalNewPasswordConfirm);
 
 		passwordChangeFields.add(formHelper.getImageSeparator());
+		
+		passwordChangeModal.setTitle(constants.changePasswordButton());
 	}
 
 	private boolean validateFields() {

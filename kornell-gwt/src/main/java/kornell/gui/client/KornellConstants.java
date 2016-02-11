@@ -225,6 +225,9 @@ public interface KornellConstants extends ConstantsWithLookup {
 	 */
 	@DefaultStringValue("Loading the course...")
 	String loadingTheCourse();
+
+	@DefaultStringValue("This class was set as invisible by the institution.")
+	String classSetAsInvisible();
 	
 	
 	/**
@@ -563,6 +566,14 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("You are not enrolled in a class and there are no classes available to request a new registration.")
 	String noClassesAvailable();
 	
+	@DefaultStringValue("Class")
+	String courseClass();
+	
+	/**
+	 * Captain
+	 */
+	@DefaultStringValue("Are you sure you wish to leave the classroom? Your progress since last save may be lost.")
+	String leavingTheClassroom();
 	
 	/**
 	 * Util
@@ -779,5 +790,6 @@ public interface KornellConstants extends ConstantsWithLookup {
 	
 	@DefaultStringValue("Error checking for certificates.")
 	String errorCheckingCerts();
+
 	
 }

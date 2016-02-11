@@ -123,59 +123,45 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	@Override
 	public void filterAndShowThreads() {
 		if(updateMessages && unreadChatThreadsTOFetchedFromEvent != null){
-			if(Dean.getInstance().getCourseClassTO() != null){
-				filterTO();
-			} else {
-				//TODO: UGLY DESPERATE HACK due to the courseClasses not yet set on dean
-				Timer timer = new Timer() { 
-					public void run(){		
-						filterTO();		
-					}
-				};
-				timer.schedule(3000);
+			List<UnreadChatThreadTO> newUnreadChatThreadTOs = new ArrayList<UnreadChatThreadTO>();
+			for (Iterator<UnreadChatThreadTO> iterator = unreadChatThreadsTOFetchedFromEvent.iterator(); iterator.hasNext();) {
+				UnreadChatThreadTO unreadChatThreadTO = (UnreadChatThreadTO) iterator.next();
+				if(MessagePanelType.inbox.equals(messagePanelType) || 
+						showOnCourseClassSupport(unreadChatThreadTO) ||
+						showOnCourseClassGlobal(unreadChatThreadTO) || 
+						showOnCourseClassTutor(unreadChatThreadTO)){
+					newUnreadChatThreadTOs.add(unreadChatThreadTO);
+				}
 			}
-		}
-	}
+			
+			// create placeholder thread for tutor, since it's only created after the first message
+			if(MessagePanelType.courseClassTutor.equals(messagePanelType) && newUnreadChatThreadTOs.size() == 0){
+				UnreadChatThreadTO newUnreadChatThreadTO = toFactory.newUnreadChatThreadTO().as();
+				newUnreadChatThreadTO.setThreadType(ChatThreadType.TUTORING);
+				newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
+				if(Dean.getInstance().getCourseClassTO() != null){
+					newUnreadChatThreadTO.setEntityUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
+					newUnreadChatThreadTO.setEntityName(Dean.getInstance().getCourseClassTO().getCourseClass().getName());
+				}
+				newUnreadChatThreadTO.setUnreadMessages("0");
+				newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
+				newUnreadChatThreadTOs.add(newUnreadChatThreadTO);
+				selectedChatThreadInfo = null;
+			}
+			
+			if(newUnreadChatThreadTOs.size() > 0){
+				// if no thread is selected, "click" the first one
+				if(selectedChatThreadInfo == null){
+					threadClicked(newUnreadChatThreadTOs.get(0));
+					selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
+				}
+				view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
+			} else if(placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)){
+				KornellNotification.show(constants.noThreadsMessage(), AlertType.WARNING, 5000);
+			} 
 
-	private void filterTO() {
-		List<UnreadChatThreadTO> newUnreadChatThreadTOs = new ArrayList<UnreadChatThreadTO>();
-		for (Iterator<UnreadChatThreadTO> iterator = unreadChatThreadsTOFetchedFromEvent.iterator(); iterator.hasNext();) {
-			UnreadChatThreadTO unreadChatThreadTO = (UnreadChatThreadTO) iterator.next();
-			if(MessagePanelType.inbox.equals(messagePanelType) || 
-					showOnCourseClassSupport(unreadChatThreadTO) ||
-					showOnCourseClassGlobal(unreadChatThreadTO) || 
-					showOnCourseClassTutor(unreadChatThreadTO)){
-				newUnreadChatThreadTOs.add(unreadChatThreadTO);
-			}
+			asWidget().setVisible(newUnreadChatThreadTOs.size() > 0);
 		}
-		
-		// create placeholder thread for tutor, since it's only created after the first message
-		if(MessagePanelType.courseClassTutor.equals(messagePanelType) && newUnreadChatThreadTOs.size() == 0){
-			UnreadChatThreadTO newUnreadChatThreadTO = toFactory.newUnreadChatThreadTO().as();
-			newUnreadChatThreadTO.setThreadType(ChatThreadType.TUTORING);
-			newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
-			if(Dean.getInstance().getCourseClassTO() != null){
-				newUnreadChatThreadTO.setEntityUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-				newUnreadChatThreadTO.setEntityName(Dean.getInstance().getCourseClassTO().getCourseClass().getName());
-			}
-			newUnreadChatThreadTO.setUnreadMessages("0");
-			newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
-			newUnreadChatThreadTOs.add(newUnreadChatThreadTO);
-			selectedChatThreadInfo = null;
-		}
-		
-		if(newUnreadChatThreadTOs.size() > 0){
-			// if no thread is selected, "click" the first one
-			if(selectedChatThreadInfo == null){
-				threadClicked(newUnreadChatThreadTOs.get(0));
-				selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
-			}
-			view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
-		} else if(placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)){
-			KornellNotification.show(constants.noThreadsMessage(), AlertType.WARNING, 5000);
-		} 
-
-		asWidget().setVisible(newUnreadChatThreadTOs.size() > 0);
 	}
 
 	@Override
