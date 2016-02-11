@@ -54,11 +54,6 @@
 			<name>Scala-tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</pluginRepository>
-		<pluginRepository>
-			<id>ScalaCheck</id>
-			<name>Scalacheck repository</name>
-			<url>https://oss.sonatype.org/content/repositories/releases/org/scalastyle/scalastyle-maven-plugin</url>
-		</pluginRepository>
 	</pluginRepositories>
 
 
@@ -275,27 +270,6 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.scalastyle</groupId>
-				<artifactId>scalastyle-maven-plugin</artifactId>
-				<version>0.2.0</version>
-				<configuration>
-					<verbose>false</verbose>
-					<failOnViolation>false</failOnViolation>
-					<failOnWarning>false</failOnWarning>
-					<configLocation>${basedir}/lib/scalastyle_config.xml</configLocation>
-					<sourceDirectory>${basedir}/src/main/scala</sourceDirectory>
-					<!-- <includeTestSourceDirectory>true</includeTestSourceDirectory> <testSourceDirectory>${basedir}/src/test/scala</testSourceDirectory> -->
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
