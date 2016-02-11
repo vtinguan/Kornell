@@ -2,7 +2,6 @@ package kornell.gui.client.presentation.course.generic.notes;
 
 import kornell.api.client.KornellClient;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.Positioning;
 
 import com.google.gwt.core.client.GWT;

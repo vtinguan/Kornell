@@ -1444,7 +1444,8 @@
   text-align: center;
 }
 @media screen and (max-width: 700px) {
-  .imgMenuBar {
+  .menuBarContainer .menuBar .testEnvWarning,
+  .menuBarContainer .menuBar .imgMenuBar {
     display: none;
   }
 }

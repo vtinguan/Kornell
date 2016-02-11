@@ -16,6 +16,6 @@ public interface ClassroomView  extends IsWidget{
 
 	FlowPanel getContentPanel();
 	void setPresenter(Presenter presenter);
-	void display(boolean isEnrolled);
+	void display(boolean showCourseClassContent);
 
 }
