@@ -23,7 +23,7 @@ object Migration {
     log.info("[INFO] Starting Database Mygration")
     val flyway = new Flyway()
     setDataSource(flyway)
-    flyway.setLocations("db/")
+    flyway.setLocations("db/jdbcmigration","db/migration") 
     flyway.setOutOfOrder(true)
     flyway.migrate()
   }

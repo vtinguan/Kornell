@@ -25,6 +25,7 @@ import java.util.Map
 import kornell.server.jdbc.PreparedStmt
 import scala.util.Try
 import java.math.BigDecimal
+import kornell.server.util.EnrollmentUtil._
 
 class ActomResource(enrollmentUUID: String, actomURL: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
@@ -117,36 +118,6 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
     entries
   }
 
-  type EntriesMap = java.util.Map[String, String]
-  def containsProgress(entries: EntriesMap) =
-    entries.containsKey("cmi.core.lesson_status") ||
-      entries.containsKey("cmi.core.lesson_location") ||
-      entries.containsKey("cmi.suspend_data")
-
-  def containsAssessment(entries: EntriesMap) =
-    entries.containsKey("cmi.core.score.raw") ||
-      entries.containsKey("cmi.suspend_data")
-
-  val preScore_r = """.*::preteste,(\d+).*""".r
-  val postScore_r = """.*::finalteste,(\d+).*""".r
- 
-  def parsePreAssessmentScore(entries: EntriesMap): Option[BigDecimal] =
-    Option(entries.get("cmi.suspend_data"))
-      .flatMap {
-        case preScore_r(x) => parseBigDecimal(x)
-        case _ => None
-      }
-
-  def parsePostAssessmentScore(entries: EntriesMap): Option[BigDecimal] =
-    Option(entries.get("cmi.suspend_data"))
-      .flatMap {
-        case postScore_r(x) => parseBigDecimal(x)
-        case _ => None
-      }
-  
-  def parseBigDecimal(x:String):Option[BigDecimal] = Try {
-    new BigDecimal(x)
-  }.toOption
 
   @Path("entries")
   @Produces(Array(ActomEntries.TYPE))
