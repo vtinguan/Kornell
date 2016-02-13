@@ -206,6 +206,7 @@ public class GenericCourseClassConfigView extends Composite {
                 }
             }
         });
+        ((CheckBox)approveEnrollmentsAutomatically.getFieldWidget()).setEnabled(isPublicClass);
 
         Boolean isInvisible = courseClass.isInvisible() == null ? false : courseClass.isInvisible();
         invisible = new KornellFormFieldWrapper("Turma invisível?", formHelper.createCheckBoxFormField(isInvisible), isInstitutionAdmin);
@@ -297,6 +298,7 @@ public class GenericCourseClassConfigView extends Composite {
 	                }
 	            }
 	        });
+            ((CheckBox)chatDockEnabled.getFieldWidget()).setEnabled(isCourseClassChatEnabled);
         }
         
         final ListBox registrationTypes = new ListBox();
