@@ -19,7 +19,7 @@ import kornell.core.entity.AuthClientType
 import java.util.Date
 import com.google.gwt.uibinder.elementparsers.IsEmptyParser
 
-class BasicAuthFilter extends Filter {
+class BasicAuthFilter extends Filter { 
   val log = Logger.getLogger(classOf[BasicAuthFilter].getName)
   val tokenRepo = TokenRepo()
   val X_KNL_TOKEN = "X-KNL-TOKEN"

@@ -150,6 +150,7 @@ class EnrollmentRepo(uuid: String) {
   		AND entryKey = 'cmi.core.score.raw'
   """.first[BigDecimal] { rs => rs.getBigDecimal("maxScore") }
 
+  
   def updateAssessment = first map { e =>
     val notPassed = !Assessment.PASSED.equals(e.getAssessment)
     if (notPassed && e.getCourseClassUUID != null) {
@@ -218,6 +219,18 @@ class EnrollmentRepo(uuid: String) {
     //add participation to global class thread for new class
     ChatThreadsRepo.addParticipantToCourseClassThread(enrollment)
   }
+  
+  def updatePreAssessmentScore(score:BigDecimal) = sql"""
+		  update Enrollment 
+		  set preAssessmentScore = ${score}
+  		  where uuid = ${uuid}
+  """.executeUpdate
+  
+  def updatePostAssessmentScore(score:BigDecimal) = sql"""
+		  update Enrollment 
+		  set postAssessmentScore = ${score}
+  		  where uuid = ${uuid}
+  """.executeUpdate
 
 }
 
