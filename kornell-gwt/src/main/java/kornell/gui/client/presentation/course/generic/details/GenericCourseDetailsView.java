@@ -220,7 +220,6 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	private FlowPanel getCertificationPanel() {
 		FlowPanel certificationPanel = new FlowPanel();
 		certificationPanel.addStyleName("certificationPanel");
-		// TODO: i18n
 		certificationPanel.add(getCertificationInfo());
 		certificationPanel.add(getCertificationTableHeader());
 		certificationPanel.add(getCertificationTableContent());
@@ -401,6 +400,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 			displayButton(btnCertification, constants.btnCertification(), constants.printCertificateButton(), false);
 			if(courseClassTO.getCourseClass().isCourseClassChatEnabled()){
 				displayButton(btnChat, constants.btnChat(), constants.classChatButton(), false);
+				buildChatPanel();
 			}
 			if(courseClassTO.getCourseClass().isTutorChatEnabled()){
 				displayButton(btnTutor, constants.btnTutor(), constants.tutorChatButton(), false);
