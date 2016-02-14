@@ -117,7 +117,7 @@ class ChatThreadsResource {
   		if(StringUtils.isSome(since))
   			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
   		else if(StringUtils.isSome(before))
-  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(since.toLong))
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(before.toLong))
   		else
   			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
     }

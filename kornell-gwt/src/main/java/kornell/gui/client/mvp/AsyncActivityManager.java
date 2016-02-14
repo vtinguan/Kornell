@@ -122,7 +122,7 @@ public class AsyncActivityManager implements PlaceChangeEvent.Handler,
 					@Override
 					public void onUncaughtException(Throwable e) {
 						e = unwrap(e);
-		        logger.log(Level.SEVERE, "Ex caught!", e);
+						logger.log(Level.SEVERE, "Ex caught!", e);
 						if(Window.Location.getHostName().indexOf("localhost") >= 0 ||
 								Window.Location.getHostName().indexOf("127.0.0.1") >= 0){
 							KornellNotification.show(e.getMessage(), AlertType.ERROR, 0);

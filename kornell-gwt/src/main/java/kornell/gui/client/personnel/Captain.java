@@ -41,20 +41,23 @@ public class Captain implements LogoutEventHandler, LoginEventHandler {
 		bus.addHandler(PlaceChangeRequestEvent.TYPE, new PlaceChangeRequestEvent.Handler() {
 			@Override
 			public void onPlaceChangeRequest(PlaceChangeRequestEvent event) {
-				// if the user is inside the classroom and doesn't try to go to
-				// the vitrine (by logging out, for example)
-				if (placeCtrl.getWhere() instanceof ClassroomPlace && !(event.getNewPlace() instanceof VitrinePlace)) {
-					// if the user hasn't passed the class and the type of the
-					// version isn't KNL (small htmls, user won't lose progress)
-					if (Dean.getInstance().getCourseClassTO() != null
-							&& Dean.getInstance().getCourseClassTO().getCourseClass() != null
-							&& ContentSpec.SCORM12.equals(Dean.getInstance().getCourseClassTO().getCourseVersionTO()
-									.getCourseVersion().getContentSpec())
-							&& Dean.getInstance().getCourseClassTO().getEnrollment() != null
-							&& Dean.getInstance().getCourseClassTO().getEnrollment().getCertifiedAt() == null) {
-						//If there is a token cookie, a certificate is being generated. Bypass confirm on this case.
-						if(StringUtils.isNone(ClientProperties.getCookie(ClientProperties.X_KNL_TOKEN)) && Dean.getInstance().getCourseClassTO() != null){
-							event.setWarning(constants.leavingTheClassroom());	
+				// if the user tries to go from one classroom to another, don't show this message
+				if (!(placeCtrl.getWhere() instanceof ClassroomPlace && event.getNewPlace() instanceof ClassroomPlace)) {
+					// if the user is inside the classroom and doesn't try to go to
+					// the vitrine (by logging out, for example)
+					if (placeCtrl.getWhere() instanceof ClassroomPlace && !(event.getNewPlace() instanceof VitrinePlace)) {
+						// if the user hasn't passed the class and the type of the
+						// version isn't KNL (small htmls, user won't lose progress)
+						if (Dean.getInstance().getCourseClassTO() != null
+								&& Dean.getInstance().getCourseClassTO().getCourseClass() != null
+								&& ContentSpec.SCORM12.equals(Dean.getInstance().getCourseClassTO().getCourseVersionTO()
+										.getCourseVersion().getContentSpec())
+								&& Dean.getInstance().getCourseClassTO().getEnrollment() != null
+								&& Dean.getInstance().getCourseClassTO().getEnrollment().getCertifiedAt() == null) {
+							//If there is a token cookie, a certificate is being generated. Bypass confirm on this case.
+							if(StringUtils.isNone(ClientProperties.getCookie(ClientProperties.X_KNL_TOKEN)) && Dean.getInstance().getCourseClassTO() != null){
+								event.setWarning(constants.leavingTheClassroom());	
+							}
 						}
 					}
 				}

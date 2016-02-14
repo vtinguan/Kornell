@@ -190,7 +190,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				viewFactory.getMessagePresenter();
 				viewFactory.getMessagePresenterClassroomGlobalChat();
 				viewFactory.getMessagePresenterClassroomTutorChat();
-				if(session.hasAnyAdminRole(session.getCurrentUser().getRoles())){
+                if (session.getCurrentUser() != null && session.hasAnyAdminRole(session.getCurrentUser().getRoles())) {
 					viewFactory.getMessagePresenterCourseClass();
 				}
 			}
@@ -201,8 +201,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException(Throwable e) {
-				System.out.println("** UNCAUGHT **");
-				e.printStackTrace();
+                if (Window.Location.getHostName().indexOf("localhost") >= 0
+                        || Window.Location.getHostName().indexOf("127.0.0.1") >= 0) {
+                    KornellNotification.show(e.getMessage(), AlertType.ERROR, 0);
+                }
 			}
 		});
 	}
