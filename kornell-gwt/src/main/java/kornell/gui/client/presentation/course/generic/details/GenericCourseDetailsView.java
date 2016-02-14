@@ -504,7 +504,9 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	
 	@Override
 	public void onShowDetails(ShowDetailsEvent event) {
-		if(btnChat.equals(btnCurrent) && event.isShowDetails()){
+		boolean sameBtn = btnChat!=null && btnChat.equals(btnCurrent); 
+		boolean isShowDetails = event.isShowDetails();
+		if(sameBtn && isShowDetails){
 			buildChatPanel();
 		}
 	}
