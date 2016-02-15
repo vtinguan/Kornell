@@ -148,7 +148,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		displayButton(btnNotes, BUTTON_NOTES,
 				new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NOTES) + ".png")));
 
-		if (Dean.getInstance().getCourseClassTO().getCourseClass().isCourseClassChatEnabled()) {
+		if (Dean.getInstance().getCourseClassTO().getCourseClass().isCourseClassChatEnabled() &&
+				!Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()) {
 			btnChat.addStyleName("activityBarButtonSmall");
 			btnNotes.addStyleName("activityBarButtonSmall");
 			btnChat.removeStyleName("shy");

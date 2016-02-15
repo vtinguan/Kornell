@@ -228,19 +228,25 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	}
 
 	private void buildChatPanel() {
+		buildChatPanel(true);
+	}
+	
+	private void buildChatPanel(boolean isVisible) {
 		if (messagesGlobalChatView == null) {
 			messagesGlobalChatView = new GenericCourseClassMessagesView(session, bus,
 					placeCtrl, viewFactory, messagePresenterClassroomGlobalChat, Dean
 							.getInstance().getCourseClassTO());
 		}
-		messagesGlobalChatView.initData();
 		if(chatPanel == null){
 			chatPanel = new FlowPanel();
 			detailsContentPanel.add(chatPanel);
 		}
-		chatPanel.clear();
-		chatPanel.add(messagesGlobalChatView);
-		chatPanel.setVisible(true);
+		if(isVisible){
+			messagesGlobalChatView.initData();
+			chatPanel.clear();
+			chatPanel.add(messagesGlobalChatView);
+		}
+		chatPanel.setVisible(isVisible);
 		messagePresenterClassroomGlobalChat.enableMessagesUpdate(true);
 		messagePresenterClassroomGlobalChat.filterAndShowThreads();
 		messagePresenterClassroomGlobalChat.scrollToBottom();
@@ -504,11 +510,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	
 	@Override
 	public void onShowDetails(ShowDetailsEvent event) {
-		boolean sameBtn = btnChat!=null && btnChat.equals(btnCurrent); 
-		boolean isShowDetails = event.isShowDetails();
-		if(sameBtn && isShowDetails){
-			buildChatPanel();
-		}
+		buildChatPanel(btnChat!=null && btnChat.equals(btnCurrent) && event.isShowDetails());
 	}
 
 	public void setPresenter(Presenter presenter) {
