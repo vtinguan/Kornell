@@ -64,6 +64,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private Image iconPrevious;
 	private Image iconNext;
+	private Image iconChat;
 
 	private boolean showDetails = true;
 	private boolean chatDockEnabled = false;
@@ -139,9 +140,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 		displayButton(btnDetails, showDetails ? constants.course() : BUTTON_DETAILS,
 				new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
-
-		displayButton(btnChat, BUTTON_CHAT,
-				new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_CHAT) + ".png")));
+		
+		iconChat = new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_CHAT) + ".png"));
+		displayButton(btnChat, BUTTON_CHAT, iconChat);
 		btnChat.addStyleName("activityBarButtonChat");
 
 		displayButton(btnNotes, BUTTON_NOTES,
@@ -302,7 +303,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	@UiHandler("btnChat")
 	void handleClickBtnChat(ClickEvent e) {
-		if(!(chatDockEnabled && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()) && !showDetails){
+		if(!(chatDockEnabled && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()) && !showDetails && btnChat.getStyleName().indexOf("disabled") < 0){
 			clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(!chatDockEnabled));
 		}
 	}
@@ -321,9 +322,16 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				iconPrevious.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS) + ".png"));
 				btnPrevious.removeStyleName("disabled");
 			} else {
-				iconPrevious.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS)
-						+ "Disabled.png"));
+				iconPrevious.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS) + "Disabled.png"));
 				btnPrevious.addStyleName("disabled");
+			}
+		} else if (BUTTON_CHAT.equals(btn)) {
+			if (enable && !showDetails) {
+				iconChat.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_CHAT) + ".png"));
+				btnChat.removeStyleName("disabled");
+			} else {
+				iconChat.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_CHAT) + "Disabled.png"));
+				btnChat.addStyleName("disabled");
 			}
 		}
 	}
@@ -382,6 +390,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		}
 		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev);
 		enableButton(BUTTON_NEXT, !showDetails && enableNext);
+		enableButton(BUTTON_CHAT, !showDetails);
 		updateProgressBarPanel();
 	}
 
