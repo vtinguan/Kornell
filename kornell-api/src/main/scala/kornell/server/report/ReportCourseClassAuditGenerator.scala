@@ -57,7 +57,7 @@ object ReportCourseClassAuditGenerator {
 			    adminPwd.username as adminUsername,
 			    COALESCE(participant.fullname, 'a') as participantFullName,
 			    COALESCE(participantPwd.username, participant.email) as participantUsername,
-			    cc.name as fromCourseClassName,
+			    '-' as fromCourseClassName,
 			    '-' as toCourseClassName,
 				case    
 					when esc.fromState = ${EnrollmentState.notEnrolled.toString} then '-'  
@@ -108,10 +108,10 @@ object ReportCourseClassAuditGenerator {
 			    ccTo.uuid as toCourseClassUUID
 			from EnrollmentTransferred et
 			join Person admin on admin.uuid = et.personUUID
-			join Password adminPwd on adminPwd.person_uuid = admin.uuid
+			join Password adminPwd on adminPwd.person_uuid = admin.uuid 
 			join Enrollment e on e.uuid = et.enrollmentUUID
-			join CourseClass ccFrom on ccFrom.uuid = et.fromCourseClassUUID
-			join CourseClass ccTo on ccTo.uuid = et.toCourseClassUUID and ccTo.uuid = ${courseClassUUID}
+			join CourseClass ccFrom on ccFrom.uuid = et.fromCourseClassUUID and (et.fromCourseClassUUID = ${courseClassUUID} or et.toCourseClassUUID = ${courseClassUUID})
+			join CourseClass ccTo on ccTo.uuid = et.toCourseClassUUID and (et.toCourseClassUUID = ${courseClassUUID} or et.fromCourseClassUUID = ${courseClassUUID})
 			join Person participant on participant.uuid = e.person_uuid
 			left join Password participantPwd on participantPwd.person_uuid = participant.uuid
 		order by eventFiredAt desc

@@ -437,7 +437,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Enter a city.")
 	String missingCityMessage();
 	
-	@DefaultStringValue("Enter an affress.")
+	@DefaultStringValue("Enter an address.")
 	String missingAddressMessage();
 	
 	@DefaultStringValue("Enter a postal code.")

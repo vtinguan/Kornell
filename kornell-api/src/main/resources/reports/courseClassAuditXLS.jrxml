@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="1800" pageHeight="842" columnWidth="1800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
-	<property name="ireport.zoom" value="1.024520183047606"/>
-	<property name="ireport.x" value="0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="2100" pageHeight="842" columnWidth="2100" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+	<property name="ireport.zoom" value="1.6500000000000006"/>
+	<property name="ireport.x" value="1356"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="courseClassName" class="java.lang.String"/>
 	<parameter name="institutionBaseURL" class="java.lang.String"/>
@@ -70,7 +70,7 @@
 				<text><![CDATA[PARTICIPANTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="65d06bc5-f391-4fca-a716-d98f7e70b62a" mode="Opaque" x="1200" y="52" width="300" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="65d06bc5-f391-4fca-a716-d98f7e70b62a" mode="Opaque" x="1500" y="52" width="300" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -78,7 +78,7 @@
 				<text><![CDATA[TURMA DE DESTINO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b908e2f3-8afa-44ff-89dc-ad9c740338d9" mode="Opaque" x="1500" y="52" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="b908e2f3-8afa-44ff-89dc-ad9c740338d9" mode="Opaque" x="1800" y="52" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -86,12 +86,20 @@
 				<text><![CDATA[ESTADO ORIGINAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d43816ed-24fe-426c-936e-449a61f01ea0" mode="Opaque" x="1650" y="52" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<reportElement uuid="d43816ed-24fe-426c-936e-449a61f01ea0" mode="Opaque" x="1950" y="52" width="150" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[ESTADO ALTERADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d2108ffc-9a57-448c-87c6-836ed7e60764" mode="Opaque" x="1200" y="52" width="300" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[TURMA DE ORIGEM]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -126,25 +134,32 @@
 				<textFieldExpression><![CDATA[$F{participantFullName} + " (" + $F{participantUsername} + ")"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="666eb0f1-8f37-465e-bd44-bbc66a24746f" x="1200" y="0" width="300" height="12" forecolor="#000000"/>
+				<reportElement uuid="666eb0f1-8f37-465e-bd44-bbc66a24746f" x="1500" y="0" width="300" height="12" forecolor="#000000"/>
 				<textElement>
 					<font fontName="Serif" size="8" isUnderline="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{toCourseClassName}]]></textFieldExpression>
 			</textField>
 			<textField hyperlinkType="ReportExecution">
-				<reportElement uuid="17ceed29-50f6-4f03-9ab4-b1c0859909f6" x="1500" y="0" width="150" height="12"/>
+				<reportElement uuid="17ceed29-50f6-4f03-9ab4-b1c0859909f6" x="1800" y="0" width="150" height="12"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fromState}]]></textFieldExpression>
 			</textField>
 			<textField hyperlinkType="ReportExecution">
-				<reportElement uuid="452d67a7-d6a2-4f9f-aae3-5cf38b0afe10" x="1650" y="0" width="150" height="12"/>
+				<reportElement uuid="452d67a7-d6a2-4f9f-aae3-5cf38b0afe10" x="1950" y="0" width="150" height="12"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{toState}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="babadaf8-7add-4cd2-890a-42ec7e7dbb99" x="1200" y="0" width="300" height="12" forecolor="#000000"/>
+				<textElement>
+					<font fontName="Serif" size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fromCourseClassName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

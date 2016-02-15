@@ -564,7 +564,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 			KornellFormFieldWrapper field = (KornellFormFieldWrapper) it.next();
 			isValid = isValid && field.isValid();			
 		}
-		validateFields();
+		checkErrors();
 		setValidity(isValid);
 	}
 	
