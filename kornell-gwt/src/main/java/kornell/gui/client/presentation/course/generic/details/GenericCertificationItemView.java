@@ -148,7 +148,9 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 				courseClassComplete = true;
 				checkCertificateAvailability();
 			}
-			currentCourseClass.getEnrollment().setProgress(event.getProgressPercent());
+			if(currentCourseClass != null){
+				currentCourseClass.getEnrollment().setProgress(event.getProgressPercent());
+			}
 		}
 	}
 

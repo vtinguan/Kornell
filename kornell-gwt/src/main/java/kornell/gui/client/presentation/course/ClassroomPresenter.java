@@ -94,7 +94,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		CourseClassState courseClassState = courseClass != null ? courseClass.getState() : null;
 		
 		//TODO: Consider if the null state is inactive				
-		final boolean showCourseClassContent = isEnrolled && (courseClassState != null && !CourseClassState.inactive.equals(courseClassState));
+        final boolean showCourseClassContent = enrollmentClassUUID == null || (isEnrolled && (courseClassState != null && !CourseClassState.inactive.equals(courseClassState)));
 
 		
 		LoadingPopup.show();		

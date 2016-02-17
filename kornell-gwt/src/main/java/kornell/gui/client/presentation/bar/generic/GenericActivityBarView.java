@@ -382,7 +382,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			displayButton(btnDetails, constants.course(),
 					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
 		} else {
-			if(!chatDockEnabled && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()){
+			if(!chatDockEnabled && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()){
 				clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(true));
 			}
 			btnDetails.removeStyleName("btnSelected");
