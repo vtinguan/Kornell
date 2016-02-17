@@ -43,7 +43,7 @@ public class ChatThreadsClient extends RESTClient {
 		GET("/chatThreads/unreadCountPerThread/?institutionUUID=" + institutionUUID).sendRequest(null, callback);
 	}
 	
-	public void getChatThreadMessagesx(String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
+	public void getChatThreadMessages(String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {
 		getChatThreadMessages(chatThreadUUID, null, null, callback);
 	}
 	

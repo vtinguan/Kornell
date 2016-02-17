@@ -85,7 +85,7 @@ class PersonRepo(val uuid: String) {
         (uuid == targetPersonUUID) ||
           {
             //platformAdmin has power over everyone
-            RoleCategory.isPlatformAdmin(targetRoles, targetPerson.getInstitutionUUID)
+            RoleCategory.isPlatformAdmin(actorRoles, targetPerson.getInstitutionUUID)
           } || {
             //institutionAdmin doesn't have power over platformAdmins, other institutionAdmins or people from other institutions 
             !RoleCategory.isPlatformAdmin(targetRoles, targetPerson.getInstitutionUUID) &&

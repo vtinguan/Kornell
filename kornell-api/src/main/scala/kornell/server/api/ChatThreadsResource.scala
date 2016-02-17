@@ -80,7 +80,7 @@ class ChatThreadsResource {
   		if(StringUtils.isSome(since))
   			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
   		else
-  			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date)
   }
   
   @POST
@@ -119,7 +119,7 @@ class ChatThreadsResource {
   		else if(StringUtils.isSome(before))
   			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(before.toLong))
   		else
-  			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date)
     }
   }
 }

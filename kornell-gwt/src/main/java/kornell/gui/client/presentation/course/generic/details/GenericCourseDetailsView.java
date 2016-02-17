@@ -516,4 +516,5 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
+	
 }

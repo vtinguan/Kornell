@@ -310,7 +310,7 @@ object ChatThreadsRepo {
 		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
   }
   
-  def getChatThreadMessages(chatThreadUUID: String) = {
+  /*def getChatThreadMessages(chatThreadUUID: String) = {
     TOs.newChatThreadMessagesTO(sql"""
 			select 
 				p.fullName as senderFullName, 
@@ -335,9 +335,9 @@ object ChatThreadsRepo {
 			join ChatThread t on t.uuid = tm.chatThreadUUID
 			join Person p on p.uuid = tm.personUUID
 		 	where tm.chatThreadUUID = ${chatThreadUUID}
-			order by tm.sentAt
+			order by tm.sentAt limit 20
 	    """.map[ChatThreadMessageTO](toChatThreadMessageTO))
-  } 
+  } */
 
   def getChatThreadMessagesSince(chatThreadUUID: String, lastFetchedMessageSentAt: Date) = {
     TOs.newChatThreadMessagesTO(sql"""

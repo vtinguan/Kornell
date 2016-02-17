@@ -171,6 +171,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		initializeChatThreadMessagesTimer();
 		this.selectedChatThreadInfo = unreadChatThreadTO;
 		if(unreadChatThreadTO.getChatThreadUUID() != null){
+			view.displayThreadPanel(false);
 			view.updateThreadPanel(unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
 			onScrollToTop(true);
 		} else {
@@ -228,9 +229,19 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 						view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), true);
 					}
 					if(scrollToBottomAfterFetchingMessages){
-						view.scrollToBottom();
+						Timer scrollToBottomTimer = new Timer() {
+							@Override
+							public void run() {
+								view.scrollToBottom();
+								view.displayThreadPanel(true);
+								LoadingPopup.hide();
+							}
+						};
+						scrollToBottomTimer.schedule(2000);
+					} else {
+						view.displayThreadPanel(true);
+						LoadingPopup.hide();
 					}
-					LoadingPopup.hide();
 				}
 			});
 		}

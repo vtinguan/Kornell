@@ -55,6 +55,7 @@ object EventsRepo {
 
     EnrollmentSEP.onProgress(event.getEnrollmentUUID)
     EnrollmentSEP.onAssessment(event.getEnrollmentUUID)
+    
   }
 
   def logAttendanceSheetSigned(event: AttendanceSheetSigned) = {
@@ -89,6 +90,8 @@ object EventsRepo {
 
     sql"""update Enrollment set state = ${toState.toString} where uuid = ${enrollmentUUID};
 		""".executeUpdate
+		
+    EnrollmentsRepo.invalidateCache(enrollmentUUID)
 
     if (EnrollmentState.enrolled.equals(toState) && sendEmail) {
       val enrollment = EnrollmentRepo(enrollmentUUID).get

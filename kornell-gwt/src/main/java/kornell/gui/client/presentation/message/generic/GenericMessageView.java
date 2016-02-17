@@ -87,7 +87,6 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 	private String HIGHLIGHT_CLASS = "highlightTextDiscreteColor";
 	private String PLAIN_CLASS = "plainDiscreteTextColor";
 	private FlowPanel searchPanel;
-	private boolean bla;
 	@SuppressWarnings("unused")
 	private MessagePanelType messagePanelType;
 
@@ -115,6 +114,11 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 				}
 			}
 		});
+	}
+	
+	@Override
+	public void displayThreadPanel(boolean display){
+		threadPanel.setVisible(display);
 	}
 
 	@Override
@@ -336,7 +340,7 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 				threadMessageWrapper.add(item);
 				
 				if(!dateLabelsMap.containsKey(chatThreadMessageTO.getSentAt())){
-					dateLabelsMap.put(chatDateFormat.format(chatThreadMessageTO.getSentAt()), new MessageItem(header, chatThreadMessageTO));
+					dateLabelsMap.put(chatThreadMessageTO.getSentAt()+"", new MessageItem(header, chatThreadMessageTO));
 					if(insertOnTop){
 						threadPanelItems.insert(threadMessageWrapper, 0);
 					} else {
@@ -363,8 +367,6 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 
 	private void updateDateLabelValues(Date serverTime) {
 		synchronized(dateLabelsMap){
-			if(bla)return;
-			bla = false;
 			Iterator<Entry<String, MessageItem>> it = dateLabelsMap.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry<String, MessageItem> pairs = (Map.Entry<String, MessageItem>)it.next();

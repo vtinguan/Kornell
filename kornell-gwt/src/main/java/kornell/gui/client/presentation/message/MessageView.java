@@ -26,4 +26,5 @@ public interface MessageView  extends IsWidget {
 	void scrollToBottom();
 	void setPlaceholder(String placeholder);
 	void setMessagePanelType(MessagePanelType messagePanelType);
+	void displayThreadPanel(boolean display);
 }
