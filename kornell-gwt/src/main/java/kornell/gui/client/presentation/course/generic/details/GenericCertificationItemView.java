@@ -74,6 +74,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	Anchor lblActions;
 	
 	private boolean courseClassComplete;
+	private boolean allowCertificateGeneration;
 
 
 	public GenericCertificationItemView(EventBus eventBus, KornellSession session, CourseClassTO currentCourseClass,
@@ -110,8 +111,6 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		lblDescription.setText(description);
 		lblStatus.setText(status);
 		lblGrade.setText(grade);
-
-		displayActionCell(false);
 	}
 
 	private void displayActionCell(boolean show) {
@@ -164,9 +163,12 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		courseClassComplete = progress >= 100;
 		
 		Assessment assessment = currEnrollment.getAssessment(); 
-		boolean approvedOnTest = Assessment.PASSED.equals(assessment) && currEnrollment.getCertifiedAt() != null;
+		boolean approvedOnTest = (Assessment.PASSED.equals(assessment) && currEnrollment.getCertifiedAt() != null) ||
+				currentCourseClass.getCourseClass().getRequiredScore() == null ||
+				BigDecimal.ZERO.equals(currentCourseClass.getCourseClass().getRequiredScore()) ||
+				currentCourseClass.getCourseClass().getRequiredScore().compareTo(currEnrollment.getAssessmentScore()) <= 0;
 		
-		boolean allowCertificateGeneration = (courseClassComplete && approvedOnTest);
+		allowCertificateGeneration = (courseClassComplete && approvedOnTest);
 		status = allowCertificateGeneration ? constants.certificateAvailable() : constants.certificateNotAvailable();
 		lblStatus.setText(status);
 
@@ -181,7 +183,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			this.grade = "-";
 		}
 		lblGrade.setText(this.grade);
-		
+
 		displayActionCell(allowCertificateGeneration);
 	}
 	
@@ -192,7 +194,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 	
 	private void checkCertificateAvailability() {
-		if(/*!approvedOnTest && */Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
+		if(!allowCertificateGeneration && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
 			Timer checkTimer = new Timer() {
 				@Override
 				public void run() {
