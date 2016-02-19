@@ -9,6 +9,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SimpleSequencer;
@@ -24,6 +25,7 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 	private ClassroomPlace place;
 	private FlowPanel contentPanel;
 	private Uidget currentUidget;
+	private boolean isActive;
 
 	public SCORM12Sequencer(EventBus bus, KornellSession session) {
 		super(bus, session);
@@ -31,6 +33,8 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 
 	@Override
 	public void onContinue(NavigationRequest event) {
+		if (!isActive)
+			return;
 		currentIndex++;
 		paintCurrent();
 		dropBreadcrumb();
@@ -42,6 +46,8 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 
 	@Override
 	public void onPrevious(NavigationRequest event) {
+		if (!isActive)
+			return;
 		currentIndex--;
 		paintCurrent();
 		dropBreadcrumb();
@@ -53,6 +59,7 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 	}
 
 	private void launch(String key) {
+		isActive = true;
 		currentIndex = StringUtils.isSome(key) ? lookupCurrentIndex(key) : 0;
 		currentActom = actoms.get(currentIndex);
 		paintCurrent();
@@ -84,6 +91,8 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 	}
 
 	private void paintCurrent() {
+		if (!isActive)
+			return;
 		if (contentPanel != null)
 			contentPanel.clear();
 		currentActom = actoms.get(currentIndex);
@@ -100,7 +109,8 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 
 	@Override
 	public void stop() {
-		GWT.log("STOP");
+		isActive = false;
+		contentPanel.clear();
 	}
 
 	// TODO: Smell - Activity Bar shows only after this fires.

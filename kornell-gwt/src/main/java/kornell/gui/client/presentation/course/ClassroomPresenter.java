@@ -27,6 +27,7 @@ import kornell.scorm.client.scorm12.SCORM12Runtime;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -54,6 +55,14 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		this.placeCtrl = placeCtrl;
 		this.sequencerFactory = seqFactory;
 		this.session = session;
+
+
+		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				stopSequencer();
+			}
+		});
 	}
 
 	private void displayPlace() {
