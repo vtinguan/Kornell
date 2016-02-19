@@ -83,7 +83,7 @@ object RegistrationEnrollmentService {
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
     val personRepo = PersonRepo(person.getUUID)
     if (enrollmentRequest.getCourseVersionUUID == null) {
-      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
+      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID, true) match {
         case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
         case None => {
           createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
@@ -94,7 +94,7 @@ object RegistrationEnrollmentService {
       if (courseVersion.getParentVersionUUID != null) {
         throw new EntityConflictException("cannotEnrollOnChildVersion")
       }
-      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
+      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID, true) match {
         case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
         case None => {
           val enrollment = createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
@@ -102,7 +102,7 @@ object RegistrationEnrollmentService {
         }
       }
     }
-    //if there's no username set, get it from the enrollment request
+    //if there's no fullName set, get it from the enrollment request
     if (StringUtils.isNone(person.getFullName)) {
       person.setFullName(enrollmentRequest.getFullName)
       personRepo.update(person)

@@ -80,11 +80,12 @@ object EnrollmentsRepo {
     WHERE e.person_uuid = ${personUUID} and e.state <> ${EnrollmentState.deleted.toString}
 	    """.map[Enrollment](toEnrollment)
 
-  def byCourseClassAndPerson(courseClassUUID: String, personUUID: String): Option[Enrollment] =
+  def byCourseClassAndPerson(courseClassUUID: String, personUUID: String, getDeleted: Boolean): Option[Enrollment] =
     sql"""
 	  SELECT e.*, p.* 
     FROM Enrollment e join Person p on e.person_uuid = p.uuid
-    WHERE e.class_uuid = ${courseClassUUID} and e.state <> ${EnrollmentState.deleted.toString} 
+    WHERE e.class_uuid = ${courseClassUUID} and 
+	    (e.state <> ${EnrollmentState.deleted.toString} or ${getDeleted} = true)  
 	    AND e.person_uuid = ${personUUID}
 	    """.first[Enrollment]
 
