@@ -350,7 +350,9 @@ object ChatThreadsRepo {
 				(r.role <> ${RoleType.tutor.toString} or t.threadType = ${ChatThreadType.TUTORING.toString})
 				order by 
 					case 
-						when (r.role = ${RoleType.tutor.toString} and t.threadType = ${ChatThreadType.TUTORING.toString}) then 1
+						when (r.role = ${RoleType.tutor.toString} and 
+							(t.threadType = ${ChatThreadType.TUTORING.toString} or
+							 t.threadType = ${ChatThreadType.COURSE_CLASS.toString})) then 1
 						when r.role = ${RoleType.platformAdmin.toString} then 2
 						when r.role = ${RoleType.institutionAdmin.toString}  then 3
 						when r.role = ${RoleType.courseClassAdmin.toString}  then 4

@@ -339,8 +339,8 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 				item.addStyleName("threadMessageItem");
 				threadMessageWrapper.add(item);
 				
-				if(!dateLabelsMap.containsKey(chatThreadMessageTO.getSentAt())){
-					dateLabelsMap.put(chatThreadMessageTO.getSentAt()+"", new MessageItem(header, chatThreadMessageTO));
+				if(!dateLabelsMap.containsKey(chatThreadMessageTO.getSentAt().getTime()+"")){
+					dateLabelsMap.put(chatThreadMessageTO.getSentAt().getTime()+"", new MessageItem(header, chatThreadMessageTO));
 					if(insertOnTop){
 						threadPanelItems.insert(threadMessageWrapper, 0);
 					} else {
