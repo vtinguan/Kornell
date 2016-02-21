@@ -166,7 +166,8 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		boolean approvedOnTest = (Assessment.PASSED.equals(assessment) && currEnrollment.getCertifiedAt() != null) ||
 				currentCourseClass.getCourseClass().getRequiredScore() == null ||
 				BigDecimal.ZERO.equals(currentCourseClass.getCourseClass().getRequiredScore()) ||
-				currentCourseClass.getCourseClass().getRequiredScore().compareTo(currEnrollment.getAssessmentScore()) <= 0;
+				(currEnrollment.getAssessmentScore() != null &&
+						currentCourseClass.getCourseClass().getRequiredScore().compareTo(currEnrollment.getAssessmentScore()) <= 0);
 		
 		allowCertificateGeneration = (courseClassComplete && approvedOnTest);
 		status = allowCertificateGeneration ? constants.certificateAvailable() : constants.certificateNotAvailable();

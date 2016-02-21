@@ -151,6 +151,7 @@ object RegistrationEnrollmentService {
     if (cancelEnrollment && !EnrollmentState.cancelled.equals(enrollment.getState))
       EventsRepo.logEnrollmentStateChanged(UUID.random, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled, enrollment.getCourseVersionUUID == null)
     else if (!cancelEnrollment && (EnrollmentState.cancelled.equals(enrollment.getState)
+      || EnrollmentState.deleted.equals(enrollment.getState())
       || EnrollmentState.requested.equals(enrollment.getState())
       || EnrollmentState.denied.equals(enrollment.getState()))) {
       EventsRepo.logEnrollmentStateChanged(UUID.random, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled, enrollment.getCourseVersionUUID == null)

@@ -547,8 +547,8 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("Inactive class")
 	String inactiveClassLabel();
 	
-	@DefaultStringValue("Note")
-	String completedCourseNoteLabel();
+	@DefaultStringValue("Grade")
+	String completedCourseGradeLabel();
 	
 	@DefaultStringValue("on")
 	String completedOnToken();
