@@ -13,6 +13,11 @@ import scala.collection.mutable.Buffer
 import kornell.core.to.SimplePersonTO
 import kornell.core.to.SimplePeopleTO
 import kornell.server.repository.Entities
+import kornell.core.entity.Person
+import kornell.core.util.UUID
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import java.util.concurrent.TimeUnit.MINUTES
 
 object EnrollmentsRepo {
 
@@ -33,14 +38,15 @@ object EnrollmentsRepo {
 				from Enrollment e 
 				join Person p on e.person_uuid = p.uuid
 				left join Password pw on p.uuid = pw.person_uuid
-				where e.class_uuid = ${courseClassUUID} and
+				where e.class_uuid = ${courseClassUUID} and 
+       			e.state <> ${EnrollmentState.deleted.toString} and 
                 (p.fullName like ${filteredSearchTerm}
                 or pw.username like ${filteredSearchTerm}
                 or p.email like ${filteredSearchTerm})
 				order by e.state desc, p.fullName, username limit ${resultOffset}, ${pageSize}
 			    """.map[EnrollmentTO](toEnrollmentTO))
     enrollmentsTO.setCount(
-        sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}""".first[String].get.toInt)
+        sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID} and e.state <> ${EnrollmentState.deleted.toString}""".first[String].get.toInt)
     enrollmentsTO.setCountCancelled(
       sql"""select count(*) from Enrollment e where e.class_uuid = ${courseClassUUID}
             and state = ${EnrollmentState.cancelled.toString}""".first[String].get.toInt)
@@ -57,6 +63,7 @@ object EnrollmentsRepo {
           join Person p on e.person_uuid = p.uuid
           left join Password pw on p.uuid = pw.person_uuid
           where e.class_uuid = ${courseClassUUID} and 
+      	  e.state <> ${EnrollmentState.deleted.toString} and 
           (p.fullName like ${filteredSearchTerm}
           or pw.username like ${filteredSearchTerm}
           or p.email like ${filteredSearchTerm})
@@ -70,14 +77,15 @@ object EnrollmentsRepo {
     SELECT 
     	e.*
 	  FROM Enrollment e join Person p on e.person_uuid = p.uuid 
-    WHERE e.person_uuid = ${personUUID}
+    WHERE e.person_uuid = ${personUUID} and e.state <> ${EnrollmentState.deleted.toString}
 	    """.map[Enrollment](toEnrollment)
 
-  def byCourseClassAndPerson(courseClassUUID: String, personUUID: String): Option[Enrollment] =
+  def byCourseClassAndPerson(courseClassUUID: String, personUUID: String, getDeleted: Boolean): Option[Enrollment] =
     sql"""
 	  SELECT e.*, p.* 
     FROM Enrollment e join Person p on e.person_uuid = p.uuid
-    WHERE e.class_uuid = ${courseClassUUID} 
+    WHERE e.class_uuid = ${courseClassUUID} and 
+	    (e.state <> ${EnrollmentState.deleted.toString} or ${getDeleted} = true)  
 	    AND e.person_uuid = ${personUUID}
 	    """.first[Enrollment]
 
@@ -86,7 +94,7 @@ object EnrollmentsRepo {
 	  SELECT e.uuid
     FROM Enrollment e join Person p on e.person_uuid = p.uuid
 	join Password pw on pw.person_uuid = p.uuid
-    WHERE e.class_uuid = ${courseClassUUID} 
+    WHERE e.class_uuid = ${courseClassUUID} and e.state <> ${EnrollmentState.deleted.toString} 
 	    AND pw.username = ${username}
 	    """.first[String]
 
@@ -94,7 +102,7 @@ object EnrollmentsRepo {
     sql"""
     	SELECT e.*, p.* 
     FROM Enrollment e join Person p on e.person_uuid = p.uuid
-    WHERE e.courseVersionUUID = ${courseVersionUUID} 
+    WHERE e.courseVersionUUID = ${courseVersionUUID} and e.state <> ${EnrollmentState.deleted.toString} 
 	    AND e.person_uuid = ${personUUID}
 	    """.first[Enrollment]
 
@@ -132,22 +140,57 @@ object EnrollmentsRepo {
     		${enrollment.getCourseVersionUUID},
         	${enrollment.getParentEnrollmentUUID}
     	)""".executeUpdate
+    	if (enrollment.getCourseClassUUID != null)
+    		ChatThreadsRepo.addParticipantsToCourseClassThread(CourseClassesRepo(enrollment.getCourseClassUUID).get)
     enrollment
   }
 
-  def find(person: PersonRepo, course_uuid: String): Enrollment = sql"""
+  def find(personUUID: String, courseClassUUID: String): Option[Enrollment] = sql"""
 	  select * from Enrollment 
-	  where person_uuid=${person.uuid}
-	   and course_uuid=${course_uuid}"""
+	  where person_uuid=${personUUID}
+	   and class_uuid=${courseClassUUID}"""
     .first[Enrollment]
-    .get
 
   def simplePersonList(courseClassUUID: String): SimplePeopleTO = {
     TOs.newSimplePeopleTO(sql"""select p.uuid as uuid, p.fullName as fullName, pw.username as username
     from Enrollment enr 
     join Person p on enr.person_uuid = p.uuid
     left join Password pw on p.uuid = pw.person_uuid
-    where enr.state <> ${EnrollmentState.cancelled.toString} and
+    where enr.state <> ${EnrollmentState.cancelled.toString} and enr.state <> ${EnrollmentState.deleted.toString} and
     enr.class_uuid = ${courseClassUUID}""".map[SimplePersonTO](toSimplePersonTO))
+  }
+    
+  def getEspinafreEmailList(): List[Person] = {
+    sql"""select p.* from Enrollment e 
+        join CourseVersion cv on cv.uuid = e.courseVersionUUID
+    	join Person p on e.person_uuid = p.uuid
+        where cv.label = 'espinafre'
+    	and p.receiveEmailCommunication = 1
+    	and e.end_date = concat(curdate(), ' 23:59:59')
+    	and e.progress < 100
+    """.map[Person](toPerson)
+  }
+
+
+  val cacheBuilder = CacheBuilder
+    .newBuilder()
+    .expireAfterAccess(5, MINUTES)
+    .maximumSize(1000)
+
+  val uuidLoader = new CacheLoader[String, Option[Enrollment]]() {
+    override def load(uuid: String): Option[Enrollment] = sql" SELECT * FROM Enrollment e WHERE uuid = ${uuid}".first[Enrollment]
+  }
+    
+  val uuidCache = cacheBuilder.build(uuidLoader)
+  
+  def getByUUID(uuid: String) = Option(uuid) flatMap uuidCache.get
+  
+  def updateCache(e: Enrollment) = {
+    val oe = Some(e)
+    uuidCache.put(e.getUUID, oe)
+  }
+  
+  def invalidateCache(enrollmentUUID: String) = {
+    uuidCache.invalidate(enrollmentUUID)
   }
 }

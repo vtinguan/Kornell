@@ -4,6 +4,8 @@ public enum ChatThreadType {
     SUPPORT,
     TUTORING,
     COURSE_CLASS,
-    DIRECT
+    DIRECT,
+    INSTITUTION_SUPPORT,
+    PLATFORM_SUPPORT
 }
 

@@ -98,7 +98,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private Institution institution;
 
-	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist;
+	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private GenericInstitutionReportsView reportsView;
@@ -299,6 +299,10 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		fields.add(terms);
 		institutionFields.add(terms);
 		
+		timeZone = new KornellFormFieldWrapper("Fuso horário", formHelper.createTextBoxFormField(institution.getTimeZone()), isPlatformAdmin);
+		fields.add(timeZone);
+		institutionFields.add(timeZone);
+		
 		institutionFields.add(formHelper.getImageSeparator());
 
 		institutionFields.setVisible(true);
@@ -338,6 +342,8 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setTerms(terms.getFieldPersistText());
 		institution.setAssetsURL(assetsURL.getFieldPersistText());
 		institution.setBaseURL(baseURL.getFieldPersistText());
+		institution.setBillingType(BillingType.valueOf(billingType.getFieldPersistText()));
+		institution.setInstitutionType(InstitutionType.valueOf(institutionType.getFieldPersistText()));
 		institution.setDemandsPersonContactDetails(demandsPersonContactDetails.getFieldPersistText().equals("true"));
 		institution.setValidatePersonContactDetails(validatePersonContactDetails.getFieldPersistText().equals("true"));
 		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));

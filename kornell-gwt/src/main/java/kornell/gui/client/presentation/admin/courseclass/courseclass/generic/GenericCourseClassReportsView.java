@@ -99,7 +99,6 @@ public class GenericCourseClassReportsView extends Composite {
 		btn.removeStyleName("btn");
 		btn.addStyleName(styleNameGlobal);
 		btn.addStyleName(styleName);
-		btn.addStyleName("btnNotSelected");
 		return btn;
 	}
 

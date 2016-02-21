@@ -1,8 +1,13 @@
 package kornell.gui.client.presentation.welcome.generic;
 
+import static kornell.core.util.StringUtils.mkurl;
+
+import java.util.Date;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentProgress;
 import kornell.core.entity.EnrollmentProgressDescription;
@@ -19,7 +24,8 @@ import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teacher;
 import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.presentation.util.EnumTranslator;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Paragraph;
@@ -27,6 +33,7 @@ import com.github.gwtbootstrap.client.ui.ProgressBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -46,8 +53,6 @@ public class GenericCourseSummaryView extends Composite {
 
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	
-	private FormHelper formHelper = GWT.create(FormHelper.class);
-
 	@UiField
 	Heading hTitle;
 	
@@ -84,7 +89,8 @@ public class GenericCourseSummaryView extends Composite {
 	@UiField
 	FlowPanel pnlCourseSummaryBar;
 
-	String iconCourseURL = "skins/first/icons/welcomeCourses/";
+	String ICON_COURSE_URL = mkurl(ClientConstants.IMAGES_PATH, "welcomeCourses");
+	String iconCourseURL;
 
 	private CourseClassTO courseClassTO;
 	private PlaceController placeCtrl;
@@ -99,7 +105,7 @@ public class GenericCourseSummaryView extends Composite {
 		this.session = session;
 		Course course = courseClassTO.getCourseVersionTO().getCourse();
 		hTitle.setText(course.getTitle());
-		lblSubTitle.setText("Turma: " + courseClassTO.getCourseClass().getName());
+		lblSubTitle.setText(constants.courseClass() + ": " + courseClassTO.getCourseClass().getName());
 		pDescription.setText(course.getDescription());
 
 		final Teacher teacher = Teachers.of(courseClassTO);
@@ -109,19 +115,21 @@ public class GenericCourseSummaryView extends Composite {
 			public void ok(UserInfoTO userInfoTO) {
 				Student student = teacher.student(userInfoTO);
 				if(courseClassTO.getEnrollment() != null && EnrollmentState.cancelled.equals(courseClassTO.getEnrollment().getState())){
-					pStatusErr.setText("(CANCELADA)");
+					pStatusErr.setText(constants.cancelledClassLabel());
 				}
-				if (student.isEnrolled())
+				if(!CourseClassState.active.equals(courseClassTO.getCourseClass().getState())){
+					pStatus.setText(constants.inactiveClassLabel());
+					iconCourseURL = mkurl(ICON_COURSE_URL, "iconNotStarted.png");
+				} else if (student.isEnrolled()) {
 					onEnrolled(student);
-				else
+				} else {
 					onNotEnrolled();
+				}
 				onEnrolledOrNot();
 			}
 
 			private void onEnrolledOrNot() {
-				String assetsURL = StringUtils.composeURL(courseClassTO.getCourseVersionTO().getDistributionURL(),
-						courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix());
-				imgThumb.setUrl(StringUtils.composeURL("/",assetsURL, "/images/thumb.jpg"));
+				imgThumb.setUrl(StringUtils.mkurl("/",courseClassTO.getCourseVersionTO().getDistributionURL(),courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix(),"/images/thumb.jpg"));
 				imgIconCourse.setUrl(iconCourseURL);
 
 				sinkEvents(Event.ONCLICK);
@@ -145,8 +153,8 @@ public class GenericCourseSummaryView extends Composite {
 				Button requestEnrollmentBtn = getRequestEnrollmentButton();
 				pnlCourseSummaryBar.add(requestEnrollmentBtn);
 
-				pStatus.setText("Disponível");
-				iconCourseURL += "iconAcquire.png";
+				pStatus.setText(constants.availableClassLabel());
+				iconCourseURL = mkurl(ICON_COURSE_URL, "iconAcquire.png");
 			}
 
 			private void onEnrolled(Student student) {
@@ -169,46 +177,46 @@ public class GenericCourseSummaryView extends Composite {
 
 	private void onCourseInProgress(Integer progress) {
 		if(progress >= 100){
-			pStatus.setText("Aguardando Avaliação");
+			pStatus.setText(constants.pendingGradeLabel());
 		} else {
-			pStatus.setText(formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.inProgress)+": ");
+			pStatus.setText(EnumTranslator.translateEnum(EnrollmentProgressDescription.inProgress)+": ");
 			progressBar.removeStyleName("shy");
 			progressBar.setPercent(progress);
 			pStatusInfo.setText(progress + "% ");
 		}
-		iconCourseURL += "iconInProgress.png";
+		iconCourseURL = mkurl(ICON_COURSE_URL, "iconInProgress.png");
 		
 	}
 
 	private void onCourseNotStarted() {
 		if(courseClassTO.getEnrollment() != null &&
 				EnrollmentState.requested.equals(courseClassTO.getEnrollment().getState())){
-			pStatus.setText("Aguardando aprovação da matrícula");
-			iconCourseURL += "iconWaiting.png";
+			pStatus.setText(constants.pendingEnrollmentApproval());
+			iconCourseURL = mkurl(ICON_COURSE_URL, "iconWaiting.png");
 		} else {
 			pStatus.setText(constants.toStart());
-			iconCourseURL += "iconNotStarted.png";
+			iconCourseURL = mkurl(ICON_COURSE_URL, "iconNotStarted.png");
 		}
 	}
 
-	private void onCourseCompleted(String certifiedAt) {
-		String statusText = formHelper.getEnrollmentProgressAsText(EnrollmentProgressDescription.completed);
+	private void onCourseCompleted(Date certifiedAt) {
+		String statusText = EnumTranslator.translateEnum(EnrollmentProgressDescription.completed);
 		if(certifiedAt != null) {
-			statusText += " em: ";
-			pStatusInfo.setText(formHelper.getStringFromDate(certifiedAt));
+			statusText += " " + constants.completedOnToken() + ": ";
+			pStatusInfo.setText(DateTimeFormat.getFormat("yyyy-MM-dd").format(certifiedAt));
 		}
 		if(courseClassTO.getCourseClass().getRequiredScore() != null && 
 				courseClassTO.getCourseClass().getRequiredScore().intValue() != 0 &&
 				courseClassTO.getEnrollment().getAssessmentScore() != null){
-			pStatus2.setText(" - Nota: ");
+			pStatus2.setText(" - " + constants.completedCourseGradeLabel() + ":");
 			pStatusInfo2.setText(""+courseClassTO.getEnrollment().getAssessmentScore().intValue());
 		}
 		pStatus.setText(statusText);
-		iconCourseURL += "iconFinished.png";
+		iconCourseURL = mkurl(ICON_COURSE_URL, "iconFinished.png");
 	}
 
 	private Button getRequestEnrollmentButton() {
-		Button requestEnrollmentBtn = new Button(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? "Iniciar Curso" : "Solicitar Matrícula");
+		Button requestEnrollmentBtn = new Button(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? constants.startCourseLabel() : constants.requestEnrollmentLabel());
 		requestEnrollmentBtn.addStyleName("right btnAction");
 
 		requestEnrollmentBtn.addClickHandler(new ClickHandler() {

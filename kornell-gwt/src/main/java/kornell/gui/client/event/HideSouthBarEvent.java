@@ -7,14 +7,12 @@ public class HideSouthBarEvent extends GwtEvent<HideSouthBarEventHandler>{
 	public static final Type<HideSouthBarEventHandler> TYPE = new Type<HideSouthBarEventHandler>();
 	
 	private boolean hideSouthBar;
-	private boolean testPlace;
 	
 	public HideSouthBarEvent(boolean hideSouthBar){
 		this.hideSouthBar = hideSouthBar;
 	}
 	
 	public HideSouthBarEvent(){
-		this.testPlace = true;
 	}
 	
 	@Override
@@ -33,13 +31,5 @@ public class HideSouthBarEvent extends GwtEvent<HideSouthBarEventHandler>{
 
 	public void setHideSouthBar(boolean hideSouthBar) {
 		this.hideSouthBar = hideSouthBar;
-	}
-
-	public boolean isTestPlace() {
-		return testPlace;
-	}
-
-	public void setTestPlace(boolean testPlace) {
-		this.testPlace = testPlace;
 	}
 }

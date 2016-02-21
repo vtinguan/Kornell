@@ -225,8 +225,8 @@
 					<style>${gwt.style}</style>
 					<copyWebapp>true</copyWebapp>
 					<!-- Enable these lines to generate translation files on maven build -->
-					<!-- extraParam>true</extraParam>
-					<extra>target/i18n</extra -->
+					<extraParam>true</extraParam>
+					<extra>target/i18n</extra>
 				</configuration>
 			</plugin>
 

@@ -1,10 +1,10 @@
 package kornell.gui.client.presentation.admin.course.course.generic;
 
-import static kornell.core.util.StringUtils.noneEmpty;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
@@ -13,7 +13,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -27,9 +26,8 @@ public class GenericCourseReportItemView extends Composite {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-	private String BASE_IMAGES_PATH = "skins/first/icons/";
-	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
-	private String LIBRARY_IMAGES_PATH = BASE_IMAGES_PATH + "courseLibrary/";
+	private String ADMIN_IMAGES_PATH = StringUtils.mkurl(ClientConstants.IMAGES_PATH, "admin/");
+	private String LIBRARY_IMAGES_PATH = StringUtils.mkurl(ClientConstants.IMAGES_PATH, "courseLibrary/");
 	private KornellSession session;
 	private Course course;
 	private String type;
@@ -71,8 +69,8 @@ public class GenericCourseReportItemView extends Composite {
 	private void displayCourseClassInfo() {
 	  this.name = "Relatório de detalhes do curso";
 		this.description = "Geração do relatório de detalhes do curso, contendo os dados das matrículas nas turmas.";
-		
-		certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
+
+		certificationIcon.setUrl(StringUtils.mkurl(ADMIN_IMAGES_PATH, type + ".png"));
 		lblName.setText(name);
 		lblDescription.setText(description);
 		lblGenerate.setText("Gerar");
@@ -82,8 +80,8 @@ public class GenericCourseReportItemView extends Composite {
 		lblDownload.removeStyleName("cursorPointer");
 		lblDownload.addStyleName("anchorToLabel");
 		lblDownload.setEnabled(false);
-		
-		Image img = new Image(LIBRARY_IMAGES_PATH + "xls.png");
+
+		Image img = new Image(StringUtils.mkurl(LIBRARY_IMAGES_PATH, "xls.png"));
 		xlsCheckBox = new CheckBox("Gerar em formato Excel");
 		
 		optionPanel.add(img);

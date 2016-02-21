@@ -38,6 +38,10 @@ public class UserClient extends RESTClient {
 	public void changeTargetPassword(String targetPersonUUID, String password, Callback<Void> cb) {
 		PUT("/user/changePassword/" + targetPersonUUID).sendRequest(password, cb);
 	}
+	
+	public void forcedPasswordChange(String username, String password, Callback<UserInfoTO> cb) {
+		PUT("/user/updatePassword/" + username).sendRequest(password, cb);
+	}
 
 	public void hasPowerOver(String targetPersonUUID, Callback<Boolean> cb) {
 		GET("/user/hasPowerOver/" + targetPersonUUID).sendRequest(null, cb);

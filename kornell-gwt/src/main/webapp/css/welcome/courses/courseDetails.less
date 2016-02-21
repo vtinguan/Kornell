@@ -1,0 +1,473 @@
+@import-once "../../utils/mixins";
+@import-once "../../utils/colors";
+@import-once "../../utils/forms";
+
+.detailsPanel{
+    width: @wrapperWidth;
+    margin: 0 auto;
+	@detailsPanelMargin: 20px;
+	@buttonsPanelWidth: .18 * @wrapperWidth;
+	@hintsPanelWidth: .25 * @wrapperWidth;
+	@infoPanelWidth: .45 * @wrapperWidth;
+	.titlePanel{
+		padding-top: 20px;
+		font-size: 18px;
+		line-height: 20px;
+		.titleImage{
+			padding-left: 20px;
+			padding-right: 5px;
+			margin-top: -3px;
+			float: left;
+			height: 28px;
+			width: 28px;
+		}
+		.titleLabel{
+			color: @niceTextColor;
+			padding-left: 8px;
+			padding-right: 8px;
+			float: left;
+		}
+		.subTitleLabel{
+			clear: both;
+			margin-left: 53px;
+			font-size: 14px;
+		}
+		.courseNameLabel{
+			color: @textHighlightColor2;
+			float: left;
+		}
+		.courseClassNameLabel{
+			font-size: 14px;
+			color: @textHighlightColor2;
+			float: left;
+		}
+		.closePanel{
+			.closeImage {
+				float: right;
+			}
+			.closeLabel {
+				float: right;
+				line-height: 40px;
+				color: @textHighlightColor;
+				padding-right: 3px;
+			}
+		}
+	}
+	.buttonsPanel{
+		width: @buttonsPanelWidth;
+		margin-left: @detailsPanelMargin;
+		margin-right: @detailsPanelMargin;
+		margin-top: @detailsPanelMargin;
+		clear: both;
+		float: left;
+		.btnDetails{
+			width: @buttonsPanelWidth - (@detailsPanelMargin * 2);
+			text-align: right;
+			margin-top: @detailsPanelMargin;
+			padding: 4px 12px !important;
+			display: inline-block;
+			&:hover{
+				text-decoration: none;
+			}
+			.btnTitle{
+				font-weight: bold;
+				color: @plainTextColor;
+				line-height: 28px;
+				font-size: 15px;
+			}
+			.btnLabel{
+				font-size: 11px;
+				line-height: 14px;
+				color: @niceTextColor;
+				padding-bottom: 8px;
+			}
+		}
+
+	}
+	.detailsContentPanel{
+		.infoPanel{
+			width: @infoPanelWidth;
+			margin-top: @detailsPanelMargin;
+			float: left;
+			.infoDetails{
+				margin-top: @detailsPanelMargin;
+				.infoTitle{
+					color: @textHighlightColor;
+					font-weight: bold;
+					font-size: 16px;
+					margin-bottom:  @detailsPanelMargin / 2;
+				}
+				.infoText{
+					color: @niceTextColor;
+					padding-right: @detailsPanelMargin;
+				}
+			}
+		}
+		.sidePanel{
+			float: left;	
+			margin-top: @detailsPanelMargin * 3;
+			.hintsPanel{
+				width: @hintsPanelWidth;
+				background-color: @contentBoxBackgroundColor;
+				border-radius: 8px;
+				color: @niceTextColor;
+				font-size: 12px;
+				line-height: 14px;
+				padding: @detailsPanelMargin;
+				.hintDetails{
+					padding-top: @detailsPanelMargin;
+					padding-bottom: @detailsPanelMargin;
+					.hintImg{
+						float: left;
+					}
+					.hintText{
+						padding-left: @detailsPanelMargin * 1.5;
+					}
+				}
+			}	
+			.notEnrolledPanel{
+				width: @hintsPanelWidth;
+				color: @textHighlightColor2;
+				padding: 10px;
+				padding-left: 22px;
+			}
+		}
+		.topicsPanel{
+			@topicsPanelWidth: .75 * @wrapperWidth;
+			@topicsWidth: @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@statusWidth: .17 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@timeWidth: .1 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@forumCommentsWidth: .21 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@notesWidth: .12 * @topicsPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			width: @topicsPanelWidth;
+			margin-top: @detailsPanelMargin * 1.5;
+			float: left;
+			.topicsHeaderPanel{
+				@topicsHeaderPanelHeight: 24px;
+				height: @topicsHeaderPanelHeight;
+				margin-bottom: 10px;
+				.btnTopicsHeader{
+					border-radius: 0px;
+					height: @topicsHeaderPanelHeight;
+					line-height: @topicsHeaderPanelHeight;
+					border: 0;
+					color: @niceTextColor;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					font-size: 12px;
+					font-weight: bold;
+					border-left: 1px solid @buttonBorderLeftColor;
+					border-right: 1px solid @buttonBorderRightColor;
+					display: block;
+					float: left;
+					&:hover{
+						text-decoration: none;
+						cursor: default;
+					}
+				}
+				.btnTopics{width: @topicsWidth + @detailsPanelMargin;}
+				.btnStatus{width: @statusWidth + @detailsPanelMargin;}
+				.btnTime{width: @timeWidth + @detailsPanelMargin;}
+				.btnForumComments{width: @forumCommentsWidth + @detailsPanelMargin;}
+				.btnNotes{width: @notesWidth + @detailsPanelMargin;}
+			}
+			.pageWrapper{
+				background-color: transparent !important;
+				font-size: 12px !important;
+				.identImage{
+					float: left;
+				}
+				.topicPanel{
+					width: @topicsWidth + @detailsPanelMargin + 2px - 50px !important;
+					background-color: @contentBoxBackgroundColor;
+				}
+			}
+			.topicWrapper{
+				@topicWrapperHeight: 30px;
+				height: @topicWrapperHeight;
+				line-height: @topicWrapperHeight;
+				background-color: @contentBoxBackgroundColor;
+				margin-top: @detailsPanelMargin / 2;
+				color: @niceTextColor;
+				font-size: 14px;
+				border-radius: 5px;
+				.topicPanel{
+					float: left;
+					padding-right: @detailsPanelMargin / 2;
+					width: @topicsWidth + (@detailsPanelMargin/2) + 2px;
+					border-radius: 5px;
+					.topicIcon{
+						float: left;
+						padding: 5px;
+						padding-right: 8px;
+						width: 20px;
+						display: block;
+					}
+					.shy{
+						visibility: hidden;
+					}
+					.lblTopic{
+						float: left;
+						color: lighten(@niceTextColor, 20%);
+					}
+				}
+				.lblStatus{
+					float: left;
+					width: @statusWidth + @detailsPanelMargin + 2px;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+				}
+				.lblStatusFinishedTest{
+					float: left;
+					width: @statusWidth + @detailsPanelMargin + 2px;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					color: @linkTextColor;
+				}
+				.lblTime{
+					float: left;
+					width: @timeWidth + @detailsPanelMargin + 2px;
+					text-align: center;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+				}
+				.pnlForumComments{
+					float: left;
+					width: @forumCommentsWidth + @detailsPanelMargin + 2px;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					.lblForumComments{
+						float: left;
+						color: lighten(@niceTextColor, 20%);
+						padding-right: @detailsPanelMargin / 4;
+					}
+					.lblDividingBar{
+						float: left;
+						color: darken(@niceTextColor, 20%);
+						padding-right: @detailsPanelMargin / 4;
+					}
+					.lblNew{
+						float: left;
+						padding-right: @detailsPanelMargin / 4;
+					}
+					.lblNewForumComments{
+						float: left;
+						color: @textHighlightColor;
+					}
+				}
+				.lblNotes{
+					float: left;
+					width: @notesWidth + @detailsPanelMargin + 2px;
+					text-align: center;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+				}
+			}
+
+		}
+		.certificationPanel{
+
+			@itemWidth: .6 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@statusWidth: .15 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@gradeWidth: .07 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@actionsWidth: .18 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			margin-top: @detailsPanelMargin;
+			float: left;
+			.certificationHeaderPanel{
+				@certificationHeaderPanelHeight: 24px;
+				height: @certificationHeaderPanelHeight;
+				margin-bottom: 10px;
+				.btnCertificationHeader{
+					.btnDefault;
+					.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
+					float: left;
+					border-radius: 0px !important;
+					line-height: 24px;
+					padding-left: 10px !important;
+					padding-right: 10px !important;
+					font-size: 12px !important;
+					.btnBorder;
+					&:hover{
+						text-decoration: none;
+						cursor: default;
+					}
+				}
+				.btnItem{width: @itemWidth + @detailsPanelMargin; text-align: left;}
+				.btnStatus{width: @statusWidth + @detailsPanelMargin;}
+				.btnGrade{width: @gradeWidth + @detailsPanelMargin;}
+				.btnActions{width: @actionsWidth + @detailsPanelMargin;}
+			}
+			.certificationWrapper{
+				@certificationWrapperHeight: 78px;
+				height: @certificationWrapperHeight;
+				line-height: @certificationWrapperHeight;
+				background-color: @contentBoxBackgroundColor;
+				margin-top: @detailsPanelMargin / 2;
+				color: @niceTextColor;
+				font-size: 13px;
+				.itemPanel{
+					float: left;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					width: @itemWidth + @detailsPanelMargin + 2px;
+					.certificationIcon{
+						float: left;
+						padding-top: (@certificationWrapperHeight - 18px) / 2;
+						padding-bottom: (@certificationWrapperHeight - 18px) / 2;
+						padding-left: @detailsPanelMargin / 2;
+						padding-right: @detailsPanelMargin;
+					}
+					.lblName{
+						color: lighten(@niceTextColor, 20%);
+						padding-left: @detailsPanelMargin;
+						line-height: 22px;
+						font-size: 15px;
+						padding-top: @detailsPanelMargin * 2 / 3;
+						padding-bottom: @detailsPanelMargin / 4;
+					}
+					.lblDescription{
+						color: @textInfoColor;
+						padding-left: @detailsPanelMargin;
+						font-size: 11px;
+						line-height: 13px;
+					}
+				}
+				.lblStatus{
+					float: left;
+					width: @statusWidth + @detailsPanelMargin + 2px;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					text-align: center;
+				}
+				.lblGrade{
+					float: left;
+					min-height: 1px;
+					width: @gradeWidth + @detailsPanelMargin + 2px;
+					text-align: center;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+					color: @textInfoColor;
+				}
+				.lblActions{
+					float: left;
+					width: @actionsWidth + @detailsPanelMargin + 2px;
+					text-align: center;
+					padding-left: @detailsPanelMargin / 2;
+					padding-right: @detailsPanelMargin / 2;
+				}
+			}
+		}
+		.libraryPanel{
+			float: left;
+			margin-top: 20px;
+		}
+		.detailsInfo{
+			width: @rightPanelWidth;
+			margin-top: @detailsPanelMargin;
+			margin-bottom: @detailsPanelMargin;
+			.detailsInfoTitle{
+				color: @textHighlightColor;
+				font-weight: bold;
+				font-size: 16px;
+				margin-bottom:  @detailsPanelMargin / 2;
+			}
+			.detailsInfoText{
+				color: @niceTextColor;
+				padding-right: @detailsPanelMargin;
+			}
+		}
+	}
+}
+
+
+/*@media screen and (max-width: @wrapperWidth) {
+	.detailsPanel{
+		@detailsPanelWidth: @wrapperWidthUnder990 - 18px;
+		@buttonsPanelWidth: @detailsPanelWidth;
+		@infoPanelWidth: @detailsPanelWidth;
+		@topicsPanelWidth: @detailsPanelWidth;
+		@hintsPanelWidth: @detailsPanelWidth * 2 / 3;
+		@rightPanelWidth: .85 * @wrapperWidthUnder990;
+		@detailsPanelMargin: 10px;
+		width:	@detailsPanelWidth;
+		.buttonsPanel{
+			width: @buttonsPanelWidth - 17px;
+			margin-left: 17px;
+			margin-right: 0px;
+			margin-top: @detailsPanelMargin;
+			.btnDetails{
+				width: @buttonsPanelWidth / 4;
+				margin-left: @detailsPanelMargin;
+				text-align: center;
+			}
+		}
+		.contentPanel{
+			.infoPanel{
+				margin-left: @detailsPanelMargin;
+				width:  .85 * @wrapperWidthUnder990;
+			}
+			.hintsPanel{
+				width: @hintsPanelWidth;
+				margin-top: @detailsPanelMargin; 
+				margin-bottom: @detailsPanelMargin * 3;
+				margin-right: @detailsPanelMargin * 3;
+				margin-left: @detailsPanelMargin * 3;
+			}
+			.topicsPanel{
+				width: @topicsPanelWidth + @detailsPanelMargin + 2px;
+				padding-left: @detailsPanelMargin / 2;
+				padding-right: @detailsPanelMargin / 2;
+				margin-left: 35px;
+				.topicsHeaderPanel{
+					.btnTopicsHeader{width: @topicsPanelWidth}
+					.btnForumComments{display: none}
+					.btnNotes{display: none}
+				}					
+				.topicWrapper{
+					.pnlForumComments{display: none}
+					.lblNotes{display: none}
+				}
+			}
+
+			@itemWidth: .6 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@statusWidth: .15 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@gradeWidth: .07 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			@actionsWidth: .18 * @rightPanelWidth - (@detailsPanelMargin * 2) - 2px;
+			.certificationPanel{
+				margin-left: @detailsPanelMargin;
+				.certificationInfo{
+					width: @rightPanelWidth;
+				}
+				.certificationHeaderPanel{
+					.btnItem{width: @itemWidth + @detailsPanelMargin;}
+					.btnStatus{width: @statusWidth + @detailsPanelMargin;}
+					.btnGrade{width: @gradeWidth + @detailsPanelMargin;}
+					.btnActions{width: @actionsWidth + @detailsPanelMargin;}
+				}
+				.certificationWrapper{
+					.itemPanel{
+						width: @itemWidth + @detailsPanelMargin + 2px;
+						.certificationIcon{
+						}
+						.lblName{
+							line-height: 54px;
+						}
+						.lblDescription{
+							display: none;
+						}
+					}
+					.lblStatus{
+						width: @statusWidth + @detailsPanelMargin + 2px;
+					}
+					.lblGrade{
+						width: @gradeWidth + @detailsPanelMargin + 2px;
+					}
+					.lblActions{
+						width: @actionsWidth + @detailsPanelMargin + 2px;
+					}
+				}
+			}
+		}	
+	}
+}*/
+

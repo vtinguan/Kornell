@@ -1,5 +1,8 @@
 package kornell.gui.client.presentation.util;
 
+import static kornell.core.util.StringUtils.mkurl;
+import kornell.gui.client.util.ClientConstants;
+
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -21,7 +24,7 @@ public class LoadingPopup {
 			if(message != null){
 				panel.add(new Label(" " + message + " "));
 			}
-			panel.add(new Image("skins/first/ajax-loader.gif"));
+			panel.add(new Image(mkurl(ClientConstants.IMAGES_PATH, "ajax-loader.gif")));
 			//popup.setGlassEnabled(true);
 			popup.add(panel);
 			popup.center();

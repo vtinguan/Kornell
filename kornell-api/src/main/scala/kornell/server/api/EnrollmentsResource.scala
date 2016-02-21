@@ -22,6 +22,11 @@ import kornell.server.util.AccessDeniedErr
 import kornell.server.util.Conditional.toConditional
 import kornell.core.to.SimplePeopleTO
 import kornell.core.to.EnrollmentsTO
+import kornell.server.jdbc.repository.InstitutionRepo
+import kornell.server.util.EmailService
+import kornell.server.jdbc.repository.EventsRepo
+import kornell.core.util.UUID
+import kornell.server.jdbc.repository.EnrollmentRepo
 
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
@@ -34,7 +39,18 @@ class EnrollmentsResource {
   @Consumes(Array(Enrollment.TYPE))
   @Produces(Array(Enrollment.TYPE))
   def create(enrollment: Enrollment) = {
-      EnrollmentsRepo.create(enrollment)
+      val existingEnrollment = EnrollmentsRepo.find(enrollment.getPersonUUID, enrollment.getCourseClassUUID)
+      if(existingEnrollment.isDefined) {
+    	val oldState = existingEnrollment.get.getState
+    	existingEnrollment.get.setState(enrollment.getState)
+    	EnrollmentRepo(existingEnrollment.get.getUUID).update(existingEnrollment.get)
+        EventsRepo.logEnrollmentStateChanged(UUID.random, getAuthenticatedPersonUUID, existingEnrollment.get.getUUID, oldState, existingEnrollment.get.getState, false)
+        existingEnrollment.get
+      } else {
+        val e = EnrollmentsRepo.create(enrollment)
+        EventsRepo.logEnrollmentStateChanged(UUID.random, getAuthenticatedPersonUUID, e.getUUID, EnrollmentState.notEnrolled, e.getState, false)
+        e
+      }
   }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  AccessDeniedErr() )
   .requiring(CourseClassRepo(enrollment.getCourseClassUUID()).get.isPublicClass() == true, AccessDeniedErr())
   .requiring(enrollment.getState.equals(EnrollmentState.requested) || 
@@ -78,7 +94,7 @@ class EnrollmentsResource {
   }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
-    
+  
 }
 
 object EnrollmentsResource {

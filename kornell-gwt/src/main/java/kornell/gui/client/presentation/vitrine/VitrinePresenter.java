@@ -130,10 +130,18 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				view.setMessage(KornellConstantsHelper.getMessage("badUsernamePassword"));
 				view.showMessage();
 			}
+			@Override
+			protected void forbidden(KornellErrorTO kornellErrorTO) {
+				logger.info(this.getClass().getName() + " - " + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
+				view.setForcedPasswordUpdate(true);
+				view.displayView(VitrineViewType.newPassword);
+				view.setMessage(KornellConstantsHelper.getMessage("forcedPasswordChange"));
+				view.showMessage();
+			}
 		};
 		String email = view.getEmail().toLowerCase().trim().replace(FormHelper.USERNAME_ALTERNATE_SEPARATOR, FormHelper.USERNAME_SEPARATOR); 
-    String password = view.getPassword();
-    session.login(email, password, userInfoCallback);
+		String password = view.getPassword();
+		session.login(email, password, userInfoCallback);
 	}
 
 	@Override
@@ -277,25 +285,30 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			errors.add(KornellConstantsHelper.getMessage("passwordMismatch"));
 		}
 		if (errors.size() == 0) {
-			session.user().changePassword(view.getNewPassword(), passwordChangeUUID,
-					new Callback<UserInfoTO>() {
-						@Override
-						public void ok(UserInfoTO to) {
-							view.displayView(VitrineViewType.login);
-							KornellNotification.show(KornellConstantsHelper.getMessage("passwordChangeComplete"));
-							view.setEmail(to.getUsername());
-							view.setPassword(view.getNewPassword());
-							doLogin();
-						}
+			Callback<UserInfoTO> passwordChangeCallback = new Callback<UserInfoTO>() {
+				@Override
+				public void ok(UserInfoTO to) {
+					view.setForcedPasswordUpdate(false);
+					view.displayView(VitrineViewType.login);
+					KornellNotification.show(KornellConstantsHelper.getMessage("passwordChangeComplete"));
+					view.setEmail(to.getUsername());
+					view.setPassword(view.getNewPassword());
+					doLogin();
+				}
 
-						@Override
-						public void unauthorized(KornellErrorTO kornellErrorTO) {
-							logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
-							KornellNotification
-									.show(KornellConstantsHelper.getMessage("passwordChangeError"),
-											AlertType.ERROR, 8000);
-						}
-					});
+				@Override
+				public void unauthorized(KornellErrorTO kornellErrorTO) {
+					logger.severe(this.getClass().getName() + " - " + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
+					KornellNotification
+					.show(KornellConstantsHelper.getMessage("passwordChangeError"),
+							AlertType.ERROR, 8000);
+				}
+			};
+			if (this.view.isForcedPasswordUpdate()) {
+				session.user().forcedPasswordChange(view.getEmail(), view.getNewPassword(), passwordChangeCallback);
+			} else {
+				session.user().changePassword(view.getNewPassword(), passwordChangeUUID, passwordChangeCallback);
+			}
 		} else {
 			view.setMessage(errors);
 			view.showMessage();

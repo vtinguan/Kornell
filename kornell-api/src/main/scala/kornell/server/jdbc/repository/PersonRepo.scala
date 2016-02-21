@@ -10,7 +10,6 @@ import scala.collection.JavaConverters._
 import kornell.core.entity.RoleType
 import java.text.SimpleDateFormat
 import java.text.DateFormat
-import kornell.core.util.TimeUtil
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import java.util.concurrent.TimeUnit
@@ -25,17 +24,14 @@ class PersonRepo(val uuid: String) {
     PersonRepo.this
   }
   
-  def updatePassword(personUUID: String, plainPassword: String): PersonRepo = {
-    AuthRepo().updatePassword(personUUID, plainPassword)
+  def updatePassword(personUUID: String, plainPassword: String, disableForceUpdatePassword: Boolean = false): PersonRepo = {
+    AuthRepo().updatePassword(personUUID, plainPassword, disableForceUpdatePassword)
     PersonRepo.this
   }
 
-  lazy val finder = sql" SELECT * FROM Person e WHERE uuid = ${uuid}"
+  def get: Person = first.get
 
-  def get: Person = finder.get[Person]
-
-  def first: Option[Person] =
-    finder.first[Person]
+  def first: Option[Person] = PeopleRepo.getByUUID(uuid)
 
   def update(person: Person) = {    
     sql"""
@@ -76,37 +72,33 @@ class PersonRepo(val uuid: String) {
   }
 
   def hasPowerOver(targetPersonUUID: String) = {
-    val actorRoles = AuthRepo().rolesOf(uuid)
-    val actorRolesSet = (Set.empty ++ actorRoles).asJava
+    val actorRoles = RolesRepo.getUserRoles(uuid, RoleCategory.BIND_DEFAULT).getRoleTOs
     val targetPerson = PersonRepo(targetPersonUUID).get
-
     val targetUsername = AuthRepo().getUsernameByPersonUUID(targetPersonUUID)
 
     //if there's no username yet, any admin can have power
     (!targetUsername.isDefined) ||
       {
-        val targetRoles = AuthRepo().rolesOf(targetPersonUUID)
-        val targetRolesSet = (Set.empty ++ targetRoles).asJava
+    	val targetRoles = RolesRepo.getUserRoles(targetPersonUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
 
         //people have power over themselves
         (uuid == targetPersonUUID) ||
           {
-            //platformAdmin has power over everyone, except other platformAdmins
-            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
-              RoleCategory.isPlatformAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
+            //platformAdmin has power over everyone
+            RoleCategory.isPlatformAdmin(actorRoles, targetPerson.getInstitutionUUID)
           } || {
             //institutionAdmin doesn't have power over platformAdmins, other institutionAdmins or people from other institutions 
-            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
-              !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) && 
-              RoleCategory.isInstitutionAdmin(actorRolesSet, targetPerson.getInstitutionUUID)
+            !RoleCategory.isPlatformAdmin(targetRoles, targetPerson.getInstitutionUUID) &&
+              !RoleCategory.hasRole(targetRoles, RoleType.institutionAdmin) && 
+              RoleCategory.isInstitutionAdmin(actorRoles, targetPerson.getInstitutionUUID)
           } || {
             //courseClassAdmin doesn't have power over platformAdmins, institutionAdmins, other courseClassAdmins or non enrolled users
             val enrollmentTOs = EnrollmentsRepo.byPerson(targetPersonUUID)
-            !RoleCategory.isPlatformAdmin(targetRolesSet, targetPerson.getInstitutionUUID) &&
-              !RoleCategory.hasRole(targetRolesSet, RoleType.institutionAdmin) &&
-              !RoleCategory.hasRole(targetRolesSet, RoleType.courseClassAdmin) && {
+            !RoleCategory.isPlatformAdmin(targetRoles, targetPerson.getInstitutionUUID) &&
+              !RoleCategory.hasRole(targetRoles, RoleType.institutionAdmin) &&
+              !RoleCategory.hasRole(targetRoles, RoleType.courseClassAdmin) && {
                 enrollmentTOs exists {
-                  to => RoleCategory.isCourseClassAdmin(actorRolesSet, to.getCourseClassUUID)
+                  to => RoleCategory.isCourseClassAdmin(actorRoles, to.getCourseClassUUID)
                 }
               }
           }
@@ -131,19 +123,6 @@ class PersonRepo(val uuid: String) {
 
 }
 
-object PersonRepo {
-    
-  val uuidLoader = new CacheLoader[String, Option[Person]]() {
-    override def load(uuid: String): Option[Person] = PersonRepo(uuid).first
-  } 
-
-  val personCache = CacheBuilder
-    .newBuilder()
-    .expireAfterAccess(5, TimeUnit.MINUTES)
-    .maximumSize(1000)
-    .build(uuidLoader)
-    
-  
-    
+object PersonRepo {    
   def apply(uuid: String) = new PersonRepo(uuid)
 }

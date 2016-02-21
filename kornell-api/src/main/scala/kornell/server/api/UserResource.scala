@@ -39,6 +39,10 @@ import kornell.server.jdbc.repository.TokenRepo
 import kornell.server.util.Conditional.toConditional
 import javax.ws.rs.POST
 import kornell.server.util.AccessDeniedErr
+import kornell.server.jdbc.repository.RolesRepo
+import kornell.core.entity.RoleCategory
+import kornell.server.jdbc.repository.EventsRepo
+import kornell.core.entity.AuditedEntityType
 //TODO Person/People Resource
 @Path("user")
 class UserResource(private val authRepo:AuthRepo) {
@@ -58,14 +62,14 @@ class UserResource(private val authRepo:AuthRepo) {
     userHello.setInstitution(
       {
         if(name != null)
-			    InstitutionsRepo.byName(name)
-			  else
-			    InstitutionsRepo.byHostName(hostName)
+		    InstitutionsRepo.lookupByName(name)
+		  else
+		    InstitutionsRepo.getByHostName(hostName)
       }.getOrElse(null));
     
     val auth = req.getHeader("X-KNL-TOKEN")
     if (auth != null && auth.length() > 0 && userHello.getInstitution != null) {
-      val token = TokenRepo.checkToken(auth)
+      val token = TokenRepo().checkToken(auth)
       if (token.isDefined) {
     	  val person = PersonRepo(token.get.getPersonUUID).first.getOrElse(null)
 		  userHello.setUserInfoTO(getUser(person).getOrElse(null))
@@ -76,7 +80,7 @@ class UserResource(private val authRepo:AuthRepo) {
   }
   
   @GET
-  @Produces(Array(UserInfoTO.TYPE)) //TODO: Cache
+  @Produces(Array(UserInfoTO.TYPE))
   def first: Option[UserInfoTO] =
     authRepo.withPerson { p =>
       getUser(p)
@@ -88,8 +92,8 @@ class UserResource(private val authRepo:AuthRepo) {
     user.setUsername(username)
     user.setPerson(person)
     user.setLastPlaceVisited(person.getLastPlaceVisited)
-    val roles = authRepo.rolesOf(person.getUUID)
-    user.setRoles((Set.empty ++ roles).asJava)
+    val roleTOs = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT)
+    user.setRoles(roleTOs.getRoleTOs)
     user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
     if(RegistrationType.username.equals(person.getRegistrationType)){
     	user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
@@ -106,7 +110,7 @@ class UserResource(private val authRepo:AuthRepo) {
     @PathParam("personUUID") personUUID: String): Option[UserInfoTO] =
     authRepo.withPerson { p =>
       val user = newUserInfoTO
-      val person = PersonRepo(personUUID).get
+      val person = PersonRepo(personUUID).first.get
       if (person != null) {
         user.setPerson(person)
         user.setUsername(PersonRepo(person.getUUID).getUsername)
@@ -137,7 +141,7 @@ class UserResource(private val authRepo:AuthRepo) {
   @Produces(Array("text/plain"))
   def requestPasswordChange(@PathParam("email") email: String,
     @PathParam("institutionName") institutionName: String) = {
-    val institution = InstitutionsRepo.byName(institutionName)
+    val institution = InstitutionsRepo.getByName(institutionName)
     val person = PeopleRepo.getByEmail(institution.get.getUUID, email)
     if (person.isDefined && institution.isDefined) {
       val requestPasswordChangeUUID = UUID.random
@@ -155,6 +159,10 @@ class UserResource(private val authRepo:AuthRepo) {
     val person = authRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
     if (person.isDefined) {
       PersonRepo(person.get.getUUID).updatePassword(person.get.getUUID, password)
+        
+	  //log entity change
+	  EventsRepo.logEntityChange(person.get.getInstitutionUUID, AuditedEntityType.password, person.get.getUUID, null, null, person.get.getUUID)
+	  
       val user = newUserInfoTO
       user.setUsername(person.get.getEmail())
       Option(user)
@@ -171,22 +179,36 @@ class UserResource(private val authRepo:AuthRepo) {
     authRepo.withPerson { p =>
       if (!PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID))
         throw new UnauthorizedAccessException("passwordChangeDenied")
-      else {
+      else {		
         val targetPersonRepo = PersonRepo(targetPersonUUID)
         val username = authRepo.getUsernameByPersonUUID(targetPersonUUID)
 
-        targetPersonRepo.setPassword(targetPersonRepo.get.getInstitutionUUID,
-          if (username.isDefined) {
-            username.get
-          } else {
-            val targetPerson = targetPersonRepo.get
-            if (targetPerson.getEmail() != null)
-              targetPerson.getEmail()
-            else
-              targetPerson.getCPF()
-          }, password)
+        targetPersonRepo.setPassword(targetPersonRepo.get.getInstitutionUUID, username.get, password)
+        
+	    //log entity change
+	    EventsRepo.logEntityChange(targetPersonRepo.get.getInstitutionUUID, AuditedEntityType.password, targetPersonUUID, null, null)
 
       }
+    }
+  }
+  
+  //Used when user has the forcePasswordUpdate flag on his account
+  @PUT
+  @Path("updatePassword/{username}")
+  @Produces(Array(UserInfoTO.TYPE))
+  def updatePassword(@PathParam("username") username: String, password: String) = {
+    val person = authRepo.getPersonByUsernameAndPasswordUpdateFlag(username)
+    if (person.isDefined) {
+      PersonRepo(person.get.getUUID).updatePassword(person.get.getUUID, password, true)
+
+	  //log entity change
+	  EventsRepo.logEntityChange(person.get.getInstitutionUUID, AuditedEntityType.password, person.get.getUUID, null, null, person.get.getUUID)
+	  
+	  val user = newUserInfoTO
+      user.setUsername(person.get.getEmail())
+      Option(user)
+    } else {
+      throw new UnauthorizedAccessException("passwordChangeFailed")
     }
   }
 
@@ -207,17 +229,6 @@ class UserResource(private val authRepo:AuthRepo) {
   def createUser(regReq: RegistrationRequestTO) = RegistrationEnrollmentService.userRequestRegistration(regReq)
 
   @PUT
-  @Path("placeChange")
-  @Produces(Array("text/plain"))
-  def putPlaceChange(implicit @Context sc: SecurityContext, newPlace: String) =
-    authRepo.withPerson { p =>
-      sql"""
-    	update Person set lastPlaceVisited=$newPlace
-    	where uuid=${p.getUUID}
-    	""".executeUpdate
-    }
-
-  @PUT
   @Path("{personUUID}")
   @Consumes(Array(UserInfoTO.TYPE))
   @Produces(Array(UserInfoTO.TYPE))
@@ -228,10 +239,14 @@ class UserResource(private val authRepo:AuthRepo) {
       if (!PersonRepo(p.getUUID).hasPowerOver(personUUID))
         throw new UnauthorizedAccessException("passwordChangeDenied")
       else {
+    	  val from = PersonRepo(personUUID).first.get
+    
 	      PersonRepo(personUUID).update(userInfo.getPerson)
-	
-	      val roles = authRepo.rolesOf(userInfo.getPerson.getUUID)
-	      userInfo.setRoles((Set.empty ++ roles).asJava)
+	          
+	      //log entity change
+	      EventsRepo.logEntityChange(p.getInstitutionUUID, AuditedEntityType.person, personUUID, from, userInfo.getPerson)
+	      val roleTOs = RolesRepo.getUserRoles(personUUID, RoleCategory.BIND_DEFAULT)
+	      userInfo.setRoles(roleTOs.getRoleTOs)
 	      userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
 	      userInfo
       }
@@ -243,7 +258,15 @@ class UserResource(private val authRepo:AuthRepo) {
   @Consumes(Array("text/plain"))
   @Produces(Array(UserInfoTO.TYPE))
   def acceptTerms() = AuthRepo().withPerson{ p =>
+	val from = PersonRepo(p.getUUID).first.get
+	          
     PersonRepo(p.getUUID).acceptTerms
+    
+	val to = PersonRepo(p.getUUID).first.get
+	
+    //log entity change
+    EventsRepo.logEntityChange(p.getInstitutionUUID, AuditedEntityType.person, p.getUUID, from, to)
+    
     getUser(p)
   }
 

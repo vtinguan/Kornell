@@ -1,5 +1,6 @@
 package kornell.core.error.exception;
 
+@SuppressWarnings("serial")
 public class ServerErrorException extends KornellBaseException {
 	
 	public ServerErrorException(String messageKey) {

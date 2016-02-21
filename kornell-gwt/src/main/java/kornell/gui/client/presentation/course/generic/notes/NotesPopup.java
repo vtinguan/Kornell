@@ -1,10 +1,10 @@
 package kornell.gui.client.presentation.course.generic.notes;
 
 import kornell.api.client.KornellClient;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.util.Positioning;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -17,14 +17,15 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class NotesPopup {
+	
+	private KornellConstants constants = GWT.create(KornellConstants.class);
+	
 	PopupPanel popup;
 	PopupPanel glass;
 	TextArea richTextArea;
 	KornellClient client;
 	String courseClassUUID;
 	String notes;
-
-	
 
 	public NotesPopup(final KornellClient client, final String courseUUID, final String notes) {
 		this.courseClassUUID = courseUUID;
@@ -51,12 +52,18 @@ public class NotesPopup {
 	}
 	
 	private void placePopup() {
-		int left = (Window.getClientWidth() - Positioning.BAR_WIDTH) / 2;
+		int barWidth = Positioning.BAR_WIDTH;
+		int left = (Window.getClientWidth() - barWidth) / 2;
 		left = (Window.getClientWidth() % 2 == 0) ? left : left + 1;
 		int top = Window.getClientHeight() - Positioning.SOUTH_BAR - Positioning.NOTES_MIN_HEIGHT;
 		
+		if(Window.getClientWidth() < barWidth){
+			left = 0;
+			barWidth = Window.getClientWidth();
+		}
+		
 		popup.setPopupPosition(Math.max(left, 0), Math.max(top, 0));
-		popup.setWidth(Positioning.BAR_WIDTH + "px");
+		popup.setWidth(barWidth + "px");
 		popup.getElement().getStyle().setPropertyPx("size", Positioning.NOTES_MIN_HEIGHT);
 		popup.getElement().getStyle().setPropertyPx("bottom", Positioning.SOUTH_BAR);
 		popup.setVisible(true);
@@ -68,7 +75,7 @@ public class NotesPopup {
 		popup.show();
 
 		richTextArea.setFocus(true);
-		richTextArea.getElement().setAttribute("placeholder", "< Use este espaço para fazer suas anotações ao longo do curso. >");
+		richTextArea.getElement().setAttribute("placeholder", constants.notesPopupPlaceholder());
 		
 	}
 

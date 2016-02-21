@@ -11,6 +11,7 @@ public class CertificateInformationTO {
 	String distributionPrefix;
 	String courseVersionUUID;
 	Date courseClassFinishedDate;
+	String baseURL;
 	
 	public String getPersonFullName() {
 		return personFullName;
@@ -60,5 +61,11 @@ public class CertificateInformationTO {
 	public void setCourseVersionUUID(String courseVersionUUID) {
 		this.courseVersionUUID = courseVersionUUID;
 	}
+    public String getBaseURL() {
+        return baseURL;
+    }
+    public void setBaseURL(String baseURL) {
+        this.baseURL = baseURL;
+    }
 	
 }

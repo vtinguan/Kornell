@@ -1,0 +1,31 @@
+@import-once "../utils/mixins";
+@import-once "../utils/colors";
+
+.profileForm{
+	@profileWidth: @wrapperWidth - 18px;
+	@profilePadding: 20px;
+	width: @profileWidth;
+	height: 100%;
+	margin: 0 auto;
+	margin-top: 15px;
+	border-radius: 0px 0px 15px 15px;
+	.editPanel{
+		float: right;
+		padding-right: 30px;
+		.lblEdit{
+			color: white;
+		}
+	}
+	.btnChangePassword{
+		float: right;
+		margin-right: 40px;
+		width: 150px;
+	}
+	.fieldsWrapper{
+		padding-left: 100px;
+		.profileSeparatorBar{
+			margin-bottom: 25px;
+			float: left;
+		}
+	}
+}

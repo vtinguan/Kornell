@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 	<g:FlowPanel ui:field="topicWrapper" addStyleNames="topicWrapper pageWrapper cursorDefault">
-		<g:Image url="skins/first/icons/courseDetails/pageIdent.png" addStyleNames="identImage"></g:Image>
+		<g:Image ui:field="topicImg" addStyleNames="identImage"></g:Image>
 		<g:FlowPanel ui:field="topicPanel" addStyleNames="topicPanel">
 			<g:Image ui:field="topicIcon" addStyleNames="topicIcon"></g:Image>
 			<g:FlowPanel ui:field="lblPage" addStyleNames="lblTopic"></g:FlowPanel>

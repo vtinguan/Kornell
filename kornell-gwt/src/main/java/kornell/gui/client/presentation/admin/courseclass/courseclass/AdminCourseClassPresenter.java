@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
-import static kornell.core.util.StringUtils.noneEmpty;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +10,6 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
@@ -38,6 +35,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.util.EnumTranslator;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
@@ -47,7 +45,6 @@ import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -63,8 +60,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     private Place defaultPlace;
     TOFactory toFactory;
     private ViewFactory viewFactory;
-    private Integer maxEnrollments = 0;
-    private Integer numEnrollments = 0;
     private boolean overriddenEnrollmentsModalShown = false, confirmedEnrollmentsModal = false;
     private EnrollmentRequestsTO enrollmentRequestsTO;
     private List<SimplePersonTO> enrollmentsToOverride;
@@ -135,8 +130,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     }
 
     private void showEnrollments(EnrollmentsTO e, boolean refreshView) {
-        numEnrollments = e.getEnrollmentTOs().size();
-        maxEnrollments = Dean.getInstance().getCourseClassTO().getCourseClass().getMaxEnrollments();
         enrollmentTOs = e.getEnrollmentTOs();
         view.setEnrollmentList(e.getEnrollmentTOs(), e.getCount(), e.getCountCancelled(), e.getSearchCount(), refreshView);
         view.showEnrollmentsPanel(true);
@@ -271,7 +264,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             KornellNotification.show("O nome deve ter no mínimo 2 caracteres.", AlertType.ERROR);
         } else if (!isUsernameValid(username)) {
             KornellNotification.show(
-                    formHelper.getRegistrationTypeAsText(Dean.getInstance().getCourseClassTO().getCourseClass()
+            		EnumTranslator.translateEnum(Dean.getInstance().getCourseClassTO().getCourseClass()
                             .getRegistrationType())
                             + " inválido.", AlertType.ERROR);
         } else {
@@ -362,7 +355,6 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
             if (isBatchCancel) {
             	fullName = fullName.trim();
             	username = username.trim();
-                String usr;
                 EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
                 enrollmentRequestTO.setCancelEnrollment(true);
@@ -434,14 +426,10 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         } else if (enrollmentRequestsTO.getEnrollmentRequests().size() == 0) {
             KornellNotification
             .show("Verifique se os nomes/"
-                    + formHelper.getRegistrationTypeAsText(
+                    + EnumTranslator.translateEnum(
                             Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType())
                             .toLowerCase() + " dos participantes estão corretos. Nenhuma matrícula encontrada.",
                             AlertType.WARNING);
-        } else if ((enrollmentRequestsTO.getEnrollmentRequests().size() + numEnrollments) > maxEnrollments) {
-            KornellNotification
-            .show("Não foi possível concluir a requisição. Verifique a quantidade de matrículas disponíveis nesta turma",
-                    AlertType.ERROR, 5000);
         } else {
             if (isBatch && Dean.getInstance().getCourseClassTO().getCourseClass().isOverrideEnrollments()) {
                 session.enrollments().simpleEnrollmentsList(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), new Callback<SimplePeopleTO>() {
@@ -458,7 +446,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                                     "Deseja continuar?");
                             view.showModal(true, "error");
                         }
-                    }
+                    }                    
                 });
             } else {
                 createEnrollments();
@@ -540,6 +528,12 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                             + KornellConstantsHelper.getErrorMessage(kornellErrorTO));
                     KornellNotification.show("Erro ao criar matrícula(s).", AlertType.ERROR, 2500);
                     LoadingPopup.hide();
+                }
+                
+                @Override
+                protected void conflict(KornellErrorTO kornellErrorTO) {
+                	KornellNotification
+                    .show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 5000);
                 }
             });
         }
@@ -626,19 +620,23 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     @Override
     public void deleteEnrollment(EnrollmentTO enrollmentTO) {
         if(session.isCourseClassAdmin()){
-            session.enrollment(enrollmentTO.getEnrollment().getUUID()).delete(new Callback<Enrollment>() {
-                @Override
-                public void ok(Enrollment to) {
-                    KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
+        	session.events().enrollmentStateChanged(
+        			enrollmentTO.getEnrollment().getUUID(), 
+        			session.getCurrentUser().getPerson().getUUID(), 
+        			enrollmentTO.getEnrollment().getState(), 
+        			EnrollmentState.deleted).fire(new Callback<Void>(){
+				@Override
+				public void ok(Void to) {
+					KornellNotification.show("Matrícula excluída com sucesso.", AlertType.SUCCESS, 2000);
                     getEnrollments(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
                     view.setCanPerformEnrollmentAction(true);
-                }
-                @Override
+				}
+				@Override
                 public void internalServerError(KornellErrorTO kornellErrorTO){
                     KornellNotification.show("Erro ao excluir matrícula. Usuário provavelmente já acessou a plataforma.", AlertType.ERROR, 2500);
                     view.setCanPerformEnrollmentAction(true);
                 }
-            });
+        	});
         }
     }
 

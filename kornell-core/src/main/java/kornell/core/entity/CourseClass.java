@@ -45,6 +45,9 @@ public interface CourseClass extends Named{
 	Boolean isCourseClassChatEnabled();
 	void setCourseClassChatEnabled(Boolean courseClassChatEnabled);
 	
+	Boolean isChatDockEnabled();
+	void setChatDockEnabled(Boolean chatDockEnabled);
+	
 	Boolean isAllowBatchCancellation();
 	void setAllowBatchCancellation(Boolean allowBatchCancellation);
 	

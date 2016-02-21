@@ -21,14 +21,15 @@ object ReportCertificateGenerator {
       rs.getString("cpf"),
       rs.getString("title"),
       rs.getString("name"),
-      rs.getDate("certifiedAt"),
-      rs.getString("assetsURL"),
+      rs.getTimestamp("certifiedAt"),
+      rs.getString("assetsRepositoryUUID"),
       rs.getString("distributionPrefix"),
-      rs.getString("courseVersionUUID"))
+      rs.getString("courseVersionUUID"),
+      rs.getString("baseURL"))
       
    def generateCertificate(userUUID: String, courseClassUUID: String): Array[Byte] = {
     generateCertificateReport(sql"""
-				select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
+				select p.fullName, c.title, cc.name, i.assetsRepositoryUUID, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID, i.baseURL
 	    		from Person p
 					join Enrollment e on p.uuid = e.person_uuid
 					join CourseClass cc on cc.uuid = e.class_uuid
@@ -51,7 +52,7 @@ object ReportCertificateGenerator {
   }
   
   def getCertificateInformationTOsByCourseClass(courseClassUUID: String, enrollments: String) = {
-    var sql = """select p.fullName, c.title, cc.name, i.assetsURL, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID
+    var sql = """select p.fullName, c.title, cc.name, i.assetsRepositoryUUID, cv.distributionPrefix, p.cpf, e.certifiedAt, cv.uuid as courseVersionUUID, i.baseURL
       from Person p 
       join Enrollment e on p.uuid = e.person_uuid 
       join CourseClass cc on cc.uuid = e.class_uuid 
@@ -73,13 +74,12 @@ object ReportCertificateGenerator {
     	return null
     }
     val parameters: HashMap[String, Object] = new HashMap()
-    val assetsURL: String = composeURL(certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports")
-    parameters.put("assetsURL", assetsURL + "/")
+    val assetsURL: String = composeURL(certificateData.head.getBaseURL, "repository", certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports") + "/"
+    parameters.put("assetsURL", assetsURL)
 	  
    
   	//store one jasperfile per course
     val fileName = Settings.tmpDir + "tmp-" + certificateData.head.getCourseVersionUUID + ".jasper"
-    println(fileName);
     val jasperFile: File = new File(fileName)
         
     /*val diff = new Date().getTime - jasperFile.lastModified

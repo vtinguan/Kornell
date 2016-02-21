@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
 import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.scorm.client.scorm12.SCORM12Sequencer;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
@@ -24,7 +25,14 @@ public class SequencerFactoryImpl implements SequencerFactory {
 	public Sequencer withPlace(ClassroomPlace place) {
 		logger.info("Creating course sequencer");
 		Sequencer sequencer = null;
-		sequencer = new PrefetchSequencer(bus, session);
+		switch (place.getContentSpec()){
+			case SCORM12: 
+				sequencer = new SCORM12Sequencer(bus, session);
+				break;
+			case KNL:
+				sequencer = new PrefetchSequencer(bus, session);
+				break;
+		}		
 		return sequencer.withPlace(place);
 	}
 

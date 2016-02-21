@@ -4,6 +4,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
+import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
@@ -17,6 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MessageComposePresenter implements MessageComposeView.Presenter {
 	private FormHelper formHelper = GWT.create(FormHelper.class);
+	private KornellConstants constants = GWT.create(KornellConstants.class);
 	
 	private MessageComposeView view;
 	private PlaceController placeCtrl;
@@ -42,9 +44,9 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 
 	private String getCourseClassUUIDFromPlace() {
 		if(placeCtrl.getWhere() instanceof ClassroomPlace){
-	    return Dean.getInstance().getCourseClassTO().getCourseClass().getUUID();
+			return Dean.getInstance().getCourseClassTO().getCourseClass().getUUID();
 		}
-	  return null;
+		return null;
   }
 
 	@Override
@@ -54,12 +56,18 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 			Callback<String> chatThreadCallback = new Callback<String>() {
 				@Override
 				public void ok(String str) {
-					KornellNotification.show("Mensagem enviada com sucesso!");
+					KornellNotification.show(constants.messageSentSuccess());
 					MrPostman.hide();
 				}
 			};
-			String entityUUID = view.getRecipient().getFieldPersistText();
-			threadsClient.postMessageToSupportCourseClassThread(messageText, entityUUID, chatThreadCallback);
+			String threadSelectValue = view.getRecipient().getFieldPersistText();
+			if("platformSupport".equals(threadSelectValue)){
+				threadsClient.postMessageToSupportPlatformThread(messageText, chatThreadCallback);
+			} else if("institutionSupport".equals(threadSelectValue)){
+				threadsClient.postMessageToSupportInstitutionThread(messageText, chatThreadCallback);
+			} else {
+				threadsClient.postMessageToSupportCourseClassThread(messageText, threadSelectValue, chatThreadCallback);
+			}
 		}
 	}
 
@@ -71,7 +79,7 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 	private boolean validateMessage() {	
 		view.clearErrors();		
 		if (!formHelper.isLengthValid(view.getMessageText().getFieldPersistText(), 1, 1000)) {
-			view.getMessageText().setError("Preencha o corpo da mensagem.");
+			view.getMessageText().setError(constants.noMessageBodyError());
 		}
 		return !view.checkErrors();
 	}

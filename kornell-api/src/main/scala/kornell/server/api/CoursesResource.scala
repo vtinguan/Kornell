@@ -7,7 +7,6 @@ import kornell.core.lom._
 import kornell.core.to._
 import kornell.server.jdbc.SQL._
 import kornell.server.dev.util.ContentsParser
-import kornell.server.repository.s3.S3
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CoursesRepo
 import kornell.server.jdbc.repository.CourseRepo

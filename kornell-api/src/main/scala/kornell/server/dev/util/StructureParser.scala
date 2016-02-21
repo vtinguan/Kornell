@@ -22,7 +22,7 @@ object ContentsParser {
   def parseLines(prefix:String,lines:Iterator[String],visited:List[String]) = {
     val result = ListBuffer[Content]()
     var topic: Topic = null
-    var index = 0
+    var index = 1 //should start with 1, in case of the ordering fallback
     lines foreach { line =>
       line match {
         case topicPattern(topicName) => {

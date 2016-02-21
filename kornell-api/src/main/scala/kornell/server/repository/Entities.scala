@@ -2,33 +2,34 @@ package kornell.server.repository
 
 import java.math.BigDecimal
 import java.util.Date
+import java.util.HashMap
 import java.util.Map
-import java.util.UUID
 import scala.collection.JavaConverters.seqAsJavaListConverter
+import org.joda.time.LocalDate
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource
+import kornell.core.entity.ActomEntries
 import kornell.core.entity.Assessment
+import kornell.core.entity.BillingType
 import kornell.core.entity.ContentSpec
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClassState
-import kornell.core.entity.CourseVersion
 import kornell.core.entity.Enrollment
+import kornell.core.entity.EnrollmentEntries
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.EntityFactory
-import kornell.core.entity.Institution
-import kornell.core.entity.Person
-import kornell.core.entity.PlatformAdminRole
-import kornell.core.entity.Role
-import kornell.core.entity.RoleType
-import kornell.core.util.TimeUtil
-import kornell.server.util.ValueFactory
-import kornell.core.entity.RegistrationType
-import kornell.core.entity.BillingType
 import kornell.core.entity.InstitutionRegistrationPrefix
 import kornell.core.entity.InstitutionType
-import java.util.HashMap
-import kornell.core.entity.ActomEntries
-import kornell.core.entity.EnrollmentEntries
+import kornell.core.entity.Person
+import kornell.core.entity.RegistrationType
+import kornell.core.entity.Role
+import kornell.core.entity.RoleType
+import kornell.core.util.StringUtils
+import kornell.core.util.UUID
+import kornell.server.util.DateConverter
+import kornell.server.authentication.ThreadLocalAuthenticator
 
+
+//TODO: Remove this class without spreading dependency on AutoBeanFactorySource
 object Entities {
   val factory = AutoBeanFactorySource.create(classOf[EntityFactory])
 
@@ -55,12 +56,12 @@ object Entities {
     postalCode: String = null,
     cpf: String = null,
     institutionUUID: String = null,
-    termsAcceptedOn: String = null,
+    termsAcceptedOn: Date = null,
     registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
-    receiveEmailCommunication: Boolean = true) = {
-
-    val bday = ValueFactory.newDate
+    receiveEmailCommunication: Boolean = true,
+    forcePasswordUpdate: Boolean = false) = {
+	val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val person = factory.newPerson.as
     person.setUUID(uuid)
     person.setFullName(fullName)
@@ -69,7 +70,7 @@ object Entities {
     person.setCompany(company)
     person.setTitle(title)
     person.setSex(sex)
-    person.setBirthDate(TimeUtil.fromJUD(bday, birthDate))
+    person.setBirthDate(new LocalDate(birthDate).toDate)
     person.setConfirmation(confirmation)
     person.setTelephone(telephone)
     person.setCountry(country)
@@ -80,10 +81,11 @@ object Entities {
     person.setPostalCode(postalCode)
     person.setCPF(cpf)
     person.setInstitutionUUID(institutionUUID)
-    person.setTermsAcceptedOn(termsAcceptedOn)
+    person.setTermsAcceptedOn(dateConverter.dateToInstitutionTimezone(termsAcceptedOn))
     person.setRegistrationType(registrationType)
     person.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     person.setReceiveEmailCommunication(receiveEmailCommunication)
+    person.setForcePasswordUpdate(forcePasswordUpdate)
     person
   }
 
@@ -132,25 +134,26 @@ object Entities {
   def newEnrollment(uuid: String = randUUID, enrolledOn: Date = null,
     courseClassUUID: String, personUUID: String,
     progress: Integer = 0, notes: String = null,
-    state: EnrollmentState, lastProgressUpdate: String = null,
-    assessment: Assessment = null, lastAssessmentUpdate: String = null,
-    assessmentScore: BigDecimal = null, certifiedAt: String = null,
+    state: EnrollmentState, lastProgressUpdate: Date = null,
+    assessment: Assessment = null, lastAssessmentUpdate: Date = null,
+    assessmentScore: BigDecimal = null, certifiedAt: Date = null,
     courseVersionUUID: String = null, parentEnrollmentUUID:String = null,
     startDate:Date=null,endDate:Date=null,
     preAssessment:BigDecimal=null,postAssessment:BigDecimal=null): Enrollment = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val e = factory.enrollment.as
     e.setUUID(uuid)
-    e.setEnrolledOn(enrolledOn)
+    e.setEnrolledOn(dateConverter.dateToInstitutionTimezone(enrolledOn))
     e.setCourseClassUUID(courseClassUUID)
     e.setPersonUUID(personUUID)
     e.setProgress(progress)
     e.setNotes(notes)
     e.setState(state)
-    e.setLastProgressUpdate(lastProgressUpdate)
+    e.setLastProgressUpdate(dateConverter.dateToInstitutionTimezone(lastProgressUpdate))
     e.setAssessment(assessment)
-    e.setLastAssessmentUpdate(lastAssessmentUpdate)
+    e.setLastAssessmentUpdate(dateConverter.dateToInstitutionTimezone(lastAssessmentUpdate))
     e.setAssessmentScore(assessmentScore)
-    e.setCertifiedAt(certifiedAt)
+    e.setCertifiedAt(dateConverter.dateToInstitutionTimezone(certifiedAt))
     e.setCourseVersionUUID(courseVersionUUID)
     e.setParentEnrollmentUUID(parentEnrollmentUUID)
     e.setStartDate(startDate)
@@ -169,14 +172,16 @@ object Entities {
   //FTW: Default parameter values
   def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, 
       demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, 
-      activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String, internationalized: Boolean, useEmailWhitelist: Boolean = false) = {
+      activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String, internationalized: Boolean, 
+      useEmailWhitelist: Boolean = false,assetsRepositoryUUID:String=null, timeZone: String) = {
     val i = factory.newInstitution.as
     i.setName(name)
     i.setFullName(fullName)
     i.setUUID(uuid)
     if (terms != null)
       i.setTerms(terms.stripMargin)
-    i.setAssetsURL(assetsURL)
+    i.setAssetsURL(StringUtils.mkurl("/repository",assetsRepositoryUUID));
+    i.setAssetsRepositoryUUID(assetsRepositoryUUID);
     i.setBaseURL(baseURL)
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
     i.setValidatePersonContactDetails(validatePersonContactDetails)
@@ -189,6 +194,7 @@ object Entities {
     i.setDashboardVersionUUID(dashboardVersionUUID)
     i.setInternationalized(internationalized)
     i.setUseEmailWhitelist(useEmailWhitelist)
+    i.setTimeZone(timeZone)
     i
   }
 
@@ -248,6 +254,15 @@ object Entities {
     role.setObserverRole(observerRole)
     role
   }
+  
+  def newControlPanelAdminRole(person_uuid: String) = {
+    val role = factory.newRole().as
+    role.setPersonUUID(person_uuid)
+    val controlPanelAdminRole = factory.newControlPanelAdminRole().as
+    role.setRoleType(RoleType.controlPanelAdmin)
+    role.setControlPanelAdminRole(controlPanelAdminRole)
+    role
+  }
 
   def newCourseVersion(
     uuid: String = randUUID, name: String = null, 
@@ -255,12 +270,13 @@ object Entities {
     versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
     contentSpec: String = null, disabled: Boolean = false, parentVersionUUID: String = null,
     instanceCount: Integer = 1, label: String = null) = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
     version.setCourseUUID(courseUUID);
     version.setRepositoryUUID(repositoryUUID);
-    version.setVersionCreatedAt(versionCreatedAt)
+    version.setVersionCreatedAt(dateConverter.dateToInstitutionTimezone(versionCreatedAt))
     version.setDistributionPrefix(distributionPrefix)
     version.setDisabled(disabled)
     version.setParentVersionUUID(parentVersionUUID)
@@ -283,9 +299,11 @@ object Entities {
     registrationType: RegistrationType = null,
     institutionRegistrationPrefixUUID: String = null,
     courseClassChatEnabled: Boolean = false,
+    chatDockEnabled: Boolean = false,
     allowBatchCancellation: Boolean = false,
     tutorChatEnabled: Boolean = false,
     approveEnrollmentsAutomatically: Boolean = false) = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -296,24 +314,17 @@ object Entities {
     clazz.setOverrideEnrollments(overrideEnrollments)
     clazz.setInvisible(invisible)
     clazz.setMaxEnrollments(maxEnrollments)
-    clazz.setCreatedAt(createdAt)
+    clazz.setCreatedAt(dateConverter.dateToInstitutionTimezone(createdAt))
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
     clazz.setRegistrationType(registrationType)
     clazz.setInstitutionRegistrationPrefixUUID(institutionRegistrationPrefixUUID)
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
+    clazz.setChatDockEnabled(chatDockEnabled)
     clazz.setAllowBatchCancellation(allowBatchCancellation)
 	clazz.setTutorChatEnabled(tutorChatEnabled)
 	clazz.setApproveEnrollmentsAutomatically(approveEnrollmentsAutomatically)
     clazz
-  }
-
-  def newWebRepository(uuid: String, distributionURL: String, prefix: String) = {
-    val webRepo = factory.newWebReposiory.as
-    webRepo.setUUID(uuid)
-    webRepo.setPrefix(prefix)
-    webRepo.setDistributionURL(distributionURL)
-    webRepo
   }
 
   def newActomEntries(enrollmentUUID: String, actomKey: String, entriesMap: Map[String, String]) = {
@@ -343,9 +354,10 @@ object Entities {
   }
 
   def newChatThread(uuid: String = null, createdAt: Date = null, institutionUUID: String = null, courseClassUUID: String = null, personUUID: String = null, threadType: String = null, active: Boolean = true) = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val chatThread = factory.newChatThread.as
     chatThread.setUUID(uuid)
-    chatThread.setCreatedAt(createdAt)
+    chatThread.setCreatedAt(dateConverter.dateToInstitutionTimezone(createdAt))
     chatThread.setInstitutionUUID(institutionUUID)
     chatThread.setCourseClassUUID(courseClassUUID)
     chatThread.setPersonUUID(personUUID)
@@ -355,14 +367,15 @@ object Entities {
   }
 
   def newChatThreadParticipant(uuid: String = null, chatThreadUUID: String = null, personUUID: String = null, 
-      chatThreadName: String = null, lastReadAt: Date = null, active: Boolean = false, lastJoinDate: Date = null) ={
+      chatThreadName: String = null, lastReadAt: Date = null, active: Boolean = false, lastJoinDate: Date = null) = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val chatThreadParticipant = factory.newChatThreadParticipant.as
     chatThreadParticipant.setUUID(uuid)
     chatThreadParticipant.setThreadUUID(chatThreadUUID)
     chatThreadParticipant.setPersonUUID(personUUID)
-    chatThreadParticipant.setLastReadAt(lastReadAt)
+    chatThreadParticipant.setLastReadAt(dateConverter.dateToInstitutionTimezone(lastReadAt))
     chatThreadParticipant.setActive(active)
-    chatThreadParticipant.setLastJoinDate(lastJoinDate)
+    chatThreadParticipant.setLastJoinDate(dateConverter.dateToInstitutionTimezone(lastJoinDate))
     chatThreadParticipant
   }
 
@@ -384,9 +397,19 @@ object Entities {
   }
   
   def newEnrollmentEntries = {
-    val eEntries = factory.newEnrollmentEntries().as()
+    val eEntries = factory.newEnrollmentEntries.as
     eEntries.setActomEntriesMap(new HashMap[String,ActomEntries]())
     eEntries
   }
+  
+  def newFSContentRepository(uuid:String,path:String,prefix:String,institutionUUID:String) = {
+    val fsRepo = factory.newFSContentRepository.as
+    fsRepo.setUUID(uuid)
+    fsRepo.setPath(path)
+    fsRepo.setPrefix(prefix)
+    fsRepo.setInstitutionUUID(institutionUUID)
+    fsRepo
+  }
 
 }
+

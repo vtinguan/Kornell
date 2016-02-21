@@ -1,0 +1,90 @@
+html, body {
+	margin: 0 0 0 0 !important;
+	padding: 0 0 0 0 !important;
+	height: 100% !important;
+}
+
+.AtividadePlace .contentWrapper {
+	width: 100%;
+}
+
+.debug{
+	
+}
+
+.debug-g{
+	background-color: lightgreen;
+}
+
+.full {
+	width: 100%;
+	height: 100%;
+}
+
+.widest {
+	width: 100%;
+}
+
+.shy {
+	display: none !important; 
+}
+
+.show {
+	display: block !important; 
+}
+
+iframe {
+	border-width: 0;
+}
+
+.clearer{
+	clear: both;
+}
+
+.externalContent{
+	margin-bottom: -5px;
+}
+
+.collapse{
+	-webkit-transition: height 0.6s ease;
+	-moz-transition: height 0.6s ease;
+	-o-transition: height 0.6s ease;
+	transition: height 0.6s ease;
+}
+
+.contentPanel{
+	height: auto;
+}
+
+.debug {
+	border: 2px solid red;
+}
+
+.gwt-PopupPanelGlass{
+	background-color: #000;
+	opacity: 0.40;
+	-moz-opacity: 0.40;
+	filter:alpha(opacity=40);
+	width: 100% !important;
+	height: 100% !important;
+}
+
+.loadingPopup {
+	z-index: 5;
+	width: 100%;
+}
+
+.ajaxLoaderPanel {
+	width: 80px;
+	margin: 0 auto;
+}
+
+.ajaxLoaderPanel span{
+	display: block;
+	text-align: center;
+	margin-bottom: 2px;
+}
+
+object{
+	display: none;
+}

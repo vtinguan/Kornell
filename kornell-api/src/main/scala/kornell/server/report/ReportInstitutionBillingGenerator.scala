@@ -11,6 +11,7 @@ import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.core.to.report.InstitutionBillingMonthlyReportTO
 import kornell.core.entity.BillingType
 import kornell.core.entity.Institution
+import kornell.core.entity.EnrollmentState
 
 object ReportInstitutionBillingGenerator {
   
@@ -35,14 +36,14 @@ object ReportInstitutionBillingGenerator {
 	      rs.getString("username"))
 	      
     val institutionBillingReportTO = sql"""
-    	SELECT
+    			SELECT
 					p.uuid AS 'personUUID', 
 					p.fullName AS 'fullName',
 					pw.username AS 'username'
 				FROM AttendanceSheetSigned att
 				JOIN Person p ON p.uuid = att.personUUID
 				JOIN Password pw ON pw.person_uuid = p.uuid
-				WHERE att.eventFiredAt > ${periodStart} AND att.eventFiredAt < ${periodEnd}
+				WHERE att.eventFiredAt >= ${periodStart + "-01 00:00:00"} AND att.eventFiredAt < ${periodEnd + "-01 00:00:00"}
 				AND (email IS null OR email NOT LIKE '%craftware.com.br%')
 				AND att.institutionUUID = ${institutionUUID} 
 				AND (SELECT count(uuid) FROM Enrollment where person_uuid = p.uuid and DATE_FORMAT(enrolledOn, '%Y-%m-%d')< ${periodEnd}) > 0
@@ -65,10 +66,10 @@ object ReportInstitutionBillingGenerator {
 	      rs.getString("courseClassName"),
 	      rs.getString("fullName"),
 	      rs.getString("username"),
-	      rs.getDate("firstEventFiredAt"))
+	      rs.getTimestamp("firstEventFiredAt"))
 	      
     val institutionBillingReportTO = sql"""
-    	SELECT 
+    		SELECT 
 				e.uuid AS 'enrollmentUUID', 
 				c.title AS 'courseTitle',
 				cv.name AS 'courseVersionName',
@@ -88,13 +89,13 @@ object ReportInstitutionBillingGenerator {
 			WHERE cc.institution_uuid = ${institutionUUID}
 			AND (
 					(e.lastBilledAt IS NULL
-					AND ae.firstEventFiredAt >= ${periodStart}
-					AND ae.firstEventFiredAt < ${periodEnd})
+					AND ae.firstEventFiredAt >= ${periodStart + "-01 00:00:00"}
+					AND ae.firstEventFiredAt < ${periodEnd + "-01 00:00:00"})
 				OR (e.lastBilledAt IS NOT NULL
-					AND e.lastBilledAt >= ${periodStart}
-					AND e.lastBilledAt < ${periodEnd})
+					AND e.lastBilledAt >= ${periodStart + "-01 00:00:00"}
+					AND e.lastBilledAt < ${periodEnd + "-01 00:00:00"})
 				) 
-			AND (p.email IS NULL OR p.email NOT LIKE '%@craftware.com.br')
+			AND (email IS null OR email NOT LIKE '%craftware.com.br%')
 			ORDER BY LOWER(c.title),LOWER(cv.name),LOWER(cc.name), LOWER(p.fullName)
 	    """.map[InstitutionBillingEnrollmentReportTO](toInstitutionBillingEnrollmentReportTO)
 		  

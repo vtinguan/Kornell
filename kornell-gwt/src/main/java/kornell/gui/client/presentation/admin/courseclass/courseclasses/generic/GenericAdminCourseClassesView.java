@@ -13,6 +13,7 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourse
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassConfigView;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.util.AsciiUtils;
+import kornell.gui.client.presentation.util.EnumTranslator;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.uidget.KornellPagination;
 
@@ -70,7 +71,6 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
 	final CellTable<CourseClassTO> table;
-	private List<CourseClassTO> courseClassTOs;
 	private KornellPagination pagination;
 	private AdminCourseClassesView.Presenter presenter;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
@@ -217,14 +217,17 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		table.addColumn(new TextColumn<CourseClassTO>() {
 			@Override
 			public String getValue(CourseClassTO courseClassTO) {
-				return formHelper.getCourseClassStateAsText(courseClassTO.getCourseClass().getState());
+				String value = EnumTranslator.translateEnum(courseClassTO.getCourseClass().getState());
+				value += courseClassTO.getCourseClass().isInvisible() ? " / Invísivel" : "";
+				value += courseClassTO.getCourseClass().isPublicClass() ? " / Pública" : "";
+				return value;
 			}
 		}, "Status");
 		
 		table.addColumn(new TextColumn<CourseClassTO>() {
 			@Override
 			public String getValue(CourseClassTO courseClassTO) {
-				return formHelper.getRegistrationTypeAsText(courseClassTO.getCourseClass().getRegistrationType());
+				return EnumTranslator.translateEnum(courseClassTO.getCourseClass().getRegistrationType());
 			}
 		}, "Tipo de Matrícula");
 		
@@ -351,7 +354,6 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 			adminHomePanel.setVisible(false);
 			return;
 		}
-		this.courseClassTOs = courseClasses;
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
 		panel.add(table);

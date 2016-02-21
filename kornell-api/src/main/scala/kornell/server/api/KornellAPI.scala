@@ -1,9 +1,7 @@
 package kornell.server.api
 
 import java.util.Collections
-
 import scala.collection.JavaConverters.setAsJavaSetConverter
-
 import javax.ws.rs.core.Application
 import kornell.server.dev.ProbesResource
 import kornell.server.ws.rs.AutoBeanWriter
@@ -17,6 +15,7 @@ import kornell.server.ws.rs.reader.EntityReader
 import kornell.server.ws.rs.reader.EventsReader
 import kornell.server.ws.rs.reader.LOMReader
 import kornell.server.ws.rs.writer.BooleanWriter
+import kornell.server.ws.rs.exception.AuthenticationExceptionMapper
 
 class KornellAPI extends Application {
   type ClassSet = Set[Class[_]]
@@ -32,7 +31,8 @@ class KornellAPI extends Application {
     classOf[EntityConflictMapper], 
     classOf[UnauthorizedAccessMapper],
     classOf[ServerErrorMapper],
-    classOf[KornellExceptionMapper])
+    classOf[KornellExceptionMapper],
+    classOf[AuthenticationExceptionMapper])
     
   val resources:ClassSet = Set(classOf[RootResource],
     classOf[UserResource],
@@ -45,14 +45,14 @@ class KornellAPI extends Application {
     classOf[ReportResource],
     classOf[EnrollmentsResource],
     classOf[EventsResource],
-    classOf[RepositoryResource],
     classOf[ActomResource],
     classOf[ChatThreadsResource],
     classOf[ProbesResource],
     classOf[HealthCheckResource],
     classOf[NewRelicResource],
     classOf[TokenResource],
-    classOf[LoggerResource]
+    classOf[LoggerResource],
+    classOf[ContentRepositoriesResource]
   )
     
   override def getClasses() = 

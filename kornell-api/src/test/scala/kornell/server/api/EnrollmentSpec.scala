@@ -1,17 +1,18 @@
 package kornell.server.api
 
 import org.junit.runner.RunWith
+import javax.ws.rs.Consumes
+import javax.ws.rs.PUT
+import javax.ws.rs.Produces
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
-import kornell.server.helper.SimpleInstitution
+import kornell.server.helper.GenCourseClass
+import kornell.server.helper.GenInstitutionAdmin
+import kornell.server.helper.GenPlatformAdmin
+import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.repository.Entities
 import kornell.server.test.UnitSpec
 import org.scalatest.junit.JUnitRunner
-import kornell.server.helper.GenPlatformAdmin
-import kornell.server.helper.GenInstitution
-import kornell.server.helper.GenCourseClass
-import kornell.server.jdbc.repository.EnrollmentsRepo
-import kornell.server.helper.GenInstitutionAdmin
 
 
 @RunWith(classOf[JUnitRunner])

@@ -1,5 +1,6 @@
 package kornell.gui.client.mvp;
 
+import kornell.gui.client.presentation.admin.audit.AdminAuditPlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
@@ -34,6 +35,7 @@ import com.google.gwt.place.shared.WithTokenizers;
 	AdminCourseVersionsPlace.Tokenizer.class,
 	AdminCourseVersionPlace.Tokenizer.class,
 	AdminCourseClassPlace.Tokenizer.class,
-	AdminCourseClassesPlace.Tokenizer.class})
+	AdminCourseClassesPlace.Tokenizer.class,
+	AdminAuditPlace.Tokenizer.class})
 public interface HistoryMapper extends PlaceHistoryMapper {
 }

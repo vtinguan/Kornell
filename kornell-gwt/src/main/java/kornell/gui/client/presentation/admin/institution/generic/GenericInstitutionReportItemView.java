@@ -10,6 +10,7 @@ import kornell.core.util.StringUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
@@ -18,7 +19,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -33,8 +33,7 @@ public class GenericInstitutionReportItemView extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private String BASE_IMAGES_PATH = "skins/first/icons/";
-	private String ADMIN_IMAGES_PATH = BASE_IMAGES_PATH + "admin/";
+	private String ADMIN_IMAGES_PATH = StringUtils.mkurl(ClientConstants.IMAGES_PATH, "admin/");
 	private KornellSession session;
 	private String type;
 	private String name;
@@ -68,8 +67,8 @@ public class GenericInstitutionReportItemView extends Composite {
 		if(BILLING.equals(this.type)){
 			this.name = "Relatório de utilização";
 			this.description = "Escolha o período desejado na lista abaixo:";
-			
-			certificationIcon.setUrl(ADMIN_IMAGES_PATH + type + ".png");
+
+			certificationIcon.setUrl(StringUtils.mkurl(ADMIN_IMAGES_PATH, type + ".png"));
 			lblName.setText(name);
 			lblDescription.setText(description);
 			lblGenerate.setText("Gerar");

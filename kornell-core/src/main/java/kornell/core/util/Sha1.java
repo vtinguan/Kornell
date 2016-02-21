@@ -396,8 +396,8 @@ public class Sha1 {
 		String str = "";
 		for (int i = 0; i < binarray.length * 4; i++) {
 			
-			int a = (binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF;
-			int b = (binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF;
+			//int a = (binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF;
+			//int b = (binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF;
 			
 			char aa = hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF);
 		    char bb = hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF);
@@ -462,73 +462,6 @@ public class Sha1 {
 			
 		}
 		return str;
-	}
-
-	
-	/**
-	 * run tests to verify results
-	 */
-	public void tests() {
-	
-		System.out.println("Running Tests");
-		
-		
-		//boolean bol = test_Sha1();
-		//System.out.println("main test: " + bol);
-		
-		//test1();
-		
-		//test2();
-		
-		//test3();
-		
-		test4();
-	}
-	
-	private void test1() {
-		String hexSha1 = hex_sha1("abc");
-		System.out.println("hex_sha1(\"abc\"): " + hexSha1);
-	}
-	
-	/**
-	 * test the big endian word creation and to and from
-	 */
-	private void test2() {
-		
-		String sh = "abcdefghijklmnopqrstuvwxyz1234567891011121314abABcdEF /?1*3478568@#$%)*";
-		
-		System.out.println("str2binb(\""+sh+"\")");
-		
-		int[] a = str2binb(sh);
-		for (int i=0; i < a.length; i++) {
-			System.out.println("big endian words created: (" + a[i] + ")");
-		}
-		
-		// a weird character comes at both the end of this and the javascript too
-		String s = binb2str(a);
-		System.out.println("change back from endian words: " + s);
-		
-		// note: more chars exist on the return from binb2str - same with javascript version
-		if (s.contains(sh)) {
-			System.out.println("str2binb and binb2str: works");
-		} else {
-			System.out.println("str2binb and binb2str: not working");
-		}
-	}
-	
-	private void test3() {
-		String key = "salt";
-		String data = "password";
-		String hash = hex_hmac_sha1(key, data);
-		
-		System.out.println("hash: " + hash);
-		
-	}
-	
-	private void test4() {
-		String key = "Salt";
-		String data = "http&y=b&c=1&this=work";
-		String s = b64_hmac_sha1(key, data);
 	}
 	
 }

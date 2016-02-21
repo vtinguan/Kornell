@@ -11,4 +11,14 @@ object ActomEntriesRepo {
   """.first[String] { _.getString("entryValue") }
     value
   }
+  
+  def getValues(enrollmentUUID: String, actomKey: String, entryKey: String) = {
+    val value = sql"""
+  	select * from ActomEntries
+  	where enrollment_uuid = $enrollmentUUID 
+  	and actomKey like $actomKey
+  	and entryKey = $entryKey
+  """.map[String] { _.getString("entryValue") }
+    value
+  }
 }

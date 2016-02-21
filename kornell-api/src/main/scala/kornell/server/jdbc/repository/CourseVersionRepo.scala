@@ -7,6 +7,7 @@ import kornell.server.jdbc.SQL._
 import kornell.core.to.CourseVersionTO
 import kornell.core.to.CourseClassesTO
 import kornell.server.repository.TOs
+import kornell.core.entity.AuditedEntityType
 
 class CourseVersionRepo(uuid: String) {
 
@@ -41,7 +42,10 @@ class CourseVersionRepo(uuid: String) {
     | where cv.uuid = ${uuid}""".map[CourseVersionTO](toCourseVersionTO).head
   }
   
-  def update(courseVersion: CourseVersion): CourseVersion = {
+  def update(courseVersion: CourseVersion, institutionUUID: String): CourseVersion = {
+    //get previous version
+    val oldCourseVersion = CourseVersionRepo(courseVersion.getUUID).first.get
+    
     sql"""
     | update CourseVersion c
     | set c.name = ${courseVersion.getName},
@@ -55,6 +59,10 @@ class CourseVersionRepo(uuid: String) {
     | c.instanceCount = ${courseVersion.getInstanceCount},
     | c.label = ${courseVersion.getLabel}
     | where c.uuid = ${courseVersion.getUUID}""".executeUpdate
+	    
+    //log entity change
+    EventsRepo.logEntityChange(institutionUUID, AuditedEntityType.courseVersion, courseVersion.getUUID, oldCourseVersion, courseVersion)
+	    
     courseVersion
   }
   

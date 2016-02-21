@@ -16,8 +16,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -53,6 +57,8 @@ public class KornellFormFieldWrapper extends Composite {
 	private Validator validator;
 	private String tooltipText;
 
+	private Timer updateTimer;
+
 	public KornellFormFieldWrapper(String label, KornellFormField<?> formField) {
 		this(label, formField, true,null);
 	}
@@ -77,6 +83,13 @@ public class KornellFormFieldWrapper extends Composite {
 		this.validator = validator;
 		this.tooltipText = tooltipText;
 		initData(formField);
+
+		updateTimer = new Timer() {
+			@Override
+			public void run() {
+				validate();
+			}
+		};
 	}
 
 	public void initData(KornellFormField<?> formField) {
@@ -97,44 +110,62 @@ public class KornellFormFieldWrapper extends Composite {
 				fieldPanel.add(fieldWidget);
 			}
 
-			if (fieldWidget instanceof HasChangeHandlers) {
-				HasChangeHandlers changeable = (HasChangeHandlers) fieldWidget;
+			if (fieldWidget instanceof HasKeyUpHandlers) {
+				HasKeyUpHandlers ku = (HasKeyUpHandlers) fieldWidget;
 				if(validator != null){
-					changeable.addChangeHandler(new ChangeHandler() {
+					ku.addKeyUpHandler(new KeyUpHandler() {
 						@Override
-						public void onChange(ChangeEvent event) {
-							validator.getErrors(fieldWidget
-									,new Callback<List<String>>() {
-								
-								@Override
-								public void ok(List<String> errors) {
-									if(errors.isEmpty()){
-										setError("");
-									}else {
-										showErrors(errors);
-									}
-									fieldBus.fireEvent(new ValidationChangedEvent());
-									
-								}
-							});
-							
-						}
-
-						private void showErrors(List<String> errorKeys) {
-							StringBuilder buf = new StringBuilder();
-							for(String e:errorKeys){
-								buf.append(e);
-							}
-							setError(buf.toString());
+						public void onKeyUp(KeyUpEvent event) {
+							scheduleValidation();							
 						}
 					});
 				}
 			}
-			
+
+			if (fieldWidget instanceof HasChangeHandlers) {
+				HasChangeHandlers ku = (HasChangeHandlers) fieldWidget;
+				if(validator != null){
+					ku.addChangeHandler(new ChangeHandler() {
+						@Override
+						public void onChange(ChangeEvent event) {
+							scheduleValidation();							
+						}
+					});
+				}
+			}
+
 			fieldError = new Label();
 			fieldError.addStyleName("error");
 			fieldPanel.add(fieldError);
 		}
+	}
+
+	private void validate() {
+		validator.getErrors(formField.getFieldWidget(), new Callback<List<String>>() {
+			@Override
+			public void ok(List<String> errors) {
+				if(errors.isEmpty()){
+					setError("");
+				}else {
+					showErrors(errors);
+				}
+				fieldBus.fireEvent(new ValidationChangedEvent());
+				
+			}
+		});
+	}
+	
+	public void scheduleValidation(){
+		updateTimer.cancel();
+		updateTimer.schedule(500);
+	}
+
+	private void showErrors(List<String> errorKeys) {
+		StringBuilder buf = new StringBuilder();
+		for(String e:errorKeys){
+			buf.append(e);
+		}
+		setError(buf.toString());
 	}
 
 	public KornellFormField<?> getFormField() {

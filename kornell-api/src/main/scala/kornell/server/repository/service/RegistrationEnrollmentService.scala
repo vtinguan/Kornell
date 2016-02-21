@@ -24,8 +24,6 @@ import scala.collection.JavaConverters._
 import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.RoleCategory
 import kornell.server.repository.Entities
-import kornell.core.util.TimeUtil
-import kornell.server.util.ServerTime
 import kornell.core.util.StringUtils
 import kornell.core.entity.RegistrationType
 import kornell.server.jdbc.repository.CourseClassRepo
@@ -33,17 +31,24 @@ import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.server.api.ActomResource
 import kornell.core.error.exception.EntityConflictException
 import scala.collection.mutable.ListBuffer
+import kornell.server.jdbc.repository.RolesRepo
 
 object RegistrationEnrollmentService {
 
   def deanRequestEnrollments(enrollmentRequests: EnrollmentRequestsTO, dean: Person) = {
+    val courseClassUUID = enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID
+    val courseClass = CourseClassRepo(courseClassUUID).get
+    val currentEnrollmentCount = EnrollmentsRepo.byCourseClass(courseClassUUID).getCount
+    if ((currentEnrollmentCount + enrollmentRequests.getEnrollmentRequests.size) > courseClass.getMaxEnrollments()) {
+      throw new EntityConflictException("tooManyEnrollments")
+    }
     enrollmentRequests.getEnrollmentRequests.asScala.foreach(e => deanRequestEnrollment(e, dean))
     if (enrollmentRequests.getEnrollmentRequests.size > 100)
-      EmailService.sendEmailBatchEnrollment(dean, InstitutionsRepo.byUUID(dean.getInstitutionUUID).get, CourseClassRepo(enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID).get)
+      EmailService.sendEmailBatchEnrollment(dean, InstitutionsRepo.getByUUID(dean.getInstitutionUUID).get, CourseClassRepo(enrollmentRequests.getEnrollmentRequests.get(0).getCourseClassUUID).get)
   }
 
-  def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUsername: String) = {
-    val roles = (Set.empty ++ AuthRepo().rolesOf(deanUsername)).asJava
+  def isInvalidRequestEnrollment(enrollmentRequest: EnrollmentRequestTO, deanUUID: String) = {
+    val roles = RolesRepo.getUserRoles(deanUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
     !(RoleCategory.isPlatformAdmin(roles, enrollmentRequest.getInstitutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, enrollmentRequest.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, enrollmentRequest.getCourseClassUUID))
@@ -78,7 +83,7 @@ object RegistrationEnrollmentService {
   private def deanEnrollExistingPerson(person: Person, enrollmentRequest: EnrollmentRequestTO, dean: Person) = {
     val personRepo = PersonRepo(person.getUUID)
     if (enrollmentRequest.getCourseVersionUUID == null) {
-      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
+      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID, true) match {
         case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
         case None => {
           createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
@@ -89,7 +94,7 @@ object RegistrationEnrollmentService {
       if (courseVersion.getParentVersionUUID != null) {
         throw new EntityConflictException("cannotEnrollOnChildVersion")
       }
-      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID) match {
+      EnrollmentsRepo.byCourseClassAndPerson(enrollmentRequest.getCourseClassUUID, person.getUUID, true) match {
         case Some(enrollment) => deanUpdateExistingEnrollment(person, enrollment, enrollmentRequest.getInstitutionUUID, dean, enrollmentRequest.isCancelEnrollment)
         case None => {
           val enrollment = createEnrollment(person.getUUID, enrollmentRequest.getCourseClassUUID, null, EnrollmentState.enrolled, dean.getUUID)
@@ -97,7 +102,7 @@ object RegistrationEnrollmentService {
         }
       }
     }
-    //if there's no username set, get it from the enrollment request
+    //if there's no fullName set, get it from the enrollment request
     if (StringUtils.isNone(person.getFullName)) {
       person.setFullName(enrollmentRequest.getFullName)
       personRepo.update(person)
@@ -144,11 +149,12 @@ object RegistrationEnrollmentService {
 
   private def deanUpdateExistingEnrollment(person: Person, enrollment: Enrollment, institutionUUID: String, dean: Person, cancelEnrollment: Boolean) = {
     if (cancelEnrollment && !EnrollmentState.cancelled.equals(enrollment.getState))
-      EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled, enrollment.getCourseVersionUUID == null)
+      EventsRepo.logEnrollmentStateChanged(UUID.random, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.cancelled, enrollment.getCourseVersionUUID == null)
     else if (!cancelEnrollment && (EnrollmentState.cancelled.equals(enrollment.getState)
+      || EnrollmentState.deleted.equals(enrollment.getState())
       || EnrollmentState.requested.equals(enrollment.getState())
       || EnrollmentState.denied.equals(enrollment.getState()))) {
-      EventsRepo.logEnrollmentStateChanged(UUID.random, ServerTime.now, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled, enrollment.getCourseVersionUUID == null)
+      EventsRepo.logEnrollmentStateChanged(UUID.random, dean.getUUID, enrollment.getUUID, enrollment.getState, EnrollmentState.enrolled, enrollment.getCourseVersionUUID == null)
     }
   }
 
@@ -211,7 +217,7 @@ object RegistrationEnrollmentService {
       courseVersionUUID = courseVersionUUID,
       parentEnrollmentUUID = parentEnrollmentUUID)
     EventsRepo.logEnrollmentStateChanged(
-      UUID.random, ServerTime.now, enrollerUUID,
+      UUID.random, enrollerUUID,
       enrollment.getUUID, enrollment.getState, enrollmentState, courseVersionUUID == null)
     enrollment
   }

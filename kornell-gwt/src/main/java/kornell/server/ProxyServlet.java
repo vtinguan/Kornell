@@ -68,6 +68,7 @@ import org.apache.http.util.EntityUtils;
  *
  * @author David Smiley dsmiley@mitre.org
  */
+@SuppressWarnings({"rawtypes","deprecation", "serial","resource","unchecked"})
 public class ProxyServlet extends HttpServlet {
 
   /* INIT PARAMETER NAME CONSTANTS */
@@ -97,7 +98,7 @@ public class ProxyServlet extends HttpServlet {
     return "A proxy servlet by David Smiley, dsmiley@mitre.org";
   }
 
-  @Override
+@Override
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
 
@@ -127,7 +128,7 @@ public class ProxyServlet extends HttpServlet {
    * for customization. By default, SystemDefaultHttpClient is used available, otherwise it falls
    * back to:
    * <pre>new DefaultHttpClient(new ThreadSafeClientConnManager(),hcParams)</pre>*/
-  protected HttpClient createHttpClient(HttpParams hcParams) {
+protected HttpClient createHttpClient(HttpParams hcParams) {
     try {
       //as of HttpComponents v4.2, this class is better since it uses System
       // Properties:
@@ -436,7 +437,7 @@ public class ProxyServlet extends HttpServlet {
    *
    * @param in example: name=value&foo=bar#fragment
    */
-  protected static CharSequence encodeUriQuery(CharSequence in) {
+protected static CharSequence encodeUriQuery(CharSequence in) {
     //Note that I can't simply use URI.java to encode because it will escape pre-existing escaped things.
     StringBuilder outBuf = null;
     Formatter formatter = null;

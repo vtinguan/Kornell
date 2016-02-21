@@ -1,8 +1,9 @@
 package kornell.core.to.report;
 
+import java.util.Date;
 
 public class CourseClassAuditTO {
-	private String eventFiredAt;
+	private Date eventFiredAt;
 	private String eventType;
 	private String adminFullName;
 	private String adminUsername;
@@ -17,10 +18,10 @@ public class CourseClassAuditTO {
 	private String enrollmentUUID;
 	private String fromCourseClassUUID;
 	private String toCourseClassUUID;
-	public String getEventFiredAt() {
+	public Date getEventFiredAt() {
 		return eventFiredAt;
 	}
-	public void setEventFiredAt(String eventFiredAt) {
+	public void setEventFiredAt(Date eventFiredAt) {
 		this.eventFiredAt = eventFiredAt;
 	}
 	public String getEventType() {

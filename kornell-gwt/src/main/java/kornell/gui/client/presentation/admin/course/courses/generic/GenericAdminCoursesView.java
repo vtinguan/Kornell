@@ -14,7 +14,6 @@ import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
 import kornell.gui.client.presentation.util.AsciiUtils;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.uidget.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -22,7 +21,6 @@ import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.ActionCell;
@@ -72,7 +70,6 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private PlaceController placeCtrl;
 	final CellTable<Course> table;
-	private List<Course> courses;
 	private AdminCoursesView.Presenter presenter;
 	private KornellPagination pagination;
 	private TextBox txtSearch;
@@ -330,7 +327,6 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 	@Override
 	public void setCourses(List<Course> courses, Integer count, Integer searchCount) {
 		coursesWrapper.clear();
-		this.courses = courses;
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
 		panel.add(table);

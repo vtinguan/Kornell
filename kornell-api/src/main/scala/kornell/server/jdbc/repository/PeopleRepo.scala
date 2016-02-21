@@ -2,10 +2,8 @@ package kornell.server.jdbc.repository
 
 import java.sql.ResultSet
 import java.util.concurrent.TimeUnit.MINUTES
-
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
-
 import kornell.core.entity.Person
 import kornell.core.entity.RegistrationType
 import kornell.core.to.PersonTO
@@ -14,6 +12,7 @@ import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.Entities
 import kornell.server.repository.Entities.randUUID
 import kornell.server.repository.TOs.newPeopleTO
+import kornell.core.entity.AuditedEntityType
 
 object PeopleRepo {
 
@@ -34,7 +33,11 @@ object PeopleRepo {
   }
 
   val uuidLoader = new CacheLoader[String, Option[Person]]() {
-    override def load(uuid: String): Option[Person] = PersonRepo(uuid).first
+    override def load(uuid: String): Option[Person] = lookupByUUID(uuid)
+  }
+
+  val timezoneLoader = new CacheLoader[String, Option[String]]() {
+    override def load(personUUID: String): Option[String] = lookupTimezoneByUUID(personUUID)
   }
 
   val DEFAULT_CACHE_SIZE = 1000
@@ -45,17 +48,16 @@ object PeopleRepo {
     .maximumSize(1000)
 
   val usernameCache = cacheBuilder.build(usernameLoader)
-
   val cpfCache = cacheBuilder.build(cpfLoader)
-
   val emailCache = cacheBuilder.build(emailLoader)
-
   val uuidCache = cacheBuilder.build(uuidLoader)
+  val timezoneCache = cacheBuilder.build(timezoneLoader)
 
   def getByUsername(institutionUUID: String, username: String) = Option(institutionUUID, username) flatMap usernameCache.get
   def getByEmail(institutionUUID: String, email: String) = Option(institutionUUID, email) flatMap emailCache.get
   def getByCPF(institutionUUID: String, cpf: String) = Option(institutionUUID, cpf) flatMap cpfCache.get
-  def getByUUID(uuid: String) = uuidCache.get(uuid)
+  def getByUUID(uuid: String) = Option(uuid) flatMap uuidCache.get
+  def getTimezoneByUUID(personUUID: String) = timezoneCache.get(personUUID)
 
   def lookupByUsername(institutionUUID: String, username: String) = sql"""
 		select p.* from Person p
@@ -76,6 +78,14 @@ object PeopleRepo {
 		where p.email = $email
 		and p.institutionUUID = $institutionUUID
 	""".first[Person]
+
+  def lookupByUUID(uuid: String) = sql"""
+		select p.* from Person p	
+		where p.uuid = $uuid
+	""".first[Person]
+  
+  def lookupTimezoneByUUID(personUUID: String) = 
+	sql"""select i.timeZone from Person p left join Institution i on p.institutionUUID = i.uuid where p.uuid = ${personUUID}""".first[String]
 
   def get(institutionUUID: String, any: String): Option[Person] = get(institutionUUID, any, any, any)
 
@@ -134,6 +144,10 @@ object PeopleRepo {
 	             ${person.getRegistrationType.toString},
 	             ${person.getInstitutionRegistrationPrefixUUID})
     """.executeUpdate
+    
+    //log entity creation
+    EventsRepo.logEntityChange(person.getInstitutionUUID, AuditedEntityType.person, person.getUUID, null, person)
+    
     updateCaches(person)
     person
   }
@@ -143,6 +157,9 @@ object PeopleRepo {
     uuidCache.put(p.getUUID, op)
     if (isSome(p.getCPF)) cpfCache.put((p.getInstitutionUUID, p.getCPF), op)
     if (isSome(p.getEmail)) emailCache.put((p.getInstitutionUUID, p.getEmail), op)
+    if(timezoneCache.get(p.getUUID).isDefined){
+    	timezoneCache.put(p.getUUID, lookupTimezoneByUUID(p.getUUID)) 
+    }
   }
   
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="3870" pageHeight="842" columnWidth="3870" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="2918"/>
+	<property name="ireport.x" value="3093"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="notStarted" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
@@ -21,7 +21,7 @@
 	<parameter name="createdAt" class="java.util.Date"/>
 	<parameter name="maxEnrollments" class="java.lang.String"/>
 	<parameter name="assetsURL" class="java.lang.String"/>
-	<parameter name="disabledAt" class="java.lang.String"/>
+	<parameter name="disabledAt" class="java.util.Date"/>
 	<parameter name="courseClassAdminNames" class="java.lang.String"/>
 	<field name="fullName" class="java.lang.String"/>
 	<field name="username" class="java.lang.String"/>
@@ -31,8 +31,8 @@
 	<field name="progressState" class="java.lang.String"/>
 	<field name="progress" class="java.lang.Integer"/>
 	<field name="assessmentScore" class="java.math.BigDecimal"/>
-	<field name="certifiedAt" class="java.lang.String"/>
-	<field name="enrolledAt" class="java.lang.String"/>
+	<field name="certifiedAt" class="java.util.Date"/>
+	<field name="enrolledAt" class="java.util.Date"/>
 	<field name="courseName" class="java.lang.String"/>
 	<field name="courseVersionName" class="java.lang.String"/>
 	<field name="courseClassName" class="java.lang.String"/>
@@ -216,9 +216,7 @@
 				<textElement>
 					<font fontName="Serif" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{disabledAt} == null ?
-    ""
-    : $P{disabledAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{disabledAt})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="31643644-fc81-4e6a-ad1e-e132af1a4983" x="210" y="193" width="1005" height="16" forecolor="#CB9902"/>
@@ -467,7 +465,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{certifiedAt} == null ?
     " - "
-    : $F{certifiedAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
+    : new SimpleDateFormat("yyyy-MM-dd").format($F{certifiedAt})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="90520c48-2b19-4007-85b6-b730368d83a7" x="1215" y="0" width="85" height="12"/>
@@ -476,7 +474,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{enrolledAt} == null ?
     " - "
-    : $F{enrolledAt}.split(" ")[0].split("T")[0]]]></textFieldExpression>
+    : new SimpleDateFormat("yyyy-MM-dd").format($F{enrolledAt})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="01cf94a2-2b51-4331-993b-adec96eaf0a8" x="980" y="0" width="150" height="12"/>
@@ -550,7 +548,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{birthDate} == null ?
     " - "
-    : $F{birthDate}.split(" ")[0].split("T")[0]]]></textFieldExpression>
+    : $F{birthDate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="8fd10761-871f-40fe-8d21-a89e2c123490" x="2585" y="0" width="150" height="12" forecolor="#525252"/>

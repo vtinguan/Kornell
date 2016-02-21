@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation.vitrine.generic;
 
-import static kornell.core.util.StringUtils.composeURL;
+import static kornell.core.util.StringUtils.mkurl;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +11,7 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.VitrineViewType;
+import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.ClientProperties;
 
 import com.github.gwtbootstrap.client.ui.Alert;
@@ -44,6 +45,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private VitrineView.Presenter presenter;
 	private VitrineViewType currentViewType = VitrineViewType.login;
 	private String registrationEmail;
+	private boolean forcedPasswordUpdate = false;
 
 	@UiField
 	FlowPanel vitrineWrapper;
@@ -115,10 +117,9 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	HTMLPanel panelHR;
 	
 	
-	// TODO i18n xml
 	public GenericVitrineView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		//buildFlagsPanel();
+		buildFlagsPanel();
 		displayView(VitrineViewType.login);
 		
 		KeyPressHandler kpHandler = new KeyPressHandler() {
@@ -156,10 +157,11 @@ public class GenericVitrineView extends Composite implements VitrineView {
 				locale = "pt_BR";
 			}
 			Map<String, String> localeToFlagsImage = new HashMap<String, String>();
-			localeToFlagsImage.put("pt_BR", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-br\" alt=\"BR\" title=\"Português\"/>");
-			localeToFlagsImage.put("en", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-gb\" alt=\"EN\" title=\"English\" />");
-			localeToFlagsImage.put("fr", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-fr\" alt=\"FR\" title=\"Français\" />");
-			localeToFlagsImage.put("es", "<img src=\"skins/first/icons/blank.gif\" class=\"flag flag-es\" alt=\"ES\" title=\"Español\" />");
+			String blank = mkurl(ClientConstants.IMAGES_PATH, "blank.gif");
+			localeToFlagsImage.put("pt_BR", "<img src=\""+blank+"\" class=\"flag flag-br\" alt=\"BR\" title=\"Português\"/>");
+			localeToFlagsImage.put("en",    "<img src=\""+blank+"\" class=\"flag flag-gb\" alt=\"EN\" title=\"English\" />");
+			localeToFlagsImage.put("fr",    "<img src=\""+blank+"\" class=\"flag flag-fr\" alt=\"FR\" title=\"Français\" />");
+			localeToFlagsImage.put("es",    "<img src=\""+blank+"\" class=\"flag flag-es\" alt=\"ES\" title=\"Español\" />");
 	
 			Map<String, Command> localeToCommand = new HashMap<String, Command>();
 			localeToCommand.put("pt_BR", new Command() {
@@ -325,7 +327,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 			if(registrationEmail != null){
 				suEmail.setText(registrationEmail);
 				suEmail.setEnabled(false);
-				suEmail.setTitle("Use o mesmo email no qual recebeu a matrícula.");
+				suEmail.setTitle(constants.registrationEmailMessage());
 			}
 			signUpPanel.setVisible(true);
 			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
@@ -342,7 +344,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 				}
 			});
 			break;
-		case newPassword: 
+		case newPassword:
 			newPasswordPanel.setVisible(true);
 			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 				public void execute() {
@@ -396,7 +398,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	public void setLogoURL(String assetsURL) {
 		String skin = Dean.getInstance().getInstitution().getSkin();
 		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png";
-		imgLogo.setUrl(composeURL(assetsURL, barLogoFileName));
+		imgLogo.setUrl(mkurl(assetsURL, barLogoFileName));
 	}
 
 	@Override
@@ -406,8 +408,18 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	@Override
-  public void setRegistrationEmail(String email) {
+	public void setRegistrationEmail(String email) {
 		this.registrationEmail = email;  
-  }
+	}
+
+	@Override
+	public boolean isForcedPasswordUpdate() {
+		return forcedPasswordUpdate;
+	}
+
+	@Override
+	public void setForcedPasswordUpdate(boolean forcedPasswordUpdate) {
+		this.forcedPasswordUpdate = forcedPasswordUpdate;
+	}
 
 }

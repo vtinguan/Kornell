@@ -1,5 +1,7 @@
 package kornell.gui.client.presentation.course.generic.details;
 
+import static kornell.core.util.StringUtils.mkurl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,17 +23,18 @@ import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ShowDetailsEvent;
-import kornell.gui.client.mvp.HistoryMapper;
+import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassMessagesView;
 import kornell.gui.client.presentation.course.ClassroomPlace;
 import kornell.gui.client.presentation.course.ClassroomView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.LoadingPopup;
+import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
@@ -48,13 +51,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class GenericCourseDetailsView extends Composite {
+public class GenericCourseDetailsView extends Composite implements ShowDetailsEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseDetailsView> {
 	}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
-	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 
 	private KornellSession session;
 	private PlaceController placeCtrl;
@@ -63,7 +64,7 @@ public class GenericCourseDetailsView extends Composite {
 	private MessagePresenter messagePresenterClassroomGlobalChat, messagePresenterClassroomTutorChat;
 	private GenericCourseClassMessagesView messagesGlobalChatView, messagesTutorChatView;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
-	private String IMAGES_PATH = "skins/first/icons/courseDetails/";
+	private String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseDetails");
 
 	@UiField
 	FlowPanel detailsPanel;
@@ -98,12 +99,10 @@ public class GenericCourseDetailsView extends Composite {
 	private List<Actom> actoms;
 
 	private boolean isEnrolled, isCancelled, isInactiveCourseClass;
-
-
-
 	
 	public GenericCourseDetailsView(EventBus bus, KornellSession session, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.bus = bus;
+		this.bus.addHandler(ShowDetailsEvent.TYPE,this);
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.viewFactory = viewFactory;
@@ -125,25 +124,6 @@ public class GenericCourseDetailsView extends Composite {
 	private void setContents(Contents contents) {
 		this.contents = contents;
 		this.actoms = ContentsOps.collectActoms(contents);
-		//fireProgressChangeEvent();
-	}
-
-	private void fireProgressChangeEvent() {
-		int pagesVisitedCount = 0;
-		int totalPages = actoms.size();
-		for (Actom actom : actoms) {
-			if(actom.isVisited()){
-				pagesVisitedCount++;
-				continue;
-			}
-			break;
-		}
-		ProgressEvent progressChangeEvent = new ProgressEvent();
-		progressChangeEvent.setCurrentPage(0);
-		progressChangeEvent.setTotalPages(totalPages);		
-		progressChangeEvent.setPagesVisitedCount(pagesVisitedCount);
-		progressChangeEvent.setEnrollmentUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-		bus.fireEvent(progressChangeEvent);
 	}
 
 	private void display() {
@@ -209,9 +189,6 @@ public class GenericCourseDetailsView extends Composite {
 		
 		if(btn.equals(btnChat)){
 			buildChatPanel();
-			chatPanel.setVisible(true);
-			messagePresenterClassroomGlobalChat.enableMessagesUpdate(true);
-			messagePresenterClassroomGlobalChat.filterAndShowThreads();
 		} else if(chatPanel != null){
 			chatPanel.setVisible(false);
 			messagePresenterClassroomGlobalChat.enableMessagesUpdate(false);
@@ -222,6 +199,7 @@ public class GenericCourseDetailsView extends Composite {
 			tutorPanel.setVisible(true);
 			messagePresenterClassroomTutorChat.enableMessagesUpdate(true);
 			messagePresenterClassroomTutorChat.filterAndShowThreads();
+			messagePresenterClassroomTutorChat.scrollToBottom();
 		} else if(tutorPanel != null){
 			tutorPanel.setVisible(false);
 			messagePresenterClassroomTutorChat.enableMessagesUpdate(false);
@@ -242,7 +220,6 @@ public class GenericCourseDetailsView extends Composite {
 	private FlowPanel getCertificationPanel() {
 		FlowPanel certificationPanel = new FlowPanel();
 		certificationPanel.addStyleName("certificationPanel");
-		// TODO: i18n
 		certificationPanel.add(getCertificationInfo());
 		certificationPanel.add(getCertificationTableHeader());
 		certificationPanel.add(getCertificationTableContent());
@@ -251,6 +228,10 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private void buildChatPanel() {
+		buildChatPanel(true);
+	}
+	
+	private void buildChatPanel(boolean isVisible) {
 		if (messagesGlobalChatView == null) {
 			messagesGlobalChatView = new GenericCourseClassMessagesView(session, bus,
 					placeCtrl, viewFactory, messagePresenterClassroomGlobalChat, Dean
@@ -260,10 +241,15 @@ public class GenericCourseDetailsView extends Composite {
 			chatPanel = new FlowPanel();
 			detailsContentPanel.add(chatPanel);
 		}
+		if(isVisible){
+			messagesGlobalChatView.initData();
+			chatPanel.clear();
+			chatPanel.add(messagesGlobalChatView);
+		}
+		chatPanel.setVisible(isVisible);
+		messagePresenterClassroomGlobalChat.enableMessagesUpdate(true);
 		messagePresenterClassroomGlobalChat.filterAndShowThreads();
-		chatPanel.clear();
-		chatPanel.addStyleName("certificationPanel");
-		chatPanel.add(messagesGlobalChatView);
+		messagePresenterClassroomGlobalChat.scrollToBottom();
 	}
 
 	private void buildTutorPanel() {
@@ -276,7 +262,6 @@ public class GenericCourseDetailsView extends Composite {
 			tutorPanel = new FlowPanel();
 			detailsContentPanel.add(tutorPanel);
 		}
-		messagePresenterClassroomTutorChat.filterAndShowThreads();
 		tutorPanel.clear();
 		tutorPanel.addStyleName("certificationPanel");
 		tutorPanel.add(messagesTutorChatView);
@@ -293,12 +278,11 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel certificationInfo = new FlowPanel();
 		certificationInfo.addStyleName("detailsInfo");
 
-		Label infoTitle = new Label("Certificação");
+		Label infoTitle = new Label(constants.certification());
 		infoTitle.addStyleName("detailsInfoTitle");
 		certificationInfo.add(infoTitle);
 
-		Label infoText = new Label(
-				/*"Confira abaixo o status dos testes e avaliações presentes neste curso. " + */"Seu certificado pode ser impresso por aqui caso você tenha concluído 100% do conteúdo do curso e tenha sido aprovado na avaliação final.");
+		Label infoText = new Label(constants.certificationInfoText());
 		infoText.addStyleName("detailsInfoText");
 		certificationInfo.add(infoText);
 
@@ -319,10 +303,10 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel certificationHeaderPanel = new FlowPanel();
 		certificationHeaderPanel.addStyleName("certificationHeaderPanel");
 
-		certificationHeaderPanel.add(getHeaderButton("Item", "btnItem", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Status", "btnStatus centerText", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Nota", "btnGrade centerText", "btnCertificationHeader"));
-		certificationHeaderPanel.add(getHeaderButton("Ações", "btnActions centerText", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton(constants.certificationTableInfo(), "btnItem", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton(constants.certificationTableStatus(), "btnStatus centerText", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton(constants.certificationTableGrade(), "btnGrade centerText", "btnCertificationHeader"));
+		certificationHeaderPanel.add(getHeaderButton(constants.certificationTableActions(), "btnActions centerText", "btnCertificationHeader"));
 
 		return certificationHeaderPanel;
 	}
@@ -333,7 +317,6 @@ public class GenericCourseDetailsView extends Composite {
 		btn.removeStyleName("btn");
 		btn.addStyleName(styleNameGlobal);
 		btn.addStyleName(styleName);
-		btn.addStyleName("btnNotSelected");
 		return btn;
 	}
 
@@ -359,7 +342,7 @@ public class GenericCourseDetailsView extends Composite {
 	}
 
 	private void displayTitle() {
-		Image titleImage = new Image(IMAGES_PATH + "details.png");
+		Image titleImage = new Image(StringUtils.mkurl(IMAGES_PATH, "details.png"));
 		titleImage.addStyleName("titleImage");
 		titlePanel.add(titleImage);
 
@@ -418,17 +401,18 @@ public class GenericCourseDetailsView extends Composite {
 					constants.btnTopicsInfo(), false);
 		}
 		if(isInactiveCourseClass){
-			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
+			displayButton(btnCertification, constants.btnCertification(), constants.printCertificateButton(), false);
 		} else if(isEnrolled && !isCancelled){
-			displayButton(btnCertification, constants.btnCertification(), "Imprimir certificado"/*constants.btnCertificationInfo()*/, false);
+			displayButton(btnCertification, constants.btnCertification(), constants.printCertificateButton(), false);
 			if(courseClassTO.getCourseClass().isCourseClassChatEnabled()){
-				displayButton(btnChat, constants.btnChat(), "Com todos os participantes da turma"/*constants.btnCertificationInfo()*/, false);
+				displayButton(btnChat, constants.btnChat(), constants.classChatButton(), false);
+				buildChatPanel();
 			}
 			if(courseClassTO.getCourseClass().isTutorChatEnabled()){
-				displayButton(btnTutor, constants.btnTutor(), "Com um especialista"/*constants.btnCertificationInfo()*/, false);
+				displayButton(btnTutor, constants.btnTutor(), constants.tutorChatButton(), false);
 			}
-			displayButton(btnLibrary, constants.btnLibrary(), "Material complementar"/*constants.btnCertificationInfo()*/, false);
-			displayButton(btnGoToCourse, "Ir para o curso", "", false);	
+			displayButton(btnLibrary, constants.btnLibrary(), constants.libraryButton(), false);
+			displayButton(btnGoToCourse, constants.goToClassButton(), "", false);	
 		}
 	}
 
@@ -470,14 +454,13 @@ public class GenericCourseDetailsView extends Composite {
 			warningPanel.addStyleName("notEnrolledPanel");
 			String text = "";
 			if(isInactiveCourseClass){
-				text = "Essa turma foi desabilitada pela instituição."
-						+ "<br><br> O material desta turma está inacessível.<br>";
+				text = constants.inactiveCourseClass();
 			} else if(isCancelled) {
-				text = "Sua matrícula foi cancelada pela instituição.";
+				text = constants.cancelledEnrollment();
 			} else if(!isEnrolled) {
-				text = "Sua matrícula ainda não foi aprovada pela instituição."
+				text = constants.enrollmentNotApproved()
 						+ (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) ?
-								"" : "<br><br> Você receberá um email no momento da aprovação.<br>");
+								"" : constants.enrollmentConfirmationEmail());
 			}
 			HTMLPanel panel = new HTMLPanel(text);
 			warningPanel.add(panel);
@@ -504,7 +487,7 @@ public class GenericCourseDetailsView extends Composite {
 		FlowPanel hint = new FlowPanel();
 		hint.addStyleName("hintDetails");
 
-		Image hintImg = new Image(IMAGES_PATH + img + ".png");
+		Image hintImg = new Image(StringUtils.mkurl(IMAGES_PATH, img + ".png"));
 		hintImg.addStyleName("hintImg");
 		hint.add(hintImg);
 
@@ -524,8 +507,14 @@ public class GenericCourseDetailsView extends Composite {
 		displayContent(btn);
 		btnCurrent = btn;
 	}
+	
+	@Override
+	public void onShowDetails(ShowDetailsEvent event) {
+		buildChatPanel(btnChat!=null && btnChat.equals(btnCurrent) && event.isShowDetails());
+	}
 
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
+	
 }

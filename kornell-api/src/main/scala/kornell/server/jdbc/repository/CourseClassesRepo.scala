@@ -17,6 +17,7 @@ import kornell.core.entity.CourseClassState
 import java.sql.ResultSet
 import kornell.core.error.exception.EntityConflictException
 import kornell.core.util.StringUtils
+import kornell.core.entity.AuditedEntityType
 
 class CourseClassesRepo {
 }
@@ -34,7 +35,7 @@ object CourseClassesRepo {
 	      courseClass.setUUID(UUID.random)
 	    }
 	    sql""" 
-	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, allowBatchCancellation, tutorChatEnabled,approveEnrollmentsAutomatically)
+	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, chatDockEnabled, allowBatchCancellation, tutorChatEnabled,approveEnrollmentsAutomatically)
 	    	values(${courseClass.getUUID},
 	             ${courseClass.getName},
 	             ${courseClass.getCourseVersionUUID},
@@ -49,11 +50,15 @@ object CourseClassesRepo {
 	             ${courseClass.getRegistrationType.toString},
 	             ${courseClass.getInstitutionRegistrationPrefixUUID},
 	             ${courseClass.isCourseClassChatEnabled},
+	             ${courseClass.isChatDockEnabled},
 	             ${courseClass.isAllowBatchCancellation},
 	             ${courseClass.isTutorChatEnabled},
 	             ${courseClass.isApproveEnrollmentsAutomatically})
 	    """.executeUpdate
 	    ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
+	    
+	    //log creation event
+	    EventsRepo.logEntityChange(courseClass.getInstitutionUUID, AuditedEntityType.courseClass, courseClass.getUUID, null, courseClass)
 	    courseClass
     } else {
       throw new EntityConflictException("courseClassAlreadyExists")
@@ -63,7 +68,7 @@ object CourseClassesRepo {
   def byInstitution(institutionUUID: String) =
     sql"""
     | select * from CourseClass where institution_uuid = $institutionUUID
-    | where state <> ${CourseClassState.deleted}
+    | and state <> ${CourseClassState.deleted}
     """.map[CourseClass](toCourseClass)
 
   private def getAllClassesByInstitution(institutionUUID: String): kornell.core.to.CourseClassesTO = 
@@ -110,6 +115,7 @@ object CourseClassesRepo {
 		  		cc.registrationType as registrationType,
 		  		cc.institutionRegistrationPrefixUUID as institutionRegistrationPrefixUUID, 
 		  		cc.courseClassChatEnabled as courseClassChatEnabled, 
+		  		cc.chatDockEnabled as chatDockEnabled, 
 		  		cc.allowBatchCancellation as allowBatchCancellation, 
 		  		cc.tutorChatEnabled as tutorChatEnabled, 
 		  		cc.approveEnrollmentsAutomatically as approveEnrollmentsAutomatically,
@@ -122,10 +128,10 @@ object CourseClassesRepo {
       	  	    (cc.courseVersion_uuid = ${courseVersionUUID} or ${StringUtils.isNone(courseVersionUUID)}) and
       	  	    (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)}) and
 		    	cc.institution_uuid = ${institutionUUID} and
-	            (cv.name like ${filteredSearchTerm}
-	            or cc.name like ${filteredSearchTerm}) and (${StringUtils.isNone(adminUUID)} or
+	            (cv.name like ${filteredSearchTerm} or cc.name like ${filteredSearchTerm}) and 
+	            (${StringUtils.isNone(adminUUID)} or
 				(select count(*) from Role r where person_uuid = ${adminUUID} and (
-					(r.role = ${RoleType.platformAdmin.toString}) or 
+					(r.role = ${RoleType.platformAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 					(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 				( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
 			)) > 0)
@@ -134,7 +140,7 @@ object CourseClassesRepo {
 		courseClassesTO.setCount(
 		    sql"""select count(cc.uuid) from CourseClass cc where cc.state <> ${CourseClassState.deleted.toString} and (${StringUtils.isSome(adminUUID)} and
 					(select count(*) from Role r where person_uuid = ${adminUUID} and (
-						(r.role = ${RoleType.platformAdmin.toString}) or 
+						(r.role = ${RoleType.platformAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 						(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 						( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
 					)) > 0)
@@ -153,7 +159,7 @@ object CourseClassesRepo {
             	(cv.name like ${filteredSearchTerm}
             	or cc.name like ${filteredSearchTerm}) and (${StringUtils.isSome(adminUUID)} and
 				(select count(*) from Role r where person_uuid = ${adminUUID} and (
-					(r.role = ${RoleType.platformAdmin.toString}) or 
+					(r.role = ${RoleType.platformAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 					(r.role = ${RoleType.institutionAdmin.toString} and r.institution_uuid = ${institutionUUID}) or 
 					( (r.role = ${RoleType.courseClassAdmin.toString} or r.role = ${RoleType.observer.toString} or r.role = ${RoleType.tutor.toString}) and r.course_class_uuid = cc.uuid)
 				)) > 0)
@@ -178,15 +184,15 @@ object CourseClassesRepo {
     cc.getCourseClass().isPublicClass() || cc.getEnrollment() != null
   }
 
-  private def isPlatformAdmin(roles: List[Role]) = {
+  private def isPlatformAdmin(institutionUUID: String, roles: List[Role]) = {
     var hasRole: Boolean = false
     roles.foreach(role => hasRole = hasRole
-      || RoleCategory.isValidRole(role, RoleType.platformAdmin, null, null))
+      || RoleCategory.isValidRole(role, RoleType.platformAdmin, institutionUUID, null))
     hasRole
   }
 
   private def isInstitutionAdmin(institutionUUID: String, roles: List[Role]) = {
-    var hasRole: Boolean = isPlatformAdmin(roles)
+    var hasRole: Boolean = isPlatformAdmin(institutionUUID, roles)
     roles.foreach(role => hasRole = hasRole
       || RoleCategory.isValidRole(role, RoleType.institutionAdmin, institutionUUID, null))
     hasRole
@@ -214,7 +220,7 @@ object CourseClassesRepo {
   }
 
   private def bindEnrollment(personUUID: String, courseClassTO: CourseClassTO) = {
-    val enrollment = EnrollmentsRepo.byCourseClassAndPerson(courseClassTO.getCourseClass().getUUID(), personUUID)
+    val enrollment = EnrollmentsRepo.byCourseClassAndPerson(courseClassTO.getCourseClass().getUUID(), personUUID, false)
     enrollment foreach courseClassTO.setEnrollment    
   }
 

@@ -26,6 +26,7 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.util.AsciiUtils;
+import kornell.gui.client.presentation.util.EnumTranslator;
 import kornell.gui.client.presentation.util.FormHelper;
 import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.util.LoadingPopup;
@@ -196,6 +197,8 @@ public class GenericAdminCourseClassView extends Composite implements
 	Label lblEnrollmentsCancelledCount;
 	@UiField
 	Label lblEnrollmentsAvailableCount;
+	@UiField
+	Label lblStatus;
 
 	@UiField
 	FlowPanel enrollmentsWrapper;
@@ -407,7 +410,7 @@ public class GenericAdminCourseClassView extends Composite implements
 		}
 		txtSearch.setValue(presenter.getSearchTerm());
 		txtSearch.setTitle("nome, "
-				+ formHelper.getRegistrationTypeAsText(Dean.getInstance()
+				+ EnumTranslator.translateEnum(Dean.getInstance()
 						.getCourseClassTO().getCourseClass()
 						.getRegistrationType()) + ", matrícula ou progresso");
 	}
@@ -438,7 +441,7 @@ public class GenericAdminCourseClassView extends Composite implements
 		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
 			public String getValue(EnrollmentTO enrollmentTO) {
-				return formHelper.getEnrollmentStateAsText(enrollmentTO
+				return EnumTranslator.translateEnum(enrollmentTO
 						.getEnrollment().getState());
 			}
 		}, "Matrícula");
@@ -446,8 +449,7 @@ public class GenericAdminCourseClassView extends Composite implements
 		table.addColumn(new TextColumn<EnrollmentTO>() {
 			@Override
 			public String getValue(EnrollmentTO enrollmentTO) {
-				String progressTxt = formHelper
-						.getEnrollmentProgressAsText(EnrollmentCategory
+				String progressTxt = EnumTranslator.translateEnum(EnrollmentCategory
 								.getEnrollmentProgressDescription(enrollmentTO
 										.getEnrollment()));
 				if (EnrollmentProgressDescription.inProgress
@@ -881,6 +883,11 @@ public class GenericAdminCourseClassView extends Composite implements
         this.courseClassTO = courseClassTO;
         this.lblCourseClassName.setText(courseClassTO.getCourseClass().getName());
         this.lblCourseName.setText(courseClassTO.getCourseVersionTO().getCourse().getTitle());
+		String status = EnumTranslator.translateEnum(courseClassTO.getCourseClass().getState());
+		status += courseClassTO.getCourseClass().isInvisible() ? " / Invísivel" : "";
+		status += courseClassTO.getCourseClass().isPublicClass() ? " / Pública" : "";
+        this.lblStatus.setText(status);
+        
     }
 
 
@@ -921,7 +928,7 @@ public class GenericAdminCourseClassView extends Composite implements
 			infoPanel.add(getLabel("Cancelamento:", false));
 			infoPanel.add(getLabel("* Só os nomes de usuário", true));
 		}
-		identifierLabel.setText(formHelper.getRegistrationTypeAsText(Dean
+		identifierLabel.setText(EnumTranslator.translateEnum(Dean
 				.getInstance().getCourseClassTO().getCourseClass()
 				.getRegistrationType())
 				+ ":");

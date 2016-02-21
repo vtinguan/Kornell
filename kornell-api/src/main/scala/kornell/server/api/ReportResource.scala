@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
-
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
@@ -18,19 +17,24 @@ import kornell.core.entity.RoleCategory
 import kornell.core.error.exception.ServerErrorException
 import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.core.to.SimplePeopleTO
+import kornell.server.content.ContentManagers
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.server.jdbc.repository.CourseClassRepo
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.server.jdbc.repository.CourseRepo
 import kornell.server.jdbc.repository.EnrollmentsRepo
+import kornell.server.jdbc.repository.EnrollmentsRepo
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.PersonRepo
+import kornell.server.jdbc.repository.RolesRepo
 import kornell.server.report.ReportCertificateGenerator
 import kornell.server.report.ReportCourseClassAuditGenerator
 import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
-import kornell.server.repository.s3.S3
+import javax.servlet.http.HttpServletRequest
+import kornell.core.util.StringUtils.composeURL
 
 @Path("/report")
 class ReportResource {
@@ -39,9 +43,10 @@ class ReportResource {
   @Path("/certificate/{userUUID}/{courseClassUUID}")
   @Produces(Array("application/pdf"))
   def get(@Context resp: HttpServletResponse,
+    @Context req: HttpServletRequest,
     @PathParam("userUUID") userUUID: String,
     @PathParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
-	    val roles = AuthRepo().getUserRoles
+	    val roles = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
 	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isCourseClassAdmin(roles, courseClassUUID) ||
@@ -57,10 +62,11 @@ class ReportResource {
   @PUT
   @Path("/certificate")
   @Consumes(Array(SimplePeopleTO.TYPE))
-  def get(@QueryParam("courseClassUUID") courseClassUUID: String, 
+  def get(@Context req: HttpServletRequest,
+   @QueryParam("courseClassUUID") courseClassUUID: String, 
     peopleTO: SimplePeopleTO) = AuthRepo().withPerson { p =>
     val courseClass = CourseClassesRepo(courseClassUUID).get
-    val roles = AuthRepo().getUserRoles
+	val roles = RolesRepo.getUserRoles(p.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
     if (!(RoleCategory.isPlatformAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isInstitutionAdmin(roles, courseClass.getInstitutionUUID) ||
       RoleCategory.isCourseClassAdmin(roles, courseClass.getUUID) ||
@@ -94,12 +100,13 @@ class ReportResource {
         } else {
           val report = ReportCertificateGenerator.generateCertificate(certificateInformationTOsByCourseClass)
           val bs = new ByteArrayInputStream(report)
-          S3.certificates.put(filename,
+          val repo = ContentManagers.forCertificates(p.getInstitutionUUID())
+          repo.put(
             bs,
             "application/pdf",
             "Content-Disposition: attachment; filename=\"" + filename + ".pdf\"",
-            Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()))
-          S3.certificates.url(filename)
+            Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()),filename)
+          composeURL(ContentManagers.USER_CONTENT_URL, repo.url(filename)) 
         }
       } catch {
         case e: Exception =>
@@ -113,7 +120,8 @@ class ReportResource {
   def fileExists(@QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson { p =>
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
-      val url = S3.certificates.url(filename)
+      
+      val url = composeURL(ContentManagers.USER_CONTENT_URL, ContentManagers.forCertificates(p.getInstitutionUUID).url(filename)) 
 
       HttpURLConnection.setFollowRedirects(false);
       val con = new URL(url).openConnection.asInstanceOf[HttpURLConnection]
@@ -130,6 +138,7 @@ class ReportResource {
   @GET
   @Path("/courseClassInfo")
   def getCourseClassInfo(@Context resp: HttpServletResponse,
+    @Context req: HttpServletRequest,
     @QueryParam("courseUUID") courseUUID: String,
     @QueryParam("courseClassUUID") courseClassUUID: String,
     @QueryParam("fileType") fileType: String) = AuthRepo().withPerson{ person => {
@@ -177,7 +186,7 @@ class ReportResource {
     @QueryParam("institutionUUID") institutionUUID: String,
     @QueryParam("periodStart") periodStart: String,
     @QueryParam("periodEnd") periodEnd: String) = AuthRepo().withPerson{ person => {
-	    val roles = AuthRepo().getUserRoles
+	    val roles = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT).getRoleTOs
 	    if (!(RoleCategory.isPlatformAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID) ||
 	      RoleCategory.isInstitutionAdmin(roles, PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID)))
 	      throw new UnauthorizedAccessException("accessDenied")
@@ -192,5 +201,5 @@ class ReportResource {
   @Path("/clear")
   @Produces(Array("application/pdf"))
   def clearJasperFiles = ReportGenerator.clearJasperFiles
-
+  
 }

@@ -28,6 +28,7 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
+@SuppressWarnings("unchecked")
 public abstract class Callback<T> implements RequestCallback {
 
 	Logger logger = Logger.getLogger(Callback.class.getName());
@@ -80,9 +81,7 @@ public abstract class Callback<T> implements RequestCallback {
 			ok(bool);
 		} else if (contentType.contains("json")) {
 			if (MediaTypes.get().containsType(contentType)) {
-				@SuppressWarnings("unchecked")
-				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(
-						contentType);
+				Class<T> clazz = (Class<T>) MediaTypes.get().classOf(contentType);
 
 				AutoBean<T> bean = null;
 				AutoBeanFactory factory = factoryFor(contentType);
@@ -144,7 +143,6 @@ public abstract class Callback<T> implements RequestCallback {
 		logger.severe("Cause: " + kornellErrorTO.getException());
 	}
 
-	@SuppressWarnings("unchecked")
 	private T bool(String responseText) {
 		return (T) Boolean.valueOf(responseText);
 	}
@@ -190,7 +188,6 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void forbidden(KornellErrorTO kornellErrorTO) {
-		// Not used for now
 		if (kornellErrorTO != null)
 			logger.fine(KornellConstantsHelper
 					.getErrorMessage(kornellErrorTO));

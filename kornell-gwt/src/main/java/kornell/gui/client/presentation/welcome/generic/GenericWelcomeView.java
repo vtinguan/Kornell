@@ -5,7 +5,6 @@ import java.util.List;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
@@ -112,15 +111,15 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	}
 
 	private void initData() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, "Cursos", "Selecione uma turma abaixo");
-		session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
-			@Override
-			public void ok(CourseClassesTO tos) {
-				Dean.getInstance().setCourseClassesTO(tos);
-				startPlaceBar();
-				display(tos);
-			}
-		});
+		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, constants.homeTitle(), constants.homeDescription());
+        session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
+            @Override
+            public void ok(CourseClassesTO tos) {
+                Dean.getInstance().setCourseClassesTO(tos);
+                startPlaceBar();
+                display(tos);
+            }
+        });
 	}
 
 	private void display(final CourseClassesTO tos) {
@@ -130,7 +129,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		final int classesCount = tos.getCourseClasses().size();
 		if(classesCount == 0){
 			coursesWrapper.setVisible(false);
-			KornellNotification.show("Você não está matriculado em uma turma e não há turmas disponíveis para solicitar uma nova matrícula.", AlertType.WARNING, 8000);
+			KornellNotification.show(constants.noClassesAvailable(), AlertType.WARNING, 8000);
 		} else {
 			coursesWrapper.setVisible(true);
 		}
@@ -143,7 +142,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		final int classesCount = tos.getCourseClasses().size();
 		
 	  for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
-	  	if(courseClassTO.getCourseClass().isInvisible() || !CourseClassState.active.equals(courseClassTO.getCourseClass().getState())) continue;
+	  	if(courseClassTO.getCourseClass().isInvisible()) continue;
 	  	
 			final Teacher teacher = Teachers.of(courseClassTO);
 

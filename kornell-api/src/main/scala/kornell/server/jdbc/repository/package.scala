@@ -2,7 +2,13 @@ package kornell.server.jdbc
 
 import java.sql.ResultSet
 import java.util.logging.Logger
+
 import kornell.core.entity.Assessment
+import kornell.core.entity.AuditedEntityType
+import kornell.core.entity.AuthClientType
+import kornell.core.entity.BillingType
+import kornell.core.entity.ChatThread
+import kornell.core.entity.ChatThreadParticipant
 import kornell.core.entity.Course
 import kornell.core.entity.CourseClass
 import kornell.core.entity.CourseClassState
@@ -10,31 +16,28 @@ import kornell.core.entity.CourseVersion
 import kornell.core.entity.Enrollment
 import kornell.core.entity.EnrollmentState
 import kornell.core.entity.Institution
+import kornell.core.entity.InstitutionRegistrationPrefix
+import kornell.core.entity.InstitutionType
 import kornell.core.entity.Person
+import kornell.core.entity.RegistrationType
+import kornell.core.entity.RegistrationType
+import kornell.core.entity.RoleCategory
 import kornell.core.entity.RoleType
+import kornell.core.event.EntityChanged
 import kornell.core.to.ChatThreadMessageTO
 import kornell.core.to.CourseClassTO
+import kornell.core.to.CourseVersionTO
 import kornell.core.to.EnrollmentTO
+import kornell.core.to.PersonTO
+import kornell.core.to.RoleTO
+import kornell.core.to.SimplePersonTO
+import kornell.core.to.TokenTO
 import kornell.core.to.UnreadChatThreadTO
 import kornell.server.repository.Entities._
 import kornell.server.repository.Entities
 import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
-import kornell.core.entity.RegistrationType
-import kornell.core.to.CourseVersionTO
-import kornell.core.entity.ChatThreadParticipant
-import kornell.core.entity.ChatThread
-import kornell.core.entity.BillingType
-import kornell.core.entity.RegistrationType
-import kornell.core.entity.InstitutionRegistrationPrefix
-import kornell.core.to.PersonTO
-import kornell.core.to.RoleTO
-import kornell.core.entity.RoleCategory
-import kornell.core.to.TokenTO
-import kornell.core.entity.AuthClientType
-import kornell.core.entity.InstitutionType
-import sun.security.action.GetBooleanAction
-import kornell.core.to.SimplePersonTO
+import kornell.core.entity.S3ContentRepository
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -46,7 +49,7 @@ import kornell.core.to.SimplePersonTO
  * find() => Return Collection[T], as the result of a query
  */
 package object repository {
-  val logger = Logger.getLogger("kornell.server.jdbc")
+  val logger = Logger.getLogger("kornell.server.jdbc.repository")
   
   //TODO: Move converters to their repos
   implicit def toInstitution(rs:ResultSet):Institution = 
@@ -66,7 +69,18 @@ package object repository {
         InstitutionType.valueOf(rs.getString("institutionType")),
         rs.getString("dashboardVersionUUID"),
         rs.getBoolean("internationalized"),
-        rs.getBoolean("useEmailWhitelist"))
+        rs.getBoolean("useEmailWhitelist"),
+        rs.getString("assetsRepositoryUUID"),
+        rs.getString("timeZone"))
+        
+  implicit def toS3ContentRepository(rs:ResultSet):S3ContentRepository = 
+    newS3ContentRepository(rs.getString("uuid"),
+        rs.getString("accessKeyId"),
+        rs.getString("secretAccessKey"),
+        rs.getString("bucketName"),
+        rs.getString("prefix"),
+        rs.getString("region"),
+        rs.getString("institutionUUID"))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
@@ -78,7 +92,8 @@ package object repository {
         CourseClassState.valueOf(r.getString("state")), 
         RegistrationType.valueOf(r.getString("registrationType")),
         r.getString("institutionRegistrationPrefixUUID"), r.getBoolean("courseClassChatEnabled"), 
-        r.getBoolean("allowBatchCancellation"),  r.getBoolean("tutorChatEnabled"), r.getBoolean("approveEnrollmentsAutomatically")) 
+        r.getBoolean("chatDockEnabled"), r.getBoolean("allowBatchCancellation"),  
+        r.getBoolean("tutorChatEnabled"), r.getBoolean("approveEnrollmentsAutomatically")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -138,6 +153,7 @@ package object repository {
 			RegistrationType.valueOf(rs.getString("registrationType")),
 			rs.getString("institutionRegistrationPrefixUUID"),
 			rs.getBoolean("courseClassChatEnabled"),
+			rs.getBoolean("chatDockEnabled"),
 			rs.getBoolean("allowBatchCancellation"),  
 			rs.getBoolean("tutorChatEnabled"),
 			rs.getBoolean("approveEnrollmentsAutomatically"))
@@ -174,19 +190,19 @@ package object repository {
   implicit def toEnrollment(rs: ResultSet): Enrollment = {
     newEnrollment(
       rs.getString("uuid"),
-      rs.getDate("enrolledOn"),
+      rs.getTimestamp("enrolledOn"),
       rs.getString("class_uuid"),
       rs.getString("person_uuid"),
       rs.getInt("progress"),
       rs.getString("notes"),      
       EnrollmentState.valueOf(rs.getString("state")),
-      rs.getString("lastProgressUpdate"),
+      rs.getTimestamp("lastProgressUpdate"),
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getString("lastAssessmentUpdate"),
+      rs.getTimestamp("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt"),
+      rs.getTimestamp("certifiedAt"),
       rs.getString("courseVersionUUID"),
       rs.getString("parentEnrollmentUUID"),
       rs.getDate("start_date"),
@@ -206,13 +222,13 @@ package object repository {
       rs.getInt("progress"),
       rs.getString("notes"),      
       EnrollmentState.valueOf(rs.getString("state")),
-      rs.getString("lastProgressUpdate"),
+      rs.getTimestamp("lastProgressUpdate"),
       Option(rs.getString("assessment"))
       	.map(Assessment.valueOf)
       	.getOrElse(null),
-      rs.getString("lastAssessmentUpdate"),
+      rs.getTimestamp("lastAssessmentUpdate"),
       rs.getBigDecimal("assessmentScore"),
-      rs.getString("certifiedAt")
+      rs.getTimestamp("certifiedAt")
     )
     
     TOs.newEnrollmentTO(enrollment, rs.getString("personUUID"), rs.getString("fullName"), rs.getString("username"))
@@ -237,10 +253,11 @@ package object repository {
 	    rs.getString("postalCode"),
 	    rs.getString("cpf"),
 	    rs.getString("institutionUUID"),
-	    rs.getString("termsAcceptedOn"),
+	    rs.getTimestamp("termsAcceptedOn"),
 	    RegistrationType.valueOf(rs.getString("registrationType")),
 	    rs.getString("institutionRegistrationPrefixUUID"),
-	    rs.getBoolean("receiveEmailCommunication"))
+	    rs.getBoolean("receiveEmailCommunication"),
+	    rs.getBoolean("forcePasswordUpdate"))
 	
 	implicit def toPersonTO(rs:ResultSet):PersonTO = newPersonTO(toPerson(rs),
 	    rs.getString("username"))
@@ -254,6 +271,7 @@ package object repository {
       case RoleType.courseClassAdmin => Entities.newCourseClassAdminRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
       case RoleType.tutor => Entities.newTutorRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
       case RoleType.observer => Entities.newObserverRole(rs.getString("person_uuid"), rs.getString("course_class_uuid"))
+      case RoleType.controlPanelAdmin => Entities.newControlPanelAdminRole(rs.getString("person_uuid"))
     }
     role
   }
@@ -286,7 +304,11 @@ package object repository {
 	
 	implicit def toChatThreadMessageTO(rs:ResultSet):ChatThreadMessageTO = newChatThreadMessageTO(
 	    rs.getString("senderFullName"),
-	    rs.getString("sentAt"), 
+	    if(rs.getString("senderRole") == null)
+	      RoleType.user
+	    else
+	      RoleType.valueOf(rs.getString("senderRole")),
+	    rs.getTimestamp("sentAt"), 
 	    rs.getString("message"))
   
 	implicit def toChatThreadParticipant(rs: ResultSet): ChatThreadParticipant = newChatThreadParticipant(
@@ -294,13 +316,13 @@ package object repository {
 	    rs.getString("chatThreadUUID"),
 	    rs.getString("personUUID"),
 	    rs.getString("chatThreadName"),
-	    rs.getDate("lastReadAt"),
+	    rs.getTimestamp("lastReadAt"),
 	    rs.getBoolean("active"),
-	    rs.getDate("lastJoinDate"))
+	    rs.getTimestamp("lastJoinDate"))
 	    
 	implicit def toChatThread(rs: ResultSet): ChatThread = newChatThread(
 	    rs.getString("uuid"), 
-	    rs.getDate("createdAt"), 
+	    rs.getTimestamp("createdAt"), 
 	    rs.getString("institutionUUID"), 
 	    rs.getString("courseClassUUID"), 
 	    rs.getString("personUUID"), 
@@ -317,4 +339,18 @@ package object repository {
         rs.getString("uuid"),
         rs.getString("fullName"),
         rs.getString("username"))
+        
+   
+  implicit def toEntityChanged(rs: ResultSet): EntityChanged = newEntityChanged(
+    rs.getString("uuid"), 
+    rs.getTimestamp("eventFiredAt"),
+    rs.getString("institutionUUID"),
+    rs.getString("personUUID"),
+    AuditedEntityType.valueOf(rs.getString("entityType")),
+    rs.getString("entityUUID"),
+    rs.getString("fromValue"),
+    rs.getString("toValue"),
+    rs.getString("entityName"),
+    rs.getString("fromPersonName"),
+    rs.getString("fromUsername")) 
 }

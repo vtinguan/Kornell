@@ -1,6 +1,8 @@
 package kornell.gui.client.mvp;
 
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.presentation.admin.audit.AdminAuditActivity;
+import kornell.gui.client.presentation.admin.audit.AdminAuditPlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseActivity;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesActivity;
@@ -183,6 +185,15 @@ public class GlobalActivityMapper implements AsyncActivityMapper {
 				}
 				public void onSuccess() {
 					activityCallbackHandler.onReceiveActivity(new AdminCourseClassActivity(clientFactory));
+				}
+			});
+		} else if (place instanceof AdminAuditPlace) {
+			GWT.runAsync(new RunAsyncCallback() {
+				public void onFailure(Throwable err) {
+					Window.Location.reload();
+				}
+				public void onSuccess() {
+					activityCallbackHandler.onReceiveActivity(new AdminAuditActivity(clientFactory));
 				}
 			});
 		} else {

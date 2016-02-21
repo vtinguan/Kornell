@@ -18,48 +18,45 @@ import java.util.Date
 import kornell.server.ep.EnrollmentSEP
 import java.math.BigDecimal
 import java.math.BigDecimal._
-import kornell.server.util.ServerTime
 import kornell.core.entity.ChatThreadType
 import scala.util.Try
+import org.joda.time.DateTime
 
 //TODO: Specific column names and proper sql
-class EnrollmentRepo(enrollmentUUID: String) {
-  lazy val finder = sql" SELECT * FROM Enrollment e WHERE uuid = ${enrollmentUUID} "
+class EnrollmentRepo(uuid: String) {
+  
+  lazy val finder = sql" SELECT * FROM Enrollment e WHERE uuid = ${uuid} "
 
-  def get: Enrollment = finder.get[Enrollment]
+  def get: Enrollment = first.get
 
-  def first: Option[Enrollment] =
-    finder.first[Enrollment]
+  def first: Option[Enrollment] = EnrollmentsRepo.getByUUID(uuid)
 
   def update(e: Enrollment): Enrollment = {
+    e.setLastProgressUpdate(DateTime.now.toDate)
     sql"""
     UPDATE Enrollment    
      SET 
-				enrolledOn = ${e.getEnrolledOn},
-				progress = ${e.getProgress},
-				notes = ${e.getNotes},
-				state = ${e.getState.toString},
-				lastProgressUpdate = ${e.getLastProgressUpdate},
-				assessment = ${Option(e.getAssessment).map(_.toString).getOrElse(null)},
-				lastAssessmentUpdate = ${e.getLastAssessmentUpdate},
-				assessmentScore = ${e.getAssessmentScore},
-				certifiedAt = ${e.getCertifiedAt},
+		progress = ${e.getProgress},
+		notes = ${e.getNotes},
+		state = ${e.getState.toString},
+		lastProgressUpdate = ${e.getLastProgressUpdate},
+		assessment = ${Option(e.getAssessment).map(_.toString).getOrElse(null)},
+		lastAssessmentUpdate = ${e.getLastAssessmentUpdate},
+		assessmentScore = ${e.getAssessmentScore},
+		certifiedAt = ${e.getCertifiedAt},
         parentEnrollmentUUID = ${e.getParentEnrollmentUUID},
         start_date = ${e.getStartDate},
         end_date = ${e.getEndDate}
       where uuid = ${e.getUUID} """.executeUpdate
+    
+    EnrollmentsRepo.updateCache(e)
+	ChatThreadsRepo.addParticipantsToCourseClassThread(CourseClassesRepo(e.getCourseClassUUID).get)
     e
-  }
-
-  def delete(enrollmentUUID: String) = {
-    sql"""
-      delete from Enrollment 
-      where uuid = ${enrollmentUUID}""".executeUpdate
   }
 
   def findGrades: List[String] = sql"""
     	select * from ActomEntries
-    	where enrollment_uuid = ${enrollmentUUID}
+    	where enrollment_uuid = ${uuid}
     	and entryKey = 'cmi.core.score.raw'
     """.map { rs => rs.getString("entryValue") }
 
@@ -78,7 +75,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
     val actoms = ContentsOps.collectActoms(contents).asScala
     val visited = actoms.filter(_.isVisited).size
     val newProgress = visited / actoms.size.toDouble
-    val newProgressPerc = (newProgress * 100).floor.toInt
+    val newProgressPerc = math.max((newProgress * 100).floor.toInt, 1)
     setEnrollmentProgress(e, newProgressPerc)
   }
 
@@ -116,8 +113,12 @@ class EnrollmentRepo(enrollmentUUID: String) {
 
 
   def progressFromSuspendData(e: Enrollment): Option[Int] = {
-    val suspend_data = ActomEntriesRepo.getValue(e.getUUID, "%", "cmi.suspend_data")
-    val progress = suspend_data.flatMap { parseProgress(_) }
+    val suspend_datas = ActomEntriesRepo.getValues(e.getUUID, "%", "cmi.suspend_data")
+    val progresses = suspend_datas.flatMap { parseProgress(_) }
+    val progress = if (progresses.isEmpty)
+      None
+    else
+      Some(progresses.max)
     progress
   }
 
@@ -129,13 +130,10 @@ class EnrollmentRepo(enrollmentUUID: String) {
   
 
   def setEnrollmentProgress(e: Enrollment, newProgress: Int) = {
-    //TODO: Consider using client timestamp
-    val lastProgressUpdate = ServerTime.now
     val currentProgress = e.getProgress
     val isProgress = newProgress > currentProgress
     val isValid = newProgress >= 0 && newProgress <= 100
     if (isValid && isProgress) {
-      e.setLastProgressUpdate(lastProgressUpdate)
       e.setProgress(newProgress)
       update(e)
       checkCompletion(e);
@@ -152,14 +150,13 @@ class EnrollmentRepo(enrollmentUUID: String) {
   		AND entryKey = 'cmi.core.score.raw'
   """.first[BigDecimal] { rs => rs.getBigDecimal("maxScore") }
 
+  
   def updateAssessment = first map { e =>
     val notPassed = !Assessment.PASSED.equals(e.getAssessment)
     if (notPassed && e.getCourseClassUUID != null) {
       val (maxScore, assessment) = assess(e)
       e.setAssessmentScore(maxScore)
       e.setAssessment(assessment)
-      //TODO: Add client timestap
-      e.setLastAssessmentUpdate(ServerTime.now)
       update(e)
       checkCompletion(e)
     }
@@ -184,7 +181,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
 		  entryKey='cmi.core.score.raw' 
 		  and enrollment_uuid=${e.getUUID()} 
     """
-      .first[String] { rs => rs.getString("latestEvent") }
+      .first[Date] { rs => rs.getTimestamp("latestEvent") }
     lastActomEntered
   }
 
@@ -195,7 +192,7 @@ class EnrollmentRepo(enrollmentUUID: String) {
     if (isPassed
       && isCompleted
       && isUncertified) {
-      val certifiedAt = findLastEventTime(e).getOrElse(ServerTime.now)
+      val certifiedAt = findLastEventTime(e).getOrElse(DateTime.now.toDate)
       e.setCertifiedAt(certifiedAt)
       update(e)
     }
@@ -212,14 +209,28 @@ class EnrollmentRepo(enrollmentUUID: String) {
     ChatThreadsRepo.disableParticipantFromCourseClassThread(enrollment)
 
     //update enrollment
-    sql"""update Enrollment set class_uuid = ${toCourseClassUUID} where uuid = ${enrollmentUUID}""".executeUpdate
+    sql"""update Enrollment set class_uuid = ${toCourseClassUUID} where uuid = ${uuid}""".executeUpdate
 
     //disable old support and tutoring threads
     sql"""update ChatThread set active = 0 where courseClassUUID = ${fromCourseClassUUID} and personUUID = ${enrollment.getPersonUUID} and threadType in  (${ChatThreadType.SUPPORT.toString}, ${ChatThreadType.TUTORING.toString})""".executeUpdate
 
+    EnrollmentsRepo.invalidateCache(uuid)
+    
     //add participation to global class thread for new class
     ChatThreadsRepo.addParticipantToCourseClassThread(enrollment)
   }
+  
+  def updatePreAssessmentScore(score:BigDecimal) = sql"""
+		  update Enrollment 
+		  set preAssessmentScore = ${score}
+  		  where uuid = ${uuid}
+  """.executeUpdate
+  
+  def updatePostAssessmentScore(score:BigDecimal) = sql"""
+		  update Enrollment 
+		  set postAssessmentScore = ${score}
+  		  where uuid = ${uuid}
+  """.executeUpdate
 
 }
 

@@ -16,7 +16,6 @@ import kornell.server.ep.EnrollmentSEP
 import kornell.server.jdbc.SQL._
 import kornell.server.jdbc.repository.ActomEntriesRepo
 import kornell.server.repository.Entities
-import kornell.server.util.ServerTime
 import kornell.core.scorm12.rte.RTE
 import kornell.core.scorm12.rte.DMElement
 import kornell.server.scorm12.SCORM12
@@ -24,8 +23,11 @@ import kornell.server.jdbc.repository.AuthRepo
 import scala.collection.mutable.ListBuffer
 import java.util.Map
 import kornell.server.jdbc.PreparedStmt
+import scala.util.Try
+import java.math.BigDecimal
+import kornell.server.util.EnrollmentUtil._
 
-class  ActomResource(enrollmentUUID: String, actomURL: String) {
+class ActomResource(enrollmentUUID: String, actomURL: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
 
   @GET
@@ -46,17 +48,17 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   @Produces(Array("text/plain"))
   @Consumes(Array("text/plain"))
   @PUT
-  def putValue(@PathParam("entryKey") entryKey: String, entryValue: String, modifiedAt: String) = {
-    updateEventModel(entryKey, entryValue, modifiedAt)
+  def putValue(@PathParam("entryKey") entryKey: String, entryValue: String) = {
+    updateEventModel(entryKey, entryValue)
     updateQueryModel(entryKey, entryValue)
   }
 
-  def updateEventModel(entryKey: String, entryValue: String, modifiedAt: String) = {
+  def updateEventModel(entryKey: String, entryValue: String) = {
     val currentValue = getValue(entryKey)
     if (entryValue != currentValue)
       sql"""
   		insert into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) 
-  		values (${randomUUID}, ${enrollmentUUID} , ${actomKey}, ${entryKey}, ${entryValue}, ${modifiedAt})
+  		values (${randomUUID}, ${enrollmentUUID} , ${actomKey}, ${entryKey}, ${entryValue}, now())
   	  """.executeUpdate
   }
 
@@ -69,22 +71,22 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   //Batch version of put value using a map
   def putValues(actomEntries: Map[String, String], modifiedAt: String) = {
     var eventModelQuery = "insert into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) values "
-    val eventModelStrings = new ListBuffer[String] 
+    val eventModelStrings = new ListBuffer[String]
     for ((key, value) <- actomEntries) {
-      eventModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "',null)") 
+      eventModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "',now())")
     }
-    eventModelQuery += eventModelStrings.mkString(",")  
+    eventModelQuery += eventModelStrings.mkString(",")
     new PreparedStmt(eventModelQuery, List[String]()).executeUpdate
-    
+
     var queryModelQuery = "insert into ActomEntries (uuid, enrollment_uuid, actomKey, entryKey, entryValue) values "
-    val queryModelStrings = new ListBuffer[String] 
+    val queryModelStrings = new ListBuffer[String]
     for ((key, value) <- actomEntries) {
-      queryModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "')") 
+      queryModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "')")
     }
-    queryModelQuery += queryModelStrings.mkString(",")    
+    queryModelQuery += queryModelStrings.mkString(",")
     new PreparedStmt(queryModelQuery, List[String]()).executeUpdate
   }
-  
+
   @Path("entries")
   @Consumes(Array(ActomEntries.TYPE))
   @Produces(Array(ActomEntries.TYPE))
@@ -92,28 +94,31 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   def putEntries(entries: ActomEntries) = {
     val modifiedAt = entries.getLastModifiedAt()
     val actomEntries = entries.getEntries
-    for ((key, value) <- actomEntries) putValue(key, value, modifiedAt)
-    
+    for ((key, value) <- actomEntries) putValue(key, value)
+
     val hasProgress = containsProgress(actomEntries)
     if (hasProgress)
       EnrollmentSEP.onProgress(enrollmentUUID)
 
     val hasAssessment = containsAssessment(actomEntries)
     if (hasAssessment) {
-      EnrollmentSEP.onAssessment(enrollmentUUID);
+      EnrollmentSEP.onAssessment(enrollmentUUID)
     }
+    
+    parsePreAssessmentScore(actomEntries)
+      .foreach {
+        EnrollmentSEP.onPreAssessmentScore(enrollmentUUID, _);
+      }
+    
+    parsePostAssessmentScore(actomEntries)
+      .foreach {
+        EnrollmentSEP.onPostAssessmentScore(enrollmentUUID, _);
+      }
+
     entries
   }
 
-  def containsProgress(entries: java.util.Map[String, String]) =
-      entries.containsKey("cmi.core.lesson_status") ||
-      entries.containsKey("cmi.core.lesson_location") ||
-      entries.containsKey("cmi.core.suspend_data")
 
-  def containsAssessment(entries: java.util.Map[String, String]) =
-    entries.containsKey("cmi.core.score.raw") || 
-    entries.containsKey("cmi.suspend_data")
-    
   @Path("entries")
   @Produces(Array(ActomEntries.TYPE))
   @GET
@@ -123,18 +128,17 @@ class  ActomResource(enrollmentUUID: String, actomURL: String) {
   	select * from ActomEntries 
   	where enrollment_uuid=${enrollmentUUID}
   	  and actomKey=${actomKey}""".foreach { rs =>
-        entries.getEntries().put(rs.getString("entryKey"), rs.getString("entryValue"))
+      entries.getEntries().put(rs.getString("entryKey"), rs.getString("entryValue"))
     }
     initialize(entries)
   }
-  
-  
-  def initialize(aentries:ActomEntries):ActomEntries = AuthRepo().withPerson { person =>
-    val entries = aentries.getEntries()    
-    val initdEntries = SCORM12.dataModel.initialize(entries,person)    
+
+  def initialize(aentries: ActomEntries): ActomEntries = AuthRepo().withPerson { person =>
+    val entries = aentries.getEntries()
+    val initdEntries = SCORM12.dataModel.initialize(entries, person)
     aentries.setEntries(initdEntries)
     aentries
-  }    
+  }
 }
 
 object ActomResource {

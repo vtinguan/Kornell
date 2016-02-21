@@ -19,6 +19,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+@SuppressWarnings("serial")
 public class APIProxyServlet extends HttpServlet{
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
@@ -28,7 +29,7 @@ public class APIProxyServlet extends HttpServlet{
 		StringBuilder log = new StringBuilder();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		try {
-			HttpGet httpget = new HttpGet(StringUtils.composeURL(distributionURL,uri));
+			HttpGet httpget = new HttpGet(StringUtils.mkurl(distributionURL,uri));
 
 			log.append("Requesting " + uri);
 

@@ -4,19 +4,59 @@ import java.io.InputStream
 import java.sql.ResultSet
 import java.util.Date
 import java.util.HashMap
-
 import scala.collection.JavaConverters.seqAsJavaListConverter
 import scala.collection.mutable.ListBuffer
-
 import kornell.core.to.report.CourseClassReportTO
 import kornell.core.to.report.EnrollmentsBreakdownTO
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
+import kornell.core.entity.EnrollmentState
+import kornell.core.entity.CourseClassState
+import kornell.core.util.StringUtils._
+import kornell.server.jdbc.PreparedStmt
+import kornell.server.jdbc.SQL.SQLHelper
+import kornell.server.util.DateConverter
+import kornell.server.authentication.ThreadLocalAuthenticator
+import java.math.BigDecimal
 
 object ReportCourseClassGenerator {
 
+  def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
+  def newCourseClassReportTO(fullName: String, username: String, email: String, cpf: String, state: String, progressState: String, 
+      progress: Int, assessmentScore: BigDecimal, certifiedAt: Date, enrolledAt: Date, courseName: String, courseVersionName: String, courseClassName: String, 
+      company: String, title: String, sex: String, birthDate: String, telephone: String, country: String, stateProvince: String, 
+      city: String, addressLine1: String, addressLine2: String, postalCode: String): CourseClassReportTO = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
+    val to = newCourseClassReportTO
+    to.setFullName(fullName)
+    to.setUsername(username)
+    to.setEmail(email)
+    to.setCpf(cpf)
+    to.setState(state)
+    to.setProgressState(progressState)
+    to.setProgress(progress)
+    to.setAssessmentScore(assessmentScore)
+    to.setCertifiedAt(dateConverter.dateToInstitutionTimezone(certifiedAt))
+    to.setEnrolledAt(dateConverter.dateToInstitutionTimezone(enrolledAt))
+    to.setCourseName(courseName)
+    to.setCourseVersionName(courseVersionName)
+    to.setCourseClassName(courseClassName)
+	to.setCompany(company)
+	to.setTitle(title)
+	to.setSex(sex)
+	to.setBirthDate(birthDate)
+	to.setTelephone(telephone)
+	to.setCountry(country)
+	to.setStateProvince(stateProvince)
+	to.setCity(city)
+	to.setAddressLine1(addressLine1)
+	to.setAddressLine2(addressLine2)
+	to.setPostalCode(postalCode)
+    to
+  }
+
   implicit def toCourseClassReportTO(rs: ResultSet): CourseClassReportTO =
-    TOs.newCourseClassReportTO(
+    newCourseClassReportTO(
 		rs.getString("fullName"),
 		rs.getString("username"),
 		rs.getString("email"),
@@ -25,8 +65,8 @@ object ReportCourseClassGenerator {
 		rs.getString("progressState"),
 		rs.getInt("progress"),
 		rs.getBigDecimal("assessmentScore"),
-		rs.getString("certifiedAt"),
-		rs.getString("enrolledAt"),
+		rs.getTimestamp("certifiedAt"),
+		rs.getTimestamp("enrolledAt"),
 		rs.getString("courseName"),
 		rs.getString("courseVersionName"),
 		rs.getString("courseClassName"),
@@ -53,9 +93,9 @@ object ReportCourseClassGenerator {
 				p.email,
     			p.cpf,
 				case    
-					when e.state = 'cancelled' then 'Cancelada'  
-					when e.state = 'requested' then 'Requisitada'  
-					when e.state = 'denied' then 'Negada'  
+					when e.state = ${EnrollmentState.cancelled.toString} then 'Cancelada'  
+					when e.state = ${EnrollmentState.requested.toString} then 'Requisitada'  
+					when e.state = ${EnrollmentState.denied.toString} then 'Negada'  
 					else 'Matriculado'   
 				end as state,
 				case    
@@ -90,16 +130,18 @@ object ReportCourseClassGenerator {
 				join Course c on c.uuid = cv.course_uuid
 				left join Password pw on pw.person_uuid = p.uuid
 			where
-				(e.state = 'enrolled' or ${fileType} = 'xls') and
-    			cc.state = 'active' and 
+				(e.state = ${EnrollmentState.enrolled.toString} or ${fileType} = 'xls') and
+    			cc.state <> ${CourseClassState.deleted.toString} and 
+    			(cc.state = ${CourseClassState.active.toString} or ${courseUUID} is null) and
 		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
-				(c.uuid = ${courseUUID} or ${courseUUID} is null)
+				(c.uuid = ${courseUUID} or ${courseUUID} is null) and
+				e.state <> ${EnrollmentState.deleted.toString}
 			order by 
 				case 
-					when e.state = 'enrolled' then 1
-					when e.state = 'requested'  then 2
-					when e.state = 'denied'  then 3
-					when e.state = 'cancelled'  then 4
+					when e.state = ${EnrollmentState.enrolled.toString} then 1
+					when e.state = ${EnrollmentState.requested.toString}  then 2
+					when e.state = ${EnrollmentState.denied.toString}  then 3
+					when e.state = ${EnrollmentState.cancelled.toString}  then 4
 					else 5
 					end,
 				case 
@@ -135,8 +177,8 @@ object ReportCourseClassGenerator {
 	    ReportGenerator.getReportBytesFromStream(courseClassReportTO, parameters, jasperStream, fileType)
   }
       
-  type ReportHeaderData = Tuple8[String,String, String, Date, String, String, String, String]
-  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8))
+  type ReportHeaderData = Tuple9[String,String, String, Date, String, String, Date, String, String]
+  implicit def headerDataConvertion(rs:ResultSet): ReportHeaderData = (rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getString(5), rs.getString(6), rs.getDate(7), rs.getString(8), rs.getString(9))
   
   private def addInfoParameters(courseUUID: String, courseClassUUID: String, parameters: HashMap[String, Object]) = {
     val headerInfo = sql"""
@@ -146,7 +188,7 @@ object ReportCourseClassGenerator {
 				cc.name as 'courseClassName',
 				cc.createdAt,
 				cc.maxEnrollments,
-				i.assetsURL,
+				i.assetsRepositoryUUID,
 				(select eventFiredAt from CourseClassStateChanged 
 					where toState = 'inactive' and courseClassUUID = cc.uuid
 					order by eventFiredAt desc) as disabledAt,
@@ -154,7 +196,8 @@ object ReportCourseClassGenerator {
 					from Role r 
 					join Person p on p.uuid = r.person_uuid 
 					where course_class_uuid = cc.uuid
-					group by course_class_uuid) as courseClassAdminNames
+					group by course_class_uuid) as courseClassAdminNames,
+                i.baseURL
 			from
 				CourseClass cc
 				join CourseVersion cv on cc.courseVersion_uuid = cv.uuid
@@ -162,12 +205,13 @@ object ReportCourseClassGenerator {
 				join Institution i on i.uuid = cc.institution_uuid
 			where (cc.uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
 				(cv.course_uuid = ${courseUUID} or ${courseUUID} is null) and
-    			cc.state = 'active'
+    			cc.state <> ${CourseClassState.deleted.toString} and 
+    			(cc.state = ${CourseClassState.active.toString} or ${courseUUID} is null)
     """.first[ReportHeaderData](headerDataConvertion)
     
     parameters.put("institutionName", headerInfo.get._1)
     parameters.put("courseTitle", headerInfo.get._2)
-	parameters.put("assetsURL", headerInfo.get._6)
+	parameters.put("assetsURL", mkurl(headerInfo.get._9, "repository", headerInfo.get._6, ""))
     if(courseClassUUID != null){
 	    parameters.put("courseClassName", headerInfo.get._3)
 	    parameters.put("createdAt", headerInfo.get._4)
@@ -194,10 +238,11 @@ object ReportCourseClassGenerator {
 					join CourseClass cc on cc.uuid = e.class_uuid
 					join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
 				where      
-					(e.state = 'enrolled' or ${fileType} = 'xls') and
-    				cc.state = 'active' and 
+					(e.state = ${EnrollmentState.enrolled.toString} or ${fileType} = 'xls') and
+    				cc.state = ${CourseClassState.active.toString} and 
     		  		(e.class_uuid = ${courseClassUUID} or ${courseClassUUID} is null) and
-					(cv.course_uuid = ${courseUUID} or ${courseUUID} is null)
+					(cv.course_uuid = ${courseUUID} or ${courseUUID} is null) and
+					e.state <> ${EnrollmentState.deleted.toString}
 				group by 
 					case    
 						when progress is null OR progress = 0 then 'notStarted'  

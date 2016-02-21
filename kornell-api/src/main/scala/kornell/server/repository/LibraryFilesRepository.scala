@@ -1,7 +1,6 @@
 package kornell.server.repository
 
 import kornell.server.dev.util.ContentsParser
-import kornell.server.repository.s3.S3
 import kornell.server.jdbc.repository.CourseClassesRepo
 import kornell.core.entity.Person
 import javax.xml.parsers.DocumentBuilderFactory
@@ -14,6 +13,9 @@ import kornell.server.dev.util.LibraryFilesParser
 import kornell.core.util.StringUtils
 import scala.util.Try
 import kornell.core.to.LibraryFileTO
+import kornell.server.content.ContentManagers
+import kornell.core.util.StringUtils._
+
 
 object LibraryFilesRepository {
 //TODO: Review
@@ -22,12 +24,12 @@ object LibraryFilesRepository {
     val versionRepo = classRepo.version
     val version = versionRepo.get
     val repositoryUUID = version.getRepositoryUUID
-    val repo = S3(repositoryUUID)
+    val repo = ContentManagers.forRepository(repositoryUUID)
     val filesURL = StringUtils.composeURL(version.getDistributionPrefix(), "library")
     try {
       val structureSrc = repo.source(filesURL, "libraryFiles.knl")
       val libraryFilesText = structureSrc.get.mkString("")
-      val fullURL = StringUtils.composeURL(repo.prefix, version.getDistributionPrefix(), "library")
+      val fullURL = repo.url(version.getDistributionPrefix(), "library")
       val contents = LibraryFilesParser.parse(fullURL, libraryFilesText)
       contents
     } catch {

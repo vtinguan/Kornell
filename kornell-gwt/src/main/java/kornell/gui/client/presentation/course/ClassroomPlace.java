@@ -1,16 +1,24 @@
 package kornell.gui.client.presentation.course;
 
+import kornell.core.entity.ContentSpec;
+import kornell.core.util.StringUtils;
+
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
 
 public class ClassroomPlace extends Place {
-	String enrollmentUUID;
+	private String enrollmentUUID;
+	private ContentSpec contentSpec;
 
-
-	public ClassroomPlace(String enrollmentUUID) {
+	public ClassroomPlace(String enrollmentUUID){
+		this(enrollmentUUID,ContentSpec.SCORM12);
+	}
+	
+	public ClassroomPlace(String enrollmentUUID, ContentSpec contentSpec) {
 		this.enrollmentUUID = enrollmentUUID;
+		this.setContentSpec(contentSpec);
 	}
 
 	public String getEnrollmentUUID() {
@@ -23,8 +31,9 @@ public class ClassroomPlace extends Place {
 
 	@Prefix("classroom")
 	public static class Tokenizer implements PlaceTokenizer<ClassroomPlace> {
-		public ClassroomPlace getPlace(String token) {
-			return new ClassroomPlace(token);
+		public ClassroomPlace getPlace(String str) {
+			String[] tokens = StringUtils.parseStrings(str); 
+			return new ClassroomPlace(tokens[0],ContentSpec.SCORM12);
 		}
 
 		public String getToken(ClassroomPlace place) {
@@ -35,5 +44,13 @@ public class ClassroomPlace extends Place {
 	@Override
 	public String toString() {		
 		return getClass().getSimpleName() + ":" + new Tokenizer().getToken(this);
+	}
+
+	public ContentSpec getContentSpec() {
+		return contentSpec;
+	}
+
+	public void setContentSpec(ContentSpec contentSpec) {
+		this.contentSpec = contentSpec;
 	}
 }

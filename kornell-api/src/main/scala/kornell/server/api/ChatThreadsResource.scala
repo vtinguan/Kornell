@@ -21,10 +21,15 @@ import kornell.core.util.StringUtils
 import kornell.core.entity.ChatThreadType
 import kornell.server.util.Conditional.toConditional
 import kornell.server.jdbc.repository.PersonRepo
+import java.util.Date
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.DateTime
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
 class ChatThreadsResource {
+  
+  val dateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
   
   @POST
   @Path("courseClass/{courseClassUUID}/support")
@@ -47,6 +52,24 @@ class ChatThreadsResource {
   }
   
   @POST
+  @Path("institutionSupport")
+  @Produces(Array("application/octet-stream"))
+  def postMessageToInstitutionSupportThread(implicit @Context sc: SecurityContext, 
+    message: String) = AuthRepo().withPerson { person => 
+        ChatThreadsRepo.postMessageToInstitutionThread(person.getUUID, person.getInstitutionUUID, message, ChatThreadType.INSTITUTION_SUPPORT)
+  		ChatThreadsRepo.getInstitutionChatThreadUUID(person.getUUID, person.getInstitutionUUID: String, ChatThreadType.INSTITUTION_SUPPORT).get
+  }
+  
+  @POST
+  @Path("platformSupport")
+  @Produces(Array("application/octet-stream"))
+  def postMessageToPlatformSupportThread(implicit @Context sc: SecurityContext,
+    message: String) = AuthRepo().withPerson { person => 
+        ChatThreadsRepo.postMessageToInstitutionThread(person.getUUID, person.getInstitutionUUID, message, ChatThreadType.PLATFORM_SUPPORT)
+  		ChatThreadsRepo.getInstitutionChatThreadUUID(person.getUUID, person.getInstitutionUUID: String, ChatThreadType.PLATFORM_SUPPORT).get
+  }
+  
+  @POST
   @Path("{chatThreadUUID}/message")
   @Produces(Array(ChatThreadMessagesTO.TYPE))
   def postMessageToChatThread(implicit @Context sc: SecurityContext, 
@@ -55,9 +78,9 @@ class ChatThreadsResource {
     @QueryParam("since") since: String) = AuthRepo().withPerson { person => 
   		ChatThreadsRepo.createChatThreadMessage(chatThreadUUID, person.getUUID, message)
   		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
+  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
   		else
-  			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date)
   }
   
   @POST
@@ -88,12 +111,15 @@ class ChatThreadsResource {
   @GET
   def getChatThreadMessages(implicit @Context sc: SecurityContext, 
     @PathParam("chatThreadUUID") chatThreadUUID: String, 
-    @QueryParam("since") since: String) = AuthRepo().withPerson { person => {
+    @QueryParam("since") since: String, 
+    @QueryParam("before") before: String) = AuthRepo().withPerson { person => {
       ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
   		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, since)
+  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
+  		else if(StringUtils.isSome(before))
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(before.toLong))
   		else
-  			ChatThreadsRepo.getChatThreadMessages(chatThreadUUID)
+  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date)
     }
   }
 }
