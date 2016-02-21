@@ -175,10 +175,10 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 
 		BigDecimal requiredScore = courseClass != null ? courseClass.getRequiredScore() : null;
 		if(currEnrollment != null &&
-				EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(currEnrollment)) &&
 				requiredScore != null && 
 				requiredScore.intValue() != 0 &&
-				currEnrollment.getAssessmentScore() != null){
+				currEnrollment.getAssessmentScore() != null &&
+				(EnrollmentProgressDescription.completed.equals(EnrollmentCategory.getEnrollmentProgressDescription(currEnrollment)) || allowCertificateGeneration)){
 			this.grade = ""+currEnrollment.getAssessmentScore().intValue();
 		} else {
 			this.grade = "-";
