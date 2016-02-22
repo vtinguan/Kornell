@@ -181,12 +181,13 @@ class UserResource(private val authRepo:AuthRepo) {
         throw new UnauthorizedAccessException("passwordChangeDenied")
       else {		
         val targetPersonRepo = PersonRepo(targetPersonUUID)
-        val username = authRepo.getUsernameByPersonUUID(targetPersonUUID)
+        val person = targetPersonRepo.get
+        val username = authRepo.getUsernameByPersonUUID(targetPersonUUID).getOrElse(person.getEmail)
 
-        targetPersonRepo.setPassword(targetPersonRepo.get.getInstitutionUUID, username.get, password)
+        targetPersonRepo.setPassword(person.getInstitutionUUID, username, password)
         
 	    //log entity change
-	    EventsRepo.logEntityChange(targetPersonRepo.get.getInstitutionUUID, AuditedEntityType.password, targetPersonUUID, null, null)
+	    EventsRepo.logEntityChange(person.getInstitutionUUID, AuditedEntityType.password, targetPersonUUID, null, null)
 
       }
     }
