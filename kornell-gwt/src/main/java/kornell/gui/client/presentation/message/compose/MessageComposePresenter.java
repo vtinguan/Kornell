@@ -8,9 +8,9 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.KornellNotification;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;

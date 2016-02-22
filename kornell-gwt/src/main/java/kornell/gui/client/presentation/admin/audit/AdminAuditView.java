@@ -1,7 +1,7 @@
 package kornell.gui.client.presentation.admin.audit;
 
 import kornell.core.to.EntityChangedEventsTO;
-import kornell.gui.client.presentation.admin.PaginationPresenter;
+import kornell.gui.client.util.view.PaginationPresenter;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

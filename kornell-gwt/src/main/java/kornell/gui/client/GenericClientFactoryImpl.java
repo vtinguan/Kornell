@@ -26,12 +26,13 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
-import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
+import kornell.gui.client.util.view.KornellMaintenance;
+import kornell.gui.client.util.view.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -110,6 +111,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			public void ok(final UserHelloTO userHelloTO) {
 				doCallbackOk(userHelloTO);
 			}
+			
 			@Override
 			public void unauthorized(KornellErrorTO kornellErrorTO){
 				//this case means someone entered a URL in the bar with an expired token in local storage
@@ -123,6 +125,17 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				};
 				session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
 			}
+			
+			@Override
+			public void internalServerError(KornellErrorTO kornellErrorTO) {
+				KornellMaintenance.show();
+			}
+			
+			@Override
+			public void serviceUnavailable(KornellErrorTO kornellErrorTO) {
+				KornellMaintenance.show();
+			}
+			
 			private void doCallbackOk(final UserHelloTO userHelloTO) {
 				session.setCurrentUser(userHelloTO.getUserInfoTO());
 				if(userHelloTO.getInstitution() == null) {

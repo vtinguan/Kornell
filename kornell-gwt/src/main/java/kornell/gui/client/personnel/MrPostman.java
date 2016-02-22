@@ -12,11 +12,11 @@ import kornell.gui.client.event.UnreadMessagesFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
-import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.util.Positioning;
+import kornell.gui.client.util.view.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.place.shared.Place;

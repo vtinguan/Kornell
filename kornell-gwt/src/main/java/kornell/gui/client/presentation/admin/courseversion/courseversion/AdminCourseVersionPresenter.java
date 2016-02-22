@@ -10,8 +10,8 @@ import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
-import kornell.gui.client.presentation.util.KornellNotification;
-import kornell.gui.client.presentation.util.LoadingPopup;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;

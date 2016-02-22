@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
-	<ui:import field="kornell.gui.client.presentation.util.FormHelper.SEPARATOR_BAR_IMG_PATH" />
-	<ui:import field="kornell.gui.client.presentation.util.FormHelper.SEPARATOR_BAR_CLASS" />
+	<ui:import field="kornell.gui.client.util.forms.FormHelper.SEPARATOR_BAR_IMG_PATH" />
+	<ui:import field="kornell.gui.client.util.forms.FormHelper.SEPARATOR_BAR_CLASS" />
 	<g:FlowPanel addStyleNames="courseSummary">
 	    <g:SimplePanel addStyleNames="thumbWrapper">
 			<b:Image ui:field="imgThumb" addStyleNames="thumb" />

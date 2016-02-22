@@ -12,10 +12,10 @@ import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassConfigView;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
-import kornell.gui.client.presentation.util.AsciiUtils;
-import kornell.gui.client.presentation.util.EnumTranslator;
-import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.uidget.KornellPagination;
+import kornell.gui.client.util.AsciiUtils;
+import kornell.gui.client.util.EnumTranslator;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;

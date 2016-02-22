@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.util.view.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.activity.shared.AbstractActivity;

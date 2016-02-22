@@ -17,9 +17,9 @@ import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminC
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionActivity;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
-import kornell.gui.client.presentation.course.ClassroomActivity;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.course.ClassroomPresenter;
+import kornell.gui.client.presentation.classroom.ClassroomActivity;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPresenter;
 import kornell.gui.client.presentation.home.HomeActivity;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.message.MessageActivity;

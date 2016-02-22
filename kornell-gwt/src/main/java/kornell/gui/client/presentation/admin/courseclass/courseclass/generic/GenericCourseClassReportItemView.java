@@ -11,9 +11,9 @@ import kornell.core.to.SimplePeopleTO;
 import kornell.core.to.SimplePersonTO;
 import kornell.core.to.TOFactory;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.presentation.util.KornellNotification;
-import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Collapse;

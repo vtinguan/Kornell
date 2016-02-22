@@ -22,9 +22,9 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCo
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
-import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.uidget.KornellPagination;
 import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.KornellPagination;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;

@@ -3,7 +3,7 @@ package kornell.gui.client.sequence;
 import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
-import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.scorm.client.scorm12.SCORM12Sequencer;
 
 import com.google.gwt.place.shared.PlaceController;

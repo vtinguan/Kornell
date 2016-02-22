@@ -8,8 +8,8 @@ import kornell.core.to.EntityChangedEventsTO;
 import kornell.core.to.TOFactory;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.util.LoadingPopup;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.LoadingPopup;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;

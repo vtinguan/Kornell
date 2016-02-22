@@ -30,11 +30,11 @@ import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassMessagesView;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.course.ClassroomView.Presenter;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
-import kornell.gui.client.presentation.util.LoadingPopup;
 import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;

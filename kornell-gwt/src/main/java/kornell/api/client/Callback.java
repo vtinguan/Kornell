@@ -7,6 +7,7 @@ import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
 import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
 import static com.google.gwt.http.client.Response.SC_OK;
 import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
+import static com.google.gwt.http.client.Response.SC_SERVICE_UNAVAILABLE;
 
 import java.util.logging.Logger;
 
@@ -57,6 +58,9 @@ public abstract class Callback<T> implements RequestCallback {
 			break;
 		case SC_INTERNAL_SERVER_ERROR:
 			internalServerError(unwrapError(response));
+			break;
+		case SC_SERVICE_UNAVAILABLE:
+			serviceUnavailable(unwrapError(response));
 			break;
 		case 0:
 			failed();
@@ -138,6 +142,12 @@ public abstract class Callback<T> implements RequestCallback {
 	}
 
 	protected void internalServerError(KornellErrorTO kornellErrorTO) {
+		logger.severe(KornellConstantsHelper
+				.getErrorMessage(kornellErrorTO));
+		logger.severe("Cause: " + kornellErrorTO.getException());
+	}
+
+	protected void serviceUnavailable(KornellErrorTO kornellErrorTO) {
 		logger.severe(KornellConstantsHelper
 				.getErrorMessage(kornellErrorTO));
 		logger.severe("Cause: " + kornellErrorTO.getException());

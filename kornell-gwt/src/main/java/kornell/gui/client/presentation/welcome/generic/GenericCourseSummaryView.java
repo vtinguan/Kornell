@@ -23,9 +23,9 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teacher;
 import kornell.gui.client.personnel.Teachers;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.util.EnumTranslator;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.EnumTranslator;
 
 import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Paragraph;

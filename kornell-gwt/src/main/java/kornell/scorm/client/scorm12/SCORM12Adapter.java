@@ -6,7 +6,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.ContentSpec;
-import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;

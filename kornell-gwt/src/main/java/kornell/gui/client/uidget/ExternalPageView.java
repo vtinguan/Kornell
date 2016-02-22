@@ -8,7 +8,7 @@ import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.ShowChatDockEvent;
 import kornell.gui.client.event.ShowChatDockEventHandler;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.util.Positioning;
+import kornell.gui.client.util.view.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;

@@ -13,7 +13,7 @@ import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
-import kornell.gui.client.presentation.course.ClassroomView;
+import kornell.gui.client.presentation.classroom.ClassroomView;
 import kornell.gui.client.presentation.course.generic.details.GenericCourseDetailsView;
 
 import com.google.gwt.core.client.GWT;

@@ -17,10 +17,10 @@ import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
-import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.view.formfield.ListBoxFormField;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.forms.formfield.ListBoxFormField;
+import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;

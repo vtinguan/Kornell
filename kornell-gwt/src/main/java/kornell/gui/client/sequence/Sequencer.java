@@ -1,7 +1,7 @@
 package kornell.gui.client.sequence;
 
 import kornell.core.lom.Contents;
-import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 

@@ -20,8 +20,8 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessageView;
-import kornell.gui.client.presentation.util.EnumTranslator;
-import kornell.gui.client.presentation.util.FormHelper;
+import kornell.gui.client.util.EnumTranslator;
+import kornell.gui.client.util.forms.FormHelper;
 
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.TextArea;

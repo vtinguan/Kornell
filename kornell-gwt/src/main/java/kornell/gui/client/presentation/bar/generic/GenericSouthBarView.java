@@ -9,11 +9,11 @@ import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.bar.AdminBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.util.Positioning;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.easing.Ease;
 import kornell.gui.client.util.easing.Transitions;
 import kornell.gui.client.util.easing.Updater;
+import kornell.gui.client.util.view.Positioning;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;

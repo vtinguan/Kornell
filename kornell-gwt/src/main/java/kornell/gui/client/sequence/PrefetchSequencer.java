@@ -11,7 +11,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
-import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.uidget.Uidget;
 
 import com.google.gwt.user.client.ui.FlowPanel;

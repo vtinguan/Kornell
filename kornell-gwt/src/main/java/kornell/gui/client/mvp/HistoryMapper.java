@@ -8,7 +8,7 @@ import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCour
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
-import kornell.gui.client.presentation.course.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.home.HomePlace;
 import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;

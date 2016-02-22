@@ -28,9 +28,9 @@ import kornell.gui.client.presentation.bar.SouthBarView;
 import kornell.gui.client.presentation.bar.generic.GenericMenuBarView;
 //github.com/Craftware/Kornell.git
 import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.course.ClassroomPresenter;
-import kornell.gui.client.presentation.course.ClassroomView;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPresenter;
+import kornell.gui.client.presentation.classroom.ClassroomView;
 import kornell.gui.client.presentation.course.generic.GenericClassroomView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;

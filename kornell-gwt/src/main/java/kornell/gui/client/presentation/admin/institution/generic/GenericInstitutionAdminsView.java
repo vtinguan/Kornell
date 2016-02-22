@@ -14,9 +14,9 @@ import kornell.core.entity.RoleType;
 import kornell.core.entity.Roles;
 import kornell.core.to.RoleTO;
 import kornell.core.to.RolesTO;
-import kornell.gui.client.presentation.util.KornellNotification;
-import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.view.formfield.PeopleMultipleSelect;
+import kornell.gui.client.util.forms.formfield.PeopleMultipleSelect;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;

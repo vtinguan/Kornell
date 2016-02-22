@@ -8,12 +8,12 @@ import kornell.core.lom.ContentsOps;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ProgressEvent;
-import kornell.gui.client.presentation.course.ClassroomPlace;
-import kornell.gui.client.presentation.util.KornellNotification;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SimpleSequencer;
 import kornell.gui.client.uidget.Uidget;
+import kornell.gui.client.util.view.KornellNotification;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;

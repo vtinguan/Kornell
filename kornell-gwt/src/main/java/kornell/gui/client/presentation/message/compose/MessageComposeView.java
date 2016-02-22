@@ -1,6 +1,6 @@
 package kornell.gui.client.presentation.message.compose;
 
-import kornell.gui.client.util.view.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

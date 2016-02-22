@@ -8,9 +8,9 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.to.InstitutionHostNamesTO;
 import kornell.core.to.TOFactory;
-import kornell.gui.client.presentation.util.KornellNotification;
-import kornell.gui.client.presentation.util.LoadingPopup;
-import kornell.gui.client.util.view.formfield.SimpleMultipleSelect;
+import kornell.gui.client.util.forms.formfield.SimpleMultipleSelect;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;

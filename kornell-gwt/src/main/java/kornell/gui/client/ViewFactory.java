@@ -14,8 +14,8 @@ import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminC
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.bar.SouthBarView;
-import kornell.gui.client.presentation.course.ClassroomPresenter;
-import kornell.gui.client.presentation.course.ClassroomView;
+import kornell.gui.client.presentation.classroom.ClassroomPresenter;
+import kornell.gui.client.presentation.classroom.ClassroomView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.message.MessageView;

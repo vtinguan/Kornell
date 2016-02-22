@@ -3,8 +3,8 @@ package kornell.gui.client.presentation.admin.course.course.generic;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.view.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;

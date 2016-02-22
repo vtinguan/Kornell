@@ -8,9 +8,9 @@ import java.util.List;
 import kornell.api.client.KornellSession;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.util.FormHelper;
-import kornell.gui.client.presentation.util.KornellNotification;
 import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
