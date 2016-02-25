@@ -37,6 +37,7 @@ public class SCORM12Adapter implements CMIConstants {
 	private KornellSession client;
 	private PlaceController placeCtrl;
 	private SCORM12Runtime rte;
+	private Timer timer;
 
 	public SCORM12Adapter(SCORM12Runtime rte, KornellSession session,
 			PlaceController placeCtrl, String enrollmentUUID, String actomKey,
@@ -125,15 +126,17 @@ public class SCORM12Adapter implements CMIConstants {
 
 	
 	private void scheduleSync(final String moduleUUID, final String moduleActomKey) {
-		(new Timer() {
+		if (timer == null) timer = new Timer() {
 			public void run() {
 				syncAfterSet(moduleUUID,moduleActomKey);
 			}
 
 			private void syncAfterSet(String moduleUUID,String moduleActomKey) {
 				sync(moduleUUID,moduleActomKey,"scheduledSync");
+				timer=null;
 			}
-		}).schedule(DIRTY_TOLERANCE);
+		};
+		timer.schedule(DIRTY_TOLERANCE);
 	}
 
 	
