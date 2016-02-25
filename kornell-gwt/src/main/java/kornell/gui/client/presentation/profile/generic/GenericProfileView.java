@@ -391,7 +391,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private void display() {
 
 		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
-		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails();
+		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails() && isCurrentUser;
 
 		form.addStyleName("shy");
 
