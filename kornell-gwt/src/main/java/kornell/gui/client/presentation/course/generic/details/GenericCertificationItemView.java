@@ -158,6 +158,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 		if(currentCourseClass == null) return;
 		CourseClass courseClass = currentCourseClass.getCourseClass();
 		Enrollment currEnrollment = currentCourseClass.getEnrollment();
+		if(currEnrollment == null) return;
 		
 		Integer progress = currEnrollment.getProgress() != null ? currEnrollment.getProgress() : -1;
 		courseClassComplete = progress >= 100;

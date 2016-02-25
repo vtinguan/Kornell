@@ -78,11 +78,16 @@ object EmailService {
   }
   
   //TODO: Consider ASYNC
-  def sendEmailEnrolled(person: Person, institution: Institution, course: Course, enrollment: Enrollment) = {
+  def sendEmailEnrolled(person: Person, institution: Institution, course: Course, enrollment: Enrollment, courseClass: CourseClass) = {
     if (checkWhitelistForDomain(institution, person.getEmail) && person.isReceiveEmailCommunication) {
       val subject = "Você foi matriculado no curso " + course.getTitle
       val from = getFromEmail(institution)
       val to = person.getEmail
+      val className = if(courseClass == null){
+        " no"
+      } else {
+        """ na turma <b>"""+ courseClass.getName + """</b> do"""
+      }
       val hasPassword = PersonRepo(person.getUUID).hasPassword(institution.getUUID)
       val hasPasswordStr = if(hasPassword) {
         ""
@@ -97,7 +102,7 @@ object EmailService {
       val body = wrapBody("""
     		<p>Ol&aacute;, <b>""" + person.getFullName + """</b></p>
     		<p>&nbsp;</p>
-    		<p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + """ no curso """+ course.getTitle +""" oferecido pela """+ institution.getFullName +""".</p> 
+    		<p>Voc&ecirc; foi matriculad""" + PersonCategory.getSexSuffix(person) + className + """ curso <b>"""+ course.getTitle +"""</b> oferecido pela <b>"""+ institution.getFullName +"""</b>.</p> 
     		<p>Clique no bot&atilde;o abaixo para ir ao curso.</p> """ +
     		getActionButton(actionLink, "Acessar o Curso") + 
     		hasPasswordStr +

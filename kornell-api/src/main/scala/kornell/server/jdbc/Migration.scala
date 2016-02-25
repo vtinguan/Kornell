@@ -19,8 +19,8 @@ object Migration {
   }
 
   def migrate = Try {
-    println("[SYSOUT] Starting Database Mygration")
-    log.info("[INFO] Starting Database Mygration")
+    println("[SYSOUT] Starting Database Migration")
+    log.info("[INFO] Starting Database Migration")
     val flyway = new Flyway()
     setDataSource(flyway)
     flyway.setLocations("db/jdbcmigration","db/migration") 
