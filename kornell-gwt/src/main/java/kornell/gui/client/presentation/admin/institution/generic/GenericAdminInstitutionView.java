@@ -15,6 +15,8 @@ import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.forms.formfield.ListBoxFormField;
+import kornell.gui.client.util.forms.formfield.TextBoxFormField;
+import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
@@ -23,7 +25,10 @@ import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -298,8 +303,13 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		terms.addStyleName("marginBottom25");
 		fields.add(terms);
 		institutionFields.add(terms);
-		
-		timeZone = new KornellFormFieldWrapper("Fuso horário", formHelper.createTextBoxFormField(institution.getTimeZone()), isPlatformAdmin);
+
+
+		final ListBox timeZones = formHelper.getTimeZonesList();
+		if(institution.getTimeZone() != null){
+			timeZones.setSelectedValue(institution.getTimeZone());
+		}
+		timeZone = new KornellFormFieldWrapper("Fuso horário", new ListBoxFormField(timeZones), isPlatformAdmin);
 		fields.add(timeZone);
 		institutionFields.add(timeZone);
 		
@@ -320,6 +330,9 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		}
 		if (!formHelper.isLengthValid(baseURL.getFieldPersistText(), 10, 200)) {
 			baseURL.setError("Insira a URL base.");
+		}
+		if(!formHelper.isLengthValid(timeZone.getFieldPersistText(), 2, 100)){
+			timeZone.setError("Escolha o fuso horário.");
 		}
 		
 		return !formHelper.checkErrors(fields);
@@ -349,6 +362,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));
 		institution.setAllowRegistrationByUsername(allowRegistrationByUsername.getFieldPersistText().equals("true"));
 		institution.setUseEmailWhitelist(useEmailWhitelist.getFieldPersistText().equals("true"));
+		institution.setTimeZone(timeZone.getFieldPersistText());
 		return institution;
 	}
 
