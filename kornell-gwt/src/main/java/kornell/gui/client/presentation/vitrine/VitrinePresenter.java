@@ -93,7 +93,6 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				Dean.getInstance().setCourseClassesTO(courseClasses);
 				final UserInfoTO userInfoTO = session.getCurrentUser();
 				clientFactory.setDefaultPlace(new WelcomePlace());
-				clientFactory.getEventBus().fireEvent(new LoginEvent(userInfoTO));
 				Place newPlace;
 				Place welcomePlace = new WelcomePlace();
 				if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
