@@ -26,6 +26,8 @@ import kornell.server.jdbc.PreparedStmt
 import scala.util.Try
 import java.math.BigDecimal
 import kornell.server.util.EnrollmentUtil._
+import scala.collection.JavaConverters._
+import java.util.Date
 
 class ActomResource(enrollmentUUID: String, actomURL: String) {
   implicit def toString(rs: ResultSet): String = rs.getString("entryValue")
@@ -69,7 +71,7 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   """.executeUpdate
 
   //Batch version of put value using a map
-  def putValues(actomEntries: Map[String, String], modifiedAt: String) = {
+  def putValues(actomEntries: Map[String, String]) = {
     var eventModelQuery = "insert into ActomEntryChangedEvent (uuid, enrollment_uuid, actomKey, entryKey, entryValue, ingestedAt) values "
     val eventModelStrings = new ListBuffer[String]
     for ((key, value) <- actomEntries) {
@@ -84,6 +86,8 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
       queryModelStrings += ("('" + randomUUID + "','" + enrollmentUUID + "','" + actomKey + "','" + key + "','" + value + "')")
     }
     queryModelQuery += queryModelStrings.mkString(",")
+    queryModelQuery += " on duplicate key update entryValue = VALUES(entryValue)"
+      
     new PreparedStmt(queryModelQuery, List[String]()).executeUpdate
   }
 
@@ -94,8 +98,14 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   def putEntries(entries: ActomEntries) = {
     val modifiedAt = entries.getLastModifiedAt()
     val actomEntries = entries.getEntries
-    for ((key, value) <- actomEntries) putValue(key, value)
-
+    
+    val enrollmentMap = collection.mutable.Map[String, String]()
+    for ((key, value) <- actomEntries)  
+      enrollmentMap(key) = value
+     
+    val enrollmentsJMap = enrollmentMap.asJava
+    putValues(enrollmentsJMap)  
+        
     val hasProgress = containsProgress(actomEntries)
     if (hasProgress)
       EnrollmentSEP.onProgress(enrollmentUUID)
