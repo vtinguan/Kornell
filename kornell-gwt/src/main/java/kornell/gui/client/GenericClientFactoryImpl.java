@@ -138,7 +138,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 			
 			@Override
-			public void serviceUnavailable(KornellErrorTO kornellErrorTO) {
+			public void serviceUnavailable() {
 				KornellMaintenance.show();
 			}
 			

@@ -60,7 +60,7 @@ public abstract class Callback<T> implements RequestCallback {
 			internalServerError(unwrapError(response));
 			break;
 		case SC_SERVICE_UNAVAILABLE:
-			serviceUnavailable(unwrapError(response));
+			serviceUnavailable();
 			break;
 		case 0:
 			failed();
@@ -147,10 +147,7 @@ public abstract class Callback<T> implements RequestCallback {
 		logger.severe("Cause: " + kornellErrorTO.getException());
 	}
 
-	protected void serviceUnavailable(KornellErrorTO kornellErrorTO) {
-		logger.severe(KornellConstantsHelper
-				.getErrorMessage(kornellErrorTO));
-		logger.severe("Cause: " + kornellErrorTO.getException());
+	protected void serviceUnavailable() {
 	}
 
 	private T bool(String responseText) {
