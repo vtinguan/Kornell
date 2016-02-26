@@ -37,6 +37,7 @@ import kornell.gui.client.util.view.KornellNotification;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -116,13 +117,19 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				//this case means someone entered a URL in the bar with an expired token in local storage
 				//so we clear his old token and we do the call to hello again
 				ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
+				ClientProperties.removeCookie(ClientProperties.X_KNL_TOKEN);
 				final Callback<UserHelloTO> userManualAccessCallback = new Callback<UserHelloTO>() {
 					@Override
 					public void ok(final UserHelloTO userHelloTO) {
 						doCallbackOk(userHelloTO);
 					}
 				};
-				session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
+					}
+				});
 			}
 			
 			@Override
