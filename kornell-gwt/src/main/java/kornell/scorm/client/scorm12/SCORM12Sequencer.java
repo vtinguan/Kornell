@@ -37,7 +37,6 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 			return;
 		currentIndex++;
 		paintCurrent();
-		dropBreadcrumb();
 	}
 
 	private void makeCurrentVisible() {
@@ -50,7 +49,6 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 			return;
 		currentIndex--;
 		paintCurrent();
-		dropBreadcrumb();
 	}
 
 	@Override
