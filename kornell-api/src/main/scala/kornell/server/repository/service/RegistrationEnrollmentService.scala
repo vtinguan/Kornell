@@ -143,7 +143,7 @@ object RegistrationEnrollmentService {
     for (uuid <- enrolls) {
       //TODO: Support MultiSCO
       val actomResource = new ActomResource(uuid, "index.html")
-      actomResource.putValues(enrollmentsJMap, "")  
+      actomResource.putValues(enrollmentsJMap)  
     }    
   }
 

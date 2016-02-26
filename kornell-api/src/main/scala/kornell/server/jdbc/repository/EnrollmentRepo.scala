@@ -126,6 +126,7 @@ class EnrollmentRepo(uuid: String) {
   def updateSCORM12Progress(e: Enrollment) = 
     progressFromSuspendData(e)
       .orElse(progressFromMilestones(e))
+      .orElse(Some(1))
       .foreach { p => setEnrollmentProgress(e, p) }
   
 

@@ -31,6 +31,7 @@ import kornell.server.repository.TOs
 import kornell.server.scorm12.SCORM12
 import kornell.core.entity.EnrollmentsEntries
 import kornell.server.jdbc.PreparedStmt
+import kornell.server.ep.EnrollmentSEP
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -116,6 +117,7 @@ class EnrollmentResource(uuid: String) {
     }
 
     eLaunch.setEnrollmentEntries(eEntries)
+    EnrollmentSEP.onProgress(uuid)
     eLaunch
   }
 

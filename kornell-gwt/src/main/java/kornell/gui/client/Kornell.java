@@ -2,6 +2,8 @@ package kornell.gui.client;
 
 import java.util.logging.Logger;
 
+import kornell.gui.client.util.ClientProperties;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -17,6 +19,7 @@ public class Kornell implements EntryPoint {
 	public void onModuleLoad() {
 		loggerSoundcheck();
 		final long t0 = System.currentTimeMillis();
+		ClientProperties.removeCookie(ClientProperties.X_KNL_TOKEN);
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {

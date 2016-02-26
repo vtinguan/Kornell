@@ -8,6 +8,7 @@ import kornell.core.entity.ActomEntries;
 import kornell.core.entity.ContentSpec;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 
@@ -37,6 +38,7 @@ public class SCORM12Adapter implements CMIConstants {
 	private KornellSession client;
 	private PlaceController placeCtrl;
 	private SCORM12Runtime rte;
+	private Timer timer;
 
 	public SCORM12Adapter(SCORM12Runtime rte, KornellSession session,
 			PlaceController placeCtrl, String enrollmentUUID, String actomKey,
@@ -87,7 +89,7 @@ public class SCORM12Adapter implements CMIConstants {
 	}
 
 	private void syncOnLMSCommit() {
-		sync(enrollmentUUID,actomKey,"syncOnLMSCommit");
+		scheduleSync(enrollmentUUID,actomKey,"syncOnLMSCommit");
 	}
 
 	public String LMSSetDouble(String key, Double value, String moduleUUID) {
@@ -122,26 +124,30 @@ public class SCORM12Adapter implements CMIConstants {
 	public void launch(String enrollmentUUID) {
 		placeCtrl.goTo(new ClassroomPlace(enrollmentUUID,ContentSpec.SCORM12));
 	}
-
 	
 	private void scheduleSync(final String moduleUUID, final String moduleActomKey) {
-		(new Timer() {
+		scheduleSync(moduleUUID,moduleActomKey,"scheduledSync");
+	}
+	
+	private void scheduleSync(final String moduleUUID, final String moduleActomKey, final String syncCause) {
+		if (timer == null) timer = new Timer() {
 			public void run() {
 				syncAfterSet(moduleUUID,moduleActomKey);
 			}
 
 			private void syncAfterSet(String moduleUUID,String moduleActomKey) {
-				sync(moduleUUID,moduleActomKey,"scheduledSync");
+				GWT.log("Sync Scheduled: cause["+syncCause+"] - key["+actomKey+"]");
+				sync(moduleUUID,moduleActomKey,syncCause);
+				timer=null;
 			}
-		}).schedule(DIRTY_TOLERANCE);
+		};
+		timer.schedule(DIRTY_TOLERANCE);
 	}
-
 	
 	public void onActomEntered() {
-		sync(enrollmentUUID,actomKey,"onActomEntered");
+		scheduleSync(enrollmentUUID,actomKey,"onActomEntered");
 	}
 	
-
 	private void sync(final String syncEnrollmentUUID,final String syncActomKey, final String syncCause) {
 		class Scrub extends Callback<ActomEntries> {
 			@Override
