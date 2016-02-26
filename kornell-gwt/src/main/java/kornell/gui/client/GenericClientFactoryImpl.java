@@ -105,7 +105,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public void startApp() {
 		//remove token cookie on page load
-		ClientProperties.removeCookie(ClientProperties.X_KNL_TOKEN);
 		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
 			public void ok(final UserHelloTO userHelloTO) {
