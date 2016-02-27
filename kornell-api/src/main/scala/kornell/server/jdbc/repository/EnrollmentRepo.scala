@@ -176,17 +176,17 @@ class EnrollmentRepo(uuid: String) {
     (maxScore, assessment)
   }
 
-  def findLastEventTime(e: Enrollment) = {
-    val lastActomEntered = sql"""
-		select max(ingestedAt) as latestEvent
-		from ActomEntryChangedEvent 
-		where 
-		  entryKey='cmi.core.score.raw' 
-		  and enrollment_uuid=${e.getUUID()} 
-    """
-      .first[String] { rs => rs.getString("latestEvent") }
-    lastActomEntered
-  }
+//  def findLastEventTime(e: Enrollment) = {
+//    val lastActomEntered = sql"""
+//		select max(ingestedAt) as latestEvent
+//		from ActomEntryChangedEvent 
+//		where 
+//		  entryKey='cmi.core.score.raw' 
+//		  and enrollment_uuid=${e.getUUID()} 
+//    """
+//      .first[String] { rs => rs.getString("latestEvent") }
+//    lastActomEntered
+//  }
 
   def checkCompletion(e: Enrollment) = {
     val isPassed = Assessment.PASSED == e.getAssessment
@@ -195,15 +195,7 @@ class EnrollmentRepo(uuid: String) {
     if (isPassed
       && isCompleted
       && isUncertified) {
-      val certifiedAt = findLastEventTime(e)
-      val formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
-      val cleanCertifiedAt = 
-      if (certifiedAt.isDefined) {
-        certifiedAt.get.split('+').head.split('.').head.replace("T", " ")
-      } else {
-        DateTime.now.toString.split('+').head.split('.').head.replace("T", " ")
-      }
-      e.setCertifiedAt(LocalDateTime.parse(cleanCertifiedAt, formatter).toDate)
+      e.setCertifiedAt(DateTime.now.toDate)
       update(e)
     }
   }  
