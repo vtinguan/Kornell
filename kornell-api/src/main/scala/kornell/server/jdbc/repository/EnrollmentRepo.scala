@@ -21,6 +21,8 @@ import java.math.BigDecimal._
 import kornell.core.entity.ChatThreadType
 import scala.util.Try
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.LocalDateTime
 
 //TODO: Specific column names and proper sql
 class EnrollmentRepo(uuid: String) {
@@ -182,7 +184,7 @@ class EnrollmentRepo(uuid: String) {
 		  entryKey='cmi.core.score.raw' 
 		  and enrollment_uuid=${e.getUUID()} 
     """
-      .first[Date] { rs => rs.getTimestamp("latestEvent") }
+      .first[String] { rs => rs.getString("latestEvent") }
     lastActomEntered
   }
 
@@ -193,8 +195,15 @@ class EnrollmentRepo(uuid: String) {
     if (isPassed
       && isCompleted
       && isUncertified) {
-      val certifiedAt = findLastEventTime(e).getOrElse(DateTime.now.toDate)
-      e.setCertifiedAt(certifiedAt)
+      val certifiedAt = findLastEventTime(e)
+      val formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
+      val cleanCertifiedAt = 
+      if (certifiedAt.isDefined) {
+        certifiedAt.get.split('+').head.split('.').head.replace("T", " ")
+      } else {
+        DateTime.now.toString.split('+').head.split('.').head.replace("T", " ")
+      }
+      e.setCertifiedAt(LocalDateTime.parse(cleanCertifiedAt, formatter).toDate)
       update(e)
     }
   }  

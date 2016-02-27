@@ -107,11 +107,13 @@ class PersonRepo(val uuid: String) {
   
   def getUsername = sql"""select username from Password where person_uuid=${uuid}""".first[String].getOrElse(null)
   
-  def acceptTerms() =
+  def acceptTerms(p: Person) = {
     sql"""update Person
       	 set termsAcceptedOn = now()
       	 where uuid=${uuid}
       	   """.executeUpdate
+   PeopleRepo.invalidateCache(p)
+  }
   
   def actomsVisitedBy(enrollmentUUID: String): List[String] = sql"""
   	select actomKey from ActomEntered ae
