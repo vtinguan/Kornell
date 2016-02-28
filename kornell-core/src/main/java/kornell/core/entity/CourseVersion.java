@@ -8,9 +8,6 @@ public interface CourseVersion extends Named {
 	String getCourseUUID();
 	void setCourseUUID(String courseUUID);
 	
-	String getRepositoryUUID();
-	void setRepositoryUUID(String repositoryUUID);
-	
 	String getDistributionPrefix();
 	void setDistributionPrefix(String distributionPrefix);
 	

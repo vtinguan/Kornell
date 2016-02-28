@@ -25,23 +25,13 @@ object CourseVersionsRepo {
 	    if (courseVersion.getUUID == null){
 	      courseVersion.setUUID(UUID.random)
 	    }
-	    if (courseVersion.getRepositoryUUID == null){
-	      //pick default repository for the institution
-	      courseVersion.setRepositoryUUID(sql"""
-						| select distinct cr.uuid 
-						| from S3ContentRepository cr
-						| join Course c on c.institutionUUID = cr.institutionUUID
-	    			| where c.uuid = ${courseVersion.getCourseUUID}
-				    """.first[String].get)
-	    }
-			courseVersion.setVersionCreatedAt(new Date());
+		courseVersion.setVersionCreatedAt(new Date());
 		
 	    sql"""
-	    | insert into CourseVersion (uuid,name,repository_uuid,course_uuid,versionCreatedAt,distributionPrefix,contentSpec,disabled) 
+	    | insert into CourseVersion (uuid,name,course_uuid,versionCreatedAt,distributionPrefix,contentSpec,disabled) 
 	    | values(
 	    | ${courseVersion.getUUID},
 	    | ${courseVersion.getName},
-	    | ${courseVersion.getRepositoryUUID},
 	    | ${courseVersion.getCourseUUID}, 
 	    | ${courseVersion.getVersionCreatedAt},
 	    | ${courseVersion.getDistributionPrefix},

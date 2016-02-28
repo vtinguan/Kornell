@@ -15,16 +15,18 @@ import scala.util.Try
 import kornell.core.to.LibraryFileTO
 import kornell.server.content.ContentManagers
 import kornell.core.util.StringUtils._
+import kornell.server.jdbc.repository.InstitutionsRepo
 
 
 object LibraryFilesRepository {
 //TODO: Review
   def findLibraryFiles(courseClassUUID: String) =  {
     val classRepo = CourseClassesRepo(courseClassUUID)
+    val institutionRepo = classRepo.institution
+    val repositoryUUID = institutionRepo.get.getAssetsRepositoryUUID
+    val repo = ContentManagers.forRepository(repositoryUUID)
     val versionRepo = classRepo.version
     val version = versionRepo.get
-    val repositoryUUID = version.getRepositoryUUID
-    val repo = ContentManagers.forRepository(repositoryUUID)
     val filesURL = StringUtils.composeURL(version.getDistributionPrefix(), "library")
     try {
       val structureSrc = repo.source(filesURL, "libraryFiles.knl")

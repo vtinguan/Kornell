@@ -49,6 +49,7 @@ import kornell.server.content.ContentManagers
 import kornell.core.entity.RoleType
 import kornell.server.util.DateConverter
 import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.server.jdbc.repository.InstitutionRepo
 
 //TODO: Consider turning to Object
 object TOs {
@@ -110,7 +111,9 @@ object TOs {
 
   def newCourseVersionTO(course: Course, version: CourseVersion): CourseVersionTO = {
     val versionTO = tos.newCourseVersionTO.as
-    val repo = ContentManagers.forRepository(version.getRepositoryUUID)
+    val institutionRepo = InstitutionRepo(course.getInstitutionUUID)
+    val repositoryUUID = institutionRepo.get.getAssetsRepositoryUUID
+    val repo = ContentManagers.forRepository(repositoryUUID)
     versionTO.setDistributionURL(repo.url(""))
     versionTO.setCourse(course)
     versionTO.setCourseVersion(version)
@@ -147,22 +150,6 @@ object TOs {
   def newEnrollmentRequestsTO(enrollmentRequests: java.util.List[EnrollmentRequestTO]): EnrollmentRequestsTO = {
     val to = newEnrollmentRequestsTO
     to.setEnrollmentRequests(enrollmentRequests)
-    to
-  }
-
-  def newCertificateInformationTO: CertificateInformationTO = new CertificateInformationTO
-  def newCertificateInformationTO(personFullName: String, personCPF: String, courseTitle: String, courseClassName: String, courseClassFinishedDate: Date, assetsURL: String, distributionPrefix: String, courseVersionUUID: String, baseURL: String): CertificateInformationTO = {
-    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
-    val to = newCertificateInformationTO
-    to.setPersonFullName(personFullName)
-    to.setPersonCPF(personCPF)
-    to.setCourseTitle(courseTitle)
-    to.setCourseClassName(courseClassName)
-    to.setCourseClassFinishedDate(dateConverter.dateToInstitutionTimezone(courseClassFinishedDate))
-    to.setAssetsURL(assetsURL)
-    to.setDistributionPrefix(distributionPrefix)
-    to.setCourseVersionUUID(courseVersionUUID)
-    to.setBaseURL(baseURL)
     to
   }
 
