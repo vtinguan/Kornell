@@ -14,14 +14,16 @@ import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.Enrollment
 import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.server.content.ContentManagers
+import kornell.server.jdbc.repository.InstitutionsRepo
+import kornell.server.jdbc.repository.InstitutionRepo
 
 @Deprecated
 object ContentRepository {
 
-  def findKNLVisitedContent(enrollment: Enrollment) = {
+  def findKNLVisitedContent(enrollment: Enrollment, person: Person) = {
     val personRepo = PersonRepo(enrollment.getPersonUUID)
     val visited = personRepo.actomsVisitedBy(enrollment.getUUID)  
-    val institutionRepo = CourseClassesRepo(enrollment.getCourseClassUUID).institution
+    val institutionRepo = InstitutionRepo(person.getInstitutionUUID)
     val repositoryUUID = institutionRepo.get.getAssetsRepositoryUUID  
     val version = {
       if(enrollment.getCourseVersionUUID != null)

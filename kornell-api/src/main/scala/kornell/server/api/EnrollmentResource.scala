@@ -60,7 +60,7 @@ class EnrollmentResource(uuid: String) {
   @Produces(Array(Contents.TYPE))
   def contents(): Option[Contents] = AuthRepo().withPerson { person =>
     first map { e =>
-      ContentRepository.findKNLVisitedContent(e)
+      ContentRepository.findKNLVisitedContent(e, person)
     }
   }
     
