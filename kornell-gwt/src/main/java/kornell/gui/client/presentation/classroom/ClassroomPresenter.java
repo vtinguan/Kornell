@@ -108,6 +108,12 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		
 		LoadingPopup.show();		
 		final PopupPanel popup = KornellNotification.show(constants.loadingTheCourse(), AlertType.WARNING, -1);
+		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				popup.hide();
+			}
+		});
 		session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
 			
 			public void ok(EnrollmentLaunchTO to) {
