@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ContentSpec;
+import kornell.core.entity.EnrollmentState;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
@@ -57,6 +58,7 @@ public class Captain implements LogoutEventHandler, LoginEventHandler {
 											.getCourseVersion().getContentSpec())
 									&& Dean.getInstance().getCourseClassTO().getEnrollment() != null
 									&& Dean.getInstance().getCourseClassTO().getEnrollment().getCertifiedAt() == null
+									&& EnrollmentState.enrolled.equals(Dean.getInstance().getCourseClassTO().getEnrollment().getState())
 									)
 						) {
 							event.setWarning(constants.leavingTheClassroom());	
