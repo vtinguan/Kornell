@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.generic.details;
+package kornell.gui.client.presentation.classroom.generic.details;
 
 import static kornell.core.util.StringUtils.mkurl;
 
@@ -123,7 +123,9 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 
 	private void setContents(Contents contents) {
 		this.contents = contents;
-		this.actoms = ContentsOps.collectActoms(contents);
+		if(contents != null){
+			this.actoms = ContentsOps.collectActoms(contents);
+		}
 	}
 
 	private void display() {
@@ -155,7 +157,8 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		displayContent(btnCurrent);
 
 		topicsPanel.addStyleName("topicsPanel");
-		displayTopics();
+		if(contents != null)
+			displayTopics();
 
 		displayTitle();
 
@@ -396,7 +399,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		btnLibrary = new Button();
 		btnGoToCourse = new Button();
 		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(), true);
-		if(actoms.size() > 1){
+		if(actoms != null && actoms.size() > 1){
 			displayButton(btnTopics, constants.btnTopics(),
 					constants.btnTopicsInfo(), false);
 		}
@@ -458,8 +461,8 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 			} else if(isCancelled) {
 				text = constants.cancelledEnrollment();
 			} else if(!isEnrolled) {
-				text = constants.enrollmentNotApproved()
-						+ (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) ?
+				text = constants.enrollmentNotApproved()  
+						+ (StringUtils.isSome(session.getCurrentUser().getPerson().getEmail()) ?
 								"" : constants.enrollmentConfirmationEmail());
 			}
 			HTMLPanel panel = new HTMLPanel(text);
