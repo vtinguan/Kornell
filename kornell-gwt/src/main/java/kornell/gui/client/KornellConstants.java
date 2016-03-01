@@ -152,7 +152,7 @@ public interface KornellConstants extends ConstantsWithLookup {
 	@DefaultStringValue("This class has been disabled by the institution.<br><br> The material in this class is inaccessible.<br>")
 	String inactiveCourseClass();
 	
-	@DefaultStringValue("Your registration was canceled by the institution.")
+	@DefaultStringValue("Your registration was canceled by the institution.<br><br> The material in this class is inaccessible.<br>")
 	String cancelledEnrollment();
 	
 	@DefaultStringValue("Your registration has not yet been approved by the institution.")

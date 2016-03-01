@@ -116,6 +116,7 @@ public class GenericCourseSummaryView extends Composite {
 				Student student = teacher.student(userInfoTO);
 				if(courseClassTO.getEnrollment() != null && EnrollmentState.cancelled.equals(courseClassTO.getEnrollment().getState())){
 					pStatusErr.setText(constants.cancelledClassLabel());
+					pStatusErr.removeStyleName("shy");
 				}
 				if(!CourseClassState.active.equals(courseClassTO.getCourseClass().getState())){
 					pStatus.setText(constants.inactiveClassLabel());

@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.generic.details;
+package kornell.gui.client.presentation.classroom.generic.details;
 
 import java.util.ArrayList;
 import java.util.List;
