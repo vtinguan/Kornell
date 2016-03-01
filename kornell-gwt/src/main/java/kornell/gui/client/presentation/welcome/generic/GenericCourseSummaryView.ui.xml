@@ -19,7 +19,7 @@
         <b:Paragraph addStyleNames="courseStatus" ui:field="pStatus"/>
         <b:ProgressBar addStyleNames="progressBar shy" ui:field="progressBar"/>
         <b:Paragraph addStyleNames="courseStatus courseStatusInfo" ui:field="pStatusInfo"/>
-        <b:Paragraph addStyleNames="courseStatus courseStatusErr" ui:field="pStatusErr"/>
+        <b:Paragraph addStyleNames="courseStatus courseStatusErr shy" ui:field="pStatusErr"/>
         <b:Paragraph addStyleNames="courseStatus courseStatus" ui:field="pStatus2"/>
         <b:Paragraph addStyleNames="courseStatus courseStatusInfo" ui:field="pStatusInfo2"/>
 			</g:FlowPanel>	
