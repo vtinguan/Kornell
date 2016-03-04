@@ -70,12 +70,11 @@ object InstitutionsRepo {
       institution.setActivatedAt(new Date)
     }
     sql"""
-    | insert into Institution (uuid,name,terms,assetsURL,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType,institutionType,dashboardVersionUUID,internationalized,useEmailWhitelist,assetsRepositoryUUID, timeZone) 
+    | insert into Institution (uuid,name,terms,baseURL,demandsPersonContactDetails,validatePersonContactDetails,fullName,allowRegistration,allowRegistrationByUsername,activatedAt,skin,billingType,institutionType,dashboardVersionUUID,internationalized,useEmailWhitelist,assetsRepositoryUUID, timeZone) 
     | values(
     | ${institution.getUUID},
     | ${institution.getName},
     | ${institution.getTerms},
-    | ${institution.getAssetsURL},
     | ${institution.getBaseURL},
     | ${institution.isDemandsPersonContactDetails},
     | ${institution.isValidatePersonContactDetails},

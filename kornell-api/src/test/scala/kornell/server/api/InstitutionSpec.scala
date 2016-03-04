@@ -22,14 +22,14 @@ class InstitutionSpec extends UnitSpec
   "The platformAdmin" should 
   "be able to create a new institution" in asPlatformAdmin {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
   }
   
   "The institutionAdmin" should 
   "not be able to create a new institution" in asInstitutionAdmin {
     try {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
     } catch {
       case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
       case default:Throwable => fail() 
@@ -40,7 +40,7 @@ class InstitutionSpec extends UnitSpec
   "not be able to create a new institution" in asPerson {
     try {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
     } catch {
       case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
       case default:Throwable => fail() 
@@ -50,7 +50,7 @@ class InstitutionSpec extends UnitSpec
   "The platformAdmin" should 
   "be able to modify an institution" in asPlatformAdmin {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
     newInstitution.setFullName("test");
     val modifiedInstitution = InstitutionResource(newInstitution.getUUID).update(newInstitution)
     assert("test" == modifiedInstitution.getFullName)
@@ -59,7 +59,7 @@ class InstitutionSpec extends UnitSpec
   "The institutionAdmin" should 
   "not be able to modify an institution" in asPlatformAdmin {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
     newInstitution.setFullName("test");
     asInstitutionAdmin {
       try {
@@ -74,7 +74,7 @@ class InstitutionSpec extends UnitSpec
   "A person" should 
   "not be able to modify an institution" in asPlatformAdmin {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
     newInstitution.setFullName("test");
     asPerson {
       try {
@@ -89,7 +89,7 @@ class InstitutionSpec extends UnitSpec
   "The platformAdmin" should 
   "be able to get an institution" in asPlatformAdmin {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
 
     val fetchedInstitution = InstitutionResource(newInstitution.getUUID).get
     assert(newInstitution.getFullName == fetchedInstitution.getFullName)
@@ -99,7 +99,7 @@ class InstitutionSpec extends UnitSpec
   "The institutionAdmin" should 
   "not be able to get an institution" in asPlatformAdmin {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
 
     asInstitutionAdmin{
         try {
@@ -114,7 +114,7 @@ class InstitutionSpec extends UnitSpec
   "The person" should 
   "not be able to get an institution" in asPlatformAdmin {
     val newInstitution = InstitutionsResource().create( 
-        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
+        Entities.newInstitution(randUUID, randStr, randStr, randStr, randURL, false, false, false, false, null, "", BillingType.enrollment, InstitutionType.DEFAULT, null, false, false, null, "America/Sao_Paulo"))
 
     asPerson{
         try {

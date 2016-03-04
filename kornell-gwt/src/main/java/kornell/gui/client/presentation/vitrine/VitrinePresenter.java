@@ -61,7 +61,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 		Dean localdean = Dean.getInstance();
 		if (localdean != null) {
-			String assetsURL = localdean.getInstitution().getAssetsURL();
+			String assetsURL = Dean.getInstance().getAssetsURL();
 			view.setLogoURL(assetsURL);
 			view.showRegistrationOption(localdean.getInstitution().isAllowRegistration());
 		}

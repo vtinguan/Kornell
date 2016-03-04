@@ -105,9 +105,16 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		//TODO: Consider if the null state is inactive				
         final boolean showCourseClassContent = enrollmentClassUUID == null || (isEnrolled && (courseClassState != null && !CourseClassState.inactive.equals(courseClassState)));
 
-		if(showCourseClassContent){
+
+        if(showCourseClassContent){
 			LoadingPopup.show();		
 			final PopupPanel popup = KornellNotification.show(constants.loadingTheCourse(), AlertType.WARNING, -1);
+			bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+				@Override
+				public void onPlaceChange(PlaceChangeEvent event) {
+					popup.hide();
+				}
+			});
 			session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
 				
 				public void ok(EnrollmentLaunchTO to) {
@@ -136,9 +143,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 			view.display(showCourseClassContent);	
 			view.asWidget().setVisible(true);
 		}
-		
-	
-	}
+	}	
 
 	private FlowPanel getPanel() {
 		return view.getContentPanel();

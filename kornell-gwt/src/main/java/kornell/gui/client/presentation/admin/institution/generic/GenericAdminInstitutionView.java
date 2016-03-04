@@ -103,7 +103,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private Institution institution;
 
-	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone;
+	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsRepositoryUUID, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private GenericInstitutionReportsView reportsView;
@@ -225,9 +225,9 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		fields.add(institutionType);
 		institutionFields.add(institutionType);
 		
-		assetsURL = new KornellFormFieldWrapper("URL dos Recursos", formHelper.createTextBoxFormField(institution.getAssetsURL()), isPlatformAdmin);
-		fields.add(assetsURL);
-		institutionFields.add(assetsURL);
+		assetsRepositoryUUID = new KornellFormFieldWrapper("UUID do repositório", formHelper.createTextBoxFormField(institution.getAssetsRepositoryUUID()), isPlatformAdmin);
+		fields.add(assetsRepositoryUUID);
+		institutionFields.add(assetsRepositoryUUID);
 		
 		baseURL = new KornellFormFieldWrapper("URL Base", formHelper.createTextBoxFormField(institution.getBaseURL()), isPlatformAdmin);
 		fields.add(baseURL);
@@ -325,8 +325,8 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		if (!formHelper.isLengthValid(fullName.getFieldPersistText(), 2, 50)) {
 			fullName.setError("Insira o nome da instituição.");
 		}
-		if (!formHelper.isLengthValid(assetsURL.getFieldPersistText(), 10, 200)) {
-			assetsURL.setError("Insira a URL dos recursos.");
+		if (!formHelper.isLengthValid(assetsRepositoryUUID.getFieldPersistText(), 10, 200)) {
+			assetsRepositoryUUID.setError("Insira o UUID do repositório.");
 		}
 		if (!formHelper.isLengthValid(baseURL.getFieldPersistText(), 10, 200)) {
 			baseURL.setError("Insira a URL base.");
@@ -353,7 +353,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setName(name.getFieldPersistText());
 		institution.setFullName(fullName.getFieldPersistText());
 		institution.setTerms(terms.getFieldPersistText());
-		institution.setAssetsURL(assetsURL.getFieldPersistText());
+		institution.setAssetsRepositoryUUID(assetsRepositoryUUID.getFieldPersistText());
 		institution.setBaseURL(baseURL.getFieldPersistText());
 		institution.setBillingType(BillingType.valueOf(billingType.getFieldPersistText()));
 		institution.setInstitutionType(InstitutionType.valueOf(institutionType.getFieldPersistText()));

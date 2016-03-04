@@ -73,7 +73,7 @@ class EnrollmentRepo(uuid: String) {
   }
 
   def updateKNLProgress(e: Enrollment) = {
-    val contents = ContentRepository.findKNLVisitedContent(e)
+    val contents = ContentRepository.findKNLVisitedContent(e, PersonRepo(e.getPersonUUID).get)
     val actoms = ContentsOps.collectActoms(contents).asScala
     val visited = actoms.filter(_.isVisited).size
     val newProgress = visited / actoms.size.toDouble

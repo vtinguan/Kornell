@@ -11,11 +11,6 @@ public interface Institution extends Named {
 
 	String getTerms();
 	void setTerms(String terms);
-
-	@Deprecated
-	String getAssetsURL();
-	@Deprecated()
-	void setAssetsURL(String assetsURL);
 	
 	String getAssetsRepositoryUUID();
 	void setAssetsRepositoryUUID(String assetsRepositoryUUID);

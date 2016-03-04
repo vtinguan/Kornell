@@ -18,6 +18,8 @@ class CourseClassRepo(uuid:String) {
   
   def version = CourseVersionRepo(get.getCourseVersionUUID)
   
+  def institution = InstitutionRepo(get.getInstitutionUUID)
+  
   def update(courseClass: CourseClass): CourseClass = { 
     //get previous version
     val oldCourseClass = CourseClassRepo(courseClass.getUUID).first.get

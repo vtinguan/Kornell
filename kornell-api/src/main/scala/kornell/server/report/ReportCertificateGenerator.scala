@@ -12,11 +12,30 @@ import kornell.server.jdbc.PreparedStmt
 import kornell.server.jdbc.SQL.SQLHelper
 import kornell.server.repository.TOs
 import kornell.server.util.Settings
+import kornell.server.util.DateConverter
+import kornell.server.authentication.ThreadLocalAuthenticator
+import java.util.Date
 
 object ReportCertificateGenerator {
 
+  def newCertificateInformationTO: CertificateInformationTO = new CertificateInformationTO
+  def newCertificateInformationTO(personFullName: String, personCPF: String, courseTitle: String, courseClassName: String, courseClassFinishedDate: Date, assetsURL: String, distributionPrefix: String, courseVersionUUID: String, baseURL: String): CertificateInformationTO = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
+    val to = newCertificateInformationTO
+    to.setPersonFullName(personFullName)
+    to.setPersonCPF(personCPF)
+    to.setCourseTitle(courseTitle)
+    to.setCourseClassName(courseClassName)
+    to.setCourseClassFinishedDate(dateConverter.dateToInstitutionTimezone(courseClassFinishedDate))
+    to.setAssetsURL(assetsURL)
+    to.setDistributionPrefix(distributionPrefix)
+    to.setCourseVersionUUID(courseVersionUUID)
+    to.setBaseURL(baseURL)
+    to
+  }
+  
   implicit def toCertificateInformationTO(rs: ResultSet): CertificateInformationTO =
-    TOs.newCertificateInformationTO(
+    newCertificateInformationTO(
       rs.getString("fullName"),
       rs.getString("cpf"),
       rs.getString("title"),
@@ -35,8 +54,8 @@ object ReportCertificateGenerator {
 					join CourseClass cc on cc.uuid = e.class_uuid
 		    	join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
 		    	join Course c on c.uuid = cv.course_uuid
-					join S3ContentRepository s on s.uuid = cv.repository_uuid
-					join Institution i on i.uuid = cc.institution_uuid
+				join Institution i on i.uuid = cc.institution_uuid
+				join S3ContentRepository s on s.uuid = i.assetsRepositoryUUID
 				where e.certifiedAt is not null and 
         		  p.uuid = $userUUID and
 				  cc.uuid = $courseClassUUID
@@ -57,8 +76,7 @@ object ReportCertificateGenerator {
       join Enrollment e on p.uuid = e.person_uuid 
       join CourseClass cc on cc.uuid = e.class_uuid 
       join CourseVersion cv on cv.uuid = cc.courseVersion_uuid 
-      join Course c on c.uuid = cv.course_uuid 
-      join S3ContentRepository s on s.uuid = cv.repository_uuid 
+      join Course c on c.uuid = cv.course_uuid  
       join Institution i on i.uuid = cc.institution_uuid 
       where e.certifiedAt is not null and  """ +
 		s"""cc.uuid = '$courseClassUUID' """
@@ -77,7 +95,7 @@ object ReportCertificateGenerator {
     val assetsURL: String = composeURL(certificateData.head.getBaseURL, "repository", certificateData.head.getAssetsURL, certificateData.head.getDistributionPrefix, "/reports") + "/"
     parameters.put("assetsURL", assetsURL)
 	  
-   
+
   	//store one jasperfile per course
     val fileName = Settings.tmpDir + "tmp-" + certificateData.head.getCourseVersionUUID + ".jasper"
     val jasperFile: File = new File(fileName)

@@ -21,7 +21,6 @@ class CourseVersionRepo(uuid: String) {
     | select 
     | cv.uuid as courseVersionUUID,
     | cv.name as courseVersionName,
-    | cv.repository_uuid as repositoryUUID,
     | cv.course_uuid as courseUUID,
     | cv.versionCreatedAt as versionCreatedAt,
     | cv.distributionPrefix as distributionPrefix,
@@ -49,7 +48,6 @@ class CourseVersionRepo(uuid: String) {
     sql"""
     | update CourseVersion c
     | set c.name = ${courseVersion.getName},
-    | c.repository_uuid = ${courseVersion.getRepositoryUUID},
     | c.course_uuid = ${courseVersion.getCourseUUID}, 
     | c.versionCreatedAt = ${courseVersion.getVersionCreatedAt},
     | c.distributionPrefix = ${courseVersion.getDistributionPrefix},

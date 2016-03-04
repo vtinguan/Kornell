@@ -72,7 +72,7 @@ public class Dean implements LogoutEventHandler,
 	}
 
 	private void initInstitutionSkin() {
-		String url = institution.getAssetsURL();
+		String url = getAssetsURL();
 		if (url != null) {
 			updateFavicon(mkurl(url, ICON_NAME));
 		} else {
@@ -122,6 +122,10 @@ public class Dean implements LogoutEventHandler,
 
 	public Institution getInstitution() {
 		return institution;
+	}
+	
+	public String getAssetsURL() {
+		return "/repository/" + institution.getAssetsRepositoryUUID();
 	}
 
 	public Institution setInstitution(Institution institution) {

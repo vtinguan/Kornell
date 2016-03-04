@@ -121,7 +121,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		// TODO: Consider anonynous
 		if (localDean != null) {
 			Institution localInstitution = localDean.getInstitution();
-			String assetsURL = localInstitution.getAssetsURL();
+			String assetsURL = Dean.getInstance().getAssetsURL();
 			String skin = Dean.getInstance().getInstitution().getSkin();
 			String barLogoFileName = "logo300x45"
 					+ (!"_light".equals(skin) ? "_light" : "") + ".png";

@@ -171,7 +171,7 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, 
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, baseURL: String, 
       demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, 
       activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String, internationalized: Boolean, 
       useEmailWhitelist: Boolean = false,assetsRepositoryUUID:String=null, timeZone: String) = {
@@ -181,7 +181,6 @@ object Entities {
     i.setUUID(uuid)
     if (terms != null)
       i.setTerms(terms.stripMargin)
-    i.setAssetsURL(StringUtils.mkurl("/repository",assetsRepositoryUUID));
     i.setAssetsRepositoryUUID(assetsRepositoryUUID);
     i.setBaseURL(baseURL)
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
@@ -267,8 +266,7 @@ object Entities {
 
   def newCourseVersion(
     uuid: String = randUUID, name: String = null, 
-    courseUUID: String = null, repositoryUUID: String = null, 
-    versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
+    courseUUID: String = null, versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
     contentSpec: String = null, disabled: Boolean = false, parentVersionUUID: String = null,
     instanceCount: Integer = 1, label: String = null) = {
     val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
@@ -276,7 +274,6 @@ object Entities {
     version.setUUID(uuid);
     version.setName(name);
     version.setCourseUUID(courseUUID);
-    version.setRepositoryUUID(repositoryUUID);
     version.setVersionCreatedAt(dateConverter.dateToInstitutionTimezone(versionCreatedAt))
     version.setDistributionPrefix(distributionPrefix)
     version.setDisabled(disabled)
