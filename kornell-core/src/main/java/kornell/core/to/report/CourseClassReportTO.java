@@ -12,6 +12,8 @@ public class CourseClassReportTO {
 	private String progressState;
 	private Integer progress;
 	private BigDecimal assessmentScore;
+	private BigDecimal preAssessmentScore;
+	private BigDecimal postAssessmentScore;
 	private Date certifiedAt;
 	private Date enrolledAt;
 	private String courseName;
@@ -40,7 +42,7 @@ public class CourseClassReportTO {
 
 	public String getUsername() {
 		return username;
-	}
+	} 
 
 	public void setUsername(String username) {
 		this.username = username;
@@ -93,6 +95,22 @@ public class CourseClassReportTO {
 
 	public void setAssessmentScore(BigDecimal assessmentScore) {
 		this.assessmentScore = assessmentScore;
+	}
+
+	public BigDecimal getPreAssessmentScore() {
+		return preAssessmentScore;
+	}
+
+	public void setPreAssessmentScore(BigDecimal preAssessmentScore) {
+		this.preAssessmentScore = preAssessmentScore;
+	}
+
+	public BigDecimal getPostAssessmentScore() {
+		return postAssessmentScore;
+	}
+
+	public void setPostAssessmentScore(BigDecimal postAssessmentScore) {
+		this.postAssessmentScore = postAssessmentScore;
 	}
 
 	public Date getCertifiedAt() {
