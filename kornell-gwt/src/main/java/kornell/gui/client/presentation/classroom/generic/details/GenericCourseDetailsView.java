@@ -10,6 +10,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RegistrationType;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
@@ -33,10 +34,13 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.Gen
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.classroom.ClassroomView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -111,6 +115,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		this.messagePresenterClassroomTutorChat = viewFactory.getMessagePresenterClassroomTutorChat();
 		this.messagePresenterClassroomTutorChat.enableMessagesUpdate(false);
 		initWidget(uiBinder.createAndBindUi(this));
+		detailsPanel.addStyleName("shy");
 	}
 
 	public void initData() {
@@ -464,6 +469,12 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 				text = constants.enrollmentNotApproved()  
 						+ (StringUtils.isSome(session.getCurrentUser().getPerson().getEmail()) ?
 								"" : constants.enrollmentConfirmationEmail());
+			}
+			if(!"".equals(text) && InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+				KornellNotification.show(text.replaceAll("<br>", ""), AlertType.WARNING, 5000);
+				placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), false));
+			} else {
+				detailsPanel.removeStyleName("shy");
 			}
 			HTMLPanel panel = new HTMLPanel(text);
 			warningPanel.add(panel);
