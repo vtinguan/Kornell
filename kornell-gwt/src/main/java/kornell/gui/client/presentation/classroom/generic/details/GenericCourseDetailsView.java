@@ -115,7 +115,6 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		this.messagePresenterClassroomTutorChat = viewFactory.getMessagePresenterClassroomTutorChat();
 		this.messagePresenterClassroomTutorChat.enableMessagesUpdate(false);
 		initWidget(uiBinder.createAndBindUi(this));
-		detailsPanel.addStyleName("shy");
 	}
 
 	public void initData() {
@@ -456,11 +455,11 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		FlowPanel sidePanel = new FlowPanel();
 		sidePanel.addStyleName("sidePanel");
 
-		
+
+		String text = "";
 		if(isInactiveCourseClass || isCancelled || !isEnrolled){
 			FlowPanel warningPanel = new FlowPanel();
 			warningPanel.addStyleName("notEnrolledPanel");
-			String text = "";
 			if(isInactiveCourseClass){
 				text = constants.inactiveCourseClass();
 			} else if(isCancelled) {
@@ -470,17 +469,17 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 						+ (StringUtils.isSome(session.getCurrentUser().getPerson().getEmail()) ?
 								"" : constants.enrollmentConfirmationEmail());
 			}
-			if(!"".equals(text) && InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
-				KornellNotification.show(text.replaceAll("<br>", ""), AlertType.WARNING, 5000);
-				placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), false));
-			} else {
-				detailsPanel.removeStyleName("shy");
-			}
 			HTMLPanel panel = new HTMLPanel(text);
 			warningPanel.add(panel);
 			sidePanel.add(warningPanel);
 		}
-		
+
+		if(!"".equals(text) && InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			KornellNotification.show(text.replaceAll("<br>", ""), AlertType.WARNING, 5000);
+			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), false));
+		} else {
+			detailsPanel.removeStyleName("shy");
+		}
 		sidePanel.add(getHintsPanel());
 		
 		return sidePanel;
