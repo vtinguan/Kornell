@@ -166,7 +166,6 @@ public class KornellSession extends KornellClient {
 			@Override
 			public void ok(UserInfoTO user) {
 				setCurrentUser(user);
-				bus.fireEvent(new LoginEvent(user));
 				callback.ok(user);
 			}
 

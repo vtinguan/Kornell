@@ -261,7 +261,7 @@ class UserResource(private val authRepo:AuthRepo) {
   def acceptTerms() = AuthRepo().withPerson{ p =>
 	val from = PersonRepo(p.getUUID).first.get
 	          
-    PersonRepo(p.getUUID).acceptTerms
+    PersonRepo(p.getUUID).acceptTerms(from)
     
 	val to = PersonRepo(p.getUUID).first.get
 	

@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.generic.details;
+package kornell.gui.client.presentation.classroom.generic.details;
 
 import static kornell.core.util.StringUtils.mkurl;
 
@@ -10,6 +10,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RegistrationType;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
@@ -33,10 +34,13 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.Gen
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.classroom.ClassroomView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
+import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -123,7 +127,9 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 
 	private void setContents(Contents contents) {
 		this.contents = contents;
-		this.actoms = ContentsOps.collectActoms(contents);
+		if(contents != null){
+			this.actoms = ContentsOps.collectActoms(contents);
+		}
 	}
 
 	private void display() {
@@ -155,7 +161,8 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		displayContent(btnCurrent);
 
 		topicsPanel.addStyleName("topicsPanel");
-		displayTopics();
+		if(contents != null)
+			displayTopics();
 
 		displayTitle();
 
@@ -396,7 +403,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		btnLibrary = new Button();
 		btnGoToCourse = new Button();
 		displayButton(btnAbout, constants.btnAbout(), constants.btnAboutInfo(), true);
-		if(actoms.size() > 1){
+		if(actoms != null && actoms.size() > 1){
 			displayButton(btnTopics, constants.btnTopics(),
 					constants.btnTopicsInfo(), false);
 		}
@@ -448,25 +455,31 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		FlowPanel sidePanel = new FlowPanel();
 		sidePanel.addStyleName("sidePanel");
 
-		
+
+		String text = "";
 		if(isInactiveCourseClass || isCancelled || !isEnrolled){
 			FlowPanel warningPanel = new FlowPanel();
 			warningPanel.addStyleName("notEnrolledPanel");
-			String text = "";
 			if(isInactiveCourseClass){
 				text = constants.inactiveCourseClass();
 			} else if(isCancelled) {
 				text = constants.cancelledEnrollment();
 			} else if(!isEnrolled) {
-				text = constants.enrollmentNotApproved()
-						+ (RegistrationType.email.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getRegistrationType()) ?
+				text = constants.enrollmentNotApproved()  
+						+ (StringUtils.isSome(session.getCurrentUser().getPerson().getEmail()) ?
 								"" : constants.enrollmentConfirmationEmail());
 			}
 			HTMLPanel panel = new HTMLPanel(text);
 			warningPanel.add(panel);
 			sidePanel.add(warningPanel);
 		}
-		
+
+		if(!"".equals(text) && InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+			KornellNotification.show(text.replaceAll("<br>", ""), AlertType.WARNING, 5000);
+			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), false));
+		} else {
+			detailsPanel.removeStyleName("shy");
+		}
 		sidePanel.add(getHintsPanel());
 		
 		return sidePanel;

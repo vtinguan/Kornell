@@ -23,7 +23,8 @@ object ReportCourseClassGenerator {
 
   def newCourseClassReportTO: CourseClassReportTO = new CourseClassReportTO
   def newCourseClassReportTO(fullName: String, username: String, email: String, cpf: String, state: String, progressState: String, 
-      progress: Int, assessmentScore: BigDecimal, certifiedAt: Date, enrolledAt: Date, courseName: String, courseVersionName: String, courseClassName: String, 
+      progress: Int, assessmentScore: BigDecimal,  preAssessmentScore: BigDecimal,  postAssessmentScore: BigDecimal, 
+      certifiedAt: Date, enrolledAt: Date, courseName: String, courseVersionName: String, courseClassName: String, 
       company: String, title: String, sex: String, birthDate: String, telephone: String, country: String, stateProvince: String, 
       city: String, addressLine1: String, addressLine2: String, postalCode: String): CourseClassReportTO = {
     val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
@@ -36,6 +37,8 @@ object ReportCourseClassGenerator {
     to.setProgressState(progressState)
     to.setProgress(progress)
     to.setAssessmentScore(assessmentScore)
+    to.setPreAssessmentScore(preAssessmentScore)
+    to.setPostAssessmentScore(postAssessmentScore)
     to.setCertifiedAt(dateConverter.dateToInstitutionTimezone(certifiedAt))
     to.setEnrolledAt(dateConverter.dateToInstitutionTimezone(enrolledAt))
     to.setCourseName(courseName)
@@ -65,6 +68,8 @@ object ReportCourseClassGenerator {
 		rs.getString("progressState"),
 		rs.getInt("progress"),
 		rs.getBigDecimal("assessmentScore"),
+		rs.getBigDecimal("preAssessmentScore"),
+		rs.getBigDecimal("postAssessmentScore"),
 		rs.getTimestamp("certifiedAt"),
 		rs.getTimestamp("enrolledAt"),
 		rs.getString("courseName"),
@@ -106,6 +111,8 @@ object ReportCourseClassGenerator {
 				end as progressState,
 				e.progress,
 				e.assessmentScore,
+				e.preAssessmentScore,
+				e.postAssessmentScore,
 				e.certifiedAt,
 				e.enrolledOn as enrolledAt,
     			c.title as courseName,
@@ -153,7 +160,7 @@ object ReportCourseClassGenerator {
 				c.title,
 				cv.name,
 				cc.name,
-				e.certifiedAt,
+				e.certifiedAt desc,
 				progress,
 				p.fullName,
 				pw.username,

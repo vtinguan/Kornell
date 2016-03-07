@@ -31,7 +31,7 @@ import kornell.gui.client.presentation.bar.generic.GenericSouthBarView;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.classroom.ClassroomPresenter;
 import kornell.gui.client.presentation.classroom.ClassroomView;
-import kornell.gui.client.presentation.course.generic.GenericClassroomView;
+import kornell.gui.client.presentation.classroom.generic.GenericClassroomView;
 import kornell.gui.client.presentation.home.HomeView;
 import kornell.gui.client.presentation.home.generic.GenericHomeView;
 import kornell.gui.client.presentation.message.MessagePanelType;
@@ -152,7 +152,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;" + "overflow:auto;";
 		if (showMantle)
 			style = "background: url('"
-					+ composeURL(Dean.getInstance().getInstitution().getAssetsURL(), "bgVitrine.jpg")
+					+ composeURL(Dean.getInstance().getAssetsURL(), "bgVitrine.jpg")
 					+ "') no-repeat center center fixed; " + style;
 		DOM.setElementAttribute(scrollPanel.getElement(), "style", style);
 		isMantleShown = showMantle;

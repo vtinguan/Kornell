@@ -162,5 +162,10 @@ object PeopleRepo {
     }
   }
   
+  def invalidateCache(p: Person) = {
+    if (isSome(p.getCPF)) cpfCache.invalidate((p.getInstitutionUUID, p.getCPF))
+    if (isSome(p.getEmail)) emailCache.invalidate((p.getInstitutionUUID, p.getEmail))
+    uuidCache.invalidate(p.getUUID)
+  }
 
 }

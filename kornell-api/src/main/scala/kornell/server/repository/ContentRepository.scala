@@ -14,20 +14,23 @@ import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.Enrollment
 import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.server.content.ContentManagers
+import kornell.server.jdbc.repository.InstitutionsRepo
+import kornell.server.jdbc.repository.InstitutionRepo
 
 @Deprecated
 object ContentRepository {
 
-  def findKNLVisitedContent(enrollment: Enrollment) = {
+  def findKNLVisitedContent(enrollment: Enrollment, person: Person) = {
     val personRepo = PersonRepo(enrollment.getPersonUUID)
-    val visited = personRepo.actomsVisitedBy(enrollment.getUUID)    
+    val visited = personRepo.actomsVisitedBy(enrollment.getUUID)  
+    val institutionRepo = InstitutionRepo(person.getInstitutionUUID)
+    val repositoryUUID = institutionRepo.get.getAssetsRepositoryUUID  
     val version = {
       if(enrollment.getCourseVersionUUID != null)
         CourseVersionRepo(enrollment.getCourseVersionUUID)
        else 
         CourseClassesRepo(enrollment.getCourseClassUUID).version
     }.get
-    val repositoryUUID = version.getRepositoryUUID
     val repo = ContentManagers.forRepository(repositoryUUID)
     val versionPrefix = version.getDistributionPrefix
     val structureSrc = repo.source(versionPrefix, "structure.knl")
@@ -47,9 +50,10 @@ object ContentRepository {
     val builder = builderFactory.newDocumentBuilder
     /* </rant> */
     val classRepo = CourseClassesRepo(courseClassUUID)
+    val institutionRepo = classRepo.institution
+    val repositoryUUID = institutionRepo.get.getAssetsRepositoryUUID
     val versionRepo = classRepo.version
     val version = versionRepo.get
-    val repositoryUUID = version.getRepositoryUUID();
     val repo = ContentManagers.forRepository(repositoryUUID)
     val structureIn = repo.inputStream(mkurl(version.getDistributionPrefix(), "imsmanifest.xml")).get
     val document = builder.parse(structureIn)

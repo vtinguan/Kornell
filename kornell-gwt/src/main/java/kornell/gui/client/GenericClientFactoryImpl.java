@@ -138,7 +138,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 			
 			@Override
-			public void serviceUnavailable(KornellErrorTO kornellErrorTO) {
+			public void serviceUnavailable() {
 				KornellMaintenance.show();
 			}
 			
@@ -266,12 +266,12 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
 			Date date = new Date(0);
 			for (Enrollment enrollment : session.getCurrentUser().getEnrollments().getEnrollments()) {
-				//get latest active enrollment on a class
-				if(enrollment.getCourseClassUUID() != null && 
-						EnrollmentState.enrolled.equals(enrollment.getState()) && 
-						enrollment.getEnrolledOn().after(date)){
-					date = enrollment.getEnrolledOn();
-					enrollmentUUID = enrollment.getUUID();
+				//get latest active enrollment on a class (if no enrollment was found yet, get non active enrollment)
+				if(enrollment.getEnrolledOn().after(date) && enrollment.getCourseClassUUID() != null){
+					if(EnrollmentState.enrolled.equals(enrollment.getState()) || enrollmentUUID == null){
+						date = enrollment.getEnrolledOn();
+						enrollmentUUID = enrollment.getUUID();
+					}
 				}				
 			}			
 		}

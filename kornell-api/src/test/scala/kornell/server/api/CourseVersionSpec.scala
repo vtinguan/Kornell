@@ -52,7 +52,7 @@ class CourseVersionSpec extends UnitSpec
     val repositoryUUID = ContentRepositoriesRepo.createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
     asPerson {
       try {
-        CourseVersionsResource().create(Entities.newCourseVersion(repositoryUUID=repositoryUUID, courseUUID = courseUUID))
+        CourseVersionsResource().create(Entities.newCourseVersion(courseUUID = courseUUID))
         throw new Throwable
       } catch {
         case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))
@@ -62,25 +62,22 @@ class CourseVersionSpec extends UnitSpec
   }
   
   "The platformAdmin" should "be able to update a courseVersion" in asPlatformAdmin {
-    val repositoryUUID = ContentRepositoriesRepo.createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
     val name = "test name"
-    val updatedCourseVersion = CourseVersionResource(courseVersionUUID).update(Entities.newCourseVersion(uuid = courseVersionUUID, repositoryUUID=repositoryUUID, courseUUID = courseUUID, name = name))
+    val updatedCourseVersion = CourseVersionResource(courseVersionUUID).update(Entities.newCourseVersion(uuid = courseVersionUUID, courseUUID = courseUUID, name = name))
     assert(name == updatedCourseVersion.getName)
   }
   
   "The institutionAdmin" should "be able to update a courseVersion" in asInstitutionAdmin {
-    val repositoryUUID = ContentRepositoriesRepo.createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
     val name = "test name1"
-    val updatedCourseVersion = CourseVersionResource(courseVersionUUID).update(Entities.newCourseVersion(uuid = courseVersionUUID, repositoryUUID=repositoryUUID, courseUUID = courseUUID, name = name))
+    val updatedCourseVersion = CourseVersionResource(courseVersionUUID).update(Entities.newCourseVersion(uuid = courseVersionUUID, courseUUID = courseUUID, name = name))
     assert(name == updatedCourseVersion.getName)
   }
 
   "A person" should "not be able to update a courseVersion" in asPlatformAdmin {
-    val repositoryUUID = ContentRepositoriesRepo.createS3Repository("", "", "", institutionUUID = institutionUUID, region = "us-east-1").getUUID
     val name = "test name1"
       asPerson {
         try {
-          val updatedCourseVersion = CourseVersionResource(courseVersionUUID).update(Entities.newCourseVersion(uuid = courseVersionUUID, repositoryUUID=repositoryUUID, courseUUID = courseUUID, name = name))
+          val updatedCourseVersion = CourseVersionResource(courseVersionUUID).update(Entities.newCourseVersion(uuid = courseVersionUUID, courseUUID = courseUUID, name = name))
           throw new Throwable
         } catch {
           case ise:IllegalStateException => assert(ise.getCause.eq(RequirementNotMet))

@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.generic.notes;
+package kornell.gui.client.presentation.classroom.generic.notes;
 
 import kornell.api.client.KornellClient;
 import kornell.gui.client.KornellConstants;

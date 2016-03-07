@@ -20,7 +20,7 @@ import kornell.gui.client.mvp.HistoryMapper;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.bar.ActivityBarView;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
-import kornell.gui.client.presentation.course.generic.notes.NotesPopup;
+import kornell.gui.client.presentation.classroom.generic.notes.NotesPopup;
 import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.util.ClientConstants;
 

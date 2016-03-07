@@ -96,7 +96,6 @@ object CourseClassesRepo {
       			c.childCourse,
 			    cv.uuid as courseVersionUUID,
 			    cv.name as courseVersionName,
-			    cv.repository_uuid as repositoryUUID, 
 			    cv.versionCreatedAt as versionCreatedAt,
 		  		cv.distributionPrefix as distributionPrefix,
       			cv.contentSpec as contentSpec,

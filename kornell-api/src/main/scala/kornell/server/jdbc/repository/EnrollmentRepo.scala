@@ -21,6 +21,8 @@ import java.math.BigDecimal._
 import kornell.core.entity.ChatThreadType
 import scala.util.Try
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.LocalDateTime
 
 //TODO: Specific column names and proper sql
 class EnrollmentRepo(uuid: String) {
@@ -71,7 +73,7 @@ class EnrollmentRepo(uuid: String) {
   }
 
   def updateKNLProgress(e: Enrollment) = {
-    val contents = ContentRepository.findKNLVisitedContent(e)
+    val contents = ContentRepository.findKNLVisitedContent(e, PersonRepo(e.getPersonUUID).get)
     val actoms = ContentsOps.collectActoms(contents).asScala
     val visited = actoms.filter(_.isVisited).size
     val newProgress = visited / actoms.size.toDouble
@@ -174,17 +176,17 @@ class EnrollmentRepo(uuid: String) {
     (maxScore, assessment)
   }
 
-  def findLastEventTime(e: Enrollment) = {
-    val lastActomEntered = sql"""
-		select max(ingestedAt) as latestEvent
-		from ActomEntryChangedEvent 
-		where 
-		  entryKey='cmi.core.score.raw' 
-		  and enrollment_uuid=${e.getUUID()} 
-    """
-      .first[Date] { rs => rs.getTimestamp("latestEvent") }
-    lastActomEntered
-  }
+//  def findLastEventTime(e: Enrollment) = {
+//    val lastActomEntered = sql"""
+//		select max(ingestedAt) as latestEvent
+//		from ActomEntryChangedEvent 
+//		where 
+//		  entryKey='cmi.core.score.raw' 
+//		  and enrollment_uuid=${e.getUUID()} 
+//    """
+//      .first[String] { rs => rs.getString("latestEvent") }
+//    lastActomEntered
+//  }
 
   def checkCompletion(e: Enrollment) = {
     val isPassed = Assessment.PASSED == e.getAssessment
@@ -193,8 +195,7 @@ class EnrollmentRepo(uuid: String) {
     if (isPassed
       && isCompleted
       && isUncertified) {
-      val certifiedAt = findLastEventTime(e).getOrElse(DateTime.now.toDate)
-      e.setCertifiedAt(certifiedAt)
+      e.setCertifiedAt(DateTime.now.toDate)
       update(e)
     }
   }  

@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.course.generic;
+package kornell.gui.client.presentation.classroom.generic;
 
 import java.util.logging.Logger;
 
@@ -14,7 +14,7 @@ import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 import kornell.gui.client.presentation.classroom.ClassroomView;
-import kornell.gui.client.presentation.course.generic.details.GenericCourseDetailsView;
+import kornell.gui.client.presentation.classroom.generic.details.GenericCourseDetailsView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;

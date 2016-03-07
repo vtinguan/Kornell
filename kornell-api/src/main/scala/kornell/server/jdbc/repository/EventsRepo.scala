@@ -210,7 +210,7 @@ object EventsRepo {
 	    	.first[String].get.toInt
    })
    entityChangedEventsTO.setSearchCount(entityChangedEventsTO.getCount)
-   
+
    def getEntityName(entityChanged: EntityChanged): String = {
       entityChanged.getEntityType match {
 	      case AuditedEntityType.person | 
@@ -218,7 +218,7 @@ object EventsRepo {
 	      case AuditedEntityType.institution | 
 	      	AuditedEntityType.institutionAdmin | 
 	      	AuditedEntityType.institutionHostName | 
-	      	AuditedEntityType.institutionEmailWhitelist => InstitutionRepo(entityChanged.getEntityUUID).first.get.getName
+	      	AuditedEntityType.institutionEmailWhitelist => InstitutionsRepo.getByUUID(entityChanged.getEntityUUID).get.getName
 	      case AuditedEntityType.course => CourseRepo(entityChanged.getEntityUUID).first.get.getTitle
 	      case AuditedEntityType.courseVersion => CourseVersionRepo(entityChanged.getEntityUUID).first.get.getName
 	      case AuditedEntityType.courseClass | 

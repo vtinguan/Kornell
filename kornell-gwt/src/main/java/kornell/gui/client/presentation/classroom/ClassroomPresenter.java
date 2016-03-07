@@ -105,34 +105,45 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		//TODO: Consider if the null state is inactive				
         final boolean showCourseClassContent = enrollmentClassUUID == null || (isEnrolled && (courseClassState != null && !CourseClassState.inactive.equals(courseClassState)));
 
-		
-		LoadingPopup.show();		
-		final PopupPanel popup = KornellNotification.show(constants.loadingTheCourse(), AlertType.WARNING, -1);
-		session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
-			
-			public void ok(EnrollmentLaunchTO to) {
-				popup.hide();
-				loadRuntime(to.getEnrollmentEntries());
-				loadContents(enrollmentUUID,to.getContents());
-			};
-			
-			private void loadRuntime(EnrollmentsEntries enrollmentEntries) {
-				SCORM12Runtime.launch(bus, session,placeCtrl, enrollmentEntries);
-			}
 
-			private void loadContents(final String enrollmentUUID, final Contents contents) {
-				// check if user has a valid enrollment to this course
-				GenericClientFactoryImpl.EVENT_BUS.fireEvent(new HideSouthBarEvent());
-				setContents(contents);
-				view.display(showCourseClassContent);	
-				view.asWidget().setVisible(true);
-				LoadingPopup.hide();
-			}
-
-		});
-		
+        if(showCourseClassContent){
+			LoadingPopup.show();		
+			final PopupPanel popup = KornellNotification.show(constants.loadingTheCourse(), AlertType.WARNING, -1);
+			bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+				@Override
+				public void onPlaceChange(PlaceChangeEvent event) {
+					popup.hide();
+				}
+			});
+			session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
+				
+				public void ok(EnrollmentLaunchTO to) {
+					popup.hide();
+					loadRuntime(to.getEnrollmentEntries());
+					loadContents(enrollmentUUID,to.getContents());
+				};
+				
+				private void loadRuntime(EnrollmentsEntries enrollmentEntries) {
+					SCORM12Runtime.launch(bus, session,placeCtrl, enrollmentEntries);
+				}
 	
-	}
+				private void loadContents(final String enrollmentUUID, final Contents contents) {
+					// check if user has a valid enrollment to this course
+					GenericClientFactoryImpl.EVENT_BUS.fireEvent(new HideSouthBarEvent());
+					setContents(contents);
+					view.display(showCourseClassContent);	
+					view.asWidget().setVisible(true);
+					LoadingPopup.hide();
+				}
+	
+			});
+		} else {
+			GenericClientFactoryImpl.EVENT_BUS.fireEvent(new HideSouthBarEvent());
+			setContents(null);
+			view.display(showCourseClassContent);	
+			view.asWidget().setVisible(true);
+		}
+	}	
 
 	private FlowPanel getPanel() {
 		return view.getContentPanel();
@@ -140,8 +151,10 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 
 	@Override
 	public void startSequencer() {
-		sequencer = sequencerFactory.withPlace(place).withPanel(getPanel());
-		sequencer.go(contents);
+		if(contents != null){
+			sequencer = sequencerFactory.withPlace(place).withPanel(getPanel());
+			sequencer.go(contents);
+		}
 	}
 
 	@Override

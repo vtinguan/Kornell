@@ -61,7 +61,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 		Dean localdean = Dean.getInstance();
 		if (localdean != null) {
-			String assetsURL = localdean.getInstitution().getAssetsURL();
+			String assetsURL = Dean.getInstance().getAssetsURL();
 			view.setLogoURL(assetsURL);
 			view.showRegistrationOption(localdean.getInstitution().isAllowRegistration());
 		}
@@ -93,7 +93,6 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				Dean.getInstance().setCourseClassesTO(courseClasses);
 				final UserInfoTO userInfoTO = session.getCurrentUser();
 				clientFactory.setDefaultPlace(new WelcomePlace());
-				clientFactory.getEventBus().fireEvent(new LoginEvent(userInfoTO));
 				Place newPlace;
 				Place welcomePlace = new WelcomePlace();
 				if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {

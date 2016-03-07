@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="3870" pageHeight="842" columnWidth="3870" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="4020" pageHeight="842" columnWidth="4020" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4afc64c7-1a74-47aa-9c6a-4019a5649a1b">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="3093"/>
+	<property name="ireport.x" value="4578"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="notStarted" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
@@ -31,6 +31,8 @@
 	<field name="progressState" class="java.lang.String"/>
 	<field name="progress" class="java.lang.Integer"/>
 	<field name="assessmentScore" class="java.math.BigDecimal"/>
+	<field name="preAssessmentScore" class="java.math.BigDecimal"/>
+	<field name="postAssessmentScore" class="java.math.BigDecimal"/>
 	<field name="certifiedAt" class="java.util.Date"/>
 	<field name="enrolledAt" class="java.util.Date"/>
 	<field name="courseName" class="java.lang.String"/>
@@ -426,6 +428,30 @@
 				</textElement>
 				<text><![CDATA[CEP]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="f5891db5-dbb8-4da6-ab6e-fc960bf35f56" mode="Opaque" x="3870" y="225" width="50" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Nota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4ca1d802-208c-4e2f-b0d5-31ae8d746ae5" mode="Opaque" x="3920" y="225" width="50" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PréNota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1a05e0db-86c4-4926-b855-28b849916d47" mode="Opaque" x="3970" y="225" width="50" height="14" forecolor="#ACC2BF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Serif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PósNota]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
@@ -598,6 +624,33 @@
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{postalCode}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="82aa7351-b283-4250-a61e-bcac24c07df3" x="3870" y="0" width="50" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{assessmentScore} == null || Integer.valueOf($F{assessmentScore}.intValue()) == 0 ?
+"-" :
+Integer.valueOf($F{assessmentScore}.intValue())]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="76702647-8264-4506-a106-70f6ff33fa55" x="3920" y="0" width="50" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{preAssessmentScore} == null || Integer.valueOf($F{preAssessmentScore}.intValue()) == 0 ?
+"-" :
+Integer.valueOf($F{preAssessmentScore}.intValue())]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c5f023ad-70f0-4b7e-bc1b-570da31fea17" x="3970" y="0" width="50" height="12" forecolor="#525252"/>
+				<textElement>
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{postAssessmentScore} == null || Integer.valueOf($F{postAssessmentScore}.intValue()) == 0 ?
+"-" :
+Integer.valueOf($F{postAssessmentScore}.intValue())]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

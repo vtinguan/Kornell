@@ -10,20 +10,19 @@ class InstitutionRepo(uuid: String) {
 
   val finder = sql"select * from Institution where uuid=$uuid"
 
-  def get = finder.get[Institution]
-  def first = finder.first[Institution]
+
+  def get = InstitutionsRepo.getByUUID(uuid).get
   
   
   def update(institution: Institution): Institution = { 
     //get previous version
-    val oldInstitution = InstitutionRepo(institution.getUUID).first.get 
+    val oldInstitution = InstitutionsRepo.getByUUID(institution.getUUID)
     
     sql"""
     | update Institution i
     | set i.name = ${institution.getName},
     | i.fullName = ${institution.getFullName},
     | i.terms = ${institution.getTerms},
-    | i.assetsURL = ${institution.getAssetsURL},
     | i.baseURL = ${institution.getBaseURL},
     | i.demandsPersonContactDetails = ${institution.isDemandsPersonContactDetails},
     | i.validatePersonContactDetails = ${institution.isValidatePersonContactDetails},
