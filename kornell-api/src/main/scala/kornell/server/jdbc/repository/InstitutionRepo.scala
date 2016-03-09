@@ -43,6 +43,8 @@ class InstitutionRepo(uuid: String) {
     EventsRepo.logEntityChange(institution.getUUID, AuditedEntityType.institution, institution.getUUID, oldInstitution, institution)
     
 	InstitutionsRepo.updateCaches(institution)
+	
+    InstitutionsRepo.cleanUpHostNameCache
 	  
     institution
   }
