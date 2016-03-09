@@ -20,6 +20,8 @@ import kornell.server.repository.Entities
 import javax.ws.rs.POST
 import kornell.core.entity.RegistrationType
 import kornell.server.util.AccessDeniedErr
+import kornell.core.to.CourseClassTO
+import kornell.server.jdbc.repository.CourseClassRepo
 
 @Path("courseClasses")
 class CourseClassesResource {
@@ -43,6 +45,15 @@ class CourseClassesResource {
       {
           CourseClassesRepo.byPersonAndInstitution(person.getUUID, person.getInstitutionUUID)
       }
+    }
+  
+  @GET
+  @Path("enrollment/{enrollmentUUID}")
+  @Produces(Array(CourseClassTO.TYPE))
+  def getByEnrollment(implicit @Context sc: SecurityContext, @PathParam("enrollmentUUID") enrollmentUUID: String) =
+    AuthRepo().withPerson { person => {
+    		CourseClassesRepo.byEnrollment(enrollmentUUID, person.getUUID, person.getInstitutionUUID);
+    	}
     }
 
   @GET

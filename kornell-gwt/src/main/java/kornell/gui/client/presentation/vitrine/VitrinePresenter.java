@@ -18,6 +18,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstantsHelper;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
@@ -89,8 +90,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		
 		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
 			@Override
-			public void ok(CourseClassesTO courseClasses) {
-				Dean.getInstance().setCourseClassesTO(courseClasses);
+			public void ok(CourseClassesTO courseClassesTO) {
+				clientFactory.getEventBus().fireEvent(new CourseClassesFetchedEvent(courseClassesTO));	
 				final UserInfoTO userInfoTO = session.getCurrentUser();
 				clientFactory.setDefaultPlace(new WelcomePlace());
 				Place newPlace;

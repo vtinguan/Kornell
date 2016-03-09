@@ -60,11 +60,7 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	}
 
 	@Override
-	public void show(String courseClassUUID) {
-		initialize(courseClassUUID);
-	}
-
-	private void initialize(String courseClassUUID) {
+	public void show(ArrayList<CourseClassTO> helpCourseClasses, String courseClassUUID) {
 		lblTitle.setText(constants.composeTitle());
 		lblSubTitle.setText(constants.composeSubTitle());
 		separatorBar.setUrl(FormHelper.SEPARATOR_BAR_IMG_PATH);
@@ -94,7 +90,7 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 			recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getName(), "institutionSupport");
 		}
 
-		for (CourseClassTO courseClassTO : Dean.getInstance().getHelpCourseClasses()) {
+		for (CourseClassTO courseClassTO : helpCourseClasses) {
 			recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
 		}
 

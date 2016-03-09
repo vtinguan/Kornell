@@ -11,7 +11,6 @@ import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.InstitutionType;
-import kornell.core.entity.RegistrationType;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Content;
 import kornell.core.lom.ContentFormat;

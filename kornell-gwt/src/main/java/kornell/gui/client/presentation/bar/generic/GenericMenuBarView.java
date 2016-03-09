@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
@@ -106,12 +108,14 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private String imgMenuBarUrl;
 	private boolean isLoaded;
 	private boolean showingPlacePanel;
+	private CourseClassesTO courseClassesTO;
 
 	public GenericMenuBarView(final ClientFactory clientFactory,
-			final ScrollPanel scrollPanel) {
+			final ScrollPanel scrollPanel, CourseClassesTO courseClassesTO) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
+		this.courseClassesTO = courseClassesTO;
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 		bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
@@ -212,8 +216,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private void showButtons(Place newPlace) {
 		boolean isRegistrationCompleted = !(newPlace instanceof TermsPlace || ((newPlace instanceof ProfilePlace || newPlace instanceof MessagePlace) && isProfileIncomplete()));
 
-		boolean showHelp = (Dean.getInstance().getHelpCourseClasses().size() > 0)
-				&& !(newPlace instanceof TermsPlace);
+		boolean showHelp = hasHelpCourseClasses() && !(newPlace instanceof TermsPlace);
 
 		showButton(btnHelp, showHelp);
 		showButton(btnMessages, showHelp);
@@ -234,6 +237,17 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		} else {
 			menuBar.removeStyleName("menuBarPlus");
 		}
+	}
+
+	private boolean hasHelpCourseClasses() {
+		if(courseClassesTO != null){
+			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+				if (courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void showButton(Button btn, boolean show) {
@@ -377,6 +391,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@Override
 	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+		this.courseClassesTO = event.getCourseClassesTO();		
 		showButtons(clientFactory.getPlaceController().getWhere());
 	}
 	

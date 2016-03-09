@@ -17,6 +17,7 @@ import kornell.core.lom.LOMFactory;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserHelloTO;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.mvp.AsyncActivityManager;
 import kornell.gui.client.mvp.AsyncActivityMapper;
 import kornell.gui.client.mvp.GlobalActivityMapper;
@@ -150,10 +151,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
 					final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
 						@Override
-						public void ok(final CourseClassesTO courseClassesTO) {
-							Dean.getInstance().setCourseClassesTO(courseClassesTO);
+						public void ok(CourseClassesTO courseClassesTO) {
+							EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(courseClassesTO));	
 							setHomePlace(new WelcomePlace());
-							startAuthenticated(session);
+							startAuthenticated(courseClassesTO);
 						}
 					};
 					if (session.isAuthenticated()) {
@@ -170,10 +171,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private void startAnonymous() {
 		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
 		setDefaultPlace(new VitrinePlace());
-		startClient();
+		startClient(null);
 	}
 
-	private void startAuthenticated(KornellSession session) {
+	private void startAuthenticated(CourseClassesTO courseClassesTO) {
 		if(RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 				|| session.isInstitutionAdmin()){
 			setDefaultPlace(new AdminCourseClassesPlace());
@@ -182,19 +183,19 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		} else {
 			setDefaultPlace(new WelcomePlace());
 		}
-		startClient();
+		startClient(courseClassesTO);
 	}
 
-	protected void startClient() {
-		initGUI();
+	protected void startClient(CourseClassesTO courseClassesTO) {
+		initGUI(courseClassesTO);
 		initActivityManagers();
 		initHistoryHandler(defaultPlace);
 		initException();
 		initPersonnel();
 	}
 
-	private void initGUI() {
-		viewFactory = new GenericViewFactoryImpl(this);
+	private void initGUI(CourseClassesTO courseClassesTO) {
+		viewFactory = new GenericViewFactoryImpl(this, courseClassesTO);
 		viewFactory.initGUI();
 	}
 

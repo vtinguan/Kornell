@@ -1,11 +1,16 @@
 package kornell.gui.client.personnel;
 
+import java.util.ArrayList;
+
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadsTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.ComposeMessageEventHandler;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
+import kornell.gui.client.event.CourseClassesFetchedEventHandler;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 import kornell.gui.client.event.UnreadMessagesFetchedEvent;
@@ -27,23 +32,25 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler {
+public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler, CourseClassesFetchedEventHandler {
 
 	private static PopupPanel popup;
 	private EventBus bus;
 	private ChatThreadsClient chatThreadsClient;
 	private PlaceController placeCtrl;
-	private MessageComposeView.Presenter presenter; 
+	private MessageComposeView.Presenter messageComposePresenter; 
 	private Timer unreadMessagesCountTimer;
 	private Timer unreadMessagesCountPerThreadTimer;
+	private ArrayList<CourseClassTO> helpCourseClasses;
 	
-	public MrPostman(MessageComposeView.Presenter presenter, EventBus bus, ChatThreadsClient chatThreadsClient, PlaceController placeCtrl) {
+	public MrPostman(MessageComposeView.Presenter messageComposePresenter, EventBus bus, ChatThreadsClient chatThreadsClient, PlaceController placeCtrl) {
 		this.bus = bus;
-		this.presenter = presenter;
+		this.messageComposePresenter = messageComposePresenter;
 		this.chatThreadsClient = chatThreadsClient;
 		this.placeCtrl = placeCtrl;
 		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
 		this.bus.addHandler(LoginEvent.TYPE, this);
+		this.bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
 		
 		//initializeUnreadMessagesCountTimer();
 		initializeUnreadMessagesCountPerThreadTimer();
@@ -102,21 +109,30 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 
 	@Override
   public void onLogin(UserInfoTO user) {
-
 		// Fetch all messages after 2 seconds
 		new Timer() {
 			public void run() {
 				getUnreadMessagesPerThread(true);
 			}
 		}.schedule(2 * 1000);
-
   }
+
+	@Override
+	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+		this.helpCourseClasses = new ArrayList<CourseClassTO>();
+		for (CourseClassTO courseClassTO : event.getCourseClassesTO().getCourseClasses()) {
+			if (courseClassTO.getEnrollment() != null
+					&& !courseClassTO.getCourseClass().isInvisible()) {
+				this.helpCourseClasses.add(courseClassTO);
+			}
+		}
+	}
 
 
 	@Override
 	public void onComposeMessage(ComposeMessageEvent event) {
 		if(popup == null || !popup.isShowing()){
-			presenter.init();
+			messageComposePresenter.init(helpCourseClasses);
 			show(event.isShowingPlacePanel());
 		} else {
 			hide();
@@ -158,8 +174,8 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler 
 			popup = new PopupPanel(false, false);
 			popup.addStyleName("messagesPopup");
 			FlowPanel panel = new FlowPanel();
-			if(presenter != null){
-				panel.add(presenter.asWidget());
+			if(messageComposePresenter != null){
+				panel.add(messageComposePresenter.asWidget());
 			}
 			popup.setGlassEnabled(false);
 			popup.add(panel);

@@ -13,7 +13,6 @@ import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SimpleSequencer;
 import kornell.gui.client.uidget.Uidget;
-import kornell.gui.client.util.view.KornellNotification;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;

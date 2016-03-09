@@ -240,22 +240,21 @@ public class GenericCourseSummaryView extends Composite {
 				new Callback<Enrollment>() {
 					@Override
 					public void ok(Enrollment enrollment) {
-						TOFactory toFactory = GWT.create(TOFactory.class);
-						EnrollmentTO enrollmentTO = toFactory.newEnrollmentTO().as();
-						enrollmentTO.setEnrollment(enrollment);
-						enrollmentTO.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
-						enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
-						enrollmentTO.setUsername(session.getCurrentUser().getUsername());
-						session.getCurrentUser().getEnrollments().getEnrollments().add(enrollment);
-						for (CourseClassTO courseClassTO : Dean.getInstance().getCourseClassesTO().getCourseClasses()) {
-							if (courseClassTO.getCourseClass().getUUID().equals(enrollment.getCourseClassUUID())) {
-								courseClassTO.setEnrollment(enrollment);
-								Dean.getInstance().setCourseClassTO(courseClassTO);
-								break;
-							}
-						}
+						updateEnrollmentOnCourseClassTO(enrollment);
 						placeCtrl.goTo(new ClassroomPlace(enrollment.getUUID()));
 					}
 				});
+	}
+
+	private void updateEnrollmentOnCourseClassTO(Enrollment enrollment) {
+		TOFactory toFactory = GWT.create(TOFactory.class);
+		EnrollmentTO enrollmentTO = toFactory.newEnrollmentTO().as();
+		enrollmentTO.setEnrollment(enrollment);
+		enrollmentTO.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
+		enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
+		enrollmentTO.setUsername(session.getCurrentUser().getUsername());
+		session.getCurrentUser().getEnrollments().getEnrollments().add(enrollment);
+		courseClassTO.setEnrollment(enrollment);
+		Dean.getInstance().setCourseClassTO(courseClassTO);
 	}
 }

@@ -1,9 +1,12 @@
 package kornell.gui.client.presentation.message.compose;
 
+import java.util.ArrayList;
+
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
+import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
@@ -31,15 +34,16 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 		this.viewFactory = viewFactory;
 	}
 
+
 	@Override
-	public void init() {
+	public void init(ArrayList<CourseClassTO> helpCourseClasses) {
 		if(view == null){
 			view = viewFactory.getMessageComposeView();
 			view.setPresenter(this);
 		}
 		
 		//check if it's inside the classroom to preselect the recipient
-		view.show(getCourseClassUUIDFromPlace());
+		view.show(helpCourseClasses, getCourseClassUUIDFromPlace());
 	}
 
 	private String getCourseClassUUIDFromPlace() {

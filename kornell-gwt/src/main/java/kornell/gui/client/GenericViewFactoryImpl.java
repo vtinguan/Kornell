@@ -1,6 +1,7 @@
 package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
+import kornell.core.to.CourseClassesTO;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -85,11 +86,14 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	private SandboxPresenter sandboxPresenter;
 	private MessagePresenter messagePresenter, messagePresenterCourseClass, messagePresenterClassroomGlobalChat, messagePresenterClassroomTutorChat;
 	private boolean isMantleShown = false;
+	private CourseClassesTO courseClassesTO;
 
 	SimplePanel shell = new SimplePanel();
 
-	public GenericViewFactoryImpl(ClientFactory clientFactory) {
+
+	public GenericViewFactoryImpl(ClientFactory clientFactory, CourseClassesTO courseClassesTO) {
 		this.clientFactory = clientFactory;
+		this.courseClassesTO = courseClassesTO;
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
 	}
 
@@ -161,7 +165,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	@Override
 	public MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(clientFactory, scrollPanel);
+			menuBarView = new GenericMenuBarView(clientFactory, scrollPanel, courseClassesTO);
 		return menuBarView;
 	}
 

@@ -6,8 +6,8 @@ import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
 import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
 import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
 import static com.google.gwt.http.client.Response.SC_OK;
-import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import static com.google.gwt.http.client.Response.SC_SERVICE_UNAVAILABLE;
+import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 
 import java.util.logging.Logger;
 

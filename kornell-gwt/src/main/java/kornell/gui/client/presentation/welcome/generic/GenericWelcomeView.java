@@ -15,7 +15,7 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teacher;
 import kornell.gui.client.personnel.Teachers;
@@ -114,10 +114,10 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, constants.homeTitle(), constants.homeDescription());
         session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
             @Override
-            public void ok(CourseClassesTO tos) {
-                Dean.getInstance().setCourseClassesTO(tos);
+            public void ok(CourseClassesTO courseClassesTO) {
+				bus.fireEvent(new CourseClassesFetchedEvent(courseClassesTO));	
                 startPlaceBar();
-                display(tos);
+                display(courseClassesTO);
             }
         });
 	}

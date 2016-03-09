@@ -206,7 +206,8 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 					    	@Override
 					    	public void ok(String grade) {
 					    		if(StringUtils.isSome(grade)){
-						    		currentCourseClass.getEnrollment().setAssessmentScore(new BigDecimal(grade));	
+					    			currentCourseClass = Dean.getInstance().getCourseClassTO();
+					    			Dean.getInstance().getCourseClassTO().getEnrollment().setAssessmentScore(new BigDecimal(grade));	
 					    		}
 					    		updateCertificationLinkAndLabel();
 					    	}

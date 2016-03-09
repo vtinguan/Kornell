@@ -12,7 +12,6 @@ import kornell.core.to.RoleTO;
 import kornell.core.to.TokenTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 

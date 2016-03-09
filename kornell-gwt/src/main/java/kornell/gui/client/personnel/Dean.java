@@ -1,16 +1,10 @@
 package kornell.gui.client.personnel;
 
 import static kornell.core.util.StringUtils.mkurl;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UnreadChatThreadTO;
-import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
@@ -36,7 +30,6 @@ public class Dean implements LogoutEventHandler,
 	private Institution institution;
 	private CourseClassTO courseClassTO;
 	private String courseClassUUID;
-	private CourseClassesTO courseClassesTO;
 	private int totalCount;
 
 	public static Dean getInstance() {
@@ -58,7 +51,7 @@ public class Dean implements LogoutEventHandler,
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 
 		// get the skin and logo immediately
-		// updateSkin(institution.getSkin()); //TODO re-enable skins
+		// updateSkin(institution.getSkin());
 		initInstitutionSkin();
 
 		showBody(false);
@@ -79,6 +72,10 @@ public class Dean implements LogoutEventHandler,
 			setDefaultFavicon();
 		}
 
+		setPageTitle();
+	}
+
+	private void setPageTitle() {
 		String name = institution.getFullName();
 		String title = DEFAULT_SITE_TITLE;
 		if (name != null) {
@@ -139,52 +136,6 @@ public class Dean implements LogoutEventHandler,
 	public void setCourseClassTO(CourseClassTO courseClassTO) {		
 		this.courseClassTO = courseClassTO;
 	}
-	
-	public void setCourseClassTO(String uuid) {
-		this.courseClassUUID = uuid;
-		refresh();
-	}
-
-	/*
-	 * Method created because setCourseClassTO was being called before setCourseClassesTO
-	 */
-	public void refresh() {
-		if (courseClassesTO != null) {
-			List<CourseClassTO> courseClasses = courseClassesTO.getCourseClasses();
-			for (CourseClassTO courseClassTO : courseClasses) {
-				String iCourseClassUUID = courseClassTO.getCourseClass().getUUID();
-				if (iCourseClassUUID.equals(courseClassUUID)) {
-					this.courseClassTO = courseClassTO;
-					return;
-				}
-			}
-		}
-		
-	}
-
-	public List<CourseClassTO> getHelpCourseClasses() {
-		List<CourseClassTO> courseClasses = new ArrayList<CourseClassTO>();
-		if (courseClassesTO != null) {
-			for (CourseClassTO courseClassTO : courseClassesTO
-					.getCourseClasses()) {
-				if (courseClassTO.getEnrollment() != null
-						&& !courseClassTO.getCourseClass().isInvisible()) {
-					courseClasses.add(courseClassTO);
-				}
-			}
-		}
-		return courseClasses;
-	}
-
-	public CourseClassesTO getCourseClassesTO() {
-		return courseClassesTO;
-	}
-
-	public void setCourseClassesTO(CourseClassesTO courseClassesTO) {
-		this.courseClassesTO = courseClassesTO;
-		refresh();
-		bus.fireEvent(new CourseClassesFetchedEvent());		
-	}
 
 	@Override
 	public void onUnreadMessagesPerThreadFetched(
@@ -196,7 +147,7 @@ public class Dean implements LogoutEventHandler,
 					+ Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
 		}
 		totalCount = count;
-		initInstitutionSkin();
+		setPageTitle();
 	}
 
 	@Override
@@ -204,7 +155,7 @@ public class Dean implements LogoutEventHandler,
 			UnreadMessagesCountChangedEvent event) {
 		totalCount = event.isIncrement() ? totalCount + event.getCountChange()
 				: totalCount - event.getCountChange();
-		initInstitutionSkin();
+		setPageTitle();
 	}
 
 	private static native void showBody(boolean show) /*-{
