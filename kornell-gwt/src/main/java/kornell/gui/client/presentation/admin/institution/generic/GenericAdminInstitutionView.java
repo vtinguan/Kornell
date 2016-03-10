@@ -8,6 +8,7 @@ import kornell.core.entity.BillingType;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.entity.InstitutionType;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
@@ -97,6 +98,8 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	Button btnModalCancel;
 
 	private Institution institution;
+	
+	private Dean dean;
 
 	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsRepositoryUUID, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone;
 	
@@ -110,6 +113,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	public GenericAdminInstitutionView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
 		this.session = session;
 		this.bus = bus;
+		this.dean = GenericClientFactoryImpl.DEAN;
 		this.isPlatformAdmin = session.isPlatformAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -120,7 +124,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		
-		this.institution = Dean.getInstance().getInstitution();
+		this.institution = dean.getInstitution();
 		
 		initData();
 

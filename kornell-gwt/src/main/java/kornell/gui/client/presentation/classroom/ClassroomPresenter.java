@@ -43,6 +43,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private Contents contents;
 	private Sequencer sequencer;
 	private EventBus bus;
+	private Dean dean;
 
 	public ClassroomPresenter(EventBus bus, ClassroomView view, PlaceController placeCtrl,
 			SequencerFactory seqFactory, KornellSession session) {
@@ -52,6 +53,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		this.placeCtrl = placeCtrl;
 		this.sequencerFactory = seqFactory;
 		this.session = session;
+		this.dean = GenericClientFactoryImpl.DEAN;
 
 
 		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
@@ -90,12 +92,12 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		Enrollment enrollment = courseClassTO != null ? courseClassTO.getEnrollment() : null;
 		boolean isEnrolled = enrollment != null && EnrollmentState.enrolled.equals(enrollment.getState());
 		if(enrollment == null){
-			Dean.getInstance().setCourseClassTO((CourseClassTO)null);
+			dean.setCourseClassTO((CourseClassTO)null);
 		} else {
-			Dean.getInstance().setCourseClassTO(courseClassTO);
+			dean.setCourseClassTO(courseClassTO);
 		}
 		
-		CourseClass courseClass = Dean.getInstance().getCourseClassTO() != null ? Dean.getInstance().getCourseClassTO().getCourseClass() : null;
+		CourseClass courseClass = dean.getCourseClassTO() != null ? dean.getCourseClassTO().getCourseClass() : null;
 		CourseClassState courseClassState = courseClass != null ? courseClass.getState() : null;
 		
 		//TODO: Consider if the null state is inactive				

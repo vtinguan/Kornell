@@ -7,6 +7,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.RoleTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.forms.FormHelper;
@@ -87,7 +88,7 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 		}
 		
 		if(hasInstitutionThreadAccess){
-			recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getName(), "institutionSupport");
+			recipients.addItem(constants.institutionAdmin() + ": " + GenericClientFactoryImpl.DEAN.getInstitution().getName(), "institutionSupport");
 		}
 
 		for (CourseClassTO courseClassTO : helpCourseClasses) {

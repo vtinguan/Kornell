@@ -88,13 +88,15 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	private boolean isMantleShown = false;
 	private CourseClassesTO courseClassesTO;
 
-	SimplePanel shell = new SimplePanel();
+	private SimplePanel shell = new SimplePanel();
+	private Dean dean;
 
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory, CourseClassesTO courseClassesTO) {
 		this.clientFactory = clientFactory;
 		this.courseClassesTO = courseClassesTO;
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
+		this.dean = GenericClientFactoryImpl.DEAN;
 	}
 
 	@Override
@@ -114,7 +116,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 				setPlaceNameAsBodyStyle(event);
 				setBackgroundImage(event.getNewPlace() instanceof VitrinePlace);
 				checkMenuBars(event.getNewPlace() instanceof VitrinePlace);
-				changeOverflow(event.getNewPlace() instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null);
+				changeOverflow(event.getNewPlace() instanceof ClassroomPlace && dean.getCourseClassTO() != null);
 			}
 
 			private void checkMenuBars(boolean removePanels) {
@@ -156,7 +158,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;" + "overflow:auto;";
 		if (showMantle)
 			style = "background: url('"
-					+ composeURL(Dean.getInstance().getAssetsURL(), "bgVitrine.jpg")
+					+ composeURL(dean.getAssetsURL(), "bgVitrine.jpg")
 					+ "') no-repeat center center fixed; " + style;
 		DOM.setElementAttribute(scrollPanel.getElement(), "style", style);
 		isMantleShown = showMantle;

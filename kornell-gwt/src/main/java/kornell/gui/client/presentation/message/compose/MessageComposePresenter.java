@@ -7,6 +7,7 @@ import kornell.api.client.ChatThreadsClient;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.personnel.Dean;
@@ -48,7 +49,7 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 
 	private String getCourseClassUUIDFromPlace() {
 		if(placeCtrl.getWhere() instanceof ClassroomPlace){
-			return Dean.getInstance().getCourseClassTO().getCourseClass().getUUID();
+			return GenericClientFactoryImpl.DEAN.getCourseClassTO().getCourseClass().getUUID();
 		}
 		return null;
   }

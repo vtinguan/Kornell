@@ -18,6 +18,7 @@ import kornell.core.to.EnrollmentTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.Student;
@@ -141,7 +142,7 @@ public class GenericCourseSummaryView extends Composite {
 							requestEnrollment();
 							return;
 						} else if (courseClassTO.getEnrollment() != null){
-							Dean.getInstance().setCourseClassTO(courseClassTO);
+							GenericClientFactoryImpl.DEAN.setCourseClassTO(courseClassTO);
 							placeCtrl.goTo(new ClassroomPlace(courseClassTO
 									.getEnrollment().getUUID()));
 						}
@@ -255,6 +256,6 @@ public class GenericCourseSummaryView extends Composite {
 		enrollmentTO.setUsername(session.getCurrentUser().getUsername());
 		session.getCurrentUser().getEnrollments().getEnrollments().add(enrollment);
 		courseClassTO.setEnrollment(enrollment);
-		Dean.getInstance().setCourseClassTO(courseClassTO);
+		GenericClientFactoryImpl.DEAN.setCourseClassTO(courseClassTO);
 	}
 }

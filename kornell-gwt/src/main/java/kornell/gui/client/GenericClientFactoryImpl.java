@@ -50,6 +50,7 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 //TODO: Organize this big, messy class and interface
 public class GenericClientFactoryImpl implements ClientFactory {
 	Logger logger = Logger.getLogger(GenericClientFactoryImpl.class.getName());
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 	public static final EntityFactory entityFactory = GWT
 			.create(EntityFactory.class);
@@ -59,9 +60,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			.create(EventFactory.class);
 
 	public static final EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
+	public static final KornellSession KORNELL_SESSION = GWT.create(KornellSession.class);	
+	public static final Dean DEAN = GWT.create(Dean.class);
 	
 	/* History Management */
-//	private final EventBus bus = new SimpleEventBus();
 	private final PlaceController placeCtrl = new PlaceController(EVENT_BUS);
 	private final HistoryMapper historyMapper = GWT.create(HistoryMapper.class);
 	private final DefaultHistorian historian = GWT
@@ -73,7 +75,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	private ViewFactory viewFactory;
 	private Place defaultPlace;
 	private Place homePlace;
-	private KornellSession session = new KornellSession(EVENT_BUS);
 
 	public GenericClientFactoryImpl() {
 	}
@@ -97,7 +98,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		historyHandler.register(placeCtrl, EVENT_BUS, defaultPlace);
 		// sessions that arent authenticated, go to the default place
 		// except if it's a vitrineplace, then let the history take care of it
-		if (!session.isAuthenticated()
+		if (!KORNELL_SESSION.isAuthenticated()
 				&& historian.getToken().indexOf("vitrine") == -1) {
 			placeCtrl.goTo(defaultPlace);
 		}
@@ -128,7 +129,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					@Override
 					public void execute() {
-						session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
+						KORNELL_SESSION.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userManualAccessCallback);
 					}
 				});
 			}
@@ -144,11 +145,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 			
 			private void doCallbackOk(final UserHelloTO userHelloTO) {
-				session.setCurrentUser(userHelloTO.getUserInfoTO());
+				KORNELL_SESSION.setCurrentUser(userHelloTO.getUserInfoTO());
 				if(userHelloTO.getInstitution() == null) {
-					KornellNotification.show("Instituição não encontrada.", AlertType.ERROR, -1);
+					KornellNotification.show(constants.institutionNotFound(), AlertType.ERROR, -1);
 				} else {		
-					Dean.init(session, EVENT_BUS, userHelloTO.getInstitution());
+					DEAN.init(userHelloTO.getInstitution());
 					final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
 						@Override
 						public void ok(CourseClassesTO courseClassesTO) {
@@ -157,15 +158,15 @@ public class GenericClientFactoryImpl implements ClientFactory {
 							startAuthenticated(courseClassesTO);
 						}
 					};
-					if (session.isAuthenticated()) {
-						session.courseClasses().getCourseClassesTO(courseClassesCallback);
+					if (KORNELL_SESSION.isAuthenticated()) {
+						KORNELL_SESSION.courseClasses().getCourseClassesTO(courseClassesCallback);
 					} else {
 						startAnonymous();
 					}
 				}
 			}
 		};
-		session.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userHelloCallback);
+		KORNELL_SESSION.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(), userHelloCallback);
 	}
 
 	private void startAnonymous() {
@@ -175,10 +176,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void startAuthenticated(CourseClassesTO courseClassesTO) {
-		if(RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-				|| session.isInstitutionAdmin()){
+		if(RoleCategory.hasRole(KORNELL_SESSION.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+				|| KORNELL_SESSION.isInstitutionAdmin()){
 			setDefaultPlace(new AdminCourseClassesPlace());
-		} else if(InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+		} else if(InstitutionType.DASHBOARD.equals(DEAN.getInstitution().getInstitutionType())){
 			setDefaultPlace(getHomePlace());
 		} else {
 			setDefaultPlace(new WelcomePlace());
@@ -200,17 +201,17 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initPersonnel() {
-		new Captain(EVENT_BUS, session, placeCtrl);
-		new Stalker(EVENT_BUS, session);
+		new Captain(EVENT_BUS, KORNELL_SESSION, placeCtrl);
+		new Stalker(EVENT_BUS, KORNELL_SESSION);
 
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
-				new MrPostman(new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory),  EVENT_BUS, session.chatThreads(), placeCtrl);
+				new MrPostman(new MessageComposePresenter(placeCtrl, KORNELL_SESSION, viewFactory, entityFactory),  EVENT_BUS, KORNELL_SESSION.chatThreads(), placeCtrl);
 				viewFactory.getMessagePresenter();
 				viewFactory.getMessagePresenterClassroomGlobalChat();
 				viewFactory.getMessagePresenterClassroomTutorChat();
-                if (session.getCurrentUser() != null && session.hasAnyAdminRole(session.getCurrentUser().getRoles())) {
+                if (KORNELL_SESSION.getCurrentUser() != null && KORNELL_SESSION.hasAnyAdminRole(KORNELL_SESSION.getCurrentUser().getRoles())) {
 					viewFactory.getMessagePresenterCourseClass();
 				}
 			}
@@ -262,11 +263,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public void setHomePlace(Place place) {
 		String enrollmentUUID = null;
-		if(session.getCurrentUser() != null &&
-				session.getCurrentUser().getEnrollments() != null &&
-				InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+		if(KORNELL_SESSION.getCurrentUser() != null &&
+				KORNELL_SESSION.getCurrentUser().getEnrollments() != null &&
+				InstitutionType.DASHBOARD.equals(DEAN.getInstitution().getInstitutionType())){
 			Date date = new Date(0);
-			for (Enrollment enrollment : session.getCurrentUser().getEnrollments().getEnrollments()) {
+			for (Enrollment enrollment : KORNELL_SESSION.getCurrentUser().getEnrollments().getEnrollments()) {
 				//get latest active enrollment on a class (if no enrollment was found yet, get non active enrollment)
 				if(enrollment.getEnrolledOn().after(date) && enrollment.getCourseClassUUID() != null){
 					if(EnrollmentState.enrolled.equals(enrollment.getState()) || enrollmentUUID == null){
@@ -314,11 +315,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public KornellSession getKornellSession() {
-		return session;
-	}
-
-	@Override
-	public void setKornellSession(KornellSession session) {
-		this.session = session;
+		return KORNELL_SESSION;
 	}
 }

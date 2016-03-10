@@ -16,7 +16,7 @@ class InstitutionRepo(uuid: String) {
   
   def update(institution: Institution): Institution = { 
     //get previous version
-    val oldInstitution = InstitutionsRepo.getByUUID(institution.getUUID)
+    val oldInstitution = InstitutionsRepo.getByUUID(institution.getUUID).get
     
     sql"""
     | update Institution i

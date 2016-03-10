@@ -6,6 +6,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
 import kornell.core.to.CourseClassTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ShowChatDockEvent;
 import kornell.gui.client.event.ShowChatDockEventHandler;
@@ -48,11 +49,14 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	private GenericCourseDetailsView detailsView;
 
 	private Presenter presenter;
+	
+	private Dean dean;
 
 	public GenericClassroomView(PlaceController placeCtrl, KornellSession session, EventBus bus, ViewFactory viewFactory) {
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		this.bus = bus;
+		this.dean = GenericClientFactoryImpl.DEAN;
 		this.bus.addHandler(ShowChatDockEvent.TYPE,this);
 		this.viewFactory = viewFactory;
 		bus.addHandler(ShowDetailsEvent.TYPE,this);
@@ -74,12 +78,11 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		detailsView.initData();
 		detailsPanel.clear();
 		detailsPanel.add(detailsView);
-		Dean dean = Dean.getInstance();
 		CourseClassTO courseClassTO = dean.getCourseClassTO();
 		Enrollment enrollment = courseClassTO!= null ? courseClassTO.getEnrollment() : null;		
 		boolean showDetails = !showCourseClassContent || EnrollmentCategory.isFinished(enrollment);
 		bus.fireEvent(new ShowDetailsEvent(showDetails));
-        bus.fireEvent(new ShowChatDockEvent(!showDetails && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()));
+        bus.fireEvent(new ShowChatDockEvent(!showDetails && dean.getCourseClassTO() != null && dean.getCourseClassTO().getCourseClass().isChatDockEnabled()));
 	}
 
 	@Override

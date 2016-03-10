@@ -8,6 +8,7 @@ import kornell.core.entity.EnrollmentState;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.ProgressEvent;
@@ -89,6 +90,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private UserInfoTO user;
 	private ClientFactory clientFactory;
+	private Dean dean;
 
 	private Integer currentPage = 0, totalPages = 0, progressPercent = 0;
 
@@ -96,6 +98,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	public GenericActivityBarView(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
+		this.dean = GenericClientFactoryImpl.DEAN;
 		initWidget(uiBinder.createAndBindUi(this));
 		clientFactory.getEventBus().addHandler(ProgressEvent.TYPE, this);
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE, this);
@@ -127,8 +130,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 				}
 			}
 		}
-		shouldShowActivityBar = isEnrolled && Dean.getInstance().getCourseClassTO() != null
-				&& !CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
+		shouldShowActivityBar = isEnrolled && dean.getCourseClassTO() != null
+				&& !CourseClassState.inactive.equals(dean.getCourseClassTO().getCourseClass().getState());
 
 		showDetails = !isEnrolled;
 
@@ -148,8 +151,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		displayButton(btnNotes, BUTTON_NOTES,
 				new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NOTES) + ".png")));
 
-		if (Dean.getInstance().getCourseClassTO().getCourseClass().isCourseClassChatEnabled() &&
-				!Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()) {
+		if (dean.getCourseClassTO().getCourseClass().isCourseClassChatEnabled() &&
+				!dean.getCourseClassTO().getCourseClass().isChatDockEnabled()) {
 			btnChat.addStyleName("activityBarButtonSmall");
 			btnNotes.addStyleName("activityBarButtonSmall");
 			btnChat.removeStyleName("shy");
@@ -294,8 +297,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	@UiHandler("btnNotes")
 	void handleClickBtnNotes(ClickEvent e) {
 		if (notesPopup == null) {
-			notesPopup = new NotesPopup(clientFactory.getKornellSession(), Dean.getInstance().getCourseClassTO()
-					.getCourseClass().getUUID(), Dean.getInstance().getCourseClassTO().getEnrollment().getNotes());
+			notesPopup = new NotesPopup(clientFactory.getKornellSession(), dean.getCourseClassTO()
+					.getCourseClass().getUUID(), dean.getCourseClassTO().getEnrollment().getNotes());
 			notesPopup.show();
 		} else {
 			notesPopup.show();
@@ -304,7 +307,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	@UiHandler("btnChat")
 	void handleClickBtnChat(ClickEvent e) {
-		if(!(chatDockEnabled && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()) && !showDetails && btnChat.getStyleName().indexOf("disabled") < 0){
+		if(!(chatDockEnabled && dean.getCourseClassTO().getCourseClass().isChatDockEnabled()) && !showDetails && btnChat.getStyleName().indexOf("disabled") < 0){
 			clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(!chatDockEnabled));
 		}
 	}
@@ -361,8 +364,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			btnDetails.removeStyleName("firstMonoSCO");
 			btnNotes.removeStyleName("last");
 		}
-		shouldShowActivityBar = isEnrolled && Dean.getInstance().getCourseClassTO() != null
-				&& !CourseClassState.inactive.equals(Dean.getInstance().getCourseClassTO().getCourseClass().getState());
+		shouldShowActivityBar = isEnrolled && dean.getCourseClassTO() != null
+				&& !CourseClassState.inactive.equals(dean.getCourseClassTO().getCourseClass().getState());
 		clientFactory.getEventBus().fireEvent(new HideSouthBarEvent(!shouldShowActivityBar));
 		this.setVisible(shouldShowActivityBar);
 	}
@@ -382,7 +385,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			displayButton(btnDetails, constants.course(),
 					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
 		} else {
-			if(!chatDockEnabled && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()){
+			if(!chatDockEnabled && dean.getCourseClassTO() != null && dean.getCourseClassTO().getCourseClass().isChatDockEnabled()){
 				clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(true));
 			}
 			btnDetails.removeStyleName("btnSelected");

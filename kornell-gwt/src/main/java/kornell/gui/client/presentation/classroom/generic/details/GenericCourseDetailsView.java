@@ -24,6 +24,7 @@ import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ShowDetailsEvent;
@@ -69,6 +70,8 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseDetails");
 
+	private Dean dean;
+
 	@UiField
 	FlowPanel detailsPanel;
 	@UiField
@@ -109,6 +112,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.viewFactory = viewFactory;
+		this.dean = GenericClientFactoryImpl.DEAN;
 		this.messagePresenterClassroomGlobalChat = viewFactory.getMessagePresenterClassroomGlobalChat();
 		this.messagePresenterClassroomGlobalChat.enableMessagesUpdate(false);
 		this.messagePresenterClassroomTutorChat = viewFactory.getMessagePresenterClassroomTutorChat();
@@ -119,7 +123,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	public void initData() {
 		setContents(presenter.getContents());
 		certificationPanel = getCertificationPanel();
-		courseClassTO = Dean.getInstance().getCourseClassTO();
+		courseClassTO = dean.getCourseClassTO();
 		if(courseClassTO != null)
 			display();
 	}
@@ -169,7 +173,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		detailsContentPanel.add(certificationPanel);
 
 		btnLibrary.setVisible(false);
-		session.courseClass(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID()).libraryFiles(new Callback<LibraryFilesTO>() {
+		session.courseClass(dean.getCourseClassTO().getCourseClass().getUUID()).libraryFiles(new Callback<LibraryFilesTO>() {
 			@Override
 			public void ok(LibraryFilesTO to) {		
 				if(to.getLibraryFiles() != null && to.getLibraryFiles().size() > 0){
@@ -240,8 +244,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	private void buildChatPanel(boolean isVisible) {
 		if (messagesGlobalChatView == null) {
 			messagesGlobalChatView = new GenericCourseClassMessagesView(session, bus,
-					placeCtrl, viewFactory, messagePresenterClassroomGlobalChat, Dean
-							.getInstance().getCourseClassTO());
+					placeCtrl, viewFactory, messagePresenterClassroomGlobalChat, dean.getCourseClassTO());
 		}
 		if(chatPanel == null){
 			chatPanel = new FlowPanel();
@@ -261,8 +264,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	private void buildTutorPanel() {
 		if (messagesTutorChatView == null) {
 			messagesTutorChatView = new GenericCourseClassMessagesView(session, bus,
-					placeCtrl, viewFactory, messagePresenterClassroomTutorChat, Dean
-							.getInstance().getCourseClassTO());
+					placeCtrl, viewFactory, messagePresenterClassroomTutorChat, dean.getCourseClassTO());
 		}
 		if(tutorPanel == null){
 			tutorPanel = new FlowPanel();
@@ -299,8 +301,8 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		FlowPanel certificationContentPanel = new FlowPanel();
 		certificationContentPanel.addStyleName("certificationContentPanel");
 
-		//certificationContentPanel.add(new GenericCertificationItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCertificationItemView.TEST));
-		certificationContentPanel.add(new GenericCertificationItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCertificationItemView.CERTIFICATION)); 
+		//certificationContentPanel.add(new GenericCertificationItemView(bus, session, dean.getCourseClassTO(), GenericCertificationItemView.TEST));
+		certificationContentPanel.add(new GenericCertificationItemView(bus, session, dean.getCourseClassTO(), GenericCertificationItemView.CERTIFICATION)); 
 
 		return certificationContentPanel;
 	}
@@ -331,7 +333,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		ExternalPage page;
 		boolean enableAnchorOnNextTopicsFirstChild = true;
 		for (Content content: contents.getChildren()) {
-			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, Dean.getInstance().getCourseClassTO(), content, i++, enableAnchorOnNextTopicsFirstChild));
+			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, dean.getCourseClassTO(), content, i++, enableAnchorOnNextTopicsFirstChild));
 			enableAnchorOnNextTopicsFirstChild = true;
 			List<Content> children = new ArrayList<Content>();
 			if(ContentFormat.Topic.equals(content.getFormat()) ){
@@ -473,7 +475,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 			sidePanel.add(warningPanel);
 		}
 
-		if(!"".equals(text) && InstitutionType.DASHBOARD.equals(Dean.getInstance().getInstitution().getInstitutionType())){
+		if(!"".equals(text) && InstitutionType.DASHBOARD.equals(dean.getInstitution().getInstitutionType())){
 			KornellNotification.show(text.replaceAll("<br>", ""), AlertType.WARNING, 5000);
 			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), false));
 		} else {

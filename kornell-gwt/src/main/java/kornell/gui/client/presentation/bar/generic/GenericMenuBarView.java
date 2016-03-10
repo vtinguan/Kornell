@@ -12,6 +12,7 @@ import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.CourseClassesFetchedEventHandler;
@@ -109,24 +110,25 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private boolean isLoaded;
 	private boolean showingPlacePanel;
 	private CourseClassesTO courseClassesTO;
+	private Dean dean;
 
 	public GenericMenuBarView(final ClientFactory clientFactory,
 			final ScrollPanel scrollPanel, CourseClassesTO courseClassesTO) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
+		this.dean = GenericClientFactoryImpl.DEAN;
 		this.courseClassesTO = courseClassesTO;
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 		bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
-		Dean localDean = Dean.getInstance();
 		// TODO: Consider anonynous
-		if (localDean != null) {
-			Institution localInstitution = localDean.getInstitution();
-			String assetsURL = Dean.getInstance().getAssetsURL();
-			String skin = Dean.getInstance().getInstitution().getSkin();
+		if (dean != null) {
+			Institution localInstitution = dean.getInstitution();
+			String assetsURL = dean.getAssetsURL();
+			String skin = dean.getInstitution().getSkin();
 			String barLogoFileName = "logo300x45"
 					+ (!"_light".equals(skin) ? "_light" : "") + ".png";
 			imgMenuBarUrl = StringUtils.mkurl(assetsURL, barLogoFileName);
@@ -283,9 +285,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		return (session.getCurrentUser().getInstitutionRegistrationPrefix() == null || session
 				.getCurrentUser().getInstitutionRegistrationPrefix()
 				.isShowContactInformationOnProfile())
-				&& Dean.getInstance().getInstitution()
+				&& dean.getInstitution()
 						.isDemandsPersonContactDetails()
-				&& Dean.getInstance().getInstitution()
+				&& dean.getInstitution()
 						.isValidatePersonContactDetails()
 				&& StringUtils.isNone(clientFactory.getKornellSession()
 						.getCurrentUser().getPerson().getCity());

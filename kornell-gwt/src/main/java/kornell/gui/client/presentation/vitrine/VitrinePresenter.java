@@ -17,6 +17,7 @@ import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.LoginEvent;
@@ -39,12 +40,14 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	private VitrineView view;
 	private String passwordChangeUUID;
 	private KornellSession session;
+	private Dean dean;
 	private String registrationEmail;
 
 	public VitrinePresenter(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		view = getView();
+		this.dean = GenericClientFactoryImpl.DEAN;
 		view.setPresenter(this);
 		
 
@@ -59,12 +62,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				view.displayView(VitrineViewType.newPassword);
 			}
 		}
-
-		Dean localdean = Dean.getInstance();
-		if (localdean != null) {
-			String assetsURL = Dean.getInstance().getAssetsURL();
+		if (dean != null) {
+			String assetsURL = dean.getAssetsURL();
 			view.setLogoURL(assetsURL);
-			view.showRegistrationOption(localdean.getInstitution().isAllowRegistration());
+			view.showRegistrationOption(dean.getInstitution().isAllowRegistration());
 		}
 	}
 
@@ -86,7 +87,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	private void doLogin() {
 		view.hideMessage();
 		
-		final Institution institution = Dean.getInstance().getInstitution();
+		final Institution institution = dean.getInstitution();
 		
 		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
 			@Override
@@ -146,7 +147,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onRegisterButtonClicked() {
-		if(Dean.getInstance().getInstitution().isAllowRegistration()){
+		if(dean.getInstitution().isAllowRegistration()){
 			view.hideMessage();
 			view.displayView(VitrineViewType.register);
 		}
@@ -181,7 +182,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onSignUpButtonClicked() {
-		if(StringUtils.isSome(registrationEmail) || Dean.getInstance().getInstitution().isAllowRegistration()){
+		if(StringUtils.isSome(registrationEmail) || dean.getInstitution().isAllowRegistration()){
 			view.hideMessage();
 			List<String> errors = validateFields();
 			if (errors.size() == 0) {
@@ -221,7 +222,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				session.user().requestRegistration(registrationRequestTO, registrationCallback);
 			}
 		};
-		session.user().checkUser(Dean.getInstance().getInstitution().getUUID(), suEmail, checkUserCallback);
+		session.user().checkUser(dean.getInstitution().getUUID(), suEmail, checkUserCallback);
 	}
 
 	private RegistrationRequestTO buildRegistrationRequestTO(String name, String email, String password) {
@@ -230,7 +231,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		registrationRequestTO.setEmail(email);
 		registrationRequestTO.setPassword(password);
 		registrationRequestTO.setRegistrationType(RegistrationType.email);
-		registrationRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+		registrationRequestTO.setInstitutionUUID(dean.getInstitution().getUUID());
 		return registrationRequestTO;
 	}
 
@@ -244,7 +245,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	public void onRequestPasswordChangeButtonClicked() {
 		session.user().requestPasswordChange(
 				view.getFpEmail().toLowerCase().trim(),
-				Dean.getInstance().getInstitution().getName(),
+				dean.getInstitution().getName(),
 				new Callback<Void>() {
 					@Override
 					public void ok(Void to) {

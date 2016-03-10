@@ -5,7 +5,9 @@ import java.util.logging.Logger;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ContentSpec;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
@@ -29,12 +31,14 @@ public class Captain implements LogoutEventHandler, LoginEventHandler {
 	Logger logger = Logger.getLogger(Captain.class.getName());
 	private PlaceController placeCtrl;
 	private KornellSession session;
+	private Dean dean;
 	
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 	public Captain(EventBus bus, KornellSession session, final PlaceController placeCtrl) {
 		this.placeCtrl = placeCtrl;
 		this.session = session;
+		this.dean = GenericClientFactoryImpl.DEAN;
 		bus.addHandler(LogoutEvent.TYPE, this);
 		bus.addHandler(LoginEvent.TYPE, this);
 		bus.addHandler(PlaceChangeRequestEvent.TYPE, new PlaceChangeRequestEvent.Handler() {
@@ -49,13 +53,14 @@ public class Captain implements LogoutEventHandler, LoginEventHandler {
 						// if the courseClassTO is null, it's a Dashboard institution on a child course (enrollment is attached on the version)
 						// if the user hasn't passed the class and the type of the
 						// version isn't KNL (small htmls, user won't lose progress)
-						if (Dean.getInstance().getCourseClassTO() == null 
-								|| (Dean.getInstance().getCourseClassTO().getCourseClass() != null
-									&& ContentSpec.SCORM12.equals(Dean.getInstance().getCourseClassTO().getCourseVersionTO()
+						CourseClassTO courseClassTO = dean.getCourseClassTO();
+						if (courseClassTO == null 
+								|| (courseClassTO.getCourseClass() != null
+									&& ContentSpec.SCORM12.equals(courseClassTO.getCourseVersionTO()
 											.getCourseVersion().getContentSpec())
-									&& Dean.getInstance().getCourseClassTO().getEnrollment() != null
-									&& Dean.getInstance().getCourseClassTO().getEnrollment().getCertifiedAt() == null
-									&& EnrollmentState.enrolled.equals(Dean.getInstance().getCourseClassTO().getEnrollment().getState())
+									&& courseClassTO.getEnrollment() != null
+									&& courseClassTO.getEnrollment().getCertifiedAt() == null
+									&& EnrollmentState.enrolled.equals(courseClassTO.getEnrollment().getState())
 									)
 						) {
 							event.setWarning(constants.leavingTheClassroom());	

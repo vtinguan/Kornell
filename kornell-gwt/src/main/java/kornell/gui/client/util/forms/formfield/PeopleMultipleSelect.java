@@ -9,6 +9,7 @@ import kornell.core.entity.Person;
 import kornell.core.to.PeopleTO;
 import kornell.core.to.PersonTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.forms.FormHelper;
 
@@ -131,7 +132,7 @@ public class PeopleMultipleSelect extends Composite {
 	}
 
 	private void searchChanged(final String searchStr) {
-		session.people().findBySearchTerm(searchStr, Dean.getInstance().getInstitution().getUUID(),
+		session.people().findBySearchTerm(searchStr, GenericClientFactoryImpl.DEAN.getInstitution().getUUID(),
 				new Callback<PeopleTO>() {
 					@Override
 					public void ok(PeopleTO to) {

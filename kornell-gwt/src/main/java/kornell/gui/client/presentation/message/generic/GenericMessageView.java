@@ -13,6 +13,7 @@ import kornell.core.entity.RoleType;
 import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ShowChatDockEvent;
 import kornell.gui.client.event.ShowChatDockEventHandler;
@@ -255,7 +256,7 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 			case INSTITUTION_SUPPORT:
 				return span(constants.institutionSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
 			case PLATFORM_SUPPORT:
-				return span(constants.platformSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(Dean.getInstance().getInstitution().getName(), INFO_CLASS);
+				return span(constants.platformSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(GenericClientFactoryImpl.DEAN.getInstitution().getName(), INFO_CLASS);
 			default:
 				return  "";
 			}

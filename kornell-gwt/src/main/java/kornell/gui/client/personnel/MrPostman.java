@@ -7,6 +7,7 @@ import kornell.api.client.ChatThreadsClient;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadsTO;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.ComposeMessageEventHandler;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
@@ -42,6 +43,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 	private Timer unreadMessagesCountTimer;
 	private Timer unreadMessagesCountPerThreadTimer;
 	private ArrayList<CourseClassTO> helpCourseClasses;
+	private Dean dean;
 	
 	public MrPostman(MessageComposeView.Presenter messageComposePresenter, EventBus bus, ChatThreadsClient chatThreadsClient, PlaceController placeCtrl) {
 		this.bus = bus;
@@ -51,6 +53,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
 		this.bus.addHandler(LoginEvent.TYPE, this);
 		this.bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
+		this.dean = GenericClientFactoryImpl.DEAN;
 		
 		//initializeUnreadMessagesCountTimer();
 		initializeUnreadMessagesCountPerThreadTimer();
@@ -97,7 +100,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 	
 	private void getUnreadMessagesPerThread(boolean forceFetch) {
 		if(forceFetch || !(placeCtrl.getWhere() instanceof VitrinePlace)){
-	    chatThreadsClient.getTotalUnreadCountsPerThread(Dean.getInstance().getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
+	    chatThreadsClient.getTotalUnreadCountsPerThread(dean.getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
 				@Override
 				public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
 					bus.fireEvent(new UnreadMessagesPerThreadFetchedEvent(unreadChatThreadsTO.getUnreadChatThreadTOs()));
@@ -160,7 +163,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
   }
 	private void getUnreadMessages() {
 		if(!(placeCtrl.getWhere() instanceof VitrinePlace)){
-	    chatThreadsClient.getTotalUnreadCount(Dean.getInstance().getInstitution().getUUID(), new Callback<String>() {
+	    chatThreadsClient.getTotalUnreadCount(dean.getInstitution().getUUID(), new Callback<String>() {
 				@Override
 				public void ok(String unreadMessagesCount) {
 					bus.fireEvent(new UnreadMessagesFetchedEvent(unreadMessagesCount));

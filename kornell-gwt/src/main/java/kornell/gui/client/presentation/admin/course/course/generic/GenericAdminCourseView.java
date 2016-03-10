@@ -7,6 +7,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.EntityFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
@@ -49,6 +50,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
+	private Dean dean;
 	private boolean isCreationMode, isPlatformAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
@@ -101,6 +103,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		this.placeCtrl = placeCtrl;
 		this.bus = bus;
 		this.isPlatformAdmin = session.isPlatformAdmin();
+		this.dean = GenericClientFactoryImpl.DEAN;
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
@@ -242,7 +245,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		course.setTitle(title.getFieldPersistText());
 		course.setDescription(description.getFieldPersistText());
 		course.setChildCourse(childCourse.getFieldPersistText().equals("true"));
-		course.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+		course.setInstitutionUUID(dean.getInstitution().getUUID());
 		return course;
 	}
 

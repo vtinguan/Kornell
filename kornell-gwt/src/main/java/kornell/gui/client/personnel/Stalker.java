@@ -3,6 +3,7 @@ package kornell.gui.client.personnel;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 import kornell.gui.client.event.LoginEvent;
@@ -54,7 +55,7 @@ public class Stalker implements ActomEnteredEventHandler, LoginEventHandler {
 			return;
 		session.events()
 				.attendanceSheetSigned(
-						Dean.getInstance().getInstitution().getUUID(),
+						GenericClientFactoryImpl.DEAN.getInstitution().getUUID(),
 						session.getCurrentUser().getPerson().getUUID())
 				.fire(new Callback<Void>() {
 					@Override

@@ -3,6 +3,7 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
 
@@ -25,6 +26,7 @@ public class GenericCourseClassReportsView extends Composite {
 
 	private EventBus bus;
 	private KornellSession session;
+	private Dean dean;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	@UiField
@@ -34,6 +36,7 @@ public class GenericCourseClassReportsView extends Composite {
 			Presenter presenter, CourseClassTO courseClassTO) {
 		this.session = session;
 		this.bus = bus;
+		this.dean = GenericClientFactoryImpl.DEAN;
 		initWidget(uiBinder.createAndBindUi(this));		
 		initData();
 	}
@@ -73,10 +76,10 @@ public class GenericCourseClassReportsView extends Composite {
 	private FlowPanel getReportTableContent() {
 		FlowPanel reportContentPanel = new FlowPanel();
 		reportContentPanel.addStyleName("reportContentPanel");
-		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.CERTIFICATE));
-		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.COURSE_CLASS_INFO));
+		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, dean.getCourseClassTO(), GenericCourseClassReportItemView.CERTIFICATE));
+		reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, dean.getCourseClassTO(), GenericCourseClassReportItemView.COURSE_CLASS_INFO));
 		if(session.isInstitutionAdmin()){
-			reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, Dean.getInstance().getCourseClassTO(), GenericCourseClassReportItemView.COURSE_CLASS_AUDIT));
+			reportContentPanel.add(new GenericCourseClassReportItemView(bus, session, dean.getCourseClassTO(), GenericCourseClassReportItemView.COURSE_CLASS_AUDIT));
 		}
 
 		return reportContentPanel;

@@ -12,6 +12,7 @@ import kornell.core.to.RoleTO;
 import kornell.core.to.TokenTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
@@ -24,12 +25,11 @@ public class KornellSession extends KornellClient {
 	private static final String PREFIX = ClientProperties.PREFIX + "UserSession";
 
 	private UserInfoTO currentUser = null;
+	private Dean dean = null;
 
-	private EventBus bus;
-
-	public KornellSession(EventBus bus) {
-		this.bus = bus;
+	public KornellSession() {
 		logger.info("Instantiated new Kornell Session");
+		this.dean = GenericClientFactoryImpl.DEAN;
 	}
 	
 	public void getCurrentUser(final Callback<UserInfoTO> callback) {
@@ -79,7 +79,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isPlatformAdmin() {
-		return isValidRole(RoleType.platformAdmin, Dean.getInstance().getInstitution().getUUID(), null);
+		return isValidRole(RoleType.platformAdmin, dean.getInstitution().getUUID(), null);
 	}
 
 	public boolean isInstitutionAdmin(String institutionUUID) {
@@ -87,7 +87,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isInstitutionAdmin() {
-		return isInstitutionAdmin(Dean.getInstance().getInstitution().getUUID());
+		return isInstitutionAdmin(dean.getInstitution().getUUID());
 	}
 	
 	public boolean hasCourseClassRole(String courseClassUUID) {
@@ -103,7 +103,6 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassAdmin() {
-		Dean dean = Dean.getInstance();
 		if(dean == null) return false;
 		CourseClassTO courseClassTO = dean.getCourseClassTO();
 		if(courseClassTO == null) return false;
@@ -118,7 +117,6 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassObserver() {
-		Dean dean = Dean.getInstance();
 		if(dean == null) return false;
 		CourseClassTO courseClassTO = dean.getCourseClassTO();
 		if(courseClassTO == null) return false;
@@ -133,7 +131,6 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassTutor() {
-		Dean dean = Dean.getInstance();
 		if(dean == null) return false;
 		CourseClassTO courseClassTO = dean.getCourseClassTO();
 		if(courseClassTO == null) return false;
@@ -222,7 +219,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean hasSignedTerms() {
-		return StringUtils.isSome(Dean.getInstance().getInstitution().getTerms()) &&
+		return StringUtils.isSome(dean.getInstitution().getTerms()) &&
 				currentUser != null &&
 				currentUser.getPerson().getTermsAcceptedOn() != null;
 	}

@@ -17,6 +17,7 @@ import kornell.core.error.KornellErrorTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.LogoutEvent;
@@ -73,6 +74,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private static final Logger logger = Logger.getLogger(GenericProfileView.class.getName());
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
+	private Dean dean;
 
 	private KornellSession session;
 	private ViewFactory viewFactory;
@@ -113,6 +115,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		formHelper = new FormHelper();
 		initWidget(uiBinder.createAndBindUi(this));
+		this.dean = GenericClientFactoryImpl.DEAN;
 
 		// i18n
 		btnEdit = createButton(constants.editButton(), "btnAction btnPlaceBar", false, new ClickHandler() {
@@ -390,8 +393,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	private void display() {
 
-		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
-		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails() && isCurrentUser;
+		showContactDetails = dean.getInstitution().isDemandsPersonContactDetails();
+		validateContactDetails = dean.getInstitution().isValidatePersonContactDetails() && isCurrentUser;
 
 		form.addStyleName("shy");
 

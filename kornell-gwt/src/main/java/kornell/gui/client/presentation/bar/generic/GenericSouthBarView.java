@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.bar.generic;
 
 import kornell.core.entity.EnrollmentState;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.HideSouthBarEvent;
 import kornell.gui.client.event.HideSouthBarEventHandler;
 import kornell.gui.client.personnel.Dean;
@@ -39,6 +40,8 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	IsWidget barView = null;
 	
 	private AdminBarView adminBarView;
+	
+	private Dean dean;
 
 	@UiField
 	FlowPanel southBar;
@@ -52,6 +55,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 		clientFactory.getEventBus().addHandler(HideSouthBarEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		this.scrollPanel = scrollPanel;
+		this.dean = GenericClientFactoryImpl.DEAN;
 		
 		pickSouthBar(clientFactory.getPlaceController().getWhere());
 
@@ -71,9 +75,9 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 				barView = getAdminBarView(newPlace);
 				showSouthBar(barView);
 			}
-		} else if (newPlace instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null && 
-				Dean.getInstance().getCourseClassTO().getEnrollment() != null &&
-				EnrollmentState.enrolled.equals(Dean.getInstance().getCourseClassTO().getEnrollment().getState())) {
+		} else if (newPlace instanceof ClassroomPlace && dean.getCourseClassTO() != null && 
+				dean.getCourseClassTO().getEnrollment() != null &&
+				EnrollmentState.enrolled.equals(dean.getCourseClassTO().getEnrollment().getState())) {
 			if(currentSouthBar != ACTIVITY_BAR){
 				currentSouthBar = ACTIVITY_BAR;
 				barView = getActivityBarView();

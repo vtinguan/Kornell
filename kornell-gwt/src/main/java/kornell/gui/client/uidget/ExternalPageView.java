@@ -85,7 +85,7 @@ public class ExternalPageView extends Uidget implements ShowChatDockEventHandler
 	private void placeIframe() {
 		iframe.setPropertyString("width", "100%");
 		int h = (Window.getClientHeight() - Positioning.NORTH_BAR);
-		if(Dean.getInstance().getCourseClassTO() != null){
+		if(GenericClientFactoryImpl.DEAN.getCourseClassTO() != null){
 			h -= Positioning.SOUTH_BAR;
 		}
 		String height = h + "px";

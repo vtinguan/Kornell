@@ -5,6 +5,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
@@ -16,36 +17,19 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class Dean implements LogoutEventHandler,
-		UnreadMessagesPerThreadFetchedEventHandler,
+public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedEventHandler,
 		UnreadMessagesCountChangedEventHandler {
 
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
-
-	private static Dean instance;
 	private EventBus bus;
-	private KornellSession session;
-
 	private Institution institution;
 	private CourseClassTO courseClassTO;
-	private String courseClassUUID;
 	private int totalCount;
 
-	public static Dean getInstance() {
-		return instance;
-	}
-
-	public static void init(KornellSession session, EventBus bus,
-			Institution institution) {
-		instance = new Dean(session, bus, institution);
-	}
-
-	private Dean(KornellSession session, EventBus bus,
-			final Institution institution) {
-		this.bus = bus;
+	public void init(Institution institution) {
+		this.bus = GenericClientFactoryImpl.EVENT_BUS;
 		this.institution = institution;
-		this.session = session;
 		bus.addHandler(LogoutEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
@@ -54,7 +38,7 @@ public class Dean implements LogoutEventHandler,
 		// updateSkin(institution.getSkin());
 		initInstitutionSkin();
 
-		showBody(false);
+		/*showBody(false);
 		Timer mdaTimer = new Timer() {
 			public void run() {
 				showBody(true);
@@ -62,6 +46,8 @@ public class Dean implements LogoutEventHandler,
 		};
 		// wait 3 secs for the theme css
 		mdaTimer.schedule((int) (3 * 1000));
+		 */
+		showBody(true);
 	}
 
 	private void initInstitutionSkin() {
@@ -120,42 +106,17 @@ public class Dean implements LogoutEventHandler,
 	public Institution getInstitution() {
 		return institution;
 	}
-	
+
 	public String getAssetsURL() {
 		return "/repository/" + institution.getAssetsRepositoryUUID();
-	}
-
-	public Institution setInstitution(Institution institution) {
-		return this.institution = institution;
 	}
 
 	public CourseClassTO getCourseClassTO() {
 		return courseClassTO;
 	}
 
-	public void setCourseClassTO(CourseClassTO courseClassTO) {		
+	public void setCourseClassTO(CourseClassTO courseClassTO) {
 		this.courseClassTO = courseClassTO;
-	}
-
-	@Override
-	public void onUnreadMessagesPerThreadFetched(
-			UnreadMessagesPerThreadFetchedEvent event) {
-		int count = 0;
-		for (UnreadChatThreadTO unreadChatThreadTO : event
-				.getUnreadChatThreadTOs()) {
-			count = count
-					+ Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
-		}
-		totalCount = count;
-		setPageTitle();
-	}
-
-	@Override
-	public void onUnreadMessagesCountChanged(
-			UnreadMessagesCountChangedEvent event) {
-		totalCount = event.isIncrement() ? totalCount + event.getCountChange()
-				: totalCount - event.getCountChange();
-		setPageTitle();
 	}
 
 	private static native void showBody(boolean show) /*-{
@@ -164,9 +125,24 @@ public class Dean implements LogoutEventHandler,
 	}-*/;
 
 	@Override
+	public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
+		int count = 0;
+		for (UnreadChatThreadTO unreadChatThreadTO : event.getUnreadChatThreadTOs()) {
+			count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
+		}
+		totalCount = count;
+		setPageTitle();
+	}
+
+	@Override
+	public void onUnreadMessagesCountChanged(UnreadMessagesCountChangedEvent event) {
+		totalCount = event.isIncrement() ? totalCount + event.getCountChange() : totalCount - event.getCountChange();
+		setPageTitle();
+	}
+
+	@Override
 	public void onLogout() {
 		showBody(false);
 	}
 
-	
 }

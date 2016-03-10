@@ -20,6 +20,7 @@ import kornell.core.to.CoursesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.RolesTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
@@ -70,6 +71,7 @@ public class GenericCourseClassConfigView extends Composite {
     private static final String MODAL_TUTOR_CHAT_ENABLED = "tutorChatEnabled";
 
     private KornellSession session;
+	private Dean dean;
     private FormHelper formHelper = GWT.create(FormHelper.class);
     private boolean isCreationMode, canDelete, isInstitutionAdmin, allowPrefixEdit;
     boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -116,16 +118,17 @@ public class GenericCourseClassConfigView extends Composite {
         this.bus = bus;
         this.placeCtrl = placeCtrl;
         this.presenter = presenter;
+    	this.dean = GenericClientFactoryImpl.DEAN;
         this.isInstitutionAdmin = session.isInstitutionAdmin();
         this.isCreationMode = (courseClassTO == null) && isInstitutionAdmin;
-        this.allowPrefixEdit = Dean.getInstance().getInstitution().isAllowRegistrationByUsername() && (isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID()));
+        this.allowPrefixEdit = dean.getInstitution().isAllowRegistrationByUsername() && (isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID()));
         this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
         initWidget(uiBinder.createAndBindUi(this));
 
         // i18n
         btnOK.setText("OK".toUpperCase());
         btnCancel.setText(isCreationMode ? "Cancelar".toUpperCase() : "Limpar".toUpperCase());
-        btnDelete.setVisible(isInstitutionAdmin && !isCreationMode && CourseClassState.active.equals(Dean.getInstance()
+        btnDelete.setVisible(isInstitutionAdmin && !isCreationMode && CourseClassState.active.equals(dean
                 .getCourseClassTO().getCourseClass().getState()));
         btnDelete.setText(canDelete?"Excluir".toUpperCase():"Desabilitar".toUpperCase());
 
@@ -304,7 +307,7 @@ public class GenericCourseClassConfigView extends Composite {
         final ListBox registrationTypes = new ListBox();
         registrationTypes.addItem("Email", RegistrationType.email.toString());
         registrationTypes.addItem("CPF", RegistrationType.cpf.toString());
-        if(Dean.getInstance().getInstitution().isAllowRegistrationByUsername())
+        if(dean.getInstitution().isAllowRegistrationByUsername())
             registrationTypes.addItem("Usuário", RegistrationType.username.toString());
         if (!isCreationMode) {
             registrationTypes.setSelectedValue(courseClassTO.getCourseClass().getRegistrationType().toString());
@@ -313,7 +316,7 @@ public class GenericCourseClassConfigView extends Composite {
         fields.add(registrationType);
         profileFields.add(registrationType);
 
-        if(Dean.getInstance().getInstitution().isAllowRegistrationByUsername()){
+        if(dean.getInstitution().isAllowRegistrationByUsername()){
             institutionRegistrationPrefixes = new ListBox();		
             if(!isCreationMode)
                 institutionRegistrationPrefixes.setSelectedValue(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
@@ -338,7 +341,7 @@ public class GenericCourseClassConfigView extends Composite {
     }
 
     private void loadInstitutionPrefixes() {
-        session.institution(Dean.getInstance().getInstitution().getUUID()).getRegistrationPrefixes(new Callback<InstitutionRegistrationPrefixesTO>() {
+        session.institution(dean.getInstitution().getUUID()).getRegistrationPrefixes(new Callback<InstitutionRegistrationPrefixesTO>() {
             @Override
             public void ok(InstitutionRegistrationPrefixesTO to) {
                 for (InstitutionRegistrationPrefix institutionRegistrationPrefix : to.getInstitutionRegistrationPrefixes()) {
@@ -452,7 +455,7 @@ public class GenericCourseClassConfigView extends Composite {
     }
 
     private CourseClass getCourseClassInfoFromForm() {
-        courseClass.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+        courseClass.setInstitutionUUID(dean.getInstitution().getUUID());
         courseClass.setName(name.getFieldPersistText());
         courseClass.setCourseVersionUUID(courseVersion.getFieldPersistText());
         courseClass.setPublicClass(publicClass.getFieldPersistText().equals("true"));

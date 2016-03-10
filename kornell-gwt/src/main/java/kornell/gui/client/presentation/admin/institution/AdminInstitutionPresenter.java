@@ -17,6 +17,7 @@ import kornell.gui.client.util.view.LoadingPopup;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter {
@@ -69,7 +70,7 @@ public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter
 				public void ok(Institution institution) {
 						LoadingPopup.hide();
 						KornellNotification.show("Alterações salvas com sucesso!");
-						Dean.getInstance().setInstitution(institution);
+						Window.Location.reload();
 				}		
 				
 				@Override
