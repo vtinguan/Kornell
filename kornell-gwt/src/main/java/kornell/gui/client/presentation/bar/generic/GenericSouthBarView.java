@@ -14,6 +14,7 @@ import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.easing.Ease;
 import kornell.gui.client.util.easing.Transitions;
 import kornell.gui.client.util.easing.Updater;
+import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.Positioning;
 
 import com.google.gwt.core.client.GWT;
@@ -56,7 +57,7 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 		initWidget(uiBinder.createAndBindUi(this));
 		this.scrollPanel = scrollPanel;
 		this.dean = GenericClientFactoryImpl.DEAN;
-		
+
 		pickSouthBar(clientFactory.getPlaceController().getWhere());
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
