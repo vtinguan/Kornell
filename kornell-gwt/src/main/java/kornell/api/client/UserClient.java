@@ -15,7 +15,7 @@ public class UserClient extends RESTClient {
 	}
 
 	public void getUserHello(String name, String hostName, Callback<UserHelloTO> cb) {
-		String path = "/user/hello?" + (StringUtils.isSome(name) ? "name="+name : "hostName="+hostName);
+		String path = "/user/login?" + (StringUtils.isSome(name) ? "name="+name : "hostName="+hostName);
 		GET(path).sendRequest(null, cb);
 	}
 

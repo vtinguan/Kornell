@@ -14,6 +14,7 @@ import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
@@ -87,43 +88,13 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	private void doLogin() {
 		view.hideMessage();
 		
-		final Institution institution = dean.getInstitution();
-		
-		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
+		Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
-			public void ok(CourseClassesTO courseClassesTO) {
-				clientFactory.getEventBus().fireEvent(new CourseClassesFetchedEvent(courseClassesTO));	
-				final UserInfoTO userInfoTO = session.getCurrentUser();
-				clientFactory.setDefaultPlace(new WelcomePlace());
-				Place newPlace;
-				Place welcomePlace = new WelcomePlace();
-				if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
-					 newPlace = new TermsPlace();
-				} else if ( 
-						( institution.isDemandsPersonContactDetails() && 
-								( !RegistrationType.username.equals(userInfoTO.getPerson().getRegistrationType()) ||
-									userInfoTO.getInstitutionRegistrationPrefix().isShowContactInformationOnProfile()
-								)
-						) && userInfoTO.getPerson().getCity() == null) {
-					newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
-				} else if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-						|| session.isInstitutionAdmin()) {
-					newPlace = new AdminCourseClassesPlace();
-				} else {
-					newPlace = welcomePlace;
-				}
-				clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
-				clientFactory.setHomePlace(welcomePlace);
-				clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? clientFactory.getHomePlace() : newPlace);
-			}
-		};
-		
-		Callback<UserInfoTO> userInfoCallback = new Callback<UserInfoTO>() {
-			@Override
-			public void ok(final UserInfoTO user) {
+			public void ok(final UserHelloTO userHello) {
 				view.displayView(null);
-				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
-				session.courseClasses().getCourseClassesTO(courseClassesCallback);
+				clientFactory.getEventBus().fireEvent(new LoginEvent(userHello.getUserInfoTO()));
+				clientFactory.getEventBus().fireEvent(new CourseClassesFetchedEvent(userHello.getCourseClassesTO()));	
+				postLogin();
 			}
 			@Override
 			protected void unauthorized(KornellErrorTO kornellErrorTO) {
@@ -142,7 +113,33 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		};
 		String email = view.getEmail().toLowerCase().trim().replace(FormHelper.USERNAME_ALTERNATE_SEPARATOR, FormHelper.USERNAME_SEPARATOR); 
 		String password = view.getPassword();
-		session.login(email, password, userInfoCallback);
+		session.login(email, password, userHelloCallback);
+	}
+
+	private void postLogin() {
+		Institution institution = dean.getInstitution();
+		UserInfoTO userInfoTO = session.getCurrentUser();
+		clientFactory.setDefaultPlace(new WelcomePlace());
+		Place newPlace;
+		Place welcomePlace = new WelcomePlace();
+		if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
+			 newPlace = new TermsPlace();
+		} else if ( 
+				( institution.isDemandsPersonContactDetails() && 
+						( !RegistrationType.username.equals(userInfoTO.getPerson().getRegistrationType()) ||
+							userInfoTO.getInstitutionRegistrationPrefix().isShowContactInformationOnProfile()
+						)
+				) && userInfoTO.getPerson().getCity() == null) {
+			newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
+		} else if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+				|| session.isInstitutionAdmin()) {
+			newPlace = new AdminCourseClassesPlace();
+		} else {
+			newPlace = welcomePlace;
+		}
+		clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
+		clientFactory.setHomePlace(welcomePlace);
+		clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? clientFactory.getHomePlace() : newPlace);
 	}
 
 	@Override

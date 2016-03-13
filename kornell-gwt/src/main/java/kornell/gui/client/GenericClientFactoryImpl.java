@@ -149,16 +149,19 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				} else {
 					DEAN.init(userHelloTO.getInstitution());
 					KORNELL_SESSION.setCurrentUser(userHelloTO.getUserInfoTO());
-					final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
+					/*final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
 						@Override
 						public void ok(CourseClassesTO courseClassesTO) {
 							EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(courseClassesTO));
 							setHomePlace(new WelcomePlace());
 							startAuthenticated(courseClassesTO);
 						}
-					};
+					};*/
 					if (KORNELL_SESSION.isAuthenticated()) {
-						KORNELL_SESSION.courseClasses().getCourseClassesTO(courseClassesCallback);
+						//KORNELL_SESSION.courseClasses().getCourseClassesTO(courseClassesCallback);
+						EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(userHelloTO.getCourseClassesTO()));
+						setHomePlace(new WelcomePlace());
+						startAuthenticated(userHelloTO.getCourseClassesTO());
 					} else {
 						startAnonymous();
 					}

@@ -10,6 +10,7 @@ import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.RoleTO;
 import kornell.core.to.TokenTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.GenericClientFactoryImpl;
@@ -156,12 +157,12 @@ public class KornellSession extends KornellClient {
 		return currentUser != null;
 	}
 
-	public void login(String username, String password, final Callback<UserInfoTO> callback) {
-		final Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
+	public void login(String username, String password, final Callback<UserHelloTO> callback) {
+		final Callback<UserHelloTO> wrapper = new Callback<UserHelloTO>() {
 			@Override
-			public void ok(UserInfoTO user) {
-				setCurrentUser(user);
-				callback.ok(user);
+			public void ok(UserHelloTO userHello) {
+				setCurrentUser(userHello.getUserInfoTO());
+				callback.ok(userHello);
 			}
 
 			@Override
@@ -176,7 +177,7 @@ public class KornellSession extends KornellClient {
 			@Override
 			public void ok(TokenTO to) {
 				ClientProperties.set(ClientProperties.X_KNL_TOKEN, to.getToken());
-				GET("/user").sendRequest(null, wrapper);
+				GET("/user/login").sendRequest(null, wrapper);
 			}
 			
 			@Override

@@ -1,5 +1,7 @@
 package kornell.core.to;
 
+import java.util.List;
+
 import kornell.core.entity.Institution;
 
 public interface UserHelloTO {
@@ -10,5 +12,8 @@ public interface UserHelloTO {
 	
 	Institution getInstitution();
 	void setInstitution(Institution institution);
+	
+	CourseClassesTO getCourseClassesTO(); 
+	void setCourseClassesTO(CourseClassesTO courseClassesTO);
 	 
 }

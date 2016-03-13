@@ -43,48 +43,36 @@ import kornell.server.jdbc.repository.RolesRepo
 import kornell.core.entity.RoleCategory
 import kornell.server.jdbc.repository.EventsRepo
 import kornell.core.entity.AuditedEntityType
+import kornell.server.jdbc.repository.CourseClassesRepo
 //TODO Person/People Resource
 @Path("user")
-class UserResource(private val authRepo:AuthRepo) {
+class UserResource(private val authRepo: AuthRepo) {
   def this() = this(AuthRepo())
-  
-  def get = first.get
-     
-  
-  @Path("hello")
-  @Produces(Array(UserHelloTO.TYPE))
+
   @GET
-  def hello(@Context req: HttpServletRequest,
-      @QueryParam("name") name:String, 
-      @QueryParam("hostName") hostName:String) = {
+  @Path("login")
+  @Produces(Array(UserHelloTO.TYPE))
+  def get(@Context req: HttpServletRequest,
+    @QueryParam("name") name: String,
+    @QueryParam("hostName") hostName: String) = {
     val userHello = newUserHelloTO
-    
-    userHello.setInstitution(
-      {
-        if(name != null)
-		    InstitutionsRepo.lookupByName(name)
-		  else
-		    InstitutionsRepo.getByHostName(hostName)
-      }.getOrElse(null));
-    
+
+    userHello.setInstitution({
+      if(name != null) InstitutionsRepo.getByName(name)
+      else if(hostName != null) InstitutionsRepo.getByHostName(hostName)
+      else None
+    }.getOrElse(null));
+
     val auth = req.getHeader("X-KNL-TOKEN")
-    if (auth != null && auth.length() > 0 && userHello.getInstitution != null) {
-      val token = TokenRepo().checkToken(auth)
-      if (token.isDefined) {
-    	  val person = PersonRepo(token.get.getPersonUUID).first.getOrElse(null)
-		  userHello.setUserInfoTO(getUser(person).getOrElse(null))
-      }
+    val token = TokenRepo().checkToken(auth)
+    if (token.isDefined) {
+      val person = PersonRepo(token.get.getPersonUUID).first.getOrElse(null)
+      userHello.setUserInfoTO(getUser(person).getOrElse(null))
+      userHello.setCourseClassesTO(CourseClassesRepo.byPersonAndInstitution(person.getUUID, person.getInstitutionUUID))
     }
-    
+
     userHello
   }
-  
-  @GET
-  @Produces(Array(UserInfoTO.TYPE))
-  def first: Option[UserInfoTO] =
-    authRepo.withPerson { p =>
-      getUser(p)
-    }
 
   def getUser(person: Person) = {
     val user = newUserInfoTO
@@ -95,14 +83,14 @@ class UserResource(private val authRepo:AuthRepo) {
     val roleTOs = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT)
     user.setRoles(roleTOs.getRoleTOs)
     user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
-    if(RegistrationType.username.equals(person.getRegistrationType)){
-    	user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
-    		.asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
+    if (RegistrationType.username.equals(person.getRegistrationType)) {
+      user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
+        .asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
     }
-    
+
     Option(user)
-  } 
-  
+  }
+
   @GET
   @Path("{personUUID}")
   @Produces(Array(UserInfoTO.TYPE))
@@ -114,10 +102,10 @@ class UserResource(private val authRepo:AuthRepo) {
       if (person != null) {
         user.setPerson(person)
         user.setUsername(PersonRepo(person.getUUID).getUsername)
-	    if(RegistrationType.username.equals(person.getRegistrationType)){
-	    	user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
-	    		.asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
-	    }
+        if (RegistrationType.username.equals(person.getRegistrationType)) {
+          user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
+            .asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
+        }
         Option(user)
       } else {
         throw new EntityNotFoundException("personNotFound")
@@ -128,7 +116,7 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("check/{institutionUUID}/{username}")
   @Produces(Array(UserInfoTO.TYPE))
   def checkUsernameAndEmail(@PathParam("username") username: String,
-      @PathParam("institutionUUID") institutionUUID: String): Option[UserInfoTO] = {
+    @PathParam("institutionUUID") institutionUUID: String): Option[UserInfoTO] = {
     val user = newUserInfoTO
     //verify if there's a password set for this email
     if (authRepo.hasPassword(institutionUUID, username))
@@ -151,7 +139,7 @@ class UserResource(private val authRepo:AuthRepo) {
       throw new EntityNotFoundException("personOrInstitutionNotFound")
     }
   }
-  
+
   @PUT
   @Path("resetPassword/{passwordChangeUUID}")
   @Produces(Array(UserInfoTO.TYPE))
@@ -159,10 +147,10 @@ class UserResource(private val authRepo:AuthRepo) {
     val person = authRepo.getPersonByPasswordChangeUUID(passwordChangeUUID)
     if (person.isDefined) {
       PersonRepo(person.get.getUUID).updatePassword(person.get.getUUID, password)
-        
-	  //log entity change
-	  EventsRepo.logEntityChange(person.get.getInstitutionUUID, AuditedEntityType.password, person.get.getUUID, null, null, person.get.getUUID)
-	  
+
+      //log entity change
+      EventsRepo.logEntityChange(person.get.getInstitutionUUID, AuditedEntityType.password, person.get.getUUID, null, null, person.get.getUUID)
+
       val user = newUserInfoTO
       user.setUsername(person.get.getEmail())
       Option(user)
@@ -179,20 +167,20 @@ class UserResource(private val authRepo:AuthRepo) {
     authRepo.withPerson { p =>
       if (!PersonRepo(p.getUUID).hasPowerOver(targetPersonUUID))
         throw new UnauthorizedAccessException("passwordChangeDenied")
-      else {		
+      else {
         val targetPersonRepo = PersonRepo(targetPersonUUID)
         val person = targetPersonRepo.get
         val username = authRepo.getUsernameByPersonUUID(targetPersonUUID).getOrElse(person.getEmail)
 
         targetPersonRepo.setPassword(person.getInstitutionUUID, username, password)
-        
-	    //log entity change
-	    EventsRepo.logEntityChange(person.getInstitutionUUID, AuditedEntityType.password, targetPersonUUID, null, null)
+
+        //log entity change
+        EventsRepo.logEntityChange(person.getInstitutionUUID, AuditedEntityType.password, targetPersonUUID, null, null)
 
       }
     }
   }
-  
+
   //Used when user has the forcePasswordUpdate flag on his account
   @PUT
   @Path("updatePassword/{username}")
@@ -202,10 +190,10 @@ class UserResource(private val authRepo:AuthRepo) {
     if (person.isDefined) {
       PersonRepo(person.get.getUUID).updatePassword(person.get.getUUID, password, true)
 
-	  //log entity change
-	  EventsRepo.logEntityChange(person.get.getInstitutionUUID, AuditedEntityType.password, person.get.getUUID, null, null, person.get.getUUID)
-	  
-	  val user = newUserInfoTO
+      //log entity change
+      EventsRepo.logEntityChange(person.get.getInstitutionUUID, AuditedEntityType.password, person.get.getUUID, null, null, person.get.getUUID)
+
+      val user = newUserInfoTO
       user.setUsername(person.get.getEmail())
       Option(user)
     } else {
@@ -233,51 +221,51 @@ class UserResource(private val authRepo:AuthRepo) {
   @Path("{personUUID}")
   @Consumes(Array(UserInfoTO.TYPE))
   @Produces(Array(UserInfoTO.TYPE))
-  def update(implicit @Context sc: SecurityContext, 
+  def update(implicit @Context sc: SecurityContext,
     userInfo: UserInfoTO,
     @PathParam("personUUID") personUUID: String) = authRepo.withPerson { p =>
     if (userInfo != null) {
       if (!PersonRepo(p.getUUID).hasPowerOver(personUUID))
         throw new UnauthorizedAccessException("passwordChangeDenied")
       else {
-    	  val from = PersonRepo(personUUID).first.get
-    
-	      PersonRepo(personUUID).update(userInfo.getPerson)
-	          
-	      //log entity change
-	      EventsRepo.logEntityChange(p.getInstitutionUUID, AuditedEntityType.person, personUUID, from, userInfo.getPerson)
-	      val roleTOs = RolesRepo.getUserRoles(personUUID, RoleCategory.BIND_DEFAULT)
-	      userInfo.setRoles(roleTOs.getRoleTOs)
-	      userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
-	      userInfo
+        val from = PersonRepo(personUUID).first.get
+
+        PersonRepo(personUUID).update(userInfo.getPerson)
+
+        //log entity change
+        EventsRepo.logEntityChange(p.getInstitutionUUID, AuditedEntityType.person, personUUID, from, userInfo.getPerson)
+        val roleTOs = RolesRepo.getUserRoles(personUUID, RoleCategory.BIND_DEFAULT)
+        userInfo.setRoles(roleTOs.getRoleTOs)
+        userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
+        userInfo
       }
     }
   }
-    
+
   @PUT
   @Path("acceptTerms")
   @Consumes(Array("text/plain"))
   @Produces(Array(UserInfoTO.TYPE))
-  def acceptTerms() = AuthRepo().withPerson{ p =>
-	val from = PersonRepo(p.getUUID).first.get
-	          
+  def acceptTerms() = AuthRepo().withPerson { p =>
+    val from = PersonRepo(p.getUUID).first.get
+
     PersonRepo(p.getUUID).acceptTerms(from)
-    
-	val to = PersonRepo(p.getUUID).first.get
-	
+
+    val to = PersonRepo(p.getUUID).first.get
+
     //log entity change
     EventsRepo.logEntityChange(p.getInstitutionUUID, AuditedEntityType.person, p.getUUID, from, to)
-    
+
     getUser(p)
   }
 
   def createUser(institutionUUID: String, fullName: String, email: String, cpf: String, username: String, password: String): String = {
-    val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password,cpf,username, RegistrationType.email)
+    val regreq = TOs.newRegistrationRequestTO(institutionUUID, fullName, email, password, cpf, username, RegistrationType.email)
     createUser(regreq).getPerson.getUUID
   }
 }
 
 object UserResource {
-  def apply(authRepo:AuthRepo):UserResource = new UserResource(AuthRepo()) 
-  def apply():UserResource = apply(AuthRepo())
+  def apply(authRepo: AuthRepo): UserResource = new UserResource(AuthRepo())
+  def apply(): UserResource = apply(AuthRepo())
 }
