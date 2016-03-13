@@ -5,6 +5,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
@@ -117,19 +118,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private void display() {
 
 		this.setVisible(false);
-		isEnrolled = false;
-
-		UserInfoTO user = clientFactory.getKornellSession().getCurrentUser();
-		if (user != null) {
-			for (Enrollment enrollment : user.getEnrollments().getEnrollments()) {
-				if (enrollment.getUUID().equals(
-						((ClassroomPlace) clientFactory.getPlaceController().getWhere()).getEnrollmentUUID())
-						&& EnrollmentState.enrolled.equals(enrollment.getState())) {
-					isEnrolled = true;
-					break;
-				}
-			}
-		}
+		CourseClassTO courseClassTO = GenericClientFactoryImpl.DEAN.getCourseClassTO();
+		
+		isEnrolled = courseClassTO != null && courseClassTO.getEnrollment() != null && EnrollmentState.enrolled.equals(courseClassTO.getEnrollment().getState());
 		shouldShowActivityBar = isEnrolled && dean.getCourseClassTO() != null
 				&& !CourseClassState.inactive.equals(dean.getCourseClassTO().getCourseClass().getState());
 

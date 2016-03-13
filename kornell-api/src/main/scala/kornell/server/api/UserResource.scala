@@ -82,7 +82,6 @@ class UserResource(private val authRepo: AuthRepo) {
     user.setLastPlaceVisited(person.getLastPlaceVisited)
     val roleTOs = RolesRepo.getUserRoles(person.getUUID, RoleCategory.BIND_DEFAULT)
     user.setRoles(roleTOs.getRoleTOs)
-    user.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(person.getUUID)))
     if (RegistrationType.username.equals(person.getRegistrationType)) {
       user.setInstitutionRegistrationPrefix(InstitutionRepo(person.getInstitutionUUID).getInstitutionRegistrationPrefixes.getInstitutionRegistrationPrefixes
         .asScala.filter(irp => irp.getUUID.equals(person.getInstitutionRegistrationPrefixUUID)).head)
@@ -236,7 +235,6 @@ class UserResource(private val authRepo: AuthRepo) {
         EventsRepo.logEntityChange(p.getInstitutionUUID, AuditedEntityType.person, personUUID, from, userInfo.getPerson)
         val roleTOs = RolesRepo.getUserRoles(personUUID, RoleCategory.BIND_DEFAULT)
         userInfo.setRoles(roleTOs.getRoleTOs)
-        userInfo.setEnrollments(newEnrollments(EnrollmentsRepo.byPerson(p.getUUID)))
         userInfo
       }
     }

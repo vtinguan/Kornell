@@ -90,11 +90,8 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		
 		Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
-			public void ok(final UserHelloTO userHello) {
-				view.displayView(null);
-				clientFactory.getEventBus().fireEvent(new LoginEvent(userHello.getUserInfoTO()));
-				clientFactory.getEventBus().fireEvent(new CourseClassesFetchedEvent(userHello.getCourseClassesTO()));	
-				postLogin();
+			public void ok(UserHelloTO userHello) {
+				postLogin(userHello);
 			}
 			@Override
 			protected void unauthorized(KornellErrorTO kornellErrorTO) {
@@ -116,7 +113,11 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		session.login(email, password, userHelloCallback);
 	}
 
-	private void postLogin() {
+	private void postLogin(UserHelloTO userHello) {
+		view.displayView(null);
+		clientFactory.getEventBus().fireEvent(new LoginEvent(userHello.getUserInfoTO()));
+		clientFactory.getEventBus().fireEvent(new CourseClassesFetchedEvent(userHello.getCourseClassesTO()));	
+		
 		Institution institution = dean.getInstitution();
 		UserInfoTO userInfoTO = session.getCurrentUser();
 		clientFactory.setDefaultPlace(new WelcomePlace());
@@ -138,7 +139,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 			newPlace = welcomePlace;
 		}
 		clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
-		clientFactory.setHomePlace(welcomePlace);
+		clientFactory.setHomePlace(welcomePlace, userHello.getCourseClassesTO());
 		clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? clientFactory.getHomePlace() : newPlace);
 	}
 

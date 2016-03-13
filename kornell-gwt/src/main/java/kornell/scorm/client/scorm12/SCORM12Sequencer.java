@@ -20,7 +20,6 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 
-	@SuppressWarnings("unused")
 	private ClassroomPlace place;
 	private FlowPanel contentPanel;
 	private Uidget currentUidget;

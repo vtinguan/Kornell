@@ -2,6 +2,7 @@
 package kornell.gui.client;
 
 import kornell.api.client.KornellSession;
+import kornell.core.to.CourseClassesTO;
 import kornell.gui.client.mvp.HistoryMapper;
 
 import com.google.gwt.place.shared.Place;
@@ -20,11 +21,12 @@ public interface ClientFactory {
 	Place getDefaultPlace();
 	void setDefaultPlace(Place place);
 	Place getHomePlace();
-	void setHomePlace(Place place);
+	void setHomePlace(Place place, CourseClassesTO courseClassesTO);
 
 	void logState();
 
 	KornellSession getKornellSession();
+
 
 
 

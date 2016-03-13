@@ -14,6 +14,7 @@ import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserHelloTO;
@@ -160,7 +161,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					if (KORNELL_SESSION.isAuthenticated()) {
 						//KORNELL_SESSION.courseClasses().getCourseClassesTO(courseClassesCallback);
 						EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(userHelloTO.getCourseClassesTO()));
-						setHomePlace(new WelcomePlace());
+						setHomePlace(new WelcomePlace(), userHelloTO.getCourseClassesTO());
 						startAuthenticated(userHelloTO.getCourseClassesTO());
 					} else {
 						startAnonymous();
@@ -266,15 +267,16 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public void setHomePlace(Place place) {
+	public void setHomePlace(Place place, CourseClassesTO courseClassesTO) {
 		String enrollmentUUID = null;
-		if (KORNELL_SESSION.getCurrentUser() != null && KORNELL_SESSION.getCurrentUser().getEnrollments() != null
-				&& InstitutionType.DASHBOARD.equals(DEAN.getInstitution().getInstitutionType())) {
+		if (KORNELL_SESSION.getCurrentUser() != null && courseClassesTO != null && InstitutionType.DASHBOARD.equals(DEAN.getInstitution().getInstitutionType())) {
 			Date date = new Date(0);
-			for (Enrollment enrollment : KORNELL_SESSION.getCurrentUser().getEnrollments().getEnrollments()) {
+			Enrollment enrollment = null;
+			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
 				// get latest active enrollment on a class (if no enrollment was
 				// found yet, get non active enrollment)
-				if (enrollment.getEnrolledOn().after(date) && enrollment.getCourseClassUUID() != null) {
+				enrollment = courseClassTO.getEnrollment();
+				if (enrollment != null && enrollment.getEnrolledOn().after(date) && enrollment.getCourseClassUUID() != null) {
 					if (EnrollmentState.enrolled.equals(enrollment.getState()) || enrollmentUUID == null) {
 						date = enrollment.getEnrolledOn();
 						enrollmentUUID = enrollment.getUUID();

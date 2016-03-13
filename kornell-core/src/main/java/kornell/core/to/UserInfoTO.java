@@ -24,6 +24,4 @@ public interface UserInfoTO {
 	List<RoleTO> getRoles();
 	void setRoles(List<RoleTO> roles);
 	
-	Enrollments getEnrollments();
-	void setEnrollments(Enrollments e);
 }

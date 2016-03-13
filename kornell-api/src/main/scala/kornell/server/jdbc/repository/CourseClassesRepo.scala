@@ -2,6 +2,7 @@ package kornell.server.jdbc.repository
 
 import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.collection.JavaConverters.bufferAsJavaListConverter
+import scala.collection.JavaConverters.seqAsJavaListConverter
 import kornell.core.entity.CourseClass
 import kornell.core.entity.Person
 import kornell.core.entity.Role
@@ -20,6 +21,10 @@ import kornell.core.error.exception.EntityNotFoundException
 import kornell.core.util.StringUtils
 import kornell.core.entity.AuditedEntityType
 import kornell.core.to.CourseClassesTO
+import kornell.core.entity.CourseVersion
+import com.sun.xml.internal.bind.v2.TODO
+import kornell.core.entity.Course
+import java.util.ArrayList
 
 class CourseClassesRepo {
 }
@@ -182,7 +187,38 @@ object CourseClassesRepo {
 	    val courseClassesTO = getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", null, courseClass.get.getUUID)
 	    bindEnrollments(personUUID, courseClassesTO).getCourseClasses().get(0)
 	} else {
-    	throw new EntityNotFoundException("")
+		//@TODO what about disabled versions?
+	    val courseVersion = sql"""
+		    | select cv.* from 
+			| CourseVersion cv
+			| join Enrollment e on e.courseVersionUUID = cv.uuid
+			| where e.uuid = ${enrollmentUUID}
+		    """.first[CourseVersion](toCourseVersion)
+	    
+		if(courseVersion.isDefined){
+		    val course = sql"""
+			    | select c.* from 
+				| Course c
+				| join CourseVersion cv on cv.course_uuid = c.uuid
+				| where cv.uuid = ${courseVersion.get.getUUID}
+			    """.first[Course](toCourse)
+			
+			val parentCourseClass = getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", courseVersion.get.getParentVersionUUID, null).getCourseClasses.get(0).getCourseClass
+			val courseClassesTO = TOs.newCourseClassesTO
+			val list = new ArrayList[CourseClassTO]
+			val courseClassTO = TOs.newCourseClassTO(course.get, courseVersion.get, parentCourseClass, null)
+			courseClassTO.setEnrolledOnCourseVersion(true)
+		    bindEnrollment(personUUID, courseClassTO)
+			list.add(courseClassTO)
+			courseClassesTO.setCourseClasses(list)
+		    courseClassesTO.setCount(1)
+		    courseClassesTO.setPageSize(1)
+		    courseClassesTO.setPageNumber(1)
+		    courseClassesTO.setSearchCount(1)
+		    courseClassTO
+		} else {
+	    	throw new EntityNotFoundException("")
+		}
 	}
   }
   
@@ -235,7 +271,12 @@ object CourseClassesRepo {
   }
 
   private def bindEnrollment(personUUID: String, courseClassTO: CourseClassTO) = {
-    val enrollment = EnrollmentsRepo.byCourseClassAndPerson(courseClassTO.getCourseClass().getUUID(), personUUID, false)
+    val enrollment = 
+      if(courseClassTO.getCourseClass() != null)
+    	  EnrollmentsRepo.byCourseClassAndPerson(courseClassTO.getCourseClass.getUUID, personUUID, false)
+      else
+    	  EnrollmentsRepo.byCourseVersionAndPerson(courseClassTO.getCourseVersionTO.getCourseVersion.getUUID, personUUID)
+    
     enrollment foreach courseClassTO.setEnrollment
   }
 

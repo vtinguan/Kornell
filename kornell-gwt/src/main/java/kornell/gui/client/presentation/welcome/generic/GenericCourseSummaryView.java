@@ -253,7 +253,6 @@ public class GenericCourseSummaryView extends Composite {
 		enrollmentTO.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
 		enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
 		enrollmentTO.setUsername(session.getCurrentUser().getUsername());
-		session.getCurrentUser().getEnrollments().getEnrollments().add(enrollment);
 		courseClassTO.setEnrollment(enrollment);
 		GenericClientFactoryImpl.DEAN.setCourseClassTO(courseClassTO);
 	}

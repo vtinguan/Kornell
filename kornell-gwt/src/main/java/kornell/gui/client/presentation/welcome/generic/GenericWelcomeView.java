@@ -124,8 +124,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	}
 
 	private void display(final CourseClassesTO tos) {
-		updateUserEnrollments(tos);
-		
 		pnlCourses.clear();
 		final int classesCount = tos.getCourseClasses().size();
 		if(classesCount == 0){
@@ -180,25 +178,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 			});
 		}
   }
-
-	private void updateUserEnrollments(CourseClassesTO tos) {
-		EnrollmentsTO enrollmentsTO = toFactory.newEnrollmentsTO().as();
-		List<EnrollmentTO> enrollmentTOs = new ArrayList<EnrollmentTO>();
-		EnrollmentTO enrollmentTO;
-		session.getCurrentUser().getEnrollments().getEnrollments().clear();
-		for (CourseClassTO courseClassTO : tos.getCourseClasses()) {
-			if (courseClassTO.getEnrollment() != null) {
-				enrollmentTO = toFactory.newEnrollmentTO().as();
-				enrollmentTO.setEnrollment(courseClassTO.getEnrollment());
-				session.getCurrentUser().getEnrollments().getEnrollments().add(courseClassTO.getEnrollment());
-				enrollmentTO.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
-				enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
-				enrollmentTO.setUsername(session.getCurrentUser().getUsername());
-				enrollmentTOs.add(enrollmentTO);
-			}
-		}
-		enrollmentsTO.setEnrollmentTOs(enrollmentTOs);
-	}
 
 	private void prepareButtons(int classesCount) {
 		refreshButtonSelection(btnCoursesAll);

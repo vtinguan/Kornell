@@ -50,6 +50,7 @@ import kornell.core.entity.RoleType
 import kornell.server.util.DateConverter
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.InstitutionRepo
+import kornell.core.to.CourseClassesTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -61,6 +62,7 @@ object TOs {
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
   def newCourseVersionsTO: CourseVersionsTO = tos.newCourseVersionsTO.as
+  def newCourseClassesTO: CourseClassesTO = tos.newCourseClassesTO.as
   def newLibraryFileTO: LibraryFileTO = tos.newLibraryFileTO.as
   def newEntityChangedEventsTO: EntityChangedEventsTO = tos.newEntityChangedEventsTO.as
 
