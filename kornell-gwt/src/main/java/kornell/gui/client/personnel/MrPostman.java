@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UnreadChatThreadsTO;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.GenericClientFactoryImpl;
@@ -45,7 +46,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 	private ArrayList<CourseClassTO> helpCourseClasses;
 	private Dean dean;
 	
-	public MrPostman(MessageComposeView.Presenter messageComposePresenter, EventBus bus, ChatThreadsClient chatThreadsClient, PlaceController placeCtrl) {
+	public MrPostman(MessageComposeView.Presenter messageComposePresenter, EventBus bus, ChatThreadsClient chatThreadsClient, PlaceController placeCtrl, CourseClassesTO courseClassesTO) {
 		this.bus = bus;
 		this.messageComposePresenter = messageComposePresenter;
 		this.chatThreadsClient = chatThreadsClient;
@@ -54,6 +55,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 		this.bus.addHandler(LoginEvent.TYPE, this);
 		this.bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
 		this.dean = GenericClientFactoryImpl.DEAN;
+		filterHelpCourseClasses(courseClassesTO);
 		
 		//initializeUnreadMessagesCountTimer();
 		initializeUnreadMessagesCountPerThreadTimer();
@@ -122,8 +124,12 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 
 	@Override
 	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+		filterHelpCourseClasses(event.getCourseClassesTO());
+	}
+
+	private void filterHelpCourseClasses(CourseClassesTO courseClassesTO) {
 		this.helpCourseClasses = new ArrayList<CourseClassTO>();
-		for (CourseClassTO courseClassTO : event.getCourseClassesTO().getCourseClasses()) {
+		for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
 			if (courseClassTO.getEnrollment() != null
 					&& !courseClassTO.getCourseClass().isInvisible()) {
 				this.helpCourseClasses.add(courseClassTO);

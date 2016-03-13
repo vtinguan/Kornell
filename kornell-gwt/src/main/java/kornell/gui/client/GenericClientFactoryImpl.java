@@ -196,7 +196,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		initActivityManagers();
 		initHistoryHandler(defaultPlace);
 		initException();
-		initPersonnel();
+		initPersonnel(courseClassesTO);
 	}
 
 	private void initGUI(CourseClassesTO courseClassesTO) {
@@ -204,7 +204,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		viewFactory.initGUI();
 	}
 
-	private void initPersonnel() {
+	private void initPersonnel(final CourseClassesTO courseClassesTO) {
 		new Captain(EVENT_BUS, KORNELL_SESSION, placeCtrl);
 		new Stalker(EVENT_BUS, KORNELL_SESSION);
 
@@ -212,7 +212,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			@Override
 			public void execute() {
 				new MrPostman(new MessageComposePresenter(placeCtrl, KORNELL_SESSION, viewFactory, ENTITY_FACTORY),
-						EVENT_BUS, KORNELL_SESSION.chatThreads(), placeCtrl);
+						EVENT_BUS, KORNELL_SESSION.chatThreads(), placeCtrl, courseClassesTO);
 				viewFactory.getMessagePresenter();
 				viewFactory.getMessagePresenterClassroomGlobalChat();
 				viewFactory.getMessagePresenterClassroomTutorChat();
