@@ -2,10 +2,6 @@
 package kornell.gui.client;
 
 import kornell.api.client.KornellSession;
-import kornell.core.entity.EntityFactory;
-import kornell.core.event.EventFactory;
-import kornell.core.lom.LOMFactory;
-import kornell.core.to.TOFactory;
 import kornell.gui.client.mvp.HistoryMapper;
 
 import com.google.gwt.place.shared.Place;
@@ -25,11 +21,6 @@ public interface ClientFactory {
 	void setDefaultPlace(Place place);
 	Place getHomePlace();
 	void setHomePlace(Place place);
-
-	EntityFactory getEntityFactory();
-	TOFactory getTOFactory();
-	LOMFactory getLOMFactory();
-	EventFactory getEventFactory();
 
 	void logState();
 

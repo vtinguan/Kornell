@@ -16,8 +16,6 @@ import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
-import com.google.web.bindery.event.shared.EventBus;
-
 
 public class KornellSession extends KornellClient {
 	Logger logger = Logger.getLogger(KornellSession.class.getName());
@@ -59,6 +57,7 @@ public class KornellSession extends KornellClient {
 
 	public void setCurrentUser(UserInfoTO userInfo) {
 		this.currentUser = userInfo;
+		this.dean = GenericClientFactoryImpl.DEAN;
 	}
 
 	public String getItem(String key) {

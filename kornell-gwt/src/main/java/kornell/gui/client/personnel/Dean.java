@@ -1,7 +1,6 @@
 package kornell.gui.client.personnel;
 
 import static kornell.core.util.StringUtils.mkurl;
-import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadTO;
@@ -14,7 +13,6 @@ import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedEventHandler,

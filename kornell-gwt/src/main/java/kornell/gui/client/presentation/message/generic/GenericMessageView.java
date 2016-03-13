@@ -18,7 +18,6 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ShowChatDockEvent;
 import kornell.gui.client.event.ShowChatDockEventHandler;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.message.MessagePanelType;
 import kornell.gui.client.presentation.message.MessageView;
 import kornell.gui.client.util.EnumTranslator;

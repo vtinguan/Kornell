@@ -365,6 +365,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");
 		btnMessages.add(messagesCount);
+		showButtons(clientFactory.getPlaceController().getWhere());
 	}
 
 	@Override

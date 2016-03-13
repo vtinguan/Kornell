@@ -4,7 +4,6 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.personnel.Dean;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

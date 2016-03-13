@@ -322,8 +322,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	public AdminCoursePresenter getAdminCoursePresenter() {
 		if (genericAdminCoursePresenter == null)
 			genericAdminCoursePresenter = new AdminCoursePresenter(clientFactory.getKornellSession(),
-					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(),
-					clientFactory.getEntityFactory(), this);
+					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(), this);
 		return genericAdminCoursePresenter;
 	}
 
@@ -372,7 +371,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 		if (genericAdminCourseClassPresenter == null)
 			genericAdminCourseClassPresenter = new AdminCourseClassPresenter(clientFactory.getKornellSession(),
 					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getDefaultPlace(),
-					clientFactory.getTOFactory(), this);
+					GenericClientFactoryImpl.TO_FACTORY, this);
 		return genericAdminCourseClassPresenter;
 	}
 

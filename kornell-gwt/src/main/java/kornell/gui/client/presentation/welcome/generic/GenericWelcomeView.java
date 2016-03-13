@@ -13,6 +13,7 @@ import kornell.core.to.EnrollmentsTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
@@ -65,7 +66,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	public GenericWelcomeView(ClientFactory clientFactory) {
 		this.session = clientFactory.getKornellSession();
 		this.placeCtrl = clientFactory.getPlaceController();
-		this.toFactory = clientFactory.getTOFactory();
+		this.toFactory = GenericClientFactoryImpl.TO_FACTORY;
 		this.viewFactory = clientFactory.getViewFactory();
 		this.bus = clientFactory.getEventBus();
 		initWidget(uiBinder.createAndBindUi(this));

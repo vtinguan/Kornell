@@ -9,7 +9,6 @@ import kornell.core.error.KornellErrorTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;

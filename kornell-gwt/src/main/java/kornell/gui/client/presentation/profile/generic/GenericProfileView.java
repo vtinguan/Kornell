@@ -318,7 +318,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private UserInfoTO getUserInfoFromForm() {
 		//"clone" user
 		String userPayload = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(user)).getPayload();
-		UserInfoTO userTmp = AutoBeanCodex.decode(clientFactory.getTOFactory(), kornell.core.to.UserInfoTO.class, userPayload).as();
+		UserInfoTO userTmp = AutoBeanCodex.decode(GenericClientFactoryImpl.TO_FACTORY, kornell.core.to.UserInfoTO.class, userPayload).as();
 		Person person = userTmp.getPerson();
 		
 		if(showCPF){

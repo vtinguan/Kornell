@@ -10,7 +10,6 @@ import kornell.core.to.PeopleTO;
 import kornell.core.to.PersonTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.forms.FormHelper;
 
 import com.github.gwtbootstrap.client.ui.ListBox;

@@ -10,7 +10,6 @@ import kornell.core.to.CourseClassTO;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.forms.FormHelper;

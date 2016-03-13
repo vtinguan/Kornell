@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import kornell.core.entity.AuthClientType;
 import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 import kornell.gui.client.util.view.KornellNotification;
 

@@ -226,7 +226,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	}
 
 	private RegistrationRequestTO buildRegistrationRequestTO(String name, String email, String password) {
-		RegistrationRequestTO registrationRequestTO = clientFactory.getTOFactory().newRegistrationRequestTO().as();
+		RegistrationRequestTO registrationRequestTO = GenericClientFactoryImpl.TO_FACTORY.newRegistrationRequestTO().as();
 		registrationRequestTO.setFullName(name);
 		registrationRequestTO.setEmail(email);
 		registrationRequestTO.setPassword(password);
