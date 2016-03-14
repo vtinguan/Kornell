@@ -35,12 +35,12 @@ public class ChatThreadsClient extends RESTClient {
 		POST("/chatThreads/"+chatThreadUUID+"/message/?since="+((since != null) ? since.getTime() : "")).sendRequest(message, callback);
 	}
 	
-	public void getTotalUnreadCount(String institutionUUID, Callback<String> callback) {
-		GET("/chatThreads/unreadCount/?institutionUUID=" + institutionUUID).sendRequest(null, callback);
+	public void getTotalUnreadCount(Callback<String> callback) {
+		GET("/chatThreads/unreadCount").sendRequest(null, callback);
 	}
 	
-	public void getTotalUnreadCountsPerThread(String institutionUUID, Callback<UnreadChatThreadsTO> callback) {
-		GET("/chatThreads/unreadCountPerThread/?institutionUUID=" + institutionUUID).sendRequest(null, callback);
+	public void getTotalUnreadCountsPerThread(Callback<UnreadChatThreadsTO> callback) {
+		GET("/chatThreads/unreadCountPerThread").sendRequest(null, callback);
 	}
 	
 	public void getChatThreadMessages(String chatThreadUUID, Callback<ChatThreadMessagesTO> callback) {

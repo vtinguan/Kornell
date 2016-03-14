@@ -32,9 +32,6 @@ import kornell.server.jdbc.repository.EnrollmentRepo
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentsResource {
 
-  @Path("{uuid}")
-  def get(@PathParam("uuid") uuid: String): EnrollmentResource = new EnrollmentResource(uuid)
-
   @POST
   @Consumes(Array(Enrollment.TYPE))
   @Produces(Array(Enrollment.TYPE))
@@ -51,7 +48,7 @@ class EnrollmentsResource {
         EventsRepo.logEnrollmentStateChanged(UUID.random, getAuthenticatedPersonUUID, e.getUUID, EnrollmentState.notEnrolled, e.getState, false)
         e
       }
-  }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  AccessDeniedErr() )
+  }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(enrollment.getPersonUUID),  AccessDeniedErr())
   .requiring(CourseClassRepo(enrollment.getCourseClassUUID()).get.isPublicClass() == true, AccessDeniedErr())
   .requiring(enrollment.getState.equals(EnrollmentState.requested) || 
       (enrollment.getState.equals(EnrollmentState.enrolled) && CourseClassRepo(enrollment.getCourseClassUUID()).get.isApproveEnrollmentsAutomatically == true), AccessDeniedErr())
@@ -60,8 +57,11 @@ class EnrollmentsResource {
   @GET
   @Produces(Array(EnrollmentsTO.TYPE))
   def getByCourseUUID(@QueryParam("courseClassUUID") courseClassUUID: String, @QueryParam("searchTerm") searchTerm: String,
-      @QueryParam("ps") pageSize: Int, @QueryParam("pn") pageNumber: Int) = 
-    EnrollmentsRepo.byCourseClassPaged(courseClassUUID, searchTerm, pageSize, pageNumber)
+      @QueryParam("ps") pageSize: Int, @QueryParam("pn") pageNumber: Int) = { 
+      EnrollmentsRepo.byCourseClassPaged(courseClassUUID, searchTerm, pageSize, pageNumber)
+    }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
+     .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
+  .   or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
 
   @PUT
   @Path("requests")

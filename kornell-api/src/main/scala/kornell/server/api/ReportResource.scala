@@ -35,6 +35,9 @@ import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
 import javax.servlet.http.HttpServletRequest
 import kornell.core.util.StringUtils.composeURL
+import kornell.server.util.Conditional.toConditional
+import kornell.server.util.AccessDeniedErr
+
 
 @Path("/report")
 class ReportResource {
@@ -141,7 +144,7 @@ class ReportResource {
     @Context req: HttpServletRequest,
     @QueryParam("courseUUID") courseUUID: String,
     @QueryParam("courseClassUUID") courseClassUUID: String,
-    @QueryParam("fileType") fileType: String) = AuthRepo().withPerson{ person => {
+    @QueryParam("fileType") fileType: String) =  {
 	  if(courseUUID != null || courseClassUUID != null){
 	    val fType = {
 	      if(fileType != null && fileType == "xls")
@@ -163,13 +166,14 @@ class ReportResource {
 	    	resp.setContentType("application/pdf")
 	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
 	  }
-    }  
-  }
+  }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
+     .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
+  .   or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
 
   @GET
   @Path("/courseClassAudit")
   def getCourseClassAudit(@Context resp: HttpServletResponse,
-    @QueryParam("courseClassUUID") courseClassUUID: String) = AuthRepo().withPerson{ person => {
+    @QueryParam("courseClassUUID") courseClassUUID: String) = {
 	  if(courseClassUUID != null){
 	    val courseClass = CourseClassRepo(courseClassUUID).get
 	    val fileName = courseClass.getName + " - Audit - " + new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())+ ".xls"
@@ -177,8 +181,9 @@ class ReportResource {
 	    resp.setContentType("application/vnd.ms-excel")
 	    ReportCourseClassAuditGenerator.generateCourseClassAuditReport(courseClass)
 	  }
-    }  
-  }
+  }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
+     .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
+  .   or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
 
   @GET
   @Path("/institutionBilling")
