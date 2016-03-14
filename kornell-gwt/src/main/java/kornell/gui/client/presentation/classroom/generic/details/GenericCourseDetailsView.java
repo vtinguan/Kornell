@@ -454,6 +454,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	}
 
 	private FlowPanel getSidePanel() {
+		detailsPanel.addStyleName("shy");
 		FlowPanel sidePanel = new FlowPanel();
 		sidePanel.addStyleName("sidePanel");
 

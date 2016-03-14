@@ -2,6 +2,8 @@ package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
 import kornell.core.to.CourseClassesTO;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
+import kornell.gui.client.event.CourseClassesFetchedEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.presentation.admin.audit.AdminAuditView;
@@ -61,7 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHandler {
+public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHandler, CourseClassesFetchedEventHandler {
 
 	private ClientFactory clientFactory;
 
@@ -93,6 +95,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 		this.clientFactory = clientFactory;
 		this.courseClassesTO = courseClassesTO;
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
+		clientFactory.getEventBus().addHandler(CourseClassesFetchedEvent.TYPE, this);
 	}
 
 	@Override
@@ -377,5 +380,10 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 			genericAdminAuditView = new GenericAdminAuditView(clientFactory.getKornellSession(),
 					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 		return genericAdminAuditView;
+	}
+
+	@Override
+	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+		this.courseClassesTO = event.getCourseClassesTO();		
 	}
 }
