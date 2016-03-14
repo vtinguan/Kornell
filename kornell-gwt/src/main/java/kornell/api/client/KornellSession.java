@@ -29,30 +29,6 @@ public class KornellSession extends KornellClient {
 	public KornellSession() {
 		logger.info("Instantiated new Kornell Session");
 	}
-	
-	public UserInfoTO getCurrentUser() {
-		if (currentUser == null) {
-			logger.warning("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
-		}
-		return currentUser;
-	}
-
-	public void setCurrentUser(UserInfoTO userInfo) {
-		this.currentUser = userInfo;
-	}
-
-	public String getItem(String key) {
-		return ClientProperties.get(prefixed(key));
-	}
-
-	public void setItem(String key, String value) {
-		ClientProperties.set(prefixed(key), value);
-	}
-
-	private String prefixed(String key) {
-		return PREFIX + ClientProperties.SEPARATOR + currentUser.getPerson().getUUID()
-				+ ClientProperties.SEPARATOR + key;
-	}
 
 	public boolean isPlatformAdmin(String institutionUUID) {
 		return isValidRole(RoleType.platformAdmin, institutionUUID, null);
@@ -204,6 +180,19 @@ public class KornellSession extends KornellClient {
 		setCurrentUser(null);
 	}
 
+	public String getItem(String key) {
+		return ClientProperties.get(prefixed(key));
+	}
+
+	public void setItem(String key, String value) {
+		ClientProperties.set(prefixed(key), value);
+	}
+
+	private String prefixed(String key) {
+		return PREFIX + ClientProperties.SEPARATOR + currentUser.getPerson().getUUID()
+				+ ClientProperties.SEPARATOR + key;
+	}
+
 	public String getAssetsURL() {
 		return institution == null ? "" : "/repository/" + institution.getAssetsRepositoryUUID();
 	}
@@ -222,6 +211,17 @@ public class KornellSession extends KornellClient {
 
 	public void setCurrentCourseClass(CourseClassTO currentCourseClass) {
 		this.currentCourseClass = currentCourseClass;
+	}
+	
+	public UserInfoTO getCurrentUser() {
+		if (currentUser == null) {
+			logger.warning("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
+		}
+		return currentUser;
+	}
+
+	public void setCurrentUser(UserInfoTO userInfo) {
+		this.currentUser = userInfo;
 	}
 
 }

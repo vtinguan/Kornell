@@ -32,18 +32,7 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 
 		// get the skin and logo immediately
-		// updateSkin(institution.getSkin());
 		initInstitutionSkin();
-
-		/*showBody(false);
-		Timer mdaTimer = new Timer() {
-			public void run() {
-				showBody(true);
-			}
-		};
-		// wait 3 secs for the theme css
-		mdaTimer.schedule((int) (3 * 1000));
-		 */
 		showBody(true);
 	}
 

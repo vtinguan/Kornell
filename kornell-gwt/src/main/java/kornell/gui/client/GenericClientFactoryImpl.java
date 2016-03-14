@@ -84,10 +84,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void initHistoryHandler(Place defaultPlace) {
 
-		// AppPlaceHistoryMapper historyMapper=
-		// GWT.create(AppPlaceHistoryMapper.class);
-		// PlaceHistoryHandler historyHandler = new
-		// PlaceHistoryHandler(historyMapper);
+		// AppPlaceHistoryMapper historyMapper =  GWT.create(AppPlaceHistoryMapper.class);
+		// PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 		// historyHandler.register(placeController, eventBus, defaultPlace);
 
 		historyHandler.register(placeCtrl, EVENT_BUS, defaultPlace);
