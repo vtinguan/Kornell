@@ -11,7 +11,6 @@ import kornell.gui.client.event.ShowChatDockEvent;
 import kornell.gui.client.event.ShowChatDockEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 import kornell.gui.client.presentation.classroom.ClassroomView;
 import kornell.gui.client.presentation.classroom.generic.details.GenericCourseDetailsView;
@@ -74,12 +73,11 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		detailsView.initData();
 		detailsPanel.clear();
 		detailsPanel.add(detailsView);
-		Dean dean = Dean.getInstance();
-		CourseClassTO courseClassTO = dean.getCourseClassTO();
+		CourseClassTO courseClassTO = session.getCurrentCourseClass();
 		Enrollment enrollment = courseClassTO!= null ? courseClassTO.getEnrollment() : null;		
 		boolean showDetails = !showCourseClassContent || EnrollmentCategory.isFinished(enrollment);
 		bus.fireEvent(new ShowDetailsEvent(showDetails));
-        bus.fireEvent(new ShowChatDockEvent(!showDetails && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getCourseClass().isChatDockEnabled()));
+        bus.fireEvent(new ShowChatDockEvent(!showDetails && session.getCurrentCourseClass() != null && session.getCurrentCourseClass().getCourseClass().isChatDockEnabled()));
 	}
 
 	@Override

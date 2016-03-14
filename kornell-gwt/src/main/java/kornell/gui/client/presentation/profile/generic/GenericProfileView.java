@@ -14,13 +14,14 @@ import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.profile.ProfileView;
 import kornell.gui.client.util.forms.FormHelper;
@@ -296,10 +297,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					} else {
 						History.back();
 					}
-					session.getCurrentUser(true, new Callback<UserInfoTO>() {
+					session.fetchUser(new Callback<UserHelloTO>() {
 						@Override
-						public void ok(UserInfoTO to) {
-							user = to;
+						public void ok(UserHelloTO to) {
+							user = to.getUserInfoTO();
 						}
 					});
 				}
@@ -315,7 +316,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private UserInfoTO getUserInfoFromForm() {
 		//"clone" user
 		String userPayload = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(user)).getPayload();
-		UserInfoTO userTmp = AutoBeanCodex.decode(clientFactory.getTOFactory(), kornell.core.to.UserInfoTO.class, userPayload).as();
+		UserInfoTO userTmp = AutoBeanCodex.decode(GenericClientFactoryImpl.TO_FACTORY, kornell.core.to.UserInfoTO.class, userPayload).as();
 		Person person = userTmp.getPerson();
 		
 		if(showCPF){
@@ -390,8 +391,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	private void display() {
 
-		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
-		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails() && isCurrentUser;
+		showContactDetails = session.getInstitution().isDemandsPersonContactDetails();
+		validateContactDetails = session.getInstitution().isValidatePersonContactDetails() && isCurrentUser;
 
 		form.addStyleName("shy");
 

@@ -8,7 +8,6 @@ import kornell.core.entity.RoleType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.RoleTO;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.forms.formfield.ListBoxFormField;
@@ -60,11 +59,7 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 	}
 
 	@Override
-	public void show(String courseClassUUID) {
-		initialize(courseClassUUID);
-	}
-
-	private void initialize(String courseClassUUID) {
+	public void show(ArrayList<CourseClassTO> helpCourseClasses, String courseClassUUID) {
 		lblTitle.setText(constants.composeTitle());
 		lblSubTitle.setText(constants.composeSubTitle());
 		separatorBar.setUrl(FormHelper.SEPARATOR_BAR_IMG_PATH);
@@ -91,10 +86,10 @@ public class GenericMessageComposeView extends Composite implements MessageCompo
 		}
 		
 		if(hasInstitutionThreadAccess){
-			recipients.addItem(constants.institutionAdmin() + ": " + Dean.getInstance().getInstitution().getName(), "institutionSupport");
+			recipients.addItem(constants.institutionAdmin() + ": " + session.getInstitution().getName(), "institutionSupport");
 		}
 
-		for (CourseClassTO courseClassTO : Dean.getInstance().getHelpCourseClasses()) {
+		for (CourseClassTO courseClassTO : helpCourseClasses) {
 			recipients.addItem(constants.courseClassAdmin() + ": " + courseClassTO.getCourseClass().getName(), courseClassTO.getCourseClass().getUUID());
 		}
 

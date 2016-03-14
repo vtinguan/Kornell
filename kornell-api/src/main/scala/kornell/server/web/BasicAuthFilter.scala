@@ -28,7 +28,7 @@ class BasicAuthFilter extends Filter {
     "/api",
     "/probes",
     "/sync",
-    "/user/hello",
+    "/user/login",
     "/user/check",
     "/user/registrationRequest",
     "/user/requestPasswordChange",

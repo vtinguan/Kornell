@@ -49,6 +49,7 @@ public class TestStringUtils {
 		assertNull(StringUtils.opt(null).orElse("").getOrNull());
 	}
 	
+	@SuppressWarnings("serial")
 	@Test
 	public void testComposeProperties(){
 		Map<String, String> props = new HashMap<String, String>(){{

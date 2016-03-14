@@ -1,11 +1,16 @@
 package kornell.gui.client.event;
 
+import kornell.core.to.CourseClassesTO;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class CourseClassesFetchedEvent extends GwtEvent<CourseClassesFetchedEventHandler>{
 	public static final Type<CourseClassesFetchedEventHandler> TYPE = new Type<CourseClassesFetchedEventHandler>();
 		
-	public CourseClassesFetchedEvent() {
+	private CourseClassesTO courseClassesTO;
+	
+	public CourseClassesFetchedEvent(CourseClassesTO courseClassesTO) {
+		this.setCourseClassesTO(courseClassesTO);
 	}
 
 	@Override
@@ -16,6 +21,14 @@ public class CourseClassesFetchedEvent extends GwtEvent<CourseClassesFetchedEven
 	@Override
 	public Type<CourseClassesFetchedEventHandler> getAssociatedType() {
 		return TYPE;
+	}
+
+	public CourseClassesTO getCourseClassesTO() {
+		return courseClassesTO;
+	}
+
+	public void setCourseClassesTO(CourseClassesTO courseClassesTO) {
+		this.courseClassesTO = courseClassesTO;
 	}
 	
 }

@@ -6,7 +6,6 @@ import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.terms.TermsView;
@@ -80,11 +79,11 @@ public class GenericTermsView extends Composite implements TermsView {
 	private void paint() {
 		clientFactory.getViewFactory().getMenuBarView().initPlaceBar(IconType.LEGAL, constants.termsTitle(), constants.termsDescription());
 		titleUser.setText(session.getCurrentUser().getPerson().getFullName());
-		if (Dean.getInstance().getInstitution() != null) {
-			txtTerms.getElement().setInnerHTML(Dean.getInstance().getInstitution().getTerms());
-			String skin = Dean.getInstance().getInstitution().getSkin();
+		if (session.getInstitution() != null) {
+			txtTerms.getElement().setInnerHTML(session.getInstitution().getTerms());
+			String skin = session.getInstitution().getSkin();
 			String barLogoFileName = "/logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png?1";
-			institutionLogo.setUrl(Dean.getInstance().getAssetsURL() + barLogoFileName);
+			institutionLogo.setUrl(session.getAssetsURL() + barLogoFileName);
 		}
 	}
 
@@ -110,7 +109,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void goStudy() {
-		if(Dean.getInstance().getInstitution().isDemandsPersonContactDetails()){
+		if(session.getInstitution().isDemandsPersonContactDetails()){
 			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), true));
 		} else {
 			placeCtrl.goTo(clientFactory.getDefaultPlace());

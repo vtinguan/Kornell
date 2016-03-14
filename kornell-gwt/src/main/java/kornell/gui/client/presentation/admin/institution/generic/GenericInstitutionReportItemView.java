@@ -7,7 +7,6 @@ import java.util.List;
 
 import kornell.api.client.KornellSession;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.KornellNotification;
@@ -54,7 +53,6 @@ public class GenericInstitutionReportItemView extends Composite {
 	Anchor lblDownload;
 	private ListBox periodListBox;
 
-
 	public GenericInstitutionReportItemView(EventBus eventBus, KornellSession session, String type) {
 		this.session = session;
 		this.type = type;
@@ -87,7 +85,7 @@ public class GenericInstitutionReportItemView extends Composite {
 				public void onClick(ClickEvent event) {
 					KornellNotification.show("Aguarde um instante...", AlertType.WARNING, 2000);
 					session.report().locationAssign("/report/institutionBilling", 
-							"?institutionUUID=" + Dean.getInstance().getInstitution().getUUID() +
+							"?institutionUUID=" + session.getInstitution().getUUID() +
 							"&periodStart=" + periodListBox.getValue() +
 							"&periodEnd=" + getNextPeriod(periodListBox.getValue()));
 				}
@@ -108,7 +106,7 @@ public class GenericInstitutionReportItemView extends Composite {
 	  String now = formHelper.dateToString(new Date());
 	  String next = getNextPeriod(now.split("-")[0] + "-" + now.split("-")[1]);
 	  List<String> dates = new ArrayList<String>();
-	  String date = formHelper.dateToString(Dean.getInstance().getInstitution().getActivatedAt());
+	  String date = formHelper.dateToString(session.getInstitution().getActivatedAt());
 	  date = date.split("-")[0] + "-" + date.split("-")[1];
 	  while(!date.equals(next)){
 		  dates.add(date);

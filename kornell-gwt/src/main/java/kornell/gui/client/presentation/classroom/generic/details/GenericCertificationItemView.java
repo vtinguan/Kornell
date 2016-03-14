@@ -21,7 +21,6 @@ import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.view.KornellNotification;
 
@@ -154,7 +153,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 
 	private void updateCertificationLinkAndLabel(){
-		currentCourseClass = Dean.getInstance().getCourseClassTO();
+		currentCourseClass = session.getCurrentCourseClass();
 		if(currentCourseClass == null) return;
 		CourseClass courseClass = currentCourseClass.getCourseClass();
 		Enrollment currEnrollment = currentCourseClass.getEnrollment();
@@ -196,17 +195,18 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 	
 	private void checkCertificateAvailability() {
-		if(!allowCertificateGeneration && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
+		if(!allowCertificateGeneration && session.getCurrentCourseClass() != null && session.getCurrentCourseClass().getEnrollment() != null){
 			Timer checkTimer = new Timer() {
 				@Override
 				public void run() {
-					if(Dean.getInstance().getCourseClassTO() != null){
-					    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
+					if(session.getCurrentCourseClass() != null){
+					    session.enrollment(session.getCurrentCourseClass().getEnrollment().getUUID())
 					    .isApproved(new Callback<String>() {
 					    	@Override
 					    	public void ok(String grade) {
 					    		if(StringUtils.isSome(grade)){
-						    		currentCourseClass.getEnrollment().setAssessmentScore(new BigDecimal(grade));	
+					    			currentCourseClass = session.getCurrentCourseClass();
+					    			session.getCurrentCourseClass().getEnrollment().setAssessmentScore(new BigDecimal(grade));	
 					    		}
 					    		updateCertificationLinkAndLabel();
 					    	}

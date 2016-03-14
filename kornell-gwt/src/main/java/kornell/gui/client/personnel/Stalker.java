@@ -9,70 +9,59 @@ import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
-/**
- * Tracks user
- * 
- * @author faermanj
- */
 public class Stalker implements ActomEnteredEventHandler, LoginEventHandler {
-	EventBus bus;
-	KornellSession session;
-	PlaceHistoryMapper mapper;
-
+	private KornellSession session;
 	private Timer seuInacioTimer;
-
+	
 	public Stalker(EventBus bus, KornellSession session) {
-		this.bus = bus;
 		this.session = session;
-
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		    		signAttendanceSheet();
-		      }
-		});
-
+		
+		scheduleAttendanceSheetSigning();
+		
 		seuInacioTimer = new Timer() {
 			public void run() {
-				signAttendanceSheet();
+				scheduleAttendanceSheetSigning();
 			}
 		};
 
 		// Schedule the timer to run daily
 		seuInacioTimer.scheduleRepeating(24 * 60 * 60 * 1000);
-		
+
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
 		bus.addHandler(LoginEvent.TYPE, this);
 	}
+	
+	private void scheduleAttendanceSheetSigning(){
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				signAttendanceSheet();
+			}
+		});
+	}
 
 	private void signAttendanceSheet() {
-		if (session.isAnonymous())
-			return;
-		session.events()
-				.attendanceSheetSigned(
-						Dean.getInstance().getInstitution().getUUID(),
-						session.getCurrentUser().getPerson().getUUID())
-				.fire(new Callback<Void>() {
-					@Override
-					public void ok(Void to) {
-						//
-					}
-				});
+		if (session.isAnonymous()) return;
+		String institutionUUID = session.getInstitution().getUUID();
+		String personUUID = session.getCurrentUser().getPerson().getUUID();
+		session.events().attendanceSheetSigned(institutionUUID, personUUID).fire(new Callback<Void>() {
+			@Override
+			public void ok(Void to) { 
+				/* nothing to do */
+			}
+		});
 	}
 
 	@Override
 	public void onActomEntered(ActomEnteredEvent event) {
-		session.events()
-				.actomEntered(event.getEnrollmentUUID(), event.getActomKey())
-				.fire();
+		session.events().actomEntered(event.getEnrollmentUUID(), event.getActomKey()).fire();
 	}
 
 	@Override
 	public void onLogin(UserInfoTO user) {
-		signAttendanceSheet();
+		scheduleAttendanceSheetSigning();
 	}
 }

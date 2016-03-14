@@ -1,11 +1,9 @@
 package kornell.scorm.client.scorm12;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
-import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
@@ -13,7 +11,6 @@ import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SimpleSequencer;
 import kornell.gui.client.uidget.Uidget;
-import kornell.gui.client.util.view.KornellNotification;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -21,7 +18,6 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 
-	@SuppressWarnings("unused")
 	private ClassroomPlace place;
 	private FlowPanel contentPanel;
 	private Uidget currentUidget;
@@ -79,13 +75,8 @@ public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 	@Override
 	public void go(Contents contents) {
 		setContents(contents);
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO userInfo) {
-				String currentKey = session.getItem(getBreadcrumbKey());
-				launch(currentKey);
-			}
-		});
+		String currentKey = session.getItem(getBreadcrumbKey());
+		launch(currentKey);
 	}
 
 	private void paintCurrent() {

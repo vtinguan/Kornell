@@ -1,7 +1,5 @@
 package kornell.gui.client.presentation.classroom;
 
-import java.util.List;
-
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
@@ -9,15 +7,13 @@ import kornell.core.entity.CourseClassState;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EnrollmentsEntries;
+import kornell.core.error.KornellErrorTO;
 import kornell.core.lom.Contents;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentLaunchTO;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.HideSouthBarEvent;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.profile.ProfilePlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SequencerFactory;
@@ -66,45 +62,43 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	}
 
 	private void displayPlace() {
-		final String enrollmentUUID = place.getEnrollmentUUID();
-
 		if(session.isAnonymous()){
 			placeCtrl.goTo(new VitrinePlace());
 			return;
 		}
-
-		boolean isEnrolled = false;
-		String enrollmentClassUUID = null;
-		UserInfoTO user = session.getCurrentUser();
-		//TODO: Consider moving this to the server
-		final Dean dean = Dean.getInstance();
-		List<Enrollment> enrollments = user.getEnrollments().getEnrollments();
-		for (Enrollment enrollment : enrollments) {
-			String eUUID = enrollment.getUUID();					
-			if(eUUID.equals(enrollmentUUID)){
-				enrollmentClassUUID = enrollment.getCourseClassUUID();
-				dean.setCourseClassTO(enrollmentClassUUID);
-				if(dean.getCourseClassTO() != null && dean.getCourseClassTO().getCourseClass().isInvisible()){
-					dean.setCourseClassTO((CourseClassTO)null);
-					KornellNotification.show(constants.classSetAsInvisible(), AlertType.WARNING, 5000);
-					placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), false));
-					return;
-				}
-				isEnrolled = EnrollmentState.enrolled.equals(enrollment.getState());
-				break;
-			}
-		}
-		if(enrollmentClassUUID == null){
-			dean.setCourseClassTO((CourseClassTO)null);
-		}
-		view.asWidget().setVisible(false);
 		
-		CourseClass courseClass = Dean.getInstance().getCourseClassTO() != null ? Dean.getInstance().getCourseClassTO().getCourseClass() : null;
+		view.asWidget().setVisible(false);
+
+        LoadingPopup.show();
+        session.courseClasses().getByEnrollment(place.getEnrollmentUUID(), new Callback<CourseClassTO>() {
+            @Override            
+            public void ok(CourseClassTO courseClassTO) {
+                LoadingPopup.hide();
+        		courseClassFetched(courseClassTO);
+            }
+            
+            @Override
+            public void notFound(KornellErrorTO kornellErrorTO){
+                LoadingPopup.hide();
+        		courseClassFetched(null);
+            }
+        });
+	}
+
+	private void courseClassFetched(CourseClassTO courseClassTO) {
+		Enrollment enrollment = courseClassTO != null ? courseClassTO.getEnrollment() : null;
+		boolean isEnrolled = enrollment != null && EnrollmentState.enrolled.equals(enrollment.getState());
+		if(enrollment == null){
+			session.setCurrentCourseClass((CourseClassTO)null);
+		} else {
+			session.setCurrentCourseClass(courseClassTO);
+		}
+		
+		CourseClass courseClass = session.getCurrentCourseClass() != null ? session.getCurrentCourseClass().getCourseClass() : null;
 		CourseClassState courseClassState = courseClass != null ? courseClass.getState() : null;
 		
 		//TODO: Consider if the null state is inactive				
-        final boolean showCourseClassContent = enrollmentClassUUID == null || (isEnrolled && (courseClassState != null && !CourseClassState.inactive.equals(courseClassState)));
-
+        final boolean showCourseClassContent = enrollment == null || (isEnrolled && (courseClassState != null && !CourseClassState.inactive.equals(courseClassState)));
 
         if(showCourseClassContent){
 			LoadingPopup.show();		
@@ -115,12 +109,12 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 					popup.hide();
 				}
 			});
-			session.enrollment(enrollmentUUID).launch(new Callback<EnrollmentLaunchTO>() {
+			session.enrollment(place.getEnrollmentUUID()).launch(new Callback<EnrollmentLaunchTO>() {
 				
 				public void ok(EnrollmentLaunchTO to) {
 					popup.hide();
 					loadRuntime(to.getEnrollmentEntries());
-					loadContents(enrollmentUUID,to.getContents());
+					loadContents(place.getEnrollmentUUID(),to.getContents());
 				};
 				
 				private void loadRuntime(EnrollmentsEntries enrollmentEntries) {

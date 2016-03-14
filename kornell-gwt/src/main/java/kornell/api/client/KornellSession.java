@@ -4,19 +4,17 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import kornell.core.entity.CourseClass;
+import kornell.core.entity.Institution;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.RoleTO;
 import kornell.core.to.TokenTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.event.LoginEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
-
-import com.google.web.bindery.event.shared.EventBus;
 
 
 public class KornellSession extends KornellClient {
@@ -25,54 +23,11 @@ public class KornellSession extends KornellClient {
 	private static final String PREFIX = ClientProperties.PREFIX + "UserSession";
 
 	private UserInfoTO currentUser = null;
+	private Institution institution = null;
+	private CourseClassTO currentCourseClass = null;
 
-	private EventBus bus;
-
-	public KornellSession(EventBus bus) {
-		this.bus = bus;
+	public KornellSession() {
 		logger.info("Instantiated new Kornell Session");
-	}
-	
-	public void getCurrentUser(final Callback<UserInfoTO> callback) {
-		getCurrentUser(false, callback);
-	}
-	
-	public void getCurrentUser(boolean skipCache, final Callback<UserInfoTO> callback) {
-		if (currentUser != null && !skipCache) {
-			callback.ok(currentUser);
-		} else {
-			Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
-				@Override
-				public void ok(UserInfoTO userInfo) {
-					setCurrentUser(userInfo);
-					callback.ok(userInfo);
-				}
-
-				@Override
-				public void unauthorized(KornellErrorTO kornellErrorTO) {
-					setCurrentUser(null);
-					//callback.unauthorized(errorMessage);
-				}
-			};
-			GET("/user").sendRequest(null, wrapper);
-		}
-	}
-
-	public void setCurrentUser(UserInfoTO userInfo) {
-		this.currentUser = userInfo;
-	}
-
-	public String getItem(String key) {
-		return ClientProperties.get(prefixed(key));
-	}
-
-	public void setItem(String key, String value) {
-		ClientProperties.set(prefixed(key), value);
-	}
-
-	private String prefixed(String key) {
-		return PREFIX + ClientProperties.SEPARATOR + currentUser.getPerson().getUUID()
-				+ ClientProperties.SEPARATOR + key;
 	}
 
 	public boolean isPlatformAdmin(String institutionUUID) {
@@ -80,7 +35,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isPlatformAdmin() {
-		return isValidRole(RoleType.platformAdmin, Dean.getInstance().getInstitution().getUUID(), null);
+		return isValidRole(RoleType.platformAdmin, institution.getUUID(), null);
 	}
 
 	public boolean isInstitutionAdmin(String institutionUUID) {
@@ -88,7 +43,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isInstitutionAdmin() {
-		return isInstitutionAdmin(Dean.getInstance().getInstitution().getUUID());
+		return isInstitutionAdmin(institution.getUUID());
 	}
 	
 	public boolean hasCourseClassRole(String courseClassUUID) {
@@ -104,11 +59,8 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassAdmin() {
-		Dean dean = Dean.getInstance();
-		if(dean == null) return false;
-		CourseClassTO courseClassTO = dean.getCourseClassTO();
-		if(courseClassTO == null) return false;
-		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(currentCourseClass == null) return false;
+		CourseClass courseClass = currentCourseClass.getCourseClass();
 		if(courseClass == null) return false;
 		String courseClassUUID = courseClass.getUUID();
 		return isCourseClassAdmin(courseClassUUID);
@@ -119,11 +71,8 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassObserver() {
-		Dean dean = Dean.getInstance();
-		if(dean == null) return false;
-		CourseClassTO courseClassTO = dean.getCourseClassTO();
-		if(courseClassTO == null) return false;
-		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(currentCourseClass == null) return false;
+		CourseClass courseClass = currentCourseClass.getCourseClass();
 		if(courseClass == null) return false;
 		String courseClassUUID = courseClass.getUUID();
 		return isCourseClassObserver(courseClassUUID);
@@ -134,14 +83,20 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassTutor() {
-		Dean dean = Dean.getInstance();
-		if(dean == null) return false;
-		CourseClassTO courseClassTO = dean.getCourseClassTO();
-		if(courseClassTO == null) return false;
-		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(currentCourseClass == null) return false;
+		CourseClass courseClass = currentCourseClass.getCourseClass();
 		if(courseClass == null) return false;
 		String courseClassUUID = courseClass.getUUID();
 		return isCourseClassTutor(courseClassUUID);
+	}
+
+	public boolean hasAnyAdminRole() {
+		if(currentUser == null) return false;
+		List<RoleTO> roleTOs = currentUser.getRoles();
+		return (RoleCategory.hasRole(roleTOs, RoleType.courseClassAdmin) || 
+				RoleCategory.hasRole(roleTOs, RoleType.observer) || 
+				RoleCategory.hasRole(roleTOs, RoleType.tutor) || 
+				isInstitutionAdmin());
 	}
 
 	private boolean isValidRole(RoleType type, String institutionUUID, String courseClassUUID) {
@@ -149,39 +104,29 @@ public class KornellSession extends KornellClient {
 			return false;
 		return RoleCategory.isValidRole(currentUser.getRoles(), type, institutionUUID, courseClassUUID);
 	}
-	
-	public UserInfoTO getCurrentUser() {
-		if (currentUser == null) {
-			logger.warning("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
-		}
-		return currentUser;
-	}
 
 	public boolean isAuthenticated() {
 		return currentUser != null;
 	}
 
-	public void login(String username, String password, final Callback<UserInfoTO> callback) {
-		final Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO user) {
-				setCurrentUser(user);
-				callback.ok(user);
-			}
+	public boolean isAnonymous() {
+		return ! isAuthenticated();
+	}
 
-			@Override
-			protected void unauthorized(KornellErrorTO kornellErrorTO) {
-				setCurrentUser(null);
-				callback.unauthorized(kornellErrorTO);
-			}
-		};
+	public boolean hasSignedTerms() {
+		return StringUtils.isSome(institution.getTerms()) &&
+				currentUser != null &&
+				currentUser.getPerson().getTermsAcceptedOn() != null;
+	}
+
+	public void login(String username, String password, final Callback<UserHelloTO> callback) {
 		
 		Callback<TokenTO> loginWrapper = new Callback<TokenTO>() {
 
 			@Override
 			public void ok(TokenTO to) {
 				ClientProperties.set(ClientProperties.X_KNL_TOKEN, to.getToken());
-				GET("/user").sendRequest(null, wrapper);
+				fetchUser(callback);
 			}
 			
 			@Override
@@ -197,7 +142,24 @@ public class KornellSession extends KornellClient {
 			}
 			
 		};
-		POST_LOGIN(username, password, "/auth/token").sendRequest(null, loginWrapper);
+		POST_LOGIN(username, password, institution.getUUID(), "/auth/token").sendRequest(null, loginWrapper);
+	}
+
+	public void fetchUser(final Callback<UserHelloTO> callback) {
+		final Callback<UserHelloTO> wrapper = new Callback<UserHelloTO>() {
+			@Override
+			public void ok(UserHelloTO userHello) {
+				setCurrentUser(userHello.getUserInfoTO());
+				callback.ok(userHello);
+			}
+
+			@Override
+			protected void unauthorized(KornellErrorTO kornellErrorTO) {
+				setCurrentUser(null);
+				callback.unauthorized(kornellErrorTO);
+			}
+		};
+		GET("/user/login").sendRequest(null, wrapper);
 	}
 	
 	public void logout(){
@@ -218,21 +180,48 @@ public class KornellSession extends KornellClient {
 		setCurrentUser(null);
 	}
 
-	public boolean isAnonymous() {
-		return ! isAuthenticated();
+	public String getItem(String key) {
+		return ClientProperties.get(prefixed(key));
 	}
 
-	public boolean hasSignedTerms() {
-		return StringUtils.isSome(Dean.getInstance().getInstitution().getTerms()) &&
-				currentUser != null &&
-				currentUser.getPerson().getTermsAcceptedOn() != null;
+	public void setItem(String key, String value) {
+		ClientProperties.set(prefixed(key), value);
 	}
 
-	public boolean hasAnyAdminRole(List<RoleTO> roleTOs) {
-		return (RoleCategory.hasRole(roleTOs, RoleType.courseClassAdmin) || 
-				RoleCategory.hasRole(roleTOs, RoleType.observer) || 
-				RoleCategory.hasRole(roleTOs, RoleType.tutor) || 
-				isInstitutionAdmin());
+	private String prefixed(String key) {
+		return PREFIX + ClientProperties.SEPARATOR + currentUser.getPerson().getUUID()
+				+ ClientProperties.SEPARATOR + key;
+	}
+
+	public String getAssetsURL() {
+		return institution == null ? "" : "/repository/" + institution.getAssetsRepositoryUUID();
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public CourseClassTO getCurrentCourseClass() {
+		return currentCourseClass;
+	}
+
+	public void setCurrentCourseClass(CourseClassTO currentCourseClass) {
+		this.currentCourseClass = currentCourseClass;
+	}
+	
+	public UserInfoTO getCurrentUser() {
+		if (currentUser == null) {
+			logger.warning("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
+		}
+		return currentUser;
+	}
+
+	public void setCurrentUser(UserInfoTO userInfo) {
+		this.currentUser = userInfo;
 	}
 
 }

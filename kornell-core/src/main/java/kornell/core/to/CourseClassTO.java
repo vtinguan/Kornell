@@ -15,6 +15,9 @@ public interface CourseClassTO {
 	String getRegistrationPrefix();
 	void setRegistrationPrefix(String registrationPrefix);
 	
+	boolean isEnrolledOnCourseVersion();
+	void setEnrolledOnCourseVersion(boolean enrolledOnCourseVersion);
+	
 	Enrollment getEnrollment();
 	void setEnrollment(Enrollment e);
 	

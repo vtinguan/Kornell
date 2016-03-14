@@ -48,8 +48,4 @@ public class Kornell implements EntryPoint {
 		clientFactory.logState();
 	}
 
-	public ClientFactory getClientFactory() {
-		return clientFactory;
-	}
-
 }

@@ -8,6 +8,16 @@ public interface KornellConstants extends ConstantsWithLookup {
 	String loading();
 
 	/**
+	 * GenericClientFactoryImpl
+	 */
+	
+	@DefaultStringValue("Institution not found.")
+	String institutionNotFound();//"Instituição não encontrada."
+	
+	@DefaultStringValue("We are currently under maintenance. Please check again later. If the problem persists, contact us at suporte@craftware.com.br. Thanks for your patience.")
+	String maintenanceMessage();//"Estamos em manutenção. Tente novamente mais tarde. Se o problema persistir, entre em contato pelo email suporte@craftware.com.br. Agradecemos por sua paciência."
+
+	/**
 	 * VitrinePlace
 	 */
 	

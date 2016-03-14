@@ -21,7 +21,6 @@ import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.RolesTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.mvp.PlaceUtils;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
@@ -118,15 +117,14 @@ public class GenericCourseClassConfigView extends Composite {
         this.presenter = presenter;
         this.isInstitutionAdmin = session.isInstitutionAdmin();
         this.isCreationMode = (courseClassTO == null) && isInstitutionAdmin;
-        this.allowPrefixEdit = Dean.getInstance().getInstitution().isAllowRegistrationByUsername() && (isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID()));
+        this.allowPrefixEdit = session.getInstitution().isAllowRegistrationByUsername() && (isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID()));
         this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
         initWidget(uiBinder.createAndBindUi(this));
 
         // i18n
         btnOK.setText("OK".toUpperCase());
         btnCancel.setText(isCreationMode ? "Cancelar".toUpperCase() : "Limpar".toUpperCase());
-        btnDelete.setVisible(isInstitutionAdmin && !isCreationMode && CourseClassState.active.equals(Dean.getInstance()
-                .getCourseClassTO().getCourseClass().getState()));
+        btnDelete.setVisible(isInstitutionAdmin && !isCreationMode && CourseClassState.active.equals(session.getCurrentCourseClass().getCourseClass().getState()));
         btnDelete.setText(canDelete?"Excluir".toUpperCase():"Desabilitar".toUpperCase());
 
         btnModalOK.setText("OK".toUpperCase());
@@ -304,7 +302,7 @@ public class GenericCourseClassConfigView extends Composite {
         final ListBox registrationTypes = new ListBox();
         registrationTypes.addItem("Email", RegistrationType.email.toString());
         registrationTypes.addItem("CPF", RegistrationType.cpf.toString());
-        if(Dean.getInstance().getInstitution().isAllowRegistrationByUsername())
+        if(session.getInstitution().isAllowRegistrationByUsername())
             registrationTypes.addItem("Usuário", RegistrationType.username.toString());
         if (!isCreationMode) {
             registrationTypes.setSelectedValue(courseClassTO.getCourseClass().getRegistrationType().toString());
@@ -313,7 +311,7 @@ public class GenericCourseClassConfigView extends Composite {
         fields.add(registrationType);
         profileFields.add(registrationType);
 
-        if(Dean.getInstance().getInstitution().isAllowRegistrationByUsername()){
+        if(session.getInstitution().isAllowRegistrationByUsername()){
             institutionRegistrationPrefixes = new ListBox();		
             if(!isCreationMode)
                 institutionRegistrationPrefixes.setSelectedValue(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
@@ -338,7 +336,7 @@ public class GenericCourseClassConfigView extends Composite {
     }
 
     private void loadInstitutionPrefixes() {
-        session.institution(Dean.getInstance().getInstitution().getUUID()).getRegistrationPrefixes(new Callback<InstitutionRegistrationPrefixesTO>() {
+        session.institution(session.getInstitution().getUUID()).getRegistrationPrefixes(new Callback<InstitutionRegistrationPrefixesTO>() {
             @Override
             public void ok(InstitutionRegistrationPrefixesTO to) {
                 for (InstitutionRegistrationPrefix institutionRegistrationPrefix : to.getInstitutionRegistrationPrefixes()) {
@@ -452,7 +450,7 @@ public class GenericCourseClassConfigView extends Composite {
     }
 
     private CourseClass getCourseClassInfoFromForm() {
-        courseClass.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+        courseClass.setInstitutionUUID(session.getInstitution().getUUID());
         courseClass.setName(name.getFieldPersistText());
         courseClass.setCourseVersionUUID(courseVersion.getFieldPersistText());
         courseClass.setPublicClass(publicClass.getFieldPersistText().equals("true"));

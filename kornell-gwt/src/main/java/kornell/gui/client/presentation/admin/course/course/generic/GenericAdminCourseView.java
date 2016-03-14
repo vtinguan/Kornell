@@ -7,7 +7,6 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.EntityFactory;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
@@ -242,7 +241,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		course.setTitle(title.getFieldPersistText());
 		course.setDescription(description.getFieldPersistText());
 		course.setChildCourse(childCourse.getFieldPersistText().equals("true"));
-		course.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+		course.setInstitutionUUID(session.getInstitution().getUUID());
 		return course;
 	}
 
