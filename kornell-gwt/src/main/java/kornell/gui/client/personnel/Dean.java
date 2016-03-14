@@ -3,7 +3,6 @@ package kornell.gui.client.personnel;
 import static kornell.core.util.StringUtils.mkurl;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UnreadChatThreadTO;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
@@ -23,9 +22,9 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 	private KornellSession session;
 	private int totalCount;
 
-	public void init() {
-		this.bus = GenericClientFactoryImpl.EVENT_BUS;
-		this.session = GenericClientFactoryImpl.KORNELL_SESSION;
+	public Dean(EventBus bus, KornellSession session) {
+		this.bus = bus;
+		this.session = session;
 		
 		bus.addHandler(LogoutEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);

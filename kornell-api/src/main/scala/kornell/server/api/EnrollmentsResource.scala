@@ -31,6 +31,9 @@ import kornell.server.jdbc.repository.EnrollmentRepo
 @Path("enrollments")
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentsResource {
+  
+  @Path("{uuid}")
+  def get(@PathParam("uuid") uuid: String): EnrollmentResource = new EnrollmentResource(uuid)
 
   @POST
   @Consumes(Array(Enrollment.TYPE))

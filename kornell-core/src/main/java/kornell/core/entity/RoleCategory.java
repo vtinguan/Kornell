@@ -7,8 +7,8 @@ import kornell.core.to.RoleTO;
 
 public class RoleCategory {
 
-	public static String BIND_DEFAULT = "DEFAULT";
-	public static String BIND_WITH_PERSON = "PERSON";
+	public static final String BIND_DEFAULT = "DEFAULT";
+	public static final String BIND_WITH_PERSON = "PERSON";
 	
 	public static boolean isValidRole(Role role, RoleType type, String institutionUUID, String courseClassUUID) {
 		switch (role.getRoleType()) {

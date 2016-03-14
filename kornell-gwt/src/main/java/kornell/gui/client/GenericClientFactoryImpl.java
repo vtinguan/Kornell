@@ -193,7 +193,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initPersonnel(final CourseClassesTO courseClassesTO) {
-		new Dean();
+		new Dean(EVENT_BUS, KORNELL_SESSION);
 		new Captain(EVENT_BUS, KORNELL_SESSION, placeCtrl);
 		new Stalker(EVENT_BUS, KORNELL_SESSION);
 
