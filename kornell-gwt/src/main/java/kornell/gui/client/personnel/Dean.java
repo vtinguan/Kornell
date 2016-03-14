@@ -2,7 +2,6 @@ package kornell.gui.client.personnel;
 
 import static kornell.core.util.StringUtils.mkurl;
 import kornell.api.client.KornellSession;
-import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.LogoutEvent;
@@ -100,10 +99,6 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 		}
 		$wnd.document.getElementsByTagName('head')[0].appendChild(link);
 	}-*/;
-
-	public CourseClassTO getCourseClassTO() {
-		return session.getCurrentCourseClass();
-	}
 
 	private static native void showBody(boolean show) /*-{
 		$wnd.document.getElementsByTagName('body')[0].setAttribute('style',

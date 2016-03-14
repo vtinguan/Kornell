@@ -8,7 +8,6 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
@@ -47,7 +46,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	@UiField
 	FlowPanel pnlCourses;
 	Button btnCoursesAll, btnCoursesInProgress, btnCoursesToStart, btnCoursesToAcquire, btnCoursesFinished;
-	
+
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private ViewFactory viewFactory;
@@ -56,8 +55,8 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	private Button selectedFilterButton;
 	private ArrayList<IsWidget> widgets;
 
-		
-	
+	private int classesCount;
+
 	public GenericWelcomeView(ClientFactory clientFactory) {
 		this.session = clientFactory.getKornellSession();
 		this.placeCtrl = clientFactory.getPlaceController();
@@ -65,21 +64,21 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		this.bus = clientFactory.getEventBus();
 		initWidget(uiBinder.createAndBindUi(this));
 		coursesWrapper.setVisible(false);
-		
+
 		initData();
-		
-		bus.addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
+
+		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
 			public void onPlaceChange(PlaceChangeEvent event) {
-				if(event.getNewPlace() instanceof WelcomePlace){					
+				if (event.getNewPlace() instanceof WelcomePlace) {
 					initData();
 				}
-			}});
+			}
+		});
 	}
 
 	private void startPlaceBar() {
-		if(widgets == null){
+		if (widgets == null) {
 			widgets = new ArrayList<IsWidget>();
 			btnCoursesFinished = startButton(constants.finished(), widgets);
 			btnCoursesToAcquire = startButton("Disponíveis", widgets);
@@ -90,8 +89,8 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		}
 		viewFactory.getMenuBarView().setPlaceBarWidgets(widgets);
 	}
-	
-	private Button startButton(String text, List<IsWidget> widgets){
+
+	private Button startButton(String text, List<IsWidget> widgets) {
 		Button button = new Button(text);
 		button.addStyleName("btnPlaceBar");
 		button.addClickHandler(new ClickHandler() {
@@ -107,71 +106,66 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 
 	private void initData() {
 		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, constants.homeTitle(), constants.homeDescription());
-        session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
-            @Override
-            public void ok(CourseClassesTO courseClassesTO) {
-				bus.fireEvent(new CourseClassesFetchedEvent(courseClassesTO));	
-                startPlaceBar();
-                display(courseClassesTO);
-            }
-        });
+		session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
+			@Override
+			public void ok(CourseClassesTO courseClassesTO) {
+				bus.fireEvent(new CourseClassesFetchedEvent(courseClassesTO));
+				startPlaceBar();
+				display(courseClassesTO);
+			}
+		});
 	}
 
 	private void display(final CourseClassesTO tos) {
 		pnlCourses.clear();
 		final int classesCount = tos.getCourseClasses().size();
-		if(classesCount == 0){
+		if (classesCount == 0) {
 			coursesWrapper.setVisible(false);
 			KornellNotification.show(constants.noClassesAvailable(), AlertType.WARNING, 8000);
 		} else {
 			coursesWrapper.setVisible(true);
 		}
-		
+
 		prepareButtons(classesCount);
 		prepareClassesPanel(tos);
 	}
 
 	private void prepareClassesPanel(final CourseClassesTO tos) {
-		final int classesCount = tos.getCourseClasses().size();
-		
-	  for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
-	  	if(courseClassTO.getCourseClass().isInvisible()) continue;
-	  	
-			final Teacher teacher = Teachers.of(courseClassTO);
+		classesCount = tos.getCourseClasses().size();
 
-			session.getCurrentUser(new Callback<UserInfoTO>() {
-				@Override
-				public void ok(UserInfoTO userInfoTO) {
-					Student student = teacher.student(userInfoTO);
-					addPanelIfFiltered(btnCoursesAll, courseClassTO);
-					if (student.isEnrolled()) {
-						EnrollmentProgressDescription description = student.getEnrollmentProgress().getDescription();
-						switch (description) {
-						case completed:
-							addPanelIfFiltered(btnCoursesFinished, courseClassTO);
-							break;
-						case inProgress:
-							addPanelIfFiltered(btnCoursesInProgress, courseClassTO);
-							break;
-						case notStarted:
-							addPanelIfFiltered(btnCoursesToStart, courseClassTO);
-							break;
-						}
-					} else {
-						addPanelIfFiltered(btnCoursesToAcquire, courseClassTO);
-					}
+		for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
+			if (courseClassTO.getCourseClass().isInvisible())
+				continue;
+
+			final Teacher teacher = Teachers.of(courseClassTO);
+			Student student = teacher.student(session.getCurrentUser());
+			addPanelIfFiltered(btnCoursesAll, courseClassTO);
+			if (student.isEnrolled()) {
+				EnrollmentProgressDescription description = student.getEnrollmentProgress().getDescription();
+				switch (description) {
+				case completed:
+					addPanelIfFiltered(btnCoursesFinished, courseClassTO);
+					break;
+				case inProgress:
+					addPanelIfFiltered(btnCoursesInProgress, courseClassTO);
+					break;
+				case notStarted:
+					addPanelIfFiltered(btnCoursesToStart, courseClassTO);
+					break;
 				}
-				
-				private void addPanelIfFiltered(Button button, CourseClassTO courseClassTO){
-					if(button.equals(selectedFilterButton)){
-						pnlCourses.add(new GenericCourseSummaryView(placeCtrl, courseClassTO, session));
-					}
-					if(classesCount > 3)
-						button.setVisible(true);
-				}
-			});
+			} else {
+				addPanelIfFiltered(btnCoursesToAcquire, courseClassTO);
+			}
 		}
-  }
+	}
+
+	private void addPanelIfFiltered(Button button, CourseClassTO courseClassTO) {
+		if (button.equals(selectedFilterButton)) {
+			pnlCourses.add(new GenericCourseSummaryView(placeCtrl, courseClassTO, session));
+		}
+		if (classesCount > 3)
+			button.setVisible(true);
+	}
 
 	private void prepareButtons(int classesCount) {
 		refreshButtonSelection(btnCoursesAll);
@@ -179,9 +173,9 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		refreshButtonSelection(btnCoursesToStart);
 		refreshButtonSelection(btnCoursesToAcquire);
 		refreshButtonSelection(btnCoursesFinished);
-  }
-	
-	private void refreshButtonSelection(Button button){
+	}
+
+	private void refreshButtonSelection(Button button) {
 		button.setVisible(false);
 		button.removeStyleName("btnSelected");
 		button.addStyleName("btnNotSelected");

@@ -16,13 +16,11 @@ import kornell.core.entity.Person;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.view.KornellNotification;
 
@@ -49,7 +47,6 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private EventBus bus;
 	private KornellSession session;
-	private Dean dean;
 	private CourseClassTO currentCourseClass;
 	private String type;
 	private String name;
@@ -83,7 +80,6 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 			String type) {
 		this.bus = eventBus;
 		this.session = session;
-		this.dean = GenericClientFactoryImpl.DEAN;
 		this.currentCourseClass = currentCourseClass;
 		this.type = type;
 		bus.addHandler(ProgressEvent.TYPE,this);
@@ -157,7 +153,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 
 	private void updateCertificationLinkAndLabel(){
-		currentCourseClass = dean.getCourseClassTO();
+		currentCourseClass = session.getCurrentCourseClass();
 		if(currentCourseClass == null) return;
 		CourseClass courseClass = currentCourseClass.getCourseClass();
 		Enrollment currEnrollment = currentCourseClass.getEnrollment();
@@ -199,18 +195,18 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 	
 	private void checkCertificateAvailability() {
-		if(!allowCertificateGeneration && dean.getCourseClassTO() != null && dean.getCourseClassTO().getEnrollment() != null){
+		if(!allowCertificateGeneration && session.getCurrentCourseClass() != null && session.getCurrentCourseClass().getEnrollment() != null){
 			Timer checkTimer = new Timer() {
 				@Override
 				public void run() {
-					if(dean.getCourseClassTO() != null){
-					    session.enrollment(dean.getCourseClassTO().getEnrollment().getUUID())
+					if(session.getCurrentCourseClass() != null){
+					    session.enrollment(session.getCurrentCourseClass().getEnrollment().getUUID())
 					    .isApproved(new Callback<String>() {
 					    	@Override
 					    	public void ok(String grade) {
 					    		if(StringUtils.isSome(grade)){
-					    			currentCourseClass = dean.getCourseClassTO();
-					    			dean.getCourseClassTO().getEnrollment().setAssessmentScore(new BigDecimal(grade));	
+					    			currentCourseClass = session.getCurrentCourseClass();
+					    			session.getCurrentCourseClass().getEnrollment().setAssessmentScore(new BigDecimal(grade));	
 					    		}
 					    		updateCertificationLinkAndLabel();
 					    	}

@@ -14,7 +14,6 @@ import kornell.core.to.EnrollmentLaunchTO;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.HideSouthBarEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SequencerFactory;
@@ -43,7 +42,6 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 	private Contents contents;
 	private Sequencer sequencer;
 	private EventBus bus;
-	private Dean dean;
 
 	public ClassroomPresenter(EventBus bus, ClassroomView view, PlaceController placeCtrl,
 			SequencerFactory seqFactory, KornellSession session) {
@@ -53,7 +51,6 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		this.placeCtrl = placeCtrl;
 		this.sequencerFactory = seqFactory;
 		this.session = session;
-		this.dean = GenericClientFactoryImpl.DEAN;
 
 
 		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
@@ -97,7 +94,7 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 			session.setCurrentCourseClass(courseClassTO);
 		}
 		
-		CourseClass courseClass = dean.getCourseClassTO() != null ? dean.getCourseClassTO().getCourseClass() : null;
+		CourseClass courseClass = session.getCurrentCourseClass() != null ? session.getCurrentCourseClass().getCourseClass() : null;
 		CourseClassState courseClassState = courseClass != null ? courseClass.getState() : null;
 		
 		//TODO: Consider if the null state is inactive				

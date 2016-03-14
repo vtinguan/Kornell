@@ -22,12 +22,10 @@ import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassMessagesView;
 import kornell.gui.client.presentation.classroom.ClassroomView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
@@ -66,8 +64,6 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	private GenericCourseClassMessagesView messagesGlobalChatView, messagesTutorChatView;
 	private KornellConstants constants = GWT.create(KornellConstants.class);
 	private String IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "courseDetails");
-
-	private Dean dean;
 
 	@UiField
 	FlowPanel detailsPanel;
@@ -110,7 +106,6 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.viewFactory = viewFactory;
-		this.dean = GenericClientFactoryImpl.DEAN;
 		this.messagePresenterClassroomGlobalChat = viewFactory.getMessagePresenterClassroomGlobalChat();
 		this.messagePresenterClassroomGlobalChat.enableMessagesUpdate(false);
 		this.messagePresenterClassroomTutorChat = viewFactory.getMessagePresenterClassroomTutorChat();
@@ -121,7 +116,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	public void initData() {
 		setContents(presenter.getContents());
 		certificationPanel = getCertificationPanel();
-		courseClassTO = dean.getCourseClassTO();
+		courseClassTO = session.getCurrentCourseClass();
 		if (courseClassTO != null)
 			display();
 	}
@@ -137,7 +132,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		isEnrolled = false;
 		isCancelled = false;
 
-		CourseClassTO courseClassTO = GenericClientFactoryImpl.DEAN.getCourseClassTO();
+		CourseClassTO courseClassTO = session.getCurrentCourseClass();
 		if (courseClassTO != null && courseClassTO.getEnrollment() != null) {
 			if (EnrollmentState.enrolled.equals(courseClassTO.getEnrollment().getState())) {
 				isEnrolled = true;
@@ -170,8 +165,8 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		detailsContentPanel.add(certificationPanel);
 
 		btnLibrary.setVisible(false);
-		if(!dean.getCourseClassTO().isEnrolledOnCourseVersion()){
-			session.courseClass(dean.getCourseClassTO().getCourseClass().getUUID()).libraryFiles(
+		if(!session.getCurrentCourseClass().isEnrolledOnCourseVersion()){
+			session.courseClass(session.getCurrentCourseClass().getCourseClass().getUUID()).libraryFiles(
 					new Callback<LibraryFilesTO>() {
 						@Override
 						public void ok(LibraryFilesTO to) {
@@ -244,7 +239,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	private void buildChatPanel(boolean isVisible) {
 		if (messagesGlobalChatView == null) {
 			messagesGlobalChatView = new GenericCourseClassMessagesView(session, bus, placeCtrl, viewFactory,
-					messagePresenterClassroomGlobalChat, dean.getCourseClassTO());
+					messagePresenterClassroomGlobalChat, session.getCurrentCourseClass());
 		}
 		if (chatPanel == null) {
 			chatPanel = new FlowPanel();
@@ -264,7 +259,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	private void buildTutorPanel() {
 		if (messagesTutorChatView == null) {
 			messagesTutorChatView = new GenericCourseClassMessagesView(session, bus, placeCtrl, viewFactory,
-					messagePresenterClassroomTutorChat, dean.getCourseClassTO());
+					messagePresenterClassroomTutorChat, session.getCurrentCourseClass());
 		}
 		if (tutorPanel == null) {
 			tutorPanel = new FlowPanel();
@@ -302,9 +297,9 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		certificationContentPanel.addStyleName("certificationContentPanel");
 
 		// certificationContentPanel.add(new GenericCertificationItemView(bus,
-		// session, dean.getCourseClassTO(),
+		// session, session.getCourseClassTO(),
 		// GenericCertificationItemView.TEST));
-		certificationContentPanel.add(new GenericCertificationItemView(bus, session, dean.getCourseClassTO(),
+		certificationContentPanel.add(new GenericCertificationItemView(bus, session, session.getCurrentCourseClass(),
 				GenericCertificationItemView.CERTIFICATION));
 
 		return certificationContentPanel;
@@ -339,7 +334,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		ExternalPage page;
 		boolean enableAnchorOnNextTopicsFirstChild = true;
 		for (Content content : contents.getChildren()) {
-			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, dean.getCourseClassTO(), content,
+			topicsPanel.add(new GenericTopicView(bus, session, placeCtrl, session, session.getCurrentCourseClass(), content,
 					i++, enableAnchorOnNextTopicsFirstChild));
 			enableAnchorOnNextTopicsFirstChild = true;
 			List<Content> children = new ArrayList<Content>();

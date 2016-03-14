@@ -4,7 +4,6 @@ import static kornell.core.util.StringUtils.composeURL;
 import kornell.core.to.CourseClassesTO;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.audit.AdminAuditView;
 import kornell.gui.client.presentation.admin.audit.generic.GenericAdminAuditView;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
@@ -89,14 +88,11 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	private CourseClassesTO courseClassesTO;
 
 	private SimplePanel shell = new SimplePanel();
-	private Dean dean;
-
 
 	public GenericViewFactoryImpl(ClientFactory clientFactory, CourseClassesTO courseClassesTO) {
 		this.clientFactory = clientFactory;
 		this.courseClassesTO = courseClassesTO;
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
-		this.dean = GenericClientFactoryImpl.DEAN;
 	}
 
 	@Override
@@ -116,7 +112,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 				setPlaceNameAsBodyStyle(event);
 				setBackgroundImage(event.getNewPlace() instanceof VitrinePlace);
 				checkMenuBars(event.getNewPlace() instanceof VitrinePlace);
-				changeOverflow(event.getNewPlace() instanceof ClassroomPlace && dean.getCourseClassTO() != null);
+				changeOverflow(event.getNewPlace() instanceof ClassroomPlace && clientFactory.getKornellSession().getCurrentCourseClass() != null);
 			}
 
 			private void checkMenuBars(boolean removePanels) {

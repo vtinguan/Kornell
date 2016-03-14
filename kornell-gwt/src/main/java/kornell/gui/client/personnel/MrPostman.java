@@ -46,24 +46,25 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 	private EntityFactory entityFactory;
 	private ChatThreadsClient chatThreadsClient;
 	private PlaceController placeCtrl;
-	private MessageComposeView.Presenter messageComposePresenter; 
+	private MessageComposeView.Presenter messageComposePresenter;
 	private Timer unreadMessagesCountTimer;
 	private Timer unreadMessagesCountPerThreadTimer;
 	private ArrayList<CourseClassTO> helpCourseClasses;
-	
-	public MrPostman(ViewFactory viewFactory, EventBus bus, KornellSession session, PlaceController placeCtrl, EntityFactory entityFactory, CourseClassesTO courseClassesTO) {
+
+	public MrPostman(ViewFactory viewFactory, EventBus bus, KornellSession session, PlaceController placeCtrl,
+			EntityFactory entityFactory, CourseClassesTO courseClassesTO) {
 		this.viewFactory = viewFactory;
 		this.bus = bus;
 		this.session = session;
 		this.entityFactory = entityFactory;
 		this.chatThreadsClient = session.chatThreads();
 		this.placeCtrl = placeCtrl;
-		
+
 		filterHelpCourseClasses(courseClassesTO);
-		
+
 		initializeMessagePresenters();
-		
-		//initializeUnreadMessagesCountTimer();
+
+		// initializeUnreadMessagesCountTimer();
 		initializeUnreadMessagesCountPerThreadTimer();
 		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
 		this.bus.addHandler(LoginEvent.TYPE, this);
@@ -83,12 +84,12 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 	private void initializeUnreadMessagesCountPerThreadTimer() {
 
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		    		getUnreadMessagesPerThread();
-		      }
+			@Override
+			public void execute() {
+				getUnreadMessagesPerThread();
+			}
 		});
-		
+
 		unreadMessagesCountPerThreadTimer = new Timer() {
 			public void run() {
 				getUnreadMessagesPerThread();
@@ -97,49 +98,52 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 
 		// Schedule the timer to run every 30 seconds
 		unreadMessagesCountPerThreadTimer.scheduleRepeating(30 * 1000);
-		
-		bus.addHandler(PlaceChangeEvent.TYPE,
-				new PlaceChangeEvent.Handler() {
 
-					@Override 
-					public void onPlaceChange(PlaceChangeEvent event) {
-						Place place = event.getNewPlace();
-						if(place instanceof MessagePlace || place instanceof AdminCourseClassPlace || place instanceof ClassroomPlace){
-							getUnreadMessagesPerThread(true);
-						}
-						if(popup != null && popup.isShowing()){
-							boolean showingPlacePanel = !(place instanceof VitrinePlace || place instanceof ClassroomPlace || place instanceof AdminPlace);;
-							popup.setPopupPosition(popup.getAbsoluteLeft(), showingPlacePanel ? Positioning.NORTH_BAR_PLUS : Positioning.NORTH_BAR);
-						}
-					}
-				});
-  }
-	
+		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
+
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				Place place = event.getNewPlace();
+				if (place instanceof MessagePlace || place instanceof AdminCourseClassPlace
+						|| place instanceof ClassroomPlace) {
+					getUnreadMessagesPerThread(true);
+				}
+				if (popup != null && popup.isShowing()) {
+					boolean showingPlacePanel = !(place instanceof VitrinePlace || place instanceof ClassroomPlace || place instanceof AdminPlace);
+					;
+					popup.setPopupPosition(popup.getAbsoluteLeft(), showingPlacePanel ? Positioning.NORTH_BAR_PLUS
+							: Positioning.NORTH_BAR);
+				}
+			}
+		});
+	}
+
 	private void getUnreadMessagesPerThread() {
 		getUnreadMessagesPerThread(false);
 	}
-	
-	private void getUnreadMessagesPerThread(boolean forceFetch) {
-		if(forceFetch || !(placeCtrl.getWhere() instanceof VitrinePlace)){
-	    chatThreadsClient.getTotalUnreadCountsPerThread(session.getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
-				@Override
-				public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
-					bus.fireEvent(new UnreadMessagesPerThreadFetchedEvent(unreadChatThreadsTO.getUnreadChatThreadTOs()));
-				}
-			});
-		}
-  }
 
+	private void getUnreadMessagesPerThread(boolean forceFetch) {
+		if (forceFetch || !(placeCtrl.getWhere() instanceof VitrinePlace)) {
+			chatThreadsClient.getTotalUnreadCountsPerThread(session.getInstitution().getUUID(),
+					new Callback<UnreadChatThreadsTO>() {
+						@Override
+						public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
+							bus.fireEvent(new UnreadMessagesPerThreadFetchedEvent(unreadChatThreadsTO
+									.getUnreadChatThreadTOs()));
+						}
+					});
+		}
+	}
 
 	@Override
-  public void onLogin(UserInfoTO user) {
+	public void onLogin(UserInfoTO user) {
 		// Fetch all messages after 2 seconds
 		new Timer() {
 			public void run() {
 				getUnreadMessagesPerThread(true);
 			}
 		}.schedule(2 * 1000);
-  }
+	}
 
 	@Override
 	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
@@ -148,35 +152,34 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 
 	private void filterHelpCourseClasses(CourseClassesTO courseClassesTO) {
 		this.helpCourseClasses = new ArrayList<CourseClassTO>();
-		for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-			if (courseClassTO.getEnrollment() != null
-					&& !courseClassTO.getCourseClass().isInvisible()) {
-				this.helpCourseClasses.add(courseClassTO);
+		if (courseClassesTO != null) {
+			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+				if (courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()) {
+					this.helpCourseClasses.add(courseClassTO);
+				}
 			}
 		}
 	}
 
-
 	@Override
 	public void onComposeMessage(ComposeMessageEvent event) {
-		if(popup == null || !popup.isShowing()){
+		if (popup == null || !popup.isShowing()) {
 			messageComposePresenter.init(helpCourseClasses);
 			show(event.isShowingPlacePanel());
 		} else {
 			hide();
 		}
 	}
-	
 
 	@SuppressWarnings("unused")
 	private void initializeUnreadMessagesCountTimer() {
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		    		getUnreadMessages();
-		      }
+			@Override
+			public void execute() {
+				getUnreadMessages();
+			}
 		});
-		
+
 		unreadMessagesCountTimer = new Timer() {
 			public void run() {
 				getUnreadMessages();
@@ -185,24 +188,25 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 
 		// Schedule the timer to run every 2 minutes
 		unreadMessagesCountTimer.scheduleRepeating(2 * 60 * 1000);
-  }
+	}
+
 	private void getUnreadMessages() {
-		if(!(placeCtrl.getWhere() instanceof VitrinePlace)){
-	    chatThreadsClient.getTotalUnreadCount(session.getInstitution().getUUID(), new Callback<String>() {
+		if (!(placeCtrl.getWhere() instanceof VitrinePlace)) {
+			chatThreadsClient.getTotalUnreadCount(session.getInstitution().getUUID(), new Callback<String>() {
 				@Override
 				public void ok(String unreadMessagesCount) {
 					bus.fireEvent(new UnreadMessagesFetchedEvent(unreadMessagesCount));
 				}
 			});
 		}
-  }
-	
-	public synchronized void show(boolean showingPlacePanel) {	
-		if(popup == null){
+	}
+
+	public synchronized void show(boolean showingPlacePanel) {
+		if (popup == null) {
 			popup = new PopupPanel(false, false);
 			popup.addStyleName("messagesPopup");
 			FlowPanel panel = new FlowPanel();
-			if(messageComposePresenter != null){
+			if (messageComposePresenter != null) {
 				panel.add(messageComposePresenter.asWidget());
 			}
 			popup.setGlassEnabled(false);
@@ -210,11 +214,12 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 			popup.center();
 		}
 		popup.show();
-		popup.setPopupPosition(popup.getAbsoluteLeft(), showingPlacePanel ? Positioning.NORTH_BAR_PLUS : Positioning.NORTH_BAR);
+		popup.setPopupPosition(popup.getAbsoluteLeft(), showingPlacePanel ? Positioning.NORTH_BAR_PLUS
+				: Positioning.NORTH_BAR);
 	}
 
 	public static void hide() {
-		if(popup != null){
+		if (popup != null) {
 			popup.hide();
 		}
 	}

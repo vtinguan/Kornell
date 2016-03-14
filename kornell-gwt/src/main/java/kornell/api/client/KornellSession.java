@@ -14,8 +14,6 @@ import kornell.core.to.TokenTO;
 import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 
 
@@ -25,38 +23,18 @@ public class KornellSession extends KornellClient {
 	private static final String PREFIX = ClientProperties.PREFIX + "UserSession";
 
 	private UserInfoTO currentUser = null;
-	private Dean dean = null;
 	private Institution institution = null;
 	private CourseClassTO currentCourseClass = null;
 
 	public KornellSession() {
 		logger.info("Instantiated new Kornell Session");
-		this.dean = GenericClientFactoryImpl.DEAN;
 	}
 	
-	public void getCurrentUser(final Callback<UserInfoTO> callback) {
-		getCurrentUser(false, callback);
-	}
-	
-	public void getCurrentUser(boolean skipCache, final Callback<UserInfoTO> callback) {
-		if (currentUser != null && !skipCache) {
-			callback.ok(currentUser);
-		} else {
-			Callback<UserInfoTO> wrapper = new Callback<UserInfoTO>() {
-				@Override
-				public void ok(UserInfoTO userInfo) {
-					setCurrentUser(userInfo);
-					callback.ok(userInfo);
-				}
-
-				@Override
-				public void unauthorized(KornellErrorTO kornellErrorTO) {
-					setCurrentUser(null);
-					//callback.unauthorized(errorMessage);
-				}
-			};
-			GET("/user").sendRequest(null, wrapper);
+	public UserInfoTO getCurrentUser() {
+		if (currentUser == null) {
+			logger.warning("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
 		}
+		return currentUser;
 	}
 
 	public void setCurrentUser(UserInfoTO userInfo) {
@@ -105,10 +83,8 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassAdmin() {
-		if(dean == null) return false;
-		CourseClassTO courseClassTO = dean.getCourseClassTO();
-		if(courseClassTO == null) return false;
-		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(currentCourseClass == null) return false;
+		CourseClass courseClass = currentCourseClass.getCourseClass();
 		if(courseClass == null) return false;
 		String courseClassUUID = courseClass.getUUID();
 		return isCourseClassAdmin(courseClassUUID);
@@ -119,10 +95,8 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassObserver() {
-		if(dean == null) return false;
-		CourseClassTO courseClassTO = dean.getCourseClassTO();
-		if(courseClassTO == null) return false;
-		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(currentCourseClass == null) return false;
+		CourseClass courseClass = currentCourseClass.getCourseClass();
 		if(courseClass == null) return false;
 		String courseClassUUID = courseClass.getUUID();
 		return isCourseClassObserver(courseClassUUID);
@@ -133,10 +107,8 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isCourseClassTutor() {
-		if(dean == null) return false;
-		CourseClassTO courseClassTO = dean.getCourseClassTO();
-		if(courseClassTO == null) return false;
-		CourseClass courseClass = courseClassTO.getCourseClass();
+		if(currentCourseClass == null) return false;
+		CourseClass courseClass = currentCourseClass.getCourseClass();
 		if(courseClass == null) return false;
 		String courseClassUUID = courseClass.getUUID();
 		return isCourseClassTutor(courseClassUUID);
@@ -156,13 +128,6 @@ public class KornellSession extends KornellClient {
 			return false;
 		return RoleCategory.isValidRole(currentUser.getRoles(), type, institutionUUID, courseClassUUID);
 	}
-	
-	public UserInfoTO getCurrentUser() {
-		if (currentUser == null) {
-			logger.warning("WARNING: Requested current user for unauthenticated session. Watch out for NPEs. Check before or use callback to be safer.");
-		}
-		return currentUser;
-	}
 
 	public boolean isAuthenticated() {
 		return currentUser != null;
@@ -179,26 +144,13 @@ public class KornellSession extends KornellClient {
 	}
 
 	public void login(String username, String password, final Callback<UserHelloTO> callback) {
-		final Callback<UserHelloTO> wrapper = new Callback<UserHelloTO>() {
-			@Override
-			public void ok(UserHelloTO userHello) {
-				setCurrentUser(userHello.getUserInfoTO());
-				callback.ok(userHello);
-			}
-
-			@Override
-			protected void unauthorized(KornellErrorTO kornellErrorTO) {
-				setCurrentUser(null);
-				callback.unauthorized(kornellErrorTO);
-			}
-		};
 		
 		Callback<TokenTO> loginWrapper = new Callback<TokenTO>() {
 
 			@Override
 			public void ok(TokenTO to) {
 				ClientProperties.set(ClientProperties.X_KNL_TOKEN, to.getToken());
-				GET("/user/login").sendRequest(null, wrapper);
+				fetchUser(callback);
 			}
 			
 			@Override
@@ -214,7 +166,24 @@ public class KornellSession extends KornellClient {
 			}
 			
 		};
-		POST_LOGIN(username, password, "/auth/token").sendRequest(null, loginWrapper);
+		POST_LOGIN(username, password, institution.getUUID(), "/auth/token").sendRequest(null, loginWrapper);
+	}
+
+	public void fetchUser(final Callback<UserHelloTO> callback) {
+		final Callback<UserHelloTO> wrapper = new Callback<UserHelloTO>() {
+			@Override
+			public void ok(UserHelloTO userHello) {
+				setCurrentUser(userHello.getUserInfoTO());
+				callback.ok(userHello);
+			}
+
+			@Override
+			protected void unauthorized(KornellErrorTO kornellErrorTO) {
+				setCurrentUser(null);
+				callback.unauthorized(kornellErrorTO);
+			}
+		};
+		GET("/user/login").sendRequest(null, wrapper);
 	}
 	
 	public void logout(){

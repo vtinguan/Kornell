@@ -14,6 +14,7 @@ import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
@@ -296,10 +297,10 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					} else {
 						History.back();
 					}
-					session.getCurrentUser(true, new Callback<UserInfoTO>() {
+					session.fetchUser(new Callback<UserHelloTO>() {
 						@Override
-						public void ok(UserInfoTO to) {
-							user = to;
+						public void ok(UserHelloTO to) {
+							user = to.getUserInfoTO();
 						}
 					});
 				}

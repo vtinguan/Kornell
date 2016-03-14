@@ -20,9 +20,7 @@ import kornell.core.to.CoursesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
 import kornell.core.to.RolesTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.mvp.PlaceUtils;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView.Presenter;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
@@ -71,7 +69,6 @@ public class GenericCourseClassConfigView extends Composite {
     private static final String MODAL_TUTOR_CHAT_ENABLED = "tutorChatEnabled";
 
     private KornellSession session;
-	private Dean dean;
     private FormHelper formHelper = GWT.create(FormHelper.class);
     private boolean isCreationMode, canDelete, isInstitutionAdmin, allowPrefixEdit;
     boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -118,7 +115,6 @@ public class GenericCourseClassConfigView extends Composite {
         this.bus = bus;
         this.placeCtrl = placeCtrl;
         this.presenter = presenter;
-    	this.dean = GenericClientFactoryImpl.DEAN;
         this.isInstitutionAdmin = session.isInstitutionAdmin();
         this.isCreationMode = (courseClassTO == null) && isInstitutionAdmin;
         this.allowPrefixEdit = session.getInstitution().isAllowRegistrationByUsername() && (isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID()));
@@ -128,8 +124,7 @@ public class GenericCourseClassConfigView extends Composite {
         // i18n
         btnOK.setText("OK".toUpperCase());
         btnCancel.setText(isCreationMode ? "Cancelar".toUpperCase() : "Limpar".toUpperCase());
-        btnDelete.setVisible(isInstitutionAdmin && !isCreationMode && CourseClassState.active.equals(dean
-                .getCourseClassTO().getCourseClass().getState()));
+        btnDelete.setVisible(isInstitutionAdmin && !isCreationMode && CourseClassState.active.equals(session.getCurrentCourseClass().getCourseClass().getState()));
         btnDelete.setText(canDelete?"Excluir".toUpperCase():"Desabilitar".toUpperCase());
 
         btnModalOK.setText("OK".toUpperCase());

@@ -2,12 +2,12 @@ package kornell.gui.client.uidget;
 
 import java.util.logging.Logger;
 
+import kornell.api.client.KornellSession;
 import kornell.core.lom.ExternalPage;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.ShowChatDockEvent;
 import kornell.gui.client.event.ShowChatDockEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.view.Positioning;
 
 import com.google.gwt.core.client.Scheduler;
@@ -27,11 +27,11 @@ public class ExternalPageView extends Uidget implements ShowChatDockEventHandler
 	private IFrameElement iframe;
 	
 	FlowPanel panel = new FlowPanel();
-	private Dean dean;
+	private KornellSession session;
 
 	public ExternalPageView(ExternalPage page) {
 		GenericClientFactoryImpl.EVENT_BUS.addHandler(ShowChatDockEvent.TYPE,this);
-		dean = GenericClientFactoryImpl.DEAN;
+		session = GenericClientFactoryImpl.KORNELL_SESSION;
 		createIFrame();
 		panel.setStyleName("contentWrapper");
 		panel.getElement().appendChild(iframe);
@@ -87,7 +87,7 @@ public class ExternalPageView extends Uidget implements ShowChatDockEventHandler
 	private void placeIframe() {
 		iframe.setPropertyString("width", "100%");
 		int h = (Window.getClientHeight() - Positioning.NORTH_BAR);
-		if(dean.getCourseClassTO() != null && !dean.getCourseClassTO().isEnrolledOnCourseVersion()){
+		if(session.getCurrentCourseClass() != null && !session.getCurrentCourseClass().isEnrolledOnCourseVersion()){
 			h -= Positioning.SOUTH_BAR;
 		}
 		String height = h + "px";

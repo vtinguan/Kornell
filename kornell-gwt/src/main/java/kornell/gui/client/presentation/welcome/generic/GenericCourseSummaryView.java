@@ -16,7 +16,6 @@ import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.TOFactory;
-import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Student;
@@ -108,71 +107,64 @@ public class GenericCourseSummaryView extends Composite {
 		pDescription.setText(course.getDescription());
 
 		final Teacher teacher = Teachers.of(courseClassTO);
+		Student student = teacher.student(session.getCurrentUser());
+		if(courseClassTO.getEnrollment() != null && EnrollmentState.cancelled.equals(courseClassTO.getEnrollment().getState())){
+			pStatusErr.setText(constants.cancelledClassLabel());
+			pStatusErr.removeStyleName("shy");
+		}
+		if(!CourseClassState.active.equals(courseClassTO.getCourseClass().getState())){
+			pStatus.setText(constants.inactiveClassLabel());
+			iconCourseURL = mkurl(ICON_COURSE_URL, "iconNotStarted.png");
+		} else if (student.isEnrolled()) {
+			onEnrolled(student);
+		} else {
+			onNotEnrolled();
+		}
+		onEnrolledOrNot();
+	}
 
-		session.getCurrentUser(new Callback<UserInfoTO>() {
+	private void onEnrolledOrNot() {
+		imgThumb.setUrl(StringUtils.mkurl("/",courseClassTO.getCourseVersionTO().getDistributionURL(),courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix(),"/images/thumb.jpg"));
+		imgIconCourse.setUrl(iconCourseURL);
+
+		sinkEvents(Event.ONCLICK);
+		addHandler(new ClickHandler() {
 			@Override
-			public void ok(UserInfoTO userInfoTO) {
-				Student student = teacher.student(userInfoTO);
-				if(courseClassTO.getEnrollment() != null && EnrollmentState.cancelled.equals(courseClassTO.getEnrollment().getState())){
-					pStatusErr.setText(constants.cancelledClassLabel());
-					pStatusErr.removeStyleName("shy");
-				}
-				if(!CourseClassState.active.equals(courseClassTO.getCourseClass().getState())){
-					pStatus.setText(constants.inactiveClassLabel());
-					iconCourseURL = mkurl(ICON_COURSE_URL, "iconNotStarted.png");
-				} else if (student.isEnrolled()) {
-					onEnrolled(student);
-				} else {
-					onNotEnrolled();
-				}
-				onEnrolledOrNot();
-			}
-
-			private void onEnrolledOrNot() {
-				imgThumb.setUrl(StringUtils.mkurl("/",courseClassTO.getCourseVersionTO().getDistributionURL(),courseClassTO.getCourseVersionTO().getCourseVersion().getDistributionPrefix(),"/images/thumb.jpg"));
-				imgIconCourse.setUrl(iconCourseURL);
-
-				sinkEvents(Event.ONCLICK);
-				addHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						if(courseClassTO.getEnrollment() == null && courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically()){
-							requestEnrollment();
-							return;
-						} else if (courseClassTO.getEnrollment() != null){
-							session.setCurrentCourseClass(courseClassTO);
-							placeCtrl.goTo(new ClassroomPlace(courseClassTO
-									.getEnrollment().getUUID()));
-						}
-					}
-				}, ClickEvent.getType());
-
-			}
-
-			private void onNotEnrolled() {
-				Button requestEnrollmentBtn = getRequestEnrollmentButton();
-				pnlCourseSummaryBar.add(requestEnrollmentBtn);
-
-				pStatus.setText(constants.availableClassLabel());
-				iconCourseURL = mkurl(ICON_COURSE_URL, "iconAcquire.png");
-			}
-
-			private void onEnrolled(Student student) {
-				EnrollmentProgress progress = student.getEnrollmentProgress();
-				switch (progress.getDescription()) {
-				case notStarted:
-					onCourseNotStarted();
-					break;
-				case completed:
-					onCourseCompleted(progress.getCertifiedAt());
-					break;
-				case inProgress:
-					onCourseInProgress(progress.getProgress());
-					break;
+			public void onClick(ClickEvent event) {
+				if(courseClassTO.getEnrollment() == null && courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically()){
+					requestEnrollment();
+					return;
+				} else if (courseClassTO.getEnrollment() != null){
+					session.setCurrentCourseClass(courseClassTO);
+					placeCtrl.goTo(new ClassroomPlace(courseClassTO
+							.getEnrollment().getUUID()));
 				}
 			}
-		});
+		}, ClickEvent.getType());
 
+	}
+
+	private void onNotEnrolled() {
+		Button requestEnrollmentBtn = getRequestEnrollmentButton();
+		pnlCourseSummaryBar.add(requestEnrollmentBtn);
+
+		pStatus.setText(constants.availableClassLabel());
+		iconCourseURL = mkurl(ICON_COURSE_URL, "iconAcquire.png");
+	}
+
+	private void onEnrolled(Student student) {
+		EnrollmentProgress progress = student.getEnrollmentProgress();
+		switch (progress.getDescription()) {
+		case notStarted:
+			onCourseNotStarted();
+			break;
+		case completed:
+			onCourseCompleted(progress.getCertifiedAt());
+			break;
+		case inProgress:
+			onCourseInProgress(progress.getProgress());
+			break;
+		}
 	}
 
 	private void onCourseInProgress(Integer progress) {

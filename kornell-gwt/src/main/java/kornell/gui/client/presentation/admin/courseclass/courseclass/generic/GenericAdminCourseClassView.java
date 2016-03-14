@@ -17,13 +17,11 @@ import kornell.core.to.CourseClassesTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.util.AsciiUtils;
@@ -111,7 +109,6 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	private int totalCount = 0;
 	private EnrollmentTO selectedEnrollment;
 	private CourseClassTO courseClassTO;
-	private Dean dean;
 
 	@UiField
 	FlowPanel adminHomePanel;
@@ -221,7 +218,6 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		tabsPanel.setVisible(false);
 		table = new CellTable<EnrollmentTO>();
 		formHelper = new FormHelper();
-		this.dean = GenericClientFactoryImpl.DEAN;
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 
@@ -239,7 +235,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		enrollmentsTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				presenter.updateCourseClass(dean.getCourseClassTO().getCourseClass().getUUID());
+				presenter.updateCourseClass(session.getCurrentCourseClass().getCourseClass().getUUID());
 				messagePresenter.enableMessagesUpdate(false);
 			}
 		});
@@ -335,15 +331,15 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	public void buildConfigView(boolean isCreationMode) {
 		prepareAddNewCourseClass(isCreationMode);
 		if (!isCreationMode) {
-			configPanel.add(new GenericCourseClassConfigView(session, bus, placeCtrl, presenter, dean
-					.getCourseClassTO()));
+			configPanel.add(new GenericCourseClassConfigView(session, bus, placeCtrl, presenter, session
+					.getCurrentCourseClass()));
 		}
 	}
 
 	@Override
 	public void buildReportsView() {
 		if (reportsView == null) {
-			reportsView = new GenericCourseClassReportsView(session, bus, presenter, dean.getCourseClassTO());
+			reportsView = new GenericCourseClassReportsView(session, bus, presenter, session.getCurrentCourseClass());
 		}
 		reportsPanel.clear();
 		reportsPanel.add(reportsView);
@@ -353,7 +349,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	public void buildMessagesView() {
 		if (messagesView == null) {
 			messagesView = new GenericCourseClassMessagesView(session, bus, placeCtrl, viewFactory, messagePresenter,
-					dean.getCourseClassTO());
+					session.getCurrentCourseClass());
 		}
 		messagePresenter.filterAndShowThreads();
 		messagesPanel.clear();
@@ -365,7 +361,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		adminsPanel.clear();
 		if (!session.isInstitutionAdmin())
 			return;
-		adminsPanel.add(new GenericCourseClassAdminsView(session, presenter, dean.getCourseClassTO()));
+		adminsPanel.add(new GenericCourseClassAdminsView(session, presenter, session.getCurrentCourseClass()));
 	}
 
 	private void initSearch() {
@@ -405,7 +401,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		}
 		txtSearch.setValue(presenter.getSearchTerm());
 		txtSearch.setTitle("nome, "
-				+ EnumTranslator.translateEnum(dean.getCourseClassTO().getCourseClass().getRegistrationType())
+				+ EnumTranslator.translateEnum(session.getCurrentCourseClass().getCourseClass().getRegistrationType())
 				+ ", matrícula ou progresso");
 	}
 
@@ -453,8 +449,8 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 					progressTxt += ": " + enrollmentTO.getEnrollment().getProgress() + "%";
 				} else if (EnrollmentProgressDescription.completed.equals(EnrollmentCategory
 						.getEnrollmentProgressDescription(enrollmentTO.getEnrollment()))
-						&& dean.getCourseClassTO().getCourseClass().getRequiredScore() != null
-						&& dean.getCourseClassTO().getCourseClass().getRequiredScore().intValue() != 0
+						&& session.getCurrentCourseClass().getCourseClass().getRequiredScore() != null
+						&& session.getCurrentCourseClass().getCourseClass().getRequiredScore().intValue() != 0
 						&& enrollmentTO.getEnrollment().getAssessmentScore() != null) {
 					progressTxt += " - Nota: " + enrollmentTO.getEnrollment().getAssessmentScore().intValue();
 				}
@@ -572,11 +568,11 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 
 		setTabsVisibility();
 		enrollmentsOriginal = enrollmentsIn;
-		this.isEnabled = CourseClassState.active.equals(dean.getCourseClassTO().getCourseClass().getState());
+		this.isEnabled = CourseClassState.active.equals(session.getCurrentCourseClass().getCourseClass().getState());
 		addEnrollmentsPanel.setVisible(isEnabled);
 
 		numEnrollments = count;
-		maxEnrollments = dean.getCourseClassTO().getCourseClass().getMaxEnrollments();
+		maxEnrollments = session.getCurrentCourseClass().getCourseClass().getMaxEnrollments();
 		lblEnrollmentsCount.setText(numEnrollments + " / " + maxEnrollments);
 		lblEnrollmentsCancelledCount.setText("" + countCancelled);
 		lblEnrollmentsAvailableCount.setText("" + (maxEnrollments - numEnrollments));
@@ -604,7 +600,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 				if (pageSizeListBox.getValue().matches("[0-9]*")) {
 					presenter.setPageNumber("1");
 					presenter.setPageSize(pageSizeListBox.getValue());
-					presenter.updateCourseClassUI(dean.getCourseClassTO());
+					presenter.updateCourseClassUI(session.getCurrentCourseClass());
 				}
 			}
 		});
@@ -636,7 +632,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 
 	private void filterEnrollments() {
 		String newSearchTerm = AsciiUtils.convertNonAscii(txtSearch.getText().trim()).toLowerCase();
-		if (RegistrationType.cpf.equals(dean.getCourseClassTO().getCourseClass().getRegistrationType())) {
+		if (RegistrationType.cpf.equals(session.getCurrentCourseClass().getCourseClass().getRegistrationType())) {
 			newSearchTerm = newSearchTerm.replaceAll("-", "").replaceAll("\\.", "");
 		}
 		if (!presenter.getSearchTerm().equals(newSearchTerm)) {
@@ -892,7 +888,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 			infoPanel.add(getLabel("Cancelamento:", false));
 			infoPanel.add(getLabel("* Só os nomes de usuário", true));
 		}
-		identifierLabel.setText(EnumTranslator.translateEnum(dean.getCourseClassTO().getCourseClass()
+		identifierLabel.setText(EnumTranslator.translateEnum(session.getCurrentCourseClass().getCourseClass()
 				.getRegistrationType())
 				+ ":");
 		btnCancelEnrollmentBatch.setVisible(courseClassTO.getCourseClass().isAllowBatchCancellation());
@@ -936,8 +932,8 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 		if (unreadChatThreadTOs != null) {
 			int count = 0;
 			for (UnreadChatThreadTO unreadChatThreadTO : unreadChatThreadTOs) {
-				if (dean.getCourseClassTO() != null
-						&& dean.getCourseClassTO().getCourseClass().getUUID()
+				if (session.getCurrentCourseClass() != null
+						&& session.getCurrentCourseClass().getCourseClass().getUUID()
 								.equals(unreadChatThreadTO.getEntityUUID()))
 					count = count + Integer.parseInt(unreadChatThreadTO.getUnreadMessages());
 			}

@@ -57,7 +57,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	public static final EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
 	public static final KornellSession KORNELL_SESSION = GWT.create(KornellSession.class);
-	public static final Dean DEAN = GWT.create(Dean.class);
 
 	/* History Management */
 	private final PlaceController placeCtrl = new PlaceController(EVENT_BUS);
@@ -147,7 +146,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				} else {
 					KORNELL_SESSION.setInstitution(userHelloTO.getInstitution());
 					KORNELL_SESSION.setCurrentUser(userHelloTO.getUserInfoTO());
-					DEAN.init();
 					if (KORNELL_SESSION.isAuthenticated()) {
 						EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(userHelloTO.getCourseClassesTO()));
 						setHomePlace(new WelcomePlace(), userHelloTO.getCourseClassesTO());
@@ -197,6 +195,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void initPersonnel(final CourseClassesTO courseClassesTO) {
+		new Dean();
 		new Captain(EVENT_BUS, KORNELL_SESSION, placeCtrl);
 		new Stalker(EVENT_BUS, KORNELL_SESSION);
 
@@ -253,7 +252,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public void setHomePlace(Place place, CourseClassesTO courseClassesTO) {
 		String enrollmentUUID = null;
-		if (InstitutionType.DASHBOARD.equals(KORNELL_SESSION.getInstitution().getInstitutionType())) {
+		if (InstitutionType.DASHBOARD.equals(KORNELL_SESSION.getInstitution().getInstitutionType()) && courseClassesTO != null) {
 			Date date = new Date(0);
 			Enrollment enrollment = null;
 			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
