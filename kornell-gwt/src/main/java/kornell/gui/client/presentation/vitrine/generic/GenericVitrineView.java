@@ -9,7 +9,6 @@ import java.util.Map;
 
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.VitrineViewType;
 import kornell.gui.client.util.ClientConstants;
@@ -44,7 +43,6 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private VitrineView.Presenter presenter;
-	private Dean dean;
 	private VitrineViewType currentViewType = VitrineViewType.login;
 	private String registrationEmail;
 	private boolean forcedPasswordUpdate = false;
@@ -121,7 +119,6 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	
 	public GenericVitrineView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		this.dean = GenericClientFactoryImpl.DEAN;
 		buildFlagsPanel();
 		displayView(VitrineViewType.login);
 		
@@ -154,7 +151,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	private void buildFlagsPanel() {
-		if(dean.getInstitution().isInternationalized()){
+		if(GenericClientFactoryImpl.KORNELL_SESSION.getInstitution().isInternationalized()){
 			String locale = ClientProperties.getLocaleCookie();
 			if(locale == null){
 				locale = "pt_BR";
@@ -399,7 +396,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	@Override
 	public void setLogoURL(String assetsURL) {
-		String skin = dean.getInstitution().getSkin();
+		String skin = GenericClientFactoryImpl.KORNELL_SESSION.getInstitution().getSkin();
 		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png";
 		imgLogo.setUrl(mkurl(assetsURL, barLogoFileName));
 	}

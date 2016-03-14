@@ -158,7 +158,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;" + "overflow:auto;";
 		if (showMantle)
 			style = "background: url('"
-					+ composeURL(dean.getAssetsURL(), "bgVitrine.jpg")
+					+ composeURL(clientFactory.getKornellSession().getAssetsURL(), "bgVitrine.jpg")
 					+ "') no-repeat center center fixed; " + style;
 		DOM.setElementAttribute(scrollPanel.getElement(), "style", style);
 		isMantleShown = showMantle;

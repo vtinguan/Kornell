@@ -163,7 +163,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         view.setHomeTabActive();
         if (courseClassTO == null)
             return;
-        dean.setCourseClassTO(courseClassTO);        
+        session.setCurrentCourseClass(courseClassTO);        
         view.setCourseClassTO(courseClassTO);
         view.setUserEnrollmentIdentificationType(courseClassTO.getCourseClass().getRegistrationType());
         view.setCanPerformEnrollmentAction(true);
@@ -171,7 +171,7 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
     }
 
     private String getLocalStoragePropertyName() {
-        return PREFIX + ClientProperties.SEPARATOR + dean.getInstitution().getUUID()
+        return PREFIX + ClientProperties.SEPARATOR + session.getInstitution().getUUID()
                 + ClientProperties.SEPARATOR + ClientProperties.SELECTED_COURSE_CLASS;
     }
 
@@ -361,8 +361,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
                 EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
                 enrollmentRequestTO.setCancelEnrollment(true);
-                enrollmentRequestTO.setInstitutionUUID(dean.getInstitution().getUUID());
-                if(InstitutionType.DASHBOARD.equals(dean.getInstitution().getInstitutionType())){
+                enrollmentRequestTO.setInstitutionUUID(session.getInstitution().getUUID());
+                if(InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
                     enrollmentRequestTO.setCourseVersionUUID(dean.getCourseClassTO().getCourseVersionTO().getCourseVersion().getUUID());
                 }
                 enrollmentRequestTO.setCourseClassUUID(dean.getCourseClassTO().getCourseClass().getUUID());
@@ -384,8 +384,8 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
         EnrollmentRequestTO enrollmentRequestTO = toFactory.newEnrollmentRequestTO().as();
 
         enrollmentRequestTO.setCancelEnrollment(cancelEnrollment);
-        enrollmentRequestTO.setInstitutionUUID(dean.getInstitution().getUUID());
-        if(InstitutionType.DASHBOARD.equals(dean.getInstitution().getInstitutionType())){
+        enrollmentRequestTO.setInstitutionUUID(session.getInstitution().getUUID());
+        if(InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
             enrollmentRequestTO.setCourseVersionUUID(dean.getCourseClassTO().getCourseVersionTO().getCourseVersion().getUUID());
         }
         enrollmentRequestTO.setCourseClassUUID(dean.getCourseClassTO().getCourseClass().getUUID());

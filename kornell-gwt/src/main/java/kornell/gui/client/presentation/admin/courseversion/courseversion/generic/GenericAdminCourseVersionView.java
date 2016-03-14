@@ -13,8 +13,6 @@ import kornell.core.entity.InstitutionType;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
-import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
@@ -55,7 +53,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 
 	private KornellSession session;
 	private PlaceController placeCtrl;
-	private Dean dean;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private boolean isCreationMode, isPlatformAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
@@ -95,7 +92,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	public GenericAdminCourseVersionView(final KornellSession session, EventBus bus, final PlaceController placeCtrl) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
-		this.dean = GenericClientFactoryImpl.DEAN;
 		this.isPlatformAdmin = session.isPlatformAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -193,7 +189,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 			}
 		});
 		
-		if(InstitutionType.DASHBOARD.equals(dean.getInstitution().getInstitutionType())){
+		if(InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
 			if (isCreationMode || isPlatformAdmin) {
 		  		session.courseVersions().get(new Callback<CourseVersionsTO>() {
 		  			@Override
@@ -294,7 +290,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 				contentSpec.setError("Tipo inválido.");
 	    }
 		}
-		if(InstitutionType.DASHBOARD.equals(dean.getInstitution().getInstitutionType())){
+		if(InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
 			if (!formHelper.isValidNumber(instanceCount.getFieldPersistText()) || !formHelper.isNumberRangeValid(Integer.parseInt(instanceCount.getFieldPersistText()), 1, 100)) {
 				instanceCount.setError("Insira a um número entre 1 e 100.");
 			}
@@ -320,7 +316,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		version.setDistributionPrefix(distributionPrefix.getFieldPersistText());
 		version.setContentSpec(ContentSpec.valueOf(contentSpec.getFieldPersistText()));
 		version.setDisabled(disabled.getFieldPersistText().equals("true"));
-		if(InstitutionType.DASHBOARD.equals(dean.getInstitution().getInstitutionType())){
+		if(InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
 			version.setParentVersionUUID(parentCourseVersion.getFieldPersistText());
 			version.setInstanceCount(instanceCount.getFieldPersistText().length() > 0 ?
 					Integer.parseInt(instanceCount.getFieldPersistText()) :

@@ -92,9 +92,9 @@ public class ClassroomPresenter implements ClassroomView.Presenter {
 		Enrollment enrollment = courseClassTO != null ? courseClassTO.getEnrollment() : null;
 		boolean isEnrolled = enrollment != null && EnrollmentState.enrolled.equals(enrollment.getState());
 		if(enrollment == null){
-			dean.setCourseClassTO((CourseClassTO)null);
+			session.setCurrentCourseClass((CourseClassTO)null);
 		} else {
-			dean.setCourseClassTO(courseClassTO);
+			session.setCurrentCourseClass(courseClassTO);
 		}
 		
 		CourseClass courseClass = dean.getCourseClassTO() != null ? dean.getCourseClassTO().getCourseClass() : null;

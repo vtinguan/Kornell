@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UnreadChatThreadsTO;
 import kornell.core.to.UserInfoTO;
-import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.ComposeMessageEventHandler;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
@@ -21,6 +23,7 @@ import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.message.MessagePlace;
+import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.view.Positioning;
@@ -38,27 +41,43 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 
 	private static PopupPanel popup;
 	private EventBus bus;
+	private KornellSession session;
+	private ViewFactory viewFactory;
+	private EntityFactory entityFactory;
 	private ChatThreadsClient chatThreadsClient;
 	private PlaceController placeCtrl;
 	private MessageComposeView.Presenter messageComposePresenter; 
 	private Timer unreadMessagesCountTimer;
 	private Timer unreadMessagesCountPerThreadTimer;
 	private ArrayList<CourseClassTO> helpCourseClasses;
-	private Dean dean;
 	
-	public MrPostman(MessageComposeView.Presenter messageComposePresenter, EventBus bus, ChatThreadsClient chatThreadsClient, PlaceController placeCtrl, CourseClassesTO courseClassesTO) {
+	public MrPostman(ViewFactory viewFactory, EventBus bus, KornellSession session, PlaceController placeCtrl, EntityFactory entityFactory, CourseClassesTO courseClassesTO) {
+		this.viewFactory = viewFactory;
 		this.bus = bus;
-		this.messageComposePresenter = messageComposePresenter;
-		this.chatThreadsClient = chatThreadsClient;
+		this.session = session;
+		this.entityFactory = entityFactory;
+		this.chatThreadsClient = session.chatThreads();
 		this.placeCtrl = placeCtrl;
-		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
-		this.bus.addHandler(LoginEvent.TYPE, this);
-		this.bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
-		this.dean = GenericClientFactoryImpl.DEAN;
+		
 		filterHelpCourseClasses(courseClassesTO);
+		
+		initializeMessagePresenters();
 		
 		//initializeUnreadMessagesCountTimer();
 		initializeUnreadMessagesCountPerThreadTimer();
+		this.bus.addHandler(ComposeMessageEvent.TYPE, this);
+		this.bus.addHandler(LoginEvent.TYPE, this);
+		this.bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
+	}
+
+	private void initializeMessagePresenters() {
+		viewFactory.getMessagePresenter();
+		viewFactory.getMessagePresenterClassroomGlobalChat();
+		viewFactory.getMessagePresenterClassroomTutorChat();
+		if (session.hasAnyAdminRole()) {
+			viewFactory.getMessagePresenterCourseClass();
+		}
+		this.messageComposePresenter = new MessageComposePresenter(placeCtrl, session, viewFactory, entityFactory);
 	}
 
 	private void initializeUnreadMessagesCountPerThreadTimer() {
@@ -102,7 +121,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 	
 	private void getUnreadMessagesPerThread(boolean forceFetch) {
 		if(forceFetch || !(placeCtrl.getWhere() instanceof VitrinePlace)){
-	    chatThreadsClient.getTotalUnreadCountsPerThread(dean.getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
+	    chatThreadsClient.getTotalUnreadCountsPerThread(session.getInstitution().getUUID(), new Callback<UnreadChatThreadsTO>() {
 				@Override
 				public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
 					bus.fireEvent(new UnreadMessagesPerThreadFetchedEvent(unreadChatThreadsTO.getUnreadChatThreadTOs()));
@@ -169,7 +188,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
   }
 	private void getUnreadMessages() {
 		if(!(placeCtrl.getWhere() instanceof VitrinePlace)){
-	    chatThreadsClient.getTotalUnreadCount(dean.getInstitution().getUUID(), new Callback<String>() {
+	    chatThreadsClient.getTotalUnreadCount(session.getInstitution().getUUID(), new Callback<String>() {
 				@Override
 				public void ok(String unreadMessagesCount) {
 					bus.fireEvent(new UnreadMessagesFetchedEvent(unreadMessagesCount));

@@ -14,7 +14,6 @@ import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.easing.Ease;
 import kornell.gui.client.util.easing.Transitions;
 import kornell.gui.client.util.easing.Updater;
-import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.Positioning;
 
 import com.google.gwt.core.client.GWT;

@@ -3,7 +3,6 @@ package kornell.gui.client.personnel;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 import kornell.gui.client.event.LoginEvent;
@@ -31,10 +30,10 @@ public class Stalker implements ActomEnteredEventHandler, LoginEventHandler {
 		this.session = session;
 
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		      @Override
-		      public void execute() {
-		    		signAttendanceSheet();
-		      }
+			@Override
+			public void execute() {
+				signAttendanceSheet();
+			}
 		});
 
 		seuInacioTimer = new Timer() {
@@ -45,7 +44,7 @@ public class Stalker implements ActomEnteredEventHandler, LoginEventHandler {
 
 		// Schedule the timer to run daily
 		seuInacioTimer.scheduleRepeating(24 * 60 * 60 * 1000);
-		
+
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
 		bus.addHandler(LoginEvent.TYPE, this);
 	}
@@ -54,22 +53,18 @@ public class Stalker implements ActomEnteredEventHandler, LoginEventHandler {
 		if (session.isAnonymous())
 			return;
 		session.events()
-				.attendanceSheetSigned(
-						GenericClientFactoryImpl.DEAN.getInstitution().getUUID(),
-						session.getCurrentUser().getPerson().getUUID())
-				.fire(new Callback<Void>() {
+				.attendanceSheetSigned(session.getInstitution().getUUID(),
+						session.getCurrentUser().getPerson().getUUID()).fire(new Callback<Void>() {
 					@Override
 					public void ok(Void to) {
-						//
+						// nothing to do
 					}
 				});
 	}
 
 	@Override
 	public void onActomEntered(ActomEnteredEvent event) {
-		session.events()
-				.actomEntered(event.getEnrollmentUUID(), event.getActomKey())
-				.fire();
+		session.events().actomEntered(event.getEnrollmentUUID(), event.getActomKey()).fire();
 	}
 
 	@Override

@@ -8,7 +8,6 @@ import java.util.List;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.InstitutionType;
 import kornell.core.lom.Actom;
@@ -19,7 +18,6 @@ import kornell.core.lom.ContentsOps;
 import kornell.core.lom.ExternalPage;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.LibraryFilesTO;
-import kornell.core.to.UserInfoTO;
 import kornell.core.to.coursedetails.CourseDetailsTO;
 import kornell.core.to.coursedetails.HintTO;
 import kornell.core.to.coursedetails.InfoTO;
@@ -31,7 +29,6 @@ import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassMessagesView;
-import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.classroom.ClassroomView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -173,18 +170,20 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		detailsContentPanel.add(certificationPanel);
 
 		btnLibrary.setVisible(false);
-		session.courseClass(dean.getCourseClassTO().getCourseClass().getUUID()).libraryFiles(
-				new Callback<LibraryFilesTO>() {
-					@Override
-					public void ok(LibraryFilesTO to) {
-						if (to.getLibraryFiles() != null && to.getLibraryFiles().size() > 0) {
-							libraryPanel = getLibraryPanel(to);
-							libraryPanel.setVisible(false);
-							detailsContentPanel.add(libraryPanel);
-							btnLibrary.setVisible(true);
+		if(!dean.getCourseClassTO().isEnrolledOnCourseVersion()){
+			session.courseClass(dean.getCourseClassTO().getCourseClass().getUUID()).libraryFiles(
+					new Callback<LibraryFilesTO>() {
+						@Override
+						public void ok(LibraryFilesTO to) {
+							if (to.getLibraryFiles() != null && to.getLibraryFiles().size() > 0) {
+								libraryPanel = getLibraryPanel(to);
+								libraryPanel.setVisible(false);
+								detailsContentPanel.add(libraryPanel);
+								btnLibrary.setVisible(true);
+							}
 						}
-					}
-				});
+					});
+		}
 	}
 
 	private void displayContent(Button btn) {
@@ -481,7 +480,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 			sidePanel.add(warningPanel);
 		}
 
-		if (!"".equals(text) && InstitutionType.DASHBOARD.equals(dean.getInstitution().getInstitutionType())) {
+		if (!"".equals(text) && InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())) {
 			KornellNotification.show(text.replaceAll("<br>", ""), AlertType.WARNING, 5000);
 			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), false));
 		} else {

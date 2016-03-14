@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Institution;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.event.ComposeMessageEvent;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.CourseClassesFetchedEventHandler;
@@ -22,7 +20,6 @@ import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
 import kornell.gui.client.mvp.PlaceUtils;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.bar.MenuBarView;
@@ -110,14 +107,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private boolean isLoaded;
 	private boolean showingPlacePanel;
 	private CourseClassesTO courseClassesTO;
-	private Dean dean;
 
 	public GenericMenuBarView(final ClientFactory clientFactory,
 			final ScrollPanel scrollPanel, CourseClassesTO courseClassesTO) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
-		this.dean = GenericClientFactoryImpl.DEAN;
 		this.courseClassesTO = courseClassesTO;
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
@@ -125,10 +120,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
 		// TODO: Consider anonynous
-		if (dean != null) {
-			Institution localInstitution = dean.getInstitution();
-			String assetsURL = dean.getAssetsURL();
-			String skin = dean.getInstitution().getSkin();
+		if (session != null) {
+			String assetsURL = session.getAssetsURL();
+			String skin = session.getInstitution().getSkin();
 			String barLogoFileName = "logo300x45"
 					+ (!"_light".equals(skin) ? "_light" : "") + ".png";
 			imgMenuBarUrl = StringUtils.mkurl(assetsURL, barLogoFileName);
@@ -226,10 +220,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 		showButton(btnHome, isRegistrationCompleted);
 		showButton(btnFullScreen, isRegistrationCompleted);
-		showButton(
-				btnAdmin,
-				isRegistrationCompleted
-						&& clientFactory.getKornellSession().hasAnyAdminRole(clientFactory.getKornellSession().getCurrentUser().getRoles()));
+		showButton(btnAdmin, isRegistrationCompleted && clientFactory.getKornellSession().hasAnyAdminRole());
 		showButton(btnNotifications, false);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
@@ -285,9 +276,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		return (session.getCurrentUser().getInstitutionRegistrationPrefix() == null || session
 				.getCurrentUser().getInstitutionRegistrationPrefix()
 				.isShowContactInformationOnProfile())
-				&& dean.getInstitution()
+				&& session.getInstitution()
 						.isDemandsPersonContactDetails()
-				&& dean.getInstitution()
+				&& session.getInstitution()
 						.isValidatePersonContactDetails()
 				&& StringUtils.isNone(clientFactory.getKornellSession()
 						.getCurrentUser().getPerson().getCity());

@@ -121,7 +121,7 @@ public class GenericCourseClassConfigView extends Composite {
     	this.dean = GenericClientFactoryImpl.DEAN;
         this.isInstitutionAdmin = session.isInstitutionAdmin();
         this.isCreationMode = (courseClassTO == null) && isInstitutionAdmin;
-        this.allowPrefixEdit = dean.getInstitution().isAllowRegistrationByUsername() && (isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID()));
+        this.allowPrefixEdit = session.getInstitution().isAllowRegistrationByUsername() && (isCreationMode || (presenter.getEnrollments().size() == 0) || StringUtils.isNone(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID()));
         this.canDelete = presenter.getEnrollments() == null || presenter.getEnrollments().size() == 0;
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -307,7 +307,7 @@ public class GenericCourseClassConfigView extends Composite {
         final ListBox registrationTypes = new ListBox();
         registrationTypes.addItem("Email", RegistrationType.email.toString());
         registrationTypes.addItem("CPF", RegistrationType.cpf.toString());
-        if(dean.getInstitution().isAllowRegistrationByUsername())
+        if(session.getInstitution().isAllowRegistrationByUsername())
             registrationTypes.addItem("Usuário", RegistrationType.username.toString());
         if (!isCreationMode) {
             registrationTypes.setSelectedValue(courseClassTO.getCourseClass().getRegistrationType().toString());
@@ -316,7 +316,7 @@ public class GenericCourseClassConfigView extends Composite {
         fields.add(registrationType);
         profileFields.add(registrationType);
 
-        if(dean.getInstitution().isAllowRegistrationByUsername()){
+        if(session.getInstitution().isAllowRegistrationByUsername()){
             institutionRegistrationPrefixes = new ListBox();		
             if(!isCreationMode)
                 institutionRegistrationPrefixes.setSelectedValue(courseClassTO.getCourseClass().getInstitutionRegistrationPrefixUUID());
@@ -341,7 +341,7 @@ public class GenericCourseClassConfigView extends Composite {
     }
 
     private void loadInstitutionPrefixes() {
-        session.institution(dean.getInstitution().getUUID()).getRegistrationPrefixes(new Callback<InstitutionRegistrationPrefixesTO>() {
+        session.institution(session.getInstitution().getUUID()).getRegistrationPrefixes(new Callback<InstitutionRegistrationPrefixesTO>() {
             @Override
             public void ok(InstitutionRegistrationPrefixesTO to) {
                 for (InstitutionRegistrationPrefix institutionRegistrationPrefix : to.getInstitutionRegistrationPrefixes()) {
@@ -455,7 +455,7 @@ public class GenericCourseClassConfigView extends Composite {
     }
 
     private CourseClass getCourseClassInfoFromForm() {
-        courseClass.setInstitutionUUID(dean.getInstitution().getUUID());
+        courseClass.setInstitutionUUID(session.getInstitution().getUUID());
         courseClass.setName(name.getFieldPersistText());
         courseClass.setCourseVersionUUID(courseVersion.getFieldPersistText());
         courseClass.setPublicClass(publicClass.getFieldPersistText().equals("true"));

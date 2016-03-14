@@ -1,7 +1,5 @@
 package kornell.core.to;
 
-import java.util.List;
-
 import kornell.core.entity.Institution;
 
 public interface UserHelloTO {

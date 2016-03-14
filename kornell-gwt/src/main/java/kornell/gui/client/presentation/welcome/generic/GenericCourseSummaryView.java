@@ -18,7 +18,6 @@ import kornell.core.to.EnrollmentTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teacher;
@@ -97,7 +96,7 @@ public class GenericCourseSummaryView extends Composite {
 	private KornellSession session;
 
 	public GenericCourseSummaryView(final PlaceController placeCtrl,
-			final CourseClassTO courseClassTO, KornellSession session) {
+			final CourseClassTO courseClassTO, final KornellSession session) {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.courseClassTO = courseClassTO;
@@ -141,7 +140,7 @@ public class GenericCourseSummaryView extends Composite {
 							requestEnrollment();
 							return;
 						} else if (courseClassTO.getEnrollment() != null){
-							GenericClientFactoryImpl.DEAN.setCourseClassTO(courseClassTO);
+							session.setCurrentCourseClass(courseClassTO);
 							placeCtrl.goTo(new ClassroomPlace(courseClassTO
 									.getEnrollment().getUUID()));
 						}
@@ -254,6 +253,6 @@ public class GenericCourseSummaryView extends Composite {
 		enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
 		enrollmentTO.setUsername(session.getCurrentUser().getUsername());
 		courseClassTO.setEnrollment(enrollment);
-		GenericClientFactoryImpl.DEAN.setCourseClassTO(courseClassTO);
+		session.setCurrentCourseClass(courseClassTO);
 	}
 }

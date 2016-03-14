@@ -285,6 +285,7 @@ public class StringUtils {
 		return bud.toString();
 	}
 	
+	@SuppressWarnings("serial")
 	public static void main(String[] args) {
 		Map<String, String> props = new HashMap<String, String>(){{
 			put("a", "0");

@@ -13,7 +13,6 @@ import kornell.core.entity.RoleType;
 import kornell.core.to.ChatThreadMessageTO;
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.ShowChatDockEvent;
 import kornell.gui.client.event.ShowChatDockEventHandler;
@@ -40,7 +39,6 @@ import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -65,7 +63,6 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 	private MessageView.Presenter presenter;
 	private EventBus bus;
 	private KornellSession session;
-	private DateTimeFormat chatDateFormat = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
 
 	private List<Label> sideItems;
 	private Map<String, MessageItem> dateLabelsMap;
@@ -255,7 +252,7 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 			case INSTITUTION_SUPPORT:
 				return span(constants.institutionSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
 			case PLATFORM_SUPPORT:
-				return span(constants.platformSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(GenericClientFactoryImpl.DEAN.getInstitution().getName(), INFO_CLASS);
+				return span(constants.platformSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(session.getInstitution().getName(), INFO_CLASS);
 			default:
 				return  "";
 			}

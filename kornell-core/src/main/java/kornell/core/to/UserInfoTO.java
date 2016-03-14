@@ -2,7 +2,6 @@ package kornell.core.to;
 
 import java.util.List;
 
-import kornell.core.entity.Enrollments;
 import kornell.core.entity.InstitutionRegistrationPrefix;
 import kornell.core.entity.Person;
 

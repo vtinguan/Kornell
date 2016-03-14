@@ -1,7 +1,7 @@
 package kornell.gui.client.personnel;
 
 import static kornell.core.util.StringUtils.mkurl;
-import kornell.core.entity.Institution;
+import kornell.api.client.KornellSession;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UnreadChatThreadTO;
 import kornell.gui.client.GenericClientFactoryImpl;
@@ -21,13 +21,13 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 	private String ICON_NAME = "favicon.ico";
 	private String DEFAULT_SITE_TITLE = "Kornell";
 	private EventBus bus;
-	private Institution institution;
-	private CourseClassTO courseClassTO;
+	private KornellSession session;
 	private int totalCount;
 
-	public void init(Institution institution) {
+	public void init() {
 		this.bus = GenericClientFactoryImpl.EVENT_BUS;
-		this.institution = institution;
+		this.session = GenericClientFactoryImpl.KORNELL_SESSION;
+		
 		bus.addHandler(LogoutEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
@@ -49,7 +49,7 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 	}
 
 	private void initInstitutionSkin() {
-		String url = getAssetsURL();
+		String url = session.getAssetsURL();
 		if (url != null) {
 			updateFavicon(mkurl(url, ICON_NAME));
 		} else {
@@ -60,7 +60,7 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 	}
 
 	private void setPageTitle() {
-		String name = institution.getFullName();
+		String name = session.getInstitution().getFullName();
 		String title = DEFAULT_SITE_TITLE;
 		if (name != null) {
 			title = name;
@@ -101,20 +101,8 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 		$wnd.document.getElementsByTagName('head')[0].appendChild(link);
 	}-*/;
 
-	public Institution getInstitution() {
-		return institution;
-	}
-
-	public String getAssetsURL() {
-		return "/repository/" + institution.getAssetsRepositoryUUID();
-	}
-
 	public CourseClassTO getCourseClassTO() {
-		return courseClassTO;
-	}
-
-	public void setCourseClassTO(CourseClassTO courseClassTO) {
-		this.courseClassTO = courseClassTO;
+		return session.getCurrentCourseClass();
 	}
 
 	private static native void showBody(boolean show) /*-{

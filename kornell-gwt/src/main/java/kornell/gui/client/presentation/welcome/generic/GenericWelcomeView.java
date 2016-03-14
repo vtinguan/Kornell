@@ -8,12 +8,8 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
-import kornell.core.to.EnrollmentTO;
-import kornell.core.to.EnrollmentsTO;
-import kornell.core.to.TOFactory;
 import kornell.core.to.UserInfoTO;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
@@ -57,7 +53,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	private ViewFactory viewFactory;
 	private EventBus bus;
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
-	private TOFactory toFactory;
 	private Button selectedFilterButton;
 	private ArrayList<IsWidget> widgets;
 
@@ -66,7 +61,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	public GenericWelcomeView(ClientFactory clientFactory) {
 		this.session = clientFactory.getKornellSession();
 		this.placeCtrl = clientFactory.getPlaceController();
-		this.toFactory = GenericClientFactoryImpl.TO_FACTORY;
 		this.viewFactory = clientFactory.getViewFactory();
 		this.bus = clientFactory.getEventBus();
 		initWidget(uiBinder.createAndBindUi(this));

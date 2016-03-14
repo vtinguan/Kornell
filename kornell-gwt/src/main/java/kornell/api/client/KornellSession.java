@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import kornell.core.entity.CourseClass;
+import kornell.core.entity.Institution;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
@@ -25,6 +26,8 @@ public class KornellSession extends KornellClient {
 
 	private UserInfoTO currentUser = null;
 	private Dean dean = null;
+	private Institution institution = null;
+	private CourseClassTO currentCourseClass = null;
 
 	public KornellSession() {
 		logger.info("Instantiated new Kornell Session");
@@ -58,7 +61,6 @@ public class KornellSession extends KornellClient {
 
 	public void setCurrentUser(UserInfoTO userInfo) {
 		this.currentUser = userInfo;
-		this.dean = GenericClientFactoryImpl.DEAN;
 	}
 
 	public String getItem(String key) {
@@ -79,7 +81,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isPlatformAdmin() {
-		return isValidRole(RoleType.platformAdmin, dean.getInstitution().getUUID(), null);
+		return isValidRole(RoleType.platformAdmin, institution.getUUID(), null);
 	}
 
 	public boolean isInstitutionAdmin(String institutionUUID) {
@@ -87,7 +89,7 @@ public class KornellSession extends KornellClient {
 	}
 
 	public boolean isInstitutionAdmin() {
-		return isInstitutionAdmin(dean.getInstitution().getUUID());
+		return isInstitutionAdmin(institution.getUUID());
 	}
 	
 	public boolean hasCourseClassRole(String courseClassUUID) {
@@ -140,6 +142,15 @@ public class KornellSession extends KornellClient {
 		return isCourseClassTutor(courseClassUUID);
 	}
 
+	public boolean hasAnyAdminRole() {
+		if(currentUser == null) return false;
+		List<RoleTO> roleTOs = currentUser.getRoles();
+		return (RoleCategory.hasRole(roleTOs, RoleType.courseClassAdmin) || 
+				RoleCategory.hasRole(roleTOs, RoleType.observer) || 
+				RoleCategory.hasRole(roleTOs, RoleType.tutor) || 
+				isInstitutionAdmin());
+	}
+
 	private boolean isValidRole(RoleType type, String institutionUUID, String courseClassUUID) {
 		if (currentUser == null)
 			return false;
@@ -155,6 +166,16 @@ public class KornellSession extends KornellClient {
 
 	public boolean isAuthenticated() {
 		return currentUser != null;
+	}
+
+	public boolean isAnonymous() {
+		return ! isAuthenticated();
+	}
+
+	public boolean hasSignedTerms() {
+		return StringUtils.isSome(institution.getTerms()) &&
+				currentUser != null &&
+				currentUser.getPerson().getTermsAcceptedOn() != null;
 	}
 
 	public void login(String username, String password, final Callback<UserHelloTO> callback) {
@@ -214,21 +235,24 @@ public class KornellSession extends KornellClient {
 		setCurrentUser(null);
 	}
 
-	public boolean isAnonymous() {
-		return ! isAuthenticated();
+	public String getAssetsURL() {
+		return institution == null ? "" : "/repository/" + institution.getAssetsRepositoryUUID();
 	}
 
-	public boolean hasSignedTerms() {
-		return StringUtils.isSome(dean.getInstitution().getTerms()) &&
-				currentUser != null &&
-				currentUser.getPerson().getTermsAcceptedOn() != null;
+	public Institution getInstitution() {
+		return institution;
 	}
 
-	public boolean hasAnyAdminRole(List<RoleTO> roleTOs) {
-		return (RoleCategory.hasRole(roleTOs, RoleType.courseClassAdmin) || 
-				RoleCategory.hasRole(roleTOs, RoleType.observer) || 
-				RoleCategory.hasRole(roleTOs, RoleType.tutor) || 
-				isInstitutionAdmin());
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public CourseClassTO getCurrentCourseClass() {
+		return currentCourseClass;
+	}
+
+	public void setCurrentCourseClass(CourseClassTO currentCourseClass) {
+		this.currentCourseClass = currentCourseClass;
 	}
 
 }

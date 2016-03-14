@@ -9,8 +9,6 @@ import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.InstitutionType;
-import kornell.core.entity.RoleCategory;
-import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
@@ -29,7 +27,6 @@ import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
-import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
@@ -148,18 +145,10 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if (userHelloTO.getInstitution() == null) {
 					KornellNotification.show(constants.institutionNotFound(), AlertType.ERROR, -1);
 				} else {
-					DEAN.init(userHelloTO.getInstitution());
+					KORNELL_SESSION.setInstitution(userHelloTO.getInstitution());
 					KORNELL_SESSION.setCurrentUser(userHelloTO.getUserInfoTO());
-					/*final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
-						@Override
-						public void ok(CourseClassesTO courseClassesTO) {
-							EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(courseClassesTO));
-							setHomePlace(new WelcomePlace());
-							startAuthenticated(courseClassesTO);
-						}
-					};*/
+					DEAN.init();
 					if (KORNELL_SESSION.isAuthenticated()) {
-						//KORNELL_SESSION.courseClasses().getCourseClassesTO(courseClassesCallback);
 						EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(userHelloTO.getCourseClassesTO()));
 						setHomePlace(new WelcomePlace(), userHelloTO.getCourseClassesTO());
 						startAuthenticated(userHelloTO.getCourseClassesTO());
@@ -180,15 +169,18 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	}
 
 	private void startAuthenticated(CourseClassesTO courseClassesTO) {
-		if (RoleCategory.hasRole(KORNELL_SESSION.getCurrentUser().getRoles(), RoleType.courseClassAdmin)
-				|| KORNELL_SESSION.isInstitutionAdmin()) {
+		pickDefaultPlace();
+		startClient(courseClassesTO);
+	}
+
+	private void pickDefaultPlace() {
+		if (KORNELL_SESSION.hasAnyAdminRole()) {
 			setDefaultPlace(new AdminCourseClassesPlace());
-		} else if (InstitutionType.DASHBOARD.equals(DEAN.getInstitution().getInstitutionType())) {
+		} else if (InstitutionType.DASHBOARD.equals(KORNELL_SESSION.getInstitution().getInstitutionType())) {
 			setDefaultPlace(getHomePlace());
 		} else {
 			setDefaultPlace(new WelcomePlace());
 		}
-		startClient(courseClassesTO);
 	}
 
 	protected void startClient(CourseClassesTO courseClassesTO) {
@@ -211,15 +203,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
-				new MrPostman(new MessageComposePresenter(placeCtrl, KORNELL_SESSION, viewFactory, ENTITY_FACTORY),
-						EVENT_BUS, KORNELL_SESSION.chatThreads(), placeCtrl, courseClassesTO);
-				viewFactory.getMessagePresenter();
-				viewFactory.getMessagePresenterClassroomGlobalChat();
-				viewFactory.getMessagePresenterClassroomTutorChat();
-				if (KORNELL_SESSION.getCurrentUser() != null
-						&& KORNELL_SESSION.hasAnyAdminRole(KORNELL_SESSION.getCurrentUser().getRoles())) {
-					viewFactory.getMessagePresenterCourseClass();
-				}
+				new MrPostman(viewFactory, EVENT_BUS, KORNELL_SESSION, placeCtrl, ENTITY_FACTORY, courseClassesTO);
 			}
 		});
 	}
@@ -269,7 +253,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public void setHomePlace(Place place, CourseClassesTO courseClassesTO) {
 		String enrollmentUUID = null;
-		if (KORNELL_SESSION.getCurrentUser() != null && courseClassesTO != null && InstitutionType.DASHBOARD.equals(DEAN.getInstitution().getInstitutionType())) {
+		if (InstitutionType.DASHBOARD.equals(KORNELL_SESSION.getInstitution().getInstitutionType())) {
 			Date date = new Date(0);
 			Enrollment enrollment = null;
 			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
