@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import kornell.core.entity.AuthClientType;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientProperties;
 import kornell.gui.client.util.view.KornellNotification;
 
@@ -59,7 +58,7 @@ public class RESTClient {
 		return reqBuilder;
 	}
 	
-	protected ExceptionalRequestBuilder POST_LOGIN(String username, String password, String... path) {
+	protected ExceptionalRequestBuilder POST_LOGIN(String username, String password, String institutionUUID, String... path) {
 		String url = mkurl(getApiUrl(), path);
 		ExceptionalRequestBuilder reqBuilder = new ExceptionalRequestBuilder(
 				RequestBuilder.POST, url);
@@ -68,7 +67,7 @@ public class RESTClient {
 		StringBuilder sb = new StringBuilder();
 		sb.append("userkey=" + username + "&");
 		sb.append("password=" + password + "&");
-		sb.append("institutionUUID=" + Dean.getInstance().getInstitution().getUUID() + "&");
+		sb.append("institutionUUID=" + institutionUUID + "&");
 		sb.append("clientType=" + AuthClientType.web.toString());
 		
 		reqBuilder.setRequestData(sb.toString());

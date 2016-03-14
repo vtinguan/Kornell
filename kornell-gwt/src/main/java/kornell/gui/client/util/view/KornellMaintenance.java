@@ -1,18 +1,22 @@
 package kornell.gui.client.util.view;
 
+import kornell.gui.client.KornellConstants;
+
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 public class KornellMaintenance {
+	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 	public static PopupPanel show() {	
 		final PopupPanel popup = new PopupPanel();
 		Alert alert = new Alert();
 		alert.addStyleName("kornellMessage");
 		alert.setType(AlertType.ERROR);
-		alert.setText("Estamos em manutenção. Sentimos muito pelo transtorno. Se o problema persistir, entre em contato pelo email suporte@craftware.com.br. Atenciosamente, equipe Eduvem.");
+		alert.setText(constants.maintenanceMessage());
 		popup.setWidget(alert);
 		
 		popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {

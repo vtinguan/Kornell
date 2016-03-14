@@ -10,7 +10,7 @@ import kornell.server.helper.GenPerson
 class PeopleResourceSpec extends UnitSpec with GenPerson {
   
 	"A person" should "be able to alter his own CPF" in asPerson {
-		val self = UserResource().get
+		val self = UserResource().get(null, null, null).getUserInfoTO()
 	  val ownCPF = self.getPerson.getCPF
 	  assertResult(false){
 	   new PersonResource(self.getPerson.getUUID).isRegistered(ownCPF,email = null)

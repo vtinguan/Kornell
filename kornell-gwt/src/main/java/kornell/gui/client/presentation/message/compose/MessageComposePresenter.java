@@ -1,12 +1,14 @@
 package kornell.gui.client.presentation.message.compose;
 
+import java.util.ArrayList;
+
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
+import kornell.core.to.CourseClassTO;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.forms.FormHelper;
@@ -24,27 +26,30 @@ public class MessageComposePresenter implements MessageComposeView.Presenter {
 	private PlaceController placeCtrl;
 	private ChatThreadsClient threadsClient;
 	private ViewFactory viewFactory;
+	private KornellSession session;
 
 	public MessageComposePresenter(PlaceController placeCtrl, KornellSession session, ViewFactory viewFactory, EntityFactory entityFactory) {
 		this.placeCtrl = placeCtrl;
 		this.threadsClient = session.chatThreads();
 		this.viewFactory = viewFactory;
+		this.session = session;
 	}
 
+
 	@Override
-	public void init() {
+	public void init(ArrayList<CourseClassTO> helpCourseClasses) {
 		if(view == null){
 			view = viewFactory.getMessageComposeView();
 			view.setPresenter(this);
 		}
 		
 		//check if it's inside the classroom to preselect the recipient
-		view.show(getCourseClassUUIDFromPlace());
+		view.show(helpCourseClasses, getCourseClassUUIDFromPlace());
 	}
 
 	private String getCourseClassUUIDFromPlace() {
 		if(placeCtrl.getWhere() instanceof ClassroomPlace){
-			return Dean.getInstance().getCourseClassTO().getCourseClass().getUUID();
+			return session.getCurrentCourseClass().getCourseClass().getUUID();
 		}
 		return null;
   }

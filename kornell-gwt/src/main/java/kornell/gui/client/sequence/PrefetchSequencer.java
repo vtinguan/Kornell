@@ -2,12 +2,10 @@ package kornell.gui.client.sequence;
 
 import java.util.logging.Logger;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
@@ -180,12 +178,7 @@ public class PrefetchSequencer extends SimpleSequencer implements Sequencer {
 	}
 
 	private void orientateAndSail() {
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO userInfo) {
-				orientateAndSail(session.getItem(getBreadcrumbKey()));
-			}
-		});
+		orientateAndSail(session.getItem(getBreadcrumbKey()));
 	}
 
 	private void orientateAndSail(String key) {

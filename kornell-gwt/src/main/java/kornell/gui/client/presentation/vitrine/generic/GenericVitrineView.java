@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.vitrine.VitrineView;
 import kornell.gui.client.presentation.vitrine.VitrineViewType;
 import kornell.gui.client.util.ClientConstants;
@@ -151,7 +151,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	}
 
 	private void buildFlagsPanel() {
-		if(Dean.getInstance().getInstitution().isInternationalized()){
+		if(GenericClientFactoryImpl.KORNELL_SESSION.getInstitution().isInternationalized()){
 			String locale = ClientProperties.getLocaleCookie();
 			if(locale == null){
 				locale = "pt_BR";
@@ -396,7 +396,7 @@ public class GenericVitrineView extends Composite implements VitrineView {
 
 	@Override
 	public void setLogoURL(String assetsURL) {
-		String skin = Dean.getInstance().getInstitution().getSkin();
+		String skin = GenericClientFactoryImpl.KORNELL_SESSION.getInstitution().getSkin();
 		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png";
 		imgLogo.setUrl(mkurl(assetsURL, barLogoFileName));
 	}

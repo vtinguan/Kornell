@@ -104,7 +104,7 @@ object InstitutionsRepo {
   }
 
   def cleanUpHostNameCache = {
-    nameCache.cleanUp
+    hostNameCache.cleanUp
   }
   
   def updateHostNameCache(institutionUUID: String, hostName: String) = {

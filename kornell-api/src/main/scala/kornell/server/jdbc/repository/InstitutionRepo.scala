@@ -16,7 +16,7 @@ class InstitutionRepo(uuid: String) {
   
   def update(institution: Institution): Institution = { 
     //get previous version
-    val oldInstitution = InstitutionsRepo.getByUUID(institution.getUUID)
+    val oldInstitution = InstitutionsRepo.getByUUID(institution.getUUID).get
     
     sql"""
     | update Institution i
@@ -43,6 +43,8 @@ class InstitutionRepo(uuid: String) {
     EventsRepo.logEntityChange(institution.getUUID, AuditedEntityType.institution, institution.getUUID, oldInstitution, institution)
     
 	InstitutionsRepo.updateCaches(institution)
+	
+    InstitutionsRepo.cleanUpHostNameCache
 	  
     institution
   }

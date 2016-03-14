@@ -6,8 +6,8 @@ import static com.google.gwt.http.client.Response.SC_INTERNAL_SERVER_ERROR;
 import static com.google.gwt.http.client.Response.SC_NOT_FOUND;
 import static com.google.gwt.http.client.Response.SC_NO_CONTENT;
 import static com.google.gwt.http.client.Response.SC_OK;
-import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 import static com.google.gwt.http.client.Response.SC_SERVICE_UNAVAILABLE;
+import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 
 import java.util.logging.Logger;
 
@@ -123,7 +123,7 @@ public abstract class Callback<T> implements RequestCallback {
 		AutoBean<T> bean = null;
 		AutoBeanFactory factory = factoryFor(contentType);
 		if(factory == null){
-			KornellErrorTO errorTO = GenericClientFactoryImpl.toFactory.newKornellErrorTO().as();
+			KornellErrorTO errorTO = GenericClientFactoryImpl.TO_FACTORY.newKornellErrorTO().as();
 			errorTO.setMessageKey("genericUnhandledError");
 			return errorTO;
 		}
@@ -159,13 +159,13 @@ public abstract class Callback<T> implements RequestCallback {
 			throw new NullPointerException(
 					"Can't create factory without content type");
 		if (contentType.startsWith(TOFactory.PREFIX))
-			return GenericClientFactoryImpl.toFactory;
+			return GenericClientFactoryImpl.TO_FACTORY;
 		else if (contentType.startsWith(LOMFactory.PREFIX))
-			return GenericClientFactoryImpl.lomFactory;
+			return GenericClientFactoryImpl.LOM_FACTORY;
 		else if (contentType.startsWith(EventFactory.PREFIX))
-			return GenericClientFactoryImpl.eventFactory;
+			return GenericClientFactoryImpl.EVENT_FACTORY;
 		else if (contentType.startsWith(EntityFactory.PREFIX))
-			return GenericClientFactoryImpl.entityFactory;
+			return GenericClientFactoryImpl.ENTITY_FACTORY;
 		else
 			return null;
 
