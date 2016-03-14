@@ -124,7 +124,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 
 	private void getUnreadMessagesPerThread(boolean forceFetch) {
 		if (forceFetch || !(placeCtrl.getWhere() instanceof VitrinePlace)) {
-			chatThreadsClient.getTotalUnreadCountsPerThread(session.getInstitution().getUUID(),
+			chatThreadsClient.getTotalUnreadCountsPerThread(
 					new Callback<UnreadChatThreadsTO>() {
 						@Override
 						public void ok(UnreadChatThreadsTO unreadChatThreadsTO) {
@@ -192,7 +192,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 
 	private void getUnreadMessages() {
 		if (!(placeCtrl.getWhere() instanceof VitrinePlace)) {
-			chatThreadsClient.getTotalUnreadCount(session.getInstitution().getUUID(), new Callback<String>() {
+			chatThreadsClient.getTotalUnreadCount(new Callback<String>() {
 				@Override
 				public void ok(String unreadMessagesCount) {
 					bus.fireEvent(new UnreadMessagesFetchedEvent(unreadMessagesCount));
