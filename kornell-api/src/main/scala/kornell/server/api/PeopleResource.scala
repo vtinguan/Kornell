@@ -10,6 +10,10 @@ import kornell.core.entity.People
 import kornell.server.jdbc.repository.AuthRepo
 import kornell.core.error.exception.UnauthorizedAccessException
 import kornell.core.to.PeopleTO
+import kornell.server.util.Conditional.toConditional
+import kornell.server.jdbc.repository.CourseClassRepo
+import kornell.server.util.AccessDeniedErr
+
 
 @Path("people")
 @Produces(Array(People.TYPE))
@@ -20,8 +24,10 @@ class PeopleResource() {
   
   @GET
   @Produces(Array(PeopleTO.TYPE))
-  def findBySearchTerm(@QueryParam("institutionUUID") institutionUUID:String,
-      @QueryParam("search") search:String) = PeopleRepo.findBySearchTerm(institutionUUID, search)
+  def findBySearchTerm(@QueryParam("institutionUUID") institutionUUID:String, @QueryParam("search") search:String) = {
+    PeopleRepo.findBySearchTerm(institutionUUID, search)
+  }.requiring(isPlatformAdmin(institutionUUID), AccessDeniedErr())
+   .or(isInstitutionAdmin(institutionUUID), AccessDeniedErr()).get
 }
 
 object PeopleResource{

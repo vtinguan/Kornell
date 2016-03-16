@@ -109,7 +109,7 @@ class UserResource(private val authRepo: AuthRepo) {
       } else {
         throw new EntityNotFoundException("personNotFound")
       }
-    }
+    }.requiring(PersonRepo(getAuthenticatedPersonUUID).hasPowerOver(personUUID), AccessDeniedErr()).get
 
   @GET
   @Path("check/{institutionUUID}/{username}")
