@@ -24,6 +24,7 @@
 		<buildNumber>Development Build</buildNumber>
 		<scala.version>2.10.6</scala.version>
 		<aws.sdk.version>1.10.27</aws.sdk.version>
+		<version.swarm>1.0.0.Beta6</version.swarm>
 	</properties>
 
 	<repositories>
@@ -46,6 +47,7 @@
 			<name>newrelic</name>
 			<url>http://download.newrelic.com/</url>
 		</repository>
+
 	</repositories>
 
 	<pluginRepositories>
@@ -54,9 +56,20 @@
 			<name>Scala-tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</pluginRepository>
+
 	</pluginRepositories>
 
-
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.wildfly.swarm</groupId>
+				<artifactId>bom</artifactId>
+				<version>${version.swarm}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -220,6 +233,16 @@
 			<version>1.0.2.Final</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>jaxrs-weld</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>2.4.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -237,7 +260,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>
@@ -319,6 +342,24 @@
 				<version>[3.0.4,)</version> </requireMavenVersion> <requireJavaVersion> <version>[1.7,)</version> 
 				</requireJavaVersion> </rules> </configuration> </execution> </executions> 
 				</plugin> -->
+
+
+			<plugin>
+				<groupId>org.wildfly.swarm</groupId>
+				<artifactId>wildfly-swarm-plugin</artifactId>
+				<version>${version.swarm}</version>
+				<configuration>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 		<pluginManagement>
 			<plugins>
