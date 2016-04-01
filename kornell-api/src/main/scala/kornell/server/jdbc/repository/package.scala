@@ -2,7 +2,6 @@ package kornell.server.jdbc
 
 import java.sql.ResultSet
 import java.util.logging.Logger
-
 import kornell.core.entity.Assessment
 import kornell.core.entity.AuditedEntityType
 import kornell.core.entity.AuthClientType
@@ -38,6 +37,7 @@ import kornell.server.repository.Entities
 import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
 import kornell.core.entity.S3ContentRepository
+import java.util.UUID
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -49,8 +49,10 @@ import kornell.core.entity.S3ContentRepository
  * find() => Return Collection[T], as the result of a query
  */
 package object repository {
-  val logger = Logger.getLogger("kornell.server.jdbc.repository")
   
+  val logger = Logger.getLogger("kornell.server.jdbc.repository")
+
+
   //TODO: Move converters to their repos
   implicit def toInstitution(rs:ResultSet):Institution = 
     newInstitution(rs.getString("uuid"), 

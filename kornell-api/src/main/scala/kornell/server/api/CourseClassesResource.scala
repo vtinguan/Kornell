@@ -27,7 +27,7 @@ import kornell.server.jdbc.repository.CourseClassRepo
 class CourseClassesResource {
    
   @Path("{uuid}")
-  def get(@PathParam("uuid") uuid: String):CourseClassResource = CourseClassResource(uuid)
+  def get(@PathParam("uuid") uuid: String) = CourseClassResource(uuid)
 
   @GET
   @Produces(Array(CourseClassesTO.TYPE))
