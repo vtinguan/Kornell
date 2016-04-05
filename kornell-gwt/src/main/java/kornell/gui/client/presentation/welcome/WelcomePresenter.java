@@ -6,13 +6,11 @@ import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.gui.client.ClientFactory;
-import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.welcome.summary.CourseSummaryPresenter;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,7 +22,6 @@ public class WelcomePresenter implements WelcomeView.Presenter{
 	private EventBus bus;
 	private PlaceController placeCtrl;
 	private MenuBarView menuBarView;
-	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
 	public WelcomePresenter(ClientFactory clientFactory) {
 		this.session = clientFactory.getKornellSession();

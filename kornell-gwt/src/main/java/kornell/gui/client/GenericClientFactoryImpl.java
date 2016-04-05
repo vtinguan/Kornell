@@ -1,18 +1,13 @@
 package kornell.gui.client;
 
-import java.util.Date;
 import java.util.logging.Logger;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
-import kornell.core.entity.Enrollment;
-import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
-import kornell.core.entity.InstitutionType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.event.EventFactory;
 import kornell.core.lom.LOMFactory;
-import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserHelloTO;
@@ -25,8 +20,6 @@ import kornell.gui.client.personnel.Captain;
 import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.personnel.Stalker;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
-import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
@@ -66,7 +59,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	/* GUI */
 	private ViewFactory viewFactory;
-	private Place homePlace;
 
 	public GenericClientFactoryImpl() {
 	}
