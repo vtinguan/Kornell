@@ -112,7 +112,7 @@ public class GenericTermsView extends Composite implements TermsView {
 		if(session.getInstitution().isDemandsPersonContactDetails()){
 			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), true));
 		} else {
-			placeCtrl.goTo(clientFactory.getDefaultPlace());
+			placeCtrl.goTo(clientFactory.getKornellSession().getDefaultPlace());
 		}
 	}
 

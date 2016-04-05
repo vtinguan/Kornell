@@ -1,27 +1,19 @@
-package kornell.gui.client.presentation.welcome.generic;
+package kornell.gui.client.presentation.welcome.summary.generic;
 
 import static kornell.core.util.StringUtils.mkurl;
 
 import java.util.Date;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentProgress;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.entity.EnrollmentState;
-import kornell.core.entity.EntityFactory;
 import kornell.core.to.CourseClassTO;
-import kornell.core.to.EnrollmentTO;
-import kornell.core.to.TOFactory;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.personnel.Student;
-import kornell.gui.client.personnel.Teacher;
-import kornell.gui.client.personnel.Teachers;
-import kornell.gui.client.presentation.classroom.ClassroomPlace;
+import kornell.gui.client.presentation.welcome.summary.CourseSummaryView;
 import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.EnumTranslator;
 
@@ -32,7 +24,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
@@ -43,7 +34,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class GenericCourseSummaryView extends Composite {
+public class GenericCourseSummaryView extends Composite implements CourseSummaryView{
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseSummaryView> {
 	}
 
@@ -91,23 +82,25 @@ public class GenericCourseSummaryView extends Composite {
 	String iconCourseURL;
 
 	private CourseClassTO courseClassTO;
-	private PlaceController placeCtrl;
-	private KornellSession session;
 
-	public GenericCourseSummaryView(final PlaceController placeCtrl,
-			final CourseClassTO courseClassTO, final KornellSession session) {
+	private Presenter presenter;
+
+	private Student student;
+
+	public GenericCourseSummaryView(final CourseClassTO courseClassTO, Student student){
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.courseClassTO = courseClassTO;
-		this.placeCtrl = placeCtrl;
-		this.session = session;
+		this.student = student;
+		init();
+	}
+
+	private void init() {
 		Course course = courseClassTO.getCourseVersionTO().getCourse();
 		hTitle.setText(course.getTitle());
 		lblSubTitle.setText(constants.courseClass() + ": " + courseClassTO.getCourseClass().getName());
 		pDescription.setText(course.getDescription());
-
-		final Teacher teacher = Teachers.of(courseClassTO);
-		Student student = teacher.student(session.getCurrentUser());
+		
 		if(courseClassTO.getEnrollment() != null && EnrollmentState.cancelled.equals(courseClassTO.getEnrollment().getState())){
 			pStatusErr.setText(constants.cancelledClassLabel());
 			pStatusErr.removeStyleName("shy");
@@ -131,15 +124,9 @@ public class GenericCourseSummaryView extends Composite {
 		addHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if(courseClassTO.getEnrollment() == null && courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically()){
-					requestEnrollment();
-					return;
-				} else if (courseClassTO.getEnrollment() != null){
-					session.setCurrentCourseClass(courseClassTO);
-					placeCtrl.goTo(new ClassroomPlace(courseClassTO
-							.getEnrollment().getUUID()));
-				}
+				presenter.courseSummaryClicked(courseClassTO);
 			}
+
 		}, ClickEvent.getType());
 
 	}
@@ -214,37 +201,14 @@ public class GenericCourseSummaryView extends Composite {
 		requestEnrollmentBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				requestEnrollment();
+				presenter.requestEnrollmentButtonClicked(courseClassTO);
 			}
 		});
 		return requestEnrollmentBtn;
 	}
 
-	private void requestEnrollment() {
-		EntityFactory entityFactory = GWT.create(EntityFactory.class);
-		Enrollment enrollment = entityFactory.enrollment().as();
-		enrollment.setCourseClassUUID(courseClassTO.getCourseClass()
-				.getUUID());
-		enrollment.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
-		enrollment.setState(courseClassTO.getCourseClass().isApproveEnrollmentsAutomatically() ? EnrollmentState.enrolled : EnrollmentState.requested);
-		session.enrollments().createEnrollment(enrollment,
-				new Callback<Enrollment>() {
-					@Override
-					public void ok(Enrollment enrollment) {
-						updateEnrollmentOnCourseClassTO(enrollment);
-						placeCtrl.goTo(new ClassroomPlace(enrollment.getUUID()));
-					}
-				});
-	}
-
-	private void updateEnrollmentOnCourseClassTO(Enrollment enrollment) {
-		TOFactory toFactory = GWT.create(TOFactory.class);
-		EnrollmentTO enrollmentTO = toFactory.newEnrollmentTO().as();
-		enrollmentTO.setEnrollment(enrollment);
-		enrollmentTO.setPersonUUID(session.getCurrentUser().getPerson().getUUID());
-		enrollmentTO.setFullName(session.getCurrentUser().getPerson().getFullName());
-		enrollmentTO.setUsername(session.getCurrentUser().getUsername());
-		courseClassTO.setEnrollment(enrollment);
-		session.setCurrentCourseClass(courseClassTO);
+	@Override
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
 	}
 }

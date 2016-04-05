@@ -1,19 +1,31 @@
 package kornell.api.client;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.place.shared.Place;
+
 import kornell.core.entity.CourseClass;
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RoleTO;
 import kornell.core.to.TokenTO;
 import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
+import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
 
 
@@ -25,6 +37,10 @@ public class KornellSession extends KornellClient {
 	private UserInfoTO currentUser = null;
 	private Institution institution = null;
 	private CourseClassTO currentCourseClass = null;
+
+	private Place defaultPlace;
+
+	private Place homePlace;
 
 	public KornellSession() {
 		logger.info("Instantiated new Kornell Session");
@@ -222,6 +238,51 @@ public class KornellSession extends KornellClient {
 
 	public void setCurrentUser(UserInfoTO userInfo) {
 		this.currentUser = userInfo;
+	}
+
+	public Place getDefaultPlace() {
+		return defaultPlace;
+	}
+
+	public void setDefaultPlace(Place place) {
+		this.defaultPlace = place;
+	}
+
+	public void pickDefaultPlace() {
+		if (hasAnyAdminRole()) {
+			setDefaultPlace(new AdminCourseClassesPlace());
+		} else if (InstitutionType.DASHBOARD.equals(getInstitution().getInstitutionType())) {
+			setDefaultPlace(getHomePlace());
+		} else {
+			setDefaultPlace(new WelcomePlace());
+		}
+	}
+
+	public Place getHomePlace() {
+		return homePlace != null ? homePlace : defaultPlace;
+	}
+
+	public void setHomePlace(Place place, CourseClassesTO courseClassesTO) {
+		if (InstitutionType.DASHBOARD.equals(getInstitution().getInstitutionType()) && courseClassesTO != null) {
+			Date date = new Date(0);
+			Enrollment enrollment = null;
+			String enrollmentUUID = null;
+			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+				// get latest active enrollment on a class (if no enrollment was
+				// found yet, get non active enrollment)
+				enrollment = courseClassTO.getEnrollment();
+				if (enrollment != null && enrollment.getEnrolledOn().after(date) && enrollment.getCourseClassUUID() != null) {
+					if (EnrollmentState.enrolled.equals(enrollment.getState())) {
+						date = enrollment.getEnrolledOn();
+						enrollmentUUID = enrollment.getUUID();
+					}
+				}
+			}
+			if (enrollmentUUID != null) {
+				place = new ClassroomPlace(enrollmentUUID);
+			}
+		}
+		this.homePlace = place;
 	}
 
 }

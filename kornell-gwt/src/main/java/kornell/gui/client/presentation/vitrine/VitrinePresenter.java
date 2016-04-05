@@ -30,6 +30,7 @@ import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.KornellNotification;
 
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -115,9 +116,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		
 		Institution institution = session.getInstitution();
 		UserInfoTO userInfoTO = session.getCurrentUser();
-		clientFactory.setDefaultPlace(new WelcomePlace());
+		session.setDefaultPlace(new WelcomePlace());
 		Place newPlace;
 		Place welcomePlace = new WelcomePlace();
+		session.setHomePlace(welcomePlace, userHello.getCourseClassesTO());
 		if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
 			 newPlace = new TermsPlace();
 		} else if ( 
@@ -130,12 +132,14 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		} else if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
 				|| session.isInstitutionAdmin()) {
 			newPlace = new AdminCourseClassesPlace();
+		} else if (InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())) {
+			newPlace = session.getHomePlace();
 		} else {
 			newPlace = welcomePlace;
 		}
-		clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
-		clientFactory.setHomePlace(welcomePlace, userHello.getCourseClassesTO());
-		clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? clientFactory.getHomePlace() : newPlace);
+		session.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
+		clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? session.getHomePlace() : newPlace);
+		clientFactory.getPlaceController().goTo(new AdminCourseClassesPlace());
 	}
 
 	@Override

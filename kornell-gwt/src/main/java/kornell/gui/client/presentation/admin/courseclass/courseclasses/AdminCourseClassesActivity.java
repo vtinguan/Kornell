@@ -25,7 +25,7 @@ public class AdminCourseClassesActivity extends AbstractActivity {
 		TOFactory toFactory = GenericClientFactoryImpl.TO_FACTORY;
 		KornellSession session = clientFactory.getKornellSession();
 		PlaceController placeController = clientFactory.getPlaceController();
-		Place defaultPlace = clientFactory.getDefaultPlace();
+		Place defaultPlace = clientFactory.getKornellSession().getDefaultPlace();
 		ViewFactory viewFactory = clientFactory.getViewFactory();
 		AdminCourseClassesPresenter presenter = new AdminCourseClassesPresenter(session,placeController,defaultPlace,toFactory,viewFactory);
 		panel.setWidget(presenter);

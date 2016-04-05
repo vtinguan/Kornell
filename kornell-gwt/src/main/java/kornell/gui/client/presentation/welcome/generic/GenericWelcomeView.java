@@ -3,19 +3,11 @@ package kornell.gui.client.presentation.welcome.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
 import kornell.core.entity.EnrollmentProgressDescription;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
-import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.event.CourseClassesFetchedEvent;
-import kornell.gui.client.personnel.Student;
-import kornell.gui.client.personnel.Teacher;
-import kornell.gui.client.personnel.Teachers;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
+import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.util.view.KornellNotification;
 
@@ -24,16 +16,14 @@ import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericWelcomeView extends Composite implements WelcomeView {
 	interface MyUiBinder extends UiBinder<Widget, GenericWelcomeView> {
@@ -45,39 +35,24 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 	FlowPanel coursesWrapper;
 	@UiField
 	FlowPanel pnlCourses;
+	
 	Button btnCoursesAll, btnCoursesInProgress, btnCoursesToStart, btnCoursesToAcquire, btnCoursesFinished;
 
-	private KornellSession session;
-	private PlaceController placeCtrl;
-	private ViewFactory viewFactory;
-	private EventBus bus;
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 	private Button selectedFilterButton;
 	private ArrayList<IsWidget> widgets;
 
 	private int classesCount;
 
-	public GenericWelcomeView(ClientFactory clientFactory) {
-		this.session = clientFactory.getKornellSession();
-		this.placeCtrl = clientFactory.getPlaceController();
-		this.viewFactory = clientFactory.getViewFactory();
-		this.bus = clientFactory.getEventBus();
+	private Presenter presenter;
+
+	public GenericWelcomeView() {
 		initWidget(uiBinder.createAndBindUi(this));
 		coursesWrapper.setVisible(false);
-
-		initData();
-
-		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
-			@Override
-			public void onPlaceChange(PlaceChangeEvent event) {
-				if (event.getNewPlace() instanceof WelcomePlace) {
-					initData();
-				}
-			}
-		});
 	}
 
-	private void startPlaceBar() {
+	private void startPlaceBar(MenuBarView menuBarView) {
+		menuBarView.initPlaceBar(IconType.HOME, constants.homeTitle(), constants.homeDescription());
 		if (widgets == null) {
 			widgets = new ArrayList<IsWidget>();
 			btnCoursesFinished = startButton(constants.finished(), widgets);
@@ -87,7 +62,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 			btnCoursesAll = startButton(constants.allClasses(), widgets);
 			selectedFilterButton = btnCoursesAll;
 		}
-		viewFactory.getMenuBarView().setPlaceBarWidgets(widgets);
+		menuBarView.setPlaceBarWidgets(widgets);
 	}
 
 	private Button startButton(String text, List<IsWidget> widgets) {
@@ -97,26 +72,16 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 			@Override
 			public void onClick(ClickEvent event) {
 				selectedFilterButton = (Button) event.getSource();
-				initData();
+				presenter.initData();
 			}
 		});
 		widgets.add(button);
 		return button;
 	}
-
-	private void initData() {
-		viewFactory.getMenuBarView().initPlaceBar(IconType.HOME, constants.homeTitle(), constants.homeDescription());
-		session.courseClasses().getCourseClassesTO(new Callback<CourseClassesTO>() {
-			@Override
-			public void ok(CourseClassesTO courseClassesTO) {
-				bus.fireEvent(new CourseClassesFetchedEvent(courseClassesTO));
-				startPlaceBar();
-				display(courseClassesTO);
-			}
-		});
-	}
-
-	private void display(final CourseClassesTO tos) {
+	
+	@Override
+	public void display(final CourseClassesTO tos, MenuBarView menuBarView) {
+		startPlaceBar(menuBarView);
 		pnlCourses.clear();
 		final int classesCount = tos.getCourseClasses().size();
 		if (classesCount == 0) {
@@ -136,12 +101,9 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 		for (final CourseClassTO courseClassTO : tos.getCourseClasses()) {
 			if (courseClassTO.getCourseClass().isInvisible())
 				continue;
-
-			final Teacher teacher = Teachers.of(courseClassTO);
-			Student student = teacher.student(session.getCurrentUser());
 			addPanelIfFiltered(btnCoursesAll, courseClassTO);
-			if (student.isEnrolled()) {
-				EnrollmentProgressDescription description = student.getEnrollmentProgress().getDescription();
+			if (presenter.isEnrolled(courseClassTO)) {
+				EnrollmentProgressDescription description = presenter.getEnrollmentProgressDescription(courseClassTO);
 				switch (description) {
 				case completed:
 					addPanelIfFiltered(btnCoursesFinished, courseClassTO);
@@ -161,7 +123,7 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 
 	private void addPanelIfFiltered(Button button, CourseClassTO courseClassTO) {
 		if (button.equals(selectedFilterButton)) {
-			pnlCourses.add(new GenericCourseSummaryView(placeCtrl, courseClassTO, session));
+			pnlCourses.add(presenter.getCourseSummaryPresenter(courseClassTO).asWidget());
 		}
 		if (classesCount > 3)
 			button.setVisible(true);
@@ -187,5 +149,6 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 
 	@Override
 	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
 	}
 }

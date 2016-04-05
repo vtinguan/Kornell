@@ -293,7 +293,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					isEditMode = false;
 					display();
 					if(isCurrentUser){
-						placeCtrl.goTo(clientFactory.getDefaultPlace());
+						placeCtrl.goTo(clientFactory.getKornellSession().getDefaultPlace());
 					} else {
 						History.back();
 					}

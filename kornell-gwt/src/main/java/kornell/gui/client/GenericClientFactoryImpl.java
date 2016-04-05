@@ -66,7 +66,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	/* GUI */
 	private ViewFactory viewFactory;
-	private Place defaultPlace;
 	private Place homePlace;
 
 	public GenericClientFactoryImpl() {
@@ -146,7 +145,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					KORNELL_SESSION.setCurrentUser(userHelloTO.getUserInfoTO());
 					if (KORNELL_SESSION.isAuthenticated()) {
 						EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(userHelloTO.getCourseClassesTO()));
-						setHomePlace(new WelcomePlace(), userHelloTO.getCourseClassesTO());
+						KORNELL_SESSION.setHomePlace(new WelcomePlace(), userHelloTO.getCourseClassesTO());
 						startAuthenticated(userHelloTO.getCourseClassesTO());
 					} else {
 						startAnonymous();
@@ -160,29 +159,19 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	private void startAnonymous() {
 		ClientProperties.remove(ClientProperties.X_KNL_TOKEN);
-		setDefaultPlace(new VitrinePlace());
+		KORNELL_SESSION.setDefaultPlace(new VitrinePlace());
 		startClient(null);
 	}
 
 	private void startAuthenticated(CourseClassesTO courseClassesTO) {
-		pickDefaultPlace();
+		KORNELL_SESSION.pickDefaultPlace();
 		startClient(courseClassesTO);
-	}
-
-	private void pickDefaultPlace() {
-		if (KORNELL_SESSION.hasAnyAdminRole()) {
-			setDefaultPlace(new AdminCourseClassesPlace());
-		} else if (InstitutionType.DASHBOARD.equals(KORNELL_SESSION.getInstitution().getInstitutionType())) {
-			setDefaultPlace(getHomePlace());
-		} else {
-			setDefaultPlace(new WelcomePlace());
-		}
 	}
 
 	protected void startClient(CourseClassesTO courseClassesTO) {
 		initGUI(courseClassesTO);
 		initActivityManagers();
-		initHistoryHandler(defaultPlace);
+		initHistoryHandler(KORNELL_SESSION.getDefaultPlace());
 		initException();
 		initPersonnel(courseClassesTO);
 	}
@@ -230,45 +219,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	@Override
 	public EventBus getEventBus() {
 		return EVENT_BUS;
-	}
-
-	@Override
-	public Place getDefaultPlace() {
-		return defaultPlace;
-	}
-
-	@Override
-	public void setDefaultPlace(Place place) {
-		this.defaultPlace = place;
-	}
-
-	@Override
-	public Place getHomePlace() {
-		return homePlace != null ? homePlace : defaultPlace;
-	}
-
-	@Override
-	public void setHomePlace(Place place, CourseClassesTO courseClassesTO) {
-		String enrollmentUUID = null;
-		if (InstitutionType.DASHBOARD.equals(KORNELL_SESSION.getInstitution().getInstitutionType()) && courseClassesTO != null) {
-			Date date = new Date(0);
-			Enrollment enrollment = null;
-			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-				// get latest active enrollment on a class (if no enrollment was
-				// found yet, get non active enrollment)
-				enrollment = courseClassTO.getEnrollment();
-				if (enrollment != null && enrollment.getEnrolledOn().after(date) && enrollment.getCourseClassUUID() != null) {
-					if (EnrollmentState.enrolled.equals(enrollment.getState()) || enrollmentUUID == null) {
-						date = enrollment.getEnrolledOn();
-						enrollmentUUID = enrollment.getUUID();
-					}
-				}
-			}
-		}
-		if (enrollmentUUID != null) {
-			place = new ClassroomPlace(enrollmentUUID);
-		}
-		this.homePlace = place;
 	}
 
 	@Override

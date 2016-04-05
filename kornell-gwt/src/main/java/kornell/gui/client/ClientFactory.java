@@ -18,10 +18,6 @@ public interface ClientFactory {
 	PlaceController getPlaceController();
 	HistoryMapper getHistoryMapper();
 	EventBus getEventBus();
-	Place getDefaultPlace();
-	void setDefaultPlace(Place place);
-	Place getHomePlace();
-	void setHomePlace(Place place, CourseClassesTO courseClassesTO);
 
 	void logState();
 

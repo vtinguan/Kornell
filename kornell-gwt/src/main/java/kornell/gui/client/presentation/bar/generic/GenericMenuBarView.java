@@ -307,10 +307,10 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@UiHandler("btnHome")
 	void handleHome(ClickEvent e) {
-		if(clientFactory.getPlaceController().getWhere().toString().equals(clientFactory.getHomePlace().toString())){
+		if(clientFactory.getPlaceController().getWhere().toString().equals(clientFactory.getKornellSession().getHomePlace().toString())){
 			PlaceUtils.reloadCurrentPlace(clientFactory.getEventBus(), clientFactory.getPlaceController());	
 		} else {
-			clientFactory.getPlaceController().goTo(clientFactory.getHomePlace());
+			clientFactory.getPlaceController().goTo(clientFactory.getKornellSession().getHomePlace());
 		}
 	}
 

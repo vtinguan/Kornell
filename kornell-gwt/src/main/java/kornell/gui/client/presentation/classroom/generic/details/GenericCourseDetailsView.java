@@ -475,13 +475,8 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 			warningPanel.add(panel);
 			sidePanel.add(warningPanel);
 		}
-
-		if (!"".equals(text) && InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())) {
-			KornellNotification.show(text.replaceAll("<br>", ""), AlertType.WARNING, 5000);
-			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), false));
-		} else {
-			detailsPanel.removeStyleName("shy");
-		}
+		
+		detailsPanel.removeStyleName("shy");
 		sidePanel.add(getHintsPanel());
 
 		return sidePanel;

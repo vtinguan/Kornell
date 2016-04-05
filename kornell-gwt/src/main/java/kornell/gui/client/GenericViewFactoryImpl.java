@@ -193,7 +193,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 
 	@Override
 	public WelcomeView getWelcomeView() {
-		return new GenericWelcomeView(clientFactory);
+		return new GenericWelcomeView();
 	}
 
 	@Override
@@ -321,7 +321,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	public AdminCoursePresenter getAdminCoursePresenter() {
 		if (genericAdminCoursePresenter == null)
 			genericAdminCoursePresenter = new AdminCoursePresenter(clientFactory.getKornellSession(),
-					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(), this);
+					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getKornellSession().getDefaultPlace(), this);
 		return genericAdminCoursePresenter;
 	}
 
@@ -353,7 +353,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	public AdminCourseVersionPresenter getAdminCourseVersionPresenter() {
 		if (genericAdminCourseVersionPresenter == null)
 			genericAdminCourseVersionPresenter = new AdminCourseVersionPresenter(clientFactory.getKornellSession(),
-					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(), this);
+					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getKornellSession().getDefaultPlace(), this);
 		return genericAdminCourseVersionPresenter;
 	}
 
@@ -369,7 +369,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	public AdminCourseClassPresenter getAdminCourseClassPresenter() {
 		if (genericAdminCourseClassPresenter == null)
 			genericAdminCourseClassPresenter = new AdminCourseClassPresenter(clientFactory.getKornellSession(),
-					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getDefaultPlace(),
+					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getKornellSession().getDefaultPlace(),
 					GenericClientFactoryImpl.TO_FACTORY, this);
 		return genericAdminCourseClassPresenter;
 	}
