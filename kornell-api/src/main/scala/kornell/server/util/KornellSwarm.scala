@@ -15,4 +15,4 @@ object KornellSwarm extends App{
     
     container.start();
     container.deploy(deployment);
-}
+} 
