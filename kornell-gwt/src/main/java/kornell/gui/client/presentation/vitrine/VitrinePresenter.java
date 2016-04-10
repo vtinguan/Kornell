@@ -138,7 +138,6 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		}
 		session.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
 		clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? session.getHomePlace() : newPlace);
-		clientFactory.getPlaceController().goTo(new AdminCourseClassesPlace());
 	}
 
 	@Override
