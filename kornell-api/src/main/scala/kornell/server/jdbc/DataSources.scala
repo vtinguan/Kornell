@@ -14,89 +14,33 @@ import kornell.server.util.Settings._
 import com.zaxxer.hikari.HikariDataSource
 import com.googlecode.flyway.core.Flyway
 import com.zaxxer.hikari.HikariConfig
+import kornell.server.util.Settings._
 
 object DataSources {
   val log = Logger.getLogger(getClass.getName)
 
-  def ping(cf: ConnectionFactory, dbDesc: String = ""): Try[ConnectionFactory] = Try {
-    log.info(s"Pinging database [$dbDesc]")
-    try {
-      val conn = cf()
-      val stmt = conn.createStatement
-      stmt.execute("select 40+2")
-      stmt.close
-      conn.close
-      cf
-    } catch {
-      case t: Throwable => {
-        log.info(s"Could not connect to [$dbDesc]")
-        t.printStackTrace() // TODO: handle error
-        throw t
-      }
-    }
-  }
-
-  lazy val kornellDS = {
-    val context = new InitialContext()
-      .lookup(JNDI_ROOT)
-      .asInstanceOf[Context]
-    val ds = context.lookup(JNDI_DATASOURCE)
-      .asInstanceOf[DataSource]
-    ds
-  }
-
   lazy val hikariDS = {
-    //val ds = new HikariDataSource();
-    //ds.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource")
-    //ds.addDataSourceProperty("dataSource.url", prop("JDBC_CONNECTION_STRING"))
-    //ds.addDataSourceProperty("dataSource.user", prop("JDBC_USERNAME"))
-    //ds.addDataSourceProperty("dataSource.password", prop("JDBC_PASSWORD"))
-    //ds.addDataSourceProperty("dataSource.databaseName", "ebdb")
-    //ds.addDataSourceProperty("datasource.driverClassName", "com.mysql.jdbc.Driver")
-    val driverName = prop("JDBC_DRIVER")
-    val jdbcURL = prop("JDBC_CONNECTION_STRING")
-    val username = prop("JDBC_USERNAME")
-    val password = prop("JDBC_PASSWORD")
+    val driverName = JDBC_DRIVER.get
+    val jdbcURL = JDBC_CONNECTION_STRING.get
+    val username = JDBC_USERNAME.get
+    val password = JDBC_PASSWORD.get
     log.info(s"JDBC properties [$driverName, $jdbcURL, $username, *****]")
     val config = new HikariConfig()
     config.setDriverClassName(driverName)
-    config.setJdbcUrl(jdbcURL);
-    config.setUsername(username);
-    config.setPassword(password);
-    val ds = new HikariDataSource(config);
+    config.setJdbcUrl(jdbcURL)
+    config.setUsername(username)
+    config.setPassword(password)
+    val ds = new HikariDataSource(config)
     ds
   }
 
-  //lazy val JNDI: Try[ConnectionFactory] =
-  //  ping({ () => kornellDS.getConnection }, s"$JNDI_ROOT/$JNDI_DATASOURCE")
 
-  def getConnection(url: String, user: String, pass: String): Try[ConnectionFactory] =
-    ping({ () => DriverManager.getConnection(url, user, pass) }, s"JDBC@$url,$user,$pass")
+  lazy val POOL = { () => hikariDS.getConnection  }
 
-  lazy val LOCAL = getConnection(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD)
-
-  lazy val SYSPROPS = getConnection(
-    prop("JDBC_CONNECTION_STRING"),
-    prop("JDBC_USERNAME"),
-    prop("JDBC_PASSWORD"))
-
-  lazy val POOL = ping ({ () => hikariDS.getConnection  },"HikariDS")
-
-  val connectionFactory = POOL // orElse JNDI orElse SYSPROPS orElse LOCAL 
+  val connectionFactory = POOL 
   
-  def configure(flyway:Flyway) = //connectionFactory match 
-  {
-//      case JNDI => flyway.setDataSource(kornellDS)
-//      case _ => 
-        flyway.setDataSource(
-          prop("JDBC_CONNECTION_STRING"),
-          prop("JDBC_USERNAME"),
-          prop("JDBC_PASSWORD")) 
-  }
-
-  connectionFactory match {
-    case Success(cf) => log.info(s"Connection Factory validated ${connectionFactory} . Nice!");
-    case Failure(e) => log.severe("Can't live without a databse, sorry :("); //TODO: DIE
-  }
-
+  def configure(flyway:Flyway) = flyway.setDataSource(
+          JDBC_CONNECTION_STRING,
+          JDBC_USERNAME,
+          JDBC_PASSWORD)
 }
