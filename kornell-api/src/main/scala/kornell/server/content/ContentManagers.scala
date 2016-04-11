@@ -7,7 +7,7 @@ import kornell.core.entity.S3ContentRepository
 import kornell.server.util.Settings
 import kornell.server.repository.Entities
 import kornell.core.entity.FSContentRepository
-
+import kornell.server.util.Settings._
 object ContentManagers {
   
   lazy val s3 = new AmazonS3Client
@@ -23,10 +23,6 @@ object ContentManagers {
   	}.getOrElse(throw new IllegalArgumentException(s"Could not find repository [$repoUUID]"))
   
   
-  lazy val DEFAULT_USER_CONTENT_BUCKET = "us-east-1.usercontent-develop";
-  lazy val USER_CONTENT_BUCKET = Settings.get("USER_CONTENT_BUCKET").getOrElse(DEFAULT_USER_CONTENT_BUCKET)
-  lazy val DEFAULT_USER_CONTENT_REGION = "us-east-1";
-  lazy val USER_CONTENT_REGION = Settings.get("USER_CONTENT_REGION").getOrElse(DEFAULT_USER_CONTENT_REGION)
   lazy val USER_CONTENT_URL = "https://s3.amazonaws.com/" + USER_CONTENT_BUCKET 
   
   def certsRepo(institutionUUID:String) = 

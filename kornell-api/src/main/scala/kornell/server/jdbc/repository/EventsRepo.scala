@@ -96,7 +96,9 @@ object EventsRepo {
     if (EnrollmentState.enrolled.equals(toState) && sendEmail) {
       val enrollment = EnrollmentRepo(enrollmentUUID).get
       val person = PersonRepo(enrollment.getPersonUUID).get
-      if (person.getEmail != null && !"true".equals(Settings.get("TEST_MODE").orNull)) {
+      val testMode = Settings.TEST_MODE.getOpt.orNull
+      val notTestMode = !"true".equals(testMode)
+      if (person.getEmail != null && notTestMode) {
         if (enrollment.getCourseClassUUID != null) {
           val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
 		  val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get

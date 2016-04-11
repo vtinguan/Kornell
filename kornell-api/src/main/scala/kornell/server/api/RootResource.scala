@@ -5,11 +5,11 @@ import javax.ws.rs.Produces
 import javax.ws.rs.GET
 import java.util.Properties
 import kornell.server.jdbc.SQL._
-import kornell.server.util.Settings
+import kornell.server.util.Settings._
 
 @Path("")
 class RootResource { 
-  val buildDescription = Settings.get("build.number").getOrElse("development")
+  val buildDescription = BUILD_NUM.getOpt.orElse("development_build").get
   
   @Produces(Array("text/plain"))
   @GET

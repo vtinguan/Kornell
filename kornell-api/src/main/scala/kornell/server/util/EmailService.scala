@@ -14,6 +14,8 @@ import kornell.server.jdbc.repository.PersonRepo
 import kornell.core.entity.Enrollment
 import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
 import kornell.core.entity.ChatThread
+import kornell.server.util.Settings._
+
 
 object EmailService {
   
@@ -167,7 +169,7 @@ object EmailService {
     }
   }
   
-  private def getFromEmail(institution: kornell.core.entity.Institution):String = EmailSender.SMTP_FROM
+  private def getFromEmail(institution: kornell.core.entity.Institution):String = SMTP_FROM.get
   
   
   private def wrapBody(bodyText: String) = 
