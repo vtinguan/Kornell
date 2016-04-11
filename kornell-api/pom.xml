@@ -79,11 +79,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
 			<scope>provided</scope>
 		</dependency>
+
 
 		<dependency>
 			<groupId>javax.mail</groupId>
@@ -249,9 +250,9 @@
 			<artifactId>shrinkwrap-resolver-depchain</artifactId>
 			<version>2.2.2</version>
 			<scope>compile</scope>
-			<type>pom</type> 
+			<type>pom</type>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
@@ -260,15 +261,9 @@
 		<testSourceDirectory>src/test/scala</testSourceDirectory>
 
 		<plugins>
-			<!-- <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> 
+				<version>2.1</version> <configuration> <source>1.8</source> <target>1.8</target> 
+				</configuration> </plugin> -->
 
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
