@@ -45,14 +45,22 @@ object Settings extends Enum {
     val default: Option[String] = None
     val required: Boolean = false
     
-    def getOpt = fromSystem
+    lazy val getOpt = fromSystem
                   .orElse(fromEnv)
                   .orElse(fromProperties)
-    def get = getOpt orElse default get
-    def fromSystem = Option(System.getProperty(name))
-    def fromEnv = Option(System.getenv(name))
-    def fromProperties:Option[String] = properties flatMap {props => Option(props.getProperty(name))}
+                  .orElse(default)
+                  
+    lazy val get = getOpt get
+    lazy val fromSystem = Option(System.getProperty(name))
+    lazy val fromEnv = Option(System.getenv(name))
+    lazy val fromProperties:Option[String] = properties flatMap {props => Option(props.getProperty(name))}
 
+    lazy val requiredStr = if (required) "*" else " "
+    lazy val valueStr =
+      if (name.contains("PASSWORD")) "********"
+      else if (getOpt.isDefined) s"= $get" else ""
+        
+    override def toString = s"[$requiredStr] $name $valueStr"
   }
 
   implicit def toString(e: EnumVal): String = e.get
