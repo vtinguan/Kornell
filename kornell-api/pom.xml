@@ -24,7 +24,8 @@
 		<buildNumber>Development Build</buildNumber>
 		<scala.version>2.10.6</scala.version>
 		<aws.sdk.version>1.10.27</aws.sdk.version>
-		<version.swarm>1.0.0.Beta6</version.swarm>
+		<version.swarm>1.0.0.Beta7</version.swarm>
+		<jasper.version>5.0.4</jasper.version> <!-- ArtifactNotFoundException? -->
 	</properties>
 
 	<repositories>
@@ -151,7 +152,7 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>5.0.4</version>
+			<version>${jasper.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>jdtcore</artifactId>
@@ -236,7 +237,7 @@
 
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>jaxrs-weld</artifactId>
+			<artifactId>jaxrs-cdi</artifactId>
 		</dependency>
 
 		<dependency>
@@ -256,7 +257,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>${artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<sourceDirectory>src/main/scala</sourceDirectory>
 		<testSourceDirectory>src/test/scala</testSourceDirectory>
 
@@ -359,6 +360,23 @@
 						<id>package</id>
 						<goals>
 							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>src/assembly/bin.xml</descriptor>
+					<finalName>${project.artifactId}</finalName>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
