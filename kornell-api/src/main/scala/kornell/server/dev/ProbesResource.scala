@@ -7,12 +7,9 @@ import kornell.server.util.Settings
 @Path("/probes")
 @Produces(Array("text/plain"))
 class ProbesResource {
-  
-  
   @Path("settings")
   @GET
   def settings = Settings
                   .values
                   .mkString("\n")
-
 }

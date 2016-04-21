@@ -1,0 +1,307 @@
+{
+  "Parameters": {
+
+    "knljdbcurl": {
+      "Type": "String"
+    },
+
+    "knljdbcdriver": {
+      "Type": "String"
+    },
+
+    "knljdbcusername": {
+      "Type": "String"
+    },
+
+    "knljdbcpassword": {
+      "Type": "String"
+    },
+
+    "Branch": {
+      "Type": "String",
+      "Default": "master"
+    },
+
+    "BaseLinuxAMI": {
+      "Type": "String",
+      "Default": "ami-e010108a"
+    },
+
+
+    "APIInstanceType": {
+      "Type": "String",
+      "Default": "t2.nano",
+      "AllowedValues": [
+        "t2.nano",
+        "t2.micro",
+        "t2.small",
+        "t2.medium",
+        "t2.large",
+        "m4.large",
+        "m4.xlarge",
+        "m4.2xlarge",
+        "m4.4xlarge",
+        "m4.10xlarge"
+      ],
+      "Description": "Enter t1.micro, m1.small, or m1.large. Default is t1.micro."
+    }
+
+  },
+
+  "Resources": {
+    "knlapivpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.1.0.0/16"
+      }
+    },
+
+    "knlapivpcigw": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [{
+          "Key": "Application",
+          "Value": {
+            "Ref": "AWS::StackId"
+          }
+        }, {
+          "Key": "Network",
+          "Value": "Public"
+        }]
+      }
+    },
+
+    "knlapivpcigwattach": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "knlapivpc"
+        },
+        "InternetGatewayId": {
+          "Ref": "knlapivpcigw"
+        }
+      }
+    },
+
+    "knlpubroutetbl": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "knlapivpc"
+        },
+        "Tags": [{
+          "Key": "Application",
+          "Value": {
+            "Ref": "AWS::StackId"
+          }
+        }, {
+          "Key": "Network",
+          "Value": "Public"
+        }]
+      }
+    },
+
+    "knlapipubroute": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "knlapivpcigwattach",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "knlpubroutetbl"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "knlapivpcigw"
+        }
+      }
+    },
+
+
+    "knlsubnetapia": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "knlapivpc"
+        },
+        "CidrBlock": "10.1.1.0/24",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0, {
+              "Fn::GetAZs": ""
+            }
+          ]
+        }
+      }
+    },
+
+     "knlsubnetapiaroute" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "knlsubnetapia" },
+        "RouteTableId" : { "Ref" : "knlpubroutetbl" }
+      }
+    },
+
+
+    "knlsubnetapib": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "knlapivpc"
+        },
+        "CidrBlock": "10.1.2.0/24",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1, {
+              "Fn::GetAZs": ""
+            }
+          ]
+        }
+      }
+    },
+
+    "knlsubnetapibroute" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "knlsubnetapib" },
+        "RouteTableId" : { "Ref" : "knlpubroutetbl" }
+      }
+    },
+
+    "knlapisecg": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "knlapivpc"
+        },
+        "GroupDescription": "Open database for access",
+        "SecurityGroupIngress": [{
+          "IpProtocol": "tcp",
+          "FromPort": "8080",
+          "ToPort": "8080",
+          "CidrIp": "0.0.0.0/0"
+        }]
+      }
+    },
+
+    "knlapiapp": {
+      "Type": "AWS::ElasticBeanstalk::Application",
+      "Properties": {
+        "ApplicationName": {
+          "Fn::Join": ["-", [
+            {
+              "Ref": "AWS::StackName"
+            },
+            "api"
+          ]]
+        },
+        "Description": "Kornell API Tier"
+      }
+    },
+
+    "knlapiversion": {
+      "Type": "AWS::ElasticBeanstalk::ApplicationVersion",
+      "Properties": {
+        "Description": "Version 1.0",
+        "ApplicationName": {
+          "Ref": "knlapiapp"
+        },
+        "SourceBundle": {
+          "S3Bucket": "us-east-1.craftware-dist",
+          "S3Key": {
+            "Fn::Join": ["/", [
+              "kornell-api", {
+                "Ref": "Branch"
+              },
+              "kornell-api-eb.zip"
+            ]]
+          }
+        }
+      }
+    },
+
+    "knlapienv": {
+      "Type": "AWS::ElasticBeanstalk::Environment",
+      "Properties": {
+        "ApplicationName": {
+          "Ref": "knlapiapp"
+        },
+        "Description": "Kornell API Environment",
+        "SolutionStackName": "64bit Amazon Linux 2016.03 v2.1.0 running Java 8",
+        "VersionLabel": {
+          "Ref": "knlapiversion"
+        },
+        "OptionSettings": [{
+          "Namespace": "aws:autoscaling:launchconfiguration",
+          "OptionName": "SecurityGroups",
+          "Value": {
+            "Ref": "knlapisecg"
+          }
+        }, {
+          "Namespace": "aws:ec2:vpc",
+          "OptionName": "VPCId",
+          "Value": {
+            "Ref": "knlapivpc"
+          }
+        }, {
+          "Namespace": "aws:ec2:vpc",
+          "OptionName": "Subnets",
+          "Value": {
+            "Fn::Join": [",", [{
+              "Ref": "knlsubnetapia"
+            }, {
+              "Ref": "knlsubnetapib"
+            }]]
+          }
+        }, {
+          "Namespace": "aws:ec2:vpc",
+          "OptionName": "ELBSubnets",
+          "Value": {
+            "Fn::Join": [",", [{
+              "Ref": "knlsubnetapia"
+            }, {
+              "Ref": "knlsubnetapib"
+            }]]
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application",
+          "OptionName": "Application Healthcheck URL",
+          "Value": "/api"
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "PORT",
+          "Value": "8080"
+        }
+        , {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "JDBC_CONNECTION_STRING",
+          "Value": {
+            "Ref": "knljdbcurl"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "JDBC_USERNAME",
+          "Value": {
+            "Ref": "knljdbcusername"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "JDBC_PASSWORD",
+          "Value": {
+            "Ref": "knljdbcpassword"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "JDBC_DRIVER",
+          "Value": {
+            "Ref": "knljdbcdriver"
+          }
+        }, {
+          "Namespace": "aws:ec2:vpc",
+          "OptionName": "AssociatePublicIpAddress",
+          "Value": "True"
+        }
+        ]
+      }
+    }
+  }
+}

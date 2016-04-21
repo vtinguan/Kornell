@@ -1,6 +1,5 @@
 package kornell.server.util
 
-import io.Source._
 import java.util.Properties
 
 //Klangist Enums: https://gist.github.com/viktorklang/1057513
@@ -105,8 +104,4 @@ object Settings extends Enum {
       System.getProperty("java.io.tmpdir")
     else
       System.getProperty("java.io.tmpdir") + "/"
-
-  override def toString() = s"""
-  #  Kornell Settings
-  """
 }

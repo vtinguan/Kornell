@@ -1,0 +1,171 @@
+{
+  "Parameters": {
+
+    "DBStorage": {
+      "Type": "String",
+      "Default": "5"
+    },
+
+    "DBMultiAZ": {
+      "Type": "String",
+      "Default": "false"
+    },
+
+    "DBPassword": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Default": "CHANGEMEPLEASE",
+      "Description": "Test database admin account password",
+      "MinLength": "8",
+      "MaxLength": "41",
+      "AllowedPattern": "[a-zA-Z0-9]*",
+      "ConstraintDescription": "must contain only alphanumeric characters."
+    },
+
+    "DBInstanceType": {
+      "Type": "String",
+      "Default": "db.t2.micro",
+      "AllowedValues": [
+        "db.t2.micro",
+        "db.t2.small",
+        "db.t2.medium",
+        "db.t2.large",
+        "db.m4.large",
+        "db.m4.xlarge",
+        "db.m4.2xlarge",
+        "db.m4.4xlarge",
+        "db.m4.10xlarge"
+      ],
+      "Description": "Enter t1.micro, m1.small, or m1.large. Default is t1.micro."
+    }
+  },
+
+  "Resources": {
+
+    "knldbvpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16"
+      }
+    },
+
+    "knlsubnetdba": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "knldbvpc"
+        },
+        "CidrBlock": "10.0.1.0/24",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0, {
+              "Fn::GetAZs": ""
+            }
+          ]
+        }
+      }
+    },
+
+    "knlsubnetdbb": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "knldbvpc"
+        },
+        "CidrBlock": "10.0.2.0/24",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1, {
+              "Fn::GetAZs": ""
+            }
+          ]
+        }
+      }
+    },
+
+    "knldbsecg": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "knldbvpc"
+        },
+        "GroupDescription": "Open database for access",
+        "SecurityGroupIngress": [{
+          "IpProtocol": "tcp",
+          "FromPort": "3306",
+          "ToPort": "3306",
+          "CidrIp": "0.0.0.0/0"
+        }]
+      }
+    },
+
+
+    "knldbsubnetgrp": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "Kornell DB Subnet Group",
+        "SubnetIds": [{
+          "Ref": "knlsubnetdba"
+        }, {
+          "Ref": "knlsubnetdbb"
+        }]
+      }
+    },
+
+    "knldb": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "Engine": "MySQL",
+        "DBName": "ebdb",
+        "MasterUsername": "root",
+        "DBInstanceClass": {
+          "Ref": "DBInstanceType"
+        },
+        "MultiAZ": {
+          "Ref": "DBMultiAZ"
+        },
+        "AllocatedStorage": {
+          "Ref": "DBStorage"
+        },
+        "MasterUserPassword": {
+          "Ref": "DBPassword"
+        },
+        "DBSubnetGroupName": {
+          "Ref": "knldbsubnetgrp"
+        },
+        "VPCSecurityGroups": [{
+          "Fn::GetAtt": [
+            "knldbsecg",
+            "GroupId"
+          ]
+        }]
+      }
+    }
+
+
+  },
+
+  "Outputs": {
+    "knldb": {
+      "Description": "RDS",
+      "Value": {
+        "Ref": "knldb"
+      }
+    },
+
+    "knljdbcurl": {
+      "Description": "JDBC_URL",
+      "Value": {
+        "Fn::Join": ["", [
+          "jdbc:mysql://", {
+            "Fn::GetAtt": ["knldb", "Endpoint.Address"]
+          },
+          ":", {
+            "Fn::GetAtt": ["knldb", "Endpoint.Port"]
+          },
+          "/ebdb"]]}
+    }
+
+  }
+
+}
