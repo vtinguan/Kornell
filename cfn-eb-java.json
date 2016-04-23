@@ -17,20 +17,29 @@
       "Type": "String"
     },
 
+    "knldbvpcid" : {
+      "Type": "String"
+    },
+
+    "knlapiversionbucket": {
+      "Type": "String",
+      "Default": "us-east-1.craftware-dist"
+    },
+
+    "knlapiversionkey": {
+      "Type": "String",
+      "Default": "kornell-api/master/kornell-api-eb.zip"
+    },
+
     "Branch": {
       "Type": "String",
       "Default": "master"
     },
 
-    "BaseLinuxAMI": {
-      "Type": "String",
-      "Default": "ami-e010108a"
-    },
 
-
-    "APIInstanceType": {
+    "knlapiinstancetype": {
       "Type": "String",
-      "Default": "t2.nano",
+      "Default": "t2.medium",
       "AllowedValues": [
         "t2.nano",
         "t2.micro",
@@ -183,6 +192,8 @@
       }
     },
 
+    
+
     "knlapiapp": {
       "Type": "AWS::ElasticBeanstalk::Application",
       "Properties": {
@@ -206,15 +217,8 @@
           "Ref": "knlapiapp"
         },
         "SourceBundle": {
-          "S3Bucket": "us-east-1.craftware-dist",
-          "S3Key": {
-            "Fn::Join": ["/", [
-              "kornell-api", {
-                "Ref": "Branch"
-              },
-              "kornell-api-eb.zip"
-            ]]
-          }
+          "S3Bucket": {"Ref": "knlapiversionbucket"} ,
+          "S3Key": {"Ref":"knlapiversionkey"}
         }
       }
     },
@@ -298,7 +302,11 @@
         }, {
           "Namespace": "aws:ec2:vpc",
           "OptionName": "AssociatePublicIpAddress",
-          "Value": "True"
+          "Value": "true"
+        }, {
+          "Namespace": "aws:autoscaling:launchconfiguration",
+          "OptionName": "InstanceType",
+          "Value": {"Ref":"knlapiinstancetype"}
         }
         ]
       }
