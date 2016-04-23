@@ -27,13 +27,16 @@ public class DMElement {
 		this("");
 	}
 
-	public DMElement(DMElement... children) {
+	public DMElement(String key, DMElement... children) {
+		this.key = key;
 		addAll(children);
 	}
 
 	protected void addAll(DMElement... children) {
-		for (DMElement c : children)
+		for (DMElement c : children){
 			add(c);
+			c.parent = this;
+		}
 	}
 
 	public DMElement(String key, boolean mandatory,
@@ -87,12 +90,12 @@ public class DMElement {
 	public String getFQKN() {
 		if (fqkn == null) {
 			if (parent != null) {
-				fqkn = parent.getFQKN();
-				if (!"".equals(fqkn))
-					fqkn += ".";
-				fqkn += key;
-			} else
-				fqkn = "";
+				String pfqkn = parent.getFQKN();
+				if (StringUtils.isSome(pfqkn)) 
+					fqkn = pfqkn + "." + key;
+				else
+					fqkn = key;
+			}
 		}
 		return fqkn;
 	}
@@ -187,4 +190,5 @@ public class DMElement {
 		String str = get(entries);
 		return Integer.parseInt(str);
 	}
+	
 }
