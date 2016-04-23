@@ -16,7 +16,10 @@ class FSContentManager(fsRepo:FSContentRepository) extends SyncContentManager {
 	 }
 	 
 	 def inputStream(keys: String*): Try[InputStream] = Try {
-		 new FileInputStream(Paths.get(fsRepo.getPath, url(keys:_*)).toFile())
+	   val path = Paths.get(fsRepo.getPath, url(keys:_*))
+	   val file = path.toFile()
+		 if(file.exists()) new FileInputStream(file) 
+		 else throw new IllegalArgumentException(s"$path not found")
 	 }
 
 	 def put(input: InputStream, contentType: String, contentDisposition: String, metadataMap: Map[String, String],keys: String*) = 

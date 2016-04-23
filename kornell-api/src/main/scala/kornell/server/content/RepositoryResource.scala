@@ -26,9 +26,10 @@ class RepositoryResource {
   def get(@Context resp: HttpServletResponse, @PathParam("path") path: String):Response = {
     val repoData = StringUtils.parseRepositoryData(path)
     val repositoryUUID = repoData.getRepositoryUUID()
-    val cm = ContentManagers.forRepository(repositoryUUID);
-    val key = repoData.getKey()
-    cm.inputStream(key) match {
+    val cm = ContentManagers.forRepository(repositoryUUID);    
+    val key = repoData.getKey
+    val input = cm.inputStream(key)
+    input match {
       case Success(in) => {  
 		  val out: OutputStream = resp.getOutputStream();
 		  try {
