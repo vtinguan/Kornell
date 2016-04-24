@@ -1,0 +1,56 @@
+{
+  "Parameters": {
+
+    "knldomainname": {
+      "Type": "String"
+    },
+
+    "knlgwtbucketname": {
+      "Type": "String"
+    },
+
+    "knlcdnpriceclass": {
+      "Type": "String",
+      "Default": "PriceClass_100"
+    }
+
+  },
+
+  "Resources": {
+    "myDistribution": {
+      "Type": "AWS::CloudFront::Distribution",
+      "Properties": {
+        "DistributionConfig": {
+          "Origins": [{
+            "Id": "knlgwtorigin",
+            "DomainName": {
+              "Fn::Join": ["", [{
+                "Ref": "knlgwtbucketname"
+              }, ".s3.amazonaws.com"]]
+            }
+          }],
+          "Enabled": "true",
+          "Comment": "Content Distribution",
+          "DefaultRootObject": "Kornell.nocache.html",
+          "Aliases": [{
+            "Ref": "knldomainname"
+          }],
+          "DefaultCacheBehavior": {
+            "AllowedMethods": ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"],
+            "TargetOriginId": "knlgwtorigin",
+            "ForwardedValues": {
+              "QueryString": "true",
+              "Cookies": {
+                "Forward": "all"
+              }
+            },
+            "ViewerProtocolPolicy": "allow-all"
+          },
+          "PriceClass": {
+            "Ref": "knlcdnpriceclass"
+          }
+        }
+      }
+    }
+  }
+}

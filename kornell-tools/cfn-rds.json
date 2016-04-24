@@ -93,12 +93,6 @@
   },
 
   "Outputs": {
-    "knldb": {
-      "Description": "DB_VPC_ID",
-      "Value": {
-        "Ref": "knldb"
-      }
-    },
 
     "knljdbcurl": {
       "Description": "JDBC_CONNECTION_STRING",
@@ -113,6 +107,21 @@
           "/ebdb"
         ]]
       }
+    },
+
+    "knljdbcdriver": {
+      "Description": "JDBC_DRIVER",
+      "Value": "com.mysql.jdbc.Driver"
+    },
+
+    "knljdbcusername": {
+      "Description": "JDBC_USERNAME",
+      "Value" : "root"
+    },
+
+    "knljdbcpassword" :{
+      "Description": "JDBC_PASSWORD",
+      "Value" : "CHANGEMEPLEASE"
     }
 
   }

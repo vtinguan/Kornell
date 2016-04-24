@@ -1,15 +1,15 @@
 {
   "Parameters": {
-    "knlvpc":{
-      "Type": "AWS::EC2::VPC::Id"
+    "knlvpc": {
+      "Type": "String"
     },
 
     "knlapisubnetids": {
-      "Type": "List<AWS::EC2::Subnet::Id>"
+      "Type": "String"
     },
 
     "knlapisgids": {
-      "Type": "List<AWS::EC2::SecurityGroup::Id>"
+      "Type": "String"
     },
 
     "knljdbcurl": {
@@ -28,7 +28,7 @@
       "Type": "String"
     },
 
-    "knlkeypair":{
+    "knlkeypair": {
       "Type": "AWS::EC2::KeyPair::KeyName"
     },
 
@@ -105,6 +105,7 @@
     "knlapienv": {
       "Type": "AWS::ElasticBeanstalk::Environment",
       "Properties": {
+
         "ApplicationName": {
           "Ref": "knlapiapp"
         },
@@ -114,12 +115,6 @@
           "Ref": "knlapiversion"
         },
         "OptionSettings": [{
-          "Namespace": "aws:autoscaling:launchconfiguration",
-          "OptionName": "SecurityGroups",
-          "Value": {
-            "Ref": "knlapisgids"
-          }
-        }, {
           "Namespace": "aws:ec2:vpc",
           "OptionName": "VPCId",
           "Value": {
@@ -128,12 +123,25 @@
         }, {
           "Namespace": "aws:ec2:vpc",
           "OptionName": "Subnets",
-          "Value": {"Ref":"knlapisubnetids"}
+          "Value": {
+            "Ref": "knlapisubnetids"
+          }
         }, {
           "Namespace": "aws:ec2:vpc",
           "OptionName": "ELBSubnets",
-          "Value": {"Ref":"knlapisubnetids"}
-
+          "Value": {
+            "Ref": "knlapisubnetids"
+          }
+        }, {
+          "Namespace": "aws:autoscaling:launchconfiguration",
+          "OptionName": "SecurityGroups",
+          "Value": {
+            "Ref": "knlapisgids"
+          }
+        },{
+          "Namespace": "aws:ec2:vpc",
+          "OptionName": "AssociatePublicIpAddress",
+          "Value": "true"
         }, {
           "Namespace": "aws:elasticbeanstalk:application",
           "OptionName": "Application Healthcheck URL",
@@ -166,25 +174,19 @@
           "Value": {
             "Ref": "knljdbcdriver"
           }
-        }, {
-          "Namespace": "aws:ec2:vpc",
-          "OptionName": "AssociatePublicIpAddress",
-          "Value": "true"
-        }, {
+        },  {
           "Namespace": "aws:autoscaling:launchconfiguration",
           "OptionName": "InstanceType",
           "Value": {
             "Ref": "knlapiinstancetype"
           }
-        }, 
-        {
+        }, {
           "Namespace": "aws:autoscaling:launchconfiguration",
           "OptionName": "EC2KeyName",
           "Value": {
             "Ref": "knlkeypair"
           }
-        }
-        ]
+        }]
       }
     }
   }

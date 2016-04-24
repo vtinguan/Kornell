@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
 
-TIER="rds"
+BRANCH="static"
+TIER="s3"
+
 source cfn-create-stack.sh

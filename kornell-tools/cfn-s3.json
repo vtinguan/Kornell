@@ -1,0 +1,39 @@
+{
+  "Parameters": {},
+
+  "Resources": {
+
+    "knlgwtbucket": {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "AccessControl" : "PublicRead"
+      }
+    },
+
+    "knluserbucket": {
+      "Type" : "AWS::S3::Bucket"
+    },
+
+    "knllogsbucket": {
+      "Type" : "AWS::S3::Bucket"
+    }
+
+  },
+
+  "Outputs":{
+    "knlgwtbucketname": {
+      "Description":"S3_GWT_BUCKET",
+      "Value":{"Ref":"knlgwtbucket"} 
+    },
+    "knluserbucketname": {
+      "Description":"S3_USER_BUCKET",
+      "Value":{"Ref":"knluserbucket"} 
+    },
+    "knllogbucketname": {
+      "Description":"S3_log_BUCKET",
+      "Value":{"Ref":"knllogsbucket"} 
+    }
+
+  }
+
+}
