@@ -1,7 +1,21 @@
 #!/bin/bash
 set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $DIR/bash-utils.sh
 
-TIER="app"
+
+demmand "JDBC_CONNECTION_STRING"
+demmand "JDBC_DRIVER"
+demmand "JDBC_USERNAME"
+demmand "JDBC_PASSWORD"
+demmand "VPC_ID"
+demmand "VPC_API_SUBNETS"
+demmand "VPC_API_SECGS"
+demmand "API_KEYPAIR"
+demmand "API_CERT"
+
+TIER="eb"
+BRANCH=${BRANCH:-"master"}
 
 ARG_URL="ParameterKey=knljdbcurl,ParameterValue='$JDBC_CONNECTION_STRING'"
 ARG_DRIVER="ParameterKey=knljdbcdriver,ParameterValue=$JDBC_DRIVER"
@@ -13,8 +27,8 @@ ARG_VPC_API_SUBNETS="ParameterKey=knlapisubnetids,ParameterValue='$VPC_API_SUBNE
 ARG_VPC_API_SECGS="ParameterKey=knlapisgids,ParameterValue='$VPC_API_SECGS'"
 
 ARG_API_KEYPAIR="ParameterKey=knlkeypair,ParameterValue='$API_KEYPAIR'"
+ARG_API_CERT="ParameterKey=knlcertificateid,ParameterValue='$API_CERT'"
 
+CFN_CREATE_ARGS="--parameters $ARG_VPC_ID $ARG_URL $ARG_DRIVER $ARG_USERNAME $ARG_PASSWORD $ARG_VPC_API_SUBNETS $ARG_VPC_API_SECGS $ARG_API_KEYPAIR $ARG_API_BRANCH $ARG_API_CERT"
 
-CFN_CREATE_ARGS="--parameters $ARG_VPC_ID $ARG_URL $ARG_DRIVER $ARG_USERNAME $ARG_PASSWORD $ARG_VPC_API_SUBNETS $ARG_VPC_API_SECGS $ARG_API_KEYPAIR"
-
-source cfn-create-stack.sh
+source $DIR/cfn-create-stack.sh

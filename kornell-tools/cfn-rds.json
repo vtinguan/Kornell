@@ -14,17 +14,17 @@
       "Default": "false"
     },
 
-    "DBStorage": {
+    "knldbstorage": {
       "Type": "String",
-      "Default": "5"
+      "Default": "32"
     },
 
-    "DBMultiAZ": {
+    "knldbmultiaz": {
       "Type": "String",
       "Default": "false"
     },
 
-    "DBPassword": {
+    "knldbpassword": {
       "NoEcho": "true",
       "Type": "String",
       "Default": "CHANGEMEPLEASE",
@@ -35,7 +35,7 @@
       "ConstraintDescription": "must contain only alphanumeric characters."
     },
 
-    "DBInstanceType": {
+    "knldbinstancetype": {
       "Type": "String",
       "Default": "db.t2.micro",
       "AllowedValues": [
@@ -66,20 +66,23 @@
     "knldb": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
+        "DBInstanceIdentifier": {
+              "Ref": "AWS::StackName"
+        },
         "Engine": "MySQL",
         "DBName": "ebdb",
-        "MasterUsername": "root",
         "DBInstanceClass": {
-          "Ref": "DBInstanceType"
+          "Ref": "knldbinstancetype"
         },
         "MultiAZ": {
-          "Ref": "DBMultiAZ"
+          "Ref": "knldbmultiaz"
         },
         "AllocatedStorage": {
-          "Ref": "DBStorage"
+          "Ref": "knldbstorage"
         },
+        "MasterUsername": "root",
         "MasterUserPassword": {
-          "Ref": "DBPassword"
+          "Ref": "knldbpassword"
         },
         "DBSubnetGroupName": {
           "Ref": "knldbsubnetgrp"
@@ -87,7 +90,15 @@
         "VPCSecurityGroups": {"Ref":"knldbsgids"},
         "PubliclyAccessible": {
           "Ref": "knldbpublic"
-        }
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          }
+        ]
       }
     }
   },

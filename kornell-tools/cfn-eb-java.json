@@ -32,6 +32,10 @@
       "Type": "AWS::EC2::KeyPair::KeyName"
     },
 
+    "knlcertificateid": {
+      "Type": "String"
+    },
+
     "knlapiversionbucket": {
       "Type": "String",
       "Default": "us-east-1.craftware-dist"
@@ -40,11 +44,6 @@
     "knlapiversionkey": {
       "Type": "String",
       "Default": "kornell/master/latest/kornell-api-eb.zip"
-    },
-
-    "Branch": {
-      "Type": "String",
-      "Default": "master"
     },
 
 
@@ -77,7 +76,7 @@
           "Fn::Join": ["-", [{
               "Ref": "AWS::StackName"
             },
-            "api"
+            "a"
           ]]
         },
         "Description": "Kornell API Tier"
@@ -105,12 +104,19 @@
     "knlapienv": {
       "Type": "AWS::ElasticBeanstalk::Environment",
       "Properties": {
-
         "ApplicationName": {
           "Ref": "knlapiapp"
         },
+        "EnvironmentName":{
+          "Fn::Join": ["-", [{
+              "Ref": "AWS::StackName"
+            },
+            "e"
+          ]]
+        },
+
         "Description": "Kornell API Environment",
-        "SolutionStackName": "64bit Amazon Linux 2016.03 v2.1.0 running Java 8",
+        "SolutionStackName": "64bit Amazon Linux 2016.03 v2.1.0 running Java 8",        
         "VersionLabel": {
           "Ref": "knlapiversion"
         },
@@ -133,6 +139,22 @@
             "Ref": "knlapisubnetids"
           }
         }, {
+          "Namespace": "aws:elb:listener:443",
+          "OptionName": "ListenerProtocol",
+          "Value": "HTTPS"
+        }, {
+          "Namespace": "aws:elb:listener:443",
+          "OptionName": "InstancePort",
+          "Value": "8080"
+        }, {
+          "Namespace": "aws:elb:listener:443",
+          "OptionName": "InstanceProtocol",
+          "Value": "HTTP"
+        },{
+          "Namespace": "aws:elb:listener:443",
+          "OptionName": "SSLCertificateId",
+          "Value": {"Ref":"knlcertificateid"}
+        },{
           "Namespace": "aws:autoscaling:launchconfiguration",
           "OptionName": "SecurityGroups",
           "Value": {
@@ -187,6 +209,14 @@
             "Ref": "knlkeypair"
           }
         }]
+      }
+    }
+  },
+  "Outputs" : {
+    "knlapiendpoint": {
+      "Description": "API_ENDPOINT",
+      "Value": {
+        "Fn::GetAtt": [ "knlapienv","EndpointURL"]
       }
     }
   }

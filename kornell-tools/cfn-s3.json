@@ -10,6 +10,10 @@
       }
     },
 
+    "knlcontentbucket": {
+      "Type" : "AWS::S3::Bucket"
+    },
+
     "knluserbucket": {
       "Type" : "AWS::S3::Bucket"
     },
@@ -25,13 +29,20 @@
       "Description":"S3_GWT_BUCKET",
       "Value":{"Ref":"knlgwtbucket"} 
     },
+    
     "knluserbucketname": {
       "Description":"S3_USER_BUCKET",
       "Value":{"Ref":"knluserbucket"} 
     },
+
     "knllogbucketname": {
-      "Description":"S3_log_BUCKET",
+      "Description":"S3_LOG_BUCKET",
       "Value":{"Ref":"knllogsbucket"} 
+    },
+
+    "knlcontentbucketname": {
+      "Description":"S3_CONTENT_BUCKET",
+      "Value":{"Ref":"knlcontentbucket"} 
     }
 
   }
