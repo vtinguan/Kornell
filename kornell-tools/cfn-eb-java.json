@@ -1,15 +1,15 @@
 {
   "Parameters": {
     "knlvpc": {
-      "Type": "String"
+      "Type": "AWS::EC2::VPC::Id"
     },
 
     "knlapisubnetids": {
-      "Type": "String"
+      "Type": "List<AWS::EC2::Subnet::Id>"
     },
 
     "knlapisgids": {
-      "Type": "String"
+      "Type": "List<AWS::EC2::SecurityGroup::Id>"
     },
 
     "knljdbcurl": {
@@ -46,7 +46,6 @@
       "Default": "kornell/master/latest/kornell-api-eb.zip"
     },
 
-
     "knlapiinstancetype": {
       "Type": "String",
       "Default": "t2.medium",
@@ -63,8 +62,18 @@
         "m4.10xlarge"
       ],
       "Description": "Enter t1.micro, m1.small, or m1.large. Default is t1.micro."
-    }
+    },
 
+    "knlhostedzoneid": {
+      "Type": "String",
+      "Default": "Z2RR98NTBICQ16"
+    },
+
+    "knlelbhostedzoneid": {
+      "Type": "String",
+      "Default": "Z3DZXE0Q79N41H"
+    }
+    
   },
 
   "Resources": {
@@ -123,21 +132,15 @@
         "OptionSettings": [{
           "Namespace": "aws:ec2:vpc",
           "OptionName": "VPCId",
-          "Value": {
-            "Ref": "knlvpc"
-          }
+          "Value": {"Fn::Join": ["",[{"Ref": "knlvpc"}]]}
         }, {
           "Namespace": "aws:ec2:vpc",
           "OptionName": "Subnets",
-          "Value": {
-            "Ref": "knlapisubnetids"
-          }
+          "Value": {"Fn::Join": [",",{"Ref": "knlapisubnetids"}]}
         }, {
           "Namespace": "aws:ec2:vpc",
           "OptionName": "ELBSubnets",
-          "Value": {
-            "Ref": "knlapisubnetids"
-          }
+          "Value": {"Fn::Join": [",",{"Ref": "knlapisubnetids"}]}
         }, {
           "Namespace": "aws:elb:listener:443",
           "OptionName": "ListenerProtocol",
@@ -158,7 +161,7 @@
           "Namespace": "aws:autoscaling:launchconfiguration",
           "OptionName": "SecurityGroups",
           "Value": {
-            "Ref": "knlapisgids"
+            "Fn::Join": [",", {"Ref": "knlapisgids"}]
           }
         },{
           "Namespace": "aws:ec2:vpc",
@@ -210,14 +213,33 @@
           }
         }]
       }
+    },
+
+    "knlapidns":{
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "AliasTarget" : {
+          "DNSName" : {
+            "Fn::GetAtt": [ "knlapienv","EndpointURL"]
+          },
+          "EvaluateTargetHealth" : "false",
+          "HostedZoneId" : {"Ref":"knlelbhostedzoneid"}
+        },
+        "Comment" : "API Endpoint",
+        "HostedZoneId" : {"Ref":"knlhostedzoneid"},
+        "Name" : {"Fn::Join": [".",[
+            {"Ref": "AWS::StackName"},
+            "eduvem.com."
+        ]]},   
+        "Type" : "A"
+      }
     }
   },
+
   "Outputs" : {
     "knlapiendpoint": {
       "Description": "API_ENDPOINT",
-      "Value": {
-        "Fn::GetAtt": [ "knlapienv","EndpointURL"]
-      }
+      "Value": {"Ref":"knlapidns"}
     }
   }
 }

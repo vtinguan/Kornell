@@ -6,9 +6,9 @@ source $DIR/bash-utils.sh
 
 BRANCH=${BRANCH:-master}
 PURPOSE=${PURPOSE:-dev}
-BUILD=${BUILD:-$(date -u +"%Y%m%d-%H%M")}
+BUILD=${BUILD:-$(date -u +"%Y%m%d%H%M")}
 STACK_TEMPLATE="`basename "$0" ".sh"`.json"
-STACK_NAME=${STACK_NAME:-"knl-$BRANCH-$BUILD-$PURPOSE-$TIER"}
+STACK_NAME=${STACK_NAME:-"knl-$BRANCH-$BUILD-$PURPOSE"}
 CFN_CREATE_ARGS=${CFN_CREATE_ARGS:-""}
 
 echo "Creating $STACK_NAME from $STACK_TEMPLATE"

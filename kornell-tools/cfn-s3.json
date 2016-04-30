@@ -36,7 +36,7 @@
     },
 
     "knllogbucketname": {
-      "Description":"S3_LOG_BUCKET",
+      "Description":"S3_LOGS_BUCKET",
       "Value":{"Ref":"knllogsbucket"} 
     },
 

@@ -13,28 +13,52 @@
         "knlcontentbucketname": {
             "Type": "String"
         },
+        "knllogsbucketname": {
+            "Type": "String"
+        },
         "knlapiendpoint": {
             "Type": "String"
+        },
+        "knlcertificateid": {
+          "Type": "String"
+        },
+
+        "knlhostedzoneid": {
+          "Type": "String",
+          "Default": "Z2RR98NTBICQ16"
+        },
+
+        "knlcdnhostedzoneid": {
+          "Type": "String",
+          "Default": "Z2FDTNDATAQYW2"
         }
+
     },
     "Resources": {
         "knlcdn": {
             "Type": "AWS::CloudFront::Distribution",
             "Properties": {
                 "DistributionConfig": {
+                    "Logging" : {
+                      "Bucket" : {"Fn::Join": [ "",
+                                [ {"Ref": "knllogsbucketname"},
+                                ".s3.amazonaws.com" ]]
+                            },
+                      "IncludeCookies" : "false",
+                      "Prefix" : "cloudfront"
+                    },
+                    "ViewerCertificate": {
+                        "IamCertificateId" : {"Ref":"knlcertificateid"},
+                        "MinimumProtocolVersion" : "TLSv1",
+                        "SslSupportMethod" : "sni-only"                        
+                    },
                     "Origins": [
                         {
                             "Id": "knlgwtorigin",
-                            "DomainName": {
-                                "Fn::Join": [
-                                    "",
-                                    [
-                                        {
-                                            "Ref": "knlgwtbucketname"
-                                        },
-                                        ".s3.amazonaws.com"
-                                    ]
-                                ]
+                            "DomainName": 
+                            {"Fn::Join": [ "",
+                                [ {"Ref": "knlgwtbucketname"},
+                                ".s3.amazonaws.com" ]]
                             },
                             "S3OriginConfig": {}
                         },
@@ -66,21 +90,7 @@
                     "Enabled": "true",
                     "Comment": "Content Distribution",
                     "DefaultRootObject": "Kornell.nocache.html",
-                    "Aliases": [
-                        {
-                            "Fn::Join": [
-                                ".",
-                                [
-                                    {
-                                        "Ref": "AWS::StackName"
-                                    },
-                                    {
-                                        "Ref": "knldomainname"
-                                    }
-                                ]
-                            ]
-                        }
-                    ],
+                    "Aliases": [{"Ref": "knldomainname"}],
                     "DefaultCacheBehavior": {
                         "AllowedMethods": [
                             "DELETE",
@@ -140,6 +150,41 @@
                     ]
                 }
             }
-        }
+        },
+
+    "knlcdndns":{
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "AliasTarget" : {
+          "DNSName" : {
+            "Fn::GetAtt": [ "knlcdn","DomainName"]
+          },
+          "EvaluateTargetHealth" : "false",
+          "HostedZoneId" : {"Ref":"knlcdnhostedzoneid"}
+        },
+        "Comment" : "CDN Endpoint",
+        "HostedZoneId" : {"Ref":"knlhostedzoneid"},
+        "Name" : {"Ref": "knldomainname"},   
+        "Type" : "A"
+      }
     }
+      
+    },
+
+
+  "Outputs" : {
+    "knlcdndomainname": {
+      "Description": "CDN_DOMAIN",
+      "Value": {
+        "Fn::GetAtt": [ "knlcdn","DomainName"]
+      }
+    },
+
+    "knl": {
+      "Description": "EDUVEM_URL",
+      "Value": {"Ref":"knlcdndns"}
+    }
+
+  }
+
 }
