@@ -8,9 +8,8 @@ public class KNL extends DMElement {
 	
 	private KNL() {
 		super("knl",
+				ClassStartDate.dme,
 				FirstLaunch.dme,
 				LaunchDate.dme);
 	}
-
-	
 }

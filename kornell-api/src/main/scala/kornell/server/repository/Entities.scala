@@ -300,7 +300,8 @@ object Entities {
     chatDockEnabled: Boolean = false,
     allowBatchCancellation: Boolean = false,
     tutorChatEnabled: Boolean = false,
-    approveEnrollmentsAutomatically: Boolean = false) = {
+    approveEnrollmentsAutomatically: Boolean = false,
+    startDate:Date = null) = {
     val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
@@ -320,8 +321,9 @@ object Entities {
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
     clazz.setChatDockEnabled(chatDockEnabled)
     clazz.setAllowBatchCancellation(allowBatchCancellation)
-	clazz.setTutorChatEnabled(tutorChatEnabled)
-	clazz.setApproveEnrollmentsAutomatically(approveEnrollmentsAutomatically)
+	  clazz.setTutorChatEnabled(tutorChatEnabled)
+	  clazz.setApproveEnrollmentsAutomatically(approveEnrollmentsAutomatically)
+	  clazz.setStartDate(startDate);
     clazz
   }
 

@@ -60,7 +60,9 @@ object CourseClassesRepo {
 	             ${courseClass.isChatDockEnabled},
 	             ${courseClass.isAllowBatchCancellation},
 	             ${courseClass.isTutorChatEnabled},
-	             ${courseClass.isApproveEnrollmentsAutomatically})
+	             ${courseClass.isApproveEnrollmentsAutomatically},
+               ${courseClass.getStartDate}
+               )
 	    """.executeUpdate
       ChatThreadsRepo.addParticipantsToCourseClassThread(courseClass)
 
@@ -182,7 +184,7 @@ object CourseClassesRepo {
 		| where e.uuid = ${enrollmentUUID}
 	    | and cc.state <> ${CourseClassState.deleted.toString}
 	    """.first[CourseClass](toCourseClass)
-    
+
 	if(courseClass.isDefined){
 	    val courseClassesTO = getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", null, courseClass.get.getUUID)
 	    bindEnrollments(personUUID, courseClassesTO).getCourseClasses().get(0)

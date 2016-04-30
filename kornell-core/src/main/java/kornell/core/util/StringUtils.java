@@ -168,13 +168,27 @@ public class StringUtils {
 
 	@SuppressWarnings("deprecation")
 	public static String isoNow() {
-		Date date = new Date();
+		Date now = new Date();
+		return toISO(now);
+	}
+		
+	//TODO: Differentiate client and server date formatting 
+	public static String toISO(Date date){
 		String year = i2s(1900 + date.getYear());
 		String month = i2s(date.getMonth());
 		String day = i2s(date.getDate());
-		String hour = i2s(date.getHours());
-		String min = i2s(date.getMinutes());
-		String sec = i2s(date.getSeconds());
+		
+		String hour = "00";
+		String min = "00";
+		String sec = "00";
+		try {
+			 hour = i2s(date.getHours());
+			 min = i2s(date.getMinutes());
+			 sec = i2s(date.getSeconds());
+		}catch(Exception e){
+			logger.warning("Could not get time from date, returning start of day.");
+		}
+		
 		String result = year + "-" + month + "-" + day + "T" + hour + ":" + min
 				+ ":" + sec;
 		return result;

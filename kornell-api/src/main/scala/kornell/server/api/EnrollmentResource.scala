@@ -32,6 +32,7 @@ import kornell.server.scorm12.SCORM12
 import kornell.core.entity.EnrollmentsEntries
 import kornell.server.jdbc.PreparedStmt
 import kornell.server.ep.EnrollmentSEP
+import kornell.server.jdbc.repository.CourseClassesRepo
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -105,13 +106,14 @@ class EnrollmentResource(uuid: String) {
     val eEntries = getEntries(enrollments)
 
     val mEntries = eEntries.getEnrollmentEntriesMap.asScala
-
+    val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
+    
     for {
       (enrollmentUUID, enrollmentEntries) <- mEntries.par
       (actomKey,actomEntries) <- enrollmentEntries.getActomEntriesMap.asScala
     } {
       val entriesMap = actomEntries.getEntries
-      val launchedMap = SCORM12.dataModel.initialize(entriesMap,person)
+      val launchedMap = SCORM12.initialize(entriesMap,person,enrollment, courseClass)
       entriesMap.putAll(launchedMap)
       actomEntries.setEntries(entriesMap)
     }

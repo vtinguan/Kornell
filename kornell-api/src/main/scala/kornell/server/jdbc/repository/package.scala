@@ -94,7 +94,8 @@ package object repository {
         RegistrationType.valueOf(r.getString("registrationType")),
         r.getString("institutionRegistrationPrefixUUID"), r.getBoolean("courseClassChatEnabled"), 
         r.getBoolean("chatDockEnabled"), r.getBoolean("allowBatchCancellation"),  
-        r.getBoolean("tutorChatEnabled"), r.getBoolean("approveEnrollmentsAutomatically")) 
+        r.getBoolean("tutorChatEnabled"), r.getBoolean("approveEnrollmentsAutomatically"),
+        r.getDate("startDate")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),

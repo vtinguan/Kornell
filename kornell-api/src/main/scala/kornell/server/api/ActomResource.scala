@@ -140,15 +140,10 @@ class ActomResource(enrollmentUUID: String, actomURL: String) {
   	  and actomKey=${actomKey}""".foreach { rs =>
       entries.getEntries().put(rs.getString("entryKey"), rs.getString("entryValue"))
     }
-    initialize(entries)
+    entries
   }
 
-  def initialize(aentries: ActomEntries): ActomEntries = AuthRepo().withPerson { person =>
-    val entries = aentries.getEntries()
-    val initdEntries = SCORM12.dataModel.initialize(entries, person)
-    aentries.setEntries(initdEntries)
-    aentries
-  }
+  
 }
 
 object ActomResource {

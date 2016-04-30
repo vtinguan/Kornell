@@ -1,0 +1,1 @@
+alter table CourseClass add column startDate timestamp null default null;
