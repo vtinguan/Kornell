@@ -2,6 +2,10 @@ package kornell.gui.client;
 
 import java.util.Date;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -122,8 +126,17 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					@Override
 					public void execute() {
-						KORNELL_SESSION.user().getUserHello(Window.Location.getParameter("institution"),
-								Window.Location.getHostName(), userManualAccessCallback);
+						String institution = Window.Location.getParameter("institution");
+						String hostName = Window.Location.getHostName();
+						if(StringUtils.isEmpty(institution)){
+							Pattern pattern = Pattern.compile("(\\w*)-(\\w*).eduvem.com");
+							Matcher matcher = pattern.matcher(hostName);
+							if(matcher.matches()){
+								institution = matcher.group(1);
+							}
+						}
+						KORNELL_SESSION.user().getUserHello(institution,
+								hostName, userManualAccessCallback);
 					}
 				});
 			}
@@ -285,4 +298,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 	public KornellSession getKornellSession() {
 		return KORNELL_SESSION;
 	}
+	
+
 }
