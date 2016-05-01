@@ -53,11 +53,12 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 public class GenericClientFactoryImpl implements ClientFactory {
 	Logger logger = Logger.getLogger(GenericClientFactoryImpl.class.getName());
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
+	private static final Pattern urlPattern = Pattern.compile("(\\w*)-(\\w*)\\.(.*)");
 
 	public static final EntityFactory ENTITY_FACTORY = GWT.create(EntityFactory.class);
 	public static final TOFactory TO_FACTORY = GWT.create(TOFactory.class);
 	public static final LOMFactory LOM_FACTORY = GWT.create(LOMFactory.class);
-	public static final EventFactory EVENT_FACTORY = GWT.create(EventFactory.class);
+	public static final EventFactory EVENT_FACTORY = GWT.create(EventFactory.class);	
 
 	public static final EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
 	public static final KornellSession KORNELL_SESSION = GWT.create(KornellSession.class);
@@ -129,8 +130,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 						String institution = Window.Location.getParameter("institution");
 						String hostName = Window.Location.getHostName();
 						if(StringUtils.isEmpty(institution)){
-							Pattern pattern = Pattern.compile("(\\w*)-(\\w*).eduvem.com");
-							Matcher matcher = pattern.matcher(hostName);
+							Matcher matcher = urlPattern.matcher(hostName);
 							if(matcher.matches()){
 								institution = matcher.group(1);
 							}
