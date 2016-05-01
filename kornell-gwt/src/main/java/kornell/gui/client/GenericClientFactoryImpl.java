@@ -2,10 +2,6 @@ package kornell.gui.client;
 
 import java.util.Date;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
@@ -20,6 +16,7 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserHelloTO;
+import kornell.core.util.StringUtils;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.mvp.AsyncActivityManager;
 import kornell.gui.client.mvp.AsyncActivityMapper;
@@ -53,7 +50,6 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 public class GenericClientFactoryImpl implements ClientFactory {
 	Logger logger = Logger.getLogger(GenericClientFactoryImpl.class.getName());
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
-	private static final Pattern urlPattern = Pattern.compile("(\\w*)-(\\w*)\\.(.*)");
 
 	public static final EntityFactory ENTITY_FACTORY = GWT.create(EntityFactory.class);
 	public static final TOFactory TO_FACTORY = GWT.create(TOFactory.class);
@@ -129,10 +125,13 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					public void execute() {
 						String institution = Window.Location.getParameter("institution");
 						String hostName = Window.Location.getHostName();
-						if(StringUtils.isEmpty(institution)){
-							Matcher matcher = urlPattern.matcher(hostName);
-							if(matcher.matches()){
-								institution = matcher.group(1);
+						if(StringUtils.isNone(institution)){
+							String[] dots = hostName.split("\\.");
+							if(dots.length > 0){
+							String id = dots[0];
+							String[] slashes = id.split("-");
+							if (slashes.length > 0)
+								institution = slashes[0];
 							}
 						}
 						KORNELL_SESSION.user().getUserHello(institution,
