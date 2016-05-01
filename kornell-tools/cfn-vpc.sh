@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $DIR/bash-utils.sh
 
 BRANCH="network"
-TIER="vpc"
 
-source cfn-create-stack.sh
+source $DIR/cfn-create-stack.sh

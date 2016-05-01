@@ -14,9 +14,6 @@ demmand "VPC_API_SECGS"
 demmand "API_KEYPAIR"
 demmand "CERT_ARN"
 
-
-
-TIER="eb"
 BRANCH=${BRANCH:-"master"}
 
 ARG_URL="ParameterKey=knljdbcurl,ParameterValue='$JDBC_CONNECTION_STRING'"

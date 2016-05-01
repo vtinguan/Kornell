@@ -1,50 +1,77 @@
 {
-  "Parameters": {},
-
-  "Resources": {
-
-    "knlgwtbucket": {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "AccessControl" : "PublicRead"
-      }
+    "Parameters": {},
+    "Resources": {
+        "knlgwtbucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "AccessControl": "PublicRead"
+            }
+        },
+        "knlgwtbucketpolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+                "Bucket": {
+                    "Ref": "knlgwtbucket"
+                },
+                "PolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "knlgwtbucket"
+                                        },
+                                        "/*"
+                                    ]
+                                ]
+                            },
+                            "Principal": "*"
+                        }
+                    ]
+                }
+            }
+        },
+        "knlusercontentbucket": {
+            "Type": "AWS::S3::Bucket"
+        },
+        "knlrepositorybucket": {
+            "Type": "AWS::S3::Bucket"
+        },
+        "knllogsbucket": {
+            "Type": "AWS::S3::Bucket"
+        }
     },
-
-    "knlcontentbucket": {
-      "Type" : "AWS::S3::Bucket"
-    },
-
-    "knluserbucket": {
-      "Type" : "AWS::S3::Bucket"
-    },
-
-    "knllogsbucket": {
-      "Type" : "AWS::S3::Bucket"
+    "Outputs": {
+        "knlgwtbucketname": {
+            "Description": "S3_GWT_BUCKET",
+            "Value": {
+                "Ref": "knlgwtbucket"
+            }
+        },
+        "knlusercontentbucketname": {
+            "Description": "S3_USERCONTENT_BUCKET",
+            "Value": {
+                "Ref": "knlusercontentbucket"
+            }
+        },
+        "knllogbucketname": {
+            "Description": "S3_LOGS_BUCKET",
+            "Value": {
+                "Ref": "knllogsbucket"
+            }
+        },
+        "knlrepositorybucketname": {
+            "Description": "S3_REPOSITORY_BUCKET",
+            "Value": {
+                "Ref": "knlrepositorybucket"
+            }
+        }
     }
-
-  },
-
-  "Outputs":{
-    "knlgwtbucketname": {
-      "Description":"S3_GWT_BUCKET",
-      "Value":{"Ref":"knlgwtbucket"} 
-    },
-    
-    "knluserbucketname": {
-      "Description":"S3_USER_BUCKET",
-      "Value":{"Ref":"knluserbucket"} 
-    },
-
-    "knllogbucketname": {
-      "Description":"S3_LOGS_BUCKET",
-      "Value":{"Ref":"knllogsbucket"} 
-    },
-
-    "knlcontentbucketname": {
-      "Description":"S3_CONTENT_BUCKET",
-      "Value":{"Ref":"knlcontentbucket"} 
-    }
-
-  }
-
 }

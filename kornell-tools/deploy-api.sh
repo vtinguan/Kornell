@@ -5,7 +5,7 @@ source $DIR/bash-utils.sh
 
 REGION=${REGION:-"us-east-1"}
 TEMP_DIR=${TEMP_DIR:-"$DIR/kornell-api-eb/"}
-API_ARTIFACT=${GWT_ARTIFACT:-"$DIR/../kornell-api/target/kornell-api-eb.zip"}
+API_ARTIFACT=${API_ARTIFACT:-"$DIR/../kornell-api/target/kornell-api-eb.zip"}
 APPLICATION_NAME=${APPLICATION_NAME:-"kornell-api" }
 VERSION_ID=${VERSION_ID:-"$(date -u +'%Y%m%d%H%M')"}
 VERSION_BUCKET=${VERSION_BUCKET:-"us-east-1.craftware-dist"}

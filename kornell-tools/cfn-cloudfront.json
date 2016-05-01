@@ -10,10 +10,13 @@
             "Type": "String",
             "Default": "PriceClass_100"
         },
-        "knlcontentbucketname": {
+        "knlrepositorybucketname": {
             "Type": "String"
         },
         "knllogsbucketname": {
+            "Type": "String"
+        },
+        "knlusercontentbucketname": {
             "Type": "String"
         },
         "knlapiendpoint": {
@@ -63,13 +66,28 @@
                             "S3OriginConfig": {}
                         },
                         {
-                            "Id": "knlcontentorigin",
+                            "Id": "knlrepositoryorigin",
                             "DomainName": {
                                 "Fn::Join": [
                                     "",
                                     [
                                         {
-                                            "Ref": "knlcontentbucketname"
+                                            "Ref": "knlrepositorybucketname"
+                                        },
+                                        ".s3.amazonaws.com"
+                                    ]
+                                ]
+                            },
+                            "S3OriginConfig": {}
+                        },
+                        {
+                            "Id": "knlusercontentorigin",
+                            "DomainName": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        {
+                                            "Ref": "knlusercontentbucketname"
                                         },
                                         ".s3.amazonaws.com"
                                     ]
@@ -113,6 +131,7 @@
                     },
                     "CacheBehaviors": [
                         {
+                            "PathPattern": "/api/*",
                             "AllowedMethods": [
                                 "DELETE",
                                 "GET",
@@ -142,11 +161,61 @@
                                 ],
                                 "QueryString": "true"
                             },
-                            "PathPattern": "/api/*",
                             "SmoothStreaming": "false",
                             "TargetOriginId": "knlapiorigin",
                             "ViewerProtocolPolicy": "redirect-to-https"
+                        },
+                        {
+                            "PathPattern": "/repository/*",
+                            "AllowedMethods": [
+                                "DELETE",
+                                "GET",
+                                "HEAD",
+                                "OPTIONS",
+                                "PATCH",
+                                "POST",
+                                "PUT"
+                            ],
+                            "CachedMethods": [
+                                "GET",
+                                "HEAD",
+                                "OPTIONS"
+                            ],
+                            "Compress": "true",
+                            "DefaultTTL": "0",
+                            "ForwardedValues": {
+                                "QueryString": "true"
+                            },
+                            "SmoothStreaming": "false",
+                            "TargetOriginId": "knlrepositoryorigin",
+                            "ViewerProtocolPolicy": "redirect-to-https"
+                        },
+                        {
+                            "PathPattern": "/usercontent/*",
+                            "AllowedMethods": [
+                                "DELETE",
+                                "GET",
+                                "HEAD",
+                                "OPTIONS",
+                                "PATCH",
+                                "POST",
+                                "PUT"
+                            ],
+                            "CachedMethods": [
+                                "GET",
+                                "HEAD",
+                                "OPTIONS"
+                            ],
+                            "Compress": "true",
+                            "DefaultTTL": "0",
+                            "ForwardedValues": {
+                                "QueryString": "true"
+                            },
+                            "SmoothStreaming": "false",
+                            "TargetOriginId": "knlusercontentorigin",
+                            "ViewerProtocolPolicy": "redirect-to-https"
                         }
+
                     ]
                 }
             }
