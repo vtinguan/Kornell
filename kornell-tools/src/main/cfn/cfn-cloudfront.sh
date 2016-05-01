@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source $DIR/bash-utils.sh
+source $DIR/../bash/bash-utils.sh
 
 BRANCH=${BRANCH:-"cdn"}
 PURPOSE="$INSTITUTION"

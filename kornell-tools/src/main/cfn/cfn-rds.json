@@ -127,12 +127,12 @@
 
     "knljdbcusername": {
       "Description": "JDBC_USERNAME",
-      "Value" : "root"
+      "Value" : "???"
     },
 
     "knljdbcpassword" :{
       "Description": "JDBC_PASSWORD",
-      "Value" : "CHANGEMEPLEASE"
+      "Value" : "???"
     }
 
   }
