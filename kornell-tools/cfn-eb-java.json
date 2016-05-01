@@ -72,6 +72,36 @@
     "knlelbhostedzoneid": {
       "Type": "String",
       "Default": "Z3DZXE0Q79N41H"
+    },
+
+    "knlsmtphost": {
+      "Type": "String",
+      "Default": "email-smtp.us-east-1.amazonaws.com"
+    },
+
+    "knlsmtpport": {
+      "Type": "String",
+      "Default": "465"
+    },
+
+    "knlsmtpusername": {
+      "Type": "String",
+      "Default": ""
+    },
+
+    "knlsmtppassword": {
+      "Type": "String",
+      "Default": ""
+    },
+
+    "knlreplyto": {
+      "Type": "String",
+      "Default": "suporte@craftware.com.br"
+    },
+
+    "knlusercontentbucketname": {
+      "Type": "String",
+      "Default": ""
     }
     
   },
