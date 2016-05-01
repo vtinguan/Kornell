@@ -26,6 +26,7 @@
 		</fileSet>
 	</fileSets>
 
+	<!--
 	<dependencySets>
 		<dependencySet>
 			<includes>
@@ -33,4 +34,5 @@
 			</includes>
 		</dependencySet>
 	</dependencySets>
+	-->
 </assembly>
