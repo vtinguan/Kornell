@@ -3,9 +3,11 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/../bash/bash-utils.sh
 
-BRANCH=${BRANCH:-"cdn"}
-PURPOSE="$INSTITUTION"
-DOMAIN_NAME=${DOMAIN_NAME:-"$PURPOSE-$RANDOM.eduvem.com"}
+DATE=$(date -u +"%Y%m%d%H%M")
+DOMAIN_PREFIX="$INSTITUTION-$DATE"
+DOMAIN_NAME=${DOMAIN_NAME:-"$DOMAIN_PREFIX.eduvem.com"}
+STACK_NAME=${STACK_NAME:-"knl-cdn-$DOMAIN_PREFIX-$PURPOSE"}
+
 
 demmand "DOMAIN_NAME"
 demmand "S3_GWT_BUCKET"
