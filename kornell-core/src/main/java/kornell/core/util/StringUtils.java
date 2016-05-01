@@ -175,7 +175,7 @@ public class StringUtils {
 	//TODO: Differentiate client and server date formatting 
 	public static String toISO(Date date){
 		String year = i2s(1900 + date.getYear());
-		String month = i2s(date.getMonth());
+		String month = i2s(date.getMonth()+1);
 		String day = i2s(date.getDate());
 		
 		String hour = "00";

@@ -6,6 +6,7 @@ import kornell.core.util.StringUtils;
 import static kornell.core.scorm12.rte.DataType.*;
 import static kornell.core.scorm12.rte.SCOAccess.*;
 
+import java.util.Date;
 import java.util.Map;
 
 import kornell.core.entity.CourseClass;
@@ -24,6 +25,8 @@ public class ClassStartDate extends DMElement {
 			Person person, 
 			Enrollment enrollment,
 			CourseClass courseClass) {
-		return set(entries,StringUtils.toISO(courseClass.getStartDate()));
+		Date startDate = courseClass.getStartDate();
+		String startDateStr = StringUtils.toISO(startDate);
+		return set(entries,startDateStr);
 	}
 }
