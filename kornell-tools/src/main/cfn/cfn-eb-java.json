@@ -281,6 +281,14 @@
     "knlapiendpoint": {
       "Description": "API_ENDPOINT",
       "Value": {"Ref":"knlapidns"}
+    },
+    "knlapiappname": {
+      "Description": "APPLICATION_NAME",
+      "Value": {"Ref":"knlapiapp"}
+    },
+    "knlapienvname": {
+      "Description": "ENV_NAME",
+      "Value": {"Ref":"knlapienv"}
     }
   }
 }
