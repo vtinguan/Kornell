@@ -125,15 +125,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 					public void execute() {
 						String institution = Window.Location.getParameter("institution");
 						String hostName = Window.Location.getHostName();
-						if(StringUtils.isNone(institution)){
-							String[] dots = hostName.split("\\.");
-							if(dots.length > 0){
-							String id = dots[0];
-							String[] slashes = id.split("-");
-							if (slashes.length > 0)
-								institution = slashes[0];
-							}
-						}
 						KORNELL_SESSION.user().getUserHello(institution,
 								hostName, userManualAccessCallback);
 					}

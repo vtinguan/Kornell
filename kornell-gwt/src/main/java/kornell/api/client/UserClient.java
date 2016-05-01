@@ -5,6 +5,7 @@ import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 
 public class UserClient extends RESTClient {
@@ -15,6 +16,15 @@ public class UserClient extends RESTClient {
 	}
 
 	public void getUserHello(String name, String hostName, Callback<UserHelloTO> cb) {
+		if(StringUtils.isNone(name)){
+			String[] dots = hostName.split("\\.");
+			if(dots.length > 0){
+			String id = dots[0];
+			String[] slashes = id.split("-");
+			if (slashes.length > 0)
+				name = slashes[0];
+			}
+		}
 		String path = "/user/login?" + (StringUtils.isSome(name) ? "name="+name : "hostName="+hostName);
 		GET(path).sendRequest(null, cb);
 	}
