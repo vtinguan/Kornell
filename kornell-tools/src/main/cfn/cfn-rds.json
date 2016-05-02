@@ -11,7 +11,7 @@
 
     "knldbpublic": {
       "Type": "String",
-      "Default": "false"
+      "Default": "true"
     },
 
     "knldbstorage": {

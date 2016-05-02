@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source $DIR/bash-utils.sh
+source $DIR/../bash/bash-utils.sh
 
 TEMP_DIR=${TEMP_DIR:-"$DIR/kornell-gwt-s3/"}
 REGION=${REGION:-"us-east-1"}
