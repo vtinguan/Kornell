@@ -4,8 +4,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/../bash/bash-utils.sh
 
 TEMP_DIR=${TEMP_DIR:-"$DIR/kornell-gwt-s3/"}
-REGION=${REGION:-"us-east-1"}
-GWT_ARTIFACT=${GWT_ARTIFACT:-"$DIR/../kornell-gwt/target/kornell-gwt-s3.zip"}
+REGION=${bamboo_REGION:-"us-east-1"}
+GWT_ARTIFACT=${bamboo_GWT_ARTIFACT:-"$DIR/../kornell-gwt/target/kornell-gwt-s3.zip"}
+S3_GWT_BUCKET=${bamboo_S3_GWT_BUCKET}
 
 demmand "S3_GWT_BUCKET"
 demmand "REGION"

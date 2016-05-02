@@ -3,10 +3,11 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/../bash/bash-utils.sh
 
-REGION=${REGION:-"us-east-1"}
+REGION=${bamboo_REGION:-"us-east-1"}
 TEMP_DIR=${TEMP_DIR:-"$DIR/kornell-api-eb/"}
-API_ARTIFACT=${API_ARTIFACT:-"$DIR/../kornell-api/target/kornell-api-eb.zip"}
-APPLICATION_NAME=${APPLICATION_NAME:-"kornell-api" }
+API_ARTIFACT=${bamboo_API_ARTIFACT:-"$DIR/../kornell-api/target/kornell-api-eb.zip"}
+APPLICATION_NAME=${bamboo_APPLICATION_NAME:-"kornell-api" }
+ENV_NAME=${bamboo_ENV_NAME}
 VERSION_ID=${VERSION_ID:-"$(date -u +'%Y%m%d%H%M')"}
 VERSION_BUCKET=${VERSION_BUCKET:-"us-east-1.craftware-dist"}
 VERSION_BRANCH=${VERSION_BRANCH:-"master"}
