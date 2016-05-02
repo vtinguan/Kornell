@@ -7,7 +7,7 @@ source $DIR/../bash/bash-utils.sh
 TEMP_DIR=${TEMP_DIR:-"$DIR/kornell-gwt-s3/"}
 REGION=${bamboo_REGION:-"us-east-1"}
 GWT_ARTIFACT=${bamboo_GWT_ARTIFACT:-"$DIR/../../../../kornell-gwt/target/kornell-gwt-s3.zip"}
-S3_GWT_BUCKET=${S3_GWT_BUCKET:-bamboo_S3_GWT_BUCKET}
+S3_GWT_BUCKET=${bamboo_S3_GWT_BUCKET:-"$S3_GWT_BUCKET"}
 
 demmand "S3_GWT_BUCKET"
 demmand "REGION"
@@ -19,7 +19,7 @@ log "Uncompressing [$GWT_ARTIFACT] to [$TEMP_DIR]"
 mkdir -p $TEMP_DIR
 unzip -o $GWT_ARTIFACT -d $TEMP_DIR
 
-log "Deploying cacheable files to S3"
+log "Deploying cacheable files to [$S3_GWT_BUCKET]"
 aws s3 sync \
   "$TEMP_DIR" \
   "s3://$S3_GWT_BUCKET" \
@@ -29,7 +29,7 @@ aws s3 sync \
   --cache-control 'max-age=2592000' \
   --region="$REGION"
 
-log "Deploying non-cacheable Files to S3"
+log "Deploying non-cacheable Files to [$S3_GWT_BUCKET]"
 aws s3 cp \
   "$TEMP_DIR" \
   "s3://$S3_GWT_BUCKET" \
