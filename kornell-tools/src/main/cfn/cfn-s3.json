@@ -49,7 +49,7 @@
             "Type": "AWS::S3::BucketPolicy",
             "Properties": {
                 "Bucket": {
-                    "Ref": "knlgwtbucket"
+                    "Ref": "knlrepositorybucket"
                 },
                 "PolicyDocument": {
                     "Statement": [

@@ -6,7 +6,7 @@ source $DIR/../bash/bash-utils.sh
 DATE=$(date -u +"%Y%m%d%H%M")
 DOMAIN_PREFIX="$INSTITUTION-$DATE"
 DOMAIN_NAME=${DOMAIN_NAME:-"$DOMAIN_PREFIX.eduvem.com"}
-STACK_NAME=${STACK_NAME:-"knl-cdn-$DOMAIN_PREFIX-$PURPOSE"}
+STACK_NAME=${STACK_NAME:-"cfn-cloudfront-$PURPOSE-$DOMAIN_PREFIX"}
 
 
 demmand "DOMAIN_NAME"
