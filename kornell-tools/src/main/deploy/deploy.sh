@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $DIR/../bash/bash-utils.sh
 
 if [ -n "$bamboo_awsAccessKeyId" ]; then
 	export AWS_ACCESS_KEY_ID=$bamboo_awsAccessKeyId
