@@ -23,25 +23,25 @@ unzip -o $GWT_ARTIFACT -d $TEMP_DIR
 log "Using access key id [$AWS_ACCESS_KEY_ID]"
 log "Deploying cacheable files to S3"
 aws s3 sync \
-  $TEMP_DIR \
-  s3://$S3_GWT_BUCKET \
+  "$TEMP_DIR" \
+  "s3://$S3_GWT_BUCKET" \
   --delete \
   --exclude='*.nocache.*' \
   --exclude='WEB-INF/*' \
   --cache-control 'max-age=2592000' \
-  --region=$REGION
+  --region="$REGION"
 
 log "Deploying non-cacheable Files to S3"
 aws s3 cp \
-  $TEMP_DIR \
-  s3://$S3_GWT_BUCKET \
+  "$TEMP_DIR" \
+  "s3://$S3_GWT_BUCKET" \
   --recursive \
   --exclude '*' \
   --include '*.nocache.*' \
   --cache-control 'max-age=0' \
-  --region=$REGION
+  --region="$REGION"
 
 log "Cleaning [$TEMP_DIR]"
-rm -rf $TEMP_DIR
+rm -rf "$TEMP_DIR"
 
 log "GWT module deployment finished successfully"

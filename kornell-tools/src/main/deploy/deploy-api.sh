@@ -28,16 +28,16 @@ aws s3 cp $API_ARTIFACT $VERSION_URL
 
 log "Creating application [$APPLICATION_NAME] version [$VERSION_LABEL]"
 aws elasticbeanstalk create-application-version \
-	--application-name $APPLICATION_NAME \
-	--version-label $VERSION_LABEL \
-	--source-bundle S3Bucket=$VERSION_BUCKET,S3Key=$VERSION_KEY \
-	--region $REGION
+	--application-name "$APPLICATION_NAME" \
+	--version-label "$VERSION_LABEL" \
+	--source-bundle "S3Bucket=$VERSION_BUCKET,S3Key=$VERSION_KEY" \
+	--region "$REGION"
 
 log "Updating environment [$ENV_NAME]"
 aws elasticbeanstalk update-environment \
-	--application-name $APPLICATION_NAME \
-	--environment-name $ENV_NAME \
-	--version-label $VERSION_LABEL \
-	--region $REGION
+	--application-name "$APPLICATION_NAME" \
+	--environment-name "$ENV_NAME" \
+	--version-label "$VERSION_LABEL" \
+	--region "$REGION"
 
 log "API module deployment finished successfully"
