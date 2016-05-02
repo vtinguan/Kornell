@@ -3,8 +3,8 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/../bash/bash-utils.sh
 
-AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-"$bamboo_awsAccessKeyId"} 
-AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-"$bamboo_awsSecretKeypassword"}
+export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-"$bamboo_awsAccessKeyId"} 
+export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-"$bamboo_awsSecretKeypassword"}
 TEMP_DIR=${TEMP_DIR:-"$DIR/kornell-gwt-s3/"}
 REGION=${bamboo_REGION:-"us-east-1"}
 GWT_ARTIFACT=${bamboo_GWT_ARTIFACT:-"$DIR/../kornell-gwt/target/kornell-gwt-s3.zip"}
