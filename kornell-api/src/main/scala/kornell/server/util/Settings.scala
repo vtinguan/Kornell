@@ -49,7 +49,7 @@ object Settings extends Enum {
                   .orElse(fromProperties)
                   .orElse(default)
                   
-    lazy val get = getOpt get
+    lazy val get = getOpt.getOrElse(null)
     lazy val fromSystem = Option(System.getProperty(name))
     lazy val fromEnv = Option(System.getenv(name))
     lazy val fromProperties:Option[String] = properties flatMap {props => Option(props.getProperty(name))}
