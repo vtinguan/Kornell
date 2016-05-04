@@ -57,13 +57,20 @@ class UserResource(private val authRepo: AuthRepo) {
     @QueryParam("hostName") hostName: String) = {
     val userHello = newUserHelloTO
 
-    userHello.setInstitution({
+    
+    val institution = {
       if(name != null) InstitutionsRepo.getByName(name)
       else if(hostName != null) InstitutionsRepo.getByHostName(hostName)
       else None
-    }.getOrElse(null));
-
+    }
+    userHello.setInstitution(institution.getOrElse(null));
     val auth = req.getHeader("X-KNL-TOKEN")
+    
+    //DEBUG
+    val institutionName = institution.map { _.getName }.getOrElse("NOT FOUND");
+    logger.info(s"Login name[$name] hostName[$hostName] institution[$institutionName] token[$auth]")
+    //END DEBUG
+    
     val token = TokenRepo().checkToken(auth)
     if (token.isDefined) {
       val person = PersonRepo(token.get.getPersonUUID).first.getOrElse(null)
