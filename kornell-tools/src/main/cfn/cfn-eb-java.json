@@ -102,6 +102,11 @@
     "knlusercontentbucketname": {
       "Type": "String",
       "Default": ""
+    },
+
+    "knlapiinstanceprofile": {
+      "Type": "String",
+      "Default": "aws-elasticbeanstalk-ec2-role"
     }
     
   },
@@ -240,6 +245,12 @@
           "OptionName": "EC2KeyName",
           "Value": {
             "Ref": "knlkeypair"
+          }
+        },{
+          "Namespace": "aws:autoscaling:launchconfiguration",
+          "OptionName": "IamInstanceProfile",
+          "Value": {
+            "Ref": "knlapiinstanceprofile"
           }
         },
         {

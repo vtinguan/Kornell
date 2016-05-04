@@ -4,7 +4,12 @@
         "knlgwtbucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
-                "AccessControl": "PublicRead"
+                "AccessControl": "PublicRead",
+                "BucketName" : {
+                    "Fn::Join": ["-",[
+                        {"Ref": "AWS::StackName"},
+                        "gwt"]]
+                    }
             }
         },
         "knlgwtbucketpolicy": {
@@ -40,44 +45,24 @@
         },
 
         "knlusercontentbucket": {
-            "Type": "AWS::S3::Bucket"
-        },
-        "knlrepositorybucket": {
-            "Type": "AWS::S3::Bucket"
-        },
-        "knlrepositorybucketpolicy": {
-            "Type": "AWS::S3::BucketPolicy",
+            "Type": "AWS::S3::Bucket",
             "Properties": {
-                "Bucket": {
-                    "Ref": "knlrepositorybucket"
-                },
-                "PolicyDocument": {
-                    "Statement": [
-                        {
-                            "Action": [
-                                "s3:GetObject"
-                            ],
-                            "Effect": "Allow",
-                            "Resource": {
-                                "Fn::Join": [
-                                    "",
-                                    [
-                                        "arn:aws:s3:::",
-                                        {
-                                            "Ref": "knlrepositorybucket"
-                                        },
-                                        "/*"
-                                    ]
-                                ]
-                            },
-                            "Principal": "*"
+                "BucketName" : {
+                        "Fn::Join": ["-",[
+                            {"Ref": "AWS::StackName"},
+                            "usercontent"]]
                         }
-                    ]
-                }
             }
         },
         "knllogsbucket": {
-            "Type": "AWS::S3::Bucket"
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+            "BucketName" : {
+                    "Fn::Join": ["-",[
+                        {"Ref": "AWS::StackName"},
+                        "logs"]]
+                    }
+            }
         }
     },
     "Outputs": {
@@ -97,12 +82,6 @@
             "Description": "S3_LOGS_BUCKET",
             "Value": {
                 "Ref": "knllogsbucket"
-            }
-        },
-        "knlrepositorybucketname": {
-            "Description": "S3_REPOSITORY_BUCKET",
-            "Value": {
-                "Ref": "knlrepositorybucket"
             }
         }
     }
