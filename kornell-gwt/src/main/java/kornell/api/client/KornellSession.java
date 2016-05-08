@@ -119,7 +119,9 @@ public class KornellSession extends KornellClient {
 				currentUser.getPerson().getTermsAcceptedOn() != null;
 	}
 
-	public void login(String username, String password, final Callback<UserHelloTO> callback) {
+	public void login(String username, 
+			String password, 
+			final Callback<UserHelloTO> callback) {
 		
 		Callback<TokenTO> loginWrapper = new Callback<TokenTO>() {
 
@@ -142,7 +144,8 @@ public class KornellSession extends KornellClient {
 			}
 			
 		};
-		POST_LOGIN(username, password, institution.getUUID(), "/auth/token").sendRequest(null, loginWrapper);
+		String institutionUUID = institution.getUUID();
+		POST_LOGIN(username, password, institutionUUID, "/auth/token").sendRequest(null, loginWrapper);
 	}
 
 	public void fetchUser(final Callback<UserHelloTO> callback) {

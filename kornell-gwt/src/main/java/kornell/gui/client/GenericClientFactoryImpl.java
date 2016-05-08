@@ -8,6 +8,7 @@ import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.entity.EntityFactory;
+import kornell.core.entity.Institution;
 import kornell.core.entity.InstitutionType;
 import kornell.core.error.KornellErrorTO;
 import kornell.core.event.EventFactory;
@@ -16,6 +17,7 @@ import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 import kornell.core.to.TOFactory;
 import kornell.core.to.UserHelloTO;
+import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.mvp.AsyncActivityManager;
@@ -31,6 +33,7 @@ import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
+import kornell.gui.client.util.Console;
 import kornell.gui.client.util.view.KornellMaintenance;
 import kornell.gui.client.util.view.KornellNotification;
 
@@ -100,7 +103,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void startApp() {
+		String institutionParam = Window.Location.getParameter("institution");
 		// remove token cookie on page load
+		String windowHostName = Window.Location.getHostName();
 		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
 			public void ok(final UserHelloTO userHelloTO) {
@@ -123,8 +128,8 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					@Override
 					public void execute() {
-						String institution = Window.Location.getParameter("institution");
-						String hostName = Window.Location.getHostName();
+						String institution = institutionParam;
+						String hostName = windowHostName;
 						KORNELL_SESSION.user().getUserHello(institution,
 								hostName, userManualAccessCallback);
 					}
@@ -142,12 +147,21 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 
 			private void doCallbackOk(final UserHelloTO userHelloTO) {
-				if (userHelloTO.getInstitution() == null) {
+				Institution institution = userHelloTO.getInstitution();				
+				if (institution == null) {
 					KornellNotification.show(constants.institutionNotFound(), AlertType.ERROR, -1);
 				} else {
-					KORNELL_SESSION.setInstitution(userHelloTO.getInstitution());
-					KORNELL_SESSION.setCurrentUser(userHelloTO.getUserInfoTO());
-					if (KORNELL_SESSION.isAuthenticated()) {
+					//TODO: DEBUGAUTH
+					String institutionUUID=institution.getUUID();
+					String institutionName=institution.getName();
+					Console.log("DEBUGAUTH institution["+institution+"] ");
+					Console.log("DEBUGAUTH doCallbackOk institutionUUID["+institutionUUID+"] institutionName["+institutionName+"]");
+					
+					UserInfoTO userInfoTO = userHelloTO.getUserInfoTO();					
+					KORNELL_SESSION.setInstitution(institution);
+					KORNELL_SESSION.setCurrentUser(userInfoTO);
+					boolean authenticated = KORNELL_SESSION.isAuthenticated();
+					if (authenticated) {
 						EVENT_BUS.fireEvent(new CourseClassesFetchedEvent(userHelloTO.getCourseClassesTO()));
 						setHomePlace(new WelcomePlace(), userHelloTO.getCourseClassesTO());
 						startAuthenticated(userHelloTO.getCourseClassesTO());
@@ -157,7 +171,7 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				}
 			}
 		};
-		KORNELL_SESSION.user().getUserHello(Window.Location.getParameter("institution"), Window.Location.getHostName(),
+		KORNELL_SESSION.user().getUserHello(institutionParam, windowHostName,
 				userHelloCallback);
 	}
 
