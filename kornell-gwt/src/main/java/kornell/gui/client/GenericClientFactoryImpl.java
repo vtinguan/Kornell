@@ -151,12 +151,6 @@ public class GenericClientFactoryImpl implements ClientFactory {
 				if (institution == null) {
 					KornellNotification.show(constants.institutionNotFound(), AlertType.ERROR, -1);
 				} else {
-					//TODO: DEBUGAUTH
-					String institutionUUID=institution.getUUID();
-					String institutionName=institution.getName();
-					Console.log("DEBUGAUTH institution["+institution+"] ");
-					Console.log("DEBUGAUTH doCallbackOk institutionUUID["+institutionUUID+"] institutionName["+institutionName+"]");
-					
 					UserInfoTO userInfoTO = userHelloTO.getUserInfoTO();					
 					KORNELL_SESSION.setInstitution(institution);
 					KORNELL_SESSION.setCurrentUser(userInfoTO);
