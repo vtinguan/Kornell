@@ -66,25 +66,24 @@ object Settings extends Enum {
   implicit def toOption(s: String): Option[String] = Option(s)
   
   
-  def settting(s:String) = new EnumVal {
-    val name = s
-  }
-  def settting(n:String,d:String) = new EnumVal {
-    val name = n
-    override val default = Option(d)
+  def settting(_name:String) = new EnumVal {
+    val name = _name
   }
   
-  def settting(n:String,r:Boolean) = new EnumVal {
-    val name = n
-    override val required = r
+  def settting(_name:String,_default:String) = new EnumVal {
+    val name = _name
+    override val default = Option(_default)
   }
   
-  val JDBC_CONNECTION_STRING = settting("JDBC_CONNECTION_STRING",true)
+  def settting(_name:String,_required:Boolean) = new EnumVal {
+    val name = _name
+    override val required = _required
+  }
   
-
-  val JDBC_USERNAME = settting("JDBC_USERNAME")
+  val JDBC_CONNECTION_STRING = settting("JDBC_CONNECTION_STRING","jdbc:mysql:///ebdb")
+  val JDBC_USERNAME = settting("JDBC_USERNAME","kornell")
   val JDBC_PASSWORD = settting("JDBC_PASSWORD")
-  val JDBC_DRIVER =   settting("JDBC_DRIVER")
+  val JDBC_DRIVER =   settting("JDBC_DRIVER","com.mysql.jdbc.Driver")
   val USER_CONTENT_BUCKET = settting("USER_CONTENT_BUCKET","us-east-1.usercontent-develop")
   val USER_CONTENT_REGION = settting("USER_CONTENT_REGION","us-east-1")
   val TEST_MODE = settting("TEST_MODE")
