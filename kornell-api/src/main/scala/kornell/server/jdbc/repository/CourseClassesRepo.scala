@@ -42,7 +42,24 @@ object CourseClassesRepo {
         courseClass.setUUID(UUID.random)
       }
       sql""" 
-	    	insert into CourseClass(uuid,name,courseVersion_uuid,institution_uuid,publicClass,requiredScore,overrideEnrollments,invisible,maxEnrollments,createdAt,createdBy,registrationType,institutionRegistrationPrefixUUID, courseClassChatEnabled, chatDockEnabled, allowBatchCancellation, tutorChatEnabled,approveEnrollmentsAutomatically)
+	    	insert into CourseClass(uuid,
+                name,
+                courseVersion_uuid,
+                institution_uuid,
+                publicClass,requiredScore,
+                overrideEnrollments,
+                invisible,
+                maxEnrollments,
+                createdAt,
+                createdBy,
+                registrationType,
+                institutionRegistrationPrefixUUID, 
+                courseClassChatEnabled, 
+                chatDockEnabled, 
+                allowBatchCancellation, 
+                tutorChatEnabled,
+                approveEnrollmentsAutomatically,
+                startDate)
 	    	values(${courseClass.getUUID},
 	             ${courseClass.getName},
 	             ${courseClass.getCourseVersionUUID},
