@@ -103,9 +103,9 @@ public class GenericClientFactoryImpl implements ClientFactory {
 
 	@Override
 	public void startApp() {
-		String institutionParam = Window.Location.getParameter("institution");
+		final String institutionParam = Window.Location.getParameter("institution");
 		// remove token cookie on page load
-		String windowHostName = Window.Location.getHostName();
+		final String windowHostName = Window.Location.getHostName();
 		final Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
 			public void ok(final UserHelloTO userHelloTO) {
