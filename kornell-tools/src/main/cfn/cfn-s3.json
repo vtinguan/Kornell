@@ -44,16 +44,6 @@
             }
         },
 
-        "knlusercontentbucket": {
-            "Type": "AWS::S3::Bucket",
-            "Properties": {
-                "BucketName" : {
-                        "Fn::Join": ["-",[
-                            {"Ref": "AWS::StackName"},
-                            "usercontent"]]
-                        }
-            }
-        },
         "knllogsbucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
@@ -72,12 +62,7 @@
                 "Ref": "knlgwtbucket"
             }
         },
-        "knlusercontentbucketname": {
-            "Description": "S3_USERCONTENT_BUCKET",
-            "Value": {
-                "Ref": "knlusercontentbucket"
-            }
-        },
+        
         "knllogbucketname": {
             "Description": "S3_LOGS_BUCKET",
             "Value": {

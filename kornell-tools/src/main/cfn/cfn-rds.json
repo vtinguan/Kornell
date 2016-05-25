@@ -70,8 +70,9 @@
               "Ref": "AWS::StackName"
         },
         "Engine": "MySQL",
-		"EngineVersion" : "5.6",
+		    "EngineVersion" : "5.6",
         "DBName": "ebdb",
+        "PubliclyAccessible": "true",
         "DBInstanceClass": {
           "Ref": "knldbinstancetype"
         },

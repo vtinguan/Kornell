@@ -13,9 +13,6 @@
         "knllogsbucketname": {
             "Type": "String"
         },
-        "knlusercontentbucketname": {
-            "Type": "String"
-        },
         "knlapiendpoint": {
             "Type": "String"
         },
@@ -78,6 +75,19 @@
             }
         },
 
+        "knlusercontentbucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName" : {
+                        "Fn::Join": ["-",[
+                            {"Ref": "AWS::StackName"},
+                            "usercontent"]]
+                        }
+            }
+        },
+
+
+
         "knlcdn": {
             "Type": "AWS::CloudFront::Distribution",
             "Properties": {
@@ -92,12 +102,12 @@
                     },
                     "ViewerCertificate": {
                         "IamCertificateId" : {"Ref":"knlcertificateid"},
-                        "SslSupportMethod" : "sni-only"                        
+                        "SslSupportMethod" : "sni-only"
                     },
                     "Origins": [
                         {
                             "Id": "knlgwtorigin",
-                            "DomainName": 
+                            "DomainName":
                             {"Fn::Join": [ "",
                                 [ {"Ref": "knlgwtbucketname"},
                                 ".s3.amazonaws.com" ]]
@@ -118,7 +128,7 @@
                                     "",
                                     [
                                         {
-                                            "Ref": "knlusercontentbucketname"
+                                            "Ref": "knlusercontentbucket"
                                         },
                                         ".s3.amazonaws.com"
                                     ]
@@ -264,11 +274,11 @@
         },
         "Comment" : "CDN Endpoint",
         "HostedZoneId" : {"Ref":"knlhostedzoneid"},
-        "Name" : {"Ref": "knldomainname"},   
+        "Name" : {"Ref": "knldomainname"},
         "Type" : "A"
       }
     }
-      
+
     },
 
 
@@ -278,6 +288,13 @@
             "Value": {
                 "Ref": "knlrepositorybucket"
             }
+    },
+
+    "knlusercontentbucketname": {
+        "Description": "S3_USERCONTENT_BUCKET",
+        "Value": {
+            "Ref": "knlusercontentbucket"
+        }
     },
 
     "knlcdndomainname": {

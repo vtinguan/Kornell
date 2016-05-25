@@ -3,9 +3,10 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/../bash/bash-utils.sh
 
+demmand "PURPOSE"
 
 BRANCH=${BRANCH:-master}
-PURPOSE=${PURPOSE:-dev}
+PURPOSE=${PURPOSE}
 BUILD=${BUILD:-$(date -u +"%Y%m%d%H%M")}
 STACK_ROOT=$(basename "$0" ".sh")
 STACK_TEMPLATE="${STACK_ROOT}.json"
@@ -42,4 +43,4 @@ aws cloudformation describe-stacks \
         --query="Stacks[*].Outputs[*].[Description,OutputValue]" \
         --output=text | tr '\t' '=' | sed -e 's/^/export /'
 echo " "
-echo "Create complete ${STACK_NAME}"	
+echo "Create complete ${STACK_NAME}"

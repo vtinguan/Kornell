@@ -108,7 +108,7 @@
       "Type": "String",
       "Default": "aws-elasticbeanstalk-ec2-role"
     }
-    
+
   },
 
   "Resources": {
@@ -160,7 +160,7 @@
         },
 
         "Description": "Kornell API Environment",
-        "SolutionStackName": "64bit Amazon Linux 2016.03 v2.1.0 running Java 8",        
+        "SolutionStackName": "64bit Amazon Linux 2016.03 v2.1.1 running Java 8",
         "VersionLabel": {
           "Ref": "knlapiversion"
         },
@@ -282,7 +282,7 @@
         "Name" : {"Fn::Join": [".",[
             {"Ref": "AWS::StackName"},
             "eduvem.com."
-        ]]},   
+        ]]},
         "Type" : "A"
       }
     }
