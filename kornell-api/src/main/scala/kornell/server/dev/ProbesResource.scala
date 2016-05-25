@@ -5,10 +5,36 @@ import javax.ws.rs._
 import kornell.server.util.Settings
 import javax.ws.rs.core.Context
 import javax.servlet.http.HttpServletRequest
+import scala.collection.JavaConversions._
 
 @Path("/probes")
 @Produces(Array("text/plain"))
 class ProbesResource {
+  
+  @Path("system")
+  @GET
+  def system = {
+    val buf =  new StringBuilder
+    buf.append("# Properties\n")
+    val props = System.getProperties
+    val names = props.propertyNames
+    while (names.hasMoreElements){
+      val name = names.nextElement.toString()
+      val value = props.getProperty(name)
+      buf.append(s"${name} = ${value}\n")
+    }
+    buf.append("\n# Environment\n")
+    val env = System.getenv
+    env.foreach { kv =>
+      val name = kv._1
+      val value = if (name.toLowerCase().contains("password"))
+        "********"
+      else kv._2
+      buf.append(s"${name} = ${value}\n")
+    }
+    buf.toString
+  }
+  
   @Path("settings")
   @GET
   def settings = Settings
