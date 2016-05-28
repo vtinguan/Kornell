@@ -54,4 +54,8 @@ class ProbesResource {
     }
     buf.toString
   }
+  
+  @Path("throws")
+  @GET
+  def throws = throw new RuntimeException
 }
