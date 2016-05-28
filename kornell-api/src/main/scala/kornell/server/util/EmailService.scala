@@ -15,6 +15,8 @@ import kornell.core.entity.Enrollment
 import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
 import kornell.core.entity.ChatThread
 import kornell.server.util.Settings._
+import java.nio.file.Path
+import java.nio.file.Paths
 
 
 object EmailService {
@@ -188,9 +190,9 @@ object EmailService {
 
   private def getInstitutionLogoImage(institution: Institution): java.io.File = {
     val logoImageName: String = "logo300x80.png"
-    val tDir: String = System.getProperty("java.io.tmpdir")
-    val path: String = tDir + institution.getFullName + "-" + logoImageName
-    val imgFile: File = new File(path)
+    val tempDir: Path = Paths.get(System.getProperty("java.io.tmpdir"))
+    val imgPath = tempDir.resolve(institution.getFullName + "-" + logoImageName)
+    val imgFile: File = imgPath.toFile()
     
     val purgeTime = System.currentTimeMillis - (1 * 24 * 60 * 60 * 1000) //one day
     if(imgFile.lastModified < purgeTime && !imgFile.delete)
@@ -198,7 +200,7 @@ object EmailService {
       
     if (!imgFile.exists) {
       //TODO: Use ContentStore API
-      val url = new URL(mkurl(institution.getBaseURL, "repository", institution.getAssetsRepositoryUUID, logoImageName))
+      val url = new URL(mkurl(institution.getBaseURL, "repository", institution.getAssetsRepositoryUUID, logoImageName))      
       FileUtils.copyURLToFile(url, imgFile)
     }
     imgFile
