@@ -12,7 +12,7 @@ import java.nio.file.Files
 class FSContentManager(fsRepo:FSContentRepository) extends SyncContentManager {
 	 def source(keys: String*): Try[Source] = Try {
 	   val path = Paths.get(fsRepo.getPath,url(keys:_*))
-	   Source.fromFile(path.toFile())
+	   Source.fromFile(path.toFile(), "UTF-8")
 	 }
 	 
 	 def inputStream(keys: String*): Try[InputStream] = Try {
