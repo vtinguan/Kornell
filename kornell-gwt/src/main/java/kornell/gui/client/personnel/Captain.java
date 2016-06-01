@@ -2,8 +2,15 @@ package kornell.gui.client.personnel;
 
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceChangeRequestEvent;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ContentSpec;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
@@ -14,12 +21,6 @@ import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.PlaceChangeRequestEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class Captain implements LogoutEventHandler, LoginEventHandler {
 	Logger logger = Logger.getLogger(Captain.class.getName());
@@ -52,6 +53,7 @@ public class Captain implements LogoutEventHandler, LoginEventHandler {
 											.getCourseVersion().getContentSpec())
 									&& courseClassTO.getEnrollment() != null
 									&& courseClassTO.getEnrollment().getCertifiedAt() == null
+									&& CourseClassState.active.equals(courseClassTO.getCourseClass().getState())
 									&& EnrollmentState.enrolled.equals(courseClassTO.getEnrollment().getState())
 									)
 						) {

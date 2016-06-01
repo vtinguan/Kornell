@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.InstitutionRegistrationPrefix;
+import kornell.core.entity.InstitutionType;
 import kornell.core.entity.Person;
 import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
@@ -292,17 +293,19 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					btnOK2.setEnabled(true);
 					isEditMode = false;
 					display();
-					if(isCurrentUser){
-						placeCtrl.goTo(clientFactory.getDefaultPlace());
-					} else {
-						History.back();
-					}
 					session.fetchUser(new Callback<UserHelloTO>() {
 						@Override
 						public void ok(UserHelloTO to) {
 							user = to.getUserInfoTO();
 						}
 					});
+					if(!InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
+						if(isCurrentUser){
+							placeCtrl.goTo(clientFactory.getDefaultPlace());
+						} else {
+							History.back();
+						}
+					}
 				}
 				@Override
 				public void unauthorized(KornellErrorTO kornellErrorTO){
