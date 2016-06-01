@@ -64,7 +64,9 @@ class EnrollmentsResource {
       EnrollmentsRepo.byCourseClassPaged(courseClassUUID, searchTerm, pageSize, pageNumber)
     }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
      .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
-  .   or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
+     .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr())
+     .or(isCourseClassTutor(courseClassUUID), AccessDeniedErr())
+     .or(isCourseClassObserver(courseClassUUID), AccessDeniedErr()).get
 
   @PUT
   @Path("requests")
@@ -96,7 +98,9 @@ class EnrollmentsResource {
     EnrollmentsRepo.simplePersonList(courseClassUUID)
   }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
   .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
-  .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
+  .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr())
+  .or(isCourseClassTutor(courseClassUUID), AccessDeniedErr())
+  .or(isCourseClassObserver(courseClassUUID), AccessDeniedErr()).get
   
 }
 

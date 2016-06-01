@@ -45,6 +45,8 @@ class CourseClassResource(uuid: String) {
     }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isCourseClassAdmin(uuid), AccessDeniedErr())
+   .or(isCourseClassTutor(uuid), AccessDeniedErr())
+   .or(isCourseClassObserver(uuid), AccessDeniedErr())
    .get
 
 
