@@ -21,8 +21,12 @@ public class SCORM12Adapter implements CMIConstants {
 	private static final int DIRTY_TOLERANCE = 2000;
 
 	public static SCORM12Adapter create(SCORM12Runtime rte,
-			KornellSession session, PlaceController placeCtrl,
-			String enrollmentUUID, String actomKey, ActomEntries entries) {
+			KornellSession session,
+			PlaceController placeCtrl,
+			String enrollmentUUID, 
+			String actomKey, 
+			ActomEntries entries) {
+		
 		return new SCORM12Adapter(rte, session, placeCtrl, enrollmentUUID,
 				actomKey, entries);
 	}
@@ -102,8 +106,10 @@ public class SCORM12Adapter implements CMIConstants {
 		String result = FALSE;
 		String targetUUID = getEnrollmentUUID(moduleUUID);
 		CMITree dataModel = getDataModel(targetUUID,actomKey);
-		if(dataModel != null)
+		if(dataModel != null){
 			result = dataModel.setValue(key, value);
+			rte.onLMSSetValue(key,value);
+		}
 		else
 			logger.warning("Null data model for LMSSetValue [" + key + " = " + value+ "]@[" + targetUUID + "/"+actomKey+"] = " + result);
 		scheduleSync(targetUUID,actomKey);
