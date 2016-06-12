@@ -1,8 +1,8 @@
 package kornell.gui.client.presentation.terms;
 
-import kornell.gui.client.ClientFactory;
-
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.gui.client.ClientFactory;
 
 public class TermsPresenter implements TermsView.Presenter{
 	private TermsView view;

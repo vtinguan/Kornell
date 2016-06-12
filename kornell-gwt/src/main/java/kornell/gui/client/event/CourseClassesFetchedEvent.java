@@ -1,8 +1,8 @@
 package kornell.gui.client.event;
 
-import kornell.core.to.CourseClassesTO;
-
 import com.google.gwt.event.shared.GwtEvent;
+
+import kornell.core.to.CourseClassesTO;
 
 public class CourseClassesFetchedEvent extends GwtEvent<CourseClassesFetchedEventHandler>{
 	public static final Type<CourseClassesFetchedEventHandler> TYPE = new Type<CourseClassesFetchedEventHandler>();

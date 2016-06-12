@@ -3,17 +3,6 @@ package kornell.gui.client.presentation.admin.course.course.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.Course;
-import kornell.core.entity.EntityFactory;
-import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
-import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
-import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.Modal;
@@ -37,6 +26,17 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.Course;
+import kornell.core.entity.EntityFactory;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
+import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericAdminCourseView extends Composite implements AdminCourseView {
 

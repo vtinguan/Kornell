@@ -1,8 +1,8 @@
 package kornell.gui.client.event;
 
-import kornell.core.to.UserInfoTO;
-
 import com.google.gwt.event.shared.GwtEvent;
+
+import kornell.core.to.UserInfoTO;
 
 public class LoginEvent extends GwtEvent<LoginEventHandler> {
 	public static final Type<LoginEventHandler> TYPE = new Type<LoginEventHandler>();

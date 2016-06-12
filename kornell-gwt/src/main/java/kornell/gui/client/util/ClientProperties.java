@@ -2,12 +2,12 @@ package kornell.gui.client.util;
 
 import java.util.Date;
 
-import kornell.core.util.StringUtils;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
+
+import kornell.core.util.StringUtils;
 
 //TODO: if this is user specific, move to UserSession
 public class ClientProperties {

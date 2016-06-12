@@ -1,12 +1,12 @@
 package kornell.gui.client.util.view;
 
-import kornell.gui.client.KornellConstants;
-
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
+
+import kornell.gui.client.KornellConstants;
 
 public class KornellMaintenance {
 	private static KornellConstants constants = GWT.create(KornellConstants.class);

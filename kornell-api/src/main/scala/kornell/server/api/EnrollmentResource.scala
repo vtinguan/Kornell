@@ -33,6 +33,8 @@ import kornell.core.entity.EnrollmentsEntries
 import kornell.server.jdbc.PreparedStmt
 import kornell.server.ep.EnrollmentSEP
 import kornell.server.jdbc.repository.CourseClassesRepo
+import kornell.core.to.DashboardLeaderboardTO
+import kornell.server.jdbc.repository.EnrollmentsRepo
 
 @Produces(Array(Enrollment.TYPE))
 class EnrollmentResource(uuid: String) {
@@ -182,5 +184,6 @@ class EnrollmentResource(uuid: String) {
   @GET
   @Produces(Array(EnrollmentsEntries.TYPE))
   def getEntries():EnrollmentsEntries = getEntries(List(uuid))
+
 
 }

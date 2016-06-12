@@ -2,9 +2,9 @@ package kornell.gui.client.event;
 
 import java.util.List;
 
-import kornell.core.to.UnreadChatThreadTO;
-
 import com.google.gwt.event.shared.GwtEvent;
+
+import kornell.core.to.UnreadChatThreadTO;
 
 public class UnreadMessagesPerThreadFetchedEvent extends GwtEvent<UnreadMessagesPerThreadFetchedEventHandler>{
 	public static final Type<UnreadMessagesPerThreadFetchedEventHandler> TYPE = new Type<UnreadMessagesPerThreadFetchedEventHandler>();

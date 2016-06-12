@@ -6,14 +6,14 @@ import static kornell.core.util.StringUtils.mkurl;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import kornell.core.entity.AuthClientType;
-import kornell.gui.client.util.ClientProperties;
-import kornell.gui.client.util.view.KornellNotification;
-
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+
+import kornell.core.entity.AuthClientType;
+import kornell.gui.client.util.ClientProperties;
+import kornell.gui.client.util.view.KornellNotification;
 
 public class RESTClient {
 	

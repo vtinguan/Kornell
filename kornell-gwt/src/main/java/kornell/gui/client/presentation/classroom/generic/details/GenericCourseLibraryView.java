@@ -8,13 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kornell.api.client.KornellSession;
-import kornell.core.to.LibraryFileTO;
-import kornell.core.to.LibraryFilesTO;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.util.ClientConstants;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,6 +22,13 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.to.LibraryFileTO;
+import kornell.core.to.LibraryFilesTO;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.util.ClientConstants;
 
 
 public class GenericCourseLibraryView extends Composite {

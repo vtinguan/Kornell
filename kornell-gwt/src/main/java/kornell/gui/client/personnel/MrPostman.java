@@ -2,6 +2,15 @@ package kornell.gui.client.personnel;
 
 import java.util.ArrayList;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.api.client.KornellSession;
@@ -27,15 +36,6 @@ import kornell.gui.client.presentation.message.compose.MessageComposePresenter;
 import kornell.gui.client.presentation.message.compose.MessageComposeView;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.util.view.Positioning;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler, CourseClassesFetchedEventHandler {
 
@@ -110,9 +110,8 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 				}
 				if (popup != null && popup.isShowing()) {
 					boolean showingPlacePanel = !(place instanceof VitrinePlace || place instanceof ClassroomPlace || place instanceof AdminPlace);
-					;
-					popup.setPopupPosition(popup.getAbsoluteLeft(), showingPlacePanel ? Positioning.NORTH_BAR_PLUS
-							: Positioning.NORTH_BAR);
+					int popupPosition = showingPlacePanel ? Positioning.NORTH_BAR_PLUS : Positioning.NORTH_BAR;
+					popup.setPopupPosition(popup.getAbsoluteLeft(), popupPosition);
 				}
 			}
 		});
@@ -201,7 +200,7 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 		}
 	}
 
-	public synchronized void show(boolean showingPlacePanel) {
+	public void show(boolean showingPlacePanel) {
 		if (popup == null) {
 			popup = new PopupPanel(false, false);
 			popup.addStyleName("messagesPopup");

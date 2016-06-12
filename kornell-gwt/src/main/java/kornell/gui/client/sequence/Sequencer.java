@@ -1,9 +1,9 @@
 package kornell.gui.client.sequence;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+
 import kornell.core.lom.Contents;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
-
-import com.google.gwt.user.client.ui.FlowPanel;
 
 public interface Sequencer 
 	extends NavigationRequest.Handler  {

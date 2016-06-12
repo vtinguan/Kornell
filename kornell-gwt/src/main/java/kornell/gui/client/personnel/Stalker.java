@@ -1,5 +1,9 @@
 package kornell.gui.client.personnel;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Timer;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.UserInfoTO;
@@ -7,10 +11,6 @@ import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Timer;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class Stalker implements ActomEnteredEventHandler, LoginEventHandler {
 	private KornellSession session;

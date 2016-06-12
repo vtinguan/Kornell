@@ -2,6 +2,9 @@ package kornell.gui.client.sequence;
 
 import java.util.logging.Logger;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
@@ -11,9 +14,6 @@ import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.uidget.Uidget;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class PrefetchSequencer extends SimpleSequencer implements Sequencer {
 	Logger logger = Logger.getLogger(PrefetchSequencer.class.getName());

@@ -6,6 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
@@ -39,13 +46,6 @@ import kornell.gui.client.util.EnumTranslator;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter {
     Logger logger = Logger.getLogger(AdminCourseClassPresenter.class.getName());

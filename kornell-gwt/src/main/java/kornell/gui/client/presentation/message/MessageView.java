@@ -2,10 +2,10 @@ package kornell.gui.client.presentation.message;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 import kornell.core.to.ChatThreadMessagesTO;
 import kornell.core.to.UnreadChatThreadTO;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 public interface MessageView  extends IsWidget {
 	public interface Presenter extends IsWidget {

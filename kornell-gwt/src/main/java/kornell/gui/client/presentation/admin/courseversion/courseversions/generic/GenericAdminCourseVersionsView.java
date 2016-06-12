@@ -5,19 +5,6 @@ import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import java.util.LinkedList;
 import java.util.List;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseVersion;
-import kornell.core.entity.EnrollmentState;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
-import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsView;
-import kornell.gui.client.util.AsciiUtils;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.view.KornellPagination;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -63,6 +50,19 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseVersion;
+import kornell.core.entity.EnrollmentState;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsView;
+import kornell.gui.client.util.AsciiUtils;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.KornellPagination;
 
 public class GenericAdminCourseVersionsView extends Composite implements AdminCourseVersionsView {
 

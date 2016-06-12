@@ -1,12 +1,11 @@
 package kornell.api.client;
 
+import com.google.gwt.http.client.URL;
+
 import kornell.core.to.RegistrationRequestTO;
 import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.URL;
 
 public class UserClient extends RESTClient {
 

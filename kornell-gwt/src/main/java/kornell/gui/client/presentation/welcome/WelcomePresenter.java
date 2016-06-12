@@ -1,8 +1,8 @@
 package kornell.gui.client.presentation.welcome;
 
-import kornell.gui.client.ClientFactory;
-
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.gui.client.ClientFactory;
 
 public class WelcomePresenter implements WelcomeView.Presenter{
 	private WelcomeView view;

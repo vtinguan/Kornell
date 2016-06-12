@@ -1,15 +1,15 @@
 package kornell.gui.client.presentation.admin.course.courses;
 
+import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+
 import kornell.api.client.KornellSession;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.ViewFactory;
-
-import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class AdminCoursesActivity extends AbstractActivity {
 	private ClientFactory clientFactory;

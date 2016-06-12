@@ -1,5 +1,14 @@
 package kornell.gui.client.presentation.classroom;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClass;
@@ -20,15 +29,6 @@ import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
 import kornell.scorm.client.scorm12.SCORM12Runtime;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class ClassroomPresenter implements ClassroomView.Presenter {
 	

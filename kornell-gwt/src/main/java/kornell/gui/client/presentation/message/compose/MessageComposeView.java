@@ -2,10 +2,10 @@ package kornell.gui.client.presentation.message.compose;
 
 import java.util.ArrayList;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 import kornell.core.to.CourseClassTO;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 public interface MessageComposeView  extends IsWidget {
 	public interface Presenter extends IsWidget {

@@ -2,14 +2,6 @@ package kornell.gui.client.uidget;
 
 import java.util.logging.Logger;
 
-import kornell.api.client.KornellSession;
-import kornell.core.lom.ExternalPage;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.event.ShowChatDockEvent;
-import kornell.gui.client.event.ShowChatDockEventHandler;
-import kornell.gui.client.util.view.Positioning;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
@@ -21,6 +13,14 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
+
+import kornell.api.client.KornellSession;
+import kornell.core.lom.ExternalPage;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.event.ShowChatDockEvent;
+import kornell.gui.client.event.ShowChatDockEventHandler;
+import kornell.gui.client.util.view.Positioning;
 
 public class ExternalPageView extends Uidget implements ShowChatDockEventHandler{
 	private static final Logger logger = Logger.getLogger(ExternalPageView.class.getName()); 

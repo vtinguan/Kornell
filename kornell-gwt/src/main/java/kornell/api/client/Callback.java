@@ -11,15 +11,6 @@ import static com.google.gwt.http.client.Response.SC_UNAUTHORIZED;
 
 import java.util.logging.Logger;
 
-import kornell.core.entity.EntityFactory;
-import kornell.core.error.KornellErrorTO;
-import kornell.core.event.EventFactory;
-import kornell.core.lom.LOMFactory;
-import kornell.core.to.TOFactory;
-import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.KornellConstantsHelper;
-import kornell.gui.client.event.LogoutEvent;
-
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
@@ -28,6 +19,15 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
+
+import kornell.core.entity.EntityFactory;
+import kornell.core.error.KornellErrorTO;
+import kornell.core.event.EventFactory;
+import kornell.core.lom.LOMFactory;
+import kornell.core.to.TOFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.KornellConstantsHelper;
+import kornell.gui.client.event.LogoutEvent;
 
 @SuppressWarnings("unchecked")
 public abstract class Callback<T> implements RequestCallback {

@@ -3,22 +3,6 @@ package kornell.gui.client.presentation.welcome.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.EnrollmentProgressDescription;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
-import kornell.gui.client.ClientFactory;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.event.CourseClassesFetchedEvent;
-import kornell.gui.client.personnel.Student;
-import kornell.gui.client.personnel.Teacher;
-import kornell.gui.client.personnel.Teachers;
-import kornell.gui.client.presentation.welcome.WelcomePlace;
-import kornell.gui.client.presentation.welcome.WelcomeView;
-import kornell.gui.client.util.view.KornellNotification;
-
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
@@ -34,6 +18,22 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.EnrollmentProgressDescription;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
+import kornell.gui.client.ClientFactory;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
+import kornell.gui.client.personnel.Student;
+import kornell.gui.client.personnel.Teacher;
+import kornell.gui.client.personnel.Teachers;
+import kornell.gui.client.presentation.welcome.WelcomePlace;
+import kornell.gui.client.presentation.welcome.WelcomeView;
+import kornell.gui.client.util.view.KornellNotification;
 
 public class GenericWelcomeView extends Composite implements WelcomeView {
 	interface MyUiBinder extends UiBinder<Widget, GenericWelcomeView> {
