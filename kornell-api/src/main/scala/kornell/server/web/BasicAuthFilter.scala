@@ -35,6 +35,7 @@ class BasicAuthFilter extends Filter {
     "/user/changePassword",
     "/user/resetPassword",
     "/user/updatePassword",
+    "/enrollments/leaderboard",
     "/institutions",
     "/healthCheck",
     "/auth",

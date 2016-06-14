@@ -2,6 +2,10 @@ package kornell.gui.client.presentation.admin.courseclass.courseclasses;
 
 import java.util.logging.Logger;
 
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.Widget;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.RoleCategory;
@@ -12,10 +16,6 @@ import kornell.core.to.TOFactory;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.LoadingPopup;
-
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.Widget;
 
 public class AdminCourseClassesPresenter implements AdminCourseClassesView.Presenter {
 	Logger logger = Logger.getLogger(AdminCourseClassesPresenter.class.getName());

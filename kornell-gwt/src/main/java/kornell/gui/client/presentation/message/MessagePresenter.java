@@ -5,6 +5,15 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ChatThreadType;
@@ -22,15 +31,6 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourse
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPerThreadFetchedEventHandler{
 	private MessageView view;
@@ -196,9 +196,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					@Override
 					public void ok(ChatThreadMessagesTO to) {
 						if(selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
-							synchronized (chatThreadMessageTOs) {
-								chatThreadMessageTOs.addAll(0, to.getChatThreadMessageTOs());
-							}
+							chatThreadMessageTOs.addAll(0, to.getChatThreadMessageTOs());
 							view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), false);
 						}
 						LoadingPopup.hide();
@@ -222,9 +220,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 						view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), true);
 						view.setPlaceholder(messagePanelType.equals(MessagePanelType.courseClassTutor) ? constants.tutorPlaceholderMessage() : "");
 					} else if(selectedChatThreadInfo != null && selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
-						synchronized (chatThreadMessageTOs) {
-							chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
-						}
+						chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
 						view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), true);
 					}
 					if(scrollToBottomAfterFetchingMessages){
@@ -253,9 +249,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			session.chatThreads().postMessageToChatThread(message, selectedChatThreadInfo.getChatThreadUUID(), lastFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
 				@Override
 				public void ok(ChatThreadMessagesTO to) {
-					synchronized (chatThreadMessageTOs) {
-						chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
-					}
+					chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
 					view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), false);
 					view.scrollToBottom();
 					LoadingPopup.hide();
@@ -317,17 +311,13 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 
 	private Date lastFetchedMessageSentAt() {
 		Date date;
-		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : null;
-		}
+		date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : null;
 		return date;
 	}
 
 	private Date firstFetchedMessageSentAt() {
 		Date date;
-		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : null;
-		}
+		date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : null;
 		return date;
 	}
 	

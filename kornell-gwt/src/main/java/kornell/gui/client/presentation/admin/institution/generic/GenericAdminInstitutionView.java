@@ -3,19 +3,6 @@ package kornell.gui.client.presentation.admin.institution.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.BillingType;
-import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Institution;
-import kornell.core.entity.InstitutionType;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.forms.formfield.ListBoxFormField;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -39,6 +26,19 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.entity.BillingType;
+import kornell.core.entity.EntityFactory;
+import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionType;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.forms.formfield.ListBoxFormField;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericAdminInstitutionView extends Composite implements AdminInstitutionView {
 

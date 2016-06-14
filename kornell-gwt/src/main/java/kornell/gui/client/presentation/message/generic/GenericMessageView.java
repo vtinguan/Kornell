@@ -8,20 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.RoleType;
-import kornell.core.to.ChatThreadMessageTO;
-import kornell.core.to.ChatThreadMessagesTO;
-import kornell.core.to.UnreadChatThreadTO;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.ShowChatDockEvent;
-import kornell.gui.client.event.ShowChatDockEventHandler;
-import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
-import kornell.gui.client.presentation.message.MessagePanelType;
-import kornell.gui.client.presentation.message.MessageView;
-import kornell.gui.client.util.EnumTranslator;
-import kornell.gui.client.util.forms.FormHelper;
-
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -50,6 +36,20 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.entity.RoleType;
+import kornell.core.to.ChatThreadMessageTO;
+import kornell.core.to.ChatThreadMessagesTO;
+import kornell.core.to.UnreadChatThreadTO;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.ShowChatDockEvent;
+import kornell.gui.client.event.ShowChatDockEventHandler;
+import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
+import kornell.gui.client.presentation.message.MessagePanelType;
+import kornell.gui.client.presentation.message.MessageView;
+import kornell.gui.client.util.EnumTranslator;
+import kornell.gui.client.util.forms.FormHelper;
 
 
 public class GenericMessageView extends Composite implements MessageView, ShowChatDockEventHandler {
@@ -319,33 +319,32 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 	public void addMessagesToThreadPanel(ChatThreadMessagesTO chatThreadMessagesTO, String currentUserFullName, final boolean insertOnTop) {
 		final int oldPosition = threadPanelItemsScroll.getMaximumVerticalScrollPosition();
 		boolean shouldScrollToBottom = (threadPanelItemsScroll.getMaximumVerticalScrollPosition()  == threadPanelItemsScroll.getVerticalScrollPosition()) && !insertOnTop;
-		synchronized(dateLabelsMap){
-			for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessagesTO.getChatThreadMessageTOs()) {
-				FlowPanel threadMessageWrapper = new FlowPanel();
-				threadMessageWrapper.addStyleName("threadMessageWrapper");
-				Label header = new Label("");
-	
-				header.addStyleName("threadMessageHeader");
-				if(currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
-					header.addStyleName("rightText");
-					threadMessageWrapper.addStyleName("overrideWrapper");
+		
+		for (final ChatThreadMessageTO chatThreadMessageTO : chatThreadMessagesTO.getChatThreadMessageTOs()) {
+			FlowPanel threadMessageWrapper = new FlowPanel();
+			threadMessageWrapper.addStyleName("threadMessageWrapper");
+			Label header = new Label("");
+
+			header.addStyleName("threadMessageHeader");
+			if(currentUserFullName.equals(chatThreadMessageTO.getSenderFullName())){
+				header.addStyleName("rightText");
+				threadMessageWrapper.addStyleName("overrideWrapper");
+			}
+			threadMessageWrapper.add(header);
+
+			Label item = new Label(chatThreadMessageTO.getMessage());
+			item.addStyleName("threadMessageItem");
+			threadMessageWrapper.add(item);
+			
+			if(!dateLabelsMap.containsKey(chatThreadMessageTO.getSentAt().getTime()+"")){
+				dateLabelsMap.put(chatThreadMessageTO.getSentAt().getTime()+"", new MessageItem(header, chatThreadMessageTO));
+				if(insertOnTop){
+					threadPanelItems.insert(threadMessageWrapper, 0);
+				} else {
+					threadPanelItems.add(threadMessageWrapper);
 				}
-				threadMessageWrapper.add(header);
-	
-				Label item = new Label(chatThreadMessageTO.getMessage());
-				item.addStyleName("threadMessageItem");
-				threadMessageWrapper.add(item);
-				
-				if(!dateLabelsMap.containsKey(chatThreadMessageTO.getSentAt().getTime()+"")){
-					dateLabelsMap.put(chatThreadMessageTO.getSentAt().getTime()+"", new MessageItem(header, chatThreadMessageTO));
-					if(insertOnTop){
-						threadPanelItems.insert(threadMessageWrapper, 0);
-					} else {
-						threadPanelItems.add(threadMessageWrapper);
-					}
-				}
-			} 
-		}
+			}
+		} 
 		
 		updateDateLabelValues(chatThreadMessagesTO.getServerTime());
 		
@@ -363,12 +362,10 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 	}
 
 	private void updateDateLabelValues(Date serverTime) {
-		synchronized(dateLabelsMap){
-			Iterator<Entry<String, MessageItem>> it = dateLabelsMap.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry<String, MessageItem> pairs = (Map.Entry<String, MessageItem>)it.next();
-				pairs.getValue().getLabel().getElement().setInnerHTML(getDateLabelValue(serverTime, pairs.getValue().getChatThreadMessageTO()));
-			}
+		Iterator<Entry<String, MessageItem>> it = dateLabelsMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, MessageItem> pairs = (Map.Entry<String, MessageItem>)it.next();
+			pairs.getValue().getLabel().getElement().setInnerHTML(getDateLabelValue(serverTime, pairs.getValue().getChatThreadMessageTO()));
 		}
 	}
 

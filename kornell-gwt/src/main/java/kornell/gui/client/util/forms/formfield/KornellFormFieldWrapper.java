@@ -4,11 +4,6 @@ import static kornell.core.util.StringUtils.isNone;
 
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.gui.client.util.validation.ValidationChangedEvent;
-import kornell.gui.client.util.validation.ValidationChangedHandler;
-import kornell.gui.client.util.validation.Validator;
-
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Tooltip;
@@ -28,6 +23,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+
+import kornell.api.client.Callback;
+import kornell.gui.client.util.validation.ValidationChangedEvent;
+import kornell.gui.client.util.validation.ValidationChangedHandler;
+import kornell.gui.client.util.validation.Validator;
 
 public class KornellFormFieldWrapper extends Composite {
 	EventBus fieldBus = new SimpleEventBus();

@@ -1,10 +1,7 @@
 package kornell.core.scorm12.rte.knl;
 
-import kornell.core.scorm12.rte.DMElement;
-import kornell.core.util.StringUtils;
-
-import static kornell.core.scorm12.rte.DataType.*;
-import static kornell.core.scorm12.rte.SCOAccess.*;
+import static kornell.core.scorm12.rte.DataType.CMIString255;
+import static kornell.core.scorm12.rte.SCOAccess.RO;
 
 import java.util.Date;
 import java.util.Map;
@@ -12,6 +9,8 @@ import java.util.Map;
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.Person;
+import kornell.core.scorm12.rte.DMElement;
+import kornell.core.util.StringUtils;
 
 public class ClassStartDate extends DMElement {
 	public static final ClassStartDate dme = new ClassStartDate();

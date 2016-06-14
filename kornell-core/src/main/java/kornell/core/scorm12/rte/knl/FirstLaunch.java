@@ -1,10 +1,11 @@
 package kornell.core.scorm12.rte.knl;
 
+import static kornell.core.scorm12.rte.DataType.CMIString255;
+import static kornell.core.scorm12.rte.SCOAccess.RO;
+
 import java.util.Map;
 
 import kornell.core.scorm12.rte.DMElement;
-import static kornell.core.scorm12.rte.DataType.*;
-import static kornell.core.scorm12.rte.SCOAccess.*;
 import kornell.core.util.StringUtils;
 
 public class FirstLaunch extends DMElement{

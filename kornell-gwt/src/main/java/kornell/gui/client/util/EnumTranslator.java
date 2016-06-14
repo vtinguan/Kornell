@@ -1,8 +1,8 @@
 package kornell.gui.client.util;
 
-import kornell.gui.client.KornellConstants;
-
 import com.google.gwt.core.client.GWT;
+
+import kornell.gui.client.KornellConstants;
 
 public class EnumTranslator {
 

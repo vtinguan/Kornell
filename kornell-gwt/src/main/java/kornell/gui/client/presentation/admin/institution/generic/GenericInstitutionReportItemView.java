@@ -5,12 +5,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import kornell.api.client.KornellSession;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.util.ClientConstants;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.view.KornellNotification;
-
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -25,6 +19,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.KornellNotification;
 
 public class GenericInstitutionReportItemView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericInstitutionReportItemView> {

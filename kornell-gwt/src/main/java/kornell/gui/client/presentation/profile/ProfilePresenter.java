@@ -1,8 +1,8 @@
 package kornell.gui.client.presentation.profile;
 
-import kornell.gui.client.ClientFactory;
-
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.gui.client.ClientFactory;
 
 public class ProfilePresenter implements ProfileView.Presenter{
 	private ProfileView view;

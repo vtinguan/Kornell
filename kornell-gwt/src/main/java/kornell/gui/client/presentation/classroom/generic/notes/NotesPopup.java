@@ -1,9 +1,5 @@
 package kornell.gui.client.presentation.classroom.generic.notes;
 
-import kornell.api.client.KornellClient;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.util.view.Positioning;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -15,6 +11,10 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
+
+import kornell.api.client.KornellClient;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.util.view.Positioning;
 
 public class NotesPopup {
 	

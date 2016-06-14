@@ -2,6 +2,15 @@ package kornell.gui.client.presentation.classroom.generic;
 
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentCategory;
@@ -14,15 +23,6 @@ import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 import kornell.gui.client.presentation.classroom.ClassroomView;
 import kornell.gui.client.presentation.classroom.generic.details.GenericCourseDetailsView;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericClassroomView extends Composite implements ClassroomView, ShowDetailsEventHandler, ShowChatDockEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericClassroomView> {

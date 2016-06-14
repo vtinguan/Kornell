@@ -3,24 +3,6 @@ package kornell.gui.client.presentation.admin.courseversion.courseversion.generi
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.ContentSpec;
-import kornell.core.entity.Course;
-import kornell.core.entity.CourseVersion;
-import kornell.core.entity.EntityFactory;
-import kornell.core.entity.InstitutionType;
-import kornell.core.to.CourseVersionTO;
-import kornell.core.to.CourseVersionsTO;
-import kornell.core.to.CoursesTO;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
-import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.forms.formfield.ListBoxFormField;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -43,6 +25,24 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.ContentSpec;
+import kornell.core.entity.Course;
+import kornell.core.entity.CourseVersion;
+import kornell.core.entity.EntityFactory;
+import kornell.core.entity.InstitutionType;
+import kornell.core.to.CourseVersionTO;
+import kornell.core.to.CourseVersionsTO;
+import kornell.core.to.CoursesTO;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.forms.formfield.ListBoxFormField;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericAdminCourseVersionView extends Composite implements AdminCourseVersionView {
 

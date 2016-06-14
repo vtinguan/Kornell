@@ -3,16 +3,6 @@ package kornell.gui.client.presentation.profile.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.to.UserInfoTO;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.profile.ProfileView;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.view.KornellNotification;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,6 +13,16 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.to.UserInfoTO;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.presentation.profile.ProfileView;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericPasswordChangeView extends Composite implements ProfileView {
 	interface MyUiBinder extends UiBinder<Widget, GenericPasswordChangeView> {

@@ -7,13 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import kornell.gui.client.GenericClientFactoryImpl;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.vitrine.VitrineView;
-import kornell.gui.client.presentation.vitrine.VitrineViewType;
-import kornell.gui.client.util.ClientConstants;
-import kornell.gui.client.util.ClientProperties;
-
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.Image;
@@ -35,6 +28,13 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.presentation.vitrine.VitrineView;
+import kornell.gui.client.presentation.vitrine.VitrineViewType;
+import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.ClientProperties;
 
 public class GenericVitrineView extends Composite implements VitrineView {
 	interface MyUiBinder extends UiBinder<Widget, GenericVitrineView> {

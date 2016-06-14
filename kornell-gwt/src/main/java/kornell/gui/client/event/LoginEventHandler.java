@@ -1,8 +1,8 @@
 package kornell.gui.client.event;
 
-import kornell.core.to.UserInfoTO;
-
 import com.google.gwt.event.shared.EventHandler;
+
+import kornell.core.to.UserInfoTO;
 
 public interface LoginEventHandler extends EventHandler {
 	

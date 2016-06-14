@@ -27,6 +27,7 @@ import kornell.core.util.StringUtils
 import kornell.core.util.UUID
 import kornell.server.util.DateConverter
 import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.server.jdbc.repository.CourseRepo
 
 
 //TODO: Remove this class without spreading dependency on AutoBeanFactorySource
@@ -269,12 +270,16 @@ object Entities {
     courseUUID: String = null, versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
     contentSpec: String = null, disabled: Boolean = false, parentVersionUUID: String = null,
     instanceCount: Integer = 1, label: String = null) = {
-    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.getOrElse(""))
+    val versionCreatedAtConverted = {
+      if(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.isDefined) dateConverter.dateToInstitutionTimezone(versionCreatedAt)
+      else dateConverter.dateToInstitutionTimezone(versionCreatedAt, CourseRepo(courseUUID).get.getInstitutionUUID)
+    }
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
     version.setCourseUUID(courseUUID);
-    version.setVersionCreatedAt(dateConverter.dateToInstitutionTimezone(versionCreatedAt))
+    version.setVersionCreatedAt(versionCreatedAtConverted)
     version.setDistributionPrefix(distributionPrefix)
     version.setDisabled(disabled)
     version.setParentVersionUUID(parentVersionUUID)
@@ -302,7 +307,11 @@ object Entities {
     tutorChatEnabled: Boolean = false,
     approveEnrollmentsAutomatically: Boolean = false,
     startDate:Date = null) = {
-    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.getOrElse(""))
+    val createdAtConverted = {
+      if(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.isDefined) dateConverter.dateToInstitutionTimezone(createdAt)
+      else dateConverter.dateToInstitutionTimezone(createdAt, institutionUUID)
+    }
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -313,7 +322,7 @@ object Entities {
     clazz.setOverrideEnrollments(overrideEnrollments)
     clazz.setInvisible(invisible)
     clazz.setMaxEnrollments(maxEnrollments)
-    clazz.setCreatedAt(dateConverter.dateToInstitutionTimezone(createdAt))
+    clazz.setCreatedAt(createdAtConverted)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
     clazz.setRegistrationType(registrationType)

@@ -192,15 +192,19 @@ object CourseClassesRepo {
   def byPersonAndInstitution(personUUID: String, institutionUUID: String) = {
     bindEnrollments(personUUID, getAllClassesByInstitution(institutionUUID))
   }
-
-  def byEnrollment(enrollmentUUID: String, personUUID: String, institutionUUID: String): CourseClassTO = {
-    val courseClass = sql"""
+  
+  def byEnrollment(enrollmentUUID: String) = {
+    sql"""
 	    | select cc.* from 
-		| CourseClass cc
-		| join Enrollment e on e.class_uuid = cc.uuid
-		| where e.uuid = ${enrollmentUUID}
+    	| CourseClass cc
+    	| join Enrollment e on e.class_uuid = cc.uuid
+    	| where e.uuid = ${enrollmentUUID}
 	    | and cc.state <> ${CourseClassState.deleted.toString}
 	    """.first[CourseClass](toCourseClass)
+  }
+
+  def byEnrollment(enrollmentUUID: String, personUUID: String, institutionUUID: String): CourseClassTO = {
+    val courseClass = byEnrollment(enrollmentUUID);
 
 	if(courseClass.isDefined){
 	    val courseClassesTO = getAllClassesByInstitutionPaged(institutionUUID, "", Int.MaxValue, 1, "", null, courseClass.get.getUUID)

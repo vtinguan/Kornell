@@ -1,10 +1,10 @@
 package kornell.gui.client.util.forms.formfield;
 
-import kornell.gui.client.util.forms.FormHelper;
-
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.gui.client.util.forms.FormHelper;
 
 public class TextBoxFormField implements KornellFormField<TextBox> {
 

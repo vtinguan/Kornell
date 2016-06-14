@@ -1,8 +1,8 @@
 package kornell;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
+
+import junit.framework.TestCase;
 
 
 public class MessageTest extends TestCase {

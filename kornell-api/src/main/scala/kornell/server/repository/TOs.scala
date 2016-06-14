@@ -51,6 +51,7 @@ import kornell.server.util.DateConverter
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.core.to.CourseClassesTO
+import kornell.core.to.DashboardLeaderboardItemTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -314,6 +315,20 @@ object TOs {
   def newSimplePeopleTO(simplePeople: List[SimplePersonTO]) = {
     val to = tos.newSimplePeopleTO.as
     to.setSimplePeopleTO(simplePeople.asJava)
+    to
+  }
+  
+  def newDashboardLeaderboardItemTO(personUUID: String, fullName: String, attribute: String) = {
+    val to = tos.newDashboardLeaderboardItemTO.as
+    to.setPersonUUID(personUUID)
+    to.setFullName(fullName)
+    to.setAttribute(attribute)
+    to
+  }
+  
+  def newDashboardLeaderboardTO(dashboardLeaderboardItems: List[DashboardLeaderboardItemTO]) = {
+    val to = tos.newDashboardLeaderboardTO.as
+    to.setDashboardLeaderboardItems(dashboardLeaderboardItems.asJava)
     to
   }
 

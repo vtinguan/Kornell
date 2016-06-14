@@ -1,8 +1,8 @@
 package kornell.api.client;
 
-import kornell.core.to.PeopleTO;
-
 import com.google.gwt.http.client.URL;
+
+import kornell.core.to.PeopleTO;
 
 public class PeopleClient extends KornellClient {
 

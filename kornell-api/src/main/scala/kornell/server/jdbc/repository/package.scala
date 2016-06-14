@@ -38,6 +38,8 @@ import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
 import kornell.core.entity.S3ContentRepository
 import java.util.UUID
+import kornell.core.to.DashboardLeaderboardTO
+import kornell.core.to.DashboardLeaderboardItemTO
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -334,10 +336,15 @@ package object repository {
 	    rs.getString("personUUID"),
 	    AuthClientType.valueOf(rs.getString("clientType")))
 	    
-    implicit def toSimplePersonTO(rs: ResultSet): SimplePersonTO = newSimplePersonTO(
-        rs.getString("uuid"),
-        rs.getString("fullName"),
-        rs.getString("username"))
+  implicit def toSimplePersonTO(rs: ResultSet): SimplePersonTO = newSimplePersonTO(
+      rs.getString("uuid"),
+      rs.getString("fullName"),
+      rs.getString("username"))
+    
+  implicit def toDashboardLeaderboardItemTO(rs: ResultSet): DashboardLeaderboardItemTO = newDashboardLeaderboardItemTO(
+      rs.getString("uuid"),
+      rs.getString("fullName"),
+      rs.getString("attribute"))
         
    
   implicit def toEntityChanged(rs: ResultSet): EntityChanged = newEntityChanged(

@@ -1,5 +1,9 @@
 package kornell.scorm.client.scorm12;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
@@ -11,10 +15,6 @@ import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.sequence.Sequencer;
 import kornell.gui.client.sequence.SimpleSequencer;
 import kornell.gui.client.uidget.Uidget;
-
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class SCORM12Sequencer extends SimpleSequencer implements Sequencer {
 
