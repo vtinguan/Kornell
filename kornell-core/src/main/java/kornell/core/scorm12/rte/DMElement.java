@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kornell.core.entity.CourseClass;
+import kornell.core.entity.Enrollment;
 import kornell.core.entity.Person;
 import kornell.core.util.StringUtils;
 
@@ -27,15 +29,23 @@ public class DMElement {
 		this("");
 	}
 
-	public DMElement(DMElement... children) {
+	public DMElement(String key, DMElement... children) {
+		this.key = key;
 		addAll(children);
 	}
 
 	protected void addAll(DMElement... children) {
-		for (DMElement c : children)
+		for (DMElement c : children){
 			add(c);
+			c.parent = this;
+		}
 	}
 
+	public DMElement(String key,
+			DataType type, SCOAccess access) {
+		this(key,false,type,access);
+	}
+	
 	public DMElement(String key, boolean mandatory,
 			DataType type, SCOAccess access) {
 		this.key = key;
@@ -68,9 +78,14 @@ public class DMElement {
 	 * The launch value is the value to be set to a given data model upon
 	 * launching the SCO
 	 */
-	public Map<String, String> initializeMap(Map<String, String> entries,Person person) {
+	public Map<String, String> initializeMap(Map<String, String> entries,
+			Person person,
+			Enrollment enrollment,
+			CourseClass courseClass) {
 		return nothing();
 	}
+	
+	
 
 	/**
 	 * The finish value is the value to be set to a given when the LMSFinish is
@@ -87,12 +102,12 @@ public class DMElement {
 	public String getFQKN() {
 		if (fqkn == null) {
 			if (parent != null) {
-				fqkn = parent.getFQKN();
-				if (!"".equals(fqkn))
-					fqkn += ".";
-				fqkn += key;
-			} else
-				fqkn = "";
+				String pfqkn = parent.getFQKN();
+				if (StringUtils.isSome(pfqkn)) 
+					fqkn = pfqkn + "." + key;
+				else
+					fqkn = key;
+			}
 		}
 		return fqkn;
 	}
@@ -149,7 +164,11 @@ public class DMElement {
 	private Map<String, String> defaultTo(Map<String, String> entries,
 			String defaultValue, boolean dirty) {
 		if (entries != null){
-			boolean isDefined = entries.containsKey(getFQKN());
+			String key = getFQKN();
+			if(key.contains("launch")){
+				System.out.println("BREAK");
+			}
+			boolean isDefined = entries.containsKey(key);
 			if(! isDefined){
 				Map<String, String> result = set(null, defaultValue, dirty);
 				return result;
@@ -187,4 +206,5 @@ public class DMElement {
 		String str = get(entries);
 		return Integer.parseInt(str);
 	}
+	
 }

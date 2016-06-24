@@ -2,13 +2,13 @@ package kornell.gui.client;
 
 import java.util.logging.Logger;
 
-import kornell.gui.client.util.ClientProperties;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.logging.client.LogConfiguration;
+
+import kornell.gui.client.util.ClientProperties;
 
 public class Kornell implements EntryPoint {
 

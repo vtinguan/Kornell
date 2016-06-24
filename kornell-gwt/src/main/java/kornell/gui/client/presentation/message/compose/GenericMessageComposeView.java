@@ -3,15 +3,6 @@ package kornell.gui.client.presentation.message.compose;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.RoleType;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.RoleTO;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.forms.formfield.ListBoxFormField;
-
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,6 +15,15 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.api.client.KornellSession;
+import kornell.core.entity.RoleType;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.RoleTO;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.forms.formfield.ListBoxFormField;
 
 public class GenericMessageComposeView extends Composite implements MessageComposeView {
 

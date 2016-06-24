@@ -2,9 +2,9 @@ package kornell.gui.client;
 
 import java.util.MissingResourceException;
 
-import kornell.core.error.KornellErrorTO;
-
 import com.google.gwt.core.client.GWT;
+
+import kornell.core.error.KornellErrorTO;
 
 public class KornellConstantsHelper {
 

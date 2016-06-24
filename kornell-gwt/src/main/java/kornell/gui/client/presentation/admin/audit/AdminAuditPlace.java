@@ -1,9 +1,9 @@
 package kornell.gui.client.presentation.admin.audit;
 
-import kornell.gui.client.presentation.admin.AdminPlace;
-
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+
+import kornell.gui.client.presentation.admin.AdminPlace;
 
 public class AdminAuditPlace extends AdminPlace {
 	public static final AdminAuditPlace instance = new AdminAuditPlace();

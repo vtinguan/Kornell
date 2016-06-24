@@ -92,5 +92,15 @@ object CourseVersionsRepo {
   """.map[CourseVersion]
 
   
+  def byEnrollment(enrollmentUUID: String) = {
+    sql"""
+	    | select cv.* from 
+  		| CourseVersion cv
+  		| join Enrollment e on e.courseVersionUUID = cv.uuid
+  		| where e.uuid = ${enrollmentUUID}
+	    | and cv.disabled = 0
+	    """.first[CourseVersion](toCourseVersion)
+  }
+  
   
 }

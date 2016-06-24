@@ -2,6 +2,8 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentState;
@@ -9,8 +11,6 @@ import kornell.core.entity.RegistrationType;
 import kornell.core.to.CourseClassTO;
 import kornell.core.to.EnrollmentTO;
 import kornell.gui.client.util.view.PaginationPresenter;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AdminCourseClassView extends IsWidget {
 	public interface Presenter extends PaginationPresenter {

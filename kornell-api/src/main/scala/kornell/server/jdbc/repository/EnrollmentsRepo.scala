@@ -1,6 +1,7 @@
 package kornell.server.jdbc.repository
 
 import kornell.core.entity.Enrollment
+import scala.collection.JavaConverters._
 import kornell.core.entity.EnrollmentState
 import kornell.server.jdbc.SQL._
 import kornell.server.repository.Entities._
@@ -18,6 +19,11 @@ import kornell.core.util.UUID
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import java.util.concurrent.TimeUnit.MINUTES
+import kornell.core.entity.CourseVersion
+import kornell.core.error.exception.ServerErrorException
+import kornell.core.entity.InstitutionType
+import kornell.core.to.DashboardLeaderboardTO
+import kornell.core.to.DashboardLeaderboardItemTO
 
 object EnrollmentsRepo {
 
@@ -170,7 +176,38 @@ object EnrollmentsRepo {
     	and e.progress < 100
     """.map[Person](toPerson)
   }
-
+  
+  def getLeaderboardForDashboard(dashboardEnrollmentUUID: String) = {
+    val courseClass = CourseClassesRepo.byEnrollment(dashboardEnrollmentUUID)
+    if(!courseClass.isDefined) throw new ServerErrorException("errorGeneratingReport")
+    val institution = InstitutionRepo(courseClass.get.getInstitutionUUID).get
+    if(!InstitutionType.DASHBOARD.equals(institution.getInstitutionType)) throw new ServerErrorException("errorGeneratingReport")
+    TOs.newDashboardLeaderboardTO(
+      sql"""
+        select 
+        	p.uuid,
+        	p.fullName, 
+          (select ae.entryValue from ActomEntries ae where ae.enrollment_uuid = e.uuid and ae.entryKey = "knl.leaderboardScore") as attribute
+        from Person p
+        	join Enrollment e on e.person_uuid = p.uuid
+        where
+            e.uuid in (select uuid from Enrollment where class_uuid in (select class_uuid from Enrollment where uuid = ${dashboardEnrollmentUUID}))
+        order by CONVERT(SUBSTRING_INDEX(attribute,'-',-1),UNSIGNED INTEGER) desc, p.fullName;
+  	    """.map[DashboardLeaderboardItemTO](toDashboardLeaderboardItemTO)
+  	 )
+  }
+  
+  def getLeaderboardPosition(dashboardEnrollmentUUID: String) = {
+    val personUUID = sql" SELECT person_uuid FROM Enrollment e WHERE uuid = ${dashboardEnrollmentUUID}".first[String].get
+    var personAttribute = 0
+    val leaderboardItems = getLeaderboardForDashboard(dashboardEnrollmentUUID).getDashboardLeaderboardItems
+    for (i <- 0 until leaderboardItems.size; if personAttribute == 0) {
+      val item = leaderboardItems.get(i)
+      if(item.getPersonUUID.equals(personUUID))
+        personAttribute = item.getAttribute.toInt
+    }
+    (leaderboardItems.asScala.filter(_.getAttribute.toInt > personAttribute).length + 1).toString
+  }
 
   val cacheBuilder = CacheBuilder
     .newBuilder()

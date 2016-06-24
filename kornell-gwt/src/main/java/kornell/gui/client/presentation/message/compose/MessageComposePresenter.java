@@ -2,6 +2,10 @@ package kornell.gui.client.presentation.message.compose;
 
 import java.util.ArrayList;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.Widget;
+
 import kornell.api.client.Callback;
 import kornell.api.client.ChatThreadsClient;
 import kornell.api.client.KornellSession;
@@ -13,10 +17,6 @@ import kornell.gui.client.personnel.MrPostman;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.KornellNotification;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.Widget;
 
 public class MessageComposePresenter implements MessageComposeView.Presenter {
 	private FormHelper formHelper = GWT.create(FormHelper.class);

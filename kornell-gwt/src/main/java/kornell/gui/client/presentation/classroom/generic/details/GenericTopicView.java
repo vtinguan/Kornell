@@ -5,18 +5,6 @@ import static kornell.core.util.StringUtils.mkurl;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.KornellClient;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClassState;
-import kornell.core.entity.Enrollment;
-import kornell.core.entity.EnrollmentState;
-import kornell.core.lom.Content;
-import kornell.core.lom.ContentFormat;
-import kornell.core.lom.ExternalPage;
-import kornell.core.lom.Topic;
-import kornell.core.to.CourseClassTO;
-import kornell.gui.client.util.ClientConstants;
-
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
 import com.github.gwtbootstrap.client.ui.FluidRow;
@@ -36,6 +24,18 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellClient;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
+import kornell.core.entity.Enrollment;
+import kornell.core.entity.EnrollmentState;
+import kornell.core.lom.Content;
+import kornell.core.lom.ContentFormat;
+import kornell.core.lom.ExternalPage;
+import kornell.core.lom.Topic;
+import kornell.core.to.CourseClassTO;
+import kornell.gui.client.util.ClientConstants;
 
 public class GenericTopicView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericTopicView> {

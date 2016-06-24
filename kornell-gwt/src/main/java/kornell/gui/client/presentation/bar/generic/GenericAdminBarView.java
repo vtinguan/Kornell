@@ -1,15 +1,5 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.gui.client.ClientFactory;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.admin.course.CoursePlace;
-import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
-import kornell.gui.client.presentation.admin.courseversion.CourseVersionPlace;
-import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
-import kornell.gui.client.presentation.bar.AdminBarView;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -24,6 +14,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.gui.client.ClientFactory;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.presentation.admin.course.CoursePlace;
+import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.admin.courseversion.CourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
+import kornell.gui.client.presentation.bar.AdminBarView;
 
 
 public class GenericAdminBarView extends Composite implements AdminBarView {

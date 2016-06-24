@@ -19,6 +19,7 @@ import kornell.core.util.StringUtils
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.logging.Logger
+import kornell.server.util.Settings._
 
 object EmailSender {
   val logger = Logger.getLogger("kornell.server.email")
@@ -36,7 +37,7 @@ object EmailSender {
     sendEmail(subject,
       from,
       to,
-      REPLY_TO.getOrElse(from),
+      REPLY_TO.getOpt.getOrElse(from),
       body,
       imgFile)
 
@@ -76,7 +77,8 @@ object EmailSender {
       val password = SMTP_PASSWORD
       transport.connect(username, password)
 
-      if (!"true".equals(Settings.get("TEST_MODE").orNull)) {
+      val test_mode:String = Settings.TEST_MODE
+      if (!"true".equals(test_mode.orNull)) {
         transport.sendMessage(message, Array(new InternetAddress(to)))
       }
 
@@ -95,23 +97,16 @@ object EmailSender {
   })
 
   private def getEmailSession =
-    SMTP_HOST map { host =>
+    SMTP_HOST.getOpt map { host =>
       println (s"Creating smtp session for host [$host]")
       val props = new Properties()
       props.put("mail.smtp.auth", "true")
       props.put("mail.smtp.host", host)
-      props.put("mail.smtp.port", SMTP_PORT)
+      props.put("mail.smtp.port", SMTP_PORT.get)
       props.put("mail.smtp.ssl.enable", "true");
       props.put("mail.transport.protocol", "smtp");
       Session.getDefaultInstance(props);
     }
 
-  val DEFAULT_SMTP_FROM = "cdf@craftware.com.br"
-  lazy val SMTP_HOST = Settings.get("SMTP_HOST")
-  lazy val SMTP_PORT = Settings.get("SMTP_PORT").get
-  lazy val SMTP_USERNAME = Settings.get("SMTP_USERNAME").get
-  lazy val SMTP_PASSWORD = Settings.get("SMTP_PASSWORD").get
-  lazy val SMTP_FROM = Settings.get("SMTP_FROM").getOrElse(DEFAULT_SMTP_FROM)
-  lazy val REPLY_TO = Settings.get("REPLY_TO")
-  lazy val HEALTH_TO = SMTP_FROM
+  
 }

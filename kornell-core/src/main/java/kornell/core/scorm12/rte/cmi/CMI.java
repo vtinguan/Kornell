@@ -7,8 +7,8 @@ public class CMI extends DMElement {
 	public static final CMI dme = new CMI();
 
 	private CMI() {
-		super("cmi");
-		addAll(Core.dme,
+		super("cmi",
+				Core.dme,
 				StudentData.dme,
 				SuspendData.dme);
 	}

@@ -9,9 +9,15 @@ import java.util.logging.Logger
 import java.util.HashMap
 import kornell.core.scorm12._
 import kornell.core.entity.Person
+import kornell.core.entity.Enrollment
+import kornell.core.entity.CourseClass
 
 object SCORM12 {
   val logger = Logger.getLogger("kornell.server.scorm12")
+  
+  def initialize(entries: JMap[String, String], person: Person,
+        enrollment:Enrollment,
+        courseClass:CourseClass) = dataModel.initialize(entries,person,enrollment,courseClass)
 
   def merged(mms: Seq[JMap[String, String]]): MMap[String, String] = {
     val merged = MMap[String, String]()
@@ -25,17 +31,23 @@ object SCORM12 {
   }
 
   implicit class Element(el: DMElement) {
-    def initialize(entries: JMap[String, String], person: Person): JMap[String, String] = 
-       _initialize(entries, person).asJava
+    
+    def initialize(entries: JMap[String, String], person: Person,
+        enrollment:Enrollment,
+        courseClass:CourseClass): JMap[String, String] = 
+       _initialize(entries, person, enrollment, courseClass).asJava
      
 
-    def _initialize(entries: JMap[String, String], person: Person): MMap[String, String] = {
+    def _initialize(entries: JMap[String, String], 
+        person: Person,
+        enrollment:Enrollment,
+        courseClass:CourseClass): MMap[String, String] = {
       type Maps = List[JMap[String, String]]
       val childDataModels = el.getChildren().asScala
       val kids: Maps = childDataModels
-        .map { _.initialize(entries, person) }
+        .map { _.initialize(entries, person, enrollment, courseClass) }
         .toList
-      val selfie = el.initializeMap(entries, person)
+      val selfie = el.initializeMap(entries, person,enrollment,courseClass)
       val maps = kids ++ List(selfie)
       val result = merged(maps)
       result

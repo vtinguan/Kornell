@@ -3,18 +3,6 @@ package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.error.KornellErrorTO;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.SimplePeopleTO;
-import kornell.core.to.SimplePersonTO;
-import kornell.core.to.TOFactory;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.util.ClientConstants;
-import kornell.gui.client.util.view.KornellNotification;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Collapse;
 import com.github.gwtbootstrap.client.ui.CollapseTrigger;
@@ -38,6 +26,18 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.error.KornellErrorTO;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.SimplePeopleTO;
+import kornell.core.to.SimplePersonTO;
+import kornell.core.to.TOFactory;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericCourseClassReportItemView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseClassReportItemView> {

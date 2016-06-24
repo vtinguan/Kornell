@@ -1,9 +1,9 @@
 package kornell.gui.client.presentation.admin.courseversion.courseversion;
 
-import kornell.gui.client.ClientFactory;
-
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+
+import kornell.gui.client.ClientFactory;
 
 public class AdminCourseVersionActivity extends AbstractActivity {
 	private ClientFactory clientFactory;

@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.google.gwt.place.shared.PlaceController;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.EnrollmentEntries;
@@ -12,9 +15,7 @@ import kornell.core.entity.EnrollmentsEntries;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
-
-import com.google.gwt.place.shared.PlaceController;
-import com.google.web.bindery.event.shared.EventBus;
+import kornell.gui.client.sequence.NavigationRequest;
 
 public class SCORM12Runtime implements ActomEnteredEventHandler {
 	private static final Logger logger = Logger.getLogger(SCORM12Runtime.class.getName());
@@ -24,16 +25,18 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 	private SCORM12Adapter currentAPI = null;
 	private KornellSession session;
 	private PlaceController placeCtrl;
-	
+
 	private Map<String,CMITree> forestCache = new HashMap<>();
+	private EventBus bus;
 	
 	private SCORM12Runtime(EventBus bus, KornellSession session, PlaceController placeCtrl, EnrollmentsEntries entries){
 		this.entries = entries;
 		this.session = session;
 		this.placeCtrl = placeCtrl;
+		this.bus = bus;
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
 	}
-	
+
 	public static synchronized SCORM12Runtime launch(EventBus bus, KornellSession session, PlaceController placeCtrl,EnrollmentsEntries entries){		
 		instance = new SCORM12Runtime(bus, session, placeCtrl, entries);
 		return instance;
@@ -84,5 +87,13 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 		}
 		forestCache.put(cacheKey, dataModel);
 		return dataModel;
+	}
+
+	public void onLMSSetValue(String key, String value) {
+		if ("knl.next".equals(key)){
+			bus.fireEvent(NavigationRequest.next());
+		}else if ("knl.prev".equals(key)){
+			bus.fireEvent(NavigationRequest.prev());
+		}
 	}
 }

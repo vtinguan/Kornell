@@ -1,12 +1,12 @@
 package kornell.gui.client.util.view;
 
-import kornell.core.util.StringUtils;
-
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
+
+import kornell.core.util.StringUtils;
 
 public class KornellNotification {
 

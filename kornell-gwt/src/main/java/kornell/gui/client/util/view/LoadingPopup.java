@@ -1,12 +1,13 @@
 package kornell.gui.client.util.view;
 
 import static kornell.core.util.StringUtils.mkurl;
-import kornell.gui.client.util.ClientConstants;
 
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
+
+import kornell.gui.client.util.ClientConstants;
 
 public class LoadingPopup {
 	private static PopupPanel popup;	
@@ -15,7 +16,7 @@ public class LoadingPopup {
 		show(null);
 	}
 	
-	public synchronized static void show(String message) {	
+	public static void show(String message) {	
 		if(popup == null){
 			popup = new PopupPanel(false, false); // Create a non-modal dialog box that will not auto-hide
 			popup.addStyleName("loadingPopup");

@@ -1,6 +1,13 @@
 package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
+
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+
 import kornell.core.to.CourseClassesTO;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.CourseClassesFetchedEventHandler;
@@ -56,12 +63,6 @@ import kornell.gui.client.presentation.welcome.WelcomeView;
 import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
-
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHandler, CourseClassesFetchedEventHandler {
 

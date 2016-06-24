@@ -1,8 +1,8 @@
 package kornell.gui.client.presentation.message.generic;
 
-import kornell.core.to.ChatThreadMessageTO;
-
 import com.google.gwt.user.client.ui.Label;
+
+import kornell.core.to.ChatThreadMessageTO;
 
 public class MessageItem {
 	

@@ -5,6 +5,8 @@ import static kornell.core.scorm12.rte.SCOAccess.RO;
 
 import java.util.Map;
 
+import kornell.core.entity.CourseClass;
+import kornell.core.entity.Enrollment;
 import kornell.core.entity.Person;
 import kornell.core.scorm12.rte.DMElement;
 
@@ -17,7 +19,8 @@ public class StudentName extends DMElement {
 
 	@Override
 	public Map<String, String> initializeMap(Map<String, String> entries,
-			Person person) {
+			Person person,Enrollment enrollment,
+			CourseClass courseClass) {
 		return set(person.getFullName());
 	}
 }

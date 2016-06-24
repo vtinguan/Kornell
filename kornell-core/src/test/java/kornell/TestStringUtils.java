@@ -8,9 +8,9 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import kornell.core.util.StringUtils;
-
 import org.junit.Test;
+
+import kornell.core.util.StringUtils;
 
 public class TestStringUtils {
 	

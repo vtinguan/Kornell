@@ -1,9 +1,9 @@
 package kornell.gui.client.presentation.admin.course.course;
 
-import kornell.gui.client.presentation.admin.course.CoursePlace;
-
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+
+import kornell.gui.client.presentation.admin.course.CoursePlace;
 
 public class AdminCoursePlace extends CoursePlace {
 	private String courseUUID;

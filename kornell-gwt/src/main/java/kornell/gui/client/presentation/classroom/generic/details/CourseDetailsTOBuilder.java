@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import kornell.core.to.coursedetails.CourseDetailsTO;
-import kornell.core.to.coursedetails.HintTO;
-import kornell.core.to.coursedetails.InfoTO;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
-
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+
+import kornell.core.to.coursedetails.CourseDetailsTO;
+import kornell.core.to.coursedetails.HintTO;
+import kornell.core.to.coursedetails.InfoTO;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPresenter;
 
 public class CourseDetailsTOBuilder {
 	private final static Logger logger = Logger.getLogger(AdminInstitutionPresenter.class.getName());

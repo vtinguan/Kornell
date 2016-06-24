@@ -1,9 +1,9 @@
 package kornell.gui.client.presentation.admin.courseversion.courseversions;
 
-import kornell.gui.client.presentation.admin.courseversion.CourseVersionPlace;
-
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+
+import kornell.gui.client.presentation.admin.courseversion.CourseVersionPlace;
 
 public class AdminCourseVersionsPlace extends CourseVersionPlace {
 	public static final AdminCourseVersionsPlace instance = new AdminCourseVersionsPlace();

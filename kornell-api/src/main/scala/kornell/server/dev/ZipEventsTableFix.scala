@@ -65,7 +65,7 @@ object ZipEventsTableFix extends App {
 	   and actomKey=$actomKey
 	 """.map[String]
     entryKeys foreach { key =>
-      val conn = DataSources.connectionFactory.get()
+      val conn = DataSources.connectionFactory()
       try {
         conn.setAutoCommit(false)
         zipEntry(conn, enrollmentUUID, actomKey, key)

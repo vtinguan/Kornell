@@ -5,32 +5,6 @@ import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import java.util.LinkedList;
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.CourseClassState;
-import kornell.core.entity.EnrollmentCategory;
-import kornell.core.entity.EnrollmentProgressDescription;
-import kornell.core.entity.EnrollmentState;
-import kornell.core.entity.RegistrationType;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
-import kornell.core.to.EnrollmentTO;
-import kornell.core.to.UnreadChatThreadTO;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
-import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
-import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
-import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
-import kornell.gui.client.presentation.message.MessagePresenter;
-import kornell.gui.client.util.AsciiUtils;
-import kornell.gui.client.util.EnumTranslator;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.view.KornellNotification;
-import kornell.gui.client.util.view.KornellPagination;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -79,6 +53,32 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.CourseClassState;
+import kornell.core.entity.EnrollmentCategory;
+import kornell.core.entity.EnrollmentProgressDescription;
+import kornell.core.entity.EnrollmentState;
+import kornell.core.entity.RegistrationType;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
+import kornell.core.to.EnrollmentTO;
+import kornell.core.to.UnreadChatThreadTO;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
+import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
+import kornell.gui.client.presentation.message.MessagePresenter;
+import kornell.gui.client.util.AsciiUtils;
+import kornell.gui.client.util.EnumTranslator;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.KornellPagination;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericAdminCourseClassView extends Composite implements AdminCourseClassView,
 		UnreadMessagesPerThreadFetchedEventHandler, UnreadMessagesCountChangedEventHandler {
