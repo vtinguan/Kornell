@@ -18,7 +18,7 @@
 		</fileSet>
 
 		<fileSet>
-			<directory>src/main/aws</directory>
+			<directory>target/classes</directory>
 			<includes>
 				<include>Procfile</include>
 			</includes>
