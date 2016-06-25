@@ -1,1 +1,1 @@
-web: java -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -jar kornell-api-swarm.jar
+web: java -Xmx$(echo "$(free -m | awk '/^Mem:/{print $2}') * 0.7/1" | bc)m -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -jar kornell-api-swarm.jar
