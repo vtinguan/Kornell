@@ -22,7 +22,7 @@ ARG_USERNAME="ParameterKey=knljdbcusername,ParameterValue=$JDBC_USERNAME"
 ARG_PASSWORD="ParameterKey=knljdbcpassword,ParameterValue=$JDBC_PASSWORD"
 
 ARG_SMTP_HOST="ParameterKey=knlsmtphost,ParameterValue='$SMTP_HOST'"
-ARG_SMTP_PORT="ParameterKey=knlsmtpport,ParameterValue='$SMTP_HOST'"
+ARG_SMTP_PORT="ParameterKey=knlsmtpport,ParameterValue='$SMTP_PORT'"
 ARG_SMTP_USERNAME="ParameterKey=knlsmtpusername,ParameterValue='$SMTP_USERNAME'"
 ARG_SMTP_PASSWORD="ParameterKey=knlsmtppassword,ParameterValue='$SMTP_PASSWORD'"
 ARG_REPLY_TO="ParameterKey=knlreplyto,ParameterValue='$REPLY_TO'"

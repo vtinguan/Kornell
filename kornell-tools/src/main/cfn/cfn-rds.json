@@ -16,7 +16,7 @@
 
     "knldbstorage": {
       "Type": "String",
-      "Default": "32"
+      "Default": "100"
     },
 
     "knldbmultiaz": {
