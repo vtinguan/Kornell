@@ -10,7 +10,7 @@ APPLICATION_NAME=${bamboo_APPLICATION_NAME:-"$APPLICATION_NAME" }
 ENV_NAME=${bamboo_ENV_NAME:-"$ENV_NAME"}
 VERSION_ID=${VERSION_ID:-"$(date -u +'%Y%m%d%H%M')"}
 VERSION_BUCKET=${VERSION_BUCKET:-"us-east-1.craftware-dist"}
-VERSION_BRANCH=${VERSION_BRANCH:-"master"}
+VERSION_BRANCH=${bamboo_VERSION_BRANCH:-"master"}
 VERSION_LABEL=${VERSION_LABEL:-"kornell-api-$VERSION_ID"}
 VERSION_KEY=${VERSION_KEY:-"kornell/$VERSION_BRANCH/latest/kornell-api-eb.zip"}
 VERSION_URL="s3://$VERSION_BUCKET/$VERSION_KEY"
@@ -34,7 +34,7 @@ aws elasticbeanstalk create-application-version \
 	--application-name "$APPLICATION_NAME" \
 	--version-label "$VERSION_LABEL" \
 	--source-bundle "S3Bucket=$VERSION_BUCKET,S3Key=$VERSION_KEY" \
-	--region "$REGION"	
+	--region "$REGION"
 
 log "Updating environment [$ENV_NAME]"
 echo aws elasticbeanstalk update-environment \
@@ -46,6 +46,6 @@ aws elasticbeanstalk update-environment \
 	--application-name "$APPLICATION_NAME" \
 	--environment-name "$ENV_NAME" \
 	--version-label "$VERSION_LABEL" \
-	--region "$REGION"	
+	--region "$REGION"
 
 log "API module deployment finished successfully"
