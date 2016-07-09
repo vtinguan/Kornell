@@ -1,16 +1,5 @@
 package kornell.gui.client.presentation.terms.generic;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.to.UserInfoTO;
-import kornell.gui.client.ClientFactory;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.profile.ProfilePlace;
-import kornell.gui.client.presentation.terms.TermsPlace;
-import kornell.gui.client.presentation.terms.TermsView;
-
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -25,6 +14,16 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.to.UserInfoTO;
+import kornell.gui.client.ClientFactory;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.terms.TermsPlace;
+import kornell.gui.client.presentation.terms.TermsView;
 
 public class GenericTermsView extends Composite implements TermsView {
 	interface MyUiBinder extends UiBinder<Widget, GenericTermsView> {
@@ -80,11 +79,11 @@ public class GenericTermsView extends Composite implements TermsView {
 	private void paint() {
 		clientFactory.getViewFactory().getMenuBarView().initPlaceBar(IconType.LEGAL, constants.termsTitle(), constants.termsDescription());
 		titleUser.setText(session.getCurrentUser().getPerson().getFullName());
-		if (Dean.getInstance().getInstitution() != null) {
-			txtTerms.getElement().setInnerHTML(Dean.getInstance().getInstitution().getTerms());
-			String skin = Dean.getInstance().getInstitution().getSkin();
+		if (session.getInstitution() != null) {
+			txtTerms.getElement().setInnerHTML(session.getInstitution().getTerms());
+			String skin = session.getInstitution().getSkin();
 			String barLogoFileName = "/logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png?1";
-			institutionLogo.setUrl(Dean.getInstance().getInstitution().getAssetsURL() + barLogoFileName);
+			institutionLogo.setUrl(session.getAssetsURL() + barLogoFileName);
 		}
 	}
 
@@ -110,7 +109,7 @@ public class GenericTermsView extends Composite implements TermsView {
 	}
 
 	private void goStudy() {
-		if(Dean.getInstance().getInstitution().isDemandsPersonContactDetails()){
+		if(session.getInstitution().isDemandsPersonContactDetails()){
 			placeCtrl.goTo(new ProfilePlace(session.getCurrentUser().getPerson().getUUID(), true));
 		} else {
 			placeCtrl.goTo(clientFactory.getDefaultPlace());

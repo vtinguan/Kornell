@@ -1,11 +1,5 @@
 package kornell.gui.client.presentation.admin.courseclass.courseclass.generic;
 
-import kornell.api.client.KornellSession;
-import kornell.core.to.CourseClassTO;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
-import kornell.gui.client.presentation.message.MessagePresenter;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -15,6 +9,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.to.CourseClassTO;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
+import kornell.gui.client.presentation.message.MessagePresenter;
 
 public class GenericCourseClassMessagesView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseClassMessagesView> {

@@ -8,9 +8,9 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import kornell.core.util.StringUtils;
-
 import org.junit.Test;
+
+import kornell.core.util.StringUtils;
 
 public class TestStringUtils {
 	
@@ -49,6 +49,7 @@ public class TestStringUtils {
 		assertNull(StringUtils.opt(null).orElse("").getOrNull());
 	}
 	
+	@SuppressWarnings("serial")
 	@Test
 	public void testComposeProperties(){
 		Map<String, String> props = new HashMap<String, String>(){{

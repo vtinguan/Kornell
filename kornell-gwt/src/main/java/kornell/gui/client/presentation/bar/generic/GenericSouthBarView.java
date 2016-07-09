@@ -1,20 +1,5 @@
 package kornell.gui.client.presentation.bar.generic;
 
-import kornell.core.entity.EnrollmentState;
-import kornell.gui.client.ClientFactory;
-import kornell.gui.client.event.HideSouthBarEvent;
-import kornell.gui.client.event.HideSouthBarEventHandler;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.AdminPlace;
-import kornell.gui.client.presentation.bar.ActivityBarView;
-import kornell.gui.client.presentation.bar.AdminBarView;
-import kornell.gui.client.presentation.bar.SouthBarView;
-import kornell.gui.client.presentation.classroom.ClassroomPlace;
-import kornell.gui.client.util.easing.Ease;
-import kornell.gui.client.util.easing.Transitions;
-import kornell.gui.client.util.easing.Updater;
-import kornell.gui.client.util.view.Positioning;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -25,6 +10,21 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.api.client.KornellSession;
+import kornell.core.entity.EnrollmentState;
+import kornell.gui.client.ClientFactory;
+import kornell.gui.client.event.HideSouthBarEvent;
+import kornell.gui.client.event.HideSouthBarEventHandler;
+import kornell.gui.client.presentation.admin.AdminPlace;
+import kornell.gui.client.presentation.bar.ActivityBarView;
+import kornell.gui.client.presentation.bar.AdminBarView;
+import kornell.gui.client.presentation.bar.SouthBarView;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
+import kornell.gui.client.util.easing.Ease;
+import kornell.gui.client.util.easing.Transitions;
+import kornell.gui.client.util.easing.Updater;
+import kornell.gui.client.util.view.Positioning;
 
 public class GenericSouthBarView extends Composite implements SouthBarView, HideSouthBarEventHandler {
 
@@ -46,13 +46,15 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 	private ClientFactory clientFactory;
 
 	private ScrollPanel scrollPanel;
+	private KornellSession session;
 
 	public GenericSouthBarView(final ClientFactory clientFactory, ScrollPanel scrollPanel) {
 		this.clientFactory = clientFactory;
 		clientFactory.getEventBus().addHandler(HideSouthBarEvent.TYPE,this);
 		initWidget(uiBinder.createAndBindUi(this));
 		this.scrollPanel = scrollPanel;
-		
+		this.session = clientFactory.getKornellSession();
+
 		pickSouthBar(clientFactory.getPlaceController().getWhere());
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
@@ -71,9 +73,9 @@ public class GenericSouthBarView extends Composite implements SouthBarView, Hide
 				barView = getAdminBarView(newPlace);
 				showSouthBar(barView);
 			}
-		} else if (newPlace instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null && 
-				Dean.getInstance().getCourseClassTO().getEnrollment() != null &&
-				EnrollmentState.enrolled.equals(Dean.getInstance().getCourseClassTO().getEnrollment().getState())) {
+		} else if (newPlace instanceof ClassroomPlace && session.getCurrentCourseClass() != null && 
+				session.getCurrentCourseClass().getEnrollment() != null &&
+				EnrollmentState.enrolled.equals(session.getCurrentCourseClass().getEnrollment().getState())) {
 			if(currentSouthBar != ACTIVITY_BAR){
 				currentSouthBar = ACTIVITY_BAR;
 				barView = getActivityBarView();

@@ -4,11 +4,11 @@ import static kornell.core.util.StringUtils.isSome;
 
 import java.util.Map;
 
-import kornell.core.entity.ActomEntries;
-import kornell.core.entity.EntityFactory;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.URL;
+
+import kornell.core.entity.ActomEntries;
+import kornell.core.entity.EntityFactory;
 
 public class ActomClient extends RESTClient {
 	// TODO: Consider not hurting DI

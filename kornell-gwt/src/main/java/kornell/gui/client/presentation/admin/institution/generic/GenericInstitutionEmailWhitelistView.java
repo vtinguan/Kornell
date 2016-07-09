@@ -3,15 +3,6 @@ package kornell.gui.client.presentation.admin.institution.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.Institution;
-import kornell.core.to.InstitutionEmailWhitelistTO;
-import kornell.core.to.TOFactory;
-import kornell.gui.client.util.forms.formfield.SimpleMultipleSelect;
-import kornell.gui.client.util.view.KornellNotification;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
@@ -25,6 +16,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.Institution;
+import kornell.core.to.InstitutionEmailWhitelistTO;
+import kornell.core.to.TOFactory;
+import kornell.gui.client.util.forms.formfield.SimpleMultipleSelect;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericInstitutionEmailWhitelistView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericInstitutionEmailWhitelistView> {

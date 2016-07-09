@@ -5,6 +5,15 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ChatThreadType;
@@ -17,21 +26,11 @@ import kornell.gui.client.KornellConstants;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.AdminPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPerThreadFetchedEventHandler{
 	private MessageView view;
@@ -139,9 +138,9 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				UnreadChatThreadTO newUnreadChatThreadTO = toFactory.newUnreadChatThreadTO().as();
 				newUnreadChatThreadTO.setThreadType(ChatThreadType.TUTORING);
 				newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
-				if(Dean.getInstance().getCourseClassTO() != null){
-					newUnreadChatThreadTO.setEntityUUID(Dean.getInstance().getCourseClassTO().getCourseClass().getUUID());
-					newUnreadChatThreadTO.setEntityName(Dean.getInstance().getCourseClassTO().getCourseClass().getName());
+				if(session.getCurrentCourseClass() != null){
+					newUnreadChatThreadTO.setEntityUUID(session.getCurrentCourseClass().getCourseClass().getUUID());
+					newUnreadChatThreadTO.setEntityName(session.getCurrentCourseClass().getCourseClass().getName());
 				}
 				newUnreadChatThreadTO.setUnreadMessages("0");
 				newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
@@ -185,9 +184,9 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		if(((placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof AdminCourseClassPlace && MessagePanelType.courseClassSupport.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof ClassroomPlace && 
-						Dean.getInstance().getCourseClassTO() != null  && 
-						( (MessagePanelType.courseClassGlobal.equals(messagePanelType) && Dean.getInstance().getCourseClassTO().getCourseClass().isCourseClassChatEnabled()) ||
-						  (MessagePanelType.courseClassTutor.equals(messagePanelType) && Dean.getInstance().getCourseClassTO().getCourseClass().isTutorChatEnabled())
+						session.getCurrentCourseClass() != null  && 
+						( (MessagePanelType.courseClassGlobal.equals(messagePanelType) && session.getCurrentCourseClass().getCourseClass().isCourseClassChatEnabled()) ||
+						  (MessagePanelType.courseClassTutor.equals(messagePanelType) && session.getCurrentCourseClass().getCourseClass().isTutorChatEnabled())
 						)
 				) && selectedChatThreadInfo != null && updateMessages)){
 			if(selectedChatThreadInfo != null && selectedChatThreadInfo.getChatThreadUUID() != null){
@@ -197,9 +196,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					@Override
 					public void ok(ChatThreadMessagesTO to) {
 						if(selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
-							synchronized (chatThreadMessageTOs) {
-								chatThreadMessageTOs.addAll(0, to.getChatThreadMessageTOs());
-							}
+							chatThreadMessageTOs.addAll(0, to.getChatThreadMessageTOs());
 							view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), false);
 						}
 						LoadingPopup.hide();
@@ -223,9 +220,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 						view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), true);
 						view.setPlaceholder(messagePanelType.equals(MessagePanelType.courseClassTutor) ? constants.tutorPlaceholderMessage() : "");
 					} else if(selectedChatThreadInfo != null && selectedChatThreadInfo.getChatThreadUUID().equals(chatThreadUUID)){
-						synchronized (chatThreadMessageTOs) {
-							chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
-						}
+						chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
 						view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), true);
 					}
 					if(scrollToBottomAfterFetchingMessages){
@@ -254,17 +249,15 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			session.chatThreads().postMessageToChatThread(message, selectedChatThreadInfo.getChatThreadUUID(), lastFetchedMessageSentAt(), new Callback<ChatThreadMessagesTO>() {
 				@Override
 				public void ok(ChatThreadMessagesTO to) {
-					synchronized (chatThreadMessageTOs) {
-						chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
-					}
+					chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
 					view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), false);
 					view.scrollToBottom();
 					LoadingPopup.hide();
 				}
 			});
-		} else if(MessagePanelType.courseClassTutor.equals(messagePanelType) && Dean.getInstance().getCourseClassTO() != null){
+		} else if(MessagePanelType.courseClassTutor.equals(messagePanelType) && session.getCurrentCourseClass() != null){
 			LoadingPopup.show();
-			session.chatThreads().postMessageToTutoringCourseClassThread(message, Dean.getInstance().getCourseClassTO().getCourseClass().getUUID(), new Callback<String>() {
+			session.chatThreads().postMessageToTutoringCourseClassThread(message, session.getCurrentCourseClass().getCourseClass().getUUID(), new Callback<String>() {
 				@Override
 				public void ok(String uuid) {
 					selectedChatThreadInfo.setChatThreadUUID(uuid);
@@ -276,8 +269,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	}
 	
 	private boolean isCourseClassThread(String courseClassUUID) {
-		return Dean.getInstance().getCourseClassTO() != null
-				&& Dean.getInstance().getCourseClassTO().getCourseClass().getUUID().equals(courseClassUUID);
+		return session.getCurrentCourseClass() != null
+				&& session.getCurrentCourseClass().getCourseClass().getUUID().equals(courseClassUUID);
 	}
 
 	private boolean showOnCourseClassSupport(UnreadChatThreadTO unreadChatThreadTO) {
@@ -318,17 +311,13 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 
 	private Date lastFetchedMessageSentAt() {
 		Date date;
-		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : null;
-		}
+		date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(0).getSentAt() : null;
 		return date;
 	}
 
 	private Date firstFetchedMessageSentAt() {
 		Date date;
-		synchronized (chatThreadMessageTOs) {
-			date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : null;
-		}
+		date = chatThreadMessageTOs.size() > 0 ? chatThreadMessageTOs.get(chatThreadMessageTOs.size() - 1).getSentAt()  : null;
 		return date;
 	}
 	

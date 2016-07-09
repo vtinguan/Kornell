@@ -2,6 +2,10 @@ package kornell.gui.client.presentation.admin.audit;
 
 import java.util.logging.Logger;
 
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.Widget;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.to.EntityChangedEventsTO;
@@ -10,10 +14,6 @@ import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.LoadingPopup;
-
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.Widget;
 
 public class AdminAuditPresenter implements AdminAuditView.Presenter {
 	Logger logger = Logger.getLogger(AdminAuditPresenter.class.getName());

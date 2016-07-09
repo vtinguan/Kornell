@@ -2,6 +2,12 @@ package kornell.gui.client.presentation.admin.institution;
 
 import java.util.logging.Logger;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Widget;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
@@ -9,15 +15,9 @@ import kornell.core.error.KornellErrorTO;
 import kornell.core.to.TOFactory;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.Widget;
 
 public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter {
 	Logger logger = Logger.getLogger(AdminInstitutionPresenter.class.getName());
@@ -69,7 +69,7 @@ public class AdminInstitutionPresenter implements AdminInstitutionView.Presenter
 				public void ok(Institution institution) {
 						LoadingPopup.hide();
 						KornellNotification.show("Alterações salvas com sucesso!");
-						Dean.getInstance().setInstitution(institution);
+						Window.Location.reload();
 				}		
 				
 				@Override

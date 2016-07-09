@@ -73,7 +73,7 @@ class EnrollmentRepo(uuid: String) {
   }
 
   def updateKNLProgress(e: Enrollment) = {
-    val contents = ContentRepository.findKNLVisitedContent(e)
+    val contents = ContentRepository.findKNLVisitedContent(e, PersonRepo(e.getPersonUUID).get)
     val actoms = ContentsOps.collectActoms(contents).asScala
     val visited = actoms.filter(_.isVisited).size
     val newProgress = visited / actoms.size.toDouble
@@ -134,15 +134,17 @@ class EnrollmentRepo(uuid: String) {
 
   def setEnrollmentProgress(e: Enrollment, newProgress: Int) = {
     val currentProgress = e.getProgress
-    val isProgress = newProgress > currentProgress
-    val isValid = newProgress >= 0 && newProgress <= 100
-    if (isValid && isProgress) {
-      e.setProgress(newProgress)
-      update(e)
-      checkCompletion(e);
-    } else {
-      logger.warning(s"Invalid progress [${currentProgress} to ${newProgress}] on enrollment [${e.getUUID}]")
-    }
+    val isProgress = newProgress > currentProgress    
+    if (isProgress) {
+      val isValid = newProgress >= 0 && newProgress <= 100
+      if (isValid){
+        e.setProgress(newProgress)
+        update(e)
+        checkCompletion(e);
+      }else {
+        logger.warning(s"Invalid progress [${currentProgress} to ${newProgress}] on enrollment [${e.getUUID}]")
+      }
+    } 
   }
 
   //TODO: WRONG ASSUMPTION: Courses can have multiple assessments, should be across all grades

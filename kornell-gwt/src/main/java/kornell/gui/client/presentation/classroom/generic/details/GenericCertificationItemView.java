@@ -5,6 +5,21 @@ import static kornell.core.util.StringUtils.noneEmpty;
 
 import java.math.BigDecimal;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Assessment;
@@ -21,24 +36,8 @@ import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.view.KornellNotification;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericCertificationItemView extends Composite implements ProgressEventHandler, ShowDetailsEventHandler{
 	interface MyUiBinder extends UiBinder<Widget, GenericCertificationItemView> {
@@ -154,7 +153,7 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 
 	private void updateCertificationLinkAndLabel(){
-		currentCourseClass = Dean.getInstance().getCourseClassTO();
+		currentCourseClass = session.getCurrentCourseClass();
 		if(currentCourseClass == null) return;
 		CourseClass courseClass = currentCourseClass.getCourseClass();
 		Enrollment currEnrollment = currentCourseClass.getEnrollment();
@@ -196,17 +195,18 @@ public class GenericCertificationItemView extends Composite implements ProgressE
 	}
 	
 	private void checkCertificateAvailability() {
-		if(!allowCertificateGeneration && Dean.getInstance().getCourseClassTO() != null && Dean.getInstance().getCourseClassTO().getEnrollment() != null){
+		if(!allowCertificateGeneration && session.getCurrentCourseClass() != null && session.getCurrentCourseClass().getEnrollment() != null){
 			Timer checkTimer = new Timer() {
 				@Override
 				public void run() {
-					if(Dean.getInstance().getCourseClassTO() != null){
-					    session.enrollment(Dean.getInstance().getCourseClassTO().getEnrollment().getUUID())
+					if(session.getCurrentCourseClass() != null){
+					    session.enrollment(session.getCurrentCourseClass().getEnrollment().getUUID())
 					    .isApproved(new Callback<String>() {
 					    	@Override
 					    	public void ok(String grade) {
 					    		if(StringUtils.isSome(grade)){
-						    		currentCourseClass.getEnrollment().setAssessmentScore(new BigDecimal(grade));	
+					    			currentCourseClass = session.getCurrentCourseClass();
+					    			session.getCurrentCourseClass().getEnrollment().setAssessmentScore(new BigDecimal(grade));	
 					    		}
 					    		updateCertificationLinkAndLabel();
 					    	}

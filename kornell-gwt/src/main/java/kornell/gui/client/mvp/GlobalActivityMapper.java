@@ -1,5 +1,10 @@
 package kornell.gui.client.mvp;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
+
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.presentation.admin.audit.AdminAuditActivity;
 import kornell.gui.client.presentation.admin.audit.AdminAuditPlace;
@@ -35,11 +40,6 @@ import kornell.gui.client.presentation.vitrine.VitrineActivity;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomeActivity;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Window;
 
 
 

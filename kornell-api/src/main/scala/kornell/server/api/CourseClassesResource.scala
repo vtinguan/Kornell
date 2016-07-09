@@ -20,9 +20,23 @@ import kornell.server.repository.Entities
 import javax.ws.rs.POST
 import kornell.core.entity.RegistrationType
 import kornell.server.util.AccessDeniedErr
+import kornell.core.to.CourseClassTO
+import kornell.server.jdbc.repository.CourseClassRepo
 
 @Path("courseClasses")
 class CourseClassesResource {
+   
+  @Path("{uuid}")
+  def get(@PathParam("uuid") uuid: String) = CourseClassResource(uuid)
+
+  @GET
+  @Produces(Array(CourseClassesTO.TYPE))
+  def getClasses(implicit @Context sc: SecurityContext) =
+    AuthRepo().withPerson { person =>
+      {
+          CourseClassesRepo.byPersonAndInstitution(person.getUUID, person.getInstitutionUUID)
+      }
+    }
   
   @POST
   @Consumes(Array(CourseClass.TYPE))
@@ -32,17 +46,14 @@ class CourseClassesResource {
   }.requiring(isPlatformAdmin(courseClass.getInstitutionUUID), AccessDeniedErr()) 
    .or(isInstitutionAdmin(courseClass.getInstitutionUUID), AccessDeniedErr())
    .get
-   
-  @Path("{uuid}")
-  def get(@PathParam("uuid") uuid: String):CourseClassResource = CourseClassResource(uuid)
-
+  
   @GET
-  @Produces(Array(CourseClassesTO.TYPE))
-  def getClasses(implicit @Context sc: SecurityContext) =
-    AuthRepo().withPerson { person =>
-      {
-          CourseClassesRepo.byPersonAndInstitution(person.getUUID, person.getInstitutionUUID)
-      }
+  @Path("enrollment/{enrollmentUUID}")
+  @Produces(Array(CourseClassTO.TYPE))
+  def getByEnrollment(implicit @Context sc: SecurityContext, @PathParam("enrollmentUUID") enrollmentUUID: String) =
+    AuthRepo().withPerson { person => {
+    		CourseClassesRepo.byEnrollment(enrollmentUUID, person.getUUID, person.getInstitutionUUID);
+    	}
     }
 
   @GET

@@ -8,24 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.AuditedEntityType;
-import kornell.core.event.EntityChanged;
-import kornell.core.to.EntityChangedEventsTO;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.presentation.admin.audit.AdminAuditPresenter;
-import kornell.gui.client.presentation.admin.audit.AdminAuditView;
-import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
-import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
-import kornell.gui.client.presentation.profile.ProfilePlace;
-import kornell.gui.client.util.ClientConstants;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.view.KornellPagination;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -66,6 +48,24 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.entity.AuditedEntityType;
+import kornell.core.event.EntityChanged;
+import kornell.core.to.EntityChangedEventsTO;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.presentation.admin.audit.AdminAuditPresenter;
+import kornell.gui.client.presentation.admin.audit.AdminAuditView;
+import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
+import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.view.KornellPagination;
 
 public class GenericAdminAuditView extends Composite implements AdminAuditView {
 

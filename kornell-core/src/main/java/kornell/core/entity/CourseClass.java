@@ -56,4 +56,7 @@ public interface CourseClass extends Named{
 	
 	Boolean isApproveEnrollmentsAutomatically();
 	void setApproveEnrollmentsAutomatically(Boolean approveEnrollmentsAutomatically);
+	
+	Date getStartDate();
+	void setStartDate(Date startDate);
 }

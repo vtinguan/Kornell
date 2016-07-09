@@ -1,10 +1,5 @@
 package kornell.gui.client.presentation.admin.institution.generic;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Institution;
-import kornell.gui.client.personnel.Dean;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -14,6 +9,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.entity.EntityFactory;
+import kornell.core.entity.Institution;
 
 public class GenericInstitutionReportsView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericInstitutionReportsView> {
@@ -72,7 +71,7 @@ public class GenericInstitutionReportsView extends Composite {
 	private FlowPanel getReportTableContent() {
 		FlowPanel reportContentPanel = new FlowPanel();
 		reportContentPanel.addStyleName("reportContentPanel");
-		if(Dean.getInstance().getInstitution().getActivatedAt() != null)
+		if(session.getInstitution().getActivatedAt() != null)
 			reportContentPanel.add(new GenericInstitutionReportItemView(bus, session, GenericInstitutionReportItemView.BILLING)); 
 
 		return reportContentPanel;

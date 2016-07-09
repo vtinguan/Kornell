@@ -2,23 +2,23 @@ package kornell.gui.client.presentation.admin.course.course;
 
 import java.util.logging.Logger;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
-import kornell.core.entity.EntityFactory;
 import kornell.core.error.KornellErrorTO;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstantsHelper;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.mvp.PlaceUtils;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class AdminCoursePresenter implements AdminCourseView.Presenter {
 	Logger logger = Logger.getLogger(AdminCoursePresenter.class.getName());
@@ -27,17 +27,14 @@ public class AdminCoursePresenter implements AdminCourseView.Presenter {
 	private PlaceController placeController;
 	private EventBus bus;
 	Place defaultPlace;
-	EntityFactory entityFactory;
 	private ViewFactory viewFactory;
 
 	public AdminCoursePresenter(KornellSession session,
-			PlaceController placeController, EventBus bus, Place defaultPlace,
-			EntityFactory entityFactory, ViewFactory viewFactory) {
+			PlaceController placeController, EventBus bus, Place defaultPlace, ViewFactory viewFactory) {
 		this.session = session;
 		this.placeController = placeController;
 		this.bus = bus;
 		this.defaultPlace = defaultPlace;
-		this.entityFactory = entityFactory;
 		this.viewFactory = viewFactory;
 
 		init();
@@ -57,7 +54,7 @@ public class AdminCoursePresenter implements AdminCourseView.Presenter {
 	
 	@Override
 	public Course getNewCourse() {
-		return entityFactory.newCourse().as();
+		return GenericClientFactoryImpl.ENTITY_FACTORY.newCourse().as();
 	}
 
 	

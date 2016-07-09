@@ -5,35 +5,6 @@ import static kornell.core.util.StringUtils.mkurl;
 import java.util.List;
 import java.util.logging.Logger;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.Institution;
-import kornell.core.to.UnreadChatThreadTO;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.ClientFactory;
-import kornell.gui.client.event.ComposeMessageEvent;
-import kornell.gui.client.event.CourseClassesFetchedEvent;
-import kornell.gui.client.event.CourseClassesFetchedEventHandler;
-import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
-import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
-import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
-import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
-import kornell.gui.client.mvp.PlaceUtils;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.AdminPlace;
-import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
-import kornell.gui.client.presentation.bar.MenuBarView;
-import kornell.gui.client.presentation.classroom.ClassroomPlace;
-import kornell.gui.client.presentation.message.MessagePlace;
-import kornell.gui.client.presentation.profile.ProfilePlace;
-import kornell.gui.client.presentation.terms.TermsPlace;
-import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.util.ClientConstants;
-import kornell.gui.client.util.easing.Ease;
-import kornell.gui.client.util.easing.Transitions;
-import kornell.gui.client.util.easing.Updater;
-import kornell.gui.client.util.view.Positioning;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
@@ -54,6 +25,35 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
+import kornell.core.to.UnreadChatThreadTO;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.ClientFactory;
+import kornell.gui.client.event.ComposeMessageEvent;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
+import kornell.gui.client.event.CourseClassesFetchedEventHandler;
+import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
+import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
+import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
+import kornell.gui.client.mvp.PlaceUtils;
+import kornell.gui.client.presentation.admin.AdminPlace;
+import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
+import kornell.gui.client.presentation.bar.MenuBarView;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
+import kornell.gui.client.presentation.message.MessagePlace;
+import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.terms.TermsPlace;
+import kornell.gui.client.presentation.vitrine.VitrinePlace;
+import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.easing.Ease;
+import kornell.gui.client.util.easing.Transitions;
+import kornell.gui.client.util.easing.Updater;
+import kornell.gui.client.util.view.Positioning;
 
 public class GenericMenuBarView extends Composite implements MenuBarView,
 		UnreadMessagesPerThreadFetchedEventHandler,
@@ -106,23 +106,23 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private String imgMenuBarUrl;
 	private boolean isLoaded;
 	private boolean showingPlacePanel;
+	private CourseClassesTO courseClassesTO;
 
 	public GenericMenuBarView(final ClientFactory clientFactory,
-			final ScrollPanel scrollPanel) {
+			final ScrollPanel scrollPanel, CourseClassesTO courseClassesTO) {
 		this.clientFactory = clientFactory;
 		this.session = clientFactory.getKornellSession();
 		this.bus = clientFactory.getEventBus();
+		this.courseClassesTO = courseClassesTO;
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 		bus.addHandler(CourseClassesFetchedEvent.TYPE, this);
 		initWidget(uiBinder.createAndBindUi(this));
 		display();
-		Dean localDean = Dean.getInstance();
 		// TODO: Consider anonynous
-		if (localDean != null) {
-			Institution localInstitution = localDean.getInstitution();
-			String assetsURL = localInstitution.getAssetsURL();
-			String skin = Dean.getInstance().getInstitution().getSkin();
+		if (session != null) {
+			String assetsURL = session.getAssetsURL();
+			String skin = session.getInstitution().getSkin();
 			String barLogoFileName = "logo300x45"
 					+ (!"_light".equals(skin) ? "_light" : "") + ".png";
 			imgMenuBarUrl = StringUtils.mkurl(assetsURL, barLogoFileName);
@@ -212,8 +212,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private void showButtons(Place newPlace) {
 		boolean isRegistrationCompleted = !(newPlace instanceof TermsPlace || ((newPlace instanceof ProfilePlace || newPlace instanceof MessagePlace) && isProfileIncomplete()));
 
-		boolean showHelp = (Dean.getInstance().getHelpCourseClasses().size() > 0)
-				&& !(newPlace instanceof TermsPlace);
+		boolean showHelp = hasHelpCourseClasses() && !(newPlace instanceof TermsPlace);
 
 		showButton(btnHelp, showHelp);
 		showButton(btnMessages, showHelp);
@@ -221,10 +220,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 		showButton(btnHome, isRegistrationCompleted);
 		showButton(btnFullScreen, isRegistrationCompleted);
-		showButton(
-				btnAdmin,
-				isRegistrationCompleted
-						&& clientFactory.getKornellSession().hasAnyAdminRole(clientFactory.getKornellSession().getCurrentUser().getRoles()));
+		showButton(btnAdmin, isRegistrationCompleted && clientFactory.getKornellSession().hasAnyAdminRole());
 		showButton(btnNotifications, false);
 		showButton(btnMenu, false);
 		showButton(btnExit, true);
@@ -234,6 +230,17 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		} else {
 			menuBar.removeStyleName("menuBarPlus");
 		}
+	}
+
+	private boolean hasHelpCourseClasses() {
+		if(courseClassesTO != null){
+			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
+				if (courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void showButton(Button btn, boolean show) {
@@ -269,9 +276,9 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		return (session.getCurrentUser().getInstitutionRegistrationPrefix() == null || session
 				.getCurrentUser().getInstitutionRegistrationPrefix()
 				.isShowContactInformationOnProfile())
-				&& Dean.getInstance().getInstitution()
+				&& session.getInstitution()
 						.isDemandsPersonContactDetails()
-				&& Dean.getInstance().getInstitution()
+				&& session.getInstitution()
 						.isValidatePersonContactDetails()
 				&& StringUtils.isNone(clientFactory.getKornellSession()
 						.getCurrentUser().getPerson().getCity());
@@ -349,6 +356,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		messagesCount.addStyleName("count");
 		messagesCount.addStyleName("countMessages");
 		btnMessages.add(messagesCount);
+		showButtons(clientFactory.getPlaceController().getWhere());
 	}
 
 	@Override
@@ -377,6 +385,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	@Override
 	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+		this.courseClassesTO = event.getCourseClassesTO();		
 		showButtons(clientFactory.getPlaceController().getWhere());
 	}
 	

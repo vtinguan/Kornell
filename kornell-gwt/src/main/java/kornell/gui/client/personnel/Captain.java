@@ -2,10 +2,18 @@ package kornell.gui.client.personnel;
 
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceChangeRequestEvent;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ContentSpec;
+import kornell.core.entity.CourseClassState;
+import kornell.core.entity.EnrollmentState;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.UserInfoTO;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.LoginEvent;
 import kornell.gui.client.event.LoginEventHandler;
@@ -13,20 +21,7 @@ import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
-import kornell.gui.client.util.ClientProperties;
-import kornell.gui.client.util.view.KornellNotification;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.PlaceChangeRequestEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
-import com.google.web.bindery.event.shared.EventBus;
-
-/**
- * Manages navigation
- * 
- * @author faermanj
- */
 public class Captain implements LogoutEventHandler, LoginEventHandler {
 	Logger logger = Logger.getLogger(Captain.class.getName());
 	private PlaceController placeCtrl;
@@ -34,7 +29,7 @@ public class Captain implements LogoutEventHandler, LoginEventHandler {
 	
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
-	public Captain(EventBus bus, KornellSession session, final PlaceController placeCtrl) {
+	public Captain(EventBus bus, final KornellSession session, final PlaceController placeCtrl) {
 		this.placeCtrl = placeCtrl;
 		this.session = session;
 		bus.addHandler(LogoutEvent.TYPE, this);
@@ -51,12 +46,15 @@ public class Captain implements LogoutEventHandler, LoginEventHandler {
 						// if the courseClassTO is null, it's a Dashboard institution on a child course (enrollment is attached on the version)
 						// if the user hasn't passed the class and the type of the
 						// version isn't KNL (small htmls, user won't lose progress)
-						if (Dean.getInstance().getCourseClassTO() == null 
-								|| (Dean.getInstance().getCourseClassTO().getCourseClass() != null
-									&& ContentSpec.SCORM12.equals(Dean.getInstance().getCourseClassTO().getCourseVersionTO()
+						CourseClassTO courseClassTO = session.getCurrentCourseClass();
+						if (courseClassTO == null 
+								|| (courseClassTO.getCourseClass() != null
+									&& ContentSpec.SCORM12.equals(courseClassTO.getCourseVersionTO()
 											.getCourseVersion().getContentSpec())
-									&& Dean.getInstance().getCourseClassTO().getEnrollment() != null
-									&& Dean.getInstance().getCourseClassTO().getEnrollment().getCertifiedAt() == null
+									&& courseClassTO.getEnrollment() != null
+									&& courseClassTO.getEnrollment().getCertifiedAt() == null
+									&& CourseClassState.active.equals(courseClassTO.getCourseClass().getState())
+									&& EnrollmentState.enrolled.equals(courseClassTO.getEnrollment().getState())
 									)
 						) {
 							event.setWarning(constants.leavingTheClassroom());	

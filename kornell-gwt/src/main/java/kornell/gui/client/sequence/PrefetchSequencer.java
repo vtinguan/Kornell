@@ -2,20 +2,18 @@ package kornell.gui.client.sequence;
 
 import java.util.logging.Logger;
 
-import kornell.api.client.Callback;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.KornellSession;
 import kornell.core.lom.Actom;
 import kornell.core.lom.Contents;
 import kornell.core.lom.ContentsOps;
-import kornell.core.to.UserInfoTO;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ViewReadyEvent;
 import kornell.gui.client.event.ViewReadyEventHandler;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.uidget.Uidget;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class PrefetchSequencer extends SimpleSequencer implements Sequencer {
 	Logger logger = Logger.getLogger(PrefetchSequencer.class.getName());
@@ -180,12 +178,7 @@ public class PrefetchSequencer extends SimpleSequencer implements Sequencer {
 	}
 
 	private void orientateAndSail() {
-		session.getCurrentUser(new Callback<UserInfoTO>() {
-			@Override
-			public void ok(UserInfoTO userInfo) {
-				orientateAndSail(session.getItem(getBreadcrumbKey()));
-			}
-		});
+		orientateAndSail(session.getItem(getBreadcrumbKey()));
 	}
 
 	private void orientateAndSail(String key) {

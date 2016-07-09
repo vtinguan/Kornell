@@ -28,7 +28,9 @@ class CoursesResource {
 	  AuthRepo().withPerson { person => {
 	    	 CoursesRepo.byInstitution(fetchChildCourses == "true", person.getInstitutionUUID, searchTerm, pageSize, pageNumber)
 	  }
-  }
+  }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .get
   
   @POST
   @Produces(Array(Course.TYPE))

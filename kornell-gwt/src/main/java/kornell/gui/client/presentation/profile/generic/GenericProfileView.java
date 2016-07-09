@@ -6,35 +6,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.InstitutionRegistrationPrefix;
-import kornell.core.entity.Person;
-import kornell.core.entity.RegistrationType;
-import kornell.core.entity.RoleCategory;
-import kornell.core.entity.RoleType;
-import kornell.core.error.KornellErrorTO;
-import kornell.core.to.UserInfoTO;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.ClientFactory;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.event.LogoutEvent;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.profile.ProfilePlace;
-import kornell.gui.client.presentation.profile.ProfileView;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.forms.formfield.ListBoxFormField;
-import kornell.gui.client.util.forms.formfield.SimpleDatePicker;
-import kornell.gui.client.util.forms.formfield.SimpleDatePickerFormField;
-import kornell.gui.client.util.forms.formfield.TextBoxFormField;
-import kornell.gui.client.util.validation.CPFValidator;
-import kornell.gui.client.util.validation.EmailValidator;
-import kornell.gui.client.util.validation.ValidationChangedHandler;
-import kornell.gui.client.util.view.KornellNotification;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -64,6 +35,37 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.InstitutionRegistrationPrefix;
+import kornell.core.entity.InstitutionType;
+import kornell.core.entity.Person;
+import kornell.core.entity.RegistrationType;
+import kornell.core.entity.RoleCategory;
+import kornell.core.entity.RoleType;
+import kornell.core.error.KornellErrorTO;
+import kornell.core.to.UserHelloTO;
+import kornell.core.to.UserInfoTO;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.event.LogoutEvent;
+import kornell.gui.client.presentation.profile.ProfilePlace;
+import kornell.gui.client.presentation.profile.ProfileView;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.forms.formfield.ListBoxFormField;
+import kornell.gui.client.util.forms.formfield.SimpleDatePicker;
+import kornell.gui.client.util.forms.formfield.SimpleDatePickerFormField;
+import kornell.gui.client.util.forms.formfield.TextBoxFormField;
+import kornell.gui.client.util.validation.CPFValidator;
+import kornell.gui.client.util.validation.EmailValidator;
+import kornell.gui.client.util.validation.ValidationChangedHandler;
+import kornell.gui.client.util.view.KornellNotification;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericProfileView extends Composite implements ProfileView,ValidationChangedHandler {
 	
@@ -291,17 +293,19 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 					btnOK2.setEnabled(true);
 					isEditMode = false;
 					display();
-					if(isCurrentUser){
-						placeCtrl.goTo(clientFactory.getDefaultPlace());
-					} else {
-						History.back();
-					}
-					session.getCurrentUser(true, new Callback<UserInfoTO>() {
+					session.fetchUser(new Callback<UserHelloTO>() {
 						@Override
-						public void ok(UserInfoTO to) {
-							user = to;
+						public void ok(UserHelloTO to) {
+							user = to.getUserInfoTO();
 						}
 					});
+					if(!InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
+						if(isCurrentUser){
+							placeCtrl.goTo(clientFactory.getDefaultPlace());
+						} else {
+							History.back();
+						}
+					}
 				}
 				@Override
 				public void unauthorized(KornellErrorTO kornellErrorTO){
@@ -315,7 +319,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 	private UserInfoTO getUserInfoFromForm() {
 		//"clone" user
 		String userPayload = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(user)).getPayload();
-		UserInfoTO userTmp = AutoBeanCodex.decode(clientFactory.getTOFactory(), kornell.core.to.UserInfoTO.class, userPayload).as();
+		UserInfoTO userTmp = AutoBeanCodex.decode(GenericClientFactoryImpl.TO_FACTORY, kornell.core.to.UserInfoTO.class, userPayload).as();
 		Person person = userTmp.getPerson();
 		
 		if(showCPF){
@@ -390,8 +394,8 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 
 	private void display() {
 
-		showContactDetails = Dean.getInstance().getInstitution().isDemandsPersonContactDetails();
-		validateContactDetails = Dean.getInstance().getInstitution().isValidatePersonContactDetails() && isCurrentUser;
+		showContactDetails = session.getInstitution().isDemandsPersonContactDetails();
+		validateContactDetails = session.getInstitution().isValidatePersonContactDetails() && isCurrentUser;
 
 		form.addStyleName("shy");
 

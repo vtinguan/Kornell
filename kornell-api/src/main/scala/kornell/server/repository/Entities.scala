@@ -27,6 +27,7 @@ import kornell.core.util.StringUtils
 import kornell.core.util.UUID
 import kornell.server.util.DateConverter
 import kornell.server.authentication.ThreadLocalAuthenticator
+import kornell.server.jdbc.repository.CourseRepo
 
 
 //TODO: Remove this class without spreading dependency on AutoBeanFactorySource
@@ -171,7 +172,7 @@ object Entities {
   }
 
   //FTW: Default parameter values
-  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, assetsURL: String, baseURL: String, 
+  def newInstitution(uuid: String = randUUID, name: String, fullName: String, terms: String, baseURL: String, 
       demandsPersonContactDetails: Boolean, validatePersonContactDetails: Boolean, allowRegistration: Boolean, allowRegistrationByUsername: Boolean, 
       activatedAt: Date, skin: String, billingType: BillingType, institutionType: InstitutionType, dashboardVersionUUID: String, internationalized: Boolean, 
       useEmailWhitelist: Boolean = false,assetsRepositoryUUID:String=null, timeZone: String) = {
@@ -181,7 +182,6 @@ object Entities {
     i.setUUID(uuid)
     if (terms != null)
       i.setTerms(terms.stripMargin)
-    i.setAssetsURL(StringUtils.mkurl("/repository",assetsRepositoryUUID));
     i.setAssetsRepositoryUUID(assetsRepositoryUUID);
     i.setBaseURL(baseURL)
     i.setDemandsPersonContactDetails(demandsPersonContactDetails)
@@ -267,17 +267,19 @@ object Entities {
 
   def newCourseVersion(
     uuid: String = randUUID, name: String = null, 
-    courseUUID: String = null, repositoryUUID: String = null, 
-    versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
+    courseUUID: String = null, versionCreatedAt: Date = new Date, distributionPrefix: String = null, 
     contentSpec: String = null, disabled: Boolean = false, parentVersionUUID: String = null,
     instanceCount: Integer = 1, label: String = null) = {
-    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.getOrElse(""))
+    val versionCreatedAtConverted = {
+      if(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.isDefined) dateConverter.dateToInstitutionTimezone(versionCreatedAt)
+      else dateConverter.dateToInstitutionTimezone(versionCreatedAt, CourseRepo(courseUUID).get.getInstitutionUUID)
+    }
     val version = factory.newCourseVersion.as
     version.setUUID(uuid);
     version.setName(name);
     version.setCourseUUID(courseUUID);
-    version.setRepositoryUUID(repositoryUUID);
-    version.setVersionCreatedAt(dateConverter.dateToInstitutionTimezone(versionCreatedAt))
+    version.setVersionCreatedAt(versionCreatedAtConverted)
     version.setDistributionPrefix(distributionPrefix)
     version.setDisabled(disabled)
     version.setParentVersionUUID(parentVersionUUID)
@@ -303,8 +305,13 @@ object Entities {
     chatDockEnabled: Boolean = false,
     allowBatchCancellation: Boolean = false,
     tutorChatEnabled: Boolean = false,
-    approveEnrollmentsAutomatically: Boolean = false) = {
-    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.get)
+    approveEnrollmentsAutomatically: Boolean = false,
+    startDate:Date = null) = {
+    val dateConverter = new DateConverter(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.getOrElse(""))
+    val createdAtConverted = {
+      if(ThreadLocalAuthenticator.getAuthenticatedPersonUUID.isDefined) dateConverter.dateToInstitutionTimezone(createdAt)
+      else dateConverter.dateToInstitutionTimezone(createdAt, institutionUUID)
+    }
     val clazz = factory.newCourseClass.as
     clazz.setUUID(uuid)
     clazz.setName(name)
@@ -315,7 +322,7 @@ object Entities {
     clazz.setOverrideEnrollments(overrideEnrollments)
     clazz.setInvisible(invisible)
     clazz.setMaxEnrollments(maxEnrollments)
-    clazz.setCreatedAt(dateConverter.dateToInstitutionTimezone(createdAt))
+    clazz.setCreatedAt(createdAtConverted)
     clazz.setCreatedBy(createdBy)
     clazz.setState(state)
     clazz.setRegistrationType(registrationType)
@@ -323,8 +330,9 @@ object Entities {
     clazz.setCourseClassChatEnabled(courseClassChatEnabled)
     clazz.setChatDockEnabled(chatDockEnabled)
     clazz.setAllowBatchCancellation(allowBatchCancellation)
-	clazz.setTutorChatEnabled(tutorChatEnabled)
-	clazz.setApproveEnrollmentsAutomatically(approveEnrollmentsAutomatically)
+	  clazz.setTutorChatEnabled(tutorChatEnabled)
+	  clazz.setApproveEnrollmentsAutomatically(approveEnrollmentsAutomatically)
+	  clazz.setStartDate(startDate);
     clazz
   }
 

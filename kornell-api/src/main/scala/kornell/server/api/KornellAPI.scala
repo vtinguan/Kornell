@@ -49,7 +49,6 @@ class KornellAPI extends Application {
     classOf[ChatThreadsResource],
     classOf[ProbesResource],
     classOf[HealthCheckResource],
-    classOf[NewRelicResource],
     classOf[TokenResource],
     classOf[LoggerResource],
     classOf[ContentRepositoriesResource]

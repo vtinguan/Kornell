@@ -21,6 +21,12 @@ package object api {
   def isCourseClassAdmin(courseClassUUID:String):Boolean = 
     RoleCategory.isCourseClassAdmin(RolesRepo.getUserRoles(getAuthenticatedPersonUUID, RoleCategory.BIND_DEFAULT).getRoleTOs, courseClassUUID)
     
+  def isCourseClassTutor(courseClassUUID:String):Boolean = 
+    RoleCategory.isCourseClassTutor(RolesRepo.getUserRoles(getAuthenticatedPersonUUID, RoleCategory.BIND_DEFAULT).getRoleTOs, courseClassUUID)
+    
+  def isCourseClassObserver(courseClassUUID:String):Boolean = 
+    RoleCategory.isCourseClassObserver(RolesRepo.getUserRoles(getAuthenticatedPersonUUID, RoleCategory.BIND_DEFAULT).getRoleTOs, courseClassUUID)
+    
   def getAuthenticatedPersonUUID = ThreadLocalAuthenticator.getAuthenticatedPersonUUID.getOrElse(null)
   
  

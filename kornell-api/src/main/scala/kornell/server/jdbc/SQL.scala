@@ -5,8 +5,8 @@ import kornell.core.util.UUID
 import java.sql.ResultSet
 
 object SQL {
-  implicit def rsToString(rs:ResultSet):String = rs.getString(1)
-  implicit def rsToBoolean(rs:ResultSet):Boolean = rs.getBoolean(1)
+  implicit def rsToString(rs: ResultSet): String = rs.getString(1)
+  implicit def rsToBoolean(rs: ResultSet): Boolean = rs.getBoolean(1)
 
   type ConnectionFactory = () => Connection
 
@@ -24,4 +24,6 @@ object SQL {
   }
 
   def randomUUID = UUID.randomUUID()
+
 }
+

@@ -2,8 +2,6 @@ package kornell.api.client;
 
 import java.util.logging.Logger;
 
-import kornell.core.event.EventFactory;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -13,6 +11,8 @@ import com.google.gwt.http.client.Response;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+
+import kornell.core.event.EventFactory;
 
 public class ExceptionalRequestBuilder extends RequestBuilder {
 	static Logger logger = Logger.getLogger(ExceptionalRequestBuilder.class.getName());

@@ -2,15 +2,16 @@ package kornell.scorm.client.scorm12;
 
 import static kornell.core.util.StringUtils.isSome;
 import static kornell.scorm.client.scorm12.Scorm12.logger;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ActomEntries;
 import kornell.core.entity.ContentSpec;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
-
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Timer;
 
 public class SCORM12Adapter implements CMIConstants {
 
@@ -21,8 +22,12 @@ public class SCORM12Adapter implements CMIConstants {
 	private static final int DIRTY_TOLERANCE = 2000;
 
 	public static SCORM12Adapter create(SCORM12Runtime rte,
-			KornellSession session, PlaceController placeCtrl,
-			String enrollmentUUID, String actomKey, ActomEntries entries) {
+			KornellSession session,
+			PlaceController placeCtrl,
+			String enrollmentUUID, 
+			String actomKey, 
+			ActomEntries entries) {
+		
 		return new SCORM12Adapter(rte, session, placeCtrl, enrollmentUUID,
 				actomKey, entries);
 	}
@@ -102,8 +107,10 @@ public class SCORM12Adapter implements CMIConstants {
 		String result = FALSE;
 		String targetUUID = getEnrollmentUUID(moduleUUID);
 		CMITree dataModel = getDataModel(targetUUID,actomKey);
-		if(dataModel != null)
+		if(dataModel != null){
 			result = dataModel.setValue(key, value);
+			rte.onLMSSetValue(key,value);
+		}
 		else
 			logger.warning("Null data model for LMSSetValue [" + key + " = " + value+ "]@[" + targetUUID + "/"+actomKey+"] = " + result);
 		scheduleSync(targetUUID,actomKey);

@@ -1,6 +1,7 @@
 package kornell.api.client;
 
 import kornell.core.entity.CourseClass;
+import kornell.core.to.CourseClassTO;
 import kornell.core.to.CourseClassesTO;
 
 public class CourseClassesClient extends RESTClient {
@@ -12,6 +13,10 @@ public class CourseClassesClient extends RESTClient {
 	public void getCourseClassesTO(Callback<CourseClassesTO> cb) {
 		GET("/courseClasses").sendRequest(null, cb);
 	}
+	
+    public void getByEnrollment(String enrollmentUUID, Callback<CourseClassTO> callback) {
+        GET("courseClasses", "enrollment", enrollmentUUID).go(callback);
+    }
 
 	public void getAdministratedCourseClassesTO(Callback<CourseClassesTO> cb) {
 		getAdministratedCourseClassesTOByCourseVersionPaged("", ""+Integer.MAX_VALUE, "1", "", cb);

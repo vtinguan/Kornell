@@ -174,6 +174,10 @@ object ChatThreadsRepo {
 	  chatThread
   }
 
+  def isParticipant(chatThreadUUID: String, personUUID: String) = 
+    sql"""select count(*) as participantExists from ChatThreadParticipant where chatThreadUUID = ${chatThreadUUID} and personUUID = ${personUUID}"""
+    	.first[Integer] { rs => rs.getInt("participantExists") }.get >= 1
+  
   def createChatThreadMessage(chatThreadUUID: String, personUUID: String, message: String) = {
     sql"""
 		insert into ChatThreadMessage (uuid, chatThreadUUID, sentAt, personUUID, message)

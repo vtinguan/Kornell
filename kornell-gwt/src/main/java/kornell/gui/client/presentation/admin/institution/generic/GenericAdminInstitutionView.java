@@ -3,32 +3,13 @@ package kornell.gui.client.presentation.admin.institution.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.api.client.KornellSession;
-import kornell.core.entity.BillingType;
-import kornell.core.entity.EntityFactory;
-import kornell.core.entity.Institution;
-import kornell.core.entity.InstitutionType;
-import kornell.gui.client.ViewFactory;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
-import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
-import kornell.gui.client.util.forms.FormHelper;
-import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
-import kornell.gui.client.util.forms.formfield.ListBoxFormField;
-import kornell.gui.client.util.forms.formfield.TextBoxFormField;
-import kornell.gui.client.util.view.KornellNotification;
-import kornell.gui.client.util.view.LoadingPopup;
-
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -45,6 +26,19 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+
+import kornell.api.client.KornellSession;
+import kornell.core.entity.BillingType;
+import kornell.core.entity.EntityFactory;
+import kornell.core.entity.Institution;
+import kornell.core.entity.InstitutionType;
+import kornell.gui.client.ViewFactory;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
+import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
+import kornell.gui.client.util.forms.FormHelper;
+import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.forms.formfield.ListBoxFormField;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericAdminInstitutionView extends Composite implements AdminInstitutionView {
 
@@ -103,7 +97,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private Institution institution;
 
-	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsURL, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone;
+	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsRepositoryUUID, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private GenericInstitutionReportsView reportsView;
@@ -125,7 +119,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		
-		this.institution = Dean.getInstance().getInstitution();
+		this.institution = session.getInstitution();
 		
 		initData();
 
@@ -225,9 +219,9 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		fields.add(institutionType);
 		institutionFields.add(institutionType);
 		
-		assetsURL = new KornellFormFieldWrapper("URL dos Recursos", formHelper.createTextBoxFormField(institution.getAssetsURL()), isPlatformAdmin);
-		fields.add(assetsURL);
-		institutionFields.add(assetsURL);
+		assetsRepositoryUUID = new KornellFormFieldWrapper("UUID do repositório", formHelper.createTextBoxFormField(institution.getAssetsRepositoryUUID()), isPlatformAdmin);
+		fields.add(assetsRepositoryUUID);
+		institutionFields.add(assetsRepositoryUUID);
 		
 		baseURL = new KornellFormFieldWrapper("URL Base", formHelper.createTextBoxFormField(institution.getBaseURL()), isPlatformAdmin);
 		fields.add(baseURL);
@@ -325,8 +319,8 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		if (!formHelper.isLengthValid(fullName.getFieldPersistText(), 2, 50)) {
 			fullName.setError("Insira o nome da instituição.");
 		}
-		if (!formHelper.isLengthValid(assetsURL.getFieldPersistText(), 10, 200)) {
-			assetsURL.setError("Insira a URL dos recursos.");
+		if (!formHelper.isLengthValid(assetsRepositoryUUID.getFieldPersistText(), 10, 200)) {
+			assetsRepositoryUUID.setError("Insira o UUID do repositório.");
 		}
 		if (!formHelper.isLengthValid(baseURL.getFieldPersistText(), 10, 200)) {
 			baseURL.setError("Insira a URL base.");
@@ -353,7 +347,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setName(name.getFieldPersistText());
 		institution.setFullName(fullName.getFieldPersistText());
 		institution.setTerms(terms.getFieldPersistText());
-		institution.setAssetsURL(assetsURL.getFieldPersistText());
+		institution.setAssetsRepositoryUUID(assetsRepositoryUUID.getFieldPersistText());
 		institution.setBaseURL(baseURL.getFieldPersistText());
 		institution.setBillingType(BillingType.valueOf(billingType.getFieldPersistText()));
 		institution.setInstitutionType(InstitutionType.valueOf(institutionType.getFieldPersistText()));

@@ -5,6 +5,14 @@ import static kornell.core.util.StringUtils.mkurl;
 import java.util.Date;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.PasswordTextBox;
+import com.github.gwtbootstrap.client.ui.TextArea;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Image;
+
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.KornellMessages;
 import kornell.gui.client.util.ClientConstants;
@@ -13,14 +21,6 @@ import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.forms.formfield.PasswordTextBoxFormField;
 import kornell.gui.client.util.forms.formfield.TextAreaFormField;
 import kornell.gui.client.util.forms.formfield.TextBoxFormField;
-
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
-import com.github.gwtbootstrap.client.ui.TextArea;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Image;
 
 @SuppressWarnings("deprecation")
 public class FormHelper {

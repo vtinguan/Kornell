@@ -42,7 +42,12 @@ class CourseClassResource(uuid: String) {
   def getTO(implicit @Context sc: SecurityContext) =
     AuthRepo().withPerson { person =>
        	CourseClassesRepo.getCourseClassTO(person.getInstitutionUUID, uuid)
-    }
+    }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
+   .or(isCourseClassAdmin(uuid), AccessDeniedErr())
+   .or(isCourseClassTutor(uuid), AccessDeniedErr())
+   .or(isCourseClassObserver(uuid), AccessDeniedErr())
+   .get
 
 
   @PUT

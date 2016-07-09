@@ -10,5 +10,8 @@ public interface UserHelloTO {
 	
 	Institution getInstitution();
 	void setInstitution(Institution institution);
+	
+	CourseClassesTO getCourseClassesTO(); 
+	void setCourseClassesTO(CourseClassesTO courseClassesTO);
 	 
 }

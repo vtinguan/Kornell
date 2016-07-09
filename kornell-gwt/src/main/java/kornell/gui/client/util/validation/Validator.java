@@ -2,9 +2,9 @@ package kornell.gui.client.util.validation;
 
 import java.util.List;
 
-import kornell.api.client.Callback;
-
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.api.client.Callback;
 
 public interface Validator {
 

@@ -18,7 +18,7 @@ import kornell.core.error.exception.EntityConflictException
 class PreparedStmt(query: String, params: List[Any]) {
 
   def connected[T](fun: Connection => T): T = {
-    val conn = connectionFactory.get()
+    val conn = connectionFactory()
     try fun(conn)
     finally conn.close
   }

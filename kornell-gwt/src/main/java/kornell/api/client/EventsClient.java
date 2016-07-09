@@ -1,5 +1,7 @@
 package kornell.api.client;
 
+import com.google.gwt.core.client.GWT;
+
 import kornell.core.entity.CourseClassState;
 import kornell.core.entity.EnrollmentState;
 import kornell.core.event.ActomEntered;
@@ -11,8 +13,6 @@ import kornell.core.event.Event;
 import kornell.core.event.EventFactory;
 import kornell.core.to.EntityChangedEventsTO;
 import kornell.core.util.UUID;
-
-import com.google.gwt.core.client.GWT;
 
 public class EventsClient extends RESTClient {
 	// TODO: Move all object creation to client factory

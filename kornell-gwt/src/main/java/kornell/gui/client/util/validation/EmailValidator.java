@@ -3,15 +3,15 @@ package kornell.gui.client.util.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Widget;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.util.forms.FormHelper;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.Widget;
 
 public class EmailValidator implements Validator {
 	KornellConstants constants = GWT.create(KornellConstants.class);

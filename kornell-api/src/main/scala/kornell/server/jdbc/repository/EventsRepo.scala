@@ -96,7 +96,9 @@ object EventsRepo {
     if (EnrollmentState.enrolled.equals(toState) && sendEmail) {
       val enrollment = EnrollmentRepo(enrollmentUUID).get
       val person = PersonRepo(enrollment.getPersonUUID).get
-      if (person.getEmail != null && !"true".equals(Settings.get("TEST_MODE").orNull)) {
+      val testMode = Settings.TEST_MODE.getOpt.orNull
+      val notTestMode = !"true".equals(testMode)
+      if (person.getEmail != null && notTestMode) {
         if (enrollment.getCourseClassUUID != null) {
           val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
 		  val course = CoursesRepo.byCourseClassUUID(courseClass.getUUID).get
@@ -210,7 +212,7 @@ object EventsRepo {
 	    	.first[String].get.toInt
    })
    entityChangedEventsTO.setSearchCount(entityChangedEventsTO.getCount)
-   
+
    def getEntityName(entityChanged: EntityChanged): String = {
       entityChanged.getEntityType match {
 	      case AuditedEntityType.person | 
@@ -218,7 +220,7 @@ object EventsRepo {
 	      case AuditedEntityType.institution | 
 	      	AuditedEntityType.institutionAdmin | 
 	      	AuditedEntityType.institutionHostName | 
-	      	AuditedEntityType.institutionEmailWhitelist => InstitutionRepo(entityChanged.getEntityUUID).first.get.getName
+	      	AuditedEntityType.institutionEmailWhitelist => InstitutionsRepo.getByUUID(entityChanged.getEntityUUID).get.getName
 	      case AuditedEntityType.course => CourseRepo(entityChanged.getEntityUUID).first.get.getTitle
 	      case AuditedEntityType.courseVersion => CourseVersionRepo(entityChanged.getEntityUUID).first.get.getName
 	      case AuditedEntityType.courseClass | 

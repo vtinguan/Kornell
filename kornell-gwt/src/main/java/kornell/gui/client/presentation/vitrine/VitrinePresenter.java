@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.ui.Widget;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Institution;
@@ -12,14 +16,15 @@ import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.entity.RoleType;
 import kornell.core.error.KornellErrorTO;
-import kornell.core.to.CourseClassesTO;
 import kornell.core.to.RegistrationRequestTO;
+import kornell.core.to.UserHelloTO;
 import kornell.core.to.UserInfoTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
+import kornell.gui.client.GenericClientFactoryImpl;
 import kornell.gui.client.KornellConstantsHelper;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.LoginEvent;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPlace;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesPlace;
 import kornell.gui.client.presentation.profile.ProfilePlace;
@@ -27,10 +32,6 @@ import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.view.KornellNotification;
-
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.ui.Widget;
 
 public class VitrinePresenter implements VitrineView.Presenter {
 	Logger logger = Logger.getLogger(VitrinePresenter.class.getName());
@@ -58,13 +59,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				view.displayView(VitrineViewType.newPassword);
 			}
 		}
-
-		Dean localdean = Dean.getInstance();
-		if (localdean != null) {
-			String assetsURL = localdean.getInstitution().getAssetsURL();
-			view.setLogoURL(assetsURL);
-			view.showRegistrationOption(localdean.getInstitution().isAllowRegistration());
-		}
+		
+		String assetsURL = session.getAssetsURL();
+		view.setLogoURL(assetsURL);
+		view.showRegistrationOption(session.getInstitution().isAllowRegistration());
 	}
 
 	@Override
@@ -85,43 +83,10 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	private void doLogin() {
 		view.hideMessage();
 		
-		final Institution institution = Dean.getInstance().getInstitution();
-		
-		final Callback<CourseClassesTO> courseClassesCallback = new Callback<CourseClassesTO>() {
+		Callback<UserHelloTO> userHelloCallback = new Callback<UserHelloTO>() {
 			@Override
-			public void ok(CourseClassesTO courseClasses) {
-				Dean.getInstance().setCourseClassesTO(courseClasses);
-				final UserInfoTO userInfoTO = session.getCurrentUser();
-				clientFactory.setDefaultPlace(new WelcomePlace());
-				Place newPlace;
-				Place welcomePlace = new WelcomePlace();
-				if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
-					 newPlace = new TermsPlace();
-				} else if ( 
-						( institution.isDemandsPersonContactDetails() && 
-								( !RegistrationType.username.equals(userInfoTO.getPerson().getRegistrationType()) ||
-									userInfoTO.getInstitutionRegistrationPrefix().isShowContactInformationOnProfile()
-								)
-						) && userInfoTO.getPerson().getCity() == null) {
-					newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
-				} else if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
-						|| session.isInstitutionAdmin()) {
-					newPlace = new AdminCourseClassesPlace();
-				} else {
-					newPlace = welcomePlace;
-				}
-				clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
-				clientFactory.setHomePlace(welcomePlace);
-				clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? clientFactory.getHomePlace() : newPlace);
-			}
-		};
-		
-		Callback<UserInfoTO> userInfoCallback = new Callback<UserInfoTO>() {
-			@Override
-			public void ok(final UserInfoTO user) {
-				view.displayView(null);
-				clientFactory.getEventBus().fireEvent(new LoginEvent(user));
-				session.courseClasses().getCourseClassesTO(courseClassesCallback);
+			public void ok(UserHelloTO userHello) {
+				postLogin(userHello);
 			}
 			@Override
 			protected void unauthorized(KornellErrorTO kornellErrorTO) {
@@ -140,12 +105,42 @@ public class VitrinePresenter implements VitrineView.Presenter {
 		};
 		String email = view.getEmail().toLowerCase().trim().replace(FormHelper.USERNAME_ALTERNATE_SEPARATOR, FormHelper.USERNAME_SEPARATOR); 
 		String password = view.getPassword();
-		session.login(email, password, userInfoCallback);
+		session.login(email, password, userHelloCallback);
+	}
+
+	private void postLogin(UserHelloTO userHello) {
+		view.displayView(null);
+		clientFactory.getEventBus().fireEvent(new LoginEvent(userHello.getUserInfoTO()));
+		clientFactory.getEventBus().fireEvent(new CourseClassesFetchedEvent(userHello.getCourseClassesTO()));	
+		
+		Institution institution = session.getInstitution();
+		UserInfoTO userInfoTO = session.getCurrentUser();
+		clientFactory.setDefaultPlace(new WelcomePlace());
+		Place newPlace;
+		Place welcomePlace = new WelcomePlace();
+		if (StringUtils.isSome(institution.getTerms()) && !session.hasSignedTerms()) {
+			 newPlace = new TermsPlace();
+		} else if ( 
+				( institution.isDemandsPersonContactDetails() && 
+						( !RegistrationType.username.equals(userInfoTO.getPerson().getRegistrationType()) ||
+							userInfoTO.getInstitutionRegistrationPrefix().isShowContactInformationOnProfile()
+						)
+				) && userInfoTO.getPerson().getCity() == null) {
+			newPlace = new ProfilePlace(userInfoTO.getPerson().getUUID(), true);
+		} else if (RoleCategory.hasRole(session.getCurrentUser().getRoles(), RoleType.courseClassAdmin) 
+				|| session.isInstitutionAdmin()) {
+			newPlace = new AdminCourseClassesPlace();
+		} else {
+			newPlace = welcomePlace;
+		}
+		clientFactory.setDefaultPlace(newPlace instanceof AdminCourseClassPlace ? newPlace : welcomePlace);
+		clientFactory.setHomePlace(welcomePlace, userHello.getCourseClassesTO());
+		clientFactory.getPlaceController().goTo(InstitutionType.DASHBOARD.equals(institution.getInstitutionType()) && !(newPlace instanceof AdminCourseClassPlace) ? clientFactory.getHomePlace() : newPlace);
 	}
 
 	@Override
 	public void onRegisterButtonClicked() {
-		if(Dean.getInstance().getInstitution().isAllowRegistration()){
+		if(session.getInstitution().isAllowRegistration()){
 			view.hideMessage();
 			view.displayView(VitrineViewType.register);
 		}
@@ -180,7 +175,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 
 	@Override
 	public void onSignUpButtonClicked() {
-		if(StringUtils.isSome(registrationEmail) || Dean.getInstance().getInstitution().isAllowRegistration()){
+		if(StringUtils.isSome(registrationEmail) || session.getInstitution().isAllowRegistration()){
 			view.hideMessage();
 			List<String> errors = validateFields();
 			if (errors.size() == 0) {
@@ -220,16 +215,16 @@ public class VitrinePresenter implements VitrineView.Presenter {
 				session.user().requestRegistration(registrationRequestTO, registrationCallback);
 			}
 		};
-		session.user().checkUser(Dean.getInstance().getInstitution().getUUID(), suEmail, checkUserCallback);
+		session.user().checkUser(session.getInstitution().getUUID(), suEmail, checkUserCallback);
 	}
 
 	private RegistrationRequestTO buildRegistrationRequestTO(String name, String email, String password) {
-		RegistrationRequestTO registrationRequestTO = clientFactory.getTOFactory().newRegistrationRequestTO().as();
+		RegistrationRequestTO registrationRequestTO = GenericClientFactoryImpl.TO_FACTORY.newRegistrationRequestTO().as();
 		registrationRequestTO.setFullName(name);
 		registrationRequestTO.setEmail(email);
 		registrationRequestTO.setPassword(password);
 		registrationRequestTO.setRegistrationType(RegistrationType.email);
-		registrationRequestTO.setInstitutionUUID(Dean.getInstance().getInstitution().getUUID());
+		registrationRequestTO.setInstitutionUUID(session.getInstitution().getUUID());
 		return registrationRequestTO;
 	}
 
@@ -243,7 +238,7 @@ public class VitrinePresenter implements VitrineView.Presenter {
 	public void onRequestPasswordChangeButtonClicked() {
 		session.user().requestPasswordChange(
 				view.getFpEmail().toLowerCase().trim(),
-				Dean.getInstance().getInstitution().getName(),
+				session.getInstitution().getName(),
 				new Callback<Void>() {
 					@Override
 					public void ok(Void to) {

@@ -1,9 +1,18 @@
 package kornell.gui.client;
 
 import static kornell.core.util.StringUtils.composeURL;
+
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+
+import kornell.core.to.CourseClassesTO;
+import kornell.gui.client.event.CourseClassesFetchedEvent;
+import kornell.gui.client.event.CourseClassesFetchedEventHandler;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
-import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.audit.AdminAuditView;
 import kornell.gui.client.presentation.admin.audit.generic.GenericAdminAuditView;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
@@ -55,13 +64,7 @@ import kornell.gui.client.presentation.welcome.generic.GenericWelcomeView;
 import kornell.gui.client.sequence.SequencerFactory;
 import kornell.gui.client.sequence.SequencerFactoryImpl;
 
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-
-public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHandler {
+public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHandler, CourseClassesFetchedEventHandler {
 
 	private ClientFactory clientFactory;
 
@@ -85,12 +88,15 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	private SandboxPresenter sandboxPresenter;
 	private MessagePresenter messagePresenter, messagePresenterCourseClass, messagePresenterClassroomGlobalChat, messagePresenterClassroomTutorChat;
 	private boolean isMantleShown = false;
+	private CourseClassesTO courseClassesTO;
 
-	SimplePanel shell = new SimplePanel();
+	private SimplePanel shell = new SimplePanel();
 
-	public GenericViewFactoryImpl(ClientFactory clientFactory) {
+	public GenericViewFactoryImpl(ClientFactory clientFactory, CourseClassesTO courseClassesTO) {
 		this.clientFactory = clientFactory;
+		this.courseClassesTO = courseClassesTO;
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE,this);
+		clientFactory.getEventBus().addHandler(CourseClassesFetchedEvent.TYPE, this);
 	}
 
 	@Override
@@ -110,7 +116,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 				setPlaceNameAsBodyStyle(event);
 				setBackgroundImage(event.getNewPlace() instanceof VitrinePlace);
 				checkMenuBars(event.getNewPlace() instanceof VitrinePlace);
-				changeOverflow(event.getNewPlace() instanceof ClassroomPlace && Dean.getInstance().getCourseClassTO() != null);
+				changeOverflow(event.getNewPlace() instanceof ClassroomPlace && clientFactory.getKornellSession().getCurrentCourseClass() != null);
 			}
 
 			private void checkMenuBars(boolean removePanels) {
@@ -152,7 +158,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;" + "overflow:auto;";
 		if (showMantle)
 			style = "background: url('"
-					+ composeURL(Dean.getInstance().getInstitution().getAssetsURL(), "bgVitrine.jpg")
+					+ composeURL(clientFactory.getKornellSession().getAssetsURL(), "bgVitrine.jpg")
 					+ "') no-repeat center center fixed; " + style;
 		DOM.setElementAttribute(scrollPanel.getElement(), "style", style);
 		isMantleShown = showMantle;
@@ -161,7 +167,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	@Override
 	public MenuBarView getMenuBarView() {
 		if (menuBarView == null)
-			menuBarView = new GenericMenuBarView(clientFactory, scrollPanel);
+			menuBarView = new GenericMenuBarView(clientFactory, scrollPanel, courseClassesTO);
 		return menuBarView;
 	}
 
@@ -316,8 +322,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	public AdminCoursePresenter getAdminCoursePresenter() {
 		if (genericAdminCoursePresenter == null)
 			genericAdminCoursePresenter = new AdminCoursePresenter(clientFactory.getKornellSession(),
-					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(),
-					clientFactory.getEntityFactory(), this);
+					clientFactory.getPlaceController(), clientFactory.getEventBus(), clientFactory.getDefaultPlace(), this);
 		return genericAdminCoursePresenter;
 	}
 
@@ -366,7 +371,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 		if (genericAdminCourseClassPresenter == null)
 			genericAdminCourseClassPresenter = new AdminCourseClassPresenter(clientFactory.getKornellSession(),
 					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getDefaultPlace(),
-					clientFactory.getTOFactory(), this);
+					GenericClientFactoryImpl.TO_FACTORY, this);
 		return genericAdminCourseClassPresenter;
 	}
 
@@ -376,5 +381,10 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 			genericAdminAuditView = new GenericAdminAuditView(clientFactory.getKornellSession(),
 					clientFactory.getEventBus(), clientFactory.getPlaceController(), clientFactory.getViewFactory());
 		return genericAdminAuditView;
+	}
+
+	@Override
+	public void onCourseClassesFetched(CourseClassesFetchedEvent event) {
+		this.courseClassesTO = event.getCourseClassesTO();		
 	}
 }

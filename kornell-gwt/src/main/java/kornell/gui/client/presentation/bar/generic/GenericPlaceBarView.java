@@ -2,8 +2,6 @@ package kornell.gui.client.presentation.bar.generic;
 
 import java.util.List;
 
-import kornell.gui.client.presentation.bar.PlaceBarView;
-
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
@@ -14,6 +12,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.gui.client.presentation.bar.PlaceBarView;
 
 public class GenericPlaceBarView extends Composite implements PlaceBarView {
 	interface MyUiBinder extends UiBinder<Widget, GenericPlaceBarView> {

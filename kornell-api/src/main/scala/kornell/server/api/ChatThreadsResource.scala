@@ -24,6 +24,7 @@ import kornell.server.jdbc.repository.PersonRepo
 import java.util.Date
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
+import kornell.core.error.exception.UnauthorizedAccessException
 
 @Path("chatThreads")
 @Produces(Array(ChatThread.TYPE))
@@ -76,11 +77,15 @@ class ChatThreadsResource {
     @PathParam("chatThreadUUID") chatThreadUUID: String,
     message: String, 
     @QueryParam("since") since: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.createChatThreadMessage(chatThreadUUID, person.getUUID, message)
-  		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
-  		else
-  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date)
+    	if (ChatThreadsRepo.isParticipant(chatThreadUUID, person.getUUID)) {
+    	  ChatThreadsRepo.createChatThreadMessage(chatThreadUUID, person.getUUID, message)
+  		  if(StringUtils.isSome(since))
+  			  ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
+  		  else
+  			  ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date)
+    	} else {
+    	  throw new UnauthorizedAccessException("mustBeParticipant")
+    	}
   }
   
   @POST
@@ -93,17 +98,15 @@ class ChatThreadsResource {
   @Path("unreadCount")
   @Produces(Array("application/octet-stream"))
   @GET
-  def getTotalUnreadCountByPerson(implicit @Context sc: SecurityContext, 
-    @QueryParam("institutionUUID") institutionUUID: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.getTotalUnreadCountByPerson(person.getUUID, institutionUUID)
+  def getTotalUnreadCountByPerson(implicit @Context sc: SecurityContext) = AuthRepo().withPerson { person => 
+  		ChatThreadsRepo.getTotalUnreadCountByPerson(person.getUUID, person.getInstitutionUUID)
   }
   
   @Path("unreadCountPerThread")
   @Produces(Array(UnreadChatThreadsTO.TYPE))
   @GET
-  def getTotalUnreadCountsByPersonPerThread(implicit @Context sc: SecurityContext, 
-    @QueryParam("institutionUUID") institutionUUID: String) = AuthRepo().withPerson { person => 
-  		ChatThreadsRepo.getTotalUnreadCountsByPersonPerThread(person.getUUID, institutionUUID)
+  def getTotalUnreadCountsByPersonPerThread(implicit @Context sc: SecurityContext) = AuthRepo().withPerson { person => 
+  		ChatThreadsRepo.getTotalUnreadCountsByPersonPerThread(person.getUUID, person.getInstitutionUUID)
   }
   
   @Path("{chatThreadUUID}/messages")
@@ -113,13 +116,17 @@ class ChatThreadsResource {
     @PathParam("chatThreadUUID") chatThreadUUID: String, 
     @QueryParam("since") since: String, 
     @QueryParam("before") before: String) = AuthRepo().withPerson { person => {
-      ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
-  		if(StringUtils.isSome(since))
-  			ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
-  		else if(StringUtils.isSome(before))
-  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(before.toLong))
-  		else
-  			ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date)
+      if (ChatThreadsRepo.isParticipant(chatThreadUUID, person.getUUID)) {
+        ChatThreadsRepo.markAsRead(chatThreadUUID, person.getUUID)
+  		  if(StringUtils.isSome(since))
+  			  ChatThreadsRepo.getChatThreadMessagesSince(chatThreadUUID, new Date(since.toLong))
+  		  else if(StringUtils.isSome(before))
+  			  ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date(before.toLong))
+  		  else
+  			  ChatThreadsRepo.getChatThreadMessagesBefore(chatThreadUUID, new Date)
+      } else {
+        throw new UnauthorizedAccessException("mustBeParticipant")
+      }
     }
   }
 }

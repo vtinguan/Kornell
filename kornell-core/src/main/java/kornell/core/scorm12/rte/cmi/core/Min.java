@@ -6,6 +6,8 @@ import static kornell.core.scorm12.rte.DataType.EITHER;
 
 import java.util.Map;
 
+import kornell.core.entity.CourseClass;
+import kornell.core.entity.Enrollment;
 import kornell.core.entity.Person;
 import kornell.core.scorm12.rte.DMElement;
 import kornell.core.scorm12.rte.SCOAccess;
@@ -22,7 +24,8 @@ public class Min extends DMElement{
 	}
 	
 	@Override
-	public Map<String, String> initializeMap(Map<String, String> entries,Person p) {		
+	public Map<String, String> initializeMap(Map<String, String> entries,Person p,Enrollment enrollment,
+			CourseClass courseClass) {		
 		return defaultTo(entries, "");
 	}
 }

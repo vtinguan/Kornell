@@ -1,5 +1,8 @@
 package kornell.gui.client.mvp;
 
+import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.place.shared.WithTokenizers;
+
 import kornell.gui.client.presentation.admin.audit.AdminAuditPlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
@@ -16,9 +19,6 @@ import kornell.gui.client.presentation.sandbox.SandboxPlace;
 import kornell.gui.client.presentation.terms.TermsPlace;
 import kornell.gui.client.presentation.vitrine.VitrinePlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
-
-import com.google.gwt.place.shared.PlaceHistoryMapper;
-import com.google.gwt.place.shared.WithTokenizers;
 
 
 @WithTokenizers({HomePlace.Tokenizer.class,

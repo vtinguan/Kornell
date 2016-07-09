@@ -3,15 +3,6 @@ package kornell.gui.client.util.forms.formfield;
 import java.util.HashMap;
 import java.util.Map;
 
-import kornell.api.client.Callback;
-import kornell.api.client.KornellSession;
-import kornell.core.entity.Person;
-import kornell.core.to.PeopleTO;
-import kornell.core.to.PersonTO;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.personnel.Dean;
-import kornell.gui.client.util.forms.FormHelper;
-
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Typeahead;
@@ -26,6 +17,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.api.client.Callback;
+import kornell.api.client.KornellSession;
+import kornell.core.entity.Person;
+import kornell.core.to.PeopleTO;
+import kornell.core.to.PersonTO;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.util.forms.FormHelper;
 
 public class PeopleMultipleSelect extends Composite {
 	private FormHelper formHelper = GWT.create(FormHelper.class);
@@ -131,7 +130,7 @@ public class PeopleMultipleSelect extends Composite {
 	}
 
 	private void searchChanged(final String searchStr) {
-		session.people().findBySearchTerm(searchStr, Dean.getInstance().getInstitution().getUUID(),
+		session.people().findBySearchTerm(searchStr, session.getInstitution().getUUID(),
 				new Callback<PeopleTO>() {
 					@Override
 					public void ok(PeopleTO to) {

@@ -1,8 +1,8 @@
 package kornell.gui.client.presentation.admin.courseversion.courseversion;
 
-import kornell.core.entity.CourseVersion;
-
 import com.google.gwt.user.client.ui.IsWidget;
+
+import kornell.core.entity.CourseVersion;
 
 public interface AdminCourseVersionView extends IsWidget {
 	public interface Presenter extends IsWidget {

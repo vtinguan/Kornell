@@ -1,11 +1,11 @@
 package kornell.gui.client.presentation.classroom;
 
-import kornell.core.entity.ContentSpec;
-import kornell.core.util.StringUtils;
-
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+
+import kornell.core.entity.ContentSpec;
+import kornell.core.util.StringUtils;
 
 
 public class ClassroomPlace extends Place {

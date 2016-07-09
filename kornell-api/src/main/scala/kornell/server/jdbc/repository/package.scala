@@ -2,7 +2,6 @@ package kornell.server.jdbc
 
 import java.sql.ResultSet
 import java.util.logging.Logger
-
 import kornell.core.entity.Assessment
 import kornell.core.entity.AuditedEntityType
 import kornell.core.entity.AuthClientType
@@ -38,6 +37,9 @@ import kornell.server.repository.Entities
 import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
 import kornell.core.entity.S3ContentRepository
+import java.util.UUID
+import kornell.core.to.DashboardLeaderboardTO
+import kornell.core.to.DashboardLeaderboardItemTO
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -49,15 +51,16 @@ import kornell.core.entity.S3ContentRepository
  * find() => Return Collection[T], as the result of a query
  */
 package object repository {
-  val logger = Logger.getLogger("kornell.server.jdbc.repository")
   
+  val logger = Logger.getLogger("kornell.server.jdbc.repository")
+
+
   //TODO: Move converters to their repos
   implicit def toInstitution(rs:ResultSet):Institution = 
     newInstitution(rs.getString("uuid"), 
         rs.getString("name"),  
         rs.getString("fullName"), 
         rs.getString("terms"),
-        rs.getString("assetsURL"),
         rs.getString("baseURL"),
         rs.getBoolean("demandsPersonContactDetails"),
         rs.getBoolean("validatePersonContactDetails"),
@@ -93,7 +96,8 @@ package object repository {
         RegistrationType.valueOf(r.getString("registrationType")),
         r.getString("institutionRegistrationPrefixUUID"), r.getBoolean("courseClassChatEnabled"), 
         r.getBoolean("chatDockEnabled"), r.getBoolean("allowBatchCancellation"),  
-        r.getBoolean("tutorChatEnabled"), r.getBoolean("approveEnrollmentsAutomatically")) 
+        r.getBoolean("tutorChatEnabled"), r.getBoolean("approveEnrollmentsAutomatically"),
+        r.getDate("startDate")) 
 
   implicit def toCourse(rs: ResultSet): Course = newCourse(
     rs.getString("uuid"),
@@ -108,7 +112,6 @@ package object repository {
     rs.getString("uuid"), 
     rs.getString("name"), 
     rs.getString("course_uuid"), 
-    rs.getString("repository_uuid"), 
     rs.getDate("versionCreatedAt"),
     rs.getString("distributionPrefix"),
     rs.getString("contentSpec"),
@@ -131,7 +134,6 @@ package object repository {
         rs.getString("courseVersionUUID"), 
 		    rs.getString("courseVersionName"), 
 		    rs.getString("courseUUID"), 
-		    rs.getString("repositoryUUID"), 
 		    rs.getDate("versionCreatedAt"),
 		    rs.getString("distributionPrefix"),
 		    rs.getString("contentSpec"),
@@ -166,7 +168,6 @@ package object repository {
         rs.getString("courseVersionUUID"), 
         rs.getString("courseVersionName"), 
         rs.getString("courseUUID"), 
-        rs.getString("repositoryUUID"), 
         rs.getDate("versionCreatedAt"), 
         rs.getString("distributionPrefix"), 
         rs.getString("contentSpec"), 
@@ -335,10 +336,15 @@ package object repository {
 	    rs.getString("personUUID"),
 	    AuthClientType.valueOf(rs.getString("clientType")))
 	    
-    implicit def toSimplePersonTO(rs: ResultSet): SimplePersonTO = newSimplePersonTO(
-        rs.getString("uuid"),
-        rs.getString("fullName"),
-        rs.getString("username"))
+  implicit def toSimplePersonTO(rs: ResultSet): SimplePersonTO = newSimplePersonTO(
+      rs.getString("uuid"),
+      rs.getString("fullName"),
+      rs.getString("username"))
+    
+  implicit def toDashboardLeaderboardItemTO(rs: ResultSet): DashboardLeaderboardItemTO = newDashboardLeaderboardItemTO(
+      rs.getString("uuid"),
+      rs.getString("fullName"),
+      rs.getString("attribute"))
         
    
   implicit def toEntityChanged(rs: ResultSet): EntityChanged = newEntityChanged(

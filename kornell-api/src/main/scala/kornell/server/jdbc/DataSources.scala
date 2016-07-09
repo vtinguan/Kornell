@@ -11,60 +11,36 @@ import scala.util.Success
 import scala.util.Failure
 import SQL._
 import kornell.server.util.Settings._
+import com.zaxxer.hikari.HikariDataSource
+import com.googlecode.flyway.core.Flyway
+import com.zaxxer.hikari.HikariConfig
+import kornell.server.util.Settings._
 
-object DataSources { 
+object DataSources {
   val log = Logger.getLogger(getClass.getName)
 
-  def ping(cf: ConnectionFactory,dbDesc:String=""): Try[ConnectionFactory] = Try {
-    log.info(s"Pinging database [$dbDesc]")
-    try{
-      val conn = cf()
-      val stmt = conn.createStatement
-      stmt.execute("select 40+2")
-      stmt.close
-      conn.close    
-      cf
-    }catch {
-      case t: Throwable => {
-        log.info("Could not connect to [$dbDesc]")
-        t.printStackTrace() // TODO: handle error
-        throw t
-      }
-    }
-  }
-
-  lazy val KornellDS = {
-    val context = new InitialContext()
-      .lookup(JNDI_ROOT)
-      .asInstanceOf[Context]
-    val ds = context.lookup(JNDI_DATASOURCE)
-      .asInstanceOf[DataSource]
+  lazy val hikariDS = {
+    val driverName = JDBC_DRIVER.get
+    val jdbcURL = JDBC_CONNECTION_STRING.get
+    val username = JDBC_USERNAME.get
+    val password = JDBC_PASSWORD.get
+    log.info(s"JDBC properties [$driverName, $jdbcURL, $username, *****]")
+    val config = new HikariConfig()
+    config.setDriverClassName(driverName)
+    config.setJdbcUrl(jdbcURL)
+    config.setUsername(username)
+    config.setPassword(password)
+    val ds = new HikariDataSource(config)
     ds
   }
 
-  lazy val JNDI: Try[ConnectionFactory] =    
-    ping ({ () => KornellDS.getConnection }, s"$JNDI_ROOT/$JNDI_DATASOURCE")
+
+  lazy val POOL = { () => hikariDS.getConnection  }
+
+  val connectionFactory = POOL 
   
-
-  def getConnection(url: String, user: String, pass: String): Try[ConnectionFactory] =     
-    ping ({ () => DriverManager.getConnection(url, user, pass) },s"JDBC@$url,$user,$pass")
-  
-
-  lazy val LOCAL = getConnection(DEFAULT_URL,DEFAULT_USERNAME,DEFAULT_PASSWORD)
-
-
-  lazy val SYSPROPS = getConnection(
-    prop("JDBC_CONNECTION_STRING"),
-    prop("JDBC_USERNAME"),
-    prop("JDBC_PASSWORD"))
-
-  //TODO: Consider configuring from imported implicit  (like ExecutionContext)
-  val connectionFactory = JNDI.orElse(SYSPROPS).orElse(LOCAL)
-  
-  connectionFactory match {
-    case Success(cf) => log.info(s"Connection Factory validated ${connectionFactory} . Nice!");
-    case Failure(e) => log.severe("Can't live without a databse, sorry :("); //TODO: DIE
-  }
-  
-
+  def configure(flyway:Flyway) = flyway.setDataSource(
+          JDBC_CONNECTION_STRING,
+          JDBC_USERNAME,
+          JDBC_PASSWORD)
 }
