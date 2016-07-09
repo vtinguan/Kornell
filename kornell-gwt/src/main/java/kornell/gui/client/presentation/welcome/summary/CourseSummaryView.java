@@ -1,8 +1,8 @@
 package kornell.gui.client.presentation.welcome.summary;
 
-import kornell.core.to.CourseClassTO;
-
 import com.google.gwt.user.client.ui.IsWidget;
+
+import kornell.core.to.CourseClassTO;
 
 public interface CourseSummaryView  extends IsWidget {
 	public interface Presenter extends IsWidget {

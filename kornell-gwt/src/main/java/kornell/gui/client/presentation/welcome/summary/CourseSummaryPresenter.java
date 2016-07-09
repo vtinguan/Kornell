@@ -1,5 +1,9 @@
 package kornell.gui.client.presentation.welcome.summary;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.Widget;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Enrollment;
@@ -11,10 +15,6 @@ import kornell.core.to.TOFactory;
 import kornell.gui.client.personnel.Student;
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.welcome.summary.generic.GenericCourseSummaryView;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.Widget;
 
 public class CourseSummaryPresenter implements CourseSummaryView.Presenter{
 	private CourseSummaryView view;

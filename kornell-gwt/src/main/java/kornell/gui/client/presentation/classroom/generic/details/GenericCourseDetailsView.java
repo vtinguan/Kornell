@@ -5,6 +5,21 @@ import static kornell.core.util.StringUtils.mkurl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.CourseClassState;
@@ -30,21 +45,6 @@ import kornell.gui.client.presentation.classroom.ClassroomView.Presenter;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.view.LoadingPopup;
-
-import com.github.gwtbootstrap.client.ui.Button;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class GenericCourseDetailsView extends Composite implements ShowDetailsEventHandler {
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseDetailsView> {

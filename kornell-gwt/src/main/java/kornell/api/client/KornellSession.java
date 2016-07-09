@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.gwt.place.shared.Place;
+
 import kornell.core.entity.CourseClass;
 import kornell.core.entity.Enrollment;
 import kornell.core.entity.EnrollmentState;
@@ -23,8 +25,6 @@ import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCour
 import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.welcome.WelcomePlace;
 import kornell.gui.client.util.ClientProperties;
-
-import com.google.gwt.place.shared.Place;
 
 
 public class KornellSession extends KornellClient {

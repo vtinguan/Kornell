@@ -3,14 +3,6 @@ package kornell.gui.client.presentation.welcome.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import kornell.core.entity.EnrollmentProgressDescription;
-import kornell.core.to.CourseClassTO;
-import kornell.core.to.CourseClassesTO;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.presentation.bar.MenuBarView;
-import kornell.gui.client.presentation.welcome.WelcomeView;
-import kornell.gui.client.util.view.KornellNotification;
-
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
@@ -23,6 +15,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.core.entity.EnrollmentProgressDescription;
+import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseClassesTO;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.presentation.bar.MenuBarView;
+import kornell.gui.client.presentation.welcome.WelcomeView;
+import kornell.gui.client.util.view.KornellNotification;
 
 public class GenericWelcomeView extends Composite implements WelcomeView {
 	interface MyUiBinder extends UiBinder<Widget, GenericWelcomeView> {

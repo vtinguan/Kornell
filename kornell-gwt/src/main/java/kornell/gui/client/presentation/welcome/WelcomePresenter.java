@@ -1,5 +1,10 @@
 package kornell.gui.client.presentation.welcome;
 
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EnrollmentProgressDescription;
@@ -10,11 +15,6 @@ import kornell.gui.client.personnel.Student;
 import kornell.gui.client.personnel.Teachers;
 import kornell.gui.client.presentation.bar.MenuBarView;
 import kornell.gui.client.presentation.welcome.summary.CourseSummaryPresenter;
-
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class WelcomePresenter implements WelcomeView.Presenter{
 	private WelcomeView view;

@@ -4,19 +4,6 @@ import static kornell.core.util.StringUtils.mkurl;
 
 import java.util.Date;
 
-import kornell.core.entity.Course;
-import kornell.core.entity.CourseClassState;
-import kornell.core.entity.EnrollmentProgress;
-import kornell.core.entity.EnrollmentProgressDescription;
-import kornell.core.entity.EnrollmentState;
-import kornell.core.to.CourseClassTO;
-import kornell.core.util.StringUtils;
-import kornell.gui.client.KornellConstants;
-import kornell.gui.client.personnel.Student;
-import kornell.gui.client.presentation.welcome.summary.CourseSummaryView;
-import kornell.gui.client.util.ClientConstants;
-import kornell.gui.client.util.EnumTranslator;
-
 import com.github.gwtbootstrap.client.ui.Heading;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.github.gwtbootstrap.client.ui.ProgressBar;
@@ -33,6 +20,19 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
+import kornell.core.entity.Course;
+import kornell.core.entity.CourseClassState;
+import kornell.core.entity.EnrollmentProgress;
+import kornell.core.entity.EnrollmentProgressDescription;
+import kornell.core.entity.EnrollmentState;
+import kornell.core.to.CourseClassTO;
+import kornell.core.util.StringUtils;
+import kornell.gui.client.KornellConstants;
+import kornell.gui.client.personnel.Student;
+import kornell.gui.client.presentation.welcome.summary.CourseSummaryView;
+import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.EnumTranslator;
 
 public class GenericCourseSummaryView extends Composite implements CourseSummaryView{
 	interface MyUiBinder extends UiBinder<Widget, GenericCourseSummaryView> {
