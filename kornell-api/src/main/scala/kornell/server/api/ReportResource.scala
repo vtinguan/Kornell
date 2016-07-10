@@ -34,7 +34,7 @@ import kornell.server.report.ReportCourseClassGenerator
 import kornell.server.report.ReportGenerator
 import kornell.server.report.ReportInstitutionBillingGenerator
 import javax.servlet.http.HttpServletRequest
-import kornell.core.util.StringUtils.composeURL
+import kornell.core.util.StringUtils.mkurl
 import kornell.server.util.Conditional.toConditional
 import kornell.server.util.AccessDeniedErr
 
@@ -84,14 +84,14 @@ class ReportResource {
         val enrollmentUUIDs = {
           if(people != null && people.size > 0) {
             var enrollmentUUIDsVar = ""
-		    for (i <- 0 until people.size) {
-		      val person = people.get(i)
-		      val enrollmentUUID = EnrollmentsRepo.byCourseClassAndUsername(courseClassUUID, person.getUsername)
-		      if(enrollmentUUID.isDefined){
-		          if(enrollmentUUIDsVar.length != 0) enrollmentUUIDsVar += ","
-		    	  enrollmentUUIDsVar += "'" + enrollmentUUID.get + "'"
-		      }
-		    }
+    		    for (i <- 0 until people.size) {
+    		      val person = people.get(i)
+    		      val enrollmentUUID = EnrollmentsRepo.byCourseClassAndUsername(courseClassUUID, person.getUsername)
+    		      if(enrollmentUUID.isDefined){
+    		          if(enrollmentUUIDsVar.length != 0) enrollmentUUIDsVar += ","
+    		    	  enrollmentUUIDsVar += "'" + enrollmentUUID.get + "'"
+    		      }
+    		    }
             enrollmentUUIDsVar
           }
           else null
@@ -109,7 +109,7 @@ class ReportResource {
             "application/pdf",
             "Content-Disposition: attachment; filename=\"" + filename + ".pdf\"",
             Map("certificatedata" -> "09/01/1980", "requestedby" -> p.getFullName()),filename)
-          composeURL(ContentManagers.USER_CONTENT_URL, repo.url(filename)) 
+           mkurl(ContentManagers.USER_CONTENT_URL, repo.url(filename)) 
         }
       } catch {
         case e: Exception =>
@@ -124,7 +124,7 @@ class ReportResource {
     try {
       var filename = p.getUUID + courseClassUUID + ".pdf"
       
-      val url = composeURL(ContentManagers.USER_CONTENT_URL, ContentManagers.forCertificates(p.getInstitutionUUID).url(filename)) 
+      val url = mkurl(ContentManagers.USER_CONTENT_URL, ContentManagers.forCertificates(p.getInstitutionUUID).url(filename)) 
 
       HttpURLConnection.setFollowRedirects(false);
       val con = new URL(url).openConnection.asInstanceOf[HttpURLConnection]

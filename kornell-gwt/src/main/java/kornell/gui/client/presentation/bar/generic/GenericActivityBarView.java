@@ -25,6 +25,8 @@ import kornell.core.util.StringUtils;
 import kornell.gui.client.ClientFactory;
 import kornell.gui.client.KornellConstants;
 import kornell.gui.client.event.HideSouthBarEvent;
+import kornell.gui.client.event.NavigationAuthorizationEvent;
+import kornell.gui.client.event.NavigationAuthorizationEventHandler;
 import kornell.gui.client.event.ProgressEvent;
 import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.event.ShowChatDockEvent;
@@ -38,7 +40,7 @@ import kornell.gui.client.sequence.NavigationRequest;
 import kornell.gui.client.util.ClientConstants;
 
 public class GenericActivityBarView extends Composite implements ActivityBarView, ProgressEventHandler,
-		ShowDetailsEventHandler, ShowChatDockEventHandler {
+		ShowDetailsEventHandler, ShowChatDockEventHandler, NavigationAuthorizationEventHandler {
 
 	interface MyUiBinder extends UiBinder<Widget, GenericActivityBarView> {
 	}
@@ -69,6 +71,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private boolean chatDockEnabled = false;
 	private boolean enableNext = false;
 	private boolean enablePrev = false;
+	private boolean allowedNext = false;
+	private boolean allowedPrev = false;
 
 	@UiField
 	FocusPanel btnPrevious;
@@ -101,7 +105,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		clientFactory.getEventBus().addHandler(ProgressEvent.TYPE, this);
 		clientFactory.getEventBus().addHandler(ShowDetailsEvent.TYPE, this);
 		clientFactory.getEventBus().addHandler(ShowChatDockEvent.TYPE, this);
-
+		clientFactory.getEventBus().addHandler(NavigationAuthorizationEvent.TYPE, this);
+		
 		session = clientFactory.getKornellSession();
 		if (session.isAuthenticated()) {
 			user = clientFactory.getKornellSession().getCurrentUser();
@@ -339,8 +344,6 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			updateProgressBarPanel(event.getCurrentPage(), event.getTotalPages(), event.getProgressPercent());
 			enablePrev = event.hasPrevious();
 			enableNext = event.hasNext();
-			enableButton(BUTTON_PREVIOUS, enablePrev);
-			enableButton(BUTTON_NEXT, enableNext);
 		}
 		btnNext.setVisible(!isMonoSCO);
 		btnPrevious.setVisible(!isMonoSCO);
@@ -380,8 +383,8 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			displayButton(btnDetails, BUTTON_DETAILS,
 					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
 		}
-		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev);
-		enableButton(BUTTON_NEXT, !showDetails && enableNext);
+		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev && allowedPrev);
+		enableButton(BUTTON_NEXT, !showDetails && enableNext && allowedNext);
 		enableButton(BUTTON_CHAT, !showDetails);
 		updateProgressBarPanel();
 	}
@@ -397,6 +400,30 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		} else {
 			btnChat.removeStyleName("btnSelected");
 		}
+	}
+
+	@Override
+	public void onNextActivityOK(NavigationAuthorizationEvent evt) {
+		allowedNext = true;
+		enableButton(BUTTON_NEXT, enableNext && allowedNext);
+	}
+
+	@Override
+	public void onNextActivityNotOK(NavigationAuthorizationEvent evt) {
+		allowedNext = false;
+		enableButton(BUTTON_NEXT, enableNext && allowedNext);
+	}
+
+	@Override
+	public void onPrevActivityOK(NavigationAuthorizationEvent evt) {
+		allowedPrev = true;
+		enableButton(BUTTON_PREVIOUS, enablePrev && allowedPrev);
+	}
+
+	@Override
+	public void onPrevActivityNotOK(NavigationAuthorizationEvent evt) {
+		allowedPrev = false;
+		enableButton(BUTTON_PREVIOUS, enablePrev && allowedPrev);
 	}
 
 }
