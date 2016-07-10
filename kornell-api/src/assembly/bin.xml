@@ -18,21 +18,13 @@
 		</fileSet>
 
 		<fileSet>
-			<directory>target/classes</directory>
+			<directory>src/main/eb-resources</directory>
 			<includes>
 				<include>Procfile</include>
+				<include>newrelic.jar</include>
+				<include>newrelic.yml</include>				
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
 	</fileSets>
-
-	<!--
-	<dependencySets>
-		<dependencySet>
-			<includes>
-				<include>mysql:mysql-connector-java</include>
-			</includes>
-		</dependencySet>
-	</dependencySets>
-	-->
 </assembly>
