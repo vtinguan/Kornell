@@ -120,7 +120,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 
 			@Override
 			public void onClick(ClickEvent event) {
-				if (session.isPlatformAdmin()) {
+				if (session.isInstitutionAdmin()) {
 					courseVersionsPanel.setVisible(false);
 					courseVersionsWrapper.setVisible(false);
 					adminCourseVersionPresenter = viewFactory.getAdminCourseVersionPresenter();

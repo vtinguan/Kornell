@@ -166,9 +166,11 @@ class ReportResource {
 	    	resp.setContentType("application/pdf")
 	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
 	  }
-  }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
-     .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
-  .   or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
+  }.requiring(if(courseClassUUID != null){ isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID)
+       } else {isPlatformAdmin(CourseRepo(courseUUID).get.getInstitutionUUID)}, AccessDeniedErr())
+     .or(if(courseClassUUID != null){ isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID)
+       } else {isInstitutionAdmin(CourseRepo(courseUUID).get.getInstitutionUUID)}, AccessDeniedErr())
+     .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
 
   @GET
   @Path("/courseClassAudit")

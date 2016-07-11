@@ -41,7 +41,7 @@ public class AdminCoursesPresenter implements AdminCoursesView.Presenter {
 	}
 
 	private void init() {
-		if (session.isPlatformAdmin()) {
+		if (session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
 			LoadingPopup.show();
