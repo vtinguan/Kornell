@@ -23,7 +23,7 @@
 		<beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
 		<buildNumber>Development Build</buildNumber>
 		<scala.version>2.11.7</scala.version>
-		<aws.sdk.version>1.10.27</aws.sdk.version>
+		<aws.sdk.version>1.10.77</aws.sdk.version>
 		<version.swarm>1.0.0.Final</version.swarm>
 		<jasper.version>5.0.4</jasper.version>
 		<java.opts>-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8</java.opts>
@@ -179,7 +179,7 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-iam</artifactId>
-			<version>1.9.24</version>
+			<version>${aws.sdk.version}</version>
 		</dependency>
 
 		<!--

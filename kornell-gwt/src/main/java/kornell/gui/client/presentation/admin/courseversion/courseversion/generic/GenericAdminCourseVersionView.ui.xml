@@ -12,6 +12,10 @@
 	        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
 	        <g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
 	      </g:FlowPanel>
+	      <g:FlowPanel ui:field="courseVersionUpload">
+	      	<b:FileUpload ui:field="uploadInput"></b:FileUpload>
+   	        <g:Button ui:field="btnUploadOk" addStyleNames="btnAction btnStandard"/>
+	      </g:FlowPanel>
 	    </b:Form>   
 	    <b:Modal ui:field="confirmModal" title="Confirmação" backdrop="NORMAL" addStyleNames="forgotPasswordModal">
 	      <g:FlowPanel>
