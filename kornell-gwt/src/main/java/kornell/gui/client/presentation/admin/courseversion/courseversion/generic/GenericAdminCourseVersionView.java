@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.FileUpload;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
@@ -73,6 +74,11 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	Button btnCancel;
 
 	@UiField
+	FileUpload uploadInput;
+	@UiField
+	Button btnUploadOk;
+	
+	@UiField
 	Modal confirmModal;
 	@UiField
 	Label confirmText;
@@ -99,6 +105,8 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		btnOK.setText("Salvar".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());	
 
+		btnUploadOk.setText("Upload".toUpperCase());
+		
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		
@@ -307,6 +315,12 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 			CourseVersion courseVersion = getCourseVersionInfoFromForm();
 			presenter.upsertCourseVersion(courseVersion);
 		}
+	}
+	
+	@UiHandler("btnUploadOk")
+	void doUpload(ClickEvent e) {
+//		uploadInput.getFilename();
+//		uploadInput.get
 	}
 
 	private CourseVersion getCourseVersionInfoFromForm() {
