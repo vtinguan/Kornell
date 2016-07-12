@@ -30,6 +30,8 @@ object DataSources {
     config.setJdbcUrl(jdbcURL)
     config.setUsername(username)
     config.setPassword(password)
+    config.addDataSourceProperty("characterEncoding","utf8");
+    config.addDataSourceProperty("useUnicode","true");
     val ds = new HikariDataSource(config)
     ds
   }
