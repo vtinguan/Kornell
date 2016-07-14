@@ -1,4 +1,4 @@
-package kornell.server.dev
+package kornell.server.api
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import javax.ws.rs._
