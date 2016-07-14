@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 import kornell.api.client.KornellSession;
@@ -15,9 +16,12 @@ import kornell.core.entity.EnrollmentsEntries;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.event.ActomEnteredEvent;
 import kornell.gui.client.event.ActomEnteredEventHandler;
+import kornell.gui.client.event.NavigationAuthorizationEvent;
+import kornell.gui.client.event.ProgressEvent;
+import kornell.gui.client.event.ProgressEventHandler;
 import kornell.gui.client.sequence.NavigationRequest;
 
-public class SCORM12Runtime implements ActomEnteredEventHandler {
+public class SCORM12Runtime implements ActomEnteredEventHandler, ProgressEventHandler {
 	private static final Logger logger = Logger.getLogger(SCORM12Runtime.class.getName());
 	private static SCORM12Runtime instance;
 	private EnrollmentsEntries entries;
@@ -29,12 +33,18 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 	private Map<String,CMITree> forestCache = new HashMap<>();
 	private EventBus bus;
 	
+	private boolean disableNextButton;
+	private boolean disablePrevButton;
+	private Timer disableButtonsTimer;
+	
 	private SCORM12Runtime(EventBus bus, KornellSession session, PlaceController placeCtrl, EnrollmentsEntries entries){
 		this.entries = entries;
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.bus = bus;
 		bus.addHandler(ActomEnteredEvent.TYPE, this);
+		bus.addHandler(ProgressEvent.TYPE, this);
+		initializeDisableButtonsTimer();
 	}
 
 	public static synchronized SCORM12Runtime launch(EventBus bus, KornellSession session, PlaceController placeCtrl,EnrollmentsEntries entries){		
@@ -92,8 +102,36 @@ public class SCORM12Runtime implements ActomEnteredEventHandler {
 	public void onLMSSetValue(String key, String value) {
 		if ("knl.next".equals(key)){
 			bus.fireEvent(NavigationRequest.next());
-		}else if ("knl.prev".equals(key)){
+		} else if ("knl.prev".equals(key)){
 			bus.fireEvent(NavigationRequest.prev());
+		} else if ("knl.nextEnabled".equals(key)){
+			boolean isOk = "true".equals(value);
+			disableNextButton = !isOk;
+			bus.fireEvent(NavigationAuthorizationEvent.next(isOk));
+		} else if ("knl.prevEnabled".equals(key)){
+			boolean isOk = "true".equals(value);
+			disablePrevButton = !isOk;
+			bus.fireEvent(NavigationAuthorizationEvent.prev(isOk));
 		}
+	}
+	
+	private void initializeDisableButtonsTimer(){
+		bus.fireEvent(NavigationAuthorizationEvent.next(false));
+		bus.fireEvent(NavigationAuthorizationEvent.prev(false));
+		disableButtonsTimer = new Timer() {
+			public void run() {
+				bus.fireEvent(NavigationAuthorizationEvent.next(!disableNextButton));
+				bus.fireEvent(NavigationAuthorizationEvent.prev(!disablePrevButton));
+			}
+		};
+		// Schedule the timer to run after 3s
+		disableButtonsTimer.schedule(3000);
+	}
+
+	@Override
+	public void onProgress(ProgressEvent event) {
+		disableNextButton = false;
+		disablePrevButton = false;
+		initializeDisableButtonsTimer();
 	}
 }

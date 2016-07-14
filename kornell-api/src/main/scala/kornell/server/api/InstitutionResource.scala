@@ -61,6 +61,7 @@ class InstitutionResource(uuid: String) {
         ChatThreadsRepo.updateParticipantsInCourseClassSupportThreadsForInstitution(uuid, ChatThreadType.PLATFORM_SUPPORT)
         r
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .or(isInstitutionAdmin(uuid), AccessDeniedErr())
    .get
 
   @GET
@@ -69,6 +70,7 @@ class InstitutionResource(uuid: String) {
   def getAdmins(@QueryParam("bind") bindMode:String) = {
         RolesRepo.getInstitutionAdmins(uuid, bindMode)
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .or(isInstitutionAdmin(uuid), AccessDeniedErr())
    .get
    
   @PUT
@@ -78,6 +80,7 @@ class InstitutionResource(uuid: String) {
   def updateHostnames(hostnames: InstitutionHostNamesTO) = {
       InstitutionHostNameRepo(uuid).updateHostnames(hostnames)
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .or(isInstitutionAdmin(uuid), AccessDeniedErr())
    .get
 
   @GET
@@ -86,6 +89,7 @@ class InstitutionResource(uuid: String) {
   def getHostnames() = {
         InstitutionHostNameRepo(uuid).get
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .or(isInstitutionAdmin(uuid), AccessDeniedErr())
    .get
    
    @PUT
@@ -95,6 +99,7 @@ class InstitutionResource(uuid: String) {
   def updateEmailWhitelist(domains: InstitutionEmailWhitelistTO) = {
       InstitutionEmailWhitelistRepo(uuid).updateDomains(domains)
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .or(isInstitutionAdmin(uuid), AccessDeniedErr())
    .get
 
   @GET
@@ -103,6 +108,7 @@ class InstitutionResource(uuid: String) {
   def getEmailWhitelist() = {
         InstitutionEmailWhitelistRepo(uuid).get
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .or(isInstitutionAdmin(uuid), AccessDeniedErr())
    .get
 }
 

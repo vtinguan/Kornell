@@ -49,7 +49,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private KornellSession session;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private boolean isCreationMode, isPlatformAdmin;
+	private boolean isCreationMode, isPlatformAdmin, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
@@ -110,6 +110,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		this.session = session;
 		this.bus = bus;
 		this.isPlatformAdmin = session.isPlatformAdmin();
+		this.isInstitutionAdmin = session.isInstitutionAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
@@ -132,7 +133,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 					}
 				});
 
-		if (session.isPlatformAdmin()) {
+		if (session.isInstitutionAdmin()) {
 			hostnamesTab.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -197,47 +198,48 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 		institutionFields.clear();
 		
-		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
-		btnCancel.setVisible(isPlatformAdmin);
+		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
+		btnCancel.setVisible(isInstitutionAdmin);
 		
+		fullName = new KornellFormFieldWrapper("Nome da Instituição", formHelper.createTextBoxFormField(institution.getFullName()), isInstitutionAdmin);
+		fields.add(fullName);
+		institutionFields.add(fullName);		
 
 		name = new KornellFormFieldWrapper("Sub-domínio da Instituição", formHelper.createTextBoxFormField(institution.getName()), isPlatformAdmin);
 		fields.add(name);
 		institutionFields.add(name);
 		
-		fullName = new KornellFormFieldWrapper("Nome da Instituição", formHelper.createTextBoxFormField(institution.getFullName()), isPlatformAdmin);
-		fields.add(fullName);
-		institutionFields.add(fullName);
-		
-		final ListBox institutionTypes = new ListBox();
-		institutionTypes.addItem("Padrão", InstitutionType.DEFAULT.toString());
-		institutionTypes.addItem("Dashboard", InstitutionType.DASHBOARD.toString());
-		if (!isCreationMode) {
-			institutionTypes.setSelectedValue(institution.getInstitutionType().toString());
-		}
-		institutionType = new KornellFormFieldWrapper("Tipo de Instituição", new ListBoxFormField(institutionTypes), isPlatformAdmin);
-		fields.add(institutionType);
-		institutionFields.add(institutionType);
-		
-		assetsRepositoryUUID = new KornellFormFieldWrapper("UUID do repositório", formHelper.createTextBoxFormField(institution.getAssetsRepositoryUUID()), isPlatformAdmin);
-		fields.add(assetsRepositoryUUID);
-		institutionFields.add(assetsRepositoryUUID);
-		
 		baseURL = new KornellFormFieldWrapper("URL Base", formHelper.createTextBoxFormField(institution.getBaseURL()), isPlatformAdmin);
 		fields.add(baseURL);
 		institutionFields.add(baseURL);
 		
-		final ListBox billingTypes = new ListBox();
-		billingTypes.addItem("Mensal", BillingType.monthly.toString());
-		billingTypes.addItem("Matrícula", BillingType.enrollment.toString());
-		if (!isCreationMode) {
-			billingTypes.setSelectedValue(institution.getBillingType().toString());
+		if(isPlatformAdmin){		
+			final ListBox institutionTypes = new ListBox();
+			institutionTypes.addItem("Padrão", InstitutionType.DEFAULT.toString());
+			institutionTypes.addItem("Dashboard", InstitutionType.DASHBOARD.toString());
+			if (!isCreationMode) {
+				institutionTypes.setSelectedValue(institution.getInstitutionType().toString());
+			}
+			institutionType = new KornellFormFieldWrapper("Tipo de Instituição", new ListBoxFormField(institutionTypes), isPlatformAdmin);
+			fields.add(institutionType);
+			institutionFields.add(institutionType);
+			
+			assetsRepositoryUUID = new KornellFormFieldWrapper("UUID do repositório", formHelper.createTextBoxFormField(institution.getAssetsRepositoryUUID()), isPlatformAdmin);
+			fields.add(assetsRepositoryUUID);
+			institutionFields.add(assetsRepositoryUUID);
+			
+			final ListBox billingTypes = new ListBox();
+			billingTypes.addItem("Mensal", BillingType.monthly.toString());
+			billingTypes.addItem("Matrícula", BillingType.enrollment.toString());
+			if (!isCreationMode) {
+				billingTypes.setSelectedValue(institution.getBillingType().toString());
+			}
+			billingType = new KornellFormFieldWrapper("Tipo de Cobrança", new ListBoxFormField(billingTypes), isPlatformAdmin);
+			fields.add(billingType);
+			institutionFields.add(billingType);
 		}
-		billingType = new KornellFormFieldWrapper("Tipo de Cobrança", new ListBoxFormField(billingTypes), isPlatformAdmin);
-		fields.add(billingType);
-		institutionFields.add(billingType);
-
-		demandsPersonContactDetails = new KornellFormFieldWrapper("Exige Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isDemandsPersonContactDetails()), isPlatformAdmin);
+		
+		demandsPersonContactDetails = new KornellFormFieldWrapper("Exige Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isDemandsPersonContactDetails()), isInstitutionAdmin);
 		fields.add(demandsPersonContactDetails);
 		institutionFields.add(demandsPersonContactDetails);
 		((CheckBox)demandsPersonContactDetails.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -248,7 +250,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 			}
 		});
 
-		validatePersonContactDetails = new KornellFormFieldWrapper("Validação dos Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isValidatePersonContactDetails()), isPlatformAdmin);
+		validatePersonContactDetails = new KornellFormFieldWrapper("Validação dos Detalhes de Contato", formHelper.createCheckBoxFormField(institution.isValidatePersonContactDetails()), isInstitutionAdmin);
 		fields.add(validatePersonContactDetails);
 		institutionFields.add(validatePersonContactDetails);
 		((CheckBox)validatePersonContactDetails.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -259,7 +261,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 			}
 		});
 
-		allowRegistration = new KornellFormFieldWrapper("Permitir Registro", formHelper.createCheckBoxFormField(institution.isAllowRegistration()), isPlatformAdmin);
+		allowRegistration = new KornellFormFieldWrapper("Permitir Registro", formHelper.createCheckBoxFormField(institution.isAllowRegistration()), isInstitutionAdmin);
 		fields.add(allowRegistration);
 		institutionFields.add(allowRegistration);
 		((CheckBox)allowRegistration.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -270,18 +272,20 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 			}
 		});
 
-		allowRegistrationByUsername = new KornellFormFieldWrapper("Permitir Registro por Usuário", formHelper.createCheckBoxFormField(institution.isAllowRegistrationByUsername()), isPlatformAdmin);
-		fields.add(allowRegistrationByUsername);
-		institutionFields.add(allowRegistrationByUsername);
-		((CheckBox)allowRegistrationByUsername.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
+		if(isPlatformAdmin){
+			allowRegistrationByUsername = new KornellFormFieldWrapper("Permitir Registro por Usuário", formHelper.createCheckBoxFormField(institution.isAllowRegistrationByUsername()), isPlatformAdmin);
+			fields.add(allowRegistrationByUsername);
+			institutionFields.add(allowRegistrationByUsername);
+			((CheckBox)allowRegistrationByUsername.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Boolean> event) {
+					if(event.getValue()){
+					}
 				}
-			}
-		});
+			});
+		}
 
-		useEmailWhitelist = new KornellFormFieldWrapper("Configurar domínios para emails?", formHelper.createCheckBoxFormField(institution.isUseEmailWhitelist()), isPlatformAdmin);
+		useEmailWhitelist = new KornellFormFieldWrapper("Configurar domínios para emails?", formHelper.createCheckBoxFormField(institution.isUseEmailWhitelist()), isInstitutionAdmin);
 		fields.add(useEmailWhitelist);
 		institutionFields.add(useEmailWhitelist);
 		((CheckBox)useEmailWhitelist.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -292,7 +296,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 			}
 		});
 		
-		terms = new KornellFormFieldWrapper("Termos de Uso", formHelper.createTextAreaFormField(institution.getTerms(), 20), isPlatformAdmin);
+		terms = new KornellFormFieldWrapper("Termos de Uso", formHelper.createTextAreaFormField(institution.getTerms(), 20), isInstitutionAdmin);
 		terms.addStyleName("heightAuto");
 		terms.addStyleName("marginBottom25");
 		fields.add(terms);
@@ -303,7 +307,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		if(institution.getTimeZone() != null){
 			timeZones.setSelectedValue(institution.getTimeZone());
 		}
-		timeZone = new KornellFormFieldWrapper("Fuso horário", new ListBoxFormField(timeZones), isPlatformAdmin);
+		timeZone = new KornellFormFieldWrapper("Fuso horário", new ListBoxFormField(timeZones), isInstitutionAdmin);
 		fields.add(timeZone);
 		institutionFields.add(timeZone);
 		
@@ -335,7 +339,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) {
 		formHelper.clearErrors(fields);
-		if (isPlatformAdmin && validateFields()) {
+		if (isInstitutionAdmin && validateFields()) {
 			LoadingPopup.show();
 			Institution institution = getInstitutionInfoFromForm();
 			presenter.updateInstitution(institution);

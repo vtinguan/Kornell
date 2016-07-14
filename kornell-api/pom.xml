@@ -24,7 +24,7 @@
 		<buildNumber>Development Build</buildNumber>
 		<scala.version>2.11.7</scala.version>
 		<aws.sdk.version>1.10.27</aws.sdk.version>
-		<version.swarm>1.0.0.Beta7</version.swarm>
+		<version.swarm>1.0.0.Final</version.swarm>
 		<jasper.version>5.0.4</jasper.version>
 	</properties>
 
@@ -43,12 +43,6 @@
 			<name>Sonatype OSS Maven repository</name>
 			<url>http://oss.sonatype.org/content/groups/public/</url>
 		</repository>
-		<repository>
-			<id>newrelic</id>
-			<name>newrelic</name>
-			<url>http://download.newrelic.com/</url>
-		</repository>
-
 	</repositories>
 
 	<pluginRepositories>
@@ -99,34 +93,19 @@
 			<version>${scala.version}</version>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-reflect</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
-		-->
-		<!-- 
-		<dependency>
-			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest_2.11</artifactId>
-			<version>2.2.6</version>
-		</dependency>
- 		-->
-		<!--
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<version>${resteasy.version}</version>
-		</dependency>
-		--> 
+		<!-- <dependency> <groupId>org.scala-lang</groupId> <artifactId>scala-reflect</artifactId> 
+			<version>${scala.version}</version> </dependency> -->
+		<!-- <dependency> <groupId>org.scalatest</groupId> <artifactId>scalatest_2.11</artifactId> 
+			<version>2.2.6</version> </dependency> -->
+		<!-- <dependency> <groupId>org.jboss.resteasy</groupId> <artifactId>resteasy-jaxrs</artifactId> 
+			<version>${resteasy.version}</version> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
@@ -181,22 +160,6 @@
 			<version>1.9.24</version>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>com.newrelic.agent.java</groupId>
-			<artifactId>newrelic-agent</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.newrelic.agent.java</groupId>
-			<artifactId>newrelic-api</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		-->
-
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -233,13 +196,8 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
-			<version>1.0.2.Final</version>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>org.jboss.spec.javax.ejb</groupId> <artifactId>jboss-ejb-api_3.1_spec</artifactId> 
+			<version>1.0.2.Final</version> </dependency> -->
 
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
@@ -259,7 +217,6 @@
 			<scope>compile</scope>
 			<type>pom</type>
 		</dependency>
-
 	</dependencies>
 
 	<build>

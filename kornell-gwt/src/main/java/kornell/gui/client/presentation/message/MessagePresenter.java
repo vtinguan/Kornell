@@ -252,6 +252,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					chatThreadMessageTOs.addAll(to.getChatThreadMessageTOs());
 					view.addMessagesToThreadPanel(to, session.getCurrentUser().getPerson().getFullName(), false);
 					view.scrollToBottom();
+					view.sendSidePanelItemToTop(selectedChatThreadInfo.getChatThreadUUID());
 					LoadingPopup.hide();
 				}
 			});

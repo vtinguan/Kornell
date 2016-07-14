@@ -310,7 +310,7 @@ object ChatThreadsRepo {
 					| t.active = true 
 				| ) as threadMessages
 				| group by chatThreadUUID
-				| order by unreadMessages desc, lastSentAt desc
+				| order by lastSentAt desc
 		    """.map[UnreadChatThreadTO](toUnreadChatThreadTO))
   }
   
