@@ -84,14 +84,14 @@ class ReportResource {
         val enrollmentUUIDs = {
           if(people != null && people.size > 0) {
             var enrollmentUUIDsVar = ""
-		    for (i <- 0 until people.size) {
-		      val person = people.get(i)
-		      val enrollmentUUID = EnrollmentsRepo.byCourseClassAndUsername(courseClassUUID, person.getUsername)
-		      if(enrollmentUUID.isDefined){
-		          if(enrollmentUUIDsVar.length != 0) enrollmentUUIDsVar += ","
-		    	  enrollmentUUIDsVar += "'" + enrollmentUUID.get + "'"
-		      }
-		    }
+    		    for (i <- 0 until people.size) {
+    		      val person = people.get(i)
+    		      val enrollmentUUID = EnrollmentsRepo.byCourseClassAndUsername(courseClassUUID, person.getUsername)
+    		      if(enrollmentUUID.isDefined){
+    		        if(enrollmentUUIDsVar.length != 0) enrollmentUUIDsVar += ","
+    		    	  enrollmentUUIDsVar += "'" + enrollmentUUID.get + "'"
+    		      }
+    		    }
             enrollmentUUIDsVar
           }
           else null
@@ -166,9 +166,17 @@ class ReportResource {
 	    	resp.setContentType("application/pdf")
 	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
 	  }
-  }.requiring(isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
-     .or(isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID), AccessDeniedErr())
-  .   or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
+  }.requiring(isPlatformAdmin(getInstitutionUUID(courseUUID, courseClassUUID)), AccessDeniedErr())
+     .or(isInstitutionAdmin(getInstitutionUUID(courseUUID, courseClassUUID)), AccessDeniedErr())
+     .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
+     
+  def getInstitutionUUID(courseUUID: String, courseClassUUID: String) = {
+    if(courseUUID != null){
+      CourseRepo(courseUUID).get.getInstitutionUUID
+    } else {
+      CourseClassRepo(courseClassUUID).get.getInstitutionUUID
+    }
+  }
 
   @GET
   @Path("/courseClassAudit")
