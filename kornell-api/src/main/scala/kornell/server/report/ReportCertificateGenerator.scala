@@ -80,8 +80,8 @@ object ReportCertificateGenerator {
       join Institution i on i.uuid = cc.institution_uuid 
       where e.certifiedAt is not null and  """ +
 		s"""cc.uuid = '$courseClassUUID' """
-	if(enrollments != null)
-		sql += s"""and e.uuid in ( $enrollments )"""
+	  if(enrollments != null)
+		  sql += s"""and e.uuid in ( $enrollments )"""
     if (sql.contains("--")) throw new EntityConflictException("invalidValue")
     val pstmt = new PreparedStmt(sql,List())    
     pstmt.map[CertificateInformationTO](toCertificateInformationTO)
