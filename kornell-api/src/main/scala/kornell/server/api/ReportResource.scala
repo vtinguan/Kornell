@@ -88,7 +88,7 @@ class ReportResource {
     		      val person = people.get(i)
     		      val enrollmentUUID = EnrollmentsRepo.byCourseClassAndUsername(courseClassUUID, person.getUsername)
     		      if(enrollmentUUID.isDefined){
-    		          if(enrollmentUUIDsVar.length != 0) enrollmentUUIDsVar += ","
+    		        if(enrollmentUUIDsVar.length != 0) enrollmentUUIDsVar += ","
     		    	  enrollmentUUIDsVar += "'" + enrollmentUUID.get + "'"
     		      }
     		    }
@@ -166,11 +166,17 @@ class ReportResource {
 	    	resp.setContentType("application/pdf")
 	    ReportCourseClassGenerator.generateCourseClassReport(courseUUID, courseClassUUID, fType)
 	  }
-  }.requiring(if(courseClassUUID != null){ isPlatformAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID)
-       } else {isPlatformAdmin(CourseRepo(courseUUID).get.getInstitutionUUID)}, AccessDeniedErr())
-     .or(if(courseClassUUID != null){ isInstitutionAdmin(CourseClassRepo(courseClassUUID).get.getInstitutionUUID)
-       } else {isInstitutionAdmin(CourseRepo(courseUUID).get.getInstitutionUUID)}, AccessDeniedErr())
+  }.requiring(isPlatformAdmin(getInstitutionUUID(courseUUID, courseClassUUID)), AccessDeniedErr())
+     .or(isInstitutionAdmin(getInstitutionUUID(courseUUID, courseClassUUID)), AccessDeniedErr())
      .or(isCourseClassAdmin(courseClassUUID), AccessDeniedErr()).get
+     
+  def getInstitutionUUID(courseUUID: String, courseClassUUID: String) = {
+    if(courseUUID != null){
+      CourseRepo(courseUUID).get.getInstitutionUUID
+    } else {
+      CourseClassRepo(courseClassUUID).get.getInstitutionUUID
+    }
+  }
 
   @GET
   @Path("/courseClassAudit")
