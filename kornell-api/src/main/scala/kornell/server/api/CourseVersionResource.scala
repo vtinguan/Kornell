@@ -37,7 +37,7 @@ class CourseVersionResource(uuid: String) {
    
    @GET
    @Path("uploadUrl")
-   @Produces(Array("text/plain"))
+   @Produces(Array("application/octet-stream"))
    def getUploadUrl : String = {
     CourseVersionUploadService.getUploadUrl(uuid)
   }
