@@ -1121,6 +1121,27 @@
 		}
 	}
 }*/
+.fileUploadPanel input {
+  color: #bec1c3;
+  font-size: 14px;
+  line-height: 25px !important;
+  padding-top: 6px;
+  float: left;
+}
+.fileUploadPanel a {
+  font-size: 18px;
+  color: #bec1c3 !important;
+  text-align: right;
+  line-height: 22px;
+  padding-top: 6px;
+  display: block;
+  float: left;
+  margin-left: 30px;
+}
+.fileUploadPanel .btnStandard {
+  float: left;
+  margin-top: 7px;
+}
 .rolesAdmin .multiSelect {
   border-bottom: 1px solid #474747;
 }
@@ -1160,6 +1181,9 @@
   float: left;
   margin-left: 15px;
   margin-top: 92px;
+}
+.multiSelect .fileUploadPanel {
+  margin-bottom: 30px;
 }
 .multiSelect .standardButtonBar {
   padding-left: 100px;
@@ -3552,7 +3576,8 @@ a {
 }
 .deanHome .courseClassConfig,
 .deanHome .courseClassReports,
-.deanHome .courseClassMessages {
+.deanHome .courseClassMessages,
+.deanHome .deanWrapper {
   width: 962px;
   margin: 0 auto;
 }

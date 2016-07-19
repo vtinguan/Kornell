@@ -74,6 +74,10 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	Tab adminsTab;
 	@UiField
 	FlowPanel adminsPanel;
+	@UiField
+	Tab assetsTab;
+	@UiField
+	FlowPanel assetsPanel;
 	
 	@UiField
 	HTMLPanel titleEdit;
@@ -102,6 +106,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	private List<KornellFormFieldWrapper> fields;
 	private GenericInstitutionReportsView reportsView;
 	private GenericInstitutionAdminsView adminsView;
+	private GenericInstitutionAssetsView assetsView;
 	private GenericInstitutionHostnamesView hostnamesView;
 	private GenericInstitutionEmailWhitelistView emailWhitelistView;
 	private EventBus bus;
@@ -153,6 +158,13 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 					buildAdminsView();
 				}
 			});
+			
+			assetsTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildAssetsView();
+				}
+			});
 
 
 			buildReportsView();
@@ -189,6 +201,12 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		adminsView = new GenericInstitutionAdminsView(session, presenter, institution);
 		adminsPanel.clear();
 		adminsPanel.add(adminsView);
+	}
+
+	public void buildAssetsView() {
+		assetsView = new GenericInstitutionAssetsView(session, presenter, institution);
+		assetsPanel.clear();
+		assetsPanel.add(assetsView);
 	}
 
 	public void initData() {
