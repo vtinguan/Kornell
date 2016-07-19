@@ -28,8 +28,8 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 	Place defaultPlace;
 	private ViewFactory viewFactory;
 
-	public AdminCourseVersionPresenter(KornellSession session,
-			PlaceController placeController, EventBus bus, Place defaultPlace, ViewFactory viewFactory) {
+	public AdminCourseVersionPresenter(KornellSession session, PlaceController placeController, EventBus bus,
+			Place defaultPlace, ViewFactory viewFactory) {
 		this.session = session;
 		this.placeController = placeController;
 		this.bus = bus;
@@ -42,17 +42,15 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 	private void init() {
 		if (session.isPlatformAdmin()) {
 			view = viewFactory.getAdminCourseVersionView();
-			if(view.getPresenter() == null){
-				view.setPresenter(this); 
-			}  
+			if (view.getPresenter() == null) {
+				view.setPresenter(this);
+			}
 		} else {
-			logger.warning("Hey, only admins are allowed to see this! "
-					+ this.getClass().getName());
+			logger.warning("Hey, only admins are allowed to see this! " + this.getClass().getName());
 			placeController.goTo(defaultPlace);
 		}
 	}
 
-	
 	@Override
 	public Widget asWidget() {
 		return view.asWidget();
@@ -64,36 +62,38 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 
 	@Override
 	public void upsertCourseVersion(CourseVersion courseVersion) {
-		if(courseVersion.getUUID() == null){
+		if (courseVersion.getUUID() == null) {
 			session.courseVersions().create(courseVersion, new Callback<CourseVersion>() {
 				@Override
 				public void ok(CourseVersion courseVersion) {
-						LoadingPopup.hide();
-						KornellNotification.show("Versão de curso criada com sucesso!");
-						PlaceUtils.reloadCurrentPlace(bus, placeController);
-				}		
-				
-				@Override
-				public void conflict(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 2500);
+					KornellNotification.show("Versão de curso criada com sucesso!");
+					PlaceUtils.reloadCurrentPlace(bus, placeController);
+				}
+
+				@Override
+				public void conflict(KornellErrorTO kornellErrorTO) {
+					LoadingPopup.hide();
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR,
+							2500);
 				}
 			});
 		} else {
 			session.courseVersion(courseVersion.getUUID()).update(courseVersion, new Callback<CourseVersion>() {
 				@Override
 				public void ok(CourseVersion courseVersion) {
-						LoadingPopup.hide();
-						KornellNotification.show("Alterações salvas com sucesso!");
-						placeController.goTo(new AdminCourseVersionsPlace());
-				}		
-				
-				@Override
-				public void conflict(KornellErrorTO kornellErrorTO){
 					LoadingPopup.hide();
-					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR, 2500);
+					KornellNotification.show("Alterações salvas com sucesso!");
+					placeController.goTo(new AdminCourseVersionsPlace());
+				}
+
+				@Override
+				public void conflict(KornellErrorTO kornellErrorTO) {
+					LoadingPopup.hide();
+					KornellNotification.show(KornellConstantsHelper.getErrorMessage(kornellErrorTO), AlertType.ERROR,
+							2500);
 				}
 			});
 		}
-  }
+	}
 }

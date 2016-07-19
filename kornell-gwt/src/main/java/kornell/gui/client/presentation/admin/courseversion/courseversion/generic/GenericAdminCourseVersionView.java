@@ -19,6 +19,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -106,6 +107,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		btnCancel.setText("Cancelar".toUpperCase());	
 
 		btnUploadOk.setText("Upload".toUpperCase());
+		uploadInput.setId("testgg");
 		
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
@@ -319,9 +321,25 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	
 	@UiHandler("btnUploadOk")
 	void doUpload(ClickEvent e) {
-//		uploadInput.getFilename();
-//		uploadInput.get
+		session.courseVersion(courseVersionUUID).getUploadURL(new Callback<String>() {
+			@Override
+			public void ok(String url) {
+				Window.alert(url);
+				getFile(url);
+			}
+		});		
 	}
+	
+	public static native void getFile(String url) /*-{
+		var file = $wnd.document.getElementById("testgg").files[0];
+		var formData = new FormData();
+		formData.append('file', file);
+		alert(url);
+		var req = new XMLHttpRequest();
+		req.open('PUT', url);
+		req.send(formData);
+		
+	}-*/;
 
 	private CourseVersion getCourseVersionInfoFromForm() {
 		CourseVersion version = courseVersion;
@@ -354,5 +372,4 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	public Presenter getPresenter() {
 		return presenter;
 	}
-
 }
