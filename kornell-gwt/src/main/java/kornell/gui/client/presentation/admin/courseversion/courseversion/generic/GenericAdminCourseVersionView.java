@@ -325,7 +325,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		session.courseVersion(courseVersionUUID).getUploadURL(new Callback<String>() {
 			@Override
 			public void ok(String url) {
-				Window.alert(url);
 				getFile(url);
 			}
 		});		
@@ -333,12 +332,10 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	
 	public static native void getFile(String url) /*-{
 		var file = $wnd.document.getElementById("testgg").files[0];
-		var formData = new FormData();
-		formData.append('file', file);
-		alert(url);
 		var req = new XMLHttpRequest();
 		req.open('PUT', url);
-		req.send(formData);
+		req.setRequestHeader("Content-type", "application/zip");
+		req.send(file);
 		
 	}-*/;
 

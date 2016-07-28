@@ -32,6 +32,7 @@ object CourseVersionUploadService {
     val presignedRequest = new GeneratePresignedUrlRequest(repo.getBucketName, path)
     presignedRequest.setMethod(HttpMethod.PUT)
     presignedRequest.setExpiration(new DateTime().plusMinutes(1).toDate)
+    presignedRequest.setContentType("application/zip")
     s3.generatePresignedUrl(presignedRequest).toString
   }
 }
