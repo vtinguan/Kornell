@@ -42,7 +42,7 @@ public class AdminCourseVersionsPresenter implements AdminCourseVersionsView.Pre
 	}
 
 	private void init() {
-		if (session.isPlatformAdmin()) {
+		if (session.isInstitutionAdmin()) {
 			view = getView();
 			view.setPresenter(this);
 			LoadingPopup.show();

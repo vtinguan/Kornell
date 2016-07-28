@@ -69,6 +69,7 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 	private HashMap<String, Label> sidePanelItemsMap;
 	private TextBox txtSearch;
 	private Timer updateTimer;
+	private Label currentLabel;
 	private com.github.gwtbootstrap.client.ui.Button btnClear;
 	
 
@@ -217,6 +218,8 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 					label.addStyleName("selected");
 					presenter.threadClicked(unreadChatThreadTO);
 					setLabelContent(unreadChatThreadTO, label, true, currentUserFullName);
+					
+					currentLabel = label;
 				}
 			});
 			if(unreadChatThreadTO.getChatThreadUUID().equals(selectedChatThreadUUID)){
@@ -229,6 +232,15 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 			sideItems.add(label);
 		}
 		filter();
+	}
+
+	@Override
+	public void sendSidePanelItemToTop(String chatThreadUUID) {
+		if(currentLabel != null && sidePanel != null){
+			if(sidePanel.remove(currentLabel)){
+				sidePanel.insert(currentLabel, 1);
+			}
+		}
 	}
 	
 	private String getThreadTitle(final UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean lineBreak) {

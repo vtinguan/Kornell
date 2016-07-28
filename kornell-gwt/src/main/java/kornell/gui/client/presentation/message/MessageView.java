@@ -27,4 +27,5 @@ public interface MessageView  extends IsWidget {
 	void setPlaceholder(String placeholder);
 	void setMessagePanelType(MessagePanelType messagePanelType);
 	void displayThreadPanel(boolean display);
+	void sendSidePanelItemToTop(String chatThreadUUID);
 }

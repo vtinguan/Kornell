@@ -26,7 +26,6 @@
 		<aws.sdk.version>1.10.77</aws.sdk.version>
 		<version.swarm>1.0.0.Final</version.swarm>
 		<jasper.version>5.0.4</jasper.version>
-		<java.opts>-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8</java.opts>
 	</properties>
 
 	<repositories>
@@ -44,12 +43,6 @@
 			<name>Sonatype OSS Maven repository</name>
 			<url>http://oss.sonatype.org/content/groups/public/</url>
 		</repository>
-		<repository>
-			<id>newrelic</id>
-			<name>newrelic</name>
-			<url>http://download.newrelic.com/</url>
-		</repository>
-
 	</repositories>
 
 	<pluginRepositories>
@@ -100,27 +93,12 @@
 			<version>${scala.version}</version>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-reflect</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
-		-->
-		<!--
-		<dependency>
-			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest_2.11</artifactId>
-			<version>2.2.6</version>
-		</dependency>
- 		-->
-		<!--
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<version>${resteasy.version}</version>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>org.scala-lang</groupId> <artifactId>scala-reflect</artifactId> 
+			<version>${scala.version}</version> </dependency> -->
+		<!-- <dependency> <groupId>org.scalatest</groupId> <artifactId>scalatest_2.11</artifactId> 
+			<version>2.2.6</version> </dependency> -->
+		<!-- <dependency> <groupId>org.jboss.resteasy</groupId> <artifactId>resteasy-jaxrs</artifactId> 
+			<version>${resteasy.version}</version> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -182,22 +160,6 @@
 			<version>${aws.sdk.version}</version>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>com.newrelic.agent.java</groupId>
-			<artifactId>newrelic-agent</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.newrelic.agent.java</groupId>
-			<artifactId>newrelic-api</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		-->
-
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -234,13 +196,8 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
-			<version>1.0.2.Final</version>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>org.jboss.spec.javax.ejb</groupId> <artifactId>jboss-ejb-api_3.1_spec</artifactId> 
+			<version>1.0.2.Final</version> </dependency> -->
 
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
@@ -260,7 +217,6 @@
 			<scope>compile</scope>
 			<type>pom</type>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -268,20 +224,9 @@
 		<sourceDirectory>src/main/scala</sourceDirectory>
 		<testSourceDirectory>src/test/scala</testSourceDirectory>
 
-		<resources>
-			<resource>
-				<directory>src/main/eb-resources</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
-			</resource>
-		</resources>
-
 		<plugins>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId>
-				<version>2.1</version> <configuration> <source>1.8</source> <target>1.8</target>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> 
+				<version>2.1</version> <configuration> <source>1.8</source> <target>1.8</target> 
 				</configuration> </plugin> -->
 
 			<plugin>
@@ -298,9 +243,9 @@
 				</executions>
 				<configuration>
 					<scalaVersion>${scala.version}</scalaVersion>
-					<!-- <javacArgs> <javacArg>-source 1.7</javacArg> <javacArg>-target
+					<!-- <javacArgs> <javacArg>-source 1.7</javacArg> <javacArg>-target 
 						1.7</javacArg> </javacArgs> -->
-					<!-- <args> <arg>-make:transitive</arg> <arg>-dependencyfile</arg> <arg>${project.build.directory}/.scala_dependencies</arg>
+					<!-- <args> <arg>-make:transitive</arg> <arg>-dependencyfile</arg> <arg>${project.build.directory}/.scala_dependencies</arg> 
 						</args> <jvmArgs> <jvmArg>-Xms64m</jvmArg> <jvmArg>-Xmx1024m</jvmArg> </jvmArgs> -->
 				</configuration>
 			</plugin>
@@ -359,11 +304,11 @@
 					<packagingExcludes>WEB-INF/lib/mysql-connector-java-5.1.25.jar</packagingExcludes>
 				</configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.3.1</version> <executions> <execution> <id>enforce-versions</id>
-				<goals> <goal>enforce</goal> </goals> <configuration> <rules> <requireMavenVersion>
-				<version>[3.0.4,)</version> </requireMavenVersion> <requireJavaVersion> <version>[1.7,)</version>
-				</requireJavaVersion> </rules> </configuration> </execution> </executions>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-enforcer-plugin</artifactId> 
+				<version>1.3.1</version> <executions> <execution> <id>enforce-versions</id> 
+				<goals> <goal>enforce</goal> </goals> <configuration> <rules> <requireMavenVersion> 
+				<version>[3.0.4,)</version> </requireMavenVersion> <requireJavaVersion> <version>[1.7,)</version> 
+				</requireJavaVersion> </rules> </configuration> </execution> </executions> 
 				</plugin> -->
 
 
@@ -403,7 +348,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>

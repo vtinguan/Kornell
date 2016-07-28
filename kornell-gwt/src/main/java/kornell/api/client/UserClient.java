@@ -21,7 +21,7 @@ public class UserClient extends RESTClient {
 			if(dots.length > 0){
 				String id = dots[0];
 				String[] slashes = id.split("-");
-				if (slashes.length > 0)
+				if (slashes.length > 0) //@TODO and is followed by only numbers
 					name = slashes[0];
 				}
 		}

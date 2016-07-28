@@ -9,8 +9,7 @@ public class CheckBoxFormField implements KornellFormField<CheckBox> {
 	
 	public CheckBoxFormField(CheckBox field) {
 		this.field = field;
-		field.addStyleName("field");
-		field.addStyleName("textField");
+		field.addStyleName("input-switch");
 	}
 
 	@Override

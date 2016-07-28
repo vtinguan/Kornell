@@ -83,7 +83,7 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 		int index = page.getIndex();
 		page.setVisited(index <= event.getPagesVisitedCount().intValue());
 		// enable the anchor until the next one after the current
-		display(index <= (event.getPagesVisitedCount() + 1));
+		display(index == event.getPagesVisitedCount());
 	}
 	
 }
