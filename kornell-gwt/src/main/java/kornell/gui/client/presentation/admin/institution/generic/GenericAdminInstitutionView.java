@@ -155,14 +155,15 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 				}
 			});
 
-
-			buildReportsView();
-			reportsTab.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					buildReportsView();
-				}
-			});
+			if(isPlatformAdmin){
+				buildReportsView();
+				reportsTab.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						buildReportsView();
+					}
+				});
+			}
 		}
 	}
 
@@ -323,11 +324,13 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		if (!formHelper.isLengthValid(fullName.getFieldPersistText(), 2, 50)) {
 			fullName.setError("Insira o nome da instituição.");
 		}
-		if (!formHelper.isLengthValid(assetsRepositoryUUID.getFieldPersistText(), 10, 200)) {
-			assetsRepositoryUUID.setError("Insira o UUID do repositório.");
-		}
 		if (!formHelper.isLengthValid(baseURL.getFieldPersistText(), 10, 200)) {
 			baseURL.setError("Insira a URL base.");
+		}
+		if(isPlatformAdmin){
+			if (!formHelper.isLengthValid(assetsRepositoryUUID.getFieldPersistText(), 10, 200)) {
+				assetsRepositoryUUID.setError("Insira o UUID do repositório.");
+			}
 		}
 		if(!formHelper.isLengthValid(timeZone.getFieldPersistText(), 2, 100)){
 			timeZone.setError("Escolha o fuso horário.");
@@ -351,16 +354,18 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setName(name.getFieldPersistText());
 		institution.setFullName(fullName.getFieldPersistText());
 		institution.setTerms(terms.getFieldPersistText());
-		institution.setAssetsRepositoryUUID(assetsRepositoryUUID.getFieldPersistText());
 		institution.setBaseURL(baseURL.getFieldPersistText());
-		institution.setBillingType(BillingType.valueOf(billingType.getFieldPersistText()));
-		institution.setInstitutionType(InstitutionType.valueOf(institutionType.getFieldPersistText()));
 		institution.setDemandsPersonContactDetails(demandsPersonContactDetails.getFieldPersistText().equals("true"));
 		institution.setValidatePersonContactDetails(validatePersonContactDetails.getFieldPersistText().equals("true"));
 		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));
-		institution.setAllowRegistrationByUsername(allowRegistrationByUsername.getFieldPersistText().equals("true"));
 		institution.setUseEmailWhitelist(useEmailWhitelist.getFieldPersistText().equals("true"));
 		institution.setTimeZone(timeZone.getFieldPersistText());
+		if(isPlatformAdmin){
+			institution.setAssetsRepositoryUUID(assetsRepositoryUUID.getFieldPersistText());
+			institution.setBillingType(BillingType.valueOf(billingType.getFieldPersistText()));
+			institution.setInstitutionType(InstitutionType.valueOf(institutionType.getFieldPersistText()));
+			institution.setAllowRegistrationByUsername(allowRegistrationByUsername.getFieldPersistText().equals("true"));
+		}
 		return institution;
 	}
 

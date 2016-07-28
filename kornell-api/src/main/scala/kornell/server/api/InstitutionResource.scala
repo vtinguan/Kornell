@@ -32,6 +32,7 @@ class InstitutionResource(uuid: String) {
   def get =  {
     InstitutionRepo(uuid).get
    }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+   .or(isInstitutionAdmin(uuid), AccessDeniedErr())
    .or(isControlPanelAdmin, AccessDeniedErr()).get
   
   @PUT
@@ -40,6 +41,7 @@ class InstitutionResource(uuid: String) {
   def update(institution: Institution) = {
     InstitutionRepo(uuid).update(institution)
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
+  .or(isInstitutionAdmin(uuid), AccessDeniedErr())
   .or(isControlPanelAdmin, AccessDeniedErr()).get
   
   @GET

@@ -54,7 +54,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private boolean isCreationMode, isPlatformAdmin, isInstitutionAdmin;
+	private boolean isCreationMode, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
@@ -92,7 +92,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	public GenericAdminCourseVersionView(final KornellSession session, EventBus bus, final PlaceController placeCtrl) {
 		this.session = session;
 		this.placeCtrl = placeCtrl;
-		this.isPlatformAdmin = session.isPlatformAdmin();
 		this.isInstitutionAdmin = session.isInstitutionAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
