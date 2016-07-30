@@ -212,7 +212,7 @@
 				<executions>
 					<execution>
 						<configuration>
-							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+							<extraJvmArgs>-Xmx1024M -Xss2048k</extraJvmArgs>
 						</configuration>
 						<goals>
 							<goal>compile</goal>
@@ -291,7 +291,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.4.0</version>
+				<version>1.5.0</version>
 				<executions>
 					<execution>
 						<goals>
