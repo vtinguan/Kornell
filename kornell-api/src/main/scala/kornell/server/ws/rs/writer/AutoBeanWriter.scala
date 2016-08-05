@@ -16,6 +16,7 @@ import kornell.server.util.Err
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response
 import java.util.logging.Logger
+import java.io.OutputStreamWriter
 
 @Provider
 class AutoBeanWriter extends MessageBodyWriter[Any] {
@@ -55,7 +56,11 @@ class AutoBeanWriter extends MessageBodyWriter[Any] {
   private def outputPayload(content: Any,out:OutputStream) = {    
     val bean = AutoBeanUtils.getAutoBean(content)
     val payload = AutoBeanCodex.encode(bean).getPayload
-    //println("Payloading "+content +" = " +payload)
-    out.write(payload.getBytes)
+    val writer = new OutputStreamWriter(out, "UTF-8");
+    writer.write(payload)
+    writer.flush()
+    writer.close()
+    
   }
+  
 }

@@ -31,6 +31,7 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.EntityFactory;
+import kornell.core.entity.InstitutionType;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
 import kornell.gui.client.presentation.admin.course.courses.AdminCoursesPlace;
@@ -48,7 +49,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private boolean isCreationMode, isPlatformAdmin;
+	private boolean isCreationMode, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
@@ -99,7 +100,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.bus = bus;
-		this.isPlatformAdmin = session.isPlatformAdmin();
+		isInstitutionAdmin = session.isInstitutionAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// i18n
@@ -153,7 +154,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		titleEdit.setVisible(!isCreationMode);
 		titleCreate.setVisible(isCreationMode);
 
-		if (session.isPlatformAdmin()) {
+		if (session.isInstitutionAdmin()) {
 			buildReportsView();
 			reportsTab.addClickHandler(new ClickHandler() {
 				@Override
@@ -168,31 +169,35 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 
 		courseFields.clear();
 		
-		btnOK.setVisible(isPlatformAdmin|| isCreationMode);
-		btnCancel.setVisible(isPlatformAdmin);		
+		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
+		btnCancel.setVisible(isInstitutionAdmin);		
 
-		code = new KornellFormFieldWrapper("Código", formHelper.createTextBoxFormField(course.getCode()), isPlatformAdmin);
+		code = new KornellFormFieldWrapper("Código", formHelper.createTextBoxFormField(course.getCode()), isInstitutionAdmin);
 		fields.add(code);
 		courseFields.add(code);
 		
-		title = new KornellFormFieldWrapper("Nome", formHelper.createTextBoxFormField(course.getTitle()), isPlatformAdmin);
+		title = new KornellFormFieldWrapper("Nome", formHelper.createTextBoxFormField(course.getTitle()), isInstitutionAdmin);
 		fields.add(title);
 		courseFields.add(title);
 
-		description = new KornellFormFieldWrapper("Descrição", formHelper.createTextBoxFormField(course.getDescription()), isPlatformAdmin);
+		description = new KornellFormFieldWrapper("Descrição", formHelper.createTextAreaFormField(course.getDescription(), 6), isInstitutionAdmin);
+		description.addStyleName("heightAuto");
+		description.addStyleName("marginBottom25");
 		fields.add(description);
 		courseFields.add(description);
 
-		childCourse = new KornellFormFieldWrapper("Curso Filho?", formHelper.createCheckBoxFormField(course.isChildCourse()), isPlatformAdmin);
-		fields.add(childCourse);
-		courseFields.add(childCourse);
-		((CheckBox)childCourse.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
+		if(InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
+			childCourse = new KornellFormFieldWrapper("Curso Filho?", formHelper.createCheckBoxFormField(course.isChildCourse()), isInstitutionAdmin);
+			fields.add(childCourse);
+			courseFields.add(childCourse);
+			((CheckBox)childCourse.getFieldWidget()).addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Boolean> event) {
+					if(event.getValue()){
+					}
 				}
-			}
-		});
+			});
+		}
 		
 		courseFields.add(formHelper.getImageSeparator());
 
@@ -229,7 +234,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) {
 		formHelper.clearErrors(fields);
-		if (isPlatformAdmin && validateFields()) {
+		if (isInstitutionAdmin && validateFields()) {
 			LoadingPopup.show();
 			Course course = getCourseInfoFromForm();
 			presenter.upsertCourse(course);
@@ -240,7 +245,9 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		course.setCode(code.getFieldPersistText());
 		course.setTitle(title.getFieldPersistText());
 		course.setDescription(description.getFieldPersistText());
-		course.setChildCourse(childCourse.getFieldPersistText().equals("true"));
+		if(InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
+			course.setChildCourse(childCourse.getFieldPersistText().equals("true"));
+		}
 		course.setInstitutionUUID(session.getInstitution().getUUID());
 		return course;
 	}

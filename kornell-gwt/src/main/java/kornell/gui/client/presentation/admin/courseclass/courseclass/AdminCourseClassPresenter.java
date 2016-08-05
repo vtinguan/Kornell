@@ -490,7 +490,9 @@ public class AdminCourseClassPresenter implements AdminCourseClassView.Presenter
 
         }
         LoadingPopup.show();
-        final int requestsThreshold = 100;
+        //send email for over 50 enrollments on DEFAULT institutions, but 3 on DASHBOARD institutions
+        //@TODO refactor this after improvements on child enrollment generation with hundreds of scorm attributes
+        final int requestsThreshold = InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType()) ? 3 : 50;
         if(enrollmentRequestsTO.getEnrollmentRequests().size() > requestsThreshold){
             if(StringUtils.isSome(session.getCurrentUser().getPerson().getEmail())){
                 KornellNotification.show("Solicitação de matrículas enviada para o servidor. Você receberá uma email em \"" + session.getCurrentUser().getPerson().getEmail() + "\" assim que a operação for concluída.", AlertType.WARNING, 20000);

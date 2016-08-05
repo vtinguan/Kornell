@@ -115,7 +115,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 
 			@Override
 			public void onClick(ClickEvent event) {
-				if (session.isPlatformAdmin()) {
+				if (session.isInstitutionAdmin()) {
 					coursesPanel.setVisible(false);
 					coursesWrapper.setVisible(false);
 					view = viewFactory.getAdminCourseView();

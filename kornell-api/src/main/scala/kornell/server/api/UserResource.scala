@@ -70,6 +70,10 @@ class UserResource(private val authRepo: AuthRepo) {
       val person = PersonRepo(token.get.getPersonUUID).first.getOrElse(null)
       userHello.setUserInfoTO(getUser(person).getOrElse(null))
       userHello.setCourseClassesTO(CourseClassesRepo.byPersonAndInstitution(person.getUUID, person.getInstitutionUUID))
+      
+      if(institution.isDefined && person.getInstitutionUUID != institution.get.getUUID){
+        throw new UnauthorizedAccessException("personDoesNotBelongToInstitution")
+      }
     }
 
     userHello
