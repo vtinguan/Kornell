@@ -101,15 +101,10 @@ object ReportCertificateGenerator {
     val assetsURL: String = composeURL(institutionURL, certificateData.head.getDistributionPrefix, "/reports") + "/"
     parameters.put("assetsURL", assetsURL) 
 	  
-  	//store one jasperfile per course
-    val fileName = Settings.tmpDir + "tmp-" + certificateData.head.getCourseVersionUUID + ".jasper"
+    val fileName = Settings.tmpDir + "tmp-" + certificateData.head.getCourseVersionUUID + (new Date).getTime + ".jasper"
     val jasperFile: File = new File(fileName)
-        
-    /*val diff = new Date().getTime - jasperFile.lastModified
-    if(diff > 7 * 24 * 60 * 60 * 1000) //delete if older than 7 days
-		  jasperFile.delete*/
 
-    if(!jasperFile.exists)
+    if(jasperFile.exists)
 		  jasperFile.delete
 		      
     try {
