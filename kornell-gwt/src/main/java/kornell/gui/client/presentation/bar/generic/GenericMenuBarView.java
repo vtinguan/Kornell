@@ -84,13 +84,11 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	@UiField
 	Button btnAdmin;
 	@UiField
-	Button btnNotifications;
-	@UiField
 	Button btnMessages;
 	@UiField
-	Button btnHelp;
+	Label messagesCount;
 	@UiField
-	Button btnMenu;
+	Button btnHelp;
 	@UiField
 	Button btnExit;
 	@UiField
@@ -101,7 +99,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private KornellSession session;
 	private EventBus bus;
 	private boolean hasEmail;
-	private Label messagesCount;
 	private int totalCount;
 	private String imgMenuBarUrl;
 	private boolean isLoaded;
@@ -221,8 +218,6 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		showButton(btnHome, isRegistrationCompleted);
 		showButton(btnFullScreen, isRegistrationCompleted);
 		showButton(btnAdmin, isRegistrationCompleted && clientFactory.getKornellSession().hasAnyAdminRole());
-		showButton(btnNotifications, false);
-		showButton(btnMenu, false);
 		showButton(btnExit, true);
 
 		if (showingPlacePanel) {
@@ -266,10 +261,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		btnAdmin.removeStyleName("btn");
 		btnHelp.removeStyleName("btn");
 		btnExit.removeStyleName("btn");
-
-		btnNotifications.removeStyleName("btn");
 		btnMessages.removeStyleName("btn");
-		btnMenu.removeStyleName("btn");
 	}
 
 	private boolean isProfileIncomplete() {
@@ -348,14 +340,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	}
 
 	private void updateUnreadCount() {
-		String labelText = totalCount > 0 ? "" + totalCount : "";
-		if (btnMessages.getWidgetCount() == 3) {
-			btnMessages.remove(2);
+		if(totalCount > 0){
+			messagesCount.removeStyleName("shy");
+			messagesCount.setText("" + totalCount);
+		} else {
+			messagesCount.addStyleName("shy");
 		}
-		this.messagesCount = new Label(labelText);
-		messagesCount.addStyleName("count");
-		messagesCount.addStyleName("countMessages");
-		btnMessages.add(messagesCount);
 		showButtons(clientFactory.getPlaceController().getWhere());
 	}
 

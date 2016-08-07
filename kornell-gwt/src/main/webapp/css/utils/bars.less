@@ -154,26 +154,40 @@
 	z-index: 1;
 	.menuBar{
 		.size (100%, @barNorthHeight);
-		.gradient (@barGradientStartColor, @barGradientEndColor);
 		.imgMenuBar{
 			float: left;
 			.marginLogo;
 		}
+		.navbar-inner {
+			.gradient (@barGradientStartColor, @barGradientEndColor);
+		    min-height: 0px;
+		    padding: 0px;
+		    border: 0;
+		    box-shadow: none;
+		    border-radius: 0px;
+		    .container-fluid{
+		    	padding: 0;
+		    }
+		}
 		.buttons{
-			float: right;
 			.menuBarButton{
 				.btnBorder;
 				@paddingTop: 10px;
-				height: @barNorthHeight - @paddingTop;
-				line-height: @barNorthHeight - (@paddingTop*2);
-				float: left;
-				text-align: center;
-				padding: 10px 14px 0px 14px;
+    			line-height: 26px;
 				font-size: 18px;
-				color: @niceTextColor !important;
-				text-decoration: none;
+    			width: 45px;
+    			height: 45px;
+				a {
+					color: @niceTextColor !important;
+					text-shadow: none;
+					&:hover {
+						.gradient (@barGradientEndColor, @barGradientEndColor);
+						text-decoration: none;
+					}
+				}
 				&:hover {
 					.gradient (@barGradientEndColor, @barGradientEndColor);
+					text-decoration: none;
 				}
 				.label{
 					background: transparent;
@@ -193,7 +207,7 @@
 					line-height: 14px;
 					color: @blackOrWhite;
 					margin-top: 5px;
-					padding: 0px 2px;
+					padding: 0px 3px;
 					&:hover{
 						text-decoration: none;
 					}
@@ -202,9 +216,16 @@
 					left: 12px;
 					top: -27px;
 				}
-				.countMessages{
-					left: 8px;
-					top: -36px;
+				.countMessages{    
+					left: -8px;
+					top: -8px;
+					display: inline;
+				}
+				.menuLabel{
+					display: none;
+				    margin-left: 15px;
+				    font-size: 15px;
+				    font-weight: normal;
 				}
 			}
 			.first{
@@ -226,11 +247,31 @@
 			text-align: center;
 		}
 	}
+	.navbar {
+    	margin-bottom: 0 !important;
+	}
 }
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 979px) {
   	.menuBarContainer .menuBar {
-  		.testEnvWarning, .imgMenuBar{
+		.collapse.in {
+			.buttons{
+				.menuLabel{
+					display: inline;
+				}
+			}
+		}
+		.nav-collapse .nav>li>a:hover, .nav-collapse .dropdown-menu a:hover {
+		    background-color: transparent;
+		}
+  		.testEnvWarning{
 			display: none;
+		}
+	}
+}
+@media screen and (max-width: 380px) {
+  	.menuBarContainer .menuBar {
+  		.imgMenuBar{
+			 width: 250px;
 		}
 	}
 }
