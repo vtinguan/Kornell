@@ -93,7 +93,7 @@ public class GenericInstitutionHostnamesView extends Composite {
 
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) {
-		if(session.isPlatformAdmin()){
+		if(session.isInstitutionAdmin()){
 			InstitutionHostNamesTO institutionHostNamesTO = toFactory.newInstitutionHostNamesTO().as();
 			List<String> institutionHostNames = new ArrayList<String>();
 			ListBox multipleSelect = simpleMultipleSelect.getMultipleSelect();

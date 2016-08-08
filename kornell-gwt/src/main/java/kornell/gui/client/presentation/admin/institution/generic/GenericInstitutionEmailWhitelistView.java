@@ -93,7 +93,7 @@ public class GenericInstitutionEmailWhitelistView extends Composite {
 
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) {
-		if(session.isPlatformAdmin()){
+		if(session.isInstitutionAdmin()){
 			InstitutionEmailWhitelistTO institutionEmailWhitelistTO = toFactory.newInstitutionEmailWhitelistTO().as();
 			List<String> domains = new ArrayList<String>();
 			ListBox multipleSelect = simpleMultipleSelect.getMultipleSelect();
