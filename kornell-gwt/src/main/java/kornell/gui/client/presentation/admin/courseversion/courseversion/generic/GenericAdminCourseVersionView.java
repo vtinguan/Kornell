@@ -19,7 +19,6 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -107,7 +106,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		btnCancel.setText("Cancelar".toUpperCase());	
 
 		btnUploadOk.setText("Upload".toUpperCase());
-		uploadInput.setId("testgg");
+		uploadInput.setId("versionUpdate");
 		
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
@@ -330,12 +329,21 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	}
 	
 	public static native void getFile(String url) /*-{
-		var file = $wnd.document.getElementById("testgg").files[0];
-		var req = new XMLHttpRequest();
-		req.open('PUT', url);
-		req.setRequestHeader("Content-type", "application/zip");
-		req.send(file);
-		
+		if ($wnd.document.getElementById("versionUpdate").files.length != 1) {
+			alert("Por favor selecione um arquivo");
+		} else {
+			@kornell.gui.client.util.view.LoadingPopup::show()();
+			var file = $wnd.document.getElementById("versionUpdate").files[0];
+			var req = new XMLHttpRequest();
+			req.open('PUT', url);
+			req.setRequestHeader("Content-type", "application/zip");
+			req.onreadystatechange = function() {
+    			if (req.readyState == 4 && req.status == 200) {
+        			@kornell.gui.client.util.view.LoadingPopup::hide()();
+    			}
+			}
+			req.send(file);
+		}
 	}-*/;
 
 	private CourseVersion getCourseVersionInfoFromForm() {
