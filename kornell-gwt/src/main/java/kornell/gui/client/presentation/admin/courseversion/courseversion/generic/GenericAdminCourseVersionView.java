@@ -330,19 +330,25 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	
 	public static native void getFile(String url) /*-{
 		if ($wnd.document.getElementById("versionUpdate").files.length != 1) {
-			alert("Por favor selecione um arquivo");
+        	@kornell.gui.client.util.view.KornellNotification::showError(Ljava/lang/String;)("Por favor selecione um arquivo");
 		} else {
 			@kornell.gui.client.util.view.LoadingPopup::show()();
 			var file = $wnd.document.getElementById("versionUpdate").files[0];
-			var req = new XMLHttpRequest();
-			req.open('PUT', url);
-			req.setRequestHeader("Content-type", "application/zip");
-			req.onreadystatechange = function() {
-    			if (req.readyState == 4 && req.status == 200) {
-        			@kornell.gui.client.util.view.LoadingPopup::hide()();
-    			}
+			if (file.name.indexOf(".zip") == -1) {
+	        	@kornell.gui.client.util.view.KornellNotification::showError(Ljava/lang/String;)("Faça o upload de um arquivo zip");
+				@kornell.gui.client.util.view.LoadingPopup::hide()();
+			} else {
+				var req = new XMLHttpRequest();
+				req.open('PUT', url);
+				req.setRequestHeader("Content-type", "application/zip");
+				req.onreadystatechange = function() {
+    				if (req.readyState == 4 && req.status == 200) {
+        				@kornell.gui.client.util.view.LoadingPopup::hide()();
+        				@kornell.gui.client.util.view.KornellNotification::show(Ljava/lang/String;)("Atualização de versão completa");
+    				}
+				}
+				req.send(file);
 			}
-			req.send(file);
 		}
 	}-*/;
 
