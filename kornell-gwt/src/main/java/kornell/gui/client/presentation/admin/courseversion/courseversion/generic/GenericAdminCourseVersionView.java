@@ -12,6 +12,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -74,9 +75,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	Button btnCancel;
 
 	@UiField
-	FileUpload uploadInput;
-	@UiField
-	Button btnUploadOk;
+	FlowPanel courseVersionUpload;
 	
 	@UiField
 	Modal confirmModal;
@@ -104,9 +103,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		// i18n
 		btnOK.setText("Salvar".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());	
-
-		btnUploadOk.setText("Upload".toUpperCase());
-		uploadInput.setId("versionUpdate");
 		
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
@@ -223,6 +219,39 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		courseVersionFields.add(formHelper.getImageSeparator());
 
 		courseVersionFields.setVisible(true);
+		
+		courseVersionUpload.addStyleName("fieldPanelWrapper fileUploadPanel");
+		FlowPanel labelPanel = new FlowPanel();
+		labelPanel.addStyleName("labelPanel");
+		Label lblLabel = new Label("Atualização de versão");
+		lblLabel.addStyleName("lblLabel");
+		labelPanel.add(lblLabel);
+		courseVersionUpload.add(labelPanel);
+
+		// Create the FileUpload component
+		FlowPanel fileUploadPanel = new FlowPanel();
+		FileUpload fileUpload = new FileUpload();
+		fileUpload.setName("uploadFormElement");
+		fileUpload.setId("versionUpdate");
+		fileUploadPanel.add(fileUpload);
+		courseVersionUpload.add(fileUpload);
+		
+	    // Add a submit button to the form
+		Button btnOK = new Button("Atualizar");
+		btnOK.addStyleName("btnAction btnStandard");
+		btnOK.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				session.courseVersion(courseVersionUUID).getUploadURL(new Callback<String>() {
+					@Override
+					public void ok(String url) {
+						getFile(url);
+					}
+				});		
+			}
+		});
+		courseVersionUpload.add(btnOK);
+
 	}
 
 	private void createCourseVersionsField(CourseVersionsTO to) {
@@ -316,16 +345,6 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 			CourseVersion courseVersion = getCourseVersionInfoFromForm();
 			presenter.upsertCourseVersion(courseVersion);
 		}
-	}
-	
-	@UiHandler("btnUploadOk")
-	void doUpload(ClickEvent e) {
-		session.courseVersion(courseVersionUUID).getUploadURL(new Callback<String>() {
-			@Override
-			public void ok(String url) {
-				getFile(url);
-			}
-		});		
 	}
 	
 	public static native void getFile(String url) /*-{

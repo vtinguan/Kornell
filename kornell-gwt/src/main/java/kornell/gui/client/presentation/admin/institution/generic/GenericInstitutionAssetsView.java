@@ -1,45 +1,28 @@
 package kornell.gui.client.presentation.admin.institution.generic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.gwtbootstrap.client.ui.FileUpload;
 import com.github.gwtbootstrap.client.ui.Form;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
-import kornell.core.entity.InstitutionAdminRole;
-import kornell.core.entity.Role;
-import kornell.core.entity.RoleCategory;
-import kornell.core.entity.RoleType;
-import kornell.core.entity.Roles;
-import kornell.core.to.RoleTO;
-import kornell.core.to.RolesTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.util.forms.formfield.PeopleMultipleSelect;
-import kornell.gui.client.util.view.KornellNotification;
-import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericInstitutionAssetsView extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, GenericInstitutionAssetsView> {

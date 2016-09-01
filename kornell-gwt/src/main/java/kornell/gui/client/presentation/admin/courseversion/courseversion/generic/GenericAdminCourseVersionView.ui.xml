@@ -8,9 +8,7 @@
 	    <b:Form ui:field="form" addStyleNames="profileForm left">
 	      <g:FlowPanel ui:field="courseVersionFields" addStyleNames="fieldsWrapper">    
 	      </g:FlowPanel>
-	      <g:FlowPanel ui:field="courseVersionUpload">
-	      	<b:FileUpload ui:field="uploadInput"></b:FileUpload>
-   	        <g:Button ui:field="btnUploadOk" addStyleNames="btnAction btnStandard"/>
+	      <g:FlowPanel ui:field="courseVersionUpload" addStyleNames="fieldsWrapper">
 	      </g:FlowPanel>  
 	      <g:FlowPanel addStyleNames="standardButtonBar">
 	        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
