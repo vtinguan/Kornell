@@ -34,6 +34,10 @@
 			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
+			<id>jasper</id>
+			<url>http://jasperreports.sourceforge.net/maven2/</url>
+		</repository>
+		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>

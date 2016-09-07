@@ -23,6 +23,7 @@ import kornell.core.to.InstitutionHostNamesTO
 import kornell.core.to.InstitutionEmailWhitelistTO
 import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
 import kornell.core.entity.ChatThreadType
+import kornell.server.repository.service.UploadService
 
 
 class InstitutionResource(uuid: String) {
@@ -112,6 +113,13 @@ class InstitutionResource(uuid: String) {
   }.requiring(isPlatformAdmin(uuid), AccessDeniedErr())
    .or(isInstitutionAdmin(uuid), AccessDeniedErr())
    .get
+   
+   @GET
+   @Path("uploadUrl/{filename}")
+   @Produces(Array("application/octet-stream"))
+   def getUploadUrl(filename: String) : String = {
+    UploadService.getInstitutionUploadUrl(uuid, filename)
+  }
 }
 
 object InstitutionResource {

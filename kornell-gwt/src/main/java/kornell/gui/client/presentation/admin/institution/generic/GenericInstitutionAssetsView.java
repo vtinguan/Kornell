@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
@@ -62,23 +63,18 @@ public class GenericInstitutionAssetsView extends Composite {
 
 	public void initData() {
 		assetsFields.clear();
-		assetsFields.add(buildFileUploadPanel("logo250x45.png", "Logo 250x45 - escura"));
-		assetsFields.add(buildFileUploadPanel("logo250x45_light.png", "Logo 250x45 - clara"));
-		assetsFields.add(buildFileUploadPanel("logo300x80.png", "Logo 300x80 - escura"));
-		assetsFields.add(buildFileUploadPanel("logo300x80_light.png", "Logo 300x80 - clara"));
-		assetsFields.add(buildFileUploadPanel("bgVitrine.jpg", "Background da Vitrine"));
-		assetsFields.add(buildFileUploadPanel("favicon.ico", "Favicon"));
+		assetsFields.add(buildFileUploadPanel("logo250x45.png", "image/png", "Logo 250x45 - escura"));
+		assetsFields.add(buildFileUploadPanel("logo250x45_light.png", "image/png", "Logo 250x45 - clara"));
+		assetsFields.add(buildFileUploadPanel("logo300x80.png", "image/png", "Logo 300x80 - escura"));
+		assetsFields.add(buildFileUploadPanel("logo300x80_light.png", "image/png", "Logo 300x80 - clara"));
+		assetsFields.add(buildFileUploadPanel("bgVitrine.jpg", "image/jpeg", "Background da Vitrine"));
+		assetsFields.add(buildFileUploadPanel("favicon.ico", "image/x-icon", "Favicon"));
 	}
 
-	private FlowPanel buildFileUploadPanel(String fileName, String label) {
+	private FlowPanel buildFileUploadPanel(final String fileName, final String contentType, String label) {
 		// Create a FormPanel and point it at a service
 	    final FormPanel form = new FormPanel();
-	    form.setAction("/institution/"+institution.getUUID()+"/asset/"+fileName);
-
-	    // Because we're going to add a FileUpload widget, we'll need to set the
-	    // form to use the POST method, and multipart MIME encoding
-	    form.setEncoding(FormPanel.ENCODING_MULTIPART);
-	    form.setMethod(FormPanel.METHOD_POST);
+	    final String elementId = fileName.replace('.', '-');
 
 	    // Create a panel to hold all of the form widgets
 		FlowPanel fieldPanelWrapper = new FlowPanel();
@@ -97,6 +93,7 @@ public class GenericInstitutionAssetsView extends Composite {
 		FlowPanel fileUploadPanel = new FlowPanel();
 		FileUpload fileUpload = new FileUpload();
 		fileUpload.setName("uploadFormElement");
+		fileUpload.setId(elementId);
 		fileUploadPanel.add(fileUpload);
 		fieldPanelWrapper.add(fileUpload);
 		
@@ -106,7 +103,12 @@ public class GenericInstitutionAssetsView extends Composite {
 		btnOK.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				form.submit();
+				session.institution(institution.getUUID()).getUploadURL(fileName, new Callback<String>() {
+					@Override
+					public void ok(String url) {
+						getFile(elementId, contentType, url);
+					}
+				});		
 			}
 		});
 		fieldPanelWrapper.add(btnOK);
@@ -142,5 +144,29 @@ public class GenericInstitutionAssetsView extends Composite {
 	    
 		return fieldPanelWrapper;
 	}
-
+	
+	public static native void getFile(String elementId, String contentType, String url) /*-{
+	if ($wnd.document.getElementById(elementId).files.length != 1) {
+    	@kornell.gui.client.util.view.KornellNotification::showError(Ljava/lang/String;)("Por favor selecione uma imagem");
+	} else {
+		@kornell.gui.client.util.view.LoadingPopup::show()();
+		var file = $wnd.document.getElementById(elementId).files[0];
+		if (file.name.indexOf(elementId.split("-")[1]) == -1) {
+        	@kornell.gui.client.util.view.KornellNotification::showError(Ljava/lang/String;)("Faça o upload de uma imagem do formato exigido");
+			@kornell.gui.client.util.view.LoadingPopup::hide()();
+		} else {
+			var req = new XMLHttpRequest();
+			req.open('PUT', url);
+			req.setRequestHeader("Content-type", contentType);
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+    				@kornell.gui.client.util.view.LoadingPopup::hide()();
+    				@kornell.gui.client.util.view.KornellNotification::show(Ljava/lang/String;)("Atualização de imagem completa");
+				}
+			}
+			req.send(file);
+		}
+	}
+}-*/;
+	
 }

@@ -13,7 +13,7 @@ import kornell.core.to.CourseVersionTO
 import kornell.server.util.AccessDeniedErr
 import kornell.core.to.CourseVersionUploadTO
 import javax.ws.rs.Path
-import kornell.server.repository.service.CourseVersionUploadService
+import kornell.server.repository.service.UploadService
 
 class CourseVersionResource(uuid: String) {
 
@@ -39,7 +39,7 @@ class CourseVersionResource(uuid: String) {
    @Path("uploadUrl")
    @Produces(Array("application/octet-stream"))
    def getUploadUrl : String = {
-    CourseVersionUploadService.getUploadUrl(uuid)
+    UploadService.getCourseVersionUploadUrl(uuid)
   }
 }
 
