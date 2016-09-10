@@ -140,6 +140,11 @@ public class GenericClientFactoryImpl implements ClientFactory {
 			}
 
 			@Override
+			public void notFound(KornellErrorTO kornellErrorTO) {
+				KornellMaintenance.show();
+			}
+
+			@Override
 			public void serviceUnavailable() {
 				KornellMaintenance.show();
 			}

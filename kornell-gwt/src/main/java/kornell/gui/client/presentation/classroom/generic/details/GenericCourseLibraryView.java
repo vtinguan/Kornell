@@ -198,18 +198,18 @@ public class GenericCourseLibraryView extends Composite {
 		btn.removeStyleName("btn");
 		btn.addStyleName("btnLibraryHeader"); 
 		btn.addStyleName(styleName);
-		btn.addStyleName(selected ? "btnSelected" : "btnNotSelected");
+		btn.addStyleName(selected ? "btnAction" : "btnNotSelected");
 		btn.addClickHandler(new LibraryHeaderClickHandler());
 	}
 
 	private void handleEvent(Button btn) {		
 		if(btnLastClicked != null){
-			btnLastClicked.removeStyleName("btnSelected");
+			btnLastClicked.removeStyleName("btnAction");
 			btnLastClicked.addStyleName("btnNotSelected");
 		}
 		contentPanel.clear();
 		contentPanel.add(getFilesTable(btn));
-		btn.addStyleName("btnSelected");
+		btn.addStyleName("btnAction");
 		btn.removeStyleName("btnNotSelected");
 		btnLastClicked = btn;
 	}

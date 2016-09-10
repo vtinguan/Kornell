@@ -58,7 +58,7 @@
 	min-height: 350px;
 	margin: 0 auto;
 	margin-top: 10px;
-	@borderHighlight: 1px solid fade(@textInfoColor, 50%);
+	@borderHighlight: 1px solid fade(@textHighlightColor, 50%);
 	background-color: rgba(0, 0, 0, 0.05);
 	height: 500px;
 	border-radius: 8px;
@@ -120,7 +120,7 @@
 					background-color: @tableBackgroundHoverColor;
 				}
 				.unreadCount{
-					color: @textInfoColor;
+					color: @textHighlightColor;
 				}
 			}
 			.selected{
@@ -304,7 +304,7 @@
 				text-align: center;
 			}
 			.lblSubTitle{
-				color: @textInfoColor;
+				color: @textHighlightColor;
 				font-size: 13px;
 				margin-top: 5px;
 				float: left;

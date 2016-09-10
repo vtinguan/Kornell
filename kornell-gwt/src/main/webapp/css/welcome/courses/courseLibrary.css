@@ -88,19 +88,13 @@
   color: #bec1c3;
 }
 .highlightText {
-  color: #d88709;
-}
-.highlightText2 {
-  color: #d14242;
+  color: #5b9455 !important;
 }
 .highlightTextDiscreteColor {
   color: #e3e3e3;
 }
 .plainDiscreteTextColor {
   color: #888888;
-}
-.textInfoColor {
-  color: #5b9455 !important;
 }
 .bold {
   font-weight: bold !important;
@@ -929,7 +923,7 @@
   padding-bottom: 9px;
 }
 .reportPanel .reportWrapper .itemPanel .lblDescription {
-  color: #5b9455;
+  color: #e3e3e3;
   padding-left: 55px;
   font-size: 12px;
   line-height: 14px;
@@ -1077,7 +1071,7 @@
   white-space: nowrap;
 }
 .libraryPanel .filesPanel .filesWrapper .fileWrapper .pnlFileName .fileDescription {
-  color: #5b9455;
+  color: #e3e3e3;
   font-size: 10px;
   line-height: 12px;
 }
@@ -1102,7 +1096,7 @@
   margin-bottom: 20px;
 }
 .libraryPanel .includeFileFormPanel .includeFileFormInfo .includeFileFormInfoTitle {
-  color: #d88709;
+  color: #5b9455;
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 10px;

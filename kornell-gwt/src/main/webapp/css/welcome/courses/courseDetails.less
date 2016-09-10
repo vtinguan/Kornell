@@ -33,12 +33,12 @@
 			font-size: 14px;
 		}
 		.courseNameLabel{
-			color: @textHighlightColor2;
+			color: @textHighlightColor;
 			float: left;
 		}
 		.courseClassNameLabel{
 			font-size: 14px;
-			color: @textHighlightColor2;
+			color: @textHighlightColor;
 			float: left;
 		}
 		.closePanel{
@@ -117,8 +117,11 @@
 				.hintDetails{
 					padding-top: @detailsPanelMargin;
 					padding-bottom: @detailsPanelMargin;
-					.hintImg{
-						float: left;
+					.fa{
+						font-size: 20px;
+					    float: left;
+					    padding-top: 3px;
+					    color: @textHighlightColor;
 					}
 					.hintText{
 						padding-left: @detailsPanelMargin * 1.5;
@@ -127,7 +130,7 @@
 			}	
 			.notEnrolledPanel{
 				width: @hintsPanelWidth;
-				color: @textHighlightColor2;
+				color: @textHighlightColor;
 				padding: 10px;
 				padding-left: 22px;
 			}
@@ -326,7 +329,7 @@
 						padding-bottom: @detailsPanelMargin / 4;
 					}
 					.lblDescription{
-						color: @textInfoColor;
+						color: @textHighlightDiscreteColor;
 						padding-left: @detailsPanelMargin;
 						font-size: 11px;
 						line-height: 13px;
@@ -346,7 +349,7 @@
 					text-align: center;
 					padding-left: @detailsPanelMargin / 2;
 					padding-right: @detailsPanelMargin / 2;
-					color: @textInfoColor;
+					color: @textHighlightColor;
 				}
 				.lblActions{
 					float: left;

@@ -546,6 +546,19 @@ public class FormHelper {
 
 		return states;
 	}
+	
+	public ListBox getSkinsList(){
+		ListBox skins = new ListBox();
+
+		skins.addItem("Verde", "");
+		skins.addItem("Azul", "_blue");
+		skins.addItem("Amarelo", "_yellow");
+		skins.addItem("Vermelho", "_red");
+		skins.addItem("Claro - Vermelho", "_light");
+		skins.addItem("Claro - Cinza", "_light_grey");
+
+		return skins;
+	}
 
 	public ListBox getTimeZonesList(){
 		ListBox timeZones = new ListBox();

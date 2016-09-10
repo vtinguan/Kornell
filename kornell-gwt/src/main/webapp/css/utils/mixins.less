@@ -45,3 +45,9 @@
 .lightenOrDarkenColor (@color, @percent) when (lightness(@color) < 50%) {
   	color: lighten(@color, @percent);
 }
+.lightenOrDarken1pxBorder (@color, @percent) when (lightness(@color) >= 50%) {
+	border: 1px solid darken(@color, @percent) !important;
+}
+.lightenOrDarken1pxBorder (@color, @percent) when (lightness(@color) < 50%) {
+	border: 1px solid lighten(@color, @percent) !important;
+}

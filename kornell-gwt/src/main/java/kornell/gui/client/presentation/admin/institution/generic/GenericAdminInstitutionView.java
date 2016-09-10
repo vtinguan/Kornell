@@ -97,7 +97,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private Institution institution;
 
-	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsRepositoryUUID, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone;
+	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsRepositoryUUID, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone, skin;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private GenericInstitutionReportsView reportsView;
@@ -311,6 +311,17 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		timeZone = new KornellFormFieldWrapper("Fuso horário", new ListBoxFormField(timeZones), isInstitutionAdmin);
 		fields.add(timeZone);
 		institutionFields.add(timeZone);
+
+
+		final ListBox skins = formHelper.getSkinsList();
+		if(institution.getSkin() != null){
+			skins.setSelectedValue(institution.getSkin());
+		} else {
+			skins.setSelectedValue("");
+		}
+		skin = new KornellFormFieldWrapper("Tema visual", new ListBoxFormField(skins), isInstitutionAdmin);
+		fields.add(skin);
+		institutionFields.add(skin);
 		
 		institutionFields.add(formHelper.getImageSeparator());
 
@@ -334,6 +345,9 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		}
 		if(!formHelper.isLengthValid(timeZone.getFieldPersistText(), 2, 100)){
 			timeZone.setError("Escolha o fuso horário.");
+		}
+		if(!formHelper.isLengthValid(skin.getFieldPersistText(), 2, 100)){
+			skin.setError("Escolha o tema visual.");
 		}
 		
 		return !formHelper.checkErrors(fields);
@@ -360,6 +374,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));
 		institution.setUseEmailWhitelist(useEmailWhitelist.getFieldPersistText().equals("true"));
 		institution.setTimeZone(timeZone.getFieldPersistText());
+		institution.setSkin(skin.getFieldPersistText());
 		if(isPlatformAdmin){
 			institution.setAssetsRepositoryUUID(assetsRepositoryUUID.getFieldPersistText());
 			institution.setBillingType(BillingType.valueOf(billingType.getFieldPersistText()));

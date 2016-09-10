@@ -122,18 +122,18 @@ public class GenericAdminBarView extends Composite implements AdminBarView {
 	}
 	
 	private void updateSelection(String button){
-		btnInstitution.removeStyleName("btnSelected");
-		btnCourse.removeStyleName("btnSelected");
-		btnCourseVersion.removeStyleName("btnSelected");
-		btnCourseClass.removeStyleName("btnSelected");
+		btnInstitution.removeStyleName("btnAction");
+		btnCourse.removeStyleName("btnAction");
+		btnCourseVersion.removeStyleName("btnAction");
+		btnCourseClass.removeStyleName("btnAction");
 		if(button.equals(BUTTON_COURSE)){
-			btnCourse.addStyleName("btnSelected");	
+			btnCourse.addStyleName("btnAction");	
 		} else if(button.equals(BUTTON_COURSE_VERSION)){
-			btnCourseVersion.addStyleName("btnSelected");	
+			btnCourseVersion.addStyleName("btnAction");	
 		} else if(button.equals(BUTTON_COURSE_CLASS)){
-			btnCourseClass.addStyleName("btnSelected");	
+			btnCourseClass.addStyleName("btnAction");	
 		} else if(button.equals(BUTTON_INSTITUTION)){
-			btnInstitution.addStyleName("btnSelected");	
+			btnInstitution.addStyleName("btnAction");	
 		}
 	}
 	

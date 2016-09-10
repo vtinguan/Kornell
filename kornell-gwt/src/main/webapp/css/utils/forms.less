@@ -36,7 +36,6 @@
 }
 .btnNotSelected{
 	.btnDefault;
-	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
 	.gradient(@buttonNotSelectedGradientStart, @buttonNotSelectedGradientEnd);
 	&:hover{
 		.gradient(@buttonNotSelectedGradientEnd, @buttonNotSelectedGradientEnd);
@@ -44,7 +43,6 @@
 }
 .btnSelected{
 	.btnDefault;
-	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
  	.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
 	&:hover{
 		.gradient(@buttonSelectedGradientEnd, @buttonSelectedGradientEnd);
@@ -52,7 +50,6 @@
 }
 .btnAction{
 	.btnDefault;
-	//.gradientHat(~"linear-gradient(to bottom, @buttonActionGradientStart 0%,@buttonActionGradientEnd 100%)"); 
  	.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
 	&:hover{
 		.gradient(@buttonActionGradientEnd, @buttonActionGradientEnd);
@@ -379,11 +376,11 @@
 	background-color: @tableBackgroundHoverColor !important;
 	border: 1px solid transparent !important;
 	border-bottom: 0px !important;
-	color: @textInfoColor !important;
+	color: @textHighlightColor !important;
 }
 .nav-pills>.active>a,.nav-pills>.active>a:hover{
 	background-color: @tableBackgroundHoverColor !important;
-	color: @textInfoColor !important;
+	color: @textHighlightColor !important;
 }
 
 .dropdown-menu .active>a, 
@@ -478,7 +475,7 @@
 				padding-bottom: 9px;
 			}
 			.lblDescription{
-				color: @textInfoColor;
+				color: @textHighlightDiscreteColor;
 				padding-left: 55px;
 				font-size: 12px;
 				line-height: 14px;
@@ -516,7 +513,7 @@
 					height: 150px;
 				}
 				.gwt-Label{
-					color: @textInfoColor;
+					color: @textHighlightColor;
 					padding: 0px 15px;
 					font-size: 11px;
 					line-height: 13px;

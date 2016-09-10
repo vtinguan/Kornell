@@ -898,7 +898,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 
 	private Label getLabel(String labelTxt, boolean isHighlight) {
 		Label lbl = new Label(labelTxt);
-		lbl.addStyleName(isHighlight ? "niceTextColor" : "textInfoColor");
+		lbl.addStyleName(isHighlight ? "niceTextColor" : "highlightText");
 		return lbl;
 	}
 

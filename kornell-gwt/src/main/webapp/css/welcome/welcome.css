@@ -67,7 +67,7 @@
   font-weight: bold;
   text-align: left;
   line-height: 1.231;
-  color: #e3e3e3;
+  color: #5b9455;
 }
 .welcomePanel .pnlCourses .courseSummary .lblSubTitle {
   color: #888888;
@@ -110,7 +110,7 @@
   color: #5b9455 !important;
 }
 .welcomePanel .pnlCourses .courseSummary .courseSummaryBar .courseStatusErr {
-  color: #d14242 !important;
+  color: #5b9455 !important;
 }
 .welcomePanel .pnlCourses .courseSummary .courseSummaryBar .progress {
   width: 250px;
