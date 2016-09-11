@@ -1,28 +1,23 @@
 package kornell.gui.client.personnel;
 
+import static kornell.core.util.StringUtils.isSome;
 import static kornell.core.util.StringUtils.mkurl;
 
 import com.google.gwt.core.client.Callback;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 
 import kornell.api.client.KornellSession;
 import kornell.core.to.UnreadChatThreadTO;
-import kornell.core.util.StringUtils;
 import kornell.gui.client.event.LogoutEvent;
 import kornell.gui.client.event.LogoutEventHandler;
 import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.event.UnreadMessagesCountChangedEventHandler;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEvent;
 import kornell.gui.client.event.UnreadMessagesPerThreadFetchedEventHandler;
-import kornell.gui.client.util.ClientConstants;
+import kornell.gui.client.util.CSSInjector;
 import kornell.gui.client.util.view.KornellMaintenance;
-
-import static kornell.core.util.StringUtils.mkurl;
-import static kornell.core.util.StringUtils.isSome;
 
 public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedEventHandler,
 		UnreadMessagesCountChangedEventHandler {
@@ -41,22 +36,27 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 		bus.addHandler(UnreadMessagesPerThreadFetchedEvent.TYPE, this);
 		bus.addHandler(UnreadMessagesCountChangedEvent.TYPE, this);
 
-		// get the skin and logo immediately
-		initInstitutionSkin();
+		initInstitutionAssets();
 	}
 
-	private void initInstitutionSkin() {
+	private void initInstitutionAssets() {
 		showContentNative(false);
 		
+		setFavicon();
+		setPageTitle();
+		setSkin();
+	}
+	
+	private void setFavicon(){
 		String url = session.getAssetsURL();
 		if (url != null) {
-			updateFavicon(mkurl(url, ICON_NAME));
+			updateFaviconNative(mkurl(url, ICON_NAME));
 		} else {
-			setDefaultFavicon();
+			updateFaviconNative(ICON_NAME);
 		}
+	}
 
-		setPageTitle();
-
+	private void setSkin() {
 		Callback<Void, Exception> callback = new Callback<Void, Exception>() {
 			public void onFailure(Exception reason) {
 				KornellMaintenance.show();
@@ -68,12 +68,10 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 		};
 
 		String skinName = isSome(session.getInstitution().getSkin()) ? session.getInstitution().getSkin() : "";
-		String skinPath = mkurl(ClientConstants.CSS_PATH, "skin" + skinName + ".nocache.css");
-
-		JavaScriptObject styleElement = getStyleElement(skinPath);
-		attachListeners(styleElement, callback);
-		updateSkin(styleElement);
+		
+		CSSInjector.updateSkin(skinName, callback);
 	}
+	
 
 	private void setPageTitle() {
 		String name = session.getInstitution().getFullName();
@@ -86,92 +84,13 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 		Document.get().setTitle(title);
 	}
 
-	private void setDefaultFavicon() {
-		updateFavicon(ICON_NAME);
-	}
-
-	private static native void updateFavicon(String url) /*-{
-		var link = $wnd.document.createElement('link'), oldLink = $wnd.document
-				.getElementById('icon');
-		link.id = 'icon';
-		link.rel = 'shortcut icon';
-		link.type = 'image/x-icon';
-		link.href = url;
-		if (oldLink) {
-			$wnd.document.head.removeChild(oldLink);
-		}
-
-		$wnd.document.getElementsByTagName('head')[0].appendChild(link);
-	}-*/;
-
-	private static native JavaScriptObject getStyleElement(String skinPath) /*-{
-		var link = $wnd.document.createElement('link'), oldLink = $wnd.document
-				.getElementById('kornellSkin');
-		link.id = 'kornellSkin';
-		link.rel = 'stylesheet';
-		link.type = 'text/css';
-		link.href = skinPath;
-
-		return link;
-	}-*/;
-
-	private static native void updateSkin(JavaScriptObject styleElement) /*-{
-		var oldLink = $wnd.document.getElementById('kornellSkin');
-		if (oldLink) {
-			$wnd.document.head.removeChild(oldLink);
-		}
-
-		// IE8 does not have document.head
-		($wnd.document.head || $wnd.document.getElementsByTagName("head")[0])
-				.appendChild(styleElement);
-	}-*/;
-
-	private static native void attachListeners(JavaScriptObject scriptElement, Callback<Void, Exception> callback) /*-{
-	    function clearCallbacks() {
-	      scriptElement.onerror = scriptElement.onreadystatechange = scriptElement.onload = null;
-	    }
-	    scriptElement.onload = $entry(function() {
-	      clearCallbacks();
-	      if (callback) {
-	        callback.@com.google.gwt.core.client.Callback::onSuccess(Ljava/lang/Object;)(null);
-	      }
-	    });
-	    // or possibly more portable script_tag.addEventListener('error', function(){...}, true);
-	    scriptElement.onerror = $entry(function() {
-	      clearCallbacks();
-	      if (callback) {
-	        var ex = @com.google.gwt.core.client.CodeDownloadException::new(Ljava/lang/String;)("onerror() called.");
-	        callback.@com.google.gwt.core.client.Callback::onFailure(Ljava/lang/Object;)(ex);
-	      }
-	    });
-	    scriptElement.onreadystatechange = $entry(function() {
-	      if (/loaded|complete/.test(scriptElement.readyState)) {
-	        scriptElement.onload();
-	      }
-	    });
-	  }-*/;
-
 	private void showContent(boolean show) {
 		new Timer() {
 			public void run() {
 				showContentNative(show);
 			}
-		}.schedule(2000);
+		}.schedule(1);
 	};
-
-	private static native void showContentNative(boolean show) /*-{
-		$wnd.document.getElementsByClassName('menuBar')[0].setAttribute('style',
-				'display: ' + (show ? 'block' : 'none'));
-		$wnd.document.getElementsByClassName('vScrollBar')[0].setAttribute('style',
-				'display: ' + (show ? 'block' : 'none'));
-		$wnd.document.getElementsByClassName('activityBarWrapper')[0].setAttribute('style',
-				'display: ' + (show ? 'block' : 'none'));
-	}-*/;
-
-	private static native void showBody(boolean show) /*-{
-		$wnd.document.getElementsByTagName('body')[0].setAttribute('style',
-				'display: ' + (show ? 'block' : 'none'));
-	}-*/;
 
 	@Override
 	public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
@@ -191,7 +110,42 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 
 	@Override
 	public void onLogout() {
-		showBody(false);
+		showBodyNative(false);
 	}
+
+	private static native void updateFaviconNative(String url) /*-{
+		var link = $wnd.document.createElement('link'), oldLink = $wnd.document
+				.getElementById('icon');
+		link.id = 'icon';
+		link.rel = 'shortcut icon';
+		link.type = 'image/x-icon';
+		link.href = url;
+		if (oldLink) {
+			$wnd.document.head.removeChild(oldLink);
+		}
+
+		$wnd.document.getElementsByTagName('head')[0].appendChild(link);
+	}-*/;
+
+	private static native void showContentNative(boolean show) /*-{
+		var menuBar = $wnd.document.getElementsByClassName('menuBar'),
+			vScrollBar = $wnd.document.getElementsByClassName('vScrollBar'),
+			activityBarWrapper = $wnd.document.getElementsByClassName('activityBarWrapper'),
+			style = 'display: ' + (show ? 'block' : 'none');
+		if(menuBar && menuBar.length){
+			menuBar[0].setAttribute('style', style);
+		}
+		if(vScrollBar && vScrollBar.length){
+			vScrollBar[0].setAttribute('style', style);
+		}
+		if(activityBarWrapper && activityBarWrapper.length){
+			activityBarWrapper[0].setAttribute('style', style);
+		}
+	}-*/;
+
+	private static native void showBodyNative(boolean show) /*-{
+		$wnd.document.getElementsByTagName('body')[0].setAttribute('style',
+				'display: ' + (show ? 'block' : 'none'));
+	}-*/;
 
 }

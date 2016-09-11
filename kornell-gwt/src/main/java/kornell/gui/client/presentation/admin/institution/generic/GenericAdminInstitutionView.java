@@ -10,6 +10,8 @@ import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -35,6 +37,7 @@ import kornell.core.entity.InstitutionType;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
+import kornell.gui.client.util.CSSInjector;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.forms.formfield.ListBoxFormField;
@@ -313,15 +316,23 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institutionFields.add(timeZone);
 
 
-		final ListBox skins = formHelper.getSkinsList();
-		if(institution.getSkin() != null){
-			skins.setSelectedValue(institution.getSkin());
-		} else {
-			skins.setSelectedValue("");
+		if(isPlatformAdmin){
+			final ListBox skins = formHelper.getSkinsList();
+			if(institution.getSkin() != null){
+				skins.setSelectedValue(institution.getSkin());
+			} else {
+				skins.setSelectedValue("");
+			}
+			skin = new KornellFormFieldWrapper("Tema visual", new ListBoxFormField(skins), isInstitutionAdmin);
+			fields.add(skin);
+			institutionFields.add(skin);
+			((ListBox)skin.getFieldWidget()).addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					CSSInjector.updateSkin(skin.getFieldPersistText(), null);
+				}
+			});
 		}
-		skin = new KornellFormFieldWrapper("Tema visual", new ListBoxFormField(skins), isInstitutionAdmin);
-		fields.add(skin);
-		institutionFields.add(skin);
 		
 		institutionFields.add(formHelper.getImageSeparator());
 
@@ -345,9 +356,6 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		}
 		if(!formHelper.isLengthValid(timeZone.getFieldPersistText(), 2, 100)){
 			timeZone.setError("Escolha o fuso horário.");
-		}
-		if(!formHelper.isLengthValid(skin.getFieldPersistText(), 2, 100)){
-			skin.setError("Escolha o tema visual.");
 		}
 		
 		return !formHelper.checkErrors(fields);
