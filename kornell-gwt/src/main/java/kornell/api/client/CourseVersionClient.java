@@ -23,4 +23,7 @@ public class CourseVersionClient extends RESTClient {
 		DELETE("courseVersions",courseVersionUUID).go(cb);
 	}
 	
+	public void getUploadURL(Callback<String> callback) {
+		GET("courseVersions", courseVersionUUID, "uploadUrl").go(callback);
+	}
 }

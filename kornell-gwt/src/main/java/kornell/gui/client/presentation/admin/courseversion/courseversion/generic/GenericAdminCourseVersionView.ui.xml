@@ -7,7 +7,9 @@
 	    <g:HTMLPanel ui:field="titleCreate" addStyleNames="title unclear left fillWidth marginBottom25">Criar Versão de Curso</g:HTMLPanel>
 	    <b:Form ui:field="form" addStyleNames="profileForm left">
 	      <g:FlowPanel ui:field="courseVersionFields" addStyleNames="fieldsWrapper">    
-	      </g:FlowPanel>    
+	      </g:FlowPanel>
+	      <g:FlowPanel ui:field="courseVersionUpload" addStyleNames="fieldsWrapper">
+	      </g:FlowPanel>  
 	      <g:FlowPanel addStyleNames="standardButtonBar">
 	        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
 	        <g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>

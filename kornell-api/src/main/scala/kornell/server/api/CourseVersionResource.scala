@@ -11,6 +11,9 @@ import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
 import kornell.core.to.CourseVersionTO
 import kornell.server.util.AccessDeniedErr
+import kornell.core.to.CourseVersionUploadTO
+import javax.ws.rs.Path
+import kornell.server.repository.service.UploadService
 
 class CourseVersionResource(uuid: String) {
 
@@ -31,6 +34,13 @@ class CourseVersionResource(uuid: String) {
   }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
+   
+   @GET
+   @Path("uploadUrl")
+   @Produces(Array("application/octet-stream"))
+   def getUploadUrl : String = {
+    UploadService.getCourseVersionUploadUrl(uuid)
+  }
 }
 
 object CourseVersionResource {

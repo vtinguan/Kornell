@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.FileUpload;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
@@ -11,6 +12,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -73,6 +75,9 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	Button btnCancel;
 
 	@UiField
+	FlowPanel courseVersionUpload;
+	
+	@UiField
 	Modal confirmModal;
 	@UiField
 	Label confirmText;
@@ -98,7 +103,7 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		// i18n
 		btnOK.setText("Salvar".toUpperCase());
 		btnCancel.setText("Cancelar".toUpperCase());	
-
+		
 		btnModalOK.setText("OK".toUpperCase());
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		
@@ -214,6 +219,39 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 		courseVersionFields.add(formHelper.getImageSeparator());
 
 		courseVersionFields.setVisible(true);
+		
+		courseVersionUpload.addStyleName("fieldPanelWrapper fileUploadPanel");
+		FlowPanel labelPanel = new FlowPanel();
+		labelPanel.addStyleName("labelPanel");
+		Label lblLabel = new Label("Atualização de versão");
+		lblLabel.addStyleName("lblLabel");
+		labelPanel.add(lblLabel);
+		courseVersionUpload.add(labelPanel);
+
+		// Create the FileUpload component
+		FlowPanel fileUploadPanel = new FlowPanel();
+		FileUpload fileUpload = new FileUpload();
+		fileUpload.setName("uploadFormElement");
+		fileUpload.setId("versionUpdate");
+		fileUploadPanel.add(fileUpload);
+		courseVersionUpload.add(fileUpload);
+		
+	    // Add a submit button to the form
+		Button btnOK = new Button("Atualizar");
+		btnOK.addStyleName("btnAction btnStandard");
+		btnOK.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				session.courseVersion(courseVersionUUID).getUploadURL(new Callback<String>() {
+					@Override
+					public void ok(String url) {
+						getFile(url);
+					}
+				});		
+			}
+		});
+		courseVersionUpload.add(btnOK);
+
 	}
 
 	private void createCourseVersionsField(CourseVersionsTO to) {
@@ -308,6 +346,30 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 			presenter.upsertCourseVersion(courseVersion);
 		}
 	}
+	
+	public static native void getFile(String url) /*-{
+		if ($wnd.document.getElementById("versionUpdate").files.length != 1) {
+        	@kornell.gui.client.util.view.KornellNotification::showError(Ljava/lang/String;)("Por favor selecione um arquivo");
+		} else {
+			@kornell.gui.client.util.view.LoadingPopup::show()();
+			var file = $wnd.document.getElementById("versionUpdate").files[0];
+			if (file.name.indexOf(".zip") == -1) {
+	        	@kornell.gui.client.util.view.KornellNotification::showError(Ljava/lang/String;)("Faça o upload de um arquivo zip");
+				@kornell.gui.client.util.view.LoadingPopup::hide()();
+			} else {
+				var req = new XMLHttpRequest();
+				req.open('PUT', url);
+				req.setRequestHeader("Content-type", "application/zip");
+				req.onreadystatechange = function() {
+    				if (req.readyState == 4 && req.status == 200) {
+        				@kornell.gui.client.util.view.LoadingPopup::hide()();
+        				@kornell.gui.client.util.view.KornellNotification::show(Ljava/lang/String;)("Atualização de versão completa");
+    				}
+				}
+				req.send(file);
+			}
+		}
+	}-*/;
 
 	private CourseVersion getCourseVersionInfoFromForm() {
 		CourseVersion version = courseVersion;
@@ -340,5 +402,4 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	public Presenter getPresenter() {
 		return presenter;
 	}
-
 }
