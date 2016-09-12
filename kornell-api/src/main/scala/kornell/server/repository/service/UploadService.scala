@@ -29,7 +29,6 @@ object UploadService {
       case "jpg" => "image/jpg"
       case "ico" => "image/x-icon"
     }
-    println(contentType)
     getUploadUrl(institutionUUID, filename, contentType)
   }
   

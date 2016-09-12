@@ -24,6 +24,7 @@ import kornell.core.to.InstitutionEmailWhitelistTO
 import kornell.server.jdbc.repository.InstitutionEmailWhitelistRepo
 import kornell.core.entity.ChatThreadType
 import kornell.server.repository.service.UploadService
+import javax.ws.rs.PathParam
 
 
 class InstitutionResource(uuid: String) {
@@ -117,7 +118,7 @@ class InstitutionResource(uuid: String) {
    @GET
    @Path("uploadUrl/{filename}")
    @Produces(Array("application/octet-stream"))
-   def getUploadUrl(filename: String) : String = {
+   def getUploadUrl(@PathParam("filename") filename: String) : String = {
     UploadService.getInstitutionUploadUrl(uuid, filename)
   }
 }

@@ -7,14 +7,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -67,7 +64,7 @@ public class GenericInstitutionAssetsView extends Composite {
 		assetsFields.add(buildFileUploadPanel("logo250x45_light.png", "image/png", "Logo 250x45 - clara"));
 		assetsFields.add(buildFileUploadPanel("logo300x80.png", "image/png", "Logo 300x80 - escura"));
 		assetsFields.add(buildFileUploadPanel("logo300x80_light.png", "image/png", "Logo 300x80 - clara"));
-		assetsFields.add(buildFileUploadPanel("bgVitrine.jpg", "image/jpeg", "Background da Vitrine"));
+		assetsFields.add(buildFileUploadPanel("bgVitrine.jpg", "image/jpg", "Background da Vitrine"));
 		assetsFields.add(buildFileUploadPanel("favicon.ico", "image/x-icon", "Favicon"));
 	}
 
@@ -103,7 +100,8 @@ public class GenericInstitutionAssetsView extends Composite {
 		btnOK.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				session.institution(institution.getUUID()).getUploadURL(fileName, new Callback<String>() {
+				String test = fileName.replace(".", "%2E");
+				session.institution(institution.getUUID()).getUploadURL(test, new Callback<String>() {
 					@Override
 					public void ok(String url) {
 						getFile(elementId, contentType, url);
@@ -119,28 +117,6 @@ public class GenericInstitutionAssetsView extends Composite {
 		anchor.setHref(StringUtils.mkurl(institution.getBaseURL(), "repository", institution.getAssetsRepositoryUUID(), fileName));
 		anchor.setTarget("_blank");
 		fieldPanelWrapper.add(anchor);
-		
-	    // Add an event handler to the form
-	    form.addSubmitHandler(new FormPanel.SubmitHandler() {
-			@Override
-			public void onSubmit(SubmitEvent event) {
-		        // This event is fired just before the form is submitted. We can take
-		        // this opportunity to perform validation.
-		        //event.cancel();
-			}
-		});
-	    form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-			
-			@Override
-			public void onSubmitComplete(SubmitCompleteEvent event) {
-		        // When the form submission is successfully completed, this event is
-		        // fired. Assuming the service returned a response of type text/html,
-		        // we can get the result text here (see the FormPanel documentation for
-		        // further explanation).
-		        Window.alert(event.getResults());
-				
-			}
-		});
 	    
 		return fieldPanelWrapper;
 	}
