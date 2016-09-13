@@ -15,6 +15,7 @@
       <excludes>
         <exclude>WEB-INF/**</exclude>
         <exclude>META-INF/**</exclude>
+        <exclude>less/**</exclude>        
       </excludes>
     </fileSet>
 
