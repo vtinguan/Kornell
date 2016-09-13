@@ -81,8 +81,8 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 	@UiField TextArea messageTextArea;
 	@UiField Button btnSend;
 	
-	private String INFO_CLASS = "textInfoColor";
-	private String HIGHLIGHT_CLASS = "highlightTextDiscreteColor";
+	private static String HIGHLIGHT_CLASS = "highlightText";
+	private static String HIGHLIGHT_DISCRETE_CLASS = "highlightTextDiscreteColor";
 	private String PLAIN_CLASS = "plainDiscreteTextColor";
 	private FlowPanel searchPanel;
 	@SuppressWarnings("unused")
@@ -246,25 +246,25 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 	private String getThreadTitle(final UnreadChatThreadTO unreadChatThreadTO, String currentUserFullName, boolean lineBreak) {
 		switch (unreadChatThreadTO.getThreadType()) {
 			case COURSE_CLASS:
-				return span(constants.courseClassChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+				return span(constants.courseClassChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS);
 			case DIRECT:
-				return span(constants.directChatLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+				return span(constants.directChatLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS);
 			case SUPPORT:
 				if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName) && !session.isCourseClassAdmin(unreadChatThreadTO.getEntityUUID())) {
-					return span(constants.supportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+					return span(constants.supportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS);
 				} else {
-					return span(unreadChatThreadTO.getChatThreadCreatorName(), HIGHLIGHT_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) ? separator(lineBreak, true) + span(constants.supportLabel(), PLAIN_CLASS) : separator(lineBreak, true) + span(constants.supportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS));
+					return span(unreadChatThreadTO.getChatThreadCreatorName(), HIGHLIGHT_DISCRETE_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) ? separator(lineBreak, true) + span(constants.supportLabel(), PLAIN_CLASS) : separator(lineBreak, true) + span(constants.supportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS));
 				}
 			case TUTORING:
 				if (unreadChatThreadTO.getChatThreadCreatorName().equals(currentUserFullName) && !session.isCourseClassTutor(unreadChatThreadTO.getEntityUUID())) {
-					return span(constants.tutorChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+					return span(constants.tutorChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS);
 				} else {
-					return span(unreadChatThreadTO.getChatThreadCreatorName(), HIGHLIGHT_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) || MessagePanelType.courseClassTutor.equals(presenter.getMessagePanelType()) ? separator(lineBreak, true) + span(constants.tutorLabel(), PLAIN_CLASS) : separator(lineBreak, true) + span(constants.tutorChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS));
+					return span(unreadChatThreadTO.getChatThreadCreatorName(), HIGHLIGHT_DISCRETE_CLASS) + (MessagePanelType.courseClassSupport.equals(presenter.getMessagePanelType()) || MessagePanelType.courseClassTutor.equals(presenter.getMessagePanelType()) ? separator(lineBreak, true) + span(constants.tutorLabel(), PLAIN_CLASS) : separator(lineBreak, true) + span(constants.tutorChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS));
 				}
 			case INSTITUTION_SUPPORT:
-				return span(constants.institutionSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), INFO_CLASS);
+				return span(constants.institutionSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(unreadChatThreadTO.getEntityName(), HIGHLIGHT_CLASS);
 			case PLATFORM_SUPPORT:
-				return span(constants.platformSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(session.getInstitution().getName(), INFO_CLASS);
+				return span(constants.platformSupportChatThreadLabel(), PLAIN_CLASS) + separator(lineBreak) + span(session.getInstitution().getName(), HIGHLIGHT_CLASS);
 			default:
 				return  "";
 			}
@@ -383,7 +383,7 @@ public class GenericMessageView extends Composite implements MessageView, ShowCh
 
 	private String getDateLabelValue(Date serverTime, final ChatThreadMessageTO chatThreadMessageTO) {
 		if(chatThreadMessageTO.getSentAt() == null) return "";
-		String dateStr = span(chatThreadMessageTO.getSenderFullName(), INFO_CLASS) + getIcons(chatThreadMessageTO.getSenderRole()) + separator(false, false) + span(formHelper.getElapsedTimeSince(chatThreadMessageTO.getSentAt(), serverTime), PLAIN_CLASS);
+		String dateStr = span(chatThreadMessageTO.getSenderFullName(), HIGHLIGHT_CLASS) + getIcons(chatThreadMessageTO.getSenderRole()) + separator(false, false) + span(formHelper.getElapsedTimeSince(chatThreadMessageTO.getSentAt(), serverTime), PLAIN_CLASS);
 		return dateStr;
 	}
 	

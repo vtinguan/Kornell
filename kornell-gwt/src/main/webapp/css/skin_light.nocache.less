@@ -1,41 +1,21 @@
-//UTILS
 @import-once "skin.nocache.less";
 
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px fade(@blackOrWhite, 40%) !important; 
-    border-radius: 5px;
-	background-color: @background;
-}
- 
-::-webkit-scrollbar-thumb {
-    -webkit-box-shadow: inset 0 0 6px fade(@blackOrWhite, 40%) !important; 
-    border-radius: 5px;
-	background-color: @background;
-}
-
-//STRUCTURE
-@wrapperWidth: 962px; 
-@wrapperWidthUnder990: 600px;
-@menuLeftWidth: 220px;
-@marginLeftLogo: 0px;
-@background: @bodyGradientStartColor;
-
 //GENERAL
-@niceTextColor: #08929E;
+@background: #fdfdfd;
+@niceTextColor: #2e2f2f;
 @plainTextColor: #d9dadb;
 @plainDiscreteTextColor: #888888;
 @linkTextColor: #0088cc;
 @bordersColor: #474747;
-@textHighlightColor: #008f83;
-@textHighlightColor2: #BE150E;
+@textHighlightColor: #151515;
 @textHighlightDiscreteColor: #283541;
-@textInfoColor: #5492FF;
+@againstTextHighlightColor: #fff;
 @errorMessageColor: #CA2828;
 @blackOrWhite: #000;
 
 //BARS
 @barGradientStartColor: #fff;
-@barGradientEndColor: #F2FFFE;
+@barGradientEndColor: #c3c3c3;
 @barButtonTextColor: #fff;
 @barButtonSeparatorColor: @bordersColor;
 
@@ -45,13 +25,12 @@
 
 //WELCOME
 @courseSummaryBackgroundColor: #e7ece8;
-@highlightCoursesCountColor: @textHighlightColor2;
+@highlightCoursesCountColor: @textHighlightColor;
 
 //PROFILE
 @profileLabelValueColor: @textHighlightDiscreteColor;
 @profileLabelColor: @niceTextColor;
-@profileLabelExtraInfoColor: @textInfoColor;
-@profileLabelTitleColor: @plainTextColor;
+@profileLabelExtraInfoColor: @textHighlightColor;
 
 //BACKGROUND
 @bodyGradientStartColor: #fff;
@@ -65,10 +44,10 @@
 @buttonTextColor: #fff;
 @buttonNotSelectedGradientStart: #4c4f54;
 @buttonNotSelectedGradientEnd: #2a2d32;
-@buttonSelectedGradientStart: #9b020a;
-@buttonSelectedGradientEnd: #4b0105;
+@buttonSelectedGradientStart: @buttonNotSelectedGradientStart;
+@buttonSelectedGradientEnd: @buttonNotSelectedGradientEnd;
 @buttonBorderLeftColor: #505864;
 @buttonBorderRightColor: #181c22;
 @buttonBorderBottomColor: #0c0c0d;
-@buttonActionGradientStart: #2ca095;
-@buttonActionGradientEnd: #2ca095;
+@buttonActionGradientStart: #9c9c9c;
+@buttonActionGradientEnd: #626363;

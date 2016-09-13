@@ -10,6 +10,8 @@ import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -35,6 +37,7 @@ import kornell.core.entity.InstitutionType;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
+import kornell.gui.client.util.CSSInjector;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.forms.formfield.ListBoxFormField;
@@ -101,7 +104,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 
 	private Institution institution;
 
-	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsRepositoryUUID, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone;
+	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsRepositoryUUID, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone, skin;
 	
 	private List<KornellFormFieldWrapper> fields;
 	private GenericInstitutionReportsView reportsView;
@@ -329,6 +332,25 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		timeZone = new KornellFormFieldWrapper("Fuso horário", new ListBoxFormField(timeZones), isInstitutionAdmin);
 		fields.add(timeZone);
 		institutionFields.add(timeZone);
+
+
+		if(isPlatformAdmin){
+			final ListBox skins = formHelper.getSkinsList();
+			if(institution.getSkin() != null){
+				skins.setSelectedValue(institution.getSkin());
+			} else {
+				skins.setSelectedValue("");
+			}
+			skin = new KornellFormFieldWrapper("Tema visual", new ListBoxFormField(skins), isInstitutionAdmin);
+			fields.add(skin);
+			institutionFields.add(skin);
+			((ListBox)skin.getFieldWidget()).addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					CSSInjector.updateSkin(skin.getFieldPersistText(), null);
+				}
+			});
+		}
 		
 		institutionFields.add(formHelper.getImageSeparator());
 
@@ -378,6 +400,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		institution.setAllowRegistration(allowRegistration.getFieldPersistText().equals("true"));
 		institution.setUseEmailWhitelist(useEmailWhitelist.getFieldPersistText().equals("true"));
 		institution.setTimeZone(timeZone.getFieldPersistText());
+		institution.setSkin(skin.getFieldPersistText());
 		if(isPlatformAdmin){
 			institution.setAssetsRepositoryUUID(assetsRepositoryUUID.getFieldPersistText());
 			institution.setBillingType(BillingType.valueOf(billingType.getFieldPersistText()));

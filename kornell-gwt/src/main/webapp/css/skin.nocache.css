@@ -57,19 +57,13 @@
   color: #bec1c3;
 }
 .highlightText {
-  color: #d88709;
-}
-.highlightText2 {
-  color: #d14242;
+  color: #5b9455 !important;
 }
 .highlightTextDiscreteColor {
   color: #e3e3e3;
 }
 .plainDiscreteTextColor {
   color: #888888;
-}
-.textInfoColor {
-  color: #5b9455 !important;
 }
 .bold {
   font-weight: bold !important;
@@ -223,6 +217,41 @@
   border-left: 1px solid #505864 !important;
   cursor: pointer;
 }
+.activityBarWrapper .activityBar .btnAction .label {
+  color: #bec1c3 !important;
+}
+.activityBarWrapper .activityBar .btnAction:hover {
+  background: #2c422a !important;
+  /* Old browsers */
+
+  background: -moz-linear-gradient(top, #2c422a 0%, #5b9455 100%) !important;
+  /* FF3.6+ */
+
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2c422a), color-stop(100%, #5b9455)) !important;
+  /* Chrome,Safari4+ */
+
+  background: -webkit-linear-gradient(top, #2c422a 0%, #5b9455 100%) !important;
+  /* Chrome10+,Safari5.1+ */
+
+  background: -o-linear-gradient(top, #2c422a 0%, #5b9455 100%) !important;
+  /* Opera 11.10+ */
+
+  background: -ms-linear-gradient(top, #2c422a 0%, #5b9455 100%) !important;
+  /* IE10+ */
+
+  background: linear-gradient(to bottom, #2c422a 0%, #5b9455 100%) !important;
+  /* W3C */
+
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c422a', endColorstr='#5b9455',GradientType=0 ) !important;
+  /* IE6-9 */
+
+  background-color: #2c422a;
+  background: -webkit-gradient(linear, left top, left bottom, from(#2c422a), to(#5b9455));
+  background: -webkit-linear-gradient(top, #2c422a, #5b9455);
+  background: -moz-linear-gradient(top, #2c422a, #5b9455);
+  background: -ms-linear-gradient(top, #2c422a, #5b9455);
+  background: -o-linear-gradient(top, #2c422a, #5b9455);
+}
 .activityBarWrapper .activityBar .activityBarButton {
   width: 20%;
   height: 35px;
@@ -234,7 +263,7 @@
   border: 0;
   text-decoration: none;
 }
-.activityBarWrapper .activityBar .activityBarButton:not(.btnSelected):not(.disabled):hover {
+.activityBarWrapper .activityBar .activityBarButton:not(.btnAction):not(.disabled):hover {
   background: #1f2123 !important;
   /* Old browsers */
 
@@ -277,38 +306,6 @@
 }
 .activityBarWrapper .activityBar .activityBarButtonSmall .label {
   display: none;
-}
-.activityBarWrapper .activityBar .btnSelected:hover {
-  background: #460105 !important;
-  /* Old browsers */
-
-  background: -moz-linear-gradient(top, #460105 0%, #99242a 100%) !important;
-  /* FF3.6+ */
-
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #460105), color-stop(100%, #99242a)) !important;
-  /* Chrome,Safari4+ */
-
-  background: -webkit-linear-gradient(top, #460105 0%, #99242a 100%) !important;
-  /* Chrome10+,Safari5.1+ */
-
-  background: -o-linear-gradient(top, #460105 0%, #99242a 100%) !important;
-  /* Opera 11.10+ */
-
-  background: -ms-linear-gradient(top, #460105 0%, #99242a 100%) !important;
-  /* IE10+ */
-
-  background: linear-gradient(to bottom, #460105 0%, #99242a 100%) !important;
-  /* W3C */
-
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#460105', endColorstr='#99242a',GradientType=0 ) !important;
-  /* IE6-9 */
-
-  background-color: #460105;
-  background: -webkit-gradient(linear, left top, left bottom, from(#460105), to(#99242a));
-  background: -webkit-linear-gradient(top, #460105, #99242a);
-  background: -moz-linear-gradient(top, #460105, #99242a);
-  background: -ms-linear-gradient(top, #460105, #99242a);
-  background: -o-linear-gradient(top, #460105, #99242a);
 }
 .activityBarWrapper .activityBar .selected {
   border-top: 3px solid #99242a;
@@ -372,36 +369,36 @@
   margin-top: 2px;
 }
 .activityBarWrapper .activityBar .btnProgress .progressBarPanel .progress .bar {
-  background: #99242a !important;
+  background: #5b9455 !important;
   /* Old browsers */
 
-  background: -moz-linear-gradient(top, #99242a 0%, #460105 100%) !important;
+  background: -moz-linear-gradient(top, #5b9455 0%, #2c422a 100%) !important;
   /* FF3.6+ */
 
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #99242a), color-stop(100%, #460105)) !important;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5b9455), color-stop(100%, #2c422a)) !important;
   /* Chrome,Safari4+ */
 
-  background: -webkit-linear-gradient(top, #99242a 0%, #460105 100%) !important;
+  background: -webkit-linear-gradient(top, #5b9455 0%, #2c422a 100%) !important;
   /* Chrome10+,Safari5.1+ */
 
-  background: -o-linear-gradient(top, #99242a 0%, #460105 100%) !important;
+  background: -o-linear-gradient(top, #5b9455 0%, #2c422a 100%) !important;
   /* Opera 11.10+ */
 
-  background: -ms-linear-gradient(top, #99242a 0%, #460105 100%) !important;
+  background: -ms-linear-gradient(top, #5b9455 0%, #2c422a 100%) !important;
   /* IE10+ */
 
-  background: linear-gradient(to bottom, #99242a 0%, #460105 100%) !important;
+  background: linear-gradient(to bottom, #5b9455 0%, #2c422a 100%) !important;
   /* W3C */
 
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#99242a', endColorstr='#460105',GradientType=0 ) !important;
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5b9455', endColorstr='#2c422a',GradientType=0 ) !important;
   /* IE6-9 */
 
-  background-color: #99242a;
-  background: -webkit-gradient(linear, left top, left bottom, from(#99242a), to(#460105));
-  background: -webkit-linear-gradient(top, #99242a, #460105);
-  background: -moz-linear-gradient(top, #99242a, #460105);
-  background: -ms-linear-gradient(top, #99242a, #460105);
-  background: -o-linear-gradient(top, #99242a, #460105);
+  background-color: #5b9455;
+  background: -webkit-gradient(linear, left top, left bottom, from(#5b9455), to(#2c422a));
+  background: -webkit-linear-gradient(top, #5b9455, #2c422a);
+  background: -moz-linear-gradient(top, #5b9455, #2c422a);
+  background: -ms-linear-gradient(top, #5b9455, #2c422a);
+  background: -o-linear-gradient(top, #5b9455, #2c422a);
 }
 .activityBarWrapper .activityBar .btnProgress .progressBarPanel .pagePanel {
   height: 10px;
@@ -551,10 +548,10 @@
   font-size: 11px;
   font-weight: bold;
   position: relative;
-  background-color: #d88709;
+  background-color: #5b9455;
   border-radius: 10px;
   line-height: 14px;
-  color: #000000;
+  color: #bec1c3;
   margin-top: 5px;
   padding: 0px 2px;
 }
@@ -578,7 +575,7 @@
   border-right: 0px;
 }
 .menuBarContainer .menuBar .testEnvWarning {
-  color: #d88709;
+  color: #5b9455;
   width: 85px;
   font-size: 15px;
   line-height: 45px;
@@ -608,13 +605,13 @@
   width: 25px;
   margin-top: 8px;
   margin-left: 10px;
-  color: #bec1c3;
+  color: #5b9455;
 }
 .placeBar .centerBar .title {
   font-size: 17px;
   padding-top: 8px;
   padding-left: 7px;
-  color: #d88709;
+  color: #5b9455;
   float: left;
   font-weight: bold;
 }
@@ -1436,7 +1433,7 @@
   padding-bottom: 9px;
 }
 .reportPanel .reportWrapper .itemPanel .lblDescription {
-  color: #5b9455;
+  color: #e3e3e3;
   padding-left: 55px;
   font-size: 12px;
   line-height: 14px;
@@ -1612,7 +1609,7 @@
   height: 20px;
   float: left;
   width: 3px;
-  background: #d14242;
+  background: #5b9455;
   margin-right: 5px;
   margin-top: -2px;
 }
@@ -1672,7 +1669,7 @@
   margin-bottom: 20px;
 }
 .termsPanel .titleUser {
-  color: #d88709;
+  color: #5b9455;
   font-size: 20px;
   padding-top: 5px;
   padding-bottom: 10px;
@@ -1883,7 +1880,7 @@
   font-weight: bold;
   text-align: left;
   line-height: 1.231;
-  color: #e3e3e3;
+  color: #5b9455;
 }
 .welcomePanel .pnlCourses .courseSummary .lblSubTitle {
   color: #888888;
@@ -1926,7 +1923,7 @@
   color: #5b9455 !important;
 }
 .welcomePanel .pnlCourses .courseSummary .courseSummaryBar .courseStatusErr {
-  color: #d14242 !important;
+  color: #5b9455 !important;
 }
 .welcomePanel .pnlCourses .courseSummary .courseSummaryBar .progress {
   width: 250px;
@@ -2107,7 +2104,7 @@
   white-space: nowrap;
 }
 .libraryPanel .filesPanel .filesWrapper .fileWrapper .pnlFileName .fileDescription {
-  color: #5b9455;
+  color: #e3e3e3;
   font-size: 10px;
   line-height: 12px;
 }
@@ -2132,7 +2129,7 @@
   margin-bottom: 20px;
 }
 .libraryPanel .includeFileFormPanel .includeFileFormInfo .includeFileFormInfoTitle {
-  color: #d88709;
+  color: #5b9455;
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 10px;
@@ -2440,12 +2437,12 @@
   font-size: 14px;
 }
 .detailsPanel .titlePanel .courseNameLabel {
-  color: #d14242;
+  color: #5b9455;
   float: left;
 }
 .detailsPanel .titlePanel .courseClassNameLabel {
   font-size: 14px;
-  color: #d14242;
+  color: #5b9455;
   float: left;
 }
 .detailsPanel .titlePanel .closePanel .closeImage {
@@ -2454,7 +2451,7 @@
 .detailsPanel .titlePanel .closePanel .closeLabel {
   float: right;
   line-height: 40px;
-  color: #d88709;
+  color: #5b9455;
   padding-right: 3px;
 }
 .detailsPanel .buttonsPanel {
@@ -2484,7 +2481,7 @@
 .detailsPanel .buttonsPanel .btnDetails .btnLabel {
   font-size: 11px;
   line-height: 14px;
-  color: #bec1c3;
+  color: #d9dadb;
   padding-bottom: 8px;
 }
 .detailsPanel .detailsContentPanel .infoPanel {
@@ -2496,7 +2493,7 @@
   margin-top: 20px;
 }
 .detailsPanel .detailsContentPanel .infoPanel .infoDetails .infoTitle {
-  color: #d88709;
+  color: #5b9455;
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 10px;
@@ -2522,15 +2519,18 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
-.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintImg {
+.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .fa {
+  font-size: 20px;
   float: left;
+  padding-top: 3px;
+  color: #5b9455;
 }
 .detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintText {
   padding-left: 30px;
 }
 .detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel {
   width: 240.5px;
-  color: #d14242;
+  color: #5b9455;
   padding: 10px;
   padding-left: 22px;
 }
@@ -2659,7 +2659,7 @@
 }
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .pnlForumComments .lblNewForumComments {
   float: left;
-  color: #d88709;
+  color: #5b9455;
 }
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .lblNotes {
   float: left;
@@ -2769,7 +2769,7 @@
   padding-bottom: 5px;
 }
 .detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .itemPanel .lblDescription {
-  color: #5b9455;
+  color: #e3e3e3;
   padding-left: 20px;
   font-size: 11px;
   line-height: 13px;
@@ -2807,7 +2807,7 @@
   margin-bottom: 20px;
 }
 .detailsPanel .detailsContentPanel .detailsInfo .detailsInfoTitle {
-  color: #d88709;
+  color: #5b9455;
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 10px;
@@ -3249,7 +3249,7 @@
   margin-bottom: 3px;
 }
 .messagesPopup .messagesPanel .titlePanel .lblTitle {
-  color: #d88709;
+  color: #5b9455;
   font-size: 18px;
   font-weight: bold;
   width: 100%;
@@ -3377,7 +3377,7 @@ a {
   padding: 10px;
 }
 .deanHome .nav-tabs > li > a {
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.4) !important;
   border-bottom: 0px;
 }
 .deanHome .inlineLabel {
@@ -3397,7 +3397,7 @@ a {
   padding-top: 0;
 }
 .deanHome .title {
-  color: #d88709;
+  color: #5b9455;
   font-size: 18px;
   line-height: 28px;
   clear: both;
@@ -3518,6 +3518,7 @@ a {
   background: -o-linear-gradient(top, #4c4f54, #252629);
 }
 .deanHome .adminCellTable thead tr th {
+  color: #d9dadb;
   border-right: 1px solid #505864;
   padding: 3px;
 }
@@ -3656,7 +3657,7 @@ a {
 }
 .input-switch input + span:after {
   width: 15px;
-  background-color: #e3e3e3;
+  background-color: #fff;
   -webkit-border-radius: 100%;
   -moz-border-radius: 100%;
   -ms-border-radius: 100%;
@@ -3680,5 +3681,5 @@ a {
   background-color: rgba(0, 0, 0, 0.4);
 }
 .input-switch input[disabled] + span:after {
-  background-color: #3e3d3d;
+  background-color: #fff;
 }

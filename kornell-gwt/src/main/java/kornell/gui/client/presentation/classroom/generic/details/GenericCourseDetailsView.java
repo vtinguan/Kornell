@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -426,7 +427,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	}
 
 	private void displayButton(Button btn, String title, String label, boolean isSelected) {
-		btn.addStyleName("btnDetails " + (isSelected ? "btnSelected" : "btnNotSelected"));
+		btn.addStyleName("btnDetails " + (isSelected ? "btnAction" : "btnNotSelected"));
 
 		Label btnTitle = new Label(title);
 		btnTitle.addStyleName("btnTitle");
@@ -498,14 +499,14 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		return hintsPanel;
 	}
 
-	private FlowPanel getHintPanel(String img, String hintText) {
+	private FlowPanel getHintPanel(String fontAwesomeClass, String hintText) {
 		FlowPanel hint = new FlowPanel();
-		hint.addStyleName("hintDetails");
-
-		Image hintImg = new Image(StringUtils.mkurl(IMAGES_PATH, img + ".png"));
-		hintImg.addStyleName("hintImg");
-		hint.add(hintImg);
-
+		hint.addStyleName("hintDetails ");
+		
+		Icon icon = new Icon();
+		icon.addStyleName(fontAwesomeClass);
+		hint.add(icon);
+		
 		Label lblHintText = new Label(hintText);
 		lblHintText.addStyleName("hintText");
 		hint.add(lblHintText);
@@ -514,9 +515,9 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	}
 
 	private void handleEvent(Button btn) {
-		btnCurrent.removeStyleName("btnSelected");
+		btnCurrent.removeStyleName("btnAction");
 		btnCurrent.addStyleName("btnNotSelected");
-		btn.addStyleName("btnSelected");
+		btn.addStyleName("btnAction");
 		btn.removeStyleName("btnNotSelected");
 
 		displayContent(btn);

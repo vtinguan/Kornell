@@ -88,19 +88,13 @@
   color: #bec1c3;
 }
 .highlightText {
-  color: #d88709;
-}
-.highlightText2 {
-  color: #d14242;
+  color: #5b9455 !important;
 }
 .highlightTextDiscreteColor {
   color: #e3e3e3;
 }
 .plainDiscreteTextColor {
   color: #888888;
-}
-.textInfoColor {
-  color: #5b9455 !important;
 }
 .bold {
   font-weight: bold !important;
@@ -929,7 +923,7 @@
   padding-bottom: 9px;
 }
 .reportPanel .reportWrapper .itemPanel .lblDescription {
-  color: #5b9455;
+  color: #e3e3e3;
   padding-left: 55px;
   font-size: 12px;
   line-height: 14px;
@@ -1024,12 +1018,12 @@
   font-size: 14px;
 }
 .detailsPanel .titlePanel .courseNameLabel {
-  color: #d14242;
+  color: #5b9455;
   float: left;
 }
 .detailsPanel .titlePanel .courseClassNameLabel {
   font-size: 14px;
-  color: #d14242;
+  color: #5b9455;
   float: left;
 }
 .detailsPanel .titlePanel .closePanel .closeImage {
@@ -1038,7 +1032,7 @@
 .detailsPanel .titlePanel .closePanel .closeLabel {
   float: right;
   line-height: 40px;
-  color: #d88709;
+  color: #5b9455;
   padding-right: 3px;
 }
 .detailsPanel .buttonsPanel {
@@ -1068,7 +1062,7 @@
 .detailsPanel .buttonsPanel .btnDetails .btnLabel {
   font-size: 11px;
   line-height: 14px;
-  color: #bec1c3;
+  color: #d9dadb;
   padding-bottom: 8px;
 }
 .detailsPanel .detailsContentPanel .infoPanel {
@@ -1080,7 +1074,7 @@
   margin-top: 20px;
 }
 .detailsPanel .detailsContentPanel .infoPanel .infoDetails .infoTitle {
-  color: #d88709;
+  color: #5b9455;
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 10px;
@@ -1106,15 +1100,18 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
-.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintImg {
+.detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .fa {
+  font-size: 20px;
   float: left;
+  padding-top: 3px;
+  color: #5b9455;
 }
 .detailsPanel .detailsContentPanel .sidePanel .hintsPanel .hintDetails .hintText {
   padding-left: 30px;
 }
 .detailsPanel .detailsContentPanel .sidePanel .notEnrolledPanel {
   width: 240.5px;
-  color: #d14242;
+  color: #5b9455;
   padding: 10px;
   padding-left: 22px;
 }
@@ -1243,7 +1240,7 @@
 }
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .pnlForumComments .lblNewForumComments {
   float: left;
-  color: #d88709;
+  color: #5b9455;
 }
 .detailsPanel .detailsContentPanel .topicsPanel .topicWrapper .lblNotes {
   float: left;
@@ -1353,7 +1350,7 @@
   padding-bottom: 5px;
 }
 .detailsPanel .detailsContentPanel .certificationPanel .certificationWrapper .itemPanel .lblDescription {
-  color: #5b9455;
+  color: #e3e3e3;
   padding-left: 20px;
   font-size: 11px;
   line-height: 13px;
@@ -1391,7 +1388,7 @@
   margin-bottom: 20px;
 }
 .detailsPanel .detailsContentPanel .detailsInfo .detailsInfoTitle {
-  color: #d88709;
+  color: #5b9455;
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 10px;

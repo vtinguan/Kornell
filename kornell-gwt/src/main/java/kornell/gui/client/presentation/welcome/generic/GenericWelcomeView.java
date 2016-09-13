@@ -177,10 +177,10 @@ public class GenericWelcomeView extends Composite implements WelcomeView {
 
 	private void refreshButtonSelection(Button button) {
 		button.setVisible(false);
-		button.removeStyleName("btnSelected");
+		button.removeStyleName("btnAction");
 		button.addStyleName("btnNotSelected");
 		if (selectedFilterButton != null && selectedFilterButton.equals(button)) {
-			button.addStyleName("btnSelected");
+			button.addStyleName("btnAction");
 			button.removeStyleName("btnNotSelected");
 		}
 	}

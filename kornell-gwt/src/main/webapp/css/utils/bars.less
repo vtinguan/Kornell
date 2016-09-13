@@ -25,6 +25,14 @@
 			.btnBorder;
 			.cursorPointer;
 		}
+		.btnAction{
+			.label {
+				color: @againstTextHighlightColor !important;
+			}
+		}
+		.btnAction:hover{
+			.gradient (@buttonActionGradientEnd, @buttonActionGradientStart);
+		}
 		.activityBarButton {
 			width: @activityBarButtonWidth;
 			height: @barSouthHeight;
@@ -35,7 +43,7 @@
 			border-radius: 0px !important;
 			border: 0;
 			text-decoration: none;
-			&:not(.btnSelected):not(.disabled):hover{
+			&:not(.btnAction):not(.disabled):hover{
 				.gradient (@barGradientEndColor, @barGradientEndColor);
 			}
 			.label{
@@ -51,9 +59,6 @@
 			.label{
 				display: none;
 			}
-		}
-		.btnSelected:hover{
-			.gradient (@buttonSelectedGradientEnd, @buttonSelectedGradientStart);
 		}
 		.selected{
 			@borderTopHeight: 3px;
@@ -86,7 +91,7 @@
 					margin: 0 auto;
 					margin-top: 2px;
 					.bar{
-						.gradient(@buttonSelectedGradientStart, @buttonSelectedGradientEnd);
+						.gradient(@buttonActionGradientStart, @buttonActionGradientEnd);
 					}
 				}
 				.pagePanel{
@@ -191,7 +196,7 @@
 					background-color: @textHighlightColor;
 					border-radius: 10px;
 					line-height: 14px;
-					color: @blackOrWhite;
+					color: @againstTextHighlightColor;
 					margin-top: 5px;
 					padding: 0px 2px;
 					&:hover{
@@ -251,7 +256,7 @@
 			width: 25px;
 			margin-top: 8px;
 			margin-left: 10px;
-			color: @niceTextColor;
+			color: @textHighlightColor;
 		}
 		.title{
 			font-size: 17px;

@@ -156,7 +156,7 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		displayProgressButton();
 
 		if (showDetails) {
-			btnDetails.addStyleName("btnSelected");
+			btnDetails.addStyleName("btnAction");
 			enableButton(BUTTON_PREVIOUS, false);
 			enableButton(BUTTON_NEXT, false);
 		}
@@ -372,14 +372,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		this.showDetails = event.isShowDetails();
 		if (showDetails) {
 			clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(false));
-			btnDetails.addStyleName("btnSelected");
+			btnDetails.addStyleName("btnAction");
 			displayButton(btnDetails, constants.course(),
 					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
 		} else {
 			if(!chatDockEnabled && session.getCurrentCourseClass() != null && session.getCurrentCourseClass().getCourseClass().isChatDockEnabled()){
 				clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(true));
 			}
-			btnDetails.removeStyleName("btnSelected");
+			btnDetails.removeStyleName("btnAction");
 			displayButton(btnDetails, BUTTON_DETAILS,
 					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
 		}
@@ -396,9 +396,9 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			if(showDetails){
 				clientFactory.getEventBus().fireEvent(new ShowDetailsEvent(false));
 			}
-			btnChat.addStyleName("btnSelected");
+			btnChat.addStyleName("btnAction");
 		} else {
-			btnChat.removeStyleName("btnSelected");
+			btnChat.removeStyleName("btnAction");
 		}
 	}
 
