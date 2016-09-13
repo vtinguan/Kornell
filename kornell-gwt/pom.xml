@@ -270,10 +270,10 @@
 				<artifactId>lesscss-maven-plugin</artifactId>
 				<version>1.7.0.1.1</version>
 				<configuration>
-					<sourceDirectory>${project.basedir}/src/main/webapp/css</sourceDirectory>
+					<sourceDirectory>${project.basedir}/src/main/webapp/less</sourceDirectory>
 					<outputDirectory>${project.basedir}/src/main/webapp/css</outputDirectory>
 					<compress>false</compress>
-					<force>true</force>
+					<force>false</force>
 				</configuration>
 				<executions>
 					<execution>
