@@ -40,6 +40,8 @@ import kornell.core.entity.S3ContentRepository
 import java.util.UUID
 import kornell.core.to.DashboardLeaderboardTO
 import kornell.core.to.DashboardLeaderboardItemTO
+import kornell.core.entity.CourseDetailsHint
+import kornell.core.entity.CourseDetailsEntityType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -359,4 +361,12 @@ package object repository {
     rs.getString("entityName"),
     rs.getString("fromPersonName"),
     rs.getString("fromUsername")) 
+    
+  implicit def toCourseDetailsHint(rs: ResultSet): CourseDetailsHint = newCourseDetailsHint(
+      rs.getString("uuid"), 
+      rs.getString("text"), 
+      CourseDetailsEntityType.valueOf(rs.getString("entityType")), 
+      rs.getString("entityUUID"), 
+      rs.getInt("index"), 
+      rs.getString("fontAwesomeClassName"))
 }
