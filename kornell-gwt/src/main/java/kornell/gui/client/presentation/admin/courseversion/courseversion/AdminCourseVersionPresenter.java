@@ -27,6 +27,7 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 	private EventBus bus;
 	Place defaultPlace;
 	private ViewFactory viewFactory;
+	private AdminCourseVersionContentPresenter courseVersionContentPresenter;
 
 	public AdminCourseVersionPresenter(KornellSession session, PlaceController placeController, EventBus bus,
 			Place defaultPlace, ViewFactory viewFactory) {
@@ -95,5 +96,12 @@ public class AdminCourseVersionPresenter implements AdminCourseVersionView.Prese
 				}
 			});
 		}
+	}
+
+	@Override
+	public void buildContentView(CourseVersion courseVersion) {
+		courseVersionContentPresenter = new AdminCourseVersionContentPresenter(session, placeController, bus, defaultPlace, viewFactory);
+		courseVersionContentPresenter.init(courseVersion);
+		view.addContentPanel((AdminCourseVersionContentView) courseVersionContentPresenter.asWidget());
 	}
 }

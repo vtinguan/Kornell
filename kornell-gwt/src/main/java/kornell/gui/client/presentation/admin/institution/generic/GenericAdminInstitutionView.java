@@ -9,6 +9,7 @@ import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -21,6 +22,8 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -35,12 +38,14 @@ import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.entity.InstitutionType;
 import kornell.gui.client.ViewFactory;
+import kornell.gui.client.personnel.Dean;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionPlace;
 import kornell.gui.client.presentation.admin.institution.AdminInstitutionView;
 import kornell.gui.client.util.CSSInjector;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.forms.formfield.ListBoxFormField;
+import kornell.gui.client.util.view.KornellMaintenance;
 import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericAdminInstitutionView extends Composite implements AdminInstitutionView {
@@ -347,7 +352,19 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 			((ListBox)skin.getFieldWidget()).addChangeHandler(new ChangeHandler() {
 				@Override
 				public void onChange(ChangeEvent event) {
-					CSSInjector.updateSkin(skin.getFieldPersistText(), null);
+					Dean.showContentNative(false);
+
+					Callback<Void, Exception> callback = new Callback<Void, Exception>() {
+						public void onFailure(Exception reason) {
+							Window.Location.reload();
+						}
+
+						public void onSuccess(Void result) {
+							Dean.showContentNative(true);
+						}
+					};
+					
+					CSSInjector.updateSkin(skin.getFieldPersistText(), callback);
 				}
 			});
 		}

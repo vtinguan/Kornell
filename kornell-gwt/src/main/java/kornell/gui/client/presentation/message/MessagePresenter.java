@@ -174,8 +174,6 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			view.updateThreadPanel(unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
 			onScrollToTop(true);
 		} else {
-			ChatThreadMessagesTO chatThreadMessagesTO = toFactory.newChatThreadMessagesTO().as();
-			chatThreadMessagesTO.setChatThreadMessageTOs(new ArrayList<ChatThreadMessageTO>());
 			view.updateThreadPanel(selectedChatThreadInfo, session.getCurrentUser().getPerson().getFullName());
 		}
 	}
