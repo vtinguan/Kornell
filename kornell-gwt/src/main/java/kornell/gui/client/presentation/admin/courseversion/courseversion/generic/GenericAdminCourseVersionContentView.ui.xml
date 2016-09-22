@@ -9,7 +9,11 @@
 				<g:FlowPanel ui:field="sidePanel" addStyleNames="sidePanel left"></g:FlowPanel>
 			</g:ScrollPanel>
 			<g:FlowPanel ui:field="slidePanel" addStyleNames="slidePanel left">
-				<g:Label ui:field="slideTitle" addStyleNames="slideTitle"></g:Label>
+				<b:Form ui:field="form">
+			      <g:FlowPanel ui:field="slideFields" addStyleNames="fieldsWrapper">    
+			      </g:FlowPanel>
+			      <g:Button ui:field="btnSave" addStyleNames="btnAction btnStandard">Salvar</g:Button>
+			    </b:Form>
 				<g:ScrollPanel ui:field="slideItemsScroll" addStyleNames="slideItemsScroll">
 					<g:FlowPanel ui:field="slidePanelItems"></g:FlowPanel>
 				</g:ScrollPanel>

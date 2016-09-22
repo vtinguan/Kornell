@@ -5,17 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.FileUpload;
-import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.Form;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -30,24 +27,16 @@ import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ContentSpec;
 import kornell.core.entity.CourseVersion;
-import kornell.core.entity.InstitutionType;
-import kornell.core.to.ChatThreadMessageTO;
-import kornell.core.to.UnreadChatThreadTO;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
-import kornell.gui.client.event.UnreadMessagesCountChangedEvent;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView.Presenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardMock;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
-import kornell.gui.client.presentation.message.MessagePanelType;
-import kornell.gui.client.presentation.message.generic.MessageItem;
+import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericAdminCourseVersionContentView extends Composite implements AdminCourseVersionContentView {
 	interface MyUiBinder extends UiBinder<Widget, GenericAdminCourseVersionContentView> {
@@ -58,11 +47,13 @@ public class GenericAdminCourseVersionContentView extends Composite implements A
 	private EventBus bus;
 	private KornellSession session;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
+	private FormHelper formHelper = GWT.create(FormHelper.class);
 	private List<Label> sideItems;
 	private HashMap<String, Label> sidePanelItemsMap;
 	private static String HIGHLIGHT_CLASS = "highlightText";
 	private String PLAIN_CLASS = "plainDiscreteTextColor";
 	private WizardElement currentWizardElement;
+	private KornellFormFieldWrapper name;
 	private List<KornellFormFieldWrapper> fields;
 
 	@UiField
@@ -75,16 +66,22 @@ public class GenericAdminCourseVersionContentView extends Composite implements A
 	@UiField	
 	FlowPanel slidePanel;
 	@UiField
-	Label slideTitle;
-	@UiField
 	ScrollPanel slideItemsScroll;
 	@UiField
 	FlowPanel slidePanelItems;
+	@UiField
+	Form form;
+	@UiField
+	FlowPanel slideFields;
 
 	private CourseVersion courseVersion;
 	private Presenter presenter;
 	
 	private boolean isWizardVersion = false;
+
+	private WizardElement selectedWizardElement;
+
+	private Wizard wizard;
 
 	public GenericAdminCourseVersionContentView(final KornellSession session, EventBus bus, PlaceController placeCtrl) {
 		this.session = session;
@@ -180,13 +177,18 @@ public class GenericAdminCourseVersionContentView extends Composite implements A
 
 	@Override
 	public void updateSlidePanel(Wizard wizard, WizardElement wizardElement) {
-		//threadTitle.getElement().setInnerHTML(getThreadTitle(unreadChatThreadTO, currentUserFullName, false));
+
+		selectedWizardElement = wizardElement;
+		this.wizard = wizard;
+		
+		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		sidePanelItemsMap = new HashMap<String, Label>();
+		slideFields.clear();	
 		slidePanelItems.clear();
 
-		/*name = new KornellFormFieldWrapper("Nome", formHelper.createTextBoxFormField(courseVersion.getName()), isInstitutionAdmin);
+		name = new KornellFormFieldWrapper("Título do Slide", formHelper.createTextBoxFormField(wizardElement.getTitle()), true);
 		fields.add(name);
-		courseVersionFields.add(name);*/
+		slideFields.add(name);		
 
 		if(wizardElement instanceof WizardSlide){
 			WizardSlide wizardSlide = (WizardSlide) wizardElement;
@@ -205,14 +207,23 @@ public class GenericAdminCourseVersionContentView extends Composite implements A
 			} 
 		}
 	}
+
+	@UiHandler("btnSave")
+	void doOK(ClickEvent e) {
+		formHelper.clearErrors(fields);
+		if (validateFields()) {
+			selectedWizardElement.setTitle(name.getFieldPersistText());
+			updateSidePanel(wizard, selectedWizardElement);
+		}
+	}
 	
-	/*private boolean validateFields() {		
+	private boolean validateFields() {		
 		if (!formHelper.isLengthValid(name.getFieldPersistText(), 2, 100)) {
 			name.setError("Insira o título");
 		}
 		
 		return !formHelper.checkErrors(fields);
-	}*/
+	}
 
 	@Override
 	public void updateSidePanel(Wizard wizard, WizardElement selectedWizardElement) {
@@ -226,6 +237,10 @@ public class GenericAdminCourseVersionContentView extends Composite implements A
 				createSidePanelItem(wizard, selectedWizardElement, wizardTopic, wizardSlide);				
 			}
 		}
+
+		if(selectedWizardElement != null){
+			sidePanelItemsMap.get(selectedWizardElement.getUUID()).addStyleName("selected");
+		}
 	}
 
 	private void createSidePanelItem(Wizard wizard, WizardElement selectedWizardElement, final WizardTopic parentWizardElement,
@@ -236,7 +251,11 @@ public class GenericAdminCourseVersionContentView extends Composite implements A
 			boolean enableClick = true;
 			@Override
 			public void onClick(ClickEvent event) {
-				if(!enableClick) return;
+				if(!enableClick || 
+						(currentWizardElement != null && 
+						currentWizardElement.getUUID().equals(wizardElement.getUUID()))){
+					return;
+				}
 				enableClick = false;
 				Timer preventDoubleClickTimer = new Timer() {
 					public void run() {
@@ -251,18 +270,12 @@ public class GenericAdminCourseVersionContentView extends Composite implements A
 				label.addStyleName("selected");
 				presenter.wizardElementClicked(wizard, wizardElement);
 				setLabelContent(parentWizardElement, wizardElement, label);
-				
-				currentWizardElement = selectedWizardElement;
 			}
 		});
-		if(currentWizardElement.getUUID().equals(selectedWizardElement.getUUID())){
-			label.addStyleName("selected");
-		}
 		if(parentWizardElement != null){
 			label.addStyleName("marginLeft25");
 		}
 		setLabelContent(parentWizardElement, wizardElement, label);
-		
 		sidePanel.add(label);
 		sideItems.add(label);
 	}
@@ -271,7 +284,7 @@ public class GenericAdminCourseVersionContentView extends Composite implements A
 		String type = parentWizardElement == null ? "Tópico " : ("Slide " + parentWizardElement.getOrder() + "."); 
 		String title = span(type + wizardElement.getOrder(), HIGHLIGHT_CLASS) + separator(true) + span(wizardElement.getTitle(), PLAIN_CLASS);
 		String titleStripped = title.replaceAll(separator(true), " ").replaceAll("\\<[^>]*>","").replaceAll(separator(false, true), " ").replaceAll(separator(false, false), " ").toLowerCase();
-		sidePanelItemsMap.put(titleStripped, label);
+		sidePanelItemsMap.put(wizardElement.getUUID(), label);
 		label.getElement().setInnerHTML(title);
 	}
 

@@ -402,8 +402,9 @@ a:hover{
 		}
 		.slideItemsScroll{
 			min-height: 192px;
-			margin-bottom: 5px;
+			height: ~"calc(100vh - 297px)";
 			padding-right: 5px;
+			clear: both;
 			.threadMessageWrapper{
 				.boxSizing;
 				background: @tableBackgroundHoverColor;
@@ -448,32 +449,26 @@ a:hover{
 				}
 			}
 		} 
-		.sendMessageWrapper{
-			.boxSizing;
-			padding-top: 6px;
-			.messageTextArea{
-				.boxSizing;
-				width: 83%;
+		form{
+			margin: 0;
+			.fieldsWrapper{
 				float: left;
-				height: 60px;
-				font-size: 12px;
-				line-height: 14px;
-				resize: none;
+				.fieldPanelWrapper{
+					width: initial;
+					.labelPanel {
+						width: 150px;
+					}
+					.fieldPanel{
+						width: initial;
+						.textField{
+							width: 350px;
+						}
+					}
+				}
 			}
-			.btnSend{
-				.boxSizing;
-				width: 15%;
-				float: left;
-				margin-top: 19px;
-				margin-left: 10px;
-			}
-			span{
-				color: @plainDiscreteTextColor;
-				font-size: 9px;
-				text-align: center;
-				display: block;
-				line-height: 25px;
-				font-weight: bold;
+			.btnStandard{
+				margin-left: 20px;
+				margin-top: 4px;
 			}
 		}
 	}

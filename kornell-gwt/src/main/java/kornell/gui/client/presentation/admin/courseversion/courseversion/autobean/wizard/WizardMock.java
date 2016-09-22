@@ -33,6 +33,13 @@ public class WizardMock {
 		wizardSlides.add(mockWizardSlide(wizardTopic, 1));
 		wizardSlides.add(mockWizardSlide(wizardTopic, 2));
 		wizardSlides.add(mockWizardSlide(wizardTopic, 3));
+		wizardSlides.add(mockWizardSlide(wizardTopic, 4));
+		wizardSlides.add(mockWizardSlide(wizardTopic, 5));
+		wizardSlides.add(mockWizardSlide(wizardTopic, 6));
+		wizardSlides.add(mockWizardSlide(wizardTopic, 7));
+		wizardSlides.add(mockWizardSlide(wizardTopic, 8));
+		wizardSlides.add(mockWizardSlide(wizardTopic, 9));
+		wizardSlides.add(mockWizardSlide(wizardTopic, 10));
 		
 		wizardTopic.setWizardSlides(wizardSlides);
 		
@@ -49,6 +56,16 @@ public class WizardMock {
 		List<WizardSlideItem> wizardSlideItems = new ArrayList<>();
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 1));
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 2));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 3));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 4));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 5));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 6));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 7));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 8));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 9));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 10));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 11));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 12));
 		
 		wizardSlide.setWizardSlideItems(wizardSlideItems);
 		
