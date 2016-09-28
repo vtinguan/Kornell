@@ -431,5 +431,31 @@ object Entities {
     hint.setFontAwesomeClassName(fontAwesomeClassName)
     hint
   }
+  
+  def newCourseDetailsLibrary(uuid: String, title: String, description: String, entityType:CourseDetailsEntityType, entityUUID:String, index:Integer, size:Integer, path:String, uploadDate:Date, fontAwesomeClassName:String) = {
+    val library = factory.newCourseDetailsLibrary.as
+    library.setUUID(uuid)
+    library.setTitle(title)
+    library.setDescription(description)
+    library.setEntityType(entityType)
+    library.setEntityUUID(entityUUID)
+    library.setIndex(index)
+    library.setFontAwesomeClassName(fontAwesomeClassName)
+    library.setSize(size)
+    library.setPath(path)
+    library.setUploadDate(uploadDate)
+    library
+  }
+  
+  def newCourseDetailsSection(uuid: String, title: String, text: String, entityType:CourseDetailsEntityType, entityUUID:String, index:Integer) = {
+    val section = factory.newCourseDetailsSection.as
+    section.setUUID(uuid)
+    section.setTitle(title)
+    section.setText(text)
+    section.setEntityType(entityType)
+    section.setEntityUUID(entityUUID)
+    section.setIndex(index)
+    section
+  }
 }
 

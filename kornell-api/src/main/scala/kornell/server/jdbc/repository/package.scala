@@ -42,6 +42,8 @@ import kornell.core.to.DashboardLeaderboardTO
 import kornell.core.to.DashboardLeaderboardItemTO
 import kornell.core.entity.CourseDetailsHint
 import kornell.core.entity.CourseDetailsEntityType
+import kornell.core.entity.CourseDetailsLibrary
+import kornell.core.entity.CourseDetailsSection
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -369,4 +371,24 @@ package object repository {
       rs.getString("entityUUID"), 
       rs.getInt("index"), 
       rs.getString("fontAwesomeClassName"))
+      
+  implicit def toCourseDetailsLibrary(rs: ResultSet): CourseDetailsLibrary = newCourseDetailsLibrary(
+      rs.getString("uuid"), 
+      rs.getString("title"), 
+      rs.getString("description"), 
+      CourseDetailsEntityType.valueOf(rs.getString("entityType")), 
+      rs.getString("entityUUID"), 
+      rs.getInt("index"), 
+      rs.getInt("size"), 
+      rs.getString("path"), 
+      rs.getTimestamp("uploadDate"), 
+      rs.getString("fontAwesomeClassName"))
+      
+  implicit def toCourseDetailsSection(rs: ResultSet): CourseDetailsSection = newCourseDetailsSection(
+      rs.getString("uuid"), 
+      rs.getString("title"), 
+      rs.getString("text"), 
+      CourseDetailsEntityType.valueOf(rs.getString("entityType")), 
+      rs.getString("entityUUID"), 
+      rs.getInt("index"))
 }
