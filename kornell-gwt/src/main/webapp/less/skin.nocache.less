@@ -405,35 +405,16 @@ a:hover{
 			height: ~"calc(100vh - 297px)";
 			padding-right: 5px;
 			clear: both;
-			.threadMessageWrapper{
+			.slideItemWrapper{
 				.boxSizing;
 				background: @tableBackgroundHoverColor;
 				margin: 5px;
 				padding: 5px 8px;
-				margin-left: 15px;
 				border-radius: 10px;
 				position: relative;
-				.threadMessageHeader{
-					color: @textHighlightDiscreteColor;
-					font-size: 8px;
-					font-size: 10px;
-					margin-bottom: 5px;
-				}
-				.threadMessageItem{
-					color: @niceTextColor;
+				.slideItemHeader{
 					font-size: 12px;
-					padding: 0px 10px;
-					white-space: pre-wrap;
-				}
-				&:after {
-					content: '';
-					position: absolute;
-					top: 40%;
-					left: 0%;
-					margin-left: -12px;
-					border-top: 7px solid transparent;
-					border-bottom: 7px solid transparent;
-					border-right: 12px solid @tableBackgroundHoverColor;
+					margin-bottom: 5px;
 				}
 			}
 			.overrideWrapper{
@@ -456,12 +437,12 @@ a:hover{
 				.fieldPanelWrapper{
 					width: initial;
 					.labelPanel {
-						width: 150px;
+						width: 250px;
 					}
 					.fieldPanel{
 						width: initial;
 						.textField{
-							width: 350px;
+							width: 450px;
 						}
 					}
 				}

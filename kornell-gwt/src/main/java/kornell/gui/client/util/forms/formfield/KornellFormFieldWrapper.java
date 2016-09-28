@@ -171,6 +171,10 @@ public class KornellFormFieldWrapper extends Composite {
 	public KornellFormField<?> getFormField() {
 		return formField;
 	}
+	
+	public void setFieldLabelText(String text) {
+		fieldLabel.setText(text);
+	}
 
 	public Widget getFieldWidget() {
 		return formField.getFieldWidget();

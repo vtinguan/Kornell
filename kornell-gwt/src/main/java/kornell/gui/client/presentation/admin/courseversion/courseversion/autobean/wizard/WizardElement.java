@@ -12,4 +12,7 @@ public interface WizardElement {
 	Integer getOrder();
 	void setOrder(Integer order);
 	
+	boolean isValueChanged();
+	void setValueChanged(boolean valueChanged);
+	
 }

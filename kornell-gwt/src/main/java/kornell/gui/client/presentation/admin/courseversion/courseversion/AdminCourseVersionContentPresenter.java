@@ -2,18 +2,18 @@ package kornell.gui.client.presentation.admin.courseversion.courseversion;
 
 import java.util.logging.Logger;
 
-import javax.swing.text.View;
-
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 import kornell.api.client.KornellSession;
+import kornell.core.entity.ContentSpec;
 import kornell.core.entity.CourseVersion;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardMock;
 
 public class AdminCourseVersionContentPresenter implements AdminCourseVersionContentView.Presenter {
 	Logger logger = Logger.getLogger(AdminCourseVersionContentPresenter.class.getName());
@@ -24,6 +24,9 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 	Place defaultPlace;
 	private ViewFactory viewFactory;
 	private CourseVersion courseVersion;
+
+	private Wizard wizard;
+	private WizardElement selectedWizardElement;
 
 	public AdminCourseVersionContentPresenter(KornellSession session, PlaceController placeController, EventBus bus,
 			Place defaultPlace, ViewFactory viewFactory) {
@@ -38,10 +41,17 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 	public void init(CourseVersion courseVersion) {
 		if (session.isInstitutionAdmin()) {
 			view = viewFactory.getAdminCourseVersionContentView();
-			view.init(courseVersion);
-			if (view.getPresenter() == null) {
-				view.setPresenter(this);
+			view.setPresenter(this);
+			
+			boolean isWizardVersion = ContentSpec.WIZARD.equals(courseVersion.getContentSpec());
+			if(isWizardVersion){			
+				Wizard wizard = WizardMock.mockWizard();
+				selectedWizardElement = wizard.getWizardTopics().get(0).getWizardSlides().get(0);
+				view.init(courseVersion, wizard);
+			} else {			
+				view.init(courseVersion, null);
 			}
+			
 		} else {
 			logger.warning("Hey, only admins are allowed to see this! " + this.getClass().getName());
 			placeController.goTo(defaultPlace);
@@ -54,15 +64,32 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 	}
 
 	@Override
-	public void wizardElementClicked(Wizard wizard, WizardElement wizardElement) {
-		view.displaySlidePanel(false);
-		view.updateSidePanel(wizard, wizardElement);
-		view.updateSlidePanel(wizard, wizardElement);
-		view.displaySlidePanel(true);
+	public void wizardElementClicked(WizardElement wizardElement) {
+		view.getWizardView().displaySlidePanel(false);
+		this.selectedWizardElement = wizardElement;
+		view.getWizardView().setSelectedWizardElement(selectedWizardElement);
+		view.getWizardView().updateSidePanel();
+		view.getWizardView().updateSlidePanel();
+		view.getWizardView().displaySlidePanel(true);
 	}
 
 	public AdminCourseVersionContentView getView() {
 		return view;
 	}
 
+	@Override
+	public void valueChanged(WizardElement wizardElement, boolean valueHasChanged) {
+		wizardElement.setValueChanged(valueHasChanged);
+		view.getWizardView().updateSidePanel();
+	}
+	
+	@Override
+	public WizardElement getSelectedWizardElement(){
+		return selectedWizardElement;
+	}
+	
+	@Override
+	public Wizard getWizard(){
+		return wizard;
+	}
 }
