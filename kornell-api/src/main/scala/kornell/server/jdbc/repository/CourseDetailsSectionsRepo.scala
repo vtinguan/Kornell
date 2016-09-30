@@ -13,7 +13,7 @@ object CourseDetailsSectionsRepo {
       courseDetailsSection.setUUID(UUID.random)
     }    
     sql"""
-    | insert into CourseDetailsSection (uuid,text,entityType,entityUUID,index,title) 
+    | insert into CourseDetailsSection (uuid,text,entityType,entityUUID,`index`,title) 
     | values(
     | ${courseDetailsSection.getUUID},
     | ${courseDetailsSection.getText},

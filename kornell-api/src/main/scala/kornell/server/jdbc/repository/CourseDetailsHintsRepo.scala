@@ -14,7 +14,7 @@ object CourseDetailsHintsRepo {
       courseDetailsHint.setUUID(UUID.random)
     }    
     sql"""
-    | insert into CourseDetailsHint (uuid,text,entityType,entityUUID,index,fontAwesomeClassName) 
+    | insert into CourseDetailsHint (uuid,text,entityType,entityUUID,`index`,fontAwesomeClassName) 
     | values(
     | ${courseDetailsHint.getUUID},
     | ${courseDetailsHint.getText},

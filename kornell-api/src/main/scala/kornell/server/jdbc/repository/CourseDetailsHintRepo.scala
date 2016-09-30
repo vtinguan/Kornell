@@ -18,7 +18,7 @@ class CourseDetailsHintRepo(uuid: String) {
     | update CourseDetailsHint c
     | set c.text = ${courseDetailsHint.getText},
     | c.index = ${courseDetailsHint.getIndex}, 
-    | c.fontAwesomeClassName = ${courseDetailsHint.getFontAwesomeClassName},
+    | c.fontAwesomeClassName = ${courseDetailsHint.getFontAwesomeClassName}
     | where c.uuid = ${courseDetailsHint.getUUID}""".executeUpdate
     
     courseDetailsHint

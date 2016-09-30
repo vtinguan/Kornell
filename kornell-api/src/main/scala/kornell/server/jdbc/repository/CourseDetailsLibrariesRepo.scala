@@ -13,7 +13,7 @@ object CourseDetailsLibrariesRepo {
       courseDetailsLibrary.setUUID(UUID.random)
     }    
     sql"""
-    | insert into CourseDetailsLibrary (uuid,title,entityType,entityUUID,index,description,size,path,uploadDate,fontAwesomeClassName) 
+    | insert into CourseDetailsLibrary (uuid,title,entityType,entityUUID,`index`,description,size,path,uploadDate,fontAwesomeClassName) 
     | values(
     | ${courseDetailsLibrary.getUUID},
     | ${courseDetailsLibrary.getTitle},

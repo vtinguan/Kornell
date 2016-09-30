@@ -12,27 +12,27 @@ import javax.ws.rs.DELETE
 import kornell.server.util.AccessDeniedErr
 import kornell.server.jdbc.repository.CourseDetailsHintRepo
 import kornell.core.entity.CourseDetailsHint
+import javax.ws.rs.Path
+import javax.ws.rs.PathParam
+import javax.ws.rs.POST
+import kornell.server.jdbc.repository.CourseDetailsHintsRepo
 
-class CourseDetailsHintResource(uuid: String) {
+@Path("courseDetailsHints")
+class CourseDetailsHintsResource {
   
-  @GET
-  @Produces(Array(CourseDetailsHint.TYPE))
-  def get = {
-    CourseDetailsHintRepo(uuid).get
-  }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
-   .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
-   .get
+  @Path("{uuid}")
+  def get(@PathParam("uuid") uuid: String) = CourseDetailsHintResource(uuid)
    
-  @PUT
+  @POST
   @Consumes(Array(CourseDetailsHint.TYPE))
   @Produces(Array(CourseDetailsHint.TYPE))
-  def update(courseDetailsHint: CourseDetailsHint) = {
-    CourseDetailsHintRepo(uuid).update(courseDetailsHint)
+  def create(courseDetailsHint: CourseDetailsHint) = {
+    CourseDetailsHintsRepo.create(courseDetailsHint)
   }.requiring(isPlatformAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .or(isInstitutionAdmin(PersonRepo(getAuthenticatedPersonUUID).get.getInstitutionUUID), AccessDeniedErr())
    .get
 }
 
-object CourseDetailsHintResource {
+object CourseDetailsHintsResource {
   def apply(uuid: String) = new CourseDetailsHintResource(uuid)
 }
