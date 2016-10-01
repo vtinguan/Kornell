@@ -14,6 +14,7 @@ import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardMock;
+import kornell.gui.client.util.view.LoadingPopup;
 
 public class AdminCourseVersionContentPresenter implements AdminCourseVersionContentView.Presenter {
 	Logger logger = Logger.getLogger(AdminCourseVersionContentPresenter.class.getName());
@@ -67,14 +68,19 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 	public void wizardElementClicked(WizardElement wizardElement) {
 		view.getWizardView().displaySlidePanel(false);
 		this.selectedWizardElement = wizardElement;
-		view.getWizardView().setSelectedWizardElement(selectedWizardElement);
 		view.getWizardView().updateSidePanel();
 		view.getWizardView().updateSlidePanel();
-		view.getWizardView().displaySlidePanel(true);
+		view.getWizardView().displaySlidePanel(true);	
+		LoadingPopup.hide();
 	}
 
 	public AdminCourseVersionContentView getView() {
 		return view;
+	}
+
+	@Override
+	public void valueChanged(boolean valueHasChanged) {
+		valueChanged(selectedWizardElement, valueHasChanged);
 	}
 
 	@Override

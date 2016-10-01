@@ -11,6 +11,7 @@ public interface AdminCourseVersionContentView extends IsWidget {
 	public interface Presenter extends IsWidget {
 		void init(CourseVersion courseVersion);
 		void wizardElementClicked(WizardElement wizardElement);
+		void valueChanged(boolean valueHasChanged);
 		void valueChanged(WizardElement wizardElement, boolean valueHasChanged);
 		WizardElement getSelectedWizardElement();
 		Wizard getWizard();

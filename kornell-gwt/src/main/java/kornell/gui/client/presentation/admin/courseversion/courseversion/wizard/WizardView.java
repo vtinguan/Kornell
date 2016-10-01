@@ -9,6 +9,7 @@ import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dev.util.Name;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -70,29 +71,14 @@ public class WizardView extends Composite {
 	FlowPanel wizardPanel;
 	@UiField	
 	FlowPanel sidePanel;
-	@UiField	
-	FlowPanel slidePanel;
 	@UiField
-	ScrollPanel slideItemsScroll;
-	@UiField
-	FlowPanel slidePanelItems;
-	@UiField
-	Form form;
-	@UiField
-	FlowPanel slideFields;
-	@UiField
-	Button btnSave;
-	@UiField
-	Button btnDiscard;
+	WizardSlideView wizardSlideView;
 
 
 	private Wizard wizard;
-	private WizardElement selectedWizardElement;
 	private CourseVersion courseVersion;
 	private Presenter presenter;
 	
-
-	private String nameLabel;
 	private String changedString = "(*) ";
 
 	public WizardView(final KornellSession session, EventBus bus) {
@@ -105,91 +91,13 @@ public class WizardView extends Composite {
 		this.courseVersion = courseVersion;
 		this.wizard = wizard;
 		this.presenter = presenter;
-		this.selectedWizardElement = presenter.getSelectedWizardElement();
 		updateSidePanel();
-		updateSlidePanel();
-	}
-
-	public void displaySlidePanel(boolean display) {
-		slidePanel.setVisible(display);
-	}
-
-	public void updateSlidePanel() {
-		btnSave.setVisible(false);
-		btnDiscard.setVisible(false);
-		this.fields = new ArrayList<KornellFormFieldWrapper>();
-		sidePanelItemsMap = new HashMap<String, Label>();
-		slideFields.clear();	
-		slidePanelItems.clear();
-
-		nameLabel = "Título do Slide";
-		name = new KornellFormFieldWrapper(nameLabel, formHelper.createTextBoxFormField(selectedWizardElement.getTitle()), true);
-		((TextBox)name.getFieldWidget()).addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				updateNameFormElement(false);
-			}
-		});
-		fields.add(name);
-		slideFields.add(name);		
-
-		if(selectedWizardElement instanceof WizardSlide){
-			WizardSlide wizardSlide = (WizardSlide) selectedWizardElement;
-			for (final WizardSlideItem wizardSlideItem : wizardSlide.getWizardSlideItems()) {
-				FlowPanel slideItemWrapper = new FlowPanel();
-				slideItemWrapper.addStyleName("slideItemWrapper");
-				
-				Label header = new Label(wizardSlideItem.getTitle());
-				header.addStyleName("highlightText");
-				header.addStyleName("slideItemHeader");
-				slideItemWrapper.add(header);
-				
-				if(WizardSlideItemType.text.equals(wizardSlideItem.getWizardSlideItemType())){
-					
-				}
-
-				slidePanelItems.add(slideItemWrapper);
-			} 
-		}
-	}
-	 
-	private void updateNameFormElement(boolean reset){
-		if(reset){
-			((TextBox)name.getFieldWidget()).setText(selectedWizardElement.getTitle());
-		}
-		boolean valueHasChanged = !name.getFieldPersistText().equals(selectedWizardElement.getTitle());
-		presenter.valueChanged(selectedWizardElement, valueHasChanged);
-		name.setFieldLabelText((valueHasChanged ? changedString  : "") + nameLabel);
-
-		btnSave.setVisible(WizardUtils.wizardElementHasValueChanged(selectedWizardElement));
-		btnDiscard.setVisible(WizardUtils.wizardElementHasValueChanged(selectedWizardElement));
-	}
-	
-	@UiHandler("btnSave")
-	void doOK(ClickEvent e) {
-		formHelper.clearErrors(fields);
-		if (validateFields()) {
-			selectedWizardElement.setTitle(name.getFieldPersistText());
-			presenter.valueChanged(selectedWizardElement, false);
-			name.setFieldLabelText(nameLabel);
-			updateSidePanel();
-		}
-	}
-	
-	@UiHandler("btnDiscard")
-	void doDiscard(ClickEvent e) {
-		updateNameFormElement(true);
-	}
-	
-	private boolean validateFields() {		
-		if (!formHelper.isLengthValid(name.getFieldPersistText(), 2, 100)) {
-			name.setError("Insira o título");
-		}
-		
-		return !formHelper.checkErrors(fields);
+		wizardSlideView.setPresenter(presenter);
+		wizardSlideView.updateSlidePanel();
 	}
 
 	public void updateSidePanel() {
+		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
 		sidePanel.clear();
 		sideItems = new ArrayList<Label>();
 		sidePanelItemsMap = new HashMap<String, Label>();
@@ -222,20 +130,19 @@ public class WizardView extends Composite {
 					KornellNotification.show("Salve ou descarte as alterações antes de trocar de slide.", AlertType.WARNING);
 					return;
 				}
-				enableClick = false;
-				Timer preventDoubleClickTimer = new Timer() {
-					public void run() {
-						enableClick = true;
+				wizardSlideView.displaySlidePanel(false);	
+				LoadingPopup.show();
+				Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+					@Override
+					public void execute() {
+						for (Label lbl : sideItems) {
+							lbl.removeStyleName("selected");
+						}
+						label.addStyleName("selected");
+						setLabelContent(parentWizardElement, wizardElement, label);
+						presenter.wizardElementClicked(wizardElement);
 					}
-				};
-				preventDoubleClickTimer.schedule(300);
-
-				for (Label lbl : sideItems) {
-					lbl.removeStyleName("selected");
-				}
-				label.addStyleName("selected");
-				presenter.wizardElementClicked( wizardElement);
-				setLabelContent(parentWizardElement, wizardElement, label);
+				});
 			}
 		});
 		if(parentWizardElement != null){
@@ -266,7 +173,15 @@ public class WizardView extends Composite {
 		return "<span class=\""+className+"\">"+str+"</span>";
 	}
 
-	public void setSelectedWizardElement(WizardElement selectedWizardElement) {
-		this.selectedWizardElement = selectedWizardElement;
+	public void displaySlidePanel(boolean display) {
+		this.wizardSlideView.displaySlidePanel(display);		
+	}
+
+	public void updateSlidePanel() {
+		this.wizardSlideView.updateSlidePanel();		
+	}
+
+	public void refreshSlidePanel() {
+		this.wizardSlideView.refreshForm();		
 	}
 }

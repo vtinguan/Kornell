@@ -1,0 +1,171 @@
+/* Backgrounds Group
+========================== */
+/* @group gradient-veritical() */
+/* @end */
+/* @group background-clip() */
+/* @end */
+/* Box Group
+========================== */
+/* @option: box-display() */
+/* @end */
+/* @group box-shadow() */
+/* @end */
+/* Border Group
+========================== */
+/* @group rounded() */
+/* @end */
+/* Transform Group
+========================== */
+/* @group matrix() */
+/* @end */
+/* @group rotate() */
+/* @end */
+/* @group scale() */
+/* @end */
+/* @group translate() */
+/* @end */
+/* @group skew() */
+/* @end */
+/* Transition
+========================== */
+/* Animation Group
+========================== */
+/* Column
+========================== */
+/* Misc Group
+========================== */
+.boxSizing {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.fillWidth {
+  width: 100%;
+}
+.south {
+  bottom: 0px;
+  left: 0px;
+}
+.north {
+  top: 0px;
+  left: 0px;
+}
+.centerText {
+  text-align: center;
+}
+.rightText {
+  text-align: right;
+}
+.leftText {
+  text-align: left;
+}
+.cursorPointer {
+  cursor: pointer;
+}
+.cursorDefault {
+  cursor: default;
+}
+.noTextSelect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.marginLogo {
+  margin-left: 0px;
+}
+.BMP0 {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.heightAuto {
+  height: auto !important;
+}
+.niceTextColor {
+  color: #bec1c3;
+}
+.highlightText {
+  color: #5b9455 !important;
+}
+.highlightTextDiscreteColor {
+  color: #e3e3e3;
+}
+.plainDiscreteTextColor {
+  color: #888888;
+}
+.bold {
+  font-weight: bold !important;
+}
+.font16 {
+  font-size: 16px !important;
+}
+.borderNone {
+  border: 0 !important;
+}
+.paddingTop30 {
+  padding-top: 30px;
+}
+.paddingTop37 {
+  padding-top: 37px;
+}
+.paddingTop44 {
+  padding-top: 44px;
+}
+.paddingRight5 {
+  padding-right: 5px;
+}
+.marginRight5 {
+  margin-right: 5px;
+}
+.marginRight20 {
+  margin-right: 20px;
+}
+.marginLeft-12 {
+  margin-left: -12px;
+}
+.marginLeft7 {
+  margin-left: 7px;
+}
+.marginLeft25 {
+  margin-left: 25px;
+}
+.marginLeft15 {
+  margin-left: 15px;
+}
+.marginTop15 {
+  margin-top: 15px;
+}
+.marginTop25 {
+  margin-top: 25px;
+}
+.marginBottom25 {
+  margin-bottom: 25px;
+}
+.height200 {
+  height: 200px !important;
+}
+.test {
+  color: red;
+}
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+.unclear {
+  clear: none !important;
+}
+.error {
+  color: #ca2828;
+}
+.borderRadius0 {
+  border-radius: 0 !important;
+}
+.modal-backdrop,
+.modal-backdrop.fade.in {
+  display: none;
+}

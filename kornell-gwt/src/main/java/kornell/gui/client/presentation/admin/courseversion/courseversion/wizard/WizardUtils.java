@@ -1,13 +1,18 @@
 package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard;
 
+import com.google.gwt.core.client.GWT;
+
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
 
 public class WizardUtils {
-
+	
+	public static final WizardFactory WIZARD_FACTORY = GWT.create(WizardFactory.class);
 
 	public static WizardElement findWizardElementByUUID(Wizard wizard, String wizardElementUUID){
 		for(WizardTopic topic : wizard.getWizardTopics()){
@@ -51,5 +56,28 @@ public class WizardUtils {
 	
 	public static boolean wizardSlideItemHasValueChanged(WizardSlideItem wizardSlideItem){
 		return wizardSlideItem.isValueChanged();
+	}
+	
+	public static WizardSlideItem newWizardSlideItem(){
+		WizardSlideItem wizardSlideItem = WIZARD_FACTORY.newWizardSlideItem().as();
+		wizardSlideItem.setTitle("Novo Slide");
+		wizardSlideItem.setText("");
+		wizardSlideItem.setValueChanged(true);
+		return wizardSlideItem;
+	}
+	
+	public static String getClasForWizardSlideItemViewIcon(WizardSlideItemType type){
+		switch(type){
+		case IMAGE:
+			return "fa-warning";
+		case QUIZ:
+			return "fa-warning";
+		case TEXT:
+			return "fa-text-height";
+		case VIDEO_LINK:
+			return "fa-youtube-play";
+		default:
+			return "";
+		}
 	}
 }

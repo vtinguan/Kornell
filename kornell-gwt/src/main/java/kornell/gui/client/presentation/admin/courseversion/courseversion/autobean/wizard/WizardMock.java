@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 public class WizardMock {
 
@@ -55,8 +57,8 @@ public class WizardMock {
 		
 		List<WizardSlideItem> wizardSlideItems = new ArrayList<>();
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 1));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 2));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 3));
+		wizardSlideItems.add(mockWizardSlideItemVideoLink(wizardSlide, 2));
+		/*wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 3));
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 4));
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 5));
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 6));
@@ -65,7 +67,7 @@ public class WizardMock {
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 9));
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 10));
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 11));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 12));
+		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 12));*/
 		
 		wizardSlide.setWizardSlideItems(wizardSlideItems);
 		
@@ -83,7 +85,19 @@ public class WizardMock {
 
 	private static WizardSlideItem mockWizardSlideItemText(WizardSlide wizardSlide, int order) {
 		WizardSlideItem wizardSlideItem = mockWizardSlideItemGeneric(wizardSlide, order);
-		wizardSlideItem.setWizardSlideItemType(WizardSlideItemType.text);
+		wizardSlideItem.setWizardSlideItemType(WizardSlideItemType.TEXT);
+		return wizardSlideItem;
+	}
+
+	private static WizardSlideItem mockWizardSlideItemVideoLink(WizardSlide wizardSlide, int order) {
+		WizardSlideItem wizardSlideItem = mockWizardSlideItemGeneric(wizardSlide, order);
+		wizardSlideItem.setWizardSlideItemType(WizardSlideItemType.VIDEO_LINK);
+
+		WizardSlideItemVideoLink wizardSlideItemVideoLink = WIZARD_FACTORY.newWizardSlideItemVideoLink().as();
+		wizardSlideItemVideoLink.setVideoLinkType("YOUTUBE");
+		wizardSlideItemVideoLink.setURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+		wizardSlideItem.setExtra(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(wizardSlideItemVideoLink)).getPayload().toString());
+
 		return wizardSlideItem;
 	}
 

@@ -402,7 +402,7 @@ a:hover{
 		}
 		.slideItemsScroll{
 			min-height: 192px;
-			height: ~"calc(100vh - 297px)";
+			height: ~"calc(100vh - 371px)";
 			padding-right: 5px;
 			clear: both;
 			.slideItemWrapper{
@@ -412,10 +412,25 @@ a:hover{
 				padding: 5px 8px;
 				border-radius: 10px;
 				position: relative;
+				float: left;
+				width: 100%;
+				.fieldsWrapper{
+					margin-left: -12px;
+				}
+				i{
+					float: left;
+				    margin-right: 12px;
+				    padding: 5px;
+				    font-size: 15px;
+				}
 				.slideItemHeader{
 					font-size: 12px;
-					margin-bottom: 5px;
+					margin-bottom: 5px;    
+					padding: 4px;
 				}
+			}
+			.extendedSlideItemWrapper{
+				background: transparent;
 			}
 			.overrideWrapper{
 				margin-left: 0px !important;
@@ -447,10 +462,15 @@ a:hover{
 					}
 				}
 			}
-			.btnStandard{
-				margin-left: 20px;
-				margin-top: 4px;
-			}
+		}
+		.btnStandard{
+			margin-left: 11px;
+		    margin-top: 4px;
+		    min-width: 22px;
+		    height: 22px;
+		    font-size: 18px !important;
+		    float: none;
+		    margin-bottom: 40px;
 		}
 	}
 }
