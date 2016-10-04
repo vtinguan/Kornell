@@ -17,7 +17,7 @@ class CourseDetailsSectionRepo(uuid: String) {
     | update CourseDetailsSection s
     | set s.text = ${courseDetailsSection.getText},
     | s.index = ${courseDetailsSection.getIndex}, 
-    | s.title = ${courseDetailsSection.getTitle},
+    | s.title = ${courseDetailsSection.getTitle}
     | where s.uuid = ${courseDetailsSection.getUUID}""".executeUpdate
     
     courseDetailsSection

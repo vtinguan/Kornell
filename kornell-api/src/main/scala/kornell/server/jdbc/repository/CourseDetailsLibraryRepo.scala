@@ -21,7 +21,7 @@ class CourseDetailsLibraryRepo(uuid: String) {
     | l.size = ${courseDetailsLibrary.getSize},
     | l.path = ${courseDetailsLibrary.getPath},
     | l.uploadDate = ${courseDetailsLibrary.getUploadDate},
-    | l.fontAwesomeClassName = ${courseDetailsLibrary.getFontAwesomeClassName},
+    | l.fontAwesomeClassName = ${courseDetailsLibrary.getFontAwesomeClassName}
     | where l.uuid = ${courseDetailsLibrary.getUUID}""".executeUpdate
     
     courseDetailsLibrary
