@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import kornell.core.entity.CourseVersion;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.WizardView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.WizardView;
 
 public interface AdminCourseVersionContentView extends IsWidget {
 	public interface Presenter extends IsWidget {
@@ -15,6 +15,7 @@ public interface AdminCourseVersionContentView extends IsWidget {
 		void valueChanged(WizardElement wizardElement, boolean valueHasChanged);
 		WizardElement getSelectedWizardElement();
 		Wizard getWizard();
+		AdminCourseVersionContentView getView();
 	}
 	void setPresenter(Presenter presenter);
 	void init(CourseVersion courseVersion, Wizard wizard);

@@ -1,9 +1,10 @@
-package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard;
+package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.FileUpload;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.Icon;
@@ -24,9 +25,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,10 +42,10 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCo
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView.Presenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardMock;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemVideoLink;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.WizardUtils;
 import kornell.gui.client.util.forms.FormHelper;
@@ -66,6 +67,8 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	private List<KornellFormFieldWrapper> fields;
 	private IWizardView extendedItemView;
 	
+	private Integer displayOrder;
+	
 	@UiField	
 	FlowPanel slideItemWrapper;
 	@UiField
@@ -76,25 +79,38 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	Form form;
 	@UiField
 	FlowPanel slideItemFields;	
+	@UiField
+	Image slideItemPreviewImage;
+	@UiField
+	Button btnDelete;
+	@UiField
+	Button btnMoveUp;
+	@UiField
+	Button btnMoveDown;
 
 	private String changedString = "(*) ";
 	
 	private WizardSlideItem wizardSlideItem;
-
 	private ChangeHandler refreshFormChangeHandler;
-
 	private Presenter presenter;
+	private WizardSlideView wizardSlideView;
 
-	public WizardSlideItemView(WizardSlideItem wizardSlideItem, Presenter presenter) {
+	public WizardSlideItemView(WizardSlideItem wizardSlideItem, Presenter presenter, WizardSlideView wizardSlideView) {
 		this.presenter = presenter;
 		this.wizardSlideItem = wizardSlideItem;
+		this.displayOrder = wizardSlideItem.getOrder();
+		this.wizardSlideView = wizardSlideView;
 		initWidget(uiBinder.createAndBindUi(this));
 		init();
 	}
-
+	
 	public void init() {
+		WizardUtils.createIcon(btnDelete, "fa-trash-o");
+		WizardUtils.createIcon(btnMoveUp, "fa-arrow-up");
+		WizardUtils.createIcon(btnMoveDown, "fa-arrow-down");
+		
 		slideItemIcon.addStyleName(WizardUtils.getClasForWizardSlideItemViewIcon(wizardSlideItem.getWizardSlideItemType()));
-		slideItemLabel.setText(wizardSlideItem.getTitle());
+		slideItemLabel.setText(getItemLabelText());
 		fields = new ArrayList<KornellFormFieldWrapper>();
 		slideItemFields.clear();	
 		
@@ -120,6 +136,8 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 		
 		switch (wizardSlideItem.getWizardSlideItemType()) {
 		case IMAGE:
+			extendedItemView = new WizardSlideItemImageView(wizardSlideItem, this, presenter);
+			slideItemFields.add((WizardSlideItemImageView)extendedItemView);
 			break;
 		case QUIZ:
 			break;
@@ -132,16 +150,42 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 		default:
 			break;
 		}
+
+		btnMoveUp.setVisible(displayOrder > 0);
+		btnMoveDown.setVisible(displayOrder < (((WizardSlide)presenter.getSelectedWizardElement()).getWizardSlideItems().size() -1));
+		
+		updatePreview();		
+	}
+	
+	@UiHandler("btnMoveDown")
+	void doMoveDown(ClickEvent e) {
+		wizardSlideView.moveDownItem(wizardSlideItem);
+	}
+	
+	@UiHandler("btnMoveUp")
+	void doMoveUp(ClickEvent e) {
+		wizardSlideView.moveUpItem(wizardSlideItem);
+	}
+	
+	@UiHandler("btnDelete")
+	void doDelete(ClickEvent e) {
+		wizardSlideView.deleteItem(wizardSlideItem);
 	}
 
 	@Override
 	public void resetFormToOriginalValues(){	
 		((TextBox)title.getFieldWidget()).setText(wizardSlideItem.getTitle());
 		((TextArea)text.getFieldWidget()).setText(wizardSlideItem.getText());
+
+		btnMoveUp.setVisible(displayOrder > 0);
+		btnMoveDown.setVisible(displayOrder < (((WizardSlide)presenter.getSelectedWizardElement()).getWizardSlideItems().size() -1));
+		btnDelete.setVisible(true);
 		
 		if(extendedItemView != null){
 			extendedItemView.resetFormToOriginalValues();
 		}
+		
+		this.displayOrder = wizardSlideItem.getOrder();
 
 		presenter.valueChanged(wizardSlideItem, false);
 		refreshForm();
@@ -149,19 +193,46 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 
 	@Override
 	public boolean refreshForm(){
-		boolean valueHasChanged = refreshFormElementLabel(title, titleLabel, wizardSlideItem.getTitle()) || 
+		boolean valueHasChanged = !wizardSlideItem.getOrder().equals(displayOrder) ||
+				refreshFormElementLabel(title, titleLabel, wizardSlideItem.getTitle()) || 
 				refreshFormElementLabel(text, textLabel, wizardSlideItem.getText()) ||
-				wizardSlideItem.getUUID() == null;
+				wizardSlideItem.getUUID().startsWith("new");
 		if(extendedItemView != null){
 			valueHasChanged = valueHasChanged || extendedItemView.refreshForm();
 		}
 		
 		presenter.valueChanged(wizardSlideItem, valueHasChanged);
-		slideItemLabel.setText((valueHasChanged ? changedString  : "") + wizardSlideItem.getTitle());
+		String itemLabelText = getItemLabelText();
+		slideItemLabel.setText((valueHasChanged ? changedString  : "") + itemLabelText);
+		
+		updatePreview();			
 		
 		validateFields();
+
+		btnMoveUp.setVisible(displayOrder > 0);
+		btnMoveDown.setVisible(displayOrder < (wizardSlideView.getWizardSlideItemViewCount()-1));
+		//btnDelete.setVisible(!valueHasChanged);
 		
 		return valueHasChanged;
+	}
+
+	private void updatePreview() {
+		if(WizardSlideItemType.VIDEO_LINK.equals(wizardSlideItem.getWizardSlideItemType())){
+			String url = ((WizardSlideItemVideoLinkView)extendedItemView).getUrl();
+			String youtubeId = WizardUtils.stripIdFromVideoURL(url);
+			slideItemPreviewImage.setUrl("http://img.youtube.com/vi/"+youtubeId+"/sddefault.jpg");
+		}
+		if(WizardSlideItemType.IMAGE.equals(wizardSlideItem.getWizardSlideItemType())){
+			String url = ((WizardSlideItemImageView)extendedItemView).getUrl();
+			slideItemPreviewImage.setUrl(url);
+		}
+	}
+
+	private String getItemLabelText() {
+		String itemLabelText = WizardUtils.getItemNameByType(wizardSlideItem.getWizardSlideItemType()) +
+				" - " +
+				wizardSlideItem.getParentOrder() + "." + (wizardSlideItem.getOrder()+1);
+		return itemLabelText;
 	}
 	 
 	private boolean refreshFormElementLabel(KornellFormFieldWrapper kornellFormFieldWrapper, String label, String originalValue){
@@ -175,11 +246,11 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 		formHelper.clearErrors(fields);
 
 		if (WizardSlideItemType.TEXT.equals(wizardSlideItem.getWizardSlideItemType()) &&
-				!formHelper.isLengthValid(title.getFieldPersistText(), 2, 100)) {
+				!formHelper.isLengthValid(title.getFieldPersistText(), 2)) {
 			title.setError("Insira o título");
 		}
 		if (WizardSlideItemType.TEXT.equals(wizardSlideItem.getWizardSlideItemType()) &&
-				!formHelper.isLengthValid(text.getFieldPersistText(), 2, 100)) {
+				!formHelper.isLengthValid(text.getFieldPersistText(), 2)) {
 			text.setError("Insira o texto");
 		}
 		
@@ -195,6 +266,7 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	public void updateWizard() {
 		wizardSlideItem.setTitle(title.getFieldPersistText());
 		wizardSlideItem.setText(text.getFieldPersistText());
+		wizardSlideItem.setOrder(displayOrder);
 		
 		if(extendedItemView != null){
 			extendedItemView.updateWizard();
@@ -206,5 +278,14 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 
 	public WizardSlideItem getWizardSlideItem() {
 		return wizardSlideItem;
+	}
+
+	public Integer getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(Integer displayOrder) {
+		this.displayOrder = displayOrder;
+		refreshForm();
 	}
 }

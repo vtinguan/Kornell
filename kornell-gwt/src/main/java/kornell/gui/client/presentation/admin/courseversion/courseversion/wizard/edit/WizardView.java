@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard;
+package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +39,6 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCo
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView.Presenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardMock;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
@@ -69,6 +68,8 @@ public class WizardView extends Composite {
 
 	@UiField
 	FlowPanel wizardPanel;
+	@UiField	
+	ScrollPanel slideItemsScroll;
 	@UiField	
 	FlowPanel sidePanel;
 	@UiField
@@ -139,7 +140,7 @@ public class WizardView extends Composite {
 							lbl.removeStyleName("selected");
 						}
 						label.addStyleName("selected");
-						setLabelContent(parentWizardElement, wizardElement, label);
+						setLabelContent(wizardElement, label);
 						presenter.wizardElementClicked(wizardElement);
 					}
 				});
@@ -148,17 +149,21 @@ public class WizardView extends Composite {
 		if(parentWizardElement != null){
 			label.addStyleName("marginLeft25");
 		}
-		setLabelContent(parentWizardElement, wizardElement, label);
+		setLabelContent(wizardElement, label);
 		sidePanel.add(label);
 		sideItems.add(label);
 	}
 
-	private void setLabelContent(WizardElement parentWizardElement, WizardElement wizardElement, final Label label) {
+	private void setLabelContent(WizardElement wizardElement, final Label label) {
 		String valueChanged = WizardUtils.wizardElementHasValueChanged(wizardElement) ? changedString : "";
-		String type = parentWizardElement == null ? "Tópico " : ("Slide " + parentWizardElement.getOrder() + "."); 
-		String title = span(valueChanged + type + wizardElement.getOrder(), HIGHLIGHT_CLASS) + separator(true) + span(wizardElement.getTitle(), PLAIN_CLASS);
+		String title = valueChanged + 
+				(wizardElement.getParentOrder() == null ? 
+						"Tópico " : 
+						("Slide " + wizardElement.getParentOrder() + ".")) +
+				(wizardElement.getOrder()+1); 
+		String labelText = span(title, HIGHLIGHT_CLASS) + separator(true) + span(wizardElement.getTitle(), PLAIN_CLASS);
 		sidePanelItemsMap.put(wizardElement.getUUID(), label);
-		label.getElement().setInnerHTML(title);
+		label.getElement().setInnerHTML(labelText);
 	}
 
 	private String separator(boolean lineBreak) {
@@ -171,6 +176,10 @@ public class WizardView extends Composite {
 
 	private String span(String str, String className) {
 		return "<span class=\""+className+"\">"+str+"</span>";
+	}
+
+	public void toggleViewMode(boolean isViewModeOn) {
+		this.slideItemsScroll.setVisible(!isViewModeOn);
 	}
 
 	public void displaySlidePanel(boolean display) {

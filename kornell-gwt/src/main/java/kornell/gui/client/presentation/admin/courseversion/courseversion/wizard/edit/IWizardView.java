@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard;
+package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit;
 
 public interface IWizardView {
 	public void updateWizard();

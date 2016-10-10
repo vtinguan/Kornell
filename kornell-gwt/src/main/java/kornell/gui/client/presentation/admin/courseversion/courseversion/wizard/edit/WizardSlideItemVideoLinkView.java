@@ -1,4 +1,4 @@
-package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard;
+package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +46,6 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCo
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView.Presenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardMock;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
@@ -185,5 +184,9 @@ public class WizardSlideItemVideoLinkView extends Composite implements IWizardVi
 
 	public WizardSlideItem getWizardSlideItem() {
 		return wizardSlideItem;
+	}
+
+	public String getUrl() {
+		return url.getFieldPersistText();
 	}
 }

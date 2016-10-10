@@ -316,7 +316,7 @@ a:hover{
 	border-radius: 8px;
 	.boxSizing;
 	.sidePanelScroll{
-		width: 22%;
+		width: 15%;
 		height: ~"calc(100% - 11px)";
 		padding: 5px;
 		border-radius: 8px 0px 0px 8px;
@@ -382,7 +382,7 @@ a:hover{
 		}
 	}
 	.slidePanel{
-		width: ~"calc(78% - 12px)";
+		width: ~"calc(85% - 12px)";
 		padding: 10px;
 		border-radius: 0px 8px 8px 0px;
 		.boxSizing;
@@ -416,8 +416,9 @@ a:hover{
 				width: 100%;
 				.fieldsWrapper{
 					margin-left: -12px;
+					width: 750px;
 				}
-				i{
+				.slideItemIcon{
 					float: left;
 				    margin-right: 12px;
 				    padding: 5px;
@@ -427,6 +428,21 @@ a:hover{
 					font-size: 12px;
 					margin-bottom: 5px;    
 					padding: 4px;
+				}
+				.btnStandard{
+					margin-left: 6px;
+				    margin-top: 6px;
+				    min-width: 14px;
+				    height: 16px;
+				    line-height: 14px;
+				    font-size: 14px !important;
+				    margin-bottom: 15px;
+				}
+				.slideItemPreviewImage{
+					max-height: 220px;
+				    margin-left: 40px;
+				    margin-top: 30px;
+				    max-width: 300px;
 				}
 			}
 			.extendedSlideItemWrapper{
@@ -447,6 +463,7 @@ a:hover{
 		} 
 		form{
 			margin: 0;
+			clear: both;
 			.fieldsWrapper{
 				float: left;
 				.fieldPanelWrapper{
@@ -459,6 +476,9 @@ a:hover{
 						.textField{
 							width: 450px;
 						}
+						textarea{
+							resize: vertical;
+						}
 					}
 				}
 			}
@@ -469,8 +489,43 @@ a:hover{
 		    min-width: 22px;
 		    height: 22px;
 		    font-size: 18px !important;
-		    float: none;
 		    margin-bottom: 40px;
+		}
+	}
+	.fillWidth{
+		width: 100% !important;
+	}
+}
+@media screen and (max-width: 1400px) {
+    .slideItemPreviewImage {
+		display: none;
+	}
+}
+
+
+.wizardRendererPanel{    
+	width: 80%;
+    margin-left: 10%;
+	.topicTitleLabel{
+		text-align: center;
+    	font-size: 40px;
+	    font-weight: bold;
+	}
+	.slideTitleLabel{
+		font-size: 22px;
+	    font-weight: bold;
+	}
+	.slideItemPanel{
+	    margin-top: 35px;
+		.slideItemTitleLabel{
+			font-size: 18px;
+			margin-bottom: 15px;
+		}
+		.slideItemTextLabel{
+			font-size: 14px;
+		}
+		.slideItemVideoLinkPanel{
+
 		}
 	}
 }

@@ -15,4 +15,10 @@ public interface WizardElement {
 	boolean isValueChanged();
 	void setValueChanged(boolean valueChanged);
 	
+	boolean isDeleted();
+	void setDeleted(boolean deleted);
+	
+	String getParentOrder();
+	void setParentOrder(String parentOrder);
+	
 }

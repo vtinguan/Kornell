@@ -1,5 +1,11 @@
 package kornell.gui.client.presentation.admin.courseversion.courseversion.wizard;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.google.gwt.core.client.GWT;
 
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
@@ -9,10 +15,26 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.autobea
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.IWizardView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.WizardSlideItemImageView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.WizardSlideItemVideoLinkView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.WizardSlideItemView;
 
 public class WizardUtils {
 	
-	public static final WizardFactory WIZARD_FACTORY = GWT.create(WizardFactory.class);
+	public static final WizardFactory WIZARD_FACTORY = GWT.create(WizardFactory.class);    
+	
+	public static Comparator<WizardSlideItemView> COMPARE_WIZARD_SLIDE_ITEM_VIEWS_BY_DISPLAY_ORDER = new Comparator<WizardSlideItemView>() {
+        public int compare(WizardSlideItemView one, WizardSlideItemView other) {
+            return one.getDisplayOrder().compareTo(other.getDisplayOrder());
+        }
+    };
+	
+	public static Comparator<WizardElement> COMPARE_WIZARD_ELEMENT_BY_ORDER = new Comparator<WizardElement>() {
+        public int compare(WizardElement one, WizardElement other) {
+            return one.getOrder().compareTo(other.getOrder());
+        }
+    };
 
 	public static WizardElement findWizardElementByUUID(Wizard wizard, String wizardElementUUID){
 		for(WizardTopic topic : wizard.getWizardTopics()){
@@ -60,16 +82,87 @@ public class WizardUtils {
 	
 	public static WizardSlideItem newWizardSlideItem(){
 		WizardSlideItem wizardSlideItem = WIZARD_FACTORY.newWizardSlideItem().as();
+		wizardSlideItem.setUUID("new" + Math.random());
 		wizardSlideItem.setTitle("Novo Slide");
 		wizardSlideItem.setText("");
 		wizardSlideItem.setValueChanged(true);
 		return wizardSlideItem;
 	}
+
+	public static native String stripIdFromVideoURL(String url) /*-{
+		return $wnd.stripIdFromVideoURL(url);
+	}-*/;
+	
+	public static List<WizardElement> wizardToList(Wizard wizard){
+		List<WizardElement> wizardElementList = new ArrayList<>();
+		for(WizardTopic wizardTopic : wizard.getWizardTopics()){
+			wizardElementList.add(wizardTopic);
+			for(WizardSlide wizardSlide : wizardTopic.getWizardSlides()){
+				wizardElementList.add(wizardSlide);
+			}
+		}
+		return wizardElementList;
+	}
+
+	public static WizardElement getNextWizardElement(Wizard wizard, WizardElement currentViewedWizardElement) {
+		List<WizardElement> wizardElementList = wizardToList(wizard);
+		WizardElement wizardElement;
+		for(int i = 0; i < wizardElementList.size(); i++){
+			wizardElement = wizardElementList.get(i);
+			if(currentViewedWizardElement.getUUID().equals(wizardElement.getUUID())){
+				if(wizardElementList.size() > (i + 1)){
+					return wizardElementList.get(++i);
+				}
+			}
+		}
+		return null;
+	}
+
+	public static WizardElement getPrevWizardElement(Wizard wizard, WizardElement currentViewedWizardElement) {
+		List<WizardElement> wizardElementList = wizardToList(wizard);
+		WizardElement wizardElement;
+		for(int i = 0; i < wizardElementList.size(); i++){
+			wizardElement = wizardElementList.get(i);
+			if(currentViewedWizardElement.getUUID().equals(wizardElement.getUUID())){
+				if(i > 0){
+					return wizardElementList.get(--i);
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static String buildParentOrderFromParent(WizardElement wizardElement){
+		String parentOrder = wizardElement.getParentOrder();
+		Integer order = wizardElement.getOrder();
+		if(parentOrder == null){
+			return ""+(order+1);
+		}else if(order ==  null){
+			return parentOrder;
+		}else{
+			return parentOrder+"."+(order+1);
+		}
+	}
+	
+	public static String getItemNameByType(WizardSlideItemType wizardSlideItemType){
+		switch (wizardSlideItemType) {
+		case IMAGE:
+			return "Imagem";
+		case QUIZ:
+			return "Quiz";
+		case TEXT:
+			return "Texto";
+		case VIDEO_LINK:
+			return "Video";
+		default:
+			return "";
+		}
+	}
 	
 	public static String getClasForWizardSlideItemViewIcon(WizardSlideItemType type){
 		switch(type){
 		case IMAGE:
-			return "fa-warning";
+			return "fa-picture-o";
 		case QUIZ:
 			return "fa-warning";
 		case TEXT:
@@ -80,4 +173,12 @@ public class WizardUtils {
 			return "";
 		}
 	}
+	
+	public static void createIcon(Button btn, String iconClass){
+		Icon icon = new Icon();
+		icon.addStyleName("fa " + iconClass);
+		btn.clear();
+		btn.add(icon);
+	}
+	
 }

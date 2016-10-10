@@ -13,7 +13,7 @@ import kornell.core.entity.CourseVersion;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
-import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardMock;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.WizardMock;
 import kornell.gui.client.util.view.LoadingPopup;
 
 public class AdminCourseVersionContentPresenter implements AdminCourseVersionContentView.Presenter {
@@ -46,7 +46,7 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 			
 			boolean isWizardVersion = ContentSpec.WIZARD.equals(courseVersion.getContentSpec());
 			if(isWizardVersion){			
-				Wizard wizard = WizardMock.mockWizard();
+				wizard = WizardMock.mockWizard();
 				selectedWizardElement = wizard.getWizardTopics().get(0).getWizardSlides().get(0);
 				view.init(courseVersion, wizard);
 			} else {			
@@ -74,6 +74,7 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 		LoadingPopup.hide();
 	}
 
+	@Override
 	public AdminCourseVersionContentView getView() {
 		return view;
 	}

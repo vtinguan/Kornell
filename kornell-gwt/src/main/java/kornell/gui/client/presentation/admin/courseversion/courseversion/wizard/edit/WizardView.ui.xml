@@ -1,10 +1,10 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
 	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-	xmlns:knl="urn:import:kornell.gui.client.presentation.admin.courseversion.courseversion.wizard">
+	xmlns:knl="urn:import:kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit">
 
 	<g:FlowPanel ui:field="wizardPanel" addStyleNames="courseVersionWizardPanel">
-		<g:ScrollPanel addStyleNames="sidePanelScroll left">
+		<g:ScrollPanel ui:field="slideItemsScroll" addStyleNames="sidePanelScroll left">
 			<g:FlowPanel ui:field="sidePanel" addStyleNames="sidePanel left"></g:FlowPanel>
 		</g:ScrollPanel>
     	<knl:WizardSlideView ui:field="wizardSlideView"></knl:WizardSlideView>
