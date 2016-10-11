@@ -20,6 +20,11 @@ public class WizardMock {
 
 	public static final WizardFactory WIZARD_FACTORY = GWT.create(WizardFactory.class);
 	
+	public static Wizard mockWizardBlank(){				
+		Wizard wizard = WIZARD_FACTORY.newWizard().as();		
+		return wizard;
+	}
+	
 	public static Wizard mockWizard(){				
 		Wizard wizard = WIZARD_FACTORY.newWizard().as();
 

@@ -2,17 +2,21 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
 	<g:FlowPanel ui:field="slidePanel" addStyleNames="slidePanel left">
-		<g:FlowPanel ui:field="slideButtonsBar">
-	        <b:Button ui:field="btnNewTextItem" title="Inserir texto" addStyleNames="btnNotSelected btnStandard left"></b:Button>
-	        <b:Button ui:field="btnNewImageItem" title="Inserir imagem" addStyleNames="btnNotSelected btnStandard left"></b:Button>
-	        <b:Button ui:field="btnNewVideoLinkItem" title="Inserir video" addStyleNames="btnNotSelected btnStandard left marginRight20"></b:Button>
-	        <b:Button ui:field="btnDiscard" title="Descartar alterações" addStyleNames="btnNotSelected btnStandard left"></b:Button>
-	        <b:Button ui:field="btnSave" title="Salvar alterações" addStyleNames="btnAction btnStandard left marginRight20"></b:Button>
-	        <b:Button ui:field="btnDelete" title="Excluir slide" addStyleNames="btnSelected btnStandard left"></b:Button>
+		<g:FlowPanel addStyleNames="slideButtonsWrapper">
+			<g:FlowPanel ui:field="slideButtonsBar">
+		        <b:Button ui:field="btnNewTextItem" title="Inserir texto" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+		        <b:Button ui:field="btnNewImageItem" title="Inserir imagem" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+		        <b:Button ui:field="btnNewVideoLinkItem" title="Inserir video" addStyleNames="btnNotSelected btnStandard left marginRight20"></b:Button>
+		    </g:FlowPanel>
+			<g:FlowPanel ui:field="elementButtonsBar">
+		        <b:Button ui:field="btnDiscard" title="Descartar alterações" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+		        <b:Button ui:field="btnSave" title="Salvar alterações" addStyleNames="btnAction btnStandard left marginRight20"></b:Button>
+		        <b:Button ui:field="btnDelete" title="Excluir slide" addStyleNames="btnSelected btnStandard left"></b:Button>
+		    </g:FlowPanel>
+		    <b:Button ui:field="btnView" addStyleNames="btnAction btnStandard right"></b:Button>
+		    <b:Button ui:field="btnNext" addStyleNames="btnNotSelected btnStandard right"></b:Button>
+		    <b:Button ui:field="btnPrev" addStyleNames="btnNotSelected btnStandard right"></b:Button>
 	    </g:FlowPanel>
-	    <b:Button ui:field="btnView" addStyleNames="btnAction btnStandard right"></b:Button>
-	    <b:Button ui:field="btnNext" addStyleNames="btnNotSelected btnStandard right"></b:Button>
-	    <b:Button ui:field="btnPrev" addStyleNames="btnNotSelected btnStandard right"></b:Button>
 		<b:Form ui:field="form">
 	      <g:FlowPanel ui:field="slideFields" addStyleNames="fieldsWrapper">    
 	      </g:FlowPanel>
@@ -21,6 +25,15 @@
 			<g:FlowPanel ui:field="slidePanelItems"></g:FlowPanel>
 		</g:ScrollPanel>
 		<g:FlowPanel ui:field="slideViewPanel" addStyleNames="slideViewPanel fillWidth left"></g:FlowPanel>
+	    <b:Modal ui:field="confirmModal" title="Confirmação" backdrop="NORMAL" addStyleNames="forgotPasswordModal">
+	      <g:FlowPanel>
+	        <g:Label ui:field="confirmText"></g:Label>
+	        <g:FlowPanel addStyleNames="standardButtonBar">
+	          <g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
+	          <g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
+	        </g:FlowPanel>
+	      </g:FlowPanel>
+	    </b:Modal>
 	</g:FlowPanel>
 
 </ui:UiBinder>

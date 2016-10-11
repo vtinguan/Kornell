@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.FileUpload;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.Icon;
+import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
@@ -35,7 +37,10 @@ import com.google.web.bindery.event.shared.EventBus;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ContentSpec;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.CourseVersion;
+import kornell.core.entity.RoleCategory;
+import kornell.core.to.RolesTO;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView.Presenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
@@ -63,7 +68,6 @@ public class WizardSlideView extends Composite implements IWizardView {
 	private KornellSession session;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private String PLAIN_CLASS = "plainDiscreteTextColor";
 	private KornellFormFieldWrapper title;
 	private List<KornellFormFieldWrapper> fields;
 
@@ -82,9 +86,13 @@ public class WizardSlideView extends Composite implements IWizardView {
 	@UiField
 	FlowPanel slideButtonsBar;
 	@UiField
+	FlowPanel elementButtonsBar;
+	@UiField
 	Button btnSave;
 	@UiField
 	Button btnDiscard;
+	@UiField
+	Button btnDelete;
 	@UiField
 	Button btnNewTextItem;
 	@UiField
@@ -97,6 +105,19 @@ public class WizardSlideView extends Composite implements IWizardView {
 	Button btnPrev;
 	@UiField
 	Button btnNext;
+	
+    @UiField
+    Modal confirmModal;
+    @UiField
+    Label confirmText;
+    @UiField
+    com.google.gwt.user.client.ui.Button btnModalOK;
+    @UiField
+    com.google.gwt.user.client.ui.Button btnModalCancel;
+    
+    private String modalMode;
+    public static final String MODAL_DELETE_SLIDE = "deleteSlide";
+    public static final String MODAL_DELETE_SLIDE_ITEM = "deleteSlideItem";
 	
 	private Presenter presenter;
 	
@@ -112,6 +133,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 
 	private ChangeHandler refreshFormChangeHandler;
 	private boolean viewModeNeedsRendering = true;
+	private WizardSlideItem selectedWizardSlideItem;
 
 	public WizardSlideView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -123,11 +145,15 @@ public class WizardSlideView extends Composite implements IWizardView {
 		};
 		WizardUtils.createIcon(btnPrev, "fa-arrow-left");
 		WizardUtils.createIcon(btnNext, "fa-arrow-right");
+		WizardUtils.createIcon(btnDelete, "fa-trash-o");
 		WizardUtils.createIcon(btnSave, "fa-floppy-o");
 		WizardUtils.createIcon(btnDiscard, "fa-times");
 		WizardUtils.createIcon(btnNewTextItem, WizardUtils.getClasForWizardSlideItemViewIcon(WizardSlideItemType.TEXT));
 		WizardUtils.createIcon(btnNewVideoLinkItem, WizardUtils.getClasForWizardSlideItemViewIcon(WizardSlideItemType.VIDEO_LINK));
 		WizardUtils.createIcon(btnNewImageItem, WizardUtils.getClasForWizardSlideItemViewIcon(WizardSlideItemType.IMAGE));
+
+        btnModalOK.setText("OK".toUpperCase());
+        btnModalCancel.setText("Cancelar".toUpperCase());
 	} 
 	
 	@UiHandler("btnView")
@@ -178,6 +204,47 @@ public class WizardSlideView extends Composite implements IWizardView {
 		wizardSlideItem.setWizardSlideItemType(WizardSlideItemType.IMAGE);
 		wizardSlideItemCreated(wizardSlideItem);
 	}
+	
+	@UiHandler("btnDelete")
+	void doDelete(ClickEvent e) {
+		showModal(MODAL_DELETE_SLIDE);
+	}
+	
+    @UiHandler("btnModalOK")
+    void onModalOkButtonClicked(ClickEvent e) {
+        if(MODAL_DELETE_SLIDE.equals(modalMode)){
+        	presenter.deleteSlide();
+        } else if (MODAL_DELETE_SLIDE_ITEM.equals(modalMode)){
+    		deleteItem(selectedWizardSlideItem);
+        }
+        confirmModal.hide();
+    }
+
+    @UiHandler("btnModalCancel")
+    void onModalCancelButtonClicked(ClickEvent e) {
+        this.modalMode = null;
+        confirmModal.hide();
+    }
+
+    
+    public void showModal(String mode, WizardSlideItem wizardSlideItem) {
+    	this.selectedWizardSlideItem = wizardSlideItem;
+    	showModal(mode);
+    }
+
+    public void showModal(String mode) {
+        this.modalMode = mode;
+        if(MODAL_DELETE_SLIDE.equals(modalMode)){
+            confirmText.setText("Tem certeza que deseja excluir este "
+            		+ (presenter.getSelectedWizardElement() instanceof WizardSlide ? "Slide" : "Tópico")
+            		+ "?"
+                    + "\nEsta operação não pode ser desfeita.");
+        } else if (MODAL_DELETE_SLIDE_ITEM.equals(modalMode)){
+            confirmText.setText("Tem certeza que deseja excluir este Item?"
+                    + "\nEsta operação não pode ser desfeita.");
+        }
+        confirmModal.show();
+    }
 
 	public void toggleViewMode(boolean isViewModeOn) {
 		presenter.getView().getWizardView().toggleViewMode(isViewModeOn);
@@ -192,7 +259,10 @@ public class WizardSlideView extends Composite implements IWizardView {
 			slidePanel.removeStyleName("fillWidth");
 		}
 		
-		slideButtonsBar.setVisible(!isViewModeOn);
+		elementButtonsBar.setVisible(!isViewModeOn);
+		slideButtonsBar.setVisible(!isViewModeOn &&
+				presenter.getSelectedWizardElement() != null && 
+				presenter.getSelectedWizardElement() instanceof WizardSlide);
 		form.setVisible(!isViewModeOn);
 		slideItemsScroll.setVisible(!isViewModeOn);
 		
@@ -250,11 +320,17 @@ public class WizardSlideView extends Composite implements IWizardView {
 	}
 
 	public void updateSlidePanel() {
-		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
 		this.fields = new ArrayList<KornellFormFieldWrapper>();
 		slideFields.clear();	
 		slidePanelItems.clear();
 		slideItemsScroll.scrollToTop();
+		
+		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
+		if(selectedWizardElement == null){
+			slidePanel.setVisible(false);
+			return;
+		}
+		slidePanel.setVisible(true);
 
 		titleLabel = "Título do Slide";
 		title = new KornellFormFieldWrapper(titleLabel, formHelper.createTextBoxFormField(selectedWizardElement.getTitle()), true);
@@ -268,7 +344,10 @@ public class WizardSlideView extends Composite implements IWizardView {
 			for (final WizardSlideItem wizardSlideItem : wizardSlide.getWizardSlideItems()) {
 				wizardSlideItemView = new WizardSlideItemView(wizardSlideItem, presenter, this);
 				slidePanelItems.add(wizardSlideItemView);
-			} 
+			}
+			btnDelete.setVisible(true);
+		} else {
+			btnDelete.setVisible(((WizardTopic) selectedWizardElement).getWizardSlides().size() == 0);
 		}
 		currentViewedWizardElement = selectedWizardElement;
 		//viewModeNeedsRendering = true;
@@ -483,7 +562,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 		return slidePanelItems.getWidgetCount();
 	}
 
-	public void deleteItem(WizardSlideItem wizardSlideItem) {
+	private void deleteItem(WizardSlideItem wizardSlideItem) {
 		WizardSlide wizardSlide = (WizardSlide) presenter.getSelectedWizardElement();
 		wizardSlide.getWizardSlideItems().remove(wizardSlideItem);
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.FileUpload;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.Icon;
@@ -36,8 +37,11 @@ import com.google.web.bindery.event.shared.EventBus;
 import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.ContentSpec;
+import kornell.core.entity.CourseClassState;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.Entity;
+import kornell.core.entity.RoleCategory;
+import kornell.core.to.RolesTO;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView.Presenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
@@ -169,8 +173,9 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	
 	@UiHandler("btnDelete")
 	void doDelete(ClickEvent e) {
-		wizardSlideView.deleteItem(wizardSlideItem);
+		wizardSlideView.showModal(WizardSlideView.MODAL_DELETE_SLIDE_ITEM, wizardSlideItem);
 	}
+
 
 	@Override
 	public void resetFormToOriginalValues(){	

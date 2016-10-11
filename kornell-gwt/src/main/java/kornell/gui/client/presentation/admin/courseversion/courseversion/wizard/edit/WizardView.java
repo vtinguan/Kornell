@@ -98,10 +98,14 @@ public class WizardView extends Composite {
 	}
 
 	public void updateSidePanel() {
-		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
 		sidePanel.clear();
 		sideItems = new ArrayList<Label>();
 		sidePanelItemsMap = new HashMap<String, Label>();
+
+		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
+		if(selectedWizardElement == null){
+			return;
+		}
 		for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
 			createSidePanelItem(wizard, selectedWizardElement, null, wizardTopic);
 			for (final WizardSlide wizardSlide : wizardTopic.getWizardSlides()) {

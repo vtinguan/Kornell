@@ -13,7 +13,12 @@ import kornell.core.entity.CourseVersion;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.WizardMock;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.WizardUtils;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.WizardSlideItemView;
+import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
 
 public class AdminCourseVersionContentPresenter implements AdminCourseVersionContentView.Presenter {
@@ -98,5 +103,67 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 	@Override
 	public Wizard getWizard(){
 		return wizard;
+	}
+
+	@Override
+	public void deleteSlide() {
+
+		WizardElement selectedElement = getSelectedWizardElement();
+		WizardTopic wizardTopic = null;
+
+
+		WizardElement nextElement = WizardUtils.getNextWizardElement(wizard, selectedElement);
+		WizardElement prevElement = WizardUtils.getPrevWizardElement(wizard, selectedElement);
+		if(nextElement != null){
+			selectedWizardElement = nextElement;
+		} else if(prevElement != null){
+			selectedWizardElement = prevElement;
+		} else {
+			selectedWizardElement = null;
+		}
+		if(selectedElement instanceof WizardTopic){
+			wizardTopic = (WizardTopic) selectedElement;
+			wizard.getWizardTopics().remove(wizardTopic);
+		} else {
+			for(WizardTopic topic : wizard.getWizardTopics()){
+				int i = 0;
+				for(WizardSlide slide : topic.getWizardSlides()){
+					if(selectedElement.getUUID().equals(slide.getUUID())){
+						topic.getWizardSlides().remove(slide);
+						if(topic.getWizardSlides().size() == 0 || i == topic.getWizardSlides().size()){
+							selectedWizardElement = prevElement;
+						}
+					}
+					i++;
+				}
+			}
+		}
+		/*WizardSlideItemView wizardSlideItemView;
+		WizardSlideItemView targetWizardSlideItemView = null;
+		for(Widget widget : slidePanelItems){
+			wizardSlideItemView = (WizardSlideItemView) widget;
+			if(targetWizardSlideItemView != null){
+				//make sure that only non-moved items have their orders changed
+				if(wizardSlideItemView.getWizardSlideItem().getOrder().equals(wizardSlideItemView.getDisplayOrder())){
+					wizardSlideItemView.getWizardSlideItem().setOrder(wizardSlideItemView.getWizardSlideItem().getOrder() - 1);
+				}
+				wizardSlideItemView.setDisplayOrder(wizardSlideItemView.getDisplayOrder() - 1);
+			}
+			if(wizardSlideItem.getUUID().equals(wizardSlideItemView.getWizardSlideItem().getUUID())){
+				targetWizardSlideItemView = (WizardSlideItemView) widget;
+			}
+			wizardSlideItemView.refreshForm();
+		}
+		slidePanelItems.remove(targetWizardSlideItemView);
+		if(!wizardSlideItem.getUUID().startsWith("new")){
+			//@TODO CALLBACK
+			
+			//@TODO CALLBACK
+		}*/
+		//@TODO CALLBACK
+		view.getWizardView().updateSidePanel();
+		view.getWizardView().updateSlidePanel();
+		//@TODO CALLBACK
+		
 	}
 }
