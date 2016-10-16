@@ -173,7 +173,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 			return;
 		}
 		isViewModeOn = !isViewModeOn;
-		if(!presenter.getSelectedWizardElement().getUUID().equals(currentViewedWizardElement.getUUID())){
+		if(currentViewedWizardElement == null || !presenter.getSelectedWizardElement().getUUID().equals(currentViewedWizardElement.getUUID())){
 			viewModeNeedsRendering = true;
 			currentViewedWizardElement = presenter.getSelectedWizardElement();
 		}
@@ -217,7 +217,12 @@ public class WizardSlideView extends Composite implements IWizardView {
 	
 	@UiHandler("btnDelete")
 	void doDelete(ClickEvent e) {
-		showModal(MODAL_DELETE_SLIDE);
+		if(presenter.getSelectedWizardElement() instanceof WizardSlide &&
+				(((WizardSlide)presenter.getSelectedWizardElement()).getWizardSlideItems().size() > 0)) {
+			showModal(MODAL_DELETE_SLIDE);
+		} else {
+        	presenter.deleteSlide();
+		}
 	}
 	
     @UiHandler("btnModalOK")
@@ -282,6 +287,8 @@ public class WizardSlideView extends Composite implements IWizardView {
 
 		btnPrev.setVisible(isViewModeOn);
 		btnNext.setVisible(isViewModeOn);
+		
+		updateSlidePanelStyleAttributes(isViewModeOn);
 	}
 
 	private void renderViewMode(WizardElement wizardElement) {		
@@ -347,6 +354,12 @@ public class WizardSlideView extends Composite implements IWizardView {
 		((TextBox)title.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
 		fields.add(title);
 		slideFields.add(title);	
+		
+		backgroundURLLabel = "URL do papel de parede";
+		backgroundURL = new KornellFormFieldWrapper(backgroundURLLabel, formHelper.createTextBoxFormField(selectedWizardElement.getBackgroundURL()), true);
+		((TextBox)backgroundURL.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
+		fields.add(backgroundURL);
+		slideFields.add(backgroundURL);	
 
 		if(selectedWizardElement instanceof WizardSlide){
 			WizardSlide wizardSlide = (WizardSlide) selectedWizardElement;
@@ -356,20 +369,14 @@ public class WizardSlideView extends Composite implements IWizardView {
 				slidePanelItems.add(wizardSlideItemView);
 			}
 			btnDelete.setVisible(true);
-		
-			backgroundURLLabel = "URL do papel de parede";
-			backgroundURL = new KornellFormFieldWrapper(backgroundURLLabel, formHelper.createTextBoxFormField(wizardSlide.getBackgroundURL()), true);
-			((TextBox)backgroundURL.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
-			fields.add(backgroundURL);
-			slideFields.add(backgroundURL);	
 		} else {
 			btnDelete.setVisible(((WizardTopic) selectedWizardElement).getWizardSlides().size() == 0);
 		}
-		currentViewedWizardElement = selectedWizardElement;
 		//viewModeNeedsRendering = true;
 		//isViewModeOn = true;
 		//toggleViewMode(true);
 		toggleViewMode(false);
+		
 	}
 	
 	public void reorderItems(){
@@ -457,13 +464,35 @@ public class WizardSlideView extends Composite implements IWizardView {
 		
 		validateFields();	
 
-	    String style = "background: url("
-	    		+ backgroundURL.getFieldPersistText()
-	    		+ ") no-repeat center center fixed; "
-	    		+ "background-size: 100%;";
-	    slidePanel.getElement().setAttribute("style", style);
+	    updateSlidePanelStyleAttributes();
 		
 		return valueHasChanged;
+	}
+
+	private void updateSlidePanelStyleAttributes() {
+		updateSlidePanelStyleAttributes(false);
+	}
+
+	private void updateSlidePanelStyleAttributes(boolean isViewMode) {
+		String style = "background: url("
+	    		+ backgroundURL.getFieldPersistText()
+	    		+ ") no-repeat center center fixed; "
+	    		+ "background-size: 100%; ";
+		if(isViewMode){
+			style += "position: absolute; "
+			    + "height: calc(100vh - 80px); "
+			    + "margin: 0; "
+			    + "padding: 0; "
+			    + "left: 0; "
+			    + "top: 0; "
+			    + "zoom: 1; "
+			    + "-webkit-background-size: cover; "
+			    + "-moz-background-size: cover; "
+			    + "-o-background-size: cover; "
+			    + "background-size: cover; "
+			    + "overflow: auto; ";
+		}
+	    slidePanel.getElement().setAttribute("style", style);
 	}
 	 
 	private boolean updateTitleFormElement(String originalValue){

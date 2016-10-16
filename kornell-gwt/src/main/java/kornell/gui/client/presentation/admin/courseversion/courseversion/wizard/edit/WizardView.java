@@ -71,6 +71,8 @@ public class WizardView extends Composite {
 	@UiField	
 	FlowPanel sideWrapper;
 	@UiField	
+	ScrollPanel sideItemsScroll;
+	@UiField	
 	FlowPanel sidePanel;
 	@UiField
 	WizardSlideView wizardSlideView;
@@ -85,6 +87,8 @@ public class WizardView extends Composite {
 	private Presenter presenter;
 	
 	private String changedString = "(*) ";
+
+	private Label selectedLabel;
 
 	public WizardView(final KornellSession session, EventBus bus) {
 		this.session = session;
@@ -104,11 +108,57 @@ public class WizardView extends Composite {
 	}
 	
 	@UiHandler("btnNewTopic")
-	void doPrev(ClickEvent e) {
+	void doNewTopic(ClickEvent e) {
+		WizardTopic wizardTopic = WizardUtils.newWizardTopic();
+		wizardTopic.setOrder(wizard.getWizardTopics().size());
+		wizard.getWizardTopics().add(wizardTopic);
+		WizardElement prevWizardElement = WizardUtils.getPrevWizardElement(wizard, wizardTopic);
+		if(prevWizardElement != null){
+			wizardTopic.setBackgroundURL(prevWizardElement.getBackgroundURL());
+		}
+		createSidePanelItem(wizard, presenter.getSelectedWizardElement(), null, wizardTopic);
+		presenter.wizardElementClicked(wizardTopic);
 	}
 	
 	@UiHandler("btnNewSlide")
-	void doNext(ClickEvent e) {
+	void doNewSlide(ClickEvent e) {
+		WizardSlide newWizardSlide = WizardUtils.newWizardSlide();
+		WizardElement prevWizardElement;
+		for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
+			WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
+			if(selectedWizardElement.getUUID().equals(wizardTopic.getUUID())){
+				newWizardSlide.setOrder(wizardTopic.getWizardSlides().size());
+				newWizardSlide.setParentOrder((wizardTopic.getOrder()+1)+"");
+				wizardTopic.getWizardSlides().add(newWizardSlide);
+				
+				createNewSlide(newWizardSlide, wizardTopic);
+				return;
+			}
+			int index = 0;
+			for (final WizardSlide wizardSlide : wizardTopic.getWizardSlides()) {
+				if(selectedWizardElement.getUUID().equals(wizardSlide.getUUID())){
+					newWizardSlide.setOrder(selectedWizardElement.getOrder()+1);
+					newWizardSlide.setParentOrder((wizardTopic.getOrder()+1)+"");
+					wizardTopic.getWizardSlides().add(index+1, newWizardSlide);
+					for(int i = index+1; i < wizardTopic.getWizardSlides().size(); i++){
+						wizardTopic.getWizardSlides().get(i).setOrder(i);
+					}
+					createNewSlide(newWizardSlide, wizardTopic);
+					return;
+				}	
+				index++;
+			}
+		}
+	}
+
+	private void createNewSlide(WizardSlide newWizardSlide, final WizardTopic wizardTopic) {
+		WizardElement prevWizardElement;
+		prevWizardElement = WizardUtils.getPrevWizardElement(wizard, newWizardSlide);
+		if(prevWizardElement != null){
+			newWizardSlide.setBackgroundURL(prevWizardElement.getBackgroundURL());
+		} 
+		createSidePanelItem(wizard, presenter.getSelectedWizardElement(), wizardTopic, newWizardSlide);
+		presenter.wizardElementClicked(newWizardSlide);
 	}
 
 	public void updateSidePanel() {
@@ -125,6 +175,7 @@ public class WizardView extends Composite {
 				}
 			}
 			sidePanelItemsMap.get(selectedWizardElement.getUUID()).addStyleName("selected");
+			sidePanelItemsMap.get(selectedWizardElement.getUUID()).getElement().scrollIntoView();
 		}
 
 	}

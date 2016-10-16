@@ -80,10 +80,30 @@ public class WizardUtils {
 		return wizardSlideItem.isValueChanged();
 	}
 	
+	public static WizardTopic newWizardTopic(){
+		WizardTopic wizardTopic = WIZARD_FACTORY.newWizardTopic().as();
+		wizardTopic.setUUID("new" + Math.random());
+		wizardTopic.setTitle("Novo Tópico");
+		wizardTopic.setOrder(0);
+		List<WizardSlide> wizardSlides = new ArrayList<>();
+		wizardTopic.setWizardSlides(wizardSlides);
+		return wizardTopic;
+	}
+	
+	public static WizardSlide newWizardSlide(){
+		WizardSlide wizardSlide = WIZARD_FACTORY.newWizardSlide().as();
+		wizardSlide.setUUID("new" + Math.random());
+		wizardSlide.setTitle("Novo Slide");
+		wizardSlide.setOrder(0);
+		List<WizardSlideItem> wizardSlideItems = new ArrayList<>();
+		wizardSlide.setWizardSlideItems(wizardSlideItems);
+		return wizardSlide;
+	}
+	
 	public static WizardSlideItem newWizardSlideItem(){
 		WizardSlideItem wizardSlideItem = WIZARD_FACTORY.newWizardSlideItem().as();
 		wizardSlideItem.setUUID("new" + Math.random());
-		wizardSlideItem.setTitle("Novo Slide");
+		wizardSlideItem.setTitle("Novo Item");
 		wizardSlideItem.setText("");
 		wizardSlideItem.setValueChanged(true);
 		return wizardSlideItem;
@@ -104,7 +124,20 @@ public class WizardUtils {
 		return wizardElementList;
 	}
 
+	public static WizardElement getParentWizardElement(Wizard wizard, WizardElement wizardElement) {
+		for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
+			for (final WizardSlide wizardSlide : wizardTopic.getWizardSlides()) {
+				if(wizardSlide.getUUID().equals(wizardElement.getUUID())){
+					return wizardTopic;
+				}
+			}
+		}
+		return null;
+	}
+
 	public static WizardElement getNextWizardElement(Wizard wizard, WizardElement currentViewedWizardElement) {
+		if(currentViewedWizardElement == null) return null;
+		
 		List<WizardElement> wizardElementList = wizardToList(wizard);
 		WizardElement wizardElement;
 		for(int i = 0; i < wizardElementList.size(); i++){
@@ -119,6 +152,8 @@ public class WizardUtils {
 	}
 
 	public static WizardElement getPrevWizardElement(Wizard wizard, WizardElement currentViewedWizardElement) {
+		if(currentViewedWizardElement == null) return null;
+		
 		List<WizardElement> wizardElementList = wizardToList(wizard);
 		WizardElement wizardElement;
 		for(int i = 0; i < wizardElementList.size(); i++){

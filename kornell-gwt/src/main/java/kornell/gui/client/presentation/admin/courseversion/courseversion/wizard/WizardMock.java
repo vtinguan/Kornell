@@ -44,6 +44,7 @@ public class WizardMock {
 		wizardTopic.setUUID(order + "");
 		wizardTopic.setOrder(order);		
 		wizardTopic.setTitle("I am topic " + (order+1));
+		wizardTopic.setBackgroundURL("http://localhost:8888/repository/840e93aa-2373-4fb5-ba4a-999bb3f43888/suplementacao-alimentar/v0.3-beforeVideoPlayerChanges/images/img9.jpg");
 
 		List<WizardSlide> wizardSlides = new ArrayList<>();
 		wizardSlides.add(mockWizardSlide(wizardTopic, 0));
@@ -64,6 +65,7 @@ public class WizardMock {
 		wizardSlide.setOrder(order);		
 		wizardSlide.setParentOrder(WizardUtils.buildParentOrderFromParent(wizardTopic));
 		wizardSlide.setTitle("I am slide " + wizardSlide.getParentOrder() + "." + (order+1));
+		wizardSlide.setBackgroundURL("http://localhost:8888/repository/840e93aa-2373-4fb5-ba4a-999bb3f43888/suplementacao-alimentar/v0.3-beforeVideoPlayerChanges/images/img9.jpg");
 		
 		List<WizardSlideItem> wizardSlideItems = new ArrayList<>();
 		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 0));
