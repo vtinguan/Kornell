@@ -17,6 +17,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceController;
@@ -86,7 +88,7 @@ public class WizardSlideItemImageView extends Composite implements IWizardView {
 	private WizardSlideItem wizardSlideItem;
 	private WizardSlideItemImage wizardSlideItemImage;
 	
-	private ChangeHandler refreshFormChangeHandler;
+	private KeyUpHandler refreshFormKeyUpHandler;
 
 	private Presenter presenter;	
 
@@ -105,16 +107,16 @@ public class WizardSlideItemImageView extends Composite implements IWizardView {
 		fields = new ArrayList<KornellFormFieldWrapper>();
 		slideItemFields.clear();	
 		
-		refreshFormChangeHandler = new ChangeHandler() {
+		refreshFormKeyUpHandler = new KeyUpHandler() {
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onKeyUp(KeyUpEvent event) {
 				wizardSlideItemView.refreshForm();
 			}
 		};
 
 		urlLabel = "URL da imagem";
 		url = new KornellFormFieldWrapper(urlLabel, formHelper.createTextBoxFormField(wizardSlideItemImage.getURL()), true);
-		((TextBox)url.getFieldWidget()).addChangeHandler(refreshFormChangeHandler);
+		((TextBox)url.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
 		fields.add(url);
 		slideItemFields.add(url);		
 	}

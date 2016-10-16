@@ -19,6 +19,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceController;
@@ -94,6 +96,10 @@ public class WizardSlideView extends Composite implements IWizardView {
 	@UiField
 	Button btnDelete;
 	@UiField
+	Button btnMoveUp;
+	@UiField
+	Button btnMoveDown;
+	@UiField
 	Button btnNewTextItem;
 	@UiField
 	Button btnNewVideoLinkItem;
@@ -129,23 +135,27 @@ public class WizardSlideView extends Composite implements IWizardView {
 	
 
 	private String titleLabel;
+	private String backgroundURLLabel;
+	private KornellFormFieldWrapper backgroundURL;
 	private String changedString = "(*) ";
 
-	private ChangeHandler refreshFormChangeHandler;
+	private KeyUpHandler refreshFormKeyUpHandler;
 	private boolean viewModeNeedsRendering = true;
 	private WizardSlideItem selectedWizardSlideItem;
 
 	public WizardSlideView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		refreshFormChangeHandler = new ChangeHandler() {
+		refreshFormKeyUpHandler = new KeyUpHandler() {
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onKeyUp(KeyUpEvent event) {
 				refreshForm();
 			}
 		};
 		WizardUtils.createIcon(btnPrev, "fa-arrow-left");
 		WizardUtils.createIcon(btnNext, "fa-arrow-right");
 		WizardUtils.createIcon(btnDelete, "fa-trash-o");
+		WizardUtils.createIcon(btnMoveUp, "fa-arrow-up");
+		WizardUtils.createIcon(btnMoveDown, "fa-arrow-down");
 		WizardUtils.createIcon(btnSave, "fa-floppy-o");
 		WizardUtils.createIcon(btnDiscard, "fa-times");
 		WizardUtils.createIcon(btnNewTextItem, WizardUtils.getClasForWizardSlideItemViewIcon(WizardSlideItemType.TEXT));
@@ -334,9 +344,9 @@ public class WizardSlideView extends Composite implements IWizardView {
 
 		titleLabel = "Título do Slide";
 		title = new KornellFormFieldWrapper(titleLabel, formHelper.createTextBoxFormField(selectedWizardElement.getTitle()), true);
-		((TextBox)title.getFieldWidget()).addChangeHandler(refreshFormChangeHandler);
+		((TextBox)title.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
 		fields.add(title);
-		slideFields.add(title);		
+		slideFields.add(title);	
 
 		if(selectedWizardElement instanceof WizardSlide){
 			WizardSlide wizardSlide = (WizardSlide) selectedWizardElement;
@@ -346,6 +356,12 @@ public class WizardSlideView extends Composite implements IWizardView {
 				slidePanelItems.add(wizardSlideItemView);
 			}
 			btnDelete.setVisible(true);
+		
+			backgroundURLLabel = "URL do papel de parede";
+			backgroundURL = new KornellFormFieldWrapper(backgroundURLLabel, formHelper.createTextBoxFormField(wizardSlide.getBackgroundURL()), true);
+			((TextBox)backgroundURL.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
+			fields.add(backgroundURL);
+			slideFields.add(backgroundURL);	
 		} else {
 			btnDelete.setVisible(((WizardTopic) selectedWizardElement).getWizardSlides().size() == 0);
 		}
@@ -384,6 +400,8 @@ public class WizardSlideView extends Composite implements IWizardView {
 		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
 		
 		((TextBox)title.getFieldWidget()).setText(selectedWizardElement.getTitle());
+		((TextBox)backgroundURL.getFieldWidget()).setText(selectedWizardElement.getBackgroundURL());
+		
 		WizardSlideItemView wizardSlideItemView;
 		Widget widget;
 		for(int i = 0; i < slidePanelItems.getWidgetCount(); i++){
@@ -432,11 +450,18 @@ public class WizardSlideView extends Composite implements IWizardView {
 	public boolean refreshForm(){
 		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
 		
-		boolean valueHasChanged = updateTitleFormElement(selectedWizardElement.getTitle());
+		boolean valueHasChanged = updateTitleFormElement(selectedWizardElement.getTitle()) 
+				|| updateBackgroundURLFormElement(selectedWizardElement.getBackgroundURL());
 		
 		presenter.valueChanged(valueHasChanged);
 		
-		validateFields();
+		validateFields();	
+
+	    String style = "background: url("
+	    		+ backgroundURL.getFieldPersistText()
+	    		+ ") no-repeat center center fixed; "
+	    		+ "background-size: 100%;";
+	    slidePanel.getElement().setAttribute("style", style);
 		
 		return valueHasChanged;
 	}
@@ -445,6 +470,13 @@ public class WizardSlideView extends Composite implements IWizardView {
 		boolean valueHasChanged = !title.getFieldPersistText().equals(originalValue);
 		presenter.valueChanged(valueHasChanged);
 		title.setFieldLabelText((valueHasChanged ? changedString  : "") + titleLabel);
+		return valueHasChanged;
+	}
+	 
+	private boolean updateBackgroundURLFormElement(String originalValue){
+		boolean valueHasChanged = !backgroundURL.getFieldPersistText().equals(originalValue);
+		presenter.valueChanged(valueHasChanged);
+		backgroundURL.setFieldLabelText((valueHasChanged ? changedString  : "") + backgroundURLLabel);
 		return valueHasChanged;
 	}
 	
@@ -490,6 +522,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 		if (validateFields()) {
 			WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
 			selectedWizardElement.setTitle(title.getFieldPersistText());
+			selectedWizardElement.setBackgroundURL(backgroundURL.getFieldPersistText());
 			
 			for(Widget wizardSlideItemView : slidePanelItems){
 				((WizardSlideItemView)wizardSlideItemView).updateWizard();

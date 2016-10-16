@@ -4,18 +4,42 @@
 	<g:FlowPanel ui:field="slidePanel" addStyleNames="slidePanel left">
 		<g:FlowPanel addStyleNames="slideButtonsWrapper">
 			<g:FlowPanel ui:field="slideButtonsBar">
-		        <b:Button ui:field="btnNewTextItem" title="Inserir texto" addStyleNames="btnNotSelected btnStandard left"></b:Button>
-		        <b:Button ui:field="btnNewImageItem" title="Inserir imagem" addStyleNames="btnNotSelected btnStandard left"></b:Button>
-		        <b:Button ui:field="btnNewVideoLinkItem" title="Inserir video" addStyleNames="btnNotSelected btnStandard left marginRight20"></b:Button>
+				<b:Tooltip text="Inserir texto">
+		        	<b:Button ui:field="btnNewTextItem" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+				</b:Tooltip>
+				<b:Tooltip text="Inserir imagem">
+		        	<b:Button ui:field="btnNewImageItem" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+				</b:Tooltip>
+				<b:Tooltip text="Inserir video">
+		        	<b:Button ui:field="btnNewVideoLinkItem" addStyleNames="btnNotSelected btnStandard left marginRight40"></b:Button>
+				</b:Tooltip>
 		    </g:FlowPanel>
 			<g:FlowPanel ui:field="elementButtonsBar">
-		        <b:Button ui:field="btnDiscard" title="Descartar alterações" addStyleNames="btnNotSelected btnStandard left"></b:Button>
-		        <b:Button ui:field="btnSave" title="Salvar alterações" addStyleNames="btnAction btnStandard left marginRight20"></b:Button>
-		        <b:Button ui:field="btnDelete" title="Excluir slide" addStyleNames="btnSelected btnStandard left"></b:Button>
+				<b:Tooltip text="Descartar alterações">
+			        <b:Button ui:field="btnDiscard" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+				</b:Tooltip>
+				<b:Tooltip text="Salvar alterações">
+			        <b:Button ui:field="btnSave" addStyleNames="btnAction btnStandard left marginRight40"></b:Button>
+				</b:Tooltip>
+				<b:Tooltip text="Mover para baixo">
+				    <b:Button ui:field="btnMoveDown" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+				</b:Tooltip>
+				<b:Tooltip text="Mover para cima">
+				    <b:Button ui:field="btnMoveUp" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+				</b:Tooltip>
+				<b:Tooltip text="Excluir slide">
+			        <b:Button ui:field="btnDelete" addStyleNames="btnSelected btnStandard left"></b:Button>
+				</b:Tooltip>
 		    </g:FlowPanel>
-		    <b:Button ui:field="btnView" addStyleNames="btnAction btnStandard right"></b:Button>
-		    <b:Button ui:field="btnNext" addStyleNames="btnNotSelected btnStandard right"></b:Button>
-		    <b:Button ui:field="btnPrev" addStyleNames="btnNotSelected btnStandard right"></b:Button>
+			<b:Tooltip text="Visualizar">
+			    <b:Button ui:field="btnView" addStyleNames="btnAction btnStandard right"></b:Button>
+			</b:Tooltip>
+			<b:Tooltip text="Próximo">
+			    <b:Button ui:field="btnNext" addStyleNames="btnNotSelected btnStandard right"></b:Button>
+			</b:Tooltip>
+			<b:Tooltip text="Anterior">
+			    <b:Button ui:field="btnPrev" addStyleNames="btnNotSelected btnStandard right"></b:Button>
+			</b:Tooltip>
 	    </g:FlowPanel>
 		<b:Form ui:field="form">
 	      <g:FlowPanel ui:field="slideFields" addStyleNames="fieldsWrapper">    

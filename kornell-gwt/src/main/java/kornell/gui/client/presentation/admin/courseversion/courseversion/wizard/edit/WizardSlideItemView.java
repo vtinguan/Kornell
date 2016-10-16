@@ -18,6 +18,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceController;
@@ -95,7 +97,7 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	private String changedString = "(*) ";
 	
 	private WizardSlideItem wizardSlideItem;
-	private ChangeHandler refreshFormChangeHandler;
+	private KeyUpHandler refreshFormKeyUpHandler;
 	private Presenter presenter;
 	private WizardSlideView wizardSlideView;
 
@@ -118,22 +120,22 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 		fields = new ArrayList<KornellFormFieldWrapper>();
 		slideItemFields.clear();	
 		
-		refreshFormChangeHandler = new ChangeHandler() {
+		refreshFormKeyUpHandler = new KeyUpHandler() {
 			@Override
-			public void onChange(ChangeEvent event) {
-				refreshForm();
+			public void onKeyUp(KeyUpEvent event) {
+				refreshForm();				
 			}
 		};
 
 		titleLabel = "Título do Item";
 		title = new KornellFormFieldWrapper(titleLabel, formHelper.createTextBoxFormField(wizardSlideItem.getTitle()), true);
-		((TextBox)title.getFieldWidget()).addChangeHandler(refreshFormChangeHandler);
+		((TextBox)title.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
 		fields.add(title);
 		slideItemFields.add(title);	
 
 		textLabel = "Texto";
 		text = new KornellFormFieldWrapper(textLabel, formHelper.createTextAreaFormField(wizardSlideItem.getText(), 5), true);
-		((TextArea)text.getFieldWidget()).addChangeHandler(refreshFormChangeHandler);
+		((TextArea)text.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
 		text.addStyleName("heightAuto marginBottom25");
 		fields.add(text);
 		slideItemFields.add(text);	

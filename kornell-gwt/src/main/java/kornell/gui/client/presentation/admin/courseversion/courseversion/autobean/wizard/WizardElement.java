@@ -21,4 +21,7 @@ public interface WizardElement {
 	String getParentOrder();
 	void setParentOrder(String parentOrder);
 	
+	String getBackgroundURL();
+	void setBackgroundURL(String backgroundURL);
+	
 }

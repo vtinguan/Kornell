@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.FileUpload;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -23,7 +24,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -69,11 +69,15 @@ public class WizardView extends Composite {
 	@UiField
 	FlowPanel wizardPanel;
 	@UiField	
-	ScrollPanel slideItemsScroll;
+	FlowPanel sideWrapper;
 	@UiField	
 	FlowPanel sidePanel;
 	@UiField
 	WizardSlideView wizardSlideView;
+	@UiField
+	Button btnNewTopic;
+	@UiField
+	Button btnNewSlide;
 
 
 	private Wizard wizard;
@@ -86,6 +90,8 @@ public class WizardView extends Composite {
 		this.session = session;
 		this.bus = bus;
 		initWidget(uiBinder.createAndBindUi(this));
+		WizardUtils.createIcon(btnNewTopic, "fa-folder-open");
+		WizardUtils.createIcon(btnNewSlide, "fa-newspaper-o");
 	}
 
 	public void init(CourseVersion courseVersion, Wizard wizard, Presenter presenter) {
@@ -96,6 +102,14 @@ public class WizardView extends Composite {
 		wizardSlideView.setPresenter(presenter);
 		wizardSlideView.updateSlidePanel();
 	}
+	
+	@UiHandler("btnNewTopic")
+	void doPrev(ClickEvent e) {
+	}
+	
+	@UiHandler("btnNewSlide")
+	void doNext(ClickEvent e) {
+	}
 
 	public void updateSidePanel() {
 		sidePanel.clear();
@@ -103,19 +117,16 @@ public class WizardView extends Composite {
 		sidePanelItemsMap = new HashMap<String, Label>();
 
 		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
-		if(selectedWizardElement == null){
-			return;
-		}
-		for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
-			createSidePanelItem(wizard, selectedWizardElement, null, wizardTopic);
-			for (final WizardSlide wizardSlide : wizardTopic.getWizardSlides()) {
-				createSidePanelItem(wizard, selectedWizardElement, wizardTopic, wizardSlide);				
-			}
-		}
-
 		if(selectedWizardElement != null){
+			for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
+				createSidePanelItem(wizard, selectedWizardElement, null, wizardTopic);
+				for (final WizardSlide wizardSlide : wizardTopic.getWizardSlides()) {
+					createSidePanelItem(wizard, selectedWizardElement, wizardTopic, wizardSlide);				
+				}
+			}
 			sidePanelItemsMap.get(selectedWizardElement.getUUID()).addStyleName("selected");
 		}
+
 	}
 
 	private void createSidePanelItem(Wizard wizard, WizardElement selectedWizardElement, final WizardTopic parentWizardElement,
@@ -183,7 +194,7 @@ public class WizardView extends Composite {
 	}
 
 	public void toggleViewMode(boolean isViewModeOn) {
-		this.slideItemsScroll.setVisible(!isViewModeOn);
+		this.sideWrapper.setVisible(!isViewModeOn);
 	}
 
 	public void displaySlidePanel(boolean display) {
