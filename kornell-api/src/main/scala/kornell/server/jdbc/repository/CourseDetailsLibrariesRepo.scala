@@ -5,6 +5,7 @@ import scala.collection.JavaConverters._
 import kornell.server.jdbc.SQL._
 import kornell.core.util.UUID
 import kornell.core.entity.CourseDetailsLibrary
+import kornell.core.entity.CourseDetailsEntityType
 
 object CourseDetailsLibrariesRepo {
 
@@ -27,5 +28,11 @@ object CourseDetailsLibrariesRepo {
     | ${courseDetailsLibrary.getFontAwesomeClassName})""".executeUpdate
     
     courseDetailsLibrary
-  }  
+  }
+  
+  def listForEntity(entityUUIDs: List[String], entityType: CourseDetailsEntityType): Map[String, List[CourseDetailsLibrary]] = {
+    sql"""
+      select * from CourseDetailsLibrary where entityUUID in (${entityUUIDs mkString ","}) and entityType = ${entityType.toString}
+    """.map[CourseDetailsLibrary].groupBy { x => x.getEntityUUID }
+  }
 }

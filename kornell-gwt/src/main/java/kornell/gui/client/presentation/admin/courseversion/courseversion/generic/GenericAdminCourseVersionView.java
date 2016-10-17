@@ -35,6 +35,7 @@ import kornell.core.entity.Course;
 import kornell.core.entity.CourseVersion;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.InstitutionType;
+import kornell.core.to.CourseTO;
 import kornell.core.to.CourseVersionTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
@@ -282,8 +283,8 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 	private void createCoursesField(CoursesTO to) {
 		final ListBox courses = new ListBox();
 		if(to != null){
-			for (Course course : to.getCourses()) {
-				courses.addItem(course.getTitle(), course.getUUID());
+			for (CourseTO courseTO : to.getCourses()) {
+				courses.addItem(courseTO.getCourse().getTitle(), courseTO.getCourse().getUUID());
 			}
 		}/* else {
 			courses.addItem(courseVersion.getCourse().getTitle(), courseVersion.getCourse().getUUID());

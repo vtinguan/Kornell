@@ -5,6 +5,7 @@ import scala.collection.JavaConverters._
 import kornell.server.jdbc.SQL._
 import kornell.core.util.UUID
 import kornell.core.entity.CourseDetailsSection
+import kornell.core.entity.CourseDetailsEntityType
 
 object CourseDetailsSectionsRepo {
 
@@ -24,4 +25,10 @@ object CourseDetailsSectionsRepo {
     
     courseDetailsSection
   }  
+  
+  def listForEntity(entityUUIDs: List[String], entityType: CourseDetailsEntityType): Map[String, List[CourseDetailsSection]] = {
+    sql"""
+      select * from CourseDetailsSection where entityUUID in (${entityUUIDs mkString ","}) and entityType = ${entityType.toString}
+    """.map[CourseDetailsSection].groupBy { x => x.getEntityUUID }
+  }
 }

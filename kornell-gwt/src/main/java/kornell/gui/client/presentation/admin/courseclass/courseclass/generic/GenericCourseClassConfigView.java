@@ -38,6 +38,7 @@ import kornell.core.entity.InstitutionRegistrationPrefix;
 import kornell.core.entity.RegistrationType;
 import kornell.core.entity.RoleCategory;
 import kornell.core.to.CourseClassTO;
+import kornell.core.to.CourseTO;
 import kornell.core.to.CourseVersionsTO;
 import kornell.core.to.CoursesTO;
 import kornell.core.to.InstitutionRegistrationPrefixesTO;
@@ -349,11 +350,11 @@ public class GenericCourseClassConfigView extends Composite {
     private void createCoursesField(CoursesTO to) {
         final ListBox courses = new ListBox();
         if(to != null){
-            for (Course course : to.getCourses()) {
-                courses.addItem(course.getTitle(), course.getUUID());
+            for (CourseTO courseTO : to.getCourses()) {
+                courses.addItem(courseTO.getCourse().getTitle(), courseTO.getCourse().getUUID());
             }
         } else {
-            courses.addItem(courseClassTO.getCourseVersionTO().getCourse().getTitle(), courseClassTO.getCourseVersionTO().getCourse().getUUID());
+            courses.addItem(courseClassTO.getCourseVersionTO().getCourseTO().getCourse().getTitle(), courseClassTO.getCourseVersionTO().getCourseTO().getCourse().getUUID());
         }
         courses.addChangeHandler(new ChangeHandler() {
             @Override
@@ -362,7 +363,7 @@ public class GenericCourseClassConfigView extends Composite {
             }
         });
         if (!isCreationMode) {
-            courses.setSelectedValue(courseClassTO.getCourseVersionTO().getCourse().getUUID());
+            courses.setSelectedValue(courseClassTO.getCourseVersionTO().getCourseTO().getCourse().getUUID());
         }
         course = new KornellFormFieldWrapper("Curso", new ListBoxFormField(courses), (isCreationMode || presenter.getEnrollments().size() == 0));
 

@@ -25,6 +25,7 @@ import kornell.core.entity.CourseVersion
 import com.sun.xml.internal.bind.v2.TODO
 import kornell.core.entity.Course
 import java.util.ArrayList
+import kornell.core.entity.CourseDetailsEntityType
 
 class CourseClassesRepo {
 }
@@ -187,6 +188,17 @@ object CourseClassesRepo {
       	  	    and (cc.uuid = ${courseClassUUID} or ${StringUtils.isNone(courseClassUUID)})
             	and cc.institution_uuid = ${institutionUUID}""".first[String].get.toInt
     })
+    val uuids = courseClassesTO.getCourseClasses.asScala.map { x => x.getCourseVersionTO.getCourseTO.getCourse.getUUID }.toList.distinct
+    val hints = CourseDetailsHintsRepo.listForEntity(uuids, CourseDetailsEntityType.COURSE)
+    val sections = CourseDetailsSectionsRepo.listForEntity(uuids, CourseDetailsEntityType.COURSE)
+    val libraryFiles = CourseDetailsLibrariesRepo.listForEntity(uuids, CourseDetailsEntityType.COURSE)
+    
+    courseClassesTO.getCourseClasses.asScala.foreach { x =>{
+        x.getCourseVersionTO.getCourseTO.setCourseDetailsHints(hints.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
+        x.getCourseVersionTO.getCourseTO.setCourseDetailsSections(sections.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
+        x.getCourseVersionTO.getCourseTO.setCourseDetailsLibraries(libraryFiles.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
+      }
+    }
     courseClassesTO
   }
 

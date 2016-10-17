@@ -8,6 +8,7 @@ import kornell.core.error.KornellErrorTO;
 public interface TOFactory  extends AutoBeanFactory {
 	public static String PREFIX = "application/vnd.kornell.v1.to.";
 	AutoBean<CoursesTO> newCoursesTO();
+	AutoBean<CourseTO> newCourseTO();
 	AutoBean<CourseVersionsTO> newCourseVersionsTO();
 	AutoBean<CourseClassTO> newCourseClassTO();
 	AutoBean<CourseClassesTO> newCourseClassesTO();

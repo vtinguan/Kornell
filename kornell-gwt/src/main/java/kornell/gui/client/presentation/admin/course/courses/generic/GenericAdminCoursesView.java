@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.admin.course.courses.generic;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,6 +55,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.Course;
 import kornell.core.entity.EnrollmentState;
+import kornell.core.to.CourseTO;
 import kornell.core.util.StringUtils;
 import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePlace;
@@ -325,7 +327,7 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 
 
 	@Override
-	public void setCourses(List<Course> courses, Integer count, Integer searchCount) {
+	public void setCourses(List<CourseTO> courses, Integer count, Integer searchCount) {
 		coursesWrapper.clear();
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("400");
@@ -367,7 +369,12 @@ public class GenericAdminCoursesView extends Composite implements AdminCoursesVi
 		coursesWrapper.add(panel);
 		coursesWrapper.add(pagination);
 
-		pagination.setRowData(courses, StringUtils.isSome(presenter.getSearchTerm()) ? searchCount : count);
+		List<Course> courseList = new ArrayList<>();
+		for (CourseTO to : courses) {
+			courseList.add(to.getCourse());
+		}
+		
+		pagination.setRowData(courseList, StringUtils.isSome(presenter.getSearchTerm()) ? searchCount : count);
 	
 		initTable();
 		adminHomePanel.setVisible(true);

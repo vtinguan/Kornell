@@ -12,6 +12,8 @@ import kornell.server.repository.Entities
 import kornell.core.util.UUID
 import kornell.core.to.CoursesTO
 import kornell.core.entity.AuditedEntityType
+import kornell.core.to.CourseTO
+import kornell.server.repository.TOs
 
 object CoursesRepo {
 
@@ -45,7 +47,7 @@ object CoursesRepo {
     val resultOffset = (pageNumber.max(1) - 1) * pageSize
     val filteredSearchTerm = '%' + Option(searchTerm).getOrElse("") + '%'
     
-    val coursesTO = newCoursesTO(sql"""
+    val courses = sql"""
 	  	select c.* from Course c
 		join Institution i on c.institutionUUID = i.uuid
 		where c.institutionUUID = ${institutionUUID}
@@ -53,7 +55,11 @@ object CoursesRepo {
 		and (c.title like ${filteredSearchTerm}
             or c.code like ${filteredSearchTerm})
 		order by c.code limit ${resultOffset}, ${pageSize} 
-	  """.map[Course](toCourse))
+	  """.map[CourseTO](toCourseTO)
+	  val uuids = courses.map { m => m.getCourse.getUUID }
+	  
+	  val coursesTO = TOs.newCoursesTO
+	  coursesTO.setCourses(courses.asJava)
 	  coursesTO.setPageSize(pageSize)
 	  coursesTO.setPageNumber(pageNumber.max(1))
 	  coursesTO.setCount({

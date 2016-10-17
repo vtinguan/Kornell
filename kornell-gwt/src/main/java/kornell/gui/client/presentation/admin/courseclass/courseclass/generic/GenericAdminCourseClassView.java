@@ -844,7 +844,7 @@ public class GenericAdminCourseClassView extends Composite implements AdminCours
 	public void setCourseClassTO(CourseClassTO courseClassTO) {
 		this.courseClassTO = courseClassTO;
 		this.lblCourseClassName.setText(courseClassTO.getCourseClass().getName());
-		this.lblCourseName.setText(courseClassTO.getCourseVersionTO().getCourse().getTitle());
+		this.lblCourseName.setText(courseClassTO.getCourseVersionTO().getCourseTO().getCourse().getTitle());
 		String status = EnumTranslator.translateEnum(courseClassTO.getCourseClass().getState());
 		status += courseClassTO.getCourseClass().isInvisible() ? " / Invísivel" : "";
 		status += courseClassTO.getCourseClass().isPublicClass() ? " / Pública" : "";

@@ -196,7 +196,7 @@ public class GenericAdminCourseClassesView extends Composite implements AdminCou
 		table.addColumn(new TextColumn<CourseClassTO>() {
 			@Override
 			public String getValue(CourseClassTO courseClassTO) {
-				return courseClassTO.getCourseVersionTO().getCourse().getTitle();
+				return courseClassTO.getCourseVersionTO().getCourseTO().getCourse().getTitle();
 			}
 		}, "Curso");
 

@@ -44,6 +44,7 @@ import kornell.core.entity.CourseDetailsHint
 import kornell.core.entity.CourseDetailsEntityType
 import kornell.core.entity.CourseDetailsLibrary
 import kornell.core.entity.CourseDetailsSection
+import kornell.core.to.CourseTO
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -110,7 +111,10 @@ package object repository {
     rs.getString("description"),
     rs.getString("infoJson"),
     rs.getString("institutionUUID"),
-    rs.getBoolean("childCourse"))    
+    rs.getBoolean("childCourse"))
+    
+  implicit def toCourseTO(rs: ResultSet): CourseTO = newCourseTO(
+      toCourse(rs))
 
   implicit def toCourseVersion(rs: ResultSet): CourseVersion = newCourseVersion(
     rs.getString("uuid"), 

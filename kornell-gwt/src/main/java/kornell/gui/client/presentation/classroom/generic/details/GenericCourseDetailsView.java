@@ -144,7 +144,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		isInactiveCourseClass = CourseClassState.inactive.equals(courseClassTO.getCourseClass().getState());
 		displayButtons();
 
-		CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(courseClassTO.getCourseVersionTO().getCourse()
+		CourseDetailsTOBuilder builder = new CourseDetailsTOBuilder(courseClassTO.getCourseVersionTO().getCourseTO().getCourse()
 				.getInfoJson());
 		builder.buildCourseDetails();
 		courseDetails = builder.getCourseDetailsTO();
@@ -361,7 +361,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		titleLabel.addStyleName("titleLabel");
 		titlePanel.add(titleLabel);
 
-		Label courseNameLabel = new Label(courseClassTO.getCourseVersionTO().getCourse().getTitle());
+		Label courseNameLabel = new Label(courseClassTO.getCourseVersionTO().getCourseTO().getCourse().getTitle());
 		courseNameLabel.addStyleName("courseNameLabel");
 		titlePanel.add(courseNameLabel);
 

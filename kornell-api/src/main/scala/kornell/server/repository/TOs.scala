@@ -52,6 +52,7 @@ import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.InstitutionRepo
 import kornell.core.to.CourseClassesTO
 import kornell.core.to.DashboardLeaderboardItemTO
+import kornell.core.to.CourseTO
 
 //TODO: Consider turning to Object
 object TOs {
@@ -62,6 +63,7 @@ object TOs {
   def newUserHelloTO = tos.newUserHelloTO.as
   def newEnrollmentsTO: EnrollmentsTO = tos.newEnrollmentsTO.as
   def newCoursesTO: CoursesTO = tos.newCoursesTO.as
+  def newCourseTO: CourseTO = tos.newCourseTO.as
   def newCourseVersionsTO: CourseVersionsTO = tos.newCourseVersionsTO.as
   def newCourseClassesTO: CourseClassesTO = tos.newCourseClassesTO.as
   def newLibraryFileTO: LibraryFileTO = tos.newLibraryFileTO.as
@@ -74,9 +76,15 @@ object TOs {
     enrollments
   }
 
-  def newCoursesTO(coursesList: List[Course]): CoursesTO = {
+  def newCourseTO(course: Course): CourseTO = {
+    val courseTO = newCourseTO
+    courseTO.setCourse(course)
+    courseTO
+  }
+  
+  def newCoursesTO(coursesList: List[CourseTO]): CoursesTO = {
     val courses = newCoursesTO
-    courses.setCourses(coursesList asJava)
+    courses.setCourses(coursesList.asJava)
     courses.setPageCount(coursesList.length)
     courses
   }
@@ -118,7 +126,7 @@ object TOs {
     val repositoryUUID = institutionRepo.get.getAssetsRepositoryUUID
     val repo = ContentManagers.forRepository(repositoryUUID)
     versionTO.setDistributionURL(repo.url(""))
-    versionTO.setCourse(course)
+    versionTO.setCourseTO(newCourseTO(course))
     versionTO.setCourseVersion(version)
     versionTO
   }

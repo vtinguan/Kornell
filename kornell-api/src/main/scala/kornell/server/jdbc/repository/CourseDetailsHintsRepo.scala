@@ -6,6 +6,7 @@ import kornell.server.repository.Entities._
 import kornell.core.util.UUID
 
 import kornell.core.entity.CourseDetailsHint
+import kornell.core.entity.CourseDetailsEntityType
 
 object CourseDetailsHintsRepo {
 
@@ -24,5 +25,11 @@ object CourseDetailsHintsRepo {
     | ${courseDetailsHint.getFontAwesomeClassName})""".executeUpdate
     
     courseDetailsHint
-  }  
+  }
+  
+  def listForEntity(entityUUIDs: List[String], entityType: CourseDetailsEntityType): Map[String, List[CourseDetailsHint]] = {
+    sql"""
+      select * from CourseDetailsHint where entityUUID in (${entityUUIDs mkString ","}) and entityType = ${entityType.toString}
+    """.map[CourseDetailsHint].groupBy { x => x.getEntityUUID }
+  }
 }
