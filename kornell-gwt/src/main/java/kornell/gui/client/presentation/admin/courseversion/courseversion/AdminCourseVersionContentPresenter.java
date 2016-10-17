@@ -74,7 +74,8 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 	@Override
 	public void wizardElementClicked(WizardElement wizardElement) {
 		view.getWizardView().displaySlidePanel(false);
-		this.selectedWizardElement = wizardElement;
+		this.selectedWizardElement = wizardElement;	
+		reorderItems();
 		view.getWizardView().updateSidePanel();
 		view.getWizardView().updateSlidePanel();
 		view.getWizardView().displaySlidePanel(true);	
@@ -213,6 +214,7 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 		view.getWizardView().refreshSlidePanel();
 	}
 
+	
 	private void reorderItems() {
 		int topicIndex = 0, slideIndex = 0;
 		for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {

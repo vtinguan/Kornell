@@ -118,7 +118,6 @@ public class WizardView extends Composite {
 		if(prevWizardElement != null){
 			wizardTopic.setBackgroundURL(prevWizardElement.getBackgroundURL());
 		}
-		createSidePanelItem(wizard, presenter.getSelectedWizardElement(), null, wizardTopic);
 		presenter.wizardElementClicked(wizardTopic);
 	}
 	
@@ -158,8 +157,7 @@ public class WizardView extends Composite {
 		prevWizardElement = WizardUtils.getPrevWizardElement(wizard, newWizardSlide);
 		if(prevWizardElement != null){
 			newWizardSlide.setBackgroundURL(prevWizardElement.getBackgroundURL());
-		} 
-		//createSidePanelItem(wizard, presenter.getSelectedWizardElement(), wizardTopic, newWizardSlide);
+		}
 		presenter.wizardElementClicked(newWizardSlide);
 	}
 

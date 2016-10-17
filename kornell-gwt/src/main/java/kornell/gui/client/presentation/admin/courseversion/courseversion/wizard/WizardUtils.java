@@ -86,6 +86,8 @@ public class WizardUtils {
 		wizardTopic.setTitle("Novo Tópico");
 		wizardTopic.setOrder(0);
 		List<WizardSlide> wizardSlides = new ArrayList<>();
+		WizardSlide wizardSlide = newWizardSlide();
+		wizardSlides.add(wizardSlide);
 		wizardTopic.setWizardSlides(wizardSlides);
 		return wizardTopic;
 	}
