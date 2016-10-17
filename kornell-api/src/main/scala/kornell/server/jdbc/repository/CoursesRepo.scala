@@ -56,7 +56,6 @@ object CoursesRepo {
             or c.code like ${filteredSearchTerm})
 		order by c.code limit ${resultOffset}, ${pageSize} 
 	  """.map[CourseTO](toCourseTO)
-	  val uuids = courses.map { m => m.getCourse.getUUID }
 	  
 	  val coursesTO = TOs.newCoursesTO
 	  coursesTO.setCourses(courses.asJava)
