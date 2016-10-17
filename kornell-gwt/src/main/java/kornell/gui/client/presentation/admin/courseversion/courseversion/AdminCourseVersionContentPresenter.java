@@ -2,6 +2,7 @@ package kornell.gui.client.presentation.admin.courseversion.courseversion;
 
 import java.util.logging.Logger;
 
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Widget;
@@ -14,6 +15,7 @@ import kornell.gui.client.ViewFactory;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardElement;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.WizardMock;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.WizardUtils;
@@ -86,7 +88,9 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 
 	@Override
 	public void valueChanged(boolean valueHasChanged) {
-		valueChanged(selectedWizardElement, valueHasChanged);
+		if(selectedWizardElement != null){
+			valueChanged(selectedWizardElement, valueHasChanged);
+		}
 	}
 
 	@Override
@@ -107,6 +111,12 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 
 	@Override
 	public void deleteSlide() {
+		
+		if(wizard.getWizardTopics().size() == 1 &&
+				wizard.getWizardTopics().get(0).getWizardSlides().size() == 1){
+			KornellNotification.show("É necessário ao menos um tópico e um slide.", AlertType.ERROR, 4000);
+			return;
+		}
 
 		WizardElement selectedElement = getSelectedWizardElement();
 		WizardTopic wizardTopic = null;
@@ -114,6 +124,7 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 
 		WizardElement nextElement = WizardUtils.getNextWizardElement(wizard, selectedElement);
 		WizardElement prevElement = WizardUtils.getPrevWizardElement(wizard, selectedElement);
+		selectedWizardElement = null;
 		if(nextElement != null){
 			selectedWizardElement = nextElement;
 		} else if(prevElement != null){
@@ -138,32 +149,81 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 				}
 			}
 		}
-		/*WizardSlideItemView wizardSlideItemView;
-		WizardSlideItemView targetWizardSlideItemView = null;
-		for(Widget widget : slidePanelItems){
-			wizardSlideItemView = (WizardSlideItemView) widget;
-			if(targetWizardSlideItemView != null){
-				//make sure that only non-moved items have their orders changed
-				if(wizardSlideItemView.getWizardSlideItem().getOrder().equals(wizardSlideItemView.getDisplayOrder())){
-					wizardSlideItemView.getWizardSlideItem().setOrder(wizardSlideItemView.getWizardSlideItem().getOrder() - 1);
-				}
-				wizardSlideItemView.setDisplayOrder(wizardSlideItemView.getDisplayOrder() - 1);
-			}
-			if(wizardSlideItem.getUUID().equals(wizardSlideItemView.getWizardSlideItem().getUUID())){
-				targetWizardSlideItemView = (WizardSlideItemView) widget;
-			}
-			wizardSlideItemView.refreshForm();
-		}
-		slidePanelItems.remove(targetWizardSlideItemView);
-		if(!wizardSlideItem.getUUID().startsWith("new")){
-			//@TODO CALLBACK
-			
-			//@TODO CALLBACK
-		}*/
 		//@TODO CALLBACK
+		reorderItems();
 		view.getWizardView().updateSidePanel();
 		view.getWizardView().updateSlidePanel();
+		view.getWizardView().refreshSlidePanel();
 		//@TODO CALLBACK
 		
+	}
+
+	@Override
+	public void moveSlideDown() {
+		WizardTopic topic, nextTopic;
+		WizardSlide slide;
+		if(selectedWizardElement instanceof WizardTopic){
+			topic = (WizardTopic) selectedWizardElement;
+			wizard.getWizardTopics().remove(topic);
+			wizard.getWizardTopics().add(topic.getOrder()+1, topic);
+		} else {
+			topic = (WizardTopic) WizardUtils.getParentWizardElement(wizard, selectedWizardElement);
+			slide = (WizardSlide) selectedWizardElement;
+			if(slide.getOrder() == topic.getWizardSlides().size() - 1){
+				nextTopic = (WizardTopic) WizardUtils.getNextWizardElement(wizard, topic.getWizardSlides().get(topic.getWizardSlides().size()-1));
+				topic.getWizardSlides().remove(slide);
+				nextTopic.getWizardSlides().add(0, slide);
+			} else {
+				topic.getWizardSlides().remove(slide);
+				topic.getWizardSlides().add(slide.getOrder()+1, slide);
+			}
+		}
+		reorderItems();
+		view.getWizardView().updateSidePanel();
+		view.getWizardView().refreshSlidePanel();
+	}
+
+	@Override
+	public void moveSlideUp() {
+		WizardTopic topic, prevTopic;
+		WizardSlide slide;
+		if(selectedWizardElement instanceof WizardTopic){
+			topic = (WizardTopic) selectedWizardElement;
+			wizard.getWizardTopics().remove(topic);
+			wizard.getWizardTopics().add(topic.getOrder()-1, topic);
+		} else {
+			topic = (WizardTopic) WizardUtils.getParentWizardElement(wizard, selectedWizardElement);
+			slide = (WizardSlide) selectedWizardElement;
+			if(slide.getOrder() == 0){
+				WizardElement element = WizardUtils.getPrevWizardElement(wizard, topic);
+				if(element instanceof WizardTopic){
+					prevTopic = (WizardTopic) element;
+				} else {
+					prevTopic = (WizardTopic) WizardUtils.getParentWizardElement(wizard, element);
+				}
+				topic.getWizardSlides().remove(slide);
+				prevTopic.getWizardSlides().add(prevTopic.getWizardSlides().size(), slide);
+			} else {
+				topic.getWizardSlides().remove(slide);
+				topic.getWizardSlides().add(slide.getOrder()-1, slide);
+			}
+		}
+		reorderItems();
+		view.getWizardView().updateSidePanel();
+		view.getWizardView().refreshSlidePanel();
+	}
+
+	private void reorderItems() {
+		int topicIndex = 0, slideIndex = 0;
+		for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
+			wizardTopic.setOrder(topicIndex);
+			slideIndex = 0;
+			for (final WizardSlide wizardSlide : wizardTopic.getWizardSlides()) {
+				wizardSlide.setOrder(slideIndex);
+				wizardSlide.setParentOrder((topicIndex + 1) + "");
+				slideIndex++;
+			}
+			topicIndex++;
+		}
 	}
 }

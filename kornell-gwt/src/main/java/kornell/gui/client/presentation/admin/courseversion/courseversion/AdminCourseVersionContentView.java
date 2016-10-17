@@ -17,6 +17,8 @@ public interface AdminCourseVersionContentView extends IsWidget {
 		Wizard getWizard();
 		AdminCourseVersionContentView getView();
 		void deleteSlide();
+		void moveSlideDown();
+		void moveSlideUp();
 	}
 	void setPresenter(Presenter presenter);
 	void init(CourseVersion courseVersion, Wizard wizard);

@@ -180,6 +180,16 @@ public class WizardSlideView extends Composite implements IWizardView {
 		toggleViewMode(isViewModeOn);
 	}
 	
+	@UiHandler("btnMoveDown")
+	void doMoveDown(ClickEvent e) {
+		presenter.moveSlideDown();
+	}
+	
+	@UiHandler("btnMoveUp")
+	void doMoveUp(ClickEvent e) {
+		presenter.moveSlideUp();
+	}
+	
 	@UiHandler("btnPrev")
 	void doPrev(ClickEvent e) {
 		viewModeNeedsRendering = true;
@@ -349,7 +359,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 		}
 		slidePanel.setVisible(true);
 
-		titleLabel = "Título do Slide";
+		titleLabel = "Título do " + (selectedWizardElement instanceof WizardSlide ? "Slide" : "Tópico");
 		title = new KornellFormFieldWrapper(titleLabel, formHelper.createTextBoxFormField(selectedWizardElement.getTitle()), true);
 		((TextBox)title.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
 		fields.add(title);
@@ -368,10 +378,14 @@ public class WizardSlideView extends Composite implements IWizardView {
 				wizardSlideItemView = new WizardSlideItemView(wizardSlideItem, presenter, this);
 				slidePanelItems.add(wizardSlideItemView);
 			}
-			btnDelete.setVisible(true);
+			boolean hideBtnDelete = presenter.getWizard().getWizardTopics().size() == 1 &&
+					presenter.getWizard().getWizardTopics().get(0).getWizardSlides().size() == 1;
+			btnDelete.setVisible(!hideBtnDelete);
 		} else {
 			btnDelete.setVisible(((WizardTopic) selectedWizardElement).getWizardSlides().size() == 0);
 		}
+		
+		updateUpAndDownButtons();
 		//viewModeNeedsRendering = true;
 		//isViewModeOn = true;
 		//toggleViewMode(true);
@@ -379,6 +393,37 @@ public class WizardSlideView extends Composite implements IWizardView {
 		
 	}
 	
+	private void updateUpAndDownButtons() {
+		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
+		WizardTopic topic;
+		WizardSlide slide;
+		if(selectedWizardElement == null) return;
+		
+		if(selectedWizardElement instanceof WizardTopic){
+			topic = (WizardTopic) selectedWizardElement;
+			btnMoveUp.setVisible(true);
+			btnMoveDown.setVisible(true);
+			if(topic.getOrder() == 0){
+				btnMoveUp.setVisible(false);
+			} 
+			if(topic.getOrder() == presenter.getWizard().getWizardTopics().size() - 1){
+				btnMoveDown.setVisible(false);
+			}
+		} else {
+			topic = (WizardTopic) WizardUtils.getParentWizardElement(presenter.getWizard(), selectedWizardElement);
+			slide = (WizardSlide) selectedWizardElement;
+			btnMoveUp.setVisible(true);
+			btnMoveDown.setVisible(true);
+			if(topic.getOrder() == 0 && slide.getOrder() == 0){
+				btnMoveUp.setVisible(false);
+			} 
+			if(topic.getOrder() == presenter.getWizard().getWizardTopics().size() - 1 &&
+					slide.getOrder() == topic.getWizardSlides().size() - 1){
+				btnMoveDown.setVisible(false);
+			}
+		}
+	}
+
 	public void reorderItems(){
 		List<WizardSlideItemView> itemList = new ArrayList<>(); 
 		WizardSlideItemView itemView;
@@ -457,14 +502,21 @@ public class WizardSlideView extends Composite implements IWizardView {
 	public boolean refreshForm(){
 		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
 		
-		boolean valueHasChanged = updateTitleFormElement(selectedWizardElement.getTitle()) 
-				|| updateBackgroundURLFormElement(selectedWizardElement.getBackgroundURL());
+		boolean valueHasChanged = selectedWizardElement != null && 
+				(updateTitleFormElement(selectedWizardElement.getTitle()) 
+				|| updateBackgroundURLFormElement(selectedWizardElement.getBackgroundURL()));
 		
 		presenter.valueChanged(valueHasChanged);
 		
 		validateFields();	
 
 	    updateSlidePanelStyleAttributes();
+	    
+	    updateUpAndDownButtons();
+
+		if(selectedWizardElement == null){
+			slidePanel.setVisible(false);
+		}
 		
 		return valueHasChanged;
 	}

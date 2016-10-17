@@ -20,18 +20,21 @@ public class WizardMock {
 
 	public static final WizardFactory WIZARD_FACTORY = GWT.create(WizardFactory.class);
 	
-	public static Wizard mockWizardBlank(){				
-		Wizard wizard = WIZARD_FACTORY.newWizard().as();		
-		return wizard;
+	public static Wizard mockWizard(){	
+		return mockWizard(false);
 	}
 	
-	public static Wizard mockWizard(){				
+	public static Wizard mockWizard(boolean mockData){				
 		Wizard wizard = WIZARD_FACTORY.newWizard().as();
 
 		List<WizardTopic> wizardTopics = new ArrayList<>();
-		wizardTopics.add(mockWizardTopic(0));
-		wizardTopics.add(mockWizardTopic(1));
-		wizardTopics.add(mockWizardTopic(2));
+		if(mockData){
+			wizardTopics.add(mockWizardTopic(0));
+			wizardTopics.add(mockWizardTopic(1));
+			wizardTopics.add(mockWizardTopic(2));
+		} else {
+			wizardTopics.add(mockWizardTopic(0, false));
+		}
 		
 		wizard.setWizardTopics(wizardTopics);
 		
@@ -39,6 +42,10 @@ public class WizardMock {
 	}
 
 	private static WizardTopic mockWizardTopic(int order) {
+		return mockWizardTopic(order, false);
+	}
+
+	private static WizardTopic mockWizardTopic(int order, boolean mockData) {
 		WizardTopic wizardTopic = WIZARD_FACTORY.newWizardTopic().as();
 
 		wizardTopic.setUUID(order + "");
@@ -47,18 +54,26 @@ public class WizardMock {
 		wizardTopic.setBackgroundURL("http://localhost:8888/repository/840e93aa-2373-4fb5-ba4a-999bb3f43888/suplementacao-alimentar/v0.3-beforeVideoPlayerChanges/images/img9.jpg");
 
 		List<WizardSlide> wizardSlides = new ArrayList<>();
-		wizardSlides.add(mockWizardSlide(wizardTopic, 0));
-		wizardSlides.add(mockWizardSlide(wizardTopic, 1));
-		wizardSlides.add(mockWizardSlide(wizardTopic, 2));
-		/*wizardSlides.add(mockWizardSlide(wizardTopic, 3));
-		wizardSlides.add(mockWizardSlide(wizardTopic, 4));*/
+		if(mockData){
+			wizardSlides.add(mockWizardSlide(wizardTopic, 0));
+			wizardSlides.add(mockWizardSlide(wizardTopic, 1));
+			wizardSlides.add(mockWizardSlide(wizardTopic, 2));
+			/*wizardSlides.add(mockWizardSlide(wizardTopic, 3));
+			wizardSlides.add(mockWizardSlide(wizardTopic, 4));*/
+		} else {
+			wizardSlides.add(mockWizardSlide(wizardTopic, 0, false));
+		}
 		
 		wizardTopic.setWizardSlides(wizardSlides);
 		
 		return wizardTopic;
 	}
-
+	
 	private static WizardSlide mockWizardSlide(WizardTopic wizardTopic, int order) {
+		return mockWizardSlide(wizardTopic, order, false);
+	}
+
+	private static WizardSlide mockWizardSlide(WizardTopic wizardTopic, int order, boolean mockData) {
 		WizardSlide wizardSlide = WIZARD_FACTORY.newWizardSlide().as();
 		
 		wizardSlide.setUUID(wizardTopic.getUUID() + "." + order);		
@@ -68,19 +83,21 @@ public class WizardMock {
 		wizardSlide.setBackgroundURL("http://localhost:8888/repository/840e93aa-2373-4fb5-ba4a-999bb3f43888/suplementacao-alimentar/v0.3-beforeVideoPlayerChanges/images/img9.jpg");
 		
 		List<WizardSlideItem> wizardSlideItems = new ArrayList<>();
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 0));
-		wizardSlideItems.add(mockWizardSlideItemVideoLink(wizardSlide, 1));
-		wizardSlideItems.add(mockWizardSlideItemImage(wizardSlide, 2));
-		/*wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 3));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 4));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 5));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 6));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 7));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 8));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 9));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 10));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 11));
-		wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 12));*/
+		if(mockData){
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 0));
+			wizardSlideItems.add(mockWizardSlideItemVideoLink(wizardSlide, 1));
+			wizardSlideItems.add(mockWizardSlideItemImage(wizardSlide, 2));
+			/*wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 3));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 4));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 5));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 6));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 7));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 8));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 9));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 10));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 11));
+			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 12));*/
+		}
 		
 		wizardSlide.setWizardSlideItems(wizardSlideItems);
 		

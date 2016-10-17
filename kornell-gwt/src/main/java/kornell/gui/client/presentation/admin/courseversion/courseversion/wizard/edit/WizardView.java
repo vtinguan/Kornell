@@ -28,6 +28,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -59,8 +61,8 @@ public class WizardView extends Composite {
 	private KornellSession session;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private List<Label> sideItems;
-	private HashMap<String, Label> sidePanelItemsMap;
+	private List<WizardSideItemLabel> sideItems;
+	private HashMap<String, WizardSideItemLabel> sidePanelItemsMap;
 	private static String HIGHLIGHT_CLASS = "highlightText";
 	private String PLAIN_CLASS = "plainDiscreteTextColor";
 	private KornellFormFieldWrapper name;
@@ -157,16 +159,60 @@ public class WizardView extends Composite {
 		if(prevWizardElement != null){
 			newWizardSlide.setBackgroundURL(prevWizardElement.getBackgroundURL());
 		} 
-		createSidePanelItem(wizard, presenter.getSelectedWizardElement(), wizardTopic, newWizardSlide);
+		//createSidePanelItem(wizard, presenter.getSelectedWizardElement(), wizardTopic, newWizardSlide);
 		presenter.wizardElementClicked(newWizardSlide);
 	}
 
 	public void updateSidePanel() {
 		sidePanel.clear();
-		sideItems = new ArrayList<Label>();
-		sidePanelItemsMap = new HashMap<String, Label>();
+		sideItems = new ArrayList<WizardSideItemLabel>();
+		sidePanelItemsMap = new HashMap<String, WizardSideItemLabel>();
 
 		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
+		
+		
+
+		Tree tree = new Tree();
+		/*TreeItem topicTreeItxem = new TreeItem(new WizardSideItemLabel("Grand Parent", false, true));
+		root.addItem(new WizardSideItemLabel("Parent 1", true, true));
+		root.addItem(new WizardSideItemLabel("Parent 2", true, true));
+
+		TreeItem parent3 = root.addItem(new WizardSideItemLabel("Parent 3", true, true));
+		parent3.addItem(new WizardSideItemLabel("Parent 3.1", true, true));
+		parent3.addItem(new WizardSideItemLabel("Parent 3.2", true, true));
+
+		List<TreeItem> treeItems = new ArrayList<TreeItem>();
+		treeItems.add(tree.getItem(0));
+		int number = 1;
+		while (!treeItems.isEmpty()) {
+			TreeItem item = treeItems.remove(0);
+			for (int i = 0; i < item.getChildCount(); i++) {
+				treeItems.add(item.getChild(i));
+			}
+			item.setState(true);
+		}
+		WizardSideItemLabel labelTopic, labelSlide;
+		TreeItem topicTreeItem;
+		if(selectedWizardElement != null){
+			for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
+				labelTopic = createSidePanelItem(wizard, selectedWizardElement, null, wizardTopic);
+				topicTreeItem = new TreeItem(labelTopic);
+				for (final WizardSlide wizardSlide : wizardTopic.getWizardSlides()) {
+					labelSlide = createSidePanelItem(wizard, selectedWizardElement, wizardTopic, wizardSlide);
+					topicTreeItem.addItem(new TreeItem(labelSlide));
+				}
+				tree.addItem(topicTreeItem);
+			}
+			for(int i = 0; i < tree.getItemCount(); i++){
+				
+			}
+			sidePanelItemsMap.get(selectedWizardElement.getUUID()).addStyleName("selected");
+			sidePanelItemsMap.get(selectedWizardElement.getUUID()).getElement().scrollIntoView();
+		}
+		
+		*/
+		
+
 		if(selectedWizardElement != null){
 			for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
 				createSidePanelItem(wizard, selectedWizardElement, null, wizardTopic);
@@ -178,11 +224,13 @@ public class WizardView extends Composite {
 			sidePanelItemsMap.get(selectedWizardElement.getUUID()).getElement().scrollIntoView();
 		}
 
+		sidePanel.add(tree);
+
 	}
 
-	private void createSidePanelItem(Wizard wizard, WizardElement selectedWizardElement, final WizardTopic parentWizardElement,
+	private WizardSideItemLabel createSidePanelItem(Wizard wizard, WizardElement selectedWizardElement, final WizardTopic parentWizardElement,
 			WizardElement wizardElement) {
-		final Label label = new Label();
+		final WizardSideItemLabel label = new WizardSideItemLabel("", false, false);
 		label.addStyleName("sidePanelItem");
 		label.addClickHandler(new ClickHandler() {
 			boolean enableClick = true;
@@ -215,12 +263,15 @@ public class WizardView extends Composite {
 		if(parentWizardElement != null){
 			label.addStyleName("marginLeft25");
 		}
+		label.getElement().setAttribute("data-wizard-element-uuid", wizardElement.getUUID());
 		setLabelContent(wizardElement, label);
 		sidePanel.add(label);
 		sideItems.add(label);
+		
+		return label;
 	}
 
-	private void setLabelContent(WizardElement wizardElement, final Label label) {
+	private void setLabelContent(WizardElement wizardElement, final WizardSideItemLabel label) {
 		String valueChanged = WizardUtils.wizardElementHasValueChanged(wizardElement) ? changedString : "";
 		String title = valueChanged + 
 				(wizardElement.getParentOrder() == null ? 
