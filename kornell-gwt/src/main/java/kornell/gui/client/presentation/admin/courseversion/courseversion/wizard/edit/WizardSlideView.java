@@ -51,6 +51,7 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.autobea
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideType;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.WizardUtils;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.render.WizardRenderer;
@@ -142,6 +143,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 	private KeyUpHandler refreshFormKeyUpHandler;
 	private boolean viewModeNeedsRendering = true;
 	private WizardSlideItem selectedWizardSlideItem;
+	private boolean isQuizSlide;
 
 	public WizardSlideView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -325,6 +327,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 		wizardSlide.getWizardSlideItems().add(wizardSlideItem);
 		
 		WizardSlideItemView wizardSlideItemView = new WizardSlideItemView(wizardSlideItem, presenter, this);
+		
 		wizardSlideItemView.refreshForm();		
 		slidePanelItems.add(wizardSlideItemView);
 		
@@ -357,6 +360,10 @@ public class WizardSlideView extends Composite implements IWizardView {
 			slidePanel.setVisible(false);
 			return;
 		}
+		
+		isQuizSlide = selectedWizardElement instanceof WizardSlide 
+				&& WizardSlideType.QUIZ.equals(((WizardSlide)selectedWizardElement).getWizardSlideType());
+		
 		slidePanel.setVisible(true);
 
 		titleLabel = "Título do " + (selectedWizardElement instanceof WizardSlide ? "Slide" : "Tópico");
@@ -375,17 +382,23 @@ public class WizardSlideView extends Composite implements IWizardView {
 			WizardSlide wizardSlide = (WizardSlide) selectedWizardElement;
 			WizardSlideItemView wizardSlideItemView; 
 			for (final WizardSlideItem wizardSlideItem : wizardSlide.getWizardSlideItems()) {
+				WizardUtils.buildParentOrderFromParent(wizardSlideItem);
 				wizardSlideItemView = new WizardSlideItemView(wizardSlideItem, presenter, this);
 				slidePanelItems.add(wizardSlideItemView);
 			}
-			boolean hideBtnDelete = presenter.getWizard().getWizardTopics().size() == 1 &&
-					presenter.getWizard().getWizardTopics().get(0).getWizardSlides().size() == 1;
-			btnDelete.setVisible(!hideBtnDelete);
+			if(isQuizSlide && wizardSlide.getWizardSlideItems().size() == 0){
+				WizardSlideItem wizardSlideItem = WizardUtils.newWizardSlideItem();
+				//TODO remove this
+				wizardSlideItem.setUUID(""+Math.random());
+				wizardSlideItem.setWizardSlideItemType(WizardSlideItemType.QUIZ);
+				wizardSlideItemCreated(wizardSlideItem);
+			}
+			btnDelete.setVisible(true);
 		} else {
 			btnDelete.setVisible(((WizardTopic) selectedWizardElement).getWizardSlides().size() == 0);
 		}
 		
-		updateUpAndDownButtons();
+		updateButtons();
 		//viewModeNeedsRendering = true;
 		//isViewModeOn = true;
 		//toggleViewMode(true);
@@ -393,7 +406,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 		
 	}
 	
-	private void updateUpAndDownButtons() {
+	private void updateButtons() {
 		WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
 		WizardTopic topic;
 		WizardSlide slide;
@@ -422,6 +435,10 @@ public class WizardSlideView extends Composite implements IWizardView {
 				btnMoveDown.setVisible(false);
 			}
 		}
+
+		btnNewTextItem.setVisible(!isQuizSlide);
+		btnNewVideoLinkItem.setVisible(!isQuizSlide);
+		btnNewImageItem.setVisible(!isQuizSlide);
 	}
 
 	public void reorderItems(){
@@ -512,12 +529,12 @@ public class WizardSlideView extends Composite implements IWizardView {
 
 	    updateSlidePanelStyleAttributes();
 	    
-	    updateUpAndDownButtons();
+	    updateButtons();
 
 		if(selectedWizardElement == null){
 			slidePanel.setVisible(false);
 		}
-		
+
 		return valueHasChanged;
 	}
 

@@ -82,12 +82,6 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	@UiField
 	Label slideItemLabel;
 	@UiField
-	Form form;
-	@UiField
-	FlowPanel slideItemFields;	
-	@UiField
-	Image slideItemPreviewImage;
-	@UiField
 	Button btnDelete;
 	@UiField
 	Button btnMoveUp;
@@ -100,6 +94,10 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	private KeyUpHandler refreshFormKeyUpHandler;
 	private Presenter presenter;
 	private WizardSlideView wizardSlideView;
+	FlowPanel slideItemFields;	
+	Image slideItemPreviewImage;
+    
+	private boolean isQuizItem;
 
 	public WizardSlideItemView(WizardSlideItem wizardSlideItem, Presenter presenter, WizardSlideView wizardSlideView) {
 		this.presenter = presenter;
@@ -118,49 +116,60 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 		slideItemIcon.addStyleName(WizardUtils.getClasForWizardSlideItemViewIcon(wizardSlideItem.getWizardSlideItemType()));
 		slideItemLabel.setText(getItemLabelText());
 		fields = new ArrayList<KornellFormFieldWrapper>();
-		slideItemFields.clear();	
+
+		slideItemFields = new FlowPanel();
+	    slideItemFields.addStyleName("fieldsWrapper");
 		
-		refreshFormKeyUpHandler = new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				refreshForm();				
+		isQuizItem = WizardSlideItemType.QUIZ.equals(wizardSlideItem.getWizardSlideItemType());
+		
+		if(isQuizItem){
+
+			btnMoveUp.setVisible(false);
+			btnMoveDown.setVisible(false);
+			btnDelete.setVisible(false);
+		} else {
+			refreshFormKeyUpHandler = new KeyUpHandler() {
+				@Override
+				public void onKeyUp(KeyUpEvent event) {
+					refreshForm();				
+				}
+			};
+
+			titleLabel = "Título do Item";
+			title = new KornellFormFieldWrapper(titleLabel, formHelper.createTextBoxFormField(wizardSlideItem.getTitle()), true);
+			((TextBox)title.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
+			fields.add(title);
+			slideItemFields.add(title);	
+
+			textLabel = "Texto";
+			text = new KornellFormFieldWrapper(textLabel, formHelper.createTextAreaFormField(wizardSlideItem.getText(), 5), true);
+			((TextArea)text.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
+			text.addStyleName("heightAuto marginBottom25");
+			fields.add(text);
+			slideItemFields.add(text);	
+			
+			switch (wizardSlideItem.getWizardSlideItemType()) {
+			case IMAGE:
+				extendedItemView = new WizardSlideItemImageView(wizardSlideItem, this, presenter);
+				slideItemFields.add((WizardSlideItemImageView)extendedItemView);
+				break;
+			case TEXT:
+				break;
+			case VIDEO_LINK:
+				extendedItemView = new WizardSlideItemVideoLinkView(wizardSlideItem, this, presenter);
+				slideItemFields.add((WizardSlideItemVideoLinkView)extendedItemView);	
+				break;
+			default:
+				break;
 			}
-		};
 
-		titleLabel = "Título do Item";
-		title = new KornellFormFieldWrapper(titleLabel, formHelper.createTextBoxFormField(wizardSlideItem.getTitle()), true);
-		((TextBox)title.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
-		fields.add(title);
-		slideItemFields.add(title);	
-
-		textLabel = "Texto";
-		text = new KornellFormFieldWrapper(textLabel, formHelper.createTextAreaFormField(wizardSlideItem.getText(), 5), true);
-		((TextArea)text.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
-		text.addStyleName("heightAuto marginBottom25");
-		fields.add(text);
-		slideItemFields.add(text);	
-		
-		switch (wizardSlideItem.getWizardSlideItemType()) {
-		case IMAGE:
-			extendedItemView = new WizardSlideItemImageView(wizardSlideItem, this, presenter);
-			slideItemFields.add((WizardSlideItemImageView)extendedItemView);
-			break;
-		case QUIZ:
-			break;
-		case TEXT:
-			break;
-		case VIDEO_LINK:
-			extendedItemView = new WizardSlideItemVideoLinkView(wizardSlideItem, this, presenter);
-			slideItemFields.add((WizardSlideItemVideoLinkView)extendedItemView);	
-			break;
-		default:
-			break;
-		}
-
-		btnMoveUp.setVisible(displayOrder > 0);
-		btnMoveDown.setVisible(displayOrder < (((WizardSlide)presenter.getSelectedWizardElement()).getWizardSlideItems().size() -1));
-		
-		updatePreview();		
+			btnMoveUp.setVisible(displayOrder > 0);
+			btnMoveDown.setVisible(displayOrder < (((WizardSlide)presenter.getSelectedWizardElement()).getWizardSlideItems().size() -1));
+			
+			slideItemWrapper.add(slideItemFields);
+			
+			updatePreview();
+		}		
 	}
 	
 	@UiHandler("btnMoveDown")
@@ -181,8 +190,10 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 
 	@Override
 	public void resetFormToOriginalValues(){	
-		((TextBox)title.getFieldWidget()).setText(wizardSlideItem.getTitle());
-		((TextArea)text.getFieldWidget()).setText(wizardSlideItem.getText());
+		if(!isQuizItem){
+			((TextBox)title.getFieldWidget()).setText(wizardSlideItem.getTitle());
+			((TextArea)text.getFieldWidget()).setText(wizardSlideItem.getText());
+		}
 
 		btnMoveUp.setVisible(displayOrder > 0);
 		btnMoveDown.setVisible(displayOrder < (((WizardSlide)presenter.getSelectedWizardElement()).getWizardSlideItems().size() -1));
@@ -218,18 +229,22 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 
 		btnMoveUp.setVisible(displayOrder > 0);
 		btnMoveDown.setVisible(displayOrder < (wizardSlideView.getWizardSlideItemViewCount()-1));
-		//btnDelete.setVisible(!valueHasChanged);
+		btnDelete.setVisible(!isQuizItem);
 		
 		return valueHasChanged;
 	}
 
 	private void updatePreview() {
+		if(slideItemPreviewImage == null){
+			slideItemPreviewImage = new Image();
+			slideItemPreviewImage.addStyleName("slideItemPreviewImage");
+			slideItemWrapper.add(slideItemPreviewImage);
+		}
 		if(WizardSlideItemType.VIDEO_LINK.equals(wizardSlideItem.getWizardSlideItemType())){
 			String url = ((WizardSlideItemVideoLinkView)extendedItemView).getUrl();
 			String youtubeId = WizardUtils.stripIdFromVideoURL(url);
 			slideItemPreviewImage.setUrl("http://img.youtube.com/vi/"+youtubeId+"/sddefault.jpg");
-		}
-		if(WizardSlideItemType.IMAGE.equals(wizardSlideItem.getWizardSlideItemType())){
+		} else if(WizardSlideItemType.IMAGE.equals(wizardSlideItem.getWizardSlideItemType())){
 			String url = ((WizardSlideItemImageView)extendedItemView).getUrl();
 			slideItemPreviewImage.setUrl(url);
 		}
@@ -243,6 +258,9 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	}
 	 
 	private boolean refreshFormElementLabel(KornellFormFieldWrapper kornellFormFieldWrapper, String label, String originalValue){
+		if(isQuizItem){
+			return false;
+		}
 		boolean valueHasChanged = !kornellFormFieldWrapper.getFieldPersistText().equals(originalValue);
 		kornellFormFieldWrapper.setFieldLabelText((valueHasChanged ? changedString  : "") + label);
 		return valueHasChanged;
@@ -265,7 +283,7 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 		if(extendedItemView != null){
 			extendedItemViewValidated = extendedItemView.validateFields();
 		}
-
+		
 		return extendedItemViewValidated && !formHelper.checkErrors(fields);
 	}
 

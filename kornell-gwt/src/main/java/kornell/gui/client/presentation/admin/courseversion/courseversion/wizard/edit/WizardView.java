@@ -82,6 +82,8 @@ public class WizardView extends Composite {
 	Button btnNewTopic;
 	@UiField
 	Button btnNewSlide;
+	@UiField
+	Button btnNewSlideQuiz;
 
 
 	private Wizard wizard;
@@ -98,6 +100,7 @@ public class WizardView extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		WizardUtils.createIcon(btnNewTopic, "fa-folder-open");
 		WizardUtils.createIcon(btnNewSlide, "fa-newspaper-o");
+		WizardUtils.createIcon(btnNewSlideQuiz, WizardUtils.getClasForWizardSlideItemViewIcon(WizardSlideItemType.QUIZ));
 	}
 
 	public void init(CourseVersion courseVersion, Wizard wizard, Presenter presenter) {
@@ -111,19 +114,39 @@ public class WizardView extends Composite {
 	
 	@UiHandler("btnNewTopic")
 	void doNewTopic(ClickEvent e) {
+		if(WizardUtils.wizardElementHasValueChanged(presenter.getSelectedWizardElement())){
+			KornellNotification.show("Salve ou descarte as alterações antes de criar um novo tópico.", AlertType.WARNING);
+			return;
+		}
 		WizardTopic wizardTopic = WizardUtils.newWizardTopic();
 		wizardTopic.setOrder(wizard.getWizardTopics().size());
 		wizard.getWizardTopics().add(wizardTopic);
 		WizardElement prevWizardElement = WizardUtils.getPrevWizardElement(wizard, wizardTopic);
 		if(prevWizardElement != null){
 			wizardTopic.setBackgroundURL(prevWizardElement.getBackgroundURL());
+			wizardTopic.getWizardSlides().get(0).setBackgroundURL(prevWizardElement.getBackgroundURL());
 		}
 		presenter.wizardElementClicked(wizardTopic);
 	}
 	
 	@UiHandler("btnNewSlide")
 	void doNewSlide(ClickEvent e) {
-		WizardSlide newWizardSlide = WizardUtils.newWizardSlide();
+		createSlide(false);
+	}
+	
+	@UiHandler("btnNewSlideQuiz")
+	void doNewSlideQuiz(ClickEvent e) {
+		createSlide(true);
+	}
+
+	private void createSlide(boolean isQuiz) {
+		if(WizardUtils.wizardElementHasValueChanged(presenter.getSelectedWizardElement())){
+			KornellNotification.show("Salve ou descarte as alterações antes de criar um novo slide.", AlertType.WARNING);
+			return;
+		}
+		WizardSlide newWizardSlide = isQuiz 
+				? WizardUtils.newWizardSlideQuiz() 
+				: WizardUtils.newWizardSlide();
 		WizardElement prevWizardElement;
 		for (final WizardTopic wizardTopic : wizard.getWizardTopics()) {
 			WizardElement selectedWizardElement = presenter.getSelectedWizardElement();
@@ -158,6 +181,8 @@ public class WizardView extends Composite {
 		if(prevWizardElement != null){
 			newWizardSlide.setBackgroundURL(prevWizardElement.getBackgroundURL());
 		}
+		newWizardSlide.setValueChanged(false);
+
 		presenter.wizardElementClicked(newWizardSlide);
 	}
 

@@ -14,6 +14,7 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.autobea
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemImage;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemVideoLink;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideType;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
 
 public class WizardMock {
@@ -51,7 +52,7 @@ public class WizardMock {
 		wizardTopic.setUUID(order + "");
 		wizardTopic.setOrder(order);		
 		wizardTopic.setTitle("I am topic " + (order+1));
-		wizardTopic.setBackgroundURL("http://localhost:8888/repository/840e93aa-2373-4fb5-ba4a-999bb3f43888/suplementacao-alimentar/v0.3-beforeVideoPlayerChanges/images/img9.jpg");
+		wizardTopic.setBackgroundURL("https://unsplash.it/g/5615/2907?image=974");
 
 		List<WizardSlide> wizardSlides = new ArrayList<>();
 		if(mockData){
@@ -80,7 +81,8 @@ public class WizardMock {
 		wizardSlide.setOrder(order);		
 		wizardSlide.setParentOrder(WizardUtils.buildParentOrderFromParent(wizardTopic));
 		wizardSlide.setTitle("I am slide " + wizardSlide.getParentOrder() + "." + (order+1));
-		wizardSlide.setBackgroundURL("http://localhost:8888/repository/840e93aa-2373-4fb5-ba4a-999bb3f43888/suplementacao-alimentar/v0.3-beforeVideoPlayerChanges/images/img9.jpg");
+		wizardSlide.setBackgroundURL("https://unsplash.it/g/5615/2907?image=974");
+		wizardSlide.setWizardSlideType(WizardSlideType.CONTENT);
 		
 		List<WizardSlideItem> wizardSlideItems = new ArrayList<>();
 		if(mockData){
@@ -97,6 +99,9 @@ public class WizardMock {
 			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 10));
 			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 11));
 			wizardSlideItems.add(mockWizardSlideItemText(wizardSlide, 12));*/
+		} else {
+			wizardSlide.setWizardSlideType(WizardSlideType.QUIZ);
+			wizardSlideItems.add(mockWizardSlideItemQuiz(wizardSlide, 0));
 		}
 		
 		wizardSlide.setWizardSlideItems(wizardSlideItems);
@@ -141,6 +146,19 @@ public class WizardMock {
 		wizardSlideItemImage.setURL("https://i.vimeocdn.com/portrait/58832_300x300");
 		wizardSlideItem.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
 		wizardSlideItem.setExtra(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(wizardSlideItemImage)).getPayload().toString());
+
+		return wizardSlideItem;
+	}
+
+	private static WizardSlideItem mockWizardSlideItemQuiz(WizardSlide wizardSlide, int order) {
+		WizardSlideItem wizardSlideItem = mockWizardSlideItemGeneric(wizardSlide, order);
+		wizardSlideItem.setWizardSlideItemType(WizardSlideItemType.QUIZ);
+
+		WizardSlideItemImage wizardSlideItemImage = WIZARD_FACTORY.newWizardSlideItemImage().as();
+		wizardSlideItemImage.setURL("https://i.vimeocdn.com/portrait/58832_300x300");
+		wizardSlideItem.setExtra(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(wizardSlideItemImage)).getPayload().toString());
+		wizardSlideItem.setText("");
+		wizardSlideItem.setTitle("");
 
 		return wizardSlideItem;
 	}

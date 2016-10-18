@@ -9,8 +9,11 @@
 				<b:Tooltip text="Inserir tópico">
 			    	<b:Button ui:field="btnNewTopic" addStyleNames="btnNotSelected btnStandard left marginRight10"></b:Button>
 				</b:Tooltip>
-				<b:Tooltip text="Inserir slide">
-			    	<b:Button ui:field="btnNewSlide" addStyleNames="btnNotSelected btnStandard left"></b:Button>
+				<b:Tooltip text="Inserir slide de conteúdo">
+			    	<b:Button ui:field="btnNewSlide" addStyleNames="btnNotSelected btnStandard left marginRight10"></b:Button>
+				</b:Tooltip>
+				<b:Tooltip text="Inserir slide de questionário">
+		        	<b:Button ui:field="btnNewSlideQuiz" addStyleNames="btnNotSelected btnStandard left"></b:Button>
 				</b:Tooltip>
 		    </g:FlowPanel>
 			<g:ScrollPanel ui:field="sideItemsScroll" addStyleNames="sidePanelScroll left">

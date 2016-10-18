@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Icon;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.Wizard;
@@ -14,11 +15,13 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.autobea
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideType;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.IWizardView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.WizardSlideItemImageView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.WizardSlideItemVideoLinkView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.wizard.edit.WizardSlideItemView;
+import kornell.gui.client.util.view.KornellNotification;
 
 public class WizardUtils {
 	
@@ -85,6 +88,7 @@ public class WizardUtils {
 		wizardTopic.setUUID("new" + Math.random());
 		wizardTopic.setTitle("Novo Tópico");
 		wizardTopic.setOrder(0);
+		wizardTopic.setBackgroundURL("");
 		List<WizardSlide> wizardSlides = new ArrayList<>();
 		WizardSlide wizardSlide = newWizardSlide();
 		wizardSlides.add(wizardSlide);
@@ -96,17 +100,25 @@ public class WizardUtils {
 		WizardSlide wizardSlide = WIZARD_FACTORY.newWizardSlide().as();
 		wizardSlide.setUUID("new" + Math.random());
 		wizardSlide.setTitle("Novo Slide");
+		wizardSlide.setWizardSlideType(WizardSlideType.CONTENT);
 		wizardSlide.setOrder(0);
 		List<WizardSlideItem> wizardSlideItems = new ArrayList<>();
 		wizardSlide.setWizardSlideItems(wizardSlideItems);
 		return wizardSlide;
 	}
 	
+	public static WizardSlide newWizardSlideQuiz(){
+		WizardSlide wizardSlideQuiz = newWizardSlide();
+		wizardSlideQuiz.setWizardSlideType(WizardSlideType.QUIZ);
+		return wizardSlideQuiz;
+	}
+	
 	public static WizardSlideItem newWizardSlideItem(){
 		WizardSlideItem wizardSlideItem = WIZARD_FACTORY.newWizardSlideItem().as();
 		wizardSlideItem.setUUID("new" + Math.random());
-		wizardSlideItem.setTitle("Novo Item");
+		wizardSlideItem.setTitle("");
 		wizardSlideItem.setText("");
+		wizardSlideItem.setOrder(0);
 		wizardSlideItem.setValueChanged(true);
 		return wizardSlideItem;
 	}
@@ -201,7 +213,7 @@ public class WizardUtils {
 		case IMAGE:
 			return "fa-picture-o";
 		case QUIZ:
-			return "fa-warning";
+			return "fa-check-square-o";
 		case TEXT:
 			return "fa-text-height";
 		case VIDEO_LINK:

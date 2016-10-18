@@ -13,11 +13,6 @@
 		</b:Tooltip>
 		<b:Icon type="HOME" ui:field="slideItemIcon" addStyleNames="slideItemIcon highlightText"></b:Icon>
 		<g:Label ui:field="slideItemLabel" addStyleNames="slideItemHeader highlightText"></g:Label>
-		<b:Form ui:field="form">
-	      <g:FlowPanel ui:field="slideItemFields" addStyleNames="fieldsWrapper">    
-	      </g:FlowPanel>
-	    </b:Form>
-	    <g:Image addStyleNames="slideItemPreviewImage" ui:field="slideItemPreviewImage"></g:Image>
 	</g:FlowPanel>
 
 </ui:UiBinder> 

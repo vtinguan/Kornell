@@ -113,12 +113,6 @@ public class AdminCourseVersionContentPresenter implements AdminCourseVersionCon
 	@Override
 	public void deleteSlide() {
 		
-		if(wizard.getWizardTopics().size() == 1 &&
-				wizard.getWizardTopics().get(0).getWizardSlides().size() == 1){
-			KornellNotification.show("É necessário ao menos um tópico e um slide.", AlertType.ERROR, 4000);
-			return;
-		}
-
 		WizardElement selectedElement = getSelectedWizardElement();
 		WizardTopic wizardTopic = null;
 
