@@ -31,9 +31,7 @@
 			        <b:Button ui:field="btnDelete" addStyleNames="btnSelected btnStandard left"></b:Button>
 				</b:Tooltip>
 		    </g:FlowPanel>
-			<b:Tooltip text="Visualizar" placement="LEFT">
-			    <b:Button ui:field="btnView" addStyleNames="btnAction btnStandard right"></b:Button>
-			</b:Tooltip>
+			<b:Button ui:field="btnView" addStyleNames="btnAction btnStandard right"></b:Button>
 			<b:Tooltip text="Próximo" placement="BOTTOM">
 			    <b:Button ui:field="btnNext" addStyleNames="btnNotSelected btnStandard right"></b:Button>
 			</b:Tooltip>
