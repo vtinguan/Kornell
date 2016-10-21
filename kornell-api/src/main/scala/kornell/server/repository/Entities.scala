@@ -28,6 +28,7 @@ import kornell.core.util.UUID
 import kornell.server.util.DateConverter
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.CourseRepo
+import kornell.core.entity.RepositoryType
 
 
 //TODO: Remove this class without spreading dependency on AutoBeanFactorySource
@@ -344,21 +345,25 @@ object Entities {
     entries
   }
 
-  def newS3ContentRepository(uuid: String = null,
+  def newContentRepository(uuid: String = null,
+    repositoryType: RepositoryType = null,
     accessKeyId: String = null,
     secretAccessKey: String = null,
     bucketName: String = null,
     prefix: String = null,
     region: String = null,
-    institutionUUID: String = null) = {
-    val repo = factory.newS3ContentRepository.as
+    institutionUUID: String = null,
+    path: String = null) = {
+    val repo = factory.newContentRepository.as
     repo.setUUID(uuid)
+    repo.setRepositoryType(repositoryType)
     repo.setAccessKeyId(accessKeyId)
     repo.setBucketName(bucketName)
     repo.setPrefix(prefix)
     repo.setRegion(region)
     repo.setSecretAccessKey(secretAccessKey)
     repo.setInstitutionUUID(institutionUUID)
+    repo.setPath(path)
     repo
   }
 
@@ -410,15 +415,5 @@ object Entities {
     eEntries.setActomEntriesMap(new HashMap[String,ActomEntries]())
     eEntries
   }
-  
-  def newFSContentRepository(uuid:String,path:String,prefix:String,institutionUUID:String) = {
-    val fsRepo = factory.newFSContentRepository.as
-    fsRepo.setUUID(uuid)
-    fsRepo.setPath(path)
-    fsRepo.setPrefix(prefix)
-    fsRepo.setInstitutionUUID(institutionUUID)
-    fsRepo
-  }
-
 }
 

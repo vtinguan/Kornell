@@ -29,8 +29,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
+import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.BillingType;
+import kornell.core.entity.ContentRepository;
 import kornell.core.entity.EntityFactory;
 import kornell.core.entity.Institution;
 import kornell.core.entity.InstitutionType;
@@ -81,6 +83,10 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	Tab assetsTab;
 	@UiField
 	FlowPanel assetsPanel;
+	@UiField
+	Tab repoTab;
+	@UiField
+	FlowPanel repoPanel;
 	
 	@UiField
 	HTMLPanel titleEdit;
@@ -103,6 +109,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	Button btnModalCancel;
 
 	private Institution institution;
+	private ContentRepository repo;
 
 	private KornellFormFieldWrapper name, fullName, institutionType, terms, assetsRepositoryUUID, baseURL, billingType, demandsPersonContactDetails, validatePersonContactDetails, allowRegistration, allowRegistrationByUsername, useEmailWhitelist, timeZone, skin;
 	
@@ -112,6 +119,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 	private GenericInstitutionAssetsView assetsView;
 	private GenericInstitutionHostnamesView hostnamesView;
 	private GenericInstitutionEmailWhitelistView emailWhitelistView;
+	private GenericInstitutionRepositoryView repoView;
 	private EventBus bus;
 	
 	public GenericAdminInstitutionView(final KornellSession session, EventBus bus, PlaceController placeCtrl, ViewFactory viewFactory) {
@@ -129,6 +137,21 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		btnModalCancel.setText("Cancelar".toUpperCase());
 		
 		this.institution = session.getInstitution();
+		if (isPlatformAdmin) {
+			session.repository().getRepository(institution.getAssetsRepositoryUUID(), new Callback<ContentRepository>() {
+				@Override
+				public void ok(ContentRepository to) {
+					repo = to;
+					buildRepoView();
+					repoTab.addClickHandler(new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							buildRepoView();
+						}
+					});
+				}
+			});
+		}
 		
 		initData();
 
@@ -200,6 +223,14 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		}
 		reportsPanel.clear();
 		reportsPanel.add(reportsView);
+	}
+	
+	public void buildRepoView() {
+		if (repoView == null) {
+			repoView = new GenericInstitutionRepositoryView(session, presenter, institution, repo);
+		}
+		repoPanel.clear();
+		repoPanel.add(repoView);
 	}
 
 	public void buildAdminsView() {

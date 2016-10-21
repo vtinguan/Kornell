@@ -71,6 +71,10 @@ public class KornellClient extends RESTClient implements LogoutEventHandler {
 	public ChatThreadsClient chatThreads() {
 		return new ChatThreadsClient();
 	}
+	
+	public RepositoryClient repository() {
+		return new RepositoryClient();
+	}
 
 	static final EventsClient eventsClient = new EventsClient();
 	public EventsClient events() {
