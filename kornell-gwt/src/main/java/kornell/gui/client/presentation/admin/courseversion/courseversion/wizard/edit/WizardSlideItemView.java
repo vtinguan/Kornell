@@ -118,16 +118,21 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 		fields = new ArrayList<KornellFormFieldWrapper>();
 
 		slideItemFields = new FlowPanel();
-	    slideItemFields.addStyleName("fieldsWrapper");
 		
 		isQuizItem = WizardSlideItemType.QUIZ.equals(wizardSlideItem.getWizardSlideItemType());
 		
 		if(isQuizItem){
+		    slideItemFields.addStyleName("quizWrapper");
+		    
+			extendedItemView = new WizardSlideItemQuizView(wizardSlideItem, this, presenter);
+			slideItemFields.add((WizardSlideItemQuizView)extendedItemView);	
 
 			btnMoveUp.setVisible(false);
 			btnMoveDown.setVisible(false);
 			btnDelete.setVisible(false);
 		} else {
+		    slideItemFields.addStyleName("fieldsWrapper");
+		    
 			refreshFormKeyUpHandler = new KeyUpHandler() {
 				@Override
 				public void onKeyUp(KeyUpEvent event) {
@@ -165,11 +170,11 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 
 			btnMoveUp.setVisible(displayOrder > 0);
 			btnMoveDown.setVisible(displayOrder < (((WizardSlide)presenter.getSelectedWizardElement()).getWizardSlideItems().size() -1));
-			
-			slideItemWrapper.add(slideItemFields);
-			
-			updatePreview();
+			btnDelete.setVisible(true);
 		}		
+		
+		slideItemWrapper.add(slideItemFields);
+		updatePreviewImage();
 	}
 	
 	@UiHandler("btnMoveDown")
@@ -216,14 +221,13 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 				refreshFormElementLabel(text, textLabel, wizardSlideItem.getText()) ||
 				wizardSlideItem.getUUID().startsWith("new");
 		if(extendedItemView != null){
-			valueHasChanged = valueHasChanged || extendedItemView.refreshForm();
+			valueHasChanged = valueHasChanged || extendedItemView.refreshForm();			
+			updatePreviewImage();
 		}
 		
 		presenter.valueChanged(wizardSlideItem, valueHasChanged);
 		String itemLabelText = getItemLabelText();
-		slideItemLabel.setText((valueHasChanged ? changedString  : "") + itemLabelText);
-		
-		updatePreview();			
+		slideItemLabel.setText((valueHasChanged ? changedString  : "") + itemLabelText);			
 		
 		validateFields();
 
@@ -234,8 +238,12 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 		return valueHasChanged;
 	}
 
-	private void updatePreview() {
-		if(slideItemPreviewImage == null){
+	private void updatePreviewImage() {
+		if(slideItemPreviewImage == null
+				&& (WizardSlideItemType.VIDEO_LINK.equals(wizardSlideItem.getWizardSlideItemType()) || 
+						WizardSlideItemType.IMAGE.equals(wizardSlideItem.getWizardSlideItemType())
+					)
+			){
 			slideItemPreviewImage = new Image();
 			slideItemPreviewImage.addStyleName("slideItemPreviewImage");
 			slideItemWrapper.add(slideItemPreviewImage);
@@ -288,9 +296,11 @@ public class WizardSlideItemView extends Composite implements IWizardView {
 	}
 
 	@Override
-	public void updateWizard() {
-		wizardSlideItem.setTitle(title.getFieldPersistText());
-		wizardSlideItem.setText(text.getFieldPersistText());
+	public void updateWizard() {		
+		if(!isQuizItem){
+			wizardSlideItem.setTitle(title.getFieldPersistText());
+			wizardSlideItem.setText(text.getFieldPersistText());
+		}
 		wizardSlideItem.setOrder(displayOrder);
 		
 		if(extendedItemView != null){

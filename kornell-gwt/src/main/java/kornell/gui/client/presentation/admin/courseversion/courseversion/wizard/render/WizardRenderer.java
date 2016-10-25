@@ -21,6 +21,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.place.shared.PlaceController;
@@ -29,6 +31,7 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -63,6 +66,7 @@ import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
+import kornell.gui.client.util.view.Positioning;
 
 public class WizardRenderer extends Composite {
 	interface MyUiBinder extends UiBinder<Widget, WizardRenderer> {
@@ -136,14 +140,26 @@ public class WizardRenderer extends Composite {
 			FrameElement iframe = frame.getElement().cast();
 			iframe.addClassName("youtube-player");
 			iframe.setAttribute("type", "text/html");
-			iframe.setAttribute("width", "640");
-			iframe.setAttribute("height", "390");
+			placeIframe(iframe);
 			iframe.setAttribute("frameborder", "0");
 			//allowing html5 video player to work on fullscreen inside the iframe
 			iframe.setAttribute("allowFullScreen", "true");
 			iframe.setAttribute("webkitallowfullscreen", "true");
 			iframe.setAttribute("mozallowfullscreen", "true");
 			slideItemVideoLinkPanel.add(frame);
+			
+
+			Window.addResizeHandler(new ResizeHandler() {
+				@Override
+				public void onResize(ResizeEvent event) {
+					Scheduler.get().scheduleDeferred(new Command() {
+						@Override
+						public void execute() {
+							placeIframe(iframe);
+						}
+					});
+				}
+			});
 			
 			slideItemPanel.add(slideItemVideoLinkPanel);
 		}
@@ -164,5 +180,11 @@ public class WizardRenderer extends Composite {
 		}
 
 		wizardRendererPanel.add(slideItemPanel);
+	}
+
+	private void placeIframe(FrameElement iframe) {
+		int height = Positioning.getClientHeightBetweenBars() * 50 / 100;
+		iframe.setAttribute("width", "" + (height * 164 / 100));
+		iframe.setAttribute("height", "" + height);
 	}
 }

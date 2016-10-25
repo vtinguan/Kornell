@@ -110,6 +110,7 @@ public class WizardView extends Composite {
 		updateSidePanel();
 		wizardSlideView.setPresenter(presenter);
 		wizardSlideView.updateSlidePanel();
+		createSlide(true);
 	}
 	
 	@UiHandler("btnNewTopic")

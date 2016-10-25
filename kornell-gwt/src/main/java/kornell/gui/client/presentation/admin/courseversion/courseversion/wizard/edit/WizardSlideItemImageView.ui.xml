@@ -2,10 +2,8 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
 	<g:FlowPanel ui:field="slideItemWrapper" addStyleNames="slideItemWrapper extendedSlideItemWrapper left fillWidth">
-		<b:Form ui:field="form">
-	      <g:FlowPanel ui:field="slideItemFields" addStyleNames="fieldsWrapper">    
-	      </g:FlowPanel>
-	    </b:Form>
+      <g:FlowPanel ui:field="slideItemFields" addStyleNames="fieldsWrapper">    
+      </g:FlowPanel>
 	</g:FlowPanel>
 
 </ui:UiBinder>

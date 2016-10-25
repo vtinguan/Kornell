@@ -476,24 +476,20 @@ a:hover{
 				}
 			}
 		} 
-		form{
-			margin: 0;
-			clear: both;
-			.fieldsWrapper{
-				float: left;
-				.fieldPanelWrapper{
+		.fieldsWrapper{
+			float: left;
+			.fieldPanelWrapper{
+				width: 750px;
+				.labelPanel {
+					width: 250px;
+				}
+				.fieldPanel{
 					width: initial;
-					.labelPanel {
-						width: 250px;
+					.textField{
+						width: 450px;
 					}
-					.fieldPanel{
-						width: initial;
-						.textField{
-							width: 450px;
-						}
-						textarea{
-							resize: vertical;
-						}
+					textarea{
+						resize: vertical;
 					}
 				}
 			}
@@ -542,7 +538,21 @@ a:hover{
 			font-size: 14px;
 		}
 		.slideItemVideoLinkPanel{
-
+		    position: relative;
+		    padding-bottom: 56.25%;
+		    padding-top: 30px; 
+		    height: 0; 
+		    overflow: hidden;
+				max-width: 80%;
+		    iframe,
+			object,
+			embed {
+			    position: absolute;
+			    top: 0;
+			    left: 0;
+			    width: 100%;
+			    height: 100%;
+			}
 		}
 	}
 }

@@ -7,7 +7,7 @@ public interface WizardElement {
 	void setUUID(String uuid);
 
 	String getTitle();
-	void setTitle(String name);
+	void setTitle(String title);
 
 	Integer getOrder();
 	void setOrder(Integer order);

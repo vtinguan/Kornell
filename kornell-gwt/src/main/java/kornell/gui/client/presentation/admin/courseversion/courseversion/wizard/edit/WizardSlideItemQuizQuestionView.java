@@ -51,6 +51,7 @@ import kornell.gui.client.presentation.admin.courseversion.courseversion.autobea
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlide;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItem;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemImage;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemQuiz;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemType;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardSlideItemVideoLink;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.autobean.wizard.WizardTopic;
@@ -61,12 +62,8 @@ import kornell.gui.client.util.forms.formfield.ListBoxFormField;
 import kornell.gui.client.util.view.KornellNotification;
 import kornell.gui.client.util.view.LoadingPopup;
 
-public class WizardSlideItemImageView extends Composite implements IWizardView {
-	interface MyUiBinder extends UiBinder<Widget, WizardSlideItemImageView> {
-	}
-
-	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
+public class WizardSlideItemQuizQuestionView extends Composite implements IWizardView {
+	
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
 	
@@ -74,30 +71,30 @@ public class WizardSlideItemImageView extends Composite implements IWizardView {
 	private KornellFormFieldWrapper url;
 	private List<KornellFormFieldWrapper> fields;
 
-	@UiField	
-	FlowPanel slideItemWrapper;
-	@UiField
-	FlowPanel slideItemFields;	
+	private FlowPanel slideItemWrapper;
+	private FlowPanel slideItemFields;	
 
 	private String changedString = "(*) ";
 	
 	private WizardSlideItemView wizardSlideItemView;
 	
 	private WizardSlideItem wizardSlideItem;
-	private WizardSlideItemImage wizardSlideItemImage;
+	private WizardSlideItemQuiz wizardSlideQuiz;
 	
 	private KeyUpHandler refreshFormKeyUpHandler;
 
 	private Presenter presenter;	
 
-	public WizardSlideItemImageView(WizardSlideItem wizardSlideItem, WizardSlideItemView wizardSlideItemView, Presenter presenter) {
+	public WizardSlideItemQuizQuestionView(WizardSlideItem wizardSlideItem, WizardSlideItemView wizardSlideItemView, Presenter presenter) {
 		this.presenter = presenter;
 		this.wizardSlideItem = wizardSlideItem;
 		this.wizardSlideItemView = wizardSlideItemView;
-		String extra = wizardSlideItem.getExtra();
-		extra = extra == null ? "{}" : extra;
-		this.wizardSlideItemImage = AutoBeanCodex.decode(WizardUtils.WIZARD_FACTORY, WizardSlideItemImage.class, extra).as();
-		initWidget(uiBinder.createAndBindUi(this));
+		String extra = wizardSlideItem.getExtra() == null ? "{}" : wizardSlideItem.getExtra();
+		this.wizardSlideQuiz = AutoBeanCodex.decode(WizardUtils.WIZARD_FACTORY, WizardSlideItemQuiz.class, extra).as();
+
+		slideItemWrapper = new FlowPanel();
+		slideItemFields = new FlowPanel();
+		slideItemWrapper.add(slideItemFields);
 		init();
 	}
 
@@ -113,15 +110,15 @@ public class WizardSlideItemImageView extends Composite implements IWizardView {
 		};
 
 		urlLabel = "URL da imagem";
-		url = new KornellFormFieldWrapper(urlLabel, formHelper.createTextBoxFormField(wizardSlideItemImage.getURL()), true);
+		/*url = new KornellFormFieldWrapper(urlLabel, formHelper.createTextBoxFormField(wizardSlideQuiz.getURL()), true);
 		((TextBox)url.getFieldWidget()).addKeyUpHandler(refreshFormKeyUpHandler);
 		fields.add(url);
-		slideItemFields.add(url);		
+		slideItemFields.add(url);		*/
 	}
 
 	@Override
 	public void resetFormToOriginalValues(){	
-		((TextBox)url.getFieldWidget()).setText(wizardSlideItemImage.getURL());
+		//((TextBox)url.getFieldWidget()).setText(wizardSlideQuiz.getURL());
 
 		presenter.valueChanged(wizardSlideItem, false);
 		refreshForm();
@@ -129,7 +126,8 @@ public class WizardSlideItemImageView extends Composite implements IWizardView {
 
 	@Override
 	public boolean refreshForm(){
-		boolean valueHasChanged = refreshFormElementLabel(url, urlLabel, wizardSlideItemImage.getURL());
+		//boolean valueHasChanged = refreshFormElementLabel(url, urlLabel, wizardSlideQuiz.getURL());
+		boolean valueHasChanged = false;
 		presenter.valueChanged(wizardSlideItem, valueHasChanged);
 		validateFields();
 		
@@ -155,10 +153,10 @@ public class WizardSlideItemImageView extends Composite implements IWizardView {
 
 	@Override
 	public void updateWizard() {
-		wizardSlideItemImage.setURL(url.getFieldPersistText());
+		//wizardSlideQuiz.setURL(url.getFieldPersistText());
 
-		wizardSlideItem.setExtra(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(wizardSlideItemImage)).getPayload().toString());
-		presenter.valueChanged(wizardSlideItemImage, false);	
+		wizardSlideItem.setExtra(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(wizardSlideQuiz)).getPayload().toString());
+		presenter.valueChanged(wizardSlideQuiz, false);	
 		refreshForm();	
 	}
 

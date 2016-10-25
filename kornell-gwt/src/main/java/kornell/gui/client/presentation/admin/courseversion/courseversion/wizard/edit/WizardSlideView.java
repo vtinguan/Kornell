@@ -79,8 +79,6 @@ public class WizardSlideView extends Composite implements IWizardView {
 	@UiField	
 	FlowPanel slideViewPanel;
 	@UiField
-	Form form;
-	@UiField
 	FlowPanel slideFields;
 	@UiField
 	ScrollPanel slideItemsScroll;
@@ -290,7 +288,7 @@ public class WizardSlideView extends Composite implements IWizardView {
 		slideButtonsBar.setVisible(!isViewModeOn &&
 				presenter.getSelectedWizardElement() != null && 
 				presenter.getSelectedWizardElement() instanceof WizardSlide);
-		form.setVisible(!isViewModeOn);
+		slideFields.setVisible(!isViewModeOn);
 		slideItemsScroll.setVisible(!isViewModeOn);
 		
 		btnView.clear();

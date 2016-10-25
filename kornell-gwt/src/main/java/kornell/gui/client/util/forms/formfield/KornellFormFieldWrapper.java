@@ -4,9 +4,11 @@ import static kornell.core.util.StringUtils.isNone;
 
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Tooltip;
+import com.github.gwtbootstrap.client.ui.constants.Placement;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -39,6 +41,8 @@ public class KornellFormFieldWrapper extends Composite {
 
 	@UiField
 	FlowPanel fieldPanelWrapper;
+	@UiField
+	FlowPanel labelPanel;
 	@UiField
 	Label fieldLabel;
 	@UiField
@@ -78,6 +82,14 @@ public class KornellFormFieldWrapper extends Composite {
 
 		initWidget(uiBinder.createAndBindUi(this));
 		fieldLabel.setText(label);
+		if(tooltipText != null && isEditMode){
+			Icon icon = new Icon();
+			icon.addStyleName("fa fa-question-circle");
+			Tooltip tooltip = new Tooltip(tooltipText);
+			tooltip.setPlacement(Placement.RIGHT);
+			tooltip.add(icon);
+			labelPanel.add(tooltip);
+		}
 		this.formField = formField;
 		this.isEditMode = isEditMode;
 		this.validator = validator;
@@ -102,13 +114,7 @@ public class KornellFormFieldWrapper extends Composite {
 			fieldPanel.add(fieldTxt);
 		} else {
 			final Widget fieldWidget = formField.getFieldWidget();
-			if(tooltipText != null){
-				Tooltip tooltip = new Tooltip(tooltipText);
-				tooltip.add(fieldWidget);
-				fieldPanel.add(tooltip);
-			} else {
-				fieldPanel.add(fieldWidget);
-			}
+			fieldPanel.add(fieldWidget);
 
 			if (fieldWidget instanceof HasKeyUpHandlers) {
 				HasKeyUpHandlers ku = (HasKeyUpHandlers) fieldWidget;

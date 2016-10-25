@@ -39,10 +39,8 @@
 			    <b:Button ui:field="btnPrev" addStyleNames="btnNotSelected btnStandard right"></b:Button>
 			</b:Tooltip>
 	    </g:FlowPanel>
-		<b:Form ui:field="form">
-	      <g:FlowPanel ui:field="slideFields" addStyleNames="fieldsWrapper">    
-	      </g:FlowPanel>
-	    </b:Form>
+        <g:FlowPanel ui:field="slideFields" addStyleNames="fieldsWrapper clearer">    
+        </g:FlowPanel>
 		<g:ScrollPanel ui:field="slideItemsScroll" addStyleNames="slideItemsScroll">
 			<g:FlowPanel ui:field="slidePanelItems"></g:FlowPanel>
 		</g:ScrollPanel>

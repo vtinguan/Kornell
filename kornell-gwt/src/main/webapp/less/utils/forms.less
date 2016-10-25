@@ -106,10 +106,11 @@
 		.lblLabel{
 			color: @profileLabelColor;
 			font-size: 14px;
-			line-height: 46px;
 			text-align: right;
 			line-height: 25px;
 			padding-top: 6px;
+			float: left;
+    		width: 100%;
 		}
 		.lblExtraInfo{
 			color:	@profileLabelExtraInfoColor;
@@ -117,10 +118,18 @@
 			line-height: 10px;
 			text-align: right;
 		}
+		.fa{
+			float: right;
+		    margin-right: -25px;
+		    color: @profileLabelColor;
+		    font-size: 17px;
+		    margin-top: 9px;
+		}
 	}
 	.fieldPanel{
 		float: left;
-		width: 475px;
+		width: 450px;
+    	margin-left: 20px;
 		.textField{
 			width: 448px;
 			margin-bottom: 0px;
@@ -592,6 +601,7 @@
 	    cursor: pointer;
 	}
 	input + span {
+		z-index: 10;
 	    padding: 2px;
 	    width: 30px;
 	    height: 15px;

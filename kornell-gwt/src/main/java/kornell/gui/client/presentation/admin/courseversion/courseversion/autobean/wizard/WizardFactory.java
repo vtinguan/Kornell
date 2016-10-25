@@ -12,4 +12,5 @@ public interface WizardFactory  extends AutoBeanFactory {
 	AutoBean<WizardSlideItem> newWizardSlideItem();
 	AutoBean<WizardSlideItemVideoLink> newWizardSlideItemVideoLink();
 	AutoBean<WizardSlideItemImage> newWizardSlideItemImage();
+	AutoBean<WizardSlideItemQuiz> newWizardSlideItemQuiz();
 }

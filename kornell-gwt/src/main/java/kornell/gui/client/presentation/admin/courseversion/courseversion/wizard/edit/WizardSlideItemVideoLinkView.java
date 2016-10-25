@@ -76,8 +76,6 @@ public class WizardSlideItemVideoLinkView extends Composite implements IWizardVi
 	@UiField	
 	FlowPanel slideItemWrapper;
 	@UiField
-	Form form;
-	@UiField
 	FlowPanel slideItemFields;	
 
 	private String changedString = "(*) ";

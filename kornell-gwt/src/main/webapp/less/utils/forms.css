@@ -156,6 +156,18 @@
 .marginRight5 {
   margin-right: 5px;
 }
+.marginRight10 {
+  margin-right: 10px;
+}
+.marginRight20 {
+  margin-right: 20px;
+}
+.marginRight40 {
+  margin-right: 40px;
+}
+.marginLeft-12 {
+  margin-left: -12px;
+}
 .marginLeft7 {
   margin-left: 7px;
 }
@@ -569,10 +581,11 @@
 .fieldPanelWrapper .labelPanel .lblLabel {
   color: #bec1c3;
   font-size: 14px;
-  line-height: 46px;
   text-align: right;
   line-height: 25px;
   padding-top: 6px;
+  float: left;
+  width: 100%;
 }
 .fieldPanelWrapper .labelPanel .lblExtraInfo {
   color: #5b9455;
@@ -580,9 +593,17 @@
   line-height: 10px;
   text-align: right;
 }
+.fieldPanelWrapper .labelPanel .fa {
+  float: right;
+  margin-right: -25px;
+  color: #bec1c3;
+  font-size: 17px;
+  margin-top: 9px;
+}
 .fieldPanelWrapper .fieldPanel {
   float: left;
-  width: 475px;
+  width: 450px;
+  margin-left: 20px;
 }
 .fieldPanelWrapper .fieldPanel .textField {
   width: 448px;
@@ -1076,6 +1097,7 @@
   cursor: pointer;
 }
 .input-switch input + span {
+  z-index: 10;
   padding: 2px;
   width: 30px;
   height: 15px;
