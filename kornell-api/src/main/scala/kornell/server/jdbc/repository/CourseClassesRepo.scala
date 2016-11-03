@@ -194,9 +194,12 @@ object CourseClassesRepo {
     val libraryFiles = CourseDetailsLibrariesRepo.listForEntity(uuids, CourseDetailsEntityType.COURSE)
     
     courseClassesTO.getCourseClasses.asScala.foreach { x =>{
-        x.getCourseVersionTO.getCourseTO.setCourseDetailsHints(hints.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
-        x.getCourseVersionTO.getCourseTO.setCourseDetailsSections(sections.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
-        x.getCourseVersionTO.getCourseTO.setCourseDetailsLibraries(libraryFiles.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
+        if(hints.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).isDefined)
+          x.getCourseVersionTO.getCourseTO.setCourseDetailsHints(hints.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
+        if(sections.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).isDefined)
+          x.getCourseVersionTO.getCourseTO.setCourseDetailsSections(sections.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
+        if(libraryFiles.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).isDefined)
+          x.getCourseVersionTO.getCourseTO.setCourseDetailsLibraries(libraryFiles.get(x.getCourseVersionTO.getCourseTO.getCourse.getUUID).get.asJava)
       }
     }
     courseClassesTO

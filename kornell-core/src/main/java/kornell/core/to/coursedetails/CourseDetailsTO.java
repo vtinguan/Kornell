@@ -8,15 +8,11 @@ public class CourseDetailsTO {
 	private List<HintTO> hints;
 	private List<InfoTO> infos;
 	private List<TopicTO> topics;
-	private List<CertificationTO> certifications;
-	private InfoTO certificationHeaderInfoTO;
 	
 	public CourseDetailsTO() {
 		infos = new ArrayList<InfoTO>();
 		hints = new ArrayList<HintTO>();
 		topics = new ArrayList<TopicTO>(); 
-		certifications = new ArrayList<CertificationTO>();
-		certificationHeaderInfoTO = new InfoTO("","");
 	}
 	
 
@@ -50,26 +46,6 @@ public class CourseDetailsTO {
 	}
 
 
-	public List<CertificationTO> getCertifications() {
-		return certifications;
-	}
-
-
-	public void setCertifications(List<CertificationTO> certifications) {
-		this.certifications = certifications;
-	}
-
-
-	public InfoTO getCertificationHeaderInfoTO() {
-		return certificationHeaderInfoTO;
-	}
-
-
-	public void setCertificationHeaderInfoTO(InfoTO certificationHeaderInfoTO) {
-		this.certificationHeaderInfoTO = certificationHeaderInfoTO;
-	}
-
-
 	@Override
 	public String toString() {
 		String ret = "";
@@ -91,12 +67,6 @@ public class CourseDetailsTO {
 				ret += topicTO + "\n";
 			}
 		}
-		if(certifications != null){
-			ret += "----------CertificationsTO\n";
-			for (CertificationTO certificationTO : certifications) {
-				ret += certificationTO + "\n";
-			}
-		}
-		return ret + "----------certificationHeaderInfoTO\n" + certificationHeaderInfoTO.toString();
+		return ret;
 	}
 }
