@@ -49,7 +49,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	private KornellSession session;
 	private PlaceController placeCtrl;
 	private FormHelper formHelper = GWT.create(FormHelper.class);
-	private boolean isCreationMode, isPlatformAdmin, isInstitutionAdmin;
+	private boolean isCreationMode, isInstitutionAdmin;
 	boolean isCurrentUser, showContactDetails, isRegisteredWithCPF;
 
 	private Presenter presenter;
@@ -100,7 +100,6 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		this.session = session;
 		this.placeCtrl = placeCtrl;
 		this.bus = bus;
-		this.isPlatformAdmin = session.isPlatformAdmin();
 		isInstitutionAdmin = session.isInstitutionAdmin();
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -171,7 +170,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		courseFields.clear();
 		
 		btnOK.setVisible(isInstitutionAdmin|| isCreationMode);
-		btnCancel.setVisible(isPlatformAdmin);		
+		btnCancel.setVisible(isInstitutionAdmin);		
 
 		code = new KornellFormFieldWrapper("Código", formHelper.createTextBoxFormField(course.getCode()), isInstitutionAdmin);
 		fields.add(code);
@@ -235,7 +234,7 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 	@UiHandler("btnOK")
 	void doOK(ClickEvent e) {
 		formHelper.clearErrors(fields);
-		if (isPlatformAdmin && validateFields()) {
+		if (isInstitutionAdmin && validateFields()) {
 			LoadingPopup.show();
 			Course course = getCourseInfoFromForm();
 			presenter.upsertCourse(course);
@@ -246,7 +245,9 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		course.setCode(code.getFieldPersistText());
 		course.setTitle(title.getFieldPersistText());
 		course.setDescription(description.getFieldPersistText());
-		course.setChildCourse(childCourse.getFieldPersistText().equals("true"));
+		if(InstitutionType.DASHBOARD.equals(session.getInstitution().getInstitutionType())){
+			course.setChildCourse(childCourse.getFieldPersistText().equals("true"));
+		}
 		course.setInstitutionUUID(session.getInstitution().getUUID());
 		return course;
 	}

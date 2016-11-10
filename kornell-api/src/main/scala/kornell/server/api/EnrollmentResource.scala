@@ -108,7 +108,13 @@ class EnrollmentResource(uuid: String) {
     val eEntries = getEntries(enrollments)
 
     val mEntries = eEntries.getEnrollmentEntriesMap.asScala
-    val courseClass = CourseClassesRepo(enrollment.getCourseClassUUID).get
+    val classUUID = Option(enrollment.getCourseClassUUID).getOrElse {
+      val parent = EnrollmentRepo(enrollment.getParentEnrollmentUUID).first
+      parent.map{_.getCourseClassUUID()}.getOrElse(null)
+    }
+    val courseClass = if(classUUID != null){
+      CourseClassesRepo(classUUID).get
+    } else null
     
     for {
       (enrollmentUUID, enrollmentEntries) <- mEntries.par

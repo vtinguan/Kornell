@@ -13,6 +13,13 @@ public class KornellNotification {
 	public static void show(String message) {
 		show(message, AlertType.SUCCESS);
 	}
+	
+	/*
+	 * Helper method for JSNI call
+	 */
+	public static void showError(String message) {
+		show(message, AlertType.ERROR, 2500);
+	}
 
 	public static void show(String message, AlertType alertType) {
 		show(message, alertType, 2500);

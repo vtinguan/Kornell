@@ -1,9 +1,9 @@
 package kornell.gui.client;
 
-import static kornell.core.util.StringUtils.composeURL;
+import static kornell.core.util.StringUtils.mkurl;
 
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -109,6 +109,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 
 		final RootPanel rootPanel = RootPanel.get();
 		rootPanel.add(scrollPanel);
+		setBackgroundImage(true);
 
 		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
@@ -150,17 +151,21 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void setBackgroundImage(boolean showMantle) {
 		if (showMantle == isMantleShown)
 			return;
 		String style = "position: relative; " + "zoom: 1; " + "-webkit-background-size: cover; "
 				+ "-moz-background-size: cover; " + "-o-background-size: cover; " + "background-size: cover;" + "overflow:auto;";
-		if (showMantle)
+		if (showMantle){
 			style = "background: url('"
-					+ composeURL(clientFactory.getKornellSession().getAssetsURL(), "bgVitrine.jpg")
+					+ mkurl(clientFactory.getKornellSession().getAssetsURL(), "bgVitrine.jpg")
 					+ "') no-repeat center center fixed; " + style;
-		DOM.setElementAttribute(scrollPanel.getElement(), "style", style);
+		} else {
+			style = "background: transparent; " + style;
+		}
+		style = ".vScrollBar {" + style+ "}";
+		StyleInjector.inject(style);
+		//DOM.setElementAttribute(scrollPanel.getElement(), "style", style);
 		isMantleShown = showMantle;
 	}
 

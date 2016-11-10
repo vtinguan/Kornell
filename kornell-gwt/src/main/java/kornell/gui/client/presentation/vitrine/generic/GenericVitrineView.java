@@ -397,7 +397,8 @@ public class GenericVitrineView extends Composite implements VitrineView {
 	@Override
 	public void setLogoURL(String assetsURL) {
 		String skin = GenericClientFactoryImpl.KORNELL_SESSION.getInstitution().getSkin();
-		String barLogoFileName = "logo300x80" + (!"_light".equals(skin) ? "_light" : "") + ".png";
+		boolean isLightSkin = skin == null || !skin.contains("_light");
+		String barLogoFileName = "logo300x80" + (isLightSkin ? "_light" : "") + ".png";
 		imgLogo.setUrl(mkurl(assetsURL, barLogoFileName));
 	}
 

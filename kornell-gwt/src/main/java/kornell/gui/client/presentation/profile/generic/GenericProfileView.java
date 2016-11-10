@@ -287,6 +287,7 @@ public class GenericProfileView extends Composite implements ProfileView,Validat
 				@Override
 				public void ok(UserInfoTO userInfo){
 					LoadingPopup.hide();
+					user = userInfo;
 					KornellNotification.show(constants.confirmSaveProfile());
 					btnOK.setEnabled(true);
 					btnOK2.setEnabled(true);

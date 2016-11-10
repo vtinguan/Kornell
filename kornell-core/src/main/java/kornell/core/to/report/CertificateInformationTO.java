@@ -3,15 +3,16 @@ package kornell.core.to.report;
 import java.util.Date;
 
 public class CertificateInformationTO {
-	String personFullName;
-	String personCPF;
-	String courseTitle;
-	String courseClassName;
-	String assetsURL;
-	String distributionPrefix;
-	String courseVersionUUID;
-	Date courseClassFinishedDate;
-	String baseURL;
+	private String personFullName;
+	private String personCPF;
+	private String courseTitle;
+	private String courseClassName;
+	private String assetsURL;
+	private String distributionPrefix;
+	private String courseVersionUUID;
+	private Date courseClassFinishedDate;
+	private String baseURL;
+	private String institutionName;
 	
 	public String getPersonFullName() {
 		return personFullName;
@@ -67,5 +68,11 @@ public class CertificateInformationTO {
     public void setBaseURL(String baseURL) {
         this.baseURL = baseURL;
     }
+	public String getInstitutionName() {
+		return institutionName;
+	}
+	public void setInstitutionName(String institutionName) {
+		this.institutionName = institutionName;
+	}
 	
 }

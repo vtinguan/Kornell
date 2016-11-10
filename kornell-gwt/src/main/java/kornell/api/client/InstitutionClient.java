@@ -51,4 +51,8 @@ public class InstitutionClient extends RESTClient {
 	public void updateEmailWhitelist(InstitutionEmailWhitelistTO institutionEmailWhitelistTO, Callback<InstitutionEmailWhitelistTO> cb) {
 		PUT("institutions",institutionUUID,"emailWhitelist").withContentType(InstitutionEmailWhitelistTO.TYPE).withEntityBody(institutionEmailWhitelistTO).go(cb);
 	}
+	
+	public void getUploadURL(String filename, Callback<String> callback) {
+		GET("institutions", institutionUUID, "uploadUrl", filename).go(callback);
+	}
 }

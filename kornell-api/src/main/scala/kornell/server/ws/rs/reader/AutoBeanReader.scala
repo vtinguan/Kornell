@@ -9,6 +9,8 @@ import javax.ws.rs.core.MediaType
 import scala.io.Source
 import javax.ws.rs.core.MultivaluedMap
 import java.lang.reflect.Type
+import scala.io.Codec
+import java.nio.charset.CodingErrorAction
 
 trait AutoBeanReader extends MessageBodyReader[Any] {
   def getAutoBeanFactory: AutoBeanFactory
@@ -28,7 +30,11 @@ trait AutoBeanReader extends MessageBodyReader[Any] {
     arg3: MediaType,
     arg4: MultivaluedMap[String, String],
     in: InputStream): Any = {
-    val src = Source.fromInputStream(in)
+    
+    val codec = Codec("UTF-8")
+    codec.onMalformedInput(CodingErrorAction.IGNORE)
+    
+    val src = Source.fromInputStream(in)(codec)
     if (! src.isEmpty) {
       val lines = src.getLines()
       val text = lines.mkString("")
