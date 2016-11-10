@@ -511,39 +511,6 @@
   color: #bec1c3 !important;
   text-shadow: none;
 }
-.menuBarContainer .menuBar .buttons .menuBarButton a:hover {
-  background: #1f2123 !important;
-  /* Old browsers */
-
-  background: -moz-linear-gradient(top, #1f2123 0%, #1f2123 100%) !important;
-  /* FF3.6+ */
-
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1f2123), color-stop(100%, #1f2123)) !important;
-  /* Chrome,Safari4+ */
-
-  background: -webkit-linear-gradient(top, #1f2123 0%, #1f2123 100%) !important;
-  /* Chrome10+,Safari5.1+ */
-
-  background: -o-linear-gradient(top, #1f2123 0%, #1f2123 100%) !important;
-  /* Opera 11.10+ */
-
-  background: -ms-linear-gradient(top, #1f2123 0%, #1f2123 100%) !important;
-  /* IE10+ */
-
-  background: linear-gradient(to bottom, #1f2123 0%, #1f2123 100%) !important;
-  /* W3C */
-
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1f2123', endColorstr='#1f2123',GradientType=0 ) !important;
-  /* IE6-9 */
-
-  background-color: #1f2123;
-  background: -webkit-gradient(linear, left top, left bottom, from(#1f2123), to(#1f2123));
-  background: -webkit-linear-gradient(top, #1f2123, #1f2123);
-  background: -moz-linear-gradient(top, #1f2123, #1f2123);
-  background: -ms-linear-gradient(top, #1f2123, #1f2123);
-  background: -o-linear-gradient(top, #1f2123, #1f2123);
-  text-decoration: none;
-}
 .menuBarContainer .menuBar .buttons .menuBarButton:hover {
   background: #1f2123 !important;
   /* Old browsers */
@@ -638,6 +605,9 @@
   margin-bottom: 0 !important;
 }
 @media screen and (max-width: 979px) {
+  .menuBarContainer .menuBar .collapse.in .buttons .menuBarButton {
+    width: 100%;
+  }
   .menuBarContainer .menuBar .collapse.in .buttons .menuLabel {
     display: inline;
   }

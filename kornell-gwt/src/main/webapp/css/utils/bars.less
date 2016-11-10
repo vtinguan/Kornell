@@ -180,10 +180,6 @@
 				a {
 					color: @niceTextColor !important;
 					text-shadow: none;
-					&:hover {
-						.gradient (@barGradientEndColor, @barGradientEndColor);
-						text-decoration: none;
-					}
 				}
 				&:hover {
 					.gradient (@barGradientEndColor, @barGradientEndColor);
@@ -255,6 +251,9 @@
   	.menuBarContainer .menuBar {
 		.collapse.in {
 			.buttons{
+				.menuBarButton{
+					width: 100%;
+				}
 				.menuLabel{
 					display: inline;
 				}

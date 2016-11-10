@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.NavWidget;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.ScriptInjector;
@@ -71,24 +72,39 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 	private boolean visible = false;
 
+	
 	@UiField
 	Label testEnvWarning;
 	@UiField
 	FlowPanel menuBar;
 	@UiField
+	NavWidget navWidgetFullScreen;
+	@UiField
 	Button btnFullScreen;
+	@UiField
+	NavWidget navWidgetProfile;
 	@UiField
 	Button btnProfile;
 	@UiField
+	NavWidget navWidgetHome;
+	@UiField
 	Button btnHome;
 	@UiField
+	NavWidget navWidgetAdmin;
+	@UiField
 	Button btnAdmin;
+	@UiField
+	NavWidget navWidgetMessages;
 	@UiField
 	Button btnMessages;
 	@UiField
 	Label messagesCount;
 	@UiField
+	NavWidget navWidgetHelp;
+	@UiField
 	Button btnHelp;
+	@UiField
+	NavWidget navWidgetExit;
 	@UiField
 	Button btnExit;
 	@UiField
@@ -211,14 +227,14 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 
 		boolean showHelp = hasHelpCourseClasses() && !(newPlace instanceof TermsPlace);
 
-		showButton(btnHelp, showHelp);
-		showButton(btnMessages, showHelp);
-		showButton(btnProfile, !(newPlace instanceof TermsPlace));
+		showButton(navWidgetHelp, showHelp);
+		showButton(navWidgetMessages, showHelp);
+		showButton(navWidgetProfile, !(newPlace instanceof TermsPlace));
 
-		showButton(btnHome, isRegistrationCompleted);
-		showButton(btnFullScreen, isRegistrationCompleted);
-		showButton(btnAdmin, isRegistrationCompleted && clientFactory.getKornellSession().hasAnyAdminRole());
-		showButton(btnExit, true);
+		showButton(navWidgetHome, isRegistrationCompleted);
+		showButton(navWidgetFullScreen, isRegistrationCompleted);
+		showButton(navWidgetAdmin, isRegistrationCompleted && clientFactory.getKornellSession().hasAnyAdminRole());
+		showButton(navWidgetExit, true);
 
 		if (showingPlacePanel) {
 			menuBar.addStyleName("menuBarPlus");
@@ -238,7 +254,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		return false;
 	}
 
-	private void showButton(Button btn, boolean show) {
+	private void showButton(NavWidget btn, boolean show) {
 		if (show) {
 			btn.removeStyleName("shy");
 		} else {
@@ -284,12 +300,12 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 				$wnd.screenfull.exit();
 	}-*/;
 
-	@UiHandler("btnFullScreen")
+	@UiHandler("navWidgetFullScreen")
 	void handleFullScreen(ClickEvent e) {
 		requestFullscreen();
 	}
 
-	@UiHandler("btnProfile")
+	@UiHandler("navWidgetProfile")
 	void handleProfile(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(
 				new ProfilePlace(clientFactory.getKornellSession()
@@ -297,7 +313,7 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 						isProfileIncomplete()));
 	}
 
-	@UiHandler("btnHome")
+	@UiHandler("navWidgetHome")
 	void handleHome(ClickEvent e) {
 		if(clientFactory.getPlaceController().getWhere().toString().equals(clientFactory.getKornellSession().getHomePlace().toString())){
 			PlaceUtils.reloadCurrentPlace(clientFactory.getEventBus(), clientFactory.getPlaceController());	
@@ -306,22 +322,22 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 		}
 	}
 
-	@UiHandler("btnAdmin")
+	@UiHandler("navWidgetAdmin")
 	void handleAdmin(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(new AdminCourseClassesPlace());
 	}
 
-	@UiHandler("btnExit")
+	@UiHandler("navWidgetExit")
 	void handleExit(ClickEvent e) {
 		clientFactory.getEventBus().fireEvent(new LogoutEvent());
 	}
 
-	@UiHandler("btnHelp")
+	@UiHandler("navWidgetHelp")
 	void handleHelp(ClickEvent e) {
 		bus.fireEvent(new ComposeMessageEvent(showingPlacePanel));
 	}
 
-	@UiHandler("btnMessages")
+	@UiHandler("navWidgetMessages")
 	void handleMessages(ClickEvent e) {
 		clientFactory.getPlaceController().goTo(new MessagePlace());
 	}

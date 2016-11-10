@@ -10,32 +10,32 @@
 			  	<g:Image ui:field="imgMenuBar" addStyleNames="imgMenuBar"/>
 		    	<g:Label ui:field="testEnvWarning" addStyleNames="testEnvWarning shy"></g:Label>
 			    <b:Nav addStyleNames="buttons"  alignment="RIGHT">
-				    <b:NavWidget addStyleNames="menuBarButton">	
+				    <b:NavWidget ui:field="navWidgetFullScreen" addStyleNames="menuBarButton">	
 				      	<b:Button ui:field="btnFullScreen" icon="FULLSCREEN" title="Tela Cheia"><ui:attribute name='title' description='Fullscreen button tooltip text'/></b:Button>
 				      	<b:Label addStyleNames="menuLabel"><ui:msg description="Fullscreen button tooltip text">Tela Cheia</ui:msg></b:Label>
 				    </b:NavWidget>
-				    <b:NavWidget addStyleNames="menuBarButton">	
+				    <b:NavWidget ui:field="navWidgetHome" addStyleNames="menuBarButton">	
 						<b:Button ui:field="btnHome" icon="HOME" title="Página Inicial"><ui:attribute name='title' description='Home button tooltip text'/></b:Button>
 				      	<b:Label addStyleNames="menuLabel"><ui:msg description="Home button tooltip text">Página Inicial</ui:msg></b:Label>
 				    </b:NavWidget>
-				    <b:NavWidget addStyleNames="menuBarButton">	
+				    <b:NavWidget ui:field="navWidgetAdmin" addStyleNames="menuBarButton">	
 						<b:Button ui:field="btnAdmin" icon="COGS" title="Administração"><ui:attribute name='title' description='Admin panel button tooltip text'/></b:Button>	
 				      	<b:Label addStyleNames="menuLabel"><ui:msg description="Admin panel button tooltip text">Administração</ui:msg></b:Label>
 				    </b:NavWidget>
-				    <b:NavWidget addStyleNames="menuBarButton">		
+				    <b:NavWidget ui:field="navWidgetProfile" addStyleNames="menuBarButton">		
 						<b:Button ui:field="btnProfile" icon="USER" title="Perfil"><ui:attribute name='title' description='User profile button tooltip text'/></b:Button>	
 				      	<b:Label addStyleNames="menuLabel"><ui:msg description="User profile button tooltip text">Perfil</ui:msg></b:Label>
 				    </b:NavWidget>
-				    <b:NavWidget addStyleNames="menuBarButton">	
+				    <b:NavWidget ui:field="navWidgetMessages" addStyleNames="menuBarButton">	
 						<b:Button ui:field="btnMessages" icon="COMMENTS" title="Mensagens" visible="false"><ui:attribute name='title' description='Messaging panel button tooltip text'/></b:Button>
 				      	<b:Label ui:field="messagesCount" addStyleNames="count countMessages shy"></b:Label>
 				      	<b:Label addStyleNames="menuLabel"><ui:msg description="Messaging panel button tooltip text">Mensagens</ui:msg></b:Label>
 				    </b:NavWidget>
-				    <b:NavWidget addStyleNames="menuBarButton">	
+				    <b:NavWidget ui:field="navWidgetHelp" addStyleNames="menuBarButton">	
 						<b:Button ui:field="btnHelp" icon="QUESTION_SIGN" title="Ajuda"><ui:attribute name='title' description='Help button tooltop text'/></b:Button>	
 				      	<b:Label addStyleNames="menuLabel"><ui:msg description="Help button tooltop text">Ajuda</ui:msg></b:Label>	
 				    </b:NavWidget>
-				    <b:NavWidget addStyleNames="menuBarButton last">	
+				    <b:NavWidget ui:field="navWidgetExit" addStyleNames="menuBarButton last">	
 						<b:Button ui:field="btnExit" icon="OFF" title="Sair"><ui:attribute name='title' description='Logout button tooltip text'/></b:Button>
 				      	<b:Label addStyleNames="menuLabel"><ui:msg description="Logout button tooltip text">Sair</ui:msg></b:Label>
 				    </b:NavWidget>
