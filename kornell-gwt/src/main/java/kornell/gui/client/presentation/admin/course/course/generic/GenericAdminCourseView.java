@@ -154,15 +154,13 @@ public class GenericAdminCourseView extends Composite implements AdminCourseView
 		titleEdit.setVisible(!isCreationMode);
 		titleCreate.setVisible(isCreationMode);
 
-		if (session.isInstitutionAdmin()) {
-			buildReportsView();
-			reportsTab.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					buildReportsView();
-				}
-			});
-		}
+		buildReportsView();
+		reportsTab.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				buildReportsView();
+			}
+		});
 		
 		courseFields.setVisible(false);
 		this.fields = new ArrayList<KornellFormFieldWrapper>();

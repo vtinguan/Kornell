@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+import kornell.core.entity.CourseVersion;
 import kornell.core.to.CourseClassesTO;
 import kornell.gui.client.event.CourseClassesFetchedEvent;
 import kornell.gui.client.event.CourseClassesFetchedEventHandler;
@@ -25,8 +26,10 @@ import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourse
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericAdminCourseClassView;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.generic.GenericAdminCourseClassesView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.generic.GenericAdminCourseVersionContentView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.generic.GenericAdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.generic.GenericAdminCourseVersionsView;
@@ -83,6 +86,7 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 	private AdminCoursePresenter genericAdminCoursePresenter;
 	private GenericAdminCourseVersionsView genericAdminCourseVersionsView;
 	private GenericAdminCourseVersionView genericAdminCourseVersionView;
+	private GenericAdminCourseVersionContentView genericAdminCourseVersionContentView;
 	private GenericAdminAuditView genericAdminAuditView;
 	private ClassroomPresenter coursePresenter;
 	private SandboxPresenter sandboxPresenter;
@@ -337,6 +341,14 @@ public class GenericViewFactoryImpl implements ViewFactory, ShowDetailsEventHand
 			genericAdminCourseVersionView = new GenericAdminCourseVersionView(clientFactory.getKornellSession(),
 					clientFactory.getEventBus(), clientFactory.getPlaceController());
 		return genericAdminCourseVersionView;
+	}
+
+	@Override
+	public AdminCourseVersionContentView getAdminCourseVersionContentView() {
+		if (genericAdminCourseVersionContentView == null)
+			genericAdminCourseVersionContentView = new GenericAdminCourseVersionContentView(clientFactory.getKornellSession(),
+					clientFactory.getEventBus(), clientFactory.getPlaceController());
+		return genericAdminCourseVersionContentView;
 	}
 
 	@Override

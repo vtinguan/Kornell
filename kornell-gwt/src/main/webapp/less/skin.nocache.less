@@ -282,104 +282,278 @@ a:hover{
 
 
 
-.input-switch {
-	display: table-cell;
-	vertical-align: middle;
-	padding: 5px;
-	cursor: pointer;
-	padding-left: 0 !important;
-	input {
-	    position: absolute;
-	    margin-left: -9999px;
-	    visibility: hidden;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.courseVersionWizardPanel{
+	min-height: 350px; 
+	max-height: 1000px;
+	height: ~"calc(100vh - 224px)";
+	margin: 0 auto;
+	margin-top: 10px;
+	@borderHighlight: 1px solid fade(@textHighlightColor, 50%);
+	background-color: rgba(0, 0, 0, 0.05);   
+	border-radius: 8px;
+	.boxSizing;
+	.sideWrapper{
+		width: 15%;
+		height: ~"calc(100% - 13px)";
+		padding: 5px;
+		border-radius: 8px 0px 0px 8px;
+		.sideButtonsWrapper{
+			margin-bottom: 50px;
+    		margin-top: 9px;
+    		.btnStandard {
+			    min-width: 22px;
+			    height: 22px;
+			    font-size: 18px !important;
+    		}
+		}
+		.sidePanelScroll{
+			width: 100%;
+			height: ~"calc(100% - 42px)";
+			.sidePanel{
+				width: 100%;
+				.boxSizing;
+				.filterPanel{
+					background-color: @tableBackgroundColor;
+				    margin-bottom: 8px;
+				    height: 30px;
+				    border-radius: 5px;
+				    input{
+				    	width: 75%;
+					    font-size: 11px;
+					    background-color: transparent;
+					    border: 1px solid transparent;
+					    color: #e3e3e3;
+				    }
+				    i{
+					    color: @plainDiscreteTextColor;
+					    background-color: transparent;
+					    display: block;
+					    line-height: 30px;
+					    font-size: 12px;
+						&:hover {
+							cursor: pointer;
+						}
+				    }
+				    .icon-search{
+				    	float: right;
+					    padding-right: 8px;
+					}
+					a{
+				    	float: right;
+					    padding-right: 4px;
+						&:hover {
+							text-decoration: none;
+						}
+					}
+				}
+				.sidePanelItem{
+					.boxSizing;
+					color: @niceTextColor;
+					background-color: @tableBackgroundColor;
+					font-size: 11px;
+					line-height: 20px;
+					margin-bottom: 6px;
+					border-radius: 5px;
+					padding: 6px;
+					font-weight: bold;
+					overflow: hidden;
+					&:hover {
+						background-color: @tableBackgroundHoverColor;    
+						cursor: pointer;
+					}
+					.unreadCount{
+						color: @textHighlightColor;
+					}
+				}
+				.selected{
+					background-color: @tableBackgroundHoverColor;
+				}
+			}
+		}
 	}
-	input + span {
-	    display: block;
-	    position: relative;
-	    cursor: pointer;
-	    outline: none;
-	    -webkit-user-select: none;
-	    -moz-user-select: none;
-	    -ms-user-select: none;
-	    user-select: none;
-	    z-index: -1;
+	.slidePanel{
+		width: ~"calc(85% - 12px)";
+	    height: 100%;
+		padding: 10px;
+		border-radius: 0px 8px 8px 0px;
+		background-size: 100%;
+		.boxSizing;
+		.slideTitle{
+			font-size: 13px;
+			color: @niceTextColor;
+			padding-top: 8px;
+			padding-bottom: 15px;
+			margin-bottom: 5px;
+			text-align: center;
+			font-weight: bold;
+			height: 22px;
+			span{
+				height: 20px;
+				overflow: hidden;
+			}
+		}
+		.slideItemsScroll{
+			min-height: 192px;
+			height: ~"calc(100vh - 371px)";
+			padding-right: 5px;
+			clear: both;
+			.slideItemWrapper{
+				.boxSizing;
+				background: @tableBackgroundHoverColor;
+				margin: 5px;
+				padding: 5px 8px;
+				border-radius: 10px;
+				position: relative;
+				float: left;
+				width: 100%;
+				.fieldsWrapper{
+					margin-left: -12px;
+					width: 750px;
+				}
+				.slideItemIcon{
+					float: left;
+				    margin-right: 12px;
+				    padding: 5px;
+				    font-size: 15px;
+				}
+				.slideItemHeader{
+					font-size: 12px;
+					margin-bottom: 5px;    
+					padding: 4px;
+				}
+				.btnStandard{
+					margin-left: 6px;
+				    margin-top: 6px;
+				    min-width: 14px;
+				    height: 16px;
+				    line-height: 14px;
+				    font-size: 14px !important;
+				    margin-bottom: 15px;
+				}
+				.slideItemPreviewImage{
+					max-height: 220px;
+				    margin-left: 40px;
+				    margin-top: 30px;
+				    max-width: 300px;
+				}
+			}
+			.extendedSlideItemWrapper{
+				background: transparent;
+			}
+			.overrideWrapper{
+				margin-left: 0px !important;
+				margin-right: 15px !important;
+				background: @tableBackgroundColor !important;
+				&:after {
+					left: 100% !important;
+					margin-left: 0px !important;
+					margin-right: -12px !important;
+					border-left: 12px solid @tableBackgroundColor !important;
+					border-right: 0px !important;
+				}
+			}
+		} 
+		.fieldsWrapper{
+			float: left;
+			.fieldPanelWrapper{
+				width: 750px;
+				.labelPanel {
+					width: 250px;
+				}
+				.fieldPanel{
+					width: initial;
+					.textField{
+						width: 450px;
+					}
+					textarea{
+						resize: vertical;
+					}
+				}
+			}
+		}
+		.slideButtonsWrapper{
+			.btnStandard{
+				margin-left: 11px;
+			    margin-top: 4px;
+			    min-width: 22px;
+			    height: 22px;
+			    font-size: 18px !important;
+			    margin-bottom: 40px;
+			}
+		}
 	}
-	input + span:hover {
-	    cursor: pointer;
+	.fillWidth{
+		width: 100% !important;
 	}
-	input + span {
-	    padding: 2px;
-	    width: 30px;
-	    height: 15px;
-	    background-color: @background;
-	    -webkit-border-radius: 60px;
-	    -moz-border-radius: 60px;
-	    -ms-border-radius: 60px;
-	    -o-border-radius: 60px;
-	    border-radius: 60px;
-	    margin-top: 4px;
+}
+@media screen and (max-width: 1400px) {
+    .slideItemPreviewImage {
+		display: none;
 	}
-	input + span:before, input + span:after {
-	    display: block;
-	    position: absolute;
-	    top: 1px;
-	    left: 1px;
-	    bottom: 1px;
-	    content: "";
+}
+
+
+.wizardRendererPanel{    
+	width: 80%;
+    margin-left: 10%;
+	.topicTitleLabel{
+		text-align: center;
+    	font-size: 40px;
+	    font-weight: bold;
 	}
-	input + span:before {
-	    right: 1px;
-	    background-color: @textHighlightDiscreteColor;
-	    -webkit-border-radius: 60px;
-	    -moz-border-radius: 60px;
-	    -ms-border-radius: 60px;
-	    -o-border-radius: 60px;
-	    border-radius: 60px;
-	    -webkit-transition: background 0.4s;
-	    -moz-transition: background 0.4s;
-	    -o-transition: background 0.4s;
-	    transition: background 0.4s;
+	.slideTitleLabel{
+		font-size: 22px;
+	    font-weight: bold;
 	}
-	input + span:before {
-	    right: 1px;
-	    background-color: @textHighlightDiscreteColor;
-	    -webkit-border-radius: 60px;
-	    -moz-border-radius: 60px;
-	    -ms-border-radius: 60px;
-	    -o-border-radius: 60px;
-	    border-radius: 60px;
-	    -webkit-transition: background 0.4s;
-	    -moz-transition: background 0.4s;
-	    -o-transition: background 0.4s;
-	    transition: background 0.4s;
-	}
-	input + span:after {
-	    width: 15px;
-	    background-color: #fff;
-	    -webkit-border-radius: 100%;
-	    -moz-border-radius: 100%;
-	    -ms-border-radius: 100%;
-	    -o-border-radius: 100%;
-	    border-radius: 100%;
-	    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-	    -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-	    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-	    -webkit-transition: margin 0.4s;
-	    -moz-transition: margin 0.4s;
-	    -o-transition: margin 0.4s;
-	    transition: margin 0.4s;
-	}
-	input:checked + span:before {
-	    background-color: @textHighlightColor;
-	}
-	input:checked + span:after {
-	    margin-left: 15px;
-	}
-	input[disabled] + span:before {
-    	background-color: @tableBackgroundHoverColor;
-	}
-	input[disabled] + span:after {
-    	background-color: #fff;
+	.slideItemPanel{
+	    margin-top: 35px;
+		.slideItemTitleLabel{
+			font-size: 18px;
+			margin-bottom: 15px;
+		}
+		.slideItemTextLabel{
+			font-size: 14px;
+		}
+		.slideItemVideoLinkPanel{
+		    position: relative;
+		    padding-bottom: 56.25%;
+		    padding-top: 30px; 
+		    height: 0; 
+		    overflow: hidden;
+				max-width: 80%;
+		    iframe,
+			object,
+			embed {
+			    position: absolute;
+			    top: 0;
+			    left: 0;
+			    width: 100%;
+			    height: 100%;
+			}
+		}
 	}
 }
 
