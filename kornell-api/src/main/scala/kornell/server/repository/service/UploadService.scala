@@ -5,7 +5,6 @@ import com.amazonaws.HttpMethod
 import org.joda.time.DateTime
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.auth.BasicAWSCredentials
-import kornell.core.entity.S3ContentRepository
 import kornell.core.util.StringUtils._
 import kornell.server.jdbc.repository.CourseVersionRepo
 import kornell.server.jdbc.repository.CourseClassRepo
@@ -34,7 +33,7 @@ object UploadService {
   
   def getUploadUrl(institutionUUID: String, path: String, contentType: String) = {
     val institution = InstitutionRepo(institutionUUID).get
-    val repo = ContentRepositoriesRepo.firstS3Repository(institution.getAssetsRepositoryUUID).get
+    val repo = ContentRepositoriesRepo.firstRepository(institution.getAssetsRepositoryUUID).get
     
     val s3 = if (isSome(repo.getAccessKeyId()))
       new AmazonS3Client(new BasicAWSCredentials(repo.getAccessKeyId(),repo.getSecretAccessKey()))

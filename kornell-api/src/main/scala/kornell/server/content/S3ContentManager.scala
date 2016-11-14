@@ -1,6 +1,6 @@
 package kornell.server.content
 
-import kornell.core.entity.S3ContentRepository
+import kornell.core.entity.ContentRepository
 import com.amazonaws.services.s3.AmazonS3Client
 import scala.util.Try
 import java.util.logging.Logger
@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata
 import scala.collection.JavaConverters._
 import com.amazonaws.auth.BasicAWSCredentials
 
-class S3ContentManager(repo: S3ContentRepository)
+class S3ContentManager(repo: ContentRepository)
   extends SyncContentManager {
   
   val logger = Logger.getLogger(classOf[S3ContentManager].getName)

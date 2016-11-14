@@ -40,6 +40,9 @@
       <b:Tab ui:field="assetsTab" icon="FILE_ALT" heading="Imagens" active="false">
         <g:FlowPanel ui:field="assetsPanel"></g:FlowPanel>
       </b:Tab>
+      <b:Tab ui:field="repoTab" icon="LINK" heading="Repositories" active="false">
+      	<g:FlowPanel ui:field="repoPanel"></g:FlowPanel>
+      </b:Tab>
 	</b:TabPanel>
   </g:FlowPanel>
 </ui:UiBinder>
