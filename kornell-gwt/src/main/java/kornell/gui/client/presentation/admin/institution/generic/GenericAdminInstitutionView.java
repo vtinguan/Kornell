@@ -22,7 +22,6 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -32,7 +31,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-import kornell.api.client.Callback;
 import kornell.api.client.KornellSession;
 import kornell.core.entity.BillingType;
 import kornell.core.entity.ContentRepository;
@@ -47,7 +45,6 @@ import kornell.gui.client.util.CSSInjector;
 import kornell.gui.client.util.forms.FormHelper;
 import kornell.gui.client.util.forms.formfield.KornellFormFieldWrapper;
 import kornell.gui.client.util.forms.formfield.ListBoxFormField;
-import kornell.gui.client.util.view.KornellMaintenance;
 import kornell.gui.client.util.view.LoadingPopup;
 
 public class GenericAdminInstitutionView extends Composite implements AdminInstitutionView {
@@ -143,7 +140,7 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 		
 		this.institution = session.getInstitution();
 		if (isPlatformAdmin) {
-			session.repository().getRepository(institution.getAssetsRepositoryUUID(), new Callback<ContentRepository>() {
+			session.repository().getRepository(institution.getAssetsRepositoryUUID(), new kornell.api.client.Callback<ContentRepository>() {
 				@Override
 				public void ok(ContentRepository to) {
 					repo = to;
