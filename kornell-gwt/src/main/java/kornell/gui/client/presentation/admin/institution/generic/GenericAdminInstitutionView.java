@@ -9,6 +9,7 @@ import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
+import com.github.gwtbootstrap.client.ui.constants.Device;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -153,6 +154,17 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 					});
 				}
 			});
+			
+			buildReportsView();
+			reportsTab.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					buildReportsView();
+				}
+			});
+		} else {
+			FormHelper.hideTab(reportsTab);
+			FormHelper.hideTab(repoTab);
 		}
 		
 		initData();
@@ -194,16 +206,6 @@ public class GenericAdminInstitutionView extends Composite implements AdminInsti
 					buildAssetsView();
 				}
 			});
-
-			if(isPlatformAdmin){
-				buildReportsView();
-				reportsTab.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						buildReportsView();
-					}
-				});
-			}
 		}
 	}
 

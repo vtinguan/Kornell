@@ -44,6 +44,7 @@ import kornell.gui.client.presentation.admin.course.course.generic.GenericCourse
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentPresenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPlace;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsPlace;
 import kornell.gui.client.util.forms.FormHelper;
@@ -158,7 +159,9 @@ public class GenericAdminCourseVersionView extends Composite implements AdminCou
 
 	public void initData() {
 
-		presenter.buildContentView(courseVersion);
+		if(!isCreationMode && ContentSpec.WIZARD.equals(courseVersion.getContentSpec()))
+			presenter.buildContentView(courseVersion);
+		
 		contentsTab.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

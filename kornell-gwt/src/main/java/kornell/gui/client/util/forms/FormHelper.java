@@ -8,8 +8,10 @@ import java.util.List;
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
+import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.Device;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Image;
 
@@ -221,6 +223,12 @@ public class FormHelper {
 	  	return "";
 	  return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
   }
+
+	public static void hideTab(Tab tab) {
+		tab.setHideOn(Device.DESKTOP);
+		tab.setHideOn(Device.PHONE);
+		tab.setHideOn(Device.TABLET);
+	}
 
 	public String getElapsedTimeSince(Date date, Date now) {
 		long dateM = date.getTime() - 1000; 

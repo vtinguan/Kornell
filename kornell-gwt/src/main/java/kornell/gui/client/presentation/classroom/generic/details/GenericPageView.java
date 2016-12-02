@@ -63,7 +63,7 @@ public class GenericPageView extends Composite implements ProgressEventHandler {
 		lblPage.clear();
 		int index = page.getIndex();
 		String title = index + ".  " + page.getTitle();
-		if(enableAnchor){
+		if(enableAnchor || page.isVisited()){
 			Anchor pageAnchor = new Anchor(title);
 			pageAnchor.addClickHandler(new ClickHandler() {
 				@Override

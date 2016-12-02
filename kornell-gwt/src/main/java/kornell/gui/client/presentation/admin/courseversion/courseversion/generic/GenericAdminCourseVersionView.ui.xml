@@ -3,7 +3,7 @@
 
   <g:FlowPanel addStyleNames="deanHome">
     <b:TabPanel tabPosition="middle" ui:field="tabsPanel">
-      <b:Tab ui:field="editTab" icon="COGS" heading="Configuração" active="false">
+      <b:Tab ui:field="editTab" icon="COGS" heading="Configuração" active="true">
 		  <g:FlowPanel addStyleNames="courseClassConfig">
 		    <g:HTMLPanel ui:field="titleEdit" addStyleNames="title unclear left fillWidth marginBottom25">Editar Versão de Curso</g:HTMLPanel>
 		    <g:HTMLPanel ui:field="titleCreate" addStyleNames="title unclear left fillWidth marginBottom25">Criar Versão de Curso</g:HTMLPanel>
@@ -26,7 +26,7 @@
 		    </b:Modal>
 	      </g:FlowPanel>
 	  </b:Tab>
-      <b:Tab ui:field="contentsTab" icon="FILE" heading="Conteúdo" active="true">
+      <b:Tab ui:field="contentsTab" icon="FILE" heading="Conteúdo">
         <g:FlowPanel ui:field="contentsPanel"></g:FlowPanel>
       </b:Tab>
     </b:TabPanel>
