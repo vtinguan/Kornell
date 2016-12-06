@@ -11,6 +11,7 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -150,11 +151,13 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			
 			if(newUnreadChatThreadTOs.size() > 0){
 				// if no thread is selected, "click" the first one
-				if(selectedChatThreadInfo == null){
+				if(selectedChatThreadInfo == null && placeCtrl.getWhere() instanceof MessagePlace){
 					threadClicked(newUnreadChatThreadTOs.get(0));
 					selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
 				}
-				view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
+				if(selectedChatThreadInfo != null){
+					view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
+				}
 			} else if(placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)){
 				KornellNotification.show(constants.noThreadsMessage(), AlertType.WARNING, 5000);
 			} 
