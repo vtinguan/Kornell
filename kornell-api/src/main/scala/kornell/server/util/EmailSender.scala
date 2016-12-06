@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.logging.Logger
 import kornell.server.util.Settings._
+import java.util.logging.Level
 
 object EmailSender {
   val logger = Logger.getLogger("kornell.server.email")
@@ -46,46 +47,50 @@ object EmailSender {
     to: String,
     replyTo: String,
     body: String,
-    imgFile: File): Unit = getEmailSession match {
-    case Some(session) => {
-      val message = new MimeMessage(session);
-      message.setFrom(new InternetAddress(from))
-      message.setRecipients(Message.RecipientType.TO, to)
-      message.setSentDate(new Date())
-      message.setSubject(subject, "UTF-8")
-      message.setReplyTo(Array(new InternetAddress(replyTo)))
-      // creates message part
-      val messageBodyPart: MimeBodyPart = new MimeBodyPart()
-      messageBodyPart.setContent(body, "text/html; charset=utf-8")
-
-      // creates multi-part
-      val multipart: Multipart = new MimeMultipart()
-      multipart.addBodyPart(messageBodyPart)
-
-      if (imgFile != null) {
-        val imagePartLogo: MimeBodyPart = new MimeBodyPart()
-        imagePartLogo.setHeader("Content-ID", "<logo>")
-        imagePartLogo.setDisposition(Part.INLINE)
-        imagePartLogo.attachFile(imgFile)
-        multipart.addBodyPart(imagePartLogo)
+    imgFile: File): Unit = try {
+    	getEmailSession match {
+      	case Some(session) => {
+      		val message = new MimeMessage(session);
+      		message.setFrom(new InternetAddress(from))
+      		message.setRecipients(Message.RecipientType.TO, to)
+      		message.setSentDate(new Date())
+      		message.setSubject(subject, "UTF-8")
+      		message.setReplyTo(Array(new InternetAddress(replyTo)))
+      		// creates message part
+      		val messageBodyPart: MimeBodyPart = new MimeBodyPart()
+      		messageBodyPart.setContent(body, "text/html; charset=utf-8")
+  
+      		// creates multi-part
+      		val multipart: Multipart = new MimeMultipart()
+      		multipart.addBodyPart(messageBodyPart)
+  
+      		if (imgFile != null) {
+      			val imagePartLogo: MimeBodyPart = new MimeBodyPart()
+      					imagePartLogo.setHeader("Content-ID", "<logo>")
+      					imagePartLogo.setDisposition(Part.INLINE)
+      					imagePartLogo.attachFile(imgFile)
+      					multipart.addBodyPart(imagePartLogo)
+      		}
+  
+      		message.setContent(multipart)
+  
+      		val transport = session.getTransport
+      		val username = SMTP_USERNAME
+      		val password = SMTP_PASSWORD
+      		transport.connect(username, password)
+  
+      		val test_mode:String = Settings.TEST_MODE
+      		if (!"true".equals(test_mode.orNull)) {
+      			transport.sendMessage(message, Array(new InternetAddress(to)))
+      		}
+  
+      		logger.finer(s"Email with subject [$subject] sent to [$to] by [$from]")
+      	}
+      	case None => logger.warning(s"No SMTP configured. Email could not be sent to [$to]")
       }
-
-      message.setContent(multipart)
-
-      val transport = session.getTransport
-      val username = SMTP_USERNAME
-      val password = SMTP_PASSWORD
-      transport.connect(username, password)
-
-      val test_mode:String = Settings.TEST_MODE
-      if (!"true".equals(test_mode.orNull)) {
-        transport.sendMessage(message, Array(new InternetAddress(to)))
-      }
-
-      logger.finer(s"Email with subject [$subject] sent to [$to] by [$from]")
+    } catch {
+      case e: Exception => logger.log(Level.SEVERE, "Problem sending email ", e)
     }
-    case None => logger.warning(s"No SMTP configured. Email could not be sent to [$to]")
-  }
 
   def sendEmail(subject: String,
     from: String,
