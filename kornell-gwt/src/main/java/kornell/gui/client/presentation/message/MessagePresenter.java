@@ -146,15 +146,15 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				newUnreadChatThreadTO.setUnreadMessages("0");
 				newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
 				newUnreadChatThreadTOs.add(newUnreadChatThreadTO);
-				selectedChatThreadInfo = null;
+				selectedChatThreadInfo = newUnreadChatThreadTO;
 			}
 			
 			if(newUnreadChatThreadTOs.size() > 0){
 				// if no thread is selected, "click" the first one
-				if(selectedChatThreadInfo == null && placeCtrl.getWhere() instanceof MessagePlace){
+				if(selectedChatThreadInfo == null && MessagePanelType.inbox.equals(messagePanelType)){
 					threadClicked(newUnreadChatThreadTOs.get(0));
-					selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
 				}
+				selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
 				if(selectedChatThreadInfo != null){
 					view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
 				}
@@ -168,16 +168,17 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 
 	@Override
 	public void threadClicked(final UnreadChatThreadTO unreadChatThreadTO) {
+		if(unreadChatThreadTO != null){
+			this.selectedChatThreadInfo = unreadChatThreadTO;
+		}
+		
 		threadBeginningReached = false;
 		chatThreadMessageTOs = new ArrayList<>();
 		initializeChatThreadMessagesTimer();
-		this.selectedChatThreadInfo = unreadChatThreadTO;
-		if(unreadChatThreadTO.getChatThreadUUID() != null){
+		if(selectedChatThreadInfo != null){
 			view.displayThreadPanel(false);
-			view.updateThreadPanel(unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
-			onScrollToTop(true);
-		} else {
 			view.updateThreadPanel(selectedChatThreadInfo, session.getCurrentUser().getPerson().getFullName());
+			onScrollToTop(true);
 		}
 	}
 
@@ -309,6 +310,11 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	@Override
 	public void clearThreadSelection(){
 		this.selectedChatThreadInfo = null;
+	}
+
+	@Override
+	public UnreadChatThreadTO getThreadSelection(){
+		return this.selectedChatThreadInfo = null;
 	}
 
 	private Date lastFetchedMessageSentAt() {
