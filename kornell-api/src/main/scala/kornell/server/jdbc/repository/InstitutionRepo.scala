@@ -8,11 +8,7 @@ import kornell.core.entity.AuditedEntityType
 
 class InstitutionRepo(uuid: String) {
 
-  val finder = sql"select * from Institution where uuid=$uuid"
-
-
   def get = InstitutionsRepo.getByUUID(uuid).get
-  
   
   def update(institution: Institution): Institution = { 
     //get previous version

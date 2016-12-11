@@ -125,6 +125,7 @@ public class GenericAdminCourseVersionsView extends Composite implements AdminCo
 					courseVersionsWrapper.setVisible(false);
 					adminCourseVersionPresenter = viewFactory.getAdminCourseVersionPresenter();
 					view = adminCourseVersionPresenter.getView();
+					view.setPresenter(adminCourseVersionPresenter);
 					view.init();
 					createVersionPanel.add(view);
 				}

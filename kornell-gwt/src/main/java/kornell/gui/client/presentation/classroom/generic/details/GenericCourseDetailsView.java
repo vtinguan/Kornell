@@ -10,6 +10,7 @@ import com.github.gwtbootstrap.client.ui.Icon;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -42,7 +43,10 @@ import kornell.gui.client.ViewFactory;
 import kornell.gui.client.event.ShowDetailsEvent;
 import kornell.gui.client.event.ShowDetailsEventHandler;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.generic.GenericCourseClassMessagesView;
+import kornell.gui.client.presentation.classroom.ClassroomPlace;
 import kornell.gui.client.presentation.classroom.ClassroomView.Presenter;
+import kornell.gui.client.presentation.message.MessagePanelType;
+import kornell.gui.client.presentation.message.MessagePlace;
 import kornell.gui.client.presentation.message.MessagePresenter;
 import kornell.gui.client.util.ClientConstants;
 import kornell.gui.client.util.view.LoadingPopup;
@@ -108,6 +112,14 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		this.messagePresenterClassroomTutorChat = viewFactory.getMessagePresenterClassroomTutorChat();
 		this.messagePresenterClassroomTutorChat.enableMessagesUpdate(false);
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		bus.addHandler(PlaceChangeEvent.TYPE,
+				new PlaceChangeEvent.Handler() {
+			@Override
+			public void onPlaceChange(PlaceChangeEvent event) {
+				btnCurrent = btnAbout;
+			}
+		});
 	}
 
 	public void initData() {
@@ -190,18 +202,14 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		certificationPanel.setVisible(btn.equals(btnCertification));
 
 		if (btn.equals(btnChat)) {
-			buildChatPanel();
+			buildChatPanel(true);
 		} else if (chatPanel != null) {
 			chatPanel.setVisible(false);
 			messagePresenterClassroomGlobalChat.enableMessagesUpdate(false);
 		}
 
 		if (btn.equals(btnTutor)) {
-			buildTutorPanel();
-			tutorPanel.setVisible(true);
-			messagePresenterClassroomTutorChat.enableMessagesUpdate(true);
-			messagePresenterClassroomTutorChat.filterAndShowThreads();
-			messagePresenterClassroomTutorChat.scrollToBottom();
+			buildTutorPanel(true);
 		} else if (tutorPanel != null) {
 			tutorPanel.setVisible(false);
 			messagePresenterClassroomTutorChat.enableMessagesUpdate(false);
@@ -237,34 +245,38 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 		if (messagesGlobalChatView == null) {
 			messagesGlobalChatView = new GenericCourseClassMessagesView(session, bus, placeCtrl, viewFactory,
 					messagePresenterClassroomGlobalChat, session.getCurrentCourseClass());
-		}
-		if (chatPanel == null) {
+
 			chatPanel = new FlowPanel();
 			detailsContentPanel.add(chatPanel);
 		}
-		if (isVisible) {
-			messagesGlobalChatView.initData();
-			chatPanel.clear();
-			chatPanel.add(messagesGlobalChatView);
-		}
 		chatPanel.setVisible(isVisible);
-		messagePresenterClassroomGlobalChat.enableMessagesUpdate(true);
-		messagePresenterClassroomGlobalChat.filterAndShowThreads();
-		messagePresenterClassroomGlobalChat.scrollToBottom();
+		messagePresenterClassroomGlobalChat.enableMessagesUpdate(isVisible);
+		if (isVisible) {
+			LoadingPopup.show();
+			chatPanel.clear();
+			messagesGlobalChatView.initData();
+			chatPanel.add(messagesGlobalChatView);
+			messagePresenterClassroomGlobalChat.threadClicked(null);
+		}
 	}
 
-	private void buildTutorPanel() {
+	private void buildTutorPanel(boolean isVisible) {
 		if (messagesTutorChatView == null) {
 			messagesTutorChatView = new GenericCourseClassMessagesView(session, bus, placeCtrl, viewFactory,
 					messagePresenterClassroomTutorChat, session.getCurrentCourseClass());
-		}
-		if (tutorPanel == null) {
+			
 			tutorPanel = new FlowPanel();
 			detailsContentPanel.add(tutorPanel);
 		}
-		tutorPanel.clear();
-		tutorPanel.addStyleName("certificationPanel");
-		tutorPanel.add(messagesTutorChatView);
+		tutorPanel.setVisible(isVisible);
+		messagePresenterClassroomTutorChat.enableMessagesUpdate(isVisible);
+		if (isVisible) {
+			LoadingPopup.show();
+			tutorPanel.clear();
+			messagesTutorChatView.initData();
+			tutorPanel.add(messagesTutorChatView);
+			messagePresenterClassroomTutorChat.threadClicked(null);
+		}
 	}
 
 	private FlowPanel getLibraryPanel(LibraryFilesTO libraryFilesTO) {
@@ -412,7 +424,6 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 			displayButton(btnCertification, constants.btnCertification(), constants.printCertificateButton(), false);
 			if (courseClassTO.getCourseClass().isCourseClassChatEnabled()) {
 				displayButton(btnChat, constants.btnChat(), constants.classChatButton(), false);
-				buildChatPanel();
 			}
 			if (courseClassTO.getCourseClass().isTutorChatEnabled()) {
 				displayButton(btnTutor, constants.btnTutor(), constants.tutorChatButton(), false);
@@ -518,6 +529,7 @@ public class GenericCourseDetailsView extends Composite implements ShowDetailsEv
 	@Override
 	public void onShowDetails(ShowDetailsEvent event) {
 		buildChatPanel(btnChat != null && btnChat.equals(btnCurrent) && event.isShowDetails());
+		buildTutorPanel(btnTutor != null && btnTutor.equals(btnCurrent) && event.isShowDetails());
 	}
 
 	public void setPresenter(Presenter presenter) {

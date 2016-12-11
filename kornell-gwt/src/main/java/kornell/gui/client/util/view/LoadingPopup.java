@@ -29,7 +29,7 @@ public class LoadingPopup {
 			//popup.setGlassEnabled(true);
 			popup.add(panel);
 			popup.center();
-			popup.setPopupPosition(popup.getAbsoluteLeft(), 11);
+			popup.setPopupPosition(0, 11);
 		}
 		popup.show();
 	}

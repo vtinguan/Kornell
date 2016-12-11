@@ -36,10 +36,11 @@ import kornell.server.repository.Entities._
 import kornell.server.repository.Entities
 import kornell.server.repository.TOs._
 import kornell.server.repository.TOs
-import kornell.core.entity.S3ContentRepository
 import java.util.UUID
 import kornell.core.to.DashboardLeaderboardTO
 import kornell.core.to.DashboardLeaderboardItemTO
+import kornell.core.entity.ContentRepository
+import kornell.core.entity.RepositoryType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -76,14 +77,16 @@ package object repository {
         rs.getString("assetsRepositoryUUID"),
         rs.getString("timeZone"))
         
-  implicit def toS3ContentRepository(rs:ResultSet):S3ContentRepository = 
-    newS3ContentRepository(rs.getString("uuid"),
+  implicit def toContentRepository(rs:ResultSet):ContentRepository = 
+    newContentRepository(rs.getString("uuid"),
+        RepositoryType.valueOf(rs.getString("repositoryType")),
         rs.getString("accessKeyId"),
         rs.getString("secretAccessKey"),
         rs.getString("bucketName"),
         rs.getString("prefix"),
         rs.getString("region"),
-        rs.getString("institutionUUID"))
+        rs.getString("institutionUUID"),
+        rs.getString("path"))
   
   implicit def toCourseClass(r: ResultSet): CourseClass = 
     newCourseClass(r.getString("uuid"), r.getString("name"), 
