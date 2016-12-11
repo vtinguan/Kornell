@@ -151,7 +151,9 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 			
 			if(newUnreadChatThreadTOs.size() > 0){
 				// if no thread is selected, "click" the first one
-				if(selectedChatThreadInfo == null && MessagePanelType.inbox.equals(messagePanelType)){
+				if(selectedChatThreadInfo == null && !(placeCtrl.getWhere() instanceof ClassroomPlace)
+						&& (MessagePanelType.inbox.equals(messagePanelType) ||
+								MessagePanelType.courseClassSupport.equals(messagePanelType))){
 					threadClicked(newUnreadChatThreadTOs.get(0));
 				}
 				selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
@@ -241,6 +243,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					}
 				}
 			});
+		} else {
+			view.displayThreadPanel(true);
 		}
 	}
 
