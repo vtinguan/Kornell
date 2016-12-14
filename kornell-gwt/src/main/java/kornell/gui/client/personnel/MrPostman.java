@@ -153,7 +153,8 @@ public class MrPostman implements ComposeMessageEventHandler, LoginEventHandler,
 		this.helpCourseClasses = new ArrayList<CourseClassTO>();
 		if (courseClassesTO != null) {
 			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-				if (courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()) {
+				if ((courseClassTO.getEnrollment() != null || courseClassTO.getCourseClass().isPublicClass()) 
+						&& !courseClassTO.getCourseClass().isInvisible()) {
 					this.helpCourseClasses.add(courseClassTO);
 				}
 			}
