@@ -104,6 +104,7 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		dockChatPanel.setVisible(event.isShowChatDock());
 		if(event.isShowChatDock()){
 			dockChatPanel.clear();
+			viewFactory.getMessagePresenterClassroomGlobalChat().threadClicked(null);
 			dockChatPanel.add(viewFactory.getMessagePresenterClassroomGlobalChat().asWidget());
 		}
 	}
