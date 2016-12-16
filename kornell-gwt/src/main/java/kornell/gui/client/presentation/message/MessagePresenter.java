@@ -184,7 +184,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 		}
 	}
 
-	private void getChatThreadMessagesSinceLast() {
+	public void getChatThreadMessagesSinceLast() {
 		if(((placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof AdminCourseClassPlace && MessagePanelType.courseClassSupport.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof ClassroomPlace && 
@@ -192,7 +192,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 						( (MessagePanelType.courseClassGlobal.equals(messagePanelType) && session.getCurrentCourseClass().getCourseClass().isCourseClassChatEnabled()) ||
 						  (MessagePanelType.courseClassTutor.equals(messagePanelType) && session.getCurrentCourseClass().getCourseClass().isTutorChatEnabled())
 						)
-				) && selectedChatThreadInfo != null && updateMessages)){
+				) && updateMessages)){
 			if(selectedChatThreadInfo != null && selectedChatThreadInfo.getChatThreadUUID() != null){
 				final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
 				LoadingPopup.show();
