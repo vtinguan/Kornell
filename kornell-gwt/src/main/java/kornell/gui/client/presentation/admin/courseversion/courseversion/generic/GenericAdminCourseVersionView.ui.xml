@@ -2,28 +2,33 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <g:FlowPanel addStyleNames="deanHome">
-	  <g:FlowPanel addStyleNames="courseClassConfig">
-	    <g:HTMLPanel ui:field="titleEdit" addStyleNames="title unclear left fillWidth marginBottom25">Editar Versão de Curso</g:HTMLPanel>
-	    <g:HTMLPanel ui:field="titleCreate" addStyleNames="title unclear left fillWidth marginBottom25">Criar Versão de Curso</g:HTMLPanel>
-	    <b:Form ui:field="form" addStyleNames="profileForm left">
-	      <g:FlowPanel ui:field="courseVersionFields" addStyleNames="fieldsWrapper">    
+    <b:TabPanel tabPosition="middle" ui:field="tabsPanel">
+      <b:Tab ui:field="editTab" icon="COGS" heading="Configuração" active="true">
+		  <g:FlowPanel addStyleNames="courseClassConfig">
+		    <g:HTMLPanel ui:field="titleEdit" addStyleNames="title unclear left fillWidth marginBottom25">Editar Versão de Curso</g:HTMLPanel>
+		    <g:HTMLPanel ui:field="titleCreate" addStyleNames="title unclear left fillWidth marginBottom25">Criar Versão de Curso</g:HTMLPanel>
+		    <b:Form ui:field="form" addStyleNames="profileForm left">
+		      <g:FlowPanel ui:field="courseVersionFields" addStyleNames="fieldsWrapper">    
+		      </g:FlowPanel>
+		      <g:FlowPanel addStyleNames="standardButtonBar">
+		        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
+		        <g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
+		      </g:FlowPanel>
+		    </b:Form>   
+		    <b:Modal ui:field="confirmModal" title="Confirmação" backdrop="NORMAL" addStyleNames="forgotPasswordModal">
+		      <g:FlowPanel>
+		        <g:Label ui:field="confirmText"></g:Label>
+		        <g:FlowPanel addStyleNames="standardButtonBar">
+		          <g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
+		          <g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
+		        </g:FlowPanel>
+		      </g:FlowPanel>
+		    </b:Modal>
 	      </g:FlowPanel>
-	      <g:FlowPanel ui:field="courseVersionUpload" addStyleNames="fieldsWrapper">
-	      </g:FlowPanel>  
-	      <g:FlowPanel addStyleNames="standardButtonBar">
-	        <g:Button ui:field="btnOK" addStyleNames="btnAction btnStandard"/>
-	        <g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
-	      </g:FlowPanel>
-	    </b:Form>   
-	    <b:Modal ui:field="confirmModal" title="Confirmação" backdrop="NORMAL" addStyleNames="forgotPasswordModal">
-	      <g:FlowPanel>
-	        <g:Label ui:field="confirmText"></g:Label>
-	        <g:FlowPanel addStyleNames="standardButtonBar">
-	          <g:Button ui:field="btnModalOK" addStyleNames="btnAction btnStandard"/>
-	          <g:Button ui:field="btnModalCancel" addStyleNames="btnNotSelected btnStandard"/>
-	        </g:FlowPanel>
-	      </g:FlowPanel>
-	    </b:Modal>
-    </g:FlowPanel>
+	  </b:Tab>
+      <b:Tab ui:field="contentsTab" icon="FILE" heading="Conteúdo">
+        <g:FlowPanel ui:field="contentsPanel"></g:FlowPanel>
+      </b:Tab>
+    </b:TabPanel>
   </g:FlowPanel>
 </ui:UiBinder>

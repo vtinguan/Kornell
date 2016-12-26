@@ -3,20 +3,20 @@
 @import "../utils/constants";
 @import "../utils/forms";
 
-.MessagePlace { 
+.MessagePlace {
 	.messageInboxPanel{
 		width: @wrapperWidth;
 		max-height: 1000px;
 		height: ~"calc(100vh - 105px)";
 		.threadPanel {
 			.threadPanelItemsScroll {
-				height: ~"calc(100vh - 246px)";    
+				height: ~"calc(100vh - 246px)";
 				max-height: ~"calc(1000px - 146px)";
 			}
 		}
 	}
-}  
-.AdminCourseClassPlace { 
+}
+.AdminCourseClassPlace {
 	.messageInboxPanel{
 		width: @wrapperWidth;
 		max-height: 1000px;
@@ -28,14 +28,15 @@
 			}
 		}
 	}
-}  
-.ClassroomPlace { 
+}
+.ClassroomPlace {
 	.messageInboxPanel{
 		width: @rightPanelWidth;
 		max-height: 1000px;
 		height: ~"calc(100vh - 220px)";
 		min-height: 460px;
 		margin-top: 20px;
+		float: left;
 		.threadPanel {
 			width: @rightPanelWidth;
 			.threadPanelItemsScroll {
@@ -48,8 +49,8 @@
 			display: none;
 		}
 	}
-}  
-/*.threadPanelItemsScroll > div  { 
+}
+/*.threadPanelItemsScroll > div  {
   position: absolute !important;
   bottom: 0px;
   width: 100%;
@@ -194,7 +195,7 @@
 					border-right: 0px !important;
 				}
 			}
-		} 
+		}
 		.sendMessageWrapper{
 			.boxSizing;
 			padding-top: 6px;
@@ -240,18 +241,18 @@
 }
 @media screen and ( min-height: 541px ){
     .ClassroomPlace{
-    	.dockChatPanel{    
+    	.dockChatPanel{
 		    position: fixed !important;
 		    top: 45px;
 		    bottom: 35px;
 		    right: 0;
 		    width: 320px !important;
-		    border-left: 1px solid #3D6539;
+		    border-left: 1px solid @textHighlightColor;
 		    border-radius: 0px;
     		background: fade(@blackOrWhite, 30%);
 		    box-sizing: border-box;
 			    .messageInboxPanel {
-				.sidePanelScroll{	
+				.sidePanelScroll{
 					display: none;
 				}
 				.threadPanel {
@@ -304,8 +305,9 @@
 				text-align: center;
 			}
 			.lblSubTitle{
-				color: @textHighlightColor;
-				font-size: 13px;
+				color: @niceTextColor;
+				font-weight: bold;
+				font-size: 12px;
 				margin-top: 5px;
 				float: left;
 				width: 100%;

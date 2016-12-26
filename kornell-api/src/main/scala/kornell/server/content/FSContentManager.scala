@@ -1,6 +1,6 @@
 package kornell.server.content
 
-import kornell.core.entity.FSContentRepository
+import kornell.core.entity.ContentRepository
 import scala.util.Try
 import scala.io.Source
 import java.nio.file.Paths
@@ -9,7 +9,7 @@ import java.io.InputStream
 import kornell.core.util.StringUtils
 import java.nio.file.Files
 
-class FSContentManager(fsRepo:FSContentRepository) extends SyncContentManager {
+class FSContentManager(fsRepo:ContentRepository) extends SyncContentManager {
 	 def source(keys: String*): Try[Source] = Try {
 	   val path = Paths.get(fsRepo.getPath,url(keys:_*))
 	   Source.fromFile(path.toFile(), "UTF-8")

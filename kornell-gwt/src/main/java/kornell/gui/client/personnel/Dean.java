@@ -63,7 +63,7 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 			}
 
 			public void onSuccess(Void result) {
-				showContent(true);
+				showContentNative(true);
 			}
 		};
 
@@ -83,14 +83,6 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 		}
 		Document.get().setTitle(title);
 	}
-
-	private void showContent(boolean show) {
-		new Timer() {
-			public void run() {
-				showContentNative(show);
-			}
-		}.schedule(1);
-	};
 
 	@Override
 	public void onUnreadMessagesPerThreadFetched(UnreadMessagesPerThreadFetchedEvent event) {
@@ -127,7 +119,7 @@ public class Dean implements LogoutEventHandler, UnreadMessagesPerThreadFetchedE
 		$wnd.document.getElementsByTagName('head')[0].appendChild(link);
 	}-*/;
 
-	private static native void showContentNative(boolean show) /*-{
+	public static native void showContentNative(boolean show) /*-{
 		var menuBar = $wnd.document.getElementsByClassName('menuBar'),
 			vScrollBar = $wnd.document.getElementsByClassName('vScrollBar'),
 			activityBarWrapper = $wnd.document.getElementsByClassName('activityBarWrapper'),

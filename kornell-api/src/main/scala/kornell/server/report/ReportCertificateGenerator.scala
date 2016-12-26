@@ -57,7 +57,7 @@ object ReportCertificateGenerator {
 		    	join CourseVersion cv on cv.uuid = cc.courseVersion_uuid
 		    	join Course c on c.uuid = cv.course_uuid
 				join Institution i on i.uuid = cc.institution_uuid
-				join S3ContentRepository s on s.uuid = i.assetsRepositoryUUID
+				join ContentRepository s on s.uuid = i.assetsRepositoryUUID
 				where e.certifiedAt is not null and 
         		  p.uuid = $userUUID and
 				  cc.uuid = $courseClassUUID

@@ -236,7 +236,8 @@ public class GenericMenuBarView extends Composite implements MenuBarView,
 	private boolean hasHelpCourseClasses() {
 		if(courseClassesTO != null){
 			for (CourseClassTO courseClassTO : courseClassesTO.getCourseClasses()) {
-				if (courseClassTO.getEnrollment() != null && !courseClassTO.getCourseClass().isInvisible()) {
+				if ((courseClassTO.getEnrollment() != null || courseClassTO.getCourseClass().isPublicClass()) 
+						&& !courseClassTO.getCourseClass().isInvisible()) {
 					return true;
 				}
 			}

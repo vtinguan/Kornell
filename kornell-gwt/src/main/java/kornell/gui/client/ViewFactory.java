@@ -4,6 +4,7 @@ package kornell.gui.client;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+import kornell.core.entity.CourseVersion;
 import kornell.gui.client.presentation.admin.audit.AdminAuditView;
 import kornell.gui.client.presentation.admin.course.course.AdminCoursePresenter;
 import kornell.gui.client.presentation.admin.course.course.AdminCourseView;
@@ -11,6 +12,7 @@ import kornell.gui.client.presentation.admin.course.courses.AdminCoursesView;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassPresenter;
 import kornell.gui.client.presentation.admin.courseclass.courseclass.AdminCourseClassView;
 import kornell.gui.client.presentation.admin.courseclass.courseclasses.AdminCourseClassesView;
+import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionContentView;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionPresenter;
 import kornell.gui.client.presentation.admin.courseversion.courseversion.AdminCourseVersionView;
 import kornell.gui.client.presentation.admin.courseversion.courseversions.AdminCourseVersionsView;
@@ -64,6 +66,7 @@ public interface ViewFactory {
 	AdminCoursePresenter getAdminCoursePresenter();
 	AdminCourseVersionsView getAdminCourseVersionsView();
 	AdminCourseVersionView getAdminCourseVersionView();
+	AdminCourseVersionContentView getAdminCourseVersionContentView();
 	AdminCourseVersionPresenter getAdminCourseVersionPresenter();
 	AdminCourseClassesView getAdminCourseClassesView();
 	AdminCourseClassView getAdminCourseClassView();

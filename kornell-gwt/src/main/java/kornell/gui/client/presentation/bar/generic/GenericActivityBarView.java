@@ -2,7 +2,9 @@ package kornell.gui.client.presentation.bar.generic;
 
 import static kornell.core.util.StringUtils.mkurl;
 
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.ProgressBar;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -55,17 +57,11 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 	private static KornellConstants constants = GWT.create(KornellConstants.class);
 
-	private static final String SOUTH_BAR_IMAGES_PATH = mkurl(ClientConstants.IMAGES_PATH, "southBar");
-
 	private static String BUTTON_PREVIOUS = constants.previous();
 	private static String BUTTON_NEXT = constants.next();
 	private static String BUTTON_DETAILS = constants.details();
 	private static String BUTTON_NOTES = constants.notes();
 	private static String BUTTON_CHAT = constants.chat();
-
-	private Image iconPrevious;
-	private Image iconNext;
-	private Image iconChat;
 
 	private boolean showDetails = true;
 	private boolean chatDockEnabled = false;
@@ -128,21 +124,21 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 
 		showDetails = !isEnrolled;
 
-		iconPrevious = new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS) + ".png"));
-		displayButton(btnPrevious, BUTTON_PREVIOUS, iconPrevious);
+		displayButton(btnPrevious, BUTTON_PREVIOUS, new Icon(IconType.CARET_LEFT));
 
-		iconNext = new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NEXT) + ".png"));
-		displayButton(btnNext, BUTTON_NEXT, iconNext, true);
+		displayButton(btnNext, BUTTON_NEXT, new Icon(IconType.CARET_RIGHT), true);
 
 		displayButton(btnDetails, showDetails ? constants.course() : BUTTON_DETAILS,
-				new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
+				new Icon(IconType.BOOK));
 		
-		iconChat = new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_CHAT) + ".png"));
+		Icon iconChat = new Icon();
+		iconChat.setStyleName("fa fa-comments");
 		displayButton(btnChat, BUTTON_CHAT, iconChat);
 		btnChat.addStyleName("activityBarButtonChat");
 
-		displayButton(btnNotes, BUTTON_NOTES,
-				new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NOTES) + ".png")));
+		Icon iconNotes = new Icon();
+		iconNotes.setStyleName("fa fa-sticky-note-o");
+		displayButton(btnNotes, BUTTON_NOTES, iconNotes);
 
 		if (session.getCurrentCourseClass().getCourseClass().isCourseClassChatEnabled() &&
 				!session.getCurrentCourseClass().getCourseClass().isChatDockEnabled()) {
@@ -214,17 +210,18 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 		return pageCaption;
 	}
 
-	private void displayButton(final FocusPanel btn, final String buttonType, Image icon) {
+	private void displayButton(final FocusPanel btn, final String buttonType, Icon icon) {
 		displayButton(btn, buttonType, icon, false);
 	}
 
-	private void displayButton(final FocusPanel btn, final String buttonType, Image icon, boolean invertIcon) {
+	private void displayButton(final FocusPanel btn, final String buttonType, Icon icon, boolean invertIcon) {
 		btn.clear();
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("btnPanel");
 		buttonPanel.addStyleName(getItemName(buttonType));
 
-		icon.addStyleName("icon");
+		icon.addStyleName("label");
+		icon.addStyleName("font16");
 
 		Label label = new Label(buttonType.toUpperCase());
 		label.addStyleName("label");
@@ -308,26 +305,20 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 	private void enableButton(String btn, boolean enable) {
 		if (BUTTON_NEXT.equals(btn)) {
 			if (enable && !showDetails) {
-				iconNext.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NEXT) + ".png"));
 				btnNext.removeStyleName("disabled");
 			} else {
-				iconNext.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_NEXT) + "Disabled.png"));
 				btnNext.addStyleName("disabled");
 			}
 		} else if (BUTTON_PREVIOUS.equals(btn)) {
 			if (enable && !showDetails) {
-				iconPrevious.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS) + ".png"));
 				btnPrevious.removeStyleName("disabled");
 			} else {
-				iconPrevious.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_PREVIOUS) + "Disabled.png"));
 				btnPrevious.addStyleName("disabled");
 			}
 		} else if (BUTTON_CHAT.equals(btn)) {
 			if (enable && !showDetails) {
-				iconChat.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_CHAT) + ".png"));
 				btnChat.removeStyleName("disabled");
 			} else {
-				iconChat.setUrl(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_CHAT) + "Disabled.png"));
 				btnChat.addStyleName("disabled");
 			}
 		}
@@ -374,14 +365,14 @@ public class GenericActivityBarView extends Composite implements ActivityBarView
 			clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(false));
 			btnDetails.addStyleName("btnAction");
 			displayButton(btnDetails, constants.course(),
-					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
+					new Icon(IconType.BOOK));
 		} else {
 			if(!chatDockEnabled && session.getCurrentCourseClass() != null && session.getCurrentCourseClass().getCourseClass().isChatDockEnabled()){
 				clientFactory.getEventBus().fireEvent(new ShowChatDockEvent(true));
 			}
 			btnDetails.removeStyleName("btnAction");
 			displayButton(btnDetails, BUTTON_DETAILS,
-					new Image(StringUtils.mkurl(SOUTH_BAR_IMAGES_PATH, getItemName(BUTTON_DETAILS) + ".png")));
+					new Icon(IconType.BOOK));
 		}
 		enableButton(BUTTON_PREVIOUS, !showDetails && enablePrev && allowedPrev);
 		enableButton(BUTTON_NEXT, !showDetails && enableNext && allowedNext);

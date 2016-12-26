@@ -47,6 +47,8 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 	private GenericCourseDetailsView detailsView;
 
 	private Presenter presenter;
+	
+	boolean chatDockWasShown = false;
 
 	public GenericClassroomView(PlaceController placeCtrl, KornellSession session, EventBus bus, ViewFactory viewFactory) {
 		this.placeCtrl = placeCtrl;
@@ -95,16 +97,28 @@ public class GenericClassroomView extends Composite implements ClassroomView, Sh
 		boolean showDetails = event.isShowDetails();
 		contentPanel.setVisible(!showDetails);
 		detailsPanel.setVisible(showDetails);
-		if(showDetails)
+		if(showDetails) {
+			if(dockChatPanel != null){
+				dockChatPanel.clear();
+			}
 			presenter.fireProgressEvent();
+		}
 	}
 
 	@Override
 	public void onShowChatDock(ShowChatDockEvent event) {
 		dockChatPanel.setVisible(event.isShowChatDock());
 		if(event.isShowChatDock()){
-			dockChatPanel.clear();
+			if(!chatDockWasShown){
+				dockChatPanel.clear();
+				viewFactory.getMessagePresenterClassroomGlobalChat().threadClicked(null);
+				chatDockWasShown = true;
+			} else {
+				viewFactory.getMessagePresenterClassroomGlobalChat().getChatThreadMessagesSinceLast();
+			}
 			dockChatPanel.add(viewFactory.getMessagePresenterClassroomGlobalChat().asWidget());
+		} else if(dockChatPanel != null){
+			dockChatPanel.clear();
 		}
 	}
 }

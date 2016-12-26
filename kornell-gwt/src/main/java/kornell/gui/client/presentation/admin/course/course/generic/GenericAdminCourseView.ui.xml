@@ -15,7 +15,7 @@
 		        <g:Button ui:field="btnCancel" addStyleNames="btnNotSelected btnStandard"/>
 		      </g:FlowPanel>
 		    </b:Form>   
-		    <b:Modal ui:field="confirmModal" title="Confirmação" backdrop="NORMAL" addStyleNames="forgotPasswordModal">
+		    <b:Modal ui:field="confirmModal" title="Confirmação" backdrop="STATIC" addStyleNames="forgotPasswordModal">
 		      <g:FlowPanel>
 		        <g:Label ui:field="confirmText"></g:Label>
 		        <g:FlowPanel addStyleNames="standardButtonBar">

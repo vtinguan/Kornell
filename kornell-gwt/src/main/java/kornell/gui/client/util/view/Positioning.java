@@ -22,11 +22,15 @@ public class Positioning {
 	
 	public static void placeBetweenBars(FlowPanel pnl) {
 		String width = Window.getClientWidth() + "px";
-		String height = (Window.getClientHeight()
-				- SOUTH_BAR - NORTH_BAR)
-				+ "px";
+		String height = getClientHeightBetweenBars() + "px";
 		pnl.getElement().setPropertyString("width", width);	
 		pnl.getElement().setPropertyString("height", height);	
+	}
+
+	public static int getClientHeightBetweenBars() {
+		return (Window.getClientHeight()
+				- SOUTH_BAR
+				- NORTH_BAR);
 	}
 
 	public static void betweenBars(final FlowPanel pnl) {

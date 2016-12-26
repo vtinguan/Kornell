@@ -11,6 +11,7 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -145,16 +146,20 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 				newUnreadChatThreadTO.setUnreadMessages("0");
 				newUnreadChatThreadTO.setChatThreadCreatorName(session.getCurrentUser().getPerson().getFullName());
 				newUnreadChatThreadTOs.add(newUnreadChatThreadTO);
-				selectedChatThreadInfo = null;
+				selectedChatThreadInfo = newUnreadChatThreadTO;
 			}
 			
 			if(newUnreadChatThreadTOs.size() > 0){
 				// if no thread is selected, "click" the first one
-				if(selectedChatThreadInfo == null){
+				if(selectedChatThreadInfo == null && !(placeCtrl.getWhere() instanceof ClassroomPlace)
+						&& (MessagePanelType.inbox.equals(messagePanelType) ||
+								MessagePanelType.courseClassSupport.equals(messagePanelType))){
 					threadClicked(newUnreadChatThreadTOs.get(0));
-					selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
 				}
-				view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
+				selectedChatThreadInfo = newUnreadChatThreadTOs.get(0);
+				if(selectedChatThreadInfo != null){
+					view.updateSidePanel(newUnreadChatThreadTOs, selectedChatThreadInfo.getChatThreadUUID(), session.getCurrentUser().getPerson().getFullName());
+				}
 			} else if(placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)){
 				KornellNotification.show(constants.noThreadsMessage(), AlertType.WARNING, 5000);
 			} 
@@ -165,22 +170,21 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 
 	@Override
 	public void threadClicked(final UnreadChatThreadTO unreadChatThreadTO) {
+		if(unreadChatThreadTO != null){
+			this.selectedChatThreadInfo = unreadChatThreadTO;
+		}
+		
 		threadBeginningReached = false;
 		chatThreadMessageTOs = new ArrayList<>();
 		initializeChatThreadMessagesTimer();
-		this.selectedChatThreadInfo = unreadChatThreadTO;
-		if(unreadChatThreadTO.getChatThreadUUID() != null){
+		if(selectedChatThreadInfo != null){
 			view.displayThreadPanel(false);
-			view.updateThreadPanel(unreadChatThreadTO, session.getCurrentUser().getPerson().getFullName());
-			onScrollToTop(true);
-		} else {
-			ChatThreadMessagesTO chatThreadMessagesTO = toFactory.newChatThreadMessagesTO().as();
-			chatThreadMessagesTO.setChatThreadMessageTOs(new ArrayList<ChatThreadMessageTO>());
 			view.updateThreadPanel(selectedChatThreadInfo, session.getCurrentUser().getPerson().getFullName());
+			onScrollToTop(true);
 		}
 	}
 
-	private void getChatThreadMessagesSinceLast() {
+	public void getChatThreadMessagesSinceLast() {
 		if(((placeCtrl.getWhere() instanceof MessagePlace && MessagePanelType.inbox.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof AdminCourseClassPlace && MessagePanelType.courseClassSupport.equals(messagePanelType)) || 
 				(placeCtrl.getWhere() instanceof ClassroomPlace && 
@@ -188,7 +192,7 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 						( (MessagePanelType.courseClassGlobal.equals(messagePanelType) && session.getCurrentCourseClass().getCourseClass().isCourseClassChatEnabled()) ||
 						  (MessagePanelType.courseClassTutor.equals(messagePanelType) && session.getCurrentCourseClass().getCourseClass().isTutorChatEnabled())
 						)
-				) && selectedChatThreadInfo != null && updateMessages)){
+				) && updateMessages)){
 			if(selectedChatThreadInfo != null && selectedChatThreadInfo.getChatThreadUUID() != null){
 				final String chatThreadUUID = selectedChatThreadInfo.getChatThreadUUID();
 				LoadingPopup.show();
@@ -239,6 +243,8 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 					}
 				}
 			});
+		} else {
+			view.displayThreadPanel(true);
 		}
 	}
 
@@ -308,6 +314,11 @@ public class MessagePresenter implements MessageView.Presenter, UnreadMessagesPe
 	@Override
 	public void clearThreadSelection(){
 		this.selectedChatThreadInfo = null;
+	}
+
+	@Override
+	public UnreadChatThreadTO getThreadSelection(){
+		return this.selectedChatThreadInfo = null;
 	}
 
 	private Date lastFetchedMessageSentAt() {
