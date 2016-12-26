@@ -59,9 +59,7 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<EnrollmentsEntries> newEnrollmentsEntries();
 	
 	AutoBean<EnrollmentEntries> newEnrollmentEntries();
-	
-	AutoBean<FSContentRepository> newFSContentRepository();
-	
+		
 	AutoBean<CourseDetailsHint> newCourseDetailsHint();
 	
 	AutoBean<CourseDetailsSection> newCourseDetailsSection();

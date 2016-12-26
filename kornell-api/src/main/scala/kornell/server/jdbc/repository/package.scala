@@ -44,6 +44,8 @@ import kornell.core.entity.CourseDetailsEntityType
 import kornell.core.entity.CourseDetailsLibrary
 import kornell.core.entity.CourseDetailsSection
 import kornell.core.to.CourseTO
+import kornell.core.entity.ContentRepository
+import kornell.core.entity.RepositoryType
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases

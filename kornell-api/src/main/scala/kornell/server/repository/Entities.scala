@@ -28,6 +28,8 @@ import kornell.core.util.UUID
 import kornell.server.util.DateConverter
 import kornell.server.authentication.ThreadLocalAuthenticator
 import kornell.server.jdbc.repository.CourseRepo
+import kornell.core.entity.RepositoryType
+import kornell.core.entity.CourseDetailsEntityType
 
 
 //TODO: Remove this class without spreading dependency on AutoBeanFactorySource
@@ -413,15 +415,6 @@ object Entities {
     val eEntries = factory.newEnrollmentEntries.as
     eEntries.setActomEntriesMap(new HashMap[String,ActomEntries]())
     eEntries
-  }
-  
-  def newFSContentRepository(uuid:String,path:String,prefix:String,institutionUUID:String) = {
-    val fsRepo = factory.newFSContentRepository.as
-    fsRepo.setUUID(uuid)
-    fsRepo.setPath(path)
-    fsRepo.setPrefix(prefix)
-    fsRepo.setInstitutionUUID(institutionUUID)
-    fsRepo
   }
 
   def newCourseDetailsHint(uuid:String, text:String, entityType:CourseDetailsEntityType, entityUUID:String, index:Integer, fontAwesomeClassName:String) = {
