@@ -53,7 +53,9 @@ class KornellAPI extends Application {
     classOf[ContentRepositoriesResource],
     classOf[CourseDetailsHintsResource],
     classOf[CourseDetailsSectionsResource],
-    classOf[CourseDetailsLibrariesResource]
+    classOf[CourseDetailsLibrariesResource],
+    classOf[CertificateDetailsResource],
+    classOf[CertificatesDetailsResource]
   )
     
   override def getClasses() = 

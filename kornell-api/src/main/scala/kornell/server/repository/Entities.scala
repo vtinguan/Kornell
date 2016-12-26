@@ -453,5 +453,14 @@ object Entities {
     section.setIndex(index)
     section
   }
+  
+  def newCertificateDetails(uuid: String, bgImage: String, entityType:CourseDetailsEntityType, entityUUID:String) = {
+    val certificateDetails = factory.newCertificateDetails().as
+    certificateDetails.setUUID(uuid)
+    certificateDetails.setBgImage(bgImage)
+    certificateDetails.setEntityType(entityType)
+    certificateDetails.setEntityUUID(entityUUID)
+    certificateDetails
+  }
 }
 

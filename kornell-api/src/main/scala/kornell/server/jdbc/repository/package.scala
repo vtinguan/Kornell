@@ -46,6 +46,7 @@ import kornell.core.entity.CourseDetailsSection
 import kornell.core.to.CourseTO
 import kornell.core.entity.ContentRepository
 import kornell.core.entity.RepositoryType
+import kornell.core.entity.CertificateDetails
 
 /**
  * Classes in this package are Data Access Objects for JDBC Databases
@@ -398,4 +399,10 @@ package object repository {
       CourseDetailsEntityType.valueOf(rs.getString("entityType")), 
       rs.getString("entityUUID"), 
       rs.getInt("index"))
+      
+  implicit def toCertificateDetails(rs: ResultSet): CertificateDetails = newCertificateDetails(
+      rs.getString("uuid"), 
+      rs.getString("bgImage"), 
+      CourseDetailsEntityType.valueOf(rs.getString("entityType")), 
+      rs.getString("entityUUID"))
 }

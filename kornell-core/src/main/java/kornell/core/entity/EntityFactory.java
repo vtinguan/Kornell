@@ -65,4 +65,6 @@ public interface EntityFactory extends AutoBeanFactory {
 	AutoBean<CourseDetailsSection> newCourseDetailsSection();
 	
 	AutoBean<CourseDetailsLibrary> newCourseDetailsLibrary();
+	
+	AutoBean<CertificateDetails> newCertificateDetails();
 }
